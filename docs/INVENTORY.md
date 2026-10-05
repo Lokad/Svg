@@ -148,12 +148,14 @@ compose correctly; fringe errors remain. No opaque/hole flips occur.
 
 | Logical viewport | Transparent changed pixels / alpha error mass | White changed pixels | Black changed pixels |
 | --- | --- | --- | --- |
-| 286×200 | 706 / 7,026 | 639 | 621 |
-| 572×400 | 1,558 / 14,622 | 1,395 | 1,412 |
-| 1144×800 | 3,203 / 28,474 | 2,932 | 2,980 |
+| 286×200 | 307 / 356 | 203 | 176 |
+| 572×400 | 673 / 787 | 435 | 464 |
+| 1144×800 | 1,410 / 1,634 | 918 | 940 |
 
-Transparent maximum alpha error is 64 at every size; opaque backgrounds have
-exact alpha and maximum channel error 32. All nine remain known differences.
+Transparent maximum alpha error is now 7/8/8 across the sizes. All nine remain
+known differences after the shared raw-control classifier, with no opaque/hole
+flips. The original 706/1,558/3,203 transparent pixel counts and
+7,026/14,622/28,474 alpha errors remain in the historical browser/model record.
 References are portable under `tests/References/inventory/inv-027-{size}-{background}.png`.
 
 The [actual browser path record](../tests/References/inventory/inv-027-native-route.json)
@@ -165,18 +167,42 @@ body points. Two models were declared before isolated-copy execution. Switching
 retained convex curves to the interval/live walker lowers transparent alpha error
 to **356/787/1,634** and improves every variant, while disabling retained spans
 worsens all nine. Neither model is exact; neither changes production or an input.
-This supports investigating compatible raw-path classification and the remaining
-mapped edge/paint events. It does not justify globally disabling convex dispatch.
+That isolated experiment did not justify globally disabling convex dispatch.
+The subsequent shared raw-control implementation below realizes the interval/live
+improvement through compatible classification and retains genuine convex paths.
 The [design record](RASTERIZATION_DESIGN.md#youtube-raw-path-classification-discriminator-2026-10-05)
 retains the mechanism and limits. Full evidence is ignored under
 `artifacts/corporate-cohort-20261005/`; offline tests execute all 258 dispositions,
 eighteen references and the discriminator. Fresh full validation passes **3,235
 tests = 3,090 core + 139 visual + six FontProbe**, with a clean nine-project Release
-build and locked restore. Production renderer sources remain at the all-Ford-exact
-density checkpoint; the corporate selection/measurement does not refresh Linux,
+build and locked restore at that historical selection/measurement checkpoint.
+Production then remained at the all-Ford-exact density checkpoint; that slice did not refresh Linux,
 performance, memory/package evidence or close the curved-mark/S17 exits.
 
-## Current renderer checkpoint (2026-10-05)
+## Current raw-control renderer checkpoint (2026-10-05)
+
+The [shared repair](../tests/References/raw-control-convexity.json) matches all 75
+compiled-native vectors and distinguishes retained raw controls from sampled
+convexity. Work is reserved before the allocation-free pass and cached across
+contexts. All nine Ford PNGs and every prior exact fixture PNG are unchanged.
+Twenty-four predeclared controls retain twelve exact and twelve known differences;
+one original fractional shoulder graduates against its original reference.
+The current bank executes 896 cases: 744 fixtures, 60 research and 92 legacy
+Default inputs. All 258 corporate dispositions remain; 39 PNGs change, including
+nine oracle-backed YouTube improvements and thirty cases without references.
+No holdout output changes and no corporate document newly enters the exact
+numerator. Sources, frozen recipes and original captures remain unchanged.
+
+Fresh locked restore, nine-project Release build, **3,244 tests = 3,099 core +
+139 visual + six FontProbe**, all 25 memory scenarios and runtime/symbol package
+plus installed-consumer checks pass. Matching timings and ledgers are in
+[BENCHMARKS](BENCHMARKS.md#raw-control-point-convexity-checkpoint-2026-10-05):
+YouTube is slower in both local ordering pairs, while charged work/allocation
+fall. Representative performance, Linux, complete cohort fidelity and S17 remain
+open. Next native comparison targets the original large residual (179,14),
+alpha 0 versus 3. Ignored evidence is under `artifacts/raw-convexity-20261005/`.
+
+## Historical path-point density renderer checkpoint (2026-10-05)
 
 Retained-path-point density preserves all 92 Default dispositions: 88 renders and
 four MalformedInput DTD rejections. Ford is exact in all nine original variants:

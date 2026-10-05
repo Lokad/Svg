@@ -767,3 +767,55 @@ with unchanged complete Skia/Chromium BSD notices. Full input/DLL/PNG identities
 batches, ledgers, negative-model tests, 872-case comparison and delivery evidence
 are under ignored `artifacts/lower-residuals-20261005/`. The outlined-wordmark
 checkpoint is established; representative throughput, Linux and S17 remain open.
+
+## Raw control-point convexity checkpoint (2026-10-05)
+
+Compare the retained-path-point density source at the reviewed `665ae500` baseline
+with the integrated raw-control classifier on Windows x64 .NET 10.0.12. Both
+orders run sequentially in fresh processes after capture, build, test, package,
+bank and rollback jobs finish. Each input has 32 warmups and three batches: 100
+tiny, ten intended Ford/YouTube, and three dense/native-stop/large-YouTube
+conversions. Values are local medians per conversion; these six inputs do not
+establish representative throughput.
+
+| Input | Baseline first ms / bytes | Candidate second ms / bytes | Candidate first ms / bytes | Baseline second ms / bytes |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.15409 / 20,288 | 0.12301 / 20,288 | 0.12964 / 20,288 | 0.19864 / 20,288 |
+| ford | 19.93719 / 819,730 | 16.71493 / 818,901 | 20.58201 / 816,628 | 21.63198 / 816,682 |
+| dense | 281.24177 / 7,184,808 | 270.49823 / 7,184,808 | 424.39577 / 7,184,781 | 317.68283 / 7,184,808 |
+| native-stop | 454.32303 / 36,856,592 | 444.49437 / 36,856,317 | 496.32897 / 36,856,714 | 575.41623 / 36,857,149 |
+| youtube-intended | 8.84861 / 1,096,162 | 11.04585 / 1,043,336 | 18.26950 / 1,043,150 | 10.93398 / 1,095,659 |
+| youtube-large | 28.92793 / 4,038,349 | 34.20333 / 3,952,485 | 59.37420 / 3,952,949 | 32.89683 / 4,037,584 |
+
+| Input | Charged work through raster, baseline → candidate | Accounted peak bytes, baseline → candidate |
+| --- | ---: | ---: |
+| tiny | 219 → 219 | 132,576 → 132,576 |
+| ford | 1,301,211 → 1,301,211 | 534,434 → 534,434 |
+| dense | 32,761,702 → 32,761,735 | 2,493,820 → 2,493,820 |
+| native-stop | 73,300,833 → 73,300,833 | 33,629,655 → 33,629,655 |
+| youtube-intended | 1,056,315 → 1,009,278 | 981,810 → 943,153 |
+| youtube-large | 3,533,088 → 3,249,021 | 3,731,795 → 3,733,811 |
+
+Raw classification adds no buffers and is charged once per admitted convex
+sampled contour. Tiny/Ford/native-stop work and every measured parser count are
+unchanged; dense adds 33 charged units. YouTube changes from pre-stepped convex
+curves to live interval walking: charged work falls at both sizes, intended peak
+falls 38,657 bytes and large peak grows 2,016 bytes. Intended/large allocation
+falls in both measured orders; those PNGs improve against their original
+references. The other four measured PNG identities are unchanged.
+
+YouTube medians rise in **both ordering pairs**, despite lower charged work and
+allocation. The live-curve stepping/replay cost remains a performance dependency;
+do not infer speedup from smaller ledgers or hide the measured slowdown. Ford is
+faster in both pairs here, but its work/peak are unchanged and the order variation
+in the other inputs remains substantial. These local measurements do not replace
+representative BenchmarkDotNet latency/throughput or Linux evidence.
+
+Fresh locked restore/Release build, all 3,244 tests, all 25 memory scenarios and
+runtime/symbol package plus installed-consumer checks pass. The measured current
+renderer/probe/memory/package identity is `69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006`,
+with the complete Skia/Chromium notices and new 2025 classifier notice in the
+runtime package. Local input/DLL/PNG identities, all timing batches, six resource
+ledgers, 896-case final bank, 258-case corporate comparison, rollback and delivery
+evidence remain under ignored `artifacts/raw-convexity-20261005/`. The curved-mark,
+representative performance, Linux and S17 exits remain open.

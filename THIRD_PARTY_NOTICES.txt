@@ -1,15 +1,15 @@
 Lokad.Svg contains managed adaptations of Skia analytic curve/line clipping,
-polynomial solvers, vertical edge combination, horizontal clip paint routing
-and axis-aligned path mapping.
+polynomial solvers, vertical edge combination, horizontal clip paint routing,
+axis-aligned path mapping and raw control-point convexity classification.
 These adaptations do not depend on native Skia.
 
 Source revision: f8b66b7597c4cc859d3ed190e9c6872241e6721c
 Source files: src/core/SkEdgeClipper.cpp, src/core/SkLineClipper.cpp, src/core/SkEdgeBuilder.cpp,
 src/core/SkGeometry.cpp, src/core/SkCubics.cpp, src/core/SkQuads.cpp,
 src/core/SkBezierCurves.cpp, src/core/SkFloatingPoint.cpp, src/core/SkScan_Path.cpp,
-src/core/SkBlitter.h and src/core/SkMatrix.cpp.
+src/core/SkBlitter.h, src/core/SkMatrix.cpp and src/core/SkPathPriv.cpp.
 Copyright 2006, 2009 The Android Open Source Project;
-2011, 2012 Google Inc.; 2023 Google LLC.
+2011, 2012 Google Inc.; 2023, 2025 Google LLC.
 
 Skia license:
 

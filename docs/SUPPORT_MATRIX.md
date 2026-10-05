@@ -5,10 +5,19 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the path-point density checkpoint, all 720 current manifest entries are
-gated: 567 exact decoded-pixel references, 135 known-difference renders and 18
+At the raw-control convexity checkpoint, all 744 current manifest entries are
+gated: 580 exact decoded-pixel references, 146 known-difference renders and 18
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
+
+Single clean retained contours now distinguish raw control-polygon convexity
+from sampled-ring convexity. Float sign/turn/reversal classification is charged
+once and cached across raster contexts, preserving genuine convex routes and
+declined-hint fallback. The 75 native vectors match; twelve independent controls
+and one existing fractional shoulder become exact. All nine Ford variants retain
+exact PNG identity. YouTube improves on every frozen variant but remains inexact;
+the corporate matrix still has only eighteen fidelity comparisons and one verified
+exact document. General mapped curve/paint events remain open.
 
 Analytic coverage reserves complete live-edge objects, list growth and retained
 curve expansion before allocation. Cubic forward-difference positions evolve
@@ -132,8 +141,8 @@ Stroke widths flow through the same cascade: presentation attributes, inline sty
 | PNG encoding | Managed non-interlaced RGBA8 encoder; owned-memory, caller-memory, synchronous-stream and asynchronous-stream output; stream forms aggregate into at-most-64 KiB `IDAT` chunks under a budgeted 64 KiB cap with byte-identical output across all four forms, while memory forms accumulate budgeted segments without geometric copies; stream payloads are written in cancellation-checked chunks of at most 64 KiB |
 | Independent RGBA comparison | Exact RGB8/RGBA8 comparison with alpha and mismatch diagnostics |
 | Visual comparison CLI | Exact JSON gate for bounded RGB8/RGBA8 PNGs |
-| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 567 exact fixture entries; entry count is not a count of fresh capture triples |
-| Fixture corpus | 720 original CC0 fixture entries with verified hashes across 420 base documents and 300 variants; all 567 exact entries compare exactly, and 153 classified-unsupported entries retain their observed behavior (135 known-difference renders with pinned-Chrome references and complete comparisons, 18 categorized rejections). The independent Ford matrix is separate: all nine exact against original references/source provenance. These entry counts are not corporate-document coverage. |
+| Chrome oracle lifecycle/CDP connection | Hash-pinned Windows CFT archive, transparent capture recipe, bounded graceful CDP shutdown with profile-cleanup retries, three byte-identical fresh-process smoke captures, and retained pinned references for all 580 exact fixture entries; entry count is not a count of fresh capture triples |
+| Fixture corpus | 744 original CC0 fixture entries with verified hashes across 428 base documents and 316 variants; all 580 exact entries compare exactly, and 164 classified-unsupported entries retain their observed behavior (146 known-difference renders with pinned-Chrome references and complete comparisons, 18 categorized rejections). The independent Ford matrix is separate: all nine exact against original references/source provenance. These entry counts are not corporate-document coverage. |
 
 ### Experimental supplied-font text
 

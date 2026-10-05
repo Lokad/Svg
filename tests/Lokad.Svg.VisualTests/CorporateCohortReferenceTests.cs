@@ -101,15 +101,15 @@ public sealed class CorporateCohortReferenceTests
     }
 
     [Theory]
-    [InlineData("small", "transparent", 706, 64)]
-    [InlineData("small", "white", 639, 0)]
-    [InlineData("small", "black", 621, 0)]
-    [InlineData("intended", "transparent", 1558, 64)]
-    [InlineData("intended", "white", 1395, 0)]
-    [InlineData("intended", "black", 1412, 0)]
-    [InlineData("large", "transparent", 3203, 64)]
-    [InlineData("large", "white", 2932, 0)]
-    [InlineData("large", "black", 2980, 0)]
+    [InlineData("small", "transparent", 307, 7)]
+    [InlineData("small", "white", 203, 0)]
+    [InlineData("small", "black", 176, 0)]
+    [InlineData("intended", "transparent", 673, 8)]
+    [InlineData("intended", "white", 435, 0)]
+    [InlineData("intended", "black", 464, 0)]
+    [InlineData("large", "transparent", 1410, 8)]
+    [InlineData("large", "white", 918, 0)]
+    [InlineData("large", "black", 940, 0)]
     public void Selected_curved_mark_keeps_every_original_failure(string size, string background, int changedPixels, int maximumAlpha)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Resolve("tests/References/inventory/corporate-cohort-v1.json")));

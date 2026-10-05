@@ -1,0 +1,1966 @@
+{
+  "checkpoint": "raw-control-convexity-2026-10-05",
+  "baselineCommit": "60f98bfe88c6643164bc045e844254fa6215a5c3",
+  "integrationBaselineCommit": "665ae500",
+  "nativePin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "nativeVectors": "tests/Lokad.Svg.Tests/TestData/raw-convexity-native.json",
+  "nativeVectorCount": 75,
+  "nativeConvexVectorCount": 30,
+  "declaredBeforePrototype": true,
+  "rendererSha256": "69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006",
+  "sourceFingerprintSha256": "41550a691c797f0200be48d159fa8f5c0f5bc8d24cf76f0c5bc920b9e48041f7",
+  "sourceUtf8LfSha256": {
+    "src/Lokad.Svg/AssemblyInfo.cs": "45cdca8a055356d543bcb5e4182f717e80d402ada26c844680282fb88fdd990c",
+    "src/Lokad.Svg/SvgColor.cs": "befbb1c837b440d30b77f0202bd5f83d465a03c04cea13c01f0799a1cec856c3",
+    "src/Lokad.Svg/SvgConverter.cs": "9ae7da948cc45286e8b3aac527175e3a59226e628d85e37663a1d58080ad58f3",
+    "src/Lokad.Svg/SvgErrorCode.cs": "5de7d7e4eb7ad87071f9a33e25fca74870fac06cf4dd0d11455793e9a4198221",
+    "src/Lokad.Svg/SvgException.cs": "8d86ee328e2ee72dd332d2eaa85457a7259ec6637eb9a58e245c6b6730b5b597",
+    "src/Lokad.Svg/SvgPreparedDocument.cs": "5c0afe7927d8fed25f33b5520f8830a53bddc32ecb64b55dbbb514ee5c4ae150",
+    "src/Lokad.Svg/SvgRenderLimits.cs": "9950dc1167a705642893b6d296764f8afadaaa55eab36a7da4682a3bf2d82ded",
+    "src/Lokad.Svg/SvgRenderOptions.cs": "dc4f60a724d8781a0733c61ada7bd6a8f0d8b6bfd417f3f9220bc96983ef1d80",
+    "src/Lokad.Svg/SvgViewport.cs": "a1fb633bb5d9be5ed1e3dee4626eae73346a850ba9b27b37e174e6b32cab63ea",
+    "src/Lokad.Svg/Encoding/PngEncoder.cs": "9afe664c489326a771a99e4440181ee8858162dd05a2cbb9ac009e26c03d4dce",
+    "src/Lokad.Svg/Encoding/PngImageDecoder.cs": "4b5185512f7ac1ba7d22e815b20f5abcefed1a555886a8ac2794084327d462c0",
+    "src/Lokad.Svg/Fonts/CmapLookupProbe.cs": "6704523aa68ca95251c67da73961807828bfd938eec4b034daa6c5ae6bb1bb17",
+    "src/Lokad.Svg/Fonts/FontIntegrityProbe.cs": "28761dd6dd057effdaf85fee8ad8e9bdd0a712900d3cf5b3893a39685f30ef35",
+    "src/Lokad.Svg/Fonts/FontMetricsProbe.cs": "454463d61a6729b55f650e29711e12c57109d6c5b08a32f0c554d65adeb590ed",
+    "src/Lokad.Svg/Fonts/GlyphDecoderBudgetProbe.cs": "5f07461e4921f1cc144b32704c9bd63c00a4b313eb478881c1d0aa5760343df0",
+    "src/Lokad.Svg/Fonts/GlyphExpansionProbe.cs": "3244a9207862e21efe34b529dcae9c0845672e5dddd7636f332ef483c58f2c97",
+    "src/Lokad.Svg/Fonts/GlyphOutlineProbe.cs": "a4631882a96457dc0018486f1bb0116326d312bb6c20b979f38d40f85f5cd7ae",
+    "src/Lokad.Svg/Fonts/OpenTypeFont.cs": "b35db1c4ad25e10ecc9ebd14b1f7360586f8478a4930a9c5d9cd44a2ba51fd52",
+    "src/Lokad.Svg/Fonts/SvgFontDiagnostic.cs": "d6312db061958dd86d7f7783dbc2e6c2a24fd45c52b1bbbb4e7f057b0b9aee7e",
+    "src/Lokad.Svg/Fonts/SvgFontPackCatalog.cs": "ab6b2d26dd04830fd6436f04669091456288ef5416149b157b74568fca7f383a",
+    "src/Lokad.Svg/Fonts/SvgFontProgramSource.cs": "6dfb2fba97f67760684a569898370545d43ee8a7bbd617507b738c7079c993af",
+    "src/Lokad.Svg/Fonts/SvgFontRequestDiscovery.cs": "a653913e1b2f145b5bc9c588760eeb32ed77ca9793f01437a485f68240a9f71f",
+    "src/Lokad.Svg/Fonts/SvgFontSnapshot.cs": "017557d4a2aebdf645df7e978fc01eb9b66db4e8942a725fdddce158f9a1e964",
+    "src/Lokad.Svg/Fonts/SvgGlyphLayout.cs": "7835e9256dbdbe3ba2dd2dce73e67186693bc62c58cf1f9742dd93cf54f9176f",
+    "src/Lokad.Svg/Fonts/SvgGlyphOutline.cs": "530f53a0fd587ff98e98ad92ae3efd50e956084172687b34714263dca8b9e564",
+    "src/Lokad.Svg/Parsing/BudgetedParserCollections.cs": "1887db43cb2ac328d55d204e07235d7b98c6321f9c085431c16a84cac898aafa",
+    "src/Lokad.Svg/Parsing/ReadOnlyMemoryStream.cs": "03e700334f70605a6b7962308e00fa9dabf0a2e5e7473915717b1c288b43b1df",
+    "src/Lokad.Svg/Parsing/SvgClipBox.cs": "ba4abd8eea2582dfafb862c9cc43e43a59d14f5d24378f2a2d24b20dcea882f4",
+    "src/Lokad.Svg/Parsing/SvgClipPathSyntax.cs": "85d42c3212a28885f2768c0b8a0fb3cfd3f3054ffa150b20bdbc020d3dcb9011",
+    "src/Lokad.Svg/Parsing/SvgClipPolygon.cs": "d0f696ead7e75644d354bf8e1b396c41e2a38a267025c6c63b135c2b3bd42578",
+    "src/Lokad.Svg/Parsing/SvgColorParser.cs": "ea211da9b8c24b3c144ac516c946750b00da90c22f0bba04e1be12513e0c11be",
+    "src/Lokad.Svg/Parsing/SvgComputedStyle.cs": "5750059c1124e8c06127ac2374da4e50cee710045769685b2b2affc1edec9f4e",
+    "src/Lokad.Svg/Parsing/SvgComputedStyleResolver.cs": "9e74b7e260d6d804c54ccb27d216ecefa16e68b581d8d42c99e61ac8997326ea",
+    "src/Lokad.Svg/Parsing/SvgContainerInheritance.cs": "d33f5bbcdcd825d52bababd3fb3a3544ccad98673bad91df95021675ddc957ff",
+    "src/Lokad.Svg/Parsing/SvgContainerPresentationResolver.cs": "2d2f9352f956626f620e990294ebc6ad0879c2d5f043be10d64642faa9ee67ff",
+    "src/Lokad.Svg/Parsing/SvgContourTopology.cs": "49ea6f689a1ceb79b9ad991b80f0d08c01b9cf212f1d7fed7a8f3360e493cc9f",
+    "src/Lokad.Svg/Parsing/SvgDefinitionParser.cs": "bd26bc75da85d2dd1de42e5f78e040eb155c6963f44397a740a4706c2ab5b35f",
+    "src/Lokad.Svg/Parsing/SvgDocumentState.cs": "01b1e2d14048e738373dd9057ccfefdd6c6517dcff2a451852830ab50e8903fa",
+    "src/Lokad.Svg/Parsing/SvgDocumentStyleResolver.cs": "38e34e4793f7e2d557c8e1ab4748405c298ac31350d09f2f0f2428a9b54b3323",
+    "src/Lokad.Svg/Parsing/SvgDocumentTraversal.cs": "d6b534a2c7ecdf03328ada3457a589f1f39f91e49bc7ab28600a21fc6438b891",
+    "src/Lokad.Svg/Parsing/SvgElementAttributePolicy.cs": "07ed8f2e3a8de543107bc733711ae2c3253be10a3379c1a1264bb2c5d36b3b6d",
+    "src/Lokad.Svg/Parsing/SvgEllipseSyntax.cs": "7dfffa766a8a3233b955c3c73be0f2783aeda5182472ff320d57a872f2179ebb",
+    "src/Lokad.Svg/Parsing/SvgFloatNumber.cs": "f4c11ce04eaa8ff3395a6000df30597467ab12ac6b0aa1bde00eb3b68bbaae6a",
+    "src/Lokad.Svg/Parsing/SvgGeometrySyntax.cs": "bdcb9717f6d949f0812f67eee055d0842a49e628a801c97e82ffea52680bcfb1",
+    "src/Lokad.Svg/Parsing/SvgGradientSyntax.cs": "238cb2633785117d91acfebd346a7ada968135ee899ab490d9e5541d4e1e7724",
+    "src/Lokad.Svg/Parsing/SvgGroupParser.cs": "e1f30cae135734db0b669180703edc5b047f69dd6ccda977fcf8e6d846aadb8a",
+    "src/Lokad.Svg/Parsing/SvgImageSyntax.cs": "3f2e80951242918498b6283af7b9409b69a174535582e05071f7eeeacf8ea24e",
+    "src/Lokad.Svg/Parsing/SvgInheritedPresentation.cs": "21e4e90b5f8e3a55296879fd9cbd56a9ca707d711943668564404fdf28c89fe8",
+    "src/Lokad.Svg/Parsing/SvgInheritedStrokeStyle.cs": "70173fe9ffc0d05c356b2d472eebc2c64e96bc86c116704c78e349a1b8ac47d9",
+    "src/Lokad.Svg/Parsing/SvgInheritedTextStyle.cs": "33384ebc871f4b7453dd673b1692f7512e9e41fd02f4d29aabb07c95b6502920",
+    "src/Lokad.Svg/Parsing/SvgInlineStyleParser.cs": "0365c3952bcdd75544cd102bcc40412aae920ea1ded91ea5c560bee6bc9bdb12",
+    "src/Lokad.Svg/Parsing/SvgLeafParser.cs": "4f753eb410a8512a399bc94d356f2a27af2f8e339a8c9da626f48b6ada74be08",
+    "src/Lokad.Svg/Parsing/SvgLineSyntax.cs": "3fce2193b240ce6c03e8ee655412069f2aced0459505fc6a13299e5724779bc1",
+    "src/Lokad.Svg/Parsing/SvgLocalReferenceParser.cs": "f182555441ab5c8b63816e440a1542ea2a2dce138ef7a5776b1dd4722a53855e",
+    "src/Lokad.Svg/Parsing/SvgLocalReferencePresentationResolver.cs": "979ad3f86e0d9092a6a30605dafd47507627e174c7f07b5fc9700fd20f6d8588",
+    "src/Lokad.Svg/Parsing/SvgLocalReferenceSyntax.cs": "3a7770e80767901688b99c604567d5fd74479b16353c4da81408565a13fa8367",
+    "src/Lokad.Svg/Parsing/SvgLocalUrl.cs": "8dc382fd6f34eacf66a675deda5efbeccfd689a95a113d7c52c4016c679c6af3",
+    "src/Lokad.Svg/Parsing/SvgMaskContent.cs": "8ff656450640d64b3b6fb14031ccd47d98c8067469f7b1491fba436f1728773f",
+    "src/Lokad.Svg/Parsing/SvgMaskSyntax.cs": "33fc26c9bb9a5c038872b5d421b90b307f127112bc41717fed60c7cffd17f1d7",
+    "src/Lokad.Svg/Parsing/SvgNestedViewportSyntax.cs": "7d3dbcc1a6a9998af5e5cd5b0ba35b31f8d478248107c60b1f286f5b86ae63c4",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryLowerer.cs": "d62c6d55404eaebc942395f8438200d592fc4bfe6037c27b8ef3797fbeddf7fb",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalGeometryTokenizer.cs": "56f4dfea65c1a4dd2ad763363988e1b0b543381d5eb47778125de478522d2205",
+    "src/Lokad.Svg/Parsing/SvgOrthogonalShapeParser.cs": "38dadcf9c73ef6cae700e48bb317309d984a7b4874587e4d61b7b027f96bf37e",
+    "src/Lokad.Svg/Parsing/SvgPaintableElementContext.cs": "ae38a7393054a52e12d35737a0e9826b799507b60aa1b7033edf18ccf649fdcb",
+    "src/Lokad.Svg/Parsing/SvgPaintOpacity.cs": "3e13d63ff0039a63be99d34e1287f03d251b616dfb42ff89b514effb535b1a53",
+    "src/Lokad.Svg/Parsing/SvgPaintResolver.cs": "8d336c2e3e921da5931fb34d84ff616c1f779face5d4bab557277c6420a422a3",
+    "src/Lokad.Svg/Parsing/SvgPathDataParser.cs": "e0503d5d058af83d365f3963f736d6cfae8b4656350b5bc5c6cf793b7d33848f",
+    "src/Lokad.Svg/Parsing/SvgPatternSyntax.cs": "030753ee3e6bad4ade1bc573c44a7a38908ef753d92adf2f78dc2dde3c69b0bb",
+    "src/Lokad.Svg/Parsing/SvgPresentationResolver.cs": "72cab0090c58d8e98e6891463d08a922596dd8d3d92a0f80b7b9514ec40028e1",
+    "src/Lokad.Svg/Parsing/SvgRectangleSyntax.cs": "3ea391fd7fb19830e378147c5c93e62426db09d0b4744752703a616cc9864ae7",
+    "src/Lokad.Svg/Parsing/SvgReferenceResolver.cs": "a747dffd63c4e5e89ee34fcb4127067a73c6ab4ab2771452069c7ad637b00bc5",
+    "src/Lokad.Svg/Parsing/SvgRenderedLeafParser.cs": "ec521aaa806762ee5165c48afb7cc6506e1c83f67042bda3bdfb11c3dceaa819",
+    "src/Lokad.Svg/Parsing/SvgRoot.cs": "2936b62499959d7cdd14d54d5b6da74d24ca59700b4251d3559121ab36939643",
+    "src/Lokad.Svg/Parsing/SvgRootAttributes.cs": "adb17c6a8b1cf9ce4b35eb25b165c41069050444d5e1b9ea679ab7c2d9a3d786",
+    "src/Lokad.Svg/Parsing/SvgRootParser.cs": "cded81211b4d377597bbba0752a9a235719abd7ba08ab31099aafe6bbfda1df4",
+    "src/Lokad.Svg/Parsing/SvgRootStyleSheetParser.cs": "36e685863c10e670e64c1b4edba727f5d994a5dcdc21d79579a024a91276b8b2",
+    "src/Lokad.Svg/Parsing/SvgRootSyntax.cs": "f6d52cd835dfe4d5f8d0bf42fdcb10b387dc27ac8fee9e897f2f401cbc3d50d3",
+    "src/Lokad.Svg/Parsing/SvgShapePresentationResolver.cs": "8e4b280797a69df9d5fe5b34843d49006044c99a6e34f49e50335adf3c7ca800",
+    "src/Lokad.Svg/Parsing/SvgStrokeStyleSyntax.cs": "deec19af720290d52370be02cff0cbd3beda4205fe27fac193a3305020308674",
+    "src/Lokad.Svg/Parsing/SvgStructuralAdmission.cs": "22856bb2e913521638d62d5c2e409ac9eea3cc26bef8fd336f97079a5918006b",
+    "src/Lokad.Svg/Parsing/SvgStructuralVocabulary.cs": "2834ae97def6651010a20961c0386382723cf81f5b7a05ea572767c6426beefe",
+    "src/Lokad.Svg/Parsing/SvgStyleCascade.cs": "7485bc7676f7269aa6dde7dfb8a7f692dce5bbd569f76d3db079580c763b8a31",
+    "src/Lokad.Svg/Parsing/SvgStyleSheet.cs": "21e40640fcfdb7a221a317040596947de2d2b39dfea9b8a3d5d8178d729058da",
+    "src/Lokad.Svg/Parsing/SvgSyntaxLimits.cs": "62ce6a014702f57316a7b8b02de3a6dc4ebfa2cda7e570bddbc9a32d509d400c",
+    "src/Lokad.Svg/Parsing/SvgTextRunBuilder.cs": "faa31951755f31f5f9c200c225cdc9f88f15ce94dfae5ef529dac0b43bd3ae8b",
+    "src/Lokad.Svg/Parsing/SvgTextSyntax.cs": "b37445d4aef5a3f95b0972d7f040e22ac0b3e065d6f151101de9a6aa36c1bb49",
+    "src/Lokad.Svg/Parsing/SvgViewportFrame.cs": "0a48b2125c74a23a4ddc3d8faebab0a9c256b49602ff30851d29be9b65683c06",
+    "src/Lokad.Svg/Rendering/BackgroundInitializationProbe.cs": "65855d3646c9e0fd22a0aa4a822dbe765b1739fd8c083fdd1fb4064e1b236137",
+    "src/Lokad.Svg/Rendering/GlyphCoverageProbe.cs": "68df89e71806393dfc51caa3f0c8565f266ce6f7ff3023b33bf956f26601fae7",
+    "src/Lokad.Svg/Rendering/RenderBudget.cs": "76a32dabc5fc4efa0ce477da545ee0cd99f151980c1eb8aaaeaedaa75210dcda",
+    "src/Lokad.Svg/Rendering/RenderBudgetSnapshot.cs": "fe28a88fe70ae685eb7dbb504b206380c26e0e03e903f40d5b7f465c8f5358dc",
+    "src/Lokad.Svg/Rendering/SolidCanvasRasterizationProbe.cs": "1542165d285d5d501f9409009358999aa048909aabc2c41d35a19d9d462fd57c",
+    "src/Lokad.Svg/Rendering/SvgAffineTransform.cs": "2cdb352eeb3c7a65afe467284e65c130159fd5d96c393f3109138267d3e5a78a",
+    "src/Lokad.Svg/Rendering/SvgAnalyticClipContext.cs": "e3610fadab33dc9860aa3653c2b93d59dfa08e44a913342fc0fb86d44be9ccd5",
+    "src/Lokad.Svg/Rendering/SvgAnalyticContourPreparation.cs": "48d38cc02e130dc4050825d38c5e44a2481f42d96ab32596976d056938c7bf7c",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.ClippedPreparation.cs": "7f16e735083ed17b1877d41372c14c54d0e8a115dd9cdd6eae4045cecbecb0a8",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.Clipping.cs": "cc8a727bc6922cf0f14304e2cb3c15cb5a0c76286d43a69c688902b698811273",
+    "src/Lokad.Svg/Rendering/SvgAnalyticCoverage.cs": "9f3ffa99be6941e29526954005df7c6c0e87325cc7455fab6df54f356b2b209b",
+    "src/Lokad.Svg/Rendering/SvgAnalyticPaint.cs": "b2edb26a75f0c03c81eff82f3e14ccc8a9b49d30dcab7492c7a5c34a3115c888",
+    "src/Lokad.Svg/Rendering/SvgAnalyticPaintProbe.cs": "2d6fad2b1fefb2551d0a0d93787d436d798ffc40f40872834ce8dc4b99a76fa0",
+    "src/Lokad.Svg/Rendering/SvgAnalyticScanWindow.cs": "6065f2dadad90e54ae28bb6deb295af00f0dbf644d3979888af5b2a68550b1e2",
+    "src/Lokad.Svg/Rendering/SvgContourBuilder.cs": "8aa28de912aee57514abebd9afe6aad059ed47b65c306eb373ec95e6b22aa6dd",
+    "src/Lokad.Svg/Rendering/SvgContourNesting.cs": "6edc2a1152712247e29ab53637682f6aee6617146b4d513f0bf6c5be413b9174",
+    "src/Lokad.Svg/Rendering/SvgContourStructure.cs": "5ba3ffc0e4212b43e02da14fec117f2cd03d92cd470bf8856bc48ddf8f3cdf07",
+    "src/Lokad.Svg/Rendering/SvgCpuRasterGrid.cs": "0bc9df7041d25d7f3ed3ac630306604ffa7baf12ebc5c2db5207cb506379d6fb",
+    "src/Lokad.Svg/Rendering/SvgCubicSpan.cs": "e991e18ccd82c7ee23ff842c3cf8c111f31f6b00f2ab6adb2ca3451cee864c0c",
+    "src/Lokad.Svg/Rendering/SvgCurveFlatten.cs": "39431403efda0489d0704e96b38f5018583574a7d23e6f591d703812fd361015",
+    "src/Lokad.Svg/Rendering/SvgDeviceTransform.cs": "9b94c869159dfd364e63cc5fa5d73fdd3ee38cd19a149a6552abbe6cd820508d",
+    "src/Lokad.Svg/Rendering/SvgEllipticalArc.cs": "b43f44541a1f54c0b5b29a04aa15c9e7e720c3594dca8553a800ce4d206b9898",
+    "src/Lokad.Svg/Rendering/SvgGlyphCoverage.cs": "dcc9bed94f91fd3517e48ddf251c0cbcfb92f4232d24f1745a4441441e34f0ab",
+    "src/Lokad.Svg/Rendering/SvgMemoryCategory.cs": "0bfcab2c64d0a2db9d6a68d2d3f50c210d73d1de5c0330100a47bcefcfca841d",
+    "src/Lokad.Svg/Rendering/SvgPolygonCoverage.cs": "23346aa09d6955ea04d3aa6db2b3db7d3bd11f938311d6a29fc0048a167918f5",
+    "src/Lokad.Svg/Rendering/SvgPolygonCoverageProbe.cs": "130a9dfaaf3e538a0f18d0825df80eb9b522fc25300fe9075c1c010f1a5b9f17",
+    "src/Lokad.Svg/Rendering/SvgQuadSpan.cs": "887c5161b4773146e71eca39d2e07124849fb11096f9981c906e4d30f7adccd3",
+    "src/Lokad.Svg/Rendering/SvgRawContourConvexity.cs": "f0be532ea26c78e164018056f5b2d37e95895d0184e1cf09697adcec32ba6bb8",
+    "src/Lokad.Svg/Rendering/SvgScanlineCoverage.cs": "5794680257ee46178c51a44e9112cdaa70ba60a68515092e5c0ac3ac497a5eda",
+    "src/Lokad.Svg/Rendering/SvgStrokeOutline.cs": "9103ad547a6f4911ffbaa557e44b014c1d6b2aa7d4a0aa18e06c56d799d63c35"
+  },
+  "classificationContract": "Only one contour with admitted retained hints and a convex sampled ring receives the additional raw-control classification. Raw controls replace samples; float sign, turn, reversal and closure rules are cached with charged work. Genuine convex and declined-hint routes remain intact.",
+  "nativeLimits": "Compiled single finite control-contour adapter and actual YouTube picture decision are independent discriminators. They do not establish native transformed-cache provenance, conic/multicontour admission or complete backend parity.",
+  "controls": [
+    {
+      "id": "original-raw-cubic-tangent-transparent",
+      "inputSha256": "b6d3a83662d3767b26efa1860a110ea47c485bfbbe84dd9f7fea71d5944868d1",
+      "referenceSha256": "438e3f8ca9846e4a686469194f53edd06da78b15731dc480615f47caa03bf393",
+      "captures": [
+        {
+          "pngSha256": "438e3f8ca9846e4a686469194f53edd06da78b15731dc480615f47caa03bf393",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "438e3f8ca9846e4a686469194f53edd06da78b15731dc480615f47caa03bf393",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "438e3f8ca9846e4a686469194f53edd06da78b15731dc480615f47caa03bf393",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 161,
+        "maximumChannelError": 128,
+        "meanAbsoluteError": 0.2374267578125,
+        "rootMeanSquareError": 3.425779022946825,
+        "maximumAlphaError": 43,
+        "alphaChangedPixelCount": 161,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 1641,
+        "overCoveragePixelCount": 104,
+        "underCoveragePixelCount": 57,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 64,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "ddc3aec9394afdc33b4f6015776caa35668381ae3cc464ed7cc3935029cda7d7"
+    },
+    {
+      "id": "original-raw-cubic-tangent-white",
+      "inputSha256": "b6d3a83662d3767b26efa1860a110ea47c485bfbbe84dd9f7fea71d5944868d1",
+      "referenceSha256": "bc3f84050c1e3671fc1ef7fb9d34617efd069cfe70da320bf0588f34dc04714f",
+      "captures": [
+        {
+          "pngSha256": "bc3f84050c1e3671fc1ef7fb9d34617efd069cfe70da320bf0588f34dc04714f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bc3f84050c1e3671fc1ef7fb9d34617efd069cfe70da320bf0588f34dc04714f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bc3f84050c1e3671fc1ef7fb9d34617efd069cfe70da320bf0588f34dc04714f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 163,
+        "maximumChannelError": 31,
+        "meanAbsoluteError": 0.19573974609375,
+        "rootMeanSquareError": 1.4730033161983207,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 64,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "75b3b20062ca9f34775cf1961cab8914794e4f3a724cf777fbe01ce69d4db56e"
+    },
+    {
+      "id": "original-raw-cubic-tangent-black",
+      "inputSha256": "b6d3a83662d3767b26efa1860a110ea47c485bfbbe84dd9f7fea71d5944868d1",
+      "referenceSha256": "cedb3bf1f23f082a18885752572929942448164dfa2db1ae133a8c88062e6360",
+      "captures": [
+        {
+          "pngSha256": "cedb3bf1f23f082a18885752572929942448164dfa2db1ae133a8c88062e6360",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cedb3bf1f23f082a18885752572929942448164dfa2db1ae133a8c88062e6360",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cedb3bf1f23f082a18885752572929942448164dfa2db1ae133a8c88062e6360",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 159,
+        "maximumChannelError": 19,
+        "meanAbsoluteError": 0.106201171875,
+        "rootMeanSquareError": 0.8081312838116094,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 64,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "548ddffccebf633bce3d3b750caf7e5cb9bf0589e35460b69a15f08e79100793"
+    },
+    {
+      "id": "original-raw-cubic-tangent-scaled-transparent",
+      "inputSha256": "a2bd1572f108692f4eaa12247efc73b43853b1bd0fe2d5ff0d587662295586be",
+      "referenceSha256": "790bbacd240275652d02b79fb489aedda421ab88ebf6938dc4db190d701dafbd",
+      "captures": [
+        {
+          "pngSha256": "790bbacd240275652d02b79fb489aedda421ab88ebf6938dc4db190d701dafbd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "790bbacd240275652d02b79fb489aedda421ab88ebf6938dc4db190d701dafbd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "790bbacd240275652d02b79fb489aedda421ab88ebf6938dc4db190d701dafbd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 252,
+        "maximumChannelError": 116,
+        "meanAbsoluteError": 0.13165,
+        "rootMeanSquareError": 2.3363753979187503,
+        "maximumAlphaError": 30,
+        "alphaChangedPixelCount": 252,
+        "minimumMismatchX": 7,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 87,
+        "maximumMismatchY": 86,
+        "exact": false,
+        "alphaErrorMass": 2145,
+        "overCoveragePixelCount": 151,
+        "underCoveragePixelCount": 101,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 100,
+        "minimumMismatchY": 100,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "5576b8556854adddd0ddd36e61a62c4192b639663c2f245d08db0f3a03c1e35c"
+    },
+    {
+      "id": "original-raw-cubic-tangent-scaled-white",
+      "inputSha256": "a2bd1572f108692f4eaa12247efc73b43853b1bd0fe2d5ff0d587662295586be",
+      "referenceSha256": "1b13bd5d1b6eae299c3af38ef5eb59663987ab56c508ab5ee39de1703883af7c",
+      "captures": [
+        {
+          "pngSha256": "1b13bd5d1b6eae299c3af38ef5eb59663987ab56c508ab5ee39de1703883af7c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1b13bd5d1b6eae299c3af38ef5eb59663987ab56c508ab5ee39de1703883af7c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1b13bd5d1b6eae299c3af38ef5eb59663987ab56c508ab5ee39de1703883af7c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 255,
+        "maximumChannelError": 22,
+        "meanAbsoluteError": 0.1058,
+        "rootMeanSquareError": 0.9779826174324368,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 7,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 87,
+        "maximumMismatchY": 86,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 100,
+        "minimumMismatchY": 100,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "afedb1d80c47560bbeacd454a430b4cf6a71c7a4bf94fbdde501f538abbc6c62"
+    },
+    {
+      "id": "original-raw-cubic-tangent-scaled-black",
+      "inputSha256": "a2bd1572f108692f4eaa12247efc73b43853b1bd0fe2d5ff0d587662295586be",
+      "referenceSha256": "fe5e271c5b18011b3489c6a627e576f3d8875c6f4ee956ef050f1b6851e0d3ac",
+      "captures": [
+        {
+          "pngSha256": "fe5e271c5b18011b3489c6a627e576f3d8875c6f4ee956ef050f1b6851e0d3ac",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fe5e271c5b18011b3489c6a627e576f3d8875c6f4ee956ef050f1b6851e0d3ac",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fe5e271c5b18011b3489c6a627e576f3d8875c6f4ee956ef050f1b6851e0d3ac",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 242,
+        "maximumChannelError": 12,
+        "meanAbsoluteError": 0.0562,
+        "rootMeanSquareError": 0.5302829433425141,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 7,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 87,
+        "maximumMismatchY": 86,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 100,
+        "minimumMismatchY": 100,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "7238e88d8d449309b430809ab14ed2c73bc52f0786e6dac03450e9fab5b28826"
+    },
+    {
+      "id": "original-raw-quad-tangent-transparent",
+      "inputSha256": "007ce3df54191ddf41bd59ab7494c55914b94d0e2c5c7025655c46d875b4f39b",
+      "referenceSha256": "c8c416216b5434aa3368f39da29d7ebc7d8460e7ba2bd8b9b8539713a2d67a24",
+      "captures": [
+        {
+          "pngSha256": "c8c416216b5434aa3368f39da29d7ebc7d8460e7ba2bd8b9b8539713a2d67a24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c8c416216b5434aa3368f39da29d7ebc7d8460e7ba2bd8b9b8539713a2d67a24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c8c416216b5434aa3368f39da29d7ebc7d8460e7ba2bd8b9b8539713a2d67a24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 100,
+        "maximumChannelError": 128,
+        "meanAbsoluteError": 0.1075439453125,
+        "rootMeanSquareError": 2.4101784085286093,
+        "maximumAlphaError": 15,
+        "alphaChangedPixelCount": 100,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 56,
+        "exact": false,
+        "alphaErrorMass": 304,
+        "overCoveragePixelCount": 50,
+        "underCoveragePixelCount": 50,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 64,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "4770dcdcded521e639af5b706ddd5703f2f918bfe1dd7ba938836e5b31632323"
+    },
+    {
+      "id": "original-raw-quad-tangent-white",
+      "inputSha256": "007ce3df54191ddf41bd59ab7494c55914b94d0e2c5c7025655c46d875b4f39b",
+      "referenceSha256": "1277295260fb0615991528b74a443a09f8ab53967da4f2c43c7972c46862bdef",
+      "captures": [
+        {
+          "pngSha256": "1277295260fb0615991528b74a443a09f8ab53967da4f2c43c7972c46862bdef",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1277295260fb0615991528b74a443a09f8ab53967da4f2c43c7972c46862bdef",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1277295260fb0615991528b74a443a09f8ab53967da4f2c43c7972c46862bdef",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 100,
+        "maximumChannelError": 12,
+        "meanAbsoluteError": 0.03570556640625,
+        "rootMeanSquareError": 0.33630067578173256,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 56,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 64,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "960ab62070bf1ba051950f0196c8dc04c9f4509b0e4b5ce01dcfb3ac65df656f"
+    },
+    {
+      "id": "original-raw-quad-tangent-black",
+      "inputSha256": "007ce3df54191ddf41bd59ab7494c55914b94d0e2c5c7025655c46d875b4f39b",
+      "referenceSha256": "7cdf0521fd5397b9f93baa53a04988216949d8fafc88775b3ce259eb115aa6c8",
+      "captures": [
+        {
+          "pngSha256": "7cdf0521fd5397b9f93baa53a04988216949d8fafc88775b3ce259eb115aa6c8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7cdf0521fd5397b9f93baa53a04988216949d8fafc88775b3ce259eb115aa6c8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7cdf0521fd5397b9f93baa53a04988216949d8fafc88775b3ce259eb115aa6c8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 91,
+        "maximumChannelError": 7,
+        "meanAbsoluteError": 0.01959228515625,
+        "rootMeanSquareError": 0.19184420559076054,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 56,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 64,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "bdb0018d7fd1da9a45ab7e8c5d8c2563da34ac2771e59633202a9af8a28bf892"
+    },
+    {
+      "id": "original-raw-quad-tangent-scaled-transparent",
+      "inputSha256": "88bfbd8f5643e024970d009d5f74ab3d2c7dbe054ca2b4e9efa759e69311314c",
+      "referenceSha256": "0f26827d3d582dc9b5fd8ae90438282ac3f718b081238135ca7fb90a3787bdc5",
+      "captures": [
+        {
+          "pngSha256": "0f26827d3d582dc9b5fd8ae90438282ac3f718b081238135ca7fb90a3787bdc5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0f26827d3d582dc9b5fd8ae90438282ac3f718b081238135ca7fb90a3787bdc5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0f26827d3d582dc9b5fd8ae90438282ac3f718b081238135ca7fb90a3787bdc5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 210,
+        "maximumChannelError": 128,
+        "meanAbsoluteError": 0.2066,
+        "rootMeanSquareError": 3.4470059471953336,
+        "maximumAlphaError": 65,
+        "alphaChangedPixelCount": 210,
+        "minimumMismatchX": 12,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 88,
+        "maximumMismatchY": 88,
+        "exact": false,
+        "alphaErrorMass": 3348,
+        "overCoveragePixelCount": 177,
+        "underCoveragePixelCount": 33,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 111,
+        "maximumChannelError": 128,
+        "meanAbsoluteError": 0.12805,
+        "rootMeanSquareError": 2.649424465803847,
+        "maximumAlphaError": 64,
+        "alphaChangedPixelCount": 111,
+        "minimumMismatchX": 12,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 86,
+        "maximumMismatchY": 30,
+        "exact": false,
+        "alphaErrorMass": 2507,
+        "overCoveragePixelCount": 105,
+        "underCoveragePixelCount": 6,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "7658d74d10231f72d7f478baf6aba0e6de808d609f7dfb07ae0d32477a98c283"
+    },
+    {
+      "id": "original-raw-quad-tangent-scaled-white",
+      "inputSha256": "88bfbd8f5643e024970d009d5f74ab3d2c7dbe054ca2b4e9efa759e69311314c",
+      "referenceSha256": "84069e8e16d5f1471431a23546575a10b6a4fc2f3af0e18a4b0448f54e488f52",
+      "captures": [
+        {
+          "pngSha256": "84069e8e16d5f1471431a23546575a10b6a4fc2f3af0e18a4b0448f54e488f52",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "84069e8e16d5f1471431a23546575a10b6a4fc2f3af0e18a4b0448f54e488f52",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "84069e8e16d5f1471431a23546575a10b6a4fc2f3af0e18a4b0448f54e488f52",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 208,
+        "maximumChannelError": 47,
+        "meanAbsoluteError": 0.163625,
+        "rootMeanSquareError": 1.9886867526083638,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 12,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 88,
+        "maximumMismatchY": 88,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 110,
+        "maximumChannelError": 46,
+        "meanAbsoluteError": 0.122275,
+        "rootMeanSquareError": 1.676983899743823,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 12,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 86,
+        "maximumMismatchY": 30,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "882669ed0e97be42580391b9ec2778440e44025c4863aa4f03bbcc537c354f68"
+    },
+    {
+      "id": "original-raw-quad-tangent-scaled-black",
+      "inputSha256": "88bfbd8f5643e024970d009d5f74ab3d2c7dbe054ca2b4e9efa759e69311314c",
+      "referenceSha256": "02859f56d6c431c56bbfeecb13ddbd6bbac85622662cbec23042831cec19acd8",
+      "captures": [
+        {
+          "pngSha256": "02859f56d6c431c56bbfeecb13ddbd6bbac85622662cbec23042831cec19acd8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "02859f56d6c431c56bbfeecb13ddbd6bbac85622662cbec23042831cec19acd8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "02859f56d6c431c56bbfeecb13ddbd6bbac85622662cbec23042831cec19acd8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 203,
+        "maximumChannelError": 28,
+        "meanAbsoluteError": 0.087875,
+        "rootMeanSquareError": 1.0809833486229101,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 12,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 88,
+        "maximumMismatchY": 88,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 108,
+        "maximumChannelError": 27,
+        "meanAbsoluteError": 0.0657,
+        "rootMeanSquareError": 0.9128252844876724,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 12,
+        "minimumMismatchY": 3,
+        "maximumMismatchX": 86,
+        "maximumMismatchY": 30,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "96434feb996918deb1f2f9192ae4772c34d63ba05f3f5f0e925800c87205c89b"
+    },
+    {
+      "id": "original-raw-cubic-convex-transparent",
+      "inputSha256": "7969cc662ac09892183878ee0e9c9fe368747ce84cd2a122539fcc8f2e1fd273",
+      "referenceSha256": "769add2e5f6cec6015417ec2cba9f95deb5288e8d890f59676d29033489d909f",
+      "captures": [
+        {
+          "pngSha256": "769add2e5f6cec6015417ec2cba9f95deb5288e8d890f59676d29033489d909f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "769add2e5f6cec6015417ec2cba9f95deb5288e8d890f59676d29033489d909f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "769add2e5f6cec6015417ec2cba9f95deb5288e8d890f59676d29033489d909f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 6,
+        "maximumChannelError": 29,
+        "meanAbsoluteError": 0.0064697265625,
+        "rootMeanSquareError": 0.33347571828770384,
+        "maximumAlphaError": 29,
+        "alphaChangedPixelCount": 6,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 57,
+        "exact": false,
+        "alphaErrorMass": 81,
+        "overCoveragePixelCount": 5,
+        "underCoveragePixelCount": 1,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 6,
+        "maximumChannelError": 29,
+        "meanAbsoluteError": 0.0064697265625,
+        "rootMeanSquareError": 0.33347571828770384,
+        "maximumAlphaError": 29,
+        "alphaChangedPixelCount": 6,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 57,
+        "exact": false,
+        "alphaErrorMass": 81,
+        "overCoveragePixelCount": 5,
+        "underCoveragePixelCount": 1,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "2e6f919f716c3ee5cc7b60270b97f8215473f28c4dbb5f27dd05ae68d2b4a6f6"
+    },
+    {
+      "id": "original-raw-cubic-convex-white",
+      "inputSha256": "7969cc662ac09892183878ee0e9c9fe368747ce84cd2a122539fcc8f2e1fd273",
+      "referenceSha256": "3ce0c4c6e1f00e6641af0bdf0bd4210ea509f217ee84800e5f619f3fccb1f754",
+      "captures": [
+        {
+          "pngSha256": "3ce0c4c6e1f00e6641af0bdf0bd4210ea509f217ee84800e5f619f3fccb1f754",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3ce0c4c6e1f00e6641af0bdf0bd4210ea509f217ee84800e5f619f3fccb1f754",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3ce0c4c6e1f00e6641af0bdf0bd4210ea509f217ee84800e5f619f3fccb1f754",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 6,
+        "maximumChannelError": 21,
+        "meanAbsoluteError": 0.0098876953125,
+        "rootMeanSquareError": 0.3733688482921413,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 57,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 6,
+        "maximumChannelError": 21,
+        "meanAbsoluteError": 0.0098876953125,
+        "rootMeanSquareError": 0.3733688482921413,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 57,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "db0dd41af0112f869f54eb1e34cce81cb4f2e85e5a7b594af7e6dd3491be92d1"
+    },
+    {
+      "id": "original-raw-cubic-convex-black",
+      "inputSha256": "7969cc662ac09892183878ee0e9c9fe368747ce84cd2a122539fcc8f2e1fd273",
+      "referenceSha256": "ff138816e44a211ec2ec60a055bb056b7571bcf1998b359a793f8f027c0e2aed",
+      "captures": [
+        {
+          "pngSha256": "ff138816e44a211ec2ec60a055bb056b7571bcf1998b359a793f8f027c0e2aed",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff138816e44a211ec2ec60a055bb056b7571bcf1998b359a793f8f027c0e2aed",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ff138816e44a211ec2ec60a055bb056b7571bcf1998b359a793f8f027c0e2aed",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 5,
+        "maximumChannelError": 12,
+        "meanAbsoluteError": 0.00518798828125,
+        "rootMeanSquareError": 0.20327518486340138,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 57,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 5,
+        "maximumChannelError": 12,
+        "meanAbsoluteError": 0.00518798828125,
+        "rootMeanSquareError": 0.20327518486340138,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 5,
+        "maximumMismatchX": 55,
+        "maximumMismatchY": 57,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "90a3d12a525f312a61053f48c9194022d327f5086b4a907095653575f73f3e14"
+    },
+    {
+      "id": "original-raw-quad-convex-transparent",
+      "inputSha256": "3c7475d28edc5382585b1b0b8f25abac2a06ee6619494360dd3dbe06ee3ad4f5",
+      "referenceSha256": "e12fad339cb0b2904b276e472dd75cea62b759a0dbb21e7d496eb49ad7194769",
+      "captures": [
+        {
+          "pngSha256": "e12fad339cb0b2904b276e472dd75cea62b759a0dbb21e7d496eb49ad7194769",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e12fad339cb0b2904b276e472dd75cea62b759a0dbb21e7d496eb49ad7194769",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e12fad339cb0b2904b276e472dd75cea62b759a0dbb21e7d496eb49ad7194769",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 10,
+        "maximumChannelError": 113,
+        "meanAbsoluteError": 0.0465087890625,
+        "rootMeanSquareError": 1.8149565787677953,
+        "maximumAlphaError": 48,
+        "alphaChangedPixelCount": 10,
+        "minimumMismatchX": 10,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 53,
+        "maximumMismatchY": 6,
+        "exact": false,
+        "alphaErrorMass": 211,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 10,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 10,
+        "maximumChannelError": 113,
+        "meanAbsoluteError": 0.0465087890625,
+        "rootMeanSquareError": 1.8149565787677953,
+        "maximumAlphaError": 48,
+        "alphaChangedPixelCount": 10,
+        "minimumMismatchX": 10,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 53,
+        "maximumMismatchY": 6,
+        "exact": false,
+        "alphaErrorMass": 211,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 10,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "29c5f113e6736d4833c67d92c68f4653dd72fa378b62179b1dfe5e2276f64e53"
+    },
+    {
+      "id": "original-raw-quad-convex-white",
+      "inputSha256": "3c7475d28edc5382585b1b0b8f25abac2a06ee6619494360dd3dbe06ee3ad4f5",
+      "referenceSha256": "d458922081c2e72651c0facccad506c867b7036a0ae7063b62205db99efc8572",
+      "captures": [
+        {
+          "pngSha256": "d458922081c2e72651c0facccad506c867b7036a0ae7063b62205db99efc8572",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d458922081c2e72651c0facccad506c867b7036a0ae7063b62205db99efc8572",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d458922081c2e72651c0facccad506c867b7036a0ae7063b62205db99efc8572",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 10,
+        "maximumChannelError": 35,
+        "meanAbsoluteError": 0.0252685546875,
+        "rootMeanSquareError": 0.7592206633285213,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 10,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 53,
+        "maximumMismatchY": 6,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 10,
+        "maximumChannelError": 35,
+        "meanAbsoluteError": 0.0252685546875,
+        "rootMeanSquareError": 0.7592206633285213,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 10,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 53,
+        "maximumMismatchY": 6,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "4f08cde8dac0567ed303433435e4c6708897526f55ec1b2474ae6e495f7b9715"
+    },
+    {
+      "id": "original-raw-quad-convex-black",
+      "inputSha256": "3c7475d28edc5382585b1b0b8f25abac2a06ee6619494360dd3dbe06ee3ad4f5",
+      "referenceSha256": "0dbf77290c4d2f9357a965e0c5751e7ffd5d507944dc5bc14544f8ca08f2fec1",
+      "captures": [
+        {
+          "pngSha256": "0dbf77290c4d2f9357a965e0c5751e7ffd5d507944dc5bc14544f8ca08f2fec1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0dbf77290c4d2f9357a965e0c5751e7ffd5d507944dc5bc14544f8ca08f2fec1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0dbf77290c4d2f9357a965e0c5751e7ffd5d507944dc5bc14544f8ca08f2fec1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 10,
+        "maximumChannelError": 20,
+        "meanAbsoluteError": 0.01336669921875,
+        "rootMeanSquareError": 0.4028554088860543,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 10,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 53,
+        "maximumMismatchY": 6,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 10,
+        "maximumChannelError": 20,
+        "meanAbsoluteError": 0.01336669921875,
+        "rootMeanSquareError": 0.4028554088860543,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 10,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 53,
+        "maximumMismatchY": 6,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "4b9e6ce80c787c941cef3630b0287b4064e717266ab89fdd3b324108053daf7e"
+    },
+    {
+      "id": "original-raw-cubic-tangent-shader-transparent",
+      "inputSha256": "dc423b30f7a60e41dfad90045c6301eb10bceead116d4a45fbb7f0b45a4a1b9c",
+      "referenceSha256": "ed8c1dfee1ec454622faf4d91cbfecb778ff3625513aeaf7a1583520ade8162a",
+      "captures": [
+        {
+          "pngSha256": "ed8c1dfee1ec454622faf4d91cbfecb778ff3625513aeaf7a1583520ade8162a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ed8c1dfee1ec454622faf4d91cbfecb778ff3625513aeaf7a1583520ade8162a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ed8c1dfee1ec454622faf4d91cbfecb778ff3625513aeaf7a1583520ade8162a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 484,
+        "maximumChannelError": 255,
+        "meanAbsoluteError": 0.3883056640625,
+        "rootMeanSquareError": 6.984969214096437,
+        "maximumAlphaError": 43,
+        "alphaChangedPixelCount": 164,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 1649,
+        "overCoveragePixelCount": 107,
+        "underCoveragePixelCount": 57,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 408,
+        "maximumChannelError": 36,
+        "meanAbsoluteError": 0.04913330078125,
+        "rootMeanSquareError": 0.5970815251339218,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "85269c5f07c42364ada77d83a7edff3ab309b7b10473929b66c116456b0be4ab"
+    },
+    {
+      "id": "original-raw-cubic-tangent-shader-white",
+      "inputSha256": "dc423b30f7a60e41dfad90045c6301eb10bceead116d4a45fbb7f0b45a4a1b9c",
+      "referenceSha256": "66ecec1b05bc1489746664722bc6588d1e19fbb77a5120b3b3da86da69a18171",
+      "captures": [
+        {
+          "pngSha256": "66ecec1b05bc1489746664722bc6588d1e19fbb77a5120b3b3da86da69a18171",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "66ecec1b05bc1489746664722bc6588d1e19fbb77a5120b3b3da86da69a18171",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "66ecec1b05bc1489746664722bc6588d1e19fbb77a5120b3b3da86da69a18171",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 483,
+        "maximumChannelError": 36,
+        "meanAbsoluteError": 0.1640625,
+        "rootMeanSquareError": 1.2238973832341908,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 408,
+        "maximumChannelError": 1,
+        "meanAbsoluteError": 0.02880859375,
+        "rootMeanSquareError": 0.16973094517500337,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "3ecf4e6cabd2a5d2a681dfcc61dd629dcfe02e9cb653e08c1bb5755199a22501"
+    },
+    {
+      "id": "original-raw-cubic-tangent-shader-black",
+      "inputSha256": "dc423b30f7a60e41dfad90045c6301eb10bceead116d4a45fbb7f0b45a4a1b9c",
+      "referenceSha256": "087cde4b64765ae55964365e512c0d0014320f1b97edf4001e112fd59fb02ee4",
+      "captures": [
+        {
+          "pngSha256": "087cde4b64765ae55964365e512c0d0014320f1b97edf4001e112fd59fb02ee4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "087cde4b64765ae55964365e512c0d0014320f1b97edf4001e112fd59fb02ee4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "087cde4b64765ae55964365e512c0d0014320f1b97edf4001e112fd59fb02ee4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 484,
+        "maximumChannelError": 36,
+        "meanAbsoluteError": 0.18048095703125,
+        "rootMeanSquareError": 1.3363486209514155,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 408,
+        "maximumChannelError": 1,
+        "meanAbsoluteError": 0.02880859375,
+        "rootMeanSquareError": 0.16973094517500337,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "ddd69153f693fa53e0965e463e6381108095d7fd425f31488eb56b0df0715493"
+    },
+    {
+      "id": "original-raw-cubic-tangent-opacity-transparent",
+      "inputSha256": "a142f50a74b12afa866d5720a9fbaeea739b47342bab4621a26c13f2602334c8",
+      "referenceSha256": "9a4f067f72c1974ae2c31df81cec7bf8dd277bc789a5f97b8aa68f16b0697f0b",
+      "captures": [
+        {
+          "pngSha256": "9a4f067f72c1974ae2c31df81cec7bf8dd277bc789a5f97b8aa68f16b0697f0b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9a4f067f72c1974ae2c31df81cec7bf8dd277bc789a5f97b8aa68f16b0697f0b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9a4f067f72c1974ae2c31df81cec7bf8dd277bc789a5f97b8aa68f16b0697f0b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 160,
+        "maximumChannelError": 128,
+        "meanAbsoluteError": 0.18878173828125,
+        "rootMeanSquareError": 2.616511106625338,
+        "maximumAlphaError": 27,
+        "alphaChangedPixelCount": 158,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 1051,
+        "overCoveragePixelCount": 106,
+        "underCoveragePixelCount": 52,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 64,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "e0731364755393877c54e3729bb54b1e85ae4e0aa1043e3d584813228f13e8db"
+    },
+    {
+      "id": "original-raw-cubic-tangent-opacity-white",
+      "inputSha256": "a142f50a74b12afa866d5720a9fbaeea739b47342bab4621a26c13f2602334c8",
+      "referenceSha256": "9fed3607da3ace00113295ca6c840fb81c28b8fe4c483fadb4152ff6208c1f55",
+      "captures": [
+        {
+          "pngSha256": "9fed3607da3ace00113295ca6c840fb81c28b8fe4c483fadb4152ff6208c1f55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9fed3607da3ace00113295ca6c840fb81c28b8fe4c483fadb4152ff6208c1f55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9fed3607da3ace00113295ca6c840fb81c28b8fe4c483fadb4152ff6208c1f55",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 159,
+        "maximumChannelError": 20,
+        "meanAbsoluteError": 0.125,
+        "rootMeanSquareError": 0.9336509527454572,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 64,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "74c810ffb12a154ec39eb9f58677b7e71a35cd856ea66b7e6a43295866c521d2"
+    },
+    {
+      "id": "original-raw-cubic-tangent-opacity-black",
+      "inputSha256": "a142f50a74b12afa866d5720a9fbaeea739b47342bab4621a26c13f2602334c8",
+      "referenceSha256": "9c8152b51c976a5ef5d1510f4938cee24eebfdf6d36f6a35af9defcf64c91b27",
+      "captures": [
+        {
+          "pngSha256": "9c8152b51c976a5ef5d1510f4938cee24eebfdf6d36f6a35af9defcf64c91b27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9c8152b51c976a5ef5d1510f4938cee24eebfdf6d36f6a35af9defcf64c91b27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9c8152b51c976a5ef5d1510f4938cee24eebfdf6d36f6a35af9defcf64c91b27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "before": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 151,
+        "maximumChannelError": 11,
+        "meanAbsoluteError": 0.06695556640625,
+        "rootMeanSquareError": 0.5099713725114872,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 56,
+        "maximumMismatchY": 55,
+        "exact": false,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "after": {
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "meanAbsoluteError": 0,
+        "rootMeanSquareError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 64,
+        "minimumMismatchY": 64,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1,
+        "exact": true,
+        "alphaErrorMass": 0,
+        "overCoveragePixelCount": 0,
+        "underCoveragePixelCount": 0,
+        "opaqueLostPixelCount": 0,
+        "opaqueAddedPixelCount": 0
+      },
+      "candidateSha256": "1216b3cada753d6f62c05afb037b217fc869fb163eb19771927296a59e1f2ca8"
+    }
+  ],
+  "priorBank": {
+    "executed": 872,
+    "exactPngsPreserved": 567,
+    "changedPngs": 7,
+    "changedKnownFixture": "original-one-chord-cubic-shoulder-phase",
+    "changedDefaultOutputsWithoutMatchingOracle": [
+      "inv-004",
+      "inv-026",
+      "inv-027",
+      "inv-064",
+      "inv-065",
+      "inv-092"
+    ],
+    "dispositionsPreserved": true
+  },
+  "corporateBank": {
+    "executed": 258,
+    "changedPngs": 39,
+    "measuredFidelityCases": 18,
+    "changedWithoutReferences": 30,
+    "allNineFordExactPngsPreserved": true,
+    "allNineYouTubeImproved": true,
+    "unmeasured": 225,
+    "transportGaps": 15,
+    "verifiedExactDocuments": 1
+  },
+  "remainingWork": "YouTube is not exact; mapped curve/paint events, complete cohort references/transport, measured syntax dependencies, broader fidelity, representative performance, Linux and S17 remain open.",
+  "validation": {
+    "lockedRestore": "passed",
+    "releaseProjects": 9,
+    "releaseWarnings": 0,
+    "releaseErrors": 0,
+    "tests": {
+      "font.trx": {
+        "passed": 6,
+        "sha256": "b35075224c12fcb4ef4d9056cdbd6ff3eb68abc6567caed0c9e718c135019cf0"
+      },
+      "visual.trx": {
+        "passed": 139,
+        "sha256": "a7439ff75f660295ed5163722c27c4d619e3c397a6b6d2b6538255e9e3784d92"
+      },
+      "core-final.trx": {
+        "passed": 3099,
+        "sha256": "1fab394b9db333d8b844d9559cfb79bacfa6ffbff6149eceee7b2f0dc135fe12"
+      }
+    },
+    "totalPassed": 3244,
+    "memoryScenarios": 25,
+    "memorySummarySha256": "187696b1d03f2b27544383db2004bf50518f5b5136e48e51b701aa7f882ae28b",
+    "runtimeAndSymbolInspection": "passed",
+    "installedConsumer": "passed",
+    "finalBankCases": 896,
+    "sampledDispatchRollback": {
+      "raw-controls": {
+        "cases": 24,
+        "everyPngAndDispositionRestoresBaseline": true,
+        "rendererSha256": "B3F2F604B04F74FBED79119F2112467B1E91C8BF7F285B31A0832010FD1B5F00"
+      },
+      "corporate": {
+        "cases": 258,
+        "everyPngAndDispositionRestoresBaseline": true,
+        "rendererSha256": "B3F2F604B04F74FBED79119F2112467B1E91C8BF7F285B31A0832010FD1B5F00"
+      }
+    },
+    "timedCancellationStress": [
+      {
+        "Run": 0,
+        "PointCount": 4000000,
+        "CancelAfterMilliseconds": 1,
+        "ElapsedMilliseconds": 2.9643,
+        "CancelledWithOriginalToken": true
+      },
+      {
+        "Run": 1,
+        "PointCount": 4000000,
+        "CancelAfterMilliseconds": 1,
+        "ElapsedMilliseconds": 5.2662,
+        "CancelledWithOriginalToken": true
+      },
+      {
+        "Run": 2,
+        "PointCount": 4000000,
+        "CancelAfterMilliseconds": 1,
+        "ElapsedMilliseconds": 1.0263,
+        "CancelledWithOriginalToken": true
+      }
+    ],
+    "representativePerformance": "open",
+    "linux": "open",
+    "packages": {
+      "Lokad.Svg.0.1.0-preview.1.nupkg": "186e7fde98d26da4eefa748db91a5b82927cc82d79791a334ede36b53b602fd1",
+      "Lokad.Svg.0.1.0-preview.1.snupkg": "e3f7c8353330a34c67d84bdccea219b00cfa6d06688733b53a66acd9ff317f80"
+    }
+  },
+  "localMeasurements": {
+    "orders": [
+      {
+        "order": "baseline-first",
+        "rendererSha256": "834be63073fc4a6dc42caf387a2a88bcb09f100c4733b0cec1c037ab22f64f06",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.154094,
+            "allocatedBytes": 20288
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 19.93719,
+            "allocatedBytes": 819730
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 281.24176666666665,
+            "allocatedBytes": 7184808
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 454.32303333333334,
+            "allocatedBytes": 36856592
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 8.848609999999999,
+            "allocatedBytes": 1096162
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 28.927933333333332,
+            "allocatedBytes": 4038349
+          }
+        ]
+      },
+      {
+        "order": "candidate-second",
+        "rendererSha256": "69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.123013,
+            "allocatedBytes": 20288
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 16.714930000000003,
+            "allocatedBytes": 818901
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 270.4982333333333,
+            "allocatedBytes": 7184808
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 444.4943666666666,
+            "allocatedBytes": 36856317
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 11.04585,
+            "allocatedBytes": 1043336
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 34.20333333333333,
+            "allocatedBytes": 3952485
+          }
+        ]
+      },
+      {
+        "order": "candidate-first",
+        "rendererSha256": "69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.129643,
+            "allocatedBytes": 20288
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 20.58201,
+            "allocatedBytes": 816628
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 424.3957666666667,
+            "allocatedBytes": 7184781
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 496.3289666666667,
+            "allocatedBytes": 36856714
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 18.2695,
+            "allocatedBytes": 1043150
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 59.3742,
+            "allocatedBytes": 3952949
+          }
+        ]
+      },
+      {
+        "order": "baseline-second",
+        "rendererSha256": "834be63073fc4a6dc42caf387a2a88bcb09f100c4733b0cec1c037ab22f64f06",
+        "rows": [
+          {
+            "id": "tiny",
+            "inputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+            "milliseconds": 0.198637,
+            "allocatedBytes": 20288
+          },
+          {
+            "id": "ford",
+            "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+            "milliseconds": 21.63198,
+            "allocatedBytes": 816682
+          },
+          {
+            "id": "dense",
+            "inputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+            "milliseconds": 317.68283333333335,
+            "allocatedBytes": 7184808
+          },
+          {
+            "id": "native-stop",
+            "inputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+            "milliseconds": 575.4162333333334,
+            "allocatedBytes": 36857149
+          },
+          {
+            "id": "youtube-intended",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 10.93398,
+            "allocatedBytes": 1095659
+          },
+          {
+            "id": "youtube-large",
+            "inputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+            "milliseconds": 32.89683333333333,
+            "allocatedBytes": 4037584
+          }
+        ]
+      }
+    ],
+    "ledgerBefore": [
+      {
+        "Id": "tiny",
+        "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+        "ParserWork": 33,
+        "WorkThroughRaster": 219,
+        "AccountedPeakBytes": 132576,
+        "PngSha256": "3ddb99a0773a807f4a39ed460e5cd2ae467e795c0fded02073e4a49232d9920a"
+      },
+      {
+        "Id": "ford",
+        "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "ParserWork": 4655,
+        "WorkThroughRaster": 1301211,
+        "AccountedPeakBytes": 534434,
+        "PngSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69"
+      },
+      {
+        "Id": "dense",
+        "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+        "ParserWork": 245770,
+        "WorkThroughRaster": 32761702,
+        "AccountedPeakBytes": 2493820,
+        "PngSha256": "65bb5370d2940c9d81e8258b662626ff1839d8a8951452439df0a38933a749c9"
+      },
+      {
+        "Id": "native-stop",
+        "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+        "ParserWork": 1723,
+        "WorkThroughRaster": 73300833,
+        "AccountedPeakBytes": 33629655,
+        "PngSha256": "2b3a9aaddaf75edd1154888ecdf717c1209db84560781b8b28dbe57b5aa6403b"
+      },
+      {
+        "Id": "youtube-intended",
+        "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "ParserWork": 357,
+        "WorkThroughRaster": 1056315,
+        "AccountedPeakBytes": 981810,
+        "PngSha256": "012bbd28888ba49912662dd9f9f130260e0e50d02d27542091df57ac445c0078"
+      },
+      {
+        "Id": "youtube-large",
+        "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "ParserWork": 463,
+        "WorkThroughRaster": 3533088,
+        "AccountedPeakBytes": 3731795,
+        "PngSha256": "69ae90ccaeff14480bd4ece28235c03d82a05b2c71693d99a97f55ac0edc9032"
+      }
+    ],
+    "ledgerAfter": [
+      {
+        "Id": "tiny",
+        "InputSha256": "94bfe9a2272ad5dc67ee756ce220b31c163f8b1b37c0515a8453dc0d3155b880",
+        "ParserWork": 33,
+        "WorkThroughRaster": 219,
+        "AccountedPeakBytes": 132576,
+        "PngSha256": "3ddb99a0773a807f4a39ed460e5cd2ae467e795c0fded02073e4a49232d9920a"
+      },
+      {
+        "Id": "ford",
+        "InputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
+        "ParserWork": 4655,
+        "WorkThroughRaster": 1301211,
+        "AccountedPeakBytes": 534434,
+        "PngSha256": "da65695ca7c44fa77950fdb8f53e069be6964fa9d6a6eec3bb9bf7b2f0a5de69"
+      },
+      {
+        "Id": "dense",
+        "InputSha256": "aa47032bdca0ff8aa9eee914f28cff130ecf19f8207ebea5125c76f77ada3643",
+        "ParserWork": 245770,
+        "WorkThroughRaster": 32761735,
+        "AccountedPeakBytes": 2493820,
+        "PngSha256": "65bb5370d2940c9d81e8258b662626ff1839d8a8951452439df0a38933a749c9"
+      },
+      {
+        "Id": "native-stop",
+        "InputSha256": "39aa735cc38ec2e6647a6d35b0828abd8e4aa5b47ef6d89758e561d907cbb09a",
+        "ParserWork": 1723,
+        "WorkThroughRaster": 73300833,
+        "AccountedPeakBytes": 33629655,
+        "PngSha256": "2b3a9aaddaf75edd1154888ecdf717c1209db84560781b8b28dbe57b5aa6403b"
+      },
+      {
+        "Id": "youtube-intended",
+        "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "ParserWork": 357,
+        "WorkThroughRaster": 1009278,
+        "AccountedPeakBytes": 943153,
+        "PngSha256": "4d48356ec24e90bdbbb8a39d5eebba2d5b5882c003af3febf940548112a38863"
+      },
+      {
+        "Id": "youtube-large",
+        "InputSha256": "2f5754cecfbd5b21b8c76b800b3e6471f634a8fcc4d6b7ab96fb7a4302bb8a6f",
+        "ParserWork": 463,
+        "WorkThroughRaster": 3249021,
+        "AccountedPeakBytes": 3733811,
+        "PngSha256": "0de04e1dd2ba74d50b63080b2832b0cbb5b8bbed48cdb93ca0f5410b4650a474"
+      }
+    ],
+    "limits": "Local fresh-process medians only; YouTube is slower in both pairs. Timed cancellation stress does not establish deterministic scheduler timing."
+  }
+}

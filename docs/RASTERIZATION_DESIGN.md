@@ -6,8 +6,9 @@ unproved. [PLAN.md](../PLAN.md) owns the current execution queue; this document
 retains chronological hypotheses, source evidence, rejected models and repairs.
 Direct paint and pending-run operations are integrated. Coupled numeric reading and retained-path-point density have landed; all nine
 original Ford variants are now exact. The
-[latest density checkpoint](#retained-path-point-density-checkpoint-2026-10-05)
-records its native discriminator, retained failures and validation limits.
+[latest raw-control checkpoint](#raw-control-point-convexity-checkpoint-2026-10-05)
+records native classification, retained failures and validation limits; YouTube
+improves on every frozen variant while remaining inexact.
 
 ## Initial transition requirements (historical)
 
@@ -4252,3 +4253,83 @@ separate the remaining mapped edge/paint events with native witnesses, independe
 controls, the complete fixture/research/Ford bank and all frozen corporate cases.
 The fresh corporate holdouts receive no document-specific tuning. Full ignored
 observer/model/capture evidence is under `artifacts/corporate-cohort-20261005/`.
+
+## Raw control-point convexity checkpoint (2026-10-05)
+
+The actual pinned YouTube picture's body is concave while its sampled managed
+ring is convex. The original
+[SkPathPriv.cpp](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathPriv.cpp)
+`Convexicator` checks authored controls, vector signs, float cross/dot products,
+straight turns, up to two backwards reversals and implicit closure. At raw point
+index four, the first control of the second cubic, it sees cross
++0.0014715790748596191 against the preceding negative turn;
+flattening omitted that control-polygon reversal. The matched file SHA-256 is
+`5cd42bb4cd931b0af3e667972bdc06364fd4733114202bccd615f6b084088a96`.
+
+The compiled adapter retains the original classifier/sign precheck unchanged,
+with finite single-contour points, staged float arithmetic and implicit closure.
+Its 75 declared vectors include the actual 37-point body, degenerate/reversal,
+genuine convex, concave, reflected/shifted, overflow/underflow and deterministic
+independent controls. Thirty are convex. Every managed result matches; the
+[portable data](../tests/Lokad.Svg.Tests/TestData/raw-convexity-native.json)
+retains exact source/adapter identities and compilation flags. This establishes
+that algorithm boundary, not multi-contour/conic or transformed-cache/backend
+parity. The 2025 Google notice and complete Skia BSD license are retained in source
+and the runtime package; runtime/symbol inspection and consumer validation pass.
+
+`SvgRawContourConvexity` reconstructs raw controls in place of retained samples,
+merging ordered quadratic/cubic spans and their joint endpoints. It feeds float
+points through local value state without heap storage. Shared preparation calls
+it only when the sampled ring is convex and the existing single-contour retained
+hints are admitted. Declined hints and genuine convex routes remain unchanged.
+Before traversal it reserves points + quads + 2*cubics + 2 work units, a conservative
+bound including closure; the final decision is cached across clipped/uncut raster
+contexts. Cancellation checks entry and each 1,024 raw points. Nine focused tests
+cover 75 native vectors, mixed spans/implicit close, cached work, denial before
+storage, token identity and six-output parity across four paints. Three direct
+four-million-point timed stress runs observe cancellation with the original token;
+the earlier one-million-point CancelAfter timer probe finished before its timer,
+so that observation was not treated as a cancellation pass. Timed stress is
+separate from the deterministic cancelled-token test.
+
+Eight original CC0 SVG sources / 24 configurations were declared before the
+prototype. All 72 fresh captures are healthy, cleaned and byte-stable in triples.
+The bank retains twelve exact and twelve known differences, including scaled
+quadratic/shader residuals and genuine convex controls whose complete PNGs remain
+unchanged. The original fractional shoulder also becomes exact: 48 pixels / 50
+alpha error to zero, using its original PNG/provenance. No reference is replaced.
+
+The pre-bank 872-case comparison preserves all 567 prior exact PNGs and every
+render/reject disposition. Seven PNGs change: that shoulder and Default inv-004,
+026, 027, 064, 065 and 092, without matching oracles in that sweep. The final bank
+executes **896 = 744 fixtures + 60 research + 92 legacy Default inputs**; fixtures
+are **580 exact + 146 known-difference renders + 18 rejections**, across 428 base
+entries / 316 variants. All nine original Ford PNGs preserve exact identity.
+
+All 258 frozen corporate dispositions remain unchanged. Thirty-nine PNGs change:
+nine YouTube variants improve; thirty changed UAAR/Party/Blur cases have no matching
+reference. All eight holdouts' outputs/dispositions are unchanged. Transparent
+YouTube differences fall 706/1,558/3,203 to 307/673/1,410; alpha error falls
+7,026/14,622/28,474 to 356/787/1,634, with maximum alpha errors 7/8/8 and no opaque/
+hole flips. Its nine original references stay immutable. It remains inexact at
+every size. Only Ford enters the exact-document numerator; eighteen fidelity
+comparisons, 225 unmeasured and fifteen transport gaps remain the complete cohort
+accounting. These scopes cannot be summed into independent corporate coverage.
+
+Restoring sampled-ring dispatch in the isolated copy restores all 24 old control
+and all 258 corporate PNGs/dispositions exactly, proving the effective dependency.
+The [portable checkpoint](../tests/References/raw-control-convexity.json) records
+sources, counters, captures, prior identities and adapter limits. Fresh Windows
+locked restore/Release build, all 3,244 tests, all 25 memory scenarios and runtime/
+symbol package plus installed-consumer checks pass. Matching local measurements
+show slower YouTube timings in both ordering pairs despite lower charged work and
+allocation; large accounted peak grows 2,016 bytes. Retain that cost in
+[BENCHMARKS](BENCHMARKS.md#raw-control-point-convexity-checkpoint-2026-10-05).
+Full ignored evidence is under `artifacts/raw-convexity-20261005/`.
+
+Next compare actual authored/mapped points, CTM and CPU-context edge construction
+at the first large transparent residual (179,14), oracle alpha 0 versus managed 3.
+Classify the native event before changing recurrence, mapping or paint. General
+curve/convex/stroke/layer fidelity, complete corporate references and bounded
+capture transport, measured DOCTYPE admission, representative performance, Linux
+and S17 remain open.

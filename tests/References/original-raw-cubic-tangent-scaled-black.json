@@ -1,0 +1,78 @@
+{
+  "fixtureId": "original-raw-cubic-tangent-scaled-black",
+  "referencePng": "original-raw-cubic-tangent-scaled-black.png",
+  "referenceSha256": "fe5e271c5b18011b3489c6a627e576f3d8875c6f4ee956ef050f1b6851e0d3ac",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 100,
+    "height": 100,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "a2bd1572f108692f4eaa12247efc73b43853b1bd0fe2d5ff0d587662295586be",
+  "materializedSha256": "a2bd1572f108692f4eaa12247efc73b43853b1bd0fe2d5ff0d587662295586be",
+  "captureSha256": [
+    "fe5e271c5b18011b3489c6a627e576f3d8875c6f4ee956ef050f1b6851e0d3ac",
+    "fe5e271c5b18011b3489c6a627e576f3d8875c6f4ee956ef050f1b6851e0d3ac",
+    "fe5e271c5b18011b3489c6a627e576f3d8875c6f4ee956ef050f1b6851e0d3ac"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeGenericConvexityPrototype": true,
+  "candidateOutcome": "renders",
+  "candidateSha256": "7238e88d8d449309b430809ab14ed2c73bc52f0786e6dac03450e9fab5b28826",
+  "rendererSha256": "69c28cc288a0d8ec30074e7d53f5cc2b0eb1516232d623fa1fcb5d0261e88006",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 100,
+    "minimumMismatchY": 100,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  },
+  "beforeRawControlConvexityComparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 242,
+    "maximumChannelError": 12,
+    "meanAbsoluteError": 0.0562,
+    "rootMeanSquareError": 0.5302829433425141,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 7,
+    "minimumMismatchY": 3,
+    "maximumMismatchX": 87,
+    "maximumMismatchY": 86,
+    "exact": false,
+    "alphaErrorMass": 0,
+    "overCoveragePixelCount": 0,
+    "underCoveragePixelCount": 0,
+    "opaqueLostPixelCount": 0,
+    "opaqueAddedPixelCount": 0
+  }
+}

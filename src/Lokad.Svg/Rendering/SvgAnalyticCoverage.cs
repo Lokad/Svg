@@ -1632,6 +1632,17 @@ internal ref partial struct SvgAnalyticCoverage
         {
             CheckClippedSetupWork(setupWork + points.Length, maximumSetupWork, cancellationToken);
             bool convexRing = IsConvexRing(points, cancellationToken);
+            bool retained = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure, cancellationToken);
+            setupWork += points.Length;
+            if (convexRing && retained)
+            {
+                // Raw controls can reverse a turn that flattened samples omit. Reserve the
+                // complete traversal before classifying; later contexts reuse the decision.
+                long rawWork = points.Length + (long)quadSpans.Length + 2L * cubicSpans.Length + 2;
+                CheckClippedSetupWork(setupWork + rawWork, maximumSetupWork, cancellationToken);
+                convexRing = SvgRawContourConvexity.IsConvex(points, quadSpans, cubicSpans, cancellationToken);
+                setupWork += rawWork;
+            }
             bool box = convexRing;
             if (box)
             {
@@ -1645,8 +1656,7 @@ internal ref partial struct SvgAnalyticCoverage
             }
             preparation.Convex = convexRing;
             preparation.DesnapBox = box;
-            preparation.UseCurveSpans = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure, cancellationToken);
-            setupWork += points.Length;
+            preparation.UseCurveSpans = retained;
         }
         bool convex = preparation.Convex.Value;
         bool desnapBox = preparation.DesnapBox;

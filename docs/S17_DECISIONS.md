@@ -1,18 +1,20 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-05: retained-path-point density makes all nine original Ford
-variants exact. The outlined-wordmark checkpoint is established; the flat curved
+Updated 2026-10-05: raw-control convexity improves every YouTube variant and
+preserves all nine exact Ford PNGs. The outlined-wordmark checkpoint is established;
+the flat curved
 corporate mark and S17 remain unachieved. [PLAN.md](../PLAN.md) owns the current
 queue. Rows 3–7 retain general implementation/fidelity exits; one exact wordmark
 does not complete those stages.
 
-Current validated evidence: 720 fixture entries = 567 exact + 135 known-difference
-renders + 18 rejections across 420 base documents and 300 variants; 60 research
+Current validated evidence: 744 fixture entries = 580 exact + 146 known-difference
+renders + 18 rejections across 428 base documents and 316 variants; 60 research
 probes = 59 known-difference renders + one rejection. Fresh Windows locked restore,
-Release build and 3,090 core + 139 visual + six FontProbe tests pass (3,235 total,
+Release build and 3,099 core + 139 visual + six FontProbe tests pass (3,244 total,
 including the newer corporate bank). All 25 memory scenarios, runtime/symbol
-package inspection and installed-consumer checks pass at the renderer density
-checkpoint; the selection/measurement slice does not change production sources.
+package inspection and installed-consumer checks pass at the raw-control
+checkpoint, including the classifier's 2025 Skia notice. The shared classification
+repair changes production dispatch without changing input/reference identities.
 The Default inventory retains 88 renders + four MalformedInput rejections out of
 92. These counts establish neither corporate coverage, full independent-variant
 validation nor Linux delivery. YouTube is now selected as the curved mark, and
@@ -20,8 +22,9 @@ the first corporate cohort and variant recipe are frozen before fresh comparison
 all 258 renderer cases are executed, with eighteen fidelity comparisons and
 240 cases lacking references (225 unmeasured / fifteen verified transport gaps).
 Ford is the only currently verified exact document; YouTube has nine known
-differences. Its native raw-path classification discriminator orders the next
-shared renderer slice. Curved-mark, coverage and platform/delivery exits remain open.
+differences. Its native raw-path classification discriminator is now integrated;
+remaining mapped events order the
+next slice. Curved-mark, coverage and platform/delivery exits remain open.
 
 ## Q1 - numeric exact-document target: selected
 
@@ -54,7 +57,8 @@ now freezes 27 documents / 258 explicit recipes: every one of the 19 retained
 brand/organization exports plus eight predeclared fresh evaluation holdouts.
 Primary strata contain 13 marks and 14 outlined wordmarks, requiring at least
 11 and 12 exact documents respectively, alongside the overall 22-document
-minimum. All cases of a document must pass. Fifteen large cases exceed the
+minimum; both strata together require at least 23 exact documents. All cases of a
+document must pass. Fifteen large cases exceed the
 current oracle transport cap; they remain declared gaps. The retained exports
 were measured historically, so they are development inputs rather than unseen
 holdouts. The new eight receive no document-specific tuning.
