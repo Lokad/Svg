@@ -1510,21 +1510,17 @@
     "releaseErrors": 0,
     "tests": {
       "font.trx": {
-        "passed": 6,
-        "sha256": "b35075224c12fcb4ef4d9056cdbd6ff3eb68abc6567caed0c9e718c135019cf0"
+        "passed": 6
       },
       "visual.trx": {
-        "passed": 139,
-        "sha256": "a7439ff75f660295ed5163722c27c4d619e3c397a6b6d2b6538255e9e3784d92"
+        "passed": 139
       },
       "core-final.trx": {
-        "passed": 3099,
-        "sha256": "1fab394b9db333d8b844d9559cfb79bacfa6ffbff6149eceee7b2f0dc135fe12"
+        "passed": 3099
       }
     },
     "totalPassed": 3244,
     "memoryScenarios": 25,
-    "memorySummarySha256": "187696b1d03f2b27544383db2004bf50518f5b5136e48e51b701aa7f882ae28b",
     "runtimeAndSymbolInspection": "passed",
     "installedConsumer": "passed",
     "finalBankCases": 896,

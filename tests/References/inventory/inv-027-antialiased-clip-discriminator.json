@@ -3,20 +3,19 @@
   "status": "Measured diagnostic models; no production repair integrated.",
   "validation": {
     "diagnosticCases": 54,
-    "managedDiagnosticBuilds": {
-      "authored-build.log": "be995f8e1260e34b993ca45cde77c6816d1461080a577d9b5685d63e7fb89142",
-      "force-rle-build.log": "544277b83db8d75ecbe6dfc571425dd6449896c0eecd80125764dd1fd97a165a",
-      "bounded-rle-build.log": "6389209ab850cc455a756f7cce5a343d94f8c903ce276a9af3889e2ca507ce4c",
-      "float-only-build.log": "7fe1069cb67fa65aa74320cb8eeb41b693ef8fafcc40364f33a0b9c3b4beecb2",
-      "float-bounded-rle-build.log": "49d41fcd7c1d1dc46b4c1dcfd90a7084ade8068fdd9cc83916763fe108e4f961"
-    },
+    "managedDiagnosticBuilds": [
+      "authored-build.log",
+      "force-rle-build.log",
+      "bounded-rle-build.log",
+      "float-only-build.log",
+      "float-bounded-rle-build.log"
+    ],
     "diagnosticWarnings": 0,
     "diagnosticErrors": 0,
     "currentVisualTests": {
       "passed": 139,
       "failed": 0,
-      "skipped": 0,
-      "trxSha256": "0bae2262588753ed9159b8e2b71042eeaad319090d9f76c2886f97d1cd556833"
+      "skipped": 0
     },
     "currentRuntimeSourcesUnchanged": true,
     "integrationGates": "Not run: no production change. Prior full 3244-test, 25-memory and delivery checkpoint remains the recorded production baseline."
@@ -5429,7 +5428,6 @@
       ]
     }
   ],
-  "fullResidualObservationSha256": "08860cd499a61fe823c7133706b83923dd7c0b9fd184543ec3937fc6748abf1d",
   "comparisonConclusions": [
     "All 41 authored float points (37 body, four triangle) match the saved native picture; observer-only output preserves the complete current candidate PNG.",
     "Thirty of 100 repeated body-verb coordinates differ after float narrowing of current mapped points. Either point set gives the same native alpha3 direct event at the original witness.",

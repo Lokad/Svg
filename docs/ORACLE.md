@@ -91,8 +91,8 @@ the captures remote evidence or admitting a Linux baseline.
 Chrome fingerprint schema 4 requires the startup-health diagnostics; the memory
 summary remains schema 3. Reports identify inputs, outputs, browser and runtime;
 Git and CI workflow revisions identify the code. Solution source, script and
-assembly hashes are no longer recorded or required. Older reports may retain
-these unused fields. Old Chrome schema-3 fingerprints do not establish observed
+assembly and diagnostic-report hashes are not recorded or required.
+Old Chrome schema-3 fingerprints do not establish observed
 sandbox health and are rejected by the current validator.
 
 The setup script refuses an archive or extracted executable whose SHA-256 differs

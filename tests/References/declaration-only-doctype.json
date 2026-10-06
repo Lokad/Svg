@@ -858,21 +858,18 @@
     "tests": [
       {
         "file": "artifacts/doctype-20261005/tests/core-final.trx",
-        "sha256": "2ebd9c41dbc0c0be12e0163a60c25a185f5134043a99dc4fa438e02e687b0c68",
         "passed": 3296,
         "failed": 0,
         "skipped": 0
       },
       {
         "file": "artifacts/doctype-20261005/tests/visual-final.trx",
-        "sha256": "544fda710946cffeaed96be5248782f94078f1225732858e92d2644dfd1a4027",
         "passed": 143,
         "failed": 0,
         "skipped": 0
       },
       {
         "file": "artifacts/doctype-20261005/tests/font-probe-final.trx",
-        "sha256": "0f3b5e6455306b92d3b447b2f65113cf111b0e651b37acc5623a7026fb7d1000",
         "passed": 6,
         "failed": 0,
         "skipped": 0
@@ -881,18 +878,15 @@
     "totalPassed": 3445,
     "memory": {
       "file": "artifacts/doctype-20261005/memory-final/5d2c2f138e6f4c0486c0e19fb9f5852d-summary.json",
-      "sha256": "597c80ff8083f5df1601499d6245ecaa1b66ab350e6fbb78a51f2c0eff80bec6",
       "scenariosPassed": 25
     },
     "package": {
       "packages": [
         {
-          "file": "artifacts/doctype-20261005/packages-final/Lokad.Svg.0.1.0-preview.1.nupkg",
-          "sha256": "a92c86eff4592073d4d71502c9be821ade5eac555e0befcda2dfdd193dda14a4"
+          "file": "artifacts/doctype-20261005/packages-final/Lokad.Svg.0.1.0-preview.1.nupkg"
         },
         {
-          "file": "artifacts/doctype-20261005/packages-final/Lokad.Svg.0.1.0-preview.1.snupkg",
-          "sha256": "a83e34f765f771a1cefb920986ca54b98d707bf8846e8e8a7a4b1fe9a5090435"
+          "file": "artifacts/doctype-20261005/packages-final/Lokad.Svg.0.1.0-preview.1.snupkg"
         }
       ],
       "installedConsumer": "artifacts/doctype-20261005/package-validation-final/package-consumer-26cec767d12c4e098bd804221abfc393/bin/Release/net10.0",

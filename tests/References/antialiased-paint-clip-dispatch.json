@@ -2516,29 +2516,24 @@
       "core": {
         "passed": 3109,
         "failed": 0,
-        "skipped": 0,
-        "resultSha256": "3bcbc29010ea5b65039c09ebca3da3a127e20fca3bd6471a7b03f5cd2abdb877"
+        "skipped": 0
       },
       "visual": {
         "passed": 142,
         "failed": 0,
-        "skipped": 0,
-        "resultSha256": "c6ba9e012c137615ae1c7842f1be88ef843b4ec83f5ff622446b2540ddb3cf81"
+        "skipped": 0
       },
       "fontProbe": {
         "passed": 6,
         "failed": 0,
-        "skipped": 0,
-        "resultSha256": "b27aabb1754e10b4d37e4aeecc14425715b56da7c13f596b898bb24831887485"
+        "skipped": 0
       }
     },
     "totalPassedTests": 3257,
     "memory": {
-      "scenarios": 25,
-      "summarySha256": "338b170318452ab06b50cbb894e2f50d67bd2a85bb2f6cfb0f4d6aabaa993eb9"
+      "scenarios": 25
     },
     "package": {
-      "noticesSha256": "35dc3c9fdd1be8724ff0e25bdab7fa849e5b1fcd134f550b858a26dea610ed74",
       "inspectionAndConsumerChecksPassed": true,
       "runtimeDependencies": 0,
       "nativeAssets": 0
@@ -2547,28 +2542,23 @@
       "suppression": "Final production source snapshot with only GetPaintClip returning Binary; final boundary provenance retained.",
       "controls": {
         "cases": 41,
-        "allBaselinePngsAndDispositionsRestored": true,
-        "summarySha256": "1c46c665ac037be3de2e4ee93ec5b7bda2e34058ae4329b915ecbad3f7ca4301"
+        "allBaselinePngsAndDispositionsRestored": true
       },
       "corporate": {
         "cases": 258,
-        "allBaselinePngsAndDispositionsRestored": true,
-        "summarySha256": "e716af13725d43969092fad2895e0e7470108719fdc3cbe1d6132bdd556178fd"
+        "allBaselinePngsAndDispositionsRestored": true
       },
       "sameFinalProductionSourcesVerified": true
     },
     "fullComparisons": {
       "rebuilt-expanded-bank": {
-        "executed": 937,
-        "summarySha256": "5f92778757b5e4f952e8cb1cd2974a5bb894a160899a7242df437b4327b566fe"
+        "executed": 937
       },
       "rebuilt-corporate": {
-        "executed": 258,
-        "summarySha256": "45d4d42237a92cc85dda2046e03218ed7b456feb557620661bd33de28e2c2c06"
+        "executed": 258
       },
       "rebuilt-controls": {
-        "executed": 41,
-        "summarySha256": "0aa1677ced7a853700b68658b933b876b708635f1718add2c1b54e796c4ea3fa"
+        "executed": 41
       }
     },
     "matchedTiming": [

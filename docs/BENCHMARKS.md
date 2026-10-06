@@ -266,10 +266,8 @@ The wordmark pair stays near 2 ms because its opaque content covers a small frac
 
 ## Cubic state separation and edge accounting (2026-10-04)
 
-Compared the reviewed renderer `f633c86b` (DLL SHA-256
-`2F88005F62089F8359771EE1E71310CE10963701C1FCF6FF67881378B7D4F792`)
-with the state-separation checkpoint starting at `5c4af69c` (DLL SHA-256
-`A97877188599FB2074F4EA6E74145575C4147FEA46C723E9F89F3A0F20B56BD6`).
+Compared the reviewed renderer `f633c86b` with the state-separation checkpoint
+starting at `5c4af69c`.
 The same public owned-memory harness and input hashes ran on Windows x64,
 .NET 10.0.12. Each case had 32 warmups and three measured batches, followed by
 a second pair of processes in reverse renderer order. Batches used 100 tiny,
@@ -457,10 +455,6 @@ Local source/input/output identities, capture triples, comparisons, final delive
 checks and resource records are under ignored `artifacts/scan-window-20261004/`:
 `before-measure`, `final-after-measure`, `final-after-reverse-measure`,
 `final-before-reverse-measure`, `ledger-before.json` and `final-ledger-after.json`.
-The final assembly SHA-256 is
-`0bd0de4d088f84791209134be1753ee6018d40e3411c1cd875274cc1a33d92f0`;
-the baseline assembly is
-`742f5c6b8806907c67033a9d9cd9048dca6f78598ca25bed0db5276802fa69c2`.
 
 ## One-chord cubic resource checkpoint (2026-10-05)
 
@@ -502,10 +496,7 @@ pass. Linux and representative performance remain unrefreshed.
 Ignored evidence is under `artifacts/cubic-admission-20261005/`: `before-measure`,
 `after-measure`, `after-reverse-measure`, `before-reverse-measure`, `ledger-before.json`
 and `ledger-after.json`. The baseline source matches HEAD `9e77c0fa`, also embedded
-in its assembly informational version; its rebuilt assembly SHA-256 is
-`d31aa1a15b935723bbdf38aa6a68975b7ca1d37c058575c7dda4d1e859371b82`.
-The final candidate assembly SHA-256 is
-`7b99ab2c112b84a5a00a6015c099641eb5b08569821c25494d89debe51125c98`.
+in its assembly informational version.
 
 ## Clipping-kernel resource boundary (2026-10-05)
 

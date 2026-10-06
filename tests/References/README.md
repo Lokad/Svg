@@ -2,9 +2,9 @@ Reviewed pinned-Chrome reference PNGs and their oracle metadata are stored here.
 Renderer checkpoint records identify source by Git commit. Keep regression inputs,
 expected images and capture provenance here; detailed run diagnostics belong under
 ignored `artifacts/`. Do not store hashes of solution source, scripts, local probe
-adapters, compiled binaries or packages in reference metadata: ordinary source
-edits must not require metadata refreshes. Keep fixture/reference identities and
-upstream oracle pins.
+adapters, compiled binaries, packages or diagnostic reports in reference metadata.
+Ordinary source edits must not require metadata refreshes. Keep fixture/reference
+identities and upstream oracle pins.
 The metadata records the exact capture recipe used for each reference. Revision 1
 is retained historical provenance; revision 2 added an RGBA-transparent
 background before capture. Revision 3 also configures the blank target before
