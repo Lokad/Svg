@@ -107,6 +107,15 @@ dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks
 The current machine-scoped baseline and its reproduction constraints are in
 [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
+Measure the complete frozen corporate cohort, including known differences, with:
+
+```powershell
+dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks -- --job Short --filter "*SvgCorporateCohortBenchmarks*" --exporters JSON
+```
+
+Each case uses its declared viewport, scale and background. Input loading and
+option construction occur outside the timed synchronous owned-memory conversion.
+
 Run an isolated conversion probe, optionally with a conversion budget or a
 timed cancellation request, with:
 

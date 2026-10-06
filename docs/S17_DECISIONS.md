@@ -3,8 +3,9 @@
 Updated 2026-10-07. Native legacy conic subdivision rounding makes Rede Manchete,
 Tokyo Tsukurou and Pepsi exact in every frozen variant. The cohort is **23/27
 exact documents**, marks **11/13**, wordmarks **12/14**, with 234 exact and 24
-known comparisons across 258 variants. The numerical criterion is met;
-S17's performance and delivery evidence remains open.
+known comparisons across 258 variants. The numerical criterion is met.
+Representative Windows performance and fresh local Windows delivery evidence
+are now recorded; Linux/remote delivery and platform oracle evidence remain open.
 
 Exact documents are Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, Rede Manchete,
 ROC HCVS, Red Cross, Tokyo Tsukurou, Artsy, Party of Changes, YouTube, Liputan6,
@@ -13,6 +14,28 @@ Membership, inputs, options and references
 remain frozen. [PLAN.md](../PLAN.md) owns the current queue and validation totals;
 [the design record](RASTERIZATION_DESIGN.md#legacy-conic-subdivision-rounding-2026-10-07)
 explains the repair. Detailed diagnostics stay under ignored artifacts.
+
+The four remaining failed documents stay in the denominator:
+
+| Document | Failed variants | Current pixel difference |
+| --- | ---: | --- |
+| SimpleLogin (`inv-001`) | Nine | Four through 22 pixels; transparent variants include alpha errors up to 26. |
+| Zeppelin (`inv-007`) | Three small | 26 RGB-only pixels, maximum channel error five. |
+| SG Rotation Leipzig (`inv-012`) | Three large | One RGB-only pixel, maximum channel error one. |
+| IBM (`inv-099`) | Nine | 209 through 942 pixels; transparent alpha errors reach 23. |
+
+These are measured residuals against the unchanged references. Their mechanism
+and broader coverage remain implementation work; meeting the document target
+does not waive a pixel difference.
+
+All 258 frozen recipes also complete the synchronous owned-memory BenchmarkDotNet
+ShortRun. Intended-size medians across variant means are 16.37 ms for marks and
+10.52 ms for wordmarks, with median allocation traffic 1.46 and 1.00 MiB.
+[The complete-cohort baseline](BENCHMARKS.md#frozen-corporate-cohort-baseline-2026-10-07)
+records sizes, maxima, machine scope and confidence limits. This is a warmed
+Windows measurement, with no speedup or service-latency claim. Fresh local
+Windows build, memory, package consumers, browser/font tools and artifact
+consistency pass; they do not establish Linux or remote CI delivery.
 
 ## Q1 - numeric exact-document target: selected
 

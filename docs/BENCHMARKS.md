@@ -1,5 +1,9 @@
 # Local benchmark baseline
 
+The current frozen-cohort measurement is recorded in
+[the corporate baseline](#frozen-corporate-cohort-baseline-2026-10-07).
+The earlier calibration and implementation checkpoints below retain their dates.
+
 This is the initial local baseline for the current supported subset. It is a
 comparison point for follow-up measurements on the same environment, not a
 performance gate or a claim about representative SVG workloads. The `ShortRun`
@@ -2063,3 +2067,54 @@ finite-overflow vectors, work denial, cancellation and six-output regressions.
 These are resource observations; no representative latency/allocation result
 is claimed. Detailed ledgers stay under ignored
 `artifacts/oval-residuals-20261007/`.
+
+## Frozen corporate cohort baseline (2026-10-07)
+
+`SvgCorporateCohortBenchmarks` measures all 27 frozen documents / 258 recipes,
+including the four failed documents and eight fresh holdouts. Setup loads and
+verifies the frozen SVG asset, constructs its declared viewport/scale/background
+and checks output dimensions outside timing. Each measured operation converts
+the input to owned PNG memory through the public synchronous API. The renderer
+is `2fb6a7ff`; no production code changes accompany this measurement.
+
+Reproduce from the repository with:
+
+```powershell
+dotnet run -c Release --project benchmarks/Lokad.Svg.Benchmarks -- --job Short --filter "*SvgCorporateCohortBenchmarks*" --exporters JSON --artifacts artifacts/cohort-performance
+```
+
+The run uses BenchmarkDotNet 0.14.0, SDK 10.0.401 / .NET 10.0.12 X64 RyuJIT,
+concurrent workstation GC, Windows 10 22H2 (10.0.19045.6456), and an Intel Xeon
+W-2223 at 3.60 GHz with four physical / eight logical cores. ShortRun has one
+launch, three warmups and three measured iterations. All 258 cases complete;
+exported timing/allocation rows match the complete per-case log identities.
+Raw reports and a full variant-keyed summary remain under ignored
+`artifacts/cohort-performance-20261007/`.
+
+The table contains the 243 small/intended/large recipes: three backgrounds for
+each document. The fifteen additional historical-size recipes are also measured
+and retained in the complete report. Time columns summarize the distribution
+of per-variant means; they are not request-latency percentiles.
+
+| Stratum / size | Cases | Median mean (ms) | Maximum mean (ms) | Median allocated (MiB) | Maximum allocated (MiB) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Marks / small | 39 | 5.04 | 22.13 | 0.74 | 1.31 |
+| Marks / intended | 39 | 16.37 | 93.23 | 1.46 | 4.93 |
+| Marks / large | 39 | 53.20 | 290.46 | 4.37 | 19.31 |
+| Wordmarks / small | 42 | 3.71 | 19.35 | 0.52 | 2.01 |
+| Wordmarks / intended | 42 | 10.52 | 57.43 | 1.00 | 5.57 |
+| Wordmarks / large | 42 | 28.66 | 160.88 | 2.55 | 19.41 |
+
+Pepsi's 1600×1600 variants are the slowest at 196.84–290.46 ms mean, depending
+on background. Larger outputs increase allocation traffic even when they are
+pixel-exact. [MemoryDiagnoser](https://benchmarkdotnet.org/articles/configs/diagnosers.html)
+reports cumulative managed allocation per operation, including owned output;
+it does not report renderer-accounted live storage or OS peak working set.
+
+This establishes a Windows baseline for the selected frozen cohort. Three
+iterations leave broad confidence intervals: no speedup, regression threshold,
+cold-start latency, concurrent-service capacity or broader SVG rate is inferred.
+Fresh Windows Release, 25 memory scenarios, installed runtime/symbol-package
+consumers, pinned-browser smoke, font tooling and artifact consistency pass.
+The current renderer's 3,861-test result remains valid. Linux/remote delivery
+and platform-appropriate oracle evidence remain open.
