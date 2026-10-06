@@ -1,45 +1,36 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Directed authored-fill admission and retained centerline
-instance strokes remove a required wordmark's contour gate.
-[PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
-Exact documents remain Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA,
-IKEA and Google: **9/27**, marks **3/13**, wordmarks **6/14**. S17 requires
-at least **23/27**, including 11/13 marks and 12/14 wordmarks. Membership,
-holdouts, options, original inputs and browser references remain frozen.
+Updated 2026-10-06. Shared inactive presentation admission makes Target exact
+in all nine original variants. [PLAN.md](../PLAN.md) owns the queue; rows 3–7
+and S17 remain open. Exact documents are Ford, SimpleX, Omega, ROC HCVS, Artsy,
+YouTube, NASA, Target, IKEA and Google: **10/27**, marks **4/13**, wordmarks
+**6/14**. S17 still requires **23/27**, including 11/13 marks and 12/14 wordmarks.
+Membership, holdouts, options, original inputs and browser references remain frozen.
 
-Current evidence: **1,162 fixtures = 955 exact + 183 known + 24 rejected**,
-666 base documents / 496 variants; **36 research probes = twelve exact +
-23 known + one rejected**; and 92 legacy Default renders: **1,290 cases**.
-Six existing curved-counter variants graduate against unchanged PNGs: three
-cubic variants are exact and three quadratic variants remain known differences.
-Seventeen new entries add fifteen exact and two known controls. All 949 prior
-exact fixture/research PNGs and every previously referenced render preserve
-complete identity. Nepal and Kenya Default improve; ninety other PNGs remain.
+Current evidence: **1,168 fixtures = 961 exact + 183 known + 24 rejected**,
+672 base documents / 496 variants; **36 research probes = twelve exact +
+23 known + one rejected**; and 92 legacy Default renders: **1,296 cases**.
+Six independent controls are exact. Every prior render/disposition and all
+955 prior exact fixture/twelve exact research PNGs are preserved. One active
+marker rejection now reports the shared value-validation diagnostic.
 
-The corporate matrix has **249 rendered comparisons (134 exact, 115 known)**
-and nine UnsupportedFeature outcomes. Coca-Cola now renders all nine original
-variants, with transparent differences of 258/667/1,202 pixels at small/
-intended/large sizes. All other 249 records and 134 exact PNGs are unchanged.
-The required wordmark remains in the failing denominator.
+All **258 corporate variants render: 143 exact and 115 known differences**.
+Only Target's nine records change; all other 249 records and 134 prior exact
+PNGs remain. Required known-difference documents retain their failing denominators.
 
-Windows locked restore, nine-project Release build and **3,780 tests**
-(3,614 core + 160 visual + six FontProbe) pass. Sixty fresh captures for twenty
-configurations are stable, healthy and cleaned. Twelve preceded production
-edits; six supplementary controls and two legacy witnesses followed them.
+Windows locked restore, nine-project Release build and **3,817 tests**
+(3,651 core + 160 visual + six FontProbe) pass. Eighteen fresh captures for
+six configurations are stable, healthy and cleaned. Four controls were declared
+before edits; two supplementary overflow controls followed edits, before capture.
 All 25 memory scenarios, package/installed-consumer and artifact checks pass.
 The Windows validator reuses the earlier pinned-browser smoke.
 
-Thirty-nine matched recipes preserve inputs, all PNGs and value layouts. Twenty
-complete records are unchanged; nineteen use less parser/total work. Seven
-accounted peaks increase 24–3,308 bytes and eleven decrease. These selected local
-observations do not establish representative performance.
-
-Remaining corporate curve/clip events, Target's inert style admission, shape/
-paint hairlines and bitmap contexts, sampled shape routes, transformed/pathLength
-dash coverage, conical/multistop coordinates, cache history, representative
-performance and Linux remain open. Detailed studies stay under ignored artifacts;
-Git identifies code and ordinary edits require no reference hash refresh.
+Thirty-nine matched recipes preserve complete input/PNG/work/peak records and
+geometry/paint layouts. These checks do not establish representative performance.
+Remaining corporate curve/clip events, shape/paint hairlines and bitmap contexts,
+sampled shape routes, transformed/pathLength dash coverage, conical/multistop
+coordinates, cache history, representative performance and Linux remain open.
+Detailed studies stay ignored; Git identifies code without source/build hashes.
 
 ## Q1 - numeric exact-document target: selected
 

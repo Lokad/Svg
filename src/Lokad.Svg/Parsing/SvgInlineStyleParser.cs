@@ -23,6 +23,8 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
     internal string? Miterlimit { get; init; }
     internal string? StrokeOpacity { get; init; }
     internal string? PathLength { get; init; }
+    /// <summary>Gets whether a declaration requires a target that does not establish a viewport.</summary>
+    internal bool HasVisibleOverflow { get; init; }
 }
 
 
@@ -90,6 +92,7 @@ internal static class SvgInlineStyleParser
         string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null;
         string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, pathLength = null, geometryWidth = null, geometryHeight = null;
         InlineImportantProperties important = InlineImportantProperties.None;
+        bool hasVisibleOverflow = false;
         SvgInlineDeclarationReader declarations = new(value, workCounter, cancellationToken);
         while (declarations.TryRead(out ReadOnlySpan<char> declaration))
         {
@@ -118,10 +121,25 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("width", StringComparison.OrdinalIgnoreCase)) Set(ref geometryWidth, InlineImportantProperties.GeometryWidth, property, propertyValue, strings, ref important, false);
             else if (property.Equals("height", StringComparison.OrdinalIgnoreCase)) Set(ref geometryHeight, InlineImportantProperties.GeometryHeight, property, propertyValue, strings, ref important, false);
             else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) ValidateClipDeclaration(propertyValue);
-            else if (property.Equals("overflow", StringComparison.OrdinalIgnoreCase)) ValidateOverflowDeclaration(propertyValue);
+            else if (property.Equals("overflow", StringComparison.OrdinalIgnoreCase))
+            {
+                TryStripImportant(propertyValue, out ReadOnlySpan<char> stripped);
+                if (stripped.Equals("visible".AsSpan(), StringComparison.OrdinalIgnoreCase)) hasVisibleOverflow = true;
+                else SvgNestedViewportSyntax.ValidateOverflow(stripped);
+            }
             else if (property.Equals("preserveAspectRatio", StringComparison.OrdinalIgnoreCase)) ValidateImagePreserveAspectRatioDeclaration(propertyValue);
             else if (property.Equals("font-variant", StringComparison.OrdinalIgnoreCase)) ValidateFontVariantDeclaration(propertyValue);
             else if (property.Equals("color-interpolation", StringComparison.OrdinalIgnoreCase)) ValidateColorInterpolationDeclaration(propertyValue);
+            else if (property.Equals("marker", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-start", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-mid", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-end", StringComparison.OrdinalIgnoreCase))
+            {
+                TryStripImportant(propertyValue, out ReadOnlySpan<char> stripped);
+                SvgInertPresentationSyntax.ValidateMarker(stripped);
+            }
+            else if (property.Equals("enable-background", StringComparison.OrdinalIgnoreCase))
+            {
+                TryStripImportant(propertyValue, out ReadOnlySpan<char> stripped);
+                SvgInertPresentationSyntax.ValidateBackgroundAccumulation(stripped);
+            }
             else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) Set(ref family, InlineImportantProperties.Family, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) Set(ref weight, InlineImportantProperties.Weight, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("font-style", StringComparison.OrdinalIgnoreCase)) Set(ref fontStyle, InlineImportantProperties.FontStyle, property, propertyValue, strings, ref important, false);
@@ -131,7 +149,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("pointer-events", StringComparison.OrdinalIgnoreCase) || property.Equals("cursor", StringComparison.OrdinalIgnoreCase)) { } // UI behavior never affects static pixels.
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, PathLength = pathLength, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, PathLength = pathLength, HasVisibleOverflow = hasVisibleOverflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
 
         static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {
@@ -164,12 +182,6 @@ internal static class SvgInlineStyleParser
         {
             TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
             _ = SvgImageSyntax.ParsePlacementAspectRatio(stripped.ToString());
-        }
-
-        static void ValidateOverflowDeclaration(ReadOnlySpan<char> rawValue)
-        {
-            TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
-            SvgNestedViewportSyntax.ValidateOverflow(stripped);
         }
 
         static void ValidateClipDeclaration(ReadOnlySpan<char> rawValue)

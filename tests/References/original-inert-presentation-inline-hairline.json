@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-inert-presentation-inline-hairline",
+  "referencePng": "original-inert-presentation-inline-hairline.png",
+  "referenceSha256": "58734e7e97f489da57e06f1e13486fbdd264d0b672143d0d215053a30d44986f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "f53d3f2098e4ed3a2b9dfe3e55f4b52b3de46a70156f9a7ee621fb86a9578cb4",
+  "candidateSha256": "5d568230adbde23bdccc298ab2ec5cfc314968bf61ab48e5ac498ccfffb79ff2",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

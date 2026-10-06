@@ -1965,3 +1965,18 @@ artifact validation reuses existing pinned-browser smoke evidence. Captures,
 full regressions, ledgers and timing batches stay under ignored
 `artifacts/authored-fill-admission-20261006/`. General fidelity, representative
 performance, Linux and S17 remain open.
+
+## Inactive presentation admission observations (2026-10-06)
+
+The frozen `d112fc98` renderer and shared inactive presentation admission reuse
+all 39 matched recipes on Windows X64 / .NET 10.0.12. Complete input/PNG identities,
+parser work, work through raster, accounted peaks and geometry/paint value layouts
+are identical. These checks isolate the syntax admission from numeric rendering;
+no new timing or representative performance result is claimed.
+
+Target now renders all nine original variants exactly. Six independently captured
+controls are exact; all earlier bank outputs and corporate exact PNGs remain.
+All 3,817 tests, 25 memory scenarios and installed consumers pass. Windows artifact
+validation reuses existing pinned-browser smoke. Full reports/ledgers stay under
+ignored `artifacts/inert-presentation-20261006/`; Git identifies implementation.
+General fidelity, representative performance, Linux and S17 remain open.

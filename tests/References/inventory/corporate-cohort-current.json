@@ -12,11 +12,11 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after directed authored-fill admission and retained centerline use strokes; original references and cohort options retained.",
+  "scope": "Frozen 27-document/258-variant measurement after shared inactive marker/background admission and non-viewport visible overflow; original references and cohort options retained.",
   "rendererCounts": {
-    "renders": 249,
+    "renders": 258,
     "MalformedInput": 0,
-    "UnsupportedFeature": 9
+    "UnsupportedFeature": 0
   },
   "oracleCounts": {
     "unmeasured": 0,
@@ -24,10 +24,10 @@
     "transport-limit-gap": 0
   },
   "fidelityCounts": {
-    "exact": 134,
+    "exact": 143,
     "known-difference": 115,
     "withoutReference": 0,
-    "measuredRendererRejections": 9
+    "measuredRendererRejections": 0
   },
   "oracleTransportFailures": {
     "failures": [
@@ -147,6 +147,7 @@
     "inv-020",
     "inv-027",
     "inv-066",
+    "inv-098",
     "inv-100",
     "inv-101"
   ],
@@ -555,7 +556,7 @@
         "inv-098-large-white",
         "inv-098-large-black"
       ],
-      "verifiedExact": false
+      "verifiedExact": true
     },
     {
       "id": "inv-099",
@@ -12719,10 +12720,29 @@
     },
     {
       "id": "inv-098-small-transparent",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Inline style property 'marker' is not implemented.",
+      "renderOutcome": "renders",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 384,
+          "MinimumMismatchY": 384,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-098-small-transparent.png",
       "captureProvenance": {
         "oracleInputSha256": "a129922d48cd84e7b61f5b0127c2049c3bfdcae815cc28c170124ec51646b3e8",
@@ -12750,14 +12770,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "fcd0b622b783e417e6bd48494ef93444011fdf5d53b99138a3bca76fe4ca0149"
+      "referenceSha256": "fcd0b622b783e417e6bd48494ef93444011fdf5d53b99138a3bca76fe4ca0149",
+      "candidateSha256": "abbef17c8d281e73621675d3ed1bfac179972081af675d3fe39e27d6e650f038",
+      "width": 384,
+      "height": 384
     },
     {
       "id": "inv-098-small-white",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Inline style property 'marker' is not implemented.",
+      "renderOutcome": "renders",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 384,
+          "MinimumMismatchY": 384,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-098-small-white.png",
       "captureProvenance": {
         "oracleInputSha256": "a129922d48cd84e7b61f5b0127c2049c3bfdcae815cc28c170124ec51646b3e8",
@@ -12785,14 +12827,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "e186f124678069df00cf2e792ffd7cd914039a0c7fa8c92168d19b075ba919f8"
+      "referenceSha256": "e186f124678069df00cf2e792ffd7cd914039a0c7fa8c92168d19b075ba919f8",
+      "candidateSha256": "fcd773a6d0ff19b72208f63848eab373611f8d4c0d2605e8008c289c035c3bed",
+      "width": 384,
+      "height": 384
     },
     {
       "id": "inv-098-small-black",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Inline style property 'marker' is not implemented.",
+      "renderOutcome": "renders",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 384,
+          "MinimumMismatchY": 384,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-098-small-black.png",
       "captureProvenance": {
         "oracleInputSha256": "a129922d48cd84e7b61f5b0127c2049c3bfdcae815cc28c170124ec51646b3e8",
@@ -12820,14 +12884,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "60d0a3e99da60d502332ca812552867a3d37adcffe64189d7f1bf0a0aa9bf743"
+      "referenceSha256": "60d0a3e99da60d502332ca812552867a3d37adcffe64189d7f1bf0a0aa9bf743",
+      "candidateSha256": "b9314801cad4bfc9d2803dac1dbbf0f596b23098f2712c51d4b4dcb3d4c2c59c",
+      "width": 384,
+      "height": 384
     },
     {
       "id": "inv-098-intended-transparent",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Inline style property 'marker' is not implemented.",
+      "renderOutcome": "renders",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 768,
+          "MinimumMismatchY": 768,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-098-intended-transparent.png",
       "captureProvenance": {
         "oracleInputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
@@ -12855,14 +12941,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "99070c80a44f75d51c4edbcafc87cba5ac80d1db9d214eff56fa27a9de0171e0"
+      "referenceSha256": "99070c80a44f75d51c4edbcafc87cba5ac80d1db9d214eff56fa27a9de0171e0",
+      "candidateSha256": "bb1c09f6231219b848745d410f7c2906de535aa98bb5567a2c831f0b6cd62f41",
+      "width": 768,
+      "height": 768
     },
     {
       "id": "inv-098-intended-white",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Inline style property 'marker' is not implemented.",
+      "renderOutcome": "renders",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 768,
+          "MinimumMismatchY": 768,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-098-intended-white.png",
       "captureProvenance": {
         "oracleInputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
@@ -12890,14 +12998,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "8c3f51815902d1f813b34a675c767092bd491d0d4f498528fc06bf1a332d221a"
+      "referenceSha256": "8c3f51815902d1f813b34a675c767092bd491d0d4f498528fc06bf1a332d221a",
+      "candidateSha256": "e2fba48b3e8fe3476225d05cc39475d3671ffe38d484e3e59c9eada5cf84e83c",
+      "width": 768,
+      "height": 768
     },
     {
       "id": "inv-098-intended-black",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Inline style property 'marker' is not implemented.",
+      "renderOutcome": "renders",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 768,
+          "MinimumMismatchY": 768,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-098-intended-black.png",
       "captureProvenance": {
         "oracleInputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
@@ -12925,14 +13055,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "6185bc27589f7cf16a971a4a1582e03b3365b28142b1b36dd17989ef47428df0"
+      "referenceSha256": "6185bc27589f7cf16a971a4a1582e03b3365b28142b1b36dd17989ef47428df0",
+      "candidateSha256": "df26ef7868123f80f918cdb9eda9b9e7f1f3919e466624b9521ef301457ccfc1",
+      "width": 768,
+      "height": 768
     },
     {
       "id": "inv-098-large-transparent",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Inline style property 'marker' is not implemented.",
+      "renderOutcome": "renders",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 1536,
+          "MinimumMismatchY": 1536,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-098-large-transparent.png",
       "captureProvenance": {
         "oracleInputSha256": "d9a4afd843567dbcd8301998e9fdac68fd491953dba3278384a657e74475d929",
@@ -12961,14 +13113,36 @@
         "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
       },
       "oracleState": "measured",
-      "referenceSha256": "209abf8b4c45276da2bcf1f8357b57e1369074efde566795d872dcc409acd18b"
+      "referenceSha256": "209abf8b4c45276da2bcf1f8357b57e1369074efde566795d872dcc409acd18b",
+      "candidateSha256": "7398bab052de8d3228dfcd9ea8bb6568bdc83e1d98702a94227aa49334f8f1dc",
+      "width": 1536,
+      "height": 1536
     },
     {
       "id": "inv-098-large-white",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Inline style property 'marker' is not implemented.",
+      "renderOutcome": "renders",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 1536,
+          "MinimumMismatchY": 1536,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-098-large-white.png",
       "captureProvenance": {
         "oracleInputSha256": "d9a4afd843567dbcd8301998e9fdac68fd491953dba3278384a657e74475d929",
@@ -12997,14 +13171,36 @@
         "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
       },
       "oracleState": "measured",
-      "referenceSha256": "0dc377db4c7e1d225b26f0565e2875920cfe9940577e5a4ef218677131fb1e69"
+      "referenceSha256": "0dc377db4c7e1d225b26f0565e2875920cfe9940577e5a4ef218677131fb1e69",
+      "candidateSha256": "e80ca037198275a0b5b61938be053b004a3f0f7d5d069270b7597f8689ff2a75",
+      "width": 1536,
+      "height": 1536
     },
     {
       "id": "inv-098-large-black",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Inline style property 'marker' is not implemented.",
+      "renderOutcome": "renders",
       "inputSha256": "79f8e117e374cee7ad3d4b5678b02990c23038caac53a72f6fb052d5ad15eb69",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 1536,
+          "MinimumMismatchY": 1536,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-098-large-black.png",
       "captureProvenance": {
         "oracleInputSha256": "d9a4afd843567dbcd8301998e9fdac68fd491953dba3278384a657e74475d929",
@@ -13033,7 +13229,10 @@
         "transportCheckpoint": "Bounded 8,388,608-pixel capture and screenshot-only 64 MiB CDP reply"
       },
       "oracleState": "measured",
-      "referenceSha256": "ed320da36056c1ef1741e6bbd3050ea3c91dd76da3dd3a8c6317cb1796090ebf"
+      "referenceSha256": "ed320da36056c1ef1741e6bbd3050ea3c91dd76da3dd3a8c6317cb1796090ebf",
+      "candidateSha256": "9fefb7bfb5294968e1f5c34645d43975953c9ae630f14822d2d57892143dfff7",
+      "width": 1536,
+      "height": 1536
     },
     {
       "id": "inv-099-small-transparent",
@@ -15088,8 +15287,8 @@
       "height": 386
     }
   ],
-  "rendererSourceBaselineCommit": "f7e59e0e",
-  "rendererSourceState": "Authored fills retain directed contacts; inherited path strokes consume original centerlines.",
-  "measurementCheckpoint": "authored-fill-admission-2026-10-06",
+  "rendererSourceBaselineCommit": "d112fc98",
+  "rendererSourceState": "Inactive marker/background values are validated and discarded; visible overflow is admitted only on targets that do not establish viewports.",
+  "measurementCheckpoint": "inert-presentation-admission-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

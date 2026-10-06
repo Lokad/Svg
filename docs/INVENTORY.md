@@ -7,7 +7,16 @@ No selection is claimed until documents are actually inventoried below.
 
 ## Status
 
-Current assessment (2026-10-06): declaration-only DOCTYPE admission made all
+Current assessment (2026-10-06): all 258 frozen corporate variants render,
+with 143 exact comparisons and 115 known differences. Shared inactive presentation
+admission makes Target exact in all nine original variants. All other 249 records
+and all 134 earlier exact PNGs remain unchanged. Exact documents are **10/27**,
+marks **4/13**, wordmarks **6/14**; S17 still requires 23/27 with both stratum minima.
+Membership, holdouts, sources, options, capture provenance and original PNGs
+remain frozen. Detailed runs stay under ignored
+`artifacts/inert-presentation-20261006/`.
+
+Historical DOCTYPE checkpoint: declaration-only admission made all
 92 legacy-bank files render. The four prior rejections (`inv-007`, `inv-012`,
 `inv-014`, `inv-020`) advanced with their original bytes; every previously
 rendered PNG was unchanged at that checkpoint. Renderability is separate from fidelity. The historical
@@ -24,8 +33,8 @@ repair. The earlier density sweep's four changed PNGs retain their historical
 scope below. Ford's separately
 captured variant matrix does not turn the Default sweep into a fidelity rate.
 The selected curved corporate-mark checkpoint is achieved. The representative
-corporate rate is now fully measured for the first frozen cohort: all 258
-references cover 240 rendered comparisons (134 exact, 106 known differences) and
+corporate rate was fully measured at the native wider stroke checkpoint: all 258
+references covered 240 rendered comparisons (134 exact, 106 known differences) and
 eighteen rejections. Exact documents are 9/27, marks 3/13 and wordmarks 6/14.
 SimpleX, Omega and Google join Ford, ROC HCVS, Artsy, YouTube and NASA after
 authored directed fill replay. Every prior exact comparison and disposition is

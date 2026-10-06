@@ -27,6 +27,7 @@ internal struct SvgStyleCascade
     private string? _miterlimit;
     private string? _strokeOpacity;
     private string? _pathLength;
+    private bool _hasVisibleOverflow;
     private int _colorRank;
     private int _fillRank;
     private int _fillOpacityRank;
@@ -60,6 +61,7 @@ internal struct SvgStyleCascade
 
     internal void Apply(InlineStyle style, int specificity)
     {
+        _hasVisibleOverflow |= style.HasVisibleOverflow;
         Apply(ref _color, ref _colorRank, style.Color, (style.Important & InlineImportantProperties.Color) != 0, specificity);
         Apply(ref _fill, ref _fillRank, style.Fill, (style.Important & InlineImportantProperties.Fill) != 0, specificity);
         Apply(ref _fillOpacity, ref _fillOpacityRank, style.FillOpacity, (style.Important & InlineImportantProperties.FillOpacity) != 0, specificity);
@@ -109,7 +111,7 @@ internal struct SvgStyleCascade
         if (_miterlimitRank >= ImportantBias) important |= InlineImportantProperties.Miterlimit;
         if (_strokeOpacityRank >= ImportantBias) important |= InlineImportantProperties.StrokeOpacity;
         if (_pathLengthRank >= ImportantBias) important |= InlineImportantProperties.PathLength;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, Important = important };
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, HasVisibleOverflow = _hasVisibleOverflow, Important = important };
     }
 
     private static void Apply(ref string? value, ref int currentRank, string? candidate, bool candidateImportant, int specificity)

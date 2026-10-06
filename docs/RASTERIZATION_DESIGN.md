@@ -6057,3 +6057,49 @@ Detailed captures, sweeps, ledgers and timing batches remain under ignored
 source/build/diagnostic hashes are not recorded. General numerical fidelity,
 shape/paint hairlines, bitmap contexts, representative performance, Linux and
 S17 remain open.
+
+## Inactive presentation admission (2026-10-06)
+
+Shared bounded style/attribute validation accepts `marker`, `marker-start`,
+`marker-mid` and `marker-end` only with `none`, and accepts default background
+accumulation. These meanings add no painting, as specified by
+[SVG marker properties](https://www.w3.org/TR/SVG11/painting.html#MarkerProperties)
+and [background accumulation](https://www.w3.org/TR/SVG11/filters.html#EnableBackgroundProperty).
+Styles strip a trailing important priority before value validation. Active
+references, inherited/unknown values and misplaced priorities remain unsupported,
+even when another declaration could override them. Existing root `new` hints
+retain their validator; backdrop/filter painting is not added.
+
+Visible overflow on paths/groups and other non-viewport targets is inert.
+Styles retain a target restriction through matched stylesheet rules, so computed
+style rejects it on actual viewports, including nested SVG, image and pattern
+targets. Root/nested presentation attributes preserve their existing hidden-only
+clipping gate. No code depends on a document identifier or alters curve/paint math.
+
+Target advances from nine style rejections to nine exact original comparisons.
+All other 249 corporate records and 134 earlier exact PNGs remain unchanged.
+The frozen cohort now has 143 exact / 115 known / zero rejected variants and
+10/27 exact documents, marks 4/13 and wordmarks 6/14. S17 still requires 23/27
+with both stratum minima and its independent delivery/resource/performance gates.
+
+Four independent controls were declared before edits; two supplementary
+non-viewport overflow controls followed edits, before capture. All six are
+exact against eighteen stable, healthy, profile-cleaned browser captures. They
+add six fixture entries; no original corporate input, option, reference PNG or
+capture provenance changes. The current bank executes 1,296 cases: 1,168 fixtures
+(961 exact, 183 known, 24 rejected), 36 research probes (twelve exact, 23 known,
+one rejected) and 92 Default renders. Every prior render/disposition and all
+967 prior exact fixture/research PNGs are unchanged. Only the existing active
+marker fixture's rejection message becomes the shared value diagnostic.
+
+Windows locked restore/Release build, all 3,817 tests (3,651 core, 160 visual,
+six FontProbe), 25 memory scenarios and runtime/symbol package plus installed
+consumer checks pass. The 37 new core cases cover six public outputs, styles,
+attributes, instance placement, active-value rejection, viewport restrictions,
+font discovery, budget denial, cancellation, cleanup and retry. Thirty-nine
+matched recipes preserve complete input/PNG/work/peak records and geometry/paint
+layouts. No new timing or representative performance claim is made. Windows
+artifact validation reuses earlier pinned-browser smoke; Linux/remote evidence
+remains open. Detailed studies stay under ignored
+`artifacts/inert-presentation-20261006/`; Git identifies implementation without
+source/build/report hashes.

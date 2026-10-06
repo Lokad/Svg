@@ -16,21 +16,18 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current directed authored-fill checkpoint
+## Current inactive-presentation checkpoint
 
-The bank has 1,162 fixtures (955 exact, 183 known, 24 rejected), 36 research
+The bank has 1,168 fixtures (961 exact, 183 known, 24 rejected), 36 research
 probes (twelve exact, 23 known, one rejected) and 92 legacy Default cases:
-1,290 executed cases. Seventeen original control entries add fifteen exact and
-two known comparisons. Six curved-counter references are reused unchanged:
-three cubic variants become exact and three quadratic variants render with known
-differences. All 949 prior exact fixture/research PNGs and every previously
-referenced render retain complete identity. Nepal and Kenya Default improve;
-the other ninety legacy PNGs remain unchanged. Sixty fresh captures for twenty
-configurations are stable and healthy. Coca-Cola's nine original corporate
-variants now render with measured differences; all other 249 corporate records
-and reference PNGs remain unchanged. The corporate totals are 134 exact /
-115 known / nine rejected, 9/27 fully exact documents. Detailed runs stay under
-ignored `artifacts/authored-fill-admission-20261006/`.
+1,296 executed cases. Six independent controls add six exact comparisons.
+All prior renders/dispositions and 955 prior exact fixture/twelve exact research
+PNGs remain. One active-marker rejection reports a more precise value diagnostic.
+Eighteen fresh captures are stable, healthy and cleaned. Target is exact in all
+nine original corporate variants; all other 249 corporate records and original
+reference PNGs remain unchanged. Totals are 143 exact / 115 known / zero rejected,
+10/27 fully exact documents. Detailed runs stay under ignored
+`artifacts/inert-presentation-20261006/`.
 
 ## Frozen corporate cohort
 
@@ -46,15 +43,15 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 249 rendered comparisons (134 exact, 115 known differences)
-and nine renderer rejections. No variants lack references. All nine variants
+all 258 references: 258 rendered comparisons (143 exact, 115 known differences)
+and zero renderer rejections. No variants lack references. All nine variants
 of YouTube, Ford, ROC HCVS, Artsy and NASA remain exact. SimpleX, Omega and Google
 are now exact in all twelve/twelve/nine variants respectively. The YouTube PNGs retain
 stable healthy capture triples. `inv-027-native-route.json`
 retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
-Nine documents are exact in every frozen variant (9/27), including IKEA. Known
+Ten documents are exact in every frozen variant (10/27), including IKEA and Target. Known
 differences remain measured against the original images. The earlier native open-stroke
 construction improved all nine Rede Manchete variants, with no prior mismatch
 count increase and all 70 exact corporate PNGs preserved. Six original research

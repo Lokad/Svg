@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the native wider path-stroke checkpoint, the 1,145 manifest entries contain
-937 exact decoded-pixel references, 178 known-difference renders and 30
+At the inactive-presentation checkpoint, the 1,168 manifest entries contain
+961 exact decoded-pixel references, 183 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -15,24 +15,28 @@ before the root. External identifiers are inert; internal subsets (even empty),
 duplicates and malformed syntax remain `MalformedInput`. No DTD resources,
 declared entities or defaults are loaded. Original byte encodings and structural
 limits are preserved across root parsing, font discovery and scale probing.
-The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
-27 cases to rendering and nine Target cases to the existing unsupported `marker`
-style gate. At that checkpoint, previous rendered PNGs remained unchanged.
-The complete frozen matrix has
-240 rendered comparisons (134 exact, 106 known differences) and eighteen
-independently captured renderer rejections. Ford, SimpleX, Omega, ROC HCVS, Artsy,
-YouTube, NASA, IKEA and Google are exact in every declared variant: 9/27 documents,
-marks 3/13 and wordmarks 6/14. Eligible authored fills preserve directed winding
-and retained curves after scene normalization, under either fill rule. Root/group
-placement composes before float rounding. Scene bounds, paint coordinates, clips
-and admission retain their existing contracts. All prior exact fixture/corporate
-PNGs are preserved. SVG endpoint arcs in eligible authored fills retain native
-float rational conics. Convex cubics retain live edges and newly arriving edges
-retain intersection checks under dense walking. Of 45 changed corporate PNGs,
-42 improve mismatch count and three retain it. Six known synthetic cases worsen
-in mismatch count and remain measured.
-Wider path endpoint arcs construct retained native quadratic offset outlines. Eligible solid path
-hairlines, including dashes, retain native endpoint conics. General event and coordinate fidelity remain open.
+
+Inline/stylesheet declarations and presentation attributes admit `marker`,
+`marker-start`, `marker-mid` and `marker-end` only with `none`. Shared validation
+also admits default `enable-background:accumulate`; the existing root attribute
+syntax retains its validated `new` hint. Active markers and backdrop filtering
+remain unsupported. `overflow:visible` is accepted on non-viewport targets;
+root/nested SVG viewports retain hidden clipping and reject visible overflow,
+including matched stylesheet declarations. These admissions add no painting.
+
+The complete frozen corporate matrix has 258 rendered comparisons: 143 exact
+and 115 known differences, with zero renderer rejections. Target is exact in all
+nine original variants, joining Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube,
+NASA, IKEA and Google: 10/27 documents, marks 4/13 and wordmarks 6/14.
+All other 249 records and 134 earlier exact PNGs remain unchanged. This is below
+S17's required 23/27 exact documents and both stratum minima.
+
+Eligible authored fills preserve directed winding and retained curves without
+scene contact surgery. Root/group placement composes before float rounding;
+scene bounds and paint coordinates remain. SVG endpoint arcs retain native
+float rational conics; wider path arcs construct native quadratic offset outlines.
+Eligible solid/dashed path hairlines retain conics. General event, coordinate
+and clip/paint fidelity remain open.
 
 Solid path strokes retain centerlines, closure and width maps. Dashed paths use
 bounded native curve measurement and cuts, with retained conic weights, zero ON

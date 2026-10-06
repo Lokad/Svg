@@ -76,9 +76,15 @@ internal static class SvgElementAttributePolicy
                 if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader, reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Rectangle || isInheritedContainer, (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || roundInstanceJoin || isInheritedContainer, kind == SvgElementKind.Path || kind == SvgElementKind.Circle || (kind == SvgElementKind.PointList && elementName == "polyline") || (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || isInheritedContainer, workCounter, cancellationToken);
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "color-interpolation") SvgGradientSyntax.ValidateColorInterpolation(reader.Value.AsSpan());
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow") SvgNestedViewportSyntax.ValidateOverflow(reader.Value.AsSpan());
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow")
+                {
+                    ReadOnlySpan<char> overflow = reader.Value.AsSpan();
+                    if (kind is SvgElementKind.Root or SvgElementKind.NestedViewport || !overflow.Trim().Equals("visible".AsSpan(), StringComparison.OrdinalIgnoreCase)) SvgNestedViewportSyntax.ValidateOverflow(overflow);
+                }
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "preserveAspectRatio" && kind == SvgElementKind.Image) _ = SvgImageSyntax.ParsePlacementAspectRatio(reader.Value);;
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "clip-rule") SvgClipPathSyntax.ValidateClipRule(reader.Value.AsSpan());
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName is "marker" or "marker-start" or "marker-mid" or "marker-end") SvgInertPresentationSyntax.ValidateMarker(reader.Value.AsSpan());
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "enable-background" && kind != SvgElementKind.Root) SvgInertPresentationSyntax.ValidateBackgroundAccumulation(reader.Value.AsSpan());
                 continue;
             }
             throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " attribute '" + reader.Name + "' is not implemented.");
@@ -90,6 +96,8 @@ internal static class SvgElementAttributePolicy
     {
         if ((kind is SvgElementKind.Root or SvgElementKind.Group) && (reader.Prefix == "xmlns" || reader.Name == "xmlns")) return true;
         if (reader.NamespaceURI.Length == 0 && (reader.LocalName is "role" or "tabindex" or "focusable" or "pointer-events" or "cursor" || reader.LocalName.StartsWith("aria-", StringComparison.Ordinal) || reader.LocalName.StartsWith("data-", StringComparison.Ordinal))) return true;
+        if (reader.NamespaceURI.Length == 0 && reader.LocalName is "marker" or "marker-start" or "marker-mid" or "marker-end" or "enable-background") return true;
+        if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow" && kind is SvgElementKind.Group or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Line or SvgElementKind.Rectangle or SvgElementKind.Circle or SvgElementKind.Use or SvgElementKind.Text or SvgElementKind.TextSpan) return true;
         if ((kind is SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Image or SvgElementKind.LinearGradient or SvgElementKind.RadialGradient) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
         if ((kind is SvgElementKind.Root or SvgElementKind.Group or SvgElementKind.Text or SvgElementKind.TextSpan) && reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") return true;
         if (reader.NamespaceURI.Length != 0 && (reader.NamespaceURI == "http://www.w3.org/1999/xlink" || reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace")) return false;
