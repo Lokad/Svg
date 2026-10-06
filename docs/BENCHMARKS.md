@@ -966,3 +966,30 @@ the single ordering and shared-host variation do not establish a causal cost or
 representative throughput. Managed allocation traffic is unchanged for tiny and
 dense; other medians vary by -2,980 / +760 / +1,240 / -1,275 bytes for
 Ford/native/intended/large respectively. Broader performance and Linux remain open.
+
+
+## Orthogonal clip-lowering observations (2026-10-06)
+
+Matching six-input ledgers preserve parser/raster work, accounted peaks and full
+PNG identity. The bounded lowering change uses the existing polygon/clip route.
+Denial/cancellation controls verify its storage cleanup separately. Raw ledgers
+and timing batches remain under ignored `artifacts/rectangle-route-20261006/`.
+
+Two sequential process pairs use the original six input/options recipes,
+32 warmups and three measured batches. Cells below are median milliseconds.
+
+| Input | Baseline first | Candidate second | Candidate first | Baseline second |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | .134 | .132 | .133 | .139 |
+| Ford | 16.144 | 16.776 | 17.403 | 18.346 |
+| dense | 274.566 | 276.447 | 272.940 | 305.328 |
+| native-size | 475.817 | 560.846 | 477.044 | 468.706 |
+| intended YouTube | 11.108 | 17.738 | 10.935 | 10.806 |
+| large YouTube | 34.860 | 91.484 | 33.922 | 33.947 |
+
+The large YouTube slowdown in the first pair does not repeat in the opposite
+order. Both complete pairs are retained; shared-host variation and unchanged
+resource ledgers do not establish a causal speedup or regression threshold.
+Managed allocation medians vary by at most 1,506 bytes in these pairs; tiny and
+dense preserve their first-pair allocation counts. Representative throughput and
+Linux remain open.

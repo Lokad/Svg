@@ -43,8 +43,10 @@ These checkpoints do not establish general logo coverage.
 Convex paths now round coverage for rectangular strips created by clipping a
 slanted edge, while raw rectangles retain their separate calibration. This closes
 YouTube's opaque triangle residuals at intended and large sizes. The subsequent
-clip-byte repair closes the remaining boundary differences. General rectangle
-paint, clip-stack and layer parity remain open.
+clip-byte repair closes the remaining boundary differences. Clipped orthogonal
+paths, polygons and filled polylines now preserve their original contour and AA
+paint clip, making eleven existing failures and eighteen new scaled controls
+exact. Actual rectangle paint, clip-stack and layer parity remain open.
 
 ## Development
 

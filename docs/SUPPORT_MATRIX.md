@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the rectangle clip-byte checkpoint, the 823 current manifest entries contain
-628 exact decoded-pixel references, 168 known-difference renders and 27
+At the orthogonal-clip checkpoint, the 841 current manifest entries contain
+657 exact decoded-pixel references, 157 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -28,9 +28,12 @@ thirteen fresh configurations become exact and one shader control retains known
 paint differences. Rectangle clip bytes now close the remaining YouTube boundary
 differences: all nine variants are exact against their original references.
 Twelve new nonrectangular path configurations are exact across horizontal,
-vertical, corner, opacity and nearly integral clips. Separate lowered-rectangle
-controls retain eleven known differences and one exact configuration; their
-baseline outputs are unchanged. General rectangle paint and clip stacks remain open.
+vertical, corner, opacity and nearly integral clips. Integer orthogonal `path`,
+`polygon` and filled `polyline` now retain their contour and separate AA paint
+clip instead of clipping rectangle bands during lowering. All twelve original
+path-band controls and eighteen new scaled box/notch configurations are exact.
+All 628 prior exact fixture PNGs are unchanged. Actual `rect` paint, paint-server
+bands and general clip stacks retain their separate fidelity limits.
 
 Single clean retained contours now distinguish raw control-polygon convexity
 from sampled-ring convexity. Float sign/turn/reversal classification is charged

@@ -6,9 +6,11 @@ unproved. [PLAN.md](../PLAN.md) owns the current execution queue; this document
 retains chronological hypotheses, source evidence, rejected models and repairs.
 Direct paint and pending-run operations are integrated. Coupled numeric reading and retained-path-point density have landed; all nine
 original Ford variants are now exact. The
-[latest raw-control checkpoint](#raw-control-point-convexity-checkpoint-2026-10-05)
-records native classification, retained failures and validation limits; YouTube
-improves on every frozen variant while remaining inexact.
+[raw-control checkpoint](#raw-control-point-convexity-checkpoint-2026-10-05)
+records native classification and its historical limits. Subsequent strip and
+clip-byte repairs make all nine YouTube variants exact. The current
+[orthogonal-clip checkpoint](#orthogonal-fill-clip-preservation-2026-10-06)
+preserves contours and AA clip ownership through lowering.
 
 ## Initial transition requirements (historical)
 
@@ -4689,3 +4691,39 @@ Complete adapters, observers, captures and run diagnostics stay under ignored
 `artifacts/boundary-clip-20261006/`. The tests, original references and compact
 current measurements are the portable evidence. General rectangle paint,
 successive clip intersections and native cache history remain open.
+
+
+## Orthogonal fill clip preservation (2026-10-06)
+
+The eleven remaining clip-byte controls were integer orthogonal paths in
+fractional nested viewports. Axis-aligned lowering converted them into clipped
+rectangle bands, losing the original contour and separate antialiased paint
+boundary. That bypassed the already-proved analytic clip-mask/paint operation
+route. The repair retains the contour as `SvgPolygonFill` whenever its frame has
+an AA clip, matching the existing rotated/diagonal route. Integer `polygon` and
+filled `polyline` use the same condition. Binary clips keep their existing route;
+actual `rect` paints, paint-server bands and stroke lowering are separate.
+
+All twelve original controls now match their original browser references,
+including the previously exact black-background case. Eleven failures graduate
+without regenerating any reference image. Six CC0 inputs declared before
+production editing add box/notch shapes, .5 scaling and path/polygon/polyline
+spellings at a fractional viewport, each on transparent/white/black. All 54 fresh
+captures are healthy, cleaned and byte-identical in triples. All eighteen new
+configurations are exact. The 975-case retained bank changes only the eleven
+controls; all 628 prior exact PNG identities and every disposition are preserved.
+The expanded bank has 993 cases. All 258 corporate dispositions, all 240 PNG
+identities and every corporate comparison remain unchanged: exact documents 2/27.
+
+Nine focused controls verify retained contour/clip boundaries, six-output parity,
+parser memory/work denial and cancellation after clipped raster preparation,
+including zero retained accounted storage. Four parser characterizations now
+assert original contour points and the separate user/object-bounding-box clip.
+Locked restore, nine-project Release build (zero warnings/errors), all 3,489 tests
+(3,323 core / 160 visual / six FontProbe), all 25 memory scenarios, runtime/symbol
+package and isolated installed-consumer checks, Chrome smoke and artifact-validator
+controls pass. Matching six-input parser/raster work, accounted peaks and PNG
+identities are unchanged. Full local experiments remain under ignored
+`artifacts/rectangle-route-20261006/`; no current-source hash inventory is needed.
+General rectangle paint, successive clip-alpha intersections, cache history and
+corporate fidelity remain open.

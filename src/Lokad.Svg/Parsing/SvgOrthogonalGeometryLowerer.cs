@@ -166,7 +166,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         catch { foreach (SvgGeometry geometry in _geometries.AsSpan()) geometry.Dispose(); throw; }
     }
 
-    /// <summary>Lowers diagonal solid polygons with separated simple contours to retained device points, keeping touching and non-simple shapes rejected.</summary>
+    /// <summary>Lowers solid polygons with separated simple contours to retained device points and a separate paint clip, keeping touching and non-simple shapes rejected.</summary>
     internal SvgParsedGeometry LowerPolygonFill(SvgColor color, bool hasFill, SvgAffineTransform transform, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);

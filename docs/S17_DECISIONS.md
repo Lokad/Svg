@@ -1,19 +1,22 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06: rectangle clip-byte arithmetic makes all nine YouTube variants
-exact against their original references while preserving all nine exact Ford
-PNGs. Both selected logo checkpoints are achieved. [PLAN.md](../PLAN.md) owns the
-current queue; rows 3–7 and S17 retain their general implementation/fidelity exits.
+Updated 2026-10-06: preserving the original orthogonal contour and separate AA
+paint clip closes all eleven former path-band control failures. All eighteen new
+scaled box/notch configurations are exact across path/polygon/filled-polyline
+spellings and backgrounds. Ford and YouTube retain all eighteen exact original
+PNGs. [PLAN.md](../PLAN.md) owns the current queue; rows 3–7 and S17 retain their
+general implementation/fidelity exits.
 
-Current evidence: 823 fixtures = 628 exact + 168 known-difference renders + 27
-rejections across 457 base documents / 366 variants; research remains 59 known
+Current evidence: 841 fixtures = 657 exact + 157 known-difference renders + 27
+rejections across 463 base documents / 378 variants; research remains 59 known
 renders + one rejection. Windows locked restore, nine-project Release build and
-3,314 core + 160 visual + six FontProbe tests (3,480 total) pass. Memory/package
-and installed-consumer evidence remains the validated clip-byte renderer
-checkpoint, including all 25 memory scenarios. The 975-case bank preserves all 614
-prior exact PNGs and dispositions. One existing fixture graduates; twelve fresh
-path configurations and one rectangle configuration are exact. Eleven rectangle
-fast-path controls retain their baseline failures.
+3,323 core + 160 visual + six FontProbe tests (3,489 total) pass. All 25 memory
+scenarios, package/installed-consumer checks, Chrome smoke and artifact-validator
+controls pass. The 993-case bank preserves all 628 prior exact PNG identities and
+all 975 prior dispositions; only the eleven now-exact controls change. Their
+original references are preserved. Matching six-input work/peak ledgers and PNG
+identities are unchanged. Local evidence is under
+`artifacts/rectangle-route-20261006/`.
 
 All 258 corporate cases are executed: 240 render and eighteen are unsupported.
 All 258 references are available: 240 rendered comparisons (**60 exact /
@@ -26,7 +29,8 @@ unchanged. All 258 dispositions and all 240 rendered PNGs are preserved.
 S8 measurement is complete for this first cohort; the S17 target is still unmet.
 
 Native rectangle-mask fringes and all 65,536 byte products prove this shared
-cause. The remaining rectangle paint route, successive clip intersections,
+cause. Orthogonal clipping now preserves those bytes through the shared polygon
+paint route. Actual `rect` paints, paint-server bands, successive clip intersections,
 cache history, general fidelity, representative performance and Linux remain
 open. The capture transport now admits 8,388,608 pixels with a screenshot-only
 64 MiB reply bound; commands/events retain 16 MiB. Next use the complete measured

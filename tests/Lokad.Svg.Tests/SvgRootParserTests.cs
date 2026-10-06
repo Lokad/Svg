@@ -2882,19 +2882,28 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Clips_path_bands_to_their_clip_path_box()
+    public void Preserves_the_path_contour_and_its_clip_path_box()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 0, 4, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
+        Assert.Equal(new SvgColor(255, 0, 0, 255), polygon.Color);
+        Assert.Equal(new SvgDevicePoint[] { new(0, 0), new(8, 0), new(8, 8), new(0, 8) }, polygon.Points);
+        SvgClipBox clip = Assert.IsType<SvgClipBox>(polygon.Clip);
+        Assert.Equal(new SvgClipBox(2, 0, 4, 8), clip);
+        Assert.Equal(SvgClipAntialiasing.All, clip.Antialiasing);
     }
 
     [Fact]
-    public void Clips_path_bands_to_direct_child_clip_path_boxes()
+    public void Preserves_the_path_contour_and_direct_child_clip_path_box()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 0, 4, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
+        Assert.Equal(new SvgDevicePoint[] { new(0, 0), new(8, 0), new(8, 8), new(0, 8) }, polygon.Points);
+        SvgClipBox clip = Assert.IsType<SvgClipBox>(polygon.Clip);
+        Assert.Equal(new SvgClipBox(2, 0, 4, 8), clip);
+        Assert.Equal(SvgClipAntialiasing.All, clip.Antialiasing);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -4512,20 +4521,27 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Passes_full_fraction_clips_on_paths_without_clipping()
+    public void Preserves_full_fraction_clips_on_orthogonal_paths()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='1' height='1'/></clipPath></defs><path d='M 0,0 H 4 V 4 H 0 Z' fill='red' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries).Rectangle);
+        SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
+        Assert.Equal(new SvgColor(255, 0, 0, 255), polygon.Color);
+        Assert.Equal(new SvgDevicePoint[] { new(0, 0), new(4, 0), new(4, 4), new(0, 4) }, polygon.Points);
+        SvgClipBox clip = Assert.IsType<SvgClipBox>(polygon.Clip);
+        Assert.Equal(new SvgClipBox(0, 0, 4, 4), clip);
+        Assert.Equal(SvgClipAntialiasing.All, clip.Antialiasing);
     }
     [Fact]
     public void Clips_a_polygon_to_its_object_bounding_box_clip()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs><polygon points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red' clip-path='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        Assert.Equal(new SvgRectangle(2, 2, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
-        Assert.Equal(new SvgRectangle(2, 4, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[1].Rectangle);
+        SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
+        Assert.Equal(new SvgDevicePoint[] { new(0, 0), new(8, 0), new(8, 4), new(4, 4), new(4, 8), new(0, 8) }, polygon.Points);
+        SvgClipBox clip = Assert.IsType<SvgClipBox>(polygon.Clip);
+        Assert.Equal(new SvgClipBox(2, 2, 4, 4), clip);
+        Assert.Equal(SvgClipAntialiasing.All, clip.Antialiasing);
     }
 
     [Fact]

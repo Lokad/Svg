@@ -31,6 +31,9 @@ There are no missing references or capture gaps. S17 still requires at least 80%
 stratum. YouTube is the selected curved mark; the first cohort is frozen below
 before fresh comparison and further per-document tuning. See [PLAN](../PLAN.md)
 and [the release criteria](S17_DECISIONS.md).
+The orthogonal-fill clip repair preserves all 258 corporate dispositions, all
+240 rendered PNG identities and every measured pixel comparison. It closes
+synthetic path-band failures without changing the 2/27 exact-document result.
 Historical batch counts below retain their dated scope.
 
 The batch history below retains original selections and contemporaneous results.

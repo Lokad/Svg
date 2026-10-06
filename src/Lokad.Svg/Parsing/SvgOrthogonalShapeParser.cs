@@ -70,10 +70,12 @@ internal static class SvgOrthogonalShapeParser
             {
                 SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, "path", context.WorkCounter, context.CancellationToken);
                 bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-                if (!shape.Transform.IsAxisAligned)
+                // AA clips belong to the paint operation. Clipping orthogonal
+                // bands here discards their native boundary bytes and paint route.
+                if (!shape.Transform.IsAxisAligned || frame is { Clip.Antialiasing: not SvgClipAntialiasing.None })
                 {
-                    using SvgOrthogonalGeometryLowering rotatedLowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                    filled = rotatedLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
+                    using SvgOrthogonalGeometryLowering polygonLowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                    filled = polygonLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
                 }
                 else
                 {
@@ -277,10 +279,11 @@ internal static class SvgOrthogonalShapeParser
             SvgOrthogonalGeometryLowering.ValidateSimpleContour(points, elementName, context.WorkCounter, context.CancellationToken);
             shape = context.ResolveShape(fillStyle, reader, true);
             bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-            if (!shape.Transform.IsAxisAligned)
+            // Keep the same contour/clip ownership as the path spelling above.
+            if (!shape.Transform.IsAxisAligned || frame is { Clip.Antialiasing: not SvgClipAntialiasing.None })
             {
-                using SvgOrthogonalGeometryLowering rotatedLowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                filled = rotatedLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
+                using SvgOrthogonalGeometryLowering polygonLowering = new(points, contourEnds, elementName, false, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                filled = polygonLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
             }
             else
             {
