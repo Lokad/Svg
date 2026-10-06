@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g transform='translate(0.25 0.5)'><path d='M1,1 C5,5 11,11 15,15 L15,1 C11,5 5,11 1,15 Z' fill='url(#g)' fill-rule='evenodd'/></g></svg>

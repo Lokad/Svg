@@ -1620,3 +1620,56 @@ the wide NASA-large baseline interval is retained. Every recipe allocates more,
 especially Ford. This mapping repair establishes neither a throughput saving
 nor the representative performance target. Remaining fidelity, profiling and
 Linux require separate evidence.
+
+
+## Authored directed-fill observations (2026-10-06)
+
+Twelve identical recipes compare saved renderer `313ee775` with authored directed
+fill replay. Nine recipes are retained from the previous checkpoint; SimpleX,
+Omega and Google add intended-size workloads. Inputs/options were fixed before
+measurement. Two fresh processes per renderer run eight warmups and three batches,
+in baseline/current then current/baseline order after test, capture, memory and
+package jobs finished. Raw records stay under ignored
+`artifacts/authored-topology-20261006/`. No implementation or report hashes are kept.
+
+Geometry/rectangle/stop/analytic-paint/quad-span sizes remain 256/112/16/24/32 bytes.
+Multi-contour authored fills no longer need a raster admission graph scan. Scene
+normalization and its existing work remain. Replay after topology normalization
+also retains commands for paths that previously discarded them.
+
+| Recipe | Parser work | Work through raster | Accounted peak bytes |
+| --- | --- | --- | --- |
+| simplex | 1,144 → 1,144 | 563,889 → 559,251 | 2,944,612 → 2,944,612 |
+| omega | 3,894 → 3,896 | 166,890 → 103,979 | 1,307,758 → 2,272,808 |
+| google | 1,787 → 1,788 | 160,375 → 121,427 | 887,056 → 888,240 |
+| tiny | 17 → 17 | 22 → 22 | 163,840 → 163,840 |
+| cap-unit | 74 → 74 | 527 → 527 | 163,840 → 163,840 |
+| cubic-meet | 97 → 97 | 2,713 → 2,713 | 237,676 → 237,676 |
+| cubic-slice | 102 → 102 | 7,245 → 7,245 | 216,832 → 216,832 |
+| nasa-small | 877 → 877 | 136,515 → 136,515 | 1,358,584 → 1,358,584 |
+| nasa-large | 1,024 → 1,024 | 1,473,035 → 1,473,035 | 2,442,096 → 2,442,096 |
+| nike | 305 → 305 | 1,229,390 → 1,229,390 | 2,036,496 → 2,036,496 |
+| blur | 2,284 → 2,284 | 1,537,497 → 1,537,497 | 3,328,776 → 3,328,776 |
+| ford | 4,683 → 4,683 | 1,301,440 → 895,344 | 2,588,992 → 2,588,992 |
+
+| Recipe | Baseline ms | Current ms | Baseline allocated bytes | Current allocated bytes |
+| --- | --- | --- | --- | --- |
+| simplex | 13.251–32.379 | 11.454–22.015 | 1,068,916–1,068,916 | 1,047,564–1,047,564 |
+| omega | 12.585–16.281 | 14.150–18.847 | 504,954–504,980 | 568,722–568,748 |
+| google | 4.874–9.263 | 4.967–16.462 | 364,842–365,786 | 367,416–367,442 |
+| tiny | 0.083–0.097 | 0.104–0.202 | 24,784–24,786 | 24,784–24,944 |
+| cap-unit | 0.137–0.178 | 0.168–0.356 | 35,450–35,450 | 35,450–35,607 |
+| cubic-meet | 0.285–0.329 | 0.364–0.642 | 43,690–43,690 | 43,690–43,849 |
+| cubic-slice | 0.398–0.603 | 0.417–0.686 | 47,666–47,666 | 47,666–47,826 |
+| nasa-small | 3.237–4.571 | 3.498–5.222 | 280,648–281,409 | 280,817–281,406 |
+| nasa-large | 20.626–33.588 | 20.620–38.339 | 1,471,012–1,472,617 | 1,471,108–1,472,841 |
+| nike | 15.181–26.663 | 12.901–16.317 | 1,605,409–1,606,500 | 1,605,241–1,606,456 |
+| blur | 20.028–33.349 | 18.490–24.400 | 1,801,313–1,802,835 | 1,801,244–1,802,624 |
+| ford | 17.096–23.625 | 14.828–20.914 | 1,048,040–1,049,873 | 1,048,056–1,049,873 |
+
+Omega uses more retained storage and allocates roughly 64 KiB more per conversion.
+Its conservative accounted peak grows by 965,050 bytes despite less raster work.
+SimpleX allocates less; Google allocates slightly more. Most timing ranges overlap,
+and even unchanged tiny/cubic recipes show substantial process variation. These
+local measurements establish no representative latency or throughput improvement.
+All 25 memory scenarios pass. Wider fidelity, profiling and Linux remain open.

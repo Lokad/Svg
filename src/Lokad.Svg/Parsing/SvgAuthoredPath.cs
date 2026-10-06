@@ -110,11 +110,10 @@ internal sealed class SvgAuthoredPath : IDisposable
                 if (isEvenOdd)
                 {
                     using BudgetedParserList<int> signBuilder = new(budget, SvgMemoryCategory.Surface, workCounter, cancellationToken);
-                    for (int contour = 0; contour < ends.Items.Length; contour++) signBuilder.Add(0);
+                    // The native walker applies parity to directed winding. Keep
+                    // every contour, including zero-area self-crossing rings.
+                    for (int contour = 0; contour < ends.Items.Length; contour++) signBuilder.Add(1);
                     signs = signBuilder.Detach();
-                    long pairs = (long)ends.Items.Length * (ends.Items.Length - 1) / 2;
-                    for (long pair = 0; pair < pairs; pair++) workCounter.Consume(cancellationToken);
-                    SvgContourNesting.ComputeParitySigns(points.Items, ends.Items, signs.Items, false, cancellationToken);
                 }
                 return new(points, ends, quads, cubics, signs, owner);
             }

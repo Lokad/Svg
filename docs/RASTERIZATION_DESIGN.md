@@ -5448,12 +5448,12 @@ backgrounds, while small has twelve differing pixels and intended six on each.
 The exact document count remains five (marks 3/13, wordmarks 2/14), below S17.
 
 Fifty-four corporate PNGs change: 36 improve changed-pixel count, eleven worsen
-and seven retain it. Intended SDL worsens 421/420/395 → 423/422/397 across
-transparent/white/black; intended Omega 3143/3143/1590 → 3150/3150/1597; small
-Party of Changes 1350/1348 → 1351/1349 on transparent/white; large Goodyear
+and seven retain it. Intended SimpleLogin worsens 421/420/395 → 423/422/397 across
+transparent/white/black; intended SG Rotation Leipzig 3143/3143/1590 → 3150/3150/1597; small
+Party of Changes 1350/1348 → 1351/1349 on transparent/white; large Toyota
 17027/16762/16983 → 17031/16766/16987. These measured regressions remain visible.
 Across the eleven worsened variants, maximum alpha error is unchanged and no
-opaque pixels are lost or added. Transparent SDL, Party of Changes and Goodyear
+opaque pixels are lost or added. Transparent SimpleLogin, Party of Changes and Toyota
 alpha mass increases by 20, 3 and 429; Omega's is unchanged. This pattern is
 consistent with residual edge/paint quantization interacting with changed float
 placement. It does not establish correct coverage for those regressions.
@@ -5477,3 +5477,73 @@ topology model stay under ignored artifacts/deferred-root-map-20261006/.
 Reusable tests and current behavior records remain in the existing harness.
 Git identifies implementation; no source, adapter, assembly or report hashes
 are introduced.
+
+
+## Authored directed fill replay (2026-10-06)
+
+Scene normalization still owns admission, paint boxes and clip coordinates.
+Eligible path fills now keep authored raster replay when that normalization merges
+or splits contours. The output representation carries an explicit native-fill
+marker, original directed contours and retained curves. It does not replace scene
+bounds or use/reference admission. Existing numeric and unsupported outcomes stay
+unchanged; there are no document-specific switches.
+
+The native edge builder iterates directed path verbs; the analytic walker applies
+nonzero or parity masks to their accumulated winding. A ring with zero signed area
+can still contain filled lobes. Authored replay therefore keeps such rings in
+single, multi-contour and clipped construction, and assigns every even-odd contour
+a nonzero retention vote. Retained polynomial curves work under either fill rule.
+Multi-contour raster preparation needs no pairwise contact admission scan for this
+representation; normalized payloads retain their existing gates.
+
+The first model broke the exact vertical-retrace fixture by painting its cancelled
+upper region. The uncut helper handled native combination incorrectly: partial
+trimming still appended the incoming edge, while total cancellation left the
+previous edge in storage. Both now consume the incoming edge, and total cancellation
+removes the previous edge. Clipped and uncut preparation share the same rule from
+pinned Skia `SkAnalyticEdgeBuilder::combineVertical`; the duplicate clipped helper
+is removed. Incoming/current live curve state remains outside straight combination.
+
+Eighteen declared mechanism configurations have 54 stable, healthy fresh-process
+captures from Chrome 153.0.8010.52. Sixteen are exact after the repair; both straight
+integer bowties retain three differences. Curved and fractional zero-area bowties,
+vertical retraces, clipped retraces, duplicate cubics, nested quadratic even-odd
+fills and transformed gradient crossings cover the shared route. Eleven formerly
+inexact controls become exact. Four selected CC0 fixtures are separately declared
+and captured twelve times before joining the existing manifest. Those declarations
+followed implementation; they are mechanism controls rather than fresh corporate
+holdouts. Browser values correct three old assertions: curved crossing alpha 130,
+fractional bowtie aggregate alpha 6,261 and clipped fractional crossing alpha 61.
+Original reference images remain frozen.
+
+The full bank executes 1,174 cases: 1,046 fixtures (851 exact, 165 known, 30 rejected),
+36 research probes and 92 legacy Default cases. Every preceding fixture/research
+PNG and outcome is unchanged. Twenty legacy Default PNGs change; their unmatched
+options do not establish fidelity. The complete corporate matrix preserves all 76
+prior exact PNGs and every outcome: 240 render (121 exact, 119 known), eighteen
+UnsupportedFeature rejections. SimpleX and Omega are exact in twelve variants each,
+and Google in nine. Exact documents advance 5 → 8, marks 3/13 and wordmarks 5/14;
+S17 still requires 23/27 and both stratum minima.
+
+Of 108 changed corporate PNGs, 99 improve changed-pixel count. All nine SimpleLogin
+variants worsen: small transparent/white/black 202/200/189 → 211/209/198; intended
+423/422/397 → 429/428/401; large 1057/1049/1013 → 1075/1067/1028. Transparent alpha
+mass changes 2,105 → 2,108, 3,681 → 3,825 and 11,088 → 11,002 respectively. Small
+maximum alpha error improves 60 → 46; intended/large retain 66/64. No opaque pixels
+are lost or added. These residual edge/paint changes remain known differences,
+not proof of native coverage. The width-one cap remains sixteen differences,
+alpha mass 42 and maximum alpha error eleven.
+
+Ten new core cases cover authored ownership after normalization, retained single
+and multi-contour crossings, raw parity votes, cancellation-token preservation,
+tight memory denial/retry and four shapes through all six output APIs. Full locked
+restore, nine-project Release build and 3,664 tests pass, with all 25 memory
+scenarios, pinned Chrome/artifact checks and installed runtime/symbol consumers.
+Twelve matched cost recipes record reduced Ford/Omega/Google raster work and
+Omega's increased memory/allocation in the benchmark record. Representative
+performance, general contour/clip/stroke fidelity and Linux remain open.
+
+Detailed model comparisons, 66 capture diagnostics, ledgers and timing batches
+stay under ignored `artifacts/authored-topology-20261006/`. Test data retain reusable
+inputs, expected images and required oracle provenance. Git identifies code;
+no source, adapter, build or report hashes are introduced.

@@ -397,6 +397,8 @@ internal enum SvgPolygonMapping
     FlattenedCurves,
     /// <summary>Native float open-stroke contours whose directed winding overlaps are retained through scan conversion.</summary>
     NativeStrokeEdges,
+    /// <summary>Authored fill contours replayed in output space with directed winding and retained curves under either fill rule.</summary>
+    NativeFillEdges,
 }
 
 /// <summary>Retains one admitted diagonal solid polygon with separated simple contours and its scene-memory reservation until the scene is disposed.</summary>

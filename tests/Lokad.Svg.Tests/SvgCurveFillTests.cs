@@ -273,22 +273,19 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
-    public void Curved_bowtie_matches_integer_bowtie()
+    public void Curved_bowtie_keeps_authored_crossing_coverage()
     {
-        // R34: flattened collinear cubics cross like their straight twin up to
-        // one half-quantum alpha step at the exact-half pixel: the fan rounds
-        // 127.5 up to 128 while the edges walker truncates to 127 (the banked
-        // diagonal-bowtie oracle reads 127/128 at row 3 with symmetric 144s on
-        // the vertex row 4 under the max-16 ratchet; the row-4 sliver, not any
-        // 130 reading, is the open coincident-event question, and the twin
-        // identity holds everywhere else).
+        // Fresh pinned Chrome 153.0.8010.52 captures record alpha 130 at (3,3)
+        // for these authored cubics. Splitting their flattened crossing into
+        // separate loops loses that native curve event. The normalized polygon
+        // retains its legacy alpha 128; the opaque lobes agree.
         byte[] curved = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z' fill='red'/></svg>", out _, out _);
         byte[] straight = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red'/></svg>", out _, out _);
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(curved, 8, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(curved, 8, 6, 2));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(curved, 8, 4, 2));
-        Assert.Equal(new SvgColor(255, 0, 0, 127), Pixel(curved, 8, 3, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 130), Pixel(curved, 8, 3, 3));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(straight, 8, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(straight, 8, 6, 2));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(straight, 8, 4, 2));
@@ -298,15 +295,15 @@ public sealed class SvgCurveFillTests
     [Fact]
     public void Fractional_self_intersecting_path_paints_union()
     {
-        // R34: flattened self-crossings admit through the same unsigned-union rule.
+        // Authored self-crossings retain their directed winding through clipping.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8.5,8 L8,0 L0,8 Z' fill='red'/></svg>", out int width, out int height);
 
         Assert.Equal(8, width);
         Assert.Equal(8, height);
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 6, 2));
-        // Crossing-adjacent partial coverage at the shared vertex pixel.
-        Assert.Equal(new SvgColor(255, 0, 0, 67), Pixel(pixels, width, 4, 4));
+        // Fresh pinned-browser captures record 61 at this clipped crossing.
+        Assert.Equal(new SvgColor(255, 0, 0, 61), Pixel(pixels, width, 4, 4));
     }
 
     [Fact]

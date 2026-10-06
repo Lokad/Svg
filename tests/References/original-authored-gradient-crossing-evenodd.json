@@ -1,0 +1,25 @@
+{
+  "fixtureId": "original-authored-gradient-crossing-evenodd",
+  "referencePng": "original-authored-gradient-crossing-evenodd.png",
+  "referenceSha256": "2ee51aeb8a4a82f91e74404254078d2e5d87680a306dcf894a0a687539825782",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "Authored directed fill checkpoint, 2026-10-06",
+  "declarationTiming": "Declared after the production edit and before independent capture/comparison."
+}

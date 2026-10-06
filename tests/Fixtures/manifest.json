@@ -9967,6 +9967,106 @@
       "oracleIdentity": "tests/References/original-curve-root-cubic-slice-black.json",
       "referenceSha256": "b9a358cdd23629e5525126926fe23481f27c286ae891acc76f72f70105788302",
       "variantOf": "original-curve-root-cubic-slice-transparent"
+    },
+    {
+      "id": "original-authored-curved-crossing",
+      "path": "original/authored-curved-crossing.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-06",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "177cce1ef6736a40c3e7d4f5bd02c607cde8d788f65ae8d6c96f164a766fd4b1",
+      "materializedSha256": "177cce1ef6736a40c3e7d4f5bd02c607cde8d788f65ae8d6c96f164a766fd4b1",
+      "featureTags": [
+        "geometry",
+        "authored-fill",
+        "retained-curves",
+        "directed-winding"
+      ],
+      "width": 8,
+      "height": 8,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-authored-curved-crossing.json",
+      "referenceSha256": "4c3a3ab01c36334fbc12a16e385b01c98416e90cb64e7dbae90957f3b9e1b3f2"
+    },
+    {
+      "id": "original-authored-duplicate-cubic-evenodd",
+      "path": "original/authored-duplicate-cubic-evenodd.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-06",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "8a6e9074be77d704cf0ae8c5cdb1cce652de88e071a32c0b451b24f3b577d2f1",
+      "materializedSha256": "8a6e9074be77d704cf0ae8c5cdb1cce652de88e071a32c0b451b24f3b577d2f1",
+      "featureTags": [
+        "geometry",
+        "authored-fill",
+        "retained-curves",
+        "directed-winding"
+      ],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-authored-duplicate-cubic-evenodd.json",
+      "referenceSha256": "e304a634e5f14b69cce1a33c15ca75170c237904bc50cbd73929500b73cbe1ee"
+    },
+    {
+      "id": "original-authored-nested-quadratic-evenodd",
+      "path": "original/authored-nested-quadratic-evenodd.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-06",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "d7f648ed37dbd70fe99ddf49285c30184b9fcdd20a9d2373aa5193a95c9ab680",
+      "materializedSha256": "d7f648ed37dbd70fe99ddf49285c30184b9fcdd20a9d2373aa5193a95c9ab680",
+      "featureTags": [
+        "geometry",
+        "authored-fill",
+        "retained-curves",
+        "directed-winding"
+      ],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-authored-nested-quadratic-evenodd.json",
+      "referenceSha256": "bb6209007d2a049118ba6587a07431837464ab528136f3e3ba99ff71e19fb18d"
+    },
+    {
+      "id": "original-authored-gradient-crossing-evenodd",
+      "path": "original/authored-gradient-crossing-evenodd.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-06",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
+      "originalSha256": "155572a70db701f1bdf9029ee1aaf02c53bb90180d47aa0b95f3940a3fbf22b7",
+      "materializedSha256": "155572a70db701f1bdf9029ee1aaf02c53bb90180d47aa0b95f3940a3fbf22b7",
+      "featureTags": [
+        "geometry",
+        "authored-fill",
+        "retained-curves",
+        "directed-winding"
+      ],
+      "width": 16,
+      "height": 16,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-authored-gradient-crossing-evenodd.json",
+      "referenceSha256": "2ee51aeb8a4a82f91e74404254078d2e5d87680a306dcf894a0a687539825782"
     }
   ]
 }

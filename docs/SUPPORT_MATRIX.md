@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the retained-curve root-mapping checkpoint, the 1,042 manifest entries contain
-847 exact decoded-pixel references, 165 known-difference renders and 30
+At the authored directed-fill checkpoint, the 1,046 manifest entries contain
+851 exact decoded-pixel references, 165 known-difference renders and 30
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -17,18 +17,17 @@ declared entities or defaults are loaded. Original byte encodings and structural
 limits are preserved across root parsing, font discovery and scale probing.
 The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
 27 cases to rendering and nine Target cases to the existing unsupported `marker`
-style gate. All previous PNGs are unchanged. The complete frozen matrix has
-240 rendered comparisons (73 exact, 167 known differences) and eighteen
-independently captured renderer rejections. Ford, ROC HCVS, Artsy, YouTube and
-NASA are exact in every declared variant: 5/27 documents, marks 3/13 and
-wordmarks 2/14. Final retained cubic/quadratic controls and curve endpoints use
-separate native float multiply/add operations. All 844 prior exact fixture PNGs
-and 70 exact corporate PNGs are preserved. Three fresh cubic-slice configurations
-are exact, three fractional cubic-meet controls retain ten differences, and three
-anisotropic quadratic controls retain the non-uniform scaling gate. Known large
-SDL, SG Rotation, Party of Changes and Pepsi variants worsen. General root/affine
-mapping and event fidelity remain open; exact NASA pixels do not prove complete
-mapped-coordinate parity.
+style gate. At that checkpoint, previous rendered PNGs remained unchanged.
+The complete frozen matrix has
+240 rendered comparisons (121 exact, 119 known differences) and eighteen
+independently captured renderer rejections. Ford, SimpleX, Omega, ROC HCVS, Artsy,
+YouTube, NASA and Google are exact in every declared variant: 8/27 documents,
+marks 3/13 and wordmarks 5/14. Eligible authored fills preserve directed winding
+and retained curves after scene normalization, under either fill rule. Root/group
+placement composes before float rounding. Scene bounds, paint coordinates, clips
+and admission retain their existing contracts. All prior exact fixture/corporate
+PNGs are preserved; nine SimpleLogin variants worsen. General event and native
+coordinate fidelity remain open.
 
 Straight solid open strokes retain native float normals, endpoint miter replacement
 and pivot inner joins through directed nonzero winding. Intersecting rings cannot

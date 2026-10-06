@@ -15,7 +15,7 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
     /// <remarks>Both passes charge clipping, validation and traversal. Straight verbs construct edges in bitmap coordinates and then translate to canvas fixed space. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Rational convex edges retain live state; polynomial convex curves preserve their pre-stepped gate. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
-    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
+    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
     {
         eligible = false;
         int width = xEnd - xStart;
@@ -45,7 +45,7 @@ internal ref partial struct SvgAnalyticCoverage
                     int end = ends[contour];
                     priorEnd = end;
                     ChargeClippedSetupWork(ref setupWork, end - start + 1L, maximumWork, token);
-                    if (end - start < 3 || (hasVotes && votes[contour] == 0) || TwiceArea(points[start..end]) == 0) continue;
+                    if (end - start < 3 || (hasVotes && votes[contour] == 0) || (mapping != SvgPolygonMapping.NativeFillEdges && TwiceArea(points[start..end]) == 0)) continue;
                     while (quadCursor < quads.Length && quads[quadCursor].Contour < contour) { ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token); quadCursor++; }
                     while (cubicCursor < cubics.Length && cubics[cubicCursor].Contour < contour) { ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token); cubicCursor++; }
                     int quadEnd = quadCursor;
@@ -127,7 +127,7 @@ internal ref partial struct SvgAnalyticCoverage
                                                 edge.LowerY += origin.Y << 16;
                                                 edgeWork += 5;
                                             }
-                                            AddClippedLine(kept, edge);
+                                            if (!CombineVertical(edge, kept)) kept.Add(edge);
                                         }
                                         break;
                                     case SvgAnalyticClipKind.Quad:
@@ -188,35 +188,5 @@ internal ref partial struct SvgAnalyticCoverage
         static SvgAnalyticClipPoint ToClipPoint(SvgDevicePoint point) => new((float)point.X, (float)point.Y);
         static SvgAnalyticClipPoint ToLocalClipPoint(SvgDevicePoint point, SvgCpuBitmapOrigin origin) => new((float)(point.X - origin.X), (float)(point.Y - origin.Y));
 
-        // Projected vertical lines can trim or cancel earlier projected lines.
-        // Unlike the legacy uncut helper, both partial and total combinations
-        // consume the incoming edge; a total combination removes the prior one.
-        static void AddClippedLine(List<AnalyticEdge> edges, AnalyticEdge edge)
-        {
-            if (edge.DX == 0 && edges.Count > 0)
-            {
-                AnalyticEdge last = edges[^1];
-                if (last.InitialCurveCount == 0 && last.DX == 0 && edge.X == last.X)
-                {
-                    if (edge.Winding == last.Winding)
-                    {
-                        if (edge.LowerY == last.UpperY) { last.UpperY = edge.UpperY; last.Y = last.UpperY; return; }
-                        if (SkAbs32(edge.UpperY - last.LowerY) < 0x100) { last.LowerY = edge.LowerY; return; }
-                    }
-                    else if (SkAbs32(edge.UpperY - last.UpperY) < 0x100)
-                    {
-                        if (SkAbs32(edge.LowerY - last.LowerY) < 0x100) { edges.RemoveAt(edges.Count - 1); return; }
-                        if (edge.LowerY < last.LowerY) { last.UpperY = edge.LowerY; last.Y = last.UpperY; return; }
-                        last.UpperY = last.LowerY; last.Y = last.UpperY; last.LowerY = edge.LowerY; last.Winding = edge.Winding; return;
-                    }
-                    else if (SkAbs32(edge.LowerY - last.LowerY) < 0x100)
-                    {
-                        if (edge.UpperY > last.UpperY) { last.LowerY = edge.UpperY; return; }
-                        last.LowerY = last.UpperY; last.UpperY = edge.UpperY; last.Y = last.UpperY; last.Winding = edge.Winding; return;
-                    }
-                }
-            }
-            edges.Add(edge);
-        }
     }
 }

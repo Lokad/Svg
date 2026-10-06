@@ -15,17 +15,19 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current authored fill mapping checkpoint
+## Current authored directed-fill checkpoint
 
-Eligible path fills retain authored commands and compose root/group placement
-before float point/control rounding. The bank has 1,042 fixtures (847 exact,
-165 known, 30 rejected), 36 research probes and 92 legacy Default cases. Every
-fixture/research output and outcome is preserved. Six legacy Default PNGs change
-without a matching-options fidelity claim. The corporate matrix has 76 exact
-variants; UAAR adds three exact large variants, while its smaller variants remain
-inexact. Eleven known variants worsen. Original references stay frozen; detailed
-comparisons remain under ignored `artifacts/deferred-root-map-20261006/`.
-Source edits alone require no metadata refresh.
+Eligible path fills retain authored directions and curve verbs after scene
+normalization. Zero signed-area crossings and raw even-odd contours use directed
+analytic walking. Partial vertical cancellation consumes the incoming edge;
+total cancellation removes the previous edge. The bank has 1,046 fixtures (851
+exact, 165 known, 30 rejected), 36 research probes and 92 legacy Default cases.
+All prior fixture/research PNGs and outcomes are unchanged. Four new captured
+regressions are exact. Twenty legacy Default PNGs change without a matching-
+options fidelity claim. Corporate comparisons are 121 exact / 119 known; SimpleX,
+Omega and Google join the five exact documents. All nine SimpleLogin variants
+worsen. Original references remain frozen. Detailed comparisons stay under
+ignored `artifacts/authored-topology-20261006/`; code edits require no hash refresh.
 
 ## Frozen corporate cohort
 
@@ -41,14 +43,15 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 240 rendered comparisons (76 exact, 164 known differences)
+all 258 references: 240 rendered comparisons (121 exact, 119 known differences)
 and eighteen renderer rejections. No variants lack references. All nine variants
-of YouTube, Ford, ROC HCVS, Artsy and NASA are now exact. The YouTube PNGs retain
+of YouTube, Ford, ROC HCVS, Artsy and NASA remain exact. SimpleX, Omega and Google
+are now exact in all twelve/twelve/nine variants respectively. The YouTube PNGs retain
 stable healthy capture triples. `inv-027-native-route.json`
 retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
-Ford, ROC HCVS, Artsy, YouTube and NASA are exact in every variant (5/27). Known
+Eight documents are exact in every frozen variant (8/27). Known
 differences remain measured against the original images. The earlier native open-stroke
 construction improved all nine Rede Manchete variants, with no prior mismatch
 count increase and all 70 exact corporate PNGs preserved. Six original research

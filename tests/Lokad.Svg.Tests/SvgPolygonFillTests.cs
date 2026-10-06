@@ -722,16 +722,14 @@ public sealed class SvgPolygonFillTests
     [Fact]
     public void Fractional_bowtie_paints_union()
     {
-        // R34: the fractional bowtie paints like its integer twin through the
-        // same unsigned-union rule.
+        // A zero signed-area authored ring still paints both filled lobes.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0.5,0.5 L7.5,7.5 L7.5,0.5 L0.5,7.5 Z' fill='red'/></svg>", out _, out _);
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 2));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
-        // Coverage quantization walk over the analytic 6247.5; the loops share only
-        // the crossing point, so no coverage doubles.
-        Assert.Equal(6260, AlphaSum(pixels));
+        // Aggregate alpha from three stable pinned Chrome 153.0.8010.52 captures.
+        Assert.Equal(6261, AlphaSum(pixels));
     }
 
     [Fact]

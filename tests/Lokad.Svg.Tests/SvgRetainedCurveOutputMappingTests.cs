@@ -5,6 +5,29 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgRetainedCurveOutputMappingTests
 {
     [Theory]
+    [InlineData("<path fill='red' d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z'/>")]
+    [InlineData("<path fill='red' fill-rule='evenodd' d='M2,2 C14,2 14,14 2,14 Z M2,2 C14,2 14,14 2,14 Z'/>")]
+    [InlineData("<path fill='red' fill-rule='evenodd' d='M1,1 Q15,1 15,15 L1,15 Z M5,5 Q11,5 11,11 L5,11 Z'/>")]
+    [InlineData("<defs><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g transform='translate(.25 .5)'><path fill='url(#g)' fill-rule='evenodd' d='M1,1 C5,5 11,11 15,15 L15,1 C11,5 5,11 1,15 Z'/></g>")]
+    public async Task Authored_crossings_and_even_odd_curves_preserve_six_output_parity(string body)
+    {
+        byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'>" + body + "</svg>");
+        byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] destination = new byte[expected.Length];
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream stream = new();
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, stream.ToArray());
+        Assert.Equal(expected, (await SvgConverter.ConvertToPngAsync(input, SvgRenderOptions.Default, CancellationToken.None)).ToArray());
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream asyncStream = new();
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, asyncStream.ToArray());
+    }
+
+    [Theory]
     [InlineData("M4.137 33.256 C20.619 21.987 33.187 2.135 58.813 4.785 C78.919 12.678 84.013 31.784 66.417 37.161 L21.913 41.317 Z")]
     [InlineData("M8.137 35.319 Q46.913 2.137 83.619 35.319 Q48.137 49.619 8.137 35.319 Z")]
     [InlineData("M-8.137 33.256 C20.619 21.987 33.187 -7.135 58.813 4.785 C108.919 12.678 84.013 61.784 66.417 57.161 Z")]

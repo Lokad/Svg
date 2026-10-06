@@ -556,14 +556,10 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
         if (kept != ends.Length) Array.Resize(ref ends, kept);
 
-        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget, out bool separationRetainsTopology);
-        // A topology rewrite produces a different retained contour graph. Its
-        // original commands cannot replace that graph during final mapping.
-        bool retainsAuthoredTopology = element.Presentation.HasFill && separationRetainsTopology && result.Geometries.Length == 1
-            && result.Geometries[0].Polygon.ContourEnds.Length == builder.ContourCount
-            && result.Geometries[0].Polygon.QuadSpans.Length == recorded.Length
-            && result.Geometries[0].Polygon.CubicSpans.Length == recordedCubics.Length;
-        if (retainsAuthoredTopology)
+        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
+        // Scene normalization still owns admission and paint coordinates. Raster
+        // replay keeps authored directions, including crossings and retraces.
+        if (element.Presentation.HasFill && result.Geometries.Length == 1)
         {
             OwnedParserArray<SvgAuthoredPathCommand> commands = authored.Detach();
             try { result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.Create(commands, deviceMap, budget) }; }
@@ -1553,7 +1549,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Validated separated contour storage with resolved combination weights and its scene reservation, ready for paint-specific retention. The reservation transfers to the retained fill.</summary>
-    private readonly record struct SeparatedContours(SvgDevicePoint[] Points, int[] Ends, int[] Signs, SvgQuadSpan[] Spans, SvgCubicSpan[] CubicSpans, SvgPolygonMapping Mapping, RenderBudget.BudgetReservation? SceneReservation, bool RetainsAuthoredTopology);
+    private readonly record struct SeparatedContours(SvgDevicePoint[] Points, int[] Ends, int[] Signs, SvgQuadSpan[] Spans, SvgCubicSpan[] CubicSpans, SvgPolygonMapping Mapping, RenderBudget.BudgetReservation? SceneReservation);
 
     /// <summary>Reserves exact scene storage for retained contour and span arrays before allocation, returning null when nothing is retained.</summary>
     private static RenderBudget.BudgetReservation? ReserveScene(int pointCount, int endCount, int signCount, int spanCount, int cubicSpanCount, RenderBudget budget)
@@ -1649,7 +1645,6 @@ internal ref struct SvgOrthogonalGeometryLowering
         RenderBudget.BudgetReservation? reservation = ReserveScene(mapped.Count, ends.Length, ends.Length, quadSpans.Length, cubicSpans.Length, budget);
         try
         {
-            bool retainsAuthoredTopology = true;
             SvgDevicePoint[] retained = mapped.AsSpan().ToArray();
             ValidateDeviceRange(retained);
             int[] weldedEnds = new int[ends.Length];
@@ -1702,7 +1697,6 @@ internal ref struct SvgOrthogonalGeometryLowering
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
             if (SvgContourNesting.MergeIdenticalContours(retained, ends, _workCounter, out SvgDevicePoint[] mergedPoints, out int[] mergedEnds, _cancellationToken))
             {
-                retainsAuthoredTopology = false;
                 quadSpans = Array.Empty<SvgQuadSpan>();
                 cubicSpans = Array.Empty<SvgCubicSpan>();
                 reservation?.Dispose();
@@ -1752,7 +1746,6 @@ internal ref struct SvgOrthogonalGeometryLowering
                 }
                 if (resolvedUnions)
                 {
-                    retainsAuthoredTopology = false;
                     reservation?.Dispose();
                     reservation = ReserveScene(splitPoints.Count, splitEnds.Count, splitEnds.Count, quadSpans.Length, cubicSpans.Length, budget);
                     retained = splitPoints.AsSpan().ToArray();
@@ -1772,7 +1765,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 signs[0] = 1;
                 signs[1] = -1;
             }
-            return new SeparatedContours(retained, ends, signs, quadSpans, cubicSpans, mapping, reservation, retainsAuthoredTopology);
+            return new SeparatedContours(retained, ends, signs, quadSpans, cubicSpans, mapping, reservation);
         }
         catch
         {
@@ -1790,16 +1783,10 @@ internal ref struct SvgOrthogonalGeometryLowering
     /// <summary>Retains one polygon fill carrying translated quadratic spans into separation.</summary>
     private SvgParsedGeometry FinishPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgColor color, bool hasFill, SvgPolygonMapping mapping, SvgViewportFrame? frame, RenderBudget budget)
     {
-        return FinishPolygonFill(mapped, ends, quadSpans, cubicSpans, color, hasFill, mapping, frame, budget, out _);
-    }
-
-    private SvgParsedGeometry FinishPolygonFill(BudgetedParserList<SvgDevicePoint> mapped, int[] ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgColor color, bool hasFill, SvgPolygonMapping mapping, SvgViewportFrame? frame, RenderBudget budget, out bool retainsAuthoredTopology)
-    {
         ArgumentNullException.ThrowIfNull(mapped);
         ArgumentNullException.ThrowIfNull(ends);
         ArgumentNullException.ThrowIfNull(budget);
         SeparatedContours separated = PrepareSeparatedContours(mapped, ends, quadSpans, cubicSpans, mapping, budget, false);
-        retainsAuthoredTopology = separated.RetainsAuthoredTopology;
         return RetainPolygonFill(separated.Points, separated.Ends, separated.Signs, separated.Spans, separated.CubicSpans, color, hasFill, _isEvenOdd, separated.Mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, separated.SceneReservation, budget);
     }
 
