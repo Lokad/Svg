@@ -1511,15 +1511,14 @@
       "-I",
       "C:\\Users\\JoannesVermorel\\code\\svg\\artifacts\\cubic-native-tip-20261005\\native"
     ],
-    "sources": {
-      "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkAnalyticEdge.cpp": "27420132d6c3560e32118f9dc0fc3e5cce4fd421f3da7695634e23dd38f5d963",
-      "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkLineClipper.cpp": "48eff4d3d08449677618dcfeb4887dee172c81ea4299411c3c7d641d61baaf4a",
-      "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkBezierCurves.cpp": "dae94574f95b69e252add33f24296d0cc86d3fcaa518e34f8ff89ed6c4db309c",
-      "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkCubics.cpp": "d05c07ad527d4133c677446ef5e3b00826777e606a00998cdb3abe7530bc65bf",
-      "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkQuads.cpp": "86a8b996c61bf7bbe2aa1d0c6815647ce08cd25a2f11d7fce493c1aae377ebd4",
-      "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkFloatingPoint.cpp": "36e1ab6f637f737b5ddbce88cdba5e9536287d40a015932db4c81ee9f63eb09b",
-      "artifacts\\cubic-native-tip-20261005\\native\\native-walk.inc": "2a909d042de6d9b072d2e2f8aeb9076f2ef4c28668389874135bcfb4e6c6fbce"
-    },
+    "sources": [
+      "src/core/SkAnalyticEdge.cpp",
+      "src/core/SkLineClipper.cpp",
+      "src/core/SkBezierCurves.cpp",
+      "src/core/SkCubics.cpp",
+      "src/core/SkQuads.cpp",
+      "src/core/SkFloatingPoint.cpp"
+    ],
     "walkExtraction": {
       "Pin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
       "SourceFiles": [
