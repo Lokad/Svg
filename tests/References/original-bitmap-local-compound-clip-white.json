@@ -1,0 +1,51 @@
+{
+  "fixtureId": "original-bitmap-local-compound-clip-white",
+  "referencePng": "original-bitmap-local-compound-clip-white.png",
+  "referenceSha256": "f0796ffcc937cbf35bf5c21298924905ad977cd2352b618d6f27e129091347b3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 768,
+    "height": 384,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "dcf6e0fc5e621f529ca077d909bd7eb375cac043e1018592b4909d6e66ab9be2",
+  "captureSha256": [
+    "f0796ffcc937cbf35bf5c21298924905ad977cd2352b618d6f27e129091347b3",
+    "f0796ffcc937cbf35bf5c21298924905ad977cd2352b618d6f27e129091347b3",
+    "f0796ffcc937cbf35bf5c21298924905ad977cd2352b618d6f27e129091347b3"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "candidateSha256": "042a401295e8f6fd5502dfa414eddf87d2c6d61814304a1c3dd8a8bf65dfcf5a",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 768,
+    "minimumMismatchY": 384,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
+}

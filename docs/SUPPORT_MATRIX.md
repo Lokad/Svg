@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the native-gradient checkpoint, the 957 current manifest entries contain
-803 exact decoded-pixel references, 127 known-difference renders and 27
+At the bitmap-local straight-edge checkpoint, the 969 manifest entries contain
+812 exact decoded-pixel references, 130 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -18,9 +18,18 @@ limits are preserved across root parsing, font discovery and scale probing.
 The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
 27 cases to rendering and nine Target cases to the existing unsupported `marker`
 style gate. All previous PNGs are unchanged. The complete frozen matrix has
-240 rendered comparisons (66 exact, 174 known differences) and eighteen
-independently captured renderer rejections. Ford, ROC HCVS and YouTube are exact in
-every declared variant: 3/27 documents, marks 2/13 and wordmarks 1/14.
+240 rendered comparisons (70 exact, 170 known differences) and eighteen
+independently captured renderer rejections. Ford, ROC HCVS, Artsy and YouTube are
+exact in every declared variant: 4/27 documents, marks 3/13 and wordmarks 1/14.
+
+Straight-edge construction clips in the owning bitmap's coordinates while
+retaining SVG clip bounds separately. Finite polygon root maps use native float
+multiply/add. Artsy's remaining four variants become exact; all 803 prior exact
+fixture PNGs and 66 prior exact corporate PNGs are unchanged. Float rounding also
+creates proper crossings in two generated stroke probes, which worsen through
+the existing fallback. Those differences and small corporate mismatch increases
+remain measured. Retained curves and the proper-crossing guard are unchanged;
+general stroke, curve and clip fidelity remain open.
 
 Straight dash endpoints now retain native float interpolation. Nonzero orthogonal
 contour sets without retained spans use signed-winding analytic walking through
@@ -92,7 +101,7 @@ once and cached across raster contexts, preserving genuine convex routes and
 declined-hint fallback. The 75 native vectors match; twelve independent controls
 and one existing fractional shoulder become exact. All nine Ford variants retain
 exact PNG identity. Ford and YouTube now complete both selected checkpoints;
-the complete corporate matrix has 240 fidelity comparisons and three verified
+the complete corporate matrix has 240 fidelity comparisons and four verified
 exact documents. All eighteen renderer rejections have independent references.
 General mapped curve/paint events remain open.
 

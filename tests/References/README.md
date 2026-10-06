@@ -25,13 +25,15 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 240 rendered comparisons (66 exact, 174 known differences)
+all 258 references: 240 rendered comparisons (70 exact, 170 known differences)
 and eighteen renderer rejections. No variants lack references. All nine variants
-of YouTube, Ford and ROC HCVS are now exact. The YouTube PNGs retain
+of YouTube, Ford, ROC HCVS and Artsy are now exact. The YouTube PNGs retain
 stable healthy capture triples. `inv-027-native-route.json`
 retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
-Ford, ROC HCVS and YouTube are exact in every variant (3/27).
+Ford, ROC HCVS, Artsy and YouTube are exact in every variant (4/27). Known
+differences remain measured against the original images, including increases
+from float mapping and generated stroke crossings.
 The capture script and VisualDiff `--cohort` command reproduce the full matrix;
 see [the oracle instructions](../../docs/ORACLE.md#frozen-corporate-captures).

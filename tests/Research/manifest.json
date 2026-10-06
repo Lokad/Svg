@@ -247,13 +247,13 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 20,
-        "maximumChannelError": 27,
-        "maximumAlphaError": 27,
-        "alphaChangedPixelCount": 20,
-        "minimumMismatchX": 3,
+        "changedPixelCount": 58,
+        "maximumChannelError": 15,
+        "maximumAlphaError": 15,
+        "alphaChangedPixelCount": 58,
+        "minimumMismatchX": 0,
         "minimumMismatchY": 2,
-        "maximumMismatchX": 12,
+        "maximumMismatchX": 15,
         "maximumMismatchY": 12
       },
       "oracle": {
@@ -328,16 +328,16 @@
       "width": 16,
       "height": 16,
       "candidateError": "UnsupportedFeature",
-    "admittedRendering": {
-      "changedPixelCount": 59,
-      "maximumChannelError": 26,
-      "maximumAlphaError": 26,
-      "alphaChangedPixelCount": 59,
-      "minimumMismatchX": 0,
-      "minimumMismatchY": 2,
-      "maximumMismatchX": 15,
-      "maximumMismatchY": 12
-    },
+      "admittedRendering": {
+        "changedPixelCount": 15,
+        "maximumChannelError": 15,
+        "maximumAlphaError": 15,
+        "alphaChangedPixelCount": 15,
+        "minimumMismatchX": 3,
+        "minimumMismatchY": 2,
+        "maximumMismatchX": 11,
+        "maximumMismatchY": 12
+      },
       "oracle": {
         "referencePng": "references/odd-stroke-round-join-16x16.png",
         "referenceSha256": "8301ad9f963232250428286cac7ffc6e744e39d7d249402e557643ee6637357b",
@@ -1631,7 +1631,14 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
       "sourceSha256": "02d5b872d3cd593262d516b86b2758f371539d7094abe312112c25956b47451f",
-      "featureTags": ["geometry", "stroke", "bevel", "join", "coverage", "calibration"],
+      "featureTags": [
+        "geometry",
+        "stroke",
+        "bevel",
+        "join",
+        "coverage",
+        "calibration"
+      ],
       "width": 64,
       "height": 64,
       "admittedRendering": {
@@ -1676,15 +1683,15 @@
       "width": 64,
       "height": 64,
       "admittedRendering": {
-        "changedPixelCount": 79,
-        "maximumChannelError": 7,
-        "maximumAlphaError": 7,
-        "alphaChangedPixelCount": 79,
-        "minimumMismatchX": 5,
+        "changedPixelCount": 212,
+        "maximumChannelError": 23,
+        "maximumAlphaError": 23,
+        "alphaChangedPixelCount": 212,
+        "minimumMismatchX": 4,
         "minimumMismatchY": 1,
-        "maximumMismatchX": 58,
+        "maximumMismatchX": 59,
         "maximumMismatchY": 42,
-        "alphaErrorMass": 275
+        "alphaErrorMass": 2484
       },
       "oracle": {
         "referencePng": "references/miter-join-acute-64x64.png",

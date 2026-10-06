@@ -1318,3 +1318,56 @@ Raw ledgers, allocation traffic and process orders remain under ignored
 `artifacts/gradient-coordinates-20261006/`. Git identifies implementation;
 input/output identities protect measured assets. No source/build fingerprints
 are recorded. Linux and representative performance remain open.
+
+## Bitmap-local straight edges and float root mapping (2026-10-06)
+
+Matched against retained `8ed114a9` on Windows x64 / .NET 10.0.12. Thirty-four
+recipes retain the previous 29 controls and add four fresh straight-edge/stroke
+controls plus intended Artsy. All parser ledgers and scene value sizes are
+unchanged: geometry 248, rectangle 112, gradient stop 16 and analytic paint
+24 bytes. The clip context adds two origin coordinates as an immutable value,
+without a heap owner. Both construction passes charge local point mapping and
+kept fixed-edge translation. Twelve cumulative raster ledgers increase:
+
+| Input | Work through raster, baseline → current | Increase |
+| --- | ---: | ---: |
+| ford | 1301213 → 1301233 | 20 |
+| dense | 32761743 → 33341618 | 579875 |
+| native-stop | 73300835 → 73348402 | 47567 |
+| youtube-intended | 928430 → 928684 | 254 |
+| youtube-large | 3026899 → 3027397 | 498 |
+| greek-flag | 836502 → 837813 | 1311 |
+| inv-001-intended | 138562 → 138940 | 378 |
+| inv-003-intended | 6366292 → 6426168 | 59876 |
+| bitmap-local-straight | 583289 → 583673 | 384 |
+| bitmap-local-compound | 322378 → 322723 | 345 |
+| float-polygon | 702209 → 702608 | 399 |
+| inv-020-intended | 4905507 → 4909892 | 4385 |
+
+The other 22 work ledgers are unchanged. Thirty-three accounted peaks are
+unchanged. Artsy decreases 4,854,953 → 4,854,913 bytes, matching two copies of
+the PNG's 35,129 → 35,109-byte difference. All 25 memory scenarios pass;
+there is no added scene/edge allocation owner.
+
+Two fresh-process pairs run sequentially in opposite order, with eight warmups
+and three measured batches per recipe. Cells are median milliseconds per
+conversion. The table shows the new controls and selected existing paths;
+all 34 recipes, allocation traffic and exact batch data remain under ignored
+`artifacts/corporate-edges-20261006/`. SDL and several unchanged paths show large
+variation between processes on the shared host. These measurements do not
+establish representative throughput or a causal performance regression.
+
+| Input | Pair 1 baseline | Pair 1 current | Pair 2 current | Pair 2 baseline |
+| --- | ---: | ---: | ---: | ---: |
+| ford | 28.226 | 21.312 | 23.679 | 18.591 |
+| inv-003-intended | 170.450 | 173.486 | 276.132 | 161.309 |
+| shader-coordinate-linear | 21.067 | 21.757 | 20.422 | 20.402 |
+| bitmap-local-straight | 7.587 | 7.934 | 7.490 | 7.292 |
+| bitmap-local-compound | 6.354 | 6.721 | 5.951 | 5.978 |
+| float-polygon | 9.228 | 8.874 | 8.841 | 7.888 |
+| float-stroke | 0.689 | 0.607 | 0.555 | 0.537 |
+| inv-020-intended | 47.066 | 50.035 | 46.485 | 44.931 |
+
+Git identifies implementation; input/output identities protect measured assets.
+No source/build fingerprints are recorded. Linux and representative performance
+remain open.

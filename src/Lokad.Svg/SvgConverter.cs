@@ -17,7 +17,7 @@ public static class SvgConverter
 
         /// <summary>Gets bordered construction when complete mapped path/control bounds escape this bitmap or the SVG clip.</summary>
         internal SvgAnalyticClipContext? GetConstructionClip(SvgCpuRasterContext context)
-            => ClipContainsPath && CompleteBounds.IsContainedBy(context.BitmapClip) ? null : new(GetBitmapClip(context));
+            => ClipContainsPath && CompleteBounds.IsContainedBy(context.BitmapClip) ? null : new(GetBitmapClip(context), new(context.BitmapClip.Left, context.BitmapClip.Top));
 
         /// <summary>Keeps bitmap walking distinct from whole-path storage and exclusively owned painting.</summary>
         internal SvgAnalyticScanWindow GetScanWindow(SvgCpuRasterContext context)
@@ -527,8 +527,8 @@ public static class SvgConverter
                 for (int index = 0; index < points.Length; index++)
                 {
                     if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double edgeX = mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
-                    double edgeY = mapping == SvgPolygonMapping.QuarterEdges ? MapStraightPolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
+                    double edgeX = mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges ? MapStraightPolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
+                    double edgeY = mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges ? MapStraightPolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
                     mapped[index] = new SvgDevicePoint(edgeX, edgeY);
                     if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
                     if (edgeX < left) left = edgeX;
@@ -1502,7 +1502,11 @@ public static class SvgConverter
 
         static double MapStraightPolygonEdge(double value, double scale, double offset)
         {
-            return MapEdge(value, scale, offset);
+            double mapped = MapEdge(value, scale, offset);
+            // SkMatrix::Scale_pts narrows each operand and rounds the product
+            // before adding translation. Retained curves keep their own gate.
+            float native = (float)value * (float)scale + (float)offset;
+            return float.IsFinite(native) ? native : mapped;
         }
 
         static int ClampFloor(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Floor(value));

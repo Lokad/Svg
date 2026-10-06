@@ -5010,3 +5010,54 @@ are in BENCHMARKS. General focal/conical and multistop arithmetic, broader affin
 instance precision, remaining geometry/clip events, cache history, representative
 performance, Linux and S17 remain open. Git identifies implementation; no source,
 binary, adapter or package fingerprints are added.
+
+## Bitmap-local straight edges and float root mapping (2026-10-06)
+
+The intended and large Artsy browser captures were traced again and match their
+original reference PNG bytes. Authored path points match the browser's float
+points; the remaining differences arise after root mapping and context clipping.
+Pinned `SkMatrix::Scale_pts` narrows operands, rounds the float product and then
+adds translation. The production root map now follows this arithmetic for
+QuarterEdges and FiniteEdges. Non-finite float maps keep the validated double
+fallback; retained curve mapping keeps its existing gate.
+
+Straight verbs in clipped construction now translate to the owning bitmap's
+coordinates before native line clipping and fixed-edge construction, then return
+fixed edges to canvas space. `SvgAnalyticClipContext` carries the bitmap origin
+separately from its bounds: an SVG clip may narrow the latter without moving the
+bitmap. Retained quad/cubic verbs keep their earlier construction. Two bounded
+passes charge local mapping and fixed-edge translation, retain the existing
+edge reservations and release them on work/memory denial or cancellation.
+The context is an immutable value with no heap owner.
+
+Both operations are needed for Artsy. Bitmap-local clipping closes intended
+transparent/white 156 → zero; float root mapping closes large transparent/white
+10 → zero. Its five earlier exact variants remain unchanged. The frozen cohort
+now has 70 exact variants, 170 known differences and eighteen rejections, with
+Ford, ROC HCVS, Artsy and YouTube exact in every variant: 4/27 documents.
+All 66 preceding exact corporate PNGs remain unchanged. Twenty-seven rendered
+PNGs change, with some known counts increasing; the other 213 are unchanged.
+No original reference, membership, option or tolerance changes.
+
+The old 1,101-case bank preserves every outcome and every fixture PNG. Six known
+research and ten legacy Default PNGs change. Float rounding creates tiny proper
+crossings in generated stroke outlines: fractional round joins worsen 20 → 58
+changed pixels and acute miter joins worsen 79 → 212 through the existing
+fallback. This exposes a generated-stroke/topology limitation. An isolated model
+allowing these crossings through the walker worsened them further to 70 and
+747 pixels respectively and is rejected. The production crossing guard remains.
+
+Four independently declared SVG controls have twelve configurations and 36
+healthy, cleaned, stable fresh-process browser captures. Nine configurations
+are exact and three stroke cases retain 120/121/117 differences on both baseline
+and current renderer. They are preservation controls, not discriminating evidence
+or graduations. Four new core cases cover six-output parity, an SVG clip narrowed
+inside its bitmap, bounded work/memory and cancellation cleanup. The expanded
+bank has 1,113 cases; full tests and memory/delivery checks pass. Thirty-four
+matched work/peak/timing recipes are summarized in BENCHMARKS.
+
+Detailed traces, rejected models and run diagnostics remain under ignored
+`artifacts/corporate-edges-20261006/`. Git identifies implementation; no own-code
+or build fingerprints are recorded. Generated stroke topology, broader curve/
+clip mapping, conical/multistop coordinates, cache history, representative
+performance, Linux and S17 remain open.

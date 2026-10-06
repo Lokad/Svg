@@ -36,8 +36,10 @@ and preserve the distinction between geometric clip edges and mask allocation
 bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
 paints apply the rectangle's snapped byte mask to each ordered operation.
 The frozen corporate matrix now has all 258 reference images: 240 rendered
-comparisons (66 exact, 174 different) and eighteen retained renderer rejections.
-Ford, ROC HCVS and YouTube are exact in every declared variant: 3/27 documents.
+comparisons (70 exact, 170 different) and eighteen retained renderer rejections.
+Ford, ROC HCVS, Artsy and YouTube are exact in every declared variant: 4/27 documents.
+Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
+remaining variants; general stroke and curve fidelity remain open.
 Straight dash cuts now preserve native float endpoints, and nonzero orthogonal
 contact sets retain their one-byte fringes through signed-winding analytic
 walking. All nine ROC variants and twelve fresh controls are exact. These

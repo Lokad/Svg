@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Fixtures/original/bitmap-local-straight-clip.svg" Link="TestData/bitmap-local-straight-clip.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/bitmap-local-compound-clip.svg" Link="TestData/bitmap-local-compound-clip.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/float-polygon-viewbox.svg" Link="TestData/float-polygon-viewbox.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-coordinates-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-coordinates-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-transform-browser.json" CopyToOutputDirectory="PreserveNewest" />

@@ -14,8 +14,8 @@ internal ref partial struct SvgAnalyticCoverage
 
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
-    /// <remarks>Both passes charge clipping, validation and traversal. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Horizontal and AA paint-wrapper routing are retained separately from curve clipping; vertical-only binary clips preserve specialized pairs. Convex fills preserve their separately gated pre-stepped walker. Reservations transfer to the returned instance or release on every exception.</remarks>
-    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
+    /// <remarks>Both passes charge clipping, validation and traversal. Straight verbs clip and construct fixed edges in the owning bitmap's coordinates, then translate those edges to canvas fixed space; retained curves keep their existing construction. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Horizontal and AA paint-wrapper routing are retained separately from curve clipping; vertical-only binary clips preserve specialized pairs. Convex fills preserve their separately gated pre-stepped walker. Reservations transfer to the returned instance or release on every exception.</remarks>
+    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
     {
         eligible = false;
         int width = xEnd - xStart;
@@ -25,6 +25,8 @@ internal ref partial struct SvgAnalyticCoverage
         RenderBudget.BudgetReservation? scratch = null;
         try
         {
+            ChargeClippedSetupWork(ref setupWork, 4, maximumWork, token);
+            SvgAnalyticClipBounds localClip = new(clip.Left - origin.X, clip.Top - origin.Y, clip.Right - origin.X, clip.Bottom - origin.Y);
             for (int pass = 0; pass < 2; pass++)
             {
                 if (pass == 1)
@@ -54,7 +56,9 @@ internal ref partial struct SvgAnalyticCoverage
                     for (int index = start; index < end; index++)
                     {
                         ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token);
-                        Clipper clipper = new(clip, !convex, pieces, maximumWork - setupWork, token);
+                        bool localLine = !(contourSpans && ((quadCursor < quadEnd && quads[quadCursor].StartIndex == index) || (cubicCursor < cubicEnd && cubics[cubicCursor].StartIndex == index)));
+                        if (localLine) ChargeClippedSetupWork(ref setupWork, 4, maximumWork, token);
+                        Clipper clipper = new(localLine ? localClip : clip, !convex, pieces, maximumWork - setupWork, token);
                         try
                         {
                             if (contourSpans && quadCursor < quadEnd && quads[quadCursor].StartIndex == index)
@@ -69,7 +73,7 @@ internal ref partial struct SvgAnalyticCoverage
                                 clipper.ClipCubic(ToClipPoint(points[index]), ToClipPoint(cubic.FirstControl), ToClipPoint(cubic.SecondControl), ToClipPoint(points[cubic.EndIndex]));
                                 index = cubic.EndIndex - 1;
                             }
-                            else clipper.ClipLine(ToClipPoint(points[index]), ToClipPoint(points[index + 1 < end ? index + 1 : start]));
+                            else clipper.ClipLine(ToLocalClipPoint(points[index], origin), ToLocalClipPoint(points[index + 1 < end ? index + 1 : start], origin));
                         }
                         finally { setupWork += clipper.WorkUnits; }
                         for (int pieceIndex = 0; pieceIndex < clipper.Count; pieceIndex++)
@@ -86,7 +90,7 @@ internal ref partial struct SvgAnalyticCoverage
                             if (kept is null) throw new InvalidOperationException("Clipped edge storage was not reserved.");
                             // Check the complete bounded numerical phase before entering
                             // it, then report its actual setup and initial stepping cost.
-                            long phaseBound = piece.Kind == SvgAnalyticClipKind.Line ? 2 : 132;
+                            long phaseBound = piece.Kind == SvgAnalyticClipKind.Line ? 7 : 132;
                             CheckClippedSetupWork(setupWork + phaseBound, maximumWork, token);
                             long edgeWork = 0;
                             int contourEdges = kept.Count;
@@ -95,7 +99,19 @@ internal ref partial struct SvgAnalyticCoverage
                                 case SvgAnalyticClipKind.Line:
                                     AnalyticEdge? edge = SetLine(piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, true);
                                     edgeWork = 2;
-                                    if (edge is not null) AddClippedLine(kept, edge);
+                                    if (edge is not null)
+                                    {
+                                        if (localLine)
+                                        {
+                                            edge.X += origin.X << 16;
+                                            edge.UpperX += origin.X << 16;
+                                            edge.Y += origin.Y << 16;
+                                            edge.UpperY += origin.Y << 16;
+                                            edge.LowerY += origin.Y << 16;
+                                            edgeWork += 5;
+                                        }
+                                        AddClippedLine(kept, edge);
+                                    }
                                     break;
                                 case SvgAnalyticClipKind.Quad:
                                     if (convex) AppendQuadPiece(kept, piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, piece.Third.X, piece.Third.Y, ref contourEdges, ref edgeWork, token);
@@ -150,6 +166,7 @@ internal ref partial struct SvgAnalyticCoverage
 
 
         static SvgAnalyticClipPoint ToClipPoint(SvgDevicePoint point) => new((float)point.X, (float)point.Y);
+        static SvgAnalyticClipPoint ToLocalClipPoint(SvgDevicePoint point, SvgCpuBitmapOrigin origin) => new((float)(point.X - origin.X), (float)(point.Y - origin.Y));
 
         // Projected vertical lines can trim or cancel earlier projected lines.
         // Unlike the legacy uncut helper, both partial and total combinations

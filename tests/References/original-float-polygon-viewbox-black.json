@@ -1,0 +1,51 @@
+{
+  "fixtureId": "original-float-polygon-viewbox-black",
+  "referencePng": "original-float-polygon-viewbox-black.png",
+  "referenceSha256": "7406a67e11e93ad5e5c91ac2fce8a7d7077c740efe4835009402d8503b277b5c",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 640,
+    "height": 384,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "9febe6e71b4b657b4f5667b3719e96dfecc7309db9c4232bf67f287db5821330",
+  "captureSha256": [
+    "7406a67e11e93ad5e5c91ac2fce8a7d7077c740efe4835009402d8503b277b5c",
+    "7406a67e11e93ad5e5c91ac2fce8a7d7077c740efe4835009402d8503b277b5c",
+    "7406a67e11e93ad5e5c91ac2fce8a7d7077c740efe4835009402d8503b277b5c"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": true,
+  "candidateSha256": "35329f9a3f1905831d40d76dc9d43c1074fd2866a6537627eab7733779704ef6",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 640,
+    "minimumMismatchY": 384,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
+}

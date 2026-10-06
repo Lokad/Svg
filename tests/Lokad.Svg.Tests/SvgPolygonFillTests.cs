@@ -748,11 +748,10 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 7));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 4));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 3, 0));
-        // Exact tiling verified independently: the three split triangles meet
-        // pairwise at single points, every fully covered pixel paints 255, every
-        // exterior pixel paints 0, and edge pixels track analytic coverage within
-        // half an alpha step; 4231 walks 5.3 steps over the analytic 4225.7.
-        Assert.Equal(4229, AlphaSum(pixels));
+        // The three split triangles meet pairwise at single points. Float
+        // mapping of their generated vertices gives 4226 aggregate alpha,
+        // compared with the independently derived ideal union area of 4225.7.
+        Assert.Equal(4226, AlphaSum(pixels));
     }
 
     [Fact]
