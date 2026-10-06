@@ -1,0 +1,38 @@
+{
+  "fixtureId": "original-native-oval-stroke-existing-thick-circle",
+  "referencePng": "original-native-oval-stroke-existing-thick-circle.png",
+  "referenceSha256": "815fd8643bff7d93577f51fb9168dd62b3d7e4819f7a9672868579d6d52dd546",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "60a7a4e3cbccbaeb75ac4a36e176b32ee7387ec1e2604783a6158f46539f8329",
+  "candidateSha256": "f0b735201985117923870a9a24a577dc1454e46a706ead257d13a23189aed78c",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 8,
+    "maximumChannelError": 29,
+    "meanAbsoluteError": 0.099609375,
+    "rootMeanSquareError": 1.4072912811497127,
+    "maximumAlphaError": 29,
+    "alphaChangedPixelCount": 8,
+    "minimumMismatchX": 0,
+    "minimumMismatchY": 12,
+    "maximumMismatchX": 15,
+    "maximumMismatchY": 14,
+    "exact": false
+  },
+  "geometryPredatesProductionEdit": true,
+  "captureDeclarationPredatesProductionEdit": false,
+  "origin": "Existing SvgShapeElementsTests thick-circle regression. Pinned browser confirms partial blue coverage over red at the inverted inner offset; border differences remain measured."
+}

@@ -50,6 +50,11 @@ before stroking, preserving conic weights and closed seams. Twelve new thin dash
 configurations are exact; all earlier exact images are preserved. Wider stroke
 construction, transformed/pathLength dash coverage, other shape/paint routes and
 bitmap-context hairline work remain open.
+Circle/ellipse strokes now retain native normal-offset quadratic outlines rather
+than sampled concentric ellipses. Painted `use` instances retain those curves.
+All twelve new oval controls and all nine SG Rotation variants improve but remain
+inexact; every prior exact image is preserved. Generic wider path joins/caps and
+remaining scan/paint residuals remain open.
 Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
 remaining variants. Native straight open-stroke construction and winding make
 six original miter/bevel probes and three viewBox configurations exact, and

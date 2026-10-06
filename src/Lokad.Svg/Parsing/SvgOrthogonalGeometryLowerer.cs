@@ -343,92 +343,107 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, conics, Array.Empty<SvgCubicSpan>(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
     }
 
-    /// <summary>Lowers one circle stroke ring to two opposite-wound sampled loops sharing one nonzero fill.</summary>
+    /// <summary>Lowers a circle through the shared native oval stroke constructor.</summary>
     internal SvgParsedGeometry LowerCircleStrokeFill(double centerX, double centerY, double radius, SvgResolvedPaintableElement element, SvgStroke stroke, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
-    {
-        ArgumentNullException.ThrowIfNull(budget);
-        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
-        if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Circle strokes under non-uniform polygon transforms stay unsupported.");
-        double deviceRadius = radius * scaleX;
-        double deviceWidth = nonScaling ? stroke.Width : stroke.Width * scaleX;
-        if (!double.IsFinite(deviceRadius) || !double.IsFinite(deviceWidth)) throw new SvgException(SvgErrorCode.LimitExceeded, "Circle stroke coordinates exceed the admitted numeric range.");
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        int[] ends;
-        if (deviceRadius <= 0) ends = [];
-        else
-        {
-            double outerRadius = deviceRadius + deviceWidth / 2;
-            double innerRadius = deviceRadius - deviceWidth / 2;
-            SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
-            SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
-            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(2, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(SampledOutlineCapacity(2, ShapeSegmentsPerShape), 2);
-            builder.AddEllipse(center, outerRadius, outerRadius, 0, flattenPolicy, _cancellationToken);
-            if (innerRadius > 0) builder.AddEllipse(center, innerRadius, innerRadius, 0, flattenPolicy, _cancellationToken);
-            ends = new int[builder.ContourCount];
-            for (int contour = 0; contour < builder.ContourCount; contour++)
-            {
-                if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed circle stroke contours are implemented.");
-                ends[contour] = mapped.Count;
-            }
+        => LowerEllipseStrokeFill(centerX, centerY, radius, radius, element, stroke, nonScaling, frame, budget);
 
-            if (ends.Length == 2)
-            {
-                for (int left = ends[0], right = ends[1] - 1; left < right; left++, right--)
-                {
-                    _workCounter.Consume(_cancellationToken);
-                    (mapped[left], mapped[right]) = (mapped[right], mapped[left]);
-                }
-            }
-        }
-
-        return FinishPolygonFill(mapped, ends, stroke.Color, element.Presentation.IsPainted, SvgPolygonMapping.FlattenedCurves, frame, budget);
-    }
-
-    /// <summary>Lowers one axis-aligned ellipse stroke into opposite-wound sampled ring fills.</summary>
+    /// <summary>Offsets the original oval conics along their normals and retains native quadratic stroke verbs.</summary>
     internal SvgParsedGeometry LowerEllipseStrokeFill(double centerX, double centerY, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgStroke stroke, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (radiusX != radiusY && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rotated ellipse transforms are not implemented.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
-        if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
-        double deviceRadiusX = radiusX * scaleX;
-        double deviceRadiusY = radiusY * scaleX;
-        double deviceWidth = nonScaling ? stroke.Width : stroke.Width * scaleX;
-        if (!double.IsFinite(deviceRadiusX) || !double.IsFinite(deviceRadiusY) || !double.IsFinite(deviceWidth)) throw new SvgException(SvgErrorCode.LimitExceeded, "Ellipse stroke coordinates exceed the admitted numeric range.");
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        int[] ends;
-        if (deviceRadiusX <= 0 || deviceRadiusY <= 0) ends = [];
-        else
+        if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Oval strokes under non-uniform polygon transforms stay unsupported.");
+        float left = (float)centerX - (float)radiusX, right = (float)centerX + (float)radiusX;
+        float top = (float)centerY - (float)radiusY, bottom = (float)centerY + (float)radiusY;
+        float radius = (float)stroke.Width * 0.5f;
+        float resolutionScale = (float)(element.OutputMagnification * (nonScaling ? 1 : scaleX));
+        if (!float.IsFinite(left) || !float.IsFinite(right) || !float.IsFinite(top) || !float.IsFinite(bottom)
+            || !float.IsFinite(radius) || !float.IsFinite(resolutionScale) || resolutionScale <= 0)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Oval stroke coordinates exceed the finite float range.");
+        if (radiusX <= 0 || radiusY <= 0 || left == right || top == bottom || radius <= 0)
         {
-            double outerRadiusX = deviceRadiusX + deviceWidth / 2;
-            double outerRadiusY = deviceRadiusY + deviceWidth / 2;
-            double innerRadiusX = deviceRadiusX - deviceWidth / 2;
-            double innerRadiusY = deviceRadiusY - deviceWidth / 2;
-            SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
-            SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
-            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(2, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(2), SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(SampledOutlineCapacity(2, ShapeSegmentsPerShape), 2);
-            builder.AddEllipse(center, outerRadiusX, outerRadiusY, 0, flattenPolicy, _cancellationToken);
-            if (innerRadiusX > 0 && innerRadiusY > 0) builder.AddEllipse(center, innerRadiusX, innerRadiusY, 0, flattenPolicy, _cancellationToken);
-            ends = new int[builder.ContourCount];
-            for (int contour = 0; contour < builder.ContourCount; contour++)
-            {
-                if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed ellipse stroke contours are implemented.");
-                ends[contour] = mapped.Count;
-            }
-
-            if (ends.Length == 2)
-            {
-                for (int left = ends[0], right = ends[1] - 1; left < right; left++, right--)
-                {
-                    _workCounter.Consume(_cancellationToken);
-                    (mapped[left], mapped[right]) = (mapped[right], mapped[left]);
-                }
-            }
+            using BudgetedParserList<SvgDevicePoint> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            return FinishPolygonFill(empty, [], stroke.Color, element.Presentation.IsPainted, SvgPolygonMapping.NativeStrokeEdges, frame, budget);
         }
+        float midX = (float)(0.5 * ((double)left + right)), midY = (float)(0.5 * ((double)top + bottom));
+        Span<SvgDevicePoint> oval = stackalloc SvgDevicePoint[]
+        {
+            new(right, midY), new(right, bottom), new(midX, bottom), new(left, bottom),
+            new(left, midY), new(left, top), new(midX, top), new(right, top), new(right, midY)
+        };
+        SvgAffineTransform outlineMap = nonScaling ? SvgAffineTransform.Identity : deviceMap;
+        if (nonScaling)
+            for (int index = 0; index < oval.Length; index++) oval[index] = MapPoint(deviceMap, oval[index]);
+        // Covers both private list objects and their reservation owners before allocation.
+        using RenderBudget.BudgetReservation owners = budget.Reserve(512, SvgMemoryCategory.Geometry);
+        using BudgetedParserList<SvgStrokeCurveSegment> outer = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        using BudgetedParserList<SvgStrokeCurveSegment> inner = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        for (int quarter = 0; quarter < 4; quarter++)
+        {
+            SvgConicStroke.Append(oval[quarter * 2], oval[quarter * 2 + 1], oval[quarter * 2 + 2], SvgRationalQuadratic.QuarterCircleWeight,
+                radius, resolutionScale, SvgStrokeSide.Outer, outer, _workCounter, _cancellationToken);
+            SvgConicStroke.Append(oval[quarter * 2], oval[quarter * 2 + 1], oval[quarter * 2 + 2], SvgRationalQuadratic.QuarterCircleWeight,
+                radius, resolutionScale, SvgStrokeSide.Inner, inner, _workCounter, _cancellationToken);
+        }
+        float dx = (float)oval[1].X - (float)oval[0].X, dy = (float)oval[1].Y - (float)oval[0].Y;
+        double factor = radius / Math.Sqrt((double)dx * dx + (double)dy * dy);
+        float normalX = (float)(dy * factor), normalY = (float)(-dx * factor);
+        SvgDevicePoint outerStart = new((float)oval[0].X + normalX, (float)oval[0].Y + normalY);
+        SvgDevicePoint innerStart = new((float)oval[0].X - normalX, (float)oval[0].Y - normalY);
+        SvgFlattenPolicy policy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
+        int pointCapacity = Traverse(null, outer.AsSpan(), outerStart, false, outlineMap, policy, _workCounter, _cancellationToken)
+            + Traverse(null, inner.AsSpan(), innerStart, true, outlineMap, policy, _workCounter, _cancellationToken);
+        if (pointCapacity > MaximumFlattenedContourPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "Oval stroke point count exceeds the supported expansion range.");
+        int spanCapacity = outer.Count + inner.Count;
+        using RenderBudget.BudgetReservation scratch = budget.Reserve(
+            3 * ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity)
+            + 6 * ParserCollectionMemory.GetArrayByteCount<int>(2) + StrokeConicScratchBytes(spanCapacity), SvgMemoryCategory.Geometry);
+        SvgContourBuilder outlines = new(pointCapacity, 2);
+        outlines.EnableQuadSpanRetention();
+        _ = Traverse(outlines, outer.AsSpan(), outerStart, false, outlineMap, policy, _workCounter, _cancellationToken);
+        _ = Traverse(outlines, inner.AsSpan(), innerStart, true, outlineMap, policy, _workCounter, _cancellationToken);
+        return FinishDirectedStrokeFill(outlines, stroke.Color, element.Presentation.IsPainted, SvgPolygonMapping.NativeStrokeEdges, frame, budget);
 
-        return FinishPolygonFill(mapped, ends, stroke.Color, element.Presentation.IsPainted, SvgPolygonMapping.FlattenedCurves, frame, budget);
+        static int Traverse(SvgContourBuilder? builder, ReadOnlySpan<SvgStrokeCurveSegment> curves, SvgDevicePoint first, bool reverse,
+            SvgAffineTransform map, SvgFlattenPolicy policy, ParserWorkCounter work, CancellationToken token)
+        {
+            Span<SvgDevicePoint> samples = stackalloc SvgDevicePoint[CurveSegmentsPerCommand];
+            SvgDevicePoint current = MapPoint(map, reverse ? curves[^1].End : first);
+            builder?.BeginContour(current);
+            int count = 1;
+            for (int at = 0; at < curves.Length; at++)
+            {
+                work.Consume(token);
+                int index = reverse ? curves.Length - 1 - at : at;
+                SvgStrokeCurveSegment curve = curves[index];
+                SvgDevicePoint stop = MapPoint(map, reverse ? index == 0 ? first : curves[index - 1].End : curve.End);
+                if (curve.Control is SvgDevicePoint control)
+                {
+                    control = MapPoint(map, control);
+                    if (builder is null)
+                    {
+                        int added = SvgCurveFlatten.FlattenQuadratic(current, control, stop, policy, samples, token);
+                        for (int point = 0; point < added; point++) work.Consume(token);
+                        count = checked(count + added);
+                    }
+                    else builder.AddQuadratic(control, stop, policy, token);
+                }
+                else { builder?.AddLine(stop); count++; }
+                if (count > MaximumFlattenedContourPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "Oval stroke point count exceeds the supported expansion range.");
+                current = stop;
+            }
+            builder?.EndContour();
+            return count;
+        }
+        static SvgDevicePoint MapPoint(SvgAffineTransform map, SvgDevicePoint point)
+        {
+            float x = (float)point.X, y = (float)point.Y;
+            float mappedX = map.IsAxisAligned ? (float)map.A * x + (float)map.E : ((float)map.A * x + (float)map.C * y) + (float)map.E;
+            float mappedY = map.IsAxisAligned ? (float)map.D * y + (float)map.F : ((float)map.B * x + (float)map.D * y) + (float)map.F;
+            if (!float.IsFinite(mappedX) || !float.IsFinite(mappedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Oval stroke mapping exceeds the finite float range.");
+            return new(mappedX, mappedY);
+        }
     }
 
     /// <summary>Lowers one axis-aligned rounded rectangle to a sampled polygon fill.</summary>

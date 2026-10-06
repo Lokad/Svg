@@ -506,13 +506,13 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 51,
-        "maximumChannelError": 56,
-        "maximumAlphaError": 56,
-        "alphaChangedPixelCount": 51,
+        "changedPixelCount": 4,
+        "maximumChannelError": 9,
+        "maximumAlphaError": 9,
+        "alphaChangedPixelCount": 4,
         "minimumMismatchX": 2,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 13,
+        "minimumMismatchY": 7,
+        "maximumMismatchX": 9,
         "maximumMismatchY": 13
       },
       "oracle": {

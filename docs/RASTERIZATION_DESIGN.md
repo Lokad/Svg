@@ -5840,3 +5840,53 @@ Other shape/paint and bitmap-context hairlines, transformed/pathLength browser
 coverage and native wider closed/curved/dashed construction remain open, along
 with original corporate residuals, representative performance and Linux. The
 existing outline route still owns admission and wider-stroke fallback.
+
+## Native conic oval strokes (2026-10-06)
+
+Concentric ellipse radii do not describe a normal-offset stroke. Circle/ellipse
+strokes now fit the original four conics using the pinned SkStroke.cpp normal
+rays, tangent intersections and recursive quadratic decisions at Skia revision
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c`. Ordinary strokes fit before final
+float placement with mapped resolution; non-scaling strokes fit mapped conics.
+The inner chain reverses the original emitted verbs rather than recomputing them.
+Existing positive uniform-scale and ellipse-rotation admission gates remain.
+
+The unchanged compiled conic fitter and geometry/point helpers produce 960 cases
+/ 2,880 segments through a recording sink. Tests compare float bits, including
+reversal, varying weights, degenerate tangents, widths and resolution. The adapter
+excludes path reduction, joins, caps and painting. Git and the upstream pin
+identify implementation; only the numerical asset has an integrity hash.
+
+Two budgeted private lists reserve their owners before allocation. Recursion,
+segment count and fallback samples are bounded; each fitting node checks work
+and cancellation. Two fallback traversals count before allocating builder arrays
+and retained columns. Native-stroke quad consumers now use the retained verb even
+when its fallback has one chord. Painted linear/radial/pattern `use` copies map
+and reserve quad/cubic spans, repairing direct/instance divergence.
+
+Twelve untuned oval configurations preceded edits/capture: circles, wide/tall,
+fractional, scaled and collapsed-inner ellipses at widths two/ten. All improve
+but remain known differences. The existing thick-circle SVG receives a later
+supplemental capture; the original center assertion's solid blue is replaced by
+the pinned browser's RGBA (188, 0, 67, 255). Its full PNG retains eight border
+differences. All 39 fresh captures are stable, healthy and cleaned.
+
+The expanded bank executes 1,236 cases. Nineteen prior PNGs change: ten known
+fixtures, the research stroked circle (51 → four differences), and eight legacy
+Default outputs without matching-options references. Every disposition and all
+908 prior exact fixture/research PNGs are preserved. Only SG Rotation's nine
+corporate images change, all improving; all 134 exact images and 258 dispositions
+are preserved. S17 remains 9/27, marks 3/13 and wordmarks 6/14, against 23/27.
+
+Sixteen new tests cover native bits, work/memory denial, token identity, private
+owner release, fallback-density independence with clipping/contours, six-output
+parity, retained-verb immutability/retry and six painted instance cases. No claim
+is made for deterministic cancellation during one tiny conic. All 3,742 tests,
+locked restore/nine-project Release build, 25 memory scenarios, browser/artifact
+validation and installed runtime/symbol-package consumers pass. Thirty-three
+matched recipes preserve all 28 previous PNG/work/peak records and value layouts;
+the new oval/SG cases add work. See [the observations](BENCHMARKS.md#native-conic-oval-stroke-observations-2026-10-06).
+Full studies stay under ignored `artifacts/native-conic-strokes-20261006/`.
+Generic wider path joins/caps, closed/curved/dashed construction, remaining
+quadratic scan/paint/clip residuals, other hairline contexts, representative
+performance and Linux remain open.

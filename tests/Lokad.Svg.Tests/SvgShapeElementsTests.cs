@@ -561,11 +561,13 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Thick_circle_stroke_closes_hole_to_disc()
+    public void Thick_circle_stroke_preserves_the_native_inner_offset_coverage()
     {
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><circle cx='8' cy='8' r='4' fill='red' stroke='blue' stroke-width='10'/></svg>", out _, out _);
 
-        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 8, 8));
+        // The pinned browser's native offset inverts the inner curve at this
+        // width; its center has partial blue coverage over the original red fill.
+        Assert.Equal(new SvgColor(188, 0, 67, 255), Pixel(pixels, 16, 8, 8));
     }
 
     [Fact]

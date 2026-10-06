@@ -15,17 +15,18 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current native dashed-path checkpoint
+## Current native conic oval-stroke checkpoint
 
-The bank has 1,095 fixtures (901 exact, 164 known, 30 rejected), 36 research
+The bank has 1,108 fixtures (901 exact, 177 known, 30 rejected), 36 research
 probes (seven exact, 28 known, one rejected) and 92 legacy Default cases:
-1,223 executed cases. Eighteen untuned dash configurations were declared before
-production edits/capture. All twelve thin controls are exact; six wider controls
-retain their measured differences. All 54 fresh captures are stable and healthy.
-Every previous PNG and disposition is preserved. All 258 corporate outcomes
-and images remain unchanged: 134 exact / 106 known / eighteen rejected,
-9/27 fully exact documents. Original references remain frozen; detailed runs
-stay under ignored `artifacts/native-dash-curves-20261006/`.
+1,236 executed cases. Twelve untuned oval configurations preceded production
+edits/capture; all improve but remain known differences. The existing thick-circle
+regression receives a supplemental reference, declared after the edit. All 39
+fresh captures are stable and healthy. Nineteen prior PNGs change; all 908 prior
+exact fixture/research PNGs and every disposition are preserved. All nine SG
+Rotation variants improve; the corporate totals remain 134 exact / 106 known /
+eighteen rejected, 9/27 fully exact documents. Original references remain frozen;
+detailed runs stay under ignored `artifacts/native-conic-strokes-20261006/`.
 
 ## Frozen corporate cohort
 

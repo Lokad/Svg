@@ -1838,3 +1838,30 @@ not establish representative throughput or latency. All 25 memory scenarios
 and installed package consumers pass. Wider stroke construction, other hairline
 shape/paint and bitmap contexts, transformed/pathLength browser coverage,
 corporate fidelity, representative profiling and Linux remain open.
+
+## Native conic oval-stroke observations (2026-10-06)
+
+Thirty-three matched recipes compare `764593a4` with native conic normal-offset
+oval outlines on Windows X64 / .NET 10.0.12. The baseline independently reproduces
+the preceding checkpoint's 28 complete PNG/work/peak records; the current renderer
+preserves all 28. Geometry/paint value layouts remain unchanged. Builds, tests,
+bank/cohort, captures and package checks finish before measurement. Both execution
+orders contribute twenty batches per implementation/recipe. Ledgers and batches
+stay under ignored `artifacts/native-conic-strokes-20261006/`.
+
+| Recipe | Parser work, before → after | Work through raster, before → after | Accounted peak bytes, before → after | Local ms, before / after | Allocated bytes, before / after |
+| --- | --- | --- | --- | --- | --- |
+| oval-circle-w10 | 218 → 440 | 43,502 → 47,918 | 266,120 → 201,556 | 0.998–2.567 / 1.066–2.181 | 291,634–291,639 / 160,981–160,986 |
+| oval-ellipse-wide-w10 | 209 → 393 | 28,135 → 31,944 | 266,120 → 201,556 | 0.769–2.979 / 0.781–2.956 | 290,626–290,788 / 159,557–159,722 |
+| oval-ellipse-collapse-w10 | 107 → 327 | 9,083 → 20,989 | 265,160 → 200,852 | 0.442–2.492 / 0.620–2.768 | 278,010–278,020 / 154,491–154,496 |
+| sg-small | 6,554 → 7,194 | 591,540 → 651,254 | 1,595,944 → 1,599,080 | 11.152–14.400 / 11.025–14.470 | 1,486,644–1,486,857 / 1,367,428–1,367,785 |
+| sg-intended | 6,554 → 7,194 | 1,784,393 → 1,819,967 | 2,075,104 → 2,078,240 | 24.640–29.146 / 22.756–30.639 | 2,021,529–2,022,798 / 1,902,257–1,903,521 |
+
+Fitting and retained-edge setup add work. Exact fallback point counts replace
+the old maximum sampled-builder reservation, reducing the small oval peaks;
+SG adds 3,136 accounted bytes. Charged private list/owner storage, builder arrays
+and copied instance spans are reserved before allocation. Measured allocation
+decreases, but timings overlap and unchanged recipes show host/JIT variation.
+These local observations do not establish representative throughput or latency.
+All 25 memory scenarios and installed consumers pass. Generic wider path strokes,
+corporate fidelity, representative profiling and Linux remain open.

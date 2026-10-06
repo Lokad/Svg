@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after native straight path hairline dispatch. All 133 prior exact corporate PNGs, original inputs, options, references and outcomes remain unchanged: 240 render (134 exact, 106 known), eighteen reject UnsupportedFeature. Nine PNGs improve across Eisenbahn und Hoefen and Rede Manchete. Exact documents remain nine, marks 3/13 and wordmarks 6/14; detailed runs stay under ignored artifacts/hairline-implementation-20261006/.",
+  "scope": "Frozen 27-document/258-variant measurement after native conic oval stroke construction; original references and cohort options retained.",
   "rendererCounts": {
     "renders": 240,
     "MalformedInput": 0,
@@ -6934,21 +6934,21 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1344,
-          "MaximumChannelError": 63,
-          "MeanAbsoluteError": 0.1596813910246746,
-          "RootMeanSquareError": 1.8269663160265086,
-          "MaximumAlphaError": 52,
-          "AlphaChangedPixelCount": 713,
+          "ChangedPixelCount": 903,
+          "MaximumChannelError": 54,
+          "MeanAbsoluteError": 0.10219734660033168,
+          "RootMeanSquareError": 1.3080507573324431,
+          "MaximumAlphaError": 54,
+          "AlphaChangedPixelCount": 481,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 5,
           "MaximumMismatchX": 197,
           "MaximumMismatchY": 200,
           "IsExact": false
         },
-        "alphaMass": 6766,
-        "overCoveredPixels": 356,
-        "underCoveredPixels": 357,
+        "alphaMass": 3534,
+        "overCoveredPixels": 256,
+        "underCoveredPixels": 225,
         "opaqueLost": 0,
         "opaqueAdded": 0
       },
@@ -6979,7 +6979,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "52ce22a43a8392149282f2c388548afea291caa0cd56dfd129f36e2b1a473a70",
+      "candidateSha256": "5480dc37f14a0b6d5ecd5a8a8c6df3a0107f19e77a4e7ae75ee59c5b678b3f50",
       "width": 198,
       "height": 201,
       "referenceSha256": "423b39e2b6872e4ad6c5607275942a0d2c63c4b60203cfb92b6953da3129f780"
@@ -6991,14 +6991,14 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1342,
-          "MaximumChannelError": 63,
-          "MeanAbsoluteError": 0.24445952057892356,
-          "RootMeanSquareError": 2.2080212993071147,
+          "ChangedPixelCount": 899,
+          "MaximumChannelError": 54,
+          "MeanAbsoluteError": 0.14644580129654758,
+          "RootMeanSquareError": 1.5645985078859492,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 7,
           "MaximumMismatchX": 197,
           "MaximumMismatchY": 200,
           "IsExact": false
@@ -7036,7 +7036,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "54cd24a9fbf3c359d4a31f84ced8806c67a2bf5101f9b0dceaa11fd5c6ef6434",
+      "candidateSha256": "eb6c6624662bf4380ab950a6f069d4940385a78701f3a84210c212d5512b037b",
       "width": 198,
       "height": 201,
       "referenceSha256": "4814fbd96d3aafd225f066e961d6c85487b5f83f0bdbaff0fbb60d986f42b373"
@@ -7048,14 +7048,14 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 653,
-          "MaximumChannelError": 63,
-          "MeanAbsoluteError": 0.11717925523895673,
-          "RootMeanSquareError": 1.6035422683616523,
+          "ChangedPixelCount": 451,
+          "MaximumChannelError": 37,
+          "MeanAbsoluteError": 0.07999773857982813,
+          "RootMeanSquareError": 1.1596106974743592,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 2,
-          "MinimumMismatchY": 2,
+          "MinimumMismatchY": 5,
           "MaximumMismatchX": 195,
           "MaximumMismatchY": 198,
           "IsExact": false
@@ -7093,7 +7093,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "b34cec5bd08bef052013b4d0decd634d90b66a3c02f140436936254a79b66c57",
+      "candidateSha256": "57d74c19f56a753ee3d0839356c462a614311343948517c9a0f3e3ce526cdfe7",
       "width": 198,
       "height": 201,
       "referenceSha256": "82869574f9fe65c8e647580ed023877bfc7166d516843ab9352901d555b4b3f1"
@@ -7105,21 +7105,21 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3147,
-          "MaximumChannelError": 109,
-          "MeanAbsoluteError": 0.2461165626488207,
-          "RootMeanSquareError": 3.331363853468246,
-          "MaximumAlphaError": 109,
-          "AlphaChangedPixelCount": 1553,
+          "ChangedPixelCount": 2104,
+          "MaximumChannelError": 40,
+          "MeanAbsoluteError": 0.06602626763917087,
+          "RootMeanSquareError": 1.0781419337571065,
+          "MaximumAlphaError": 40,
+          "AlphaChangedPixelCount": 1048,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 14,
           "MaximumMismatchX": 395,
           "MaximumMismatchY": 402,
           "IsExact": false
         },
-        "alphaMass": 35252,
-        "overCoveredPixels": 372,
-        "underCoveredPixels": 1181,
+        "alphaMass": 9154,
+        "overCoveredPixels": 392,
+        "underCoveredPixels": 656,
         "opaqueLost": 0,
         "opaqueAdded": 0
       },
@@ -7150,7 +7150,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "d0b0370dbf8e152c9cab294922932f6a67079b039cc4a372175d25b3e5f88022",
+      "candidateSha256": "da04948bd2b36477f43d221140c12694d6b8852e8bc471b9c5c7a6a2bed478d1",
       "width": 396,
       "height": 403,
       "referenceSha256": "e4f1a9d8d35e1ee9cb60c6e33b5d7bc41c36efd9178cdd4e3f70c5fffaf668e1"
@@ -7162,14 +7162,14 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3147,
-          "MaximumChannelError": 109,
-          "MeanAbsoluteError": 0.35656346341830214,
-          "RootMeanSquareError": 3.976996864526759,
+          "ChangedPixelCount": 2104,
+          "MaximumChannelError": 40,
+          "MeanAbsoluteError": 0.09470636889991729,
+          "RootMeanSquareError": 1.2635869593779718,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 14,
           "MaximumMismatchX": 395,
           "MaximumMismatchY": 402,
           "IsExact": false
@@ -7207,7 +7207,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "a2abf1e222c6e4d40d2218ca354f62d7e179f7a2b5afcd2c3638aec872547c16",
+      "candidateSha256": "64ef05ab7007082babe4c3a9dffc5a4b07b0ed3311736fc00905b2aae8a50726",
       "width": 396,
       "height": 403,
       "referenceSha256": "e00984b592710b0b12d4832ef38b959af6c17e5fd4a62336b3302761446c041b"
@@ -7219,14 +7219,14 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1594,
-          "MaximumChannelError": 98,
-          "MeanAbsoluteError": 0.19089311226408,
-          "RootMeanSquareError": 2.956133565328936,
+          "ChangedPixelCount": 1056,
+          "MaximumChannelError": 38,
+          "MeanAbsoluteError": 0.05168621700879766,
+          "RootMeanSquareError": 0.9722443324767883,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 4,
-          "MinimumMismatchY": 4,
+          "MinimumMismatchY": 18,
           "MaximumMismatchX": 391,
           "MaximumMismatchY": 398,
           "IsExact": false
@@ -7264,7 +7264,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "93c191405b5c08669d2eb42b640859e9628bc0f216b48e4d9f36fa8b520af852",
+      "candidateSha256": "da53af8342d97e2b7ec18284d496cac1c52292cca8a442c453e90b54c0da54a1",
       "width": 396,
       "height": 403,
       "referenceSha256": "9e2bf1ed84f1c776facf9933b9fd772db8fae9ccd8adf102b6d7ac5cc589552d"
@@ -7276,21 +7276,21 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 5799,
-          "MaximumChannelError": 87,
-          "MeanAbsoluteError": 0.06554495012156303,
-          "RootMeanSquareError": 1.2885569415156573,
-          "MaximumAlphaError": 87,
-          "AlphaChangedPixelCount": 2936,
+          "ChangedPixelCount": 4233,
+          "MaximumChannelError": 63,
+          "MeanAbsoluteError": 0.027653629972178358,
+          "RootMeanSquareError": 0.6316338415154781,
+          "MaximumAlphaError": 63,
+          "AlphaChangedPixelCount": 2134,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 17,
           "MaximumMismatchX": 791,
           "MaximumMismatchY": 805,
           "IsExact": false
         },
-        "alphaMass": 48815,
-        "overCoveredPixels": 774,
-        "underCoveredPixels": 2162,
+        "alphaMass": 19197,
+        "overCoveredPixels": 653,
+        "underCoveredPixels": 1481,
         "opaqueLost": 0,
         "opaqueAdded": 0
       },
@@ -7321,7 +7321,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "1ce938cdf0c3c41dde6c0cc42dca2c36a66d48607a3c424dcda8050c2f83ed7d",
+      "candidateSha256": "6b57adefe714bece81ee842e88c9546d52b8869185d97254ce4f10c1841a2fc1",
       "width": 792,
       "height": 806,
       "referenceSha256": "6a184aae1c7d5391252aac4454b4bca8b441ad2dd4303a645529e82b7cf2761a"
@@ -7333,14 +7333,14 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 5799,
-          "MaximumChannelError": 87,
-          "MeanAbsoluteError": 0.10378012444544703,
-          "RootMeanSquareError": 1.6677386534862275,
+          "ChangedPixelCount": 4233,
+          "MaximumChannelError": 63,
+          "MeanAbsoluteError": 0.04269000488758553,
+          "RootMeanSquareError": 0.8086068135662632,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 17,
           "MaximumMismatchX": 791,
           "MaximumMismatchY": 805,
           "IsExact": false
@@ -7378,7 +7378,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "e702f8c28e8e6a211ce0e26c0c8bcd10bb000d0c00a37ea4326dc0f6720ea611",
+      "candidateSha256": "2f5001da490cc4e7c57cf9565aa1bff3415340a67d046c42c06bd25f1e77ff33",
       "width": 792,
       "height": 806,
       "referenceSha256": "904af535d32bad2737c6aa6867c0fc4185f8ea9cfab55f2cf0ccee38650ec761"
@@ -7390,14 +7390,14 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 2863,
-          "MaximumChannelError": 75,
-          "MeanAbsoluteError": 0.04642736295962102,
-          "RootMeanSquareError": 1.0487575406767047,
+          "ChangedPixelCount": 2099,
+          "MaximumChannelError": 61,
+          "MeanAbsoluteError": 0.020135442514474772,
+          "RootMeanSquareError": 0.5210753066002144,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 8,
-          "MinimumMismatchY": 8,
+          "MinimumMismatchY": 25,
           "MaximumMismatchX": 783,
           "MaximumMismatchY": 797,
           "IsExact": false
@@ -7435,7 +7435,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "701b897679f968b503239712e5c765d00b2db0d3e4c311a6b0a33aa112fcd331",
+      "candidateSha256": "3b33c053c30f71626d48a4a7a5a4b96c2b77880ee3a4332a50bb3823f9f5eb80",
       "width": 792,
       "height": 806,
       "referenceSha256": "d8ce081f73854fbfb3267b74d1cce7702e4a84714adf5f397ab1aa7666fe7eb7"
@@ -14890,8 +14890,8 @@
       "referenceSha256": "e628ef493bea5ee8586514bc6d3730caeb0738def9eac6319b3db860614ded6c"
     }
   ],
-  "rendererSourceBaselineCommit": "83a5feee",
-  "rendererSourceState": "Retained solid path centerlines and native straight hairline dispatch, ordered fixed-point line coverage and cap extension; wider/curved/dashed outline routes retained.",
-  "measurementCheckpoint": "Straight path hairline dispatch, 2026-10-06",
+  "rendererSourceBaselineCommit": "764593a4",
+  "rendererSourceState": "Native conic normal offsets and retained quadratic oval stroke verbs.",
+  "measurementCheckpoint": "native-conic-oval-strokes-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

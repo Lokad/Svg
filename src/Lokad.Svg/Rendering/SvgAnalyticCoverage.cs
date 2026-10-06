@@ -1571,7 +1571,7 @@ internal ref partial struct SvgAnalyticCoverage
                         {
                             SvgQuadSpan span = quadSpans[quadAt];
                             quadAt++;
-                            if ((span.EndIndex - index >= 2 || span.ConicWeight != 1f) && AppendRetainedQuadEdges(multiKept, points, span, true, ref contourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0)
+                            if ((mapping == SvgPolygonMapping.NativeStrokeEdges || span.EndIndex - index >= 2 || span.ConicWeight != 1f) && AppendRetainedQuadEdges(multiKept, points, span, true, ref contourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0)
                             {
                                 index = span.EndIndex - 1;
                                 continue;
@@ -1687,7 +1687,7 @@ internal ref partial struct SvgAnalyticCoverage
                     spanCursor++;
                     int spanContourEdges = kept.Count;
                     bool quadSubstituted = false;
-                    if (span.EndIndex - index >= 2 || span.ConicWeight != 1f)
+                    if (mapping == SvgPolygonMapping.NativeStrokeEdges || span.EndIndex - index >= 2 || span.ConicWeight != 1f)
                     {
                         if ((!convex || span.ConicWeight != 1f) && AppendRetainedQuadEdges(kept, points, span, true, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;
                         else if (AppendRetainedQuadEdges(kept, points, span, false, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;

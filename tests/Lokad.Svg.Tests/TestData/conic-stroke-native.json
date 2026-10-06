@@ -1,0 +1,12 @@
+{
+  "skiaRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sources": [
+    "src/core/SkStroke.cpp",
+    "src/core/SkGeometry.cpp",
+    "src/core/SkPoint.cpp"
+  ],
+  "scope": "Unchanged compiled conicStroke, compareQuadConic, normal rays, tangent intersection and strokeCloseEnough with a recording sink. Excludes path reduction, joins, caps and painting.",
+  "cases": 960,
+  "segments": 2880,
+  "dataSha256": "c916c79f4885d866276a4d95a3c9aebc5754dbd8fba6a65667c36ea74dd8da10"
+}

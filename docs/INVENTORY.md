@@ -43,6 +43,14 @@ The subsequent native dashed-path checkpoint preserves every previous output
 and all 258 corporate variants. Twelve thin dashed-curve controls become exact;
 six wider controls remain inexact. These controls leave the corporate numerator
 at 9/27. Detailed runs stay under ignored `artifacts/native-dash-curves-20261006/`.
+The native conic oval-stroke checkpoint improves all nine SG Rotation (`inv-012`)
+variants. Transparent mismatch counts fall 1,344/3,147/5,799 → 903/2,104/4,233
+at small/intended/large sizes; white and black variants also improve. Every
+disposition, all 134 exact PNGs and the other 249 corporate outputs are preserved.
+The numerator remains 9/27. Eight legacy Default PNGs change without matching
+options references (`inv-012`, `inv-017`, `inv-018`, `inv-032`, `inv-057`,
+`inv-060`, `inv-091`, `inv-094`). Detailed runs stay under ignored
+`artifacts/native-conic-strokes-20261006/`.
 The dated checkpoint paragraphs below retain their historical results.
 There are no missing references or capture gaps. S17 still requires at least 80% exact documents overall and in each corporate
 stratum. YouTube is the selected curved mark; the first cohort is frozen below

@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-native-oval-stroke-ellipse-scaled-w2",
+  "referencePng": "original-native-oval-stroke-ellipse-scaled-w2.png",
+  "referenceSha256": "e0d99e473971e80197be235e3941f75f195f9a44603a2856a8cf87538bb32807",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 96,
+    "height": 96,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "6e04696cfb1bc3d7307ce669d0420a77c6dd700a3de58163cf78cfd167bb32c0",
+  "candidateSha256": "366e71545dc081232c5f7f9f0162860811ef9ea5e6fe485e783a4b7c4332195d",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 160,
+    "maximumChannelError": 255,
+    "meanAbsoluteError": 0.2018771701388889,
+    "rootMeanSquareError": 4.671657255237874,
+    "maximumAlphaError": 62,
+    "alphaChangedPixelCount": 160,
+    "minimumMismatchX": 13,
+    "minimumMismatchY": 35,
+    "maximumMismatchX": 78,
+    "maximumMismatchY": 65,
+    "exact": false
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

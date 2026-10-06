@@ -250,7 +250,7 @@ internal static class SvgReferenceResolver
         SvgPolygonFill polygon = source.Polygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = polygon.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
+        using RenderBudget.BudgetReservation? mappedReservation = polygon.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(polygon.QuadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(polygon.CubicSpans.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -332,7 +332,7 @@ internal static class SvgReferenceResolver
         SvgGradientPolygon outline = source.GradientPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
+        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(outline.QuadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(outline.CubicSpans.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -355,7 +355,9 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
+        SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
+        SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
+        SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
         return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
     }
 
@@ -364,7 +366,7 @@ internal static class SvgReferenceResolver
         SvgRadialPolygon outline = source.RadialPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
+        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(outline.QuadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(outline.CubicSpans.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -386,7 +388,9 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, outline.ContourEnds, outline.Signs, circle, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
+        SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
+        SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
+        SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, circle, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
         return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
     }
 
@@ -395,7 +399,7 @@ internal static class SvgReferenceResolver
         SvgPatternPolygon outline = source.PatternPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
-        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
+        using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(outline.QuadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(outline.CubicSpans.Length), SvgMemoryCategory.Geometry);
         SvgDevicePoint[] mapped = new SvgDevicePoint[outline.Points.Length];
         for (int index = 0; index < mapped.Length; index++)
         {
@@ -413,7 +417,9 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, outline.ContourEnds, outline.Signs, outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, state.Budget));
+        SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
+        SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
+        SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, state.Budget));
         return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
     }
 

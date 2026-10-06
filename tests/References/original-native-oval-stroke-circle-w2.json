@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-native-oval-stroke-circle-w2",
+  "referencePng": "original-native-oval-stroke-circle-w2.png",
+  "referenceSha256": "b5ca7dd0327ef73e25398ac9e541da78a19099c49ad4fd587076a6c13ab7920b",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 96,
+    "height": 96,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "dd7cb5380c9aac6a09727114c7efa36e21103a6414405e4df1544f2a797e7697",
+  "candidateSha256": "2e64ff4b5fe5a64b71cd435e4d62206000e6f60ca3b8e3801baa22847e03562f",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 160,
+    "maximumChannelError": 255,
+    "meanAbsoluteError": 0.061333550347222224,
+    "rootMeanSquareError": 2.013605254212371,
+    "maximumAlphaError": 14,
+    "alphaChangedPixelCount": 160,
+    "minimumMismatchX": 18,
+    "minimumMismatchY": 27,
+    "maximumMismatchX": 77,
+    "maximumMismatchY": 77,
+    "exact": false
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

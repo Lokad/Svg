@@ -1,31 +1,36 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Native dashed-path hairlines add twelve exact thin-dash
-controls. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
+Updated 2026-10-06. Native conic oval strokes improve twelve untuned controls
+and all nine SG Rotation variants without adding an exact document.
+[PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
 Exact documents remain Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA,
 IKEA and Google: **9/27**, marks **3/13**, wordmarks **6/14**. S17 requires
 at least **23/27**, including 11/13 marks and 12/14 wordmarks. Membership,
 holdouts, options, original inputs and browser references remain frozen.
 
-Current evidence: **1,095 fixtures = 901 exact + 164 known + 30 rejected**,
-599 base documents / 496 variants; **36 research probes = seven exact +
-28 known + one rejected**; and 92 legacy Default renders: **1,223 cases**.
-Every previous PNG and disposition is preserved. Twelve new thin dashes match
-their original native captures; six wider controls remain known differences.
-All 54 fresh-process captures are stable and healthy.
+Current evidence: **1,108 fixtures = 901 exact + 177 known + 30 rejected**,
+612 base documents / 496 variants; **36 research probes = seven exact +
+28 known + one rejected**; and 92 legacy Default renders: **1,236 cases**.
+Nineteen prior PNGs change (ten fixtures, one research, eight legacy); every
+disposition and all 908 prior exact fixture/research PNGs are preserved.
+Thirteen new oval references remain known differences. Twelve configurations
+preceded production edits/capture; the existing thick-circle regression's
+supplemental capture followed the edit. All 39 fresh captures are stable/healthy.
 
-Windows locked restore, nine-project Release build and **3,726 tests**
-(3,560 core + 160 visual + six FontProbe) pass. Compiled-native vectors cover
-480 curve measurement/lookup cases and 2,880 cuts, alongside existing curve/cap,
-line and conic controls. The adapters validate bounded numerical functions, not
+Windows locked restore, nine-project Release build and **3,742 tests**
+(3,576 core + 160 visual + six FontProbe) pass. New compiled-native vectors cover
+960 conic fitting cases and 2,880 segments, alongside existing curve/cap,
+dash, line and conic controls. The adapters validate bounded numerical functions, not
 a complete native dash/stroke/paint backend. All 25 memory scenarios,
 package/installed-consumer, Chrome smoke and artifact validation pass.
-Twenty-eight matching recipes include added dash parser work/storage; all 24
-previous complete PNG/work/peak records are preserved. Local timings remain
-exploratory.
+Thirty-three matching recipes preserve all 28 previous complete PNG/work/peak
+records. Five oval/SG recipes add work; oval peaks decrease and SG peaks add
+3,136 bytes. Local timing ranges overlap and remain exploratory.
 
-All 258 corporate outputs/dispositions are unchanged: **240 rendered comparisons
-(134 exact, 106 known)** and eighteen UnsupportedFeature outcomes. Eisenbahn
+All 258 corporate dispositions and 134 exact PNGs are preserved: **240 rendered
+comparisons (134 exact, 106 known)** and eighteen UnsupportedFeature outcomes.
+Only SG Rotation's nine PNGs change, with transparent mismatch counts falling
+1,344/3,147/5,799 → 903/2,104/4,233 at small/intended/large sizes. Eisenbahn
 small remains one/zero/one pixels from exact across backgrounds; Rede Manchete
 small/intended remain 519/638 pixels from their original references.
 
