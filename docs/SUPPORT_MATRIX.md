@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the convex-cubic/incoming-edge checkpoint, the 1,051 manifest entries contain
-869 exact decoded-pixel references, 152 known-difference renders and 30
+At the convex-cubic/incoming-edge checkpoint, the 1,057 manifest entries contain
+871 exact decoded-pixel references, 156 known-difference renders and 30
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 

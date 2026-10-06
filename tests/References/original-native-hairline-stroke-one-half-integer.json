@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-native-hairline-stroke-one-half-integer",
+  "referencePng": "original-native-hairline-stroke-one-half-integer.png",
+  "referenceSha256": "591d645d68d88552cca0127a38ae4ec44c7f1a5b3a86c9908f8a724daeccecc8",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "cde770ff4c19c4916340d7fb3e3c72d18379a87b1505d216f8fe21cd64e93500",
+  "candidateSha256": "03536a51d46a08905c2089900ae2edf0d2ddaea5754f85a9e5fa7ed5aa868098",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true,
+  "strokeWidth": 1.5,
+  "phase": 0
+}

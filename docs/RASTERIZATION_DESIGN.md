@@ -5639,3 +5639,48 @@ absolute alpha-error mass while the bevel probe worsens:
 
 General event/paint/stroke fidelity, representative performance, Linux and S17
 remain open. This checkpoint does not change the frozen release thresholds.
+
+## Thin-stroke hairline dispatch diagnosis (2026-10-06)
+
+The isolated polynomial-quadratic live-edge model preserves all 1,179 bank
+outcomes and every prior exact PNG. Seventeen synthetic comparisons improve,
+two retain their count, and all 258 corporate outcomes/PNGs remain unchanged.
+It remains an ignored prototype; it closes no corporate document and is not
+promoted ahead of the newly identified stroke dispatch gap.
+
+Pinned [SkDraw.cpp](https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkDraw.cpp)
+tests the transformed stroke-width vectors and switches to a hairline when
+both estimated lengths are at most one pixel, without perspective. Coverage
+modulates paint alpha before rendering the centerline. The separate
+[SkScan_Antihair.cpp](https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_Antihair.cpp)
+orders segment paints and apportions coverage across neighboring pixels.
+The current renderer always fills an expanded stroke outline. In Rede Manchete,
+opaque background fill hides these alpha differences in the final comparison:
+small top-border RGB is 63 in the browser and 64 here; intended right-border RGB
+is 127 versus 128. This does not explain all of its large-variant residuals.
+
+Six untuned CC0 inputs, declared after source inspection and before capture or
+production edits, use an open three-segment path, nonprimary color, widths
+0.5/1/1.5 and integer/quarter phases. All eighteen fresh captures are byte-stable,
+healthy and cleaned. The width threshold cleanly discriminates the routes:
+
+| Stroke width | Phase | Differing pixels | Alpha-error mass | Maximum alpha error |
+| --- | --- | --- | --- | --- |
+| 0.5 | Integer | 336 | 368 | 16 |
+| 0.5 | Quarter | 336 | 10,696 | 58 |
+| 1 | Integer | 169 | 296 | 64 |
+| 1 | Quarter | 172 | 295 | 57 |
+| 1.5 | Integer | 0 | 0 | 0 |
+| 1.5 | Quarter | 0 | 0 | 0 |
+
+At an interior horizontal pixel, integer width 0.5 reads alpha 63 versus 64;
+quarter width 0.5 also paints a neighboring row absent from the geometric band.
+These are kernel/dispatch differences, not an opacity-token parsing defect.
+The six inputs and original reference PNGs enter the fixture bank unchanged;
+all raw declarations, captures and prototype runs remain under ignored
+`artifacts/native-hairline-20261006/` and `artifacts/convex-quadratic-20261006/`.
+The renderer and corporate results remain unchanged. The next implementation
+must retain the source centerline, final device map and stroke style within the
+existing ownership/work/memory contracts, and use the native hairline algorithm.
+Cap/curve/dash/clip behavior and repeated paints need their full scoped evidence;
+Implement shared stroke dispatch and native coverage rules.

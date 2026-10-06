@@ -8,12 +8,14 @@ wordmarks **6/14**. S17 requires at least **23/27**, including at least 11/13 ma
 and 12/14 wordmarks. Membership, holdouts, options, original inputs and browser
 references remain frozen.
 
-Current evidence: **1,051 fixtures = 869 exact + 152 known differences + 30
-rejections**, across 555 base documents / 496 variants; **36 research probes =
+Current evidence: **1,057 fixtures = 871 exact + 156 known differences + 30
+rejections**, across 561 base documents / 496 variants; **36 research probes =
 five exact + 30 known + one rejection**; and 92 legacy Default renders:
-**1,179 cases**. All 853 prior exact fixture PNGs and 121 exact corporate PNGs
+**1,185 cases**. All 853 prior exact fixture PNGs and 121 exact corporate PNGs
 are preserved, as are all dispositions. Thirteen known fixtures become exact;
-three unchanged research probes also enter the exact bank. Windows locked
+three unchanged research probes also enter the exact bank. Six additional
+hairline-dispatch controls add two exact and four known fixtures against eighteen
+stable, healthy captures; renderer `ddaabaab` and all corporate results are unchanged. Windows locked
 restore, nine-project Release build and **3,690 tests** (3,524 core + 160 visual
 + six FontProbe) pass. All 25 memory scenarios, package/installed-consumer,
 Chrome smoke and artifact validation pass. Seventeen matched recipes record

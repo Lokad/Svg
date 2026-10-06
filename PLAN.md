@@ -14,9 +14,9 @@ All prior exact PNGs and dispositions are preserved. Forty-five corporate PNGs
 change: 42 improve mismatch count and three retain their count; none worsen.
 Original inputs, options and references remain frozen.
 
-The bank has **1,051 fixtures = 869 exact + 152 known differences + 30
+The bank has **1,057 fixtures = 871 exact + 156 known differences + 30
 rejections**, plus **36 research probes = five exact + 30 known + one rejected**
-and 92 legacy Default renders: **1,179 executed cases**. Thirteen known fixtures
+and 92 legacy Default renders: **1,185 executed cases**. Thirteen known fixtures
 become exact. Three research probes also join the exact fixture bank with their
 unchanged SVGs, PNGs and capture provenance. Six known controls worsen in mismatch
 count; the rounded-mark alpha-error mass improves while the bevel probe worsens.
@@ -29,10 +29,12 @@ Seventeen matched recipes record work, storage, allocations and timing in
 IKEA intended/large raster work falls 48,672/149,041 → 43,756/138,863;
 accounted peaks remain unchanged across all seventeen recipes. General event
 fidelity, representative performance and Linux remain open. Ordinary code edits
-and rebuilds require no hash refresh.
+and rebuilds require no hash refresh. Six fresh hairline-dispatch controls add
+two exact and four known fixtures; all eighteen captures are stable and healthy.
+The renderer remains `ddaabaab`; these controls change no corporate output.
 
-**Next: remaining original corporate edge events, thin/fractional and
-closed/curved/dashed strokes, clipping and paint residuals.** Preserve the new
+**Next: native thin-stroke hairline dispatch, remaining original corporate edge
+events, closed/curved/dashed strokes, clipping and paint residuals.** Preserve the new
 directed-fill, raw even-odd and vertical-cancellation controls alongside the
 numeric, material, bitmap-origin, AA-clip and rational-curve repairs. Rows 3–7,
 general fidelity, representative performance and Linux remain open.
@@ -95,7 +97,7 @@ below retain historical implementation and measurement details.
 | Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
 | Full tests, including corporate selection/measurement | **3,690 passed**: 3,524 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | All 25 memory scenarios, runtime/symbol package inspection, isolated installed-consumer, Chrome smoke and artifact validation pass. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **1,051 entries = 869 exact + 152 known-difference renders + 30 rejections**; 555 base documents / 496 variants. All prior exact images and outcomes are preserved. Thirteen existing known fixtures become exact; three unchanged research probes also join the exact fixture bank. Synthetic coverage is separate from corporate coverage. |
+| Executed fixture manifest | **1,057 entries = 871 exact + 156 known-difference renders + 30 rejections**; 561 base documents / 496 variants. All prior exact images and outcomes are preserved. Thirteen existing known fixtures become exact; three unchanged research probes also join the exact fixture bank. Synthetic coverage is separate from corporate coverage. |
 | Executed research manifest | **36 probes = five exact + 30 known-difference renders + one rejection**. The cubic arch and two shared-pixel probes become exact; the width-one cap remains inexact. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Ten Default PNGs change without a matching-options fidelity claim. The candidate directory has 100 files; eight new holdouts belong to the corporate matrix. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks, selected before fresh comparison. Membership, original sources, root-only materializations, options and references stay unchanged. All declared variants have stable browser references. |
@@ -813,6 +815,12 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    coordinate parity remains open. Keep paint boxes, clips and reference admission
    separate from raster replay; the early scene-premapping model remains rejected.
 4. **Complete thin/fractional events and closed/curved/dashed stroke construction.**
+   Implement the pinned native hairline dispatch for strokes up to one device
+   pixel, retaining the centerline and ordered segment paints. Six fresh controls
+   isolate this gap: widths 0.5 and 1 differ at both phases; width 1.5 is exact.
+   All eighteen captures are stable/healthy. See the [dispatch diagnosis](docs/RASTERIZATION_DESIGN.md#thin-stroke-hairline-dispatch-diagnosis-2026-10-06).
+   Keep geometry, clipping, cap behavior, alpha modulation, limits and ownership
+   coherent; changing filled-outline rounding cannot reproduce the hairline kernel.
    Preserve native float normalization, endpoint replacement, rational caps/joins,
    forward inner-arc splits and signed contacts. Keep both the 49 earlier native
    points and 88 new control/endpoint/weight rows, all graduations and fresh
@@ -1310,7 +1318,7 @@ The 240 measured renders contain 133 exact variants and 107 known differences.
 All nine Target and all nine Coca-Cola variants have browser references but retain
 UnsupportedFeature outcomes; reference availability and renderability are
 independent axes. The first cohort's complete reference matrix closes its S8
-measurement obligation, including browser behavior for rejected inputs. The 869
+measurement obligation, including browser behavior for rejected inputs. The 871
 exact fixture entries remain separate from corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and

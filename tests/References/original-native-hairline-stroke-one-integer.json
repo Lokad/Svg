@@ -1,0 +1,33 @@
+{
+  "fixtureId": "original-native-hairline-stroke-one-integer",
+  "referencePng": "original-native-hairline-stroke-one-integer.png",
+  "referenceSha256": "c7f83f088110f91a1d814b455a5e30cb27c10d4f18f01c0a034111918616351a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "c54a0ad493ae73744172da8977c3d9710db71ad83444358d296b9b0fa841f87b",
+  "candidateSha256": "7d6817b91d27dd72487fca1150bd58b3cd5008dc7414d65729df71470e696560",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 169,
+    "maximumChannelError": 235,
+    "maximumAlphaError": 64,
+    "exact": false,
+    "alphaErrorMass": 296
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true,
+  "strokeWidth": 1,
+  "phase": 0
+}
