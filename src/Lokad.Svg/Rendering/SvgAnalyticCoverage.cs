@@ -1453,6 +1453,8 @@ internal ref partial struct SvgAnalyticCoverage
         cancellationToken.ThrowIfCancellationRequested();
         if (ends.Length > 1)
         {
+            bool directedContours = mapping == SvgPolygonMapping.NativeFillEdges
+                || !isEvenOdd && mapping == SvgPolygonMapping.NativeStrokeEdges;
 
             if (preparation.KeptContours is null)
             {
@@ -1473,9 +1475,11 @@ internal ref partial struct SvgAnalyticCoverage
             if (preparation.KeptContours == 0) return default;
             if (preparation.Structure is null)
             {
-                // Authored fills already carry directed winding. Contacts do
-                // not decide admission, so they require no pairwise graph scan.
-                if (mapping == SvgPolygonMapping.NativeFillEdges) preparation.Structure = SvgContourFlags.None;
+                // Authored fills and nonzero native strokes carry directed
+                // winding. Their interval walker handles contacts directly;
+                // no pairwise graph scan is needed for multi-contour admission.
+                // Single-contour convexity keeps its separate classification.
+                if (directedContours) preparation.Structure = SvgContourFlags.None;
                 else
                 {
                     CheckClippedSetupWork(setupWork + (long)points.Length * points.Length, maximumSetupWork, cancellationToken);
@@ -1493,7 +1497,7 @@ internal ref partial struct SvgAnalyticCoverage
             if (preparation.TransversalUnion is null)
             {
                 bool transversal = false;
-                if (mapping != SvgPolygonMapping.NativeFillEdges && !isEvenOdd && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) == SvgContourFlags.None)
+                if (!directedContours && !isEvenOdd && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) == SvgContourFlags.None)
                 {
                     CheckClippedSetupWork(setupWork + (long)points.Length * points.Length, maximumSetupWork, cancellationToken);
                     transversal = SvgContourStructure.AllInterLoopContactsTransversal(points, ends, cancellationToken);

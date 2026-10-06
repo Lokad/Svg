@@ -2,6 +2,8 @@
 
 Updated 2026-10-06. Native wider path offsets, joins/caps and closed seams
 improve all 24 untuned controls and all nine Zeppelin variants.
+Multi-contour native stroke preparation now removes unused pairwise contact
+scans while preserving every bank/corporate result.
 [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
 Exact documents remain Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA,
 IKEA and Google: **9/27**, marks **3/13**, wordmarks **6/14**. S17 requires
@@ -18,15 +20,15 @@ with unchanged references. Twenty-four controls preceded edits/capture and eight
 supplemental unit-contract controls followed the edit. All 96 fresh captures are
 stable/healthy; the 37 added fixture entries include 15 exact and 22 known cases.
 
-Windows locked restore, nine-project Release build and **3,754 tests**
-(3,588 core + 160 visual + six FontProbe) pass. New unchanged compiled-native
+Windows locked restore, nine-project Release build and **3,760 tests**
+(3,594 core + 160 visual + six FontProbe) pass. Unchanged compiled-native
 functions validate 1,920 cases / 27,890 complete offset/join/cap/closure commands.
 The adapters exclude native path iteration/lookahead, rectangle specialization,
 stroke-and-fill center removal and painting. All 25 memory scenarios,
 package/installed-consumer, Chrome smoke and artifact validation pass.
-Thirty-nine matching recipes preserve value layouts and 21 complete PNG/work/peak
-records. New controls and Zeppelin reduce raster work; construction adds
-parser work and a wider dashed cubic substantially increases raster work.
+Thirty-nine matching recipes preserve inputs, parser work, all PNGs, value
+layouts and accounted peaks; eleven use less total work. The wider dashed
+cubic falls 466,033 → 27,985 after removing unused contact scans.
 Representative performance remains open.
 
 All 258 corporate dispositions and 134 exact PNGs are preserved: **240 rendered

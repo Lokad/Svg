@@ -174,4 +174,80 @@ public sealed class SvgNativeStrokeOutlineTests
         catch (OperationCanceledException exception) { Assert.Equal(cancellation.Token, exception.CancellationToken); }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
+
+    [Theory]
+    [InlineData(4)]
+    [InlineData(16)]
+    public void Many_directed_stroke_rings_keep_holes_with_bounded_setup_work(int gridSize)
+    {
+        (SvgDevicePoint[] points, int[] ends, int width) = RingGrid(gridSize);
+        SvgAnalyticContourPreparation preparation = new(points, ends, [], false, null,
+            SvgPolygonMapping.NativeStrokeEdges, [], [], new(0, 0, width, width), width, width);
+        RenderBudget budget = new(1_000_000);
+        {
+            using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, width, 0, width,
+                new(0, width), null, SvgAnalyticPaintClip.Binary, points.Length * 16L, budget,
+                out long setup, out bool eligible, CancellationToken.None);
+            Assert.True(eligible);
+            Assert.InRange(setup, 1, points.Length * 16L);
+            SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(new(224, 64, 32, 255));
+            byte[] pixel = new byte[4];
+            for (int row = 0; row < gridSize; row++)
+            {
+                walker.PrepareRow(row * 8 + 3, 100_000, out long _, CancellationToken.None);
+                for (int column = 0; column < gridSize; column++)
+                {
+                    Array.Clear(pixel);
+                    walker.PaintPixel(column * 8 + 1, pixel, paint, SvgAnalyticClipCoverage.Full);
+                    Assert.Equal(255, pixel[3]);
+                    Array.Clear(pixel);
+                    walker.PaintPixel(column * 8 + 3, pixel, paint, SvgAnalyticClipCoverage.Full);
+                    Assert.Equal(0, pixel[3]);
+                }
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData(nameof(SvgPolygonMapping.NativeStrokeEdges), true)]
+    [InlineData(nameof(SvgPolygonMapping.QuarterEdges), false)]
+    [InlineData(nameof(SvgPolygonMapping.FlattenedCurves), false)]
+    public void Other_multi_contour_routes_keep_their_contact_classification_work(string mappingName, bool evenOdd)
+    {
+        (SvgDevicePoint[] points, int[] ends, int width) = RingGrid(4);
+        int[] signs = evenOdd ? Enumerable.Repeat(1, ends.Length).ToArray() : [];
+        SvgAnalyticContourPreparation preparation = new(points, ends, signs, evenOdd, null,
+            Enum.Parse<SvgPolygonMapping>(mappingName), [], [], new(0, 0, width, width), width, width);
+        RenderBudget budget = new(1_000_000);
+        try
+        {
+            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, width, 0, width,
+                new(0, width), null, SvgAnalyticPaintClip.Binary, points.Length * 16L, budget,
+                out long _, out bool _, CancellationToken.None);
+            Assert.Fail("This route still requires its contact classification before admission.");
+        }
+        catch (SvgException exception) { Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode); }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    private static (SvgDevicePoint[] Points, int[] Ends, int Width) RingGrid(int gridSize)
+    {
+        SvgDevicePoint[] points = new SvgDevicePoint[gridSize * gridSize * 8];
+        int[] ends = new int[gridSize * gridSize * 2];
+        int point = 0, contour = 0;
+        for (int row = 0; row < gridSize; row++)
+        for (int column = 0; column < gridSize; column++)
+        {
+            int x = column * 8, y = row * 8;
+            points[point++] = new(x + 1, y + 1); points[point++] = new(x + 7, y + 1);
+            points[point++] = new(x + 7, y + 7); points[point++] = new(x + 1, y + 7);
+            ends[contour++] = point;
+            // Opposite direction leaves a counter inside each outer contour.
+            points[point++] = new(x + 2, y + 2); points[point++] = new(x + 2, y + 5);
+            points[point++] = new(x + 5, y + 5); points[point++] = new(x + 5, y + 2);
+            ends[contour++] = point;
+        }
+        return (points, ends, gridSize * 8);
+    }
 }

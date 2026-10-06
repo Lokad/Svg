@@ -109,30 +109,36 @@ public sealed class SvgNativeDashPathTests
     }
 
     [Theory]
-    [InlineData("M6 40 Q30 -4 58 38", "butt", ".5")]
-    [InlineData("M6 40 C-12 -12 76 80 58 12", "round", ".5")]
-    [InlineData("M6 36 A25 17 25 1 1 56 32 Z", "square", ".5")]
-    [InlineData("M6 40 Q30 -4 58 38", "butt", "8")]
-    [InlineData("M6 40 C-12 -12 76 80 58 12", "round", "8")]
-    [InlineData("M6 36 A25 17 25 1 1 56 32 Z", "square", "8")]
-    public async Task Retained_dashed_curves_agree_through_six_outputs_and_release_after_raster_denial(string path, string cap, string width)
+    [InlineData("M6 40 Q30 -4 58 38", "butt", ".5", 1_000_000)]
+    [InlineData("M6 40 C-12 -12 76 80 58 12", "round", ".5", 1_000_000)]
+    [InlineData("M6 36 A25 17 25 1 1 56 32 Z", "square", ".5", 1_000_000)]
+    [InlineData("M6 40 Q30 -4 58 38", "butt", "8", 1_000_000)]
+    [InlineData("M6 40 C-12 -12 76 80 58 12", "round", "8", 1_000_000)]
+    [InlineData("M6 36 A25 17 25 1 1 56 32 Z", "square", "8", 1_000_000)]
+    [InlineData("M6 40 C-12 -12 76 80 58 12", "round", "1.5", 65_536)]
+    public async Task Retained_dashed_curves_agree_through_six_outputs_and_release_after_raster_denial(string path, string cap, string width, int maximumWork)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path fill='none' stroke='#eb1c23' stroke-width='" + width + "' stroke-linecap='" + cap + "' stroke-dasharray='5 3' stroke-dashoffset='.75' d='" + path + "'/></svg>");
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        SvgRenderLimits defaults = SvgRenderLimits.Default;
+        SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
+            defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
+            maximumWork, defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
         byte[] destination = new byte[expected.Length];
-        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
         Assert.Equal(expected, destination);
         using MemoryStream stream = new();
-        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, stream, options, CancellationToken.None));
         Assert.Equal(expected, stream.ToArray());
-        Assert.Equal(expected, (await SvgConverter.ConvertToPngAsync(input, SvgRenderOptions.Default, CancellationToken.None)).ToArray());
-        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, (await SvgConverter.ConvertToPngAsync(input, options, CancellationToken.None)).ToArray());
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, destination, options, CancellationToken.None));
         Assert.Equal(expected, destination);
         using MemoryStream asyncStream = new();
-        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, options, CancellationToken.None));
         Assert.Equal(expected, asyncStream.ToArray());
 
-        SvgRenderLimits defaults = SvgRenderLimits.Default;
         RenderBudget budget = new(defaults.MaximumAccountedBytes);
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, budget, null, new(defaults.MaximumWorkUnits), CancellationToken.None))
         {

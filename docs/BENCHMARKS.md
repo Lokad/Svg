@@ -1891,11 +1891,43 @@ The new wider controls generally reduce raster work and small peaks; closed
 dashes add 13,816 peak bytes. Zeppelin adds parser work but reduces raster work
 and peak storage. The wider dashed cubic is a clear cost regression: work rises
 98,526 → 466,033 and peak storage adds 14,016 bytes despite improved pixels.
-Its retained native offset curves drive more scan work; optimizing that remaining
-curve/event path must preserve the original references. This checkpoint does
+The follow-up below identifies redundant contact classification in this
+work increase. This checkpoint does
 not meet representative performance gates. Timing ranges include host/JIT
 variation and are exploratory.
 
 All 25 memory scenarios and installed package consumers pass. Remaining stroke
 scan/paint/clip fidelity, shape/hairline contexts, representative profiling and
 Linux remain open.
+
+## Directed multi-contour stroke preparation (2026-10-06)
+
+The frozen `6d978201` renderer and the revised preparation reuse all 39 recipes
+on Windows X64 / .NET 10.0.12, with twenty batches per implementation/recipe
+in both execution orders. Inputs, parser work, value layouts, every complete PNG
+and all accounted peaks are unchanged. Twenty-eight complete PNG/work/peak
+records remain identical; eleven use less work.
+
+| Recipe | Parser work, before → after | Work through raster, before → after | Accounted peak bytes, before → after | Local ms, before / after | Allocated bytes, before / after |
+| --- | --- | --- | --- | --- | --- |
+| path-quad-butt-w8-p0 | 200 → 200 | 7,964 → 7,964 | 171,652 → 171,652 | 0.701–1.226 / 0.785–1.311 | 60,312–60,317 / 60,312–60,317 |
+| path-closed-dashes-w8-p0 | 2,229 → 2,229 | 76,674 → 46,745 | 246,164 → 246,164 | 1.383–4.021 / 1.283–4.421 | 130,541–130,706 / 130,589–130,706 |
+| zeppelin-small | 2,475 → 2,475 | 112,104 → 95,204 | 1,324,088 → 1,324,088 | 3.124–4.796 / 3.181–5.368 | 396,864–396,970 / 396,864–397,050 |
+| sg-small | 7,194 → 7,194 | 651,254 → 518,126 | 1,599,080 → 1,599,080 | 8.561–11.503 / 8.334–12.416 | 1,366,308–1,366,377 / 1,366,308–1,366,377 |
+| dash-wider | 2,834 → 2,834 | 466,033 → 27,985 | 219,492 → 219,492 | 2.160–3.507 / 0.533–0.655 | 142,703–142,715 / 142,705–142,715 |
+| rede-small | 1,005 → 1,005 | 486,444 → 431,994 | 335,810 → 335,810 | 5.197–7.690 / 4.856–7.976 | 393,648–393,706 / 393,648–393,706 |
+
+The wider dashed cubic's 468 fallback points triggered two unused pairwise
+contact scans, accounting for 438,048 work units. Removing those scans reduces
+its total work 466,033 → 27,985, below the earlier pre-construction checkpoint's
+98,526. Its measured timing ranges improve 2.160–3.507 → 0.533–0.655 ms.
+The retained-outline peak remains 219,492 bytes; the earlier 14,016-byte peak
+increase is still present. Most other timing ranges overlap, including the
+unchanged quadratic control; these runs do not establish representative speed.
+
+All 1,273 bank and 258 corporate reports are identical to the preceding
+checkpoint. All 3,760 tests, 25 memory scenarios and installed consumers pass.
+The unchanged pinned-browser smoke and new memory artifacts pass the Windows
+artifact validator. Detailed ledgers/timings stay under ignored
+`artifacts/native-stroke-preparation-20261006/`. General fidelity, representative
+performance, Linux and S17 remain open.

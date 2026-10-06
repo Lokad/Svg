@@ -22,14 +22,15 @@ configurations preceded production edits/capture; four are exact. Eight later
 unit-contract controls add six exact and two known cases. All 96 fresh captures
 are stable, healthy and cleaned. Original references remain frozen.
 
-Validation passes **3,754 tests**, including 1,920 compiled-native construction
+Validation passes **3,760 tests**, including 1,920 compiled-native construction
 cases / 27,890 outline commands, locked restore/nine-project Release build, all
 25 memory scenarios, pinned browser/artifact checks and installed package consumers.
 Private owners and retained storage are reserved before allocation; numerical
-scratch and output expansion are bounded. Thirty-nine matched recipes preserve
-value layouts and 21 complete PNG/work/peak records. Native construction adds
-parser work; raster work generally falls for the new controls and Zeppelin,
-while one wider dashed cubic rises substantially. Performance remains open.
+scratch and output expansion are bounded. Multi-contour native strokes now omit
+unused pairwise contact scans. Thirty-nine matched recipes preserve all PNGs,
+parser work, value layouts and accounted peaks; eleven need less total work.
+The wider dashed cubic falls **466,033 → 27,985 work units** with identical pixels.
+Representative performance remains open.
 Detailed studies stay ignored; source edits and rebuilds require no hash refresh.
 
 **Next: remaining quadratic/cubic stroke scan, clip and paint residuals, native
@@ -88,6 +89,14 @@ adapters exclude full native path iteration/lookahead, rectangle specialization,
 stroke-and-fill center removal and painting; numerical agreement does not prove
 full Chrome pixels. Native oval offset behavior and retained instance curves
 remain. See [the path checkpoint](docs/RASTERIZATION_DESIGN.md#native-wider-path-strokes-2026-10-06).
+
+Multiple nonzero native stroke contours use directed winding without pairwise
+contact classification or transversal-contact scans. Single-contour convexity
+and legacy/even-odd admission retain their existing classifications. All 1,273
+bank cases and 258 corporate variants keep identical complete results. Many-ring
+tests preserve counters under bounded setup work; the wider dashed cubic now
+passes all six public outputs with a 65,536-unit limit. See the
+[preparation follow-up](docs/RASTERIZATION_DESIGN.md#directed-multi-contour-stroke-preparation-2026-10-06).
 
 Native dash construction uses float cumulative distances, integer parameter
 knots and bounded recursive curve measurement. It cuts original verbs rather

@@ -5962,3 +5962,32 @@ Detailed studies stay under ignored `artifacts/native-path-strokes-20261006/`.
 Remaining quadratic/cubic scan, clip and paint residuals, sampled shape routes,
 other hairline contexts, transformed/pathLength dash coverage, full corporate
 fidelity, representative performance and Linux remain open.
+
+## Directed multi-contour stroke preparation (2026-10-06)
+
+Nonzero native stroke contours already retain directed winding at contacts.
+Their multi-contour interval walker does not use contact classification or the
+transversal-union result to choose admission. Preparation now omits both
+pairwise scans for this route, as it already did for authored native fills.
+Single-contour convexity and legacy/even-odd contact guards retain their existing
+classifications. Curve construction, retained verbs, walking and painting are
+unchanged; no storage is added.
+
+The wider dashed cubic's 468 fallback points caused 438,048 redundant work
+units. Removing them reduces total work 466,033 → 27,985 and restores conversion
+under a 65,536-unit limit through all six public output forms. Many-ring controls
+keep opaque bands and empty counters across 32/512 contours with bounded setup
+work; negative controls preserve the legacy/even-odd classification requirement.
+Existing denial, cancellation, cleanup and retry controls remain green.
+
+All 1,273 bank reports and 258 frozen corporate reports retain complete identity,
+including PNGs, comparisons and outcomes. The corporate count remains 9/27.
+All 3,760 tests (3,594 core, 160 visual, six FontProbe), locked restore/Release
+build, 25 memory scenarios and installed-package checks pass. The artifact
+validator reuses the unchanged pinned-browser smoke. Eleven of 39 matched
+recipes use less work with unchanged inputs, parser work, PNGs and accounted
+peaks; local timing ranges remain exploratory. See the
+[benchmark follow-up](BENCHMARKS.md#directed-multi-contour-stroke-preparation-2026-10-06).
+Detailed studies remain under ignored `artifacts/native-stroke-preparation-20261006/`.
+Remaining scan/clip/paint fidelity, representative performance, Linux and S17
+retain their existing requirements.
