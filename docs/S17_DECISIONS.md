@@ -1,16 +1,17 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-07. Quadratic start snapping and bitmap-local conic subdivision
-make Toyota, Liputan6 and Coca-Cola exact in every frozen variant. The cohort is
-**20/27 exact documents**, marks **8/13**, wordmarks **12/14**, with 225 exact
-and 33 known comparisons across 258 variants. S17 requires three more exact
-marks, plus the remaining performance and delivery evidence.
+Updated 2026-10-07. Native legacy conic subdivision rounding makes Rede Manchete,
+Tokyo Tsukurou and Pepsi exact in every frozen variant. The cohort is **23/27
+exact documents**, marks **11/13**, wordmarks **12/14**, with 234 exact and 24
+known comparisons across 258 variants. The numerical criterion is met;
+S17's performance and delivery evidence remains open.
 
-Exact documents are Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, ROC HCVS,
-Red Cross, Artsy, Party of Changes, YouTube, Liputan6, NASA, Blur, Nike, Toyota,
-Target, IKEA, Google and Coca-Cola. Membership, inputs, options and references
+Exact documents are Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, Rede Manchete,
+ROC HCVS, Red Cross, Tokyo Tsukurou, Artsy, Party of Changes, YouTube, Liputan6,
+NASA, Blur, Nike, Toyota, Pepsi, Target, IKEA, Google and Coca-Cola.
+Membership, inputs, options and references
 remain frozen. [PLAN.md](../PLAN.md) owns the current queue and validation totals;
-[the design record](RASTERIZATION_DESIGN.md#quadratic-start-snapping-and-local-conics-2026-10-07)
+[the design record](RASTERIZATION_DESIGN.md#legacy-conic-subdivision-rounding-2026-10-07)
 explains the repair. Detailed diagnostics stay under ignored artifacts.
 
 ## Q1 - numeric exact-document target: selected
@@ -20,7 +21,8 @@ corporate cohort for which **every declared variant is measured and pixel-exact*
 against its pinned oracle. The target is **at least 80% exact documents**, both
 overall and within each corporate-mark/outlined-wordmark stratum. Round each
 required document count upward. This is a release criterion, not a measured
-success rate; the current evidence does not meet it.
+success rate. The current frozen-cohort measurement meets this numerical
+criterion, without establishing the remaining release requirements.
 
 Rejects, known differences, oracle failures and unmeasured variants remain in
 the frozen denominator and cannot enter the exact numerator. An exact fixture

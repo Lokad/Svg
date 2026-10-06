@@ -10,7 +10,7 @@ internal static class SvgRationalQuadratic
 {
     internal const int MaximumQuadCount = 32;
     internal const int MaximumPointCount = 2 * MaximumQuadCount + 1;
-    internal const int MaximumConversionWork = 70;
+    internal const int MaximumConversionWork = 72;
     internal const float DeviceTolerance = 0.25f;
     internal const float QuarterCircleWeight = 0.707106781f;
 
@@ -33,20 +33,38 @@ internal static class SvgRationalQuadratic
         int count = 1 << depth;
         if (output.Length < 2 * count + 1) throw new SvgException(SvgErrorCode.LimitExceeded, "Conic conversion exceeds the caller point buffer.");
         output[0] = start;
+        int next = 1;
+        bool collapsed = false;
         if (depth == 5)
         {
             Split(start, control, end, weight, out SvgDevicePoint first, out SvgDevicePoint middle, out SvgDevicePoint second, out float _);
             work++;
-            if (first == middle && middle == second)
+            if (CannotNormalize(first, middle) && CannotNormalize(middle, second))
             {
                 output[1] = output[2] = output[3] = first;
                 output[4] = end;
-                return 2;
+                count = 2;
+                next = 5;
+                collapsed = true;
             }
         }
-        int next = 1;
-        Subdivide(start, control, end, weight, depth, output, ref next, ref work, token);
+        if (!collapsed) Subdivide(start, control, end, weight, depth, output, ref next, ref work, token);
+        // These bounded passes mirror the native final finite-point check.
+        work++;
+        for (int index = 0; index < next; index++)
+        {
+            if (float.IsFinite((float)output[index].X) && float.IsFinite((float)output[index].Y)) continue;
+            work++;
+            for (int interior = 1; interior < next - 1; interior++) output[interior] = control;
+            break;
+        }
         return count;
+
+        static bool CannotNormalize(SvgDevicePoint first, SvgDevicePoint second)
+        {
+            float dx = (float)first.X - (float)second.X, dy = (float)first.Y - (float)second.Y;
+            return !float.IsFinite(dx) || !float.IsFinite(dy) || dx == 0 && dy == 0;
+        }
 
         static SvgDevicePoint Narrow(SvgDevicePoint point)
         {
@@ -81,13 +99,20 @@ internal static class SvgRationalQuadratic
         out SvgDevicePoint first, out SvgDevicePoint middle, out SvgDevicePoint second, out float newWeight)
     {
         float scale = 1f / (1f + weight);
-        float controlScale = weight * scale;
-        float ax = (float)start.X * scale, ay = (float)start.Y * scale;
-        float bx = (float)control.X * controlScale, by = (float)control.Y * controlScale;
-        float cx = (float)end.X * scale, cy = (float)end.Y * scale;
-        first = new(ax + bx, ay + by);
-        second = new(bx + cx, by + cy);
-        middle = new(0.5f * ax + bx + 0.5f * cx, 0.5f * ay + by + 0.5f * cy);
+        // The legacy native expression matches the pinned browser's conic
+        // coverage. Scaling each term before summing changes its float rounding.
+        float bx = weight * (float)control.X, by = weight * (float)control.Y;
+        first = new(((float)start.X + bx) * scale, ((float)start.Y + by) * scale);
+        second = new((bx + (float)end.X) * scale, (by + (float)end.Y) * scale);
+        middle = new(((float)start.X + 2f * bx + (float)end.X) * scale * 0.5f,
+            ((float)start.Y + 2f * by + (float)end.Y) * scale * 0.5f);
+        if (!float.IsFinite((float)middle.X) || !float.IsFinite((float)middle.Y))
+        {
+            double twiceWeight = (double)weight * 2;
+            double halfScale = 0.5 / (1 + (double)weight);
+            middle = new((float)((start.X + twiceWeight * control.X + end.X) * halfScale),
+                (float)((start.Y + twiceWeight * control.Y + end.Y) * halfScale));
+        }
         newWeight = MathF.Sqrt(0.5f + weight * 0.5f);
     }
 

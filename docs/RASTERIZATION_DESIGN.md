@@ -6343,3 +6343,48 @@ change by -218 through +449 units. No timing or release claim is made. Full
 states, pixel comparisons, captures and ledgers stay under ignored
 `artifacts/quadratic-start-snap-20261007/`. S17 still needs three exact marks,
 representative performance and Linux delivery evidence.
+
+## Legacy conic subdivision rounding (2026-10-07)
+
+The pinned native conic implementation contains two subdivision expressions.
+Scaling each operand before summation changes float rounding relative to its
+original `SK_SUPPORT_LEGACY_CONIC_CHOP` expression. The latter reproduces the
+observed browser circle coverage, so the shared managed converter now uses it,
+including the double midpoint fallback and final finite-point repair. The
+max-depth collapse predicate follows the original non-normalizable point delta,
+including overflow. Endpoints remain intact; nonfinite interiors fall back to
+the original control. The bounded reservation grows from 70 to 72 work units;
+conversion still allocates no storage and checks cancellation at every split.
+
+Unchanged compiled functions from
+[SkGeometry.cpp](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkGeometry.cpp)
+with that define match all 317 complete point rows in 25 cases. These include
+twelve translated quarter circles and three finite-coordinate overflow cases.
+The new-expression native walker reproduces the earlier managed fringe error;
+the legacy-expression walker matches the independently captured circle. Three
+device/root-scaled/group-translated circle controls are exact from nine stable,
+healthy and cleaned captures. Fresh Tokyo small-transparent capture is
+byte-identical to its frozen reference. Geometry was declared before production
+edits; source licensing headers were added before the reviewed captures.
+
+This establishes numerical agreement with the original legacy functions and
+observed browser coverage. It does not establish the browser's build define:
+the inspected public Chromium configuration did not resolve that question.
+Native record adapters also do not execute the complete browser paint pipeline.
+
+Rede Manchete, Tokyo Tsukurou and Pepsi become exact in every frozen variant.
+The cohort reaches 23/27 documents, marks 11/13 and wordmarks 12/14, with 234
+exact and 24 known comparisons. All twelve changed corporate images improve;
+all 225 earlier exact PNGs remain. Thirteen fixtures graduate, three independent
+controls enter the bank, and all 1,151 earlier exact fixture/research PNGs and
+rejections remain. Research outputs are unchanged; seven legacy Default PNGs
+change without matching-options fidelity claims. No existing reference image
+or frozen cohort input/option is replaced.
+
+The Release build and 3,861 tests pass. All 39 resource recipes preserve parser
+work, peak storage and layouts; fifteen raster-work totals increase by four
+through 356 units. Prior memory and package evidence remains valid for unchanged
+ownership and delivery contracts. No representative timing or fresh Linux
+claim is made. S17's numerical minimum is met; performance and platform/delivery
+gates remain open. Detailed records stay ignored under
+`artifacts/oval-residuals-20261007/`.

@@ -336,7 +336,7 @@
     {"id":"original-logo-arc-mark","path":"original/logo-arc-mark.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-23","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"667505514f17a37978081b79c6232888d04f580b882fc1b39acf7ee7dc0002ca","materializedSha256":"667505514f17a37978081b79c6232888d04f580b882fc1b39acf7ee7dc0002ca","featureTags":["logo","mark","path","arc","shape"],"width":64,"height":64,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-logo-arc-mark.json","referenceSha256":"971bd248e3230fe78d8bc55adb775781a04efd74b3f5a20151ad0b962eaad7aa"},
     {"id":"original-logo-quadratic-mark","path":"original/logo-quadratic-mark.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-23","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"59fd2bdda1f8ff37e3b42b2e4e358f97f084bc2f9403fc2cff6af7b2e927864a","materializedSha256":"59fd2bdda1f8ff37e3b42b2e4e358f97f084bc2f9403fc2cff6af7b2e927864a","featureTags":["logo","mark","path","quadratic","shape"],"width":64,"height":64,"scale":1,"background":"transparent","expectedSupport":"unsupported","expectedFidelity":"unsupported","observedBehavior":"renders","knownDifferenceIdentity":"tests/References/original-logo-quadratic-mark.json","unsupportedReason":"Pinned Chrome remains inexact after operation-preserving paint: 4 changed pixels, maximum channel error 6, maximum alpha error 6. Remaining geometry, shader and composition fidelity stays in PLAN.md."},
     {"id":"original-logo-cubic-mark","path":"original/logo-cubic-mark.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-23","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"2769ea2578028e0bec734e1ba5d2972459899253e748ac111b7517d5800cfc3b","materializedSha256":"2769ea2578028e0bec734e1ba5d2972459899253e748ac111b7517d5800cfc3b","featureTags":["logo","mark","path","cubic","shape"],"width":64,"height":64,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-logo-cubic-mark.json","referenceSha256":"725a6820a4b06b6cb0f7ff1b2ec9ffa26343c612b4fe9a1c0c89d5d24c9b2f8d"},
-    {"id":"original-logo-ring-counter-mark","path":"original/logo-ring-counter-mark.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-23","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"9a1ca1cb2a7210b445608691b7b84ed0ae10b0cc98aef807592155bb5dc69241","materializedSha256":"9a1ca1cb2a7210b445608691b7b84ed0ae10b0cc98aef807592155bb5dc69241","featureTags":["logo","mark","counter","arc","fill-rule","shape"],"width":64,"height":64,"scale":1,"background":"transparent","expectedSupport":"unsupported","expectedFidelity":"unsupported","observedBehavior":"renders","knownDifferenceIdentity":"tests/References/original-logo-ring-counter-mark.json","unsupportedReason":"Rendered known difference: 4 differing pixels, maximum channel error 3, maximum alpha error 3. Pixel-exact fidelity remains open."},
+    {"id":"original-logo-ring-counter-mark","path":"original/logo-ring-counter-mark.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-23","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"9a1ca1cb2a7210b445608691b7b84ed0ae10b0cc98aef807592155bb5dc69241","materializedSha256":"9a1ca1cb2a7210b445608691b7b84ed0ae10b0cc98aef807592155bb5dc69241","featureTags":["logo","mark","counter","arc","fill-rule","shape"],"width":64,"height":64,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-logo-ring-counter-mark.json","referenceSha256":"a3f3d841a901b3269889d72f5192f7fbd5882b360ebe92211035c40efe269cef"},
     {"id":"original-abutting-rects","path":"original/original-abutting-rects.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-24","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"520a3275ce37d82c87e32e73e01a736459be0d935c07e24f915013e531e8c770","materializedSha256":"520a3275ce37d82c87e32e73e01a736459be0d935c07e24f915013e531e8c770","featureTags":["shape","path","axis-aligned","solid-fill","compound-contour","coincident-edges"],"width":8,"height":8,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-abutting-rects.json","referenceSha256":"8c7c72b8363807ae7e7881416fe8003278ff10755bd993005771cad37e41fd23"},
     {"id":"original-abutting-rects-white","path":"original/original-abutting-rects-white.svg","variantOf":"original-abutting-rects","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-26","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"520a3275ce37d82c87e32e73e01a736459be0d935c07e24f915013e531e8c770","materializedSha256":"520a3275ce37d82c87e32e73e01a736459be0d935c07e24f915013e531e8c770","featureTags":["shape","path","axis-aligned","solid-fill","compound-contour","coincident-edges","background-variant"],"width":8,"height":8,"scale":1,"background":"white","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-abutting-rects-white.json","referenceSha256":"7437d27e85f2789031113dcf280749dd19a398dcc95046a2a46cbe9aedd212ca"},
     {"id":"original-abutting-rects-black","path":"original/original-abutting-rects-black.svg","variantOf":"original-abutting-rects","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-26","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"520a3275ce37d82c87e32e73e01a736459be0d935c07e24f915013e531e8c770","materializedSha256":"520a3275ce37d82c87e32e73e01a736459be0d935c07e24f915013e531e8c770","featureTags":["shape","path","axis-aligned","solid-fill","compound-contour","coincident-edges","background-variant"],"width":8,"height":8,"scale":1,"background":"black","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-abutting-rects-black.json","referenceSha256":"58a448c5eb0c101fe0b5a80dd6261d61ce3d16d2f48787f9af897fc109bc2ef6"},
@@ -8779,11 +8779,10 @@
       "height": 32,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-offset-circle-32-transparent.json",
-      "unsupportedReason": "Rendered known difference: 2 differing pixels, maximum channel error 17, maximum alpha error 9. Pixel-exact fidelity remains open."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-native-conic-offset-circle-32-transparent.json",
+      "referenceSha256": "9ee1f43a0015ce199433e3424b612b48999dde04b51356654fd37e318969aead"
     },
     {
       "id": "original-native-conic-offset-circle-32-white",
@@ -8806,12 +8805,11 @@
       "height": 32,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-offset-circle-32-white.json",
-      "unsupportedReason": "Rendered known difference: 2 differing pixels, maximum channel error 8, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-native-conic-offset-circle-32-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-native-conic-offset-circle-32-transparent",
+      "oracleIdentity": "tests/References/original-native-conic-offset-circle-32-white.json",
+      "referenceSha256": "557301246ff4cb18fc4c776480e212e78f80925545c66ffc11e9681b38017ada"
     },
     {
       "id": "original-native-conic-offset-circle-32-black",
@@ -8834,12 +8832,11 @@
       "height": 32,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-offset-circle-32-black.json",
-      "unsupportedReason": "Rendered known difference: 2 differing pixels, maximum channel error 8, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-native-conic-offset-circle-32-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-native-conic-offset-circle-32-transparent",
+      "oracleIdentity": "tests/References/original-native-conic-offset-circle-32-black.json",
+      "referenceSha256": "d2f557a6e3fd474a893038d2a9d2ec4aa5670593beaa191c3c653dcc5e2d06b0"
     },
     {
       "id": "original-native-conic-wide-ellipse-64-transparent",
@@ -8945,11 +8942,10 @@
       "height": 129,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-large-circle-129-transparent.json",
-      "unsupportedReason": "Rendered known difference: 2 differing pixels, maximum channel error 8, maximum alpha error 8. Pixel-exact fidelity remains open."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-native-conic-large-circle-129-transparent.json",
+      "referenceSha256": "766337c43e7594d563b88594f44afc9eceff261a2b44b89103e9562398f7cc17"
     },
     {
       "id": "original-native-conic-large-circle-129-white",
@@ -8972,12 +8968,11 @@
       "height": 129,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-large-circle-129-white.json",
-      "unsupportedReason": "Rendered known difference: 2 differing pixels, maximum channel error 8, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-native-conic-large-circle-129-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-native-conic-large-circle-129-transparent",
+      "oracleIdentity": "tests/References/original-native-conic-large-circle-129-white.json",
+      "referenceSha256": "3c3250163fa750eacaa727384c53f07f7e869c77a8c2c3f707688fc852d220b4"
     },
     {
       "id": "original-native-conic-large-circle-129-black",
@@ -9000,12 +8995,11 @@
       "height": 129,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-large-circle-129-black.json",
-      "unsupportedReason": "Rendered known difference: 2 differing pixels, maximum channel error 7, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-native-conic-large-circle-129-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-native-conic-large-circle-129-transparent",
+      "oracleIdentity": "tests/References/original-native-conic-large-circle-129-black.json",
+      "referenceSha256": "a7f12260f0bed7bae37841ee2ef3b05505911e4d6371559f04f86223305f515a"
     },
     {
       "id": "original-native-conic-viewbox-circle-32-transparent",
@@ -9108,11 +9102,10 @@
       "height": 32,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-clipped-circle-48-transparent.json",
-      "unsupportedReason": "Rendered known difference: 3 differing pixels, maximum channel error 8, maximum alpha error 8. Pixel-exact fidelity remains open."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-native-conic-clipped-circle-48-transparent.json",
+      "referenceSha256": "f2615e29b8c79fcab2cf027b046ef8a27d2b4e1101330e2732740c5685b7d596"
     },
     {
       "id": "original-native-conic-clipped-circle-48-white",
@@ -9135,12 +9128,11 @@
       "height": 32,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-clipped-circle-48-white.json",
-      "unsupportedReason": "Rendered known difference: 3 differing pixels, maximum channel error 7, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-native-conic-clipped-circle-48-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-native-conic-clipped-circle-48-transparent",
+      "oracleIdentity": "tests/References/original-native-conic-clipped-circle-48-white.json",
+      "referenceSha256": "04c2443d1acf78614933aaf5ab23ae6966d21e31bcd7df51af6532fca144cab1"
     },
     {
       "id": "original-native-conic-clipped-circle-48-black",
@@ -9163,12 +9155,11 @@
       "height": 32,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-clipped-circle-48-black.json",
-      "unsupportedReason": "Rendered known difference: 3 differing pixels, maximum channel error 4, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-native-conic-clipped-circle-48-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-native-conic-clipped-circle-48-transparent",
+      "oracleIdentity": "tests/References/original-native-conic-clipped-circle-48-black.json",
+      "referenceSha256": "47c5963e680659740509cd0b7bde8c4e99bd9f48604a5426ae925bd263523604"
     },
     {
       "id": "original-native-conic-gradient-ellipse-48-transparent",
@@ -11966,11 +11957,10 @@
       "height": 600,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-bitmap-curve-arc-offset-transparent.json",
-      "unsupportedReason": "Rendered known difference: 15 differing pixels, maximum channel error 6, maximum alpha error 2. Pixel-exact fidelity remains open."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-bitmap-curve-arc-offset-transparent.json",
+      "referenceSha256": "0d600336a3e4aa7d256cfb703c3d8a66de2fbca5f8aa2e0755798bd6e267da7b"
     },
     {
       "id": "original-bitmap-curve-arc-offset-white",
@@ -11993,12 +11983,11 @@
       "height": 600,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-bitmap-curve-arc-offset-white.json",
-      "unsupportedReason": "Rendered known difference: 12 differing pixels, maximum channel error 2, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-bitmap-curve-arc-offset-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-bitmap-curve-arc-offset-transparent",
+      "oracleIdentity": "tests/References/original-bitmap-curve-arc-offset-white.json",
+      "referenceSha256": "0f917c45396666f7d1360f318d6b2066c6f3d2b1ff919c03c13c25a4c7e846c1"
     },
     {
       "id": "original-bitmap-curve-arc-offset-black",
@@ -12021,12 +12010,11 @@
       "height": 600,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-bitmap-curve-arc-offset-black.json",
-      "unsupportedReason": "Rendered known difference: 12 differing pixels, maximum channel error 1, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-bitmap-curve-arc-offset-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-bitmap-curve-arc-offset-transparent",
+      "oracleIdentity": "tests/References/original-bitmap-curve-arc-offset-black.json",
+      "referenceSha256": "f85c8eaa5e65366a06212f0f4d8d8fa05eeb124bddf8b0e3b03c743e6463e040"
     },
     {
       "id": "original-bitmap-curve-research-stroked-circle-16x16",
@@ -12432,6 +12420,87 @@
       "oracleIdentity": "tests/References/original-quadratic-start-phases-black.json",
       "referenceSha256": "7e89f2cab6804c9e430761f15cd0b002b0da5e9594bb811f3077fd9e022b48df",
       "variantOf": "original-quadratic-start-phases-transparent"
+    },
+    {
+      "id": "original-conic-chop-device-circle",
+      "path": "original/conic-chop-device-circle.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the leading SPDX CC0-1.0 declaration.",
+      "originalSha256": "35249d6c0922fc8f62b1fee7f515d19c2e7758b712743dc5830ee72cce617ef6",
+      "materializedSha256": "35249d6c0922fc8f62b1fee7f515d19c2e7758b712743dc5830ee72cce617ef6",
+      "featureTags": [
+        "geometry",
+        "conic",
+        "circle",
+        "transform",
+        "coverage",
+        "regression"
+      ],
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-conic-chop-device-circle.json",
+      "referenceSha256": "2d6e2ed3dc6c7ad152feae86a5cb7013b5db02dbd636b322f7e398e61bd42ff4"
+    },
+{
+      "id": "original-conic-chop-scaled-circle",
+      "path": "original/conic-chop-scaled-circle.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the leading SPDX CC0-1.0 declaration.",
+      "originalSha256": "57cc1dd717d53b87e4c6dd9b5803357ab99a8248e54f36baeb25ae72ea2f9d73",
+      "materializedSha256": "57cc1dd717d53b87e4c6dd9b5803357ab99a8248e54f36baeb25ae72ea2f9d73",
+      "featureTags": [
+        "geometry",
+        "conic",
+        "circle",
+        "transform",
+        "coverage",
+        "regression"
+      ],
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-conic-chop-scaled-circle.json",
+      "referenceSha256": "2d6e2ed3dc6c7ad152feae86a5cb7013b5db02dbd636b322f7e398e61bd42ff4"
+    },
+{
+      "id": "original-conic-chop-translated-circle",
+      "path": "original/conic-chop-translated-circle.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original work dedicated through the leading SPDX CC0-1.0 declaration.",
+      "originalSha256": "2451bf48bf81da0aaa9d11af576ef52b7878c018cf765b569ebf5a57dbb3f28f",
+      "materializedSha256": "2451bf48bf81da0aaa9d11af576ef52b7878c018cf765b569ebf5a57dbb3f28f",
+      "featureTags": [
+        "geometry",
+        "conic",
+        "circle",
+        "transform",
+        "coverage",
+        "regression"
+      ],
+      "width": 200,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-conic-chop-translated-circle.json",
+      "referenceSha256": "2d6e2ed3dc6c7ad152feae86a5cb7013b5db02dbd636b322f7e398e61bd42ff4"
     }
   ]
 }

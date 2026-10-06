@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <None Include="../Fixtures/original/quadratic-start-phases.svg" Link="TestData/quadratic-start-phases.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/conic-chop-device-circle.svg" Link="TestData/conic-chop-device-circle.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/conic-chop-scaled-circle.svg" Link="TestData/conic-chop-scaled-circle.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/conic-chop-translated-circle.svg" Link="TestData/conic-chop-translated-circle.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/path-stroke-native.csv.gz" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/path-stroke-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/conic-stroke-native.csv.gz" CopyToOutputDirectory="PreserveNewest" />

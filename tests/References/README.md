@@ -16,7 +16,21 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current quadratic start-snap checkpoint
+## Current legacy conic subdivision checkpoint
+
+The bank contains 1,231 fixtures (1,145 exact, 62 known, 24 rejected), 36
+research probes (22 exact, 13 known, one rejected) and 92 Default cases:
+1,359 executions. Thirteen existing fixtures become exact; three independent
+circle controls have nine stable, healthy and cleaned browser captures.
+All 1,151 earlier exact fixture/research PNGs remain.
+
+Rede Manchete, Tokyo Tsukurou and Pepsi become exact in every frozen variant.
+The cohort is 234 exact / 24 known / zero rejected, 23/27 documents, marks
+11/13 and wordmarks 12/14. All 225 earlier exact PNGs remain. The numerical
+minimum is met; performance and delivery evidence remains open. Detailed
+runs stay under ignored `artifacts/oval-residuals-20261007/`.
+
+## Quadratic start-snap checkpoint
 
 The bank contains 1,228 fixtures (1,129 exact, 75 known, 24 rejected), 36
 research probes (22 exact, 13 known, one rejected) and 92 Default cases:

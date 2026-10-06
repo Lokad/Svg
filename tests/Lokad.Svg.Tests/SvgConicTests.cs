@@ -20,7 +20,22 @@ public sealed class SvgConicTests
     [InlineData("semicircle-zero-weight")]
     [InlineData("depth-five")]
     [InlineData("near-monotonic")]
-    public void Original_compiled_conic_subdivision_matches_every_float_bit(string id)
+    [InlineData("half-circle-44-q0")]
+    [InlineData("half-circle-44-q1")]
+    [InlineData("half-circle-44-q2")]
+    [InlineData("half-circle-44-q3")]
+    [InlineData("half-circle-100-q0")]
+    [InlineData("half-circle-100-q1")]
+    [InlineData("half-circle-100-q2")]
+    [InlineData("half-circle-100-q3")]
+    [InlineData("half-circle-156-q0")]
+    [InlineData("half-circle-156-q1")]
+    [InlineData("half-circle-156-q2")]
+    [InlineData("half-circle-156-q3")]
+    [InlineData("finite-overflow-positive")]
+    [InlineData("finite-overflow-negative")]
+    [InlineData("finite-overflow-asymmetric")]
+    public void Original_compiled_legacy_conic_subdivision_matches_every_float_bit(string id)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "TestData");
         using JsonDocument metadata = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "conic-native.json")));

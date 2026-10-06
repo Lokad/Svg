@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the quadratic start-snap checkpoint, the 1,228 manifest entries contain
-1,129 exact decoded-pixel references, 75 known-difference renders and 24
+At the legacy conic subdivision checkpoint, the 1,231 manifest entries contain
+1,145 exact decoded-pixel references, 62 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -23,7 +23,9 @@ edge construction and vertical combination stay local, then kept fixed-point
 walk/curve positions translate together. Raw-control raster bounds retain
 extrema missed by flattened samples. Solid, linear, radial and pattern fills
 share this preparation. Quadratic recurrence starts use snapped Y; clipped
-rational curves enter bitmap coordinates before subdivision. Broader shape,
+rational curves enter bitmap coordinates before subdivision. The original native
+legacy expression and finite-output fallback match observed browser circle
+coverage; its browser build define remains unconfirmed. Broader shape,
 transform, stroke and paint fidelity remains open.
 
 Declaration-only DOCTYPE admission applies to bare, SYSTEM and PUBLIC declarations
@@ -40,12 +42,12 @@ remain unsupported. `overflow:visible` is accepted on non-viewport targets;
 root/nested SVG viewports retain hidden clipping and reject visible overflow,
 including matched stylesheet declarations. These admissions add no painting.
 
-The complete frozen corporate matrix has 258 rendered comparisons: 225 exact
-and 33 known differences, with zero renderer rejections. Toyota, Liputan6 and
-Coca-Cola become exact in every variant: **20/27 documents**, marks **8/13**,
-wordmarks **12/14**. All 168 earlier exact PNGs remain. Original inputs, options
-and browser references stay frozen. S17 requires three more exact marks and
-completion of the remaining delivery/performance gates.
+The complete frozen corporate matrix has 258 rendered comparisons: 234 exact
+and 24 known differences, with zero renderer rejections. Rede Manchete, Tokyo
+Tsukurou and Pepsi become exact in every variant: **23/27 documents**, marks
+**11/13**, wordmarks **12/14**. All 225 earlier exact PNGs remain. Original inputs,
+options and browser references stay frozen. S17's numerical minimum is met;
+delivery/performance gates remain open.
 
 Concentric general radial paints retain separate shader-local and referencing
 matrices. The drawing CTM moves into bitmap coordinates before local-gradient

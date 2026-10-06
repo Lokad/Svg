@@ -4,10 +4,14 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgRetainedCurveOutputMappingTests
 {
-    [Fact]
-    public async Task Fractional_quadratic_starts_preserve_six_output_parity()
+    [Theory]
+    [InlineData("quadratic-start-phases.svg")]
+    [InlineData("conic-chop-device-circle.svg")]
+    [InlineData("conic-chop-scaled-circle.svg")]
+    [InlineData("conic-chop-translated-circle.svg")]
+    public async Task Retained_curve_regressions_preserve_six_output_parity(string file)
     {
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "quadratic-start-phases.svg"));
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", file));
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         byte[] destination = new byte[expected.Length];
         Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None));

@@ -7,10 +7,10 @@
     "SkConic::chop",
     "subdivide"
   ],
-  "extraction": "Original function block from subdivide_w_value through chopIntoQuadsPOW2; SK_SUPPORT_LEGACY_CONIC_CHOP is undefined. No equations substituted by the adapter.",
-  "compiler": "g++ -std=c++20 -O2 -DNDEBUG -DSK_RELEASE -Wno-attributes",
+  "extraction": "Original function block from subdivide_w_value through chopIntoQuadsPOW2; SK_SUPPORT_LEGACY_CONIC_CHOP is defined. No equations substituted by the adapter. This expression matches the observed pinned browser circle coverage; it does not establish the browser build define.",
+  "compiler": "g++ -std=c++20 -O2 -DNDEBUG -DSK_RELEASE -DSK_SUPPORT_LEGACY_CONIC_CHOP -Wno-attributes",
   "data": "conic-native.csv",
-  "pointRows": 134,
+  "pointRows": 317,
   "cases": [
     {
       "id": "circle-r2",
@@ -141,6 +141,202 @@
         0.707106781,
         0.25
       ]
+    },
+    {
+      "id": "half-circle-44-q0",
+      "parameters": [
+        60.5,
+        44,
+        60.5,
+        60.5,
+        44,
+        60.5,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-44-q1",
+      "parameters": [
+        44,
+        60.5,
+        27.5,
+        60.5,
+        27.5,
+        44,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-44-q2",
+      "parameters": [
+        27.5,
+        44,
+        27.5,
+        27.5,
+        44,
+        27.5,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-44-q3",
+      "parameters": [
+        44,
+        27.5,
+        60.5,
+        27.5,
+        60.5,
+        44,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-100-q0",
+      "parameters": [
+        116.5,
+        44,
+        116.5,
+        60.5,
+        100,
+        60.5,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-100-q1",
+      "parameters": [
+        100,
+        60.5,
+        83.5,
+        60.5,
+        83.5,
+        44,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-100-q2",
+      "parameters": [
+        83.5,
+        44,
+        83.5,
+        27.5,
+        100,
+        27.5,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-100-q3",
+      "parameters": [
+        100,
+        27.5,
+        116.5,
+        27.5,
+        116.5,
+        44,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-156-q0",
+      "parameters": [
+        172.5,
+        44,
+        172.5,
+        60.5,
+        156,
+        60.5,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-156-q1",
+      "parameters": [
+        156,
+        60.5,
+        139.5,
+        60.5,
+        139.5,
+        44,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-156-q2",
+      "parameters": [
+        139.5,
+        44,
+        139.5,
+        27.5,
+        156,
+        27.5,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "half-circle-156-q3",
+      "parameters": [
+        156,
+        27.5,
+        172.5,
+        27.5,
+        172.5,
+        44,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "finite-overflow-positive",
+      "parameters": [
+        2.8e+38,
+        2e+38,
+        3e+38,
+        3e+38,
+        2e+38,
+        2.8e+38,
+        0.707106781,
+        1e+35
+      ]
+    },
+    {
+      "id": "finite-overflow-negative",
+      "parameters": [
+        -2.8e+38,
+        -2e+38,
+        -3e+38,
+        -3e+38,
+        -2e+38,
+        -2.8e+38,
+        0.707106781,
+        1e+35
+      ]
+    },
+    {
+      "id": "finite-overflow-asymmetric",
+      "parameters": [
+        8e+37,
+        1e+37,
+        2e+38,
+        2e+37,
+        3.2e+38,
+        3e+37,
+        0.707106781,
+        1e+35
+      ]
     }
-  ]
+  ],
+  "selection": "Fresh device/scaled/translated circle captures distinguish the legacy expression at the left fringe. Prior exact outputs are preserved across the frozen bank and cohort."
 }

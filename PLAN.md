@@ -1,38 +1,34 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-07. **Current validated renderer checkpoint: quadratic initial-Y
-snapping and bitmap-local conic subdivision.** Quadratic recurrence starts now
-use the native snapped Y. Clipped rational curves map into each software bitmap
-before subdivision, with source-point mapping work charged before execution.
+Updated 2026-10-07. **Current validated renderer checkpoint: native legacy conic
+subdivision rounding.** The original expression, midpoint fallback and final
+finite-point repair now preserve the observed pinned-browser circle coverage.
+The browser's conic build define remains unconfirmed.
 
-Toyota, Liputan6 and Coca-Cola become exact in every frozen variant. The cohort
-has **20/27 exact documents**, marks **8/13**, wordmarks **12/14**: **225 exact
-comparisons, 33 known differences and zero rejections** across 258 variants.
-All 90 changed corporate images improve; all 168 earlier exact images remain.
-Membership, inputs, options and browser references stay frozen.
+Rede Manchete, Tokyo Tsukurou and Pepsi become exact in every frozen variant.
+The cohort has **23/27 exact documents**, marks **11/13**, wordmarks **12/14**:
+**234 exact comparisons, 24 known differences and zero rejections** across 258
+variants. All twelve changed corporate images improve; all 225 earlier exact
+images remain. Membership, inputs, options and browser references stay frozen.
 
-The bank executes **1,356 cases**: **1,228 fixtures = 1,129 exact + 75 known +
+The bank executes **1,359 cases**: **1,231 fixtures = 1,145 exact + 62 known +
 24 rejected**, **36 research probes = 22 exact + 13 known + one rejected**,
-and 92 legacy Default renders. There are 104 existing fixture graduations and
-five research graduations. The five original research assets also enter the
-fixture bank, alongside three fractional-quadratic configurations from nine
-stable, healthy and cleaned captures. All 1,034 earlier exact fixture/research
-PNGs and every rejection remain. Thirty-two Default PNGs change without a
-matching-options fidelity claim.
+and 92 legacy Default renders. Thirteen existing fixtures graduate. Three
+independent circle controls have nine stable, healthy and cleaned captures.
+All 1,151 earlier exact fixture/research PNGs and every rejection remain.
+Seven Default PNGs change without a matching-options fidelity claim.
 
-The nine-project Windows Release build, **3,843 tests** (3,677 core, 160 visual,
-six FontProbe) and all 25 memory scenarios pass. Thirty-nine resource recipes
-keep their input, parser-work and peak-storage values; fifteen raster-work
-records change by -218 through +449 units. Prior package checks remain evidence
-for the unchanged API/package structure. No new timing, Linux or release claim
-is made. Detailed studies stay ignored.
+The nine-project Windows Release build and **3,861 tests** (3,695 core, 160
+visual, six FontProbe) pass. Thirty-nine resource recipes keep their input,
+parser-work and peak-storage values; fifteen raster-work records increase by
+four through 356 units. Prior memory/package checks remain evidence for unchanged
+ownership and delivery contracts. Detailed studies stay ignored.
 
-**Next: three more exact corporate marks.** S17 requires **23/27**, including
-**11/13 marks and 12/14 wordmarks**. SG Rotation Leipzig, Tokyo Tsukurou and
-Rede Manchete have small remaining differences; SimpleLogin and Pepsi also
-remain measured failures. Preserve every exact control while resolving shared
-shape, stroke, clip and paint routes. Representative performance and Linux
-delivery remain open. See [the quadratic repair](docs/RASTERIZATION_DESIGN.md#quadratic-start-snapping-and-local-conics-2026-10-07).
+**Next: representative performance and fresh platform/delivery evidence.**
+S17's numerical minimum is met; S17 remains open. SimpleLogin, Zeppelin,
+SG Rotation Leipzig and IBM retain measured failures in the frozen denominator.
+Preserve exact controls while completing latency/allocation, Windows/Linux and
+delivery gates. See [the conic repair](docs/RASTERIZATION_DESIGN.md#legacy-conic-subdivision-rounding-2026-10-07).
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -138,14 +134,14 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows Release solution build | Nine projects, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,843 passed**: 3,677 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | All 25 current memory scenarios pass. Prior package/consumer and Chrome artifact checks remain evidence for unchanged delivery contracts; fresh platform/release checks remain open. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **1,228 entries = 1,129 exact + 75 known-difference renders + 24 rejections**; 714 base documents / 514 variants. Eight new entries preserve five graduated research assets and add one quadratic control with two background variants. All earlier exact PNGs and rejections remain. |
-| Executed research manifest | **36 probes = 22 exact + 13 known-difference renders + one rejection**. Five original controls graduate; their SVGs, references and provenance remain unchanged. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. Thirty-two PNGs change. These Default outputs do not establish matching-options corporate fidelity. |
+| Full tests, including corporate selection/measurement | **3,861 passed**: 3,695 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Prior 25-scenario memory, package/consumer and Chrome checks remain evidence for unchanged ownership/delivery contracts; fresh platform/release checks remain open. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
+| Executed fixture manifest | **1,231 entries = 1,145 exact + 62 known-difference renders + 24 rejections**; 717 base documents / 514 variants. Thirteen existing fixtures graduate; three independent circle controls enter the bank. All earlier exact PNGs and rejections remain. |
+| Executed research manifest | **36 probes = 22 exact + 13 known-difference renders + one rejection**. Complete results and PNGs remain unchanged. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. Seven PNGs change. These Default outputs do not establish matching-options corporate fidelity. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
-| Corporate measurement | **258 rendered comparisons = 225 exact + 33 known**, zero rejections. Toyota, Liputan6 and Coca-Cola become exact in every frozen variant; all 168 earlier exact PNGs remain. **20/27 documents**, marks **8/13**, wordmarks **12/14**. S17 remains open. |
-| Performance and platform limits | Thirty-nine resource recipes preserve input identity, parser work, peak storage and layouts. Fifteen raster-work/output records change with the quadratic repair. No timing claim is made. Representative performance, Linux/remote CI and private-font metrics/pixels remain unproved. |
+| Corporate measurement | **258 rendered comparisons = 234 exact + 24 known**, zero rejections. Rede Manchete, Tokyo Tsukurou and Pepsi become exact in every frozen variant; all 225 earlier exact PNGs remain. **23/27 documents**, marks **11/13**, wordmarks **12/14**. Numerical minimum met; S17 remains open. |
+| Performance and platform limits | Thirty-nine resource recipes preserve input identity, parser work, peak storage and layouts. Fifteen raster-work totals increase by four through 356 units; two outputs change. No timing claim is made. Representative performance, Linux/remote CI and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -830,7 +826,7 @@ completed stage: the remaining exit evidence below governs completion.
 | 5 | **Retained curves and final device mapping remain partial with row 4.** Device-map threading, retained controls, live non-convex cubics, curve/walk separation, one-chord cubic admission, axis-aligned float mapping, coupled numeric reading and compatible raw-control convexity, retained conic fills, live rational convex advancement native round-stroke conics and retained-curve float root mapping, authored directed fill replay and bitmap-local curve setup with raw-control bounds have landed. All 436 recorded authored points and the actual Ford CTM match; density integration makes all nine PNGs exact. | Preserve transform/instance and large-translation evidence and the closed row-6, (740,30), (375,269), (269,187) and lower-row witnesses. NASA is exact in all nine variants; remaining root/source operands still differ from recorded browser coordinates. Exact documents do not establish general mapping/event parity. Wider affine/instance, fractional-event and quad/convex/stroke work retains separate gates. |
 | 6 | **Partial: curve-aware stroke completion.** Native straight open-stroke winding, curve measurement/dash cuts and seam continuation, retained conic hairlines and normal-offset oval quadratics are retained. Native wider path offsets, joins/caps and closed seams now share source verbs with polylines; painted instances preserve their curve spans. | Remaining stroke curve/event/paint/clip fidelity, sampled shape routes and round/miter/hairline/pathLength/non-scaling coverage through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings, retained paint clips, shared float shaders and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
-| 8 | **Both selected logo checkpoints achieved; S8 measurement complete for the first frozen cohort; S17 remains open.** Ford and YouTube are each exact in all nine declared variants. All 27 documents / 258 variants, including eight fresh holdouts and eighteen former rejections, have browser references and reproducible reports. | Improve the measured 20/27 exact documents to the 80% target overall and per corporate stratum, with fresh platform/package/resource/performance evidence. |
+| 8 | **Both selected logo checkpoints achieved; S8 measurement complete; S17 numerical minimum met.** Ford and YouTube are each exact in all nine declared variants. All 27 documents / 258 variants, including eight fresh holdouts and eighteen former rejections, have browser references and reproducible reports. | Preserve the measured 23/27 exact documents and both stratum minima; complete fresh platform/package/resource/performance evidence for S17. |
 
 ### Active work order: mapping operands, strokes and cohort residuals (2026-10-06)
 
@@ -919,20 +915,21 @@ syntax remain `MalformedInput`. Root parsing, font discovery and output-scale
 probing preserve input bytes/encodings and shared resource contracts. The 187 new
 core controls cover nine encodings, six outputs, structural limits, work/memory
 denial and during-prolog cancellation. Four legacy Default cases now render.
-Zeppelin and SG Rotation Leipzig have nine known differences each; Artsy now
-has all nine variants exact after the bitmap-local straight-edge repair. Coca-Cola's
-nine variants now render with known differences after directed admission. Shared
+At that DOCTYPE checkpoint, Zeppelin and SG Rotation Leipzig had nine known
+differences each. Artsy is now exact after the bitmap-local straight-edge repair;
+Coca-Cola's directed admission was followed by exact quadratic coverage. Shared
 inactive presentation admission makes Target exact in all nine original variants.
 Holdouts receive no document-specific tuning. All failures/gaps keep their
 denominators.
 
 **Complete first-cohort evidence.** All 258 variants have browser references:
-225 exact, 33 known differences and zero rejections. The remaining 225
+234 exact, 24 known differences and zero rejections. The remaining 225
 references have 675 healthy, cleaned, byte-stable fresh captures. The original
-33 references remain preserved. Coca-Cola graduates from rejection to measured
-known differences; Target subsequently becomes exact without recapture. The straight-edge repair made
-Artsy exact; native open strokes now improve all nine Rede Manchete variants. All
-70 prior exact corporate PNGs and every original reference remain unchanged.
+33 references remain preserved. Coca-Cola graduated from rejection to measured
+differences and subsequently became exact; Target also became exact without
+recapture. The straight-edge repair made Artsy exact; native conic rounding makes
+Rede Manchete exact. All 225 previously exact corporate PNGs and every original
+reference remain unchanged.
 `capture-corporate-cohort.ps1` and VisualDiff's `--cohort` mode reproduce capture
 and categorized per-variant/document reporting under ignored artifacts. Neither
 command refreshes the immutable selection or rewrites references automatically.
@@ -949,11 +946,11 @@ Holdouts remain evaluation
 inputs. Representative performance, Linux delivery and S17 remain open.
 
 A bounded shared repair may land with independent mechanism-level improvement
-and nonregression across all nine Ford variants. Preserve all **1,129 currently
-exact fixture entries**, 22 exact research probes, 225 exact corporate images
+and nonregression across all nine Ford variants. Preserve all **1,145 currently
+exact fixture entries**, 22 exact research probes, 234 exact corporate images
 and required categorized rejections. Intentional syntax graduations need explicit
 contract/tests/provenance updates. Shared rasterization changes require comparison
-across the complete **1,356-case current bank** and all 258 frozen corporate cases.
+across the complete **1,359-case current bank** and all 258 frozen corporate cases.
 Earlier bank comparisons remain historical evidence. Report fixture/research/legacy
 and corporate regression scopes separately.
 Run affected ownership/work/cancellation,
@@ -1248,7 +1245,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 
 | ID | Current disposition and remaining closure |
 | --- | --- |
-| R26 | First-cohort selection and measurement complete: all 27 documents / 258 variants, including eight fresh holdouts, have browser references. All variants now render: 225 exact, 33 known differences. Exact documents are 20/27; broader representativeness and S17 remain open. Historical exact labels and the legacy 92-file Default bank are not S17 rates. Preserve failures and original assets. |
+| R26 | First-cohort selection and measurement complete: all 27 documents / 258 variants, including eight fresh holdouts, have browser references. All variants render: 234 exact, 24 known differences. Exact documents are 23/27, meeting both stratum minima; broader representativeness and S17 delivery/performance remain open. Historical exact labels and the legacy 92-file Default bank are not S17 rates. Preserve failures and original assets. |
 | R27 | Every fixture is executed. Still retain complete decoded candidate identity/diff, validate historical/current oracle identity, distinguish render/reject from fidelity, and graduate positive research controls instead of deleting them. |
 | R28 | Original pattern/root-map repair and inverse gradient maps retained. Paint/alpha one-step residuals remain S11/S13. |
 | R30 | Shared contour preparation, ownership and coverage traversal have landed across the four paints. Preserve that boundary while changing curve state; remaining repeated binding/typed-state work follows demonstrated dependencies, not a repository rewrite. |
@@ -1287,7 +1284,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 | S1–S5 | Core foundations and original repairs exist; preserve API, parser, memory/work and output contracts throughout. |
 | S6 | Disposable single-use preparation exists; preserve resource leases and six-output behavior. |
 | S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
-| S8 | Complete for the first frozen corporate cohort: 27 documents / 258 variants including eight fresh holdouts, all renderer cases executed, all references available and reusable capture/reporting tools. Results are 225 exact variants and 33 known differences, with zero rejections; exact documents 20/27. Selection limits remain explicit; S17 requires the exact-document threshold and delivery evidence. The historical 92-file bank stays separate. |
+| S8 | Complete for the first frozen corporate cohort: 27 documents / 258 variants including eight fresh holdouts, all renderer cases executed, all references available and reusable capture/reporting tools. Results are 234 exact variants and 24 known differences, with zero rejections; exact documents 23/27. Selection limits remain explicit; S17's numerical minimum is met, with performance and delivery evidence open. The historical 92-file bank stays separate. |
 | S9 | Styles/references/viewports, declaration-only DOCTYPEs and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
 | S10 | Full path-command/affine kernels, retained controls, live non-convex cubics, curve/walk state separation and one-chord cubic admission exist. Raw-control classification is integrated; fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
@@ -1296,7 +1293,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 | S14 | Rectangle clips, contained-edge scan windows, limited masks and isolated opacity exist. Bounded CPU raster contexts separate bitmap construction bounds from owned interiors. Clipped construction is integrated when path/control bounds escape the bitmap, canvas or explicit clip, including curves whose geometry fits. AA paint-clip dispatch is integrated for contained and clipped paths with geometric boundary provenance separate from mask allocation regions. The bounded predicate/setup and paint-context proof excludes full native AA masks/cache intersections. Preserve X/Y pieces, projected winding, whole-path dispatch, bitmap-bounded storage, exclusive interiors and fractional paint coverage. General clipped event fidelity, clips, mask regions/content and bounded nested composition remain open. |
 | S15 | Live-text wordmarks are experimental, not required for outlined wordmarks. Follow section 6 and shared glyph contours, not a separate renderer. |
 | S16 | Uniform embedded PNGs and narrow patterns exist. General raster decoding/resampling, multi-element patterns, markers, filters/blending and additional static CSS only for measured blockers. |
-| S17 | Not achieved. The first cohort is frozen; it needs at least 11/13 exact marks and 12/14 exact wordmarks (at least 23/27 total), every declared variant exact for counted documents, and fresh delivery/resource/performance evidence. Report its selection limits; broader representativeness remains unproved. |
+| S17 | Numerical criterion met: 23/27 exact documents, including 11/13 marks and 12/14 wordmarks, with every declared variant exact for counted documents. Not achieved overall: representative performance and fresh platform/delivery evidence remain open. Report selection limits; broader representativeness remains unproved. |
 
 ## 5. Product contract, evidence and completion
 
@@ -1405,11 +1402,11 @@ records this cross-tabulation:
 | UnsupportedFeature | 0 | 0 | 0 | 0 |
 | Total | 258 | 0 | 0 | 258 |
 
-The 258 measured renders contain 225 exact variants and 33 known differences.
+The 258 measured renders contain 234 exact variants and 24 known differences.
 All nine Target variants are exact against their original browser references;
-Coca-Cola renders all nine variants with measured differences. Reference
+Coca-Cola is also exact in all nine variants. Reference
 availability and renderability remain independent axes. The first cohort's complete reference matrix closes its S8
-measurement obligation, including browser behavior for rejected inputs. The 1,129
+measurement obligation, including browser behavior for rejected inputs. The 1,145
 exact fixture entries remain separate from corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and
@@ -1431,8 +1428,8 @@ outcomes did not filter membership: all 19 retained brand/organization exports
 and eight predeclared fresh holdouts remain. The 22/27 rounded overall minimum
 and the 11/13 mark plus 12/14 wordmark minima all apply: **23 exact documents is
 the effective minimum** for this cohort. All 258 cases, including the fifteen former
-transport-limit gaps and all currently failing variants (including Coca-Cola's
-known differences), retain their denominator. Combined identities already have a
+transport-limit gaps and all currently failing variants, retain their denominator.
+Combined identities already have a
 declared primary stratum. Public-domain source selection and the organizational
 mix limit representativeness; future cohorts must be selected before measurement
 as well.

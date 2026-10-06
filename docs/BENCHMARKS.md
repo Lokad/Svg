@@ -2049,3 +2049,17 @@ with native quadratic start snapping and charged bitmap-local conic mapping;
 their output identities change as expected. All 25 memory scenarios pass. These
 are resource observations, with no new latency or allocation-rate claim. Full
 before/after records stay under ignored `artifacts/quadratic-start-snap-20261007/`.
+
+## Legacy conic subdivision resource observation (2026-10-07)
+
+All 39 Windows X64 / .NET 10.0.12 resource recipes preserve input identity,
+parser work, accounted peak storage and value layouts. The shared conic finite
+check increases fifteen work-through-raster totals by four through 356 units;
+two recipe PNGs change. Conversion remains allocation-free with the same caller
+buffers. The maximum reserved conversion phase increases from 70 to 72 units
+to cover bounded checking and repair passes. All 3,861 tests pass, including
+finite-overflow vectors, work denial, cancellation and six-output regressions.
+
+These are resource observations; no representative latency/allocation result
+is claimed. Detailed ledgers stay under ignored
+`artifacts/oval-residuals-20261007/`.

@@ -1,0 +1,36 @@
+{
+  "fixtureId": "original-conic-chop-translated-circle",
+  "referencePng": "original-conic-chop-translated-circle.png",
+  "referenceSha256": "2d6e2ed3dc6c7ad152feae86a5cb7013b5db02dbd636b322f7e398e61bd42ff4",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 200,
+    "height": 200,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "2451bf48bf81da0aaa9d11af576ef52b7878c018cf765b569ebf5a57dbb3f28f",
+  "candidateSha256": "83ed525637a9ba7f6109a75f39be4cd981e3a703b5b7f964832f0ac77a0c0ce7",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 200,
+    "minimumMismatchY": 200,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
+}

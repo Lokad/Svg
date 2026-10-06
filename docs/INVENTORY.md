@@ -5,6 +5,24 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Legacy conic subdivision checkpoint (2026-10-07)
+
+Rede Manchete (`inv-009`), Tokyo Tsukurou (`inv-019`) and Pepsi (`inv-097`)
+become exact in every frozen variant. The cohort has **23/27 exact documents**,
+marks **11/13**, wordmarks **12/14**: 234 exact, 24 known and zero rejected
+comparisons. All 225 earlier exact corporate PNGs remain; all twelve changed
+images improve. Sources, options, browser references and capture provenance
+remain frozen. SimpleLogin, Zeppelin, SG Rotation Leipzig and IBM retain their
+measured failures and denominators.
+
+The bank has 1,231 fixtures (1,145 exact, 62 known, 24 rejected), 36 research
+probes (22 exact, 13 known, one rejected) and 92 Default cases: 1,359 executions.
+Thirteen fixtures graduate and three independent circle controls enter the bank
+with nine stable, healthy and cleaned captures. S17's numerical minimum is met;
+representative performance and delivery evidence remains open. [PLAN](../PLAN.md)
+owns the queue. Detailed comparisons stay under ignored
+`artifacts/oval-residuals-20261007/`.
+
 ## Quadratic start-snap checkpoint (2026-10-07)
 
 Toyota (`inv-096`), Liputan6 (`inv-040`) and Coca-Cola (`inv-102`) become exact
