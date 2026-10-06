@@ -42,7 +42,10 @@ Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
 remaining variants. Native straight open-stroke construction and winding make
 six original miter/bevel probes and three viewBox configurations exact, and
 improve every Rede Manchete variant. Bevel polylines share the path kernel.
-Round conics, closed/curved/dashed strokes and broader clip fidelity remain open.
+Circle/ellipse fills retain rational conics through final mapping and live convex
+walking. Six original probes and one fixture become exact; every Cartier variant
+improves but remains inexact. Round stroke conics, closed/curved/dashed strokes
+and fractional clip fidelity remain open.
 Straight dash cuts now preserve native float endpoints, and nonzero orthogonal
 contact sets retain their one-byte fringes through signed-winding analytic
 walking. All nine ROC variants and twelve fresh controls are exact. These

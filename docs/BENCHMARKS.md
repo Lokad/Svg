@@ -1425,3 +1425,38 @@ square-cap/bitmap-bound controls remain inexact. Three four-million-point native
 normalization cancellation studies observe the caller token in 1.02–2.81 ms.
 Round conics, closed/curved/dashed construction, clip fidelity and Linux remain
 open.
+
+## Retained conic-fill observations (2026-10-06)
+
+Fourteen identical input/options recipes compare the saved `8f75f8ce` assembly
+with retained conic fills and live convex walking. Ledgers are separate from
+local timing: eight warmups, three batches, in both process orders. Records stay
+under ignored `artifacts/conic-retention-20261006/`; Git identifies code. No
+source, adapter, assembly, package or diagnostic-report hashes are recorded.
+Geometry/rectangle/stop/analytic-paint sizes remain 248/112/16/24 bytes and retained
+quadratic spans remain 32 bytes. The eleven oval recipes use fewer parser work units;
+three nonoval controls retain their work, storage and complete PNGs.
+
+| Recipe | Parser work | Work through raster | Accounted peak bytes |
+| --- | --- | --- | --- |
+| tiny | 17 → 17 | 22 → 22 | 163,840 → 163,840 |
+| circle-r2 | 36 → 34 | 291 → 352 | 197,112 → 199,340 |
+| ellipse | 54 → 44 | 975 → 1058 | 197,304 → 199,724 |
+| scaled-circle | 87 → 61 | 41349 → 44755 | 197,688 → 200,492 |
+| large-circle | 149 → 91 | 75218 → 67447 | 198,456 → 202,028 |
+| cartier | 999 → 759 | 31508 → 25553 | 216,064 → 221,156 |
+| ford | 4657 → 4657 | 1301233 → 1301233 | 534,546 → 534,546 |
+
+Conic metadata and live-edge construction increase the oval peaks by 2,228–5,092
+bytes. Circle r2 and the ellipse add setup/raster work; the larger circle and
+Cartier 318×80 observation reduce total work. Converted pieces use the existing
+bounded buffer and two-pass edge reservation. The converter itself allocates no
+heap storage. Denial/cancellation tests and all 25 memory scenarios pass.
+
+Local timing ranges overlap for tiny inputs, circle r2, the larger circle,
+Cartier and Ford. The 16×16 ellipse rises from 0.191–0.202 to 0.211–0.274 ms;
+its ledger includes added conic conversion and live setup. Tiny unchanged-input
+ranges are 0.086–0.109 versus 0.089–0.111 ms. Larger-circle timings are
+1.991–2.380 versus 1.740–2.768 ms and Cartier 318×80 timings are
+2.783–3.985 versus 2.903–3.090 ms. These are local observations, without a
+representative throughput claim. Broader profiling and Linux remain open.

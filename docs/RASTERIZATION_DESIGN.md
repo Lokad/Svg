@@ -5129,3 +5129,69 @@ value sizes are unchanged. Timings remain local evidence. Detailed experiments
 stay under ignored `artifacts/stroke-construction-20261006/`; Git identifies the
 implementation. Round conics, closed/curved/dashed stroke and wider clip/paint
 fidelity, representative performance, Linux and S17 remain open.
+
+## Retained conic fills and live convex curves (2026-10-06)
+
+The declared baseline is `8f75f8ce`. Circle/ellipse fills previously reached the
+scanner as sampled lines. Native `SkConic` retains rational quadratic controls;
+`SkEdgeClipper::ClipPath` converts them at 0.25 device pixels after mapping.
+`SvgQuadSpan` now retains the weight in former alignment padding, preserving its
+32-byte size. Placement and output mapping preserve that weight. Four native
+float-bound oval quarters keep their final closing endpoint; collapsed float
+bounds enclose no area and overflowing bounds report a limit. Simple ovals share
+their retained route under both fill rules; polynomial even-odd gates remain.
+
+All 134 point rows from ten original compiled `SkGeometry.cpp` cases match float
+bits, including reversal, scale, float collapse, zero/unit weights, depth five
+and near-monotonic Y. The metadata records upstream revision, function extraction,
+compiler flags and supplied inputs. No solution, adapter or binary hashes are
+recorded. The converter uses caller storage, at most 65 points and five recursive
+levels, checking cancellation at every subdivision. Work is bounded before entry
+and actual conversion work is charged. Builder weight columns allocate only for
+rational spans and their reservation remains live through scene transfer.
+
+The first model fed converted conics into the existing pre-stepped convex path.
+Two small-circle probes became exact, but the solid ellipse's alpha-error mass
+rose 83 → 116 and several known composite controls worsened. This model is
+rejected. Native `aaa_walk_convex_edges` advances a live edge before replacing it;
+its smoothing decision uses remaining quadratic/cubic derivatives. The shared
+convex walker now implements that advancement and smoothing. Rational convex
+pieces use live quad edges; polynomial convex paths retain their earlier gate.
+Clipping converts and consumes one quadratic at a time through the existing
+bounded piece buffer, in both count and construction passes. Unclipped edge
+bounds account the actual conic expansion. No intermediate piece tape is retained.
+
+Six original references become exact: circle 6×6, solid/radial disc 16×16, solid
+ellipse 16×16, and the r2/r4 small discs. Their original SVG/PNG/provenance remain
+unchanged; only manifest membership graduates. The existing line/round-mark
+fixture also becomes exact. The prior 1,125-case bank changes 31 PNGs (ten fixtures,
+six research, fifteen legacy Default). Every prior outcome, input and all 830
+prior exact fixture PNGs are preserved. No prior differing-pixel count increases.
+One mixed circle/dash fixture stays at 88 differing pixels while alpha-error mass
+rises 1,702 → 1,737: the independently corrected fill combines with a still
+sampled dash/stroke outline. This retained residual is not waived or hidden.
+
+Eighteen supplemental configurations exercise float oval bounds, larger circles,
+viewBox scaling, bitmap clipping and gradient opacity on three backgrounds. They
+were declared after the edit, before capture/comparison. All 54 captures are
+healthy, cleaned and byte-stable. Every configuration improves but remains
+inexact. The expanded bank has 1,143 cases: 1,011 fixtures (837 exact, 147 known,
+27 rejected), 40 research (39 known, one rejected) and 92 legacy Default.
+
+The frozen corporate matrix retains all 258 outcomes and all 70 exact PNGs.
+Nine Cartier variants improve: small 430 → 282, intended 1,293 → 1,084 and large
+2,535 → 1,918 differing pixels on every background. Two SG Rotation small variants
+improve by three pixels each. The other 229 rendered PNGs are unchanged. Exact
+documents remain 4/27, marks 3/13 and wordmarks 1/14; S17 remains unmet.
+
+Twenty-one new core cases exercise original native points, placement, six-output
+parity, cached nine-point native density, clipped/unclipped setup, work/memory
+denial and release, cancellation-token identity, float collapse and overflow.
+The existing even-odd circle test caught and verifies its corrected route.
+Windows locked restore, nine-project Release build, 3,606 tests, all 25 memory
+scenarios, Chrome smoke, artifact validation, package inspection and isolated
+consumer checks pass. Fourteen matched cost recipes are in the benchmark record;
+local timings do not prove representative throughput. Studies remain ignored
+under `artifacts/conic-retention-20261006/`. Round stroke conics, closed/curved/
+dashed outlines, fractional events, clipping, composition, Linux and general
+fidelity retain separate gates.

@@ -11,6 +11,18 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
+## Current conic checkpoint
+
+Circle/ellipse fills retain rational controls through final mapping and live
+convex scanning. Six original research cases graduate with unchanged references;
+eighteen supplemental configurations retain measured differences and three stable
+captures each. Controls were declared after the production edit. The bank has
+1,011 fixtures (837 exact, 147 known, 27 rejected) and 40 research probes. All 830
+prior exact fixture PNGs and 70 exact corporate PNGs are preserved. Nine Cartier
+and two SG Rotation variants improve; corporate exactness remains 4/27 documents.
+No prior mismatch count increases; one mixed circle/dash alpha-error mass rises
+1,702 → 1,737. Original references stay frozen.
+
 ## Frozen corporate cohort
 
 `inventory/corporate-cohort-v1.json` declares 27 independently sourced brand and

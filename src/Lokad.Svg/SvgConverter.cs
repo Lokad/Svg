@@ -520,6 +520,7 @@ public static class SvgConverter
                 SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, out bool canvasContainsQuads, cancellationToken);
                 SvgCubicSpan[] mappedCubics = MapCubicSpanControls(cubicSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, out bool canvasContainsCubics, cancellationToken);
                 bool hasFractionalEdge = false;
+                bool nativeConics = Array.Exists(quadSpans, static span => span.ConicWeight != 1f);
                 double left = double.PositiveInfinity;
                 double top = double.PositiveInfinity;
                 double right = double.NegativeInfinity;
@@ -527,8 +528,8 @@ public static class SvgConverter
                 for (int index = 0; index < points.Length; index++)
                 {
                     if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double edgeX = mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges ? MapStraightPolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
-                    double edgeY = mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges ? MapStraightPolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
+                    double edgeX = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges ? MapStraightPolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
+                    double edgeY = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges ? MapStraightPolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
                     mapped[index] = new SvgDevicePoint(edgeX, edgeY);
                     if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
                     if (edgeX < left) left = edgeX;
@@ -1481,9 +1482,12 @@ public static class SvgConverter
             {
                 if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 SvgDevicePoint control = spans[index].Control;
-                SvgDevicePoint mappedControl = new(MapEdge(control.X, horizontalScale, horizontalOffset), MapEdge(control.Y, verticalScale, verticalOffset));
+                bool native = spans[index].ConicWeight != 1f;
+                SvgDevicePoint mappedControl = native
+                    ? new(MapStraightPolygonEdge(control.X, horizontalScale, horizontalOffset), MapStraightPolygonEdge(control.Y, verticalScale, verticalOffset))
+                    : new(MapEdge(control.X, horizontalScale, horizontalOffset), MapEdge(control.Y, verticalScale, verticalOffset));
                 canvasContainsControls &= mappedControl.X >= 0 && mappedControl.X <= outputWidth && mappedControl.Y >= 0 && mappedControl.Y <= outputHeight;
-                mapped[index] = new SvgQuadSpan(spans[index].Contour, spans[index].StartIndex, spans[index].EndIndex, mappedControl);
+                mapped[index] = spans[index] with { Control = mappedControl };
             }
             return mapped;
         }

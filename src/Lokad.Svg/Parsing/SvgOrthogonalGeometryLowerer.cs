@@ -305,7 +305,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         return mapped.Count - keptBefore;
     }
 
-    /// <summary>Lowers one axis-aligned ellipse or circle to a sampled polygon fill.</summary>
+    /// <summary>Lowers one axis-aligned ellipse or circle with retained native conic controls.</summary>
     internal SvgParsedGeometry LowerEllipseFill(double centerX, double centerY, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
@@ -314,24 +314,33 @@ internal ref struct SvgOrthogonalGeometryLowering
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        SvgQuadSpan[] conics = Array.Empty<SvgQuadSpan>();
+        using RenderBudget.BudgetReservation? scratch = mappedRadiusX > 0 && mappedRadiusY > 0 ? budget.Reserve(
+            ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(1, ShapeSegmentsPerShape))
+            + 3 * ParserCollectionMemory.GetArrayByteCount<int>(1)
+            + 3 * ParserCollectionMemory.GetArrayByteCount<int>(4)
+            + ParserCollectionMemory.GetArrayByteCount<float>(4)
+            + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(4)
+            + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(4), SvgMemoryCategory.Geometry) : null;
         int[] ends;
         if (mappedRadiusX > 0 && mappedRadiusY > 0)
         {
             SvgDevicePoint center = deviceMap.Apply(centerX, centerY);
             SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
-            using RenderBudget.BudgetReservation scratch = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SampledOutlineCapacity(1, ShapeSegmentsPerShape)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry);
             SvgContourBuilder builder = new(SampledOutlineCapacity(1, ShapeSegmentsPerShape), 1);
+            builder.EnableQuadSpanRetention();
             builder.AddEllipse(center, mappedRadiusX, mappedRadiusY, 0, flattenPolicy, _cancellationToken);
+            conics = builder.GetQuadSpans();
             ends = new int[builder.ContourCount];
             for (int contour = 0; contour < builder.ContourCount; contour++)
             {
-                if (AppendStrippedContour(mapped, builder.GetContour(contour), _workCounter, _cancellationToken) < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed axis-aligned integer path contours are implemented.");
+                foreach (SvgDevicePoint point in builder.GetContour(contour)) mapped.Add(point);
                 ends[contour] = mapped.Count;
             }
         }
         else ends = [];
 
-        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
+        return FinishPolygonFill(mapped, ends, conics, Array.Empty<SvgCubicSpan>(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
     }
 
     /// <summary>Lowers one circle stroke ring to two opposite-wound sampled loops sharing one nonzero fill.</summary>
@@ -639,7 +648,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             int end = ResolveWeldIndex(weldMap, oldStart, span.EndIndex, workCounter, cancellationToken);
             if (start < previousEnd || end <= start || end > weldedEnds[contour]) continue;
             previousEnd = end;
-            kept.Add(new SvgQuadSpan(contour, start, end, span.Control));
+            kept.Add(span with { Contour = contour, StartIndex = start, EndIndex = end });
         }
         return kept.ToArray();
     }
@@ -657,7 +666,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             int mappedStart = indexMap[span.StartIndex];
             int mappedEnd = indexMap[span.EndIndex];
             if (mappedStart < 0 || mappedEnd < 0 || mappedEnd <= mappedStart) continue;
-            keptSpans.Add(new SvgQuadSpan(keptContour, mappedStart, mappedEnd, span.Control));
+            keptSpans.Add(span with { Contour = keptContour, StartIndex = mappedStart, EndIndex = mappedEnd });
         }
     }
 

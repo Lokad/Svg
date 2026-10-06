@@ -1,0 +1,52 @@
+{
+  "fixtureId": "original-native-conic-viewbox-circle-32-black",
+  "referencePng": "original-native-conic-viewbox-circle-32-black.png",
+  "referenceSha256": "867ba65e146b13758e5dd09c3687ffd5e17d18df0a0c63a5e50ba9fc11763e83",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "88ca631a970c508125a9bda9c5577ab62f490090b4256d57f8f99d56ab190d81",
+  "captureSha256": [
+    "867ba65e146b13758e5dd09c3687ffd5e17d18df0a0c63a5e50ba9fc11763e83",
+    "867ba65e146b13758e5dd09c3687ffd5e17d18df0a0c63a5e50ba9fc11763e83",
+    "867ba65e146b13758e5dd09c3687ffd5e17d18df0a0c63a5e50ba9fc11763e83"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": false,
+  "declaredBeforeCaptureAndComparison": true,
+  "candidateSha256": "c6b32845ea11259f53149012e3069670c8858fb847cddeb968713145580237eb",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 21,
+    "maximumChannelError": 12,
+    "meanAbsoluteError": 0.07275390625,
+    "rootMeanSquareError": 0.7457562227363578,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 3,
+    "minimumMismatchY": 10,
+    "maximumMismatchX": 28,
+    "maximumMismatchY": 24,
+    "exact": false,
+    "alphaErrorMass": 0
+  }
+}

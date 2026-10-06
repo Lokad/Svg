@@ -14,13 +14,14 @@ internal ref partial struct SvgAnalyticCoverage
 
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
-    /// <remarks>Both passes charge clipping, validation and traversal. Straight verbs clip and construct fixed edges in the owning bitmap's coordinates, then translate those edges to canvas fixed space; retained curves keep their existing construction. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Horizontal and AA paint-wrapper routing are retained separately from curve clipping; vertical-only binary clips preserve specialized pairs. Convex fills preserve their separately gated pre-stepped walker. Reservations transfer to the returned instance or release on every exception.</remarks>
+    /// <remarks>Both passes charge clipping, validation and traversal. Straight verbs construct edges in bitmap coordinates and then translate to canvas fixed space. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Rational convex edges retain live state; polynomial convex curves preserve their pre-stepped gate. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
     private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
     {
         eligible = false;
         int width = xEnd - xStart;
         long maximumEdges = 0;
         Span<SvgAnalyticClipPiece> pieces = stackalloc SvgAnalyticClipPiece[Clipper.MaximumPieces];
+        Span<SvgDevicePoint> conicPoints = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
         List<AnalyticEdge>? kept = null;
         RenderBudget.BudgetReservation? scratch = null;
         try
@@ -56,79 +57,98 @@ internal ref partial struct SvgAnalyticCoverage
                     for (int index = start; index < end; index++)
                     {
                         ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token);
-                        bool localLine = !(contourSpans && ((quadCursor < quadEnd && quads[quadCursor].StartIndex == index) || (cubicCursor < cubicEnd && cubics[cubicCursor].StartIndex == index)));
-                        if (localLine) ChargeClippedSetupWork(ref setupWork, 4, maximumWork, token);
-                        Clipper clipper = new(localLine ? localClip : clip, !convex, pieces, maximumWork - setupWork, token);
-                        try
+                        int sourceIndex = index;
+                        bool hasQuad = contourSpans && quadCursor < quadEnd && quads[quadCursor].StartIndex == index;
+                        bool hasCubic = contourSpans && cubicCursor < cubicEnd && cubics[cubicCursor].StartIndex == index;
+                        bool localLine = !hasQuad && !hasCubic;
+                        int conicCount = 1;
+                        bool rational = hasQuad && quads[quadCursor].ConicWeight != 1f;
+                        if (rational)
                         {
-                            if (contourSpans && quadCursor < quadEnd && quads[quadCursor].StartIndex == index)
-                            {
-                                SvgQuadSpan quad = quads[quadCursor++];
-                                clipper.ClipQuad(ToClipPoint(points[index]), ToClipPoint(quad.Control), ToClipPoint(points[quad.EndIndex]));
-                                index = quad.EndIndex - 1;
-                            }
-                            else if (contourSpans && cubicCursor < cubicEnd && cubics[cubicCursor].StartIndex == index)
-                            {
-                                SvgCubicSpan cubic = cubics[cubicCursor++];
-                                clipper.ClipCubic(ToClipPoint(points[index]), ToClipPoint(cubic.FirstControl), ToClipPoint(cubic.SecondControl), ToClipPoint(points[cubic.EndIndex]));
-                                index = cubic.EndIndex - 1;
-                            }
-                            else clipper.ClipLine(ToLocalClipPoint(points[index], origin), ToLocalClipPoint(points[index + 1 < end ? index + 1 : start], origin));
+                            SvgQuadSpan conic = quads[quadCursor];
+                            CheckClippedSetupWork(setupWork + SvgRationalQuadratic.MaximumConversionWork, maximumWork, token);
+                            conicCount = SvgRationalQuadratic.Convert(points[index], conic.Control, points[conic.EndIndex], conic.ConicWeight,
+                                SvgRationalQuadratic.DeviceTolerance, conicPoints, out int conicWork, token);
+                            ChargeClippedSetupWork(ref setupWork, conicWork, maximumWork, token);
                         }
-                        finally { setupWork += clipper.WorkUnits; }
-                        for (int pieceIndex = 0; pieceIndex < clipper.Count; pieceIndex++)
+                        for (int conicIndex = 0; conicIndex < conicCount; conicIndex++)
                         {
-                            SvgAnalyticClipPiece piece = pieces[pieceIndex];
-                            ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token);
-                            if (pass == 0)
+                            if (localLine) ChargeClippedSetupWork(ref setupWork, 4, maximumWork, token);
+                            Clipper clipper = new(localLine ? localClip : clip, !convex, pieces, maximumWork - setupWork, token);
+                            try
                             {
-                                // Monotonic live pieces own one edge. The convex route can
-                                // expand each curve into at most 64 forward-difference steps.
-                                maximumEdges += convex && piece.Kind != SvgAnalyticClipKind.Line ? 64 : 1;
-                                continue;
+                                if (hasQuad)
+                                {
+                                    SvgQuadSpan quad = quads[quadCursor];
+                                    if (rational) clipper.ClipQuad(ToClipPoint(conicPoints[2 * conicIndex]), ToClipPoint(conicPoints[2 * conicIndex + 1]), ToClipPoint(conicPoints[2 * conicIndex + 2]));
+                                    else clipper.ClipQuad(ToClipPoint(points[sourceIndex]), ToClipPoint(quad.Control), ToClipPoint(points[quad.EndIndex]));
+                                    index = quad.EndIndex - 1;
+                                }
+                                else if (hasCubic)
+                                {
+                                    SvgCubicSpan cubic = cubics[cubicCursor];
+                                    clipper.ClipCubic(ToClipPoint(points[sourceIndex]), ToClipPoint(cubic.FirstControl), ToClipPoint(cubic.SecondControl), ToClipPoint(points[cubic.EndIndex]));
+                                    index = cubic.EndIndex - 1;
+                                }
+                                else clipper.ClipLine(ToLocalClipPoint(points[index], origin), ToLocalClipPoint(points[index + 1 < end ? index + 1 : start], origin));
                             }
-                            if (kept is null) throw new InvalidOperationException("Clipped edge storage was not reserved.");
-                            // Check the complete bounded numerical phase before entering
-                            // it, then report its actual setup and initial stepping cost.
-                            long phaseBound = piece.Kind == SvgAnalyticClipKind.Line ? 7 : 132;
-                            CheckClippedSetupWork(setupWork + phaseBound, maximumWork, token);
-                            long edgeWork = 0;
-                            int contourEdges = kept.Count;
-                            switch (piece.Kind)
+                            finally { setupWork += clipper.WorkUnits; }
+                            for (int pieceIndex = 0; pieceIndex < clipper.Count; pieceIndex++)
                             {
-                                case SvgAnalyticClipKind.Line:
-                                    AnalyticEdge? edge = SetLine(piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, true);
-                                    edgeWork = 2;
-                                    if (edge is not null)
-                                    {
-                                        if (localLine)
+                                SvgAnalyticClipPiece piece = pieces[pieceIndex];
+                                ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token);
+                                if (pass == 0)
+                                {
+                                    // Live pieces own one edge. Polynomial convex curves can
+                                    // expand into at most 64 forward-difference steps.
+                                    maximumEdges += convex && !rational && piece.Kind != SvgAnalyticClipKind.Line ? 64 : 1;
+                                    continue;
+                                }
+                                if (kept is null) throw new InvalidOperationException("Clipped edge storage was not reserved.");
+                                // Check the complete bounded numerical phase before entering
+                                // it, then report its actual setup and initial stepping cost.
+                                long phaseBound = piece.Kind == SvgAnalyticClipKind.Line ? 7 : 132;
+                                CheckClippedSetupWork(setupWork + phaseBound, maximumWork, token);
+                                long edgeWork = 0;
+                                int contourEdges = kept.Count;
+                                switch (piece.Kind)
+                                {
+                                    case SvgAnalyticClipKind.Line:
+                                        AnalyticEdge? edge = SetLine(piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, true);
+                                        edgeWork = 2;
+                                        if (edge is not null)
                                         {
-                                            edge.X += origin.X << 16;
-                                            edge.UpperX += origin.X << 16;
-                                            edge.Y += origin.Y << 16;
-                                            edge.UpperY += origin.Y << 16;
-                                            edge.LowerY += origin.Y << 16;
-                                            edgeWork += 5;
+                                            if (localLine)
+                                            {
+                                                edge.X += origin.X << 16;
+                                                edge.UpperX += origin.X << 16;
+                                                edge.Y += origin.Y << 16;
+                                                edge.UpperY += origin.Y << 16;
+                                                edge.LowerY += origin.Y << 16;
+                                                edgeWork += 5;
+                                            }
+                                            AddClippedLine(kept, edge);
                                         }
-                                        AddClippedLine(kept, edge);
-                                    }
-                                    break;
-                                case SvgAnalyticClipKind.Quad:
-                                    if (convex) AppendQuadPiece(kept, piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, piece.Third.X, piece.Third.Y, ref contourEdges, ref edgeWork, token);
-                                    else BuildQuadLiveEdge(kept, piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, piece.Third.X, piece.Third.Y, ref contourEdges, ref edgeWork);
-                                    // Existing quad helpers charge setup only for nonempty
-                                    // pieces; clipping also charges rejected setups.
-                                    if (edgeWork == 0) edgeWork = 4;
-                                    break;
-                                case SvgAnalyticClipKind.Cubic:
-                                    if (convex) AppendCubicPiece(kept, piece.First.Coordinates, piece.Second.Coordinates, piece.Third.Coordinates, piece.Fourth.Coordinates, ref contourEdges, ref edgeWork, token);
-                                    else BuildCubicLiveEdge(kept, piece.First.Coordinates, piece.Second.Coordinates, piece.Third.Coordinates, piece.Fourth.Coordinates, ref contourEdges, ref edgeWork);
-                                    break;
-                                default: throw new InvalidOperationException("Unknown clipped analytic verb.");
+                                        break;
+                                    case SvgAnalyticClipKind.Quad:
+                                        if (convex && !rational) AppendQuadPiece(kept, piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, piece.Third.X, piece.Third.Y, ref contourEdges, ref edgeWork, token);
+                                        else BuildQuadLiveEdge(kept, piece.First.X, piece.First.Y, piece.Second.X, piece.Second.Y, piece.Third.X, piece.Third.Y, ref contourEdges, ref edgeWork);
+                                        // Existing quad helpers charge setup only for nonempty
+                                        // pieces; clipping also charges rejected setups.
+                                        if (edgeWork == 0) edgeWork = 4;
+                                        break;
+                                    case SvgAnalyticClipKind.Cubic:
+                                        if (convex) AppendCubicPiece(kept, piece.First.Coordinates, piece.Second.Coordinates, piece.Third.Coordinates, piece.Fourth.Coordinates, ref contourEdges, ref edgeWork, token);
+                                        else BuildCubicLiveEdge(kept, piece.First.Coordinates, piece.Second.Coordinates, piece.Third.Coordinates, piece.Fourth.Coordinates, ref contourEdges, ref edgeWork);
+                                        break;
+                                    default: throw new InvalidOperationException("Unknown clipped analytic verb.");
+                                }
+                                if (edgeWork > phaseBound) throw new InvalidOperationException("Clipped edge construction exceeded its bounded numerical phase.");
+                                setupWork += edgeWork;
                             }
-                            if (edgeWork > phaseBound) throw new InvalidOperationException("Clipped edge construction exceeded its bounded numerical phase.");
-                            setupWork += edgeWork;
                         }
+                        if (hasQuad) quadCursor++;
+                        else if (hasCubic) cubicCursor++;
                     }
                 }
             }

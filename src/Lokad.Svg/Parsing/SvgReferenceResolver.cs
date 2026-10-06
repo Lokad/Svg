@@ -275,7 +275,7 @@ internal static class SvgReferenceResolver
                 y = y * frame.Value.ScaleY + frame.Value.OffsetY;
             }
             if (!double.IsFinite(x) || !double.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "Contour device mapping exceeds the admitted numeric range.");
-            mapped[index] = new SvgQuadSpan(span.Contour, span.StartIndex, span.EndIndex, new SvgDevicePoint(x, y));
+            mapped[index] = span with { Control = new SvgDevicePoint(x, y) };
         }
         return mapped;
     }
@@ -527,7 +527,7 @@ internal static class SvgReferenceResolver
                 workCounter.Consume(cancellationToken);
                 SvgQuadSpan span = spans[index];
                 SvgDevicePoint placed = MapSymbolControl(span.Control, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
-                mapped[index] = new SvgQuadSpan(span.Contour, span.StartIndex, span.EndIndex, placed);
+                mapped[index] = span with { Control = placed };
             }
             return mapped;
         }

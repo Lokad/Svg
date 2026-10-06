@@ -1100,7 +1100,7 @@ internal ref partial struct SvgAnalyticCoverage
     }
 
     /// <summary>Substitutes live quadratic edges for one retained span, returning the built edge count for flattened fallback when zero.</summary>
-    /// <remarks>Interval-walked fills walk each monotonic piece with per-strip advancement (single LowerY per piece); convex rings keep pre-stepped segments until their own slice lands.</remarks>
+    /// <remarks>Interval-walked fills and retained rational convex fills advance each monotonic piece live. Polynomial convex rings keep their separately gated pre-stepped construction.</remarks>
     private static int AppendQuadLiveEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -1141,6 +1141,48 @@ internal ref partial struct SvgAnalyticCoverage
         int emitted = AppendQuadPiece(kept, dst[0], dst[1], dst[2], dst[3], dst[4], dst[5], ref contourEdges, ref setupCost, cancellationToken);
         emitted += AppendQuadPiece(kept, dst[4], dst[5], dst[6], dst[7], dst[8], dst[9], ref contourEdges, ref setupCost, cancellationToken);
         return emitted;
+    }
+
+    /// <summary>Converts retained rational verbs after output mapping and reuses the polynomial walker.</summary>
+    private static int AppendRetainedQuadEdges(List<AnalyticEdge> kept, ReadOnlySpan<SvgDevicePoint> points, SvgQuadSpan span,
+        bool live, ref int contourEdges, ref long setupWork, long maximumWork, CancellationToken token)
+    {
+        SvgDevicePoint start = points[span.StartIndex], end = points[span.EndIndex];
+        if (span.ConicWeight == 1f)
+            return live
+                ? AppendQuadLiveEdges(kept, start.X, start.Y, span.Control.X, span.Control.Y, end.X, end.Y, ref contourEdges, ref setupWork, token)
+                : AppendQuadSpanEdges(kept, start.X, start.Y, span.Control.X, span.Control.Y, end.X, end.Y, ref contourEdges, ref setupWork, token);
+        Span<SvgDevicePoint> quads = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
+        CheckClippedSetupWork(setupWork + SvgRationalQuadratic.MaximumConversionWork, maximumWork, token);
+        int count = SvgRationalQuadratic.Convert(start, span.Control, end, span.ConicWeight, SvgRationalQuadratic.DeviceTolerance, quads, out int conversionWork, token);
+        setupWork += conversionWork;
+        int built = 0;
+        for (int quad = 0; quad < count; quad++)
+        {
+            SvgDevicePoint first = quads[2 * quad], control = quads[2 * quad + 1], last = quads[2 * quad + 2];
+            built += live
+                ? AppendQuadLiveEdges(kept, first.X, first.Y, control.X, control.Y, last.X, last.Y, ref contourEdges, ref setupWork, token)
+                : AppendQuadSpanEdges(kept, first.X, first.Y, control.X, control.Y, last.X, last.Y, ref contourEdges, ref setupWork, token);
+        }
+        return built;
+    }
+
+    /// <summary>Bounds expanded conic edges without retaining an intermediate tape.</summary>
+    private static long QuadraticEdgeBound(ReadOnlySpan<SvgDevicePoint> points, SvgQuadSpan[] spans, int edgesPerQuad,
+        ref long setupWork, long maximumWork, CancellationToken token)
+    {
+        long bound = (long)spans.Length * edgesPerQuad;
+        Span<SvgDevicePoint> quads = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
+        foreach (SvgQuadSpan span in spans)
+        {
+            if (span.ConicWeight == 1f) continue;
+            CheckClippedSetupWork(setupWork + SvgRationalQuadratic.MaximumConversionWork, maximumWork, token);
+            int count = SvgRationalQuadratic.Convert(points[span.StartIndex], span.Control, points[span.EndIndex], span.ConicWeight,
+                SvgRationalQuadratic.DeviceTolerance, quads, out int work, token);
+            setupWork += work;
+            bound += (long)count * 2 - edgesPerQuad;
+        }
+        return bound;
     }
 
     /// <summary>Steps one Y-monotonic float quad into walker edges, returning the emitted count.</summary>
@@ -1232,7 +1274,10 @@ internal ref partial struct SvgAnalyticCoverage
     private static bool CurveSpansEligible(ReadOnlySpan<int> ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, bool isEvenOdd, SvgPolygonMapping mapping, SvgContourFlags structure, CancellationToken cancellationToken)
     {
         if (quadSpans.Length == 0 && cubicSpans.Length == 0) return false;
-        if (isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.None || ends.Length != 1) return false;
+        if (mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.None || ends.Length != 1) return false;
+        // A simple oval encloses the same area under both fill rules. Keep the
+        // existing even-odd gate for polynomial paths and mixed retained verbs.
+        if (isEvenOdd && (cubicSpans.Length > 0 || Array.Exists(quadSpans, static span => span.ConicWeight == 1f))) return false;
         return ContourSpansValid(0, ends[0], quadSpans, 0, quadSpans.Length, cubicSpans, 0, cubicSpans.Length, out _, cancellationToken);
     }
 
@@ -1254,7 +1299,7 @@ internal ref partial struct SvgAnalyticCoverage
                 SvgQuadSpan span = quadSpans[quad++];
                 start = span.StartIndex;
                 end = span.EndIndex;
-                if (!double.IsFinite(span.Control.X) || !double.IsFinite(span.Control.Y)) return false;
+                if (!double.IsFinite(span.Control.X) || !double.IsFinite(span.Control.Y) || !float.IsFinite(span.ConicWeight) || span.ConicWeight <= 0) return false;
             }
             else
             {
@@ -1559,7 +1604,7 @@ internal ref partial struct SvgAnalyticCoverage
             if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, multiClip.BitmapOrigin, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = multiPointCount > (long)(yEnd - yStart) * 2;
-            long multiCurveEdges = (long)quadSpans.Length * 2 + (long)cubicSpans.Length * 3;
+            long multiCurveEdges = QuadraticEdgeBound(points, quadSpans, 2, ref setupWork, maximumSetupWork, cancellationToken) + (long)cubicSpans.Length * 3;
             RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth, multiCurveEdges), SvgMemoryCategory.Surface);
             try
             {
@@ -1605,7 +1650,7 @@ internal ref partial struct SvgAnalyticCoverage
                         {
                             SvgQuadSpan span = quadSpans[quadAt];
                             quadAt++;
-                            if (span.EndIndex - index >= 2 && AppendQuadLiveEdges(multiKept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref contourEdges, ref setupWork, cancellationToken) > 0)
+                            if ((span.EndIndex - index >= 2 || span.ConicWeight != 1f) && AppendRetainedQuadEdges(multiKept, points, span, true, ref contourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0)
                             {
                                 index = span.EndIndex - 1;
                                 continue;
@@ -1704,7 +1749,7 @@ internal ref partial struct SvgAnalyticCoverage
         if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, useCurveSpans, convex, desnapBox, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, singleClip.BitmapOrigin, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
         int width = xEnd - xStart;
         bool skipIntersect = singlePointCount > (long)(yEnd - yStart) * 2;
-        long curveEdges = useCurveSpans ? (long)quadSpans.Length * (convex ? 128 : 2) + (long)cubicSpans.Length * (convex ? 192 : 3) : 0;
+        long curveEdges = useCurveSpans ? QuadraticEdgeBound(points, quadSpans, convex ? 128 : 2, ref setupWork, maximumSetupWork, cancellationToken) + (long)cubicSpans.Length * (convex ? 192 : 3) : 0;
         RenderBudget.BudgetReservation? scratch = budget.Reserve(ScratchByteCount(points.Length, width, curveEdges), SvgMemoryCategory.Surface);
         try
         {
@@ -1720,10 +1765,10 @@ internal ref partial struct SvgAnalyticCoverage
                     spanCursor++;
                     int spanContourEdges = kept.Count;
                     bool quadSubstituted = false;
-                    if (span.EndIndex - index >= 2)
+                    if (span.EndIndex - index >= 2 || span.ConicWeight != 1f)
                     {
-                        if (!convex && AppendQuadLiveEdges(kept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref spanContourEdges, ref setupWork, cancellationToken) > 0) quadSubstituted = true;
-                        else if (AppendQuadSpanEdges(kept, points[span.StartIndex].X, points[span.StartIndex].Y, span.Control.X, span.Control.Y, points[span.EndIndex].X, points[span.EndIndex].Y, ref spanContourEdges, ref setupWork, cancellationToken) > 0) quadSubstituted = true;
+                        if ((!convex || span.ConicWeight != 1f) && AppendRetainedQuadEdges(kept, points, span, true, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;
+                        else if (AppendRetainedQuadEdges(kept, points, span, false, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;
                     }
                     if (quadSubstituted)
                     {
@@ -2040,8 +2085,18 @@ internal ref partial struct SvgAnalyticCoverage
     {
         return previousRite > FixedFloorToInt(upperLeft) || previousRite > FixedFloorToInt(lowerLeft);
     }
-    private static bool IsSmoothEnoughLine(AnalyticEdge edge, AnalyticEdge next, int stopY)
+    private static bool IsSmoothEnoughEdge(AnalyticEdge edge, AnalyticEdge next, int stopY)
     {
+        // Native convex walking tests the remaining live forward differences,
+        // rather than the already expanded line segments.
+        if (edge.CurveCount < 0)
+            return (SkAbs32(edge.FCDx) >> 1) >= (SkAbs32(edge.FCDDx) >> edge.CurveShift)
+                && (SkAbs32(edge.FCDy) >> 1) >= (SkAbs32(edge.FCDDy) >> edge.CurveShift)
+                && ((edge.FCDy - (edge.FCDDy >> edge.CurveShift)) >> edge.ToFixedShift) >= Fixed1;
+        if (edge.CurveCount > 0)
+            return (SkAbs32(edge.FCDx) >> 1) >= SkAbs32(edge.FCDDx)
+                && (SkAbs32(edge.FCDy) >> 1) >= SkAbs32(edge.FCDDy)
+                && ((edge.FCDy - edge.FCDDy) >> edge.CurveShift) >= Fixed1;
         if (next.UpperY >= (stopY << 16)) return false;
         long drift = (long)next.DX - edge.DX;
         if (drift > int.MaxValue) drift = int.MaxValue;
@@ -2051,14 +2106,14 @@ internal ref partial struct SvgAnalyticCoverage
     private static bool IsSmoothEnough(AnalyticEdge left, AnalyticEdge right, AnalyticEdge? current, int stopY)
     {
         if (current is null || current.UpperY >= (stopY << 16)) return false;
-        if (left.LowerY + Fixed1 < right.LowerY) return IsSmoothEnoughLine(left, current, stopY);
-        if (left.LowerY > right.LowerY + Fixed1) return IsSmoothEnoughLine(right, current, stopY);
+        if (left.LowerY + Fixed1 < right.LowerY) return IsSmoothEnoughEdge(left, current, stopY);
+        if (left.LowerY > right.LowerY + Fixed1) return IsSmoothEnoughEdge(right, current, stopY);
         AnalyticEdge? following = current.Next;
         if (following is null || following.UpperY >= (stopY << 16)) return false;
         AnalyticEdge first = current;
         AnalyticEdge second = following;
         if (second.UpperX < first.UpperX) (first, second) = (second, first);
-        return IsSmoothEnoughLine(left, first, stopY) && IsSmoothEnoughLine(right, second, stopY);
+        return IsSmoothEnoughEdge(left, first, stopY) && IsSmoothEnoughEdge(right, second, stopY);
     }
     private void InsertNewEdges(AnalyticEdge? insertion, int y, bool skipIntersect)
     {
@@ -2219,12 +2274,18 @@ internal ref partial struct SvgAnalyticCoverage
             _strips++;
             while (leftEdge.LowerY <= y)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (leftEdge.CurveCount < 0 && AdvanceCubicLive(leftEdge, ref _strips)) continue;
+                if (leftEdge.CurveCount > 0 && AdvanceQuadLive(leftEdge, ref _strips)) continue;
                 if (current is null || FixedFloorToInt(current.UpperY) >= _stopY) return;
                 leftEdge = current;
                 current = current.Next;
             }
             while (rightEdge.LowerY <= y)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (rightEdge.CurveCount < 0 && AdvanceCubicLive(rightEdge, ref _strips)) continue;
+                if (rightEdge.CurveCount > 0 && AdvanceQuadLive(rightEdge, ref _strips)) continue;
                 if (current is null || FixedFloorToInt(current.UpperY) >= _stopY) return;
                 rightEdge = current;
                 current = current.Next;

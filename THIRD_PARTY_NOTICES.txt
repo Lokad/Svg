@@ -5,7 +5,8 @@ antialiased rectangle paint-clip dispatch and byte coverage, rounded plain
 rectangle coverage, and line-segment
 dash endpoint interpolation, high-precision shader pixel storage and
 linear/radial gradient coordinate construction and straight open-stroke
-normalization and join construction.
+normalization and join construction, rational conic subdivision and live convex
+curve advancement.
 These adaptations do not depend on native Skia.
 
 Source revision: f8b66b7597c4cc859d3ed190e9c6872241e6721c
@@ -18,7 +19,8 @@ src/core/SkRasterClip.cpp, src/core/SkAAClip.cpp, src/core/SkScan_AAAPath.cpp,
 src/core/SkScan_AntiPath.cpp, src/core/SkScan_Antihair.cpp, src/core/SkAnalyticEdge.cpp, src/core/SkAnalyticEdge.h,
 src/opts/SkRasterPipeline_opts.h, src/core/SkRasterPipelineBlitter.cpp,
 src/shaders/gradients/SkLinearGradient.cpp, src/shaders/gradients/SkRadialGradient.cpp,
-and include/private/SkMath.h, include/private/SkFixed.h.
+and include/private/SkMath.h, include/private/SkFixed.h,
+include/private/SkFloatingPoint.h.
 Copyright 2006, 2008, 2009, 2011, 2016 The Android Open Source Project;
 2010, 2011, 2012, 2016 Google Inc.; 2018, 2023, 2025 Google LLC.
 

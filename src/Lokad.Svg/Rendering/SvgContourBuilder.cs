@@ -33,6 +33,7 @@ internal sealed class SvgContourBuilder
     private int[] _quadStarts = Array.Empty<int>();
     private int[] _quadEnds = Array.Empty<int>();
     private SvgDevicePoint[] _quadControls = Array.Empty<SvgDevicePoint>();
+    private float[] _quadWeights = Array.Empty<float>();
     private int _quadCount;
 
     /// <summary>Starting point storage for growing builders, doubled toward the maxima.</summary>
@@ -78,7 +79,7 @@ internal sealed class SvgContourBuilder
     internal int ContourCount => _contourCount;
 
     /// <summary>Enables quadratic span retention for subsequent verbs.</summary>
-    /// <remarks>Only the path-fill lowering enables retention before parsing; every other route keeps flatten-only behavior with no extra storage. Span arrays allocate lazily on the first recorded quad and double toward the point maximum, so quad-free paths pay nothing and dense quad paths stay within the point denial bound.</remarks>
+    /// <remarks>Path and native oval fills enable retention before construction. Other routes keep flatten-only behavior. Span arrays allocate lazily on the first recorded quad and double toward the point maximum; rational weights allocate only when needed. Quad-free paths pay nothing and dense quad paths stay within the point denial bound.</remarks>
     internal void EnableQuadSpanRetention()
     {
         _retainSpans = true;
@@ -120,7 +121,7 @@ internal sealed class SvgContourBuilder
             try
             {
                 _pointCount += SvgCurveFlatten.FlattenQuadratic(current, control, end, policy, _points.AsSpan(_pointCount), cancellationToken);
-                RecordQuadSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, control);
+                RecordQuadSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, control, 1f);
                 return;
             }
             catch (SvgException)
@@ -132,7 +133,7 @@ internal sealed class SvgContourBuilder
     }
 
     /// <summary>Records one quadratic span with contour-slice-relative indices when retention is enabled; the flattened points stay canonical.</summary>
-    private void RecordQuadSpan(int start, int end, SvgDevicePoint control)
+    private void RecordQuadSpan(int start, int end, SvgDevicePoint control, float weight)
     {
         if (!_retainSpans) return;
         if (_quadContours.Length == 0)
@@ -143,10 +144,16 @@ internal sealed class SvgContourBuilder
             _quadControls = new SvgDevicePoint[4];
         }
         else if (_quadCount >= _quadContours.Length) GrowQuadSpans();
+        if (weight != 1f && _quadWeights.Length == 0)
+        {
+            _quadWeights = new float[_quadContours.Length];
+            Array.Fill(_quadWeights, 1f);
+        }
         _quadContours[_quadCount] = _contourCount;
         _quadStarts[_quadCount] = start;
         _quadEnds[_quadCount] = end;
         _quadControls[_quadCount] = control;
+        if (_quadWeights.Length > 0) _quadWeights[_quadCount] = weight;
         _quadCount++;
     }
 
@@ -230,6 +237,9 @@ internal sealed class SvgContourBuilder
     /// <para>The ellipse stands alone: an open contour is a misuse. Corner radii and rotation arrive in
     /// the device frame under the caller transform, matching endpoint arcs; general-affine ellipse axes
     /// need user-space sampling owned by a later slice.</para>
+    /// <para>Axis-aligned retained ovals use float bounds and four rational quarter verbs. Eager samples
+    /// remain available to fallback consumers; the explicit final endpoint keeps the last span intact.
+    /// Callers reserve point/contour and retained-span columns before construction.</para>
     /// </remarks>
     internal void AddEllipse(SvgDevicePoint center, double radiusX, double radiusY, double rotationRadians, SvgFlattenPolicy policy, CancellationToken cancellationToken)
     {
@@ -238,6 +248,31 @@ internal sealed class SvgContourBuilder
         ValidatePoint(center, nameof(center));
         if (!double.IsFinite(radiusX) || !double.IsFinite(radiusY) || radiusX <= 0 || radiusY <= 0) throw new ArgumentOutOfRangeException(nameof(radiusX));
         if (!double.IsFinite(rotationRadians)) throw new ArgumentOutOfRangeException(nameof(rotationRadians));
+        if (_retainSpans && rotationRadians == 0)
+        {
+            // Native ovals retain four rational verbs built from float bounds.
+            float left = (float)center.X - (float)radiusX, right = (float)center.X + (float)radiusX;
+            float top = (float)center.Y - (float)radiusY, bottom = (float)center.Y + (float)radiusY;
+            if (!float.IsFinite(left) || !float.IsFinite(right) || !float.IsFinite(top) || !float.IsFinite(bottom))
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Oval bounds exceed the finite float range.");
+            if (left == right || top == bottom) return;
+            // SkRect uses a double midpoint to avoid float overflow/underflow.
+            float midX = (float)(0.5 * ((double)left + right)), midY = (float)(0.5 * ((double)top + bottom));
+            BeginContour(new(right, midY));
+            Quarter(new(right, bottom), new(midX, bottom));
+            Quarter(new(left, bottom), new(left, midY));
+            Quarter(new(left, top), new(midX, top));
+            Quarter(new(right, top), new(right, midY));
+            EndContour();
+            return;
+
+            void Quarter(SvgDevicePoint control, SvgDevicePoint end)
+            {
+                int before = _pointCount;
+                AddArc(((double)right - left) * 0.5, ((double)bottom - top) * 0.5, 0, false, true, end, policy, cancellationToken);
+                RecordQuadSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, control, SvgRationalQuadratic.QuarterCircleWeight);
+            }
+        }
         int start = _pointCount;
         while (true)
         {
@@ -334,7 +369,7 @@ internal sealed class SvgContourBuilder
         SvgQuadSpan[] spans = new SvgQuadSpan[_quadCount];
         for (int index = 0; index < _quadCount; index++)
         {
-            spans[index] = new SvgQuadSpan(_quadContours[index], _quadStarts[index], _quadEnds[index], _quadControls[index]);
+            spans[index] = new SvgQuadSpan(_quadContours[index], _quadStarts[index], _quadEnds[index], _quadWeights.Length == 0 ? 1f : _quadWeights[index], _quadControls[index]);
         }
         return spans;
     }
@@ -385,6 +420,7 @@ internal sealed class SvgContourBuilder
         Array.Resize(ref _quadStarts, grown);
         Array.Resize(ref _quadEnds, grown);
         Array.Resize(ref _quadControls, grown);
+        if (_quadWeights.Length > 0) Array.Resize(ref _quadWeights, grown);
     }
 
     /// <summary>Doubles cubic span storage toward the point maximum, failing past it exactly like point storage.</summary>

@@ -1,0 +1,146 @@
+{
+  "upstreamRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "upstreamFile": "src/core/SkGeometry.cpp",
+  "functions": [
+    "SkConic::computeQuadPOW2",
+    "SkConic::chopIntoQuadsPOW2",
+    "SkConic::chop",
+    "subdivide"
+  ],
+  "extraction": "Original function block from subdivide_w_value through chopIntoQuadsPOW2; SK_SUPPORT_LEGACY_CONIC_CHOP is undefined. No equations substituted by the adapter.",
+  "compiler": "g++ -std=c++20 -O2 -DNDEBUG -DSK_RELEASE -Wno-attributes",
+  "data": "conic-native.csv",
+  "pointRows": 134,
+  "cases": [
+    {
+      "id": "circle-r2",
+      "parameters": [
+        5,
+        3,
+        5,
+        5,
+        3,
+        5,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "ellipse-wide",
+      "parameters": [
+        59,
+        20,
+        59,
+        31,
+        31,
+        31,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "large-r409",
+      "parameters": [
+        500,
+        91,
+        500,
+        500,
+        91,
+        500,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "quarter-reversed",
+      "parameters": [
+        3,
+        5,
+        5,
+        5,
+        5,
+        3,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "offset-collapse",
+      "parameters": [
+        16777216,
+        16777216,
+        16777220,
+        16777220,
+        16777220,
+        16777220,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "tiny-quarter",
+      "parameters": [
+        0.1,
+        0,
+        0.1,
+        0.1,
+        0,
+        0.1,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "weight-one",
+      "parameters": [
+        0,
+        0,
+        4,
+        8,
+        8,
+        0,
+        1,
+        0.25
+      ]
+    },
+    {
+      "id": "semicircle-zero-weight",
+      "parameters": [
+        0,
+        0,
+        4,
+        8,
+        8,
+        0,
+        0,
+        0.25
+      ]
+    },
+    {
+      "id": "depth-five",
+      "parameters": [
+        0,
+        0,
+        100000000.0,
+        100000000.0,
+        200000000.0,
+        0,
+        0.707106781,
+        0.25
+      ]
+    },
+    {
+      "id": "near-monotonic",
+      "parameters": [
+        0,
+        64,
+        32,
+        64.0000076,
+        64,
+        64.0000153,
+        0.707106781,
+        0.25
+      ]
+    }
+  ]
+}
