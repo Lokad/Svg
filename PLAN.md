@@ -1201,14 +1201,15 @@ check cancellation within bounded chunks and release owners on every exit.
 
 ### Validation and evidence policy
 
-- Use Git revisions for source and build identity. Keep detailed per-run
-  diagnostics under ignored artifacts; commit reusable regressions and concise
-  reproduction details. Tests assert behavior and protect input/reference
-  identity. Do not record or validate hashes of this solution's source files,
-  scripts, local probe adapters, compiled binaries, packages, diagnostic reports or
-  logs in references or run reports. Identify CI runs through their workflow revision.
-  Refresh measured outcomes when behavior changes. Comments, formatting, refactors
-  and rebuilds require no reference metadata refresh.
+- Identify implementation with Git commits and upstream code with pinned revisions
+  and URLs. Keep detailed per-run diagnostics under ignored artifacts; commit
+  reusable regressions and concise reproduction details. Tests assert behavior
+  and protect input/reference identity. Hash test assets and pinned external binary
+  downloads where integrity is checked. Do not maintain hashes of source files,
+  extracted code snippets, scripts, local adapters, solution binaries, packages,
+  diagnostic reports or logs, including in ignored run reports. Refresh measured
+  outcomes when behavior changes; ordinary source edits and rebuilds require no
+  reference metadata refresh.
 - Each implementation slice includes locked restore/Release build/tests,
   independent semantic/numeric/negative vectors and relevant documentation.
   Current exact references must remain exact. Changes to known mismatches require

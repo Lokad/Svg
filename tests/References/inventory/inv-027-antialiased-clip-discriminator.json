@@ -37,8 +37,6 @@
   "originalNativeRouteRecord": "inv-027-native-route.json",
   "originalReferencesPreserved": true,
   "tracedPngSha256": "a8b410480ffeb48e58c7486e1b0a103e03a2a4b9a92937285085a3a67372e0fb",
-  "traceSha256": "1b9a8a6702957d55b7b14bb0c713cdb61d53c00beeef5ddfca834348f21e7934",
-  "pictureSha256": "d7841ca89deb71a9c05727f6bc314e36fb28a827446f48e4b4fbaee90485d825",
   "actualBrowserTiles": [
     {
       "contentRect": [
@@ -1160,11 +1158,8 @@
   "compiledMapper": {
     "sourceRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
     "sourceFile": "src/core/SkMatrix.cpp",
-    "sourceSha256": "5ed211a7bf3c0ce5f808857bbd9cc305bc64f478a326cf53441138530d3f9826",
     "kernel": "SkMatrix::Scale_pts",
-    "kernelSha256": "ef722fe29f64aea7fdecb2687b314554799760c52d526dfade9870c5cecacd72",
     "vectorHeader": "src/core/SkVx.h",
-    "vectorHeaderSha256": "b2592338b480262e46f76fce7c5717e65d66fc7f24cdf67742fc9f29f3f8b62f",
     "dataSha256": "c5e4973d442987f1add944114098cf1c2c5578364c9a7dd379273b9d80217e6b",
     "inputSha256": "c3c6d8660031545d07f60e0c5a6b5645a31c46fbcf206664eff6482ed6d8af86",
     "vectors": 180,
@@ -1487,23 +1482,18 @@
   ],
   "nativeSources": {
     "src/core/SkAAClip.cpp": {
-      "sha256": "14d4c4b5747c97946189bab62220d27c69434c090e8d267f743cd46522b3c8c7",
       "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkAAClip.cpp"
     },
     "src/core/SkAAClip.h": {
-      "sha256": "a607ebb9ea223df8b05e2cba0a8af57a8f2505592807234fb19abcc481f69044",
       "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkAAClip.h"
     },
     "src/core/SkRasterClip.cpp": {
-      "sha256": "bd6c18720d3882d836570d3536ad50527ee67b8a30b7aea3555a9bcc28015bee",
       "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkRasterClip.cpp"
     },
     "src/core/SkRasterClip.h": {
-      "sha256": "6989904bb3d1e2353f322f0f87a27dd6e06404d4cce264d4c66f07df8a76557b",
       "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkRasterClip.h"
     },
     "src/core/SkScan_AntiPath.cpp": {
-      "sha256": "ba27eb861053331060e26fe6eed943143d88f9e46c16010fd3f883a8e55fa8f5",
       "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_AntiPath.cpp"
     }
   },
@@ -1532,11 +1522,10 @@
     },
     "walkExtraction": {
       "Pin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
-      "WholeSourceSha256": {
-        "src/core/SkScan_AAAPath.cpp": "c7a2e2f869ce0d13f882e713e477a59b0af547cb72dd134caf04b1889d22a35e",
-        "src/core/SkScanPriv.h": "69bcb84b1b935bada3f6bd358f1b03ef99bc4af70514c041b9f7c59b8dc2e402"
-      },
-      "ExtractedSha256": "2a909d042de6d9b072d2e2f8aeb9076f2ef4c28668389874135bcfb4e6c6fbce",
+      "SourceFiles": [
+        "src/core/SkScan_AAAPath.cpp",
+        "src/core/SkScanPriv.h"
+      ],
       "Observation": "One log_trap call; all extracted arithmetic and list/walk control unchanged."
     },
     "adapterLimits": "Compiled native numeric and AAA walk functions; projected vertical combination and actual pending-run flush/pixel paint are not implemented by this event adapter."
@@ -1565,7 +1554,6 @@
     "adapterWalks": [
       {
         "forceRLE": false,
-        "sha256": "6e583883b66744e3a8216755f1f7b447d32fe4b65ff3e3b2c51acb97e1e7cf87",
         "constructionClip": [
           0,
           0,
@@ -1582,7 +1570,6 @@
       },
       {
         "forceRLE": true,
-        "sha256": "72f76cd2ee745c91ddb991b61ed2d5eee88bbd20d19f5cf80527ec72a1a96cba",
         "constructionClip": [
           0,
           0,

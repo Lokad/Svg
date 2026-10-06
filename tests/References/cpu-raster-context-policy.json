@@ -3,28 +3,23 @@
   "sourceFiles": [
     {
       "path": "cc/layers/tile_size_calculator.cc",
-      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/layers/tile_size_calculator.cc",
-      "sourceSha256": "bc2251dc8cc3e1e03e454618ed60d91102ca2b3593217c2c91bb78ed01482f9e"
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/layers/tile_size_calculator.cc"
     },
     {
       "path": "cc/base/tiling_data.cc",
-      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/base/tiling_data.cc",
-      "sourceSha256": "e23aac4e5bb91d94c5c5bd993593504f3e82a5757a633189ebed176510fae43e"
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/base/tiling_data.cc"
     },
     {
       "path": "cc/trees/layer_tree_settings.cc",
-      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/trees/layer_tree_settings.cc",
-      "sourceSha256": "73766d7e7a2dc1ccc7065501519f7e5f13fbff587a41cd495d2b2aa6b53e214b"
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/trees/layer_tree_settings.cc"
     },
     {
       "path": "cc/tiles/picture_layer_tiling.h",
-      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/tiles/picture_layer_tiling.h",
-      "sourceSha256": "18693bbdde17fe72f073ec547bbbf5119fa772fa2d9f5f60f9d89ad5aec09dbe"
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/tiles/picture_layer_tiling.h"
     },
     {
       "path": "LICENSE",
-      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/LICENSE",
-      "sourceSha256": "368cca1106be99d39ecd32a38d8305585d802a475effb66380b91ffc9bcf709b"
+      "url": "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/LICENSE"
     }
   ],
   "platform": "win64",

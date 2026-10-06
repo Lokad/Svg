@@ -3,9 +3,7 @@
   "baselineHead": "354136a3",
   "skiaRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
   "nativeSourceFile": "src/core/SkScan_AAAPath.cpp",
-  "nativeSourceSha256Lf": "c7a2e2f869ce0d13f882e713e477a59b0af547cb72dd134caf04b1889d22a35e",
   "nativeRule": "skipIntersect = raw path point count > 2 * clipped walk height",
-  "recordedPathsSha256Lf": "34c25f3ca8009692b8c12a19b9b5f361f8be7420b522779edc247fa8971dd457",
   "coordinateFrameModels": "Global, inferred tile-local CTM and translated-device models produce identical additions at the ten residuals. Actual tile-local CTMs are not recorded.",
   "discriminator": "Identical native verb input and prepared geometry; only the skipIntersect flag changes. Additions are recorded from compiled pinned native clipping/setup/walker.",
   "limitations": "Adapter omits projected vertical combination, pending-run flush and pixel paint. Sampled additions establish this density boundary, not full backend parity. Original reference PNGs adjudicate complete Ford output.",
@@ -24,10 +22,6 @@
       "flattenedPoints": 480,
       "nativeSkipIntersections": false,
       "baselineSkipIntersections": true,
-      "nativeVerbsSha256Lf": "d031a2ad4f844420ed85e7caa07f348424f6217e09b23bdc008227d4a7e865c2",
-      "intersectionsVerbsSha256Lf": "1ebe560b6190206f73e5c592f8c8c80143b42a6e3fa0bc79a0f5faac4d563994",
-      "skipIntersectionsWalkSha256Lf": "2d3654462bec46075ec98d03304fb30654d31246f2bc7c2cffc8ed66b5bc9cea",
-      "checkIntersectionsWalkSha256Lf": "816e39565e8c55487d2c85faef35a09c7d2a83a0ae8d04419e641ece499178cc",
       "witnesses": [
         {
           "x": 829,
@@ -99,10 +93,6 @@
       "flattenedPoints": 480,
       "nativeSkipIntersections": false,
       "baselineSkipIntersections": true,
-      "nativeVerbsSha256Lf": "8367cca8cb84d9793546e2b98b28c99b01f73c3fca6e0955fbbdb3253fa67d96",
-      "intersectionsVerbsSha256Lf": "502d44b70e1ccc934578aae017fa3456933d3b199d954d2d86771379bc568865",
-      "skipIntersectionsWalkSha256Lf": "a4decfa862651b37470fd5ecacc1bb82c93a6a27741f75e0e97749cadc3f7c88",
-      "checkIntersectionsWalkSha256Lf": "a6d86630be2bff9db77f0a37fba12158362960c10bb8ca2a3b71bc1a94e2c061",
       "witnesses": [
         {
           "x": 557,
@@ -174,10 +164,6 @@
       "flattenedPoints": 421,
       "nativeSkipIntersections": false,
       "baselineSkipIntersections": true,
-      "nativeVerbsSha256Lf": "ee64c203303df4430eef40fa473ff2a3e52438681aacc940b416d89138fd5c3c",
-      "intersectionsVerbsSha256Lf": "5f17d52a9dd21a792e87d70bf46d910264f1e551a9d00653b4ab9eaf6a905cc7",
-      "skipIntersectionsWalkSha256Lf": "07d6f091f3975f4a366e163df9d7417389e74a9dc3a5565667698d70f284eccf",
-      "checkIntersectionsWalkSha256Lf": "65dec1026a05cf5706ff40c315688aacc4d70596c40f5ecf5c5477feb53ce53a",
       "witnesses": [
         {
           "x": 13,
@@ -295,10 +281,6 @@
       "flattenedPoints": 480,
       "nativeSkipIntersections": false,
       "baselineSkipIntersections": true,
-      "nativeVerbsSha256Lf": "b9829f2391518374a1084044b48f1cc35060a219f8092c7d6058bb411e992066",
-      "intersectionsVerbsSha256Lf": "546256d28219335a0e8c40e67eeb815d29e96ed89b4e96a0debb07d3beddbaa7",
-      "skipIntersectionsWalkSha256Lf": "b2fa4c745b3ff50ea1873d65af9a22f56e5abe0f0effa2bad00607944ca20288",
-      "checkIntersectionsWalkSha256Lf": "4f4c0a472c7bd3bef17366c33cb42aca7945b0ae26f2a8f7f4c3756577f70cda",
       "witnesses": [
         {
           "x": 837,

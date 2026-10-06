@@ -4,7 +4,6 @@
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
   "captureRecipeRevision": "3",
   "platform": "win64",
-  "pictureSha256": "f2b454de2c94c922168a42588ae0a1053d2acf8492176086ff1befc98fa452ca",
   "provenance": "Actual SVG renderer picture from the byte-identical original large-transparent traced capture recorded in inv-002-native-clip-context.json. Decoded with pinned Chrome LayerTree.snapshotCommandLog; authored float coordinates and recorded CTM, before bitmap mapping. No native paint replay or complete device-backend parity is claimed.",
   "commandLog": [
     {

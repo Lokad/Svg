@@ -3,13 +3,11 @@
   "status": "Unlanded diagnostic; production, manifest dispositions and original PNGs are unchanged.",
   "inputSha256": "67459a7c7d446e6cd54c8b4eca5a994908ec2d9a51f75406bf669b810d905f84",
   "recordedNativePathsFile": "inv-002-recorded-native-paths.json",
-  "recordedNativePathsSha256": "34c25f3ca8009692b8c12a19b9b5f361f8be7420b522779edc247fa8971dd457",
   "chromeVersion": "153.0.8010.52",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
   "platform": "win64",
   "captureRecipeRevision": "3",
   "skiaRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
-  "capturedPictureSha256": "f2b454de2c94c922168a42588ae0a1053d2acf8492176086ff1befc98fa452ca",
   "sourceTransformLiteral": "matrix(1.3453761,0,0,1.3453761,-191.56772,-250.70661)",
   "sourceCoefficientParsedDoubleThenFloat": {
     "value": 1.3453761339187622,
@@ -849,16 +847,13 @@
     "opaqueAdded": 0
   },
   "next": "Implement shared browser-compatible SVG number reading and relative arithmetic together, with independent controls, exact nonregression and all delivery gates. Then compare tile-local mapping at the retained lower-tile diagnostic witnesses.",
-  "recordedNativePathsHashing": "SHA-256 of UTF-8 bytes after CRLF-to-LF normalization, matching the committed Git blob.",
   "authoredCoordinateBitEncoding": "Little-endian float32 byte strings in firstDifferences; coefficient bits are hexadecimal uint32 values.",
   "chromiumResearchSources": [
     {
-      "url": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/svg_parser_utilities.cc?format=TEXT",
-      "sha256": "b52e323c34f7b26c0bb0f9a881b08aa75749c2de5a10b7b586cf72e276408705"
+      "url": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/svg_parser_utilities.cc?format=TEXT"
     },
     {
-      "url": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/svg_transform_list.cc?format=TEXT",
-      "sha256": "7157ea47c3d72fbf8176d60dba99198f7c75006cecd1fd8fa511cee42afdad2f"
+      "url": "https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/svg_transform_list.cc?format=TEXT"
     }
   ],
   "chromiumResearchSourcesUse": "Read-only investigation at the pinned Chrome release; no source is copied into production."

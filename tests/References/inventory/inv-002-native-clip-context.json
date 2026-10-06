@@ -17,7 +17,6 @@
       "height": 100,
       "referenceSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
       "tracedScreenshotSha256": "fcd8cdefa7e4e61493614e355c1f4631c14e306a47ffc643717e55250f40a74a",
-      "traceSha256": "60f952c54fd28d00afa5d572df4e9324801bfdb9b068f01416b7fb26150b5691",
       "tiles": [
         {
           "content_rect": [
@@ -48,7 +47,6 @@
       "height": 200,
       "referenceSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
       "tracedScreenshotSha256": "723f76eea2ff165f6766b5dd1e6b199d904ebca8c392f12ae61ac881e7c8d3d7",
-      "traceSha256": "ac3d1a03ba6ea856007943114af3194281f5bff82d4b4c869ad694a16a582fa3",
       "tiles": [
         {
           "content_rect": [
@@ -79,7 +77,6 @@
       "height": 400,
       "referenceSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
       "tracedScreenshotSha256": "147a5b2805f1f4b86e149ca9b11db59269dc7a466edae2454a9184614649abe0",
-      "traceSha256": "7e60c24b19528ed9704e1bb0469e46a4244090663630bfe9e64b16200c70f2f5",
       "tiles": [
         {
           "content_rect": [
@@ -285,10 +282,5 @@
     "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/layers/tile_size_calculator.cc",
     "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/base/tiling_data.cc",
     "https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/raster/raster_source.cc"
-  ],
-  "chromiumSourceSha256": {
-    "cc/layers/tile_size_calculator.cc": "bc2251dc8cc3e1e03e454618ed60d91102ca2b3593217c2c91bb78ed01482f9e",
-    "cc/base/tiling_data.cc": "e23aac4e5bb91d94c5c5bd993593504f3e82a5757a633189ebed176510fae43e",
-    "cc/raster/raster_source.cc": "89aa568d1900c193a287b02c9ab0b057624273b9ba254243db64de115bf7d858"
-  }
+  ]
 }

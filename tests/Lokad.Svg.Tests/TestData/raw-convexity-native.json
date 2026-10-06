@@ -4,35 +4,29 @@
     {
       "path": "src/core/SkPath.cpp",
       "pin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
-      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPath.cpp?format=TEXT",
-      "sha256": "af62e9f6512bb90fdfd2e4adac968c680d16182dfa63367cf77fd7bf15ed12af"
+      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPath.cpp?format=TEXT"
     },
     {
       "path": "src/core/SkPathPriv.cpp",
       "pin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
-      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathPriv.cpp?format=TEXT",
-      "sha256": "5cd42bb4cd931b0af3e667972bdc06364fd4733114202bccd615f6b084088a96"
+      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathPriv.cpp?format=TEXT"
     },
     {
       "path": "src/core/SkPathData.cpp",
       "pin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
-      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathData.cpp?format=TEXT",
-      "sha256": "607eaa59285ce26289a96bfe7e9d7b74d2012500013900ac9e27df9be3605d30"
+      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathData.cpp?format=TEXT"
     },
     {
       "path": "src/core/SkScan_AAAPath.cpp",
       "pin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
-      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_AAAPath.cpp?format=TEXT",
-      "sha256": "c7a2e2f869ce0d13f882e713e477a59b0af547cb72dd134caf04b1889d22a35e"
+      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_AAAPath.cpp?format=TEXT"
     },
     {
       "path": "src/core/SkPathRaw.h",
       "pin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
-      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathRaw.h?format=TEXT",
-      "sha256": "161ba0f15b8127ae44c537cb90fb7a2739b6e0d50a8fcc80b2805ef8ded375df"
+      "url": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathRaw.h?format=TEXT"
     }
   ],
-  "extractedConvexicatorSha256": "5afa3fa075e4cce91f9f811976a33be077406233e6bb303b2759456319410d07",
   "compiler": "g++ -std=c++20 -O2 -ffp-contract=off",
   "contract": "Original pinned Convexicator and its sign precheck unchanged; wrapper supplies one finite raw control contour and implicit closure. No multi-contour, conic weighting, transformed-cache provenance, rendering or complete backend parity claimed.",
   "vectors": [

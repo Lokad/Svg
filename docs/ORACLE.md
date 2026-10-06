@@ -91,8 +91,9 @@ the captures remote evidence or admitting a Linux baseline.
 
 Chrome fingerprint schema 4 requires the startup-health diagnostics; the memory
 summary remains schema 3. Reports identify inputs, outputs, browser and runtime;
-Git and CI workflow revisions identify the code. Hashes of solution source,
-scripts, assemblies, diagnostic reports or logs are not recorded or required.
+Git and CI workflow revisions identify the code; upstream source uses pinned
+revisions and URLs. Hashes of source files, extracted snippets, scripts, solution
+assemblies, diagnostic reports or logs are not recorded or required.
 Old Chrome schema-3 fingerprints do not establish observed
 sandbox health and are rejected by the current validator.
 

@@ -4170,7 +4170,7 @@ At Skia `f8b66b7597c4cc859d3ed190e9c6872241e6721c`,
 versus twice the clipped walk height. The recorded paths contain 254/182 points
 (two moves + 84/60 cubics), not their managed 480/421 samples. The portable
 [native density record](../tests/References/inventory/inv-002-native-density.json)
-retains source/record/input hashes, clip/height/count identities, both event
+retains the upstream revision, input identity, clip/height/count identities, both event
 sequences and reference RGBA at each witness. The adapter omits projected
 vertical combination, pending-run flush and pixel paint; sampled additions alone
 do not prove a complete browser backend. Original full-image PNGs adjudicate it.
