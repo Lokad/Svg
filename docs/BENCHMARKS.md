@@ -1362,3 +1362,66 @@ establish representative throughput or a causal performance regression.
 Git identifies implementation; input/output identities protect measured assets.
 No source/build fingerprints are recorded. Linux and representative performance
 remain open.
+
+## Native open-stroke resource checkpoint (2026-10-06)
+
+Compare the retained `f7b7d713` renderer (also the rendering state at `55e6e562`)
+with native open-stroke construction/winding on Windows x64, .NET 10.0.12. Forty
+matched recipes retain identical input bytes/options. The shared public owned-
+memory harness uses eight warmups and three measured batches per fresh process,
+then repeats current → baseline after baseline → current. Tests, captures and
+package validation finish before these sequential timing processes. Local ranges
+below span all six batches; they do not establish representative throughput.
+Git identifies the implementation; input/PNG identities protect measured assets.
+Detailed ledgers, batches and declarations remain ignored under
+`artifacts/stroke-construction-20261006/`.
+
+Eight recipes charge less parser/raster work. The other 32 work ledgers are
+unchanged. All accounted peaks remain unchanged except intended Rede Manchete:
+its newly retained analytic context raises peak by 3,392 bytes. Geometry,
+rectangle, gradient-stop and analytic-paint values remain 248/112/16/24 bytes.
+No heap owner is added; native point construction uses value/local state and
+existing caller-bounded outline storage. Directed retention removes redundant
+outline points and separation work; the existing scanner reserves its actual
+edge/row storage and releases denied setup contexts.
+
+| Input | Parser work before → after | Work through raster before → after | Accounted peak bytes before → after |
+| --- | ---: | ---: | ---: |
+| Acute miter, 64×64 | 150 → 40 | 22,224 → 9,507 | 163,840 → 163,840 |
+| Acute bevel, 64×64 | 124 → 41 | 22,505 → 8,522 | 163,840 → 163,840 |
+| Rounded mark, 16×16 | 342 → 63 | 2,696 → 2,618 | 163,840 → 163,840 |
+| Rede Manchete, 500×500 | 1,525 → 366 | 7,877,632 → 2,182,821 | 1,052,370 → 1,055,762 |
+| Short miter, 16×16 | 180 → 47 | 1,652 → 1,095 | 163,840 → 163,840 |
+| Square turn, 16×16 | 160 → 47 | 2,768 → 1,784 | 163,840 → 163,840 |
+| ViewBox stroke | 154 → 44 | 23,129 → 22,769 | 163,840 → 163,840 |
+
+| Input | Before ms | After ms | Before allocated bytes | After allocated bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Tiny triangle | 0.046–0.071 | 0.104–0.131 | 27,633–27,637 | 27,632–27,792 |
+| Acute miter | 1.113–2.375 | 0.643–0.752 | 52,754 | 51,842 |
+| Acute bevel | 0.993–1.153 | 0.588–0.881 | 51,626–51,629 | 51,594–51,597 |
+| Rounded mark | 0.580–0.638 | 0.262–0.370 | 49,386 | 42,226 |
+| Rede Manchete | 71.262–106.546 | 26.810–72.469 | 1,196,060–1,196,193 | 1,191,756–1,191,985 |
+| ViewBox stroke | 0.566–0.646 | 0.534–0.595 | 94,952–94,953 | 90,402–90,409 |
+| Ford | 20.381–22.937 | 20.460–25.339 | 858,498–858,570 | 858,402–858,562 |
+| Dense dragon | 283.233–312.076 | 277.188–310.756 | 7,209,936 | 7,209,856–7,209,936 |
+| Native-size stop sign | 557.839–624.536 | 527.813–622.925 | 36,879,890–36,882,829 | 36,879,954–36,883,096 |
+
+Acute/round recipes improve locally; Rede Manchete time ranges overlap. The tiny
+triangle timing is higher in both process orders despite identical work/output;
+its cause is unresolved and requires separate profiling before a performance
+claim. Ford/dense/native-size ranges overlap. Allocation traffic includes changed
+PNG sizes and JIT/GC effects; ledger savings alone do not establish throughput.
+General representative performance and the prior performance obligations remain
+open. All inputs keep Default admission, with explicit intended viewports where
+listed.
+
+All 3,585 tests, nine-project locked Release build, 25 memory scenarios, Chrome/
+validator checks and runtime/symbol package plus installed-consumer checks pass.
+The 1,125-case bank and full corporate matrix preserve every prior outcome and
+exact PNG. No mismatch count or alpha-error mass increases; the retained even
+round join has a higher maximum while improving 49 → four pixels. Three fresh
+square-cap/bitmap-bound controls remain inexact. Three four-million-point native
+normalization cancellation studies observe the caller token in 1.02–2.81 ms.
+Round conics, closed/curved/dashed construction, clip fidelity and Linux remain
+open.

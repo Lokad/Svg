@@ -1519,11 +1519,12 @@ internal ref partial struct SvgAnalyticCoverage
                 setupWork += (long)points.Length * points.Length;
             }
             SvgContourFlags setStructure = preparation.Structure.Value;
-            bool hasRigidContact = isEvenOdd || mapping != SvgPolygonMapping.FlattenedCurves || (setStructure & SvgContourFlags.CoincidentOverlap) != SvgContourFlags.None;
+            bool hasRigidContact = isEvenOdd || mapping is not (SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges) || (setStructure & SvgContourFlags.CoincidentOverlap) != SvgContourFlags.None;
             // Transversal-only unions walk exact signed-winding intervals on any mapping: strict
             // crossings carry no shared vertices, so event handoff stays clean while each interval
             // keeps its own trapezoid fringe instead of the fan exact-area underestimate.
-            // Other touches, self-touches, coincident spans and even-odd sets keep their gates.
+            // Native open-stroke overlaps and flattened curves retain signed
+            // winding. Ordinary straight inputs and coincident spans keep their gates.
             if (preparation.TransversalUnion is null)
             {
                 bool transversal = false;
@@ -1663,12 +1664,13 @@ internal ref partial struct SvgAnalyticCoverage
             setupWork += (long)points.Length * (points.Length - 1) / 2;
         }
         SvgContourFlags structure = preparation.Structure.Value;
-        bool rigidRing = structure != SvgContourFlags.ProperCrossing || (!isEvenOdd && mapping != SvgPolygonMapping.FlattenedCurves);
+        bool rigidRing = structure != SvgContourFlags.ProperCrossing || (!isEvenOdd && mapping is not (SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges));
         if (rigidRing && (structure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) != SvgContourFlags.None) return default;
         if (preparation.Convex is null)
         {
             CheckClippedSetupWork(setupWork + points.Length, maximumSetupWork, cancellationToken);
-            bool convexRing = IsConvexRing(points, cancellationToken);
+            // Equal turn signs do not prove convexity for an intersecting ring.
+            bool convexRing = IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
             bool retained = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure, cancellationToken);
             setupWork += points.Length;
             if (convexRing && retained)

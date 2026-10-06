@@ -82,19 +82,25 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
       "sourceSha256": "9cad69c255dea9a3c1cb221b5c8731f8ea1088d13b26863675d3d39527e8493d",
-      "featureTags": ["geometry", "path", "stroke", "round-join", "calibration"],
+      "featureTags": [
+        "geometry",
+        "path",
+        "stroke",
+        "round-join",
+        "calibration"
+      ],
       "width": 8,
       "height": 8,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 16,
+        "changedPixelCount": 2,
         "maximumChannelError": 13,
         "maximumAlphaError": 13,
-        "alphaChangedPixelCount": 16,
-        "minimumMismatchX": 2,
+        "alphaChangedPixelCount": 2,
+        "minimumMismatchX": 3,
         "minimumMismatchY": 0,
-        "maximumMismatchX": 7,
-        "maximumMismatchY": 7
+        "maximumMismatchX": 4,
+        "maximumMismatchY": 0
       },
       "oracle": {
         "referencePng": "references/round-join-8x8.png",
@@ -247,14 +253,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 58,
+        "changedPixelCount": 3,
         "maximumChannelError": 15,
         "maximumAlphaError": 15,
-        "alphaChangedPixelCount": 58,
-        "minimumMismatchX": 0,
+        "alphaChangedPixelCount": 3,
+        "minimumMismatchX": 7,
         "minimumMismatchY": 2,
-        "maximumMismatchX": 15,
-        "maximumMismatchY": 12
+        "maximumMismatchX": 9,
+        "maximumMismatchY": 2
       },
       "oracle": {
         "referencePng": "references/fractional-stroke-round-join-16x16.png",
@@ -329,14 +335,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 15,
-        "maximumChannelError": 15,
-        "maximumAlphaError": 15,
-        "alphaChangedPixelCount": 15,
-        "minimumMismatchX": 3,
+        "changedPixelCount": 4,
+        "maximumChannelError": 7,
+        "maximumAlphaError": 7,
+        "alphaChangedPixelCount": 4,
+        "minimumMismatchX": 6,
         "minimumMismatchY": 2,
-        "maximumMismatchX": 11,
-        "maximumMismatchY": 12
+        "maximumMismatchX": 9,
+        "maximumMismatchY": 2
       },
       "oracle": {
         "referencePng": "references/odd-stroke-round-join-16x16.png",
@@ -452,14 +458,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 49,
-        "maximumChannelError": 14,
-        "maximumAlphaError": 14,
-        "alphaChangedPixelCount": 49,
-        "minimumMismatchX": 1,
+        "changedPixelCount": 4,
+        "maximumChannelError": 22,
+        "maximumAlphaError": 22,
+        "alphaChangedPixelCount": 4,
+        "minimumMismatchX": 6,
         "minimumMismatchY": 2,
-        "maximumMismatchX": 14,
-        "maximumMismatchY": 13
+        "maximumMismatchX": 9,
+        "maximumMismatchY": 2
       },
       "oracle": {
         "referencePng": "references/round-join-even-16x16.png",
@@ -475,47 +481,7 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-miter-join-even-16x16",
-      "path": "miter-join-even-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "e82cd9f56d828a81b5748f4ee409f33999e4223ae746f33a61a6acd39ed0f4eb",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 54,
-        "maximumChannelError": 12,
-        "maximumAlphaError": 12,
-        "alphaChangedPixelCount": 54,
-        "minimumMismatchX": 1,
-        "minimumMismatchY": 0,
-        "maximumMismatchX": 14,
-        "maximumMismatchY": 13
-      },
-      "oracle": {
-        "referencePng": "references/miter-join-even-16x16.png",
-        "referenceSha256": "c23daacba7f23578eb1e23f40004b9b607401686f7f06ea4106513b763e66aba",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
+
     {
       "id": "research-radial-disc-16x16",
       "path": "radial-disc-16x16.svg",
@@ -762,129 +728,9 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-miter-fallback-acute-16x16",
-      "path": "miter-fallback-acute-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "1895ff0b21410345df848b204294f0f5ebf40f9cd82d7cb5db6812cd59e7c88c",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 46,
-        "maximumChannelError": 36,
-        "maximumAlphaError": 36,
-        "alphaChangedPixelCount": 46,
-        "minimumMismatchX": 1,
-        "minimumMismatchY": 1,
-        "maximumMismatchX": 8,
-        "maximumMismatchY": 13
-      },
-      "oracle": {
-        "referencePng": "references/miter-fallback-acute-16x16.png",
-        "referenceSha256": "e2257827607ea539973cf75e664c4fae21783df3abe30709949818572851a84d",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
-      "id": "research-miter-limit10-acute-16x16",
-      "path": "miter-limit10-acute-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "073faa0757e3068dc2eae8ceceb47e457182652f2322cc2318847ddd6bd61e63",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 44,
-        "maximumChannelError": 11,
-        "maximumAlphaError": 11,
-        "alphaChangedPixelCount": 44,
-        "minimumMismatchX": 1,
-        "minimumMismatchY": 1,
-        "maximumMismatchX": 9,
-        "maximumMismatchY": 13
-      },
-      "oracle": {
-        "referencePng": "references/miter-limit10-acute-16x16.png",
-        "referenceSha256": "c1afc4d55893b5261120b2bccc741b5593cf62c2d1c659bed446d2dae21e8d55",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
-      "id": "research-miter-limit1-acute-16x16",
-      "path": "miter-limit1-acute-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "53cd7c0c4c72c5b55007744655c008a7b45dbefb08ede56878fd1f2da5996d73",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 46,
-        "maximumChannelError": 36,
-        "maximumAlphaError": 36,
-        "alphaChangedPixelCount": 46,
-        "minimumMismatchX": 1,
-        "minimumMismatchY": 1,
-        "maximumMismatchX": 8,
-        "maximumMismatchY": 13
-      },
-      "oracle": {
-        "referencePng": "references/miter-limit1-acute-16x16.png",
-        "referenceSha256": "e2257827607ea539973cf75e664c4fae21783df3abe30709949818572851a84d",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
+
+
+
     {
       "id": "research-quadratic-solid-16x16",
       "path": "quadratic-solid-16x16.svg",
@@ -1623,91 +1469,8 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-bevel-join-acute-64x64",
-      "path": "bevel-join-acute-64x64.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-10-01",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "02d5b872d3cd593262d516b86b2758f371539d7094abe312112c25956b47451f",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "bevel",
-        "join",
-        "coverage",
-        "calibration"
-      ],
-      "width": 64,
-      "height": 64,
-      "admittedRendering": {
-        "changedPixelCount": 203,
-        "maximumChannelError": 26,
-        "maximumAlphaError": 26,
-        "alphaChangedPixelCount": 203,
-        "minimumMismatchX": 4,
-        "minimumMismatchY": 5,
-        "maximumMismatchX": 59,
-        "maximumMismatchY": 42
-      },
-      "oracle": {
-        "referencePng": "references/bevel-join-acute-64x64.png",
-        "referenceSha256": "8f38a1a84981b07f9025819bc469887ee9ba21c0d48ec67596c5d6f28315ff4f",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
-      "id": "research-miter-join-acute-64x64",
-      "path": "miter-join-acute-64x64.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-10-01",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "527eef721ed0ae4dff38e79d13816936dc9be208d55181e3375349b5f8bfedc7",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "join",
-        "coverage",
-        "calibration"
-      ],
-      "width": 64,
-      "height": 64,
-      "admittedRendering": {
-        "changedPixelCount": 212,
-        "maximumChannelError": 23,
-        "maximumAlphaError": 23,
-        "alphaChangedPixelCount": 212,
-        "minimumMismatchX": 4,
-        "minimumMismatchY": 1,
-        "maximumMismatchX": 59,
-        "maximumMismatchY": 42,
-        "alphaErrorMass": 2484
-      },
-      "oracle": {
-        "referencePng": "references/miter-join-acute-64x64.png",
-        "referenceSha256": "304ba1abfb3b2643a7b4e8042b3f12905e11dbfb315e5e217d1b871536917e98",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      },
-      "candidateSha256": "b1eab82f89beaf315e90162441df39a9d49deaf43b15ccf0a9635747f5108a85"
-    },
+
+
     {
       "id": "research-dashed-quad-16x16",
       "path": "dashed-quad-16x16.svg",

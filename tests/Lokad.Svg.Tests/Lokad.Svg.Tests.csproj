@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Update="TestData/stroke-miter-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/stroke-miter-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/miter-join-acute-64x64.svg" Link="TestData/miter-join-acute-64x64.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/bevel-join-acute-64x64.svg" Link="TestData/bevel-join-acute-64x64.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/float-stroke-viewbox.svg" Link="TestData/float-stroke-viewbox.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/bitmap-local-straight-clip.svg" Link="TestData/bitmap-local-straight-clip.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/bitmap-local-compound-clip.svg" Link="TestData/bitmap-local-compound-clip.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/float-polygon-viewbox.svg" Link="TestData/float-polygon-viewbox.svg" CopyToOutputDirectory="PreserveNewest" />

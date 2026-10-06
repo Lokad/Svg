@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after bitmap-local straight-line clipping and float root mapping. Artsy is exact in all nine original variants: four exact documents, marks 3/13 and wordmarks 1/14. Every outcome and all 66 prior exact PNGs are preserved. 240 render (70 exact, 170 known differences), eighteen reject UnsupportedFeature. Some inexact stroke/compound cases worsen; complete before/after evidence is retained under ignored artifacts/corporate-edges-20261006/. Original references and frozen membership are preserved.",
+  "scope": "Frozen 27-document/258-variant measurement after native open-stroke construction and winding preservation. All nine Rede Manchete variants improve but remain inexact. All outcomes and all 70 prior exact corporate PNGs are preserved: 240 render (70 exact, 170 known differences), eighteen reject UnsupportedFeature. Four exact documents, marks 3/13 and wordmarks 1/14. Original references and frozen membership are preserved; studies are ignored under artifacts/stroke-construction-20261006/.",
   "rendererCounts": {
     "renders": 240,
     "MalformedInput": 0,
@@ -11211,17 +11211,17 @@
       "id": "inv-009-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "1aad057c5b7a4eeffdc2576fe5cbded4279caa1c71129e22cd358eb2c7e5b0d7",
-      "candidateSha256": "e549556317291f725587b2b8120664892ef8bb4f508b6a2358e39ca8c410786a",
+      "candidateSha256": "8a57c90e3215455caeb043d914a15c640d7aaaa63e2f84b5d4b34f139ed7ce9f",
       "width": 250,
       "height": 250,
       "referenceSha256": "216f3ef20a20344f3cd60c6ac15561d422f389514f3c988a064420f322e9ee1d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1852,
+          "ChangedPixelCount": 1373,
           "MaximumChannelError": 99,
-          "MeanAbsoluteError": 0.080848,
-          "RootMeanSquareError": 1.4411828475249073,
+          "MeanAbsoluteError": 0.0694,
+          "RootMeanSquareError": 1.423508342090063,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11366,17 +11366,17 @@
       "id": "inv-009-small-white",
       "renderOutcome": "renders",
       "inputSha256": "1aad057c5b7a4eeffdc2576fe5cbded4279caa1c71129e22cd358eb2c7e5b0d7",
-      "candidateSha256": "e549556317291f725587b2b8120664892ef8bb4f508b6a2358e39ca8c410786a",
+      "candidateSha256": "8a57c90e3215455caeb043d914a15c640d7aaaa63e2f84b5d4b34f139ed7ce9f",
       "width": 250,
       "height": 250,
       "referenceSha256": "216f3ef20a20344f3cd60c6ac15561d422f389514f3c988a064420f322e9ee1d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1852,
+          "ChangedPixelCount": 1373,
           "MaximumChannelError": 99,
-          "MeanAbsoluteError": 0.080848,
-          "RootMeanSquareError": 1.4411828475249073,
+          "MeanAbsoluteError": 0.0694,
+          "RootMeanSquareError": 1.423508342090063,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11521,17 +11521,17 @@
       "id": "inv-009-small-black",
       "renderOutcome": "renders",
       "inputSha256": "1aad057c5b7a4eeffdc2576fe5cbded4279caa1c71129e22cd358eb2c7e5b0d7",
-      "candidateSha256": "e549556317291f725587b2b8120664892ef8bb4f508b6a2358e39ca8c410786a",
+      "candidateSha256": "8a57c90e3215455caeb043d914a15c640d7aaaa63e2f84b5d4b34f139ed7ce9f",
       "width": 250,
       "height": 250,
       "referenceSha256": "216f3ef20a20344f3cd60c6ac15561d422f389514f3c988a064420f322e9ee1d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1852,
+          "ChangedPixelCount": 1373,
           "MaximumChannelError": 99,
-          "MeanAbsoluteError": 0.080848,
-          "RootMeanSquareError": 1.4411828475249073,
+          "MeanAbsoluteError": 0.0694,
+          "RootMeanSquareError": 1.423508342090063,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11676,17 +11676,17 @@
       "id": "inv-009-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
-      "candidateSha256": "eb6a8ef97c6050a0c4c527a8d1b1304e3693553f79d029285f128702ea7f2a7f",
+      "candidateSha256": "63ab27c29c4b9a567f70425717c41958697ce2a440abb9cbeaa3aed515359118",
       "width": 500,
       "height": 500,
       "referenceSha256": "2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3526,
+          "ChangedPixelCount": 2508,
           "MaximumChannelError": 94,
-          "MeanAbsoluteError": 0.09605,
-          "RootMeanSquareError": 1.9683521026483042,
+          "MeanAbsoluteError": 0.087498,
+          "RootMeanSquareError": 1.953553173066963,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11702,28 +11702,16 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 63,
-            "Y": 0,
-            "Reference": "gIAA/w==",
-            "Candidate": "f38A/w=="
-          },
-          {
-            "X": 126,
-            "Y": 0,
-            "Reference": "gIAA/w==",
-            "Candidate": "f38A/w=="
-          },
-          {
-            "X": 252,
-            "Y": 0,
-            "Reference": "gIAA/w==",
-            "Candidate": "f38A/w=="
-          },
-          {
             "X": 499,
             "Y": 0,
             "Reference": "v78A/w==",
-            "Candidate": "4OAA/w=="
+            "Candidate": "wMAA/w=="
+          },
+          {
+            "X": 499,
+            "Y": 1,
+            "Reference": "f38A/w==",
+            "Candidate": "gIAA/w=="
           },
           {
             "X": 499,
@@ -11794,6 +11782,18 @@
           {
             "X": 499,
             "Y": 13,
+            "Reference": "f38A/w==",
+            "Candidate": "gIAA/w=="
+          },
+          {
+            "X": 499,
+            "Y": 14,
+            "Reference": "f38A/w==",
+            "Candidate": "gIAA/w=="
+          },
+          {
+            "X": 499,
+            "Y": 15,
             "Reference": "f38A/w==",
             "Candidate": "gIAA/w=="
           }
@@ -11831,17 +11831,17 @@
       "id": "inv-009-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
-      "candidateSha256": "eb6a8ef97c6050a0c4c527a8d1b1304e3693553f79d029285f128702ea7f2a7f",
+      "candidateSha256": "63ab27c29c4b9a567f70425717c41958697ce2a440abb9cbeaa3aed515359118",
       "width": 500,
       "height": 500,
       "referenceSha256": "2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3526,
+          "ChangedPixelCount": 2508,
           "MaximumChannelError": 94,
-          "MeanAbsoluteError": 0.09605,
-          "RootMeanSquareError": 1.9683521026483042,
+          "MeanAbsoluteError": 0.087498,
+          "RootMeanSquareError": 1.953553173066963,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11857,28 +11857,16 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 63,
-            "Y": 0,
-            "Reference": "gIAA/w==",
-            "Candidate": "f38A/w=="
-          },
-          {
-            "X": 126,
-            "Y": 0,
-            "Reference": "gIAA/w==",
-            "Candidate": "f38A/w=="
-          },
-          {
-            "X": 252,
-            "Y": 0,
-            "Reference": "gIAA/w==",
-            "Candidate": "f38A/w=="
-          },
-          {
             "X": 499,
             "Y": 0,
             "Reference": "v78A/w==",
-            "Candidate": "4OAA/w=="
+            "Candidate": "wMAA/w=="
+          },
+          {
+            "X": 499,
+            "Y": 1,
+            "Reference": "f38A/w==",
+            "Candidate": "gIAA/w=="
           },
           {
             "X": 499,
@@ -11949,6 +11937,18 @@
           {
             "X": 499,
             "Y": 13,
+            "Reference": "f38A/w==",
+            "Candidate": "gIAA/w=="
+          },
+          {
+            "X": 499,
+            "Y": 14,
+            "Reference": "f38A/w==",
+            "Candidate": "gIAA/w=="
+          },
+          {
+            "X": 499,
+            "Y": 15,
             "Reference": "f38A/w==",
             "Candidate": "gIAA/w=="
           }
@@ -11986,17 +11986,17 @@
       "id": "inv-009-intended-black",
       "renderOutcome": "renders",
       "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
-      "candidateSha256": "eb6a8ef97c6050a0c4c527a8d1b1304e3693553f79d029285f128702ea7f2a7f",
+      "candidateSha256": "63ab27c29c4b9a567f70425717c41958697ce2a440abb9cbeaa3aed515359118",
       "width": 500,
       "height": 500,
       "referenceSha256": "2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3526,
+          "ChangedPixelCount": 2508,
           "MaximumChannelError": 94,
-          "MeanAbsoluteError": 0.09605,
-          "RootMeanSquareError": 1.9683521026483042,
+          "MeanAbsoluteError": 0.087498,
+          "RootMeanSquareError": 1.953553173066963,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -12012,28 +12012,16 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 63,
-            "Y": 0,
-            "Reference": "gIAA/w==",
-            "Candidate": "f38A/w=="
-          },
-          {
-            "X": 126,
-            "Y": 0,
-            "Reference": "gIAA/w==",
-            "Candidate": "f38A/w=="
-          },
-          {
-            "X": 252,
-            "Y": 0,
-            "Reference": "gIAA/w==",
-            "Candidate": "f38A/w=="
-          },
-          {
             "X": 499,
             "Y": 0,
             "Reference": "v78A/w==",
-            "Candidate": "4OAA/w=="
+            "Candidate": "wMAA/w=="
+          },
+          {
+            "X": 499,
+            "Y": 1,
+            "Reference": "f38A/w==",
+            "Candidate": "gIAA/w=="
           },
           {
             "X": 499,
@@ -12106,6 +12094,18 @@
             "Y": 13,
             "Reference": "f38A/w==",
             "Candidate": "gIAA/w=="
+          },
+          {
+            "X": 499,
+            "Y": 14,
+            "Reference": "f38A/w==",
+            "Candidate": "gIAA/w=="
+          },
+          {
+            "X": 499,
+            "Y": 15,
+            "Reference": "f38A/w==",
+            "Candidate": "gIAA/w=="
           }
         ]
       },
@@ -12141,17 +12141,17 @@
       "id": "inv-009-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "cc5668c8ee511e61e7ac24da94acb78633f12cb41985d2d70d5a41cfc49faa37",
-      "candidateSha256": "eb72bead1f34c924fc1fc6eb28fe3cbdacd75022ec16688d9d76c0f2815268b5",
+      "candidateSha256": "5551f9bb47f24c6a0434d491207b2b224b27c8524f587061785099563ba510a7",
       "width": 1000,
       "height": 1000,
       "referenceSha256": "c8ff5c3a9473d6b8eb460cbed3b9d45378d847ee9b46d130219b2d0dcdb18cc2",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 5225,
+          "ChangedPixelCount": 3411,
           "MaximumChannelError": 144,
-          "MeanAbsoluteError": 0.0803905,
-          "RootMeanSquareError": 2.4067890435183554,
+          "MeanAbsoluteError": 0.077362,
+          "RootMeanSquareError": 2.403415694381644,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 68,
@@ -12296,17 +12296,17 @@
       "id": "inv-009-large-white",
       "renderOutcome": "renders",
       "inputSha256": "cc5668c8ee511e61e7ac24da94acb78633f12cb41985d2d70d5a41cfc49faa37",
-      "candidateSha256": "eb72bead1f34c924fc1fc6eb28fe3cbdacd75022ec16688d9d76c0f2815268b5",
+      "candidateSha256": "5551f9bb47f24c6a0434d491207b2b224b27c8524f587061785099563ba510a7",
       "width": 1000,
       "height": 1000,
       "referenceSha256": "c8ff5c3a9473d6b8eb460cbed3b9d45378d847ee9b46d130219b2d0dcdb18cc2",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 5225,
+          "ChangedPixelCount": 3411,
           "MaximumChannelError": 144,
-          "MeanAbsoluteError": 0.0803905,
-          "RootMeanSquareError": 2.4067890435183554,
+          "MeanAbsoluteError": 0.077362,
+          "RootMeanSquareError": 2.403415694381644,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 68,
@@ -12451,17 +12451,17 @@
       "id": "inv-009-large-black",
       "renderOutcome": "renders",
       "inputSha256": "cc5668c8ee511e61e7ac24da94acb78633f12cb41985d2d70d5a41cfc49faa37",
-      "candidateSha256": "eb72bead1f34c924fc1fc6eb28fe3cbdacd75022ec16688d9d76c0f2815268b5",
+      "candidateSha256": "5551f9bb47f24c6a0434d491207b2b224b27c8524f587061785099563ba510a7",
       "width": 1000,
       "height": 1000,
       "referenceSha256": "c8ff5c3a9473d6b8eb460cbed3b9d45378d847ee9b46d130219b2d0dcdb18cc2",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 5225,
+          "ChangedPixelCount": 3411,
           "MaximumChannelError": 144,
-          "MeanAbsoluteError": 0.0803905,
-          "RootMeanSquareError": 2.4067890435183554,
+          "MeanAbsoluteError": 0.077362,
+          "RootMeanSquareError": 2.403415694381644,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 68,
@@ -31202,8 +31202,8 @@
       "referenceSha256": "e628ef493bea5ee8586514bc6d3730caeb0738def9eac6319b3db860614ded6c"
     }
   ],
-  "rendererSourceBaselineCommit": "8ed114a9",
-  "rendererSourceState": "Clipped straight verbs use the owning bitmap origin independently of SVG clip bounds and translate native fixed edges back to canvas space. Straight polygon root maps use separate float product and offset rounding; retained curves and generated stroke construction retain separate gates.",
-  "measurementCheckpoint": "bitmap-local-lines-2026-10-06",
+  "rendererSourceBaselineCommit": "55e6e562",
+  "rendererSourceState": "Straight solid open strokes retain native float normalization, endpoint miter replacement, pivot inner joins and directed winding overlaps. Structure classification prevents crossing rings from selecting convex fill. Rounded caps avoid duplicate endpoints; round conics, closed/curved/dashed strokes and wider clip events retain separate gates.",
+  "measurementCheckpoint": "native-open-strokes-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

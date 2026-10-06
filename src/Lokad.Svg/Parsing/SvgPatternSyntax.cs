@@ -71,7 +71,7 @@ internal static class SvgPatternSyntax
         {
             // Solid strokes compose over pattern fills through the admitted outline kernel; paint strokes stay gated below.
             bandStrokeShape = context.ResolveShape(style with { Fill = "black" }, reader, true);
-            bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, bandStrokeShape, elementName, false);
+            bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, bandStrokeShape, elementName, elementName == "polyline");
         }
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Fill), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");

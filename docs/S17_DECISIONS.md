@@ -1,33 +1,35 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06: straight edges now clip and construct relative to the
-owning CPU bitmap, with finite polygon root mapping using native float
-multiply/add. All nine Artsy variants become exact against unchanged original
-references. [PLAN.md](../PLAN.md) owns the remaining queue; rows 3–7 and S17
-remain open.
+Updated 2026-10-06: native float open-stroke construction preserves directed
+winding through scan conversion. Original miter/bevel probes and viewBox strokes
+become exact; nine Rede Manchete variants improve without becoming exact.
+[PLAN.md](../PLAN.md) owns the remaining queue; rows 3–7 and S17 remain open.
 
-Current evidence: **969 fixtures = 812 exact + 130 known-difference renders + 27
-rejections**, across 511 base documents / 458 variants. Research remains 51 known
-renders + one rejection. Windows locked restore, nine-project Release build and
-3,400 core + 160 visual + six FontProbe tests (**3,566 total**) pass. All 25 memory
-scenarios, package/installed-consumer checks, Chrome smoke and artifact-validator
-controls pass. The expanded bank executes 1,113 cases; all original dispositions
-and all 803 prior exact fixture PNGs are preserved. Thirty-four matched recipes
-record additional raster work; parser work and scene storage remain unchanged.
-Local evidence is under ignored `artifacts/corporate-edges-20261006/`.
+Current evidence: **987 fixtures = 830 exact + 130 known differences + 27
+rejections**, across 521 base documents / 466 variants. Research has 45 known
+renders + one rejection after six original exact cases graduate. Windows locked
+restore, nine-project Release build and 3,419 core + 160 visual + six FontProbe
+tests (**3,585 total**) pass. All 25 memory scenarios, package/installed-consumer,
+Chrome smoke and artifact-validator controls pass. The expanded bank has 1,125
+cases; all prior dispositions, all 812 prior exact fixture PNGs and all 70 exact
+corporate PNGs are preserved. Forty matched cost recipes report work and storage;
+local timings do not establish representative performance. Detailed studies stay
+under ignored `artifacts/stroke-construction-20261006/`.
 
-All 258 corporate cases have references: **240 rendered comparisons (70 exact,
+All 258 corporate cases retain references: **240 rendered comparisons (70 exact,
 170 known differences)** and eighteen UnsupportedFeature outcomes. Ford, ROC
-HCVS, Artsy and YouTube are exact in every variant: **4/27 documents**, marks
-**3/13**, wordmarks **1/14**. Membership, inputs, original references, holdouts and
-denominators are unchanged. All 66 prior exact corporate PNGs are preserved.
-Some known differences increase, including two research stroke probes whose
-rounded outlines trigger proper-crossing fallback. No tolerance is admitted.
+HCVS, Artsy and YouTube remain **4/27 exact documents**, marks **3/13**, wordmarks
+**1/14**. Membership, inputs, original references, holdouts and denominators are
+unchanged. No prior mismatch count or alpha-error mass increases; one round-join
+maximum rises 14 → 22 while its differing pixels fall 49 → four. Three fresh
+square-cap/bitmap-bound controls remain measured differences. No tolerance is
+admitted.
 
-Generated stroke topology, remaining curve/clip mapping, conical/multistop
-coordinates, cache history, general fidelity, representative performance and
-Linux remain open. S8 measurement is complete for this first cohort. S17 still
-requires at least 23/27 exact documents with both stratum minima; it is unmet.
+Round conics, closed/curved/dashed construction, remaining clip events,
+conical/multistop coordinates, cache history, general fidelity, representative
+performance and Linux remain open. S8 measurement is complete for this first
+cohort. S17 requires at least 23/27 exact documents with both stratum minima;
+it remains unmet.
 
 ## Q1 - numeric exact-document target: selected
 

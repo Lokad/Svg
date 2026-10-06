@@ -387,7 +387,7 @@ internal static class SvgGradientSyntax
         {
             // Solid strokes compose over radial fills through the admitted outline kernel; paint strokes stay gated below.
             bandStrokeShape = context.ResolveShape(style with { Fill = "black" }, reader, true);
-            bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, bandStrokeShape, elementName, false);
+            bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, bandStrokeShape, elementName, elementName == "polyline");
         }
         SvgAffineTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceRadial(transform, gradient, frame);
@@ -475,7 +475,7 @@ internal static class SvgGradientSyntax
         {
             // Solid strokes compose over gradient fills through the admitted outline kernel; gradient strokes lower white and repaint below while other paints stay gated.
             bandStrokeShape = context.ResolveShape(strokeStyle with { Fill = "black" }, reader, true);
-            bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, strokeStyle, bandStrokeShape, elementName, false);
+            bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, strokeStyle, bandStrokeShape, elementName, elementName == "polyline");
         }
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Fill), out SvgLinearGradient gradient))
         {

@@ -1,0 +1,37 @@
+{
+  "referencePng": "original-miter-limit10-acute-16x16.png",
+  "referenceSha256": "c1afc4d55893b5261120b2bccc741b5593cf62c2d1c659bed446d2dae21e8d55",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-miter-limit10-acute-16x16",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "inputSha256": "073faa0757e3068dc2eae8ceceb47e457182652f2322cc2318847ddd6bd61e63",
+  "graduatedFrom": "research-miter-limit10-acute-16x16",
+  "candidateSha256": "61e64358a81fa85b15c560904ecc64a3398c262611287d90008f537847d43ec2",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
+}

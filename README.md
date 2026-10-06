@@ -39,7 +39,10 @@ The frozen corporate matrix now has all 258 reference images: 240 rendered
 comparisons (70 exact, 170 different) and eighteen retained renderer rejections.
 Ford, ROC HCVS, Artsy and YouTube are exact in every declared variant: 4/27 documents.
 Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
-remaining variants; general stroke and curve fidelity remain open.
+remaining variants. Native straight open-stroke construction and winding make
+six original miter/bevel probes and three viewBox configurations exact, and
+improve every Rede Manchete variant. Bevel polylines share the path kernel.
+Round conics, closed/curved/dashed strokes and broader clip fidelity remain open.
 Straight dash cuts now preserve native float endpoints, and nonzero orthogonal
 contact sets retain their one-byte fringes through signed-winding analytic
 walking. All nine ROC variants and twelve fresh controls are exact. These

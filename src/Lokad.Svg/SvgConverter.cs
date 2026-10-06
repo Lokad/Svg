@@ -527,8 +527,8 @@ public static class SvgConverter
                 for (int index = 0; index < points.Length; index++)
                 {
                     if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double edgeX = mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges ? MapStraightPolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
-                    double edgeY = mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges ? MapStraightPolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
+                    double edgeX = mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges ? MapStraightPolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
+                    double edgeY = mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges ? MapStraightPolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
                     mapped[index] = new SvgDevicePoint(edgeX, edgeY);
                     if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
                     if (edgeX < left) left = edgeX;

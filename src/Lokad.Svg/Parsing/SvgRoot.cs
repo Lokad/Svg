@@ -374,6 +374,8 @@ internal enum SvgPolygonMapping
     FiniteEdges,
     /// <summary>Flattened or offset content needing uniform output mapping.</summary>
     FlattenedCurves,
+    /// <summary>Native float open-stroke contours whose directed winding overlaps are retained through scan conversion.</summary>
+    NativeStrokeEdges,
 }
 
 /// <summary>Retains one admitted diagonal solid polygon with separated simple contours and its scene-memory reservation until the scene is disposed.</summary>

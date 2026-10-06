@@ -32,20 +32,20 @@
     true
   ],
   "declaredBeforeProductionEdit": true,
-  "candidateSha256": "64fb43780e37b1a3e95175f6e42c6652b7fc308e7f0ce25f9f0cd7dd60314368",
+  "candidateSha256": "30940847480fe2200e74784e2e25c4eccb2a7bdeb8edbd27247c75e6d85e0553",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 120,
-    "maximumChannelError": 255,
-    "meanAbsoluteError": 0.041544596354166664,
-    "rootMeanSquareError": 1.715005390540605,
-    "maximumAlphaError": 15,
-    "alphaChangedPixelCount": 120,
-    "minimumMismatchX": 21,
-    "minimumMismatchY": 24,
-    "maximumMismatchX": 101,
-    "maximumMismatchY": 81,
-    "exact": false,
-    "alphaErrorMass": 537
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 128,
+    "minimumMismatchY": 96,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
   }
 }

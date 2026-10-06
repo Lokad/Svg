@@ -1,0 +1,51 @@
+{
+  "fixtureId": "original-native-stroke-reversed-bevel-black",
+  "referencePng": "original-native-stroke-reversed-bevel-black.png",
+  "referenceSha256": "550e1598886a11973b756b91fa03cd90b95c07e0d21341568f189d31f8758779",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "668c98c444427a513682949aeaab0b68d5170264e32591791d641c836f4884f0",
+  "captureSha256": [
+    "550e1598886a11973b756b91fa03cd90b95c07e0d21341568f189d31f8758779",
+    "550e1598886a11973b756b91fa03cd90b95c07e0d21341568f189d31f8758779",
+    "550e1598886a11973b756b91fa03cd90b95c07e0d21341568f189d31f8758779"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": false,
+  "candidateSha256": "86ad3f6b9e3f106d2ffa2e50b5160d20f09e9e0ad45d1d23772bf57367a91b54",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
+}

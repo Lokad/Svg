@@ -33,7 +33,14 @@ retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
 Ford, ROC HCVS, Artsy and YouTube are exact in every variant (4/27). Known
-differences remain measured against the original images, including increases
-from float mapping and generated stroke crossings.
+differences remain measured against the original images. Native open-stroke
+construction improves all nine Rede Manchete variants, with no prior mismatch
+count increase and all 70 exact corporate PNGs preserved. Six original research
+miter/bevel probes graduate with unchanged SVG/PNG/provenance; three existing
+viewBox configurations and nine supplemental controls become exact. Three new
+square-cap/bitmap-bound references remain known differences. Their controls were
+declared after the production edit; all 36 fresh captures are stable and healthy.
+Detailed experiments stay under ignored `artifacts/stroke-construction-20261006/`.
+Source changes alone require no reference refresh.
 The capture script and VisualDiff `--cohort` command reproduce the full matrix;
 see [the oracle instructions](../../docs/ORACLE.md#frozen-corporate-captures).

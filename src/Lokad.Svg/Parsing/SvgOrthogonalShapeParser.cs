@@ -236,7 +236,7 @@ internal static class SvgOrthogonalShapeParser
             }
             try
             {
-                fractionalStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, fractionalStrokeStyle, fractionalStrokeShape, elementName, false);
+                fractionalStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, fractionalStrokeStyle, fractionalStrokeShape, elementName, elementName == "polyline");
                 if (fractionalStroke is null) return filled;
                 fractionalStroked = fractionalLowering.LowerStrokePointList(fractionalPoints, elementName == "polygon", false, fractionalStrokeShape, fractionalStroke.Value.Color, fractionalStrokeShape.Presentation.IsPainted, fractionalStroke.Value.Width, fractionalStroke.Value.MiterLimit, fractionalStroke.Value.Cap, fractionalStroke.Value.Join, fractionalStroke.Value.DashPattern, fractionalStroke.Value.DashOffset, fractionalStroke.Value.PathLength, fractionalStroke.Value.NonScalingStroke, frame, budget);
                 if (paintOutline || paintRadialOutline || paintPatternOutline)
@@ -312,7 +312,7 @@ internal static class SvgOrthogonalShapeParser
         }
         try
         {
-            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, strokeStyle, strokeShape, elementName, false);
+            stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, strokeStyle, strokeShape, elementName, elementName == "polyline");
             if (stroke is null) return filled;
             using BudgetedParserList<SvgPoint> noStrokePoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);

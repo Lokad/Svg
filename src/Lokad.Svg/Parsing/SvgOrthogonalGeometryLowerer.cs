@@ -765,9 +765,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
             SvgContourBuilder outlines = new(pointCapacity, closed ? 2 : 1);
             if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, join, outlines, _cancellationToken);
-            else SvgStrokeOutline.StrokeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
+            else SvgStrokeOutline.StrokeNativeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
             int[] loopSubpaths = new int[outlines.ContourCount];
-            return FinishStrokeFill(outlines, loopSubpaths, color, hasFill, false, false, frame, budget) with { ElementCount = points.Count + 1 };
+            return (closed
+                ? FinishStrokeFill(outlines, loopSubpaths, color, hasFill, false, false, frame, budget)
+                : FinishDirectedStrokeFill(outlines, color, hasFill, SvgPolygonMapping.NativeStrokeEdges, frame, budget)) with { ElementCount = points.Count + 1 };
         }
         double dashScale = Math.Abs(DashDeviceScale(transform) * (frame?.ScaleX ?? 1));
         return LowerDashedStrokePolyline(mapped, closed, deviceWidth, dashScale, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
@@ -1147,8 +1149,18 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (source.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path stroke point count exceeds the configured path-command limit." : _elementName + " stroke point count exceeds the configured path-command limit.");
         double deviceWidth = StrokeDeviceWidth(width, transform, frame, nonScaling);
         if (dashes is not null) return LowerDashedStrokeContours(source, closedEnds, hasCurves, transform, deviceWidth, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget);
-        // Open miter joins emit up to five outline points per centerline vertex (inner butt pair plus outer ear triple across both chains).
-            long wantedPoints = 6L * source.PointCount + 8;
+        bool nativeStroke = !hasCurves;
+        if (nativeStroke)
+        {
+            foreach (bool closed in closedEnds)
+            {
+                _workCounter.Consume(_cancellationToken);
+                if (closed) { nativeStroke = false; break; }
+            }
+        }
+        // Native open joins fit within the existing bound for legacy closed joins;
+        // round joins and caps reserve their additional fan vertices below.
+        long wantedPoints = 6L * source.PointCount + 8;
         if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join == SvgStrokeJoin.Round)
         {
             int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
@@ -1171,6 +1183,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if ((contour & 63) == 0) _cancellationToken.ThrowIfCancellationRequested();
             int firstLoop = outlines.ContourCount;
             if (closedEnds[contour]) SvgStrokeOutline.StrokeClosedPolyline(source.GetContour(contour), deviceWidth, miterLimit, join, outlines, _cancellationToken);
+            else if (nativeStroke) SvgStrokeOutline.StrokeNativeOpenPolyline(source.GetContour(contour), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
             else SvgStrokeOutline.StrokeOpenPolyline(source.GetContour(contour), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
             for (int loop = firstLoop; loop < outlines.ContourCount; loop++)
             {
@@ -1179,7 +1192,9 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
 
         Array.Resize(ref loopSubpaths, outlines.ContourCount);
-        return FinishStrokeFill(outlines, loopSubpaths, color, hasFill, hasCurves, false, frame, budget);
+        return nativeStroke
+            ? FinishDirectedStrokeFill(outlines, color, hasFill, SvgPolygonMapping.NativeStrokeEdges, frame, budget)
+            : FinishStrokeFill(outlines, loopSubpaths, color, hasFill, hasCurves, false, frame, budget);
     }
 
     private static double DashDeviceScale(SvgAffineTransform transform)
@@ -1252,7 +1267,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(outlines);
         ArgumentNullException.ThrowIfNull(loopSubpaths);
         ArgumentNullException.ThrowIfNull(budget);
-        if (flattenedCenterline || isDashedStroke) return FinishStrokeFillLegacy(outlines, color, hasFill, flattenedCenterline, frame, budget);
+        if (flattenedCenterline || isDashedStroke) return FinishDirectedStrokeFill(outlines, color, hasFill, flattenedCenterline ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.QuarterEdges, frame, budget);
         if (loopSubpaths.Length != outlines.ContourCount) throw new InvalidOperationException("Stroke outline subpath flags must match the sampled outlines.");
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = new int[outlines.ContourCount];
@@ -1421,9 +1436,9 @@ internal ref struct SvgOrthogonalGeometryLowering
         return RetainPolygonFill(retained, finalEnds, finalSigns, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), color, hasFill, false, combinedMapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
     }
 
-    /// <summary>Retains stroke outline loops as one nonzero fill through the legacy merge without structure surgery.</summary>
-    /// <remarks>Curved-source outlines keep bitwise behavior: dense curve tessellation misfires crossing subdivision with invented slivers, so only straight-source outlines route through shared separation. Winding roles resolve closed outer and inner rings, then role zero lifts to plus one for non-degenerate loops.</remarks>
-    private SvgParsedGeometry FinishStrokeFillLegacy(SvgContourBuilder outlines, SvgColor color, bool hasFill, bool flattenedCenterline, SvgViewportFrame? frame, RenderBudget budget)
+    /// <summary>Retains directed stroke outlines as one nonzero fill without converting winding overlaps into touching bands.</summary>
+    /// <remarks>Native straight open strokes preserve float construction and directed overlaps through their typed mapping. Curved and dashed source outlines keep their existing mapping and merge: dense curve tessellation can misfire crossing subdivision. The caller retains ownership and charges point, contour and role traversals; returned scene reservations release on failure or disposal.</remarks>
+    private SvgParsedGeometry FinishDirectedStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, SvgPolygonMapping sourceMapping, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(outlines);
         ArgumentNullException.ThrowIfNull(budget);
@@ -1448,7 +1463,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         retainedOutlines = mergedOutlines;
         ends = mergedEnds;
 
-        SvgPolygonMapping mapping = flattenedCenterline ? SvgPolygonMapping.FlattenedCurves : fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
+        SvgPolygonMapping mapping = sourceMapping is SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges ? sourceMapping : fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
         RenderBudget.BudgetReservation? reservation = ReserveScene(retainedOutlines.Length, ends.Length, ends.Length, 0, 0, budget);
         try
         {

@@ -5061,3 +5061,71 @@ Detailed traces, rejected models and run diagnostics remain under ignored
 or build fingerprints are recorded. Generated stroke topology, broader curve/
 clip mapping, conical/multistop coordinates, cache history, representative
 performance, Linux and S17 remain open.
+
+## Native open-stroke construction and winding (2026-10-06)
+
+The pinned `SkPoint.cpp`, `SkStrokerPriv.cpp` and `SkStroke.cpp` show float segment
+subtraction, double normalization narrowed to float, endpoint replacement for
+outer line miters and an inner join through the centerline pivot. Native source
+pin remains `f8b66b7597c4cc859d3ed190e9c6872241e6721c`; BSD notices are retained.
+Six compiled original-function cases supply 49 outer/inner point rows. The narrow
+point-recording adapter supplies line normals; it does not execute native closed/
+curved stroking or conic rasterization. Its compiler and scope are recorded in
+`tests/Lokad.Svg.Tests/TestData/stroke-miter-native.json`. Managed tests match every
+float bit. The unchanged traced acute-miter browser picture confirms the original
+three-point centerline, stroke settings and identity matrix.
+
+Replacing miter ears alone reduced the acute difference but did not become exact.
+Broad float/pivot replacement regressed two exact closed-stroke configurations
+and made three large Rede Manchete variants exceed work limits. Raw winding
+initially filled stroke holes because an intersecting ring can have equal turn
+signs at every vertex. The convex path now requires clean structure; typed native
+straight open strokes preserve their directed overlaps through the nonzero
+walker. Ordinary QuarterEdges/FiniteEdges crossing guards remain. Closed, curved
+and dashed construction retains its existing route on the contradictory evidence;
+its completion remains required. This uses the existing stroke kernel and scanner.
+
+Round cap fans initially repeated their start/closing endpoints. Those artificial
+zero-length edges produced self-touch flags and a fallback: the rounded mark rose
+39 → 78 differing pixels. Skipping already-owned cap endpoints removes the false
+contacts and improves it to 17 pixels, alpha-error mass 402 → 308. Arc endpoints
+use native float offset stages; interior samples retain the existing flatness
+policy. True round conics remain required. The even round join improves 49 → four
+pixels and alpha-error mass 299 → 31, but its maximum rises 14 → 22. That regression
+is measured explicitly, without tolerance or reference changes.
+
+The three original viewBox-stroke configurations and six original miter/bevel
+research cases become exact. Research source SVG/PNG/provenance is preserved on
+fixture graduation. Twelve supplemental configurations were declared after the
+production edit, before fresh capture/comparison; all remain in the bank. Short
+miters improve 37/37/35 → zero on transparent/white/black, near-collinear limit-one
+joins improve 27/27/27 → zero, and reversed bevel polylines advance from the style
+gate to three exact images. Direct, inline, inherited and dashed bevel styles share
+path lowering. Closed polygon bevel gates remain. Square caps crossing bitmap
+bounds improve 55/54/54 → 11/10/11 and retain the separate clip-event gate. All 36
+captures are byte-stable, healthy and cleaned.
+
+The final bank has 1,125 cases: 987 fixtures (830 exact, 130 known, 27 rejected),
+46 research (45 known, one rejected), and 92 legacy Default cases. All prior
+outcomes and all 812 prior exact fixture PNGs are preserved. Nineteen prior PNGs
+change: four fixtures, ten research and five legacy Default outputs. No changed-
+pixel count or alpha-error mass increases. Every Rede Manchete corporate variant
+improves (small 1,852 → 1,373; intended 3,526 → 2,508; large 5,225 → 3,411), with
+matching counts on each background. All 70 prior exact corporate PNGs and the
+other 231 rendered PNGs remain unchanged. The full matrix remains 70 exact, 170
+known and eighteen UnsupportedFeature outcomes; exact documents remain 4/27.
+
+Nineteen new core cases cover native point bits, semantic spelling/dash parity,
+six outputs, stroke holes, ordinary guards, float collapse, cap contacts and
+cached setup work/memory/cancellation denial with complete release. Three
+four-million-point during-normalization cancellation observations retain the
+caller token (1.02–2.81 ms on this host). No heap owner or public API is added.
+All 3,585 tests, nine-project locked Release build, 25 memory scenarios, Chrome
+smoke, validator controls and actual-artifact validation, runtime/symbol package
+inspection and isolated installed-consumer checks pass. Forty matched resource
+recipes record reduced work on eight cases and the existing analytic context's
+3,392-byte peak increase for intended Rede Manchete; the other peaks and geometry
+value sizes are unchanged. Timings remain local evidence. Detailed experiments
+stay under ignored `artifacts/stroke-construction-20261006/`; Git identifies the
+implementation. Round conics, closed/curved/dashed stroke and wider clip/paint
+fidelity, representative performance, Linux and S17 remain open.

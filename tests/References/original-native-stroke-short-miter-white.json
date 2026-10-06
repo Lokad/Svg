@@ -1,0 +1,51 @@
+{
+  "fixtureId": "original-native-stroke-short-miter-white",
+  "referencePng": "original-native-stroke-short-miter-white.png",
+  "referenceSha256": "6b219182bfae4078c22b52b1ecd4dbad449bfefb683c440da10a0b75392c65be",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "908ec37a374b778310ba3addc927a7f15988479e8d6541ebca8b53f634b68ae3",
+  "captureSha256": [
+    "6b219182bfae4078c22b52b1ecd4dbad449bfefb683c440da10a0b75392c65be",
+    "6b219182bfae4078c22b52b1ecd4dbad449bfefb683c440da10a0b75392c65be",
+    "6b219182bfae4078c22b52b1ecd4dbad449bfefb683c440da10a0b75392c65be"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredBeforeProductionEdit": false,
+  "candidateSha256": "13ad3b1eae7e20ebc83b0f128701f190dbdab218cc0895b72cab3f7bedf1bb6a",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
+}
