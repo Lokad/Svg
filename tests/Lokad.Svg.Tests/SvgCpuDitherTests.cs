@@ -14,7 +14,9 @@ public sealed class SvgCpuDitherTests
         {
             int[] v = row.Split(',').Select(value => int.Parse(value, CultureInfo.InvariantCulture)).ToArray();
             SvgCpuRasterGrid grid = new(v[0], v[1]);
-            SvgShaderPaint sample = SvgShaderPaint.Gradient(new(23, 169, 205, 69), new(23, 169, 205, 69), 0, 202, grid.GetGradientDither(v[2], v[3]));
+            const float scale = 1f / 255f;
+            float alpha = 69 * scale, opacity = 202 * scale;
+            SvgShaderPaint sample = new SvgShaderPaint(23 * scale * alpha * opacity, 169 * scale * alpha * opacity, 205 * scale * alpha * opacity, alpha * opacity).Dither(grid.GetGradientDither(v[2], v[3]));
             Assert.Equal(v.Skip(6).Take(4), new[] { BitConverter.SingleToInt32Bits(sample.Red), BitConverter.SingleToInt32Bits(sample.Green), BitConverter.SingleToInt32Bits(sample.Blue), BitConverter.SingleToInt32Bits(sample.Alpha) });
             byte[] destination = [11, 23, 37, 97];
             sample.Blend(destination, 191);
@@ -25,6 +27,8 @@ public sealed class SvgCpuDitherTests
     [Theory]
     [InlineData("cpu-dither-wide-linear.svg")]
     [InlineData("cpu-dither-radial.svg")]
+    [InlineData("shader-coordinate-linear.svg")]
+    [InlineData("shader-coordinate-affine.svg")]
     public async Task Six_outputs_agree_for_rectangle_shaders_across_cpu_contexts(string source)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", source));

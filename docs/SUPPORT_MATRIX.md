@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the CPU-local dither checkpoint, the 944 current manifest entries contain
-787 exact decoded-pixel references, 130 known-difference renders and 27
+At the native-gradient checkpoint, the 957 current manifest entries contain
+803 exact decoded-pixel references, 127 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -60,6 +60,17 @@ configurations add nine exact controls and three radial cases with four RGB-only
 differences each. All 775 prior exact PNGs remain unchanged. Six intended/large
 SDL variants improve; corporate exact documents remain 3/27. Coordinate
 construction, remaining geometry/clip events and full cache behavior remain open.
+
+Linear and centered radial coordinates now use native float unit matrices,
+bitmap-local seeds and affine inversion. Gradient-transform numbers share the
+bounded float reader, work counter and cancellation owner; legacy RGB and
+gradient paint opacity normalize before fused interpolation. Seven original
+configurations graduate, with the research ellipse transferred using its original
+assets. Twelve fresh configurations add nine exact controls and three geometry
+differences. All 787 previous exact PNGs and all 258 corporate outcomes are
+preserved. All nine SDL variants improve; corporate exact documents stay 3/27.
+Conical/multistop sampling, wider mapping, fractional geometry/clip events and
+full cache history retain separate gates.
 
 Convex rectangular strips round coverage separately from the raw-rectangle
 calibration. Native event evidence closes YouTube's opaque triangle witness;

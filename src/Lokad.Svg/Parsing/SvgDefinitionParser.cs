@@ -185,7 +185,7 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateRadialGradient(reader, workCounter, cancellationToken);
             state.RadialGradientId = reader.GetAttribute("id");
-            SvgRadialTemplate template = SvgGradientSyntax.ParseRadialVector(reader);
+            SvgRadialTemplate template = SvgGradientSyntax.ParseRadialVector(reader, workCounter, cancellationToken);
             state.RadialGradient = template;
             if (!reader.IsEmptyElement) state.RadialGradientDepth = reader.Depth;
             else if (state.RadialGradientId is not null) RegisterRadialGradient(state, workCounter, cancellationToken);
@@ -197,7 +197,7 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidateLinearGradient(reader, workCounter, cancellationToken);
             state.GradientId = reader.GetAttribute("id");
-            SvgGradientTemplate template = SvgGradientSyntax.ParseLinearVector(reader);
+            SvgGradientTemplate template = SvgGradientSyntax.ParseLinearVector(reader, workCounter, cancellationToken);
             state.Gradient = template;
             if (!reader.IsEmptyElement) state.GradientDepth = reader.Depth;
             else if (state.GradientId is not null) RegisterGradient(state, workCounter, cancellationToken);

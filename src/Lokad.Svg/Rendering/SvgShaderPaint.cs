@@ -1,5 +1,6 @@
 // Managed adaptation of Skia's high-precision premul, scale, dither,
 // source-over and RGBA8 store stages. Copyright 2018 Google LLC.
+// Legacy sRGB normalization adapts Chromium. Copyright 2012 The Chromium Authors.
 // See THIRD_PARTY_NOTICES.txt for the BSD license and pinned source revision.
 using Lokad.Svg.Parsing;
 
@@ -29,24 +30,28 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
         return GradientAlpha(start, end, firstAlpha, secondAlpha, position, opacity, matrix);
     }
 
-    internal static SvgShaderPaint Gradient(SvgColor start, SvgColor end, double position, byte opacity, int matrix)
-        => GradientAlpha(start, end, start.Alpha * (1f / 255f), end.Alpha * (1f / 255f), position, opacity, matrix);
-
     private static SvgShaderPaint GradientAlpha(SvgColor start, SvgColor end, float firstAlpha, float secondAlpha, double position, byte opacity, int matrix)
     {
         float t = (float)position;
-        const float scale = 1f / 255f;
-        float stopAlpha = firstAlpha + (secondAlpha - firstAlpha) * t;
-        float opacityScale = opacity * scale;
+        float stopAlpha = MathF.FusedMultiplyAdd(t, secondAlpha - firstAlpha, firstAlpha);
+        float opacityScale = opacity / 255f;
         float alpha = stopAlpha * opacityScale;
-        float red = (start.Red * scale + (end.Red - start.Red) * scale * t) * stopAlpha * opacityScale;
-        float green = (start.Green * scale + (end.Green - start.Green) * scale * t) * stopAlpha * opacityScale;
-        float blue = (start.Blue * scale + (end.Blue - start.Blue) * scale * t) * stopAlpha * opacityScale;
+        // CSS legacy RGB normalizes by division before native factor/bias interpolation.
+        float red = MathF.FusedMultiplyAdd(t, end.Red / 255f - start.Red / 255f, start.Red / 255f) * stopAlpha * opacityScale;
+        float green = MathF.FusedMultiplyAdd(t, end.Green / 255f - start.Green / 255f, start.Green / 255f) * stopAlpha * opacityScale;
+        float blue = MathF.FusedMultiplyAdd(t, end.Blue / 255f - start.Blue / 255f, start.Blue / 255f) * stopAlpha * opacityScale;
+        return new SvgShaderPaint(red, green, blue, alpha).Dither(matrix);
+    }
+
+    /// <summary>Applies native ordered dither to supplied premultiplied float lanes.</summary>
+    internal SvgShaderPaint Dither(int matrix)
+    {
+        const float scale = 1f / 255f;
         // Native dithering is centered around zero and precedes coverage.
         float dither = matrix * (2f / 128f) - 63f / 128f;
-        return new(Math.Clamp(MathF.FusedMultiplyAdd(dither, scale, red), 0, alpha),
-            Math.Clamp(MathF.FusedMultiplyAdd(dither, scale, green), 0, alpha),
-            Math.Clamp(MathF.FusedMultiplyAdd(dither, scale, blue), 0, alpha), alpha);
+        return new(Math.Clamp(MathF.FusedMultiplyAdd(dither, scale, Red), 0, Alpha),
+            Math.Clamp(MathF.FusedMultiplyAdd(dither, scale, Green), 0, Alpha),
+            Math.Clamp(MathF.FusedMultiplyAdd(dither, scale, Blue), 0, Alpha), Alpha);
     }
 
     internal static SvgShaderPaint Pattern(byte red, byte green, byte blue, byte alpha, byte opacity)

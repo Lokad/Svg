@@ -1,30 +1,31 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-06. **Current validated renderer checkpoint: CPU bitmap-local
-gradient dithering.** Linear/radial shader samples retain canvas-space paint
-coordinates while their dither cells use the owning bordered software bitmap.
-Three original material-pair configurations graduate. Twelve fresh large-canvas
-configurations add nine exact references and three four-pixel radial differences,
-backed by 36 healthy stable captures. All 775 prior exact fixture PNGs are preserved.
-Current validation passes **3,557 tests**, the nine-project Release build, all 25
-memory scenarios, the 1,089-case bank and package/installed-consumer checks.
-All 25 matched work ledgers and the preceding 21 peak ledgers are unchanged.
-Four new controls record small peak changes alongside encoded-output size;
-measured costs remain in the benchmark record.
+Updated 2026-10-06. **Current validated renderer checkpoint: native float
+gradient coordinates and normalized material.** Linear and centered radial
+gradients prepare bitmap-local shader matrices; general centered radial paints
+retain native affine inversion. Gradient-transform numbers share the bounded
+float reader and its work/cancellation owners. Seven original configurations
+graduate, including one research transfer. Twelve fresh configurations add nine
+exact references and three separate geometry differences, backed by 36 healthy
+stable captures. All 787 prior exact fixture PNGs are preserved.
+Current validation passes **3,562 tests**, the nine-project Release build, all 25
+memory scenarios, the 1,101-case bank and package/installed-consumer checks.
+Twenty-nine matched cost recipes retain actual parser work, raster work, peak
+storage and conversion observations in the benchmark record.
 
 The first corporate cohort remains frozen: **27 documents / 258 explicit variants**,
 including eight evaluation holdouts. All 258 references remain available:
 **66 exact variants, 174 known differences and eighteen renderer rejections**.
 Ford, ROC HCVS and YouTube remain **three verified exact documents**: marks **2/13**,
-wordmarks **1/14**. Six intended/large SDL variants improve but
-remain inexact; the other 234 rendered PNGs are unchanged. Every original
+wordmarks **1/14**. All nine SDL variants improve but
+remain inexact; the other 231 rendered PNGs are unchanged. Every original
 reference and frozen member is preserved. Declaration-only DOCTYPE admission
 remains established in `1876cf6e`.
 
-**Next: gradient coordinates, remaining edge/clip events and corporate residuals.**
+**Next: remaining edge/clip events, conical/multistop coordinates and corporate residuals.**
 Preserve source stop-opacity separately from byte-encoded CSS color alpha; the
 pinned browser distinguishes them. Polygon materials now share float coverage
-and source-over stages. Gradient coordinate/interpolation arithmetic, notched
+and source-over stages. Conical/multistop coordinates, notched
 edges, successive clips and cache history retain separate gates. Use the complete
 measured cohort to order mechanism-level investigations. General browser fidelity,
 representative performance, Linux delivery and S17 remain open.
@@ -65,11 +66,11 @@ nor the calibration fixtures establish a release rate.
 
 ## 1. Current validated checkpoint and its limits
 
-The current implementation accompanies `SvgCpuDitherTests`, 3,170 compiled native
-phase/material vectors and twelve fresh large-canvas browser configurations.
-It preserves shader float arithmetic, source stop-opacity, CPU geometry and all
-prior exact controls. Scope and evidence are in
-[the design record](docs/RASTERIZATION_DESIGN.md#cpu-bitmap-local-gradient-dithering-2026-10-06).
+The current implementation accompanies `SvgGradientCoordinateTests`, 192 compiled
+native coordinate/material vectors, three stable browser DOM numeric captures
+and twelve fresh browser image configurations. The preceding 3,170 dither and
+5,760 byte-material vectors remain unchanged and still pass. Scope and limits are in
+[the design record](docs/RASTERIZATION_DESIGN.md#native-gradient-coordinates-and-normalized-material-2026-10-06).
 The prior DOCTYPE [portable record](tests/References/declaration-only-doctype.json)
 retains its historical measurements and implementation commit. Detailed build
 diagnostics stay under ignored artifacts. Historical snapshots below retain
@@ -78,15 +79,44 @@ their dated scopes and counts.
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Recorded Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Recorded full tests, including corporate selection/measurement | **3,557 passed**: 3,391 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Recorded full tests, including corporate selection/measurement | **3,562 passed**: 3,396 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Recorded memory and delivery checks | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the complete Skia/Chromium BSD notices, including the 2010 AA-dispatch, 2018 dash-interpolation and 2025 classifier notices. No runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **944 entries = 787 exact + 130 known-difference renders + 27 rejections**; 502 base documents / 442 variants. Synthetic coverage is not corporate-logo coverage. |
-| Executed research manifest | **53 probes = 52 known-difference renders + one rejection**. Research entries and their original images are unchanged by CPU-local dithering. |
-| Legacy independent-file Default-options sweep | **92 files = 92 render**. Declaration-only DOCTYPEs remain admitted. CPU-local dithering changes only SDL's PNG in this sweep, without a matching Default-options fidelity claim; every outcome is preserved. Earlier rectangle, YouTube, ROC and Greek-flag changes retain their dated evidence below. The candidate directory has **100 files**; the eight new holdouts belong to the explicit corporate matrix. |
+| Executed fixture manifest | **957 entries = 803 exact + 127 known-difference renders + 27 rejections**; 507 base documents / 450 variants. Synthetic coverage is not corporate-logo coverage. |
+| Executed research manifest | **52 probes = 51 known-difference renders + one rejection**. The newly exact nonuniform radial ellipse transfers to the fixture bank with its original SVG, image and provenance; original research files remain unchanged. |
+| Legacy independent-file Default-options sweep | **92 files = 92 render**. Declaration-only DOCTYPEs remain admitted. Native gradient sampling changes only SDL and inv-035 PNGs in this sweep, without a matching Default-options fidelity claim; every outcome is preserved. Earlier rectangle, YouTube, ROC and Greek-flag changes retain their dated evidence below. The candidate directory has **100 files**; the eight new holdouts belong to the explicit corporate matrix. |
 | Validated Ford all-variant evidence | **All nine exact**: 250×100, 500×200 and 1000×400 × transparent/white/black. Large variants improve 10/10/7 → 0/0/0 changed pixels; transparent alpha error 16 → 0. The six prior exact PNGs retain complete identity. All original references and current candidate identities remain portable regressions. This establishes the outlined-wordmark checkpoint, not a corporate-cohort rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, independent of fresh candidate success: every one of the 19 retained brand/organization exports plus eight predeclared new holdouts. Primary strata: 13 marks / 14 wordmarks. Every original source and historical reference is preserved; materializations change only root sizing. Fifteen large cases exceeded the transport cap at freeze; all now have stable references at their original dimensions. The legacy 92-file Default bank and calibration bank are separate. |
-| Recorded corporate measurement | **258 references = 240 rendered comparisons (66 exact, 174 known differences) + eighteen UnsupportedFeature cases**. All 258 dispositions and all 66 exact PNGs are preserved. Six intended/large SDL PNGs improve but remain inexact; the other 234 rendered PNGs are unchanged. Original references and capture provenance are preserved. Exact documents remain **3/27**, marks **2/13**, wordmarks **1/14**. This completes the first cohort's measurement, not S17. |
-| Outside current Windows validation | Linux/remote CI, noncorporate inventory variant regeneration, representative throughput and private-font metrics/pixels. Current Chrome smoke, memory, package/consumer and artifact-validator checks pass. Twenty-five matched recipes preserve work ledgers and the preceding 21 peaks; four new controls record output-size-related peak changes and measured conversion costs; timings do not establish representative performance. |
+| Recorded corporate measurement | **258 references = 240 rendered comparisons (66 exact, 174 known differences) + eighteen UnsupportedFeature cases**. All 258 dispositions and all 66 exact PNGs are preserved. All nine SDL PNGs improve but remain inexact; the other 231 rendered PNGs are unchanged. Original references and capture provenance are preserved. Exact documents remain **3/27**, marks **2/13**, wordmarks **1/14**. This completes the first cohort's measurement, not S17. |
+| Outside current Windows validation | Linux/remote CI, noncorporate inventory variant regeneration, representative throughput and private-font metrics/pixels. Current Chrome smoke, memory, package/consumer and artifact-validator checks pass. Twenty-nine matched recipes retain additional gradient-transform parsing work and measured output-size-related peaks; no raster/scene storage is added. Timings do not establish representative performance. |
+
+### Native gradient coordinates and normalized material (2026-10-06)
+
+Linear and centered radial paints use float unit matrices and bitmap-local
+pixel-center seeds. Affine concatenation/inversion retains native intermediate
+precision, with a draw-local cache for the current bitmap. CSS legacy RGB
+normalizes by division before fused factor/bias interpolation; gradient paint
+opacity uses its float normalization. Source stop-opacity and byte-encoded CSS
+alpha retain their existing contracts. Gradient-transform tokens now use the
+shared float reader with bounded additional work and cancellation.
+
+Six existing fixture configurations and the nonuniform radial research ellipse
+become exact against their original browser images. All 787 previous exact PNGs
+and every prior-bank disposition are preserved; no known mismatch count increases.
+Nine fresh linear/radial/affine cases are exact. Three fractional objectBoundingBox
+path controls improve 735 to 730 differences and retain the separate geometry gate.
+All 36 fresh image captures and three numeric captures are stable, healthy and
+cleaned. All nine SDL variants improve by two/one/three pixels at small/intended/
+large sizes on each background. The other 231 rendered corporate PNGs are unchanged;
+exact corporate documents remain 3/27.
+
+Five new core cases cover 192 original compiled native coordinate/material vectors,
+browser numeric bits, shared work/cancellation and two additional six-output
+controls. Existing native vector assets are unchanged; their tests replay their
+supplied byte-normalized float inputs through common dither/coverage/blend stages.
+No heap storage or scene owner is added. Full validation and matched costs remain
+under ignored `artifacts/gradient-coordinates-20261006/`. General conical/multistop
+sampling, geometry/clip events, cache history, representative performance, Linux
+and S17 remain open.
 
 ### CPU bitmap-local gradient dithering (2026-10-06)
 
@@ -656,8 +686,8 @@ denominators.
 **Complete first-cohort evidence.** All 258 variants now have browser references:
 66 exact, 174 known differences and eighteen rejections. The remaining 225
 references have 675 healthy, cleaned, byte-stable fresh captures. The original
-33 references and all 258 outcomes are preserved. The current dither repair improves
-six intended/large SDL PNGs while preserving all 66 exact corporate PNG identities.
+33 references and all 258 outcomes are preserved. The current gradient repair improves
+all nine SDL PNGs while preserving all 66 exact corporate PNG identities.
 `capture-corporate-cohort.ps1` and VisualDiff's `--cohort` mode reproduce capture
 and categorized per-variant/document reporting under ignored artifacts. Neither
 command refreshes the immutable selection or rewrites references automatically.
@@ -673,10 +703,10 @@ Holdouts remain evaluation
 inputs. Representative performance, Linux delivery and S17 remain open.
 
 A bounded shared repair may land with independent mechanism-level improvement
-and nonregression across all nine Ford variants. Preserve all **787 currently
-exact fixture entries**, including all 775 prior complete PNG identities,
+and nonregression across all nine Ford variants. Preserve all **803 currently
+exact fixture entries**, including all 787 preceding complete PNG identities,
 and required categorized rejections. Intentional syntax graduations need explicit
-contract/tests/provenance updates. Compare the complete **1,089-case current
+contract/tests/provenance updates. Compare the complete **1,101-case current
 bank** and all 258 frozen corporate cases; retain the AA repair's separate
 896-case prior-bank comparison. Report fixture/research/legacy and corporate
 regression scopes separately.
@@ -685,13 +715,13 @@ six-output and delivery checks plus matching measurements. Missing oracle result
 must stay explicit. General tile-local/affine mapping, fractional events,
 quad/convex/stroke and layer fidelity retain independent gates.
 
-The current CPU-local dither checkpoint passes locked restore, the nine-project Release
-build with zero warnings/errors, **3,557 tests = 3,391 core + 160 visual + six
-FontProbe**, all 25 memory scenarios and runtime/symbol package plus installed-
+The current native-gradient checkpoint passes locked restore, the nine-project
+Release build with zero warnings/errors, **3,562 tests = 3,396 core + 160 visual +
+six FontProbe**, all 25 memory scenarios and runtime/symbol package plus installed-
 consumer checks. Its prior-bank and corporate comparisons preserve every prior
-exact PNG and disposition; the expanded bank executes 1,089 cases. Full local
-gates are under `artifacts/gradient-stages-20261006/`. Earlier records retain their
-historical validation snapshots. Future renderer edits need their affected checks.
+exact PNG and disposition; the expanded bank executes 1,101 cases. Full local
+gates are under `artifacts/gradient-coordinates-20261006/`. Earlier records retain
+their historical validation snapshots. Future renderer edits need their affected checks.
 
 S17 still requires at least 80% exact documents overall and in each corporate
 stratum, with every counted document's declared variants exact. Neither these

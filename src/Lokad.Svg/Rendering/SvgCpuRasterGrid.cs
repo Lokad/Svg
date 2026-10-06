@@ -7,6 +7,9 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Distinguishes a bordered edge-construction clip from its exclusively owned output pixels.</summary>
 internal readonly record struct SvgCpuRasterContext(SvgAnalyticClipBounds BitmapClip, SvgAnalyticClipBounds Interior);
 
+/// <summary>Identifies the canvas origin of one bordered software bitmap.</summary>
+internal readonly record struct SvgCpuBitmapOrigin(int X, int Y);
+
 /// <summary>Enumerates the pinned CPU compositor's raster contexts without allocating a tile tape.</summary>
 /// <remarks>Settings match the declared Windows software oracle: default 256 and maximum untiled 512, with one border texel. Contexts are canvas-clamped; interiors partition the canvas and bitmap clips overlap. Enumeration skips interiors outside the requested drawing bounds. Callers charge each visited context, construction and paint; the grid owns no storage and is immutable.</remarks>
 internal readonly struct SvgCpuRasterGrid
@@ -37,14 +40,20 @@ internal readonly struct SvgCpuRasterGrid
     /// <remarks>The last bitmap owns both remaining border pixels. The caller supplies an in-canvas pixel, charges paint work and checks cancellation between rows; this lookup allocates no storage.</remarks>
     internal int GetGradientDither(int x, int y)
     {
-        int strideX = _tileWidth - 2, strideY = _tileHeight - 2;
-        int localX = x - Math.Min(x - 1, _width - 3) / strideX * strideX;
-        int localY = y - Math.Min(y - 1, _height - 3) / strideY * strideY;
+        SvgCpuBitmapOrigin origin = GetBitmapOrigin(x, y);
+        int localX = x - origin.X, localY = y - origin.Y;
         int mixedY = localY ^ localX;
         return ((mixedY & 1) << 5) | ((localX & 1) << 4)
             | ((mixedY & 2) << 2) | ((localX & 2) << 1)
             | ((mixedY & 4) >> 1) | ((localX & 4) >> 2);
     }
+
+    /// <summary>Finds the owning bitmap for an in-canvas pixel without allocating a context tape.</summary>
+    /// <remarks>The final bitmap owns the remaining border pixels. Callers charge
+    /// raster work and check cancellation; lookup is immutable and allocation-free.</remarks>
+    internal SvgCpuBitmapOrigin GetBitmapOrigin(int x, int y)
+        => new(Math.Min(x - 1, _width - 3) / (_tileWidth - 2) * (_tileWidth - 2),
+            Math.Min(y - 1, _height - 3) / (_tileHeight - 2) * (_tileHeight - 2));
 
     internal Enumerator GetContexts(SvgAnalyticClipBounds drawingBounds)
     {

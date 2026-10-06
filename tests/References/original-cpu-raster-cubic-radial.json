@@ -17,7 +17,7 @@
   "decodedPixelStability": "identical",
   "inputSha256": "068b03dd704c7d26ce3f6edf2e9ac6a04bcdf68499361e42be08e41a6c40a92c",
   "candidateOutcome": "renders",
-  "candidateSha256": "30a14c8092a521cd8920bfedf947d604102aae74b4f9202ea4b838a28f6a771e",
+  "candidateSha256": "1e54fec88a76d7829218c53b26ce8bed343cc7e8ad6fd7e88f4163954235294f",
   "admittedAt": "CPU raster context, 2026-10-05",
   "captureSha256": [
     "32b95f81441844069351040d919694ba73a69bfff0f9a739bc473333e8b1ef10",
@@ -38,17 +38,18 @@
   "declarationReason": "Same independent concave cubic crossing bordered CPU tiles, across all four material consumers.",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 4,
-    "maximumChannelError": 1,
-    "meanAbsoluteError": 4.8828125e-06,
-    "rootMeanSquareError": 0.002209708691207961,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 186,
-    "minimumMismatchY": 90,
-    "maximumMismatchX": 456,
-    "maximumMismatchY": 184,
-    "exact": false,
+    "minimumMismatchX": 640,
+    "minimumMismatchY": 320,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
     "alphaErrorMass": 0
-  }
+  },
+  "graduatedAt": "Native float gradient coordinates and normalized material, 2026-10-06"
 }

@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Update="TestData/gradient-coordinates-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/gradient-coordinates-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/gradient-transform-browser.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/shader-coordinate-linear.svg" Link="TestData/shader-coordinate-linear.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/shader-coordinate-affine.svg" Link="TestData/shader-coordinate-affine.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/cpu-dither-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/cpu-dither-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/cpu-dither-wide-linear.svg" Link="TestData/cpu-dither-wide-linear.svg" CopyToOutputDirectory="PreserveNewest" />

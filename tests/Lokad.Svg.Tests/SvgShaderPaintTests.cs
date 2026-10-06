@@ -18,8 +18,10 @@ public sealed class SvgShaderPaintTests
             SvgColor color = new((byte)values[0], (byte)values[1], (byte)values[2], (byte)values[3]);
             int x = values[6], y = values[7] ^ x;
             int matrix = (y & 1) << 5 | (x & 1) << 4 | (y & 2) << 2 | (x & 2) << 1 | (y & 4) >> 1 | (x & 4) >> 2;
+            const float scale = 1f / 255f;
+            float alpha = color.Alpha * scale, opacity = values[4] * scale;
             SvgShaderPaint paint = columns[0] == "gradient"
-                ? SvgShaderPaint.Gradient(color, color, 0, (byte)values[4], matrix)
+                ? new SvgShaderPaint(color.Red * scale * alpha * opacity, color.Green * scale * alpha * opacity, color.Blue * scale * alpha * opacity, alpha * opacity).Dither(matrix)
                 : SvgShaderPaint.Pattern(color.Red, color.Green, color.Blue, color.Alpha, (byte)values[4]);
             byte[] destination = values.Skip(8).Take(4).Select(value => (byte)value).ToArray();
             paint.Blend(destination, (byte)values[5]);

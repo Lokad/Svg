@@ -667,6 +667,7 @@ public static class SvgConverter
             double directionY = definition.Y2 - definition.Y1;
             double denominator = directionX * directionX + directionY * directionY;
             double offsetSpan = definition.Offset2 - definition.Offset1;
+            SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
 
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
@@ -724,20 +725,23 @@ public static class SvgConverter
                     double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken) : 0.0;
                     double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                     double position;
-                    if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                    if (!nativeCoordinates.TryLinear(x, y, rasterGrid, out position))
                     {
-                        double relativeX = (deviceX - definition.X1) / definition.ReferenceScaleX;
-                        double relativeY = (deviceY - definition.Y1) / definition.ReferenceScaleY;
-                        double axisX = directionX / definition.ReferenceScaleX;
-                        double axisY = directionY / definition.ReferenceScaleY;
-                        position = (relativeX * axisX + relativeY * axisY) / (axisX * axisX + axisY * axisY);
-                    }
-                    else if (definition.IsUserSpace) position = ((deviceX - definition.X1) * directionX + (deviceY - definition.Y1) * directionY) / denominator;
-                    else
-                    {
-                        double normalizedX = (deviceX - box.X) / box.Width;
-                        double normalizedY = (deviceY - box.Y) / box.Height;
-                        position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
+                        if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                        {
+                            double relativeX = (deviceX - definition.X1) / definition.ReferenceScaleX;
+                            double relativeY = (deviceY - definition.Y1) / definition.ReferenceScaleY;
+                            double axisX = directionX / definition.ReferenceScaleX;
+                            double axisY = directionY / definition.ReferenceScaleY;
+                            position = (relativeX * axisX + relativeY * axisY) / (axisX * axisX + axisY * axisY);
+                        }
+                        else if (definition.IsUserSpace) position = ((deviceX - definition.X1) * directionX + (deviceY - definition.Y1) * directionY) / denominator;
+                        else
+                        {
+                            double normalizedX = (deviceX - box.X) / box.Width;
+                            double normalizedY = (deviceY - box.Y) / box.Height;
+                            position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
+                        }
                     }
                     double local = definition.Stops.Length == 1 ? 0 : (position - definition.Offset1) / offsetSpan;
                     if (definition.Spread == SvgGradientSpread.Repeat) local -= Math.Floor(local);
@@ -771,6 +775,7 @@ public static class SvgConverter
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
+            SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (definition.Radius <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
 
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
@@ -874,7 +879,8 @@ public static class SvgConverter
                     else
                     if (offsetX == 0 && offsetY == 0)
                     {
-                        position = (Math.Sqrt(rayX * rayX + rayY * rayY) - focalRadius) / (radius - focalRadius);
+                        if (!nativeCoordinates.TryRadial(x, y, rasterGrid, out position))
+                            position = (Math.Sqrt(rayX * rayX + rayY * rayY) - focalRadius) / (radius - focalRadius);
                     }
                     else if (rayX == 0 && rayY == 0)
                     {
@@ -1135,6 +1141,7 @@ public static class SvgConverter
             double directionY = definition.Y2 - definition.Y1;
             double denominator = directionX * directionX + directionY * directionY;
             double offsetSpan = definition.Offset2 - definition.Offset1;
+            SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (paint && offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
 
             if (paint && (denominator != 0 || definition.Stops.Length == 1))
@@ -1146,20 +1153,23 @@ public static class SvgConverter
             {
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
-                if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                if (!nativeCoordinates.TryLinear(x, y, rasterGrid, out position))
                 {
-                    double relativeX = (deviceX - definition.X1) / definition.ReferenceScaleX;
-                    double relativeY = (deviceY - definition.Y1) / definition.ReferenceScaleY;
-                    double axisX = directionX / definition.ReferenceScaleX;
-                    double axisY = directionY / definition.ReferenceScaleY;
-                    position = (relativeX * axisX + relativeY * axisY) / (axisX * axisX + axisY * axisY);
-                }
-                else if (definition.IsUserSpace) position = ((deviceX - definition.X1) * directionX + (deviceY - definition.Y1) * directionY) / denominator;
-                else
-                {
-                    double normalizedX = (deviceX - box.X) / box.Width;
-                    double normalizedY = (deviceY - box.Y) / box.Height;
-                    position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
+                    if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                    {
+                        double relativeX = (deviceX - definition.X1) / definition.ReferenceScaleX;
+                        double relativeY = (deviceY - definition.Y1) / definition.ReferenceScaleY;
+                        double axisX = directionX / definition.ReferenceScaleX;
+                        double axisY = directionY / definition.ReferenceScaleY;
+                        position = (relativeX * axisX + relativeY * axisY) / (axisX * axisX + axisY * axisY);
+                    }
+                    else if (definition.IsUserSpace) position = ((deviceX - definition.X1) * directionX + (deviceY - definition.Y1) * directionY) / denominator;
+                    else
+                    {
+                        double normalizedX = (deviceX - box.X) / box.Width;
+                        double normalizedY = (deviceY - box.Y) / box.Height;
+                        position = ((normalizedX - definition.X1) * directionX + (normalizedY - definition.Y1) * directionY) / denominator;
+                    }
                 }
                 double local = definition.Stops.Length == 1 ? 0 : (position - definition.Offset1) / offsetSpan;
                 if (definition.Spread == SvgGradientSpread.Repeat) local -= Math.Floor(local);
@@ -1197,6 +1207,7 @@ public static class SvgConverter
         void RasterizeRadialArea(SvgRadialGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
             SvgRectangleRaster raster = PrepareRectangle(area);
+            SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             if (paint && (definition.Radius <= 0 && definition.Stops.Length != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
 
@@ -1256,7 +1267,8 @@ public static class SvgConverter
                 else
                 if (offsetX == 0 && offsetY == 0)
                 {
-                    position = (Math.Sqrt(rayX * rayX + rayY * rayY) - focalRadius) / (radius - focalRadius);
+                    if (!nativeCoordinates.TryRadial(x, y, rasterGrid, out position))
+                        position = (Math.Sqrt(rayX * rayX + rayY * rayY) - focalRadius) / (radius - focalRadius);
                 }
                 else if (rayX == 0 && rayY == 0)
                 {

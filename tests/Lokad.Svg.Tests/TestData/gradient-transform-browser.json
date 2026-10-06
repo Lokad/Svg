@@ -1,0 +1,31 @@
+{
+  "cx": -3.700000047683716,
+  "cy": 12.300000190734863,
+  "r": 145.89999389648438,
+  "circleBits": [
+    3228355789,
+    1095027917,
+    1125246566
+  ],
+  "matrix": [
+    1.1700000762939453,
+    0.23000000417232513,
+    -0.3100000023841858,
+    0.8899999856948853,
+    301.70001220703125,
+    149.3000030517578
+  ],
+  "matrixBits": [
+    1066779280,
+    1047233823,
+    3198072914,
+    1063507722,
+    1133959578,
+    1125469389
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "platform": "win64",
+  "freshProcessCaptures": 3,
+  "decodedStability": "identical DOM values and float bits",
+  "provenance": "Pinned-browser radialGradient gradientTransform.baseVal.consolidate().matrix and cx/cy/r.baseVal.value. Captures use fresh sandboxed processes with healthy startup and cleaned profiles; detailed run diagnostics remain under ignored artifacts."
+}

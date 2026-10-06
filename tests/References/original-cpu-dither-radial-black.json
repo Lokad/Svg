@@ -34,20 +34,21 @@
   "declaredAfterIsolatedPrototype": true,
   "declaredBeforeProductionEdit": true,
   "declaredBeforeCaptures": true,
-  "candidateSha256": "e1ce3a948f289d4096ee02b8301c79e578386363c2ca973d57942e96965c1d67",
+  "candidateSha256": "ae7deb3e134f45ce6d7055b10566bfc2991717e6527a8eaec18a0e1326d3bc56",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 4,
-    "maximumChannelError": 1,
-    "meanAbsoluteError": 4.8828125e-06,
-    "rootMeanSquareError": 0.002209708691207961,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 213,
-    "minimumMismatchY": 122,
-    "maximumMismatchX": 530,
-    "maximumMismatchY": 275,
-    "exact": false,
+    "minimumMismatchX": 640,
+    "minimumMismatchY": 320,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
     "alphaErrorMass": 0
-  }
+  },
+  "graduatedAt": "Native float gradient coordinates and normalized material, 2026-10-06"
 }

@@ -4960,3 +4960,53 @@ peak amounts; exact deltas and conversion costs are in the benchmark record.
 Detailed reports stay under
 ignored `artifacts/gradient-stages-20261006/`. Native coordinate construction,
 remaining edge/clip events, cache history, Linux and S17 remain open.
+
+## Native gradient coordinates and normalized material (2026-10-06)
+
+The source-stop checkpoint still left one large linear and four large radial
+pixels after local dither phase was repaired. The remaining difference came
+from coordinate and material precision. Skia builds a float unit matrix from
+linear endpoints or a radial center/radius, composes it with the inverse local
+paint/CTM map, then samples bitmap-local pixel centers. The float radius stage
+keeps separate squares before square root. Native affine concatenation uses
+double products and inversion uses double determinant intermediates, with a
+separate scale/translate specialization.
+
+`SvgGradientCoordinates` now prepares those matrices for rectangle and polygon
+linear/centered-radial routes, including general affine centered radial paints.
+A draw-local cache retains the current bitmap matrix; it owns no heap storage
+and preserves existing raster work/cancellation boundaries. Bitmap origin is
+shared with ordered dithering. Non-finite float maps and focal/conical circles
+keep the existing evaluator. Gradient-transform numbers use the existing coupled
+float reader with shared additional parser work and cancellation. A direct
+pinned-browser DOM study established that `matrix(1.17 …)` retains float bits
+1066779280, rather than the correctly-rounded decimal-to-float alternative.
+This closes two fresh affine pixels without changing any old exact image.
+
+Chromium legacy sRGB conversion divides channels by 255 before native fused
+factor/bias interpolation. Gradient opacity also uses division normalization.
+Source stop-opacity remains distinct from byte-encoded functional color alpha.
+The old test-only byte gradient constructor is removed: native byte-material
+tests now supply their independently fixed float input lanes to the shared
+dither/coverage/source-over/store stages. Their 5,760 and 3,170 vector assets are
+unchanged. New vectors compile original constructors, matrix inversion/concat,
+matrix/radius stages and normalized two-stop material at Skia
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c` and Chromium tag 153.0.8010.52.
+All 192 positions, material float lanes and final pixels match. The probe uses
+explicit hardware FMA (`-mfma`); an initial MinGW `fmaf` fallback was unfused and
+was rejected before admitting vectors. Three fresh browser DOM captures agree.
+
+Six prior fixture cases and the nonuniform radial research ellipse become exact
+against unchanged original images. All 787 preceding exact PNG identities and
+every old-bank disposition are preserved; no known mismatch count increases.
+Nine fresh linear/radial/affine configurations are exact. Three fractional
+objectBoundingBox paths improve 735 → 730 differences, with residual alpha/edge
+coverage retained as a separate gate. All 36 fresh image captures are stable,
+healthy and cleaned. All nine SDL variants improve while the other 231 rendered
+corporate PNGs are unchanged; exact documents stay 3/27. The expanded bank is
+1,101 cases. Full tests, resource/delivery gates and 29 matched cost recipes remain
+under ignored `artifacts/gradient-coordinates-20261006/`; actual measured costs
+are in BENCHMARKS. General focal/conical and multistop arithmetic, broader affine/
+instance precision, remaining geometry/clip events, cache history, representative
+performance, Linux and S17 remain open. Git identifies implementation; no source,
+binary, adapter or package fingerprints are added.

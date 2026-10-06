@@ -92,7 +92,7 @@ internal static class SvgGradientSyntax
     /// <summary>Bounds retained linear-gradient stops; the per-entry storage charge covers exactly this many.</summary>
     internal const int MaximumGradientStops = 8;
 
-    internal static SvgGradientTemplate ParseLinearVector(XmlReader reader)
+    internal static SvgGradientTemplate ParseLinearVector(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string? units = reader.GetAttribute("gradientUnits");
@@ -111,12 +111,12 @@ internal static class SvgGradientSyntax
         double x2 = ParseAxis(rawX2 ?? (isUserSpace ? "0" : "1"));
         double y2 = ParseAxis(rawY2 ?? "0");
         string? transformValue = reader.GetAttribute("gradientTransform");
-        SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
+        SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue, workCounter, cancellationToken);
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
         return new SvgGradientTemplate(x1, y1, x2, y2, isUserSpace, gradientTransform, transformValue is not null, vectorCount, units is not null, spreadMethod, spread is not null, href, rawX1 is not null, rawY1 is not null, rawX2 is not null, rawY2 is not null);
     }
 
-    internal static SvgRadialTemplate ParseRadialVector(XmlReader reader)
+    internal static SvgRadialTemplate ParseRadialVector(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string? units = reader.GetAttribute("gradientUnits");
@@ -125,7 +125,7 @@ internal static class SvgGradientSyntax
         string? spread = reader.GetAttribute("spreadMethod");
         SvgGradientSpread spreadMethod = ParseSpreadMethod(spread);
         string? transformValue = reader.GetAttribute("gradientTransform");
-        SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue);
+        SvgGradientTransform gradientTransform = ParseGradientTransform(transformValue, workCounter, cancellationToken);
         string? rawFocalRadius = reader.GetAttribute("fr");
         string? rawCenterX = reader.GetAttribute("cx");
         string? rawCenterY = reader.GetAttribute("cy");
@@ -146,7 +146,7 @@ internal static class SvgGradientSyntax
         return new SvgRadialTemplate(centerX, centerY, radius, focalX, focalY, focalRadius, isUserSpace, gradientTransform, transformValue is not null, units is not null, spreadMethod, spread is not null, href, vectorCount, rawCenterX is not null, rawCenterY is not null, rawRadius is not null, rawFocalX is not null, rawFocalY is not null, rawFocalRadius is not null);
     }
 
-    private static SvgGradientTransform ParseGradientTransform(string? value)
+    private static SvgGradientTransform ParseGradientTransform(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (value is null) return SvgGradientTransform.Identity;
         if (value.Length > SvgSyntaxLimits.MaximumTransformCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform values exceed the configured syntax limit.");
@@ -172,13 +172,13 @@ internal static class SvgGradientSyntax
             int argumentsStart = position;
             while (position < input.Length && input[position] != ')') position++;
             if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite translate(), nonzero scale(), rotation, and finite matrix() gradient transforms are implemented.");
-            transform = SvgGradientTransform.Compose(transform, ParseGradientTransformFunction(name, input[argumentsStart..position]));
+            transform = SvgGradientTransform.Compose(transform, ParseGradientTransformFunction(name, input[argumentsStart..position], workCounter, cancellationToken));
             position++;
             hasFunction = true;
         }
     }
 
-    private static SvgGradientTransform ParseGradientTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments)
+    private static SvgGradientTransform ParseGradientTransformFunction(ReadOnlySpan<char> name, ReadOnlySpan<char> arguments, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         bool isMatrix = name.Equals("matrix".AsSpan(), StringComparison.OrdinalIgnoreCase);
         bool isTranslate = name.Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase);
@@ -190,7 +190,7 @@ internal static class SvgGradientSyntax
         while (tokens.TryReadValue(out ReadOnlySpan<char> value))
         {
             if (valueCount == values.Length) throw new SvgException(SvgErrorCode.MalformedInput, isMatrix ? "matrix() requires six coordinates." : "Transforms require one or two coordinates.");
-            values[valueCount++] = ParseGradientTransformCoordinate(value);
+            values[valueCount++] = ParseGradientTransformCoordinate(value, workCounter, cancellationToken);
         }
         if (isMatrix)
         {
@@ -217,10 +217,11 @@ internal static class SvgGradientSyntax
         return new SvgGradientTransform(first, 0, 0, second, 0, 0);
     }
 
-    private static double ParseGradientTransformCoordinate(ReadOnlySpan<char> value)
+    private static double ParseGradientTransformCoordinate(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient transform coordinates must be finite bounded numbers.");
-        return result;
+        ReadOnlySpan<char> token = value.Trim();
+        if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient transform coordinates must be finite bounded numbers.");
+        return SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
     }
 
 

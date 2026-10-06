@@ -1246,3 +1246,75 @@ Raw ledgers, allocation traffic, process orders and reproduction harnesses remai
 under ignored `artifacts/gradient-stages-20261006/`. Git identifies implementation;
 input/output identities protect measured artifacts. Representative performance
 and Linux evidence remain open.
+
+## Native gradient coordinates and normalized material (2026-10-06)
+
+Matched against retained `af63b764` on Windows x64 / .NET 10.0.12. Twenty-nine
+recipes retain the preceding 25 guards and add the four fresh coordinate controls.
+All raster-only work ledgers and scene value sizes are unchanged: geometry 248,
+rectangle 112, gradient stop 16 and analytic paint 24 bytes. The gradient sampler
+caches its current bitmap matrix as draw-local stack state without a heap owner.
+Three recipes each add six shared parser work units for the gradient-transform
+numeric pass; cumulative work through raster includes those parser units.
+
+| Input | Parser work, baseline → current | Work through raster, baseline → current |
+| --- | ---: | ---: |
+| inv-003-intended | 3629587 → 3629593 | 6366286 → 6366292 |
+| shader-coordinate-affine | 37 → 43 | 204841 → 204847 |
+| shader-coordinate-bbox | 51 → 57 | 248592 → 248598 |
+
+Five accounted peaks vary by exactly twice the encoded PNG byte difference,
+covering compressed storage and the returned buffer; the other 24 peaks are
+unchanged. No scene or raster storage is added.
+
+| Input | Accounted peak bytes, baseline → current | PNG bytes, baseline → current |
+| --- | ---: | ---: |
+| cpu-dither-radial | 1046749 → 1046769 | 113585 → 113595 |
+| shader-coordinate-linear | 955875 → 955835 | 68148 → 68128 |
+| shader-coordinate-radial | 1042049 → 1042043 | 111235 → 111232 |
+| shader-coordinate-affine | 961843 → 961837 | 71132 → 71129 |
+| shader-coordinate-bbox | 482161 → 482163 | 44141 → 44142 |
+
+Two fresh-process pairs run sequentially in opposite order, preserving eight
+warmups and three measured batches per recipe. New controls use ten conversions
+per batch. Cells are median milliseconds per conversion. Several large gradients
+are slower in both pairs; these observed costs are retained rather than treated
+as representative throughput or a causal regression threshold. The host is shared
+and the representative-performance exit remains open.
+
+| Input | Pair 1 baseline | Pair 1 current | Pair 2 current | Pair 2 baseline |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.194 | 0.143 | 0.140 | 0.136 |
+| ford | 22.380 | 23.566 | 25.151 | 23.101 |
+| dense | 362.383 | 326.020 | 313.168 | 312.305 |
+| native-stop | 670.042 | 521.373 | 510.800 | 515.782 |
+| youtube-intended | 16.397 | 12.453 | 11.136 | 12.722 |
+| youtube-large | 45.671 | 38.006 | 37.419 | 38.285 |
+| roc | 2.850 | 2.092 | 2.133 | 2.341 |
+| greek-flag | 11.205 | 9.480 | 8.432 | 10.204 |
+| rect-corner | 0.149 | 0.118 | 0.134 | 0.141 |
+| rect-contained | 0.103 | 0.085 | 0.122 | 0.092 |
+| pattern-content | 0.079 | 0.054 | 0.071 | 0.054 |
+| material-grid | 5.619 | 6.127 | 6.712 | 5.175 |
+| border-band | 2.764 | 2.295 | 2.196 | 2.119 |
+| shader-linear | 0.525 | 0.504 | 0.531 | 0.483 |
+| shader-radial | 0.491 | 0.396 | 0.480 | 0.418 |
+| shader-pattern | 0.245 | 0.190 | 0.168 | 0.260 |
+| inv-001-intended | 8.603 | 6.966 | 6.971 | 7.742 |
+| inv-003-intended | 212.058 | 188.833 | 179.593 | 193.376 |
+| inv-040-intended | 1.943 | 1.454 | 1.686 | 1.443 |
+| polygon-pattern-notch | 0.171 | 0.160 | 0.155 | 0.152 |
+| stop-offset-clamp | 0.260 | 0.280 | 0.211 | 0.249 |
+| cpu-dither-wide-linear | 7.346 | 8.678 | 6.957 | 5.971 |
+| cpu-dither-tall-linear | 5.223 | 5.879 | 6.493 | 5.045 |
+| cpu-dither-radial | 25.738 | 31.247 | 26.271 | 23.432 |
+| cpu-dither-polygon-clip | 6.422 | 8.050 | 7.909 | 6.323 |
+| shader-coordinate-linear | 21.474 | 25.592 | 21.632 | 20.077 |
+| shader-coordinate-radial | 22.645 | 26.480 | 25.621 | 23.082 |
+| shader-coordinate-affine | 22.187 | 23.858 | 23.908 | 20.249 |
+| shader-coordinate-bbox | 15.173 | 16.077 | 16.401 | 14.152 |
+
+Raw ledgers, allocation traffic and process orders remain under ignored
+`artifacts/gradient-coordinates-20261006/`. Git identifies implementation;
+input/output identities protect measured assets. No source/build fingerprints
+are recorded. Linux and representative performance remain open.

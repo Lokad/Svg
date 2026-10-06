@@ -1,0 +1,3 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<!-- Original gradient coordinate and color-normalization control. -->
+<svg xmlns='http://www.w3.org/2000/svg' width='640' height='320'><defs><radialGradient id='p' gradientUnits='userSpaceOnUse' cx='317.3' cy='163.9' r='283.7'><stop stop-color='#f06018'/><stop offset='1' stop-color='#003478'/></radialGradient></defs><rect width='640' height='320' fill='url(#p)'/></svg>
