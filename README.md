@@ -35,9 +35,10 @@ Antialiased rectangle paint clips now have independent native/browser regression
 and preserve the distinction between geometric clip edges and mask allocation
 bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
 paints apply the rectangle's snapped byte mask to each ordered operation.
-The frozen corporate matrix now has 33 reference images out of 258: thirty
-rendered comparisons (nineteen exact, eleven different) and three retained
-renderer rejections. These checkpoints do not establish general logo coverage.
+The frozen corporate matrix now has all 258 reference images: 240 rendered
+comparisons (60 exact, 180 different) and eighteen retained renderer rejections.
+Only Ford and YouTube are exact in every declared variant: 2/27 documents.
+These checkpoints do not establish general logo coverage.
 
 Convex paths now round coverage for rectangular strips created by clipping a
 slanted edge, while raw rectangles retain their separate calibration. This closes

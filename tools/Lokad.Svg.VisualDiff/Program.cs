@@ -4,9 +4,23 @@ internal static class Program
 {
     private static int Main(string[] arguments)
     {
+        if (arguments.Length == 4 && arguments[0] == "--cohort")
+        {
+            try
+            {
+                CorporateCohortMeasurement.Run(arguments[1], arguments[2], arguments[3], CancellationToken.None);
+                return 0;
+            }
+            catch (Exception exception) when (exception is IOException or NotSupportedException or ArgumentException or System.Text.Json.JsonException)
+            {
+                Console.Error.WriteLine(exception.Message);
+                return 2;
+            }
+        }
         if (arguments.Length != 2)
         {
             Console.Error.WriteLine("Usage: Lokad.Svg.VisualDiff <reference.png> <candidate.png>");
+            Console.Error.WriteLine("       Lokad.Svg.VisualDiff --cohort <repository> <captures-directory> <report-directory>");
             return 2;
         }
 

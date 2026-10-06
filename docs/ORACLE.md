@@ -205,6 +205,31 @@ geometry, sizing and backgrounds. Capturing an image does not establish renderer
 fidelity. Ordinary `CorporateCohortReferenceTests` compare the admitted reference
 matrix offline, including independently captured renderer rejections.
 
+Measure the renderer against those captures with the existing VisualDiff tool:
+
+```powershell
+dotnet tools/Lokad.Svg.VisualDiff/bin/Release/net10.0/Lokad.Svg.VisualDiff.dll --cohort . artifacts/corporate-captures artifacts/corporate-report
+```
+
+The command verifies the immutable variant options, pin, input identities and all
+three actual capture PNGs. For cases absent from a fresh batch it can use a
+verified banked reference. It renders every declared variant with default SDK
+limits and writes candidate PNGs plus `summary.json` under the report directory.
+The report separates capture failures, missing references, renderer rejections,
+exact pixels and known differences; its document numerator requires every
+declared variant to be exact. Comparisons include directional alpha errors,
+opaque/hole changes and pixel witnesses. Exit zero means measurement completed,
+including categorized differences and rejections; the two-PNG mode remains an
+exactness gate. Neither command rewrites the selection or admits references
+automatically. Reports contain input/output hashes, with Git identifying code.
+
+The completed 2026-10-06 matrix has all 258 references: 60 exact rendered variants,
+180 known differences and eighteen renderer rejections. The 225 remaining cases
+have 675 stable healthy fresh captures; all 33 earlier references and all 240
+candidate PNGs are unchanged. Only Ford and YouTube are exact in every variant.
+Detailed local captures and comparisons are under
+`artifacts/cohort-complete-20261006/`.
+
 The 2026-10-06 transport checkpoint supplies all fifteen formerly blocked large
 references. Forty-five captures are stable, healthy and cleaned; eighteen
 Ford/YouTube overlap captures preserve all six original reference identities.

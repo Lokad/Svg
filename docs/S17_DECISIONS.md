@@ -8,7 +8,7 @@ current queue; rows 3–7 and S17 retain their general implementation/fidelity e
 Current evidence: 823 fixtures = 628 exact + 168 known-difference renders + 27
 rejections across 457 base documents / 366 variants; research remains 59 known
 renders + one rejection. Windows locked restore, nine-project Release build and
-3,314 core + 152 visual + six FontProbe tests (3,472 total) pass. Memory/package
+3,314 core + 160 visual + six FontProbe tests (3,480 total) pass. Memory/package
 and installed-consumer evidence remains the validated clip-byte renderer
 checkpoint, including all 25 memory scenarios. The 975-case bank preserves all 614
 prior exact PNGs and dispositions. One existing fixture graduates; twelve fresh
@@ -16,21 +16,22 @@ path configurations and one rectangle configuration are exact. Eleven rectangle
 fast-path controls retain their baseline failures.
 
 All 258 corporate cases are executed: 240 render and eighteen are unsupported.
-Thirty-three references are available: thirty rendered comparisons (**19 exact /
-11 known differences**) and three retained Target renderer rejections. All
-fifteen former transport gaps now have stable healthy capture triples at their
-frozen dimensions. Another **225 variants lack references**. Ford and YouTube
+All 258 references are available: 240 rendered comparisons (**60 exact /
+180 known differences**) and eighteen retained renderer rejections. There are
+no missing references or capture gaps. The remaining 225 references have 675
+stable healthy fresh captures at their frozen dimensions. Ford and YouTube
 remain the only verified exact documents: **2/27**, marks **1/13**, wordmarks
 **1/14**. Membership, original inputs/references, holdouts and denominators remain
 unchanged. All 258 dispositions and all 240 rendered PNGs are preserved.
+S8 measurement is complete for this first cohort; the S17 target is still unmet.
 
 Native rectangle-mask fringes and all 65,536 byte products prove this shared
 cause. The remaining rectangle paint route, successive clip intersections,
 cache history, general fidelity, representative performance and Linux remain
 open. The capture transport now admits 8,388,608 pixels with a screenshot-only
-64 MiB reply bound; commands/events retain 16 MiB. Next complete frozen references
-alongside
-shared rectangle paint/clip work. The 23-document stratum target is unachieved.
+64 MiB reply bound; commands/events retain 16 MiB. Next use the complete measured
+matrix to investigate shared rectangle paint/clip work. The 23-document stratum
+target is unachieved.
 
 ## Q1 - numeric exact-document target: selected
 

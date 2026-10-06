@@ -17,9 +17,10 @@ declared entities or defaults are loaded. Original byte encodings and structural
 limits are preserved across root parsing, font discovery and scale probing.
 The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
 27 cases to rendering and nine Target cases to the existing unsupported `marker`
-style gate. All previous PNGs are unchanged. Fidelity is measured for thirty
-rendered corporate cases; three additional
-references retain renderer rejections. Another 225 cases still lack references.
+style gate. All previous PNGs are unchanged. The complete frozen matrix has
+240 rendered comparisons (60 exact, 180 known differences) and eighteen
+independently captured renderer rejections. Only Ford and YouTube are exact in
+every declared variant: 2/27 documents, marks 1/13 and wordmarks 1/14.
 
 Convex rectangular strips round coverage separately from the raw-rectangle
 calibration. Native event evidence closes YouTube's opaque triangle witness;
@@ -37,9 +38,9 @@ once and cached across raster contexts, preserving genuine convex routes and
 declined-hint fallback. The 75 native vectors match; twelve independent controls
 and one existing fractional shoulder become exact. All nine Ford variants retain
 exact PNG identity. Ford and YouTube now complete both selected checkpoints;
-the corporate matrix still has only thirty fidelity comparisons and two verified
-exact documents. The fifteen former capture gaps now have stable references;
-three retain Target renderer rejections. General mapped curve/paint events remain open.
+the complete corporate matrix has 240 fidelity comparisons and two verified
+exact documents. All eighteen renderer rejections have independent references.
+General mapped curve/paint events remain open.
 
 Rectangle paint-clip classification is independent of construction clipping and
 path containment. Native float nearly-integral/edge-snapping rules select binary
