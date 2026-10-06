@@ -1141,7 +1141,7 @@ and Linux evidence remain open.
 ## Source stop-opacity and shared polygon shaders (2026-10-06)
 
 Matched against retained `e9758253` on Windows x64 / .NET 10.0.12. Twenty-one
-recipes add the intended transparent Apple/Instagram/Liputan 6 cases, the notched
+recipes add the intended transparent SimpleLogin/SDL/Liputan 6 cases, the notched
 pattern and offset-clamp controls to the preceding sixteen guards. Every parser-
 work, raster-work and accounted-peak ledger is unchanged. Stop/rectangle/geometry
 storage remains 16/112/248 bytes. Analytic material grows from 5 to 24 bytes as a
@@ -1187,5 +1187,62 @@ measurements do not isolate their cause. Raw observations retain both timing ord
 
 Raw ledgers, allocation traffic, process orders and reproduction harnesses remain
 under ignored `artifacts/shader-stops-20261006/`. Git identifies implementation;
+input/output identities protect measured artifacts. Representative performance
+and Linux evidence remain open.
+
+## CPU bitmap-local gradient dithering (2026-10-06)
+
+Matched against retained `44115e44` on Windows x64 / .NET 10.0.12. Twenty-five
+recipes add the four fresh large-canvas dither controls to the preceding twenty-
+one guards. All parser/raster work ledgers and the preceding 21 peak ledgers are
+unchanged. The four new peak measurements vary alongside encoded PNG size;
+the encoder accounts segmented compressed storage and its final output buffer.
+Segment capacity means these amounts need not change by the same number of bytes.
+No raster storage or owner is added; grid/stop/rectangle/geometry/material value
+sizes remain unchanged.
+
+| Input | Accounted peak bytes, baseline → current | PNG bytes, baseline → current |
+| --- | ---: | ---: |
+| cpu-dither-wide-linear | 311873 → 310947 | 24639 → 24206 |
+| cpu-dither-tall-linear | 276741 → 276805 | 7103 → 7135 |
+| cpu-dither-radial | 1047079 → 1046749 | 113750 → 113585 |
+| cpu-dither-polygon-clip | 832509 → 833197 | 6139 → 6483 |
+
+Two fresh-process pairs run sequentially in opposite order, with eight warmups
+and three measured batches per recipe. Existing batch sizes are preserved; the
+four new controls each use ten conversions per batch. Cells are median
+milliseconds per conversion. Shared-host observations do not establish
+representative throughput or a causal regression threshold.
+
+| Input | Pair 1 baseline | Pair 1 current | Pair 2 current | Pair 2 baseline |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.157 | 0.143 | 0.138 | 0.147 |
+| ford | 22.181 | 21.308 | 21.085 | 22.953 |
+| dense | 305.548 | 308.216 | 301.762 | 298.950 |
+| native-stop | 554.320 | 536.855 | 432.303 | 635.339 |
+| youtube-intended | 12.592 | 12.595 | 11.908 | 13.418 |
+| youtube-large | 40.594 | 39.830 | 34.139 | 42.476 |
+| roc | 2.362 | 2.103 | 2.188 | 2.408 |
+| greek-flag | 9.234 | 10.253 | 14.252 | 11.072 |
+| rect-corner | 0.099 | 0.109 | 0.165 | 0.144 |
+| rect-contained | 0.096 | 0.085 | 0.151 | 0.092 |
+| pattern-content | 0.092 | 0.055 | 0.088 | 0.068 |
+| material-grid | 5.177 | 5.245 | 7.027 | 5.627 |
+| border-band | 2.107 | 2.168 | 2.143 | 3.454 |
+| shader-linear | 0.441 | 0.408 | 0.595 | 0.556 |
+| shader-radial | 0.349 | 0.333 | 0.436 | 0.457 |
+| shader-pattern | 0.255 | 0.259 | 0.382 | 0.380 |
+| inv-001-intended | 6.078 | 7.629 | 8.142 | 7.415 |
+| inv-003-intended | 174.441 | 179.424 | 178.398 | 202.685 |
+| inv-040-intended | 1.510 | 1.967 | 1.929 | 1.421 |
+| polygon-pattern-notch | 0.159 | 0.273 | 0.153 | 0.190 |
+| stop-offset-clamp | 0.218 | 0.239 | 0.260 | 0.232 |
+| cpu-dither-wide-linear | 5.313 | 7.610 | 6.411 | 9.558 |
+| cpu-dither-tall-linear | 4.710 | 5.106 | 4.387 | 5.245 |
+| cpu-dither-radial | 22.148 | 25.459 | 22.021 | 24.290 |
+| cpu-dither-polygon-clip | 5.752 | 6.896 | 6.256 | 6.098 |
+
+Raw ledgers, allocation traffic, process orders and reproduction harnesses remain
+under ignored `artifacts/gradient-stages-20261006/`. Git identifies implementation;
 input/output identities protect measured artifacts. Representative performance
 and Linux evidence remain open.

@@ -1,0 +1,53 @@
+{
+  "fixtureId": "original-cpu-dither-radial-white",
+  "referencePng": "original-cpu-dither-radial-white.png",
+  "referenceSha256": "3f4eff049f002ce44d97741ab931fa4ad40bbc9580d7d8bc3ba8821edbbe5ec8",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 640,
+    "height": 320,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "c4fb8af29a916f19bd192ad00e862a55b0f2d592b5e6a6f85094bd4795324815",
+  "captureSha256": [
+    "3f4eff049f002ce44d97741ab931fa4ad40bbc9580d7d8bc3ba8821edbbe5ec8",
+    "3f4eff049f002ce44d97741ab931fa4ad40bbc9580d7d8bc3ba8821edbbe5ec8",
+    "3f4eff049f002ce44d97741ab931fa4ad40bbc9580d7d8bc3ba8821edbbe5ec8"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredAfterIsolatedPrototype": true,
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true,
+  "candidateSha256": "ebc1ef1706b566006d06e284bfd3a3fe439b793369668730360f1fd1e2860114",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 4,
+    "maximumChannelError": 1,
+    "meanAbsoluteError": 4.8828125e-06,
+    "rootMeanSquareError": 0.002209708691207961,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 268,
+    "minimumMismatchY": 127,
+    "maximumMismatchX": 467,
+    "maximumMismatchY": 250,
+    "exact": false,
+    "alphaErrorMass": 0
+  }
+}

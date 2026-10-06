@@ -753,7 +753,7 @@ public static class SvgConverter
                     }
                     position = local;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, outline.Opacity, GradientDither[x & 7, y & 7]);
+                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, outline.Opacity, rasterGrid.GetGradientDither(x, y));
                     if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), CoverageAlpha(255, pixelCoverage));
                 }
@@ -912,7 +912,7 @@ public static class SvgConverter
                         if (position > 1) position = 1;
                     }
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, outline.Opacity, GradientDither[x & 7, y & 7]);
+                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, outline.Opacity, rasterGrid.GetGradientDither(x, y));
                     if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), CoverageAlpha(255, pixelCoverage));
                 }
@@ -1175,7 +1175,7 @@ public static class SvgConverter
                 }
                 position = local;
                 int offset = (y * outputWidth + x) * 4;
-                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, opacity, GradientDither[x & 7, y & 7]).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
+                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, opacity, rasterGrid.GetGradientDither(x, y)).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
             }
             }
 
@@ -1294,7 +1294,7 @@ public static class SvgConverter
                     if (position > 1) position = 1;
                 }
                 int offset = (y * outputWidth + x) * 4;
-                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, opacity, GradientDither[x & 7, y & 7]).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
+                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, opacity, rasterGrid.GetGradientDither(x, y)).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
             }
             }
         }
@@ -1524,18 +1524,6 @@ public static class SvgConverter
         static int ClampCeiling(double value, int maximum) => value <= 0 ? 0 : value >= maximum ? maximum : checked((int)Math.Ceiling(value));
 
     }
-
-        private static readonly int[,] GradientDither =
-        {
-            { 0, 32, 8, 40, 2, 34, 10, 42 },
-            { 48, 16, 56, 24, 50, 18, 58, 26 },
-            { 12, 44, 4, 36, 14, 46, 6, 38 },
-            { 60, 28, 52, 20, 62, 30, 54, 22 },
-            { 3, 35, 11, 43, 1, 33, 9, 41 },
-            { 51, 19, 59, 27, 49, 17, 57, 25 },
-            { 15, 47, 7, 39, 13, 45, 5, 37 },
-            { 63, 31, 55, 23, 61, 29, 53, 21 },
-        };
 
     /// <summary>Resolves output dimensions from an explicit viewport or root dimensions with viewBox aspect handling.</summary>
     private static (double Width, double Height) ResolveOutputDimensions(SvgViewport? viewport, SvgRootLength? rootWidth, SvgRootLength? rootHeight, SvgViewBox? viewBox)

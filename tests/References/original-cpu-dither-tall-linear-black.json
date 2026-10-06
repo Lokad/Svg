@@ -1,0 +1,53 @@
+{
+  "fixtureId": "original-cpu-dither-tall-linear-black",
+  "referencePng": "original-cpu-dither-tall-linear-black.png",
+  "referenceSha256": "86a02414831a42c2ff9b0c657afb1a512e28f607c6a31a4067dc2022089a79c1",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 1024,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "7e8c7aa60f36742364bcf51b87cb474432614bacd4e53f674278b21f3fd9a4fa",
+  "captureSha256": [
+    "86a02414831a42c2ff9b0c657afb1a512e28f607c6a31a4067dc2022089a79c1",
+    "86a02414831a42c2ff9b0c657afb1a512e28f607c6a31a4067dc2022089a79c1",
+    "86a02414831a42c2ff9b0c657afb1a512e28f607c6a31a4067dc2022089a79c1"
+  ],
+  "captureStartupHealth": [
+    "healthy",
+    "healthy",
+    "healthy"
+  ],
+  "captureProfilesCleaned": [
+    true,
+    true,
+    true
+  ],
+  "declaredAfterIsolatedPrototype": true,
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true,
+  "candidateSha256": "6c64c810511108869ef0584561ed481ac5bd2cee5acb0d08791c2909a1fe06ac",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 1024,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
+}

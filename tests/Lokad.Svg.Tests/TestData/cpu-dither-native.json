@@ -1,0 +1,10 @@
+{
+  "scope": "Original native dither and material stages at fixed independently enumerated bitmap origins from the retained Chromium CPU policy. Includes all 64 cell phases, horizontal/vertical boundaries, final border ownership, single-pixel canvases and the final Int32-sized canvas pixel. Records float lane bits before coverage and complete blended RGBA8.",
+  "sourceRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sourceFiles": [
+    "src/opts/SkRasterPipeline_opts.h"
+  ],
+  "contextPolicySource": "Chromium 153.0.8010.52: cc/layers/tile_size_calculator.cc and cc/base/tiling_data.cc",
+  "compiler": "g++ C++20 -O2 -ffp-contract=off; fused mad through std::fma and nearest-even SSE store",
+  "cases": 3170
+}

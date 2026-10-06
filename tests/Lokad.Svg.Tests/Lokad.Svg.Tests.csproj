@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Update="TestData/cpu-dither-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/cpu-dither-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/cpu-dither-wide-linear.svg" Link="TestData/cpu-dither-wide-linear.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/cpu-dither-radial.svg" Link="TestData/cpu-dither-radial.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/shader-paint-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/shader-paint-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/rectangle-coverage-native.csv" CopyToOutputDirectory="PreserveNewest" />

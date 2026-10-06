@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the shared polygon shader checkpoint, the 932 current manifest entries contain
-775 exact decoded-pixel references, 130 known-difference renders and 27
+At the CPU-local dither checkpoint, the 944 current manifest entries contain
+787 exact decoded-pixel references, 130 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -49,9 +49,17 @@ from `rgba(...,.5)`; all six fresh alpha comparisons are exact. Eighteen existin
 fixtures and one research probe graduate with their original images. Twenty-four
 fresh configurations add twenty-one exact and three known notched-pattern cases.
 All 735 prior exact fixture PNGs and 66 exact corporate PNGs are preserved;
-27 Apple/Instagram/Liputan 6 variants improve but remain inexact. The corporate
+27 SimpleLogin/SDL/Liputan 6 variants improve but remain inexact. The corporate
 rate stays 3/27. Gradient coordinates/interpolation, notched edges, successive
 clip/cache behavior and general shader fidelity remain open.
+
+Gradient dither cells now use the owning software bitmap's local indices while
+paint samples stay in canvas space. Original material-pair controls become exact;
+large linear/radial probes improve to one/four differences. Twelve fresh tiled
+configurations add nine exact controls and three radial cases with four RGB-only
+differences each. All 775 prior exact PNGs remain unchanged. Six intended/large
+SDL variants improve; corporate exact documents remain 3/27. Coordinate
+construction, remaining geometry/clip events and full cache behavior remain open.
 
 Convex rectangular strips round coverage separately from the raw-rectangle
 calibration. Native event evidence closes YouTube's opaque triangle witness;

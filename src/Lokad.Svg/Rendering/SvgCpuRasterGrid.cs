@@ -1,5 +1,7 @@
 // CPU tile sizing and bordered geometry adapt the Chromium sources and license
 // recorded in THIRD_PARTY_NOTICES.txt. Copyright 2010, 2019 The Chromium Authors.
+// Local gradient dither adapts Skia's pipeline. Copyright 2018 Google LLC.
+// See THIRD_PARTY_NOTICES.txt for the pinned source and BSD license.
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Distinguishes a bordered edge-construction clip from its exclusively owned output pixels.</summary>
@@ -29,6 +31,19 @@ internal readonly struct SvgCpuRasterGrid
         if (height < tileHeight) tileHeight = Math.Min((int)(((long)height + 63) / 64 * 64), tileHeight);
         _tileWidth = tileWidth;
         _tileHeight = tileHeight;
+    }
+
+    /// <summary>Returns the ordered gradient dither cell in the owning software bitmap's coordinates.</summary>
+    /// <remarks>The last bitmap owns both remaining border pixels. The caller supplies an in-canvas pixel, charges paint work and checks cancellation between rows; this lookup allocates no storage.</remarks>
+    internal int GetGradientDither(int x, int y)
+    {
+        int strideX = _tileWidth - 2, strideY = _tileHeight - 2;
+        int localX = x - Math.Min(x - 1, _width - 3) / strideX * strideX;
+        int localY = y - Math.Min(y - 1, _height - 3) / strideY * strideY;
+        int mixedY = localY ^ localX;
+        return ((mixedY & 1) << 5) | ((localX & 1) << 4)
+            | ((mixedY & 2) << 2) | ((localX & 2) << 1)
+            | ((mixedY & 4) >> 1) | ((localX & 4) >> 2);
     }
 
     internal Enumerator GetContexts(SvgAnalyticClipBounds drawingBounds)

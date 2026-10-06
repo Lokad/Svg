@@ -1,0 +1,3 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<!-- Original CPU-context dither phase control. -->
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='1024'><defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='0' y2='1024'><stop stop-color='#173d8f'/><stop offset='1' stop-color='#cd9739'/></linearGradient></defs><rect width='64' height='1024' fill='url(#p)'/></svg>

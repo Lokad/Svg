@@ -4907,7 +4907,7 @@ differences retain a separate geometry/replay gate; no tolerance is admitted.
 The prior 1,053-case bank changes 69 inexact PNGs (58 fixtures, five research,
 six legacy Default), preserves all outcomes and 735 exact PNGs, and increases
 no compared mismatch count. The expanded bank has 1,077 cases: 932 fixtures,
-53 research and 92 legacy Default. Twenty-seven Apple/Instagram/Liputan 6 variants
+53 research and 92 legacy Default. Twenty-seven SimpleLogin/SDL/Liputan 6 variants
 improve; the other 213 corporate renders and all 66 exact PNGs are unchanged.
 Corporate exact documents remain 3/27. Every original reference is preserved.
 Twenty-seven new core cases cover precision, inheritance, six outputs, denial
@@ -4915,3 +4915,48 @@ and cancellation cleanup. Full tests, memory, Chrome/validator and delivery
 checks pass; matched conversion costs are in the benchmark record. Detailed
 reports stay under ignored `artifacts/shader-stops-20261006/`. Gradient coordinate
 stages, notched edges, successive clips/cache history, Linux and S17 remain open.
+
+## CPU bitmap-local gradient dithering (2026-10-06)
+
+The large radial probe's first interior differences occur at CPU tile boundaries.
+A diagnostic phase scan rules out a single canvas-wide shift. The established
+bordered grid supplies the missing origin: Skia's dither stage receives local
+bitmap indices, while its gradient matrix compensates for that bitmap origin.
+Shader sampling therefore remains in canvas space, and only the dither cell
+changes. `SvgCpuRasterGrid.GetGradientDither` finds the pixel's owner without a
+tile tape; its pre-division upper bound preserves the final two border pixels.
+Both rectangle and polygon linear/radial paints use the same lookup. Grid storage,
+solid/pattern arithmetic, geometry, cancellation and work charges are unchanged.
+
+The original pinned dither/premul/opacity/coverage/source-over/store bodies emit
+3,170 vectors at independently enumerated bitmap origins from the retained
+Chromium CPU policy. They cover all 64 cells, horizontal/vertical boundaries,
+final border ownership, one-pixel canvases and the final Int32-sized canvas pixel.
+Tests compare float-lane bits before coverage and complete blended RGBA8. Existing
+CPU context tests establish the partition separately. Interpolation-only FMA
+was rejected: it changed three known calibration outputs and three large SDL
+variants by one extra mismatch, closing no case. Production interpolation and
+coordinate formulas retain their preceding semantics.
+
+Three original material-pair references graduate using unchanged captures.
+Large cubic linear/radial controls improve 19,410/18,664 → one/four changed pixels.
+Four new CC0 inputs add twelve configurations before production editing and
+captures. All 36 captures are healthy, cleaned and byte-stable in triples. Wide/
+tall linear and clipped nonconvex controls are exact on all backgrounds. The
+large radial control retains four RGB-only differences per background, with
+maximum channel errors 3/1/1 and zero alpha error. These preserve a coordinate/
+interpolation gate rather than admitting tolerance.
+
+All 1,077 prior outcomes and all 775 prior exact PNGs are preserved. Only five
+known fixture PNGs and legacy Default SDL change; the expanded bank has 1,089
+cases (944 fixtures, 53 research, 92 legacy Default). Six intended/large corporate
+SDL variants improve; the other 234 renders and all 66 exact corporate PNGs are
+unchanged. Exact documents remain 3/27. Three new core cases cover the compiled
+vectors and six-output large-rectangle parity; existing polygon, resource and
+cancellation controls pass. Full tests, memory, Chrome and delivery checks
+accompany the slice. All 25 matched work ledgers and the preceding 21 peak
+ledgers are unchanged. Four new controls vary by small encoded-output-related
+peak amounts; exact deltas and conversion costs are in the benchmark record.
+Detailed reports stay under
+ignored `artifacts/gradient-stages-20261006/`. Native coordinate construction,
+remaining edge/clip events, cache history, Linux and S17 remain open.

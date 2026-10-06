@@ -35,20 +35,20 @@
   "declaredBeforeProductionEdit": false,
   "declaredBeforeCaptures": true,
   "candidateOutcome": "renders",
-  "candidateSha256": "d7d14a8b7252733b13dcc8742913a14b25c0d9eae25dd4933acbee470b462a74",
+  "candidateSha256": "72f571403be1e7615f3670562f6f8f7b35c569fd6b46504c55e158d641df1807",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 853,
-    "maximumChannelError": 1,
-    "meanAbsoluteError": 0.0032484266493055555,
-    "rootMeanSquareError": 0.05699497038603982,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 514,
-    "minimumMismatchY": 8,
-    "maximumMismatchX": 634,
-    "maximumMismatchY": 70,
-    "exact": false,
+    "minimumMismatchX": 768,
+    "minimumMismatchY": 96,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
     "alphaErrorMass": 0
   },
   "beforeAntialiasedClipDispatchComparison": {
@@ -69,5 +69,6 @@
     "underCoveragePixelCount": 0,
     "opaqueLostPixelCount": 0,
     "opaqueAddedPixelCount": 0
-  }
+  },
+  "graduatedAt": "CPU tile-local shader dither phase, 2026-10-06"
 }

@@ -54,14 +54,22 @@ comparison above, together with all 92 legacy Default PNGs. Synthetic shader
 graduations do not change corporate coverage: 3/27 exact documents. The complete
 current comparison is retained under `artifacts/shader-paint-20261006/`.
 
-The shared polygon shader repair changes 27 corporate PNGs: every Apple,
-Instagram and Liputan 6 variant improves but remains inexact. Intended transparent
+The shared polygon shader repair changes 27 corporate PNGs: every SimpleLogin,
+SDL and Liputan 6 variant improves but remains inexact. Intended transparent
 mismatch counts fall 747 → 421, 6,093 → 5,400 and 363 → 221 respectively.
 All 258 outcomes, all 66 exact PNGs and the other 213 rendered PNGs are unchanged;
 the exact-document rate remains 3/27. Original references and frozen membership
 are preserved. Six legacy Default outputs also change, without a matching-options
 oracle comparison or a new fidelity claim. Full reports are under ignored
 `artifacts/shader-stops-20261006/`.
+
+The subsequent CPU-local gradient dither repair improves six SDL variants:
+intended mismatch counts fall 5,400/5,345/5,171 → 3,125/3,070/2,896, and large
+counts fall 15,576/15,528/15,099 → 6,500/6,452/6,023 on transparent/white/black.
+Small variants, all 66 exact corporate PNGs and all 258 dispositions are unchanged.
+The exact-document rate remains 3/27; original references and membership remain
+frozen. SDL's Default PNG also changes without a matching-options fidelity claim.
+Full reports are under ignored `artifacts/gradient-stages-20261006/`.
 
 The batch history below retains original selections and contemporaneous results.
 
