@@ -14,11 +14,13 @@ internal ref partial struct SvgAnalyticCoverage
 
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
-    /// <remarks>Both passes charge clipping, validation and traversal. Straight verbs construct edges in bitmap coordinates and then translate to canvas fixed space. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Cubic and rational convex edges retain live state; polynomial convex quadratics preserve their pre-stepped gate. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
-    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
+    /// <remarks>Both passes charge clipping, validation and traversal. Authored points map directly into bitmap coordinates; all clipped verbs construct there, combine there, then translate their fixed walk/curve state to canvas space. Source contours are borrowed during construction and no extra mapped tape is allocated. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Cubic and rational convex edges retain live state; polynomial convex quadratics preserve their pre-stepped gate. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
+    private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, SvgPreparedPathContours? source, SvgAffineTransform sourceMap, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
     {
         eligible = false;
         int width = xEnd - xStart;
+        ReadOnlySpan<SvgDevicePoint> sourcePoints = source is null ? points : source.Points;
+        SvgAffineTransform? localSourceMap = source is null ? null : sourceMap;
         long maximumEdges = 0;
         Span<SvgAnalyticClipPiece> pieces = stackalloc SvgAnalyticClipPiece[Clipper.MaximumPieces];
         Span<SvgDevicePoint> conicPoints = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
@@ -73,24 +75,24 @@ internal ref partial struct SvgAnalyticCoverage
                         }
                         for (int conicIndex = 0; conicIndex < conicCount; conicIndex++)
                         {
-                            if (localLine) ChargeClippedSetupWork(ref setupWork, 4, maximumWork, token);
-                            Clipper clipper = new(localLine ? localClip : clip, !convex, pieces, maximumWork - setupWork, token);
+                            ChargeClippedSetupWork(ref setupWork, localLine ? 4 : hasCubic ? 8 : 6, maximumWork, token);
+                            Clipper clipper = new(localClip, !convex, pieces, maximumWork - setupWork, token);
                             try
                             {
                                 if (hasQuad)
                                 {
-                                    SvgQuadSpan quad = quads[quadCursor];
-                                    if (rational) clipper.ClipQuad(ToClipPoint(conicPoints[2 * conicIndex]), ToClipPoint(conicPoints[2 * conicIndex + 1]), ToClipPoint(conicPoints[2 * conicIndex + 2]));
-                                    else clipper.ClipQuad(ToClipPoint(points[sourceIndex]), ToClipPoint(quad.Control), ToClipPoint(points[quad.EndIndex]));
+                                    SvgQuadSpan quad = source is null ? quads[quadCursor] : source.QuadSpans[quadCursor];
+                                    if (rational) clipper.ClipQuad(ToLocalClipPoint(conicPoints[2 * conicIndex], origin, null), ToLocalClipPoint(conicPoints[2 * conicIndex + 1], origin, null), ToLocalClipPoint(conicPoints[2 * conicIndex + 2], origin, null));
+                                    else clipper.ClipQuad(ToLocalClipPoint(sourcePoints[sourceIndex], origin, localSourceMap), ToLocalClipPoint(quad.Control, origin, localSourceMap), ToLocalClipPoint(sourcePoints[quad.EndIndex], origin, localSourceMap));
                                     index = quad.EndIndex - 1;
                                 }
                                 else if (hasCubic)
                                 {
-                                    SvgCubicSpan cubic = cubics[cubicCursor];
-                                    clipper.ClipCubic(ToClipPoint(points[sourceIndex]), ToClipPoint(cubic.FirstControl), ToClipPoint(cubic.SecondControl), ToClipPoint(points[cubic.EndIndex]));
+                                    SvgCubicSpan cubic = source is null ? cubics[cubicCursor] : source.CubicSpans[cubicCursor];
+                                    clipper.ClipCubic(ToLocalClipPoint(sourcePoints[sourceIndex], origin, localSourceMap), ToLocalClipPoint(cubic.FirstControl, origin, localSourceMap), ToLocalClipPoint(cubic.SecondControl, origin, localSourceMap), ToLocalClipPoint(sourcePoints[cubic.EndIndex], origin, localSourceMap));
                                     index = cubic.EndIndex - 1;
                                 }
-                                else clipper.ClipLine(ToLocalClipPoint(points[index], origin), ToLocalClipPoint(points[index + 1 < end ? index + 1 : start], origin));
+                                else clipper.ClipLine(ToLocalClipPoint(sourcePoints[index], origin, localSourceMap), ToLocalClipPoint(sourcePoints[index + 1 < end ? index + 1 : start], origin, localSourceMap));
                             }
                             finally { setupWork += clipper.WorkUnits; }
                             for (int pieceIndex = 0; pieceIndex < clipper.Count; pieceIndex++)
@@ -107,7 +109,7 @@ internal ref partial struct SvgAnalyticCoverage
                                 if (kept is null) throw new InvalidOperationException("Clipped edge storage was not reserved.");
                                 // Check the complete bounded numerical phase before entering
                                 // it, then report its actual setup and initial stepping cost.
-                                long phaseBound = piece.Kind == SvgAnalyticClipKind.Line ? 7 : 132;
+                                long phaseBound = piece.Kind == SvgAnalyticClipKind.Line ? 2 : 132;
                                 CheckClippedSetupWork(setupWork + phaseBound, maximumWork, token);
                                 long edgeWork = 0;
                                 int contourEdges = kept.Count;
@@ -118,15 +120,6 @@ internal ref partial struct SvgAnalyticCoverage
                                         edgeWork = 2;
                                         if (edge is not null)
                                         {
-                                            if (localLine)
-                                            {
-                                                edge.X += origin.X << 16;
-                                                edge.UpperX += origin.X << 16;
-                                                edge.Y += origin.Y << 16;
-                                                edge.UpperY += origin.Y << 16;
-                                                edge.LowerY += origin.Y << 16;
-                                                edgeWork += 5;
-                                            }
                                             if (!CombineVertical(edge, kept)) kept.Add(edge);
                                         }
                                         break;
@@ -152,6 +145,12 @@ internal ref partial struct SvgAnalyticCoverage
                 }
             }
             if (kept is null) throw new InvalidOperationException("Clipped edge storage was not constructed.");
+            foreach (AnalyticEdge edge in kept)
+            {
+                int translationWork = edge.InitialCurveCount == 0 ? 5 : edge.InitialCurveCount < 0 ? 13 : 15;
+                ChargeClippedSetupWork(ref setupWork, translationWork, maximumWork, token);
+                TranslateEdge(edge, origin);
+            }
             int levels = 0;
             for (int level = kept.Count; level > 0; level >>= 1) levels++;
             ChargeClippedSetupWork(ref setupWork, (long)kept.Count * (levels + 3) + (useRunBlitter ? width : 0), maximumWork, token);
@@ -184,8 +183,23 @@ internal ref partial struct SvgAnalyticCoverage
         }
 
 
-        static SvgAnalyticClipPoint ToClipPoint(SvgDevicePoint point) => new((float)point.X, (float)point.Y);
-        static SvgAnalyticClipPoint ToLocalClipPoint(SvgDevicePoint point, SvgCpuBitmapOrigin origin) => new((float)(point.X - origin.X), (float)(point.Y - origin.Y));
+        static void TranslateEdge(AnalyticEdge edge, SvgCpuBitmapOrigin origin)
+        {
+            int dx = origin.X << 16, dy = origin.Y << 16;
+            edge.X += dx; edge.UpperX += dx;
+            edge.Y += dy; edge.UpperY += dy; edge.LowerY += dy;
+            if (edge.InitialCurveCount == 0) return;
+            edge.FCx += dx; edge.FCy += dy;
+            edge.FCLastX += dx; edge.FCLastY += dy; edge.SnappedY += dy;
+            edge.InitialFCx += dx; edge.InitialFCy += dy; edge.InitialSnappedY += dy;
+            if (edge.InitialCurveCount < 0) return;
+            edge.QSnappedX += dx; edge.InitialQSnappedX += dx;
+        }
+        static SvgAnalyticClipPoint ToLocalClipPoint(SvgDevicePoint point, SvgCpuBitmapOrigin origin, SvgAffineTransform? sourceMap)
+        {
+            SvgDevicePoint local = sourceMap is {} map ? SvgAuthoredPath.MapPoint(map, point, origin) : new(point.X - origin.X, point.Y - origin.Y);
+            return new((float)local.X, (float)local.Y);
+        }
 
     }
 }

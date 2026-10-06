@@ -1997,3 +1997,24 @@ unchanged. These are accounted storage observations, not resident memory or timi
 claims. The 25 fresh-process memory scenarios and installed package consumers pass;
 representative performance and Linux remain open. Detailed ledgers stay under
 ignored `artifacts/bitmap-corner-fill-20261006/`; Git identifies implementation.
+
+## Bitmap-local curve resource observations (2026-10-06)
+
+The frozen `014dd3b1` renderer and bitmap-local curve mapping/raw-control bounds
+reuse all 39 recipes on Windows X64 / .NET 10.0.12. Input identities, parser work,
+accounted peaks and value layouts remain unchanged: geometry 256 bytes, rectangle
+112, stop 16, analytic paint 24 and quadratic span 32. The source contour tape
+replaces its mapped predecessor; no extra contour owner is added.
+
+Fifteen work-through-raster totals increase; twenty-four are unchanged. Examples:
+cubic-meet 2,715 → 3,010; Nike 1,229,391 → 1,231,945; Blur 1,537,422 → 1,548,316;
+Ford 895,156 → 917,007. Broader raw-control bounds, local remapping and translation
+are charged explicitly. Ford and other previously exact outputs retain their
+complete PNGs; cubic-meet, Nike and Blur become exact. SG/Toyota recipes improve
+their measured pixels without becoming exact documents.
+
+No timings were collected for this change, so it establishes no throughput or
+representative performance result. All 25 memory scenarios and installed package
+consumers pass. Windows artifact validation reuses earlier pinned-browser smoke;
+Linux remains open. Ledgers stay under ignored
+`artifacts/interval-curve-state-20261006/`; Git identifies implementation.

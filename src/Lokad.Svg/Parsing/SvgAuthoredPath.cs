@@ -49,7 +49,15 @@ internal sealed class SvgAuthoredPath : IDisposable
     /// <summary>Replays authored commands and maps their vertices/controls once with the composed output matrix.</summary>
     /// <remarks>Reserves temporary builder storage before allocation. Every command and copied point consumes caller work;
     /// flattening uses its existing bounded, cancellable policy. The result exclusively owns its surface arrays.</remarks>
-    internal SvgMappedAuthoredPath Prepare(SvgAffineTransform outputMap, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal SvgPreparedPathContours Prepare(SvgAffineTransform outputMap, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => Replay(outputMap, isEvenOdd, true, budget, workCounter, cancellationToken);
+
+    /// <summary>Replays and flattens source commands once, keeping original points for bitmap-local mapping.</summary>
+    /// <remarks>The returned owner retains source coordinates; the caller maps them with outputMap composed with SceneMap. Reservations, work, cancellation and cleanup match Prepare.</remarks>
+    internal SvgPreparedPathContours PrepareSource(SvgAffineTransform outputMap, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => Replay(outputMap, isEvenOdd, false, budget, workCounter, cancellationToken);
+
+    private SvgPreparedPathContours Replay(SvgAffineTransform outputMap, bool isEvenOdd, bool mapCoordinates, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (StrokeStyle is not null) throw new InvalidOperationException("A retained stroke centerline cannot be replayed as a fill.");
         SvgAffineTransform map = outputMap.ComposeChecked(SceneMap);
@@ -107,14 +115,14 @@ internal sealed class SvgAuthoredPath : IDisposable
             offsets.Add(degenerate ? -1 : points.Count);
             contours.Add(degenerate ? -1 : ends.Count);
             if (degenerate) continue;
-            foreach (SvgDevicePoint point in vertices) points.Add(MapPoint(map, point));
+            foreach (SvgDevicePoint point in vertices) points.Add(mapCoordinates ? MapPoint(map, point, new(0, 0)) : point);
             ends.Add(points.Count);
         }
         foreach (SvgQuadSpan span in builder.GetQuadSpans())
-            if (offsets[span.Contour] >= 0) quads.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], Control = MapPoint(map, span.Control) });
+            if (offsets[span.Contour] >= 0) quads.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], Control = mapCoordinates ? MapPoint(map, span.Control, new(0, 0)) : span.Control });
         foreach (SvgCubicSpan span in builder.GetCubicSpans())
-            if (offsets[span.Contour] >= 0) cubics.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], FirstControl = MapPoint(map, span.FirstControl), SecondControl = MapPoint(map, span.SecondControl) });
-        return CreateMapped(points, ends, quads, cubics, isEvenOdd, budget, workCounter, cancellationToken);
+            if (offsets[span.Contour] >= 0) cubics.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], FirstControl = mapCoordinates ? MapPoint(map, span.FirstControl, new(0, 0)) : span.FirstControl, SecondControl = mapCoordinates ? MapPoint(map, span.SecondControl, new(0, 0)) : span.SecondControl });
+        return CreateContours(points, ends, quads, cubics, isEvenOdd, budget, workCounter, cancellationToken);
 
         static void AppendEndpointArc(SvgContourBuilder builder, SvgDevicePoint start, SvgAuthoredPathCommand command, ParserWorkCounter workCounter, CancellationToken token)
         {
@@ -129,7 +137,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                 builder.AddConic(arcs[index].Control, arcs[index].End, arcs[index].Weight, 8, token);
         }
 
-        static SvgMappedAuthoredPath CreateMapped(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgPreparedPathContours CreateContours(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             RenderBudget.BudgetReservation owner = budget.Reserve(128, SvgMemoryCategory.Surface);
             OwnedParserArray<SvgDevicePoint> points = new([], null);
@@ -151,15 +159,18 @@ internal sealed class SvgAuthoredPath : IDisposable
             }
             catch { points.Dispose(); ends.Dispose(); quads.Dispose(); cubics.Dispose(); signs.Dispose(); owner.Dispose(); throw; }
         }
+    }
 
-        static SvgDevicePoint MapPoint(SvgAffineTransform map, SvgDevicePoint point)
-        {
-            float x = (float)point.X, y = (float)point.Y;
-            float mappedX = map.IsAxisAligned ? (float)map.A * x + (float)map.E : ((float)map.A * x + (float)map.C * y) + (float)map.E;
-            float mappedY = map.IsAxisAligned ? (float)map.D * y + (float)map.F : ((float)map.B * x + (float)map.D * y) + (float)map.F;
-            if (!float.IsFinite(mappedX) || !float.IsFinite(mappedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Authored path mapping exceeds the admitted numeric range.");
-            return new(mappedX, mappedY);
-        }
+    /// <summary>Maps an authored float point after moving the translation into the software bitmap.</summary>
+    /// <remarks>The caller charges the point mapping and keeps source storage alive. This bounded operation allocates nothing and preserves native float multiply/add order; returned coordinates are bitmap-local.</remarks>
+    internal static SvgDevicePoint MapPoint(SvgAffineTransform map, SvgDevicePoint point, SvgCpuBitmapOrigin origin)
+    {
+        float x = (float)point.X, y = (float)point.Y;
+        float tx = (float)map.E - origin.X, ty = (float)map.F - origin.Y;
+        float mappedX = map.IsAxisAligned ? (float)map.A * x + tx : ((float)map.A * x + (float)map.C * y) + tx;
+        float mappedY = map.IsAxisAligned ? (float)map.D * y + ty : ((float)map.B * x + (float)map.D * y) + ty;
+        if (!float.IsFinite(mappedX) || !float.IsFinite(mappedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "Authored path mapping exceeds the admitted numeric range.");
+        return new(mappedX, mappedY);
     }
 
     /// <summary>Adopts command-array ownership only on success; the caller releases the array on failure.</summary>
@@ -201,8 +212,9 @@ internal sealed class SvgAuthoredPath : IDisposable
     }
 }
 
-/// <summary>Exclusively owns one mapped authored fill and its surface-budgeted arrays.</summary>
-internal sealed class SvgMappedAuthoredPath : IDisposable
+/// <summary>Exclusively owns replayed authored contours and their surface-budgeted arrays.</summary>
+/// <remarks>Prepare returns output coordinates; PrepareSource retains source coordinates. Consumers borrow immutable arrays, remain single-threaded and release this owner after all borrowed views.</remarks>
+internal sealed class SvgPreparedPathContours : IDisposable
 {
     private OwnedParserArray<SvgDevicePoint> _points;
     private OwnedParserArray<int> _ends;
@@ -211,7 +223,7 @@ internal sealed class SvgMappedAuthoredPath : IDisposable
     private OwnedParserArray<int> _signs;
     private RenderBudget.BudgetReservation? _owner;
 
-    internal SvgMappedAuthoredPath(OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<SvgQuadSpan> quads, OwnedParserArray<SvgCubicSpan> cubics, OwnedParserArray<int> signs, RenderBudget.BudgetReservation owner)
+    internal SvgPreparedPathContours(OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<SvgQuadSpan> quads, OwnedParserArray<SvgCubicSpan> cubics, OwnedParserArray<int> signs, RenderBudget.BudgetReservation owner)
     {
         _points = points; _ends = ends; _quads = quads; _cubics = cubics; _signs = signs; _owner = owner;
     }

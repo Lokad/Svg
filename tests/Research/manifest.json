@@ -506,14 +506,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 4,
-        "maximumChannelError": 9,
-        "maximumAlphaError": 9,
-        "alphaChangedPixelCount": 4,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 7,
-        "maximumMismatchX": 9,
-        "maximumMismatchY": 13
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/stroked-circle-16x16.png",
@@ -1239,8 +1239,8 @@
       "height": 16,
       "admittedRendering": {
         "changedPixelCount": 1,
-        "maximumChannelError": 5,
-        "maximumAlphaError": 5,
+        "maximumChannelError": 9,
+        "maximumAlphaError": 9,
         "alphaChangedPixelCount": 1,
         "minimumMismatchX": 14,
         "minimumMismatchY": 12,

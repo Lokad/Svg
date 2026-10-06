@@ -1,35 +1,38 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Directed integer polygon and shader-path retention makes
-Eisenbahn exact in every frozen variant. [PLAN.md](../PLAN.md) owns the queue;
-rows 3–7 and S17 remain open. Exact documents are Ford, SimpleX, Omega,
-Eisenbahn, ROC HCVS, Artsy, YouTube, NASA, Target, IKEA and Google: **11/27**,
-marks **5/13**, wordmarks **6/14**. S17 requires **23/27**, including 11/13 marks
-and 12/14 wordmarks. Membership, holdouts, options, inputs and references stay frozen.
+Updated 2026-10-06. Bitmap-local curve mapping and raw-control raster bounds
+make UAAR, Red Cross, Party of Changes, Blur and Nike exact in every frozen
+variant. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
+Exact documents are Ford, UAAR, SimpleX, Omega, Eisenbahn, ROC HCVS, Red Cross,
+Artsy, Party of Changes, YouTube, NASA, Blur, Nike, Target, IKEA and Google:
+**16/27**, marks **7/13**, wordmarks **9/14**. S17 requires **23/27**, including
+11/13 marks and 12/14 wordmarks. Membership, holdouts, options, inputs and
+references stay frozen.
 
-Current evidence: **1,195 fixtures = 994 exact + 177 known + 24 rejected**,
-699 base documents / 496 variants; **36 research probes = sixteen exact +
-nineteen known + one rejected**; and 92 legacy Default renders: **1,323 cases**.
-Twenty-three independent controls and four original research graduates add exact
-fixtures. Six earlier shader variants and four research witnesses become exact.
-All 973 prior exact fixture/research PNGs, rejections and Default PNGs are preserved.
+Current evidence: **1,214 fixtures = 1,011 exact + 179 known + 24 rejected**,
+706 base documents / 508 variants; **36 research probes = seventeen exact +
+eighteen known + one rejected**; and 92 legacy Default renders: **1,342 cases**.
+Eighteen controls add twelve exact and six known fixtures; the original research
+circle graduates. Four earlier fixtures and the circle become exact. All 1,010
+prior exact fixture/research PNGs and rejections remain. Eight Default PNGs change
+without matching-options fidelity claims.
 
-All **258 corporate variants render: 145 exact and 113 known differences**.
-Only Eisenbahn small transparent/black changes; all other 256 records and 143
-prior exact PNGs remain. Known-difference documents retain their denominators.
+All **258 corporate variants render: 165 exact and 93 known differences**.
+Forty-four PNGs change with no mismatch count increase; all 145 earlier exact
+PNGs remain. Known-difference documents retain their denominators.
 
-Windows locked restore, nine-project Release build and **3,824 tests**
-(3,658 core + 160 visual + six FontProbe), 25 memory scenarios and installed
-package consumers pass. Sixty-nine fresh captures are stable, healthy and cleaned.
-Twelve controls preceded production edits; eleven existing-test witnesses were
-captured after the prototype, before test contract changes. Cropped exploratory
-captures are excluded. Windows validation reuses earlier pinned-browser smoke;
-Linux/remote delivery remains unproved.
+Windows locked restore, nine-project Release build and **3,829 tests**
+(3,663 core + 160 visual + six FontProbe), 25 memory scenarios and installed
+package consumers pass. Fifty-four fresh captures are stable, healthy and cleaned.
+Controls were declared after the prototype, before production edits and captures.
+Windows validation reuses earlier pinned-browser smoke; Linux/remote delivery
+remains unproved.
 
-Thirty-nine matching resource recipes preserve geometry/paint layouts. Fourteen
-peaks fall and two add 716 bytes; Eisenbahn raster work falls 16,432 → 6,662.
-No new timing or representative performance result is claimed. Detailed reports
-stay under ignored `artifacts/bitmap-corner-fill-20261006/`; Git identifies code.
+Thirty-nine matching resource recipes preserve inputs, parser work, accounted
+peaks and geometry/paint layouts. Fifteen charged raster totals increase and
+twenty-four remain unchanged. No timing or representative performance result is
+claimed. Reports stay under ignored `artifacts/interval-curve-state-20261006/`;
+Git identifies code without source/build/report hashes.
 
 ## Q1 - numeric exact-document target: selected
 

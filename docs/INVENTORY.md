@@ -5,6 +5,26 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Bitmap-local curve checkpoint (2026-10-06)
+
+UAAR (`inv-004`), Red Cross (`inv-011`), Party of Changes (`inv-026`), Blur
+(`inv-092`) and Nike (`inv-095`) now match every frozen variant. The cohort is
+165 exact / 93 known / zero rejected, **16/27 exact documents**, marks **7/13**,
+wordmarks **9/14**. Forty-four corporate PNGs change with no mismatch count
+increase; all 145 earlier exact PNGs remain. SDL intended becomes exact; its
+large variants retain three pixels each. No member, holdout, source, root
+materialization, option, reference or capture provenance changes.
+
+The bank is 1,342 cases: 1,214 fixtures (1,011 exact, 179 known, 24 rejected),
+36 research records (seventeen exact, eighteen known, one rejected) and 92
+Default renders. Eighteen independent controls add twelve exact and six known
+fixtures; the original research circle graduates with unchanged assets and
+provenance. Four earlier fixtures and the circle become exact. All 1,010 prior
+exact fixture/research PNGs and every rejection remain. Eight Default PNGs change
+without matching-options fidelity claims. Detailed records stay under ignored
+`artifacts/interval-curve-state-20261006/`. S17's 23/27 target and both stratum
+minima remain open; [PLAN](../PLAN.md) owns the next work.
+
 ## Directed integer-fill checkpoint (2026-10-06)
 
 Eisenbahn (`inv-008`) now matches all nine original frozen variants. Retaining its
@@ -22,9 +42,9 @@ fixture/research PNGs remain unchanged. Detailed records stay under ignored
 `artifacts/bitmap-corner-fill-20261006/`. S17 requires 23/27 with both stratum
 minima and remains open; [PLAN](../PLAN.md) owns the next work.
 
-## Status
+## Earlier admission and construction status
 
-Current assessment (2026-10-06): all 258 frozen corporate variants render,
+Historical inactive-presentation assessment (2026-10-06): all 258 frozen corporate variants render,
 with 143 exact comparisons and 115 known differences. Shared inactive presentation
 admission makes Target exact in all nine original variants. All other 249 records
 and all 134 earlier exact PNGs remain unchanged. Exact documents are **10/27**,

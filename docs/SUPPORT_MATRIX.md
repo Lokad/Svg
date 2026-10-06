@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the directed integer-fill checkpoint, the 1,195 manifest entries contain
-994 exact decoded-pixel references, 177 known-difference renders and 24
+At the bitmap-local curve checkpoint, the 1,214 manifest entries contain
+1,011 exact decoded-pixel references, 179 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -16,6 +16,14 @@ gradient and pattern paths retain whole fill contours and scene paint boxes.
 Solid orthogonal paths keep checked integer bands. Authored straight replay uses
 command-bounded scratch; rectangle mask and additive-run boundary bytes differ.
 Original independent controls remain exact; broader fidelity is still open.
+
+Authored fills retain source contours once for bitmap-local mapping. Float
+translation moves into the bitmap before source point/control mapping; clipped
+edge construction and vertical combination stay local, then kept fixed-point
+walk/curve positions translate together. Raw-control raster bounds retain
+extrema missed by flattened samples. Solid, linear, radial and pattern fills
+share this preparation. Broader reflected quadratic/rational bitmap fidelity
+remains open; rational conversion still occurs after global mapping.
 
 Declaration-only DOCTYPE admission applies to bare, SYSTEM and PUBLIC declarations
 before the root. External identifiers are inert; internal subsets (even empty),
@@ -31,12 +39,12 @@ remain unsupported. `overflow:visible` is accepted on non-viewport targets;
 root/nested SVG viewports retain hidden clipping and reject visible overflow,
 including matched stylesheet declarations. These admissions add no painting.
 
-The complete frozen corporate matrix has 258 rendered comparisons: 145 exact
-and 113 known differences, with zero renderer rejections. Target is exact in all
-nine original variants, joining Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube,
-NASA, IKEA and Google: 11/27 documents, marks 5/13 and wordmarks 6/14.
-All other 249 records and 134 earlier exact PNGs remain unchanged. This is below
-S17's required 23/27 exact documents and both stratum minima.
+The complete frozen corporate matrix has 258 rendered comparisons: 165 exact
+and 93 known differences, with zero renderer rejections. UAAR, Red Cross, Party
+of Changes, Blur and Nike become exact in every variant: **16/27 documents**,
+marks **7/13**, wordmarks **9/14**. Forty-four PNGs change with no mismatch count
+increase; all 145 earlier exact PNGs remain. Original inputs, options and browser
+references stay frozen. S17 still requires 23/27 and both stratum minima.
 
 Eligible authored fills preserve directed winding and retained curves without
 scene contact surgery. Root/group placement composes before float rounding;

@@ -6149,3 +6149,72 @@ consistency, not Linux or remote delivery. Thirty-nine matching resource recipes
 preserve value layouts. Fourteen peaks decrease, two add 716 bytes, and Eisenbahn
 raster work falls 16,432 → 6,662. No timing claim is made. Detailed comparisons,
 ledgers and captures stay ignored under `artifacts/bitmap-corner-fill-20261006/`.
+
+## Bitmap-local curve mapping and raw-control bounds (2026-10-06)
+
+The frozen `014dd3b1` renderer leaves six intended-size UAAR pixels. Four sit on
+the bitmap's left boundary; two sit near a curve extremum. Managed interval
+events agree with the pinned native walker when given the same initial edge
+state. Native global-coordinate curve setup reproduces those states, whereas
+bitmap-local setup changes forward differences and resolves the boundary phase.
+This separates curve construction from walking; it does not prove a full native
+path/paint/browser pipeline.
+
+Subtracting the bitmap origin from already mapped float points closes Red Cross,
+Blur and Nike, but moves previously exact Party of Changes intended pixels.
+Moving the float translation before mapping the original source points preserves
+those intended outputs and closes Party's large variants. The source contour tape
+replaces the old mapped replay tape; source verbs flatten once under the existing
+output-dependent policy. Global classification arrays remain, and each bitmap
+borrows aligned source indices without another replay or contour allocation.
+
+Clipping, edge initialization and vertical combination operate in local bitmap
+coordinates. Kept edges translate their X/Y bounds, live forward positions and
+initial reset state together before sorting. Derivatives remain local differences.
+Both construction passes and the final translation consume bounded, cancellable
+work before mutation; every partial reservation releases on denial. The new
+cleanup/retry case verifies source points/controls unchanged and storage returned.
+Four software-border cases verify all six output APIs for solid, linear, radial
+and pattern paints. Scene paint coordinates remain unchanged.
+
+The pinned SkPathData `finishInit` stores bounds from the raw point stream through
+`SkPathPriv::TrimmedBounds`; SkPath's tight-bounds computation is separate. Using
+flattened samples for raster/storage bounds can omit an adjacent extremum pixel.
+Including original mapped controls resolves UAAR's last two pixels. The original
+SVG and browser references remain frozen; no document identity or tolerance
+selects rendering behavior.
+
+All UAAR intended backgrounds improve six → zero pixels. Red Cross large,
+Party of Changes large, Blur intended/large and Nike intended/large become exact.
+SDL intended becomes exact and large improves 20/20/15 → 3/3/3. Zeppelin, SG
+Rotation, Toyota, Pepsi and IBM improve at their affected sizes. Forty-four
+corporate PNGs change, no mismatch count increases, and all 145 earlier exact
+PNGs remain. The cohort is **165 exact / 93 known / zero rejected**, **16/27
+documents**, marks **7/13**, wordmarks **9/14**; S17 still requires 23/27.
+
+Eighteen control configurations were declared after the prototype, before
+production edits and captures. All 54 fresh captures are byte-stable, healthy and
+profile-cleaned. The twelve cubic solid/linear/radial/pattern cases are exact
+before and after; six reflected quadratic/translated arc cases retain identical
+known differences. They validate preservation and shared paint preparation,
+without claiming new control error reductions. Rational conversion still happens
+after global mapping before entering local clipping; broader rational/quadratic,
+uncut, stroke/paint and bitmap-context fidelity remain open.
+
+Four earlier fixtures become exact; the original research stroked circle becomes
+exact and graduates with original assets/provenance. Nine numeric known fixtures
+improve by one pixel each; the research round spike retains one changed pixel with
+a changed candidate PNG. Eight Default PNGs change without matching-options
+fidelity claims. Every earlier exact fixture/research PNG and rejection remains.
+The bank is **1,342 cases**: **1,214 fixtures = 1,011 exact + 179 known + 24
+rejected**, **36 research = seventeen exact + eighteen known + one rejected**,
+and 92 Default renders. Seven new source documents add nineteen fixture entries.
+
+Windows locked restore/Release build, **3,829 tests** (3,663 core, 160 visual,
+six FontProbe), 25 memory scenarios and installed consumers pass. Artifact
+validation reuses earlier Windows Chrome smoke; Linux/remote delivery remains
+open. Thirty-nine matched resource recipes preserve inputs, parser work, value
+layouts and accounted peaks. Fifteen raster work totals increase, twenty-four
+remain unchanged. No timing or representative performance claim is made. Full
+traces, comparisons, captures and ledgers remain ignored under
+`artifacts/interval-curve-state-20261006/`; Git identifies implementation.

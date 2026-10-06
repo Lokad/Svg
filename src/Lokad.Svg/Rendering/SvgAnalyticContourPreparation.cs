@@ -6,6 +6,8 @@ using Lokad.Svg.Parsing;
 /// <remarks>The caller keeps the same points, contours, votes and retained verbs alive and unchanged throughout this single-threaded scope. No storage is allocated or owned here. Each classification is charged once by Prepare; each raster context still charges and owns its edge construction and row state. The preparation cannot escape into a returned walker.</remarks>
 internal ref struct SvgAnalyticContourPreparation
 {
+    internal readonly SvgPreparedPathContours? Source;
+    internal readonly SvgAffineTransform SourceMap;
     internal readonly ReadOnlySpan<SvgDevicePoint> Points;
     internal readonly ReadOnlySpan<int> Ends;
     internal readonly ReadOnlySpan<int> NestingSigns;
@@ -38,9 +40,16 @@ internal ref struct SvgAnalyticContourPreparation
     internal readonly bool UsesRunBlitter => !(PathBounds.Right - PathBounds.Left <= 32 && ((PathBounds.Right - PathBounds.Left + 3L) & ~3L) * (PathBounds.Bottom - PathBounds.Top) <= 1024);
 
     internal SvgAnalyticContourPreparation(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgAnalyticClipBounds pathBounds, int outputWidth, int outputHeight)
+        : this(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, pathBounds, outputWidth, outputHeight, null, SvgAffineTransform.Identity) { }
+
+    /// <summary>Borrows aligned source contours alongside the globally mapped classification geometry.</summary>
+    /// <remarks>Source storage remains owned by the mapped polygon; clip construction remaps its matching indices into each bitmap without allocating another contour tape.</remarks>
+    internal SvgAnalyticContourPreparation(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgAnalyticClipBounds pathBounds, int outputWidth, int outputHeight, SvgPreparedPathContours? source, SvgAffineTransform sourceMap)
     {
         ArgumentNullException.ThrowIfNull(quadSpans);
         ArgumentNullException.ThrowIfNull(cubicSpans);
+        Source = source;
+        SourceMap = sourceMap;
         Points = points;
         Ends = ends;
         NestingSigns = nestingSigns;

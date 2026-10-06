@@ -1,0 +1,39 @@
+{
+  "fixtureId": "original-bitmap-curve-cubic-pattern-transparent",
+  "referencePng": "original-bitmap-curve-cubic-pattern-transparent.png",
+  "referenceSha256": "87808f2be5b461d6c923ee9ab3b10b2882737ccd4c0f72436cbcb744d1d57604",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 600,
+    "height": 600,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "c39190ddddbddeb1d768b7dba2288755d521756b2a93e2f455acfce96dd1fae5",
+  "candidateSha256": "80030ec113b83ab653a2ad9d6239f3caae707ecdca92839b02b33a266a2f113b",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 600,
+    "minimumMismatchY": 600,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredAfterPrototype": true,
+  "declaredBeforeCaptures": true
+}
