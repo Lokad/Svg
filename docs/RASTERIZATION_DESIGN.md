@@ -5365,3 +5365,48 @@ changes and overlapping local timing ranges. Studies stay under ignored
 `artifacts/corporate-curve-events-20261006/`. Source/root operands, general affine
 mapping, thin/fractional events, closed/curved/dashed strokes, clip/composition,
 representative performance, Linux and the at-least-23/27 S17 target remain open.
+
+## Root and group composition diagnosis (2026-10-06)
+
+The renderer remains `6700a618`; `30ccca66` only trims test records. This study
+compares all 1,170 bank cases and 258 frozen corporate variants. Production
+inputs, references and the **5/27** exact-document numerator remain unchanged.
+
+Pinned Chromium `153.0.8010.52` parses `viewBox` into floats, then
+`SVGPreserveAspectRatio::ComputeTransform` computes its affine map in doubles.
+Its translate-after-scale operation order matters: NASA's small root map narrows
+to scale `0.499799281358719` and Y offset `0.0812253281474114`, matching the recorded
+browser matrix. Float-only division/subtraction produces a different offset.
+Sources are [SVGRect](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/svg_rect.cc),
+[preserveAspectRatio](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/svg/svg_preserve_aspect_ratio.cc)
+and [AffineTransform](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/platform/transforms/affine_transform.cc).
+
+UAAR's small browser picture has one composed matrix: scale
+`2.65387845039368`, X offset `-641.400756835938`, Y offset `-932.14013671875`.
+Composing the double root/group matrices and then narrowing matches all six
+coefficients. All **2,750** authored coordinate components across its six paths
+match the recorded browser path exactly; mapping them with that matrix also
+matches every component. The healthy, cleaned trace capture is byte-identical to
+the original small transparent reference. Separately rounded root/group point
+maps introduce avoidable differences.
+
+An ignored derived SVG twin and an isolated original-input renderer model both
+reduce UAAR differences on all three backgrounds: **57 → 12** at small,
+**272 → 6** at intended, **702 → 0** at large. These are diagnostic results;
+the original production SVGs do not gain an exact document. The corrected model
+preserves all **847** exact fixture PNGs, **73** exact corporate comparisons and
+every disposition. Nine bank PNGs and 69 corporate PNGs change; corporate counts
+improve for 42, worsen for 24 and remain equal for three. Three UAAR large
+comparisons become exact only in that model.
+
+Early scene premapping is not a production solution. The tangent-gradient control
+has its geometry box doubled before the existing paint map, worsening **321 →
+2,361** differences on each background. An initial new mapping marker also
+bypassed the magnified-curve reference guard; restoring the guard restores all
+three intended rejections. Keep scene bounds, paints, clips and reference
+contracts coherent while composing the final point map. The remaining UAAR
+small/intended differences persist even with verified coordinates and need
+scan-conversion investigation. Thread-local diagnostic state is not suitable for
+production; ownership, work/storage, cancellation and delivery gates are still
+required for the implementation. Detailed studies remain under ignored
+`artifacts/root-viewbox-20261006/`.

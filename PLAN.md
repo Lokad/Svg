@@ -29,7 +29,8 @@ They were declared after the edit and before capture/comparison; they do not
 establish an algorithm improvement. The earlier width-one cap regression remains
 sixteen differing pixels, alpha-error mass 42 and maximum alpha error eleven.
 
-**Next: remaining source/root mapping operands, thin/fractional stroke events,
+**Next: compose root/group maps before point rounding while preserving scene
+bounds and paint coordinates; then thin/fractional stroke events,
 closed/curved/dashed construction, clipping and corporate residuals.** Native
 multiply/add operations do not prove every mapped browser coordinate or CTM bit
 matches. Preserve the numeric, material, bitmap-origin, AA-clip, rational-curve
@@ -800,6 +801,11 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    offset; pixel equality does not prove complete float-bit parity. Investigate
    number/root-offset construction and the known large SDL, SG Rotation, Party
    of Changes and Pepsi regressions without document-specific switches.
+   The [root/group diagnosis](docs/RASTERIZATION_DESIGN.md#root-and-group-composition-diagnosis-2026-10-06)
+   proves all 2,750 UAAR authored coordinate components match the browser. Compose
+   matrices before narrowing and mapping points; preserve scene-space bounds,
+   paint-server coordinates and reference admission. Early scene premapping
+   improves UAAR but breaks a gradient control, so that model is not landed.
 4. **Complete thin/fractional events and closed/curved/dashed stroke construction.**
    Preserve native float normalization, endpoint replacement, rational caps/joins,
    forward inner-arc splits and signed contacts. Keep both the 49 earlier native
