@@ -175,14 +175,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
     "admittedRendering": {
-      "changedPixelCount": 16,
-      "maximumChannelError": 11,
-      "maximumAlphaError": 11,
-      "alphaChangedPixelCount": 16,
-      "minimumMismatchX": 1,
-      "minimumMismatchY": 7,
-      "maximumMismatchX": 14,
-      "maximumMismatchY": 8
+      "changedPixelCount": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0,
+      "alphaChangedPixelCount": 0,
+      "minimumMismatchX": 16,
+      "minimumMismatchY": 16,
+      "maximumMismatchX": -1,
+      "maximumMismatchY": -1
     },
       "oracle": {
         "referencePng": "references/odd-stroke-round-cap-16x16.png",
@@ -257,14 +257,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
     "admittedRendering": {
-      "changedPixelCount": 12,
-      "maximumChannelError": 1,
-      "maximumAlphaError": 1,
-      "alphaChangedPixelCount": 12,
-      "minimumMismatchX": 2,
-      "minimumMismatchY": 8,
-      "maximumMismatchX": 13,
-      "maximumMismatchY": 8
+      "changedPixelCount": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0,
+      "alphaChangedPixelCount": 0,
+      "minimumMismatchX": 16,
+      "minimumMismatchY": 16,
+      "maximumMismatchX": -1,
+      "maximumMismatchY": -1
     },
       "oracle": {
         "referencePng": "references/odd-stroke-hairline-16x16.png",

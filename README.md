@@ -36,7 +36,7 @@ and preserve the distinction between geometric clip edges and mask allocation
 bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
 paints apply the rectangle's snapped byte mask to each ordered operation.
 The frozen corporate matrix has all 258 reference images: 240 rendered
-comparisons (133 exact, 107 different) and eighteen retained renderer rejections.
+comparisons (134 exact, 106 different) and eighteen retained renderer rejections.
 Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google are exact in every
 declared variant: 9/27 documents. Authored fills retain directed winding and
 curves after scene normalization, with root/group composition before float
@@ -44,6 +44,10 @@ rounding. Convex cubics retain live edges, and incoming intersections constrain
 dense-path strips. Every prior exact image is preserved; six known controls
 worsen slightly. Broader event fidelity remains open; see
 [the design record](docs/RASTERIZATION_DESIGN.md#convex-cubic-and-incoming-edge-rows-2026-10-06).
+Straight solid path strokes up to one device pixel now use native hairline
+coverage. All six independent controls and both historical hairline/cap probes
+are exact; nine corporate variants improve. Curve, dash, other shape/paint and
+bitmap-context hairline work remains open.
 Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
 remaining variants. Native straight open-stroke construction and winding make
 six original miter/bevel probes and three viewBox configurations exact, and
@@ -52,7 +56,7 @@ Circle/ellipse fills and native straight solid open-stroke round caps, dots and
 joins retain rational conics through final mapping. Signed native stroke contacts
 preserve their directed fill. Four original round-stroke probes and three fresh
 configurations become exact; every Rede Manchete variant improves but remains
-inexact. A width-one cap probe worsens slightly and remains measured. Thin/
+inexact. The later hairline repair closes the width-one cap probe. Broader
 fractional events, closed/curved/dashed strokes and clip fidelity remain open.
 Straight dash cuts now preserve native float endpoints, and nonzero orthogonal
 contact sets retain their one-byte fringes through signed-winding analytic

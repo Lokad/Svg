@@ -2,7 +2,10 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgAuthoredPathVerb { Move, Line, Quadratic, Cubic, Arc, End }
+internal enum SvgAuthoredPathVerb { Move, Line, Quadratic, Cubic, Arc, End, Close }
+
+/// <summary>Retains stroke width, its independent scene map and admitted cap semantics beside the centerline.</summary>
+internal readonly record struct SvgAuthoredStrokeStyle(double Width, SvgAffineTransform WidthMap, SvgStrokeCap Cap);
 
 [Flags]
 internal enum SvgAuthoredArcFlags : byte { None = 0, Large = 1, Sweep = 2 }
@@ -16,25 +19,27 @@ internal readonly record struct SvgAuthoredPathCommand(SvgAuthoredPathVerb Verb,
 internal sealed class SvgAuthoredPath : IDisposable
 {
     // Covers the owner, geometry slot and transient old/new owner during transfer.
-    private const long OwnerBytes = 256;
+    private const long OwnerBytes = 384;
     private OwnedParserArray<SvgAuthoredPathCommand> _commands;
     private RenderBudget.BudgetReservation? _ownerReservation;
 
-    private SvgAuthoredPath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget.BudgetReservation ownerReservation)
+    private SvgAuthoredPath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, RenderBudget.BudgetReservation ownerReservation)
     {
         _commands = commands;
         SceneMap = sceneMap;
+        StrokeStyle = strokeStyle;
         _ownerReservation = ownerReservation;
     }
 
     internal ReadOnlySpan<SvgAuthoredPathCommand> Commands => _commands.Items;
     internal SvgAffineTransform SceneMap { get; }
+    internal SvgAuthoredStrokeStyle? StrokeStyle { get; }
 
     /// <summary>Transfers storage to a replacement owner; later disposal of this dropped owner is harmless.</summary>
     internal SvgAuthoredPath Transfer()
     {
         RenderBudget.BudgetReservation owner = _ownerReservation ?? throw new InvalidOperationException("Authored path ownership has already transferred.");
-        SvgAuthoredPath result = new(_commands, SceneMap, owner);
+        SvgAuthoredPath result = new(_commands, SceneMap, StrokeStyle, owner);
         _commands = new([], null);
         _ownerReservation = null;
         return result;
@@ -45,6 +50,7 @@ internal sealed class SvgAuthoredPath : IDisposable
     /// flattening uses its existing bounded, cancellable policy. The result exclusively owns its surface arrays.</remarks>
     internal SvgMappedAuthoredPath Prepare(SvgAffineTransform outputMap, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        if (StrokeStyle is not null) throw new InvalidOperationException("A retained stroke centerline cannot be replayed as a fill.");
         SvgAffineTransform map = outputMap.ComposeChecked(SceneMap);
         double magnification = Math.Max(Math.Sqrt(map.A * map.A + map.B * map.B), Math.Sqrt(map.C * map.C + map.D * map.D));
         SvgFlattenPolicy policy = new(SvgOrthogonalGeometryLowering.ScaledFlatness(magnification), SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand);
@@ -78,7 +84,8 @@ internal sealed class SvgAuthoredPath : IDisposable
                 case SvgAuthoredPathVerb.Quadratic: builder.AddQuadratic(command.First, command.Second, policy, cancellationToken); current = command.Second; break;
                 case SvgAuthoredPathVerb.Cubic: builder.AddCubic(command.First, command.Second, command.Third, policy, cancellationToken); current = command.Third; break;
                 case SvgAuthoredPathVerb.Arc: AppendEndpointArc(builder, current, command, workCounter, cancellationToken); current = command.Third; break;
-                case SvgAuthoredPathVerb.End: builder.EndContour(); break;
+                case SvgAuthoredPathVerb.End:
+                case SvgAuthoredPathVerb.Close: builder.EndContour(); break;
                 default: throw new InvalidOperationException("Invalid retained path verb.");
             }
         }
@@ -152,9 +159,16 @@ internal sealed class SvgAuthoredPath : IDisposable
 
     /// <summary>Adopts command-array ownership only on success; the caller releases the array on failure.</summary>
     internal static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
+        => Create(commands, sceneMap, null, budget);
+
+    /// <summary>Adopts a source centerline only on success, with the same ownership rules as authored fills.</summary>
+    internal static SvgAuthoredPath CreateStroke(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle strokeStyle, RenderBudget budget)
+        => Create(commands, sceneMap, strokeStyle, budget);
+
+    private static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, RenderBudget budget)
     {
         RenderBudget.BudgetReservation owner = budget.Reserve(OwnerBytes, SvgMemoryCategory.Scene);
-        try { return new SvgAuthoredPath(commands, sceneMap, owner); }
+        try { return new SvgAuthoredPath(commands, sceneMap, strokeStyle, owner); }
         catch { owner.Dispose(); throw; }
     }
 
@@ -164,7 +178,12 @@ internal sealed class SvgAuthoredPath : IDisposable
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
         foreach (SvgAuthoredPathCommand command in Commands) commands.Add(command);
         OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
-        try { return Create(owned, placement.ComposeChecked(SceneMap), budget); }
+        try
+        {
+            SvgAuthoredStrokeStyle? copiedStyle = StrokeStyle is SvgAuthoredStrokeStyle style
+                ? style with { WidthMap = placement.ComposeChecked(style.WidthMap) } : null;
+            return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, budget);
+        }
         catch { owned.Dispose(); throw; }
     }
 

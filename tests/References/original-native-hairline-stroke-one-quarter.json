@@ -17,14 +17,14 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "inputSha256": "048807e39534cff914201cfee4950fa194efb53a7ae541fbdf8814fc00fbe0bc",
-  "candidateSha256": "0f9d0bf3cef04b0bf52e011c756317c4546989b9450bd5355ab45308bcc65fb7",
+  "candidateSha256": "bc3cfa5eda5d73b2dec9b8c5367396c425c7f0e0184f47f0662262c54a9c3a3c",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 172,
-    "maximumChannelError": 57,
-    "maximumAlphaError": 57,
-    "exact": false,
-    "alphaErrorMass": 295
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
   },
   "declaredBeforeProductionEdit": true,
   "declaredBeforeCaptures": true,

@@ -370,7 +370,7 @@ internal static class SvgPathDataParser
 
         void SealContour(bool explicitlyClosed)
         {
-            authored?.Add(new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
+            authored?.Add(new(explicitlyClosed ? SvgAuthoredPathVerb.Close : SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
             builder.EndContour();
             if (closedEnds is not null) closedEnds.Add(explicitlyClosed);
         }

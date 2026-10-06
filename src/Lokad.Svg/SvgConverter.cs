@@ -444,6 +444,17 @@ public static class SvgConverter
 
         void RasterizeGeometry(SvgGeometry geometry, byte[] destination)
         {
+            if (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.AuthoredPath is SvgAuthoredPath centerline && centerline.StrokeStyle is not null)
+            {
+                ParserWorkCounter hairlineWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                SvgPolygonFill stroke = geometry.Polygon;
+                bool rendered = stroke.HasFill && SvgHairlineStroke.TryRasterize(centerline,
+                    SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), stroke.Color,
+                    stroke.Clip is SvgClipBox clip ? MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
+                    stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, destination, outputWidth, outputHeight, hairlineWork, cancellationToken);
+                workUnits += hairlineWork.Used;
+                if (rendered) return;
+            }
             switch (geometry.Kind)
             {
                 case SvgGeometryKind.Rectangle:
@@ -511,7 +522,7 @@ public static class SvgConverter
         MappedPolygon MapPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, bool isEvenOdd, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgPolygonMapping mapping, SvgClipBox? clip, SvgAuthoredPath? authoredPath)
         {
             SvgMappedAuthoredPath? authored = null;
-            if (authoredPath is not null)
+            if (authoredPath is not null && authoredPath.StrokeStyle is null)
             {
                 ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 authored = authoredPath.Prepare(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), isEvenOdd, budget, preparationWork, cancellationToken);

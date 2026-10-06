@@ -1276,8 +1276,15 @@ internal ref struct SvgOrthogonalGeometryLowering
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         SvgContourBuilder builder = hasCurves ? SvgContourBuilder.CreateGrowing(pointCapacity, contourCapacity) : new(pointCapacity, contourCapacity);
         using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds);
+        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds, hasFill && dashes is null ? authored : null);
         SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget);
+        if (authored.Count != 0 && stroked.Geometries.Length == 1)
+        {
+            OwnedParserArray<SvgAuthoredPathCommand> commands = authored.Detach();
+            try { stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, deviceMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap), budget) }; }
+            catch { commands.Dispose(); stroked.Discard(); throw; }
+        }
         return stroked with { ElementCount = commandCount + 1 };
     }
 

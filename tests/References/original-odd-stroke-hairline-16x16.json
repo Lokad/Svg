@@ -1,0 +1,23 @@
+{
+  "fixtureId": "original-odd-stroke-hairline-16x16",
+  "referencePng": "original-odd-stroke-hairline-16x16.png",
+  "referenceSha256": "41c7c56b36428bc5f68f7dbbe981c4e2cbae9e5e7ab02a5fd65f3fde8f370a37",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

@@ -1,39 +1,36 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Live convex cubic edges and mandatory incoming-edge
-intersection checks make all nine IKEA variants exact. [PLAN.md](../PLAN.md)
-owns the queue; rows 3–7 and S17 remain open. Exact documents are Ford, SimpleX,
-Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google: **9/27**, marks **3/13**,
-wordmarks **6/14**. S17 requires at least **23/27**, including at least 11/13 marks
-and 12/14 wordmarks. Membership, holdouts, options, original inputs and browser
-references remain frozen.
+Updated 2026-10-06. Native straight-path hairline dispatch improves nine original
+corporate variants. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain
+open. Exact documents remain Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube,
+NASA, IKEA and Google: **9/27**, marks **3/13**, wordmarks **6/14**. S17 requires
+at least **23/27**, including at least 11/13 marks and 12/14 wordmarks. Membership,
+holdouts, options, original inputs and browser references remain frozen.
 
-Current evidence: **1,057 fixtures = 871 exact + 156 known differences + 30
-rejections**, across 561 base documents / 496 variants; **36 research probes =
-five exact + 30 known + one rejection**; and 92 legacy Default renders:
-**1,185 cases**. All 853 prior exact fixture PNGs and 121 exact corporate PNGs
-are preserved, as are all dispositions. Thirteen known fixtures become exact;
-three unchanged research probes also enter the exact bank. Six additional
-hairline-dispatch controls add two exact and four known fixtures against eighteen
-stable, healthy captures; renderer `ddaabaab` and all corporate results are unchanged. Windows locked
-restore, nine-project Release build and **3,690 tests** (3,524 core + 160 visual
-+ six FontProbe) pass. All 25 memory scenarios, package/installed-consumer,
-Chrome smoke and artifact validation pass. Seventeen matched recipes record
-work/storage, allocations and local timing ranges.
+Current evidence: **1,059 fixtures = 877 exact + 152 known differences + 30
+rejections**, across 563 base documents / 496 variants; **36 research probes =
+seven exact + 28 known + one rejection**; and 92 legacy Default renders:
+**1,187 cases**. All 871 prior exact fixture PNGs and 133 exact corporate PNGs
+are preserved, as are all dispositions. Four known hairline fixtures become
+exact; two unchanged research probes also enter the exact bank. All six fresh
+hairline controls match their original stable captures. Windows locked restore,
+nine-project Release build and **3,696 tests** (3,530 core + 160 visual + six
+FontProbe) pass. All 25 memory scenarios, package/installed-consumer, Chrome
+smoke and artifact validation pass. Twenty-one matched recipes record work,
+storage, allocations and local timing ranges.
 
-The corporate matrix has **240 rendered comparisons (133 exact, 107 known)**
-and eighteen UnsupportedFeature outcomes. Forty-five PNGs change: 42 improve
-mismatch count and three retain their count; none worsen. Six known synthetic
-controls worsen in mismatch count, including the bevel probe's alpha-error mass;
-these remain measured against their original references. Ten legacy Default
-PNGs change without a matching-options fidelity claim.
+The corporate matrix has **240 rendered comparisons (134 exact, 106 known)**
+and eighteen UnsupportedFeature outcomes. All nine changed PNGs improve mismatch
+count; none worsen. Eisenbahn und Höfen small is one/zero/one pixels from exact
+across its backgrounds; Rede Manchete small/intended improve to 519/638 pixels.
+Three legacy Default PNGs change without a matching-options fidelity claim.
 
-The width-one cap, thin/fractional events, closed/curved/dashed construction,
-clip/composition, conical/multistop coordinates, cache history, general fidelity,
-representative performance and Linux remain open. Earlier NASA operand
-discrepancies remain diagnostic evidence despite exact pixels. S8 measurement
-is complete for this cohort; S17 remains unmet. Detailed studies stay under
-ignored `artifacts/convex-curve-rows-20261006/`; Git identifies implementation.
+Native hairline curves, dashes, other shape/paint routes and bitmap contexts,
+closed/curved/dashed stroke construction, clip/composition, conical/multistop
+coordinates, cache history, general fidelity, representative performance and
+Linux remain open. Earlier NASA operand discrepancies remain diagnostic evidence
+despite exact pixels. S8 measurement is complete for this cohort; S17 remains
+unmet. Detailed studies stay under ignored artifacts.
 
 ## Q1 - numeric exact-document target: selected
 

@@ -249,7 +249,7 @@ internal readonly struct SvgGeometry
 
     internal SvgGeometryKind Kind => _kind;
 
-    /// <summary>Owns authored fill commands for final mapping; scene contours retain bounds/paint semantics.</summary>
+    /// <summary>Owns authored fill or stroke-centerline commands for final mapping; scene contours retain bounds/paint semantics.</summary>
     internal SvgAuthoredPath? AuthoredPath { get; init; }
 
     /// <summary>Transfers authored ownership when stamping or repainting the same contours; disposal of the dropped geometry remains safe.</summary>

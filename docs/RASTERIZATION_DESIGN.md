@@ -5681,3 +5681,51 @@ must retain the source centerline, final device map and stroke style within the
 existing ownership/work/memory contracts, and use the native hairline algorithm.
 Cap/curve/dash/clip behavior and repeated paints need their full scoped evidence;
 Implement shared stroke dispatch and native coverage rules.
+
+## Native straight-path hairlines (2026-10-06)
+
+Solid undashed path strokes now retain authored commands, explicit closure and
+an independent stroke-width scene map alongside their admitted outlines.
+Final output mapping composes before float point arithmetic. Non-scaling stroke
+width maps preserve the existing admitted scene/instance semantics through
+copying. Centerline owners transfer and copy with the existing budgeted mechanism;
+they cannot enter authored fill replay. The larger owner value is reserved at
+384 bytes, including the transient transfer pair, instead of 256.
+
+Thin-stroke dispatch adapts the pinned `SkDraw.cpp` mapped-width fast-length
+predicate and byte paint-alpha modulation. Straight coverage adapts
+`SkScan_Antihair.cpp`: float pre-clipping, 26.6 endpoints, 16.16 slopes,
+fractional caps, complementary neighbor coverage, native 511-pixel subdivision
+and ordered Direct/Pair material painting. Square and round endpoint extension
+follow `SkScan_Hairline.cpp`; closed paths omit ordinary endpoint extension.
+The walker borrows the destination and allocates no heap buffers; every
+subdivision and pixel visit is charged and cancellable. Rectangle clip coverage
+uses the existing admitted clip model, not a complete native AA-mask claim.
+
+Original compiled native line/clipping functions bank 112 vectors / 40,644
+ordered coverage events. Minimal helper/region/blitter adapters are declared in
+the compact golden's metadata. Three managed material configurations consume
+the same native events; this proves line coverage, not an independent complete
+native material backend, cap extension, curve or dash construction. The six
+previously declared browser controls independently settle dispatch and ordinary
+path composition: all six are now exact. The historical odd hairline and width-one
+round cap also become exact and enter fixtures with unchanged SVG/PNG/provenance.
+
+The complete 1,187-case bank preserves all 871 prior exact fixture PNGs, five
+prior exact research PNGs and every disposition. Four known fixtures graduate;
+two exact research copies bring fixtures to 1,059 (877 exact, 152 known, 30
+rejected), research to seven exact / 28 known / one rejected. Three legacy
+Default PNGs change without a matching-options claim. All 133 prior exact
+corporate PNGs remain byte-identical. Nine corporate PNGs improve: Eisenbahn und
+Höfen small 106 → one/zero/one pixels; Rede small 1,267 → 519 and intended
+1,637 → 638. Comparisons are 134 exact / 106 known, with complete documents still
+9/27. No input, reference, cohort membership or declared option changes.
+
+Windows locked restore, nine-project Release build, 3,696 tests, all 25 memory
+scenarios, pinned browser/artifact checks and installed package consumers pass.
+Owner copy/transfer, width maps, denial before/during work, cancellation/token
+preservation, overflow cleanup and successful retry are exercised. Native
+hairline curves/dashes, other shapes/paints and bitmap contexts remain queued;
+wider and curved/dashed strokes keep the admitted outline route. Broader
+fidelity, representative performance and Linux remain open. Detailed runs stay
+under ignored `artifacts/hairline-implementation-20261006/`.

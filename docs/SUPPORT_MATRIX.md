@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the convex-cubic/incoming-edge checkpoint, the 1,057 manifest entries contain
-871 exact decoded-pixel references, 156 known-difference renders and 30
+At the straight-path hairline checkpoint, the 1,059 manifest entries contain
+877 exact decoded-pixel references, 152 known-difference renders and 30
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -19,7 +19,7 @@ The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
 27 cases to rendering and nine Target cases to the existing unsupported `marker`
 style gate. At that checkpoint, previous rendered PNGs remained unchanged.
 The complete frozen matrix has
-240 rendered comparisons (133 exact, 107 known differences) and eighteen
+240 rendered comparisons (134 exact, 106 known differences) and eighteen
 independently captured renderer rejections. Ford, SimpleX, Omega, ROC HCVS, Artsy,
 YouTube, NASA, IKEA and Google are exact in every declared variant: 9/27 documents,
 marks 3/13 and wordmarks 6/14. Eligible authored fills preserve directed winding
@@ -34,6 +34,14 @@ in mismatch count and remain measured.
 Stroke arcs retain their existing flattening. General event and native coordinate
 fidelity remain open.
 
+Solid undashed path strokes retain authored centerlines, closure and width maps.
+Straight paths up to one device pixel use native fixed-point hairline coverage
+with ordered segment painting and butt/square/round endpoint extension. All six
+fresh controls and both retained historical hairline/cap probes are exact. Nine
+corporate variants improve; every previous exact image is preserved. Wider,
+curved, dashed and other shape/paint routes retain their current behavior while
+their remaining native construction and hairline routing are completed.
+
 Straight solid open strokes retain native float normals, endpoint miter replacement
 and pivot inner joins through directed nonzero winding. Intersecting rings cannot
 select convex fill. Bevel joins are admitted on polylines through the same kernel
@@ -45,9 +53,9 @@ Native nonzero stroke contacts retain signed walking, including reversals and
 self-touches; intersecting rings cannot select convex fill. Four original probes
 and three fresh reversed-join configurations become exact. All 837 prior exact
 fixture PNGs and 70 exact corporate PNGs are preserved. Every Rede Manchete
-variant improves. The width-one cap probe worsens 15 → 16 differing pixels,
-alpha-error mass 18 → 42 and maximum alpha error 3 → 11 against its original
-reference. Thin/fractional events, closed/curved/dashed construction and clip/
+variant improves at that checkpoint. The width-one cap probe then worsened
+15 → 16 differing pixels; the subsequent hairline repair makes it exact against
+the same original reference. Broader fractional events, closed/curved/dashed construction and clip/
 composition fidelity remain open. Ordinary fill/contact gates retain their scope.
 Bitmap-local edge clipping and float root mapping preserve all nine exact Artsy
 variants.

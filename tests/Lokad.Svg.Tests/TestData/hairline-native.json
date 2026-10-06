@@ -1,0 +1,12 @@
+{
+  "nativePin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sourceFiles": [
+    "src/core/SkScan_Antihair.cpp",
+    "src/core/SkLineClipper.cpp"
+  ],
+  "compiler": "g++ -std=c++20 -O2 -ffp-contract=off -DNDEBUG -DSK_RELEASE",
+  "contract": "Original float IntersectLine and do_anti_hairline compiled unchanged. Minimal fixed-point helpers and blitter adapters retain ordered per-pixel coverage and Direct/Pair routing; these vectors cover line construction and integer bitmap clipping, not native material blending, AA clip masks, path cap extension, curves or dashes.",
+  "cases": 112,
+  "dataSha256": "957a7f893c12c975cb4e95103912ee845be4c3347c886a80d9146fc5fa5ab712",
+  "eventEncoding": "Gzip CSV; semicolon-separated events x:y:coverage:kind; kind 0=Direct, 1=Pair. Complete event order is preserved."
+}

@@ -15,22 +15,17 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current convex-cubic and incoming-edge checkpoint
+## Current straight-path hairline checkpoint
 
-Convex and clipped cubics retain live monotonic edges. Incoming-edge
-intersections constrain strips even under the density shortcut. The bank has
-1,057 fixtures (871 exact, 156 known, 30 rejected), 36 research probes (five
-exact, 30 known, one rejected) and 92 legacy Default cases. Thirteen known
-fixtures become exact; the cubic arch and two shared-pixel research probes also
-join the exact fixture bank with unchanged assets and capture provenance.
-All prior exact images and dispositions are preserved. Six known controls worsen
-in mismatch count and remain measured. Corporate comparisons are 133 exact /
-107 known, with 9/27 fully exact documents, including all nine IKEA variants.
-Ten legacy Default PNGs change without a matching-options claim. Original
-references remain frozen; raw comparisons stay under ignored
-`artifacts/convex-curve-rows-20261006/`. Code edits require no hash refresh. Six new independent hairline-dispatch controls
-add two exact wider-stroke cases and four known thin-stroke cases. All eighteen
-captures are stable and healthy; no renderer or corporate output changes.
+The bank has 1,059 fixtures (877 exact, 152 known, 30 rejected), 36 research
+probes (seven exact, 28 known, one rejected) and 92 legacy Default cases.
+All six independent hairline-dispatch controls are exact. The historical odd
+hairline and width-one round cap also enter the exact bank with unchanged SVGs,
+PNGs and capture provenance. All prior exact images and dispositions are
+preserved. Corporate comparisons are 134 exact / 106 known, with 9/27 fully
+exact documents. Nine corporate PNGs improve; three legacy Default PNGs change
+without a matching-options claim. Original references remain frozen; detailed
+comparisons stay under ignored `artifacts/hairline-implementation-20261006/`.
 
 ## Frozen corporate cohort
 

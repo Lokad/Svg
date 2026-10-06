@@ -1,43 +1,39 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-06. **Current validated renderer checkpoint: live convex
-cubics and incoming-edge intersections.** Convex and clipped cubic fills retain
-live monotonic edges. Newly arriving edges always constrain the next strip,
-including when path density suppresses checks on already active edges.
-Unused diagnostic globals and obsolete cubic expansion code are removed.
+Updated 2026-10-06. **Current validated renderer checkpoint: native straight
+path hairlines.** Solid undashed path strokes retain their authored centerlines,
+explicit closure and independent width maps. Eligible strokes up to one device
+pixel use ordered native fixed-point line coverage and endpoint cap extension.
+Wider, curved and dashed strokes retain their admitted outline route.
 
-Fully exact documents are **9/27**, marks **3/13**, wordmarks **6/14**. IKEA
-joins Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA and Google. S17 still
-requires **23/27** with both stratum minima. The frozen **258-variant** cohort
-has **133 exact comparisons, 107 known differences and eighteen rejections**.
-All prior exact PNGs and dispositions are preserved. Forty-five corporate PNGs
-change: 42 improve mismatch count and three retain their count; none worsen.
-Original inputs, options and references remain frozen.
+Fully exact documents remain **9/27**, marks **3/13**, wordmarks **6/14**;
+S17 requires **23/27** with both stratum minima. The frozen **258-variant**
+cohort has **134 exact comparisons, 106 known differences and eighteen
+rejections**. Nine corporate PNGs improve: Eisenbahn und Höfen small changes
+106 → one/zero/one pixels across transparent/white/black; Rede Manchete small
+1,267 → 519 and intended 1,637 → 638 on each background. All prior exact
+images and dispositions are preserved. Original inputs, options and references
+remain frozen.
 
-The bank has **1,057 fixtures = 871 exact + 156 known differences + 30
-rejections**, plus **36 research probes = five exact + 30 known + one rejected**
-and 92 legacy Default renders: **1,185 executed cases**. Thirteen known fixtures
-become exact. Three research probes also join the exact fixture bank with their
-unchanged SVGs, PNGs and capture provenance. Six known controls worsen in mismatch
-count; the rounded-mark alpha-error mass improves while the bevel probe worsens.
-Ten legacy Default PNGs change without a matching-options fidelity claim.
-Validation passes **3,690 tests**, the nine-project Release build, all 25 memory
-scenarios, pinned browser/artifact checks and installed package consumers.
+The bank has **1,059 fixtures = 877 exact + 152 known differences + 30
+rejections**, plus **36 research probes = seven exact + 28 known + one rejected**
+and 92 legacy Default renders: **1,187 executed cases**. Four fresh thin-stroke
+controls become exact; both wider controls remain exact. Two unchanged historical
+hairline/cap research probes also join the exact fixture bank. Three legacy
+Default PNGs change without a matching-options fidelity claim.
 
-Seventeen matched recipes record work, storage, allocations and timing in
-[the benchmark record](docs/BENCHMARKS.md#convex-cubic-and-incoming-edge-observations-2026-10-06).
-IKEA intended/large raster work falls 48,672/149,041 → 43,756/138,863;
-accounted peaks remain unchanged across all seventeen recipes. General event
-fidelity, representative performance and Linux remain open. Ordinary code edits
-and rebuilds require no hash refresh. Six fresh hairline-dispatch controls add
-two exact and four known fixtures; all eighteen captures are stable and healthy.
-The renderer remains `ddaabaab`; these controls change no corporate output.
+Validation passes **3,696 tests**, 112 compiled-native line vectors across three
+materials, the nine-project Release build, all 25 memory scenarios, pinned
+browser/artifact checks and installed package consumers. Retained command storage,
+copy/transfer, independent non-scaling width maps, work denial and cancellation
+remain bounded. Detailed runs stay under ignored artifacts; ordinary code edits
+and rebuilds require no hash refresh.
 
-**Next: native thin-stroke hairline dispatch, remaining original corporate edge
-events, closed/curved/dashed strokes, clipping and paint residuals.** Preserve the new
-directed-fill, raw even-odd and vertical-cancellation controls alongside the
-numeric, material, bitmap-origin, AA-clip and rational-curve repairs. Rows 3–7,
-general fidelity, representative performance and Linux remain open.
+**Next: native hairline curves, dash construction, remaining shape/paint routes
+and bitmap contexts; then remaining original corporate edge, stroke and clip
+residuals.** The six fresh controls and all prior exact cases must remain exact.
+General fidelity, representative performance and Linux remain open. The previous
+live-convex-cubic and incoming-edge repairs remain in place.
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -75,17 +71,14 @@ nor the calibration fixtures establish a release rate.
 
 ## 1. Current validated checkpoint and its limits
 
-Live cubic preparation preserves segment state for convex smoothing instead of
-expanding it into unrelated line edges. Incoming-edge intersections retain the
-native quarter-strip constraints under dense-path walking. Clipped and uncut
-routes share the repair; existing scene admission, curve hints, authored winding,
-paint coordinates and stroke flattening retain their contracts. Ownership,
-denial/retry, cancellation and repeated/skipped-row checks cover retained state.
-All 853 prior exact fixtures and 121 exact corporate PNGs remain exact. Six known
-regressions remain measured in
-[the design record](docs/RASTERIZATION_DESIGN.md#convex-cubic-and-incoming-edge-rows-2026-10-06).
-The earlier NASA coordinate discrepancies remain diagnostic evidence; exact
-pixels do not establish complete native coordinate parity.
+Hairline dispatch follows the pinned draw's mapped width-vector predicate and
+paint-alpha modulation. The line walker preserves fractional endpoint coverage,
+neighbor pairs, direction, large-line subdivision and ordered source-over.
+Scene outlines still own admission and fallback. Centerlines are distinct from
+fill commands and cannot be replayed accidentally as a fill after repainting.
+Native line vectors do not prove complete material/AA-clip or curve/dash parity;
+broader path, shape, paint and bitmap-context fidelity remain open. See
+[the design record](docs/RASTERIZATION_DESIGN.md#native-straight-path-hairlines-2026-10-06).
 
 The DOCTYPE [regression inputs](tests/References/declaration-only-doctype.json)
 retain only fixture identities and the declaration-free comparison contract.
@@ -95,14 +88,14 @@ below retain historical implementation and measurement details.
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,690 passed**: 3,524 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **3,696 passed**: 3,530 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | All 25 memory scenarios, runtime/symbol package inspection, isolated installed-consumer, Chrome smoke and artifact validation pass. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **1,057 entries = 871 exact + 156 known-difference renders + 30 rejections**; 561 base documents / 496 variants. All prior exact images and outcomes are preserved. Thirteen existing known fixtures become exact; three unchanged research probes also join the exact fixture bank. Synthetic coverage is separate from corporate coverage. |
-| Executed research manifest | **36 probes = five exact + 30 known-difference renders + one rejection**. The cubic arch and two shared-pixel probes become exact; the width-one cap remains inexact. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. Ten Default PNGs change without a matching-options fidelity claim. The candidate directory has 100 files; eight new holdouts belong to the corporate matrix. |
+| Executed fixture manifest | **1,059 entries = 877 exact + 152 known-difference renders + 30 rejections**; 563 base documents / 496 variants. All prior exact images and outcomes are preserved. Four known hairline fixtures become exact; two unchanged research probes also join the exact fixture bank. Synthetic coverage is separate from corporate coverage. |
+| Executed research manifest | **36 probes = seven exact + 28 known-difference renders + one rejection**. The odd hairline and width-one round cap become exact with their original references. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. Three Default PNGs change without a matching-options fidelity claim. The candidate directory has 100 files; eight new holdouts belong to the corporate matrix. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks, selected before fresh comparison. Membership, original sources, root-only materializations, options and references stay unchanged. All declared variants have stable browser references. |
-| Corporate measurement | **240 rendered comparisons = 133 exact + 107 known differences**, plus eighteen UnsupportedFeature cases. All 121 prior exact PNGs are preserved. Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google are exact: **9/27 exact documents**, marks **3/13**, wordmarks **6/14**. Of 45 changed PNGs, 42 improve mismatch count and three retain it; none worsen. S17 remains open. |
-| Performance and platform limits | Seventeen matching recipes record work/storage and local timings. Linux/remote CI, noncorporate variant regeneration, representative throughput and private-font metrics/pixels remain unproved. |
+| Corporate measurement | **240 rendered comparisons = 134 exact + 106 known differences**, plus eighteen UnsupportedFeature cases. All 133 prior exact PNGs are preserved. Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google are exact: **9/27 exact documents**, marks **3/13**, wordmarks **6/14**. Nine changed PNGs improve mismatch count; none worsen. S17 remains open. |
+| Performance and platform limits | Twenty-one matching recipes record work/storage and local timings. Linux/remote CI, noncorporate variant regeneration, representative throughput and private-font metrics/pixels remain unproved. |
 
 ### Native float root mapping for retained curves (2026-10-06)
 
@@ -808,24 +801,24 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    Root/group matrices now compose before float point/control mapping. Authored
    fills retain their directed curves, raw even-odd contours and zero signed-area
    crossings after scene normalization; partial and total vertical cancellation
-   share the native rule across clipped and uncut preparation. Preserve all eight
+   share the native rule across clipped and uncut preparation. Preserve all nine
    exact documents and the original known references. Remaining UAAR, SimpleLogin,
    Red Cross and other corporate residuals need native/browser evidence.
    The NASA trace retains 163 coordinate differences despite exact pixels; wider
    coordinate parity remains open. Keep paint boxes, clips and reference admission
    separate from raster replay; the early scene-premapping model remains rejected.
 4. **Complete thin/fractional events and closed/curved/dashed stroke construction.**
-   Implement the pinned native hairline dispatch for strokes up to one device
+   Extend the pinned native hairline dispatch beyond straight paths up to one device
    pixel, retaining the centerline and ordered segment paints. Six fresh controls
-   isolate this gap: widths 0.5 and 1 differ at both phases; width 1.5 is exact.
-   All eighteen captures are stable/healthy. See the [dispatch diagnosis](docs/RASTERIZATION_DESIGN.md#thin-stroke-hairline-dispatch-diagnosis-2026-10-06).
+   isolated this gap: widths 0.5 and 1 differed at both phases; width 1.5 was exact.
+   All six controls are now exact, with eighteen stable/healthy captures. See the [dispatch diagnosis](docs/RASTERIZATION_DESIGN.md#thin-stroke-hairline-dispatch-diagnosis-2026-10-06).
    Keep geometry, clipping, cap behavior, alpha modulation, limits and ownership
    coherent; changing filled-outline rounding cannot reproduce the hairline kernel.
    Preserve native float normalization, endpoint replacement, rational caps/joins,
    forward inner-arc splits and signed contacts. Keep both the 49 earlier native
    points and 88 new control/endpoint/weight rows, all graduations and fresh
-   controls. Investigate the width-one cap's measured 15 → 16 pixel regression
-   and remaining fractional round/clip events against original references.
+   controls. Preserve the repaired width-one cap (16 → zero pixels), and resolve
+   remaining fractional round/clip events against original references.
    Square caps crossing bitmap bounds retain their separate clip-event gate.
    Closed/curved/dashed replacement needs its own native/browser evidence after
    the broad model's closed-fixture regressions and corporate resource denials.

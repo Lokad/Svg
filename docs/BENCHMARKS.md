@@ -1741,3 +1741,35 @@ IKEA allocation decreases with live edge preparation. Host/JIT variation remains
 visible in unchanged recipes; these local ranges do not establish representative
 throughput or latency. All 25 memory scenarios and installed package consumers
 pass. Wider fidelity, representative profiling and Linux validation remain open.
+
+## Straight-path hairline observations (2026-10-06)
+
+Twenty-one matching input/options recipes compare `ddaabaab` with the straight
+path hairline implementation after `83a5feee`, on Windows X64 / .NET 10.0.12.
+Both orders run after builds, tests, captures and corpus jobs finish. Work/peaks
+are deterministic; ten local timing/allocation batches per implementation include
+both orders. Detailed ledgers and batches stay under ignored
+`artifacts/hairline-implementation-20261006/`.
+
+Five affected recipes reduce raster work. Parser work grows by one to seven
+units there to retain centerlines. Other sixteen recipes keep their parser/raster
+work. Accounted peaks grow by 128–2,704 bytes where the larger authored owner and
+retained stroke commands are live; six recipes keep their peak. Geometry/paint
+value sizes remain unchanged. These costs are explicitly reserved before owner
+or command allocation.
+
+| Recipe | Work through raster, before → after | Accounted peak bytes, before → after | Local ms, before / after | Allocated bytes, before / after |
+| --- | --- | --- | --- | --- |
+| eisenbahn-small | 60,309 → 16,594 | 163,840 → 163,840 | 2.263–8.061 / 3.096–5.683 | 64,528–64,536 / 65,528–65,536 |
+| rede-small | 659,321 → 500,058 | 337,874 → 340,578 | 20.552–27.838 / 8.790–23.657 | 396,312–396,338 / 395,176–395,202 |
+| rede-intended | 2,259,531 → 1,629,394 | 1,092,410 → 1,095,114 | 23.992–82.225 / 16.896–57.645 | 1,181,684–1,181,753 / 1,175,020–1,175,276 |
+| hairline-half | 11,540 → 407 | 163,840 → 163,840 | 0.223–0.252 / 0.158–0.234 | 51,249–51,249 / 49,026–49,028 |
+| cap-unit | 527 → 114 | 163,840 → 163,840 | 0.048–0.059 / 0.039–0.058 | 35,527–35,530 / 34,165–34,169 |
+| ikea | 43,756 → 43,756 | 2,189,432 → 2,189,816 | 2.711–3.115 / 2.826–7.050 | 205,632–205,644 / 205,848–205,860 |
+| ford | 895,496 → 895,496 | 2,588,992 → 2,589,248 | 15.790–22.929 / 14.710–20.211 | 1,050,360–1,050,526 / 1,048,408–1,048,529 |
+
+Timing ranges vary on unchanged recipes and overlap on several affected cases;
+these observations do not establish representative throughput or latency. All
+25 memory scenarios and installed package consumers pass. Native curve/dash,
+shape/paint and bitmap-context hairlines, representative profiling and Linux
+validation remain open.
