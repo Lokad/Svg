@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after retained rectangle paint clips and rounded native solid rectangle coverage. All 258 renderer outcomes and 231 of 240 PNGs remain unchanged; nine IBM variants improve but remain inexact. 240 render (66 exact, 174 known differences), eighteen reject UnsupportedFeature. Ford, ROC HCVS and YouTube remain exact in every declared variant (3/27; marks 2/13, wordmarks 1/14). Every original reference and capture provenance is preserved. Selection limits remain; this does not establish release coverage.",
+  "scope": "Frozen 27-document/258-variant measurement after authored stop-alpha precision and shared float polygon shader replay. All 258 renderer outcomes and 213 of 240 PNGs remain unchanged; 27 Apple/Instagram/Liputan 6 variants improve but remain inexact. 240 render (66 exact, 174 known differences), eighteen reject UnsupportedFeature. Ford, ROC HCVS and YouTube retain all exact variants (3/27; marks 2/13, wordmarks 1/14). Original references and capture provenance are preserved. This does not establish release coverage.",
   "rendererCounts": {
     "renders": 240,
     "MalformedInput": 0,
@@ -625,23 +625,23 @@
       "id": "inv-001-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "86c5e1bb2532ea09851989a8b9101d3800ecbd44fbf214e3b5df9612e2421613",
+      "candidateSha256": "fb5227ce5cc9af557e0d9f33c6425f59be005707ba599ba0dee3ab78efd8f27c",
       "width": 29,
       "height": 29,
       "referenceSha256": "0a8889847e3bcc02e8d187a80f5f5d3747ffc512bdf2e9342b19841bcd8e1ed6",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 364,
-          "MaximumChannelError": 255,
-          "MeanAbsoluteError": 2.089476813317479,
-          "RootMeanSquareError": 11.102497817534,
+          "ChangedPixelCount": 209,
+          "MaximumChannelError": 227,
+          "MeanAbsoluteError": 1.7077883472057076,
+          "RootMeanSquareError": 10.031386534996372,
           "MaximumAlphaError": 60,
           "AlphaChangedPixelCount": 209,
           "MinimumMismatchX": 0,
           "MinimumMismatchY": 0,
           "MaximumMismatchX": 28,
-          "MaximumMismatchY": 28,
+          "MaximumMismatchY": 27,
           "IsExact": false
         },
         "alphaMass": 2124,
@@ -654,97 +654,97 @@
             "X": 8,
             "Y": 0,
             "Reference": "zhlzHw==",
-            "Candidate": "yQ9sIQ=="
+            "Candidate": "yRdsIQ=="
+          },
+          {
+            "X": 8,
+            "Y": 2,
+            "Reference": "yxZw9A==",
+            "Candidate": "yxZv9Q=="
           },
           {
             "X": 9,
-            "Y": 0,
-            "Reference": "yBZxlQ==",
-            "Candidate": "yBVxlQ=="
+            "Y": 2,
+            "Reference": "yBZwZg==",
+            "Candidate": "xxdyZQ=="
           },
           {
-            "X": 12,
-            "Y": 0,
-            "Reference": "vxVywA==",
-            "Candidate": "vhVywA=="
-          },
-          {
-            "X": 14,
-            "Y": 0,
-            "Reference": "uhd1wA==",
-            "Candidate": "uhV0wA=="
-          },
-          {
-            "X": 15,
-            "Y": 0,
-            "Reference": "txd2wA==",
-            "Candidate": "txd1wA=="
-          },
-          {
-            "X": 16,
-            "Y": 0,
-            "Reference": "sxd1wA==",
-            "Candidate": "sxV1wA=="
-          },
-          {
-            "X": 17,
-            "Y": 0,
-            "Reference": "shd4wA==",
-            "Candidate": "shd2wA=="
-          },
-          {
-            "X": 18,
-            "Y": 0,
-            "Reference": "rhd4wA==",
-            "Candidate": "rhd2wA=="
-          },
-          {
-            "X": 19,
-            "Y": 0,
-            "Reference": "rRh5wA==",
-            "Candidate": "qxd5wA=="
-          },
-          {
-            "X": 20,
-            "Y": 0,
-            "Reference": "qRd5wA==",
-            "Candidate": "qRd4wA=="
-          },
-          {
-            "X": 21,
-            "Y": 0,
-            "Reference": "phh6wA==",
-            "Candidate": "phh5wA=="
-          },
-          {
-            "X": 22,
-            "Y": 0,
-            "Reference": "oxd6wA==",
-            "Candidate": "ohd5wA=="
-          },
-          {
-            "X": 24,
-            "Y": 0,
-            "Reference": "nRd8wA==",
-            "Candidate": "nRd6wA=="
+            "X": 11,
+            "Y": 2,
+            "Reference": "wRd0IQ==",
+            "Candidate": "xRlzHw=="
           },
           {
             "X": 25,
-            "Y": 0,
-            "Reference": "mxh9wA==",
-            "Candidate": "mhh9wA=="
+            "Y": 2,
+            "Reference": "mRl6Mg==",
+            "Candidate": "mxl9Mw=="
           },
           {
             "X": 26,
-            "Y": 0,
-            "Reference": "lxh9wA==",
-            "Candidate": "lxd9wA=="
+            "Y": 2,
+            "Reference": "lxd94A==",
+            "Candidate": "lxh94g=="
           },
           {
             "X": 27,
-            "Y": 0,
-            "Reference": "lRl/hw==",
-            "Candidate": "lRd9hw=="
+            "Y": 2,
+            "Reference": "lBeAYg==",
+            "Candidate": "lRd+Yw=="
+          },
+          {
+            "X": 7,
+            "Y": 3,
+            "Reference": "zRVuSA==",
+            "Candidate": "zRZvRw=="
+          },
+          {
+            "X": 6,
+            "Y": 4,
+            "Reference": "0BVubQ==",
+            "Candidate": "0hduWg=="
+          },
+          {
+            "X": 7,
+            "Y": 4,
+            "Reference": "zhZw6g==",
+            "Candidate": "zhZw6w=="
+          },
+          {
+            "X": 8,
+            "Y": 4,
+            "Reference": "yhZw9g==",
+            "Candidate": "yhZv9w=="
+          },
+          {
+            "X": 9,
+            "Y": 4,
+            "Reference": "xhVxJA==",
+            "Candidate": "yxZwIg=="
+          },
+          {
+            "X": 4,
+            "Y": 5,
+            "Reference": "4xxxCQ==",
+            "Candidate": "vwCABA=="
+          },
+          {
+            "X": 5,
+            "Y": 5,
+            "Reference": "1BVuqw==",
+            "Candidate": "0hVvjw=="
+          },
+          {
+            "X": 6,
+            "Y": 5,
+            "Reference": "0RZvzA==",
+            "Candidate": "0RVv1w=="
+          },
+          {
+            "X": 7,
+            "Y": 5,
+            "Reference": "zBRwGQ==",
+            "Candidate": "zxhwIA=="
           }
         ]
       },
@@ -780,23 +780,23 @@
       "id": "inv-001-small-white",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "d88ed7eabf707240cce0316ad1f547380bef1d1d6717c5ae8f814893c8f32c22",
+      "candidateSha256": "3eb0aee664fca7ea4c662ad938413807eb65f289000844b5c7741859b5d29147",
       "width": 29,
       "height": 29,
       "referenceSha256": "cd3efbb98d12d357985a0f050a33eb22e1cec395da72bf56f65f46efbe433a88",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 361,
-          "MaximumChannelError": 54,
-          "MeanAbsoluteError": 1.1590368608799049,
-          "RootMeanSquareError": 4.233697838068582,
+          "ChangedPixelCount": 207,
+          "MaximumChannelError": 55,
+          "MeanAbsoluteError": 1.0900713436385256,
+          "RootMeanSquareError": 4.216530799808211,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
           "MinimumMismatchY": 0,
           "MaximumMismatchX": 28,
-          "MaximumMismatchY": 28,
+          "MaximumMismatchY": 27,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -809,97 +809,97 @@
             "X": 8,
             "Y": 0,
             "Reference": "+ePu/w==",
-            "Candidate": "+ODs/w=="
+            "Candidate": "+OHs/w=="
+          },
+          {
+            "X": 8,
+            "Y": 2,
+            "Reference": "zSB2/w==",
+            "Candidate": "zR91/w=="
           },
           {
             "X": 9,
-            "Y": 0,
-            "Reference": "33es/w==",
-            "Candidate": "33as/w=="
+            "Y": 2,
+            "Reference": "6aLG/w==",
+            "Candidate": "6aPH/w=="
           },
           {
-            "X": 12,
-            "Y": 0,
-            "Reference": "z0+V/w==",
-            "Candidate": "zk+V/w=="
-          },
-          {
-            "X": 14,
-            "Y": 0,
-            "Reference": "y1CX/w==",
-            "Candidate": "y0+W/w=="
-          },
-          {
-            "X": 15,
-            "Y": 0,
-            "Reference": "yVCY/w==",
-            "Candidate": "yVCX/w=="
-          },
-          {
-            "X": 16,
-            "Y": 0,
-            "Reference": "xlCX/w==",
-            "Candidate": "xk+X/w=="
-          },
-          {
-            "X": 17,
-            "Y": 0,
-            "Reference": "xVCZ/w==",
-            "Candidate": "xVCY/w=="
-          },
-          {
-            "X": 18,
-            "Y": 0,
-            "Reference": "wlCZ/w==",
-            "Candidate": "wlCY/w=="
-          },
-          {
-            "X": 19,
-            "Y": 0,
-            "Reference": "wVGa/w==",
-            "Candidate": "wFCa/w=="
-          },
-          {
-            "X": 20,
-            "Y": 0,
-            "Reference": "vlCa/w==",
-            "Candidate": "vlCZ/w=="
-          },
-          {
-            "X": 21,
-            "Y": 0,
-            "Reference": "vFGb/w==",
-            "Candidate": "vFGa/w=="
-          },
-          {
-            "X": 22,
-            "Y": 0,
-            "Reference": "ulCb/w==",
-            "Candidate": "uVCa/w=="
-          },
-          {
-            "X": 24,
-            "Y": 0,
-            "Reference": "tVCc/w==",
-            "Candidate": "tVCb/w=="
+            "X": 11,
+            "Y": 2,
+            "Reference": "9+Ht/w==",
+            "Candidate": "+OPu/w=="
           },
           {
             "X": 25,
-            "Y": 0,
-            "Reference": "tFGd/w==",
-            "Candidate": "s1Gd/w=="
+            "Y": 2,
+            "Reference": "69Ll/w==",
+            "Candidate": "69Hl/w=="
           },
           {
             "X": 26,
-            "Y": 0,
-            "Reference": "sVGd/w==",
-            "Candidate": "sVCd/w=="
+            "Y": 2,
+            "Reference": "pDON/w==",
+            "Candidate": "ozKM/w=="
           },
           {
             "X": 27,
-            "Y": 0,
-            "Reference": "x4W7/w==",
-            "Candidate": "x4S6/w=="
+            "Y": 2,
+            "Reference": "1qbO/w==",
+            "Candidate": "1qXN/w=="
+          },
+          {
+            "X": 7,
+            "Y": 3,
+            "Reference": "8b3W/w==",
+            "Candidate": "8b7X/w=="
+          },
+          {
+            "X": 6,
+            "Y": 4,
+            "Reference": "65vB/w==",
+            "Candidate": "763M/w=="
+          },
+          {
+            "X": 7,
+            "Y": 4,
+            "Reference": "0il8/w==",
+            "Candidate": "0ih7/w=="
+          },
+          {
+            "X": 8,
+            "Y": 4,
+            "Reference": "zB51/w==",
+            "Candidate": "zB10/w=="
+          },
+          {
+            "X": 9,
+            "Y": 4,
+            "Reference": "997r/w==",
+            "Candidate": "+ODs/w=="
+          },
+          {
+            "X": 4,
+            "Y": 5,
+            "Reference": "/vf6/w==",
+            "Candidate": "/vv9/w=="
+          },
+          {
+            "X": 5,
+            "Y": 5,
+            "Reference": "4mKe/w==",
+            "Candidate": "5nyu/w=="
+          },
+          {
+            "X": 6,
+            "Y": 5,
+            "Reference": "2kWM/w==",
+            "Candidate": "2DqG/w=="
+          },
+          {
+            "X": 7,
+            "Y": 5,
+            "Reference": "+ujx/w==",
+            "Candidate": "+eLt/w=="
           }
         ]
       },
@@ -935,23 +935,23 @@
       "id": "inv-001-small-black",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "e5a679f4594e86ccb28b60ba2ad4dffa6a24f75656ce9e5eb7c37737dbb9d40d",
+      "candidateSha256": "2f7e2876d8958e9d07b8440c25882c14821c0b0d68c9b8735530523a0e0fdce9",
       "width": 29,
       "height": 29,
       "referenceSha256": "0dab6c6e88ff064541caa54cdcbc03cec175bde58bdade4b4e1be7365583b393",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 351,
+          "ChangedPixelCount": 195,
           "MaximumChannelError": 37,
-          "MeanAbsoluteError": 0.8736623067776457,
-          "RootMeanSquareError": 3.4144461235402237,
+          "MeanAbsoluteError": 0.8041022592152199,
+          "RootMeanSquareError": 3.409915945278483,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
           "MinimumMismatchY": 0,
           "MaximumMismatchX": 28,
-          "MaximumMismatchY": 28,
+          "MaximumMismatchY": 27,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -964,97 +964,97 @@
             "X": 8,
             "Y": 0,
             "Reference": "GQMO/w==",
-            "Candidate": "GgIO/w=="
+            "Candidate": "GgMO/w=="
+          },
+          {
+            "X": 8,
+            "Y": 2,
+            "Reference": "whVr/w==",
+            "Candidate": "wxVr/w=="
           },
           {
             "X": 9,
-            "Y": 0,
-            "Reference": "dQ1C/w==",
-            "Candidate": "dQxC/w=="
+            "Y": 2,
+            "Reference": "UAkt/w==",
+            "Candidate": "Twkt/w=="
           },
           {
-            "X": 12,
-            "Y": 0,
-            "Reference": "kBBW/w==",
-            "Candidate": "jxBW/w=="
-          },
-          {
-            "X": 14,
-            "Y": 0,
-            "Reference": "jBFY/w==",
-            "Candidate": "jBBX/w=="
-          },
-          {
-            "X": 15,
-            "Y": 0,
-            "Reference": "ihFZ/w==",
-            "Candidate": "ihFY/w=="
-          },
-          {
-            "X": 16,
-            "Y": 0,
-            "Reference": "hxFY/w==",
-            "Candidate": "hxBY/w=="
-          },
-          {
-            "X": 17,
-            "Y": 0,
-            "Reference": "hhFa/w==",
-            "Candidate": "hhFZ/w=="
-          },
-          {
-            "X": 18,
-            "Y": 0,
-            "Reference": "gxFa/w==",
-            "Candidate": "gxFZ/w=="
-          },
-          {
-            "X": 19,
-            "Y": 0,
-            "Reference": "ghJb/w==",
-            "Candidate": "gRFb/w=="
-          },
-          {
-            "X": 20,
-            "Y": 0,
-            "Reference": "fxFb/w==",
-            "Candidate": "fxFa/w=="
-          },
-          {
-            "X": 21,
-            "Y": 0,
-            "Reference": "fRJc/w==",
-            "Candidate": "fRJb/w=="
-          },
-          {
-            "X": 22,
-            "Y": 0,
-            "Reference": "exFc/w==",
-            "Candidate": "ehFb/w=="
-          },
-          {
-            "X": 24,
-            "Y": 0,
-            "Reference": "dhFd/w==",
-            "Candidate": "dhFc/w=="
+            "X": 11,
+            "Y": 2,
+            "Reference": "GQMP/w==",
+            "Candidate": "GAMO/w=="
           },
           {
             "X": 25,
-            "Y": 0,
-            "Reference": "dRJe/w==",
-            "Candidate": "dBJe/w=="
+            "Y": 2,
+            "Reference": "HgUY/w==",
+            "Candidate": "HwUZ/w=="
           },
           {
             "X": 26,
-            "Y": 0,
-            "Reference": "chJe/w==",
-            "Candidate": "chFe/w=="
+            "Y": 2,
+            "Reference": "hRRu/w==",
+            "Candidate": "hhVv/w=="
           },
           {
             "X": 27,
-            "Y": 0,
-            "Reference": "Tw1D/w==",
-            "Candidate": "TwxC/w=="
+            "Y": 2,
+            "Reference": "OQkx/w==",
+            "Candidate": "Ogkx/w=="
+          },
+          {
+            "X": 7,
+            "Y": 3,
+            "Reference": "OgYf/w==",
+            "Candidate": "OQYf/w=="
+          },
+          {
+            "X": 6,
+            "Y": 4,
+            "Reference": "WQkv/w==",
+            "Candidate": "Sggn/w=="
+          },
+          {
+            "X": 7,
+            "Y": 4,
+            "Reference": "vRRn/w==",
+            "Candidate": "vhRn/w=="
+          },
+          {
+            "X": 8,
+            "Y": 4,
+            "Reference": "wxVs/w==",
+            "Candidate": "xBVs/w=="
+          },
+          {
+            "X": 9,
+            "Y": 4,
+            "Reference": "HAMQ/w==",
+            "Candidate": "GwMP/w=="
+          },
+          {
+            "X": 4,
+            "Y": 5,
+            "Reference": "CAEE/w==",
+            "Candidate": "AwAC/w=="
+          },
+          {
+            "X": 5,
+            "Y": 5,
+            "Reference": "jg5K/w==",
+            "Candidate": "dgw+/w=="
+          },
+          {
+            "X": 6,
+            "Y": 5,
+            "Reference": "pxJZ/w==",
+            "Candidate": "sBJe/w=="
+          },
+          {
+            "X": 7,
+            "Y": 5,
+            "Reference": "FAIL/w==",
+            "Candidate": "GgMO/w=="
           }
         ]
       },
@@ -1090,21 +1090,21 @@
       "id": "inv-001-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "1e60c5baf5c5b9e431bbc47a2226d4e7cf6c1dcf6a906b4a81e647c8b62fdcca",
+      "candidateSha256": "1afa0b560957d6d13c49e82e8ea9fbd7cb32f6293fa1a280001b4dd244e1c186",
       "width": 59,
       "height": 58,
       "referenceSha256": "62a5da82a5e2bd44444089dfdd0e0eebe42881c9a6a11c04b4db297024a24465",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 747,
+          "ChangedPixelCount": 421,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 1.0744447691408534,
-          "RootMeanSquareError": 9.677594221913886,
+          "MeanAbsoluteError": 0.9064143775569842,
+          "RootMeanSquareError": 9.385421345888512,
           "MaximumAlphaError": 66,
           "AlphaChangedPixelCount": 421,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 1,
           "MaximumMismatchX": 58,
           "MaximumMismatchY": 57,
           "IsExact": false
@@ -1116,100 +1116,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 19,
-            "Y": 0,
-            "Reference": "yRZx3Q==",
-            "Candidate": "yBZw3Q=="
-          },
-          {
-            "X": 39,
-            "Y": 0,
-            "Reference": "rRh5/w==",
-            "Candidate": "rRd5/w=="
-          },
-          {
-            "X": 55,
-            "Y": 0,
-            "Reference": "lhh+3Q==",
-            "Candidate": "lhd+3Q=="
-          },
-          {
-            "X": 56,
-            "Y": 0,
-            "Reference": "kxh9dg==",
-            "Candidate": "kxZ9dg=="
-          },
-          {
             "X": 17,
             "Y": 1,
             "Reference": "yhZwlg==",
-            "Candidate": "yhZvmg=="
+            "Candidate": "yhZxmg=="
           },
           {
-            "X": 28,
-            "Y": 1,
-            "Reference": "uxd0/w==",
-            "Candidate": "uxZ0/w=="
+            "X": 14,
+            "Y": 7,
+            "Reference": "yhVqGA==",
+            "Candidate": "0Rd0Fg=="
+          },
+          {
+            "X": 13,
+            "Y": 8,
+            "Reference": "0RRvJw==",
+            "Candidate": "zRVxJA=="
+          },
+          {
+            "X": 14,
+            "Y": 8,
+            "Reference": "zxVv5A==",
+            "Candidate": "zhZu4A=="
+          },
+          {
+            "X": 18,
+            "Y": 8,
+            "Reference": "yRVxXw==",
+            "Candidate": "yRdwWQ=="
+          },
+          {
+            "X": 12,
+            "Y": 9,
+            "Reference": "0BhtNg==",
+            "Candidate": "0BVtMQ=="
+          },
+          {
+            "X": 13,
+            "Y": 9,
+            "Reference": "0BZv7Q==",
+            "Candidate": "0BZv6g=="
+          },
+          {
+            "X": 15,
+            "Y": 9,
+            "Reference": "zRVwtA==",
+            "Candidate": "zhZvsQ=="
           },
           {
             "X": 16,
-            "Y": 2,
-            "Reference": "yhVuYQ==",
-            "Candidate": "zRVuYQ=="
+            "Y": 9,
+            "Reference": "yxZxow==",
+            "Candidate": "zBZwoA=="
+          },
+          {
+            "X": 19,
+            "Y": 9,
+            "Reference": "yBZylA==",
+            "Candidate": "yBdycA=="
           },
           {
             "X": 20,
-            "Y": 2,
-            "Reference": "xhZxmQ==",
-            "Candidate": "xhZwmQ=="
+            "Y": 9,
+            "Reference": "vyCACA==",
+            "Candidate": "AAAAAA=="
           },
           {
-            "X": 21,
-            "Y": 2,
-            "Reference": "xxh0QA==",
-            "Candidate": "xxRwQA=="
+            "X": 10,
+            "Y": 10,
+            "Reference": "/wCAAg==",
+            "Candidate": "AAAAAA=="
           },
           {
-            "X": 22,
-            "Y": 2,
-            "Reference": "wxR0QA==",
-            "Candidate": "wxRwQA=="
+            "X": 11,
+            "Y": 10,
+            "Reference": "0xZudA==",
+            "Candidate": "0xVubQ=="
           },
           {
-            "X": 23,
-            "Y": 2,
-            "Reference": "wxh0QA==",
-            "Candidate": "wxR0QA=="
+            "X": 12,
+            "Y": 10,
+            "Reference": "0hZu+A==",
+            "Candidate": "0hZu9w=="
           },
           {
-            "X": 24,
-            "Y": 2,
-            "Reference": "vxR0QA==",
-            "Candidate": "wxRwQA=="
+            "X": 14,
+            "Y": 10,
+            "Reference": "zhVvkQ==",
+            "Candidate": "zhVvgw=="
           },
           {
-            "X": 25,
-            "Y": 2,
-            "Reference": "vxh0QA==",
-            "Candidate": "vxR0QA=="
-          },
-          {
-            "X": 26,
-            "Y": 2,
-            "Reference": "vxh0QA==",
-            "Candidate": "vxR0QA=="
-          },
-          {
-            "X": 27,
-            "Y": 2,
-            "Reference": "uxh0QA==",
-            "Candidate": "uxR0QA=="
-          },
-          {
-            "X": 28,
-            "Y": 2,
-            "Reference": "uxh0QA==",
-            "Candidate": "uxR0QA=="
+            "X": 15,
+            "Y": 10,
+            "Reference": "/wCAAg==",
+            "Candidate": "AAAAAA=="
           }
         ]
       },
@@ -1245,21 +1245,21 @@
       "id": "inv-001-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "2ba960f840e231224b6dcebc3a6d5927fe904a187780efa894391bb6301a2771",
+      "candidateSha256": "0ad8ef712ff8abec9d74a36f65c0a06db724c7a45cc20f905c15be418f6c12de",
       "width": 59,
       "height": 58,
       "referenceSha256": "2417a17e44a809e6a2d1793a97d2a06d6071f323727dce2960b56e8808e579af",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 738,
+          "ChangedPixelCount": 420,
           "MaximumChannelError": 60,
-          "MeanAbsoluteError": 0.49437463471654003,
-          "RootMeanSquareError": 2.6511992368242017,
+          "MeanAbsoluteError": 0.46668614845119816,
+          "RootMeanSquareError": 2.6658872813901437,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 1,
           "MaximumMismatchX": 58,
           "MaximumMismatchY": 57,
           "IsExact": false
@@ -1271,100 +1271,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 19,
-            "Y": 0,
-            "Reference": "0DWE/w==",
-            "Candidate": "zzWD/w=="
-          },
-          {
-            "X": 39,
-            "Y": 0,
-            "Reference": "rRh5/w==",
-            "Candidate": "rRd5/w=="
-          },
-          {
-            "X": 55,
-            "Y": 0,
-            "Reference": "pDeP/w==",
-            "Candidate": "pDaP/w=="
-          },
-          {
-            "X": 56,
-            "Y": 0,
-            "Reference": "zZTD/w==",
-            "Candidate": "zZPD/w=="
-          },
-          {
             "X": 17,
             "Y": 1,
             "Reference": "4Har/w==",
-            "Candidate": "33Ko/w=="
+            "Candidate": "33Kp/w=="
           },
           {
-            "X": 28,
-            "Y": 1,
-            "Reference": "uxd0/w==",
-            "Candidate": "uxZ0/w=="
+            "X": 14,
+            "Y": 7,
+            "Reference": "+unx/w==",
+            "Candidate": "++vz/w=="
+          },
+          {
+            "X": 13,
+            "Y": 8,
+            "Reference": "+Nvp/w==",
+            "Candidate": "+N7r/w=="
+          },
+          {
+            "X": 14,
+            "Y": 8,
+            "Reference": "1C5+/w==",
+            "Candidate": "1DKA/w=="
+          },
+          {
+            "X": 18,
+            "Y": 8,
+            "Reference": "66jK/w==",
+            "Candidate": "7K7N/w=="
+          },
+          {
+            "X": 12,
+            "Y": 9,
+            "Reference": "9c7g/w==",
+            "Candidate": "9tLj/w=="
+          },
+          {
+            "X": 13,
+            "Y": 9,
+            "Reference": "0yZ5/w==",
+            "Candidate": "1Cl7/w=="
+          },
+          {
+            "X": 15,
+            "Y": 9,
+            "Reference": "3Fqa/w==",
+            "Candidate": "3V2b/w=="
           },
           {
             "X": 16,
-            "Y": 2,
-            "Reference": "66bI/w==",
-            "Candidate": "7KbI/w=="
+            "Y": 9,
+            "Reference": "3mqk/w==",
+            "Candidate": "322l/w=="
+          },
+          {
+            "X": 19,
+            "Y": 9,
+            "Reference": "33it/w==",
+            "Candidate": "55nB/w=="
           },
           {
             "X": 20,
-            "Y": 2,
-            "Reference": "3XOq/w==",
-            "Candidate": "3XOp/w=="
+            "Y": 9,
+            "Reference": "/fj7/w==",
+            "Candidate": "/////w=="
           },
           {
-            "X": 21,
-            "Y": 2,
-            "Reference": "8cXc/w==",
-            "Candidate": "8cTb/w=="
+            "X": 10,
+            "Y": 10,
+            "Reference": "//3+/w==",
+            "Candidate": "/////w=="
           },
           {
-            "X": 22,
-            "Y": 2,
-            "Reference": "8MTc/w==",
-            "Candidate": "8MTb/w=="
+            "X": 11,
+            "Y": 10,
+            "Reference": "65W9/w==",
+            "Candidate": "7JvB/w=="
           },
           {
-            "X": 23,
-            "Y": 2,
-            "Reference": "8MXc/w==",
-            "Candidate": "8MTc/w=="
+            "X": 12,
+            "Y": 10,
+            "Reference": "0xxy/w==",
+            "Candidate": "0x1z/w=="
           },
           {
-            "X": 24,
-            "Y": 2,
-            "Reference": "78Tc/w==",
-            "Candidate": "8MTb/w=="
+            "X": 14,
+            "Y": 10,
+            "Reference": "43qt/w==",
+            "Candidate": "5oe1/w=="
           },
           {
-            "X": 25,
-            "Y": 2,
-            "Reference": "78Xc/w==",
-            "Candidate": "78Tc/w=="
-          },
-          {
-            "X": 26,
-            "Y": 2,
-            "Reference": "78Xc/w==",
-            "Candidate": "78Tc/w=="
-          },
-          {
-            "X": 27,
-            "Y": 2,
-            "Reference": "7sXc/w==",
-            "Candidate": "7sTc/w=="
-          },
-          {
-            "X": 28,
-            "Y": 2,
-            "Reference": "7sXc/w==",
-            "Candidate": "7sTc/w=="
+            "X": 15,
+            "Y": 10,
+            "Reference": "//3+/w==",
+            "Candidate": "/////w=="
           }
         ]
       },
@@ -1400,21 +1400,21 @@
       "id": "inv-001-intended-black",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "ad9bf2b9184987a332d912b2e30b726965944f1309e4803949292e7c06456908",
+      "candidateSha256": "feaf5e239c3c0a244fb0f6b4be9557fe05dc0b258e6d43409945494741230b95",
       "width": 59,
       "height": 58,
       "referenceSha256": "1edf3b92add56528831c5a27e2e0f6eefa9d5d773795de01b3d7157406d237bb",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 724,
+          "ChangedPixelCount": 395,
           "MaximumChannelError": 51,
-          "MeanAbsoluteError": 0.37624196376388075,
-          "RootMeanSquareError": 2.117011059725894,
+          "MeanAbsoluteError": 0.33569549970777324,
+          "RootMeanSquareError": 2.09914610676746,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 1,
           "MaximumMismatchX": 58,
           "MaximumMismatchY": 57,
           "IsExact": false
@@ -1426,100 +1426,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 19,
-            "Y": 0,
-            "Reference": "rhNi/w==",
-            "Candidate": "rRNh/w=="
-          },
-          {
-            "X": 39,
-            "Y": 0,
-            "Reference": "rRh5/w==",
-            "Candidate": "rRd5/w=="
-          },
-          {
-            "X": 55,
-            "Y": 0,
-            "Reference": "ghVt/w==",
-            "Candidate": "ghRt/w=="
-          },
-          {
-            "X": 56,
-            "Y": 0,
-            "Reference": "RAs6/w==",
-            "Candidate": "RAo6/w=="
-          },
-          {
             "X": 17,
             "Y": 1,
             "Reference": "dw1C/w==",
-            "Candidate": "eg1D/w=="
+            "Candidate": "eg1E/w=="
           },
           {
-            "X": 28,
-            "Y": 1,
-            "Reference": "uxd0/w==",
-            "Candidate": "uxZ0/w=="
+            "X": 14,
+            "Y": 7,
+            "Reference": "EwIK/w==",
+            "Candidate": "EgIK/w=="
+          },
+          {
+            "X": 13,
+            "Y": 8,
+            "Reference": "IAMR/w==",
+            "Candidate": "HQMQ/w=="
+          },
+          {
+            "X": 14,
+            "Y": 8,
+            "Reference": "uRNj/w==",
+            "Candidate": "tRNh/w=="
+          },
+          {
+            "X": 18,
+            "Y": 8,
+            "Reference": "Swgq/w==",
+            "Candidate": "Rggn/w=="
+          },
+          {
+            "X": 12,
+            "Y": 9,
+            "Reference": "LAUX/w==",
+            "Candidate": "KAQV/w=="
+          },
+          {
+            "X": 13,
+            "Y": 9,
+            "Reference": "wRRn/w==",
+            "Candidate": "vxRm/w=="
+          },
+          {
+            "X": 15,
+            "Y": 9,
+            "Reference": "kQ9P/w==",
+            "Candidate": "jw9N/w=="
           },
           {
             "X": 16,
-            "Y": 2,
-            "Reference": "TQgq/w==",
-            "Candidate": "Tggq/w=="
+            "Y": 9,
+            "Reference": "gg5I/w==",
+            "Candidate": "gA5G/w=="
+          },
+          {
+            "X": 19,
+            "Y": 9,
+            "Reference": "dA1C/w==",
+            "Candidate": "WAoy/w=="
           },
           {
             "X": 20,
-            "Y": 2,
-            "Reference": "dw1E/w==",
-            "Candidate": "dw1D/w=="
+            "Y": 9,
+            "Reference": "BgEE/w==",
+            "Candidate": "AAAA/w=="
           },
           {
-            "X": 21,
-            "Y": 2,
-            "Reference": "MgYd/w==",
-            "Candidate": "MgUc/w=="
+            "X": 10,
+            "Y": 10,
+            "Reference": "AgAB/w==",
+            "Candidate": "AAAA/w=="
           },
           {
-            "X": 22,
-            "Y": 2,
-            "Reference": "MQUd/w==",
-            "Candidate": "MQUc/w=="
+            "X": 11,
+            "Y": 10,
+            "Reference": "YAoy/w==",
+            "Candidate": "Wgkv/w=="
           },
           {
-            "X": 23,
-            "Y": 2,
-            "Reference": "MQYd/w==",
-            "Candidate": "MQUd/w=="
+            "X": 12,
+            "Y": 10,
+            "Reference": "zBVr/w==",
+            "Candidate": "yxVr/w=="
           },
           {
-            "X": 24,
-            "Y": 2,
-            "Reference": "MAUd/w==",
-            "Candidate": "MQUc/w=="
+            "X": 14,
+            "Y": 10,
+            "Reference": "dQw//w==",
+            "Candidate": "ags5/w=="
           },
           {
-            "X": 25,
-            "Y": 2,
-            "Reference": "MAYd/w==",
-            "Candidate": "MAUd/w=="
-          },
-          {
-            "X": 26,
-            "Y": 2,
-            "Reference": "MAYd/w==",
-            "Candidate": "MAUd/w=="
-          },
-          {
-            "X": 27,
-            "Y": 2,
-            "Reference": "LwYd/w==",
-            "Candidate": "LwUd/w=="
-          },
-          {
-            "X": 28,
-            "Y": 2,
-            "Reference": "LwYd/w==",
-            "Candidate": "LwUd/w=="
+            "X": 15,
+            "Y": 10,
+            "Reference": "AgAB/w==",
+            "Candidate": "AAAA/w=="
           }
         ]
       },
@@ -1555,17 +1555,17 @@
       "id": "inv-001-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "e5e396d0dbfc5d17cab9304a3b0f658ed256c1b1bba4b86d083766653952147a",
+      "candidateSha256": "80a3f0d8275dadbe423b19d992f922b60cb8691d8b46ff340239ce568c300b9b",
       "width": 118,
       "height": 116,
       "referenceSha256": "68e4d147f87ac169250fc0dda57d6a1c8ea8f7c4b7e635f588ddcd975c18290a",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1766,
+          "ChangedPixelCount": 1071,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.6952805376972531,
-          "RootMeanSquareError": 8.243291553740935,
+          "MeanAbsoluteError": 0.6281597019286966,
+          "RootMeanSquareError": 8.09589321791665,
           "MaximumAlphaError": 64,
           "AlphaChangedPixelCount": 1070,
           "MinimumMismatchX": 0,
@@ -1590,91 +1590,91 @@
             "X": 39,
             "Y": 0,
             "Reference": "yRZxdQ==",
-            "Candidate": "xxZyjQ=="
+            "Candidate": "yRZyjQ=="
           },
           {
             "X": 40,
             "Y": 0,
             "Reference": "xxVxtQ==",
-            "Candidate": "xRVxuQ=="
+            "Candidate": "xhZxuQ=="
           },
           {
-            "X": 41,
+            "X": 109,
             "Y": 0,
-            "Reference": "xhdywA==",
-            "Candidate": "xhVxwA=="
+            "Reference": "lxh+tg==",
+            "Candidate": "lxl+ug=="
           },
           {
-            "X": 43,
+            "X": 110,
             "Y": 0,
-            "Reference": "xRdywA==",
-            "Candidate": "xRdxwA=="
+            "Reference": "lRh9dg==",
+            "Candidate": "lhd9jw=="
           },
           {
-            "X": 45,
+            "X": 111,
             "Y": 0,
-            "Reference": "wxdywA==",
-            "Candidate": "wxVxwA=="
+            "Reference": "lRh9NQ==",
+            "Candidate": "lxl+Rw=="
           },
           {
-            "X": 46,
-            "Y": 0,
-            "Reference": "whdywA==",
-            "Candidate": "whVxwA=="
+            "X": 36,
+            "Y": 1,
+            "Reference": "yhVvPg==",
+            "Candidate": "yhZxfg=="
           },
           {
-            "X": 47,
-            "Y": 0,
-            "Reference": "whd0wA==",
-            "Candidate": "whdywA=="
+            "X": 37,
+            "Y": 1,
+            "Reference": "yRVw2A==",
+            "Candidate": "yRZw6A=="
           },
           {
-            "X": 48,
-            "Y": 0,
-            "Reference": "wRVywA==",
-            "Candidate": "wRVxwA=="
+            "X": 112,
+            "Y": 1,
+            "Reference": "lRh+2A==",
+            "Candidate": "lBh+6A=="
           },
           {
-            "X": 49,
-            "Y": 0,
-            "Reference": "wRd0wA==",
-            "Candidate": "wRdywA=="
+            "X": 113,
+            "Y": 1,
+            "Reference": "kxeAQg==",
+            "Candidate": "lBd9fA=="
           },
           {
-            "X": 50,
-            "Y": 0,
-            "Reference": "vxdywA==",
-            "Candidate": "vxVywA=="
+            "X": 35,
+            "Y": 2,
+            "Reference": "yhZxpQ==",
+            "Candidate": "yxZwtg=="
           },
           {
-            "X": 52,
-            "Y": 0,
-            "Reference": "vhV0wA==",
-            "Candidate": "vhVywA=="
+            "X": 114,
+            "Y": 2,
+            "Reference": "kxh+qg==",
+            "Candidate": "kxd+ug=="
           },
           {
-            "X": 54,
-            "Y": 0,
-            "Reference": "vRd0wA==",
-            "Candidate": "vRVywA=="
+            "X": 32,
+            "Y": 5,
+            "Reference": "0g9pEQ==",
+            "Candidate": "0Rd0Fg=="
           },
           {
-            "X": 55,
-            "Y": 0,
-            "Reference": "vRd1wA==",
-            "Candidate": "vRd0wA=="
+            "X": 116,
+            "Y": 5,
+            "Reference": "khh//Q==",
+            "Candidate": "khh/+w=="
           },
           {
-            "X": 56,
-            "Y": 0,
-            "Reference": "uxd0wA==",
-            "Candidate": "uhV0wA=="
+            "X": 108,
+            "Y": 6,
+            "Reference": "mBh94w==",
+            "Candidate": "lxh94g=="
           },
           {
-            "X": 57,
-            "Y": 0,
-            "Reference": "uxd1wA==",
-            "Candidate": "uhd0wA=="
+            "X": 117,
+            "Y": 6,
+            "Reference": "kRh/iQ==",
+            "Candidate": "khl/hQ=="
           }
         ]
       },
@@ -1710,17 +1710,17 @@
       "id": "inv-001-large-white",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "6928b93d7239a9428096e25196d5ee50df0f4e0a5be4250a9695617bfb3383e4",
+      "candidateSha256": "729ba260a771c535a7f5c1d9dac109b480450c3824172d7c3754278fad74c89a",
       "width": 118,
       "height": 116,
       "referenceSha256": "dd8810c470cff7ba4f38c24c4eb3791280d7c573ed0f4e710a6b14dde489531e",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1728,
-          "MaximumChannelError": 59,
-          "MeanAbsoluteError": 0.3739589421390999,
-          "RootMeanSquareError": 2.41769469995404,
+          "ChangedPixelCount": 1063,
+          "MaximumChannelError": 58,
+          "MeanAbsoluteError": 0.3577220923436587,
+          "RootMeanSquareError": 2.4120941984042523,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -1745,91 +1745,91 @@
             "X": 39,
             "Y": 0,
             "Reference": "5pS+/w==",
-            "Candidate": "4H6x/w=="
+            "Candidate": "4X6x/w=="
           },
           {
             "X": 40,
             "Y": 0,
             "Reference": "11ma/w==",
-            "Candidate": "1VWY/w=="
+            "Candidate": "1laY/w=="
           },
           {
-            "X": 41,
+            "X": 109,
             "Y": 0,
-            "Reference": "1FCV/w==",
-            "Candidate": "1E+U/w=="
+            "Reference": "tVqj/w==",
+            "Candidate": "s1eh/w=="
           },
           {
-            "X": 43,
+            "X": 110,
             "Y": 0,
-            "Reference": "01CV/w==",
-            "Candidate": "01CU/w=="
+            "Reference": "zpTD/w==",
+            "Candidate": "xH22/w=="
           },
           {
-            "X": 45,
+            "X": 111,
             "Y": 0,
-            "Reference": "0lCV/w==",
-            "Candidate": "0k+U/w=="
+            "Reference": "6c/k/w==",
+            "Candidate": "4r/b/w=="
           },
           {
-            "X": 46,
-            "Y": 0,
-            "Reference": "0VCV/w==",
-            "Candidate": "0U+U/w=="
+            "X": 36,
+            "Y": 1,
+            "Reference": "8sbc/w==",
+            "Candidate": "5Yy5/w=="
           },
           {
-            "X": 47,
-            "Y": 0,
-            "Reference": "0VCW/w==",
-            "Candidate": "0VCV/w=="
+            "X": 37,
+            "Y": 1,
+            "Reference": "0TmG/w==",
+            "Candidate": "zit9/w=="
           },
           {
-            "X": 48,
-            "Y": 0,
-            "Reference": "0E+V/w==",
-            "Candidate": "0E+U/w=="
+            "X": 112,
+            "Y": 1,
+            "Reference": "pTuS/w==",
+            "Candidate": "ni2K/w=="
           },
           {
-            "X": 49,
-            "Y": 0,
-            "Reference": "0FCW/w==",
-            "Candidate": "0FCV/w=="
+            "X": 113,
+            "Y": 1,
+            "Reference": "48Pe/w==",
+            "Candidate": "y47A/w=="
           },
           {
-            "X": 50,
-            "Y": 0,
-            "Reference": "z1CV/w==",
-            "Candidate": "z0+V/w=="
+            "X": 35,
+            "Y": 2,
+            "Reference": "3Wij/w==",
+            "Candidate": "2lmZ/w=="
           },
           {
-            "X": 52,
-            "Y": 0,
-            "Reference": "zk+W/w==",
-            "Candidate": "zk+V/w=="
+            "X": 114,
+            "Y": 2,
+            "Reference": "t2Wp/w==",
+            "Candidate": "sFah/w=="
           },
           {
-            "X": 54,
-            "Y": 0,
-            "Reference": "zVCW/w==",
-            "Candidate": "zU+V/w=="
+            "X": 32,
+            "Y": 5,
+            "Reference": "/O/1/w==",
+            "Candidate": "++vz/w=="
           },
           {
-            "X": 55,
-            "Y": 0,
-            "Reference": "zVCX/w==",
-            "Candidate": "zVCW/w=="
+            "X": 116,
+            "Y": 5,
+            "Reference": "kxqA/w==",
+            "Candidate": "lByB/w=="
           },
           {
-            "X": 56,
-            "Y": 0,
-            "Reference": "zFCW/w==",
-            "Candidate": "y0+W/w=="
+            "X": 108,
+            "Y": 6,
+            "Reference": "ozGL/w==",
+            "Candidate": "ozKM/w=="
           },
           {
-            "X": 57,
-            "Y": 0,
-            "Reference": "zFCX/w==",
-            "Candidate": "y1CW/w=="
+            "X": 117,
+            "Y": 6,
+            "Reference": "xIO6/w==",
+            "Candidate": "xoe8/w=="
           }
         ]
       },
@@ -1865,17 +1865,17 @@
       "id": "inv-001-large-black",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "80ab78c30ae2903d2776e7b5186758ee81ba428cba81c01e247cca88b4e31f16",
+      "candidateSha256": "4552b603e3802bfa1e08a80238a2ef6891f31704918e73b07236d1e0339654a8",
       "width": 118,
       "height": 116,
       "referenceSha256": "977c07c8390ad8a2dd0de6599cbb82a94e0bd743b660028b9b3f7f5ca7154dad",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1726,
+          "ChangedPixelCount": 1025,
           "MaximumChannelError": 51,
-          "MeanAbsoluteError": 0.2719352717708942,
-          "RootMeanSquareError": 1.8631443809377077,
+          "MeanAbsoluteError": 0.25084015195791937,
+          "RootMeanSquareError": 1.8573270953757264,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -1900,91 +1900,91 @@
             "X": 39,
             "Y": 0,
             "Reference": "XAo0/w==",
-            "Candidate": "bgw//w=="
+            "Candidate": "bww//w=="
           },
           {
             "X": 40,
             "Y": 0,
             "Reference": "jQ9Q/w==",
-            "Candidate": "jw9S/w=="
+            "Candidate": "kBBS/w=="
           },
           {
-            "X": 41,
+            "X": 109,
             "Y": 0,
-            "Reference": "lRFW/w==",
-            "Candidate": "lRBV/w=="
+            "Reference": "bBFa/w==",
+            "Candidate": "bhJc/w=="
           },
           {
-            "X": 43,
+            "X": 110,
             "Y": 0,
-            "Reference": "lBFW/w==",
-            "Candidate": "lBFV/w=="
+            "Reference": "RQs6/w==",
+            "Candidate": "VA1G/w=="
           },
           {
-            "X": 45,
+            "X": 111,
             "Y": 0,
-            "Reference": "kxFW/w==",
-            "Candidate": "kxBV/w=="
+            "Reference": "HwUa/w==",
+            "Candidate": "Kgcj/w=="
           },
           {
-            "X": 46,
-            "Y": 0,
-            "Reference": "khFW/w==",
-            "Candidate": "khBV/w=="
+            "X": 36,
+            "Y": 1,
+            "Reference": "MQUb/w==",
+            "Candidate": "ZAs4/w=="
           },
           {
-            "X": 47,
-            "Y": 0,
-            "Reference": "khFX/w==",
-            "Candidate": "khFW/w=="
+            "X": 37,
+            "Y": 1,
+            "Reference": "qhJf/w==",
+            "Candidate": "txRm/w=="
           },
           {
-            "X": 48,
-            "Y": 0,
-            "Reference": "kRBW/w==",
-            "Candidate": "kRBV/w=="
+            "X": 112,
+            "Y": 1,
+            "Reference": "fhRr/w==",
+            "Candidate": "hxZz/w=="
           },
           {
-            "X": 49,
-            "Y": 0,
-            "Reference": "kRFX/w==",
-            "Candidate": "kRFW/w=="
+            "X": 113,
+            "Y": 1,
+            "Reference": "JgYh/w==",
+            "Candidate": "SAs9/w=="
           },
           {
-            "X": 50,
-            "Y": 0,
-            "Reference": "kBFW/w==",
-            "Candidate": "kBBW/w=="
+            "X": 35,
+            "Y": 2,
+            "Reference": "gw5J/w==",
+            "Candidate": "kRBQ/w=="
           },
           {
-            "X": 52,
-            "Y": 0,
-            "Reference": "jxBX/w==",
-            "Candidate": "jxBW/w=="
+            "X": 114,
+            "Y": 2,
+            "Reference": "YhBU/w==",
+            "Candidate": "axFc/w=="
           },
           {
-            "X": 54,
-            "Y": 0,
-            "Reference": "jhFX/w==",
-            "Candidate": "jhBW/w=="
+            "X": 32,
+            "Y": 5,
+            "Reference": "DgEH/w==",
+            "Candidate": "EgIK/w=="
           },
           {
-            "X": 55,
-            "Y": 0,
-            "Reference": "jhFY/w==",
-            "Candidate": "jhFX/w=="
+            "X": 116,
+            "Y": 5,
+            "Reference": "kRh+/w==",
+            "Candidate": "kBh9/w=="
           },
           {
-            "X": 56,
-            "Y": 0,
-            "Reference": "jRFX/w==",
-            "Candidate": "jBBX/w=="
+            "X": 108,
+            "Y": 6,
+            "Reference": "hxVv/w==",
+            "Candidate": "hhVv/w=="
           },
           {
-            "X": 57,
-            "Y": 0,
-            "Reference": "jRFY/w==",
-            "Candidate": "jBFX/w=="
+            "X": 117,
+            "Y": 6,
+            "Reference": "Tg1E/w==",
+            "Candidate": "TA1C/w=="
           }
         ]
       },
@@ -2497,23 +2497,23 @@
       "id": "inv-003-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "4dd998626f18219b0fa6493f085a3e9a3e79f01a8c760c257a9722279136c5b6",
-      "candidateSha256": "1ec0e8f38d1a6afc67d0e3eaa1fb77264d556c953b4901aec6fbfda122e8438d",
+      "candidateSha256": "0cf230b7f198214d0a2fad5c9d58dc4669e818d52c032be93a825888b45bc933",
       "width": 369,
       "height": 185,
       "referenceSha256": "35c33375143e192dc9663835e43aebb8fd8872f14939752dc4283fa64fc84aca",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1818,
+          "ChangedPixelCount": 1352,
           "MaximumChannelError": 128,
-          "MeanAbsoluteError": 0.12648868380575698,
-          "RootMeanSquareError": 2.212049428667902,
+          "MeanAbsoluteError": 0.11744671500769062,
+          "RootMeanSquareError": 2.1575361594542333,
           "MaximumAlphaError": 74,
           "AlphaChangedPixelCount": 1208,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
-          "MaximumMismatchX": 367,
-          "MaximumMismatchY": 184,
+          "MinimumMismatchY": 9,
+          "MaximumMismatchX": 364,
+          "MaximumMismatchY": 181,
           "IsExact": false
         },
         "alphaMass": 16254,
@@ -2523,100 +2523,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 298,
-            "Y": 0,
-            "Reference": "0dHRHA==",
-            "Candidate": "0dvRHA=="
+            "X": 38,
+            "Y": 9,
+            "Reference": "ACBgCA==",
+            "Candidate": "AAAAAA=="
           },
           {
-            "X": 299,
-            "Y": 0,
-            "Reference": "1NTRUw==",
-            "Candidate": "1NTOUw=="
+            "X": 39,
+            "Y": 9,
+            "Reference": "Fy5RFg==",
+            "Candidate": "AAAAAA=="
           },
           {
-            "X": 300,
-            "Y": 0,
-            "Reference": "19fJEw==",
-            "Candidate": "19fXEw=="
+            "X": 40,
+            "Y": 9,
+            "Reference": "FTJVJA==",
+            "Candidate": "AAAAAA=="
           },
           {
-            "X": 302,
-            "Y": 2,
-            "Reference": "0tTPaw==",
-            "Candidate": "1NTPaw=="
+            "X": 41,
+            "Y": 9,
+            "Reference": "FTRTMQ==",
+            "Candidate": "FjRSIg=="
           },
           {
-            "X": 303,
-            "Y": 2,
-            "Reference": "1NTQcQ==",
-            "Candidate": "0tTQcQ=="
+            "X": 42,
+            "Y": 9,
+            "Reference": "FTVWPg==",
+            "Candidate": "FjRWOw=="
           },
           {
-            "X": 303,
-            "Y": 3,
-            "Reference": "zs7OFQ==",
-            "Candidate": "29vOFQ=="
+            "X": 47,
+            "Y": 9,
+            "Reference": "FjRWfw==",
+            "Candidate": "FjVVfg=="
           },
           {
-            "X": 304,
-            "Y": 3,
-            "Reference": "1NTPlA==",
-            "Candidate": "0tTPlA=="
+            "X": 48,
+            "Y": 9,
+            "Reference": "FjRWgA==",
+            "Candidate": "FjVWdA=="
           },
           {
-            "X": 305,
-            "Y": 4,
-            "Reference": "0dbRLA==",
-            "Candidate": "1tbRLA=="
+            "X": 49,
+            "Y": 9,
+            "Reference": "FjRWgA==",
+            "Candidate": "FjRUZw=="
           },
           {
-            "X": 307,
-            "Y": 4,
-            "Reference": "09XQkQ==",
-            "Candidate": "09PQkQ=="
+            "X": 50,
+            "Y": 9,
+            "Reference": "FjRWgA==",
+            "Candidate": "FzNVWg=="
           },
           {
-            "X": 308,
-            "Y": 4,
-            "Reference": "0dHRHA==",
-            "Candidate": "0dvRHA=="
+            "X": 51,
+            "Y": 9,
+            "Reference": "FjRWgA==",
+            "Candidate": "FzVWTQ=="
           },
           {
-            "X": 309,
-            "Y": 5,
-            "Reference": "0tTPjg==",
-            "Candidate": "0tLPjg=="
+            "X": 52,
+            "Y": 9,
+            "Reference": "FjVWfQ==",
+            "Candidate": "FDVVPw=="
           },
           {
-            "X": 310,
-            "Y": 5,
-            "Reference": "zMzMDw==",
-            "Candidate": "3d3MDw=="
+            "X": 53,
+            "Y": 9,
+            "Reference": "FjRVZg==",
+            "Candidate": "FDJVMw=="
           },
           {
-            "X": 310,
-            "Y": 6,
-            "Reference": "0NLN5g==",
-            "Candidate": "0NLM5g=="
+            "X": 54,
+            "Y": 9,
+            "Reference": "FTRWSg==",
+            "Candidate": "FDZXJg=="
           },
           {
-            "X": 311,
-            "Y": 6,
-            "Reference": "0dPObg==",
-            "Candidate": "0dPMbg=="
+            "X": 55,
+            "Y": 9,
+            "Reference": "FDJVMw==",
+            "Candidate": "FDFYGg=="
           },
           {
-            "X": 310,
-            "Y": 7,
-            "Reference": "0dHLJw==",
-            "Candidate": "0dHRJw=="
+            "X": 56,
+            "Y": 9,
+            "Reference": "FDNSGQ==",
+            "Candidate": "FCdODQ=="
           },
           {
-            "X": 311,
-            "Y": 7,
-            "Reference": "z9DN0A==",
-            "Candidate": "z9DM0A=="
+            "X": 32,
+            "Y": 10,
+            "Reference": "ADlVCQ==",
+            "Candidate": "AAAAAA=="
           }
         ]
       },
@@ -2652,23 +2652,23 @@
       "id": "inv-003-small-white",
       "renderOutcome": "renders",
       "inputSha256": "4dd998626f18219b0fa6493f085a3e9a3e79f01a8c760c257a9722279136c5b6",
-      "candidateSha256": "26be6d30dfaef6e3b245fac35ea7594d2533bcfa8e503081c983147412fb4847",
+      "candidateSha256": "51605791360fd650701aab3165e56f2dc8f50b22198c7dd13bcb16c3ad734c8f",
       "width": 369,
       "height": 185,
       "referenceSha256": "1cdf7b8be0d7e7c0043b43ebf7ba56637e76f2b825246790ecc9b5d7d6c12306",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1817,
+          "ChangedPixelCount": 1350,
           "MaximumChannelError": 67,
-          "MeanAbsoluteError": 0.1495312385556288,
-          "RootMeanSquareError": 1.9526447085794458,
+          "MeanAbsoluteError": 0.14719841793012525,
+          "RootMeanSquareError": 1.952026631207821,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
-          "MaximumMismatchX": 367,
-          "MaximumMismatchY": 184,
+          "MinimumMismatchY": 9,
+          "MaximumMismatchX": 364,
+          "MaximumMismatchY": 181,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -2678,100 +2678,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 298,
-            "Y": 0,
-            "Reference": "+vr6/w==",
-            "Candidate": "+vv6/w=="
+            "X": 38,
+            "Y": 9,
+            "Reference": "9/j6/w==",
+            "Candidate": "/////w=="
           },
           {
-            "X": 299,
-            "Y": 0,
-            "Reference": "8fHw/w==",
-            "Candidate": "8fHv/w=="
+            "X": 39,
+            "Y": 9,
+            "Reference": "6+3w/w==",
+            "Candidate": "/////w=="
           },
           {
-            "X": 300,
-            "Y": 0,
-            "Reference": "/Pz7/w==",
-            "Candidate": "/Pz8/w=="
+            "X": 40,
+            "Y": 9,
+            "Reference": "3uLn/w==",
+            "Candidate": "/////w=="
           },
           {
-            "X": 302,
-            "Y": 2,
-            "Reference": "7O3r/w==",
-            "Candidate": "7e3r/w=="
+            "X": 41,
+            "Y": 9,
+            "Reference": "0tje/w==",
+            "Candidate": "4OTo/w=="
           },
           {
-            "X": 303,
-            "Y": 2,
-            "Reference": "7Ozq/w==",
-            "Candidate": "6+zq/w=="
+            "X": 42,
+            "Y": 9,
+            "Reference": "xs7W/w==",
+            "Candidate": "ydDY/w=="
           },
           {
-            "X": 303,
-            "Y": 3,
-            "Reference": "+/v7/w==",
-            "Candidate": "/Pz7/w=="
+            "X": 47,
+            "Y": 9,
+            "Reference": "i5qr/w==",
+            "Candidate": "jJur/w=="
           },
           {
-            "X": 304,
-            "Y": 3,
-            "Reference": "5ubj/w==",
-            "Candidate": "5ebj/w=="
+            "X": 48,
+            "Y": 9,
+            "Reference": "ipmq/w==",
+            "Candidate": "laOy/w=="
           },
           {
-            "X": 305,
-            "Y": 4,
-            "Reference": "9/j3/w==",
-            "Candidate": "+Pj3/w=="
+            "X": 49,
+            "Y": 9,
+            "Reference": "ipmq/w==",
+            "Candidate": "oa26/w=="
           },
           {
-            "X": 307,
-            "Y": 4,
-            "Reference": "5ufk/w==",
-            "Candidate": "5ubk/w=="
+            "X": 50,
+            "Y": 9,
+            "Reference": "ipmq/w==",
+            "Candidate": "rbfD/w=="
           },
           {
-            "X": 308,
-            "Y": 4,
-            "Reference": "+vr6/w==",
-            "Candidate": "+vv6/w=="
+            "X": 51,
+            "Y": 9,
+            "Reference": "ipmq/w==",
+            "Candidate": "ucLM/w=="
           },
           {
-            "X": 309,
-            "Y": 5,
-            "Reference": "5ufk/w==",
-            "Candidate": "5ubk/w=="
+            "X": 52,
+            "Y": 9,
+            "Reference": "jZys/w==",
+            "Candidate": "xc3V/w=="
           },
           {
-            "X": 310,
-            "Y": 5,
-            "Reference": "/Pz8/w==",
-            "Candidate": "/f38/w=="
+            "X": 53,
+            "Y": 9,
+            "Reference": "oq67/w==",
+            "Candidate": "0Nbd/w=="
           },
           {
-            "X": 310,
-            "Y": 6,
-            "Reference": "1dbS/w==",
-            "Candidate": "1dbR/w=="
+            "X": 54,
+            "Y": 9,
+            "Reference": "u8TO/w==",
+            "Candidate": "3OHm/w=="
           },
           {
-            "X": 311,
-            "Y": 6,
-            "Reference": "6+zq/w==",
-            "Candidate": "6+zp/w=="
+            "X": 55,
+            "Y": 9,
+            "Reference": "0Nbd/w==",
+            "Candidate": "5+ru/w=="
           },
           {
-            "X": 310,
-            "Y": 7,
-            "Reference": "+Pj3/w==",
-            "Candidate": "+Pj4/w=="
+            "X": 56,
+            "Y": 9,
+            "Reference": "6Ovu/w==",
+            "Candidate": "8/T2/w=="
           },
           {
-            "X": 311,
-            "Y": 7,
-            "Reference": "2NnW/w==",
-            "Candidate": "2NnV/w=="
+            "X": 32,
+            "Y": 10,
+            "Reference": "9vj5/w==",
+            "Candidate": "/////w=="
           }
         ]
       },
@@ -2807,23 +2807,23 @@
       "id": "inv-003-small-black",
       "renderOutcome": "renders",
       "inputSha256": "4dd998626f18219b0fa6493f085a3e9a3e79f01a8c760c257a9722279136c5b6",
-      "candidateSha256": "a5786bbdfe1b768715ae14ba4e908f2d9e0b7e34d5b73596b26d503c0a813e50",
+      "candidateSha256": "6c3726cd17974d2f834b8706dd7d34772c14526971f732b76a642e345bbe39c7",
       "width": 369,
       "height": 185,
       "referenceSha256": "65857b0ac7e6662b5383a66f460dfc239f52c0fde7e2050def144b2f8d8e8b63",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1695,
+          "ChangedPixelCount": 1228,
           "MaximumChannelError": 37,
-          "MeanAbsoluteError": 0.0464256939866696,
-          "RootMeanSquareError": 0.6378724570910849,
+          "MeanAbsoluteError": 0.04410019775873435,
+          "RootMeanSquareError": 0.6359375847783215,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
-          "MaximumMismatchX": 367,
-          "MaximumMismatchY": 184,
+          "MinimumMismatchY": 9,
+          "MaximumMismatchX": 364,
+          "MaximumMismatchY": 181,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -2833,100 +2833,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 298,
-            "Y": 0,
-            "Reference": "FxcX/w==",
-            "Candidate": "FxgX/w=="
+            "X": 38,
+            "Y": 9,
+            "Reference": "AAED/w==",
+            "Candidate": "AAAA/w=="
           },
           {
-            "X": 299,
-            "Y": 0,
-            "Reference": "RUVE/w==",
-            "Candidate": "RUVD/w=="
+            "X": 39,
+            "Y": 9,
+            "Reference": "AgQH/w==",
+            "Candidate": "AAAA/w=="
           },
           {
-            "X": 300,
-            "Y": 0,
-            "Reference": "EBAP/w==",
-            "Candidate": "EBAQ/w=="
+            "X": 40,
+            "Y": 9,
+            "Reference": "AwcM/w==",
+            "Candidate": "AAAA/w=="
           },
           {
-            "X": 302,
-            "Y": 2,
-            "Reference": "WFlX/w==",
-            "Candidate": "WVlX/w=="
+            "X": 41,
+            "Y": 9,
+            "Reference": "BAoQ/w==",
+            "Candidate": "AwcL/w=="
           },
           {
-            "X": 303,
-            "Y": 2,
-            "Reference": "Xl5c/w==",
-            "Candidate": "XV5c/w=="
+            "X": 42,
+            "Y": 9,
+            "Reference": "BQ0V/w==",
+            "Candidate": "BQwU/w=="
           },
           {
-            "X": 303,
-            "Y": 3,
-            "Reference": "ERER/w==",
-            "Candidate": "EhIR/w=="
+            "X": 47,
+            "Y": 9,
+            "Reference": "Cxor/w==",
+            "Candidate": "Cxoq/w=="
           },
           {
-            "X": 304,
-            "Y": 3,
-            "Reference": "e3t4/w==",
-            "Candidate": "ent4/w=="
+            "X": 48,
+            "Y": 9,
+            "Reference": "Cxor/w==",
+            "Candidate": "Chgn/w=="
           },
           {
-            "X": 305,
-            "Y": 4,
-            "Reference": "JCUk/w==",
-            "Candidate": "JSUk/w=="
+            "X": 49,
+            "Y": 9,
+            "Reference": "Cxor/w==",
+            "Candidate": "CRUi/w=="
           },
           {
-            "X": 307,
-            "Y": 4,
-            "Reference": "eHl2/w==",
-            "Candidate": "eHh2/w=="
+            "X": 50,
+            "Y": 9,
+            "Reference": "Cxor/w==",
+            "Candidate": "CBIe/w=="
           },
           {
-            "X": 308,
-            "Y": 4,
-            "Reference": "FxcX/w==",
-            "Candidate": "FxgX/w=="
+            "X": 51,
+            "Y": 9,
+            "Reference": "Cxor/w==",
+            "Candidate": "BxAa/w=="
           },
           {
-            "X": 309,
-            "Y": 5,
-            "Reference": "dXZz/w==",
-            "Candidate": "dXVz/w=="
+            "X": 52,
+            "Y": 9,
+            "Reference": "Cxoq/w==",
+            "Candidate": "BQ0V/w=="
           },
           {
-            "X": 310,
-            "Y": 5,
-            "Reference": "DAwM/w==",
-            "Candidate": "DQ0M/w=="
+            "X": 53,
+            "Y": 9,
+            "Reference": "CRUi/w==",
+            "Candidate": "BAoR/w=="
           },
           {
-            "X": 310,
-            "Y": 6,
-            "Reference": "vL25/w==",
-            "Candidate": "vL24/w=="
+            "X": 54,
+            "Y": 9,
+            "Reference": "Bg8Z/w==",
+            "Candidate": "AwgN/w=="
           },
           {
-            "X": 311,
-            "Y": 6,
-            "Reference": "WltZ/w==",
-            "Candidate": "WltY/w=="
+            "X": 55,
+            "Y": 9,
+            "Reference": "BAoR/w==",
+            "Candidate": "AgUJ/w=="
           },
           {
-            "X": 310,
-            "Y": 7,
-            "Reference": "ICAf/w==",
-            "Candidate": "ICAg/w=="
+            "X": 56,
+            "Y": 9,
+            "Reference": "AgUI/w==",
+            "Candidate": "AQIE/w=="
           },
           {
-            "X": 311,
-            "Y": 7,
-            "Reference": "qaqn/w==",
-            "Candidate": "qaqm/w=="
+            "X": 32,
+            "Y": 10,
+            "Reference": "AAID/w==",
+            "Candidate": "AAAA/w=="
           }
         ]
       },
@@ -2962,17 +2962,17 @@
       "id": "inv-003-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "a0b8cfefbf49be3b5d2e25f06f7592ef6249fa5d225a9843fdd37ff5c7450f1f",
-      "candidateSha256": "35b7592ad963e900e8e1c9b9116d683d4443a7ba0f3a96a6ea7eab1d2a4f288f",
+      "candidateSha256": "821b785a3a02887f7cab66cb6528d83e0bb51bc6aea9ba1e8a99edd2d1dc6787",
       "width": 738,
       "height": 371,
       "referenceSha256": "151985c08590626108114d1f870d72b0ec62234beaccbd8c9da772259823022c",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 6093,
+          "ChangedPixelCount": 5400,
           "MaximumChannelError": 128,
-          "MeanAbsoluteError": 0.08343925083455686,
-          "RootMeanSquareError": 1.7738470087961715,
+          "MeanAbsoluteError": 0.07880809940174874,
+          "RootMeanSquareError": 1.7249500589899813,
           "MaximumAlphaError": 119,
           "AlphaChangedPixelCount": 2786,
           "MinimumMismatchX": 0,
@@ -2994,94 +2994,94 @@
             "Candidate": "1NTOVA=="
           },
           {
-            "X": 600,
-            "Y": 2,
-            "Reference": "0dHRFg==",
-            "Candidate": "0dzRFg=="
-          },
-          {
-            "X": 601,
-            "Y": 2,
-            "Reference": "09XQmA==",
-            "Candidate": "09POmA=="
-          },
-          {
             "X": 603,
             "Y": 3,
             "Reference": "09POzQ==",
             "Candidate": "0tPOzQ=="
           },
           {
-            "X": 604,
-            "Y": 4,
-            "Reference": "09PNVw==",
-            "Candidate": "09PQVw=="
-          },
-          {
-            "X": 605,
-            "Y": 4,
-            "Reference": "09TQ1w==",
-            "Candidate": "09PO1w=="
-          },
-          {
-            "X": 607,
-            "Y": 4,
-            "Reference": "09PNLg==",
-            "Candidate": "09PTLg=="
-          },
-          {
-            "X": 606,
-            "Y": 5,
-            "Reference": "09XPdA==",
-            "Candidate": "09PPdA=="
-          },
-          {
-            "X": 607,
-            "Y": 5,
-            "Reference": "09TP7g==",
-            "Candidate": "0tPP7g=="
-          },
-          {
-            "X": 608,
-            "Y": 5,
-            "Reference": "1NTPqw==",
-            "Candidate": "0tTPqw=="
-          },
-          {
-            "X": 609,
-            "Y": 6,
-            "Reference": "1NXQ9w==",
-            "Candidate": "09TO9w=="
-          },
-          {
-            "X": 609,
-            "Y": 7,
-            "Reference": "z9fPIA==",
-            "Candidate": "19fPIA=="
-          },
-          {
-            "X": 610,
-            "Y": 7,
-            "Reference": "09TQpw==",
-            "Candidate": "09TOpw=="
-          },
-          {
-            "X": 612,
-            "Y": 7,
-            "Reference": "1NTPtg==",
-            "Candidate": "0tTOtg=="
-          },
-          {
-            "X": 615,
-            "Y": 8,
-            "Reference": "0tLSLQ==",
-            "Candidate": "0tfSLQ=="
-          },
-          {
-            "X": 614,
+            "X": 616,
             "Y": 9,
-            "Reference": "09TP9A==",
-            "Candidate": "0tPP9A=="
+            "Reference": "09XPtQ==",
+            "Candidate": "09PPtQ=="
+          },
+          {
+            "X": 618,
+            "Y": 11,
+            "Reference": "0tPP/w==",
+            "Candidate": "0tPO/w=="
+          },
+          {
+            "X": 626,
+            "Y": 16,
+            "Reference": "z9DL/w==",
+            "Candidate": "ztDL/w=="
+          },
+          {
+            "X": 79,
+            "Y": 19,
+            "Reference": "AAAAAA==",
+            "Candidate": "EjVYHQ=="
+          },
+          {
+            "X": 80,
+            "Y": 19,
+            "Reference": "FixZFw==",
+            "Candidate": "FDNXMg=="
+          },
+          {
+            "X": 81,
+            "Y": 19,
+            "Reference": "FDJVMw==",
+            "Candidate": "FjNURg=="
+          },
+          {
+            "X": 82,
+            "Y": 19,
+            "Reference": "FzRVTg==",
+            "Candidate": "FjVUWw=="
+          },
+          {
+            "X": 83,
+            "Y": 19,
+            "Reference": "FjNVaQ==",
+            "Candidate": "FzVVbw=="
+          },
+          {
+            "X": 108,
+            "Y": 19,
+            "Reference": "FzRXLA==",
+            "Candidate": "FzNVLQ=="
+          },
+          {
+            "X": 631,
+            "Y": 19,
+            "Reference": "zM7J/w==",
+            "Candidate": "zc7J/w=="
+          },
+          {
+            "X": 634,
+            "Y": 19,
+            "Reference": "zM3Knw==",
+            "Candidate": "zM3Inw=="
+          },
+          {
+            "X": 71,
+            "Y": 20,
+            "Reference": "AAAAAA==",
+            "Candidate": "EjVTKw=="
+          },
+          {
+            "X": 72,
+            "Y": 20,
+            "Reference": "EzNTKA==",
+            "Candidate": "FTVWVg=="
+          },
+          {
+            "X": 73,
+            "Y": 20,
+            "Reference": "FDJUTA==",
+            "Candidate": "FjRWfw=="
           }
         ]
       },
@@ -3117,17 +3117,17 @@
       "id": "inv-003-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "a0b8cfefbf49be3b5d2e25f06f7592ef6249fa5d225a9843fdd37ff5c7450f1f",
-      "candidateSha256": "93cbbad70d5e786acf81ce207a6dc4f40860ed6197281cd569ce25d8dec2972f",
+      "candidateSha256": "d8f7c9e53f07197aa7922e2530f3892213e1cdecd5cbbb5e355670ee1d64fdfb",
       "width": 738,
       "height": 371,
       "referenceSha256": "0ebca872b769651d7f5a46d0a347dc157019ee42f71b4f47dbceb7c8e1190781",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 6038,
+          "ChangedPixelCount": 5345,
           "MaximumChannelError": 109,
-          "MeanAbsoluteError": 0.09334527644467819,
-          "RootMeanSquareError": 1.482130156449142,
+          "MeanAbsoluteError": 0.09230527615249198,
+          "RootMeanSquareError": 1.4818279479430443,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -3149,94 +3149,94 @@
             "Candidate": "8fHv/w=="
           },
           {
-            "X": 600,
-            "Y": 2,
-            "Reference": "+/v7/w==",
-            "Candidate": "+/z7/w=="
-          },
-          {
-            "X": 601,
-            "Y": 2,
-            "Reference": "5ebj/w==",
-            "Candidate": "5eXi/w=="
-          },
-          {
             "X": 603,
             "Y": 3,
             "Reference": "3NzY/w==",
             "Candidate": "29zY/w=="
           },
           {
-            "X": 604,
-            "Y": 4,
-            "Reference": "8PDu/w==",
-            "Candidate": "8PDv/w=="
-          },
-          {
-            "X": 605,
-            "Y": 4,
-            "Reference": "2tvX/w==",
-            "Candidate": "2trW/w=="
-          },
-          {
-            "X": 607,
-            "Y": 4,
-            "Reference": "9/f2/w==",
-            "Candidate": "9/f3/w=="
-          },
-          {
-            "X": 606,
-            "Y": 5,
-            "Reference": "6+zp/w==",
-            "Candidate": "6+vp/w=="
-          },
-          {
-            "X": 607,
-            "Y": 5,
-            "Reference": "1tfS/w==",
-            "Candidate": "1dbS/w=="
-          },
-          {
-            "X": 608,
-            "Y": 5,
-            "Reference": "4uLf/w==",
-            "Candidate": "4eLf/w=="
-          },
-          {
-            "X": 609,
-            "Y": 6,
-            "Reference": "1dbR/w==",
-            "Candidate": "1NXQ/w=="
-          },
-          {
-            "X": 609,
-            "Y": 7,
-            "Reference": "+fr5/w==",
-            "Candidate": "+vr5/w=="
-          },
-          {
-            "X": 610,
-            "Y": 7,
-            "Reference": "4uPg/w==",
-            "Candidate": "4uPf/w=="
-          },
-          {
-            "X": 612,
-            "Y": 7,
-            "Reference": "4ODd/w==",
-            "Candidate": "3+Dc/w=="
-          },
-          {
-            "X": 615,
-            "Y": 8,
-            "Reference": "9/f3/w==",
-            "Candidate": "9/j3/w=="
-          },
-          {
-            "X": 614,
+            "X": 616,
             "Y": 9,
-            "Reference": "1dbR/w==",
-            "Candidate": "1NXR/w=="
+            "Reference": "4OHd/w==",
+            "Candidate": "4ODd/w=="
+          },
+          {
+            "X": 618,
+            "Y": 11,
+            "Reference": "0tPP/w==",
+            "Candidate": "0tPO/w=="
+          },
+          {
+            "X": 626,
+            "Y": 16,
+            "Reference": "z9DL/w==",
+            "Candidate": "ztDL/w=="
+          },
+          {
+            "X": 79,
+            "Y": 19,
+            "Reference": "/////w==",
+            "Candidate": "5Ojs/w=="
+          },
+          {
+            "X": 80,
+            "Y": 19,
+            "Reference": "6uzw/w==",
+            "Candidate": "0dfe/w=="
+          },
+          {
+            "X": 81,
+            "Y": 19,
+            "Reference": "0Nbd/w==",
+            "Candidate": "v8fQ/w=="
+          },
+          {
+            "X": 82,
+            "Y": 19,
+            "Reference": "uMHL/w==",
+            "Candidate": "rLfC/w=="
+          },
+          {
+            "X": 83,
+            "Y": 19,
+            "Reference": "n6u5/w==",
+            "Candidate": "mqe1/w=="
+          },
+          {
+            "X": 108,
+            "Y": 19,
+            "Reference": "19zi/w==",
+            "Candidate": "1tvh/w=="
+          },
+          {
+            "X": 631,
+            "Y": 19,
+            "Reference": "zM7J/w==",
+            "Candidate": "zc7J/w=="
+          },
+          {
+            "X": 634,
+            "Y": 19,
+            "Reference": "3+De/w==",
+            "Candidate": "3+Dd/w=="
+          },
+          {
+            "X": 71,
+            "Y": 20,
+            "Reference": "/////w==",
+            "Candidate": "193i/w=="
+          },
+          {
+            "X": 72,
+            "Y": 20,
+            "Reference": "2t/k/w==",
+            "Candidate": "sLvG/w=="
+          },
+          {
+            "X": 73,
+            "Y": 20,
+            "Reference": "ucLM/w==",
+            "Candidate": "i5qr/w=="
           }
         ]
       },
@@ -3272,17 +3272,17 @@
       "id": "inv-003-intended-black",
       "renderOutcome": "renders",
       "inputSha256": "a0b8cfefbf49be3b5d2e25f06f7592ef6249fa5d225a9843fdd37ff5c7450f1f",
-      "candidateSha256": "f62dc13b58cf0527f3cc21354c38a004b05383cf57f965861673d01ca0583529",
+      "candidateSha256": "516eafbc004d15daece86704f4baa497f20b07d58745bc9b9701ef73a6181aac",
       "width": 738,
       "height": 371,
       "referenceSha256": "5342d8014d5e7bdb1ee2eec7e1fefdc21cf3b7da6643c6b0f340e375f371f57a",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 5864,
+          "ChangedPixelCount": 5171,
           "MaximumChannelError": 56,
-          "MeanAbsoluteError": 0.032560500807164404,
-          "RootMeanSquareError": 0.5434670465200768,
+          "MeanAbsoluteError": 0.0315122827778143,
+          "RootMeanSquareError": 0.5425943711776654,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -3304,94 +3304,94 @@
             "Candidate": "RkZE/w=="
           },
           {
-            "X": 600,
-            "Y": 2,
-            "Reference": "EhIS/w==",
-            "Candidate": "EhMS/w=="
-          },
-          {
-            "X": 601,
-            "Y": 2,
-            "Reference": "fn98/w==",
-            "Candidate": "fn57/w=="
-          },
-          {
             "X": 603,
             "Y": 3,
             "Reference": "qqqm/w==",
             "Candidate": "qaqm/w=="
           },
           {
-            "X": 604,
-            "Y": 4,
-            "Reference": "SEhG/w==",
-            "Candidate": "SEhH/w=="
-          },
-          {
-            "X": 605,
-            "Y": 4,
-            "Reference": "srOv/w==",
-            "Candidate": "srKu/w=="
-          },
-          {
-            "X": 607,
-            "Y": 4,
-            "Reference": "JiYl/w==",
-            "Candidate": "JiYm/w=="
-          },
-          {
-            "X": 606,
-            "Y": 5,
-            "Reference": "YGFe/w==",
-            "Candidate": "YGBe/w=="
-          },
-          {
-            "X": 607,
-            "Y": 5,
-            "Reference": "xcbB/w==",
-            "Candidate": "xMXB/w=="
-          },
-          {
-            "X": 608,
-            "Y": 5,
-            "Reference": "jo6L/w==",
-            "Candidate": "jY6L/w=="
-          },
-          {
-            "X": 609,
-            "Y": 6,
-            "Reference": "zc7J/w==",
-            "Candidate": "zM3I/w=="
-          },
-          {
-            "X": 609,
-            "Y": 7,
-            "Reference": "Ghsa/w==",
-            "Candidate": "Gxsa/w=="
-          },
-          {
-            "X": 610,
-            "Y": 7,
-            "Reference": "iouI/w==",
-            "Candidate": "iouH/w=="
-          },
-          {
-            "X": 612,
-            "Y": 7,
-            "Reference": "l5eU/w==",
-            "Candidate": "lpeT/w=="
-          },
-          {
-            "X": 615,
-            "Y": 8,
-            "Reference": "JSUl/w==",
-            "Candidate": "JSYl/w=="
-          },
-          {
-            "X": 614,
+            "X": 616,
             "Y": 9,
-            "Reference": "ysvG/w==",
-            "Candidate": "ycrG/w=="
+            "Reference": "lpeT/w==",
+            "Candidate": "lpaT/w=="
+          },
+          {
+            "X": 618,
+            "Y": 11,
+            "Reference": "0tPP/w==",
+            "Candidate": "0tPO/w=="
+          },
+          {
+            "X": 626,
+            "Y": 16,
+            "Reference": "z9DL/w==",
+            "Candidate": "ztDL/w=="
+          },
+          {
+            "X": 79,
+            "Y": 19,
+            "Reference": "AAAA/w==",
+            "Candidate": "AgYK/w=="
+          },
+          {
+            "X": 80,
+            "Y": 19,
+            "Reference": "AgQI/w==",
+            "Candidate": "BAoR/w=="
+          },
+          {
+            "X": 81,
+            "Y": 19,
+            "Reference": "BAoR/w==",
+            "Candidate": "Bg4X/w=="
+          },
+          {
+            "X": 82,
+            "Y": 19,
+            "Reference": "BxAa/w==",
+            "Candidate": "CBMe/w=="
+          },
+          {
+            "X": 83,
+            "Y": 19,
+            "Reference": "CRUj/w==",
+            "Candidate": "Chcl/w=="
+          },
+          {
+            "X": 631,
+            "Y": 19,
+            "Reference": "zM7J/w==",
+            "Candidate": "zc7J/w=="
+          },
+          {
+            "X": 634,
+            "Y": 19,
+            "Reference": "f4B+/w==",
+            "Candidate": "f4B9/w=="
+          },
+          {
+            "X": 71,
+            "Y": 20,
+            "Reference": "AAAA/w==",
+            "Candidate": "AwkO/w=="
+          },
+          {
+            "X": 72,
+            "Y": 20,
+            "Reference": "AwgN/w==",
+            "Candidate": "BxId/w=="
+          },
+          {
+            "X": 73,
+            "Y": 20,
+            "Reference": "Bg8Z/w==",
+            "Candidate": "Cxor/w=="
+          },
+          {
+            "X": 74,
+            "Y": 20,
+            "Reference": "Chcl/w==",
+            "Candidate": "DyQ6/w=="
           }
         ]
       },
@@ -3427,21 +3427,21 @@
       "id": "inv-003-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "5093b622ce83ea8a9c753035108868b75a90af90b3aed3f997a28873775a2347",
-      "candidateSha256": "5b2749efa3f7295f95df96ad81646e31e618afd1e49e5854cea51c5dd2518135",
+      "candidateSha256": "9d5b554bc4de8d45f0b180f1d5e37f84e80294e096a959124d2a6f37d70de0b7",
       "width": 1476,
       "height": 742,
       "referenceSha256": "e9388b53f397575e44979829bfb81f21198156131ea5396e4935ce1028c9562d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 16971,
+          "ChangedPixelCount": 15576,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.04659205874403757,
-          "RootMeanSquareError": 1.335356016102849,
+          "MeanAbsoluteError": 0.043580714614423775,
+          "RootMeanSquareError": 1.2801238226124367,
           "MaximumAlphaError": 97,
           "AlphaChangedPixelCount": 5770,
           "MinimumMismatchX": 1,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 38,
           "MaximumMismatchX": 1474,
           "MaximumMismatchY": 741,
           "IsExact": false
@@ -3453,100 +3453,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 1196,
-            "Y": 0,
-            "Reference": "1NTKGA==",
-            "Candidate": "1NTUGA=="
+            "X": 171,
+            "Y": 38,
+            "Reference": "DipVEg==",
+            "Candidate": "Dy1aEQ=="
           },
           {
-            "X": 1198,
-            "Y": 1,
-            "Reference": "0dbRMg==",
-            "Candidate": "1tbRMg=="
+            "X": 174,
+            "Y": 38,
+            "Reference": "FDZXJg==",
+            "Candidate": "FTBTJQ=="
           },
           {
-            "X": 1198,
-            "Y": 2,
-            "Reference": "09POjA==",
-            "Candidate": "09PQjA=="
+            "X": 176,
+            "Y": 38,
+            "Reference": "FDJVMw==",
+            "Candidate": "FDNXMg=="
           },
           {
-            "X": 1199,
-            "Y": 2,
-            "Reference": "1NTPsQ==",
-            "Candidate": "0tTOsQ=="
+            "X": 180,
+            "Y": 38,
+            "Reference": "FzVWTQ==",
+            "Candidate": "FDJUTA=="
           },
           {
-            "X": 1200,
-            "Y": 2,
-            "Reference": "0dHNOA==",
-            "Candidate": "0dbROA=="
+            "X": 182,
+            "Y": 38,
+            "Reference": "FzNVWg==",
+            "Candidate": "FzRWWQ=="
           },
           {
-            "X": 1199,
-            "Y": 3,
-            "Reference": "0dbRLA==",
-            "Candidate": "1tbRLA=="
+            "X": 189,
+            "Y": 38,
+            "Reference": "FjVWfQ==",
+            "Candidate": "FzRWeg=="
           },
           {
-            "X": 1200,
-            "Y": 3,
-            "Reference": "09TPxg==",
-            "Candidate": "09POxg=="
+            "X": 190,
+            "Y": 38,
+            "Reference": "FTVUeQ==",
+            "Candidate": "FjVWdA=="
           },
           {
-            "X": 1201,
-            "Y": 3,
-            "Reference": "09PPwQ==",
-            "Candidate": "0tPOwQ=="
+            "X": 191,
+            "Y": 38,
+            "Reference": "FjRVdQ==",
+            "Candidate": "FTNUbQ=="
           },
           {
-            "X": 1202,
-            "Y": 4,
-            "Reference": "09PP3Q==",
-            "Candidate": "0tPP3Q=="
+            "X": 192,
+            "Y": 38,
+            "Reference": "FzRWcQ==",
+            "Candidate": "FjRUZw=="
           },
           {
-            "X": 1203,
-            "Y": 4,
-            "Reference": "1NXQwg==",
-            "Candidate": "0tTOwg=="
+            "X": 193,
+            "Y": 38,
+            "Reference": "FTNWbg==",
+            "Candidate": "FTVVYA=="
           },
           {
-            "X": 1204,
-            "Y": 5,
-            "Reference": "09TP9A==",
-            "Candidate": "0tPP9A=="
+            "X": 194,
+            "Y": 38,
+            "Reference": "FjVUag==",
+            "Candidate": "FzNVWg=="
           },
           {
-            "X": 1205,
-            "Y": 5,
-            "Reference": "09TPyw==",
-            "Candidate": "09POyw=="
+            "X": 195,
+            "Y": 38,
+            "Reference": "FjRVZg==",
+            "Candidate": "FTRVVA=="
           },
           {
-            "X": 1204,
-            "Y": 6,
-            "Reference": "0dHRHA==",
-            "Candidate": "0dvRHA=="
+            "X": 196,
+            "Y": 38,
+            "Reference": "FTRWYg==",
+            "Candidate": "FzVWTQ=="
           },
           {
-            "X": 1205,
-            "Y": 6,
-            "Reference": "09TQpw==",
-            "Candidate": "09TOpw=="
+            "X": 197,
+            "Y": 38,
+            "Reference": "FjRUXg==",
+            "Candidate": "FjJWRw=="
           },
           {
-            "X": 1207,
-            "Y": 6,
-            "Reference": "1NXP3w==",
-            "Candidate": "0tTP3w=="
+            "X": 198,
+            "Y": 38,
+            "Reference": "FjVUWw==",
+            "Candidate": "FDRUQA=="
           },
           {
-            "X": 1209,
-            "Y": 7,
-            "Reference": "09TO4g==",
-            "Candidate": "09PO4g=="
+            "X": 199,
+            "Y": 38,
+            "Reference": "FTVVVw==",
+            "Candidate": "FjVUOg=="
           }
         ]
       },
@@ -3582,21 +3582,21 @@
       "id": "inv-003-large-white",
       "renderOutcome": "renders",
       "inputSha256": "5093b622ce83ea8a9c753035108868b75a90af90b3aed3f997a28873775a2347",
-      "candidateSha256": "91cec8cafc6705215e8e59947b70ff4b9a9520a215885dee367e2ce1d5c23a79",
+      "candidateSha256": "ff90c10fb76ffdad5d71643f1decffcd25b85bea4e11d5e901278db93ecce095",
       "width": 1476,
       "height": 742,
       "referenceSha256": "4bb62d44a7dd219471e42f0601a8647278733cdeb5194eff16187e0bae2fc829",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 16923,
+          "ChangedPixelCount": 15528,
           "MaximumChannelError": 88,
-          "MeanAbsoluteError": 0.05332877705461691,
-          "RootMeanSquareError": 1.132582801388055,
+          "MeanAbsoluteError": 0.05280832036757025,
+          "RootMeanSquareError": 1.1323445458838572,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 1,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 38,
           "MaximumMismatchX": 1474,
           "MaximumMismatchY": 741,
           "IsExact": false
@@ -3608,100 +3608,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 1196,
-            "Y": 0,
-            "Reference": "+/v6/w==",
-            "Candidate": "+/v7/w=="
+            "X": 171,
+            "Y": 38,
+            "Reference": "7vDz/w==",
+            "Candidate": "7/H0/w=="
           },
           {
-            "X": 1198,
-            "Y": 1,
-            "Reference": "9vf2/w==",
-            "Candidate": "9/f2/w=="
+            "X": 174,
+            "Y": 38,
+            "Reference": "3OHm/w==",
+            "Candidate": "3eHm/w=="
           },
           {
-            "X": 1198,
-            "Y": 2,
-            "Reference": "5+fk/w==",
-            "Candidate": "5+fl/w=="
+            "X": 176,
+            "Y": 38,
+            "Reference": "0Nbd/w==",
+            "Candidate": "0dfe/w=="
           },
           {
-            "X": 1199,
-            "Y": 2,
-            "Reference": "4eHe/w==",
-            "Candidate": "4OHd/w=="
+            "X": 182,
+            "Y": 38,
+            "Reference": "rbfD/w==",
+            "Candidate": "rrjE/w=="
           },
           {
-            "X": 1200,
-            "Y": 2,
-            "Reference": "9fX0/w==",
-            "Candidate": "9fb1/w=="
+            "X": 189,
+            "Y": 38,
+            "Reference": "jZys/w==",
+            "Candidate": "kJ6u/w=="
           },
           {
-            "X": 1199,
-            "Y": 3,
-            "Reference": "9/j3/w==",
-            "Candidate": "+Pj3/w=="
+            "X": 190,
+            "Y": 38,
+            "Reference": "kJ+u/w==",
+            "Candidate": "laOy/w=="
           },
           {
-            "X": 1200,
-            "Y": 3,
-            "Reference": "3d7a/w==",
-            "Candidate": "3d3Z/w=="
+            "X": 191,
+            "Y": 38,
+            "Reference": "lKKx/w==",
+            "Candidate": "m6i2/w=="
           },
           {
-            "X": 1201,
-            "Y": 3,
-            "Reference": "3t7b/w==",
-            "Candidate": "3d7a/w=="
+            "X": 192,
+            "Y": 38,
+            "Reference": "mKW0/w==",
+            "Candidate": "oa26/w=="
           },
           {
-            "X": 1202,
-            "Y": 4,
-            "Reference": "2dnV/w==",
-            "Candidate": "2NnV/w=="
+            "X": 193,
+            "Y": 38,
+            "Reference": "mqe2/w==",
+            "Candidate": "p7O//w=="
           },
           {
-            "X": 1203,
-            "Y": 4,
-            "Reference": "3t/b/w==",
-            "Candidate": "3d7a/w=="
+            "X": 194,
+            "Y": 38,
+            "Reference": "nqu4/w==",
+            "Candidate": "rbfD/w=="
           },
           {
-            "X": 1204,
-            "Y": 5,
-            "Reference": "1dbR/w==",
-            "Candidate": "1NXR/w=="
+            "X": 195,
+            "Y": 38,
+            "Reference": "oq67/w==",
+            "Candidate": "srzH/w=="
           },
           {
-            "X": 1205,
-            "Y": 5,
-            "Reference": "3N3Z/w==",
-            "Candidate": "3NzY/w=="
+            "X": 196,
+            "Y": 38,
+            "Reference": "pbG+/w==",
+            "Candidate": "ucLM/w=="
           },
           {
-            "X": 1204,
-            "Y": 6,
-            "Reference": "+vr6/w==",
-            "Candidate": "+vv6/w=="
+            "X": 197,
+            "Y": 38,
+            "Reference": "qbTA/w==",
+            "Candidate": "vsbQ/w=="
           },
           {
-            "X": 1205,
-            "Y": 6,
-            "Reference": "4uPg/w==",
-            "Candidate": "4uPf/w=="
+            "X": 198,
+            "Y": 38,
+            "Reference": "rLfC/w==",
+            "Candidate": "xMzU/w=="
           },
           {
-            "X": 1207,
-            "Y": 6,
-            "Reference": "2drV/w==",
-            "Candidate": "2NnV/w=="
+            "X": 199,
+            "Y": 38,
+            "Reference": "r7rF/w==",
+            "Candidate": "ytHY/w=="
           },
           {
-            "X": 1209,
-            "Y": 7,
-            "Reference": "2NnU/w==",
-            "Candidate": "2NjU/w=="
+            "X": 200,
+            "Y": 38,
+            "Reference": "s73I/w==",
+            "Candidate": "z9Xc/w=="
           }
         ]
       },
@@ -3737,21 +3737,21 @@
       "id": "inv-003-large-black",
       "renderOutcome": "renders",
       "inputSha256": "5093b622ce83ea8a9c753035108868b75a90af90b3aed3f997a28873775a2347",
-      "candidateSha256": "750befd4d3849de98d0b484fd716525b3db1dae75254f47dc2a214a4a8ac138a",
+      "candidateSha256": "6cf0fe47e8bbac889c0b2a7c9fccc677bbbd618d341800f126143b93d5e9d5a1",
       "width": 1476,
       "height": 742,
       "referenceSha256": "c1b81804415de120c0a2d2a988f113cdaaa853a5a06a0f45749ff5c4ecccef14",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 16494,
+          "ChangedPixelCount": 15099,
           "MaximumChannelError": 48,
-          "MeanAbsoluteError": 0.01841891650048576,
-          "RootMeanSquareError": 0.386933270081105,
+          "MeanAbsoluteError": 0.01789777500200878,
+          "RootMeanSquareError": 0.3862568935739092,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 1,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchY": 38,
           "MaximumMismatchX": 1474,
           "MaximumMismatchY": 741,
           "IsExact": false
@@ -3763,100 +3763,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 1196,
-            "Y": 0,
-            "Reference": "FBQT/w==",
-            "Candidate": "FBQU/w=="
+            "X": 174,
+            "Y": 38,
+            "Reference": "AwgN/w==",
+            "Candidate": "AwcM/w=="
           },
           {
-            "X": 1198,
-            "Y": 1,
-            "Reference": "KSop/w==",
-            "Candidate": "Kiop/w=="
+            "X": 180,
+            "Y": 38,
+            "Reference": "BxAa/w==",
+            "Candidate": "Bg8Z/w=="
           },
           {
-            "X": 1198,
-            "Y": 2,
-            "Reference": "dHRx/w==",
-            "Candidate": "dHRy/w=="
+            "X": 189,
+            "Y": 38,
+            "Reference": "Cxoq/w==",
+            "Candidate": "Cxkp/w=="
           },
           {
-            "X": 1199,
-            "Y": 2,
-            "Reference": "k5OQ/w==",
-            "Candidate": "kpOP/w=="
+            "X": 190,
+            "Y": 38,
+            "Reference": "Chko/w==",
+            "Candidate": "Chgn/w=="
           },
           {
-            "X": 1200,
-            "Y": 2,
-            "Reference": "Li4t/w==",
-            "Candidate": "Li8u/w=="
+            "X": 191,
+            "Y": 38,
+            "Reference": "Chgn/w==",
+            "Candidate": "CRYk/w=="
           },
           {
-            "X": 1199,
-            "Y": 3,
-            "Reference": "JCUk/w==",
-            "Candidate": "JSUk/w=="
+            "X": 192,
+            "Y": 38,
+            "Reference": "Chcm/w==",
+            "Candidate": "CRUi/w=="
           },
           {
-            "X": 1200,
-            "Y": 3,
-            "Reference": "pKWh/w==",
-            "Candidate": "pKSg/w=="
+            "X": 193,
+            "Y": 38,
+            "Reference": "CRYl/w==",
+            "Candidate": "CBQg/w=="
           },
           {
-            "X": 1201,
-            "Y": 3,
-            "Reference": "oKCd/w==",
-            "Candidate": "n6Cc/w=="
+            "X": 194,
+            "Y": 38,
+            "Reference": "CRYj/w==",
+            "Candidate": "CBIe/w=="
           },
           {
-            "X": 1202,
-            "Y": 4,
-            "Reference": "t7ez/w==",
-            "Candidate": "trez/w=="
+            "X": 195,
+            "Y": 38,
+            "Reference": "CRUi/w==",
+            "Candidate": "BxEc/w=="
           },
           {
-            "X": 1203,
-            "Y": 4,
-            "Reference": "oaKe/w==",
-            "Candidate": "oKGd/w=="
+            "X": 196,
+            "Y": 38,
+            "Reference": "CBQh/w==",
+            "Candidate": "BxAa/w=="
           },
           {
-            "X": 1204,
-            "Y": 5,
-            "Reference": "ysvG/w==",
-            "Candidate": "ycrG/w=="
+            "X": 197,
+            "Y": 38,
+            "Reference": "CBMf/w==",
+            "Candidate": "Bg4Y/w=="
           },
           {
-            "X": 1205,
-            "Y": 5,
-            "Reference": "qKml/w==",
-            "Candidate": "qKik/w=="
+            "X": 198,
+            "Y": 38,
+            "Reference": "CBMe/w==",
+            "Candidate": "BQ0V/w=="
           },
           {
-            "X": 1204,
-            "Y": 6,
-            "Reference": "FxcX/w==",
-            "Candidate": "FxgX/w=="
+            "X": 199,
+            "Y": 38,
+            "Reference": "BxId/w==",
+            "Candidate": "BQwT/w=="
           },
           {
-            "X": 1205,
-            "Y": 6,
-            "Reference": "iouI/w==",
-            "Candidate": "iouH/w=="
+            "X": 200,
+            "Y": 38,
+            "Reference": "BxEc/w==",
+            "Candidate": "BAoR/w=="
           },
           {
-            "X": 1207,
-            "Y": 6,
-            "Reference": "ubq1/w==",
-            "Candidate": "uLm1/w=="
+            "X": 201,
+            "Y": 38,
+            "Reference": "BxAa/w==",
+            "Candidate": "BAkP/w=="
           },
           {
-            "X": 1209,
-            "Y": 7,
-            "Reference": "u7y3/w==",
-            "Candidate": "u7u3/w=="
+            "X": 202,
+            "Y": 38,
+            "Reference": "Bg8Z/w==",
+            "Candidate": "AwgN/w=="
           }
         ]
       },
@@ -20255,17 +20255,17 @@
       "id": "inv-040-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
-      "candidateSha256": "baa72c410913d2555b6e9913c20c7cd2c39f71f42d2f12db57ff9b76cf9ddf40",
+      "candidateSha256": "69816e4cb53a46a946a3898f516d862a87ddbbc8ddf2c5866a0c0ab5789b5be7",
       "width": 83,
       "height": 11,
       "referenceSha256": "aa4f4fb145115226557151a8480ca16b28303862bf13e2de005b073344d4663d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 151,
+          "ChangedPixelCount": 96,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.4707009857612267,
-          "RootMeanSquareError": 6.540442053584599,
+          "MeanAbsoluteError": 0.42661555312157723,
+          "RootMeanSquareError": 6.52352722443723,
           "MaximumAlphaError": 67,
           "AlphaChangedPixelCount": 96,
           "MinimumMismatchX": 12,
@@ -20287,12 +20287,6 @@
             "Candidate": "/10A3Q=="
           },
           {
-            "X": 15,
-            "Y": 0,
-            "Reference": "/14AvA==",
-            "Candidate": "/1wAvA=="
-          },
-          {
             "X": 21,
             "Y": 0,
             "Reference": "/1kA/w==",
@@ -20302,7 +20296,7 @@
             "X": 22,
             "Y": 0,
             "Reference": "/1cAtQ==",
-            "Candidate": "/1cAsw=="
+            "Candidate": "/1gAsw=="
           },
           {
             "X": 23,
@@ -20311,34 +20305,22 @@
             "Candidate": "/1YAOw=="
           },
           {
-            "X": 26,
-            "Y": 0,
-            "Reference": "/1YA9A==",
-            "Candidate": "/1UA9A=="
-          },
-          {
             "X": 28,
             "Y": 0,
             "Reference": "/1QAtA==",
-            "Candidate": "/1MAtQ=="
+            "Candidate": "/1UAtQ=="
           },
           {
             "X": 32,
             "Y": 0,
             "Reference": "/00AFA==",
-            "Candidate": "/0kAFQ=="
+            "Candidate": "/1UAFQ=="
           },
           {
             "X": 35,
             "Y": 0,
             "Reference": "/1AArA==",
             "Candidate": "/1EArQ=="
-          },
-          {
-            "X": 37,
-            "Y": 0,
-            "Reference": "/08A9A==",
-            "Candidate": "/04A9A=="
           },
           {
             "X": 47,
@@ -20351,12 +20333,6 @@
             "Y": 0,
             "Reference": "/0UArQ==",
             "Candidate": "/0UArg=="
-          },
-          {
-            "X": 61,
-            "Y": 0,
-            "Reference": "/0AA6g==",
-            "Candidate": "/z8A6g=="
           },
           {
             "X": 66,
@@ -20375,6 +20351,30 @@
             "Y": 0,
             "Reference": "/zkARw==",
             "Candidate": "/zkASA=="
+          },
+          {
+            "X": 73,
+            "Y": 0,
+            "Reference": "/zkAxQ==",
+            "Candidate": "/zkA2A=="
+          },
+          {
+            "X": 80,
+            "Y": 0,
+            "Reference": "/zQAzw==",
+            "Candidate": "/zQA2Q=="
+          },
+          {
+            "X": 81,
+            "Y": 0,
+            "Reference": "/zUAgg==",
+            "Candidate": "/zQAkg=="
+          },
+          {
+            "X": 12,
+            "Y": 1,
+            "Reference": "/18A3Q==",
+            "Candidate": "/14A3g=="
           }
         ]
       },
@@ -20410,17 +20410,17 @@
       "id": "inv-040-small-white",
       "renderOutcome": "renders",
       "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
-      "candidateSha256": "ff0b042cc9e143c81d234700d2e9b95de9b3ffd5af626700ab3809be34f0908a",
+      "candidateSha256": "be605bef9cc14a75de4cd99d67a8d728ccac1a85a82cab60339b2e1c22aa0166",
       "width": 83,
       "height": 11,
       "referenceSha256": "3419059d35f96bc31a809bede839321f6ae7418409ca834e9a7d90cdd548867e",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 151,
+          "ChangedPixelCount": 96,
           "MaximumChannelError": 67,
-          "MeanAbsoluteError": 0.4142935377875137,
-          "RootMeanSquareError": 2.8187779816734664,
+          "MeanAbsoluteError": 0.3953997809419496,
+          "RootMeanSquareError": 2.8085107707072323,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 12,
@@ -20442,12 +20442,6 @@
             "Candidate": "/3Mi/w=="
           },
           {
-            "X": 15,
-            "Y": 0,
-            "Reference": "/4hD/w==",
-            "Candidate": "/4dD/w=="
-          },
-          {
             "X": 21,
             "Y": 0,
             "Reference": "/1kA/w==",
@@ -20457,7 +20451,7 @@
             "X": 22,
             "Y": 0,
             "Reference": "/4hK/w==",
-            "Candidate": "/4lM/w=="
+            "Candidate": "/4pM/w=="
           },
           {
             "X": 23,
@@ -20466,34 +20460,22 @@
             "Candidate": "/9jE/w=="
           },
           {
-            "X": 26,
-            "Y": 0,
-            "Reference": "/10L/w==",
-            "Candidate": "/1wL/w=="
-          },
-          {
             "X": 28,
             "Y": 0,
             "Reference": "/4ZL/w==",
-            "Candidate": "/4VK/w=="
+            "Candidate": "/4ZK/w=="
           },
           {
             "X": 32,
             "Y": 0,
             "Reference": "//Hr/w==",
-            "Candidate": "//Dq/w=="
+            "Candidate": "//Hq/w=="
           },
           {
             "X": 35,
             "Y": 0,
             "Reference": "/4lT/w==",
             "Candidate": "/4lS/w=="
-          },
-          {
-            "X": 37,
-            "Y": 0,
-            "Reference": "/1cL/w==",
-            "Candidate": "/1YL/w=="
           },
           {
             "X": 47,
@@ -20506,12 +20488,6 @@
             "Y": 0,
             "Reference": "/4FS/w==",
             "Candidate": "/4BR/w=="
-          },
-          {
-            "X": 61,
-            "Y": 0,
-            "Reference": "/1AV/w==",
-            "Candidate": "/08V/w=="
           },
           {
             "X": 66,
@@ -20530,6 +20506,30 @@
             "Y": 0,
             "Reference": "/8i4/w==",
             "Candidate": "/8e3/w=="
+          },
+          {
+            "X": 73,
+            "Y": 0,
+            "Reference": "/2Y6/w==",
+            "Candidate": "/1cn/w=="
+          },
+          {
+            "X": 80,
+            "Y": 0,
+            "Reference": "/1ow/w==",
+            "Candidate": "/1Im/w=="
+          },
+          {
+            "X": 81,
+            "Y": 0,
+            "Reference": "/5h9/w==",
+            "Candidate": "/4tt/w=="
+          },
+          {
+            "X": 12,
+            "Y": 1,
+            "Reference": "/3Qi/w==",
+            "Candidate": "/3Mh/w=="
           }
         ]
       },
@@ -20565,17 +20565,17 @@
       "id": "inv-040-small-black",
       "renderOutcome": "renders",
       "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
-      "candidateSha256": "c26de4692919760a5d886d635d2254a6ed363a0df4ea37c1946d4a5020b30ae8",
+      "candidateSha256": "a48c2c0eee817d557ac66f7ac7894a4e5f605fc07620c47f6a0f2f0124066529",
       "width": 83,
       "height": 11,
       "referenceSha256": "46f8872e4cce399fb284c83ed9d7bd545489e755b7685d609eafc7591238133c",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 151,
+          "ChangedPixelCount": 96,
           "MaximumChannelError": 67,
-          "MeanAbsoluteError": 0.3042168674698795,
-          "RootMeanSquareError": 2.384173354621051,
+          "MeanAbsoluteError": 0.2897042716319825,
+          "RootMeanSquareError": 2.3826223737060297,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 12,
@@ -20597,12 +20597,6 @@
             "Candidate": "3VEA/w=="
           },
           {
-            "X": 15,
-            "Y": 0,
-            "Reference": "vEUA/w==",
-            "Candidate": "vEQA/w=="
-          },
-          {
             "X": 21,
             "Y": 0,
             "Reference": "/1kA/w==",
@@ -20612,7 +20606,7 @@
             "X": 22,
             "Y": 0,
             "Reference": "tT4A/w==",
-            "Candidate": "sz0A/w=="
+            "Candidate": "sz4A/w=="
           },
           {
             "X": 23,
@@ -20621,34 +20615,22 @@
             "Candidate": "OxQA/w=="
           },
           {
-            "X": 26,
-            "Y": 0,
-            "Reference": "9FIA/w==",
-            "Candidate": "9FEA/w=="
-          },
-          {
             "X": 28,
             "Y": 0,
             "Reference": "tDsA/w==",
-            "Candidate": "tTsA/w=="
+            "Candidate": "tTwA/w=="
           },
           {
             "X": 32,
             "Y": 0,
             "Reference": "FAYA/w==",
-            "Candidate": "FQYA/w=="
+            "Candidate": "FQcA/w=="
           },
           {
             "X": 35,
             "Y": 0,
             "Reference": "rDYA/w==",
             "Candidate": "rTcA/w=="
-          },
-          {
-            "X": 37,
-            "Y": 0,
-            "Reference": "9EwA/w==",
-            "Candidate": "9EsA/w=="
           },
           {
             "X": 47,
@@ -20661,12 +20643,6 @@
             "Y": 0,
             "Reference": "rS8A/w==",
             "Candidate": "ri8A/w=="
-          },
-          {
-            "X": 61,
-            "Y": 0,
-            "Reference": "6jsA/w==",
-            "Candidate": "6joA/w=="
           },
           {
             "X": 66,
@@ -20685,6 +20661,30 @@
             "Y": 0,
             "Reference": "RxAA/w==",
             "Candidate": "SBAA/w=="
+          },
+          {
+            "X": 73,
+            "Y": 0,
+            "Reference": "xSwA/w==",
+            "Candidate": "2DAA/w=="
+          },
+          {
+            "X": 80,
+            "Y": 0,
+            "Reference": "zyoA/w==",
+            "Candidate": "2SwA/w=="
+          },
+          {
+            "X": 81,
+            "Y": 0,
+            "Reference": "ghsA/w==",
+            "Candidate": "kh4A/w=="
+          },
+          {
+            "X": 12,
+            "Y": 1,
+            "Reference": "3VIA/w==",
+            "Candidate": "3lIA/w=="
           }
         ]
       },
@@ -20720,17 +20720,17 @@
       "id": "inv-040-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
-      "candidateSha256": "fdb2a60f780fbcf8b221c9c9eb1d6fb5fd9f55ae2a947ded3d52831e46bc0f1a",
+      "candidateSha256": "b9703166ae05b8151cc7ab2f7c69aa62c25b887b1adde2656da3e4289fdc061c",
       "width": 166,
       "height": 22,
       "referenceSha256": "f469891ce4cf42d178d44e8b6221bb3f54dfc0f7d4480863d55f80d431f7b53f",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 363,
+          "ChangedPixelCount": 221,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.5455230010952903,
-          "RootMeanSquareError": 8.201348465247152,
+          "MeanAbsoluteError": 0.5178669222343921,
+          "RootMeanSquareError": 8.187606340705534,
           "MaximumAlphaError": 77,
           "AlphaChangedPixelCount": 221,
           "MinimumMismatchX": 16,
@@ -20752,12 +20752,6 @@
             "Candidate": "/1oAEQ=="
           },
           {
-            "X": 25,
-            "Y": 0,
-            "Reference": "/18AvA==",
-            "Candidate": "/14AvA=="
-          },
-          {
             "X": 30,
             "Y": 0,
             "Reference": "/1wAdA==",
@@ -20767,19 +20761,19 @@
             "X": 43,
             "Y": 0,
             "Reference": "/1kA/w==",
-            "Candidate": "/1gA4Q=="
+            "Candidate": "/1oA4Q=="
           },
           {
             "X": 44,
             "Y": 0,
             "Reference": "/1gA0Q==",
-            "Candidate": "/1cAxw=="
+            "Candidate": "/1gAxw=="
           },
           {
             "X": 45,
             "Y": 0,
             "Reference": "/1kAeA==",
-            "Candidate": "/1YAXA=="
+            "Candidate": "/1kAXA=="
           },
           {
             "X": 46,
@@ -20791,7 +20785,7 @@
             "X": 52,
             "Y": 0,
             "Reference": "/1UA5A==",
-            "Candidate": "/1UA5Q=="
+            "Candidate": "/1YA5Q=="
           },
           {
             "X": 57,
@@ -20806,12 +20800,6 @@
             "Candidate": "/08A6Q=="
           },
           {
-            "X": 84,
-            "Y": 0,
-            "Reference": "/0wA/w==",
-            "Candidate": "/0sA/w=="
-          },
-          {
             "X": 100,
             "Y": 0,
             "Reference": "/0UAPw==",
@@ -20821,25 +20809,37 @@
             "X": 107,
             "Y": 0,
             "Reference": "/0MAJg==",
-            "Candidate": "/0EAJw=="
+            "Candidate": "/0gAJw=="
           },
           {
             "X": 117,
             "Y": 0,
             "Reference": "/0AAIA==",
-            "Candidate": "/z4AIQ=="
+            "Candidate": "/0YAIQ=="
           },
           {
             "X": 123,
             "Y": 0,
             "Reference": "/0AAow==",
-            "Candidate": "/z8ApQ=="
+            "Candidate": "/0EApQ=="
           },
           {
-            "X": 133,
+            "X": 145,
             "Y": 0,
-            "Reference": "/z4A9A==",
-            "Candidate": "/z0A9A=="
+            "Reference": "/zsAVw==",
+            "Candidate": "/0AAEA=="
+          },
+          {
+            "X": 146,
+            "Y": 0,
+            "Reference": "/zgAzQ==",
+            "Candidate": "/zkAiw=="
+          },
+          {
+            "X": 147,
+            "Y": 0,
+            "Reference": "/zkA7w==",
+            "Candidate": "/zgA2Q=="
           }
         ]
       },
@@ -20875,17 +20875,17 @@
       "id": "inv-040-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
-      "candidateSha256": "a6d70faecb36f143f3a46a87757cd7200b2da48ca5053cd77cc69c913dd3b633",
+      "candidateSha256": "fb285d48bcb27277d02a4b3f011496accf303670e72cc1a32f64e16ef6cb93fb",
       "width": 166,
       "height": 22,
       "referenceSha256": "feda672c633f2dc27a66b309930a5340d6ad2b32a6cb989fe7e83c0b25502248",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 363,
+          "ChangedPixelCount": 221,
           "MaximumChannelError": 77,
-          "MeanAbsoluteError": 0.41299288061336253,
-          "RootMeanSquareError": 3.828710285912237,
+          "MeanAbsoluteError": 0.4029299014238773,
+          "RootMeanSquareError": 3.8351682990070532,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 16,
@@ -20907,12 +20907,6 @@
             "Candidate": "//Tu/w=="
           },
           {
-            "X": 25,
-            "Y": 0,
-            "Reference": "/4lD/w==",
-            "Candidate": "/4hD/w=="
-          },
-          {
             "X": 30,
             "Y": 0,
             "Reference": "/7WL/w==",
@@ -20922,19 +20916,19 @@
             "X": 43,
             "Y": 0,
             "Reference": "/1kA/w==",
-            "Candidate": "/2we/w=="
+            "Candidate": "/20e/w=="
           },
           {
             "X": 44,
             "Y": 0,
             "Reference": "/3Yu/w==",
-            "Candidate": "/3w4/w=="
+            "Candidate": "/304/w=="
           },
           {
             "X": 45,
             "Y": 0,
             "Reference": "/7GH/w==",
-            "Candidate": "/8Kj/w=="
+            "Candidate": "/8Oj/w=="
           },
           {
             "X": 46,
@@ -20946,7 +20940,7 @@
             "X": 52,
             "Y": 0,
             "Reference": "/2cb/w==",
-            "Candidate": "/2Ya/w=="
+            "Candidate": "/2ca/w=="
           },
           {
             "X": 57,
@@ -20961,12 +20955,6 @@
             "Candidate": "/14W/w=="
           },
           {
-            "X": 84,
-            "Y": 0,
-            "Reference": "/0wA/w==",
-            "Candidate": "/0sA/w=="
-          },
-          {
             "X": 100,
             "Y": 0,
             "Reference": "/9HA/w==",
@@ -20976,25 +20964,37 @@
             "X": 107,
             "Y": 0,
             "Reference": "/+PZ/w==",
-            "Candidate": "/+LY/w=="
+            "Candidate": "/+PY/w=="
           },
           {
             "X": 117,
             "Y": 0,
             "Reference": "/+ff/w==",
-            "Candidate": "/+be/w=="
+            "Candidate": "/+fe/w=="
           },
           {
             "X": 123,
             "Y": 0,
             "Reference": "/4Vc/w==",
-            "Candidate": "/4Na/w=="
+            "Candidate": "/4Ra/w=="
           },
           {
-            "X": 133,
+            "X": 145,
             "Y": 0,
-            "Reference": "/0YL/w==",
-            "Candidate": "/0UL/w=="
+            "Reference": "/7yo/w==",
+            "Candidate": "//Pv/w=="
+          },
+          {
+            "X": 146,
+            "Y": 0,
+            "Reference": "/18y/w==",
+            "Candidate": "/5N0/w=="
+          },
+          {
+            "X": 147,
+            "Y": 0,
+            "Reference": "/0UQ/w==",
+            "Candidate": "/1Ym/w=="
           }
         ]
       },
@@ -21030,17 +21030,17 @@
       "id": "inv-040-intended-black",
       "renderOutcome": "renders",
       "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
-      "candidateSha256": "49b24c6b4ff569659777df7e9c1001672b39dd9ce43e41f598600f288ee1326a",
+      "candidateSha256": "376af2521e7ef7e9167448220afcdf8cb5f5d5c08c3a12680505d448e9c3dc13",
       "width": 166,
       "height": 22,
       "referenceSha256": "2ac8e5233715ed1a3bcfd392efd1fbf968652f7fb96e091e9ac4ca8937fa95fc",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 363,
+          "ChangedPixelCount": 221,
           "MaximumChannelError": 77,
-          "MeanAbsoluteError": 0.30353231106243156,
-          "RootMeanSquareError": 3.171594041223122,
+          "MeanAbsoluteError": 0.29305859802847756,
+          "RootMeanSquareError": 3.166225877740224,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 16,
@@ -21062,12 +21062,6 @@
             "Candidate": "EQYA/w=="
           },
           {
-            "X": 25,
-            "Y": 0,
-            "Reference": "vEYA/w==",
-            "Candidate": "vEUA/w=="
-          },
-          {
             "X": 30,
             "Y": 0,
             "Reference": "dCoA/w==",
@@ -21077,19 +21071,19 @@
             "X": 43,
             "Y": 0,
             "Reference": "/1kA/w==",
-            "Candidate": "4U4A/w=="
+            "Candidate": "4U8A/w=="
           },
           {
             "X": 44,
             "Y": 0,
             "Reference": "0UgA/w==",
-            "Candidate": "x0QA/w=="
+            "Candidate": "x0UA/w=="
           },
           {
             "X": 45,
             "Y": 0,
             "Reference": "eCoA/w==",
-            "Candidate": "XB8A/w=="
+            "Candidate": "XCAA/w=="
           },
           {
             "X": 46,
@@ -21101,7 +21095,7 @@
             "X": 52,
             "Y": 0,
             "Reference": "5EwA/w==",
-            "Candidate": "5UwA/w=="
+            "Candidate": "5U0A/w=="
           },
           {
             "X": 57,
@@ -21116,12 +21110,6 @@
             "Candidate": "6UgA/w=="
           },
           {
-            "X": 84,
-            "Y": 0,
-            "Reference": "/0wA/w==",
-            "Candidate": "/0sA/w=="
-          },
-          {
             "X": 100,
             "Y": 0,
             "Reference": "PxEA/w==",
@@ -21131,25 +21119,37 @@
             "X": 107,
             "Y": 0,
             "Reference": "JgoA/w==",
-            "Candidate": "JwoA/w=="
+            "Candidate": "JwsA/w=="
           },
           {
             "X": 117,
             "Y": 0,
             "Reference": "IAgA/w==",
-            "Candidate": "IQgA/w=="
+            "Candidate": "IQkA/w=="
           },
           {
             "X": 123,
             "Y": 0,
             "Reference": "oykA/w==",
-            "Candidate": "pSkA/w=="
+            "Candidate": "pSoA/w=="
           },
           {
-            "X": 133,
+            "X": 145,
             "Y": 0,
-            "Reference": "9DsA/w==",
-            "Candidate": "9DoA/w=="
+            "Reference": "VxQA/w==",
+            "Candidate": "EAQA/w=="
+          },
+          {
+            "X": 146,
+            "Y": 0,
+            "Reference": "zS0A/w==",
+            "Candidate": "ix8A/w=="
+          },
+          {
+            "X": 147,
+            "Y": 0,
+            "Reference": "7zUA/w==",
+            "Candidate": "2TAA/w=="
           }
         ]
       },
@@ -21185,20 +21185,20 @@
       "id": "inv-040-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
-      "candidateSha256": "df85782f7ddf6f27f6f000953066947b0dbcbadf27af24d0c9b74569cdc178bf",
+      "candidateSha256": "d2fb82c08e546b84922582b03b2cbc773208867827f44cdcba80c55a306c6d3f",
       "width": 332,
       "height": 44,
       "referenceSha256": "46ce467f963ebb41b88321bac35e6c56e1f5239d6c46a13535cb144c37b0fcfd",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 736,
+          "ChangedPixelCount": 427,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.2583173603504929,
-          "RootMeanSquareError": 6.003552936735381,
+          "MeanAbsoluteError": 0.24115210843373494,
+          "RootMeanSquareError": 5.993257609545097,
           "MaximumAlphaError": 66,
           "AlphaChangedPixelCount": 427,
-          "MinimumMismatchX": 14,
+          "MinimumMismatchX": 61,
           "MinimumMismatchY": 0,
           "MaximumMismatchX": 330,
           "MaximumMismatchY": 43,
@@ -21210,12 +21210,6 @@
         "opaqueLost": 0,
         "opaqueAdded": 0,
         "witnesses": [
-          {
-            "X": 39,
-            "Y": 0,
-            "Reference": "/2MAJA==",
-            "Candidate": "/1wAJA=="
-          },
           {
             "X": 85,
             "Y": 0,
@@ -21253,34 +21247,10 @@
             "Candidate": "AAAAAA=="
           },
           {
-            "X": 114,
-            "Y": 0,
-            "Reference": "/1UA3A==",
-            "Candidate": "/1MA3A=="
-          },
-          {
-            "X": 142,
-            "Y": 0,
-            "Reference": "/1AAuA==",
-            "Candidate": "/08AuA=="
-          },
-          {
-            "X": 189,
-            "Y": 0,
-            "Reference": "/0oAmA==",
-            "Candidate": "/0gAmA=="
-          },
-          {
             "X": 201,
             "Y": 0,
             "Reference": "/0gAYA==",
-            "Candidate": "/0YAXw=="
-          },
-          {
-            "X": 207,
-            "Y": 0,
-            "Reference": "/0cA/w==",
-            "Candidate": "/0YA/w=="
+            "Candidate": "/0gAXw=="
           },
           {
             "X": 214,
@@ -21295,16 +21265,46 @@
             "Candidate": "/0AA1A=="
           },
           {
-            "X": 247,
-            "Y": 0,
-            "Reference": "/00ACg==",
-            "Candidate": "/zMACg=="
-          },
-          {
             "X": 292,
             "Y": 0,
             "Reference": "/zoALA==",
             "Candidate": "/zcAKg=="
+          },
+          {
+            "X": 293,
+            "Y": 0,
+            "Reference": "/zgAdg==",
+            "Candidate": "/zkAdA=="
+          },
+          {
+            "X": 294,
+            "Y": 0,
+            "Reference": "/zgArA==",
+            "Candidate": "/zkAqw=="
+          },
+          {
+            "X": 322,
+            "Y": 0,
+            "Reference": "/zQAzQ==",
+            "Candidate": "/zQAyg=="
+          },
+          {
+            "X": 323,
+            "Y": 0,
+            "Reference": "/zQAkg==",
+            "Candidate": "/zUAlQ=="
+          },
+          {
+            "X": 90,
+            "Y": 1,
+            "Reference": "/1gA/w==",
+            "Candidate": "/1gA5Q=="
+          },
+          {
+            "X": 91,
+            "Y": 1,
+            "Reference": "/1cAuw==",
+            "Candidate": "/1cAew=="
           }
         ]
       },
@@ -21340,20 +21340,20 @@
       "id": "inv-040-large-white",
       "renderOutcome": "renders",
       "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
-      "candidateSha256": "14baef5f1c1205d26f92e5f74c969c9dc8590a2c9368bd5b88985cfcc5bc79ed",
+      "candidateSha256": "b7f7a15246ba8b94eae69015f8a3b773b25eed53a27a401458ff86f7180e5488",
       "width": 332,
       "height": 44,
       "referenceSha256": "d703d01700d40adab7b4b2d4a1cd849d0199ac03f49e8c9cd48f5f4f7f28f6d6",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 736,
+          "ChangedPixelCount": 427,
           "MaximumChannelError": 66,
-          "MeanAbsoluteError": 0.13976930449069003,
-          "RootMeanSquareError": 1.842740002663185,
+          "MeanAbsoluteError": 0.13381366374589265,
+          "RootMeanSquareError": 1.836404522903794,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 14,
+          "MinimumMismatchX": 61,
           "MinimumMismatchY": 0,
           "MaximumMismatchX": 330,
           "MaximumMismatchY": 43,
@@ -21365,12 +21365,6 @@
         "opaqueLost": 0,
         "opaqueAdded": 0,
         "witnesses": [
-          {
-            "X": 39,
-            "Y": 0,
-            "Reference": "/+nb/w==",
-            "Candidate": "/+jb/w=="
-          },
           {
             "X": 85,
             "Y": 0,
@@ -21408,34 +21402,10 @@
             "Candidate": "/////w=="
           },
           {
-            "X": 114,
-            "Y": 0,
-            "Reference": "/2wj/w==",
-            "Candidate": "/2sj/w=="
-          },
-          {
-            "X": 142,
-            "Y": 0,
-            "Reference": "/4FH/w==",
-            "Candidate": "/4BH/w=="
-          },
-          {
-            "X": 189,
-            "Y": 0,
-            "Reference": "/5Nn/w==",
-            "Candidate": "/5Jn/w=="
-          },
-          {
             "X": 201,
             "Y": 0,
             "Reference": "/7qf/w==",
-            "Candidate": "/7qg/w=="
-          },
-          {
-            "X": 207,
-            "Y": 0,
-            "Reference": "/0cA/w==",
-            "Candidate": "/0YA/w=="
+            "Candidate": "/7ug/w=="
           },
           {
             "X": 214,
@@ -21450,16 +21420,46 @@
             "Candidate": "/2Ar/w=="
           },
           {
-            "X": 247,
-            "Y": 0,
-            "Reference": "//j1/w==",
-            "Candidate": "//f1/w=="
-          },
-          {
             "X": 292,
             "Y": 0,
             "Reference": "/93T/w==",
             "Candidate": "/97V/w=="
+          },
+          {
+            "X": 293,
+            "Y": 0,
+            "Reference": "/6OJ/w==",
+            "Candidate": "/6WL/w=="
+          },
+          {
+            "X": 294,
+            "Y": 0,
+            "Reference": "/3lT/w==",
+            "Candidate": "/3pU/w=="
+          },
+          {
+            "X": 322,
+            "Y": 0,
+            "Reference": "/1wy/w==",
+            "Candidate": "/141/w=="
+          },
+          {
+            "X": 323,
+            "Y": 0,
+            "Reference": "/4tt/w==",
+            "Candidate": "/4lq/w=="
+          },
+          {
+            "X": 90,
+            "Y": 1,
+            "Reference": "/1gA/w==",
+            "Candidate": "/2ka/w=="
+          },
+          {
+            "X": 91,
+            "Y": 1,
+            "Reference": "/4RE/w==",
+            "Candidate": "/66E/w=="
           }
         ]
       },
@@ -21495,20 +21495,20 @@
       "id": "inv-040-large-black",
       "renderOutcome": "renders",
       "inputSha256": "f7b0143b5ffe962021a45e93d241bf8140623a3439255c0cf010185ac69bd2e6",
-      "candidateSha256": "aa3787d8f4b02782f89826068f62cd8399c353538ccb9242f4a32762fab38bc0",
+      "candidateSha256": "8be1f2b963d6989090e7cfddecca583afc78f5d9c7ef8becac27803d29119173",
       "width": 332,
       "height": 44,
       "referenceSha256": "f9c36e8ecfc1e9a314fea04fa54416e19c309f1a99c8fb9f18a7e7cced06719c",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 736,
+          "ChangedPixelCount": 427,
           "MaximumChannelError": 66,
-          "MeanAbsoluteError": 0.10477135815991237,
-          "RootMeanSquareError": 1.5620823647773194,
+          "MeanAbsoluteError": 0.09973986856516977,
+          "RootMeanSquareError": 1.5620604529619069,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 14,
+          "MinimumMismatchX": 61,
           "MinimumMismatchY": 0,
           "MaximumMismatchX": 330,
           "MaximumMismatchY": 43,
@@ -21520,12 +21520,6 @@
         "opaqueLost": 0,
         "opaqueAdded": 0,
         "witnesses": [
-          {
-            "X": 39,
-            "Y": 0,
-            "Reference": "JA4A/w==",
-            "Candidate": "JA0A/w=="
-          },
           {
             "X": 85,
             "Y": 0,
@@ -21563,34 +21557,10 @@
             "Candidate": "AAAA/w=="
           },
           {
-            "X": 114,
-            "Y": 0,
-            "Reference": "3EkA/w==",
-            "Candidate": "3EgA/w=="
-          },
-          {
-            "X": 142,
-            "Y": 0,
-            "Reference": "uDoA/w==",
-            "Candidate": "uDkA/w=="
-          },
-          {
-            "X": 189,
-            "Y": 0,
-            "Reference": "mCwA/w==",
-            "Candidate": "mCsA/w=="
-          },
-          {
             "X": 201,
             "Y": 0,
             "Reference": "YBsA/w==",
-            "Candidate": "XxoA/w=="
-          },
-          {
-            "X": 207,
-            "Y": 0,
-            "Reference": "/0cA/w==",
-            "Candidate": "/0YA/w=="
+            "Candidate": "XxsA/w=="
           },
           {
             "X": 214,
@@ -21605,16 +21575,46 @@
             "Candidate": "1DUA/w=="
           },
           {
-            "X": 247,
-            "Y": 0,
-            "Reference": "CgMA/w==",
-            "Candidate": "CgIA/w=="
-          },
-          {
             "X": 292,
             "Y": 0,
             "Reference": "LAoA/w==",
             "Candidate": "KgkA/w=="
+          },
+          {
+            "X": 293,
+            "Y": 0,
+            "Reference": "dhoA/w==",
+            "Candidate": "dBoA/w=="
+          },
+          {
+            "X": 294,
+            "Y": 0,
+            "Reference": "rCYA/w==",
+            "Candidate": "qyYA/w=="
+          },
+          {
+            "X": 322,
+            "Y": 0,
+            "Reference": "zSoA/w==",
+            "Candidate": "yikA/w=="
+          },
+          {
+            "X": 323,
+            "Y": 0,
+            "Reference": "kh4A/w==",
+            "Candidate": "lR8A/w=="
+          },
+          {
+            "X": 90,
+            "Y": 1,
+            "Reference": "/1gA/w==",
+            "Candidate": "5U8A/w=="
+          },
+          {
+            "X": 91,
+            "Y": 1,
+            "Reference": "u0AA/w==",
+            "Candidate": "eyoA/w=="
           }
         ]
       },
@@ -31522,8 +31522,8 @@
       "referenceSha256": "e628ef493bea5ee8586514bc6d3730caeb0738def9eac6319b3db860614ded6c"
     }
   ],
-  "rendererSourceBaselineCommit": "186f26767f8a72e80101866a38a8ffa544d022a1",
-  "rendererSourceState": "Original rectangle paint edges retain a separate clip through viewport, affine and instance mappings. Solid material premultiplication precedes rounded native rectangle coverage; paint-server and pattern bands preserve clips.",
-  "measurementCheckpoint": "rectangle-paint-clip-2026-10-06",
+  "rendererSourceBaselineCommit": "e9758253",
+  "rendererSourceState": "Gradient stops retain authored float alpha alongside byte color through clamping and href inheritance. Gradient/radial/pattern polygon samples retain float channels through ordered analytic operations and fallback coverage, sharing rectangle material arithmetic.",
+  "measurementCheckpoint": "polygon-shader-stop-alpha-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

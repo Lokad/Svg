@@ -24,6 +24,12 @@ public sealed class SvgShaderPaintTests
             byte[] destination = values.Skip(8).Take(4).Select(value => (byte)value).ToArray();
             paint.Blend(destination, (byte)values[5]);
             Assert.Equal(values.Skip(12).Select(value => (byte)value), destination);
+            foreach (SvgAnalyticPaintKind kind in new[] { SvgAnalyticPaintKind.Mask, SvgAnalyticPaintKind.Direct, SvgAnalyticPaintKind.Pair })
+            {
+                byte[] replay = values.Skip(8).Take(4).Select(value => (byte)value).ToArray();
+                SvgAnalyticPaint.Shader(paint).Blend(replay, (byte)values[5], kind);
+                Assert.Equal(values.Skip(12).Select(value => (byte)value), replay);
+            }
         }
     }
 

@@ -4875,3 +4875,43 @@ allocated; existing per-row cancellation and pixel work charges remain in force.
 Full validation, delivery and sixteen matched cost recipes are retained under
 ignored `artifacts/shader-paint-20261006/`. Stop-alpha/coordinate precision,
 polygon shader arithmetic, successive clips, cache history and S17 remain open.
+
+## Source stop-opacity and shared polygon shaders (2026-10-06)
+
+The rectangle multistop residual came from quantizing `stop-opacity` while
+parsing. `SvgGradientStop.Alpha` retains its validated float alongside byte color;
+offset clamping/monotonicity use record copies so that style and href resolution
+preserve it. The float occupies former padding: stops remain 16 bytes on x64.
+CSS color alpha remains byte-encoded. Six supplemental browser configurations
+independently distinguish decimal stop-opacity from `rgba()` alpha, correcting
+the old semantic-equality test with captured pixel witnesses. No color parser
+or ordinary solid-color arithmetic changes are needed.
+
+`SvgAnalyticPaint` retains either solid premultiplied bytes or a float shader
+sample. Linear/radial/pattern polygons use the existing `SvgShaderPaint` stages
+for ordered analytic events and geometric fallback coverage. The former byte
+interpolators are removed. Event ordering, clip ownership, cancellation and work
+charges are preserved. Material grows from 5 to 24 bytes on x64 as a stack value;
+it adds no stored array or heap owner. All 21 observed work/peak ledgers match
+the retained `e9758253` renderer. The 5,760 original native material vectors also
+pass through mask/direct/pair operation wrappers; they do not prove coordinates.
+
+Eighteen fixtures and one radial research probe graduate using original images.
+Eight new CC0 sources add 24 configurations with 72 healthy, cleaned, byte-stable
+fresh captures: 18 configurations were declared before production editing and
+six supplemental cases after editing and before captures. Twenty-one are exact.
+The notched-pattern cases retain 36/52/36 changed pixels on transparent/white/
+black, maxima 12/11/8 and alpha maxima 12/0/0. These horizontal-notch/edge
+differences retain a separate geometry/replay gate; no tolerance is admitted.
+
+The prior 1,053-case bank changes 69 inexact PNGs (58 fixtures, five research,
+six legacy Default), preserves all outcomes and 735 exact PNGs, and increases
+no compared mismatch count. The expanded bank has 1,077 cases: 932 fixtures,
+53 research and 92 legacy Default. Twenty-seven Apple/Instagram/Liputan 6 variants
+improve; the other 213 corporate renders and all 66 exact PNGs are unchanged.
+Corporate exact documents remain 3/27. Every original reference is preserved.
+Twenty-seven new core cases cover precision, inheritance, six outputs, denial
+and cancellation cleanup. Full tests, memory, Chrome/validator and delivery
+checks pass; matched conversion costs are in the benchmark record. Detailed
+reports stay under ignored `artifacts/shader-stops-20261006/`. Gradient coordinate
+stages, notched edges, successive clips/cache history, Linux and S17 remain open.

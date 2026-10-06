@@ -35,13 +35,13 @@
   "declaredBeforeProductionEdit": false,
   "declaredBeforeCaptures": true,
   "candidateOutcome": "renders",
-  "candidateSha256": "3cb902ba47363db6fb83421fc215b2a32caeff52e0f744d54372a5ec75dfc101",
+  "candidateSha256": "1040ededa898ae72ff1ec6d9b83292e8e62f49e6854b084135a21fc469c7454b",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 337,
-    "maximumChannelError": 23,
-    "meanAbsoluteError": 0.019010416666666665,
-    "rootMeanSquareError": 0.20775962673243328,
+    "changedPixelCount": 325,
+    "maximumChannelError": 5,
+    "meanAbsoluteError": 0.016471354166666667,
+    "rootMeanSquareError": 0.14114487238295267,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
     "minimumMismatchX": 2,
@@ -49,11 +49,7 @@
     "maximumMismatchX": 27,
     "maximumMismatchY": 27,
     "exact": false,
-    "alphaErrorMass": 0,
-    "overCoveragePixelCount": 0,
-    "underCoveragePixelCount": 0,
-    "opaqueLostPixelCount": 0,
-    "opaqueAddedPixelCount": 0
+    "alphaErrorMass": 0
   },
   "beforeAntialiasedClipDispatchComparison": {
     "dimensionsMatch": true,

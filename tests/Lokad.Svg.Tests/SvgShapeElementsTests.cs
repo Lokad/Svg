@@ -1504,12 +1504,15 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Stop_opacity_matches_rgba_stop_alpha()
+    public void Stop_opacity_retains_precision_while_rgba_encodes_color_alpha()
     {
         byte[] faded = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff' stop-opacity='0.5'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>", out _, out _);
         byte[] rgba = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='h'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='rgba(0, 0, 255, 0.5)'/></linearGradient></defs><rect width='8' height='8' fill='url(#h)'/></svg>", out _, out _);
 
-        Assert.Equal(rgba, faded);
+        // Independent pinned-browser captures distinguish authored .5 opacity
+        // from the 128/255 alpha encoded in a CSS rgba() color.
+        Assert.Equal(new SvgColor(111, 0, 144, 183), Pixel(faded, 8, 4, 0));
+        Assert.Equal(new SvgColor(111, 0, 143, 184), Pixel(rgba, 8, 4, 0));
     }
 
     [Fact]

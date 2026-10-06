@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the float shader checkpoint, the 907 current manifest entries contain
-735 exact decoded-pixel references, 145 known-difference renders and 27
+At the shared polygon shader checkpoint, the 932 current manifest entries contain
+775 exact decoded-pixel references, 130 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -41,13 +41,17 @@ PNG identities are preserved. All nine IBM variants improve but remain inexact.
 Successive clip-alpha intersections, cache history and general paint fidelity
 remain open.
 
-Rectangle gradient and pattern samples now retain premultiplied float lanes
-through coverage and source-over, with one final byte conversion. All six prior
-rectangle shader controls become exact. Nineteen fixtures and six research probes
-graduate using their original images; twelve fresh controls add nine exact and
-three known multistop-alpha cases. All 701 prior exact PNGs and every corporate
-output are preserved. This establishes rectangle material arithmetic; authored
-stop-alpha precision, gradient interpolation and polygon shader routes remain open.
+Rectangle and polygon gradient/pattern samples retain premultiplied float lanes
+through coverage and source-over, with one final byte conversion. Gradient stops
+retain source stop-opacity through clamping, style and href resolution while CSS
+color alpha keeps its byte encoding. The browser distinguishes `stop-opacity=".5"`
+from `rgba(...,.5)`; all six fresh alpha comparisons are exact. Eighteen existing
+fixtures and one research probe graduate with their original images. Twenty-four
+fresh configurations add twenty-one exact and three known notched-pattern cases.
+All 735 prior exact fixture PNGs and 66 exact corporate PNGs are preserved;
+27 Apple/Instagram/Liputan 6 variants improve but remain inexact. The corporate
+rate stays 3/27. Gradient coordinates/interpolation, notched edges, successive
+clip/cache behavior and general shader fidelity remain open.
 
 Convex rectangular strips round coverage separately from the raw-rectangle
 calibration. Native event evidence closes YouTube's opaque triangle witness;

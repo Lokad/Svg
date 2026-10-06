@@ -17,39 +17,54 @@ internal readonly record struct SvgDirectPaintSpan(int Sequence);
 /// <summary>Indexes one pixel's ordered events without allocating one collection per pixel.</summary>
 internal readonly record struct SvgDirectPaintLink(int First, int Last, int Span);
 
-/// <summary>Holds a sampled premultiplied paint and distinguishes uniform color from shader output.</summary>
-internal readonly record struct SvgAnalyticPaint(byte Red, byte Green, byte Blue, byte Alpha, bool IsSolid)
+/// <summary>Retains either premultiplied solid bytes or a floating shader sample for ordered paint replay.</summary>
+/// <remarks>Immutable and allocation-free. The caller owns destination storage and charges pixel/event work; the coverage walker checks cancellation between events. Samples retain no document or tile storage.</remarks>
+internal readonly record struct SvgAnalyticPaint
 {
+    private readonly SvgColor _solid;
+    private readonly SvgShaderPaint? _shader;
+
+    private SvgAnalyticPaint(SvgColor solid, SvgShaderPaint? shader)
+    {
+        _solid = solid;
+        _shader = shader;
+    }
+
     internal static SvgAnalyticPaint Solid(SvgColor color)
     {
-        return new(Premultiply(color.Red, color.Alpha), Premultiply(color.Green, color.Alpha), Premultiply(color.Blue, color.Alpha), color.Alpha, true);
+        return new(new SvgColor(Premultiply(color.Red, color.Alpha), Premultiply(color.Green, color.Alpha), Premultiply(color.Blue, color.Alpha), color.Alpha), null);
 
         static byte Premultiply(byte color, byte alpha) => (byte)((color * alpha + 127) / 255);
     }
 
-    internal static SvgAnalyticPaint Shader(SvgColor color)
-        => new((byte)((color.Red * (color.Alpha + 1)) >> 8), (byte)((color.Green * (color.Alpha + 1)) >> 8), (byte)((color.Blue * (color.Alpha + 1)) >> 8), color.Alpha, false);
+    internal static SvgAnalyticPaint Shader(SvgShaderPaint sample) => new(default, sample);
 
     /// <summary>Paints one operation onto a premultiplied RGBA8 pixel without collapsing it into another operation.</summary>
-    /// <remarks>The uniform source uses the matched software blitter's initial round/255 premultiplication. A8 masks scale each lane with (lane*coverage+lane)/256; direct single/run operations scale first and then source-over. Fringe pairs interpolate before rounding and use their own coverage scale. Shader samples already contain premultiplied material output and retain their separate coverage route.</remarks>
+    /// <remarks>The uniform source uses the matched software blitter's initial round/255 premultiplication. A8 masks scale each lane with (lane*coverage+lane)/256; direct single/run operations scale first and then source-over. Fringe pairs interpolate before rounding and use their own coverage scale. Shader samples retain float lanes through coverage and source-over; each event stores its result separately.</remarks>
     internal void Blend(Span<byte> destination, byte coverage, SvgAnalyticPaintKind kind)
     {
-        if (coverage == 0 || Alpha == 0) return;
-        if (coverage == 255 && Alpha == 255)
+        if (_shader is SvgShaderPaint shader)
         {
-            destination[0] = Red;
-            destination[1] = Green;
-            destination[2] = Blue;
+            shader.Blend(destination, coverage);
+            return;
+        }
+        byte sourceRed = _solid.Red, sourceGreen = _solid.Green, sourceBlue = _solid.Blue, sourceAlpha = _solid.Alpha;
+        if (coverage == 0 || sourceAlpha == 0) return;
+        if (coverage == 255 && sourceAlpha == 255)
+        {
+            destination[0] = sourceRed;
+            destination[1] = sourceGreen;
+            destination[2] = sourceBlue;
             destination[3] = 255;
             return;
         }
         // The native opaque-black pair specialization preserves byte coverage
         // directly; the general opaque color interpolation rescales it.
-        if (IsSolid && kind == SvgAnalyticPaintKind.Pair && !(Alpha == 255 && Red == 0 && Green == 0 && Blue == 0))
+        if (kind == SvgAnalyticPaintKind.Pair && !(sourceAlpha == 255 && sourceRed == 0 && sourceGreen == 0 && sourceBlue == 0))
         {
             int sourceScale;
             int destinationScale;
-            if (Alpha == 255)
+            if (sourceAlpha == 255)
             {
                 sourceScale = coverage + (coverage >> 7);
                 destinationScale = 256 - sourceScale;
@@ -57,20 +72,20 @@ internal readonly record struct SvgAnalyticPaint(byte Red, byte Green, byte Blue
             else
             {
                 sourceScale = coverage + 1;
-                int inverse = 65535 - Alpha * sourceScale;
+                int inverse = 65535 - sourceAlpha * sourceScale;
                 destinationScale = (inverse + (inverse >> 8)) >> 8;
             }
-            destination[0] = (byte)((Red * sourceScale + destination[0] * destinationScale) >> 8);
-            destination[1] = (byte)((Green * sourceScale + destination[1] * destinationScale) >> 8);
-            destination[2] = (byte)((Blue * sourceScale + destination[2] * destinationScale) >> 8);
-            destination[3] = (byte)((Alpha * sourceScale + destination[3] * destinationScale) >> 8);
+            destination[0] = (byte)((sourceRed * sourceScale + destination[0] * destinationScale) >> 8);
+            destination[1] = (byte)((sourceGreen * sourceScale + destination[1] * destinationScale) >> 8);
+            destination[2] = (byte)((sourceBlue * sourceScale + destination[2] * destinationScale) >> 8);
+            destination[3] = (byte)((sourceAlpha * sourceScale + destination[3] * destinationScale) >> 8);
             return;
         }
         int scale = coverage + 1;
-        int red = (Red * scale) >> 8;
-        int green = (Green * scale) >> 8;
-        int blue = (Blue * scale) >> 8;
-        int alpha = (Alpha * scale) >> 8;
+        int red = (sourceRed * scale) >> 8;
+        int green = (sourceGreen * scale) >> 8;
+        int blue = (sourceBlue * scale) >> 8;
+        int alpha = (sourceAlpha * scale) >> 8;
         int inverseScale = 256 - alpha;
         destination[0] = (byte)Math.Min(red + ((destination[0] * inverseScale) >> 8), 255);
         destination[1] = (byte)Math.Min(green + ((destination[1] * inverseScale) >> 8), 255);

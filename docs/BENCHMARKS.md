@@ -1137,3 +1137,55 @@ under ignored `artifacts/shader-paint-20261006/`. Git identifies implementation;
 input/output identities protect the observations. The material repair improves
 pixel fidelity without changing work-accounting units. Representative performance
 and Linux evidence remain open.
+
+## Source stop-opacity and shared polygon shaders (2026-10-06)
+
+Matched against retained `e9758253` on Windows x64 / .NET 10.0.12. Twenty-one
+recipes add the intended transparent Apple/Instagram/Liputan 6 cases, the notched
+pattern and offset-clamp controls to the preceding sixteen guards. Every parser-
+work, raster-work and accounted-peak ledger is unchanged. Stop/rectangle/geometry
+storage remains 16/112/248 bytes. Analytic material grows from 5 to 24 bytes as a
+stack value; no new stored array or heap owner is introduced.
+
+Two fresh-process pairs run sequentially in opposite order, with eight warmups
+and three measured batches per input. Existing batch sizes are preserved; each
+new corporate input uses ten conversions and each new synthetic input 100.
+Cells are median milliseconds per conversion. These shared-host observations
+do not establish representative throughput or a causal regression threshold.
+
+| Input | Pair 1 baseline | Pair 1 current | Pair 2 current | Pair 2 baseline |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.134 | 0.145 | 0.140 | 0.135 |
+| ford | 32.488 | 22.416 | 18.607 | 22.668 |
+| dense | 285.545 | 513.909 | 275.219 | 275.836 |
+| native-stop | 483.274 | 585.565 | 455.093 | 476.767 |
+| youtube-intended | 11.586 | 21.955 | 10.757 | 11.026 |
+| youtube-large | 36.088 | 66.982 | 33.395 | 34.512 |
+| roc | 1.907 | 3.325 | 1.947 | 1.969 |
+| greek-flag | 8.177 | 14.339 | 8.625 | 8.333 |
+| rect-corner | 0.100 | 0.154 | 0.101 | 0.107 |
+| rect-contained | 0.085 | 0.104 | 0.082 | 0.083 |
+| pattern-content | 0.055 | 0.095 | 0.053 | 0.052 |
+| material-grid | 4.921 | 8.170 | 4.941 | 4.842 |
+| border-band | 2.078 | 3.444 | 2.246 | 2.085 |
+| shader-linear | 0.373 | 0.656 | 0.383 | 0.367 |
+| shader-radial | 0.290 | 0.613 | 0.282 | 0.277 |
+| shader-pattern | 0.228 | 0.462 | 0.235 | 0.214 |
+| inv-001-intended | 6.535 | 8.971 | 5.976 | 6.029 |
+| inv-003-intended | 158.648 | 157.063 | 158.766 | 162.068 |
+| inv-040-intended | 1.422 | 1.301 | 1.349 | 1.298 |
+| polygon-pattern-notch | 0.229 | 0.154 | 0.165 | 0.226 |
+| stop-offset-clamp | 0.336 | 0.200 | 0.214 | 0.339 |
+
+The first current process shows a broad slowdown across unchanged controls that
+is absent in the reversed order. This variation prevents attributing that pair
+to the material change. Notched-pattern and offset-clamp controls take less time
+in both orders; the corporate recipes do not show a consistent regression.
+Tiny, Ford, dense and the synthetic shader controls preserve managed-allocation
+traffic. Allocation variations are recorded alongside changed PNG sizes; these
+measurements do not isolate their cause. Raw observations retain both timing orders.
+
+Raw ledgers, allocation traffic, process orders and reproduction harnesses remain
+under ignored `artifacts/shader-stops-20261006/`. Git identifies implementation;
+input/output identities protect measured artifacts. Representative performance
+and Linux evidence remain open.

@@ -6,17 +6,30 @@
   "chromiumRevision": "1681091",
   "platform": "win64",
   "captureRecipeRevision": "3",
-  "viewport": { "width": 16, "height": 8, "deviceScaleFactor": 1 },
+  "viewport": {
+    "width": 16,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
   "background": "transparent",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateSha256": "8103db21c605c86fc8be7826cb71f8c70d174ec4fe9b8065acb726c3b081ef83",
+  "candidateSha256": "a903d8126d1209aecacbe3365f14bcbd654ec7e9e0d03c12a0c800bc79407c77",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 4,
-    "maximumChannelError": 1,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
-    "exact": false
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 8,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
   },
-  "admittedAt": "2026-09-26"
+  "admittedAt": "2026-09-26",
+  "graduatedAt": "Source stop precision and polygon shader replay, 2026-10-06"
 }

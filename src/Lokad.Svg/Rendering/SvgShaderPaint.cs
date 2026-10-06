@@ -12,24 +12,31 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
 {
     internal static SvgShaderPaint Ramp(ReadOnlySpan<SvgGradientStop> stops, SvgColor start, SvgColor end, double offset1, double offset2, double position, byte opacity, int matrix)
     {
+        float firstAlpha = stops.Length == 0 ? start.Alpha * (1f / 255f) : stops[0].Alpha;
+        float secondAlpha = stops.Length == 0 ? end.Alpha * (1f / 255f) : stops[^1].Alpha;
         if (stops.Length > 2)
         {
             // Parsing bounds the ramp to eight stops, keeping pixel work bounded.
             double absolute = offset1 + position * (offset2 - offset1);
             int segment = 0;
             while (segment < stops.Length - 2 && absolute >= stops[segment + 1].Offset) segment++;
+            firstAlpha = stops[segment].Alpha;
+            secondAlpha = stops[segment + 1].Alpha;
             start = stops[segment].Color;
             end = stops[segment + 1].Color;
             position = stops[segment + 1].Offset <= stops[segment].Offset ? 1 : (absolute - stops[segment].Offset) / (stops[segment + 1].Offset - stops[segment].Offset);
         }
-        return Gradient(start, end, position, opacity, matrix);
+        return GradientAlpha(start, end, firstAlpha, secondAlpha, position, opacity, matrix);
     }
 
     internal static SvgShaderPaint Gradient(SvgColor start, SvgColor end, double position, byte opacity, int matrix)
+        => GradientAlpha(start, end, start.Alpha * (1f / 255f), end.Alpha * (1f / 255f), position, opacity, matrix);
+
+    private static SvgShaderPaint GradientAlpha(SvgColor start, SvgColor end, float firstAlpha, float secondAlpha, double position, byte opacity, int matrix)
     {
         float t = (float)position;
         const float scale = 1f / 255f;
-        float stopAlpha = start.Alpha * scale + (end.Alpha - start.Alpha) * scale * t;
+        float stopAlpha = firstAlpha + (secondAlpha - firstAlpha) * t;
         float opacityScale = opacity * scale;
         float alpha = stopAlpha * opacityScale;
         float red = (start.Red * scale + (end.Red - start.Red) * scale * t) * stopAlpha * opacityScale;

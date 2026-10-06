@@ -1,0 +1,3 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<!-- Original stop precision and polygon shader calibration. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="32"><defs><radialGradient id="p"><stop offset="0" stop-color="#17a9cd" style="stop-opacity:41.4%"/><stop offset=".375" stop-color="#c3d537" style="stop-opacity:81%"/><stop offset="1" stop-color="#dc7319" stop-opacity=".46"/></radialGradient></defs><rect width="40" height="32" fill="url(#p)" fill-opacity=".79"/></svg>

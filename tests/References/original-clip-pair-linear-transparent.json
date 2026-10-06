@@ -33,24 +33,21 @@
   ],
   "declaredBeforeImplementation": true,
   "candidateOutcome": "renders",
-  "candidateSha256": "2d9e5cbded01b292d90fd619124bd2ebff094ea044cb2ec68757d4cf99bb10f1",
+  "candidateSha256": "fb0a38e408ac8e001aaf6bece13884f6639666f76fb5e02348258b0eeaad9896",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 332,
-    "maximumChannelError": 37,
-    "meanAbsoluteError": 0.010791666666666666,
-    "rootMeanSquareError": 0.3348196031696273,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 32,
-    "minimumMismatchY": 19,
-    "maximumMismatchX": 159,
-    "maximumMismatchY": 100,
-    "exact": false,
-    "alphaErrorMass": 0,
-    "overCoveragePixelCount": 0,
-    "underCoveragePixelCount": 0,
-    "opaqueLostPixelCount": 0,
-    "opaqueAddedPixelCount": 0
-  }
+    "minimumMismatchX": 200,
+    "minimumMismatchY": 120,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "graduatedAt": "Source stop precision and polygon shader replay, 2026-10-06"
 }

@@ -30,6 +30,6 @@ stable healthy capture triples. `inv-027-native-route.json`
 retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
-Ford and YouTube are the only documents exact in every variant (2/27).
+Ford, ROC HCVS and YouTube are exact in every variant (3/27).
 The capture script and VisualDiff `--cohort` command reproduce the full matrix;
 see [the oracle instructions](../../docs/ORACLE.md#frozen-corporate-captures).

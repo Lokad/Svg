@@ -211,9 +211,7 @@ internal static class SvgDefinitionParser
             {
                 if (state.GradientStops.Count >= SvgGradientSyntax.MaximumGradientStops) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only gradients with at most eight stops are implemented.");
                 SvgElementAttributePolicy.ValidateGradientStop(reader, workCounter, cancellationToken);
-                double offset = SvgGradientSyntax.ParseStopOffset(reader.GetAttribute("offset"));
-                SvgColor stopColor = SvgGradientSyntax.ParseStopColor(reader, namedColors, workCounter, cancellationToken);
-                state.GradientStops.Add(new SvgGradientStop(offset, stopColor));
+                state.GradientStops.Add(SvgGradientSyntax.ParseStop(reader, namedColors, workCounter, cancellationToken));
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 state.SawStyleableNode = true;
                 return true;
@@ -849,12 +847,12 @@ internal static class SvgDefinitionParser
         // A stop offset below the previous effective offset rises to it, forming a hard edge; Math.Clamp below preserves the order.
         for (int index = 1; index < state.GradientStops.Count; index++)
         {
-            if (state.GradientStops[index].Offset < state.GradientStops[index - 1].Offset) state.GradientStops[index] = new SvgGradientStop(state.GradientStops[index - 1].Offset, state.GradientStops[index].Color);
+            if (state.GradientStops[index].Offset < state.GradientStops[index - 1].Offset) state.GradientStops[index] = state.GradientStops[index] with { Offset = state.GradientStops[index - 1].Offset };
         }
         SvgGradientStop[] clamped = new SvgGradientStop[state.GradientStops.Count];
         for (int index = 0; index < clamped.Length; index++)
         {
-            clamped[index] = new SvgGradientStop(Math.Clamp(state.GradientStops[index].Offset, 0, 1), state.GradientStops[index].Color);
+            clamped[index] = state.GradientStops[index] with { Offset = Math.Clamp(state.GradientStops[index].Offset, 0, 1) };
         }
         if (clamped.Length > 1 && !(clamped[0].Offset < clamped[^1].Offset)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only gradient stops spanning a nonzero clamped offset range are implemented.");
         return (clamped[0].Color, clamped[^1].Color, clamped[0].Offset, clamped[^1].Offset, false, clamped);

@@ -17,7 +17,7 @@
   "decodedPixelStability": "identical",
   "inputSha256": "0e98c5379ac0cdd2c97f39e9ea69d2ec5321545add8154bd912ca380d6f375ec",
   "candidateOutcome": "renders",
-  "candidateSha256": "f44410133f886eb9e70570e0318fa98bb1ef77a9a477633ea940b6a15aff42e2",
+  "candidateSha256": "54c94b6466f9172bdf9b785eeb7a53a951c163ffab0cc466bb724146b31cc5f6",
   "admittedAt": "CPU raster context, 2026-10-05",
   "captureSha256": [
     "bee78c922d9d154d2b28dba682c4ff04a11054ea8765b57c744eafff23aee493",
@@ -38,19 +38,18 @@
   "declarationReason": "Post-trial holdout: admitted one-rectangle pattern crosses the same cubic tiles. The original two-child pattern and its UnsupportedFeature outcome remain banked.",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 353,
-    "maximumChannelError": 85,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 25,
-    "minimumMismatchY": 24,
-    "maximumMismatchX": 611,
-    "maximumMismatchY": 277,
-    "exact": false,
-    "alphaErrorMass": 0,
-    "overCoveragePixelCount": 0,
-    "underCoveragePixelCount": 0,
-    "opaqueLostPixelCount": 0,
-    "opaqueAddedPixelCount": 0
-  }
+    "minimumMismatchX": 640,
+    "minimumMismatchY": 320,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "graduatedAt": "Source stop precision and polygon shader replay, 2026-10-06"
 }

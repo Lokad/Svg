@@ -39,7 +39,6 @@ public static class SvgConverter
         }
     }
 
-
     /// <summary>Complete mapped vertex/control bounds used only for native raw-versus-clipped construction.</summary>
     private readonly record struct SvgDeviceBounds(double Left, double Top, double Right, double Bottom)
     {
@@ -669,11 +668,7 @@ public static class SvgConverter
             double denominator = directionX * directionX + directionY * directionY;
             double offsetSpan = definition.Offset2 - definition.Offset1;
             if (offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
-            bool transparentStops = false;
-            foreach (SvgGradientStop stop in definition.Stops)
-            {
-                if (stop.Color.Alpha != 255) { transparentStops = true; break; }
-            }
+
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
@@ -757,21 +752,10 @@ public static class SvgConverter
                         if (local > 1) local = 1;
                     }
                     position = local;
-                    double dither = GradientDither[x & 7, y & 7] / 64d;
                     int offset = (y * outputWidth + x) * 4;
-                    if (transparentStops)
-                    {
-                        (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, outline.Opacity);
-                        int gradientCoverage = CoverageAlpha(255, pixelCoverage) + 1;
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), new((byte)gradientRed, (byte)gradientGreen, (byte)gradientBlue, gradientMask, false), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
-                        else BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
-                    }
-                    else
-                    {
-                        SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(tileColor), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
-                        else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(tileColor, pixelCoverage));
-                    }
+                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, outline.Opacity, GradientDither[x & 7, y & 7]);
+                    if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
+                    else sample.Blend(destination.AsSpan(offset, 4), CoverageAlpha(255, pixelCoverage));
                 }
                 }
                 // Structural fallback belongs to the original fill and runs once.
@@ -788,11 +772,7 @@ public static class SvgConverter
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
             if (definition.Radius <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
-            bool transparentStops = false;
-            foreach (SvgGradientStop stop in definition.Stops)
-            {
-                if (stop.Color.Alpha != 255) { transparentStops = true; break; }
-            }
+
             ReadOnlySpan<int> contourEnds = outline.ContourEnds;
             ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
@@ -931,21 +911,10 @@ public static class SvgConverter
                         if (position < 0) position = 0;
                         if (position > 1) position = 1;
                     }
-                    double dither = GradientDither[x & 7, y & 7] / 64d;
                     int offset = (y * outputWidth + x) * 4;
-                    if (transparentStops)
-                    {
-                        (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, outline.Opacity);
-                        int gradientCoverage = CoverageAlpha(255, pixelCoverage) + 1;
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), new((byte)gradientRed, (byte)gradientGreen, (byte)gradientBlue, gradientMask, false), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
-                        else BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
-                    }
-                    else
-                    {
-                        SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, outline.Opacity);
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(tileColor), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
-                        else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(tileColor, pixelCoverage));
-                    }
+                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, outline.Opacity, GradientDither[x & 7, y & 7]);
+                    if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
+                    else sample.Blend(destination.AsSpan(offset, 4), CoverageAlpha(255, pixelCoverage));
                 }
                 }
                 // Structural fallback belongs to the original fill and runs once.
@@ -1020,15 +989,10 @@ public static class SvgConverter
                     int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
                     int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
                     int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
-                    int tileOpacityScale = tile.Opacity + 1;
-                    int tileAlpha = (blitted[tileOffset + 3] * tileOpacityScale) >> 8;
-                    int tileRed = (blitted[tileOffset] * tileOpacityScale) >> 8;
-                    int tileGreen = (blitted[tileOffset + 1] * tileOpacityScale) >> 8;
-                    int tileBlue = (blitted[tileOffset + 2] * tileOpacityScale) >> 8;
-                    int tileCoverage = CoverageAlpha(255, pixelCoverage) + 1;
                     int offset = (y * outputWidth + x) * 4;
-                    if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), new((byte)tileRed, (byte)tileGreen, (byte)tileBlue, (byte)tileAlpha, false), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
-                    else BlendPremultipliedOver(destination.AsSpan(offset, 4), (tileRed * tileCoverage) >> 8, (tileGreen * tileCoverage) >> 8, (tileBlue * tileCoverage) >> 8, (tileAlpha * tileCoverage) >> 8);
+                    SvgShaderPaint sample = SvgShaderPaint.Pattern(blitted[tileOffset], blitted[tileOffset + 1], blitted[tileOffset + 2], blitted[tileOffset + 3], tile.Opacity);
+                    if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
+                    else sample.Blend(destination.AsSpan(offset, 4), CoverageAlpha(255, pixelCoverage));
                 }
                 }
                 // Structural fallback belongs to the original fill and runs once.
@@ -1146,15 +1110,6 @@ public static class SvgConverter
 
         static int PositiveModulo(int value, int modulus) => ((value % modulus) + modulus) % modulus;
 
-        static byte InterpolateChannel(byte start, byte end, double position, double dither)
-        {
-            double value = start + (end - start) * position + dither;
-            if (value <= 0) return 0;
-            if (value >= 255) return 255;
-            return (byte)Math.Floor(value + 1e-9);
-        }
-
-
         void RasterizeGradientFill(SvgGradientGeometry gradient, byte[] destination)
         {
             if (!gradient.Fill.HasFill && gradient.Stroke is null) return;
@@ -1170,76 +1125,6 @@ public static class SvgConverter
             RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Bottom, stroke.Opacity, true, destination);
             RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Left, stroke.Opacity, true, destination);
             RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Right, stroke.Opacity, true, destination);
-        }
-
-        static (int Red, int Green, int Blue, byte Mask) TransparentTilePm(SvgColor first, SvgColor second, double blend, double dither, byte opacity)
-        {
-            double alpha = ((double)first.Alpha + ((double)second.Alpha - first.Alpha) * blend) * opacity / 255;
-            byte mask = (byte)Math.Floor(alpha + 0.5);
-            if (mask == 0) return (0, 0, 0, 0);
-            // Translucent premultiplication dithers around cell centers ((matrix + 0.5) / 64) while opaque channels
-            // dither from cell origins (matrix / 64): the transparent-stop probes reproduce the pinned oracle
-            // byte-for-byte only with the centered value, and opaque ramps pin the uncentered one.
-            double centered = dither + 0.5 / 64;
-            double red = ((double)first.Red + ((double)second.Red - first.Red) * blend) * alpha / 255 + centered;
-            double green = ((double)first.Green + ((double)second.Green - first.Green) * blend) * alpha / 255 + centered;
-            double blue = ((double)first.Blue + ((double)second.Blue - first.Blue) * blend) * alpha / 255 + centered;
-            return ((int)Math.Floor(red + 1e-9), (int)Math.Floor(green + 1e-9), (int)Math.Floor(blue + 1e-9), mask);
-        }
-
-        static SvgColor TransparentTileColor(SvgColor first, SvgColor second, double blend, double dither, byte opacity)
-        {
-            (int premultRed, int premultGreen, int premultBlue, byte mask) = TransparentTilePm(first, second, blend, dither, opacity);
-            if (mask == 0) return new SvgColor(0, 0, 0, 0);
-            double inverse = 255.0 / mask;
-            int r = (int)Math.Floor(premultRed * inverse + 0.5);
-            if (r > 255) r = 255;
-            int g = (int)Math.Floor(premultGreen * inverse + 0.5);
-            if (g > 255) g = 255;
-            int b = (int)Math.Floor(premultBlue * inverse + 0.5);
-            if (b > 255) b = 255;
-            return new SvgColor((byte)r, (byte)g, (byte)b, mask);
-        }
-
-        static SvgColor InterpolateGradientRamp(SvgGradientStop[] stops, SvgColor start, SvgColor end, double offset1, double offset2, double position, bool transparentStops, double dither, byte opacity)
-        {
-            if (stops.Length > 2)
-            {
-                double offsetSpan = offset2 - offset1;
-                double absolute = offset1 + position * offsetSpan;
-                int segment = 0;
-                while (segment < stops.Length - 2 && absolute >= stops[segment + 1].Offset) segment++;
-                SvgGradientStop first = stops[segment];
-                SvgGradientStop second = stops[segment + 1];
-                // A zero-width segment is a hard edge: the later stop wins at the shared offset, matching the pinned oracle.
-                double blend = second.Offset <= first.Offset ? 1 : (absolute - first.Offset) / (second.Offset - first.Offset);
-                if (transparentStops)
-                    return TransparentTileColor(first.Color, second.Color, blend, dither, opacity);
-                return new(InterpolateChannel(first.Color.Red, second.Color.Red, blend, dither), InterpolateChannel(first.Color.Green, second.Color.Green, blend, dither), InterpolateChannel(first.Color.Blue, second.Color.Blue, blend, dither), opacity);
-            }
-            if (transparentStops)
-                return TransparentTileColor(start, end, position, dither, opacity);
-            return new(InterpolateChannel(start.Red, end.Red, position, dither), InterpolateChannel(start.Green, end.Green, position, dither), InterpolateChannel(start.Blue, end.Blue, position, dither), opacity);
-        }
-
-        // Mirrors InterpolateGradientRamp segment selection for transparent stops, returning premultiplied
-        // color directly so transparent gradients quantize once through the shared backend instead of
-        // un-premultiplying and re-premultiplying around coverage.
-        static (int Red, int Green, int Blue, byte Mask) InterpolateGradientRampPm(SvgGradientStop[] stops, SvgColor start, SvgColor end, double offset1, double offset2, double position, double dither, byte opacity)
-        {
-            if (stops.Length > 2)
-            {
-                double offsetSpan = offset2 - offset1;
-                double absolute = offset1 + position * offsetSpan;
-                int segment = 0;
-                while (segment < stops.Length - 2 && absolute >= stops[segment + 1].Offset) segment++;
-                SvgGradientStop first = stops[segment];
-                SvgGradientStop second = stops[segment + 1];
-                // A zero-width segment is a hard edge: the later stop wins at the shared offset, matching the pinned oracle.
-                double blend = second.Offset <= first.Offset ? 1 : (absolute - first.Offset) / (second.Offset - first.Offset);
-                return TransparentTilePm(first.Color, second.Color, blend, dither, opacity);
-            }
-            return TransparentTilePm(start, end, position, dither, opacity);
         }
 
         void RasterizeGradientArea(SvgLinearGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)

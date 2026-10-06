@@ -16,7 +16,7 @@
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
   "inputSha256": "d0eebda29f3afc0e2ce916caaa47d09091e727f4c979da3e4923ba509f7d6b18",
-  "candidateSha256": "30021e5f73850fb67494daecc59687ac8f0a7829ec9031e4b7b86e6ebe2a070a",
+  "candidateSha256": "4f79c7b9f451fe524b1e092d28845d9f4396bd5b1193fa8a3d224f38102bf436",
   "admittedAt": "2026-10-04",
   "captureSha256": [
     "a3540f45834bf1a146059fe39a7ab4a9e4d4d914accc467b8d8b5adf88192e95",
@@ -27,15 +27,18 @@
   "captureProfilesCleaned": true,
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 31,
-    "maximumChannelError": 16,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 6,
-    "minimumMismatchY": 4,
-    "maximumMismatchX": 36,
-    "maximumMismatchY": 16,
-    "exact": false,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 160,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
     "alphaErrorMass": 0
-  }
+  },
+  "graduatedAt": "Source stop precision and polygon shader replay, 2026-10-06"
 }

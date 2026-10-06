@@ -17,7 +17,7 @@
   "decodedPixelStability": "identical",
   "inputSha256": "068b03dd704c7d26ce3f6edf2e9ac6a04bcdf68499361e42be08e41a6c40a92c",
   "candidateOutcome": "renders",
-  "candidateSha256": "91472d1e693cd457240452495a5078b80b68e1e6a7330b76cabd7c54169b59d8",
+  "candidateSha256": "f3072a4ff51f84ccaa17d63fe14ee048e883f41e0805853b1de68e46cadb2e39",
   "admittedAt": "CPU raster context, 2026-10-05",
   "captureSha256": [
     "32b95f81441844069351040d919694ba73a69bfff0f9a739bc473333e8b1ef10",
@@ -38,19 +38,17 @@
   "declarationReason": "Same independent concave cubic crossing bordered CPU tiles, across all four material consumers.",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 20526,
-    "maximumChannelError": 128,
+    "changedPixelCount": 18664,
+    "maximumChannelError": 8,
+    "meanAbsoluteError": 0.026627197265625,
+    "rootMeanSquareError": 0.16451203294706135,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 25,
-    "minimumMismatchY": 24,
-    "maximumMismatchX": 611,
+    "minimumMismatchX": 55,
+    "minimumMismatchY": 30,
+    "maximumMismatchX": 599,
     "maximumMismatchY": 277,
     "exact": false,
-    "alphaErrorMass": 0,
-    "overCoveragePixelCount": 0,
-    "underCoveragePixelCount": 0,
-    "opaqueLostPixelCount": 0,
-    "opaqueAddedPixelCount": 0
+    "alphaErrorMass": 0
   }
 }

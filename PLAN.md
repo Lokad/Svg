@@ -1,32 +1,33 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-06. **Current validated renderer checkpoint: float rectangle
-shader arithmetic.** Linear/radial and pattern samples retain premultiplied float
-lanes through coverage and source-over, with a single final RGBA8 conversion.
-Nineteen fixtures and six research probes graduate against their original images;
-twelve fresh configurations add nine exact and three known multistop-alpha cases.
-All 701 prior exact fixture PNGs and all 258 corporate outputs are preserved.
-Current validation passes **3,527 tests**, the nine-project Release build, all 25
-memory scenarios, the 1,053-case bank and package/installed-consumer checks.
-Matched work/peak ledgers are unchanged; radial/pattern controls have a measured
-conversion cost recorded with this checkpoint below.
+Updated 2026-10-06. **Current validated renderer checkpoint: source stop-opacity
+and shared polygon shader arithmetic.** Gradient stops retain decimal opacity;
+linear/radial/pattern polygon samples share the rectangle float material stages.
+Eighteen fixtures and one research probe graduate against their original images.
+Twenty-four fresh configurations add twenty-one exact cases and three known
+notched-pattern differences, backed by 72 healthy stable captures. All 735 prior
+exact fixture PNGs and all 258 corporate dispositions are preserved.
+Current validation passes **3,554 tests**, the nine-project Release build, all 25
+memory scenarios, the 1,077-case bank and package/installed-consumer checks.
+Twenty-one matched work/peak ledgers are unchanged; measured conversion costs
+remain in the benchmark record.
 
 The first corporate cohort remains frozen: **27 documents / 258 explicit variants**,
 including eight evaluation holdouts. All 258 references remain available:
 **66 exact variants, 174 known differences and eighteen renderer rejections**.
 Ford, ROC HCVS and YouTube remain **three verified exact documents**: marks **2/13**,
-wordmarks **1/14**. IBM's prior rectangle improvements remain inexact; the float
-shader repair leaves every corporate PNG and disposition unchanged. Every
-original reference and frozen member is preserved. Declaration-only DOCTYPE admission remains
-established in `1876cf6e`.
+wordmarks **1/14**. All 27 Apple, Instagram and Liputan 6 variants improve but
+remain inexact; the other 213 rendered PNGs are unchanged. Every original
+reference and frozen member is preserved. Declaration-only DOCTYPE admission
+remains established in `1876cf6e`.
 
-**Next: stop-alpha/interpolation, shared polygon shaders and corporate residuals.**
-Rectangle shader samples now survive native shape and paint-clip coverage.
-Authored stop-alpha precision, gradient coordinate/interpolation arithmetic,
-polygon material routes, successive clips and cache history retain separate
-gates. Use the complete measured cohort to order mechanism-level investigations.
-General browser fidelity, representative performance, Linux delivery and S17
-remain open.
+**Next: gradient coordinates, remaining edge/clip events and corporate residuals.**
+Preserve source stop-opacity separately from byte-encoded CSS color alpha; the
+pinned browser distinguishes them. Polygon materials now share float coverage
+and source-over stages. Gradient coordinate/interpolation arithmetic, notched
+edges, successive clips and cache history retain separate gates. Use the complete
+measured cohort to order mechanism-level investigations. General browser fidelity,
+representative performance, Linux delivery and S17 remain open.
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -64,10 +65,11 @@ nor the calibration fixtures establish a release rate.
 
 ## 1. Current validated checkpoint and its limits
 
-The current implementation accompanies `SvgShaderPaintTests`, 5,760 compiled
-native shader pixel vectors and twelve fresh browser configurations. It preserves
-the rectangle coverage, clip-byte, strip and contour/clip ownership checkpoints;
-scope and evidence are in [the design record](docs/RASTERIZATION_DESIGN.md#float-rectangle-shader-arithmetic-2026-10-06).
+The current implementation accompanies `SvgGradientStopPrecisionTests`, the
+5,760 compiled native shader vectors replayed through all three polygon operation
+kinds, and twenty-four fresh browser configurations. It preserves the rectangle,
+clip-byte, strip and contour ownership checkpoints; scope and evidence are in
+[the design record](docs/RASTERIZATION_DESIGN.md#source-stop-opacity-and-shared-polygon-shaders-2026-10-06).
 The prior DOCTYPE [portable record](tests/References/declaration-only-doctype.json)
 retains its historical measurements and implementation commit. Detailed build
 diagnostics stay under ignored artifacts. Historical snapshots below retain
@@ -76,15 +78,42 @@ their dated scopes and counts.
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Recorded Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Recorded full tests, including corporate selection/measurement | **3,527 passed**: 3,361 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Recorded full tests, including corporate selection/measurement | **3,554 passed**: 3,388 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Recorded memory and delivery checks | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the complete Skia/Chromium BSD notices, including the 2010 AA-dispatch, 2018 dash-interpolation and 2025 classifier notices. No runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **907 entries = 735 exact + 145 known-difference renders + 27 rejections**; 489 base documents / 418 variants. Synthetic coverage is not corporate-logo coverage. |
-| Executed research manifest | **54 probes = 53 known-difference renders + one rejection**. Six exact probes graduate to fixtures with original SVGs, references and capture provenance. |
-| Legacy independent-file Default-options sweep | **92 files = 92 render**. Declaration-only DOCTYPEs remain admitted. Float shader arithmetic preserves every PNG in this sweep. Earlier rectangle, YouTube, ROC and Greek-flag changes retain their dated evidence below. The candidate directory has **100 files**; the eight new holdouts belong to the explicit corporate matrix. |
+| Executed fixture manifest | **932 entries = 775 exact + 130 known-difference renders + 27 rejections**; 498 base documents / 434 variants. Synthetic coverage is not corporate-logo coverage. |
+| Executed research manifest | **53 probes = 52 known-difference renders + one rejection**. One exact radial probe graduates with its original SVG, reference and capture provenance. |
+| Legacy independent-file Default-options sweep | **92 files = 92 render**. Declaration-only DOCTYPEs remain admitted. Shared polygon shaders change six PNGs in this sweep without matching Default-options fidelity claims; every outcome is preserved. Earlier rectangle, YouTube, ROC and Greek-flag changes retain their dated evidence below. The candidate directory has **100 files**; the eight new holdouts belong to the explicit corporate matrix. |
 | Validated Ford all-variant evidence | **All nine exact**: 250×100, 500×200 and 1000×400 × transparent/white/black. Large variants improve 10/10/7 → 0/0/0 changed pixels; transparent alpha error 16 → 0. The six prior exact PNGs retain complete identity. All original references and current candidate identities remain portable regressions. This establishes the outlined-wordmark checkpoint, not a corporate-cohort rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, independent of fresh candidate success: every one of the 19 retained brand/organization exports plus eight predeclared new holdouts. Primary strata: 13 marks / 14 wordmarks. Every original source and historical reference is preserved; materializations change only root sizing. Fifteen large cases exceeded the transport cap at freeze; all now have stable references at their original dimensions. The legacy 92-file Default bank and calibration bank are separate. |
-| Recorded corporate measurement | **258 references = 240 rendered comparisons (66 exact, 174 known differences) + eighteen UnsupportedFeature cases**. All 258 dispositions, all 240 PNGs and every comparison are unchanged by float shader arithmetic. Original references and capture provenance are preserved. Exact documents remain **3/27**, marks **2/13**, wordmarks **1/14**. This completes the first cohort's measurement, not S17. |
-| Outside current Windows validation | Linux/remote CI, noncorporate inventory variant regeneration, representative throughput and private-font metrics/pixels. Current Chrome smoke, memory, package/consumer and artifact-validator checks pass. Sixteen matched local recipes preserve every work/peak ledger and record float shader conversion costs; timings do not establish representative performance. |
+| Recorded corporate measurement | **258 references = 240 rendered comparisons (66 exact, 174 known differences) + eighteen UnsupportedFeature cases**. All 258 dispositions and all 66 exact PNGs are preserved. Twenty-seven Apple/Instagram/Liputan 6 PNGs improve but remain inexact; the other 213 rendered PNGs are unchanged. Original references and capture provenance are preserved. Exact documents remain **3/27**, marks **2/13**, wordmarks **1/14**. This completes the first cohort's measurement, not S17. |
+| Outside current Windows validation | Linux/remote CI, noncorporate inventory variant regeneration, representative throughput and private-font metrics/pixels. Current Chrome smoke, memory, package/consumer and artifact-validator checks pass. Twenty-one matched local recipes preserve every work/peak ledger and record conversion costs; timings do not establish representative performance. |
+
+### Source stop-opacity and shared polygon shaders (2026-10-06)
+
+Stops retain source opacity alongside byte color through clamping, monotonic
+offsets and href/style resolution. CSS functional color alpha keeps its existing
+byte encoding: fresh browser controls disprove the previous assumption that
+`stop-opacity=".5"` and `rgba(...,.5)` produce identical pixels. Gradient/radial/
+pattern polygon samples now retain float lanes through ordered analytic events
+and fallback coverage, using the established rectangle material stages.
+
+Eighteen fixtures and one radial research probe become exact without replacing
+their original browser images. Twenty-four fresh configurations add twenty-one
+exact references and three notched-pattern known differences. Eighteen were
+declared before production editing; six supplemental alpha controls were declared
+after editing and before captures. All 72 captures are healthy, cleaned and stable
+in triples. The prior 1,053-case bank has 69 changed inexact PNGs, no increased
+mismatch counts, no disposition drift and no change to its 735 exact PNGs.
+The expanded bank has 1,077 cases. All 258 corporate outcomes and 66 exact PNGs
+remain unchanged; 27 variants improve without changing the 3/27 exact-document rate.
+
+Twenty-seven new core cases cover stop parsing, six-output parity, denial and
+cancellation cleanup. Native pixel tests also exercise all three polygon material
+operation kinds. Stops remain 16 bytes on x64; analytic material grows from 5 to
+24 bytes as a stack value. All 21 measured work/peak ledgers remain unchanged.
+Full validation and matched costs are retained under ignored
+`artifacts/shader-stops-20261006/`. Coordinate precision, notched edge coverage,
+successive clip/cache behavior, representative performance, Linux and S17 remain open.
 
 ### Float rectangle shader arithmetic (2026-10-06)
 
@@ -532,10 +561,10 @@ completed stage: the remaining exit evidence below governs completion.
 | 4 | **Shared scan conversion landed; general event fidelity remains open with rows 3 and 5.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows, retained cubics, clipped construction, CPU contexts and retained-path-point density have landed across the shared paint boundary. | Preserve all nine exact Ford variants, density/admission/cache regressions, X/Y splitting, projected winding, two-pass storage, whole-path dispatch, bitmap-bounded rows and exclusive interiors. Order remaining fractional events, crossings, counters and overlaps from the frozen corporate cohort. |
 | 5 | **Retained curves and final device mapping remain partial with row 4.** Device-map threading, retained controls, live non-convex cubics, curve/walk separation, one-chord cubic admission, axis-aligned float mapping, coupled numeric reading and compatible raw-control convexity have landed. All 436 recorded authored points and the actual Ford CTM match; density integration makes all nine PNGs exact. | Preserve transform/instance and large-translation evidence and the closed row-6, (740,30), (375,269), (269,187) and lower-row witnesses. One exact wordmark does not establish general mapping/event parity. Wider affine/instance, fractional-event and quad/convex/stroke work retains separate gates. |
 | 6 | **Partial: curve-aware stroke completion.** Width/cascade, cap/join/dash, zero-width, native float line-dash endpoints and nonzero orthogonal-contact walking are retained. | True curve tangents/dash cuts, curved/dashed overlap and seam handling, remaining round/miter/hairline/pathLength/non-scaling cases through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
-| 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings, retained rectangle paint clips and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
+| 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings, retained paint clips, shared float shaders and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Both selected logo checkpoints achieved; S8 measurement complete for the first frozen cohort; S17 remains open.** Ford and YouTube are each exact in all nine declared variants. All 27 documents / 258 variants, including eight fresh holdouts and eighteen rejections, have browser references and reproducible reports. | Improve the measured 3/27 exact documents to the 80% target overall and per corporate stratum, with fresh platform/package/resource/performance evidence. |
 
-### Active work order: shared rectangle paint and cohort residuals (2026-10-06)
+### Active work order: shared shaders and cohort residuals (2026-10-06)
 
 The Ford wordmark and YouTube curved-mark exits are closed: all eighteen original variants have zero differences
 and the shared regression/resource/delivery gates pass. Preserve those full-image
@@ -573,9 +602,11 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    retaining original contours and separate AA clips; keep all eighteen new
    scaled spelling controls exact. Actual rectangles now retain original edges and
    separate clips across solid and paint-server bands. Keep the 960 native pixel
-   vectors, thirty new exact controls and two graduations; follow the six shader
-   quantization differences and measured corporate residuals from native/browser
-   evidence. Preserve clipping through pattern content, symbols and use mapping.
+   vectors, thirty new exact controls and two graduations. The subsequent rectangle
+    and polygon float repairs close those six shader differences. Preserve source
+    stop-opacity, byte color alpha, 5,760 native shader vectors and the twenty-one
+    fresh exact shader/stop configurations; investigate notched-edge and corporate
+    residuals from native/browser evidence. Preserve clipping through pattern content, symbols and use mapping.
    Preserve native float dash cuts, the orthogonal signed-winding gate, all nine
    ROC references and the twelve fresh horizontal/vertical/opacity controls.
    Preserve original references and report improvements and regressions separately.
@@ -598,8 +629,8 @@ denominators.
 **Complete first-cohort evidence.** All 258 variants now have browser references:
 66 exact, 174 known differences and eighteen rejections. The remaining 225
 references have 675 healthy, cleaned, byte-stable fresh captures. The original
-33 references and all 258 outcomes are preserved. The current repair improves
-nine IBM PNGs while preserving all 66 exact corporate PNG identities.
+33 references and all 258 outcomes are preserved. The current shared shader repair improves
+27 Apple/Instagram/Liputan 6 PNGs while preserving all 66 exact corporate PNG identities.
 `capture-corporate-cohort.ps1` and VisualDiff's `--cohort` mode reproduce capture
 and categorized per-variant/document reporting under ignored artifacts. Neither
 command refreshes the immutable selection or rewrites references automatically.
@@ -615,10 +646,10 @@ Holdouts remain evaluation
 inputs. Representative performance, Linux delivery and S17 remain open.
 
 A bounded shared repair may land with independent mechanism-level improvement
-and nonregression across all nine Ford variants. Preserve all **701 currently
-exact fixture entries**, including all 669 prior complete PNG identities,
+and nonregression across all nine Ford variants. Preserve all **775 currently
+exact fixture entries**, including all 735 prior complete PNG identities,
 and required categorized rejections. Intentional syntax graduations need explicit
-contract/tests/provenance updates. Compare the complete **1,041-case current
+contract/tests/provenance updates. Compare the complete **1,077-case current
 bank** and all 258 frozen corporate cases; retain the AA repair's separate
 896-case prior-bank comparison. Report fixture/research/legacy and corporate
 regression scopes separately.
@@ -627,12 +658,12 @@ six-output and delivery checks plus matching measurements. Missing oracle result
 must stay explicit. General tile-local/affine mapping, fractional events,
 quad/convex/stroke and layer fidelity retain independent gates.
 
-The current rectangle checkpoint passes locked restore, the nine-project Release
-build with zero warnings/errors, **3,514 tests = 3,348 core + 160 visual + six
+The current shader/stop checkpoint passes locked restore, the nine-project Release
+build with zero warnings/errors, **3,554 tests = 3,388 core + 160 visual + six
 FontProbe**, all 25 memory scenarios and runtime/symbol package plus installed-
 consumer checks. Its prior-bank and corporate comparisons preserve every prior
-exact PNG and disposition; the expanded bank executes 1,041 cases. Full local
-gates are under `artifacts/rect-paint-20261006/`. Earlier records retain their
+exact PNG and disposition; the expanded bank executes 1,077 cases. Full local
+gates are under `artifacts/shader-stops-20261006/`. Earlier records retain their
 historical validation snapshots. Future renderer edits need their affected checks.
 
 S17 still requires at least 80% exact documents overall and in each corporate

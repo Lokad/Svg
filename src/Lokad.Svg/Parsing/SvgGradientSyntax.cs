@@ -12,7 +12,11 @@ internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, 
 internal enum SvgGradientSpread { Pad, Repeat, Reflect }
 
 /// <summary>Retains one parsed gradient stop with its offset while streaming.</summary>
-internal readonly record struct SvgGradientStop(double Offset, SvgColor Color);
+/// <remarks>Alpha combines byte-encoded color alpha with validated authored stop opacity for shader sampling. Color keeps the existing byte representation for admission and degenerate solid lowering. The float fits the former padding on x64; parser array reservations use the actual runtime size.</remarks>
+internal readonly record struct SvgGradientStop(double Offset, SvgColor Color)
+{
+    internal float Alpha { get; init; } = Color.Alpha * (1f / 255f);
+}
 
 /// <summary>Retains one parsed linear-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgGradientTemplate(double X1, double Y1, double X2, double Y2, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, int VectorCount, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, bool HasX1, bool HasY1, bool HasX2, bool HasY2);
@@ -273,17 +277,18 @@ internal static class SvgGradientSyntax
         return percentage ? result / 100 : result;
     }
 
-    internal static SvgColor ParseStopColor(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static SvgGradientStop ParseStop(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        double offset = ParseStopOffset(reader.GetAttribute("offset"));
         string? styleColor = null;
         string? styleOpacity = null;
         string? styleValue = reader.GetAttribute("style");
         if (styleValue is not null) ParseStopStyle(styleValue, out styleColor, out styleOpacity, workCounter, cancellationToken);
         string? colorValue = styleColor ?? reader.GetAttribute("stop-color");
-        SvgColor color = colorValue is null ? new SvgColor(0, 0, 0, 255) : SvgColorParser.Parse(colorValue, namedColors);
-        byte stopOpacity = SvgColorParser.ParseOpacity(styleOpacity ?? reader.GetAttribute("stop-opacity"));
+        SvgColor color = colorValue is null ? new(0, 0, 0, 255) : SvgColorParser.Parse(colorValue, namedColors);
+        SvgPaintOpacity stopOpacity = SvgColorParser.ParsePaintOpacity(styleOpacity ?? reader.GetAttribute("stop-opacity"));
         workCounter.Consume(cancellationToken);
-        return new SvgColor(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, stopOpacity));
+        return new SvgGradientStop(offset, new SvgColor(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, stopOpacity.Alpha))) { Alpha = color.Alpha * (1f / 255f) * stopOpacity.Value };
     }
 
     /// <summary>Reads stop-color and stop-opacity declarations from one stop style attribute, ignoring other properties.</summary>
