@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after float dash endpoint interpolation and nonzero orthogonal contact walking: all 258 renderer outcomes remain unchanged. 240 render (66 exact, 174 known differences), eighteen reject UnsupportedFeature. Ford, ROC HCVS and YouTube are exact in every declared variant (3/27; marks 2/13, wordmarks 1/14). Every original reference and capture provenance is preserved. This cohort has selection limits and does not establish market/release coverage.",
+  "scope": "Frozen 27-document/258-variant measurement after retained rectangle paint clips and rounded native solid rectangle coverage. All 258 renderer outcomes and 231 of 240 PNGs remain unchanged; nine IBM variants improve but remain inexact. 240 render (66 exact, 174 known differences), eighteen reject UnsupportedFeature. Ford, ROC HCVS and YouTube remain exact in every declared variant (3/27; marks 2/13, wordmarks 1/14). Every original reference and capture provenance is preserved. Selection limits remain; this does not establish release coverage.",
   "rendererCounts": {
     "renders": 240,
     "MalformedInput": 0,
@@ -27025,126 +27025,126 @@
       "id": "inv-099-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "8a8f3db7133c25256ef777d14fee6f43256be33dc7c49b1cb9714bb5dd49bf1b",
+      "candidateSha256": "2cd073ed37ee761cd9c88687709b6a76f6b6154ad274ca4f93a811e2c964a78b",
       "width": 537,
       "height": 201,
       "referenceSha256": "f0f774e5ab092810914e29f912116b2dc442ad079703d54088a9e684207bfa0c",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1754,
+          "ChangedPixelCount": 536,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.038784198189684725,
-          "RootMeanSquareError": 1.735931807448751,
+          "MeanAbsoluteError": 0.028551377192251034,
+          "RootMeanSquareError": 1.7291351783834523,
           "MaximumAlphaError": 52,
-          "AlphaChangedPixelCount": 1754,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "AlphaChangedPixelCount": 536,
+          "MinimumMismatchX": 138,
+          "MinimumMismatchY": 2,
           "MaximumMismatchX": 536,
           "MaximumMismatchY": 200,
           "IsExact": false
         },
-        "alphaMass": 6034,
-        "overCoveredPixels": 61,
-        "underCoveredPixels": 1693,
+        "alphaMass": 4816,
+        "overCoveredPixels": 57,
+        "underCoveredPixels": 479,
         "opaqueLost": 0,
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 0,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 227,
+            "Y": 2,
+            "Reference": "Hm/A8w==",
+            "Candidate": "H3DB8g=="
           },
           {
-            "X": 1,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 228,
+            "Y": 2,
+            "Reference": "H2/BtQ==",
+            "Candidate": "HnDBtA=="
           },
           {
-            "X": 2,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 230,
+            "Y": 2,
+            "Reference": "Gm7DHg==",
+            "Candidate": "G3LDLw=="
           },
           {
-            "X": 3,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 231,
+            "Y": 2,
+            "Reference": "AAAAAA==",
+            "Candidate": "AID/Ag=="
           },
           {
-            "X": 4,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 241,
+            "Y": 8,
+            "Reference": "H3DB/w==",
+            "Candidate": "H2/A+A=="
           },
           {
-            "X": 5,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 242,
+            "Y": 8,
+            "Reference": "Hm/BiA==",
+            "Candidate": "HXDAgg=="
           },
           {
-            "X": 6,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 243,
+            "Y": 8,
+            "Reference": "AAAAAA==",
+            "Candidate": "GmbMCg=="
           },
           {
-            "X": 7,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 246,
+            "Y": 11,
+            "Reference": "HnDBuQ==",
+            "Candidate": "Hm/BvA=="
           },
           {
-            "X": 8,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 247,
+            "Y": 11,
+            "Reference": "Em3IDg==",
+            "Candidate": "HWzEGg=="
           },
           {
-            "X": 9,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 138,
+            "Y": 84,
+            "Reference": "HHHCPw==",
+            "Candidate": "HHDDQA=="
           },
           {
-            "X": 10,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 257,
+            "Y": 84,
+            "Reference": "H2/Arg==",
+            "Candidate": "H3DAvw=="
           },
           {
-            "X": 11,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 138,
+            "Y": 87,
+            "Reference": "HHHCPw==",
+            "Candidate": "HHDDQA=="
           },
           {
-            "X": 12,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 255,
+            "Y": 87,
+            "Reference": "Hm/AVQ==",
+            "Candidate": "HXDAWQ=="
           },
           {
-            "X": 13,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 138,
+            "Y": 106,
+            "Reference": "HmnDEQ==",
+            "Candidate": "IHC/EA=="
           },
           {
-            "X": 14,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 248,
+            "Y": 106,
+            "Reference": "HG/DNw==",
+            "Candidate": "G22/OA=="
           },
           {
-            "X": 15,
-            "Y": 0,
-            "Reference": "HnDAsg==",
-            "Candidate": "Hm/BsQ=="
+            "X": 138,
+            "Y": 107,
+            "Reference": "HnDDRA==",
+            "Candidate": "HHDDQA=="
           }
         ]
       },
@@ -27180,21 +27180,21 @@
       "id": "inv-099-small-white",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "f1fa18f16034cedb8ba5b9a9b932559737edf048f3012b8e03c315a573b23dd8",
+      "candidateSha256": "a6fa67ef2220109097a0eba74115100effb5595f14dd7b91615246a067b07dda",
       "width": 537,
       "height": 201,
       "referenceSha256": "6a6fd526dc8331e078a37287896bc571a7be3a45e49518365bf7adf63b4de6b1",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1678,
+          "ChangedPixelCount": 529,
           "MaximumChannelError": 46,
-          "MeanAbsoluteError": 0.023541510325467634,
-          "RootMeanSquareError": 0.5036439476201525,
+          "MeanAbsoluteError": 0.01850616563365667,
+          "RootMeanSquareError": 0.4986199768186189,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchX": 138,
+          "MinimumMismatchY": 2,
           "MaximumMismatchX": 536,
           "MaximumMismatchY": 200,
           "IsExact": false
@@ -27206,100 +27206,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 0,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 227,
+            "Y": 2,
+            "Reference": "KXbD/w==",
+            "Candidate": "KnfE/w=="
           },
           {
-            "X": 1,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 228,
+            "Y": 2,
+            "Reference": "YJnT/w==",
+            "Candidate": "YJrT/w=="
           },
           {
-            "X": 2,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 230,
+            "Y": 2,
+            "Reference": "5O74/w==",
+            "Candidate": "1eX0/w=="
           },
           {
-            "X": 3,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 231,
+            "Y": 2,
+            "Reference": "/////w==",
+            "Candidate": "/f7//w=="
           },
           {
-            "X": 4,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 241,
+            "Y": 8,
+            "Reference": "H3DB/w==",
+            "Candidate": "JXPC/w=="
           },
           {
-            "X": 5,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 242,
+            "Y": 8,
+            "Reference": "h7Le/w==",
+            "Candidate": "jLbf/w=="
           },
           {
-            "X": 6,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 243,
+            "Y": 8,
+            "Reference": "/////w==",
+            "Candidate": "9vn9/w=="
           },
           {
-            "X": 7,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 246,
+            "Y": 11,
+            "Reference": "XJfS/w==",
+            "Candidate": "WZXR/w=="
           },
           {
-            "X": 8,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 247,
+            "Y": 11,
+            "Reference": "8vf8/w==",
+            "Candidate": "5+/4/w=="
           },
           {
-            "X": 9,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 138,
+            "Y": 84,
+            "Reference": "x9zw/w==",
+            "Candidate": "xtvw/w=="
           },
           {
-            "X": 10,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 257,
+            "Y": 84,
+            "Reference": "Zp3U/w==",
+            "Candidate": "V5PQ/w=="
           },
           {
-            "X": 11,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 138,
+            "Y": 87,
+            "Reference": "x9zw/w==",
+            "Candidate": "xtvw/w=="
           },
           {
-            "X": 12,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 255,
+            "Y": 87,
+            "Reference": "tM/q/w==",
+            "Candidate": "sMzp/w=="
           },
           {
-            "X": 13,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 138,
+            "Y": 106,
+            "Reference": "8PX7/w==",
+            "Candidate": "8fb7/w=="
           },
           {
-            "X": 14,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 248,
+            "Y": 106,
+            "Reference": "zuDy/w==",
+            "Candidate": "zd/x/w=="
           },
           {
-            "X": 15,
-            "Y": 0,
-            "Reference": "YpvT/w==",
-            "Candidate": "Y5vU/w=="
+            "X": 138,
+            "Y": 107,
+            "Reference": "w9nv/w==",
+            "Candidate": "xtvw/w=="
           }
         ]
       },
@@ -27335,21 +27335,21 @@
       "id": "inv-099-small-black",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "e077423c9b6d75cea11c376552c15f32d71c318ddaf85ab7c7acb64795d5ec2d",
+      "candidateSha256": "395d0423e58ebbb6efcaa6a3f605b2f9bd6052d9bbf18e206d9b27f554f96672",
       "width": 537,
       "height": 201,
       "referenceSha256": "2f588c89718589a68fb09982d0c4c8fa60c66d272d27d683a72c4ff60fd95e6f",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1671,
+          "ChangedPixelCount": 532,
           "MaximumChannelError": 39,
-          "MeanAbsoluteError": 0.018427415992662385,
-          "RootMeanSquareError": 0.4258697635917095,
+          "MeanAbsoluteError": 0.014999490443499448,
+          "RootMeanSquareError": 0.4218259475097467,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchX": 138,
+          "MinimumMismatchY": 2,
           "MaximumMismatchX": 536,
           "MaximumMismatchY": 200,
           "IsExact": false
@@ -27361,100 +27361,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 0,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 228,
+            "Y": 2,
+            "Reference": "Fk+J/w==",
+            "Candidate": "FU+I/w=="
           },
           {
-            "X": 1,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 230,
+            "Y": 2,
+            "Reference": "Aw0X/w==",
+            "Candidate": "BRUk/w=="
           },
           {
-            "X": 2,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 231,
+            "Y": 2,
+            "Reference": "AAAA/w==",
+            "Candidate": "AAEC/w=="
           },
           {
-            "X": 3,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 241,
+            "Y": 8,
+            "Reference": "H3DB/w==",
+            "Candidate": "Hmy7/w=="
           },
           {
-            "X": 4,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 242,
+            "Y": 8,
+            "Reference": "EDtn/w==",
+            "Candidate": "Dzli/w=="
           },
           {
-            "X": 5,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 243,
+            "Y": 8,
+            "Reference": "AAAA/w==",
+            "Candidate": "AQQI/w=="
           },
           {
-            "X": 6,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 246,
+            "Y": 11,
+            "Reference": "FlGM/w==",
+            "Candidate": "FlKO/w=="
           },
           {
-            "X": 7,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 247,
+            "Y": 11,
+            "Reference": "AQYL/w==",
+            "Candidate": "AwsU/w=="
           },
           {
-            "X": 8,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 138,
+            "Y": 84,
+            "Reference": "Bxww/w==",
+            "Candidate": "Bxwx/w=="
           },
           {
-            "X": 9,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 257,
+            "Y": 84,
+            "Reference": "FUyD/w==",
+            "Candidate": "F1SQ/w=="
           },
           {
-            "X": 10,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 138,
+            "Y": 87,
+            "Reference": "Bxww/w==",
+            "Candidate": "Bxwx/w=="
           },
           {
-            "X": 11,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 255,
+            "Y": 87,
+            "Reference": "CiVA/w==",
+            "Candidate": "CidD/w=="
           },
           {
-            "X": 12,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 138,
+            "Y": 106,
+            "Reference": "AgcN/w==",
+            "Candidate": "AgcM/w=="
           },
           {
-            "X": 13,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 138,
+            "Y": 107,
+            "Reference": "CB40/w==",
+            "Candidate": "Bxwx/w=="
           },
           {
-            "X": 14,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 249,
+            "Y": 107,
+            "Reference": "EDxo/w==",
+            "Candidate": "Dzhh/w=="
           },
           {
-            "X": 15,
-            "Y": 0,
-            "Reference": "FU6G/w==",
-            "Candidate": "FU2G/w=="
+            "X": 138,
+            "Y": 108,
+            "Reference": "CB40/w==",
+            "Candidate": "Bxwx/w=="
           }
         ]
       },
@@ -27490,28 +27490,28 @@
       "id": "inv-099-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "3a1d1e89edca1fb458a85f8213b7bd1108dbb6199d5241c6a6886f863cd2fdc4",
+      "candidateSha256": "000ff0cff5dba4dacc48a5471e6e2b2965019b8defb1372c669686d8eb7a52bd",
       "width": 1075,
       "height": 402,
       "referenceSha256": "c21e1cf64c4284d866a81c59ae3d7cdace3c862f652b7a0fb4395cc7b36baa56",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3525,
+          "ChangedPixelCount": 935,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.025766516255929656,
-          "RootMeanSquareError": 0.9816987828704136,
+          "MeanAbsoluteError": 0.01380712715492306,
+          "RootMeanSquareError": 0.9100086902153736,
           "MaximumAlphaError": 67,
-          "AlphaChangedPixelCount": 3525,
-          "MinimumMismatchX": 0,
+          "AlphaChangedPixelCount": 935,
+          "MinimumMismatchX": 277,
           "MinimumMismatchY": 2,
           "MaximumMismatchX": 1073,
           "MaximumMismatchY": 401,
           "IsExact": false
         },
-        "alphaMass": 16881,
-        "overCoveredPixels": 457,
-        "underCoveredPixels": 3068,
+        "alphaMass": 14291,
+        "overCoveredPixels": 454,
+        "underCoveredPixels": 481,
         "opaqueLost": 0,
         "opaqueAdded": 0,
         "witnesses": [
@@ -27645,20 +27645,20 @@
       "id": "inv-099-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "ab818752d426e441873c9ae872267b1e12e3f3f209a8968c87eacc93cbd4dee2",
+      "candidateSha256": "6c344cff55fa1400d0632fdf0660462e8dc9a9153fe64f99f533bd84721fa064",
       "width": 1075,
       "height": 402,
       "referenceSha256": "94c087d05d8665697b8e4116caa91629dc8a3dcc41287b5ee701b2f39d7de090",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3220,
+          "ChangedPixelCount": 933,
           "MaximumChannelError": 59,
-          "MeanAbsoluteError": 0.01602626402869374,
-          "RootMeanSquareError": 0.48132003976357074,
+          "MeanAbsoluteError": 0.013903158625477264,
+          "RootMeanSquareError": 0.47910946064003873,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
+          "MinimumMismatchX": 277,
           "MinimumMismatchY": 2,
           "MaximumMismatchX": 1073,
           "MaximumMismatchY": 401,
@@ -27800,20 +27800,20 @@
       "id": "inv-099-intended-black",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "7f9c3173f22dcdef62bad99e7d874f898c18da783e8025c7393ccc9b008acba7",
+      "candidateSha256": "1827430fd94db79c64cc900c9cfe5b7de1232301aeac79f1aeb7ddffffbbb522",
       "width": 1075,
       "height": 402,
       "referenceSha256": "0bab7c62949655e768e810b0fc951aefcb75eccd614e2d5acdd7867545215788",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3186,
+          "ChangedPixelCount": 928,
           "MaximumChannelError": 51,
-          "MeanAbsoluteError": 0.013259284970496355,
-          "RootMeanSquareError": 0.3954019538131481,
+          "MeanAbsoluteError": 0.010887423348374408,
+          "RootMeanSquareError": 0.3923911867730122,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
+          "MinimumMismatchX": 277,
           "MinimumMismatchY": 2,
           "MaximumMismatchX": 1073,
           "MaximumMismatchY": 401,
@@ -27955,37 +27955,31 @@
       "id": "inv-099-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "5f07df26e7ffd04b07a8975651c693bb4e904e8f449825b54ce996fc056670f6",
+      "candidateSha256": "6c18531d5a212a88491a6ea14d7b3f28898002e14626a174ca34dc76fd5d26f1",
       "width": 2150,
       "height": 804,
       "referenceSha256": "2706c2d425fe50b77d82e614116e41a383e8cab043d5c021cfd74e864780925d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 6642,
+          "ChangedPixelCount": 2212,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.010203199120675691,
-          "RootMeanSquareError": 0.8003744025835678,
+          "MeanAbsoluteError": 0.0063941918315399745,
+          "RootMeanSquareError": 0.7908520047643414,
           "MaximumAlphaError": 88,
-          "AlphaChangedPixelCount": 6642,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "AlphaChangedPixelCount": 2212,
+          "MinimumMismatchX": 555,
+          "MinimumMismatchY": 4,
           "MaximumMismatchX": 2147,
           "MaximumMismatchY": 803,
           "IsExact": false
         },
-        "alphaMass": 20087,
-        "overCoveredPixels": 307,
-        "underCoveredPixels": 6335,
+        "alphaMass": 15657,
+        "overCoveredPixels": 298,
+        "underCoveredPixels": 1914,
         "opaqueLost": 0,
         "opaqueAdded": 0,
         "witnesses": [
-          {
-            "X": 388,
-            "Y": 0,
-            "Reference": "GHC/IA==",
-            "Candidate": "H2zBIQ=="
-          },
           {
             "X": 894,
             "Y": 4,
@@ -28075,6 +28069,12 @@
             "Y": 19,
             "Reference": "H3DA8A==",
             "Candidate": "Hm/B7g=="
+          },
+          {
+            "X": 945,
+            "Y": 19,
+            "Reference": "H2/BjA==",
+            "Candidate": "H3DCjQ=="
           }
         ]
       },
@@ -28110,21 +28110,21 @@
       "id": "inv-099-large-white",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "f0f170ce49ceb3e7b9145337b982c1ef82e762c9ffa68c0ff3a0bfa7ca7a8b3b",
+      "candidateSha256": "aed871b61a9de4f58dd2c0f39fa7d30c8681b2efefbc13ec40219418fc40d770",
       "width": 2150,
       "height": 804,
       "referenceSha256": "e698bad575014d26a7a9cf34c160e165d90ca3219096d9a7e7db892e4bdbb72b",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 6640,
+          "ChangedPixelCount": 2210,
           "MaximumChannelError": 77,
-          "MeanAbsoluteError": 0.0050390489413398125,
-          "RootMeanSquareError": 0.28844508477833,
+          "MeanAbsoluteError": 0.0038774152493347216,
+          "RootMeanSquareError": 0.28642439358541527,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchX": 555,
+          "MinimumMismatchY": 4,
           "MaximumMismatchX": 2147,
           "MaximumMismatchY": 803,
           "IsExact": false
@@ -28135,12 +28135,6 @@
         "opaqueLost": 0,
         "opaqueAdded": 0,
         "witnesses": [
-          {
-            "X": 388,
-            "Y": 0,
-            "Reference": "4u33/w==",
-            "Candidate": "4uz3/w=="
-          },
           {
             "X": 894,
             "Y": 4,
@@ -28230,6 +28224,12 @@
             "Y": 19,
             "Reference": "LHjE/w==",
             "Candidate": "LXnF/w=="
+          },
+          {
+            "X": 945,
+            "Y": 19,
+            "Reference": "hLDd/w==",
+            "Candidate": "g7Dd/w=="
           }
         ]
       },
@@ -28265,21 +28265,21 @@
       "id": "inv-099-large-black",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "b1999faaa5398fae03dedd705f4638f49ab82108dd5a69940532c3797b390b1f",
+      "candidateSha256": "0029cd1798098e070f5ed767356631893ded9dd8980838db0b73cd99aec2f02d",
       "width": 2150,
       "height": 804,
       "referenceSha256": "95c552b29eba4fa5fcb0a8c3e74eb05ce5d2a1de0cc890b5908fe51ddb6a1f1a",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 6634,
+          "ChangedPixelCount": 2207,
           "MaximumChannelError": 67,
-          "MeanAbsoluteError": 0.003681447414092329,
-          "RootMeanSquareError": 0.23665009727658226,
+          "MeanAbsoluteError": 0.002921005437926646,
+          "RootMeanSquareError": 0.23503792580102933,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
+          "MinimumMismatchX": 555,
+          "MinimumMismatchY": 4,
           "MaximumMismatchX": 2147,
           "MaximumMismatchY": 803,
           "IsExact": false
@@ -28290,12 +28290,6 @@
         "opaqueLost": 0,
         "opaqueAdded": 0,
         "witnesses": [
-          {
-            "X": 388,
-            "Y": 0,
-            "Reference": "Aw4Y/w==",
-            "Candidate": "BA4Z/w=="
-          },
           {
             "X": 894,
             "Y": 4,
@@ -28385,6 +28379,12 @@
             "Y": 19,
             "Reference": "HWm1/w==",
             "Candidate": "HGi0/w=="
+          },
+          {
+            "X": 945,
+            "Y": 19,
+            "Reference": "ET1q/w==",
+            "Candidate": "ET5r/w=="
           }
         ]
       },
@@ -31522,8 +31522,8 @@
       "referenceSha256": "e628ef493bea5ee8586514bc6d3730caeb0738def9eac6319b3db860614ded6c"
     }
   ],
-  "rendererSourceBaselineCommit": "3a09694b41d1d2deb05012423646651778361f41",
-  "rendererSourceState": "Straight dash endpoints retain float interpolation; nonzero orthogonal contact sets use signed-winding analytic walking. Curve, self-touch and coincident even-odd gates are preserved.",
-  "measurementCheckpoint": "orthogonal-dash-contact-2026-10-06",
+  "rendererSourceBaselineCommit": "186f26767f8a72e80101866a38a8ffa544d022a1",
+  "rendererSourceState": "Original rectangle paint edges retain a separate clip through viewport, affine and instance mappings. Solid material premultiplication precedes rounded native rectangle coverage; paint-server and pattern bands preserve clips.",
+  "measurementCheckpoint": "rectangle-paint-clip-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

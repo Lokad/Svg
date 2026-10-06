@@ -1,0 +1,19 @@
+{
+  "scope": "960 pixels emitted by the original do_scanline/antifilldot8 bodies with a collecting blitter; rounded 24.8 edges, partial rows, thin/short fills, collapsed bounds and one-third pixel.",
+  "sourceRevision": "8b8c3872fbc03f025855db96ce683f34ec98a815",
+  "sourceFiles": [
+    "src/core/SkScan_Antihair.cpp",
+    "include/private/SkFixed.h"
+  ],
+  "compiler": "g++ C++20 -O2 -ffp-contract=off",
+  "cases": 960,
+  "columns": [
+    "left",
+    "top",
+    "right",
+    "bottom",
+    "x",
+    "y",
+    "alpha"
+  ]
+}

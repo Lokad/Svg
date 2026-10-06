@@ -1,0 +1,3 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<!-- Original native rectangle regression control. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><defs><clipPath id="c"><rect width="1" height="1"/></clipPath><pattern id="p" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="red" clip-path="url(#c)"/></pattern></defs><rect width="8" height="8" fill="url(#p)"/></svg>

@@ -49,7 +49,10 @@ YouTube's opaque triangle residuals at intended and large sizes. The subsequent
 clip-byte repair closes the remaining boundary differences. Clipped orthogonal
 paths, polygons and filled polylines now preserve their original contour and AA
 paint clip, making eleven existing failures and eighteen new scaled controls
-exact. Actual rectangle paint, clip-stack and layer parity remain open.
+exact. Solid rectangles now retain their original edges and separate paint clip,
+with native rounded coverage and premultiplication. Thirty fresh configurations
+and two existing controls become exact; all nine IBM variants improve but remain
+inexact. Shader quantization, clip-stack and layer parity remain open.
 
 ## Development
 

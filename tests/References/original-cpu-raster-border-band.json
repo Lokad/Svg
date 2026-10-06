@@ -17,7 +17,7 @@
   "decodedPixelStability": "identical",
   "inputSha256": "85034aed4920c575f4e8304c79fbaa2b49c6b816012e2b38bc42f2fd32005da6",
   "candidateOutcome": "renders",
-  "candidateSha256": "4e61cfdfbc43630f7de0d8e228d2024ae11af31672aa3c1773532563c309ae7f",
+  "candidateSha256": "e17db51e29752da3e0dd467af70b568efca62fd0f8b892efa7d9cf019cb8ee72",
   "admittedAt": "CPU raster context, 2026-10-05",
   "captureSha256": [
     "b4c3a464c7ab2d545d9dc247f8163b2c8cbf8461988053516aa107efe412845c",
@@ -38,19 +38,18 @@
   "declarationReason": "Translucent straight-source fill verifies owned interiors do not double-paint shared border texels.",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 10064,
-    "maximumChannelError": 2,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 240,
-    "minimumMismatchY": 12,
-    "maximumMismatchX": 273,
-    "maximumMismatchY": 307,
-    "exact": false,
-    "alphaErrorMass": 0,
-    "overCoveragePixelCount": 0,
-    "underCoveragePixelCount": 0,
-    "opaqueLostPixelCount": 0,
-    "opaqueAddedPixelCount": 0
-  }
+    "minimumMismatchX": 640,
+    "minimumMismatchY": 320,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "graduatedAt": "Retained rectangle paint clips and native solid coverage, 2026-10-06"
 }

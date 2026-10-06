@@ -312,7 +312,8 @@ public static class SvgConverter
                 double top = MapEdge(rectangle.Y, verticalScale, verticalOffset);
                 double right = MapEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
                 double bottom = MapEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
-                if (left > 0 || top > 0 || right < outputWidth || bottom < outputHeight)
+                if (rectangle.Clip is {} retainedClip && (MapEdge(retainedClip.X, horizontalScale, horizontalOffset) > 0 || MapEdge(retainedClip.Y, verticalScale, verticalOffset) > 0 || MapEdge(retainedClip.Right, horizontalScale, horizontalOffset) < outputWidth || MapEdge(retainedClip.Bottom, verticalScale, verticalOffset) < outputHeight)
+                    || left > 0 || top > 0 || right < outputWidth || bottom < outputHeight)
                 {
                     isSolid = false;
                     continue;
@@ -1049,7 +1050,8 @@ public static class SvgConverter
             double contentWidth = pattern.Content.Width * horizontalScale;
             double contentHeight = pattern.Content.Height * verticalScale;
             if (!IsDeviceInteger(originX) || !IsDeviceInteger(originY) || !IsDeviceInteger(tileWidth) || !IsDeviceInteger(tileHeight) || !IsDeviceInteger(contentX) || !IsDeviceInteger(contentY) || !IsDeviceInteger(contentWidth) || !IsDeviceInteger(contentHeight)) return false;
-            mapped = new SvgPatternGeometry(new SvgRectangle(contentX, contentY, contentWidth, contentHeight, pattern.Content.Color, pattern.Content.HasFill, null), (int)originX, (int)originY, (int)tileWidth, (int)tileHeight, pattern.Fill, pattern.Opacity, pattern.Stroke);
+            SvgClipBox? contentClip = pattern.Content.Clip is {} clip ? new SvgClipBox(clip.X * horizontalScale + horizontalOffset, clip.Y * verticalScale + verticalOffset, clip.Width * horizontalScale, clip.Height * verticalScale) { Antialiasing = clip.Antialiasing } : null;
+            mapped = new SvgPatternGeometry(new SvgRectangle(contentX, contentY, contentWidth, contentHeight, pattern.Content.Color, pattern.Content.HasFill, null) { Clip = contentClip }, (int)originX, (int)originY, (int)tileWidth, (int)tileHeight, pattern.Fill, pattern.Opacity, pattern.Stroke);
             return true;
 
             static bool IsDeviceInteger(double value)
@@ -1076,22 +1078,31 @@ public static class SvgConverter
             if (pattern.Content.Stroke is SvgStroke stroke)
             {
                 double halfWidth = stroke.Width / 2d;
-                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null), tile, pattern);
-                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + pattern.Content.Height - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null), tile, pattern);
-                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null), tile, pattern);
-                BlitPatternBox(new SvgRectangle(pattern.Content.X + pattern.Content.Width - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null), tile, pattern);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + pattern.Content.Height - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X + pattern.Content.Width - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern);
             }
         }
 
         void BlitPatternBox(SvgRectangle box, byte[] tile, SvgPatternGeometry pattern)
         {
-            int startX = (int)(box.X - pattern.OriginX);
-            int startY = (int)(box.Y - pattern.OriginY);
-            int endX = startX + (int)box.Width;
-            int endY = startY + (int)box.Height;
+            int setupVisits = box.Clip is null ? 4 : 8;
+            if (setupVisits > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern rectangle preparation exceeds the configured work limit.");
+            workUnits += setupVisits;
+            cancellationToken.ThrowIfCancellationRequested();
+            double left = box.X - pattern.OriginX, top = box.Y - pattern.OriginY;
+            double right = left + box.Width, bottom = top + box.Height;
+            SvgRectangleCoverage coverage = SvgRectangleCoverage.Create(left, top, right, bottom, pattern.TileWidth, pattern.TileHeight);
+            SvgClipBox? clip = box.Clip is {} bounds ? new SvgClipBox(bounds.X - pattern.OriginX, bounds.Y - pattern.OriginY, bounds.Width, bounds.Height) { Antialiasing = bounds.Antialiasing } : null;
+            int startX = ClampFloor(clip is {} cx ? Math.Max(left, cx.X) : left, pattern.TileWidth);
+            int startY = ClampFloor(clip is {} cy ? Math.Max(top, cy.Y) : top, pattern.TileHeight);
+            int endX = Math.Max(startX, ClampCeiling(clip is {} ex ? Math.Min(right, ex.Right) : right, pattern.TileWidth));
+            int endY = Math.Max(startY, ClampCeiling(clip is {} ey ? Math.Min(bottom, ey.Bottom) : bottom, pattern.TileHeight));
             long blitted = (long)(endY - startY) * (endX - startX);
             if (blitted > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile raster work exceeds the configured limit.");
             workUnits += blitted;
+            SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(box.Color);
             for (int y = startY; y < endY; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -1099,31 +1110,22 @@ public static class SvgConverter
                 {
                     if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
                     int offset = (y * pattern.TileWidth + x) * 4;
-                    BlendSourceOver(tile.AsSpan(offset, 4), box.Color);
+                    byte alpha = coverage.GetAlpha(x, y);
+                    if (clip is {} paintClip) alpha = SvgAnalyticRectangleClip.GetCoverage((paintClip.X, paintClip.Y, paintClip.Right, paintClip.Bottom), paintClip.Antialiasing, x, y).Apply(alpha);
+                    paint.Blend(tile.AsSpan(offset, 4), alpha, SvgAnalyticPaintKind.Direct);
                 }
             }
         }
 
         void StampPatternFill(SvgPatternGeometry pattern, byte[] tile, byte[] destination)
         {
-            double fillTop = MapRectangleEdge(pattern.Fill.Y, verticalScale, verticalOffset);
-            double fillBottom = MapRectangleEdge(pattern.Fill.Y + pattern.Fill.Height, verticalScale, verticalOffset);
-            double fillLeft = MapRectangleEdge(pattern.Fill.X, horizontalScale, horizontalOffset);
-            double fillRight = MapRectangleEdge(pattern.Fill.X + pattern.Fill.Width, horizontalScale, horizontalOffset);
-            int startY = ClampFloor(fillTop, outputHeight);
-            int endY = ClampCeiling(fillBottom, outputHeight);
-            int startX = ClampFloor(fillLeft, outputWidth);
-            int endX = ClampCeiling(fillRight, outputWidth);
-            long coverage = (long)(endY - startY) * (endX - startX);
-            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern fill raster work exceeds the configured limit.");
-            workUnits += coverage;
+            SvgRectangleRaster raster = PrepareRectangle(pattern.Fill);
+            int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
             for (int x = startX; x < endX; x++)
             {
-                double verticalCoverage = Math.Clamp(Math.Min(fillBottom, y + 1) - Math.Max(fillTop, y), 0, 1);
-                double horizontalCoverage = Math.Clamp(Math.Min(fillRight, x + 1) - Math.Max(fillLeft, x), 0, 1);
                 int tileX = PositiveModulo(x - pattern.OriginX, pattern.TileWidth);
                 int tileY = PositiveModulo(y - pattern.OriginY, pattern.TileHeight);
                 int tileOffset = (tileY * pattern.TileWidth + tileX) * 4;
@@ -1132,7 +1134,8 @@ public static class SvgConverter
                 int patternRed = (tile[tileOffset] * patternOpacityScale) >> 8;
                 int patternGreen = (tile[tileOffset + 1] * patternOpacityScale) >> 8;
                 int patternBlue = (tile[tileOffset + 2] * patternOpacityScale) >> 8;
-                int patternCoverage = CoverageAlpha(255, horizontalCoverage * verticalCoverage) + 1;
+                byte fillCoverage = raster.GetAlpha(x, y);
+                int patternCoverage = fillCoverage + 1;
                 int offset = (y * outputWidth + x) * 4;
                 BlendPremultipliedOver(destination.AsSpan(offset, 4), (patternRed * patternCoverage) >> 8, (patternGreen * patternCoverage) >> 8, (patternBlue * patternCoverage) >> 8, (patternAlpha * patternCoverage) >> 8);
             }
@@ -1142,10 +1145,10 @@ public static class SvgConverter
         void RasterizePatternStroke(SvgPatternGeometry pattern, SvgStroke stroke, byte[] destination)
         {
             double halfWidth = stroke.Width / 2d;
-            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y - halfWidth, pattern.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
-            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y + pattern.Fill.Height - halfWidth, pattern.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
-            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y + halfWidth, stroke.Width, pattern.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
-            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X + pattern.Fill.Width - halfWidth, pattern.Fill.Y + halfWidth, stroke.Width, pattern.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
+            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y - halfWidth, pattern.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Fill.Clip }, destination);
+            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y + pattern.Fill.Height - halfWidth, pattern.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Fill.Clip }, destination);
+            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y + halfWidth, stroke.Width, pattern.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Fill.Clip }, destination);
+            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X + pattern.Fill.Width - halfWidth, pattern.Fill.Y + halfWidth, stroke.Width, pattern.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Fill.Clip }, destination);
         }
 
         static int PositiveModulo(int value, int modulus) => ((value % modulus) + modulus) % modulus;
@@ -1248,17 +1251,8 @@ public static class SvgConverter
 
         void RasterizeGradientArea(SvgLinearGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
-            double areaTop = MapRectangleEdge(area.Y, verticalScale, verticalOffset);
-            double areaBottom = MapRectangleEdge(area.Y + area.Height, verticalScale, verticalOffset);
-            double areaLeft = MapRectangleEdge(area.X, horizontalScale, horizontalOffset);
-            double areaRight = MapRectangleEdge(area.X + area.Width, horizontalScale, horizontalOffset);
-            int startY = ClampFloor(areaTop, outputHeight);
-            int endY = ClampCeiling(areaBottom, outputHeight);
-            int startX = ClampFloor(areaLeft, outputWidth);
-            int endX = ClampCeiling(areaRight, outputWidth);
-            long coverage = (long)(endY - startY) * (endX - startX);
-            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Gradient fill raster work exceeds the configured limit.");
-            workUnits += coverage;
+            SvgRectangleRaster raster = PrepareRectangle(area);
+            int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             double directionX = definition.X2 - definition.X1;
             double directionY = definition.Y2 - definition.Y1;
             double denominator = directionX * directionX + directionY * directionY;
@@ -1276,8 +1270,6 @@ public static class SvgConverter
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
             for (int x = startX; x < endX; x++)
             {
-                double verticalCoverage = Math.Clamp(Math.Min(areaBottom, y + 1) - Math.Max(areaTop, y), 0, 1);
-                double horizontalCoverage = Math.Clamp(Math.Min(areaRight, x + 1) - Math.Max(areaLeft, x), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
                 if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
@@ -1313,14 +1305,14 @@ public static class SvgConverter
                 if (transparentStops)
                 {
                     (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, opacity);
-                    int gradientCoverage = CoverageAlpha(255, horizontalCoverage * verticalCoverage) + 1;
+                    byte fillCoverage = raster.GetAlpha(x, y);
+                    int gradientCoverage = fillCoverage + 1;
                     BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
                 }
                 else
                 {
                     SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
-                    SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
-                    BlendSourceOver(destination.AsSpan(offset, 4), color);
+                    SvgAnalyticPaint.Shader(tileColor).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y), SvgAnalyticPaintKind.Direct);
                 }
             }
             }
@@ -1333,26 +1325,17 @@ public static class SvgConverter
             if (radial.Stroke is SvgStroke stroke)
             {
                 double halfWidth = stroke.Width / 2d;
-                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y - halfWidth, radial.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
-                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y + radial.Fill.Height - halfWidth, radial.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
-                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y + halfWidth, stroke.Width, radial.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
-                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X + radial.Fill.Width - halfWidth, radial.Fill.Y + halfWidth, stroke.Width, radial.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
+                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y - halfWidth, radial.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = radial.Fill.Clip }, destination);
+                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y + radial.Fill.Height - halfWidth, radial.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = radial.Fill.Clip }, destination);
+                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y + halfWidth, stroke.Width, radial.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = radial.Fill.Clip }, destination);
+                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X + radial.Fill.Width - halfWidth, radial.Fill.Y + halfWidth, stroke.Width, radial.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = radial.Fill.Clip }, destination);
             }
         }
 
         void RasterizeRadialArea(SvgRadialGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
-            double areaTop = MapRectangleEdge(area.Y, verticalScale, verticalOffset);
-            double areaBottom = MapRectangleEdge(area.Y + area.Height, verticalScale, verticalOffset);
-            double areaLeft = MapRectangleEdge(area.X, horizontalScale, horizontalOffset);
-            double areaRight = MapRectangleEdge(area.X + area.Width, horizontalScale, horizontalOffset);
-            int startY = ClampFloor(areaTop, outputHeight);
-            int endY = ClampCeiling(areaBottom, outputHeight);
-            int startX = ClampFloor(areaLeft, outputWidth);
-            int endX = ClampCeiling(areaRight, outputWidth);
-            long coverage = (long)(endY - startY) * (endX - startX);
-            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Radial fill raster work exceeds the configured limit.");
-            workUnits += coverage;
+            SvgRectangleRaster raster = PrepareRectangle(area);
+            int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             if (paint && (definition.Radius <= 0 && definition.Stops.Length != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
             bool transparentStops = false;
             foreach (SvgGradientStop stop in definition.Stops)
@@ -1366,8 +1349,6 @@ public static class SvgConverter
             double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
             for (int x = startX; x < endX; x++)
             {
-                double verticalCoverage = Math.Clamp(Math.Min(areaBottom, y + 1) - Math.Max(areaTop, y), 0, 1);
-                double horizontalCoverage = Math.Clamp(Math.Min(areaRight, x + 1) - Math.Max(areaLeft, x), 0, 1);
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double sampleX;
                 double sampleY;
@@ -1459,14 +1440,14 @@ public static class SvgConverter
                 if (transparentStops)
                 {
                     (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, opacity);
-                    int gradientCoverage = CoverageAlpha(255, horizontalCoverage * verticalCoverage) + 1;
+                    byte fillCoverage = raster.GetAlpha(x, y);
+                    int gradientCoverage = fillCoverage + 1;
                     BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
                 }
                 else
                 {
                     SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
-                    SvgColor color = WithCoverage(tileColor, horizontalCoverage * verticalCoverage);
-                    BlendSourceOver(destination.AsSpan(offset, 4), color);
+                    SvgAnalyticPaint.Shader(tileColor).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y), SvgAnalyticPaintKind.Direct);
                 }
             }
             }
@@ -1475,10 +1456,10 @@ public static class SvgConverter
         void RasterizeGradientStroke(SvgGradientGeometry gradient, SvgStroke stroke, byte[] destination)
         {
             double halfWidth = stroke.Width / 2d;
-            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y - halfWidth, gradient.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
-            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y + gradient.Fill.Height - halfWidth, gradient.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
-            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y + halfWidth, stroke.Width, gradient.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
-            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X + gradient.Fill.Width - halfWidth, gradient.Fill.Y + halfWidth, stroke.Width, gradient.Fill.Height - stroke.Width, stroke.Color, true, null), destination);
+            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y - halfWidth, gradient.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = gradient.Fill.Clip }, destination);
+            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y + gradient.Fill.Height - halfWidth, gradient.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = gradient.Fill.Clip }, destination);
+            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y + halfWidth, stroke.Width, gradient.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = gradient.Fill.Clip }, destination);
+            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X + gradient.Fill.Width - halfWidth, gradient.Fill.Y + halfWidth, stroke.Width, gradient.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = gradient.Fill.Clip }, destination);
         }
         void RasterizeGlyphContours(SvgGlyphGeometry glyph, byte[] destination)
         {
@@ -1558,38 +1539,58 @@ public static class SvgConverter
             if (rectangle.Stroke is SvgStroke stroke)
             {
                 double halfWidth = stroke.Width / 2d;
-                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
-                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + rectangle.Height - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true, null), destination);
-                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true, null), destination);
-                RasterizeSolidRectangle(new SvgRectangle(rectangle.X + rectangle.Width - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true, null), destination);
+                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
+                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + rectangle.Height - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
+                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
+                RasterizeSolidRectangle(new SvgRectangle(rectangle.X + rectangle.Width - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
             }
         }
 
         void RasterizeSolidRectangle(SvgRectangle rectangle, byte[] destination)
         {
-            double rectangleY = MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset);
-            double rectangleBottom = MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
-            double rectangleX = MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset);
-            double rectangleRight = MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
-            int startY = ClampFloor(rectangleY, outputHeight);
-            int endY = ClampCeiling(rectangleBottom, outputHeight);
-            int startX = ClampFloor(rectangleX, outputWidth);
-            int endX = ClampCeiling(rectangleRight, outputWidth);
-            long coverage = (long)(endY - startY) * (endX - startX);
-            if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle raster work exceeds the configured limit.");
-            workUnits += coverage;
+            SvgRectangleRaster raster = PrepareRectangle(rectangle);
+            int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
+            SvgAnalyticPaint rectanglePaint = SvgAnalyticPaint.Solid(rectangle.Color);
             for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
             for (int x = startX; x < endX; x++)
             {
-                double verticalCoverage = Math.Clamp(Math.Min(rectangleBottom, y + 1) - Math.Max(rectangleY, y), 0, 1);
-                double horizontalCoverage = Math.Clamp(Math.Min(rectangleRight, x + 1) - Math.Max(rectangleX, x), 0, 1);
-                SvgColor color = WithCoverage(rectangle.Color, horizontalCoverage * verticalCoverage);
+                byte rectangleAlpha = raster.GetAlpha(x, y);
                 int offset = (y * outputWidth + x) * 4;
-                BlendSourceOver(destination.AsSpan(offset, 4), color);
+                rectanglePaint.Blend(destination.AsSpan(offset, 4), rectangleAlpha, SvgAnalyticPaintKind.Direct);
             }
             }
+        }
+
+        SvgRectangleRaster PrepareRectangle(SvgRectangle rectangle)
+        {
+            int setupVisits = rectangle.Clip is null ? 4 : 8;
+            if (setupVisits > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle preparation exceeds the configured work limit.");
+            workUnits += setupVisits;
+            cancellationToken.ThrowIfCancellationRequested();
+            double left = MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset);
+            double top = MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset);
+            double right = MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset);
+            double bottom = MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset);
+            SvgRectangleCoverage coverage = SvgRectangleCoverage.Create(left, top, right, bottom, outputWidth, outputHeight);
+            SvgClipBox? clip = null;
+            if (rectangle.Clip is {} sourceClip)
+            {
+                double clipLeft = MapEdge(sourceClip.X, horizontalScale, horizontalOffset);
+                double clipTop = MapEdge(sourceClip.Y, verticalScale, verticalOffset);
+                double clipRight = MapEdge(sourceClip.Right, horizontalScale, horizontalOffset);
+                double clipBottom = MapEdge(sourceClip.Bottom, verticalScale, verticalOffset);
+                clip = new SvgClipBox(clipLeft, clipTop, Math.Max(0, clipRight - clipLeft), Math.Max(0, clipBottom - clipTop)) { Antialiasing = sourceClip.Antialiasing };
+                left = Math.Max(left, clipLeft); top = Math.Max(top, clipTop);
+                right = Math.Min(right, clipRight); bottom = Math.Min(bottom, clipBottom);
+            }
+            int startX = ClampFloor(left, outputWidth), startY = ClampFloor(top, outputHeight);
+            int endX = Math.Max(startX, ClampCeiling(right, outputWidth)), endY = Math.Max(startY, ClampCeiling(bottom, outputHeight));
+            long pixels = (long)(endX - startX) * (endY - startY);
+            if (pixels > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle raster work exceeds the configured limit.");
+            workUnits += pixels;
+            return new(startX, startY, endX, endY, coverage, clip);
         }
 
         // Maps retained cubic controls through the output scale without grid snapping, like quadratic controls.

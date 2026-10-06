@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the dash/contact checkpoint, the 853 current manifest entries contain
-669 exact decoded-pixel references, 157 known-difference renders and 27
+At the rectangle checkpoint, the 889 current manifest entries contain
+701 exact decoded-pixel references, 161 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -28,7 +28,18 @@ crossings and coincident edges, preserving the one-byte ROC fringe previously
 lost in geometric fallback. Classification is cached and charged once. All nine
 ROC variants and twelve fresh controls are exact; every prior exact PNG is
 preserved. Curves, self-touching contours and coincident even-odd sets retain their
-separate gates. General stroke and rectangle-paint fidelity remain open.
+separate gates. General stroke fidelity remains open.
+
+Actual rectangles retain original fill edges and separate paint clips through
+viewport, affine, symbol and instance mappings. Solid materials use round/255
+premultiplication before rounded native 24.8 shape coverage. Gradient/radial/
+pattern bands preserve the same clip, including pattern content and solid stroke
+bands. The 960 native pixel vectors and 36 new browser configurations establish
+thirty exact cases and six known shader quantization differences. The original
+material grid and translucent border band become exact; all 669 previous exact
+PNG identities are preserved. All nine IBM variants improve but remain inexact.
+Successive clip-alpha intersections, cache history and general paint fidelity
+remain open.
 
 Convex rectangular strips round coverage separately from the raw-rectangle
 calibration. Native event evidence closes YouTube's opaque triangle witness;
@@ -40,8 +51,9 @@ vertical, corner, opacity and nearly integral clips. Integer orthogonal `path`,
 `polygon` and filled `polyline` now retain their contour and separate AA paint
 clip instead of clipping rectangle bands during lowering. All twelve original
 path-band controls and eighteen new scaled box/notch configurations are exact.
-All 628 prior exact fixture PNGs are unchanged. Actual `rect` paint, paint-server
-bands and general clip stacks retain their separate fidelity limits.
+All 628 prior exact fixture PNGs were unchanged at that checkpoint. The newer
+rectangle repair above retains paint clips across actual `rect` and paint-server
+bands; general clip stacks and shader quantization remain partial.
 
 Single clean retained contours now distinguish raw control-polygon convexity
 from sampled-ring convexity. Float sign/turn/reversal classification is charged

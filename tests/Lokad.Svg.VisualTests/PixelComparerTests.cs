@@ -184,8 +184,8 @@ public sealed class PixelComparerTests
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'><rect width='1' height='1' fill='#1aF8'/><rect x='1' width='1' height='1' fill='#ff000080'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 
-        // Pinned premultiplied backend: (170 * 137 >> 8) * 255 + 68 over 136 un-premultiplies to 169.
-        Assert.Equal(new byte[] { 17, 169, 255, 136, 255, 0, 0, 128 }, PngRgbaDecoder.Decode(png, 2).Pixels);
+        // Native solid paint rounds initial premultiplication: (170 * 136 + 127) / 255 = 91, which un-premultiplies to 171.
+        Assert.Equal(new byte[] { 17, 171, 255, 136, 255, 0, 0, 128 }, PngRgbaDecoder.Decode(png, 2).Pixels);
     }
 
     [Fact]
@@ -217,9 +217,8 @@ public sealed class PixelComparerTests
     {
         byte[] png = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='2' height='1'><rect width='1' height='1' fill='rgb(1, 2, 3)'/><rect x='1' width='1' height='1' fill='rgba(4,5,6,0.5)'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 
-        // Pinned premultiplied backend: (5 * 129 >> 8) * 255 + 64 over 128 un-premultiplies to 4.
-        // Pinned backend: rgba alpha truncates (0.5 reads 127); mid-tone un-premultiplies to 4.
-        Assert.Equal(new byte[] { 1, 2, 3, 255, 4, 4, 6, 128 }, PngRgbaDecoder.Decode(png, 2).Pixels);
+        // Native solid paint rounds initial premultiplication: (5 * 128 + 127) / 255 = 3, which un-premultiplies to 6.
+        Assert.Equal(new byte[] { 1, 2, 3, 255, 4, 6, 6, 128 }, PngRgbaDecoder.Decode(png, 2).Pixels);
     }
 
     [Fact]

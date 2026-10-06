@@ -716,7 +716,7 @@ internal static class SvgLeafParser
         if (stroke is null) return frame.Clip.ClipRectangle(shifted);
         double halfWidth = stroke.Value.Width / 2d;
         if (!frame.Clip.Contains(shifted.X - halfWidth, shifted.Y - halfWidth, shifted.X + shifted.Width + halfWidth, shifted.Y + shifted.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
-        return shifted;
+        return frame.Clip.ClipRectangle(shifted);
     }
 
     internal static SvgStroke? ParseRectangleStroke(SvgColor? color, string? widthValue, SvgAffineTransform transform, double x, double y, double width, double height, byte opacity, bool hasFill)

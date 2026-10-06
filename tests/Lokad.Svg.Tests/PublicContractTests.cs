@@ -678,15 +678,15 @@ public sealed class PublicContractTests
     [Fact]
     public void Admits_a_rectangle_view_box_mapping_with_non_quarter_output_edges()
     {
-        // R37: the rasterizer evaluates general fractional edges, so a third-pixel
-        // rectangle covers exactly one ninth of its pixel.
+        // R37: fractional edges remain admitted. Native 24.8 rounding and the
+        // one-row rectangle rule produce alpha 27, verified by browser/native controls.
         byte[] input = System.Text.Encoding.UTF8.GetBytes(
             "<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' viewBox='0 0 3 3'>" +
             "<rect width='1' height='1' fill='red'/></svg>");
         ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None);
 
         Assert.Equal(new byte[] { 0, 0, 0, 1, 0, 0, 0, 1 }, png.Span.Slice(16, 8).ToArray());
-        Assert.Equal(new SvgColor(255, 0, 0, 28), DecodeSinglePixel(png));
+        Assert.Equal(new SvgColor(255, 0, 0, 27), DecodeSinglePixel(png));
     }
 
     private static SvgColor DecodeSinglePixel(ReadOnlyMemory<byte> png)

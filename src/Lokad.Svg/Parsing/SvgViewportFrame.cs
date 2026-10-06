@@ -9,7 +9,7 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
 
     /// <summary>Shifts one fill box into viewport-parent space without clipping.</summary>
     internal SvgRectangle Shift(SvgRectangle rectangle)
-        => rectangle with { X = rectangle.X * ScaleX + OffsetX, Y = rectangle.Y * ScaleY + OffsetY, Width = rectangle.Width * ScaleX, Height = rectangle.Height * ScaleY };
+        => rectangle with { X = rectangle.X * ScaleX + OffsetX, Y = rectangle.Y * ScaleY + OffsetY, Width = rectangle.Width * ScaleX, Height = rectangle.Height * ScaleY, Clip = rectangle.Clip is {} clip ? new SvgClipBox(clip.X * ScaleX + OffsetX, clip.Y * ScaleY + OffsetY, clip.Width * ScaleX, clip.Height * ScaleY) { Antialiasing = clip.Antialiasing } : null };
 
     /// <summary>Shifts one axis-aligned line into viewport-parent space without clipping.</summary>
     internal SvgAxisAlignedLine Shift(SvgAxisAlignedLine line)

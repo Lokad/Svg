@@ -35,15 +35,9 @@ internal readonly record struct SvgClipBox(double X, double Y, double Width, dou
         return new SvgClipBox(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top)) { Antialiasing = edges };
     }
 
-    /// <summary>Clips one fill box to this viewport, preserving its paint.</summary>
+    /// <summary>Retains the original fill box and its separate viewport paint boundary.</summary>
     internal SvgRectangle ClipRectangle(SvgRectangle rectangle)
-    {
-        double left = Math.Max(rectangle.X, X);
-        double top = Math.Max(rectangle.Y, Y);
-        double right = Math.Min(rectangle.X + rectangle.Width, Right);
-        double bottom = Math.Min(rectangle.Y + rectangle.Height, Bottom);
-        return rectangle with { X = left, Y = top, Width = Math.Max(0, right - left), Height = Math.Max(0, bottom - top) };
-    }
+        => rectangle with { Clip = rectangle.Clip is {} existing ? existing.Intersect(this) : this };
 
     /// <summary>Tests whether this viewport fully contains the given outer bounds.</summary>
     internal bool Contains(double left, double top, double right, double bottom)

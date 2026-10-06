@@ -1030,3 +1030,65 @@ general speedup or regression threshold. Allocation traffic is separate from
 accounted peak memory. Raw ledgers, batches and the matching harness remain under
 ignored `artifacts/dash-endpoints-20261006/`. Representative throughput and Linux
 remain open.
+
+## Retained rectangle paint observations (2026-10-06)
+
+Thirteen matching input recipes use the retained `186f2676` build and current
+production: six prior guards, ROC/Greek flag, two 40×32 rectangle controls, clipped
+8×8 pattern content, the 1024×12 material grid and 640×320 border band. All use
+transparent output with the prior viewport/scale options. Parser work is unchanged
+for every recipe. All eight prior guard/ROC/Greek PNG identities are unchanged;
+the original material-grid and border-band references now match exactly.
+
+`SvgRectangle` grows 64 → 112 bytes and `SvgGeometry` 200 → 248 bytes on Windows
+x64. Runtime-size array reservations charge the retained clip before allocation;
+there is no new coverage buffer. Tiny examples remain below the existing 163,840-
+byte XML-reader peak. Edge preparation charges four visits, or eight with a clip,
+including pattern tile content; admitted pixel work is charged before painting.
+
+| Input | Work through raster, before → after | Accounted peak bytes, before → after |
+| --- | ---: | ---: |
+| tiny | 220 → 220 | 163,840 → 163,840 |
+| ford | 1,301,213 → 1,301,213 | 534,450 → 534,546 |
+| dense | 32,761,735 → 32,761,743 | 2,494,116 → 2,495,892 |
+| native-stop | 73,300,835 → 73,300,835 | 33,629,711 → 33,630,047 |
+| youtube-intended | 928,430 → 928,430 | 942,655 → 942,751 |
+| youtube-large | 3,026,899 → 3,026,899 | 3,732,659 → 3,732,755 |
+| roc | 166,641 → 166,641 | 175,130 → 175,178 |
+| greek-flag | 836,498 → 836,502 | 972,802 → 972,898 |
+| rect-corner | 1,034 → 1,042 | 163,840 → 163,840 |
+| rect-contained | 678 → 686 | 163,840 → 163,840 |
+| pattern-content | 103 → 115 | 163,840 → 163,840 |
+| material-grid | 36,890 → 39,962 | 662,600 → 748,616 |
+| border-band | 10,106 → 10,110 | 824,279 → 824,327 |
+
+Two sequential fresh-process pairs run in opposite order, with eight warmups and
+three measured batches per input. Batch sizes are 100 tiny/40×32/pattern controls,
+10 Ford/intended YouTube/material grid, three dense/native-size/large YouTube,
+30 ROC and five Greek flag/border band. Cells are median milliseconds per
+conversion. Both pairs are retained; these shared-host timings are observations,
+not representative throughput or a causal regression threshold.
+
+| Input | Pair 1 baseline | Pair 1 current | Pair 2 current | Pair 2 baseline |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.148 | 0.139 | 0.156 | 0.177 |
+| ford | 21.966 | 21.962 | 23.449 | 22.114 |
+| dense | 301.165 | 296.792 | 309.461 | 301.793 |
+| native-stop | 506.400 | 512.074 | 530.894 | 544.831 |
+| youtube-intended | 11.802 | 12.121 | 12.721 | 11.192 |
+| youtube-large | 38.485 | 37.806 | 40.097 | 36.707 |
+| roc | 2.065 | 2.309 | 2.135 | 2.463 |
+| greek-flag | 7.904 | 8.756 | 9.395 | 9.013 |
+| rect-corner | 0.095 | 0.121 | 0.108 | 0.083 |
+| rect-contained | 0.080 | 0.088 | 0.084 | 0.080 |
+| pattern-content | 0.051 | 0.055 | 0.053 | 0.053 |
+| material-grid | 6.224 | 5.600 | 5.667 | 6.018 |
+| border-band | 3.140 | 2.210 | 2.112 | 2.289 |
+
+Median managed-allocation traffic grows by 528 bytes for tiny/border band, 1,392
+for Ford and 23,520 for dense; the material grid grows by about 319,180 bytes.
+These costs include larger geometry arrays and parser growth rather than only
+retained peak memory. No general speedup or performance target is established.
+Raw ledgers, both process orders and reproduction harnesses remain under ignored
+`artifacts/rect-paint-20261006/`. Git identifies code; input/output identities
+protect measured artifacts. Representative performance and Linux remain open.

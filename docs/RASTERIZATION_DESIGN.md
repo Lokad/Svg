@@ -4778,3 +4778,57 @@ raster work drops 5,381,002 → 836,498 while peak grows 971,763 → 972,802 byt
 Parser work is unchanged in both. Complete local proofs remain under ignored
 `artifacts/dash-endpoints-20261006/`. General stroke, rectangle paint, clip stacks,
 affine/curve/layer fidelity, representative performance, Linux and S17 remain open.
+
+## Retained rectangle paints and native coverage (2026-10-06)
+
+The actual rectangle route had three coupled losses: clipping cropped original
+paint edges, raw coverage used floating area instead of native fixed edges, and
+solid color was premultiplied after folding coverage into straight alpha.
+The repair retains `SvgRectangle.Clip`, maps it alongside original edges, and
+prepares one immutable shape-coverage value for solid, linear/radial-gradient
+and pattern fills. Paint-server bounding boxes remain the original boxes.
+Generated solid stroke bands inherit the clip; pattern content applies its own
+clip before repetition. Symbol/use translation and viewBox maps preserve it.
+Full-canvas float paint analysis remains eligible when the clip contains the
+complete output. Parser-characterization projections still expose visible boxes;
+production rendering reads retained geometries.
+
+The native `SkScan::AntiFillRect` implementation in `SkScan_Antihair.cpp` retains
+rounded 24.8 edges and one-row/one-column minus-one rules. The implementation is
+unchanged between the existing notice revision and the studied
+`8b8c3872fbc03f025855db96ce683f34ec98a815` revision. The original `do_scanline` and
+`antifilldot8` bodies compiled with a collecting blitter emit 960 retained pixels,
+including thin/short, negative, collapsed and one-third-pixel cases. The latter
+has alpha 27 at a 1×1 viewport, confirmed by a fresh browser triple. Uniform
+materials use the existing `SvgAnalyticPaint.Solid` round/255 premultiplication
+before direct byte coverage. Shader material arithmetic retains a separate gate.
+
+Twelve CC0 sources add 36 configurations on transparent/white/black, with 108
+healthy, cleaned, byte-stable fresh-process captures. Thirty configurations were
+declared before production editing; six supplemental one-third/tile-content
+controls were declared after the edit and before captures. Thirty are exact.
+The six linear/pattern opacity controls improve maximum channel error from 20 to
+four on transparency and retain one alpha error; opaque-background maxima are
+two. These residuals remain known differences. Original material-grid and
+translucent-border-band references become exact and graduate without recapture.
+
+All 1,005 previous dispositions and all 669 previous exact fixture PNGs are
+preserved. Only those two graduated fixtures and legacy Default `inv-057` change
+in that bank. The expanded bank has 1,041 cases and 701 exact fixture references.
+All 258 corporate outcomes and all 66 exact PNGs are preserved; nine IBM PNGs
+improve but remain inexact. Exact documents remain 3/27. Input/reference/candidate
+identities protect these regressions; Git identifies implementation revisions.
+
+The value representation adds 48 bytes per rectangle and per geometry on x64.
+Existing runtime-size array reservations charge growth before allocation. Shape
+and clip setup consume four/eight edge visits before raster pixels; pattern tile
+preparation has the same charge. No new coverage buffer is allocated. Fifteen
+core tests cover compiled pixels, ownership/mapping, denial, cancellation and
+six-output parity. Full tests, all 25 memory scenarios, delivery checks and
+thirteen matched ledger/timing recipes are retained under ignored
+`artifacts/rect-paint-20261006/`. See the benchmark record for the storage and
+timing limits. Successive clip-alpha intersections, native cache history, shader
+quantization, wider affine/large-coordinate behavior and S17 remain open.
+An exploratory parser probe also found that a direct definition rectangle's
+`clip-path` attribute is not retained; that accepted-input gap needs independent
+admission and is outside the retained-geometry mapping proof here.

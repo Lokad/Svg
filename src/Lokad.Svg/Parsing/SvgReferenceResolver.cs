@@ -457,7 +457,7 @@ internal static class SvgReferenceResolver
         else throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.");
         if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         SvgRectangle mapped = MapSymbolBox(box, symbolBox, reference.Width.Value, reference.Height.Value);
-        SvgRectangle placed = mapped with { X = mapped.X + reference.X, Y = mapped.Y + reference.Y };
+        SvgRectangle placed = TranslateRectangle(mapped, reference.X, reference.Y);
         SvgClipBox localViewport = new(reference.X, reference.Y, reference.Width.Value, reference.Height.Value);
         SvgRectangle transformed = reference.Transform.Apply(localViewport.ClipRectangle(placed));
         transformed = transformed with { Color = new SvgColor(transformed.Color.Red, transformed.Color.Green, transformed.Color.Blue, MultiplyAlpha(transformed.Color.Alpha, reference.Opacity)), HasFill = transformed.HasFill && reference.IsPainted };
@@ -568,7 +568,8 @@ internal static class SvgReferenceResolver
     internal static SvgRectangle MapSymbolBox(SvgRectangle box, SvgViewBox viewBox, double viewportWidth, double viewportHeight)
     {
         (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, viewportWidth, viewportHeight);
-        return box with { X = box.X * scaleX + offsetX, Y = box.Y * scaleY + offsetY, Width = box.Width * scaleX, Height = box.Height * scaleY };
+        SvgClipBox? clip = box.Clip is {} source ? new SvgClipBox(source.X * scaleX + offsetX, source.Y * scaleY + offsetY, source.Width * scaleX, source.Height * scaleY) { Antialiasing = source.Antialiasing } : null;
+        return box with { X = box.X * scaleX + offsetX, Y = box.Y * scaleY + offsetY, Width = box.Width * scaleX, Height = box.Height * scaleY, Clip = clip };
     }
 
     private static SvgGeometry[] ApplyMask(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -671,7 +672,7 @@ internal static class SvgReferenceResolver
             if (!instance.Transform.IsUniformScale()) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
             double scaledWidth = (double)sourceStroke.Width * Math.Abs(scaleX) * Math.Abs(UniformFactor(instance.Transform));
             SvgRectangle mapped = MapSymbolBox(source, viewBox, instance.Width.Value, instance.Height.Value);
-            SvgRectangle placed = mapped with { X = mapped.X + instance.X, Y = mapped.Y + instance.Y };
+            SvgRectangle placed = TranslateRectangle(mapped, instance.X, instance.Y);
             if (placed.X != Math.Truncate(placed.X) || placed.Y != Math.Truncate(placed.Y) || placed.Width != Math.Truncate(placed.Width) || placed.Height != Math.Truncate(placed.Height) || !double.IsFinite(scaledWidth) || scaledWidth < 2 || scaledWidth > int.MaxValue || scaledWidth != Math.Truncate(scaledWidth) || (int)scaledWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped even-width symbol-held rectangle strokes are implemented.");
             SvgGeometry[] expanded = new SvgGeometry[instance.IsPainted ? 5 : 1];
             expanded[0] = ApplySymbolInstance(SvgGeometry.FromRectangle(source with { Stroke = null }), viewBox, instance, viewportFrame, document, workCounter, cancellationToken);
@@ -680,10 +681,10 @@ internal static class SvgReferenceResolver
                 double sourceHalfWidth = sourceStroke.Width / 2d;
                 SvgRectangle[] sources =
                 [
-                    new(source.X - sourceHalfWidth, source.Y - sourceHalfWidth, source.Width + sourceStroke.Width, sourceStroke.Width, sourceStroke.Color, true, null),
-                    new(source.X - sourceHalfWidth, source.Y + source.Height - sourceHalfWidth, source.Width + sourceStroke.Width, sourceStroke.Width, sourceStroke.Color, true, null),
-                    new(source.X - sourceHalfWidth, source.Y + sourceHalfWidth, sourceStroke.Width, source.Height - sourceStroke.Width, sourceStroke.Color, true, null),
-                    new(source.X + source.Width - sourceHalfWidth, source.Y + sourceHalfWidth, sourceStroke.Width, source.Height - sourceStroke.Width, sourceStroke.Color, true, null),
+                    new(source.X - sourceHalfWidth, source.Y - sourceHalfWidth, source.Width + sourceStroke.Width, sourceStroke.Width, sourceStroke.Color, true, null) { Clip = source.Clip },
+                    new(source.X - sourceHalfWidth, source.Y + source.Height - sourceHalfWidth, source.Width + sourceStroke.Width, sourceStroke.Width, sourceStroke.Color, true, null) { Clip = source.Clip },
+                    new(source.X - sourceHalfWidth, source.Y + sourceHalfWidth, sourceStroke.Width, source.Height - sourceStroke.Width, sourceStroke.Color, true, null) { Clip = source.Clip },
+                    new(source.X + source.Width - sourceHalfWidth, source.Y + sourceHalfWidth, sourceStroke.Width, source.Height - sourceStroke.Width, sourceStroke.Color, true, null) { Clip = source.Clip },
                 ];
                 for (int band = 0; band < sources.Length; band++)
                     expanded[band + 1] = ApplySymbolInstance(SvgGeometry.FromRectangle(sources[band]), viewBox, instance, viewportFrame, document, workCounter, cancellationToken);
@@ -939,7 +940,14 @@ internal static class SvgReferenceResolver
     }
 
     private static SvgRectangle InstancePlacement(SvgRectangle definitionBox, SvgUseReference reference)
-        => reference.Transform.Apply(definitionBox with { X = definitionBox.X + reference.X, Y = definitionBox.Y + reference.Y, Color = default });
+        => reference.Transform.Apply(TranslateRectangle(definitionBox, reference.X, reference.Y) with { Color = default });
+
+    /// <summary>Moves original paint edges and their retained clip together before instance transforms.</summary>
+    private static SvgRectangle TranslateRectangle(SvgRectangle rectangle, double x, double y)
+    {
+        SvgClipBox? clip = rectangle.Clip is {} source ? source with { X = source.X + x, Y = source.Y + y } : null;
+        return rectangle with { X = rectangle.X + x, Y = rectangle.Y + y, Clip = clip };
+    }
 
     private static SvgRectangle InstanceBox(SvgRectangle definitionBox, SvgUseReference reference, SvgViewportFrame? frame)
     {
@@ -1046,7 +1054,7 @@ internal static class SvgReferenceResolver
     private static SvgRectangle ApplyRectangle(SvgRectangle rectangle, SvgUseReference reference)
     {
         SvgStroke? stroke = MapInstanceStroke(rectangle.Stroke, reference);
-        SvgRectangle transformed = reference.Transform.Apply(rectangle with { X = rectangle.X + reference.X, Y = rectangle.Y + reference.Y });
+        SvgRectangle transformed = reference.Transform.Apply(TranslateRectangle(rectangle, reference.X, reference.Y));
         return transformed with { Color = new SvgColor(transformed.Color.Red, transformed.Color.Green, transformed.Color.Blue, MultiplyAlpha(transformed.Color.Alpha, reference.Opacity)), HasFill = transformed.HasFill && reference.IsPainted, Stroke = reference.IsPainted ? stroke : null };
 
         static SvgStroke? MapInstanceStroke(SvgStroke? stroke, SvgUseReference reference)

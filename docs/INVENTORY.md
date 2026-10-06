@@ -35,6 +35,18 @@ The orthogonal-fill clip repair preserves all 258 corporate dispositions, all
 240 rendered PNG identities and every measured pixel comparison. It closes
 synthetic path-band failures without changing the 2/27 exact-document result at
 that checkpoint.
+The newer rectangle checkpoint preserves all 258 corporate outcomes and every
+exact corporate PNG. All nine IBM (`inv-099`) variants improve but remain inexact:
+transparent mismatch counts drop 1,754 → 536, 3,525 → 935 and 6,642 → 2,212 at
+small/intended/large sizes. White counts drop 1,678/3,220/6,640 → 529/933/2,210;
+black counts drop 1,671/3,186/6,634 → 532/928/2,207. Remaining alpha maxima
+52/67/88 and color maxima are unchanged; the repair removes rectangle fringe
+errors without claiming full wordmark parity. All original browser references
+and input geometry remain unchanged. The legacy Default `inv-057` PNG also
+changes without a matching reference, so no fidelity graduation follows.
+Exact documents remain 3/27. Full local comparisons are under
+`artifacts/rect-paint-20261006/`.
+
 Historical batch counts below retain their dated scope.
 
 The batch history below retains original selections and contemporaneous results.

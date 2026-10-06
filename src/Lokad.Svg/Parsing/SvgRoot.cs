@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 /// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
 internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
 {
-    /// <summary>Materializes rectangles only for parser characterization tests.</summary>
+    /// <summary>Materializes visible rectangle bounds only for parser characterization tests.</summary>
     internal SvgRectangle[] Rectangles => SvgGeometry.ToRectangles(Geometries);
 
     public void Dispose() => SceneStorage?.Dispose();
@@ -21,7 +21,11 @@ internal enum SvgViewBoxAlignment { Min, Mid, Max, None }
 
 internal enum SvgViewBoxFit { Meet, Slice, None }
 
-internal readonly record struct SvgRectangle(double X, double Y, double Width, double Height, SvgColor Color, bool HasFill, SvgStroke? Stroke);
+internal readonly record struct SvgRectangle(double X, double Y, double Width, double Height, SvgColor Color, bool HasFill, SvgStroke? Stroke)
+{
+    /// <summary>Gets a separate paint clip without changing the original fill edges or paint-server box.</summary>
+    internal SvgClipBox? Clip { get; init; }
+}
 
 internal readonly record struct SvgStroke(SvgColor Color, double Width);
 
@@ -349,6 +353,13 @@ internal readonly struct SvgGeometry
                 SvgGeometryKind.OrthogonalBand => geometries[index].Rectangle,
                 _ => throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains unsupported geometry.")
             };
+            if (rectangles[index].Clip is {} clip)
+            {
+                SvgRectangle rectangle = rectangles[index];
+                double left = Math.Max(rectangle.X, clip.X), top = Math.Max(rectangle.Y, clip.Y);
+                double right = Math.Min(rectangle.X + rectangle.Width, clip.Right), bottom = Math.Min(rectangle.Y + rectangle.Height, clip.Bottom);
+                rectangles[index] = rectangle with { X = left, Y = top, Width = Math.Max(0, right - left), Height = Math.Max(0, bottom - top), Clip = null };
+            }
         }
         return rectangles;
     }

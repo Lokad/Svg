@@ -1,43 +1,36 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06: native float dash interpolation and signed-winding analytic
-walking for nonzero orthogonal contact sets make every ROC HCVS variant exact.
-All twelve fresh horizontal/vertical/single-line/opacity configurations match the
-browser. All 657 prior exact fixture PNGs and sixty prior exact corporate PNGs
-retain complete identity. [PLAN.md](../PLAN.md) owns the remaining queue; rows
-3–7 and S17 retain their general implementation/fidelity exits.
+Updated 2026-10-06: original rectangle paint edges now retain a separate clip
+through viewport, affine, symbol and use mapping. Solid premultiplication precedes
+rounded native 24.8 coverage. Thirty fresh controls and two existing known
+differences become exact; six fresh shader configurations remain inexact.
+All 669 previous exact fixture PNGs and all 66 exact corporate PNGs are preserved.
+[PLAN.md](../PLAN.md) owns the remaining queue; rows 3–7 and S17 remain open.
 
-Current evidence: 853 fixtures = 669 exact + 157 known-difference renders + 27
-rejections across 467 base documents / 386 variants; research remains 59 known
+Current evidence: **889 fixtures = 701 exact + 161 known-difference renders + 27
+rejections**, across 479 base documents / 410 variants. Research remains 59 known
 renders + one rejection. Windows locked restore, nine-project Release build and
-3,333 core + 160 visual + six FontProbe tests (3,499 total) pass. All 25 memory
+3,348 core + 160 visual + six FontProbe tests (**3,514 total**) pass. All 25 memory
 scenarios, package/installed-consumer checks, Chrome smoke and artifact-validator
-controls pass. The 1,005-case bank preserves all 993 prior dispositions; only ROC
-and the Greek flag change their Default PNGs. The latter is exact at 600×400
-against a fresh triple; this does not complete its full variant matrix. Matching
-six-input guard ledgers are unchanged. Affected ROC/Greek raster work drops with
-11,290 / 1,039-byte peak increases. Local evidence is under
-`artifacts/dash-endpoints-20261006/`.
+controls pass. The 1,041-case expanded bank preserves all 1,005 prior dispositions
+and all prior exact PNGs; only two graduated fixtures and the unreferenced legacy
+`inv-057` PNG change. Thirteen matched recipes record work, allocation and peak
+costs; the retained clip adds 48 bytes to rectangle/geometry values on x64.
+Local evidence is under `artifacts/rect-paint-20261006/`.
 
-All 258 corporate cases are executed: 240 render and eighteen are unsupported.
-All 258 references are available: 240 rendered comparisons (**66 exact /
-174 known differences**) and eighteen retained renderer rejections. There are
-no missing references or capture gaps. The remaining 225 references have 675
-stable healthy fresh captures at their frozen dimensions. Ford, ROC HCVS and YouTube
-are the verified exact documents: **3/27**, marks **2/13**, wordmarks
-**1/14**. Membership, original inputs/references, holdouts and denominators remain
-unchanged. All 258 dispositions and 234 rendered PNGs are preserved; six ROC
-PNGs improve to exact against their original references.
-S8 measurement is complete for this first cohort; the S17 target is still unmet.
+All 258 corporate cases are executed: **240 rendered comparisons (66 exact,
+174 known differences)** and eighteen UnsupportedFeature outcomes. Every variant
+has a browser reference. Ford, ROC HCVS and YouTube remain the verified exact
+documents: **3/27**, marks **2/13**, wordmarks **1/14**. Membership, original
+inputs/references, holdouts and denominators are unchanged. All 258 dispositions
+and 231 of 240 rendered PNGs are preserved. All nine IBM variants improve but
+remain inexact. S8 measurement is complete for this first cohort; S17 is unmet.
 
-The preceding clip-byte checkpoint matches native rectangle-mask fringes
-and all 65,536 byte products. Orthogonal clipping now preserves those bytes through the shared polygon
-paint route. Actual `rect` paints, paint-server bands, successive clip intersections,
-cache history, general fidelity, representative performance and Linux remain
-open. The capture transport now admits 8,388,608 pixels with a screenshot-only
-64 MiB reply bound; commands/events retain 16 MiB. Next use the complete measured
-matrix to investigate shared rectangle paint/clip work. The 23-document stratum
-target is unachieved.
+Shader quantization, successive clip-alpha intersections, cache history, general
+fidelity, representative performance and Linux remain open. The capture transport
+admits 8,388,608 pixels with a screenshot-only 64 MiB reply bound; commands/events
+retain 16 MiB. Next follow shared shader/clip arithmetic and measured corporate
+residuals. The 23-document stratum target remains unachieved.
 
 ## Q1 - numeric exact-document target: selected
 

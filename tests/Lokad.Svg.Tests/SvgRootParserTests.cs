@@ -1741,7 +1741,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.Gradient.Fill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null) { Clip = new(0, 0, 8, 8) }, geometry.Gradient.Fill);
     }
 
     [Fact]
@@ -2478,8 +2478,8 @@ public sealed class SvgRootParserTests
             Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.Gradient.Box);
             Assert.Equal(128, geometry.Gradient.Opacity);
         }
-        Assert.Equal(new SvgRectangle(0, 0, 8, 4, default, true, null), root.Geometries[0].Gradient.Fill);
-        Assert.Equal(new SvgRectangle(0, 4, 4, 4, default, true, null), root.Geometries[1].Gradient.Fill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 4, default, true, null) { Clip = new(0, 0, 8, 8) }, root.Geometries[0].Gradient.Fill);
+        Assert.Equal(new SvgRectangle(0, 4, 4, 4, default, true, null) { Clip = new(0, 0, 8, 8) }, root.Geometries[1].Gradient.Fill);
     }
     [Fact]
     public void Lowers_symbol_gradient_stroke_instances_through_viewBox_mapping()
@@ -2488,8 +2488,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientStroke, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 128), true, null), geometry.GradientStroke.Fill);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 2, default, true, null), geometry.GradientStroke.Top);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 128), true, null) { Clip = new(0, 0, 8, 8) }, geometry.GradientStroke.Fill);
+        Assert.Equal(new SvgRectangle(-2, -2, 12, 4, default, true, null) { Clip = new(0, 0, 8, 8) }, geometry.GradientStroke.Top);
         Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.GradientStroke.Box);
         Assert.Equal(128, geometry.GradientStroke.Opacity);
     }
@@ -2948,7 +2948,7 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgRectangle(2, 0, 4, 8, default, true, null), geometry.Gradient.Fill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null) { Clip = new(2, 0, 4, 8) }, geometry.Gradient.Fill);
     }
 
     [Fact]
@@ -4277,7 +4277,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#later)'><rect width='16' height='16' fill='red'/></g><rect x='0' y='0' width='2' height='2' fill='blue'/><defs><clipPath id='later'><rect x='4' y='4' width='8' height='8'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(2, root.Geometries.Length);
-        Assert.Equal(new SvgRectangle(4, 4, 8, 8, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
+        Assert.Equal(new SvgRectangle(0, 0, 16, 16, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(4, 4, 8, 8) }, root.Geometries[0].Rectangle);
         Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(0, 0, 255, 255), true, null), root.Geometries[1].Rectangle);
     }
 
@@ -4333,9 +4333,9 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g clip-path='url(#c)'><use href='#p'/></g><rect x='0' y='0' width='2' height='2' fill='blue'/><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/><clipPath id='c'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(3, root.Geometries.Length);
-        Assert.Equal(new SvgRectangle(2, 2, 4, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[0].Rectangle);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 4, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(2, 2, 4, 4) }, root.Geometries[0].Rectangle);
         Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(0, 0, 255, 255), true, null), root.Geometries[1].Rectangle);
-        Assert.Equal(new SvgRectangle(2, 4, 2, 2, new SvgColor(255, 0, 0, 255), true, null), root.Geometries[2].Rectangle);
+        Assert.Equal(new SvgRectangle(0, 4, 4, 4, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(2, 2, 4, 4) }, root.Geometries[2].Rectangle);
     }
 
     [Fact]
@@ -4689,7 +4689,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 8 V 8 H 0 Z' fill='red' clip-path='url(#later)'/><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries).Rectangle);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(2, 2, 4, 4) }, Assert.Single(root.Geometries).Rectangle);
     }
 
     [Fact]
@@ -4713,7 +4713,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 8 V 8 H 0 Z' fill='red' clip-path='url(#later)'/><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(2, 2, 4, 4, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Geometries).Rectangle);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(2, 2, 4, 4) }, Assert.Single(root.Geometries).Rectangle);
     }
     [Fact]
     public void Rejects_forward_bounding_box_clips_on_direct_lines()
@@ -5554,7 +5554,7 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgGeometryKind.GradientStroke, geometry.Kind);
         Assert.Equal(128, geometry.GradientStroke.Opacity);
         Assert.Equal(new SvgColor(0, 255, 0, 128), geometry.GradientStroke.Fill.Color);
-        Assert.Equal(new SvgRectangle(12, 12, 40, 8, new SvgColor(0, 0, 0, 0), true, null), geometry.GradientStroke.Top);
+        Assert.Equal(new SvgRectangle(12, 12, 40, 8, new SvgColor(0, 0, 0, 0), true, null) { Clip = new SvgClipBox(8, 8, 48, 48) { Antialiasing = SvgClipAntialiasing.None } }, geometry.GradientStroke.Top);
     }
 
     [Fact]
@@ -6406,12 +6406,12 @@ public sealed class SvgRootParserTests
         SvgRoot userSpace = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c'><rect x='0' y='0' width='1' height='1'/></clipPath><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' clip-path='url(#c)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry userGeometry = Assert.Single(userSpace.Geometries);
-        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), userGeometry.Pattern.Content);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(0, 0, 1, 1) }, userGeometry.Pattern.Content);
 
         SvgRoot boundingBox = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='c' clipPathUnits='objectBoundingBox'><rect x='0' y='0' width='0.5' height='0.5'/></clipPath><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' clip-path='url(#c)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry boundingGeometry = Assert.Single(boundingBox.Geometries);
-        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), boundingGeometry.Pattern.Content);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(0, 0, 1, 1) }, boundingGeometry.Pattern.Content);
     }
 
     [Fact]

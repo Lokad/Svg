@@ -70,7 +70,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Parser_lists_charge_their_runtime_value_size_for_geometry_and_stylesheet_rules()
     {
-        RenderBudget geometryBudget = new(1_000);
+        RenderBudget geometryBudget = new(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4));
         using var geometries = new BudgetedParserList<SvgGeometry>(geometryBudget, SvgMemoryCategory.Geometry);
         geometries.Add(SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null)));
         RenderBudgetSnapshot geometrySnapshot = geometryBudget.Snapshot();
@@ -230,9 +230,9 @@ public sealed class RenderBudgetTests
     {
         RenderBudget budget = new(1_000);
 
-        using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(PatternRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits(20)), budget, CancellationToken.None);
+        using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(PatternRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PatternLimits(28)), budget, CancellationToken.None);
 
-        Assert.Equal(20, surface.WorkUnits);
+        Assert.Equal(28, surface.WorkUnits);
         Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels[0..4]);
         Assert.Equal(16, budget.Snapshot().CurrentBytes);
     }

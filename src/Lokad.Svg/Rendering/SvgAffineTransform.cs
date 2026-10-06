@@ -143,7 +143,7 @@ internal readonly record struct SvgAffineTransform(double A, double B, double C,
         double height = D * rectangle.Height;
         if (width < 0) { x += width; width = -width; }
         if (height < 0) { y += height; height = -height; }
-        return rectangle with { X = x, Y = y, Width = width, Height = height };
+        return rectangle with { X = x, Y = y, Width = width, Height = height, Clip = rectangle.Clip is {} clip ? Apply(clip) : null };
     }
 
     /// <summary>Applies this axis-aligned transform to a retained axis-aligned line, keeping the stroke width non-negative.</summary>
