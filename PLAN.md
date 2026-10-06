@@ -1,40 +1,44 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-06. **Current validated renderer checkpoint: native float root
-mapping for retained curves.** Final cubic/quadratic controls and curve endpoints
-use separate float multiply/add operations. All nine frozen NASA variants are
-now exact, joining Ford, ROC HCVS, Artsy and YouTube: **5/27 exact documents**,
-marks **3/13**, wordmarks **2/14**. S17 still requires at least **23/27** with both
-stratum minima; rows 3–7, general fidelity and Linux remain open.
+Updated 2026-10-06. **Current validated renderer checkpoint: deferred authored
+fill mapping.** Path commands retain their validated float operands alongside
+the existing scene contours. Raster preparation composes root/group placement
+before point/control rounding; scene bounds, paint coordinates, clips and use
+admission retain their existing contracts. Contour merging or splitting keeps
+the normalized raster representation.
 
-The bank has **1,042 fixtures = 847 exact + 165 known differences + 30 rejections**,
-36 research probes and 92 legacy Default cases: **1,170 executed cases**. All 1,033
-previous fixture outputs, 36 research outcomes and 844 exact fixture PNGs are
-unchanged. Nine legacy Default PNGs change without a matching-options fidelity
-claim. Validation passes **3,637 tests**, the nine-project Release build, all 25
-memory scenarios and delivery checks. Nine matched cost recipes record actual
-work/storage and overlapping local timing ranges; Git identifies implementation.
+The fully exact document count remains **5/27**, marks **3/13**, wordmarks
+**2/14**. S17 still requires **23/27** with both stratum minima. UAAR's large
+variants become exact on three backgrounds; its smaller variants remain inexact.
+The frozen **27-document / 258-variant** cohort now has **76 exact comparisons,
+164 known differences and eighteen rejections**. All 73 prior exact corporate
+PNGs and every input/outcome are preserved. Fifty-four corporate PNGs change:
+36 improve mismatch count, eleven worsen and seven retain their count. The
+regressions affect intended SDL and Omega, small Party of Changes and large
+Goodyear variants; original references remain frozen.
 
-The frozen **27-document / 258-variant** cohort has **73 exact comparisons,
-167 known differences and eighteen rejections**. All 70 prior exact PNGs and
-every input/outcome are preserved. Thirty-five corporate PNGs change: seventeen
-improve in mismatch count, twelve worsen and six retain their count. Large SDL,
-SG Rotation, Party of Changes and Pepsi variants retain their measured regressions
-against original references. No tolerance or reference regeneration is used.
+The bank remains **1,042 fixtures = 847 exact + 165 known differences + 30
+rejections**, plus 36 research probes and 92 legacy Default cases: **1,170
+executed cases**. Every fixture/research PNG and outcome is unchanged. Six legacy
+Default PNGs change without a matching-options fidelity claim. Validation passes
+**3,654 tests**, the nine-project Release build, all 25 memory scenarios, pinned
+browser/artifact checks and package consumers.
 
-Nine fresh configurations have 27 healthy, cleaned, stable captures: clipped
-cubic slice is exact on three backgrounds, fractional cubic meet retains ten
-differences on each, and anisotropic quadratic fill retains UnsupportedFeature.
-They were declared after the edit and before capture/comparison; they do not
-establish an algorithm improvement. The earlier width-one cap regression remains
-sixteen differing pixels, alpha-error mass 42 and maximum alpha error eleven.
+Authored storage and replay add work and allocation. Nine matched recipes retain
+actual work/storage and local timing ranges in [the benchmark record](docs/BENCHMARKS.md#deferred-authored-fill-mapping-observations-2026-10-06).
+Accounted peaks grow substantially for larger curves, including Ford
+534,546 → 2,588,992 bytes. No representative performance improvement is claimed.
+The width-one cap retains sixteen differing pixels, alpha-error mass 42 and
+maximum alpha error eleven. Git identifies implementation; source edits and
+rebuilds require no hash metadata refresh.
 
-**Next: compose root/group maps before point rounding while preserving scene
-bounds and paint coordinates; then thin/fractional stroke events,
-closed/curved/dashed construction, clipping and corporate residuals.** Native
-multiply/add operations do not prove every mapped browser coordinate or CTM bit
-matches. Preserve the numeric, material, bitmap-origin, AA-clip, rational-curve
-and stroke repairs. Representative performance remains open.
+**Next: diagnose remaining original corporate contour/edge events, thin and
+fractional strokes, closed/curved/dashed construction and clipping.** Root/group
+composition is implemented for eligible authored fills; normalized contours,
+other primitive families and wider native coordinate parity retain separate
+work. Rows 3–7, general fidelity, representative performance and Linux remain
+open. Preserve the numeric, material, bitmap-origin, AA-clip, rational-curve and
+stroke repairs.
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -72,12 +76,15 @@ nor the calibration fixtures establish a release rate.
 
 ## 1. Current validated checkpoint and its limits
 
-The retained-curve root mapping repair accompanies three six-output
-root-versus-group mapping cases, the complete frozen corporate comparison and
-nine supplemental configurations. NASA's exact PNGs establish a document exit;
-163 mapped-coordinate differences and a root-offset discrepancy remain in the
-recorded browser comparison. Scope, numerical evidence and known regressions are
-in [the design record](docs/RASTERIZATION_DESIGN.md#native-float-root-mapping-for-retained-curves-2026-10-06).
+The authored fill mapping repair preserves scene/paint semantics while composing
+final point placement. Independent recorded-browser CTM vectors, viewBox range
+and cancellation cases, six-output parity, repeated instance ownership and
+partial-construction denial tests cover the changed contracts. All 847 exact
+fixture comparisons and the five exact corporate documents remain exact.
+Scope and known regressions are in [the design record](docs/RASTERIZATION_DESIGN.md#deferred-authored-fill-mapping-2026-10-06).
+The earlier NASA mapped-coordinate discrepancies remain diagnostic evidence;
+this slice does not establish complete native coordinate parity.
+
 The DOCTYPE [regression inputs](tests/References/declaration-only-doctype.json)
 retain only fixture identities and the declaration-free comparison contract.
 Detailed run records stay under ignored artifacts; Git and the dated snapshots
@@ -1248,8 +1255,8 @@ check cancellation within bounded chunks and release owners on every exit.
   outcomes when behavior changes; ordinary source edits and rebuilds require no
   reference metadata refresh.
 - Keep test records focused on reusable inputs, expected behavior and necessary
-  oracle provenance. Do not embed raw build/test reports, resource ledgers or
-  timing batches in test data. Keep those under ignored artifacts and summarize
+  oracle provenance. Do not embed per-pixel witness dumps, raw build/test
+  reports, resource ledgers or timing batches in test data. Keep those under ignored artifacts and summarize
   useful findings in the existing documentation; Git retains previous records.
 - Each implementation slice includes locked restore/Release build/tests,
   independent semantic/numeric/negative vectors and relevant documentation.

@@ -125,17 +125,28 @@ internal static class SvgGeometrySyntax
     /// <summary>Maps viewBox units into a viewport box under its alignment policy.</summary>
     internal static (double ScaleX, double ScaleY, double OffsetX, double OffsetY) MapViewBox(SvgViewBox viewBox, double viewportWidth, double viewportHeight)
     {
-        double scaleX = viewportWidth / viewBox.Width;
-        double scaleY = viewportHeight / viewBox.Height;
-        if (viewBox.HorizontalAlignment != SvgViewBoxAlignment.None)
+        double x = (float)viewBox.X;
+        double y = (float)viewBox.Y;
+        double width = (float)viewBox.Width;
+        double height = (float)viewBox.Height;
+        double physicalWidth = (float)viewportWidth;
+        double physicalHeight = (float)viewportHeight;
+        if (viewBox.HorizontalAlignment == SvgViewBoxAlignment.None)
         {
-            double scale = viewBox.Fit == SvgViewBoxFit.Slice ? Math.Max(scaleX, scaleY) : Math.Min(scaleX, scaleY);
-            scaleX = scale;
-            scaleY = scale;
+            double scaleX = physicalWidth / width;
+            double scaleY = physicalHeight / height;
+            return (scaleX, scaleY, 0d + -x * scaleX + -y * 0d, 0d + -x * 0d + -y * scaleY);
         }
-        double offsetX = MapAlignmentOffset(viewportWidth - viewBox.Width * scaleX, viewBox.HorizontalAlignment) - viewBox.X * scaleX;
-        double offsetY = MapAlignmentOffset(viewportHeight - viewBox.Height * scaleY, viewBox.VerticalAlignment) - viewBox.Y * scaleY;
-        return (scaleX, scaleY, offsetX, offsetY);
+        double logicalRatio = width / height;
+        double physicalRatio = physicalWidth / physicalHeight;
+        bool useHeight = logicalRatio < physicalRatio && viewBox.Fit == SvgViewBoxFit.Meet
+            || logicalRatio >= physicalRatio && viewBox.Fit == SvgViewBoxFit.Slice;
+        double scale = useHeight ? physicalHeight / height : physicalWidth / width;
+        double translateX = -x;
+        double translateY = -y;
+        if (useHeight) translateX -= MapAlignmentOffset(width - physicalWidth * height / physicalHeight, viewBox.HorizontalAlignment);
+        else translateY -= MapAlignmentOffset(height - physicalHeight * width / physicalWidth, viewBox.VerticalAlignment);
+        return (scale, scale, 0d + translateX * scale + translateY * 0d, 0d + translateX * 0d + translateY * scale);
     }
 
     private static double MapAlignmentOffset(double remaining, SvgViewBoxAlignment alignment) => alignment switch
@@ -146,7 +157,7 @@ internal static class SvgGeometrySyntax
         _ => throw new InvalidOperationException("Unknown viewBox alignment.")
     };
 
-    internal static SvgViewBox? ParseViewBox(string? value, string? preserveAspectRatio)
+    internal static SvgViewBox? ParseViewBox(string? value, string? preserveAspectRatio, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (value is not null && value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "viewBox values exceed the configured syntax limit.");
         if (preserveAspectRatio is not null && preserveAspectRatio.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "preserveAspectRatio values exceed the configured syntax limit.");
@@ -160,8 +171,10 @@ internal static class SvgGeometrySyntax
         DelimitedTokenReader tokens = new(value);
         while (tokens.TryReadValue(out ReadOnlySpan<char> token))
         {
-            if (valueCount == values.Length || !double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out values[valueCount])) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
-            valueCount++;
+            if (valueCount == values.Length || !double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double validated) || !double.IsFinite(validated)) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
+            float native = SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
+            if (!float.IsFinite(native) || valueCount >= 2 && native == 0 && validated > 0) throw new SvgException(SvgErrorCode.LimitExceeded, "viewBox values exceed the admitted float range.");
+            values[valueCount++] = native;
         }
         if (valueCount != 4 || !double.IsFinite(values[0]) || !double.IsFinite(values[1]) || !double.IsFinite(values[2]) || !double.IsFinite(values[3]) || values[2] <= 0 || values[3] <= 0) throw new SvgException(SvgErrorCode.MalformedInput, "viewBox must contain four finite numbers with positive width and height.");
         (SvgViewBoxAlignment horizontalAlignment, SvgViewBoxAlignment verticalAlignment, SvgViewBoxFit fit) = ParsePreserveAspectRatio(preserveAspectRatio);

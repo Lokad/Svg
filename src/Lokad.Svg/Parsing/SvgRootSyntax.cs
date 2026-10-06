@@ -22,14 +22,14 @@ internal readonly record struct SvgRootLength(double Value, bool IsPercentage)
 
 internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox)
 {
-    internal static SvgRootSyntax Parse(XmlReader reader)
+    internal static SvgRootSyntax Parse(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         // SVG 1.1 gives x and y no effect on the outermost svg element, so their
         // values are validated as finite lengths and then discarded. Nested svg
         // viewports keep their own offset handling.
         ValidateRootPosition(reader.GetAttribute("x"));
         ValidateRootPosition(reader.GetAttribute("y"));
-        return new(SvgGeometrySyntax.ParseRootLength(reader.GetAttribute("width")), SvgGeometrySyntax.ParseRootLength(reader.GetAttribute("height")), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio")));
+        return new(SvgGeometrySyntax.ParseRootLength(reader.GetAttribute("width")), SvgGeometrySyntax.ParseRootLength(reader.GetAttribute("height")), SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken));
 
         static void ValidateRootPosition(string? value)
         {

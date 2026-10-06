@@ -11,9 +11,9 @@ public static class SvgConverter
 {
     private const int GlyphSamplesPerAxis = 4;
     /// <summary>Owns mapped polygon points with raster bounds, clip and their surface reservation until the rasterizer releases them.</summary>
-    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, SvgClipAntialiasing ClipAntialiasing, bool ClipContainsPath, SvgDeviceBounds CompleteBounds, bool HasFractionalEdge, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans, RenderBudget.BudgetReservation? Reservation) : IDisposable
+    private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, SvgClipAntialiasing ClipAntialiasing, bool ClipContainsPath, SvgDeviceBounds CompleteBounds, bool HasFractionalEdge, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans, RenderBudget.BudgetReservation? Reservation, int[] ContourEnds, int[]? Signs, SvgMappedAuthoredPath? Authored) : IDisposable
     {
-        public void Dispose() => Reservation?.Dispose();
+        public void Dispose() { Reservation?.Dispose(); Authored?.Dispose(); }
 
         /// <summary>Gets bordered construction when complete mapped path/control bounds escape this bitmap or the SVG clip.</summary>
         internal SvgAnalyticClipContext? GetConstructionClip(SvgCpuRasterContext context)
@@ -471,16 +471,16 @@ public static class SvgConverter
                     RasterizeRadialFill(geometry.Radial, destination);
                     return;
                 case SvgGeometryKind.PolygonFill:
-                    RasterizePolygonFill(geometry.Polygon, destination);
+                    RasterizePolygonFill(geometry.Polygon, geometry.AuthoredPath, destination);
                     return;
                 case SvgGeometryKind.GradientPolygon:
-                    RasterizeGradientPolygon(geometry.GradientPolygon, destination);
+                    RasterizeGradientPolygon(geometry.GradientPolygon, geometry.AuthoredPath, destination);
                     return;
                 case SvgGeometryKind.RadialPolygon:
-                    RasterizeRadialPolygon(geometry.RadialPolygon, destination);
+                    RasterizeRadialPolygon(geometry.RadialPolygon, geometry.AuthoredPath, destination);
                     return;
                 case SvgGeometryKind.PatternPolygon:
-                    RasterizePatternPolygon(geometry.PatternPolygon, destination);
+                    RasterizePatternPolygon(geometry.PatternPolygon, geometry.AuthoredPath, destination);
                     return;
                 default:
                     throw new SvgException(SvgErrorCode.MalformedInput, "SVG scene contains invalid geometry.");
@@ -508,76 +508,97 @@ public static class SvgConverter
             return coverage;
         }
 
-        MappedPolygon MapPolygon(SvgDevicePoint[] points, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgPolygonMapping mapping, SvgClipBox? clip)
+        MappedPolygon MapPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, bool isEvenOdd, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgPolygonMapping mapping, SvgClipBox? clip, SvgAuthoredPath? authoredPath)
         {
-            long mappingWork = (long)points.Length + 2L * quadSpans.Length + 2L * cubicSpans.Length;
-            if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
-            workUnits += mappingWork;
-            RenderBudget.BudgetReservation mappedReservation = budget.Reserve(checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)), SvgMemoryCategory.Surface);
+            SvgMappedAuthoredPath? authored = null;
+            if (authoredPath is not null)
+            {
+                ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                authored = authoredPath.Prepare(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), isEvenOdd, budget, preparationWork, cancellationToken);
+                workUnits += preparationWork.Used;
+                points = authored.Points; contourEnds = authored.ContourEnds; signs = authored.Signs;
+                quadSpans = authored.QuadSpans; cubicSpans = authored.CubicSpans;
+            }
+            bool transferred = false;
             try
             {
-                SvgDevicePoint[] mapped = new SvgDevicePoint[points.Length];
-                SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, mapping is SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.FlattenedCurves, out bool canvasContainsQuads, cancellationToken);
-                SvgCubicSpan[] mappedCubics = MapCubicSpanControls(cubicSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, out bool canvasContainsCubics, cancellationToken);
-                bool hasFractionalEdge = false;
-                bool nativeConics = Array.Exists(quadSpans, static span => span.ConicWeight != 1f);
-                double left = double.PositiveInfinity;
-                double top = double.PositiveInfinity;
-                double right = double.NegativeInfinity;
-                double bottom = double.NegativeInfinity;
-                for (int index = 0; index < points.Length; index++)
+                double pointScaleX = authored is null ? horizontalScale : 1;
+                double pointScaleY = authored is null ? verticalScale : 1;
+                double pointOffsetX = authored is null ? horizontalOffset : 0;
+                double pointOffsetY = authored is null ? verticalOffset : 0;
+                long mappingWork = (long)points.Length + 2L * quadSpans.Length + 2L * cubicSpans.Length;
+                if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
+                workUnits += mappingWork;
+                RenderBudget.BudgetReservation mappedReservation = budget.Reserve(checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)), SvgMemoryCategory.Surface);
+                try
                 {
-                    if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double edgeX = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.FlattenedCurves ? MapNativePolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
-                    double edgeY = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.FlattenedCurves ? MapNativePolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
-                    mapped[index] = new SvgDevicePoint(edgeX, edgeY);
-                    if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
-                    if (edgeX < left) left = edgeX;
-                    if (edgeY < top) top = edgeY;
-                    if (edgeX > right) right = edgeX;
-                    if (edgeY > bottom) bottom = edgeY;
+                    SvgDevicePoint[] mapped = new SvgDevicePoint[points.Length];
+                    SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, pointScaleX, pointOffsetX, pointScaleY, pointOffsetY, outputWidth, outputHeight, mapping is SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.FlattenedCurves, out bool canvasContainsQuads, cancellationToken);
+                    SvgCubicSpan[] mappedCubics = MapCubicSpanControls(cubicSpans, pointScaleX, pointOffsetX, pointScaleY, pointOffsetY, outputWidth, outputHeight, out bool canvasContainsCubics, cancellationToken);
+                    bool hasFractionalEdge = false;
+                    bool nativeConics = Array.Exists(quadSpans, static span => span.ConicWeight != 1f);
+                    double left = double.PositiveInfinity;
+                    double top = double.PositiveInfinity;
+                    double right = double.NegativeInfinity;
+                    double bottom = double.NegativeInfinity;
+                    for (int index = 0; index < points.Length; index++)
+                    {
+                        if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        double edgeX = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.FlattenedCurves ? MapNativePolygonEdge(points[index].X, pointScaleX, pointOffsetX) : MapEdge(points[index].X, pointScaleX, pointOffsetX);
+                        double edgeY = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.FlattenedCurves ? MapNativePolygonEdge(points[index].Y, pointScaleY, pointOffsetY) : MapEdge(points[index].Y, pointScaleY, pointOffsetY);
+                        mapped[index] = new SvgDevicePoint(edgeX, edgeY);
+                        if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
+                        if (edgeX < left) left = edgeX;
+                        if (edgeY < top) top = edgeY;
+                        if (edgeX > right) right = edgeX;
+                        if (edgeY > bottom) bottom = edgeY;
+                    }
+                    int startY = ClampFloor(top, outputHeight);
+                    int endY = ClampCeiling(bottom, outputHeight);
+                    int startX = ClampFloor(left, outputWidth);
+                    int endX = ClampCeiling(right, outputWidth);
+                    int pathStartX = startX;
+                    int pathStartY = startY;
+                    int pathEndX = endX;
+                    int pathEndY = endY;
+                    double completeLeft = left;
+                    double completeTop = top;
+                    double completeRight = right;
+                    double completeBottom = bottom;
+                    for (int index = 0; index < mappedSpans.Length; index++)
+                    {
+                        if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        IncludeControl(mappedSpans[index].Control, ref completeLeft, ref completeTop, ref completeRight, ref completeBottom);
+                    }
+                    for (int index = 0; index < mappedCubics.Length; index++)
+                    {
+                        if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
+                        IncludeControl(mappedCubics[index].FirstControl, ref completeLeft, ref completeTop, ref completeRight, ref completeBottom);
+                        IncludeControl(mappedCubics[index].SecondControl, ref completeLeft, ref completeTop, ref completeRight, ref completeBottom);
+                    }
+                    SvgDeviceBounds completeBounds = new(completeLeft, completeTop, completeRight, completeBottom);
+                    (double Left, double Top, double Right, double Bottom)? mappedClip = null;
+                    bool clipContainsPath = left >= 0 && top >= 0 && right <= outputWidth && bottom <= outputHeight && canvasContainsQuads && canvasContainsCubics;
+                    if (clip is SvgClipBox clipBox)
+                    {
+                        (startX, startY, endX, endY) = IntersectMappedClip(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
+                        mappedClip = MapClipBounds(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
+                        var bounds = mappedClip.Value;
+                        clipContainsPath = clipContainsPath && bounds.Left <= Math.Floor(left) && bounds.Top <= Math.Floor(top) && bounds.Right >= Math.Ceiling(right) && bounds.Bottom >= Math.Ceiling(bottom)
+                            && bounds.Left <= completeLeft && bounds.Top <= completeTop && bounds.Right >= completeRight && bounds.Bottom >= completeBottom;
+                    }
+                    transferred = true;
+                    return new MappedPolygon(mapped, startX, startY, endX, endY, pathStartX, pathStartY, pathEndX, pathEndY, mappedClip, clip?.Antialiasing ?? SvgClipAntialiasing.None, clipContainsPath, completeBounds, hasFractionalEdge, mappedSpans, mappedCubics, mappedReservation, contourEnds, signs, authored);
                 }
-                int startY = ClampFloor(top, outputHeight);
-                int endY = ClampCeiling(bottom, outputHeight);
-                int startX = ClampFloor(left, outputWidth);
-                int endX = ClampCeiling(right, outputWidth);
-                int pathStartX = startX;
-                int pathStartY = startY;
-                int pathEndX = endX;
-                int pathEndY = endY;
-                double completeLeft = left;
-                double completeTop = top;
-                double completeRight = right;
-                double completeBottom = bottom;
-                for (int index = 0; index < mappedSpans.Length; index++)
+                catch
                 {
-                    if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    IncludeControl(mappedSpans[index].Control, ref completeLeft, ref completeTop, ref completeRight, ref completeBottom);
+                    mappedReservation.Dispose();
+                    authored?.Dispose();
+                    throw;
                 }
-                for (int index = 0; index < mappedCubics.Length; index++)
-                {
-                    if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    IncludeControl(mappedCubics[index].FirstControl, ref completeLeft, ref completeTop, ref completeRight, ref completeBottom);
-                    IncludeControl(mappedCubics[index].SecondControl, ref completeLeft, ref completeTop, ref completeRight, ref completeBottom);
-                }
-                SvgDeviceBounds completeBounds = new(completeLeft, completeTop, completeRight, completeBottom);
-                (double Left, double Top, double Right, double Bottom)? mappedClip = null;
-                bool clipContainsPath = left >= 0 && top >= 0 && right <= outputWidth && bottom <= outputHeight && canvasContainsQuads && canvasContainsCubics;
-                if (clip is SvgClipBox clipBox)
-                {
-                    (startX, startY, endX, endY) = IntersectMappedClip(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, startX, startY, endX, endY);
-                    mappedClip = MapClipBounds(clipBox, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
-                    var bounds = mappedClip.Value;
-                    clipContainsPath = clipContainsPath && bounds.Left <= Math.Floor(left) && bounds.Top <= Math.Floor(top) && bounds.Right >= Math.Ceiling(right) && bounds.Bottom >= Math.Ceiling(bottom)
-                        && bounds.Left <= completeLeft && bounds.Top <= completeTop && bounds.Right >= completeRight && bounds.Bottom >= completeBottom;
-                }
-                return new MappedPolygon(mapped, startX, startY, endX, endY, pathStartX, pathStartY, pathEndX, pathEndY, mappedClip, clip?.Antialiasing ?? SvgClipAntialiasing.None, clipContainsPath, completeBounds, hasFractionalEdge, mappedSpans, mappedCubics, mappedReservation);
+
             }
-            catch
-            {
-                mappedReservation.Dispose();
-                throw;
-            }
+            finally { if (!transferred) authored?.Dispose(); }
 
             static void IncludeControl(SvgDevicePoint point, ref double left, ref double top, ref double right, ref double bottom)
             {
@@ -588,15 +609,15 @@ public static class SvgConverter
             }
         }
 
-        void RasterizePolygonFill(SvgPolygonFill polygon, byte[] destination)
+        void RasterizePolygonFill(SvgPolygonFill polygon, SvgAuthoredPath? authoredPath, byte[] destination)
         {
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
-            using MappedPolygon raster = MapPolygon(polygon.Points, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip);
+            using MappedPolygon raster = MapPolygon(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip, authoredPath);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgAnalyticPaint analyticPaint = SvgAnalyticPaint.Solid(polygon.Color);
-            ReadOnlySpan<int> contourEnds = polygon.ContourEnds;
-            ReadOnlySpan<int> nestingSigns = polygon.Signs is int[] signs ? signs : Array.Empty<int>();
-            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
+            ReadOnlySpan<int> contourEnds = raster.ContourEnds;
+            ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
+            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, polygon.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
             foreach (SvgCpuRasterContext context in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -621,7 +642,7 @@ public static class SvgConverter
                 if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
                 workUnits += coverage;
                 long scanSetup = 0;
-                using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
+                using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
                 if (!useAnalytic)
                 {
                     if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
@@ -645,7 +666,7 @@ public static class SvgConverter
                     for (int x = startX; x < endX; x++)
                     {
                         if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                        double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, polygon.Signs, x, y, cancellationToken) : 0.0;
+                        double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                         int offset = (y * outputWidth + x) * 4;
                         if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), analyticPaint, raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                         else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(polygon.Color, pixelCoverage));
@@ -655,12 +676,12 @@ public static class SvgConverter
                 if (!useAnalytic) break;
             }
         }
-        void RasterizeGradientPolygon(SvgGradientPolygon outline, byte[] destination)
+        void RasterizeGradientPolygon(SvgGradientPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
-            using MappedPolygon raster = MapPolygon(outline.Points, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip);
+            using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgLinearGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
@@ -671,9 +692,9 @@ public static class SvgConverter
             SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
 
-            ReadOnlySpan<int> contourEnds = outline.ContourEnds;
-            ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
+            ReadOnlySpan<int> contourEnds = raster.ContourEnds;
+            ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
+            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
             foreach (SvgCpuRasterContext context in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -697,7 +718,7 @@ public static class SvgConverter
                 if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
                 workUnits += coverage;
                 long scanSetup = 0;
-                using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
+                using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
                 if (!useAnalytic)
                 {
                     if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
@@ -723,7 +744,7 @@ public static class SvgConverter
                 for (int x = startX; x < endX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken) : 0.0;
+                    double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                     double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                     double position;
                     if (!nativeCoordinates.TryLinear(x, y, rasterGrid, out position))
@@ -767,21 +788,21 @@ public static class SvgConverter
                 if (!useAnalytic) break;
             }
         }
-        void RasterizeRadialPolygon(SvgRadialPolygon outline, byte[] destination)
+        void RasterizeRadialPolygon(SvgRadialPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
-            using MappedPolygon raster = MapPolygon(outline.Points, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip);
+            using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
             SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (definition.Radius <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
 
-            ReadOnlySpan<int> contourEnds = outline.ContourEnds;
-            ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
+            ReadOnlySpan<int> contourEnds = raster.ContourEnds;
+            ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
+            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
             foreach (SvgCpuRasterContext context in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -805,7 +826,7 @@ public static class SvgConverter
                 if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
                 workUnits += coverage;
                 long scanSetup = 0;
-                using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
+                using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
                 if (!useAnalytic)
                 {
                     if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
@@ -830,7 +851,7 @@ public static class SvgConverter
                 for (int x = startX; x < endX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken) : 0.0;
+                    double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                     double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                     double sampleX;
                     double sampleY;
@@ -929,10 +950,10 @@ public static class SvgConverter
             }
         }
 
-        void RasterizePatternPolygon(SvgPatternPolygon outline, byte[] destination)
+        void RasterizePatternPolygon(SvgPatternPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
-            using MappedPolygon raster = MapPolygon(outline.Points, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip);
+            using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null);
             if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
@@ -942,9 +963,9 @@ public static class SvgConverter
             using RenderBudget.BudgetReservation tileReservation = budget.Reserve(checked(tilePixels * 4), SvgMemoryCategory.Surface);
             byte[] blitted = new byte[(int)tilePixels * 4];
             BlitPatternTile(tile, blitted);
-            ReadOnlySpan<int> contourEnds = outline.ContourEnds;
-            ReadOnlySpan<int> nestingSigns = outline.Signs is int[] signs ? signs : Array.Empty<int>();
-            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
+            ReadOnlySpan<int> contourEnds = raster.ContourEnds;
+            ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
+            SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, outline.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight);
             foreach (SvgCpuRasterContext context in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -968,7 +989,7 @@ public static class SvgConverter
                 if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
                 workUnits += coverage;
                 long scanSetup = 0;
-                using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
+                using SvgScanlineCoverage scan = useAnalytic ? default : SvgScanlineCoverage.Prepare(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.StartX, raster.EndX, budget, out scanSetup, cancellationToken);
                 if (!useAnalytic)
                 {
                     if (scanSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
@@ -992,7 +1013,7 @@ public static class SvgConverter
                 for (int x = startX; x < endX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, outline.Signs, x, y, cancellationToken) : 0.0;
+                    double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                     int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
                     int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
                     int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
@@ -1564,23 +1585,8 @@ public static class SvgConverter
     private static (double HorizontalScale, double HorizontalOffset, double VerticalScale, double VerticalOffset) GetViewBoxTransform(SvgViewBox? viewBox, double width, double height, double outputScale)
     {
         if (viewBox is not SvgViewBox box) return (outputScale, 0, outputScale, 0);
-        double horizontalScale = width / box.Width;
-        double verticalScale = height / box.Height;
-        if (box.HorizontalAlignment != SvgViewBoxAlignment.None)
-        {
-            double scale = box.Fit == SvgViewBoxFit.Slice ? Math.Max(horizontalScale, verticalScale) : Math.Min(horizontalScale, verticalScale);
-            horizontalScale = scale;
-            verticalScale = scale;
-        }
-        return (horizontalScale * outputScale, (GetAlignmentOffset(width - box.Width * horizontalScale, box.HorizontalAlignment) - box.X * horizontalScale) * outputScale, verticalScale * outputScale, (GetAlignmentOffset(height - box.Height * verticalScale, box.VerticalAlignment) - box.Y * verticalScale) * outputScale);
-
-        static double GetAlignmentOffset(double remaining, SvgViewBoxAlignment alignment) => alignment switch
-        {
-            SvgViewBoxAlignment.Min or SvgViewBoxAlignment.None => 0,
-            SvgViewBoxAlignment.Mid => remaining / 2,
-            SvgViewBoxAlignment.Max => remaining,
-            _ => throw new InvalidOperationException("Unknown viewBox alignment.")
-        };
+        (double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset) = SvgGeometrySyntax.MapViewBox(box, width, height);
+        return (horizontalScale * outputScale, horizontalOffset * outputScale, verticalScale * outputScale, verticalOffset * outputScale);
     }
 
     /// <summary>Probes root dimensions and the output transform without lowering, falling back to unit scales when the root cannot be resolved.</summary>

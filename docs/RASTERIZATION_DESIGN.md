@@ -5410,3 +5410,70 @@ scan-conversion investigation. Thread-local diagnostic state is not suitable for
 production; ownership, work/storage, cancellation and delivery gates are still
 required for the implementation. Detailed studies remain under ignored
 `artifacts/root-viewbox-20261006/`.
+
+
+## Deferred authored fill mapping (2026-10-06)
+
+The production repair follows the root/group diagnosis above. Eligible path
+fills retain validated authored commands beside their existing scene contours.
+A geometry owner reserves command storage, copies it for instances and mask
+content, and transfers it when repainting or stamping the same contours.
+Final preparation composes the output map with the retained scene map, then
+maps float points and controls once. Native float viewBox operands retain
+Blink's double scale/translate operation order. No global experiment switch,
+document-specific rule or oracle substitution is used.
+
+Scene contours still own bounds, objectBoundingBox paint boxes, clipping and
+admission. Merging or splitting their topology disables authored replay; a
+count-only guard was insufficient for rewritten straight contours. Dust welding
+may retain replay only when contour/span eligibility survives. Degenerate
+contours and zero-area winding stay covered by the original tests. Instance
+magnification guards continue to reject the three previously unsupported
+controls that the premature diagnostic model admitted.
+
+The new ownership tests caught abandoned solid reservations after gradient
+repainting; successful repaints now release the dropped owner. Failed repaint
+publication, scene publication, authored copying and partial preparation release
+their owners. Commands, builder growth, span records and mapped arrays are
+budgeted before allocation; copying/flattening observe bounded work and
+cancellation. SvgGeometry grows from 248 to 256 bytes and existing collection
+accounting uses its actual size.
+
+The original 1,170-case bank preserves all fixture/research PNGs and outcomes,
+including 847 exact fixtures. Six legacy Default PNGs change; those unmatched
+options do not establish fidelity. The complete frozen corporate matrix keeps
+all 73 prior exact PNGs and all outcomes: 240 render, now 76 exact and 164 known,
+with eighteen UnsupportedFeature rejections. UAAR large is exact on all three
+backgrounds, while small has twelve differing pixels and intended six on each.
+The exact document count remains five (marks 3/13, wordmarks 2/14), below S17.
+
+Fifty-four corporate PNGs change: 36 improve changed-pixel count, eleven worsen
+and seven retain it. Intended SDL worsens 421/420/395 → 423/422/397 across
+transparent/white/black; intended Omega 3143/3143/1590 → 3150/3150/1597; small
+Party of Changes 1350/1348 → 1351/1349 on transparent/white; large Goodyear
+17027/16762/16983 → 17031/16766/16987. These measured regressions remain visible.
+Across the eleven worsened variants, maximum alpha error is unchanged and no
+opaque pixels are lost or added. Transparent SDL, Party of Changes and Goodyear
+alpha mass increases by 20, 3 and 429; Omega's is unchanged. This pattern is
+consistent with residual edge/paint quantization interacting with changed float
+placement. It does not establish correct coverage for those regressions.
+The tangent-gradient control keeps its scene paint box and its 321 differences
+on each background; the early-map model's 2361-pixel regression is avoided.
+The width-one cap remains sixteen differences, alpha mass 42, maximum alpha
+error eleven.
+
+Recorded-browser CTM vectors reproduce UAAR's six coefficients and the native
+NASA root scale/offset operation. The earlier 2,750-coordinate UAAR diagnosis
+remains independent evidence; it does not establish full parity for NASA or
+every corporate path. Six-output parity, repeated plain/symbol instances,
+paint-box preservation, numeric range, work/cancellation and partial-construction
+release tests accompany the repair. Locked restore, nine-project Release build
+and 3,654 tests pass, along with 25 memory scenarios, pinned browser/artifact
+checks and installed package consumers. The measured storage/allocation cost is
+in the benchmark record; broad performance and Linux remain open.
+
+Detailed comparisons, ledgers, timing batches and the rejected intermediate
+topology model stay under ignored artifacts/deferred-root-map-20261006/.
+Reusable tests and current behavior records remain in the existing harness.
+Git identifies implementation; no source, adapter, assembly or report hashes
+are introduced.

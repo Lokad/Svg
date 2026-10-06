@@ -97,7 +97,7 @@ internal static class SvgDocumentTraversal
                     SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
                     SvgViewportFrame? parentFrame = state.EffectiveFrame;
                     SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.Width?.ToAbsoluteOrNull() ?? ResolvePercentageRootBase(root.Width, root.ViewBox, true, explicitViewport?.Width, 300), parentFrame?.ViewportHeight ?? root.Height?.ToAbsoluteOrNull() ?? ResolvePercentageRootBase(root.Height, root.ViewBox, false, explicitViewport?.Height, 150));
-                    SvgViewBox? nestedViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"));
+                    SvgViewBox? nestedViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
                     double localScaleX = 1;
                     double localScaleY = 1;
                     double viewOffsetX = 0;

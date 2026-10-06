@@ -546,7 +546,7 @@ internal static class SvgMaskSyntax
         // the source fill. Keep existing geometric boundary provenance when
         // intersecting this region with an already clipped polygon.
         region = region with { Antialiasing = SvgClipAntialiasing.None };
-        return geometry.Kind switch
+        SvgGeometry result = geometry.Kind switch
         {
             SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(StampRectangle(ClipStrokedRectangle(geometry.Rectangle, region), value)),
             SvgGeometryKind.AxisAlignedLine => StampLine(region.ClipLine(geometry.AxisAlignedLine), value),
@@ -561,6 +561,7 @@ internal static class SvgMaskSyntax
             SvgGeometryKind.PatternPolygon => SvgGeometry.FromPatternPolygon(geometry.PatternPolygon.Stamped(value, region)),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
         };
+        return geometry.TransferAuthoredPathTo(result);
     }
 
     private static SvgRectangle ClipStrokedRectangle(SvgRectangle rectangle, SvgClipBox region)

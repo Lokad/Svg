@@ -499,7 +499,7 @@ internal static class SvgClipPathSyntax
             if (!clip.Contains(rectangle.X - halfWidth, rectangle.Y - halfWidth, rectangle.X + rectangle.Width + halfWidth, rectangle.Y + rectangle.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a clip-path boundary are not implemented.");
             return geometry;
         }
-        return geometry.Kind switch
+        SvgGeometry result = geometry.Kind switch
         {
             SvgGeometryKind.OrthogonalBand => SvgGeometry.FromOrthogonalBand(clip.ClipRectangle(geometry.Rectangle)),
             SvgGeometryKind.AxisAlignedLine => clip.ClipLine(geometry.AxisAlignedLine),
@@ -513,6 +513,7 @@ internal static class SvgClipPathSyntax
             SvgGeometryKind.GradientStroke => SvgGeometry.FromGradientStroke(geometry.GradientStroke.ClipTo(clip)),
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Forward clip-path definitions on this geometry are not implemented."),
         };
+        return geometry.TransferAuthoredPathTo(result);
     }
 
     /// <summary>Resolves the effective clip for one rendered leaf or use instance from the viewport frame and an optional clip-path attribute.</summary>

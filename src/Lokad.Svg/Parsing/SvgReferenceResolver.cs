@@ -46,53 +46,63 @@ internal static class SvgReferenceResolver
         RequireAdmittedInstanceMagnification(definition, reference);
         SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
         List<SvgGeometry> applied = new(sources.Length);
-        for (int index = 0; index < sources.Length; index++)
+        try
         {
-            switch (sources[index].Kind)
+            for (int index = 0; index < sources.Length; index++)
             {
-                case SvgGeometryKind.Rectangle:
-                    applied.Add(ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame) with { SolidPaint = reference.AllowsSolidPaintAnalysis ? sources[index].SolidPaint : null });
-                    break;
-                case SvgGeometryKind.OrthogonalBand:
-                    applied.Add(SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)));
-                    break;
-                case SvgGeometryKind.AxisAlignedLine:
-                    applied.Add(ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame));
-                    break;
-                case SvgGeometryKind.PolygonFill:
-                    applied.Add(ApplyPolygon(sources[index].Polygon, reference, frame, state, workCounter, cancellationToken));
-                    if (reference.StrokeOverride is not null)
-                    {
-                        if (definition.InstanceStrokeMiterLimit is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke styles on use elements require an unstyled single-contour definition.");
-                        foreach (SvgGeometry outline in ApplyInstanceStrokeOutlines(applied[^1].Polygon, definition, reference, reference.StrokeOverride.Value, frame, state, workCounter, cancellationToken)) applied.Add(outline);
-                    }
-                    break;
-                case SvgGeometryKind.GradientPolygon:
-                    applied.Add(ApplyGradientPolygon(sources[index].GradientPolygon, reference, frame, state, workCounter, cancellationToken));
-                    break;
-                case SvgGeometryKind.RadialPolygon:
-                    applied.Add(ApplyRadialPolygon(sources[index].RadialPolygon, reference, frame, state, workCounter, cancellationToken));
-                    break;
-                case SvgGeometryKind.PatternPolygon:
-                    applied.Add(ApplyPatternPolygon(sources[index].PatternPolygon, reference, frame, state, workCounter, cancellationToken));
-                    break;
-                case SvgGeometryKind.GradientFill:
-                    applied.Add(LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame));
-                    break;
-                case SvgGeometryKind.RadialGradient:
-                    applied.Add(LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame));
-                    break;
-                case SvgGeometryKind.PatternFill:
-                    applied.Add(LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame));
-                    break;
-                case SvgGeometryKind.GradientStroke:
-                    applied.Add(LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame));
-                    break;
-                default: throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.");
+                SvgGeometry authoredSource = sources[index] with { AuthoredPath = definition.Geometries[index].AuthoredPath };
+                switch (sources[index].Kind)
+                {
+                    case SvgGeometryKind.Rectangle:
+                        applied.Add(ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame) with { SolidPaint = reference.AllowsSolidPaintAnalysis ? sources[index].SolidPaint : null });
+                        break;
+                    case SvgGeometryKind.OrthogonalBand:
+                        applied.Add(SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)));
+                        break;
+                    case SvgGeometryKind.AxisAlignedLine:
+                        applied.Add(ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame));
+                        break;
+                    case SvgGeometryKind.PolygonFill:
+                        applied.Add(ApplyPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
+                        if (reference.StrokeOverride is not null)
+                        {
+                            if (definition.InstanceStrokeMiterLimit is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke styles on use elements require an unstyled single-contour definition.");
+                            foreach (SvgGeometry outline in ApplyInstanceStrokeOutlines(applied[^1].Polygon, definition, reference, reference.StrokeOverride.Value, frame, state, workCounter, cancellationToken)) applied.Add(outline);
+                        }
+                        break;
+                    case SvgGeometryKind.GradientPolygon:
+                        applied.Add(ApplyGradientPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
+                        break;
+                    case SvgGeometryKind.RadialPolygon:
+                        applied.Add(ApplyRadialPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
+                        break;
+                    case SvgGeometryKind.PatternPolygon:
+                        applied.Add(ApplyPatternPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
+                        break;
+                    case SvgGeometryKind.GradientFill:
+                        applied.Add(LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame));
+                        break;
+                    case SvgGeometryKind.RadialGradient:
+                        applied.Add(LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame));
+                        break;
+                    case SvgGeometryKind.PatternFill:
+                        applied.Add(LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame));
+                        break;
+                    case SvgGeometryKind.GradientStroke:
+                        applied.Add(LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame));
+                        break;
+                    default: throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.");
+                }
             }
-        }
 
-        return applied.ToArray();
+            return applied.ToArray();
+        }
+        catch { foreach (SvgGeometry geometry in applied) geometry.Dispose(); throw; }
+        finally
+        {
+            if (reference.FillOverride is not null)
+                foreach (SvgGeometry geometry in sources) geometry.Dispose();
+        }
 
         static SvgGeometry[] ApplyInstanceStrokeOutlines(SvgPolygonFill placed, SvgDefinition definition, SvgUseReference reference, SvgUseStrokeOverride stroke, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -229,8 +239,15 @@ internal static class SvgReferenceResolver
         }
     }
 
-    private static SvgGeometry ApplyPolygon(SvgPolygonFill polygon, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgAffineTransform PlainInstancePlacement(SvgUseReference reference, SvgViewportFrame? frame)
     {
+        SvgAffineTransform placement = reference.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(1, 1, reference.X, reference.Y));
+        return frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(placement) : placement;
+    }
+
+    private static SvgGeometry ApplyPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        SvgPolygonFill polygon = source.Polygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
         using RenderBudget.BudgetReservation? mappedReservation = polygon.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
@@ -253,7 +270,8 @@ internal static class SvgReferenceResolver
         SvgColor color = new(polygon.Color.Red, polygon.Color.Green, polygon.Color.Blue, MultiplyAlpha(polygon.Color.Alpha, reference.Opacity));
         SvgQuadSpan[] quadSpans = MapUseQuadSpans(polygon.QuadSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
         SvgCubicSpan[] cubicSpans = MapUseCubicSpans(polygon.CubicSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
-        return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, quadSpans, cubicSpans, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
+        SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, quadSpans, cubicSpans, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
+        return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
     }
 
     /// <summary>Maps retained quad-span controls through one plain use-instance placement, preserving span ranges so the analytic walker consumes instance curves like direct geometry.</summary>
@@ -309,8 +327,9 @@ internal static class SvgReferenceResolver
         return mapped;
     }
 
-    private static SvgGeometry ApplyGradientPolygon(SvgGradientPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgGeometry ApplyGradientPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        SvgGradientPolygon outline = source.GradientPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
         using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
@@ -336,11 +355,13 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
+        SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
+        return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
     }
 
-    private static SvgGeometry ApplyRadialPolygon(SvgRadialPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgGeometry ApplyRadialPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        SvgRadialPolygon outline = source.RadialPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
         using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
@@ -365,11 +386,13 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, outline.ContourEnds, outline.Signs, circle, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
+        SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, outline.ContourEnds, outline.Signs, circle, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
+        return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
     }
 
-    private static SvgGeometry ApplyPatternPolygon(SvgPatternPolygon outline, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static SvgGeometry ApplyPatternPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        SvgPatternPolygon outline = source.PatternPolygon;
         ArgumentNullException.ThrowIfNull(state);
         SvgAffineTransform instanceMap = reference.Transform;
         using RenderBudget.BudgetReservation? mappedReservation = outline.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(outline.Points.Length), SvgMemoryCategory.Geometry);
@@ -390,7 +413,8 @@ internal static class SvgReferenceResolver
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
-        return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, outline.ContourEnds, outline.Signs, outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, state.Budget));
+        SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, outline.ContourEnds, outline.Signs, outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, state.Budget));
+        return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
     }
 
     /// <summary>Rejects non-uniformly scaled outline strokes on use instances, whose pre-scale miters would silently distort.</summary>
@@ -435,7 +459,7 @@ internal static class SvgReferenceResolver
 
     private static SvgGeometry ApplySymbolInstance(SvgGeometry geometry, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (geometry.Kind == SvgGeometryKind.PolygonFill) return ApplySymbolPolygon(geometry.Polygon, symbolBox, reference, frame, state, workCounter, cancellationToken);
+        if (geometry.Kind == SvgGeometryKind.PolygonFill) return ApplySymbolPolygon(geometry, symbolBox, reference, frame, state, workCounter, cancellationToken);
         bool isBand;
         SvgRectangle box;
         if (geometry.Kind == SvgGeometryKind.Rectangle)
@@ -472,8 +496,9 @@ internal static class SvgReferenceResolver
         return isBand ? SvgGeometry.FromOrthogonalBand(clipped) : SvgGeometry.FromRectangle(clipped) with { SolidPaint = reference.AllowsSolidPaintAnalysis ? geometry.SolidPaint : null };
 
 
-        static SvgGeometry ApplySymbolPolygon(SvgPolygonFill source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgGeometry ApplySymbolPolygon(SvgGeometry geometry, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
+            SvgPolygonFill source = geometry.Polygon;
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
@@ -516,7 +541,9 @@ internal static class SvgReferenceResolver
             SvgColor color = new(source.Color.Red, source.Color.Green, source.Color.Blue, MultiplyAlpha(source.Color.Alpha, instance.Opacity));
             SvgQuadSpan[] quadSpans = MapSymbolQuadSpans(source.QuadSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
             SvgCubicSpan[] cubicSpans = MapSymbolCubicSpans(source.CubicSpans, scaleX, scaleY, offsetX, offsetY, instance, viewportFrame, workCounter, cancellationToken);
-            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, quadSpans, cubicSpans, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, null, document.Budget));
+            SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, source.ContourEnds, source.Signs, quadSpans, cubicSpans, color, source.HasFill && instance.IsPainted, source.IsEvenOdd, source.Mapping, clip, null, document.Budget));
+            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
+            return geometry.CopyAuthoredPathTo(result, placement, document.Budget, workCounter, cancellationToken);
         }
 
         static SvgQuadSpan[] MapSymbolQuadSpans(SvgQuadSpan[] spans, double scaleX, double scaleY, double offsetX, double offsetY, SvgUseReference instance, SvgViewportFrame? viewportFrame, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -641,26 +668,36 @@ internal static class SvgReferenceResolver
             RequireUniformOutlineScales(definition, reference);
             SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
             List<SvgGeometry> applied = new(sources.Length);
-            for (int index = 0; index < sources.Length; index++)
+            try
             {
-                if (sources[index].Kind == SvgGeometryKind.Rectangle && sources[index].Rectangle.Stroke is not null)
+                for (int index = 0; index < sources.Length; index++)
                 {
-                    foreach (SvgGeometry expanded in ApplySymbolStrokedRectangle(sources[index].Rectangle, symbolBox, reference, frame, state, workCounter, cancellationToken)) applied.Add(expanded);
-                    continue;
+                    SvgGeometry authoredSource = sources[index] with { AuthoredPath = definition.Geometries[index].AuthoredPath };
+                    if (sources[index].Kind == SvgGeometryKind.Rectangle && sources[index].Rectangle.Stroke is not null)
+                    {
+                        foreach (SvgGeometry expanded in ApplySymbolStrokedRectangle(sources[index].Rectangle, symbolBox, reference, frame, state, workCounter, cancellationToken)) applied.Add(expanded);
+                        continue;
+                    }
+                    applied.Add(sources[index].Kind switch
+                    {
+                        SvgGeometryKind.GradientFill => ApplySymbolGradientFill(sources[index].Gradient, symbolBox, reference, frame, state, workCounter, cancellationToken),
+                        SvgGeometryKind.PatternFill => ApplySymbolPatternFill(sources[index].Pattern, symbolBox, reference, frame, state, workCounter, cancellationToken),
+                        SvgGeometryKind.RadialGradient => ApplySymbolRadialFill(sources[index].Radial, symbolBox, reference, frame, state, workCounter, cancellationToken),
+                        SvgGeometryKind.GradientStroke => ApplySymbolGradientStroke(sources[index].GradientStroke, symbolBox, reference, frame, state, workCounter, cancellationToken),
+                        SvgGeometryKind.GradientPolygon => ApplySymbolGradientPolygon(authoredSource, symbolBox, reference, frame, state, workCounter, cancellationToken),
+                        SvgGeometryKind.RadialPolygon => ApplySymbolRadialPolygon(authoredSource, symbolBox, reference, frame, state, workCounter, cancellationToken),
+                        SvgGeometryKind.PatternPolygon => ApplySymbolPatternPolygon(authoredSource, symbolBox, reference, frame, state, workCounter, cancellationToken),
+                        _ => ApplySymbolInstance(authoredSource, symbolBox, reference, frame, state, workCounter, cancellationToken),
+                    });
                 }
-                applied.Add(sources[index].Kind switch
-                {
-                    SvgGeometryKind.GradientFill => ApplySymbolGradientFill(sources[index].Gradient, symbolBox, reference, frame, state, workCounter, cancellationToken),
-                    SvgGeometryKind.PatternFill => ApplySymbolPatternFill(sources[index].Pattern, symbolBox, reference, frame, state, workCounter, cancellationToken),
-                    SvgGeometryKind.RadialGradient => ApplySymbolRadialFill(sources[index].Radial, symbolBox, reference, frame, state, workCounter, cancellationToken),
-                    SvgGeometryKind.GradientStroke => ApplySymbolGradientStroke(sources[index].GradientStroke, symbolBox, reference, frame, state, workCounter, cancellationToken),
-                    SvgGeometryKind.GradientPolygon => ApplySymbolGradientPolygon(sources[index].GradientPolygon, symbolBox, reference, frame, state, workCounter, cancellationToken),
-                    SvgGeometryKind.RadialPolygon => ApplySymbolRadialPolygon(sources[index].RadialPolygon, symbolBox, reference, frame, state, workCounter, cancellationToken),
-                    SvgGeometryKind.PatternPolygon => ApplySymbolPatternPolygon(sources[index].PatternPolygon, symbolBox, reference, frame, state, workCounter, cancellationToken),
-                    _ => ApplySymbolInstance(sources[index], symbolBox, reference, frame, state, workCounter, cancellationToken),
-                });
+                return applied.ToArray();
             }
-            return applied.ToArray();
+            catch { foreach (SvgGeometry geometry in applied) geometry.Dispose(); throw; }
+            finally
+            {
+                if (reference.FillOverride is not null)
+                    foreach (SvgGeometry geometry in sources) geometry.Dispose();
+            }
 
         static SvgGeometry[] ApplySymbolStrokedRectangle(SvgRectangle source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -692,8 +729,9 @@ internal static class SvgReferenceResolver
             return expanded;
         }
 
-        static SvgGeometry ApplySymbolGradientPolygon(SvgGradientPolygon source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgGeometry ApplySymbolGradientPolygon(SvgGeometry geometry, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
+            SvgGradientPolygon source = geometry.GradientPolygon;
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
@@ -741,7 +779,9 @@ internal static class SvgReferenceResolver
                 clip = placed.Intersect(viewport);
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
-            return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, source.ContourEnds, source.Signs, vector, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
+            SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, source.ContourEnds, source.Signs, vector, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
+            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
+            return geometry.CopyAuthoredPathTo(result, placement, document.Budget, workCounter, cancellationToken);
         }
         static SvgGeometry ApplySymbolGradientFill(SvgGradientGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -792,8 +832,9 @@ internal static class SvgReferenceResolver
             return LowerPlacedRadialFill(circle, fill, box, MultiplyAlpha(radial.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame);
         }
 
-        static SvgGeometry ApplySymbolRadialPolygon(SvgRadialPolygon source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgGeometry ApplySymbolRadialPolygon(SvgGeometry geometry, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
+            SvgRadialPolygon source = geometry.RadialPolygon;
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
@@ -840,11 +881,14 @@ internal static class SvgReferenceResolver
                 clip = placed.Intersect(viewport);
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
-            return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, source.ContourEnds, source.Signs, circle, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
+            SvgGeometry result = SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(mapped, source.ContourEnds, source.Signs, circle, box, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, null, document.Budget));
+            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
+            return geometry.CopyAuthoredPathTo(result, placement, document.Budget, workCounter, cancellationToken);
         }
 
-        static SvgGeometry ApplySymbolPatternPolygon(SvgPatternPolygon source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgGeometry ApplySymbolPatternPolygon(SvgGeometry geometry, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
+            SvgPatternPolygon source = geometry.PatternPolygon;
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
@@ -896,7 +940,9 @@ internal static class SvgReferenceResolver
                 clip = placed.Intersect(viewport);
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
-            return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, source.ContourEnds, source.Signs, content, (int)gridOriginX, (int)gridOriginY, (int)gridTileWidth, (int)gridTileHeight, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, document.Budget));
+            SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, source.ContourEnds, source.Signs, content, (int)gridOriginX, (int)gridOriginY, (int)gridTileWidth, (int)gridTileHeight, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, document.Budget));
+            SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
+            return geometry.CopyAuthoredPathTo(result, placement, document.Budget, workCounter, cancellationToken);
 
             static bool IsIntegerGrid(double value)
                 => double.IsFinite(value) && value == Math.Truncate(value) && value >= int.MinValue && value <= int.MaxValue;
@@ -1224,7 +1270,8 @@ internal static class SvgReferenceResolver
                 }
                 SvgClipBox? clip = polygon.Clip;
                 if (clip is not null) clip = inverse.Apply(clip.Value);
-                return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, polygon.Color, polygon.HasFill, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
+                SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, polygon.Color, polygon.HasFill, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
+                return geometry.CopyAuthoredPathTo(result, inverse, state.Budget, workCounter, cancellationToken);
             }
             case SvgGeometryKind.Rectangle:
                 SvgRectangle rectangle = geometry.Rectangle;

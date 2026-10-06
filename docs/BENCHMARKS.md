@@ -1574,3 +1574,49 @@ JIT/GC variation and PNG encoding remain part of these observations. No general
 throughput or representative-performance improvement follows. The width-one cap
 keeps its prior inexact output. Non-uniform curves, wider root/source operands,
 stroke/clip fidelity, profiling and Linux retain separate obligations.
+
+
+## Deferred authored fill mapping observations (2026-10-06)
+
+Nine existing, identical recipes compare the saved native-root-mapping renderer
+with deferred authored fill mapping. The copied declaration preceded this
+measurement; eight warmups and three batches run in fresh baseline/current and
+current/baseline process orders after rendering, tests, browser and package jobs
+finished. Raw records stay under ignored artifacts/deferred-root-map-20261006/.
+Git identifies implementation. Geometry values grow 248 → 256 bytes; rectangle,
+stop, analytic-paint and quad-span sizes remain 112/16/24/32 bytes.
+
+| Recipe | Parser work | Work through raster | Accounted peak bytes |
+| --- | --- | --- | --- |
+| tiny | 17 → 17 | 22 → 22 | 163,840 → 163,840 |
+| cap-unit | 74 → 74 | 527 → 527 | 163,840 → 163,840 |
+| cubic-meet | 91 → 97 | 2,696 → 2,713 | 237,156 → 237,676 |
+| cubic-slice | 97 → 102 | 7,230 → 7,245 | 216,536 → 216,832 |
+| nasa-small | 861 → 877 | 136,331 → 136,515 | 929,568 → 1,358,584 |
+| nasa-large | 1,008 → 1,024 | 1,472,846 → 1,473,035 | 1,207,545 → 2,442,096 |
+| nike | 297 → 305 | 1,229,354 → 1,229,390 | 1,454,293 → 2,036,496 |
+| blur | 2,264 → 2,284 | 1,537,385 → 1,537,497 | 1,414,523 → 3,328,776 |
+| ford | 4,657 → 4,683 | 1,301,233 → 1,301,440 | 534,546 → 2,588,992 |
+
+Retained commands and replay increase work and accounted storage. Conservative
+builder-growth reservations contribute to these peaks; peak accounting is
+distinct from actual managed allocation. Tiny and unit-cap allocation also grow
+because scene geometry values are larger. All 25 memory scenarios pass.
+
+| Recipe | Baseline ms | Current ms | Baseline allocated bytes | Current allocated bytes |
+| --- | --- | --- | --- | --- |
+| tiny | 0.083–0.102 | 0.083–0.100 | 24,696–24,698 | 24,784–24,786 |
+| cap-unit | 0.151–0.169 | 0.149–0.178 | 35,322–35,322 | 35,450–35,450 |
+| cubic-meet | 0.381–0.402 | 0.401–0.464 | 37,560–37,562 | 43,690–43,690 |
+| cubic-slice | 0.597–0.932 | 0.666–1.120 | 42,058–42,058 | 47,666–47,666 |
+| nasa-small | 7.073–9.088 | 7.943–9.172 | 214,440–214,449 | 281,249–281,344 |
+| nasa-large | 19.451–62.678 | 21.222–37.691 | 1,401,908–1,401,977 | 1,471,776–1,472,249 |
+| nike | 12.463–14.199 | 13.444–17.279 | 1,585,347–1,586,513 | 1,605,404–1,606,536 |
+| blur | 18.403–21.813 | 17.561–20.570 | 1,720,931–1,721,630 | 1,801,089–1,802,672 |
+| ford | 15.327–17.548 | 15.440–19.930 | 855,280–855,417 | 1,048,040–1,048,193 |
+
+Cubic meet and Nike skew slower in these local samples. Other ranges overlap;
+the wide NASA-large baseline interval is retained. Every recipe allocates more,
+especially Ford. This mapping repair establishes neither a throughput saving
+nor the representative performance target. Remaining fidelity, profiling and
+Linux require separate evidence.

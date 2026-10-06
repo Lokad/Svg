@@ -155,6 +155,7 @@ internal static class SvgLeafParser
             else repainted = isLinear
                 ? SvgGradientPolygon.RepaintOutline(parsed.Geometries[0].Polygon, linear, box, opacity, state.Budget)
                 : SvgRadialPolygon.RepaintOutline(parsed.Geometries[0].Polygon, radial, box, opacity, state.Budget);
+            repainted = parsed.Geometries[0].TransferAuthoredPathTo(repainted);
             parsed.Dispose();
             return RetainSingleGeometry(repainted, state, context);
         }
@@ -200,9 +201,9 @@ internal static class SvgLeafParser
                 using BudgetedParserList<SvgGeometry> repaintList = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 foreach (SvgGeometry existing in white.Geometries)
                 {
-                    if (useLinear) repaintList.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, mappedLinear, strokeBox, strokeOpacity, state.Budget));
-                    else if (useRadial) repaintList.Add(SvgRadialPolygon.RepaintOutline(existing.Polygon, mappedCircle, strokeBox, strokeOpacity, state.Budget));
-                    else repaintList.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, state.Budget));
+                    if (useLinear) repaintList.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, mappedLinear, strokeBox, strokeOpacity, state.Budget)));
+                    else if (useRadial) repaintList.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, mappedCircle, strokeBox, strokeOpacity, state.Budget)));
+                    else repaintList.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, state.Budget)));
                 }
                 int whiteCount = white.ElementCount;
                 white.Dispose();
@@ -340,6 +341,7 @@ internal static class SvgLeafParser
             else repainted = isLinear
                 ? SvgGradientPolygon.RepaintOutline(filled.Geometries[0].Polygon, linear, box, opacity, state.Budget)
                 : SvgRadialPolygon.RepaintOutline(filled.Geometries[0].Polygon, radial, box, opacity, state.Budget);
+            repainted = filled.Geometries[0].TransferAuthoredPathTo(repainted);
             filled.Dispose();
             return RetainSingleGeometry(repainted, state, context);
         }
@@ -480,9 +482,9 @@ internal static class SvgLeafParser
                 using BudgetedParserList<SvgGeometry> repaintList = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 foreach (SvgGeometry existing in white.Geometries)
                 {
-                    if (useLinear) repaintList.Add(SvgGradientPolygon.RepaintOutline(existing.Polygon, mappedLinear, strokeBox, strokeOpacity, state.Budget));
-                    else if (useRadial) repaintList.Add(SvgRadialPolygon.RepaintOutline(existing.Polygon, mappedCircle, strokeBox, strokeOpacity, state.Budget));
-                    else repaintList.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, state.Budget));
+                    if (useLinear) repaintList.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, mappedLinear, strokeBox, strokeOpacity, state.Budget)));
+                    else if (useRadial) repaintList.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, mappedCircle, strokeBox, strokeOpacity, state.Budget)));
+                    else repaintList.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, state.Budget)));
                 }
                 int whiteCount = white.ElementCount;
                 white.Dispose();

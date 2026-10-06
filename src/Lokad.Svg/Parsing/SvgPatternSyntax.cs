@@ -97,14 +97,19 @@ internal static class SvgPatternSyntax
                 using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
                 SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
                 SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, budget);
+                using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 try
                 {
-                    using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                    foreach (SvgGeometry existing in filled.Geometries) repainted.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget));
+                    foreach (SvgGeometry existing in filled.Geometries)
+                    {
+                        SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget));
+                        try { repainted.Add(repaint); }
+                        catch { repaint.Dispose(); throw; }
+                    }
                     filled.Dispose();
                     return SvgGradientSyntax.AppendPaintFillStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
                 }
-                catch { filled.Dispose(); throw; }
+                catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); filled.Discard(); throw; }
             }
         }
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -118,7 +123,7 @@ internal static class SvgPatternSyntax
             try
             {
                 using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                foreach (SvgGeometry existing in white.Geometries) repainted.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget));
+                foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget)));
                 white.Dispose();
                 return SvgGradientSyntax.AppendPaintFillStroke(new SvgParsedGeometry(repainted.Detach(), white.ElementCount), reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
             }
@@ -416,7 +421,7 @@ internal static class SvgPatternSyntax
             foreach (SvgGeometry existing in white.Geometries)
             {
                 if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, existing.Rectangle, opacity, null)));
-                else repainted.Add(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, state.Budget));
+                else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, state.Budget)));
             }
             white.Dispose();
             return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);

@@ -249,6 +249,26 @@ internal readonly struct SvgGeometry
 
     internal SvgGeometryKind Kind => _kind;
 
+    /// <summary>Owns authored fill commands for final mapping; scene contours retain bounds/paint semantics.</summary>
+    internal SvgAuthoredPath? AuthoredPath { get; init; }
+
+    /// <summary>Transfers authored ownership when stamping or repainting the same contours; disposal of the dropped geometry remains safe.</summary>
+    internal SvgGeometry TransferAuthoredPathTo(SvgGeometry replacement)
+    {
+        if (replacement.AuthoredPath is not null) throw new InvalidOperationException("Replacement already owns authored geometry.");
+        return AuthoredPath is null ? replacement : replacement with { AuthoredPath = AuthoredPath.Transfer() };
+    }
+
+    /// <summary>Copies authored ownership to a replacement geometry, composing its additional scene placement.</summary>
+    internal SvgGeometry CopyAuthoredPathTo(SvgGeometry replacement, SvgAffineTransform placement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (replacement.AuthoredPath is not null) throw new InvalidOperationException("Replacement already owns authored geometry.");
+        if (AuthoredPath is null) return replacement;
+        try { return replacement with { AuthoredPath = AuthoredPath.Copy(placement, budget, workCounter, cancellationToken) }; }
+        catch { replacement.Dispose(); throw; }
+    }
+
+
     internal SvgRectangle Rectangle
         => _kind is SvgGeometryKind.Rectangle or SvgGeometryKind.OrthogonalBand
             ? _rectangle
@@ -330,6 +350,7 @@ internal readonly struct SvgGeometry
 
     internal void Dispose()
     {
+        AuthoredPath?.Dispose();
         if (_kind == SvgGeometryKind.GlyphContours) _glyph?.Dispose();
         if (_kind == SvgGeometryKind.PatternFill) _pattern?.Dispose();
         if (_kind == SvgGeometryKind.GradientFill) _gradient?.Dispose();
@@ -562,9 +583,15 @@ internal sealed class SvgGradientPolygon : IDisposable
         if (paint.Stops.Length == 1 || (paint.X1 == paint.X2 && paint.Y1 == paint.Y2 && !paint.IsEmpty))
         {
             if (paint.Stops.Length > 1 && paint.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are not implemented.");
-            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
+            return Adopt(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget)));
         }
-        return SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget));
+        return Adopt(SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget)));
+
+        SvgGeometry Adopt(SvgGeometry repaint)
+        {
+            solid.Dispose();
+            return repaint;
+        }
     }
 
     /// <summary>Stamps one gradient polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
@@ -663,8 +690,14 @@ internal sealed class SvgRadialPolygon : IDisposable
     /// <summary>Repaints one solid outline as a radial-gradient outline, rendering single-stop and degenerate paints as solid end-stop fills. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgRadialGradient paint, SvgRectangle box, byte opacity, RenderBudget budget)
     {
-        if (paint.Stops.Length == 1 || (paint.Radius == 0 && !paint.IsEmpty)) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
-        return SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget));
+        if (paint.Stops.Length == 1 || (paint.Radius == 0 && !paint.IsEmpty)) return Adopt(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, SvgPaintResolver.ApplyOpacity(paint.End, opacity), solid.HasFill, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget)));
+        return Adopt(SvgGeometry.FromRadialPolygon(SvgRadialPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, paint, box, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, null, budget)));
+
+        SvgGeometry Adopt(SvgGeometry repaint)
+        {
+            solid.Dispose();
+            return repaint;
+        }
     }
 
     /// <summary>Stamps one radial polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
@@ -768,8 +801,14 @@ internal sealed class SvgPatternPolygon : IDisposable
     /// <summary>Repaints one solid outline as a pattern-tile outline, rendering empty tiles as unpainted fills. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, RenderBudget budget)
     {
-        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget));
-        return SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget));
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return Adopt(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget)));
+        return Adopt(SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget)));
+
+        SvgGeometry Adopt(SvgGeometry repaint)
+        {
+            solid.Dispose();
+            return repaint;
+        }
     }
 
     /// <summary>Stamps one pattern polygon with a mask value inside its mask region, transferring scene ownership to the stamped outline.</summary>
@@ -1138,10 +1177,14 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal void AddGeometry(SvgGeometry geometry)
     {
-        ReserveGradientStops(geometry);
-        int geometryIndex = _geometries.Count;
-        _geometries.Add(geometry);
-        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255, null, -1));
+        try
+        {
+            ReserveGradientStops(geometry);
+            int geometryIndex = _geometries.Count;
+            _geometries.Add(geometry);
+            _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255, null, -1));
+        }
+        catch { geometry.Dispose(); throw; }
     }
 
     internal int GeometryCount => _geometries.Count;
@@ -1180,10 +1223,14 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal void AddGeometries(ReadOnlySpan<SvgGeometry> geometries)
     {
-        foreach (SvgGeometry geometry in geometries) ReserveGradientStops(geometry);
-        int firstGeometryIndex = _geometries.Count;
-        _geometries.AddRange(geometries);
-        for (int index = 0; index < geometries.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1));
+        try
+        {
+            foreach (SvgGeometry geometry in geometries) ReserveGradientStops(geometry);
+            int firstGeometryIndex = _geometries.Count;
+            _geometries.AddRange(geometries);
+            for (int index = 0; index < geometries.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1));
+        }
+        catch { foreach (SvgGeometry geometry in geometries) geometry.Dispose(); throw; }
     }
 
     internal SvgSceneSlot AddReferencePlaceholder()
@@ -1258,6 +1305,7 @@ internal sealed class SvgSceneBuilder : IDisposable
                     reservation.Dispose();
                     throw;
                 }
+                copied[index] = content.Geometries[index].CopyAuthoredPathTo(copied[index], SvgAffineTransform.Identity, _budget, _workCounter, _cancellationToken);
             }
         }
         catch
