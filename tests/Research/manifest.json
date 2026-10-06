@@ -39,48 +39,6 @@
       }
     },
     {
-      "id": "research-round-join-8x8",
-      "path": "round-join-8x8.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-19",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "9cad69c255dea9a3c1cb221b5c8731f8ea1088d13b26863675d3d39527e8493d",
-      "featureTags": [
-        "geometry",
-        "path",
-        "stroke",
-        "round-join",
-        "calibration"
-      ],
-      "width": 8,
-      "height": 8,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 2,
-        "maximumChannelError": 13,
-        "maximumAlphaError": 13,
-        "alphaChangedPixelCount": 2,
-        "minimumMismatchX": 3,
-        "minimumMismatchY": 0,
-        "maximumMismatchX": 4,
-        "maximumMismatchY": 0
-      },
-      "oracle": {
-        "referencePng": "references/round-join-8x8.png",
-        "referenceSha256": "4e7fe812183668a582ea0b2d25ba7022af4671e3602f74516dfd4b79d306b37a",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "2",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
       "id": "research-tiger-16551",
       "path": "tiger-16551.svg",
       "sourceUrl": "https://openclipart.org/detail/16551/tiger",
@@ -159,47 +117,6 @@
       }
     },
     {
-      "id": "research-fractional-stroke-round-cap-16x16",
-      "path": "fractional-stroke-round-cap-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "866535303709e20aebe9d8a5fdce00840ad9b430727fea7317b3b6d3fa2a75a4",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 12,
-        "maximumChannelError": 17,
-        "maximumAlphaError": 17,
-        "alphaChangedPixelCount": 12,
-        "minimumMismatchX": 0,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 15,
-        "maximumMismatchY": 9
-      },
-      "oracle": {
-        "referencePng": "references/fractional-stroke-round-cap-16x16.png",
-        "referenceSha256": "0878ccc775cf22ffa34d3aa1bd07a66b218abd6ecbe745f5408d7312a5f7c8a9",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
       "id": "research-fractional-stroke-round-join-16x16",
       "path": "fractional-stroke-round-join-16x16.svg",
       "creator": "Lokad.Svg contributors",
@@ -217,13 +134,13 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 3,
-        "maximumChannelError": 15,
-        "maximumAlphaError": 15,
-        "alphaChangedPixelCount": 3,
-        "minimumMismatchX": 7,
+        "changedPixelCount": 2,
+        "maximumChannelError": 20,
+        "maximumAlphaError": 20,
+        "alphaChangedPixelCount": 2,
+        "minimumMismatchX": 6,
         "minimumMismatchY": 2,
-        "maximumMismatchX": 9,
+        "maximumMismatchX": 7,
         "maximumMismatchY": 2
       },
       "oracle": {
@@ -258,10 +175,10 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
     "admittedRendering": {
-      "changedPixelCount": 15,
-      "maximumChannelError": 3,
-      "maximumAlphaError": 3,
-      "alphaChangedPixelCount": 15,
+      "changedPixelCount": 16,
+      "maximumChannelError": 11,
+      "maximumAlphaError": 11,
+      "alphaChangedPixelCount": 16,
       "minimumMismatchX": 1,
       "minimumMismatchY": 7,
       "maximumMismatchX": 14,
@@ -299,13 +216,13 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 4,
-        "maximumChannelError": 7,
-        "maximumAlphaError": 7,
-        "alphaChangedPixelCount": 4,
-        "minimumMismatchX": 6,
+        "changedPixelCount": 1,
+        "maximumChannelError": 2,
+        "maximumAlphaError": 2,
+        "alphaChangedPixelCount": 1,
+        "minimumMismatchX": 7,
         "minimumMismatchY": 2,
-        "maximumMismatchX": 9,
+        "maximumMismatchX": 7,
         "maximumMismatchY": 2
       },
       "oracle": {
@@ -363,89 +280,6 @@
         "decodedPixelStability": "identical"
       }
     },
-    {
-      "id": "research-round-cap-even-16x16",
-      "path": "round-cap-even-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "77e6be5466585de14622c050f17e1c1d09629e2e326d35bec30ebee3f465b6d0",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 12,
-        "maximumChannelError": 21,
-        "maximumAlphaError": 21,
-        "alphaChangedPixelCount": 12,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 13,
-        "maximumMismatchY": 9
-      },
-      "oracle": {
-        "referencePng": "references/round-cap-even-16x16.png",
-        "referenceSha256": "5f54592ba849871250a13168f58e82c9465e8c0dd4161fdebbb61ac8db1cd285",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-    {
-      "id": "research-round-join-even-16x16",
-      "path": "round-join-even-16x16.svg",
-      "creator": "Lokad.Svg contributors",
-      "retrievalDate": "2026-09-28",
-      "license": "CC0-1.0",
-      "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
-      "sourceSha256": "6cb3c1f1b4ab4a59436ad0934c7f384b3d542c804b76c4a95dfb8ac3416ab889",
-      "featureTags": [
-        "geometry",
-        "stroke",
-        "coverage",
-        "calibration"
-      ],
-      "width": 16,
-      "height": 16,
-      "candidateError": "UnsupportedFeature",
-      "admittedRendering": {
-        "changedPixelCount": 4,
-        "maximumChannelError": 22,
-        "maximumAlphaError": 22,
-        "alphaChangedPixelCount": 4,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 9,
-        "maximumMismatchY": 2
-      },
-      "oracle": {
-        "referencePng": "references/round-join-even-16x16.png",
-        "referenceSha256": "fbe799d59f7ca218fb96f4919185dd29fb8360214f09ebc816cfa861baf36cfb",
-        "chromeVersion": "153.0.8010.52",
-        "chromiumRevision": "1681091",
-        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
-        "platform": "win64",
-        "captureRecipeRevision": "3",
-        "deviceScaleFactor": 1,
-        "background": "transparent",
-        "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
-      }
-    },
-
     {
       "id": "research-rounded-rect-solid-16x16",
       "path": "rounded-rect-solid-16x16.svg",

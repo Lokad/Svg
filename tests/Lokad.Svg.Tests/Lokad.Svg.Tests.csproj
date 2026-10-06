@@ -35,6 +35,8 @@
     <None Update="TestData/path-scale-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/conic-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/conic-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/stroke-round-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/stroke-round-native.json" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />

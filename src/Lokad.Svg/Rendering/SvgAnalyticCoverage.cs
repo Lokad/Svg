@@ -1274,7 +1274,8 @@ internal ref partial struct SvgAnalyticCoverage
     private static bool CurveSpansEligible(ReadOnlySpan<int> ends, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, bool isEvenOdd, SvgPolygonMapping mapping, SvgContourFlags structure, CancellationToken cancellationToken)
     {
         if (quadSpans.Length == 0 && cubicSpans.Length == 0) return false;
-        if (mapping != SvgPolygonMapping.FlattenedCurves || structure != SvgContourFlags.None || ends.Length != 1) return false;
+        if (mapping is not (SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges) || ends.Length != 1) return false;
+        if (structure != SvgContourFlags.None && (mapping != SvgPolygonMapping.NativeStrokeEdges || isEvenOdd)) return false;
         // A simple oval encloses the same area under both fill rules. Keep the
         // existing even-odd gate for polynomial paths and mixed retained verbs.
         if (isEvenOdd && (cubicSpans.Length > 0 || Array.Exists(quadSpans, static span => span.ConicWeight == 1f))) return false;
@@ -1564,12 +1565,13 @@ internal ref partial struct SvgAnalyticCoverage
                 setupWork += (long)points.Length * points.Length;
             }
             SvgContourFlags setStructure = preparation.Structure.Value;
-            bool hasRigidContact = isEvenOdd || mapping is not (SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges) || (setStructure & SvgContourFlags.CoincidentOverlap) != SvgContourFlags.None;
+            bool hasRigidContact = isEvenOdd || mapping is not (SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges) || (mapping != SvgPolygonMapping.NativeStrokeEdges && (setStructure & SvgContourFlags.CoincidentOverlap) != SvgContourFlags.None);
             // Transversal-only unions walk exact signed-winding intervals on any mapping: strict
             // crossings carry no shared vertices, so event handoff stays clean while each interval
             // keeps its own trapezoid fringe instead of the fan exact-area underestimate.
-            // Native open-stroke overlaps and flattened curves retain signed
-            // winding. Ordinary straight inputs and coincident spans keep their gates.
+            // Native constructed stroke contacts retain signed winding, including
+            // reversals and self-touches. Ordinary straight inputs and coincident
+            // flattened fill spans keep their existing gates.
             if (preparation.TransversalUnion is null)
             {
                 bool transversal = false;
@@ -1600,8 +1602,8 @@ internal ref partial struct SvgAnalyticCoverage
             // sets can use the native walker without losing tiny dash fringes.
             bool orthogonalUnion = preparation.OrthogonalUnion.Value;
             if (!evenOddCrossings && !transversalUnion && !orthogonalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
-            long multiPointCount = GetNativePointCount(ref preparation, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, maximumSetupWork, ref setupWork, cancellationToken);
-            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, multiClip.BitmapOrigin, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
+            long multiPointCount = GetNativePointCount(ref preparation, !isEvenOdd && (mapping is SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges), maximumSetupWork, ref setupWork, cancellationToken);
+            if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && (mapping is SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges), false, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, multiClip.BitmapOrigin, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = multiPointCount > (long)(yEnd - yStart) * 2;
             long multiCurveEdges = QuadraticEdgeBound(points, quadSpans, 2, ref setupWork, maximumSetupWork, cancellationToken) + (long)cubicSpans.Length * 3;
@@ -1609,7 +1611,7 @@ internal ref partial struct SvgAnalyticCoverage
             try
             {
                 List<AnalyticEdge> multiKept = new(points.Length);
-                bool useMultiSpans = (quadSpans.Length > 0 || cubicSpans.Length > 0) && !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves;
+                bool useMultiSpans = (quadSpans.Length > 0 || cubicSpans.Length > 0) && !isEvenOdd && (mapping is SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges);
                 int quadCursor = 0;
                 int cubicCursor = 0;
                 int priorEnd = 0;
@@ -1709,7 +1711,8 @@ internal ref partial struct SvgAnalyticCoverage
             setupWork += (long)points.Length * (points.Length - 1) / 2;
         }
         SvgContourFlags structure = preparation.Structure.Value;
-        bool rigidRing = structure != SvgContourFlags.ProperCrossing || (!isEvenOdd && mapping is not (SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges));
+        bool nativeStroke = !isEvenOdd && mapping == SvgPolygonMapping.NativeStrokeEdges;
+        bool rigidRing = !nativeStroke && (structure != SvgContourFlags.ProperCrossing || (!isEvenOdd && mapping != SvgPolygonMapping.FlattenedCurves));
         if (rigidRing && (structure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) != SvgContourFlags.None) return default;
         if (preparation.Convex is null)
         {

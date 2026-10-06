@@ -1460,3 +1460,65 @@ ranges are 0.086–0.109 versus 0.089–0.111 ms. Larger-circle timings are
 1.991–2.380 versus 1.740–2.768 ms and Cartier 318×80 timings are
 2.783–3.985 versus 2.903–3.090 ms. These are local observations, without a
 representative throughput claim. Broader profiling and Linux remain open.
+
+## Native rational round-stroke observations (2026-10-06)
+
+Sixteen identical input/options recipes compare the saved `f327d578` assembly
+with native round controls and signed contacts. Recipes preceded measurement.
+Ledgers are separate from local timing: eight warmups, three batches, baseline/
+current and current/baseline process orders. Studies stay under ignored
+`artifacts/round-stroke-conics-20261006/`; Git identifies code. Geometry/rectangle/
+stop/analytic-paint/quad-span sizes remain 248/112/16/24/32 bytes.
+
+| Recipe | Parser work | Work through raster | Accounted peak bytes |
+| --- | --- | --- | --- |
+| tiny | 17 → 17 | 22 → 22 | 163,840 → 163,840 |
+| ellipse | 44 → 44 | 1,058 → 1,058 | 199,724 → 199,724 |
+| straight | 44 → 44 | 22,769 → 22,769 | 163,840 → 163,840 |
+| cap-even | 45 → 74 | 523 → 631 | 163,840 → 163,840 |
+| cap-fractional | 45 → 74 | 555 → 660 | 163,840 → 163,840 |
+| cap-unit | 45 → 74 | 348 → 527 | 163,840 → 163,840 |
+| join-diagonal | 46 → 68 | 1,346 → 1,600 | 163,840 → 163,840 |
+| join-even | 46 → 68 | 1,316 → 1,544 | 163,840 → 163,840 |
+| offset-dot | 46 → 70 | 2,595 → 1,432 | 163,840 → 163,840 |
+| clipped-dot | 51 → 78 | 5,404 → 2,729 | 163,840 → 163,840 |
+| diagonal-caps | 47 → 76 | 5,648 → 6,935 | 163,840 → 163,840 |
+| reversed-join | 46 → 68 | 4,248 → 4,477 | 163,840 → 163,840 |
+| overlapping-dots | 74 → 132 | 4,486 → 7,652 | 163,840 → 163,840 |
+| reversal-join | 53 → 68 | 3,240 → 921 | 163,840 → 163,840 |
+| rede-manchete | 366 → 581 | 2,182,821 → 2,259,531 | 1,055,762 → 1,092,370 |
+| ford | 4,657 → 4,657 | 1,301,233 → 1,301,233 | 534,546 → 534,546 |
+
+Native retention adds parser/setup work to round inputs. Dots/clipped dots and
+the reversal reduce total work, while cap/join/overlap inputs and Rede Manchete
+add work. Rede Manchete's peak increases by 36,608 bytes; the small inputs stay
+under the same existing peak category. Reservations include the bounded eager
+fallback points, lazy span columns and returned verbs; unchanged overall peaks
+do not imply zero added allocation. All memory scenarios and denial/release
+tests pass. Tiny, ellipse, straight and Ford retain their ledgers and PNGs.
+
+| Recipe | Baseline ms | Current ms | Baseline allocated bytes | Current allocated bytes |
+| --- | --- | --- | --- | --- |
+| tiny | 0.081–0.114 | 0.083–0.102 | 24,696–24,698 | 24,696–24,698 |
+| ellipse | 0.203–0.221 | 0.202–0.221 | 98,181–98,183 | 98,181–98,183 |
+| straight | 1.257–1.792 | 1.231–1.569 | 90,344–90,352 | 90,344–90,352 |
+| cap-even | 0.176–0.184 | 0.156–0.199 | 35,466–35,466 | 35,314–35,314 |
+| cap-fractional | 0.180–0.191 | 0.160–0.212 | 35,528–35,530 | 35,384–35,386 |
+| cap-unit | 0.166–0.171 | 0.146–0.199 | 34,722–34,722 | 35,322–35,322 |
+| join-diagonal | 0.237–0.273 | 0.281–0.302 | 36,392–36,394 | 36,792–36,794 |
+| join-even | 0.235–0.281 | 0.265–0.292 | 36,394–36,394 | 36,794–36,794 |
+| offset-dot | 0.802–0.900 | 0.255–0.292 | 37,018–37,018 | 39,850–39,850 |
+| clipped-dot | 1.551–1.657 | 0.319–0.349 | 38,088–38,123 | 40,114–40,114 |
+| diagonal-caps | 0.432–0.486 | 0.644–0.674 | 47,360–47,528 | 47,760–47,768 |
+| reversed-join | 0.436–0.556 | 0.535–0.579 | 47,136–47,304 | 47,536–47,544 |
+| overlapping-dots | 0.388–0.451 | 0.576–0.617 | 48,752–48,920 | 48,848–48,856 |
+| reversal-join | 1.213–1.247 | 0.222–0.248 | 38,608–38,765 | 39,656–39,664 |
+| rede-manchete | 26.037–49.475 | 29.050–65.983 | 1,191,964–1,192,017 | 1,181,092–1,181,209 |
+| ford | 19.475–21.758 | 16.335–25.724 | 858,408–858,620 | 858,568–858,716 |
+
+Overlap-dot timings are higher in both orders; reversal is lower after signed
+contacts replace fallback. Rede Manchete ranges overlap with wider current
+variation. These local results do not establish representative throughput or
+a general performance improvement. Allocation includes PNG encoding and runtime
+effects. Thin-stroke regression, wider construction/clip fidelity, profiling and
+Linux retain separate obligations.

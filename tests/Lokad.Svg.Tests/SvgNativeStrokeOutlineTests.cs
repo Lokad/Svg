@@ -116,13 +116,17 @@ public sealed class SvgNativeStrokeOutlineTests
     }
 
     [Fact]
-    public void Round_caps_do_not_invent_zero_length_edges_or_self_touches()
+    public void Round_caps_retain_explicit_closure_without_internal_zero_length_edges()
     {
         SvgContourBuilder builder = new(64, 1);
+        builder.EnableQuadSpanRetention();
         SvgStrokeOutline.StrokeNativeOpenPolyline([new(2, 14), new(8, 2), new(14, 14)], 4, 4, SvgStrokeCap.Round, SvgStrokeJoin.Round, builder, CancellationToken.None);
         SvgDevicePoint[] points = builder.GetContour(0).ToArray();
         Assert.Equal(SvgContourFlags.ProperCrossing, SvgContourStructure.ClassifyContour(points, 0, points.Length, CancellationToken.None));
-        for (int index = 0; index < points.Length; index++) Assert.NotEqual(points[index], points[(index + 1) % points.Length]);
+        // The final conic owns its closing endpoint before the implicit ring close.
+        Assert.Equal(points[0], points[^1]);
+        Assert.Equal(points.Length - 1, builder.GetQuadSpans()[^1].EndIndex);
+        for (int index = 0; index < points.Length - 1; index++) Assert.NotEqual(points[index], points[index + 1]);
     }
 
     [Fact]

@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after retained conic fills and live convex walking. All nine Cartier variants and two SG Rotation variants improve but remain inexact. All outcomes and all 70 prior exact corporate PNGs are preserved: 240 render (70 exact, 170 known differences), eighteen reject UnsupportedFeature. Four exact documents, marks 3/13 and wordmarks 1/14. Original references and membership remain frozen; studies are ignored under artifacts/conic-retention-20261006/.",
+  "scope": "Frozen 27-document/258-variant measurement after native rational round-stroke controls and signed contacts. All nine Rede Manchete variants improve but remain inexact. All outcomes and all 70 prior exact corporate PNGs are preserved: 240 render (70 exact, 170 known differences), eighteen reject UnsupportedFeature. Four exact documents, marks 3/13 and wordmarks 1/14. Original references and membership remain frozen; studies are ignored under artifacts/round-stroke-conics-20261006/.",
   "rendererCounts": {
     "renders": 240,
     "MalformedInput": 0,
@@ -11211,17 +11211,17 @@
       "id": "inv-009-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "1aad057c5b7a4eeffdc2576fe5cbded4279caa1c71129e22cd358eb2c7e5b0d7",
-      "candidateSha256": "8a57c90e3215455caeb043d914a15c640d7aaaa63e2f84b5d4b34f139ed7ce9f",
+      "candidateSha256": "f7972cba95d644f90ecdb33c4f61dcf7e75722912c5a180ce24bb1b3a4268e51",
       "width": 250,
       "height": 250,
       "referenceSha256": "216f3ef20a20344f3cd60c6ac15561d422f389514f3c988a064420f322e9ee1d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1373,
-          "MaximumChannelError": 99,
-          "MeanAbsoluteError": 0.0694,
-          "RootMeanSquareError": 1.423508342090063,
+          "ChangedPixelCount": 1267,
+          "MaximumChannelError": 63,
+          "MeanAbsoluteError": 0.047024,
+          "RootMeanSquareError": 0.9998239845092735,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11366,17 +11366,17 @@
       "id": "inv-009-small-white",
       "renderOutcome": "renders",
       "inputSha256": "1aad057c5b7a4eeffdc2576fe5cbded4279caa1c71129e22cd358eb2c7e5b0d7",
-      "candidateSha256": "8a57c90e3215455caeb043d914a15c640d7aaaa63e2f84b5d4b34f139ed7ce9f",
+      "candidateSha256": "f7972cba95d644f90ecdb33c4f61dcf7e75722912c5a180ce24bb1b3a4268e51",
       "width": 250,
       "height": 250,
       "referenceSha256": "216f3ef20a20344f3cd60c6ac15561d422f389514f3c988a064420f322e9ee1d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1373,
-          "MaximumChannelError": 99,
-          "MeanAbsoluteError": 0.0694,
-          "RootMeanSquareError": 1.423508342090063,
+          "ChangedPixelCount": 1267,
+          "MaximumChannelError": 63,
+          "MeanAbsoluteError": 0.047024,
+          "RootMeanSquareError": 0.9998239845092735,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11521,17 +11521,17 @@
       "id": "inv-009-small-black",
       "renderOutcome": "renders",
       "inputSha256": "1aad057c5b7a4eeffdc2576fe5cbded4279caa1c71129e22cd358eb2c7e5b0d7",
-      "candidateSha256": "8a57c90e3215455caeb043d914a15c640d7aaaa63e2f84b5d4b34f139ed7ce9f",
+      "candidateSha256": "f7972cba95d644f90ecdb33c4f61dcf7e75722912c5a180ce24bb1b3a4268e51",
       "width": 250,
       "height": 250,
       "referenceSha256": "216f3ef20a20344f3cd60c6ac15561d422f389514f3c988a064420f322e9ee1d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1373,
-          "MaximumChannelError": 99,
-          "MeanAbsoluteError": 0.0694,
-          "RootMeanSquareError": 1.423508342090063,
+          "ChangedPixelCount": 1267,
+          "MaximumChannelError": 63,
+          "MeanAbsoluteError": 0.047024,
+          "RootMeanSquareError": 0.9998239845092735,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11676,17 +11676,17 @@
       "id": "inv-009-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
-      "candidateSha256": "63ab27c29c4b9a567f70425717c41958697ce2a440abb9cbeaa3aed515359118",
+      "candidateSha256": "656fb603ffff9a530cc75f14010c9225607d48b9bec5f785d78807bba22e1ed6",
       "width": 500,
       "height": 500,
       "referenceSha256": "2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 2508,
-          "MaximumChannelError": 94,
-          "MeanAbsoluteError": 0.087498,
-          "RootMeanSquareError": 1.953553173066963,
+          "ChangedPixelCount": 1637,
+          "MaximumChannelError": 33,
+          "MeanAbsoluteError": 0.011824,
+          "RootMeanSquareError": 0.39085035499536136,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11831,17 +11831,17 @@
       "id": "inv-009-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
-      "candidateSha256": "63ab27c29c4b9a567f70425717c41958697ce2a440abb9cbeaa3aed515359118",
+      "candidateSha256": "656fb603ffff9a530cc75f14010c9225607d48b9bec5f785d78807bba22e1ed6",
       "width": 500,
       "height": 500,
       "referenceSha256": "2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 2508,
-          "MaximumChannelError": 94,
-          "MeanAbsoluteError": 0.087498,
-          "RootMeanSquareError": 1.953553173066963,
+          "ChangedPixelCount": 1637,
+          "MaximumChannelError": 33,
+          "MeanAbsoluteError": 0.011824,
+          "RootMeanSquareError": 0.39085035499536136,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -11986,17 +11986,17 @@
       "id": "inv-009-intended-black",
       "renderOutcome": "renders",
       "inputSha256": "c8882446b5c341a41b0848187f375868ae4c94cc56efb7a2cfd5c5998f80971e",
-      "candidateSha256": "63ab27c29c4b9a567f70425717c41958697ce2a440abb9cbeaa3aed515359118",
+      "candidateSha256": "656fb603ffff9a530cc75f14010c9225607d48b9bec5f785d78807bba22e1ed6",
       "width": 500,
       "height": 500,
       "referenceSha256": "2cd201a0d5140bbd1ef7f4379195f771494228db340779af0c411f96edc60ded",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 2508,
-          "MaximumChannelError": 94,
-          "MeanAbsoluteError": 0.087498,
-          "RootMeanSquareError": 1.953553173066963,
+          "ChangedPixelCount": 1637,
+          "MaximumChannelError": 33,
+          "MeanAbsoluteError": 0.011824,
+          "RootMeanSquareError": 0.39085035499536136,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 0,
@@ -12141,23 +12141,23 @@
       "id": "inv-009-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "cc5668c8ee511e61e7ac24da94acb78633f12cb41985d2d70d5a41cfc49faa37",
-      "candidateSha256": "5551f9bb47f24c6a0434d491207b2b224b27c8524f587061785099563ba510a7",
+      "candidateSha256": "c4c016e6ca1bbc49c7585cd98a60c8bbeb00e75f781d310a08e3d3551c6157a3",
       "width": 1000,
       "height": 1000,
       "referenceSha256": "c8ff5c3a9473d6b8eb460cbed3b9d45378d847ee9b46d130219b2d0dcdb18cc2",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3411,
-          "MaximumChannelError": 144,
-          "MeanAbsoluteError": 0.077362,
-          "RootMeanSquareError": 2.403415694381644,
+          "ChangedPixelCount": 1452,
+          "MaximumChannelError": 61,
+          "MeanAbsoluteError": 0.0043185,
+          "RootMeanSquareError": 0.2401780589479397,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 68,
-          "MinimumMismatchY": 182,
+          "MinimumMismatchY": 184,
           "MaximumMismatchX": 931,
-          "MaximumMismatchY": 815,
+          "MaximumMismatchY": 813,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -12167,100 +12167,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 307,
-            "Y": 182,
-            "Reference": "CwsA/w==",
-            "Candidate": "AAAA/w=="
-          },
-          {
-            "X": 308,
-            "Y": 182,
-            "Reference": "NDQA/w==",
-            "Candidate": "AAAA/w=="
-          },
-          {
-            "X": 309,
-            "Y": 182,
-            "Reference": "XV0A/w==",
-            "Candidate": "AAAA/w=="
-          },
-          {
-            "X": 310,
-            "Y": 182,
-            "Reference": "fn4A/w==",
+            "X": 296,
+            "Y": 184,
+            "Reference": "AAAA/w==",
             "Candidate": "AwMA/w=="
           },
           {
-            "X": 311,
-            "Y": 182,
-            "Reference": "j48A/w==",
-            "Candidate": "HBwA/w=="
+            "X": 297,
+            "Y": 184,
+            "Reference": "KCgA/w==",
+            "Candidate": "MzMA/w=="
           },
           {
-            "X": 312,
-            "Y": 182,
-            "Reference": "nZ0A/w==",
-            "Candidate": "NzcA/w=="
+            "X": 298,
+            "Y": 184,
+            "Reference": "aGgA/w==",
+            "Candidate": "cHAA/w=="
           },
           {
-            "X": 313,
-            "Y": 182,
-            "Reference": "qqoA/w==",
-            "Candidate": "UVEA/w=="
+            "X": 299,
+            "Y": 184,
+            "Reference": "qKgA/w==",
+            "Candidate": "rKwA/w=="
           },
           {
-            "X": 314,
-            "Y": 182,
-            "Reference": "t7cA/w==",
-            "Candidate": "bGwA/w=="
+            "X": 300,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
           },
           {
-            "X": 315,
-            "Y": 182,
-            "Reference": "xcUA/w==",
-            "Candidate": "h4cA/w=="
+            "X": 339,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
           },
           {
-            "X": 316,
-            "Y": 182,
-            "Reference": "0tIA/w==",
-            "Candidate": "oqIA/w=="
+            "X": 340,
+            "Y": 184,
+            "Reference": "p6cA/w==",
+            "Candidate": "rKwA/w=="
           },
           {
-            "X": 317,
-            "Y": 182,
-            "Reference": "398A/w==",
-            "Candidate": "vb0A/w=="
+            "X": 341,
+            "Y": 184,
+            "Reference": "Z2cA/w==",
+            "Candidate": "b28A/w=="
           },
           {
-            "X": 318,
-            "Y": 182,
-            "Reference": "7e0A/w==",
-            "Candidate": "19cA/w=="
+            "X": 342,
+            "Y": 184,
+            "Reference": "JycA/w==",
+            "Candidate": "MjIA/w=="
           },
           {
-            "X": 319,
-            "Y": 182,
-            "Reference": "//8A/w==",
-            "Candidate": "8vIA/w=="
+            "X": 343,
+            "Y": 184,
+            "Reference": "AAAA/w==",
+            "Candidate": "AwMA/w=="
           },
           {
-            "X": 320,
-            "Y": 182,
-            "Reference": "//8A/w==",
-            "Candidate": "8vIA/w=="
+            "X": 656,
+            "Y": 184,
+            "Reference": "AAAA/w==",
+            "Candidate": "AwMA/w=="
           },
           {
-            "X": 321,
-            "Y": 182,
-            "Reference": "7OwA/w==",
-            "Candidate": "19cA/w=="
+            "X": 657,
+            "Y": 184,
+            "Reference": "KCgA/w==",
+            "Candidate": "MzMA/w=="
           },
           {
-            "X": 322,
-            "Y": 182,
-            "Reference": "398A/w==",
-            "Candidate": "vb0A/w=="
+            "X": 658,
+            "Y": 184,
+            "Reference": "aGgA/w==",
+            "Candidate": "cHAA/w=="
+          },
+          {
+            "X": 659,
+            "Y": 184,
+            "Reference": "qKgA/w==",
+            "Candidate": "rKwA/w=="
+          },
+          {
+            "X": 660,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
+          },
+          {
+            "X": 699,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
           }
         ]
       },
@@ -12296,23 +12296,23 @@
       "id": "inv-009-large-white",
       "renderOutcome": "renders",
       "inputSha256": "cc5668c8ee511e61e7ac24da94acb78633f12cb41985d2d70d5a41cfc49faa37",
-      "candidateSha256": "5551f9bb47f24c6a0434d491207b2b224b27c8524f587061785099563ba510a7",
+      "candidateSha256": "c4c016e6ca1bbc49c7585cd98a60c8bbeb00e75f781d310a08e3d3551c6157a3",
       "width": 1000,
       "height": 1000,
       "referenceSha256": "c8ff5c3a9473d6b8eb460cbed3b9d45378d847ee9b46d130219b2d0dcdb18cc2",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3411,
-          "MaximumChannelError": 144,
-          "MeanAbsoluteError": 0.077362,
-          "RootMeanSquareError": 2.403415694381644,
+          "ChangedPixelCount": 1452,
+          "MaximumChannelError": 61,
+          "MeanAbsoluteError": 0.0043185,
+          "RootMeanSquareError": 0.2401780589479397,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 68,
-          "MinimumMismatchY": 182,
+          "MinimumMismatchY": 184,
           "MaximumMismatchX": 931,
-          "MaximumMismatchY": 815,
+          "MaximumMismatchY": 813,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -12322,100 +12322,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 307,
-            "Y": 182,
-            "Reference": "CwsA/w==",
-            "Candidate": "AAAA/w=="
-          },
-          {
-            "X": 308,
-            "Y": 182,
-            "Reference": "NDQA/w==",
-            "Candidate": "AAAA/w=="
-          },
-          {
-            "X": 309,
-            "Y": 182,
-            "Reference": "XV0A/w==",
-            "Candidate": "AAAA/w=="
-          },
-          {
-            "X": 310,
-            "Y": 182,
-            "Reference": "fn4A/w==",
+            "X": 296,
+            "Y": 184,
+            "Reference": "AAAA/w==",
             "Candidate": "AwMA/w=="
           },
           {
-            "X": 311,
-            "Y": 182,
-            "Reference": "j48A/w==",
-            "Candidate": "HBwA/w=="
+            "X": 297,
+            "Y": 184,
+            "Reference": "KCgA/w==",
+            "Candidate": "MzMA/w=="
           },
           {
-            "X": 312,
-            "Y": 182,
-            "Reference": "nZ0A/w==",
-            "Candidate": "NzcA/w=="
+            "X": 298,
+            "Y": 184,
+            "Reference": "aGgA/w==",
+            "Candidate": "cHAA/w=="
           },
           {
-            "X": 313,
-            "Y": 182,
-            "Reference": "qqoA/w==",
-            "Candidate": "UVEA/w=="
+            "X": 299,
+            "Y": 184,
+            "Reference": "qKgA/w==",
+            "Candidate": "rKwA/w=="
           },
           {
-            "X": 314,
-            "Y": 182,
-            "Reference": "t7cA/w==",
-            "Candidate": "bGwA/w=="
+            "X": 300,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
           },
           {
-            "X": 315,
-            "Y": 182,
-            "Reference": "xcUA/w==",
-            "Candidate": "h4cA/w=="
+            "X": 339,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
           },
           {
-            "X": 316,
-            "Y": 182,
-            "Reference": "0tIA/w==",
-            "Candidate": "oqIA/w=="
+            "X": 340,
+            "Y": 184,
+            "Reference": "p6cA/w==",
+            "Candidate": "rKwA/w=="
           },
           {
-            "X": 317,
-            "Y": 182,
-            "Reference": "398A/w==",
-            "Candidate": "vb0A/w=="
+            "X": 341,
+            "Y": 184,
+            "Reference": "Z2cA/w==",
+            "Candidate": "b28A/w=="
           },
           {
-            "X": 318,
-            "Y": 182,
-            "Reference": "7e0A/w==",
-            "Candidate": "19cA/w=="
+            "X": 342,
+            "Y": 184,
+            "Reference": "JycA/w==",
+            "Candidate": "MjIA/w=="
           },
           {
-            "X": 319,
-            "Y": 182,
-            "Reference": "//8A/w==",
-            "Candidate": "8vIA/w=="
+            "X": 343,
+            "Y": 184,
+            "Reference": "AAAA/w==",
+            "Candidate": "AwMA/w=="
           },
           {
-            "X": 320,
-            "Y": 182,
-            "Reference": "//8A/w==",
-            "Candidate": "8vIA/w=="
+            "X": 656,
+            "Y": 184,
+            "Reference": "AAAA/w==",
+            "Candidate": "AwMA/w=="
           },
           {
-            "X": 321,
-            "Y": 182,
-            "Reference": "7OwA/w==",
-            "Candidate": "19cA/w=="
+            "X": 657,
+            "Y": 184,
+            "Reference": "KCgA/w==",
+            "Candidate": "MzMA/w=="
           },
           {
-            "X": 322,
-            "Y": 182,
-            "Reference": "398A/w==",
-            "Candidate": "vb0A/w=="
+            "X": 658,
+            "Y": 184,
+            "Reference": "aGgA/w==",
+            "Candidate": "cHAA/w=="
+          },
+          {
+            "X": 659,
+            "Y": 184,
+            "Reference": "qKgA/w==",
+            "Candidate": "rKwA/w=="
+          },
+          {
+            "X": 660,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
+          },
+          {
+            "X": 699,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
           }
         ]
       },
@@ -12451,23 +12451,23 @@
       "id": "inv-009-large-black",
       "renderOutcome": "renders",
       "inputSha256": "cc5668c8ee511e61e7ac24da94acb78633f12cb41985d2d70d5a41cfc49faa37",
-      "candidateSha256": "5551f9bb47f24c6a0434d491207b2b224b27c8524f587061785099563ba510a7",
+      "candidateSha256": "c4c016e6ca1bbc49c7585cd98a60c8bbeb00e75f781d310a08e3d3551c6157a3",
       "width": 1000,
       "height": 1000,
       "referenceSha256": "c8ff5c3a9473d6b8eb460cbed3b9d45378d847ee9b46d130219b2d0dcdb18cc2",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3411,
-          "MaximumChannelError": 144,
-          "MeanAbsoluteError": 0.077362,
-          "RootMeanSquareError": 2.403415694381644,
+          "ChangedPixelCount": 1452,
+          "MaximumChannelError": 61,
+          "MeanAbsoluteError": 0.0043185,
+          "RootMeanSquareError": 0.2401780589479397,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 68,
-          "MinimumMismatchY": 182,
+          "MinimumMismatchY": 184,
           "MaximumMismatchX": 931,
-          "MaximumMismatchY": 815,
+          "MaximumMismatchY": 813,
           "IsExact": false
         },
         "alphaMass": 0,
@@ -12477,100 +12477,100 @@
         "opaqueAdded": 0,
         "witnesses": [
           {
-            "X": 307,
-            "Y": 182,
-            "Reference": "CwsA/w==",
-            "Candidate": "AAAA/w=="
-          },
-          {
-            "X": 308,
-            "Y": 182,
-            "Reference": "NDQA/w==",
-            "Candidate": "AAAA/w=="
-          },
-          {
-            "X": 309,
-            "Y": 182,
-            "Reference": "XV0A/w==",
-            "Candidate": "AAAA/w=="
-          },
-          {
-            "X": 310,
-            "Y": 182,
-            "Reference": "fn4A/w==",
+            "X": 296,
+            "Y": 184,
+            "Reference": "AAAA/w==",
             "Candidate": "AwMA/w=="
           },
           {
-            "X": 311,
-            "Y": 182,
-            "Reference": "j48A/w==",
-            "Candidate": "HBwA/w=="
+            "X": 297,
+            "Y": 184,
+            "Reference": "KCgA/w==",
+            "Candidate": "MzMA/w=="
           },
           {
-            "X": 312,
-            "Y": 182,
-            "Reference": "nZ0A/w==",
-            "Candidate": "NzcA/w=="
+            "X": 298,
+            "Y": 184,
+            "Reference": "aGgA/w==",
+            "Candidate": "cHAA/w=="
           },
           {
-            "X": 313,
-            "Y": 182,
-            "Reference": "qqoA/w==",
-            "Candidate": "UVEA/w=="
+            "X": 299,
+            "Y": 184,
+            "Reference": "qKgA/w==",
+            "Candidate": "rKwA/w=="
           },
           {
-            "X": 314,
-            "Y": 182,
-            "Reference": "t7cA/w==",
-            "Candidate": "bGwA/w=="
+            "X": 300,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
           },
           {
-            "X": 315,
-            "Y": 182,
-            "Reference": "xcUA/w==",
-            "Candidate": "h4cA/w=="
+            "X": 339,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
           },
           {
-            "X": 316,
-            "Y": 182,
-            "Reference": "0tIA/w==",
-            "Candidate": "oqIA/w=="
+            "X": 340,
+            "Y": 184,
+            "Reference": "p6cA/w==",
+            "Candidate": "rKwA/w=="
           },
           {
-            "X": 317,
-            "Y": 182,
-            "Reference": "398A/w==",
-            "Candidate": "vb0A/w=="
+            "X": 341,
+            "Y": 184,
+            "Reference": "Z2cA/w==",
+            "Candidate": "b28A/w=="
           },
           {
-            "X": 318,
-            "Y": 182,
-            "Reference": "7e0A/w==",
-            "Candidate": "19cA/w=="
+            "X": 342,
+            "Y": 184,
+            "Reference": "JycA/w==",
+            "Candidate": "MjIA/w=="
           },
           {
-            "X": 319,
-            "Y": 182,
-            "Reference": "//8A/w==",
-            "Candidate": "8vIA/w=="
+            "X": 343,
+            "Y": 184,
+            "Reference": "AAAA/w==",
+            "Candidate": "AwMA/w=="
           },
           {
-            "X": 320,
-            "Y": 182,
-            "Reference": "//8A/w==",
-            "Candidate": "8vIA/w=="
+            "X": 656,
+            "Y": 184,
+            "Reference": "AAAA/w==",
+            "Candidate": "AwMA/w=="
           },
           {
-            "X": 321,
-            "Y": 182,
-            "Reference": "7OwA/w==",
-            "Candidate": "19cA/w=="
+            "X": 657,
+            "Y": 184,
+            "Reference": "KCgA/w==",
+            "Candidate": "MzMA/w=="
           },
           {
-            "X": 322,
-            "Y": 182,
-            "Reference": "398A/w==",
-            "Candidate": "vb0A/w=="
+            "X": 658,
+            "Y": 184,
+            "Reference": "aGgA/w==",
+            "Candidate": "cHAA/w=="
+          },
+          {
+            "X": 659,
+            "Y": 184,
+            "Reference": "qKgA/w==",
+            "Candidate": "rKwA/w=="
+          },
+          {
+            "X": 660,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
+          },
+          {
+            "X": 699,
+            "Y": 184,
+            "Reference": "5+cA/w==",
+            "Candidate": "6OgA/w=="
           }
         ]
       },
@@ -31202,8 +31202,8 @@
       "referenceSha256": "e628ef493bea5ee8586514bc6d3730caeb0738def9eac6319b3db860614ded6c"
     }
   ],
-  "rendererSourceBaselineCommit": "8f75f8ce",
-  "rendererSourceState": "Circle/ellipse fills retain native float oval bounds and rational quadratic weights through output mapping. Native device-space conic subdivision feeds existing quad clipping; convex walking advances live curve state and uses derivative smoothing. Round caps/joins, closed/curved/dashed strokes and fractional/clip/composition residuals remain open.",
-  "measurementCheckpoint": "retained-conic-fills-2026-10-06",
+  "rendererSourceBaselineCommit": "f327d578",
+  "rendererSourceState": "Native straight solid open strokes retain rational round caps, dots and joins through final float mapping. Forward native inner arcs reverse their original verb sequence; typed nonzero stroke contacts use signed analytic walking. Closed/curved/dashed construction, fractional/clip/composition events and the measured unit-width cap regression remain open.",
+  "measurementCheckpoint": "native-round-stroke-conics-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

@@ -8,8 +8,8 @@ namespace Lokad.Svg.Rendering;
 /// implicitly from their last point back to their start, matching the contour-topology convention.</para>
 /// <para>Storage starts small and doubles toward the construction maxima; exhausting a maximum fails with
 /// <see cref="SvgErrorCode.LimitExceeded"/>. There is nothing to dispose: the arrays are plain managed
-/// memory. Callers charge one geometry work unit per stored point; this buffer holds no budget itself and
-/// allocates nothing after construction. One conversion owns a builder; concurrent use is not supported.</para>
+/// memory. Callers reserve point, contour and lazily allocated span columns, and charge one geometry work
+/// unit per stored point; this buffer holds no budget itself. One conversion owns a builder; concurrent use is not supported.</para>
 /// </remarks>
 internal sealed class SvgContourBuilder
 {
@@ -79,7 +79,7 @@ internal sealed class SvgContourBuilder
     internal int ContourCount => _contourCount;
 
     /// <summary>Enables quadratic span retention for subsequent verbs.</summary>
-    /// <remarks>Path and native oval fills enable retention before construction. Other routes keep flatten-only behavior. Span arrays allocate lazily on the first recorded quad and double toward the point maximum; rational weights allocate only when needed. Quad-free paths pay nothing and dense quad paths stay within the point denial bound.</remarks>
+    /// <remarks>Path/oval fills and native round strokes enable retention before construction. Other routes keep flatten-only behavior. Span arrays allocate lazily on the first recorded quad and double toward the point maximum; rational weights allocate only when needed. Quad-free paths pay nothing and dense quad paths stay within the point denial bound.</remarks>
     internal void EnableQuadSpanRetention()
     {
         _retainSpans = true;
@@ -130,6 +130,32 @@ internal sealed class SvgContourBuilder
                 GrowPoints();
             }
         }
+    }
+
+    /// <summary>Appends a rational quadratic with caller-bounded fallback samples and retained controls.</summary>
+    /// <remarks>Samples use the positive rational denominator; callers bound their count, reserve span
+    /// columns and charge every appended point. Cancellation is observed on every sample. Retention
+    /// keeps one verb regardless of the fallback density; device conversion belongs to the scanner.</remarks>
+    internal void AddConic(SvgDevicePoint control, SvgDevicePoint end, float weight, int segments, CancellationToken token)
+    {
+        RequireOpenContour();
+        ValidatePoint(control, nameof(control));
+        ValidatePoint(end, nameof(end));
+        if (!float.IsFinite(weight) || weight <= 0) throw new ArgumentOutOfRangeException(nameof(weight));
+        if (segments < 1) throw new ArgumentOutOfRangeException(nameof(segments));
+        SvgDevicePoint start = _points[_pointCount - 1];
+        int before = _pointCount;
+        for (int index = 1; index <= segments; index++)
+        {
+            token.ThrowIfCancellationRequested();
+            double t = (double)index / segments, oneMinusT = 1 - t;
+            double a = oneMinusT * oneMinusT, b = 2 * weight * t * oneMinusT, c = t * t;
+            double divisor = a + b + c;
+            Append(index == segments ? end : new SvgDevicePoint(
+                RequireFinite((a * start.X + b * control.X + c * end.X) / divisor),
+                RequireFinite((a * start.Y + b * control.Y + c * end.Y) / divisor)));
+        }
+        RecordQuadSpan(before - 1 - _openStart, _pointCount - 1 - _openStart, control, weight);
     }
 
     /// <summary>Records one quadratic span with contour-slice-relative indices when retention is enabled; the flattened points stay canonical.</summary>

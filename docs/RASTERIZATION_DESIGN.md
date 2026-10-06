@@ -5195,3 +5195,86 @@ local timings do not prove representative throughput. Studies remain ignored
 under `artifacts/conic-retention-20261006/`. Round stroke conics, closed/curved/
 dashed outlines, fractional events, clipping, composition, Linux and general
 fidelity retain separate gates.
+
+## Native rational round strokes and signed contacts (2026-10-06)
+
+The declared baseline is `f327d578`. Native straight solid open strokes now keep
+the original float `RoundCapper`, `RoundJoiner` and `SkConic::BuildUnitArc` control
+construction as rational quadratic verbs. Caps project the parallel offset
+before adding/subtracting the normal. A zero-length round stroke uses two caps.
+Joins retain full quadrants plus a weighted remainder. The backward inner chain
+builds the forward native arc before reversing its verbs: rebuilding from the
+other endpoint moves the quadrant split and fails the diagonal-reversal vector.
+Near-quarter remainders whose weight rounds to one still take native float output
+mapping. Pure reversal constructs one outer arc and a pivot inner join.
+
+Sixteen cases contain 88 control/endpoint/weight rows, all float-bit exact against
+compiled original functions from Skia revision
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c`. The adapter supplies nonperspective
+scale/translate/rotate/reflect matrix setup; scalar lanes execute the original
+affine body. It is compiled with `g++ -std=c++20 -O2 -DNDEBUG -ffp-contract=off`.
+This establishes the recorded controls, not full native `SkStroke` verb-tape or
+browser raster parity. The upstream sources, flags and adapter limits are in
+`tests/Lokad.Svg.Tests/TestData/stroke-round-native.json`. Git identifies local
+implementation; no own-source, adapter, build or diagnostic hashes are stored.
+
+The builder keeps one weighted span per arc and caller-bounded eager fallback
+samples. Uniform rational-parameter angular speed is bounded by
+`4*tan(pi/8)` for a quarter; the less-than-1.06 ratio to its sweep preserves the
+existing chord bound. Every sample observes cancellation and is charged by the
+caller. Builder columns and the returned span array have a bounded reservation
+held through scene transfer. Duplicate-contour merging compacts surviving verbs
+in place and reanchors their indices to the retained contour set; scene storage
+is reserved before allocating a smaller verb array. Device subdivision reuses
+the existing count/build passes and bounded quad clipper. Span size stays 32
+bytes; no public API or native dependency is added.
+
+Typed native nonzero stroke self-touches and coincident contacts now use signed
+analytic walking, alongside proper crossings. Intersecting rings cannot select
+convex fill; ordinary fill/contact guards retain their scope. This closes the
+native reversal control's earlier fallback discrepancy: 52 → four differing
+pixels and alpha-error mass 4,193 → 76. The rejected intermediate model worsened
+it to 53 pixels and mass 3,993; its results remain in ignored studies.
+
+The prior 1,143-case bank preserves every input/disposition and all 837 exact
+fixture PNGs. Fourteen PNGs change: one fixture, seven research and six legacy
+Default outputs. Four original research cases become exact: round join 8×8,
+fractional round cap 16×16, even-width cap 16×16 and even-width join 16×16.
+Their SVG/PNG bytes and provenance remain unchanged; original research assets
+stay present. The round-mark fixture improves 17 → eight differences. Fractional
+and odd round joins improve three → two and four → one differences respectively.
+The fractional join's maximum alpha error rises 15 → 20 while its alpha-error mass
+improves 27 → 25; that higher peak remains a measured limitation.
+
+The known width-one cap probe worsens 15 → 16 pixels, alpha-error mass 18 → 42
+and maximum alpha error three → eleven. It loses/adds no fully opaque pixels and
+keeps its original reference. Thin-stroke and fractional-event behavior needs
+independent investigation; no cause, tolerance or general improvement is claimed.
+
+Six supplemental controls exercise fractional dots, bitmap clipping, translucent
+diagonal caps, reversed joins, overlapping translucent dots and reversal. They
+were declared after the edit and before capture/comparison. All 54 fresh browser
+captures are healthy, cleaned and byte-stable. Every configuration improves:
+offset dot 42 → one, clipped dot 43 → ten, diagonal caps 90/91/86 → ten,
+reversed join five → zero, overlap 82/82/80 → 52/52/50, reversal 52 → four
+on transparent/white/black. Three reversed-join configurations become exact;
+fifteen remain measured differences. The expanded bank has 1,161 cases: 1,033
+fixtures (844 exact, 162 known, 27 rejected), 36 research (35 known, one rejected)
+and 92 legacy Default. Legacy Default changes imply no matching-options fidelity.
+
+Every Rede Manchete corporate variant improves: small 1,373 → 1,267, intended
+2,508 → 1,637 and large 3,411 → 1,452 differing pixels on every background.
+All 258 outcomes, 70 exact PNGs and the other 231 rendered images are preserved.
+The matrix remains 240 renders (70 exact, 170 known), eighteen rejections and
+4/27 exact documents, marks 3/13 and wordmarks 1/14. S17 remains unmet.
+
+Twenty-eight core cases verify native vectors, six outputs, group/symbol
+placement, duplicate merging, clipped/unclipped native-count caching, denial,
+owner release, cancellation-token identity and stroke contact interiors. Windows
+locked restore, nine-project Release build, 3,634 tests, all 25 memory scenarios,
+Chrome smoke, artifact validation, package inspection and isolated consumer pass.
+Sixteen matched cost recipes record both added work/storage and selected savings;
+timing is local evidence. Studies stay under ignored
+`artifacts/round-stroke-conics-20261006/`. Thin/fractional events, closed/curved/
+dashed construction, clip/composition fidelity, Linux and representative
+performance remain open.

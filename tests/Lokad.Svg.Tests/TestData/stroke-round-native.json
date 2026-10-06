@@ -1,0 +1,217 @@
+{
+  "upstreamRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "upstreamFiles": [
+    "src/core/SkStrokerPriv.cpp",
+    "src/core/SkGeometry.cpp",
+    "src/core/SkPoint.cpp",
+    "src/core/SkMatrix.cpp"
+  ],
+  "functions": [
+    "RoundCapper",
+    "RoundJoiner",
+    "SkConic::BuildUnitArc",
+    "set_point_length",
+    "SkMatrix::setSinCos",
+    "SkMatrix::Affine_vpts"
+  ],
+  "adapter": "Original function bodies compiled unchanged. The nonperspective matrix setup shim supports scale, translation, rotation and reflection; scalar vector lanes execute the original affine map body. Inner conic verbs reverse after forward native construction.",
+  "compiler": "g++ -std=c++20 -O2 -DNDEBUG -ffp-contract=off",
+  "data": "stroke-round-native.csv",
+  "pointRows": 88,
+  "cases": [
+    {
+      "id": "cap-even",
+      "kind": "cap",
+      "p": [
+        4,
+        8,
+        12,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "cap-fractional",
+      "kind": "cap",
+      "p": [
+        2,
+        8,
+        14,
+        8,
+        2.5
+      ]
+    },
+    {
+      "id": "cap-unit",
+      "kind": "cap",
+      "p": [
+        2,
+        8,
+        14,
+        8,
+        1
+      ]
+    },
+    {
+      "id": "cap-diagonal",
+      "kind": "cap",
+      "p": [
+        2.125,
+        3.375,
+        17.625,
+        23.125,
+        3.5
+      ]
+    },
+    {
+      "id": "cap-vertical",
+      "kind": "cap",
+      "p": [
+        13.25,
+        2.5,
+        13.25,
+        29.625,
+        5.25
+      ]
+    },
+    {
+      "id": "cap-offset",
+      "kind": "cap",
+      "p": [
+        100000.125,
+        -100000.25,
+        100008.625,
+        -99995.75,
+        7.75
+      ]
+    },
+    {
+      "id": "cap-dot",
+      "kind": "cap",
+      "p": [
+        4.125,
+        8.375,
+        4.125,
+        8.375,
+        3.25
+      ]
+    },
+    {
+      "id": "join-right",
+      "kind": "join",
+      "p": [
+        2,
+        12,
+        8,
+        12,
+        8,
+        4,
+        4
+      ]
+    },
+    {
+      "id": "join-left",
+      "kind": "join",
+      "p": [
+        8,
+        4,
+        8,
+        12,
+        2,
+        12,
+        4
+      ]
+    },
+    {
+      "id": "join-diagonal",
+      "kind": "join",
+      "p": [
+        2,
+        12,
+        8,
+        4,
+        14,
+        12,
+        3.5
+      ]
+    },
+    {
+      "id": "join-diagonal-reverse",
+      "kind": "join",
+      "p": [
+        14,
+        12,
+        8,
+        4,
+        2,
+        12,
+        3.5
+      ]
+    },
+    {
+      "id": "join-acute",
+      "kind": "join",
+      "p": [
+        8,
+        40,
+        32,
+        8,
+        56,
+        40,
+        8
+      ]
+    },
+    {
+      "id": "join-obtuse",
+      "kind": "join",
+      "p": [
+        1,
+        12,
+        8,
+        4,
+        15,
+        12,
+        5
+      ]
+    },
+    {
+      "id": "join-reversal",
+      "kind": "join",
+      "p": [
+        2,
+        8,
+        8,
+        8,
+        2,
+        8,
+        4
+      ]
+    },
+    {
+      "id": "join-near-quarter",
+      "kind": "join",
+      "p": [
+        2,
+        12,
+        8,
+        12,
+        7.9972,
+        4,
+        3.5
+      ]
+    },
+    {
+      "id": "join-near-quarter-reverse",
+      "kind": "join",
+      "p": [
+        7.9972,
+        4,
+        8,
+        12,
+        2,
+        12,
+        3.5
+      ]
+    }
+  ]
+}

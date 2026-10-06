@@ -46,7 +46,7 @@ internal enum SvgStrokeJoin
 internal static class SvgStrokeOutline
 {
     /// <summary>Appends native float joins for a straight open centerline, preserving its directed winding overlaps.</summary>
-    /// <remarks>Normalization, miter replacement and pivot inner joins follow SkPoint/SkStrokerPriv at the pinned source documented in THIRD_PARTY_NOTICES. Round conics retain sampled arcs. Callers retain this outline as NativeStrokeEdges rather than splitting it into touching filled bands. Curved, closed and dashed source contours keep their existing construction. The caller owns and bounds builder storage and charges appended points; this method adds no heap storage. Traversal and arc subdivision observe cancellation, and concurrent use of the builder is unsupported.</remarks>
+    /// <remarks>Normalization, miter replacement and pivot inner joins follow SkPoint/SkStrokerPriv at the pinned source documented in THIRD_PARTY_NOTICES. Round caps, dots and joins retain rational conics. Inner arcs preserve the forward native quadrant splits before their verbs reverse. Callers retain this outline as NativeStrokeEdges rather than splitting it into touching filled bands. Curved, closed and dashed source contours keep their existing construction. The caller owns and bounds builder storage and charges appended points; this method adds no heap storage. Traversal and arc subdivision observe cancellation, and concurrent use of the builder is unsupported.</remarks>
     internal static void StrokeNativeOpenPolyline(ReadOnlySpan<SvgDevicePoint> points, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, SvgContourBuilder builder, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(builder);
@@ -69,6 +69,17 @@ internal static class SvgStrokeOutline
         if (first >= last)
         {
             if (points.Length == 0 || cap == SvgStrokeCap.Butt) return;
+            if (cap == SvgStrokeCap.Round)
+            {
+                SvgDevicePoint pivot = Point(points[first]);
+                SvgDevicePoint right = new(RequireFinite((float)pivot.X + radius), pivot.Y);
+                SvgDevicePoint left = new(RequireFinite((float)pivot.X - radius), pivot.Y);
+                builder.BeginContour(right);
+                Cap(builder, pivot, new(radius, 0), left, radius, cancellationToken);
+                Cap(builder, pivot, new(-radius, 0), right, radius, cancellationToken);
+                builder.EndContour();
+                return;
+            }
             Span<SvgDevicePoint> dot = stackalloc SvgDevicePoint[1];
             dot[0] = Point(points[first]);
             StrokeOpenPolyline(dot, radius * 2.0, miterLimit, cap, join, builder, cancellationToken);
@@ -95,14 +106,26 @@ internal static class SvgStrokeOutline
         Chain(points, first, last, 1, radius, miterLimit, join, builder, cancellationToken);
         builder.AddLine(lastRight);
         if (cap == SvgStrokeCap.Round)
-            Arc(builder, end, radius, new(endDirection.Y, -endDirection.X), endDirection, new(-endDirection.Y, endDirection.X), false, true, cancellationToken);
+            Cap(builder, end, new(radius * (float)endDirection.Y, -radius * (float)endDirection.X), lastLeft, radius, cancellationToken);
         else builder.AddLine(lastLeft);
         Chain(points, last, first, -1, radius, miterLimit, join, builder, cancellationToken);
         builder.AddLine(firstLeft);
         if (cap == SvgStrokeCap.Round)
-            Arc(builder, start, radius, new(-startDirection.Y, startDirection.X), new(-startDirection.X, -startDirection.Y), new(startDirection.Y, -startDirection.X), false, false, cancellationToken);
+            Cap(builder, start, new(-radius * (float)startDirection.Y, radius * (float)startDirection.X), firstRight, radius, cancellationToken);
         builder.EndContour();
 
+        static void Cap(SvgContourBuilder builder, SvgDevicePoint pivot, SvgDevicePoint normal, SvgDevicePoint stop, float radius, CancellationToken token)
+        {
+            // Original RoundCapper adds the parallel offset before the normal.
+            float projectedX = (float)pivot.X - (float)normal.Y;
+            float projectedY = (float)pivot.Y + (float)normal.X;
+            SvgDevicePoint projected = new(RequireFinite(projectedX), RequireFinite(projectedY));
+            int segments = ConicArcSegments(radius);
+            builder.AddConic(new(RequireFinite(projectedX + (float)normal.X), RequireFinite(projectedY + (float)normal.Y)), projected,
+                SvgRationalQuadratic.QuarterCircleWeight, segments, token);
+            builder.AddConic(new(RequireFinite(projectedX - (float)normal.X), RequireFinite(projectedY - (float)normal.Y)), stop,
+                SvgRationalQuadratic.QuarterCircleWeight, segments, token);
+        }
         static SvgDevicePoint Point(SvgDevicePoint point) => new(RequireFinite((float)point.X), RequireFinite((float)point.Y));
         static SvgDevicePoint Direction(SvgDevicePoint before, SvgDevicePoint after)
         {
@@ -134,12 +157,12 @@ internal static class SvgStrokeOutline
                     after += step;
                 }
                 if (Point(points[previous]) != pivot && Point(points[after]) != pivot)
-                    Join(pivot, Direction(Point(points[previous]), pivot), Direction(pivot, Point(points[after])), radius, limit, join, builder, token);
+                    Join(pivot, Direction(Point(points[previous]), pivot), Direction(pivot, Point(points[after])), radius, limit, join, step < 0, builder, token);
                 previous = vertex;
                 vertex = after;
             }
         }
-        static void Join(SvgDevicePoint pivot, SvgDevicePoint incoming, SvgDevicePoint outgoing, float radius, double limit, SvgStrokeJoin join, SvgContourBuilder builder, CancellationToken token)
+        static void Join(SvgDevicePoint pivot, SvgDevicePoint incoming, SvgDevicePoint outgoing, float radius, double limit, SvgStrokeJoin join, bool reverse, SvgContourBuilder builder, CancellationToken token)
         {
             float beforeX = (float)incoming.Y, beforeY = -(float)incoming.X;
             float afterX = (float)outgoing.Y, afterY = -(float)outgoing.X;
@@ -148,7 +171,7 @@ internal static class SvgStrokeOutline
             if (!bevel && MathF.Abs(1 - dot) <= 1f / 4096) return;
             bool reversal = MathF.Abs(1 + dot) <= 1f / 4096;
             float cross = (float)incoming.X * (float)outgoing.Y - (float)incoming.Y * (float)outgoing.X;
-            if (!reversal && cross < 0)
+            if (join == SvgStrokeJoin.Round ? (reverse ? cross < 0 : cross <= 0) : !reversal && cross < 0)
             {
                 builder.AddLine(Offset(pivot, incoming, radius));
                 builder.AddLine(pivot);
@@ -157,8 +180,7 @@ internal static class SvgStrokeOutline
             }
             if (join == SvgStrokeJoin.Round)
             {
-                SvgDevicePoint thru = reversal ? incoming : new(beforeX + afterX, beforeY + afterY);
-                Arc(builder, pivot, radius, new(beforeX, beforeY), thru, new(afterX, afterY), true, true, token);
+                Arc(builder, pivot, radius, new(beforeX, beforeY), new(afterX, afterY), reverse, token);
                 return;
             }
             float inverseLimit = 1 / (float)limit;
@@ -185,28 +207,72 @@ internal static class SvgStrokeOutline
                 midY = (float)(y * factor);
             }
             builder.AddLine(new(RequireFinite((float)pivot.X + midX), RequireFinite((float)pivot.Y + midY)));
-        }
-        static void Arc(SvgContourBuilder builder, SvgDevicePoint center, float radius, SvgDevicePoint from, SvgDevicePoint thru, SvgDevicePoint to, bool includeStart, bool includeEnd, CancellationToken token)
-        {
-            double start = Math.Atan2(from.Y, from.X), end = Math.Atan2(to.Y, to.X);
-            double sweep = NormalizeAngle(end - start);
-            double relative = NormalizeAngle(Math.Atan2(thru.Y, thru.X) - start);
-            if ((sweep > 0 && (relative < 0 || relative > sweep)) || (sweep < 0 && (relative > 0 || relative < sweep))) sweep += sweep > 0 ? -2 * Math.PI : 2 * Math.PI;
-            int segments = MaxArcFanSegments(radius, sweep);
-            // Caps continue an existing endpoint; closing the ring supplies the
-            // final segment. Duplicate endpoints otherwise invent self-touches.
-            for (int index = includeStart ? 0 : 1; index <= (includeEnd ? segments : segments - 1); index++)
+
+            static void Arc(SvgContourBuilder builder, SvgDevicePoint pivot, float radius, SvgDevicePoint from, SvgDevicePoint to, bool reverse, CancellationToken token)
             {
-                if ((index & 63) == 0) token.ThrowIfCancellationRequested();
-                if (index == 0 || index == segments)
+                // Build the original forward inner arc before reversing its verbs.
+                // Rebuilding from its other end moves the quadrant split and changes
+                // native subdivision; reversing preserves both weights and controls.
+                SvgDevicePoint unitStart = reverse ? to : from, unitStop = reverse ? from : to;
+                float x = (float)unitStart.X * (float)unitStop.X + (float)unitStart.Y * (float)unitStop.Y;
+                float y = (float)unitStart.X * (float)unitStop.Y - (float)unitStart.Y * (float)unitStop.X;
+                if (MathF.Abs(y) <= 1f / 4096 && x > 0 && (reverse ? y <= 0 : y >= 0)) return;
+                if (reverse) y = -y;
+                int quadrant = 0;
+                if (y == 0) quadrant = 2;
+                else if (x == 0) quadrant = y > 0 ? 1 : 3;
+                else
                 {
-                    builder.AddLine(Shift(center, index == 0 ? from : to, radius));
-                    continue;
+                    if (y < 0) quadrant += 2;
+                    if ((x < 0) != (y < 0)) quadrant++;
                 }
-                double angle = start + sweep * index / segments;
-                builder.AddLine(new(RequireFinite((float)(center.X + radius * Math.Cos(angle))), RequireFinite((float)(center.Y + radius * Math.Sin(angle)))));
+                ReadOnlySpan<SvgDevicePoint> unit = stackalloc SvgDevicePoint[]
+                {
+                    new(1, 0), new(1, 1), new(0, 1), new(-1, 1), new(-1, 0),
+                    new(-1, -1), new(0, -1), new(1, -1), new(1, 0)
+                };
+                Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[9];
+                Span<float> weights = stackalloc float[4];
+                float scaleX = radius * (float)unitStart.X, scaleY = radius * (float)unitStart.Y;
+                points[0] = Map(unit[0], pivot, scaleX, scaleY, reverse);
+                int count = quadrant;
+                for (int index = 0; index < count; index++)
+                {
+                    weights[index] = SvgRationalQuadratic.QuarterCircleWeight;
+                    points[2 * index + 1] = Map(unit[2 * index + 1], pivot, scaleX, scaleY, reverse);
+                    points[2 * index + 2] = Map(unit[2 * index + 2], pivot, scaleX, scaleY, reverse);
+                }
+                SvgDevicePoint last = unit[2 * quadrant];
+                float dot = (float)last.X * x + (float)last.Y * y;
+                if (float.IsNaN(dot)) return;
+                if (dot < 1)
+                {
+                    float weight = MathF.Sqrt((1 + dot) * 0.5f);
+                    float controlX = (float)last.X + x, controlY = (float)last.Y + y;
+                    double factor = (1f / weight) / Math.Sqrt((double)controlX * controlX + (double)controlY * controlY);
+                    controlX = (float)(controlX * factor); controlY = (float)(controlY * factor);
+                    // The native two-argument tolerance predicate tests whether
+                    // the difference can normalize, so finite differences use exact equality.
+                    if ((float)last.X != controlX || (float)last.Y != controlY)
+                    {
+                        weights[count] = weight;
+                        points[2 * count + 1] = Map(new(controlX, controlY), pivot, scaleX, scaleY, reverse);
+                        points[2 * count + 2] = Map(new(x, y), pivot, scaleX, scaleY, reverse);
+                        count++;
+                    }
+                }
+                if (count == 0) return;
+                int segments = ConicArcSegments(radius);
+                builder.AddLine(points[reverse ? 2 * count : 0]);
+                for (int index = reverse ? count - 1 : 0; reverse ? index >= 0 : index < count; index += reverse ? -1 : 1)
+                    builder.AddConic(points[2 * index + 1], points[reverse ? 2 * index : 2 * index + 2], weights[index], segments, token);
+
+                static SvgDevicePoint Map(SvgDevicePoint point, SvgDevicePoint pivot, float scaleX, float scaleY, bool reverse)
+                    => new(RequireFinite(scaleX * (float)point.X + (reverse ? scaleY : -scaleY) * (float)point.Y + (float)pivot.X),
+                        RequireFinite(scaleY * (float)point.X + (reverse ? -scaleX : scaleX) * (float)point.Y + (float)pivot.Y));
             }
         }
+
     }
 
     /// <summary>Reports whether a centerline holds fewer than two distinct points.</summary>
@@ -438,6 +504,12 @@ internal static class SvgStrokeOutline
         int segments = (int)Math.Ceiling(Math.Abs(sweep) / step);
         return Math.Max(1, segments);
     }
+
+    /// <summary>Bounds fallback sampling of circular conics under uniform rational parameter steps.</summary>
+    /// <remarks>A quarter circle turns at most 4*tan(pi/8) radians per unit parameter.
+    /// Dividing by its pi/2 sweep gives less than 1.06, so this factor preserves the
+    /// angular chord bound without doubling every fallback contour. Shorter arcs turn less.</remarks>
+    private static int ConicArcSegments(double radius) => (int)Math.Ceiling(1.06 * MaxArcFanSegments(radius, Math.PI / 2));
 
     /// <summary>Emits the polygonal fan from one unit offset through another around a stroke vertex.</summary>
     private static void EmitArcFan(SvgContourBuilder builder, SvgDevicePoint center, double radius, (double X, double Y) from, (double X, double Y) thru, (double X, double Y) to, CancellationToken cancellationToken)

@@ -769,10 +769,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             }
             int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
             long scratchBytes;
-            try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(closed ? 2 : 1)); }
+            try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(closed ? 2 : 1) + (!closed && (cap == SvgStrokeCap.Round || join == SvgStrokeJoin.Round) ? StrokeConicScratchBytes((int)Math.Min(pointCapacity, (join == SvgStrokeJoin.Round ? 2L * mapped.Count : 0) + (cap == SvgStrokeCap.Round ? 4 : 0))) : 0)); }
             catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
             using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
             SvgContourBuilder outlines = new(pointCapacity, closed ? 2 : 1);
+            if (!closed && (cap == SvgStrokeCap.Round || join == SvgStrokeJoin.Round)) outlines.EnableQuadSpanRetention();
             if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, join, outlines, _cancellationToken);
             else SvgStrokeOutline.StrokeNativeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
             int[] loopSubpaths = new int[outlines.ContourCount];
@@ -1182,10 +1183,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
         int contourCapacity = wantedContours > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedContours;
         long scratchBytes;
-        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)); }
+        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity) + (nativeStroke && (cap == SvgStrokeCap.Round || join == SvgStrokeJoin.Round) ? StrokeConicScratchBytes((int)Math.Min(pointCapacity, (join == SvgStrokeJoin.Round ? 2L * source.PointCount : 0) + (cap == SvgStrokeCap.Round ? 4L * source.ContourCount : 0))) : 0)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
         using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
         SvgContourBuilder outlines = new(pointCapacity, contourCapacity);
+        if (nativeStroke && (cap == SvgStrokeCap.Round || join == SvgStrokeJoin.Round)) outlines.EnableQuadSpanRetention();
         int[] loopSubpaths = new int[contourCapacity];
         for (int contour = 0; contour < source.ContourCount; contour++)
         {
@@ -1445,8 +1447,19 @@ internal ref struct SvgOrthogonalGeometryLowering
         return RetainPolygonFill(retained, finalEnds, finalSigns, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), color, hasFill, false, combinedMapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
     }
 
+    /// <summary>Reserves lazily grown rational span columns and the returned verb array.</summary>
+    private static long StrokeConicScratchBytes(int maximumConics)
+    {
+        int capacity = 4;
+        while (capacity < maximumConics) capacity = checked(capacity * 2);
+        return 3 * ParserCollectionMemory.GetArrayByteCount<int>(capacity)
+            + ParserCollectionMemory.GetArrayByteCount<float>(capacity)
+            + ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(capacity)
+            + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(maximumConics);
+    }
+
     /// <summary>Retains directed stroke outlines as one nonzero fill without converting winding overlaps into touching bands.</summary>
-    /// <remarks>Native straight open strokes preserve float construction and directed overlaps through their typed mapping. Curved and dashed source outlines keep their existing mapping and merge: dense curve tessellation can misfire crossing subdivision. The caller retains ownership and charges point, contour and role traversals; returned scene reservations release on failure or disposal.</remarks>
+    /// <remarks>Native straight open strokes preserve float construction, rational round verbs and directed overlaps through their typed mapping. Surviving conics re-anchor to global indices after duplicate contour merging; caller scratch covers builder columns and returned verbs. Curved and dashed source outlines keep their existing mapping and merge: dense curve tessellation can misfire crossing subdivision. The caller retains ownership and charges point, contour and role traversals; returned scene reservations release on failure or disposal.</remarks>
     private SvgParsedGeometry FinishDirectedStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, SvgPolygonMapping sourceMapping, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(outlines);
@@ -1472,10 +1485,40 @@ internal ref struct SvgOrthogonalGeometryLowering
         retainedOutlines = mergedOutlines;
         ends = mergedEnds;
 
+        SvgQuadSpan[] conics = outlines.GetQuadSpans();
+        int conicCursor = 0, conicKept = 0, sourceContour = 0;
+        for (int contour = 0; conics.Length > 0 && contour < ends.Length; contour++)
+        {
+            int start = contour == 0 ? 0 : ends[contour - 1];
+            ReadOnlySpan<SvgDevicePoint> kept = retainedOutlines.AsSpan(start, ends[contour] - start);
+            while (sourceContour < outlines.ContourCount)
+            {
+                ReadOnlySpan<SvgDevicePoint> candidate = outlines.GetContour(sourceContour);
+                bool equal = candidate.Length == kept.Length;
+                for (int vertex = 0; equal && vertex < candidate.Length; vertex++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    equal = candidate[vertex] == kept[vertex];
+                }
+                if (equal) break;
+                sourceContour++;
+            }
+            if (sourceContour == outlines.ContourCount) throw new InvalidOperationException("A merged stroke contour lost its source.");
+            while (conicCursor < conics.Length && conics[conicCursor].Contour < sourceContour)
+            { _workCounter.Consume(_cancellationToken); conicCursor++; }
+            while (conicCursor < conics.Length && conics[conicCursor].Contour == sourceContour)
+            {
+                _workCounter.Consume(_cancellationToken);
+                SvgQuadSpan span = conics[conicCursor++];
+                conics[conicKept++] = span with { Contour = contour, StartIndex = start + span.StartIndex, EndIndex = start + span.EndIndex };
+            }
+            sourceContour++;
+        }
         SvgPolygonMapping mapping = sourceMapping is SvgPolygonMapping.FlattenedCurves or SvgPolygonMapping.NativeStrokeEdges ? sourceMapping : fractionalVertices ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.QuarterEdges;
-        RenderBudget.BudgetReservation? reservation = ReserveScene(retainedOutlines.Length, ends.Length, ends.Length, 0, 0, budget);
+        RenderBudget.BudgetReservation? reservation = ReserveScene(retainedOutlines.Length, ends.Length, ends.Length, conicKept, 0, budget);
         try
         {
+            if (conicKept != conics.Length) Array.Resize(ref conics, conicKept);
             ValidateDeviceRange(retainedOutlines);
             int[] roles = new int[ends.Length];
             ChargePairs(_workCounter, (long)ends.Length * (ends.Length - 1) / 2, _cancellationToken);
@@ -1486,7 +1529,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 int start = contour == 0 ? 0 : ends[contour - 1];
                 if (roles[contour] == 0 && ends[contour] - start >= 3) roles[contour] = 1;
             }
-            return RetainPolygonFill(retainedOutlines, ends, roles, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
+            return RetainPolygonFill(retainedOutlines, ends, roles, conics, Array.Empty<SvgCubicSpan>(), color, hasFill, false, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
         }
         catch
         {

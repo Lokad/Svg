@@ -11,17 +11,19 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current conic checkpoint
+## Current round-stroke checkpoint
 
-Circle/ellipse fills retain rational controls through final mapping and live
-convex scanning. Six original research cases graduate with unchanged references;
-eighteen supplemental configurations retain measured differences and three stable
-captures each. Controls were declared after the production edit. The bank has
-1,011 fixtures (837 exact, 147 known, 27 rejected) and 40 research probes. All 830
-prior exact fixture PNGs and 70 exact corporate PNGs are preserved. Nine Cartier
-and two SG Rotation variants improve; corporate exactness remains 4/27 documents.
-No prior mismatch count increases; one mixed circle/dash alpha-error mass rises
-1,702 → 1,737. Original references stay frozen.
+Native straight solid open-stroke caps, dots and joins retain rational controls
+through final float mapping and signed contacts. Four original research cases
+graduate with unchanged SVGs, references and provenance. All eighteen fresh
+configurations improve, three to exact; their three captures are stable and
+healthy. Controls were declared after the edit and before capture/comparison.
+The bank has 1,033 fixtures (844 exact, 162 known, 27 rejected) and 36 research
+probes. All 837 prior exact fixture PNGs and 70 exact corporate PNGs are preserved.
+Every Rede Manchete variant improves; corporate exactness remains 4/27 documents.
+The width-one cap probe worsens 15 → 16 differences, alpha-error mass 18 → 42
+and maximum alpha error 3 → 11. It keeps its original reference and remains
+inexact. Original references stay frozen; ordinary source edits require no refresh.
 
 ## Frozen corporate cohort
 

@@ -1,30 +1,31 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. The checkpoint retains circle/ellipse conics through mapping
-and advances rational curves live in convex walking. Six original probes and one
-fixture become exact. Every Cartier variant improves but remains inexact.
-[PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
+Updated 2026-10-06. Native straight solid open strokes retain rational round
+caps, dots and joins through final mapping and signed contacts. Four original
+probes and three fresh configurations become exact. Every Rede Manchete variant
+improves but remains inexact. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and
+S17 remain open.
 
-Current evidence: **1,011 fixtures = 837 exact + 147 known differences + 27
-rejections**, across 533 base documents / 478 variants. Research has 39 known
+Current evidence: **1,033 fixtures = 844 exact + 162 known differences + 27
+rejections**, across 543 base documents / 490 variants. Research has 35 known
 renders + one rejection. Windows locked restore, nine-project Release build and
-3,440 core + 160 visual + six FontProbe tests (**3,606 total**) pass. All 25 memory
+3,468 core + 160 visual + six FontProbe tests (**3,634 total**) pass. All 25 memory
 scenarios, package/installed-consumer, Chrome smoke and artifact-validator checks
-pass. The expanded bank has 1,143 cases. Every prior disposition, all 830 prior
-exact fixture PNGs and 70 exact corporate PNGs are preserved. Fourteen matched
+pass. The expanded bank has 1,161 cases. Every prior disposition, all 837 prior
+exact fixture PNGs and 70 exact corporate PNGs are preserved. Sixteen matched
 recipes record work/storage and local timings; representative performance remains
-open. Studies stay under ignored `artifacts/conic-retention-20261006/`.
+open. Studies stay under ignored `artifacts/round-stroke-conics-20261006/`.
 
 The corporate matrix remains **240 rendered comparisons (70 exact, 170 known)**
 and eighteen UnsupportedFeature outcomes. Ford, ROC HCVS, Artsy and YouTube remain
 **4/27 exact documents**, marks **3/13**, wordmarks **1/14**. Inputs, references,
-holdouts and denominators remain frozen. Nine Cartier and two SG Rotation PNGs
-improve; the other 229 rendered images are unchanged. No prior mismatch count
-increases. One mixed circle/dash fixture keeps 88 differences while alpha-error
-mass rises 1,702 → 1,737. All eighteen fresh configurations improve but remain
-inexact; no tolerance is admitted.
+holdouts and denominators remain frozen. Nine Rede Manchete PNGs improve; the
+other 231 rendered images are unchanged. All eighteen fresh configurations
+improve, three to exact. The known width-one cap probe worsens 15 → 16 differing
+pixels, alpha-error mass 18 → 42 and maximum alpha error 3 → 11. The original
+reference and strict exactness rule remain unchanged.
 
-Round stroke conics, closed/curved/dashed construction, fractional/clip events,
+Thin/fractional events, closed/curved/dashed construction, clip/composition events,
 conical/multistop coordinates, cache history, general fidelity, representative
 performance and Linux remain open. S8 measurement is complete for this cohort.
 S17 requires at least 23/27 exact documents with both stratum minima; it remains

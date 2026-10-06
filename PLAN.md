@@ -1,36 +1,35 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-06. **Current validated renderer checkpoint: retained conic fills
-and live convex curves.** Circle/ellipse fills retain native float bounds and
-rational quadratic controls through final mapping. Device-space subdivision feeds
-the existing quad clipper; convex walking advances live state and uses native
-smoothing. Polynomial convex paths keep their prior gate. Round caps/joins,
-closed/curved/dashed strokes and fractional clip events remain open.
+Updated 2026-10-06. **Current validated renderer checkpoint: native rational
+round-stroke controls and signed contacts.** Straight solid open strokes retain
+round caps, dots and joins through final float mapping. Reversed inner joins
+preserve the original native quadrant splits. Typed nonzero stroke contacts use
+signed analytic walking; ordinary fill/contact gates retain their scope.
 
-Six original research references and one fixture become exact. Eighteen
-supplemental configurations, declared after the production edit and before capture
-or comparison, improve but remain inexact. All 54 captures are healthy, cleaned
-and stable. The bank has **1,011 fixtures = 837 exact + 147 known differences + 27
-rejections**, 40 research probes and 92 legacy Default cases: **1,143 executed
-cases**. All 830 prior exact fixture PNGs and 70 exact corporate PNGs are preserved.
-Validation passes **3,606 tests**, the nine-project Release build, all 25 memory
-scenarios and delivery checks. Fourteen matched cost recipes record actual work,
-storage and local timing; Git identifies implementation without source/build hashes.
+Four original research references and three fresh reversed-join configurations
+become exact. All eighteen supplemental configurations improve; fifteen remain
+inexact. Their 54 captures are healthy, cleaned and stable. The bank has **1,033
+fixtures = 844 exact + 162 known differences + 27 rejections**, 36 research probes
+and 92 legacy Default cases: **1,161 executed cases**. All 837 prior exact fixture
+PNGs and 70 exact corporate PNGs are preserved. Validation passes **3,634 tests**,
+the nine-project Release build, all 25 memory scenarios and delivery checks.
+Sixteen matched cost recipes record actual work, storage and local timing; Git
+identifies implementation without source/build hashes.
 
 The frozen corporate cohort remains **27 documents / 258 variants**: **70 exact,
 170 known differences and eighteen rejections**. Ford, ROC HCVS, Artsy and YouTube
-remain **4/27 exact documents**, marks **3/13**, wordmarks **1/14**. Every Cartier
-variant improves: small 430 → 282, intended 1,293 → 1,084, large 2,535 → 1,918 pixels
-on every background. Two SG Rotation variants improve. Every prior disposition
-and mismatch count is preserved or improved. One mixed circle/dash fixture keeps
-88 differences while alpha-error mass rises 1,702 → 1,737; its corrected fill
-exposes remaining stroke/composition work. References and membership remain frozen.
+remain **4/27 exact documents**, marks **3/13**, wordmarks **1/14**. Every Rede
+Manchete variant improves: small 1,373 → 1,267, intended 2,508 → 1,637, large
+3,411 → 1,452 pixels on every background. Every disposition and exact image is
+preserved. The known width-one round-cap probe worsens 15 → 16 differing pixels,
+alpha-error mass 18 → 42 and maximum alpha error 3 → 11; it remains measured
+against the original reference, without tolerance or a claimed explanation.
 
-**Next: round stroke conics, closed/curved/dashed strokes, fractional/clip events
+**Next: thin/fractional stroke events, closed/curved/dashed construction, clipping
 and corporate residuals.** Preserve the numeric, mapping, material, bitmap-origin,
-AA-clip and conic repairs. Conical/multistop coordinates, notched edges, successive
-clips and cache history retain separate gates. General fidelity, representative
-performance, Linux and S17 remain open.
+AA-clip and rational-curve repairs. Conical/multistop coordinates, notched edges,
+successive clips and cache history retain separate gates. General fidelity,
+representative performance, Linux and S17 remain open.
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -68,11 +67,13 @@ nor the calibration fixtures establish a release rate.
 
 ## 1. Current validated checkpoint and its limits
 
-The implementation accompanies `SvgConicTests`, 134 original compiled-native
-subdivision points and eighteen fresh browser configurations. Six original
-circle/ellipse probes and the line/round-mark fixture become exact. The rejected
-pre-stepped model and native live-curve evidence are in
-[the design record](docs/RASTERIZATION_DESIGN.md#retained-conic-fills-and-live-convex-curves-2026-10-06).
+The implementation accompanies `SvgRoundStrokeConicTests`, sixteen compiled
+native cases with 88 control/endpoint/weight rows and eighteen fresh browser
+configurations. Four original round-stroke probes graduate with their original
+SVG/PNG/provenance. Native cap and join controls match every recorded float bit;
+this does not establish parity of the complete native stroke tape or thin-stroke
+rasterization. Scope and the retained width-one regression are in
+[the design record](docs/RASTERIZATION_DESIGN.md#native-rational-round-strokes-and-signed-contacts-2026-10-06).
 The prior DOCTYPE [portable record](tests/References/declaration-only-doctype.json)
 retains its historical measurements and implementation commit. Detailed build
 diagnostics stay under ignored artifacts. Historical snapshots below retain
@@ -81,15 +82,41 @@ their dated scopes and counts.
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Recorded Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Recorded full tests, including corporate selection/measurement | **3,606 passed**: 3,440 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Recorded full tests, including corporate selection/measurement | **3,634 passed**: 3,468 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Recorded memory and delivery checks | All 25 memory scenarios pass; runtime/symbol package inspection and isolated installed-consumer checks pass. The package retains the complete Skia/Chromium BSD notices, including the 2010 AA-dispatch, 2018 dash-interpolation and 2025 classifier notices. No runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **1,011 entries = 837 exact + 147 known-difference renders + 27 rejections**; 533 base documents / 478 variants. All 830 prior exact complete PNGs are preserved. Synthetic coverage is not corporate-logo coverage. |
-| Executed research manifest | **40 probes = 39 known-difference renders + one rejection**. Six original circle/ellipse probes graduate with unchanged SVG/PNG/provenance. Original research assets remain present. |
-| Legacy independent-file Default-options sweep | **92 files = 92 render**. Fifteen known Default PNGs change, without a matching-options fidelity claim; every outcome is preserved. The candidate directory has **100 files**; eight new holdouts belong to the corporate matrix. |
+| Executed fixture manifest | **1,033 entries = 844 exact + 162 known-difference renders + 27 rejections**; 543 base documents / 490 variants. All 837 prior exact complete PNGs are preserved. Synthetic coverage is not corporate-logo coverage. |
+| Executed research manifest | **36 probes = 35 known-difference renders + one rejection**. Four original round-stroke probes graduate with unchanged SVG/PNG/provenance. Original research assets remain present. |
+| Legacy independent-file Default-options sweep | **92 files = 92 render**. Six known Default PNGs change, without a matching-options fidelity claim; every outcome is preserved. The candidate directory has **100 files**; eight new holdouts belong to the corporate matrix. |
 | Validated Ford all-variant evidence | **All nine exact**: 250×100, 500×200 and 1000×400 × transparent/white/black. Large variants improve 10/10/7 → 0/0/0 changed pixels; transparent alpha error 16 → 0. The six prior exact PNGs retain complete identity. All original references and current candidate identities remain portable regressions. This establishes the outlined-wordmark checkpoint, not a corporate-cohort rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, independent of fresh candidate success: every one of the 19 retained brand/organization exports plus eight predeclared new holdouts. Primary strata: 13 marks / 14 wordmarks. Every original source and historical reference is preserved; materializations change only root sizing. Fifteen large cases exceeded the transport cap at freeze; all now have stable references at their original dimensions. The legacy 92-file Default bank and calibration bank are separate. |
-| Recorded corporate measurement | **258 references = 240 rendered comparisons (70 exact, 170 known differences) + eighteen UnsupportedFeature cases**. Every disposition and all 70 prior exact PNGs are preserved. Nine Cartier and two SG Rotation PNGs improve; the other 229 rendered PNGs are unchanged. Exact documents remain **4/27**, marks **3/13**, wordmarks **1/14**. S17 remains open. |
-| Outside current Windows validation | Linux/remote CI, noncorporate inventory variant regeneration, representative throughput and private-font metrics/pixels. Chrome smoke, memory, package/consumer and artifact-validator checks pass. Fourteen matched recipes report work/storage changes; local timings do not establish representative performance. |
+| Recorded corporate measurement | **258 references = 240 rendered comparisons (70 exact, 170 known differences) + eighteen UnsupportedFeature cases**. Every disposition and all 70 prior exact PNGs are preserved. Nine Rede Manchete PNGs improve; the other 231 rendered PNGs are unchanged. Exact documents remain **4/27**, marks **3/13**, wordmarks **1/14**. S17 remains open. |
+| Outside current Windows validation | Linux/remote CI, noncorporate inventory variant regeneration, representative throughput and private-font metrics/pixels. Chrome smoke, memory, package/consumer and artifact-validator checks pass. Sixteen matched recipes report work/storage changes; local timings do not establish representative performance. |
+
+### Native rational round strokes and signed contacts (2026-10-06)
+
+Native round caps/dots and joins retain weighted quadratic verbs through final
+float mapping. Inner joins build the forward native arc before reversing its
+verbs; rebuilding from the other endpoint moves the quadrant split. Typed native
+nonzero stroke crossings, self-touches and coincident contacts use signed analytic
+walking, while intersecting rings cannot select convex fill. Duplicate contour
+merging preserves surviving controls and global indices. Closed/curved/dashed
+construction keeps its earlier route and still needs independent native evidence.
+
+The prior 1,143-case bank changes fourteen PNGs: one fixture, seven research and
+six legacy Default. Four research cases become exact; the fixture improves
+17 → eight differences. The fractional join improves three → two pixels,
+while its maximum alpha error rises 15 → 20. Every outcome/input and all prior
+exact PNGs are preserved. The width-one cap regression above remains explicit. All eighteen
+fresh configurations improve, three to exact; their declarations preceded
+capture/comparison but followed the edit. Corporate exact documents remain 4/27.
+
+Twenty-eight core cases verify all 88 original native point rows, six outputs,
+placement, duplicate-dot merging, cached clipped/unclipped setup, work/memory
+denial, owner release, cancellation tokens and stroke contact interiors. Builder
+columns and returned verbs are reserved through scene transfer; retained span
+size stays 32 bytes. Sixteen matched recipes show both added work/storage and
+reductions on selected inputs, without a general performance claim. Studies stay
+under ignored `artifacts/round-stroke-conics-20261006/`.
 
 ### Retained conic fills and live convex curves (2026-10-06)
 
@@ -689,12 +716,12 @@ completed stage: the remaining exit evidence below governs completion.
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
 | 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. General coverage/alpha and layer composition need independent controls; group-opacity on white still differs. |
 | 4 | **Shared scan conversion landed; general event fidelity remains open with rows 3 and 5.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows, retained cubics, clipped construction, CPU contexts and retained-path-point density have landed across the shared paint boundary. | Preserve all nine exact Ford variants, density/admission/cache regressions, X/Y splitting, projected winding, two-pass storage, whole-path dispatch, bitmap-bounded rows and exclusive interiors. Order remaining fractional events, crossings, counters and overlaps from the frozen corporate cohort. |
-| 5 | **Retained curves and final device mapping remain partial with row 4.** Device-map threading, retained controls, live non-convex cubics, curve/walk separation, one-chord cubic admission, axis-aligned float mapping, coupled numeric reading and compatible raw-control convexity, retained conic fills and live rational convex advancement have landed. All 436 recorded authored points and the actual Ford CTM match; density integration makes all nine PNGs exact. | Preserve transform/instance and large-translation evidence and the closed row-6, (740,30), (375,269), (269,187) and lower-row witnesses. One exact wordmark does not establish general mapping/event parity. Wider affine/instance, fractional-event and quad/convex/stroke work retains separate gates. |
+| 5 | **Retained curves and final device mapping remain partial with row 4.** Device-map threading, retained controls, live non-convex cubics, curve/walk separation, one-chord cubic admission, axis-aligned float mapping, coupled numeric reading and compatible raw-control convexity, retained conic fills, live rational convex advancement and native round-stroke conics have landed. All 436 recorded authored points and the actual Ford CTM match; density integration makes all nine PNGs exact. | Preserve transform/instance and large-translation evidence and the closed row-6, (740,30), (375,269), (269,187) and lower-row witnesses. One exact wordmark does not establish general mapping/event parity. Wider affine/instance, fractional-event and quad/convex/stroke work retains separate gates. |
 | 6 | **Partial: curve-aware stroke completion.** Width/cascade, cap/join/dash, zero-width, native float line-dash endpoints, nonzero orthogonal-contact walking and native straight open-stroke winding are retained. | True curve tangents/dash cuts, curved/dashed overlap and seam handling, remaining round/miter/hairline/pathLength/non-scaling cases through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings, retained paint clips, shared float shaders and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Both selected logo checkpoints achieved; S8 measurement complete for the first frozen cohort; S17 remains open.** Ford and YouTube are each exact in all nine declared variants. All 27 documents / 258 variants, including eight fresh holdouts and eighteen rejections, have browser references and reproducible reports. | Improve the measured 4/27 exact documents to the 80% target overall and per corporate stratum, with fresh platform/package/resource/performance evidence. |
 
-### Active work order: round/closed/curved strokes and cohort residuals (2026-10-06)
+### Active work order: thin/closed/curved strokes and cohort residuals (2026-10-06)
 
 The Ford wordmark and YouTube curved-mark exits are closed: all eighteen original variants have zero differences
 and the shared regression/resource/delivery gates pass. Preserve those full-image
@@ -742,12 +769,13 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    Preserve original references and report improvements and regressions separately.
    Successive clip intersections, cache history, general
    affine, quad/convex/stroke and layer work retain their own gates.
-3. **Complete round stroke conics and closed/curved/dashed stroke construction.**
-   Preserve native float open-stroke normalization, endpoint replacement, pivot
-   inner joins and directed winding; equal turn signs alone cannot select convex
-   fill for an intersecting ring. Keep the 49 native point rows, all graduated
-   originals and fresh controls. Round joins retain a sampled-conic difference;
-   square caps crossing bitmap bounds retain the separate clip-event gate.
+3. **Complete thin/fractional events and closed/curved/dashed stroke construction.**
+   Preserve native float normalization, endpoint replacement, rational caps/joins,
+   forward inner-arc splits and signed contacts. Keep both the 49 earlier native
+   points and 88 new control/endpoint/weight rows, all graduations and fresh
+   controls. Investigate the width-one cap's measured 15 → 16 pixel regression
+   and remaining fractional round/clip events against original references.
+   Square caps crossing bitmap bounds retain their separate clip-event gate.
    Closed/curved/dashed replacement needs its own native/browser evidence after
    the broad model's closed-fixture regressions and corporate resource denials.
 

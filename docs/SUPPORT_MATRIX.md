@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the retained-conic checkpoint, the 1,011 manifest entries contain
-837 exact decoded-pixel references, 147 known-difference renders and 27
+At the native round-stroke checkpoint, the 1,033 manifest entries contain
+844 exact decoded-pixel references, 162 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -26,15 +26,17 @@ Straight solid open strokes retain native float normals, endpoint miter replacem
 and pivot inner joins through directed nonzero winding. Intersecting rings cannot
 select convex fill. Bevel joins are admitted on polylines through the same kernel
 as paths, including direct/inline/inherited styles and existing dash construction.
-Circle/ellipse fills retain four native rational verbs through final mapping.
-Device-space subdivision reuses quad clipping; convex walking advances live state
-with native smoothing. Six original research probes and one fixture become exact;
-eighteen fresh configurations improve but remain inexact. All 830 prior exact
-fixture PNGs and 70 exact corporate PNGs are preserved. Every Cartier variant and
-two SG Rotation variants improve. One mixed circle/dash alpha-error mass rises
-1,702 → 1,737 at the same 88 differing pixels. Round stroke conics,
-closed/curved/dashed construction and fractional/clip events remain open.
-Ordinary straight crossing guards remain in force.
+Circle/ellipse fills and native straight solid open-stroke round caps, dots and
+joins retain rational verbs through final float mapping. Device-space subdivision
+reuses quad clipping; convex walking advances live state with native smoothing.
+Native nonzero stroke contacts retain signed walking, including reversals and
+self-touches; intersecting rings cannot select convex fill. Four original probes
+and three fresh reversed-join configurations become exact. All 837 prior exact
+fixture PNGs and 70 exact corporate PNGs are preserved. Every Rede Manchete
+variant improves. The width-one cap probe worsens 15 → 16 differing pixels,
+alpha-error mass 18 → 42 and maximum alpha error 3 → 11 against its original
+reference. Thin/fractional events, closed/curved/dashed construction and clip/
+composition fidelity remain open. Ordinary fill/contact gates retain their scope.
 Bitmap-local edge clipping and float root mapping preserve all nine exact Artsy
 variants.
 

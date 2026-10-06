@@ -517,7 +517,7 @@ public static class SvgConverter
             try
             {
                 SvgDevicePoint[] mapped = new SvgDevicePoint[points.Length];
-                SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, out bool canvasContainsQuads, cancellationToken);
+                SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, mapping == SvgPolygonMapping.NativeStrokeEdges, out bool canvasContainsQuads, cancellationToken);
                 SvgCubicSpan[] mappedCubics = MapCubicSpanControls(cubicSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, out bool canvasContainsCubics, cancellationToken);
                 bool hasFractionalEdge = false;
                 bool nativeConics = Array.Exists(quadSpans, static span => span.ConicWeight != 1f);
@@ -1473,7 +1473,7 @@ public static class SvgConverter
         }
 
                 // Maps retained quadratic controls through the output scale without grid snapping; curve data never takes the quarter discipline.
-        static SvgQuadSpan[] MapQuadSpanControls(SvgQuadSpan[] spans, double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset, int outputWidth, int outputHeight, out bool canvasContainsControls, CancellationToken cancellationToken)
+        static SvgQuadSpan[] MapQuadSpanControls(SvgQuadSpan[] spans, double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset, int outputWidth, int outputHeight, bool nativeMapping, out bool canvasContainsControls, CancellationToken cancellationToken)
         {
             canvasContainsControls = true;
             if (spans.Length == 0) return Array.Empty<SvgQuadSpan>();
@@ -1482,7 +1482,7 @@ public static class SvgConverter
             {
                 if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 SvgDevicePoint control = spans[index].Control;
-                bool native = spans[index].ConicWeight != 1f;
+                bool native = nativeMapping || spans[index].ConicWeight != 1f;
                 SvgDevicePoint mappedControl = native
                     ? new(MapStraightPolygonEdge(control.X, horizontalScale, horizontalOffset), MapStraightPolygonEdge(control.Y, verticalScale, verticalOffset))
                     : new(MapEdge(control.X, horizontalScale, horizontalOffset), MapEdge(control.Y, verticalScale, verticalOffset));
