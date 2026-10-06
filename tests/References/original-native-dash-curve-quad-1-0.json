@@ -1,0 +1,38 @@
+{
+  "fixtureId": "original-native-dash-curve-quad-1-0",
+  "referencePng": "original-native-dash-curve-quad-1-0.png",
+  "referenceSha256": "3c3b0bc21cdca9ecde1395e23fa953a2915f7d0f06a9b91d467aa92d239e2d4a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "6ded0207acd5ff81b6dd7c1af850dac080d0efa44ef2a9f2a5edbe1a56b5ae69",
+  "candidateSha256": "c205ca5311488e58bae951f998ff21dfed929f00f5240235981027b234909b35",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true,
+  "strokeWidth": 1,
+  "dashOffset": 0,
+  "dashPattern": [
+    5,
+    3
+  ],
+  "cap": "butt"
+}

@@ -1807,3 +1807,34 @@ Local timing ranges remain variable, including unchanged recipes. These results
 do not establish representative throughput or latency. All 25 memory scenarios
 and installed package consumers pass. Dashes, shape/paint and bitmap contexts,
 broader corporate fidelity, representative profiling and Linux remain open.
+
+## Native dashed-path observations (2026-10-06)
+
+Twenty-eight matching recipes compare `990f7ce7` with retained native curve
+measurement/cutting before hairline dispatch, on Windows X64 / .NET 10.0.12.
+The baseline reproduces every previous recipe's complete PNG/work/peak record.
+Timing/allocation runs follow completed builds, tests, corpus, capture and
+package jobs, in both execution orders, with twenty batches per implementation
+and recipe. Full ledgers/batches stay under ignored
+`artifacts/native-dash-curves-20261006/`.
+
+All 24 previous PNG/work/peak records and geometry/paint value layouts are
+unchanged. Four new dash recipes add parser work and 256 peak accounted bytes.
+Temporary list/reservation owners and backing arrays are charged before
+allocation; the owner allowance fits beneath the existing outline-preparation
+peak on these inputs. Cut commands are retained for later scene placement.
+Three thin recipes sharply reduce raster work. The width-1.5 cubic still uses its
+outline fallback and pays retention cost without changing pixels.
+
+| Recipe | Parser work, before → after | Work through raster, before → after | Accounted peak bytes, before → after | Local ms, before / after | Allocated bytes, before / after |
+| --- | --- | --- | --- | --- | --- |
+| dash-quad | 135 → 438 | 15,773 → 660 | 173,596 → 173,852 | 0.644–1.175 / 0.365–0.543 | 72,482–72,485 / 65,754–65,757 |
+| dash-cubic | 333 → 816 | 94,820 → 1,687 | 205,220 → 205,476 | 0.834–1.639 / 0.527–0.653 | 134,695–134,858 / 108,773–108,775 |
+| dash-arc | 166 → 722 | 24,775 → 1,993 | 192,396 → 192,652 | 0.447–0.601 / 0.399–0.647 | 81,586–81,749 / 73,933–74,093 |
+| dash-wider | 333 → 816 | 98,042 → 98,526 | 205,220 → 205,476 | 0.787–1.018 / 1.310–2.625 | 139,983–140,063 / 151,207–151,369 |
+
+Local timing ranges vary, including unchanged recipes. These measurements do
+not establish representative throughput or latency. All 25 memory scenarios
+and installed package consumers pass. Wider stroke construction, other hairline
+shape/paint and bitmap contexts, transformed/pathLength browser coverage,
+corporate fidelity, representative profiling and Linux remain open.

@@ -4,9 +4,9 @@ using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Rendering;
 
-/// <summary>Dispatches retained solid centerlines to native thin-stroke curve and line coverage.</summary>
+/// <summary>Dispatches retained centerlines to native thin-stroke curve and line coverage.</summary>
 /// <remarks>Allocates no storage and borrows immutable commands and the caller's surface. Every command,
-/// closure lookahead and coverage operation is charged and cancellable. Wider and dashed strokes
+/// closure lookahead and coverage operation is charged and cancellable. Wider strokes
 /// keep their admitted outline route. Numerical curve scratch is bounded stack storage.</remarks>
 internal static class SvgHairlineStroke
 {
@@ -52,8 +52,9 @@ internal static class SvgHairlineStroke
                     break;
                 case SvgAuthoredPathVerb.Line:
                 case SvgAuthoredPathVerb.Quadratic:
+                case SvgAuthoredPathVerb.Conic:
                 case SvgAuthoredPathVerb.Cubic:
-                    int pointCount = command.Verb == SvgAuthoredPathVerb.Line ? 2 : command.Verb == SvgAuthoredPathVerb.Quadratic ? 3 : 4;
+                    int pointCount = command.Verb == SvgAuthoredPathVerb.Line ? 2 : command.Verb == SvgAuthoredPathVerb.Cubic ? 4 : 3;
                     points[0] = MapPoint(map, current);
                     points[1] = MapPoint(map, command.First);
                     if (pointCount >= 3) points[2] = MapPoint(map, command.Second);
@@ -61,6 +62,7 @@ internal static class SvgHairlineStroke
                     current = pointCount == 2 ? command.First : pointCount == 3 ? command.Second : command.Third;
                     Extend(points[..pointCount], closed, style.Cap, firstSegment, finalSegment, workCounter, cancellationToken);
                     if (pointCount == 2) raster.DrawLine(points[0], points[1]);
+                    else if (command.Verb == SvgAuthoredPathVerb.Conic) SvgHairlineCurves.DrawConic(ref raster, points[..3], (float)command.Third.X, workCounter, cancellationToken);
                     else if (pointCount == 3) SvgHairlineCurves.DrawQuadratic(ref raster, points[..3], workCounter, cancellationToken);
                     else SvgHairlineCurves.DrawCubic(ref raster, points, workCounter, cancellationToken);
                     if (firstSegment) first = points[0];

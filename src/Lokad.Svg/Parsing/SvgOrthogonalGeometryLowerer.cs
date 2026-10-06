@@ -1277,12 +1277,24 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgContourBuilder builder = hasCurves ? SvgContourBuilder.CreateGrowing(pointCapacity, contourCapacity) : new(pointCapacity, contourCapacity);
         using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
-        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds, hasFill && dashes is null ? authored : null);
+        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds, hasFill ? authored : null);
         SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget);
         if (authored.Count != 0 && stroked.Geometries.Length == 1)
         {
-            OwnedParserArray<SvgAuthoredPathCommand> commands = authored.Detach();
-            try { stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, deviceMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap), budget) }; }
+            OwnedParserArray<SvgAuthoredPathCommand> commands = new([], null);
+            try
+            {
+                SvgAffineTransform retainedMap = deviceMap;
+                if (dashes is null) commands = authored.Detach();
+                else
+                {
+                    double magnification = Math.Max(Math.Sqrt(deviceMap.A * deviceMap.A + deviceMap.B * deviceMap.B), Math.Sqrt(deviceMap.C * deviceMap.C + deviceMap.D * deviceMap.D));
+                    commands = SvgNativeDashPath.Filter(authored.AsSpan(), dashes, dashOffset, pathLength,
+                        nonScaling ? deviceMap : SvgAffineTransform.Identity, (float)(element.OutputMagnification * (nonScaling ? 1 : magnification)), budget, _workCounter, _cancellationToken);
+                    if (nonScaling) retainedMap = SvgAffineTransform.Identity;
+                }
+                stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap), budget) };
+            }
             catch { commands.Dispose(); stroked.Discard(); throw; }
         }
         return stroked with { ElementCount = commandCount + 1 };

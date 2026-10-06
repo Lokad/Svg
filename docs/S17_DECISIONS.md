@@ -1,38 +1,39 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Native path hairline curves add twelve exact thin-curve
+Updated 2026-10-06. Native dashed-path hairlines add twelve exact thin-dash
 controls. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
 Exact documents remain Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA,
 IKEA and Google: **9/27**, marks **3/13**, wordmarks **6/14**. S17 requires
 at least **23/27**, including 11/13 marks and 12/14 wordmarks. Membership,
 holdouts, options, original inputs and browser references remain frozen.
 
-Current evidence: **1,077 fixtures = 889 exact + 158 known + 30 rejected**,
-581 base documents / 496 variants; **36 research probes = seven exact +
-28 known + one rejected**; and 92 legacy Default renders: **1,205 cases**.
-Every prior fixture/research PNG and disposition is preserved. Five legacy
-Default PNGs change without matching-options fidelity claims. Twelve thin curves
-match their original native captures; six wider controls remain known differences.
-All 54 new fresh-process captures are stable and healthy.
+Current evidence: **1,095 fixtures = 901 exact + 164 known + 30 rejected**,
+599 base documents / 496 variants; **36 research probes = seven exact +
+28 known + one rejected**; and 92 legacy Default renders: **1,223 cases**.
+Every previous PNG and disposition is preserved. Twelve new thin dashes match
+their original native captures; six wider controls remain known differences.
+All 54 fresh-process captures are stable and healthy.
 
-Windows locked restore, nine-project Release build and **3,707 tests**
-(3,541 core + 160 visual + six FontProbe) pass. The 648 compiled-native
-curve/cap vectors run under three materials, alongside the existing line and
-conic vectors. All 25 memory scenarios, package/installed-consumer, Chrome smoke
-and artifact validation pass. Twenty-four matched recipes retain parser work,
-value layouts and accounted memory peaks. Local timings remain exploratory.
+Windows locked restore, nine-project Release build and **3,726 tests**
+(3,560 core + 160 visual + six FontProbe) pass. Compiled-native vectors cover
+480 curve measurement/lookup cases and 2,880 cuts, alongside existing curve/cap,
+line and conic controls. The adapters validate bounded numerical functions, not
+a complete native dash/stroke/paint backend. All 25 memory scenarios,
+package/installed-consumer, Chrome smoke and artifact validation pass.
+Twenty-eight matching recipes include added dash parser work/storage; all 24
+previous complete PNG/work/peak records are preserved. Local timings remain
+exploratory.
 
 All 258 corporate outputs/dispositions are unchanged: **240 rendered comparisons
 (134 exact, 106 known)** and eighteen UnsupportedFeature outcomes. Eisenbahn
 small remains one/zero/one pixels from exact across backgrounds; Rede Manchete
 small/intended remain 519/638 pixels from their original references.
 
-Hairline dashes, other shape/paint routes and bitmap contexts, wider closed/curved/
-dashed stroke construction, clip/composition, conical/multistop coordinates,
-cache history, general fidelity, representative performance and Linux remain
-open. Native curve vectors do not execute a complete native paint/AA-mask backend.
-S8 measurement is complete for this cohort; S17 remains unmet. Detailed studies
-stay under ignored artifacts.
+Transformed/pathLength dash browser coverage, other shape/paint routes and bitmap
+contexts, wider closed/curved/dashed stroke construction, clip/composition,
+conical/multistop coordinates, cache history, general fidelity, representative
+performance and Linux remain open. S8 measurement is complete for this cohort;
+S17 remains unmet. Detailed studies stay under ignored artifacts.
 
 ## Q1 - numeric exact-document target: selected
 

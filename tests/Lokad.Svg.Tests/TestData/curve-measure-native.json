@@ -1,0 +1,13 @@
+{
+  "nativePin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sourceFiles": [
+    "src/core/SkContourMeasure.cpp",
+    "src/core/SkGeometry.cpp",
+    "src/core/SkPoint.cpp"
+  ],
+  "compiler": "g++ -std=c++20 -O2 -ffp-contract=off -DNDEBUG -DSK_RELEASE",
+  "contract": "Unchanged contour recursive measurement, distance-to-parameter search and segTo functions, with original pinned geometry/point helpers. Minimal array and path-verb record adapters expose float distances, integer parameter knots, lookup parameters and cut verbs. These bounded primitives do not execute full native path iteration, dash filtering, stroking or painting.",
+  "cases": 480,
+  "cuts": 2880,
+  "dataSha256": "1fa1ac44fdf3451f722c8a5d93662ae33d82a8022757b1a7a4ef849681e07c9f"
+}

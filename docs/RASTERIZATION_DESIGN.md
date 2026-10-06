@@ -5792,3 +5792,51 @@ Detailed comparisons, captures, native probes and measurements stay under ignore
 `artifacts/hairline-curves-20261006/`; no source/build/diagnostic hashes are recorded.
 Dash, shape/paint, bitmap context, broader corporate fidelity, representative
 performance and Linux gates remain open.
+
+## Native dashed-path hairlines (2026-10-06)
+
+Flattening curves before dash cutting changes cumulative distances and cap
+tangents. `SvgCurveMeasure` now preserves native float distance accumulation,
+integer parameter knots, depth-eight subdivision and original polynomial/conic
+cuts. `SvgNativeDashPath` filters immutable retained centerlines before hairline
+painting, including zero ON dots and joining the final/initial ON runs of a
+closed contour through its original seam. Cut conics keep their rational weight.
+Native source is identified by revision and file paths; no code/build hashes
+are retained.
+
+The compiled original SkContourMeasure/SkGeometry functions validate 480 cases
+and 2,880 cuts bit-for-bit through minimal array/verb record adapters. They cover
+reversal, fractional coordinates, varying resolution, coincident controls,
+float-distance stagnation and the 256-knot bound. These adapters do not execute
+the complete native path iterator, dash filter, stroker or paint backend. A zero
+weight initially disagreed with the native conic constructor's normalization;
+the managed contract now applies its weight-one fallback.
+
+Eighteen configurations preceded production edits and browser capture: open
+quadratic/butt and cubic/round paths, and a closed rotated endpoint-arc/square
+path; widths 0.5/1/1.5, pattern 5/3 and offsets 0/0.75. All 54 fresh captures
+are stable/healthy. All twelve thin controls are exact; six wider controls are
+unchanged known differences. The 1,223-case bank preserves every previous PNG
+and disposition, including all 889 earlier exact fixtures and every 258-variant
+corporate outcome. The corporate result remains 9/27, marks 3/13, wordmarks 6/14.
+
+Nineteen new tests cover native bits, buffer bounds, before/during work denial,
+token identity, memory denial and owner release, closed seams, zero ON intervals,
+negative phase, multi-contour pathLength, six outputs and immutable retained
+commands through raster denial/retry. Tiny-curve during-operation cancellation
+is not claimed; every phase checks the token. List owners and simultaneous
+reservation objects are covered before allocation, along with charged backing
+arrays. Temporary owners are released before returning the adopted command array.
+
+All 3,726 tests, locked restore/nine-project Release build, 25 memory scenarios,
+browser/artifact validation and installed package consumers pass. Twenty-eight
+matched recipes preserve all 24 previous PNG/work/peak records and value layouts.
+Dashes add parser work and retention; thin recipes sharply reduce raster work.
+The wider fallback pays retention cost without changing pixels. See
+[the cost observations](BENCHMARKS.md#native-dashed-path-observations-2026-10-06).
+Full runs stay under ignored `artifacts/native-dash-curves-20261006/`.
+
+Other shape/paint and bitmap-context hairlines, transformed/pathLength browser
+coverage and native wider closed/curved/dashed construction remain open, along
+with original corporate residuals, representative performance and Linux. The
+existing outline route still owns admission and wider-stroke fallback.

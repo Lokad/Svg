@@ -1,0 +1,38 @@
+{
+  "fixtureId": "original-native-dash-curve-arc-1p5-0p75",
+  "referencePng": "original-native-dash-curve-arc-1p5-0p75.png",
+  "referenceSha256": "2cda7c8e1a03dcb96dc66f2885245b7aec4d2aa3b602cc8f32ef664a7e203e6b",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "69bfc36c31bb941fc0f14fe4cf97a55ca3b3172e99507278e27b6b2a67928cb9",
+  "candidateSha256": "a314eb5baeef4c47a3fc0f9cbcab9c156e69ed4f5f195753d9ad726ab8128ab4",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 251,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 144,
+    "exact": false,
+    "alphaErrorMass": 6896
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true,
+  "strokeWidth": 1.5,
+  "dashOffset": 0.75,
+  "dashPattern": [
+    5,
+    3
+  ],
+  "cap": "square"
+}

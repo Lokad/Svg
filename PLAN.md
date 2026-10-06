@@ -1,39 +1,40 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-06. **Current validated renderer checkpoint: native path
-hairline curves.** Eligible solid undashed path strokes replay retained lines,
-quadratics, cubics and SVG endpoint-arc conics through native ordered hairline
-coverage. Curvature chopping, polynomial subdivision and coincident-control cap
-extension use mapped float points. Wider and dashed strokes keep their admitted
-outline route.
+Updated 2026-10-06. **Current validated renderer checkpoint: native dashed
+path hairlines.** Eligible solid path strokes retain original float curves;
+dashes measure and cut them before native ordered hairline coverage. Quadratics,
+cubics and endpoint-arc conics preserve their cut controls and weights. Closed
+contours join the final and initial ON runs through the original seam. Wider
+strokes keep their admitted outline route.
 
 The frozen corporate cohort remains **9/27 exact documents**, marks **3/13**,
 wordmarks **6/14**: **134 exact comparisons, 106 known differences and eighteen
-rejections** across 258 variants. Every corporate output is byte-identical to
-the preceding straight-path checkpoint. S17 requires **23/27** with both
-stratum minima; original inputs, options and references remain frozen.
+rejections** across 258 variants. Every corporate output/disposition is unchanged
+from the preceding curve checkpoint. S17 requires **23/27** with both stratum
+minima; original inputs, options and references remain frozen.
 
-Eighteen untuned curve configurations were declared before production edits and
-capture. All **twelve thin controls are exact**; six wider controls retain their
-known differences. The bank now executes **1,205 cases**: **1,077 fixtures =
-889 exact + 158 known + 30 rejected**, **36 research probes = seven exact +
-28 known + one rejected**, and 92 legacy Default renders. All prior fixture and
-research PNGs/dispositions are preserved. Five legacy Default PNGs change
-without a matching-options fidelity claim.
+Eighteen untuned dash configurations were declared before production edits and
+capture. All **twelve thin controls are exact**; six wider controls keep their
+known differences. The bank executes **1,223 cases**: **1,095 fixtures =
+901 exact + 164 known + 30 rejected**, **36 research probes = seven exact +
+28 known + one rejected**, and 92 legacy Default renders. Every prior output
+and disposition is preserved, including all 889 exact fixture PNGs.
 
-Validation passes **3,707 tests**, 648 compiled-native curve/cap vectors across
-three materials, locked restore/nine-project Release build, all 25 memory
+Validation passes **3,726 tests**, 480 compiled-native measurement/lookup cases
+and 2,880 cut intervals, locked restore/nine-project Release build, all 25 memory
 scenarios, pinned browser/artifact checks and installed package consumers.
-Numerical scratch is bounded stack storage; every phase charges work and checks
-cancellation. Twenty-four matched recipes retain parser work and accounted
-memory peaks; local timings remain exploratory. Detailed runs stay under ignored
-artifacts; ordinary source edits and rebuilds require no hash refresh.
+Temporary and retained owners are reserved before allocation; numerical scratch
+is bounded stack storage. Twenty-eight matched recipes include extra parser work
+and storage for dashes, with sharply reduced raster work for thin curves.
+Twenty-four previous recipes preserve their complete PNG/work/peak records.
+Detailed studies stay ignored; source edits and rebuilds require no hash refresh.
 
-**Next: native dash construction, remaining hairline shape/paint routes and
-bitmap contexts; then remaining original corporate edge, stroke and clip
-residuals.** Preserve all previous exact controls and the twelve new exact curve
-controls. General fidelity, representative performance and Linux remain open.
-The previous live-convex-cubic and incoming-edge repairs remain in place.
+**Next: remaining hairline shape/paint routes and bitmap contexts, and native
+wider closed/curved/dashed stroke construction; then remaining original corporate
+edge and clip residuals.** Preserve all earlier exact controls and the twelve new
+exact dash controls. Transformed/pathLength dash browser coverage, general
+fidelity, representative performance and Linux remain open. The previous
+live-convex-cubic and incoming-edge repairs remain in place.
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -71,6 +72,15 @@ nor the calibration fixtures establish a release rate.
 
 ## 1. Current validated checkpoint and its limits
 
+Native dash construction uses float cumulative distances, integer parameter
+knots and bounded recursive curve measurement. It cuts original verbs rather
+than flattened chords, including rational conics, zero-length ON dots and closed
+seam continuation. Filtered centerlines remain immutable; wider outlines still
+own admission and fallback. The source pin identifies native code; numeric
+goldens validate the unchanged compiled measurement/cut functions through small
+record adapters, not full native dash iteration, stroking or painting.
+See [the dash checkpoint](docs/RASTERIZATION_DESIGN.md#native-dashed-path-hairlines-2026-10-06).
+
 Hairline dispatch follows the pinned mapped-width predicate and paint-alpha
 modulation. Quadratics choose bounded subdivision levels; cubics use native
 niceness and maximum-curvature chopping before polynomial line evaluation.
@@ -82,7 +92,7 @@ stroke fallback; retained centerlines cannot be replayed as fills after repainti
 
 The native vectors validate ordered curve/cap line coverage through the existing
 line painter. They do not execute a complete native material/AA-mask backend.
-General clip, dash, shape/paint and bitmap-context fidelity remain open. See
+General clip, transformed/pathLength dash, shape/paint and bitmap-context fidelity remain open. See
 [the design record](docs/RASTERIZATION_DESIGN.md#native-path-hairline-curves-2026-10-06).
 
 The DOCTYPE [regression inputs](tests/References/declaration-only-doctype.json)
@@ -92,14 +102,14 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,707 passed**: 3,541 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **3,726 passed**: 3,560 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | All 25 memory scenarios, runtime/symbol package inspection, isolated installed-consumer, Chrome smoke and artifact validation pass. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **1,077 entries = 889 exact + 158 known-difference renders + 30 rejections**; 581 base documents / 496 variants. Twelve new thin curves are exact; six wider controls retain their measured differences. All 877 prior exact fixture PNGs and every prior fixture output/disposition are preserved. |
+| Executed fixture manifest | **1,095 entries = 901 exact + 164 known-difference renders + 30 rejections**; 599 base documents / 496 variants. Twelve new thin dashes are exact; six wider controls retain their differences. All 889 prior exact fixture PNGs and every prior output/disposition are preserved. |
 | Executed research manifest | **36 probes = seven exact + 28 known-difference renders + one rejection**. Every previous PNG and disposition is preserved. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. Five Default PNGs change without a matching-options fidelity claim. The candidate directory has 100 files; eight holdouts belong to the corporate matrix. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. Every prior Default PNG is unchanged. The candidate directory has 100 files; eight holdouts belong to the corporate matrix. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **240 rendered comparisons = 134 exact + 106 known**, plus eighteen UnsupportedFeature cases. Every output/disposition is byte-identical to the prior checkpoint. Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google remain exact: **9/27**, marks **3/13**, wordmarks **6/14**. S17 remains open. |
-| Performance and platform limits | Twenty-four matching recipes retain parser work, value layouts and accounted memory peaks. Three curve recipes reduce raster work sharply; the cap probe adds two units. Local timing/allocation observations do not establish representative throughput. Linux/remote CI and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | Twenty-eight matching recipes preserve value layouts and all 24 previous complete PNG/work/peak records. Three thin dash recipes reduce raster work; dashes add parser work/storage, including the unchanged wider fallback. Local timing/allocation observations do not establish representative throughput. Linux/remote CI and private-font metrics/pixels remain unproved. |
 
 ### Native float root mapping for retained curves (2026-10-06)
 
@@ -812,8 +822,9 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    coordinate parity remains open. Keep paint boxes, clips and reference admission
    separate from raster replay; the early scene-premapping model remains rejected.
 4. **Complete thin/fractional events and closed/curved/dashed stroke construction.**
-   Extend the pinned native hairline dispatch beyond retained solid paths to
-   dashes, other shapes/paints and bitmap contexts. Lines, quadratics, cubics and
+   Extend pinned native hairline dispatch beyond retained solid/dashed paths to
+   other shapes/paints and bitmap contexts. Native dash measurement/cuts now add
+   twelve exact thin controls; six wider controls remain known differences. Lines, quadratics, cubics and
    endpoint-arc conics now use ordered native hairline coverage. All six earlier
    line controls and twelve new thin curves are exact; six wider curves remain
    known differences. The eighteen new configurations have 54 stable/healthy

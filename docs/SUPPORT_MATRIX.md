@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the path-hairline-curve checkpoint, the 1,077 manifest entries contain
-889 exact decoded-pixel references, 158 known-difference renders and 30
+At the native dashed-path checkpoint, the 1,095 manifest entries contain
+901 exact decoded-pixel references, 164 known-difference renders and 30
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -31,16 +31,20 @@ float rational conics. Convex cubics retain live edges and newly arriving edges
 retain intersection checks under dense walking. Of 45 changed corporate PNGs,
 42 improve mismatch count and three retain it. Six known synthetic cases worsen
 in mismatch count and remain measured.
-Wider/dashed stroke arcs retain their existing outline flattening. Eligible solid
-hairlines retain native endpoint conics. General event and coordinate fidelity remain open.
+Wider stroke arcs retain their existing outline flattening. Eligible solid path
+hairlines, including dashes, retain native endpoint conics. General event and coordinate fidelity remain open.
 
-Solid undashed path strokes retain authored centerlines, closure and width maps.
+Solid path strokes retain centerlines, closure and width maps. Dashed paths use
+bounded native curve measurement and cuts, with retained conic weights, zero ON
+cap dots and closed-seam continuation. Twelve new thin dash controls are exact;
+six wider controls keep their known differences. Transformed/pathLength dash
+browser coverage remains open.
 Paths up to one device pixel replay lines, quadratics, cubics and endpoint-arc
 conics through native fixed-point hairline coverage, ordered paints and
 butt/square/round cap extension. Twelve new thin curves match their stable native
 references; six wider controls retain their known differences. Every previous
 fixture/research image and all 258 corporate outcomes/PNGs are preserved.
-Wider/dashed strokes and other shape/paint routes retain their existing behavior
+Wider strokes and other shape/paint routes retain their existing behavior
 while their remaining native construction and hairline routing are completed.
 
 Straight solid open strokes retain native float normals, endpoint miter replacement

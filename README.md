@@ -44,11 +44,12 @@ rounding. Convex cubics retain live edges, and incoming intersections constrain
 dense-path strips. Every prior exact image is preserved; six known controls
 worsen slightly. Broader event fidelity remains open; see
 [the design record](docs/RASTERIZATION_DESIGN.md#convex-cubic-and-incoming-edge-rows-2026-10-06).
-Solid undashed path strokes up to one device pixel use native hairline coverage
-for lines, quadratics, cubics and endpoint arcs. All six earlier line controls,
-both historical hairline/cap probes and twelve new thin curve configurations are
-exact. Every prior exact image is preserved. Dash, other shape/paint and
-bitmap-context hairline work remains open.
+Solid path strokes up to one device pixel use native hairline coverage for lines,
+quadratics, cubics and endpoint arcs. Dashes measure and cut retained float curves
+before stroking, preserving conic weights and closed seams. Twelve new thin dash
+configurations are exact; all earlier exact images are preserved. Wider stroke
+construction, transformed/pathLength dash coverage, other shape/paint routes and
+bitmap-context hairline work remain open.
 Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
 remaining variants. Native straight open-stroke construction and winding make
 six original miter/bevel probes and three viewBox configurations exact, and

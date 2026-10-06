@@ -39,6 +39,10 @@ synthetic controls do not change the 9/27 corporate-document numerator. Five
 legacy Default outputs (`inv-013`, `inv-014`, `inv-057`, `inv-064`, `inv-065`)
 change without matching-options references. Detailed comparisons stay under
 ignored `artifacts/hairline-curves-20261006/`.
+The subsequent native dashed-path checkpoint preserves every previous output
+and all 258 corporate variants. Twelve thin dashed-curve controls become exact;
+six wider controls remain inexact. These controls leave the corporate numerator
+at 9/27. Detailed runs stay under ignored `artifacts/native-dash-curves-20261006/`.
 The dated checkpoint paragraphs below retain their historical results.
 There are no missing references or capture gaps. S17 still requires at least 80% exact documents overall and in each corporate
 stratum. YouTube is the selected curved mark; the first cohort is frozen below

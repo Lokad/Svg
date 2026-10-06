@@ -2,7 +2,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgAuthoredPathVerb { Move, Line, Quadratic, Cubic, Arc, End, Close }
+internal enum SvgAuthoredPathVerb { Move, Line, Quadratic, Cubic, Arc, Conic, End, Close }
 
 /// <summary>Retains stroke width, its independent scene map and admitted cap semantics beside the centerline.</summary>
 internal readonly record struct SvgAuthoredStrokeStyle(double Width, SvgAffineTransform WidthMap, SvgStrokeCap Cap);
@@ -11,6 +11,7 @@ internal readonly record struct SvgAuthoredStrokeStyle(double Width, SvgAffineTr
 internal enum SvgAuthoredArcFlags : byte { None = 0, Large = 1, Sweep = 2 }
 
 /// <summary>Retains validated authored float operands, before any scene or output map.</summary>
+/// <remarks>For a filtered conic, First is its control, Second its endpoint and Third.X its weight.</remarks>
 internal readonly record struct SvgAuthoredPathCommand(SvgAuthoredPathVerb Verb, SvgAuthoredArcFlags ArcFlags, SvgDevicePoint First, SvgDevicePoint Second, SvgDevicePoint Third);
 
 /// <summary>Owns immutable authored commands and their scene map until one geometry releases them.</summary>
@@ -82,6 +83,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                 case SvgAuthoredPathVerb.Move: builder.BeginContour(command.First); current = command.First; break;
                 case SvgAuthoredPathVerb.Line: builder.AddLine(command.First); current = command.First; break;
                 case SvgAuthoredPathVerb.Quadratic: builder.AddQuadratic(command.First, command.Second, policy, cancellationToken); current = command.Second; break;
+                case SvgAuthoredPathVerb.Conic: builder.AddConic(command.First, command.Second, (float)command.Third.X, 8, cancellationToken); current = command.Second; break;
                 case SvgAuthoredPathVerb.Cubic: builder.AddCubic(command.First, command.Second, command.Third, policy, cancellationToken); current = command.Third; break;
                 case SvgAuthoredPathVerb.Arc: AppendEndpointArc(builder, current, command, workCounter, cancellationToken); current = command.Third; break;
                 case SvgAuthoredPathVerb.End:
