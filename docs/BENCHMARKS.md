@@ -1522,3 +1522,54 @@ variation. These local results do not establish representative throughput or
 a general performance improvement. Allocation includes PNG encoding and runtime
 effects. Thin-stroke regression, wider construction/clip fidelity, profiling and
 Linux retain separate obligations.
+
+## Retained-curve root-mapping observations (2026-10-06)
+
+Nine accepted, identical input/options recipes compare the saved `563c1b17`
+assembly with native float root mapping for retained curves. Recipes preceded
+measurement; the initial rejected anisotropic quadratic recipe was excluded
+before any measurement and has no raster-ledger or throughput claim. Ledgers
+are separate from local timing: eight warmups, three batches, baseline/current
+and current/baseline process orders after capture/testing completed. Studies stay
+under ignored `artifacts/corporate-curve-events-20261006/`; Git identifies code.
+Geometry/rectangle/stop/analytic-paint/quad-span sizes remain 248/112/16/24/32 bytes.
+
+| Recipe | Parser work | Work through raster | Accounted peak bytes |
+| --- | --- | --- | --- |
+| tiny | 17 → 17 | 22 → 22 | 163,840 → 163,840 |
+| cap-unit | 74 → 74 | 527 → 527 | 163,840 → 163,840 |
+| cubic-meet | 91 → 91 | 2,696 → 2,696 | 237,156 → 237,156 |
+| cubic-slice | 97 → 97 | 7,230 → 7,230 | 216,536 → 216,536 |
+| nasa-small | 861 → 861 | 137,455 → 136,331 | 929,568 → 929,568 |
+| nasa-large | 1,008 → 1,008 | 1,472,760 → 1,472,846 | 1,207,545 → 1,207,545 |
+| nike | 297 → 297 | 1,229,354 → 1,229,354 | 1,454,293 → 1,454,293 |
+| blur | 2,264 → 2,264 | 1,538,551 → 1,537,385 | 1,414,527 → 1,414,523 |
+| ford | 4,657 → 4,657 | 1,301,233 → 1,301,233 | 534,546 → 534,546 |
+
+Parser work is unchanged. NASA small reduces raster work by 1,124 units; NASA
+large adds 86. Blur reduces work by 1,166 units and the observed peak by four
+bytes. Other ledgers are unchanged. The mapping adds no buffer or owner; changed
+edge events and PNG byte counts can still affect conversion allocation. NASA
+small is 254×71, NASA large 1016×284, Nike 1000×357, Blur 800×429 and Ford 500×200,
+with transparent backgrounds. Tiny, unit-cap and new cubic controls use Default.
+The two cubic timing inputs retain their pre-admission CRLF recipe files; banked
+SVG copies use canonical LF and have fresh identical reference triples.
+
+| Recipe | Baseline ms | Current ms | Baseline allocated bytes | Current allocated bytes |
+| --- | --- | --- | --- | --- |
+| tiny | 0.083–0.143 | 0.082–0.153 | 24,696–24,698 | 24,696–24,698 |
+| cap-unit | 0.147–0.187 | 0.150–0.177 | 35,322–35,322 | 35,322–35,322 |
+| cubic-meet | 0.396–0.431 | 0.379–0.479 | 37,560–37,562 | 37,560–37,562 |
+| cubic-slice | 0.591–1.300 | 0.716–1.009 | 42,058–42,058 | 42,058–42,058 |
+| nasa-small | 4.939–9.444 | 8.089–9.357 | 214,320–214,470 | 214,440–214,595 |
+| nasa-large | 25.655–47.362 | 20.144–46.331 | 1,401,908–1,402,145 | 1,401,908–1,401,977 |
+| nike | 12.394–14.795 | 12.571–16.606 | 1,584,740–1,586,481 | 1,585,283–1,586,928 |
+| blur | 18.573–24.877 | 17.787–22.020 | 1,720,886–1,721,944 | 1,720,894–1,721,470 |
+| ford | 14.955–17.133 | 15.173–19.679 | 855,280–855,417 | 855,280–855,401 |
+
+Every timing range overlaps, including the unchanged tiny/Default controls.
+NASA small shows no proportional timing saving from its reduced charged work;
+JIT/GC variation and PNG encoding remain part of these observations. No general
+throughput or representative-performance improvement follows. The width-one cap
+keeps its prior inexact output. Non-uniform curves, wider root/source operands,
+stroke/clip fidelity, profiling and Linux retain separate obligations.

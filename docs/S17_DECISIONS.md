@@ -1,35 +1,37 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Native straight solid open strokes retain rational round
-caps, dots and joins through final mapping and signed contacts. Four original
-probes and three fresh configurations become exact. Every Rede Manchete variant
-improves but remains inexact. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and
-S17 remain open.
+Updated 2026-10-06. Native float root mapping for retained curves makes all nine
+NASA variants exact. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain
+open. The exact documents are Ford, ROC HCVS, Artsy, YouTube and NASA: **5/27**,
+marks **3/13**, wordmarks **2/14**. S17 requires at least **23/27**, including at
+least 11/13 marks and 12/14 wordmarks. Membership, holdouts, options, inputs and
+original references remain frozen.
 
-Current evidence: **1,033 fixtures = 844 exact + 162 known differences + 27
-rejections**, across 543 base documents / 490 variants. Research has 35 known
-renders + one rejection. Windows locked restore, nine-project Release build and
-3,468 core + 160 visual + six FontProbe tests (**3,634 total**) pass. All 25 memory
-scenarios, package/installed-consumer, Chrome smoke and artifact-validator checks
-pass. The expanded bank has 1,161 cases. Every prior disposition, all 837 prior
-exact fixture PNGs and 70 exact corporate PNGs are preserved. Sixteen matched
-recipes record work/storage and local timings; representative performance remains
-open. Studies stay under ignored `artifacts/round-stroke-conics-20261006/`.
+Current evidence: **1,042 fixtures = 847 exact + 165 known differences + 30
+rejections**, across 546 base documents / 496 variants. Research has 35 known
+renders + one rejection; legacy Default has 92 renders. The bank has **1,170
+cases**. Every prior fixture/research output, all 844 exact fixture PNGs and 70
+exact corporate PNGs are unchanged. Windows locked restore, nine-project Release
+build and **3,637 tests** (3,471 core + 160 visual + six FontProbe) pass. All 25
+memory scenarios, package/installed-consumer, Chrome smoke and artifact validation
+pass. Nine matched recipes record work/storage and overlapping local timings.
 
-The corporate matrix remains **240 rendered comparisons (70 exact, 170 known)**
-and eighteen UnsupportedFeature outcomes. Ford, ROC HCVS, Artsy and YouTube remain
-**4/27 exact documents**, marks **3/13**, wordmarks **1/14**. Inputs, references,
-holdouts and denominators remain frozen. Nine Rede Manchete PNGs improve; the
-other 231 rendered images are unchanged. All eighteen fresh configurations
-improve, three to exact. The known width-one cap probe worsens 15 → 16 differing
-pixels, alpha-error mass 18 → 42 and maximum alpha error 3 → 11. The original
-reference and strict exactness rule remain unchanged.
+The corporate matrix has **240 rendered comparisons (73 exact, 167 known)** and
+eighteen UnsupportedFeature outcomes. Thirty-five PNGs change: seventeen improve
+in mismatch count, twelve worsen and six keep their count. Large SDL, SG Rotation,
+Party of Changes and Pepsi regressions remain measured. Nine fresh configurations
+add three exact, three known and three rejected cases; their 27 captures are
+stable and healthy, and their outcomes are unchanged by the repair. Controls
+were declared after the edit and before capture/comparison.
 
-Thin/fractional events, closed/curved/dashed construction, clip/composition events,
+The earlier width-one cap regression remains sixteen differing pixels,
+alpha-error mass 42 and maximum alpha error eleven. Source/root operands still
+differ from recorded NASA browser coordinates despite exact output pixels.
+Thin/fractional events, closed/curved/dashed construction, clip/composition,
 conical/multistop coordinates, cache history, general fidelity, representative
-performance and Linux remain open. S8 measurement is complete for this cohort.
-S17 requires at least 23/27 exact documents with both stratum minima; it remains
-unmet.
+performance and Linux remain open. S8 measurement is complete for this cohort;
+S17 remains unmet. Studies stay under ignored
+`artifacts/corporate-curve-events-20261006/`.
 
 ## Q1 - numeric exact-document target: selected
 

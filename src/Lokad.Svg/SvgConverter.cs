@@ -517,7 +517,7 @@ public static class SvgConverter
             try
             {
                 SvgDevicePoint[] mapped = new SvgDevicePoint[points.Length];
-                SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, mapping == SvgPolygonMapping.NativeStrokeEdges, out bool canvasContainsQuads, cancellationToken);
+                SvgQuadSpan[] mappedSpans = MapQuadSpanControls(quadSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, mapping is SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.FlattenedCurves, out bool canvasContainsQuads, cancellationToken);
                 SvgCubicSpan[] mappedCubics = MapCubicSpanControls(cubicSpans, horizontalScale, horizontalOffset, verticalScale, verticalOffset, outputWidth, outputHeight, out bool canvasContainsCubics, cancellationToken);
                 bool hasFractionalEdge = false;
                 bool nativeConics = Array.Exists(quadSpans, static span => span.ConicWeight != 1f);
@@ -528,8 +528,8 @@ public static class SvgConverter
                 for (int index = 0; index < points.Length; index++)
                 {
                     if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    double edgeX = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges ? MapStraightPolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
-                    double edgeY = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges ? MapStraightPolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
+                    double edgeX = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.FlattenedCurves ? MapNativePolygonEdge(points[index].X, horizontalScale, horizontalOffset) : MapEdge(points[index].X, horizontalScale, horizontalOffset);
+                    double edgeY = nativeConics || mapping is SvgPolygonMapping.QuarterEdges or SvgPolygonMapping.FiniteEdges or SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.FlattenedCurves ? MapNativePolygonEdge(points[index].Y, verticalScale, verticalOffset) : MapEdge(points[index].Y, verticalScale, verticalOffset);
                     mapped[index] = new SvgDevicePoint(edgeX, edgeY);
                     if (edgeX != Math.Truncate(edgeX) || edgeY != Math.Truncate(edgeY)) hasFractionalEdge = true;
                     if (edgeX < left) left = edgeX;
@@ -1463,8 +1463,8 @@ public static class SvgConverter
                 if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 SvgDevicePoint first = spans[index].FirstControl;
                 SvgDevicePoint second = spans[index].SecondControl;
-                SvgDevicePoint mappedFirst = new(MapEdge(first.X, horizontalScale, horizontalOffset), MapEdge(first.Y, verticalScale, verticalOffset));
-                SvgDevicePoint mappedSecond = new(MapEdge(second.X, horizontalScale, horizontalOffset), MapEdge(second.Y, verticalScale, verticalOffset));
+                SvgDevicePoint mappedFirst = new(MapNativePolygonEdge(first.X, horizontalScale, horizontalOffset), MapNativePolygonEdge(first.Y, verticalScale, verticalOffset));
+                SvgDevicePoint mappedSecond = new(MapNativePolygonEdge(second.X, horizontalScale, horizontalOffset), MapNativePolygonEdge(second.Y, verticalScale, verticalOffset));
                 canvasContainsControls &= mappedFirst.X >= 0 && mappedFirst.X <= outputWidth && mappedFirst.Y >= 0 && mappedFirst.Y <= outputHeight
                     && mappedSecond.X >= 0 && mappedSecond.X <= outputWidth && mappedSecond.Y >= 0 && mappedSecond.Y <= outputHeight;
                 mapped[index] = new SvgCubicSpan(spans[index].Contour, spans[index].StartIndex, spans[index].EndIndex, mappedFirst, mappedSecond);
@@ -1484,7 +1484,7 @@ public static class SvgConverter
                 SvgDevicePoint control = spans[index].Control;
                 bool native = nativeMapping || spans[index].ConicWeight != 1f;
                 SvgDevicePoint mappedControl = native
-                    ? new(MapStraightPolygonEdge(control.X, horizontalScale, horizontalOffset), MapStraightPolygonEdge(control.Y, verticalScale, verticalOffset))
+                    ? new(MapNativePolygonEdge(control.X, horizontalScale, horizontalOffset), MapNativePolygonEdge(control.Y, verticalScale, verticalOffset))
                     : new(MapEdge(control.X, horizontalScale, horizontalOffset), MapEdge(control.Y, verticalScale, verticalOffset));
                 canvasContainsControls &= mappedControl.X >= 0 && mappedControl.X <= outputWidth && mappedControl.Y >= 0 && mappedControl.Y <= outputHeight;
                 mapped[index] = spans[index] with { Control = mappedControl };
@@ -1504,11 +1504,11 @@ public static class SvgConverter
             return MapEdge(value, scale, offset);
         }
 
-        static double MapStraightPolygonEdge(double value, double scale, double offset)
+        static double MapNativePolygonEdge(double value, double scale, double offset)
         {
             double mapped = MapEdge(value, scale, offset);
             // SkMatrix::Scale_pts narrows each operand and rounds the product
-            // before adding translation. Retained curves keep their own gate.
+            // before adding translation, including retained curve controls and endpoints.
             float native = (float)value * (float)scale + (float)offset;
             return float.IsFinite(native) ? native : mapped;
         }

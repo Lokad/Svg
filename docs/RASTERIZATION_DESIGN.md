@@ -5278,3 +5278,89 @@ timing is local evidence. Studies stay under ignored
 `artifacts/round-stroke-conics-20261006/`. Thin/fractional events, closed/curved/
 dashed construction, clip/composition fidelity, Linux and representative
 performance remain open.
+
+## Native float root mapping for retained curves (2026-10-06)
+
+The declared baseline is `563c1b17`. The initial diagnosis compares original
+native cubic edge construction and row walking with the shared managed input
+state. NASA's supplied-edge row-58 trapezoids match the original native walker;
+constructing edges from the managed mapped verbs also matches those recorded
+states/events. Those comparisons do not establish that the mapped path supplied
+to either walker equals the browser path. Blur's sampled supplied-state walk
+likewise preserves its baseline PNG; the early Nike trace used height 356,
+whereas the frozen variant uses 357, and establishes no matching-options parity.
+
+A fresh pinned Chrome trace of the unchanged NASA small input produces the
+original reference PNG byte-for-byte. Decoding its picture through the browser
+exposes scale 0.499799281358719 and Y offset 0.0812253281474114. Before repair,
+176 mapped cubic coordinates differ from native float arithmetic using that
+recorded CTM. The original `SkMatrix::Scale_pts` operation narrows each operand,
+rounds the float product and then adds float translation. Final root/output
+mapping used double operations for polynomial curve endpoints and controls.
+
+Production now applies the existing native float polygon map to retained
+cubic/quadratic controls and curve endpoints, including clipped polygons.
+Finite-range fallback and categorized admission remain. Existing checks observe
+cancellation in bounded chunks; no buffer, owner, public API or native dependency
+is added. Original native mapping vectors and exact prior images remain protected.
+
+The resulting NASA trace still has 163 mapped-coordinate differences. Managed
+resolved scale is 0.49979929319722, whose float cast matches the browser scale,
+but managed root Y offset is 0.0812232882858055. Thus this repair establishes the
+native operation and exact output pixels; it does not establish all source
+coordinates, root operands or complete CTM bit parity. Further number/root-offset
+construction work remains in PLAN.md; no cause for every remaining difference
+is claimed.
+
+NASA small transparent/white/black improves 7/6/7 → 0/0/0; transparent alpha-error
+mass improves 22 → zero. Its intended/large images were already exact, so NASA
+joins Ford, ROC HCVS, Artsy and YouTube: 5/27 exact documents, marks 3/13 and
+wordmarks 2/14. The 258 variants now have 73 exact, 167 known and eighteen
+UnsupportedFeature outcomes. All 70 prior exact images and every input/outcome
+are preserved. Of 35 changed PNGs, seventeen improve in mismatch count, twelve
+worsen and six keep the count. UAAR small improves 123 → 57 on each background,
+with transparent alpha-error mass 309 → zero; Blur intended transparent/white
+improves eight → six, transparent alpha mass twelve → nine.
+
+Known large regressions, on transparent/white/black in that order, remain explicit:
+
+| Document | Differing pixels before → after | Transparent alpha-error mass |
+| --- | --- | --- |
+| SDL (`inv-003`) | 6,495/6,447/6,018 → 6,498/6,450/6,021 | 88,205 → 88,213 |
+| SG Rotation (`inv-012`) | 5,799/5,799/2,862 → 5,811/5,811/2,872 | 48,805 → 48,811 |
+| Party of Changes (`inv-026`) | 2,384/2,340/2,360 → 2,407/2,363/2,382 | 34,680 → 34,775 |
+| Pepsi (`inv-097`) | 11,735/11,735/11,421 → 11,737/11,737/11,423 | 1,594 → 1,594 |
+
+The shared operation is retained with these unresolved differences; reference
+images, tolerances and per-document dispatch are not changed. Equal mismatch
+counts can also conceal error changes: SDL intended transparent alpha mass rises
+38,570 → 38,575, while Toyota large transparent falls 284,037 → 283,603.
+
+All 1,033 prior fixture outputs and 36 research outcomes are unchanged, including
+844 exact fixture PNGs and the earlier width-one cap regression (sixteen pixels,
+alpha-error mass 42, maximum alpha error eleven). Nine legacy Default PNGs change
+(`inv-003`, `026`, `032`, `050`, `057`, `063`, `064`, `065`, `082`), without a
+matching-options fidelity claim. Every legacy input still renders.
+
+Three six-output root/group cases cover cubic, polynomial quadratic and clipped
+cubic fills. Nine fresh configurations, declared after the edit and before
+capture/comparison, have 27 healthy, cleaned, stable captures. Cubic slice is
+exact on all backgrounds before/after; cubic meet retains ten differences on
+each (transparent alpha mass 33); anisotropic quadratic fill retains the existing
+non-uniform curve UnsupportedFeature gate. These add three exact, three known
+and three rejected fixtures, without claiming algorithm improvements. The bank
+has 1,042 fixtures / 36 research / 92 legacy cases: 1,170 executions.
+A final checkout audit caught CRLF in the three new controls while Git stores
+SVGs as LF. The admitted copies and input identities now use canonical LF; 27
+fresh LF captures are healthy, cleaned, stable and byte-identical to the initial
+references. Existing inputs/references and the original cost recipe files stay
+unchanged. Baseline/current LF comparisons preserve all nine control outcomes.
+
+Windows locked restore, nine-project Release build, 3,637 tests, all 25 memory
+scenarios, Chrome smoke, artifact validation, runtime/symbol package inspection
+and isolated installed-consumer checks pass. Nine accepted matching recipes
+record unchanged parser work/layouts, both positive and negative raster-work
+changes and overlapping local timing ranges. Studies stay under ignored
+`artifacts/corporate-curve-events-20261006/`. Source/root operands, general affine
+mapping, thin/fractional events, closed/curved/dashed strokes, clip/composition,
+representative performance, Linux and the at-least-23/27 S17 target remain open.

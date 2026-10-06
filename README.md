@@ -36,8 +36,11 @@ and preserve the distinction between geometric clip edges and mask allocation
 bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
 paints apply the rectangle's snapped byte mask to each ordered operation.
 The frozen corporate matrix now has all 258 reference images: 240 rendered
-comparisons (70 exact, 170 different) and eighteen retained renderer rejections.
-Ford, ROC HCVS, Artsy and YouTube are exact in every declared variant: 4/27 documents.
+comparisons (73 exact, 167 different) and eighteen retained renderer rejections.
+Ford, ROC HCVS, Artsy, YouTube and NASA are exact in every declared variant:
+5/27 documents. Final retained-curve root mapping uses native float multiply/add
+operations. It preserves every prior exact image; known large corporate variants
+also worsen, as recorded in [the design record](docs/RASTERIZATION_DESIGN.md#native-float-root-mapping-for-retained-curves-2026-10-06).
 Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
 remaining variants. Native straight open-stroke construction and winding make
 six original miter/bevel probes and three viewBox configurations exact, and

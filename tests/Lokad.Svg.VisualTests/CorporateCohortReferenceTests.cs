@@ -99,15 +99,15 @@ public sealed class CorporateCohortReferenceTests
         Assert.Equal(0, malformed);
         Assert.Equal(18, unsupported);
         Assert.Equal(258, measured);
-        Assert.Equal(70, exact);
-        Assert.Equal(170, known);
+        Assert.Equal(73, exact);
+        Assert.Equal(167, known);
         Assert.Equal(0, gaps);
         Assert.Equal(0, unmeasured);
         Assert.Equal(measured, measurements.RootElement.GetProperty("oracleCounts").GetProperty("measured").GetInt32());
         Assert.Equal(exact, measurements.RootElement.GetProperty("fidelityCounts").GetProperty("exact").GetInt32());
         Assert.Equal(known, measurements.RootElement.GetProperty("fidelityCounts").GetProperty("known-difference").GetInt32());
         Assert.Equal(measured - exact - known, measurements.RootElement.GetProperty("fidelityCounts").GetProperty("measuredRendererRejections").GetInt32());
-        Assert.Equal(new[] { "inv-002", "inv-010", "inv-020", "inv-027" }, exactDocuments);
+        Assert.Equal(new[] { "inv-002", "inv-010", "inv-020", "inv-027", "inv-066" }, exactDocuments);
         Assert.Equal(15, measurements.RootElement.GetProperty("oracleTransportFailures").GetProperty("failures").GetArrayLength());
     }
 

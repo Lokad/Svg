@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the native round-stroke checkpoint, the 1,033 manifest entries contain
-844 exact decoded-pixel references, 162 known-difference renders and 27
+At the retained-curve root-mapping checkpoint, the 1,042 manifest entries contain
+847 exact decoded-pixel references, 165 known-difference renders and 30
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -18,9 +18,17 @@ limits are preserved across root parsing, font discovery and scale probing.
 The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
 27 cases to rendering and nine Target cases to the existing unsupported `marker`
 style gate. All previous PNGs are unchanged. The complete frozen matrix has
-240 rendered comparisons (70 exact, 170 known differences) and eighteen
-independently captured renderer rejections. Ford, ROC HCVS, Artsy and YouTube are
-exact in every declared variant: 4/27 documents, marks 3/13 and wordmarks 1/14.
+240 rendered comparisons (73 exact, 167 known differences) and eighteen
+independently captured renderer rejections. Ford, ROC HCVS, Artsy, YouTube and
+NASA are exact in every declared variant: 5/27 documents, marks 3/13 and
+wordmarks 2/14. Final retained cubic/quadratic controls and curve endpoints use
+separate native float multiply/add operations. All 844 prior exact fixture PNGs
+and 70 exact corporate PNGs are preserved. Three fresh cubic-slice configurations
+are exact, three fractional cubic-meet controls retain ten differences, and three
+anisotropic quadratic controls retain the non-uniform scaling gate. Known large
+SDL, SG Rotation, Party of Changes and Pepsi variants worsen. General root/affine
+mapping and event fidelity remain open; exact NASA pixels do not prove complete
+mapped-coordinate parity.
 
 Straight solid open strokes retain native float normals, endpoint miter replacement
 and pivot inner joins through directed nonzero winding. Intersecting rings cannot

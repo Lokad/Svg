@@ -12,19 +12,18 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current round-stroke checkpoint
+## Current retained-curve root-mapping checkpoint
 
-Native straight solid open-stroke caps, dots and joins retain rational controls
-through final float mapping and signed contacts. Four original research cases
-graduate with unchanged SVGs, references and provenance. All eighteen fresh
-configurations improve, three to exact; their three captures are stable and
-healthy. Controls were declared after the edit and before capture/comparison.
-The bank has 1,033 fixtures (844 exact, 162 known, 27 rejected) and 36 research
-probes. All 837 prior exact fixture PNGs and 70 exact corporate PNGs are preserved.
-Every Rede Manchete variant improves; corporate exactness remains 4/27 documents.
-The width-one cap probe worsens 15 → 16 differences, alpha-error mass 18 → 42
-and maximum alpha error 3 → 11. It keeps its original reference and remains
-inexact. Original references stay frozen; ordinary source edits require no refresh.
+Final curve controls and endpoints use native float multiply/add operations.
+NASA's small variants become exact and all nine frozen variants now pass. The
+bank has 1,042 fixtures (847 exact, 165 known, 30 rejected) and 36 research probes.
+All 1,033 prior fixture outputs, 36 research outcomes and 70 exact corporate PNGs
+are unchanged. Nine fresh configurations retain three exact cubic-slice, three
+known cubic-meet and three rejected anisotropic quadratic outcomes. Their 27
+fresh captures are stable and healthy; controls were declared after the edit
+and before capture/comparison. Original images stay frozen. Known large SDL,
+SG Rotation, Party of Changes and Pepsi variants worsen; the width-one cap
+regression remains unchanged. Source edits alone require no metadata refresh.
 
 ## Frozen corporate cohort
 
@@ -40,15 +39,15 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 240 rendered comparisons (70 exact, 170 known differences)
+all 258 references: 240 rendered comparisons (73 exact, 167 known differences)
 and eighteen renderer rejections. No variants lack references. All nine variants
-of YouTube, Ford, ROC HCVS and Artsy are now exact. The YouTube PNGs retain
+of YouTube, Ford, ROC HCVS, Artsy and NASA are now exact. The YouTube PNGs retain
 stable healthy capture triples. `inv-027-native-route.json`
 retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
-Ford, ROC HCVS, Artsy and YouTube are exact in every variant (4/27). Known
-differences remain measured against the original images. Native open-stroke
+Ford, ROC HCVS, Artsy, YouTube and NASA are exact in every variant (5/27). Known
+differences remain measured against the original images. At the earlier native open-stroke
 construction improves all nine Rede Manchete variants, with no prior mismatch
 count increase and all 70 exact corporate PNGs preserved. Six original research
 miter/bevel probes graduate with unchanged SVG/PNG/provenance; three existing
