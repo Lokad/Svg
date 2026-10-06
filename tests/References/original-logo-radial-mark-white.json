@@ -14,13 +14,22 @@
   "background": "white",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateSha256": "638516d9d4832a7c21b8671cd64ef5d03f0a6aeec4029d4c1dba81b405596f7a",
+  "candidateSha256": "ba146ec4dca43ff1d28e59874850f83b91242a7d3ec814ee0987bfeb3ed1881a",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 51,
-    "maximumChannelError": 1,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
-    "exact": false
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 64,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
   },
-  "admittedAt": "2026-09-26"
+  "admittedAt": "2026-09-26",
+  "graduatedAt": "Float rectangle shader arithmetic, 2026-10-06"
 }

@@ -1,10 +1,12 @@
 # Rasterization research probes
 
 These are original CC0 calibration inputs, not supported-product fixtures. Each
-probe has a pinned-Chrome reference in `references/` and is deliberately asserted
-to fail public conversion with `UnsupportedFeature`. They preserve reproducible
-evidence for P1.3 geometry and paint-server work without turning an observed
-browser image into a product baseline.
+probe has a pinned-Chrome reference in `references/` and records either a
+categorized rejection or an admitted render with an explicit pixel difference.
+The current manifest has 53 known-difference renders and one rejection. Exact
+probes graduate to the fixture bank with their original inputs, references and
+capture provenance. Research records preserve reproducible evidence for geometry
+and paint-server work without treating an inexact render as a product baseline.
 
 References require three independent fresh-process captures with identical decoded
 pixels. Regenerate one capture with:

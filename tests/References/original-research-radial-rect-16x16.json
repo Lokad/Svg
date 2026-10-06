@@ -1,0 +1,37 @@
+{
+  "referencePng": "original-research-radial-rect-16x16.png",
+  "referenceSha256": "6c96e2d27cf779d2785a1daadcb7dccd679f6b3bca088c764fd067d6f602b98a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-research-radial-rect-16x16",
+  "inputSha256": "a712949dbcf615fc7ebe782ba659a1c56b606c65f24620ddad17b6f9c6e56db9",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "candidateSha256": "40544b0ff8525703a893449c8dd9bd1ffac1b52a252e0feb90c302a18eb447a1",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "graduatedAt": "Float rectangle shader arithmetic, 2026-10-06",
+  "provenance": "Original research SVG and browser reference copied byte-for-byte; historical capture recipe and evidence preserved."
+}

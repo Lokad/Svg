@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Update="TestData/shader-paint-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/shader-paint-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/rectangle-coverage-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/rectangle-coverage-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/dash-endpoints-native.csv" CopyToOutputDirectory="PreserveNewest" />

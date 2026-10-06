@@ -33,20 +33,21 @@
   ],
   "declaredBeforeProductionEdit": true,
   "declaredBeforeCaptures": true,
-  "candidateSha256": "1b0309bed0ccc373729ad802fc356b8475a0908d40a6505d5289f727116e41ba",
+  "candidateSha256": "eaad2911b6b0fc440416937b4715562bc82ecffef6e4a06900a1c78a3e208eba",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 1008,
-    "maximumChannelError": 4,
-    "meanAbsoluteError": 0.278515625,
-    "rootMeanSquareError": 0.667317390751957,
-    "maximumAlphaError": 1,
-    "alphaChangedPixelCount": 34,
-    "minimumMismatchX": 0,
-    "minimumMismatchY": 0,
-    "maximumMismatchX": 35,
-    "maximumMismatchY": 27,
-    "exact": false,
-    "alphaErrorMass": 34
-  }
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 40,
+    "minimumMismatchY": 32,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "graduatedAt": "Float rectangle shader arithmetic, 2026-10-06"
 }

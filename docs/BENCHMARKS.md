@@ -1092,3 +1092,48 @@ retained peak memory. No general speedup or performance target is established.
 Raw ledgers, both process orders and reproduction harnesses remain under ignored
 `artifacts/rect-paint-20261006/`. Git identifies code; input/output identities
 protect measured artifacts. Representative performance and Linux remain open.
+
+## Float rectangle shader arithmetic (2026-10-06)
+
+Matched against the retained `9f3713c9` renderer on Windows x64 / .NET 10.0.12.
+Sixteen recipes include the thirteen previous guards and three fresh 40×32
+linear/radial/pattern opacity controls. Every parser-work, raster-work and
+accounted-peak ledger is unchanged. Rectangle/geometry storage remains 112/248
+bytes. Float samples are stack values and add no raster buffer allocation.
+
+Two fresh-process pairs run sequentially in opposite order, with eight warmups
+and three measured batches per recipe. Batch sizes match the preceding rectangle
+record; the three new shader controls use 100 conversions per batch. Cells are
+median milliseconds per conversion. These local observations do not establish
+representative throughput or a causal regression threshold.
+
+| Input | Pair 1 baseline | Pair 1 current | Pair 2 current | Pair 2 baseline |
+| --- | ---: | ---: | ---: | ---: |
+| tiny | 0.134 | 0.134 | 0.142 | 0.195 |
+| ford | 18.241 | 20.602 | 24.164 | 22.302 |
+| dense | 278.456 | 278.365 | 276.284 | 279.263 |
+| native-stop | 471.610 | 461.359 | 483.264 | 481.682 |
+| youtube-intended | 10.758 | 10.773 | 10.307 | 10.683 |
+| youtube-large | 34.370 | 34.367 | 32.402 | 33.412 |
+| roc | 1.968 | 1.934 | 1.868 | 2.000 |
+| greek-flag | 8.355 | 8.960 | 8.175 | 8.344 |
+| rect-corner | 0.104 | 0.105 | 0.099 | 0.104 |
+| rect-contained | 0.083 | 0.081 | 0.080 | 0.083 |
+| pattern-content | 0.051 | 0.051 | 0.054 | 0.053 |
+| material-grid | 5.367 | 4.693 | 4.763 | 5.195 |
+| border-band | 2.515 | 2.148 | 2.051 | 2.167 |
+| shader-linear | 0.408 | 0.372 | 0.383 | 0.330 |
+| shader-radial | 0.244 | 0.274 | 0.275 | 0.242 |
+| shader-pattern | 0.180 | 0.229 | 0.221 | 0.167 |
+
+The radial and pattern controls cost about 12–14% and 27–32% more conversion time in
+both process orders; the linear result varies with order. Linear/radial managed
+allocation traffic rises by 527/109 bytes on these inputs, including their changed
+encoded output; pattern traffic differs by one byte. Greater precision has a
+measured cost even though the work and peak ledgers are unchanged.
+
+Raw ledgers, allocation traffic, process orders and reproduction harnesses remain
+under ignored `artifacts/shader-paint-20261006/`. Git identifies implementation;
+input/output identities protect the observations. The material repair improves
+pixel fidelity without changing work-accounting units. Representative performance
+and Linux evidence remain open.

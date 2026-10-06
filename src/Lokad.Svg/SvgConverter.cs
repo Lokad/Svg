@@ -1129,15 +1129,8 @@ public static class SvgConverter
                 int tileX = PositiveModulo(x - pattern.OriginX, pattern.TileWidth);
                 int tileY = PositiveModulo(y - pattern.OriginY, pattern.TileHeight);
                 int tileOffset = (tileY * pattern.TileWidth + tileX) * 4;
-                int patternOpacityScale = pattern.Opacity + 1;
-                int patternAlpha = (tile[tileOffset + 3] * patternOpacityScale) >> 8;
-                int patternRed = (tile[tileOffset] * patternOpacityScale) >> 8;
-                int patternGreen = (tile[tileOffset + 1] * patternOpacityScale) >> 8;
-                int patternBlue = (tile[tileOffset + 2] * patternOpacityScale) >> 8;
-                byte fillCoverage = raster.GetAlpha(x, y);
-                int patternCoverage = fillCoverage + 1;
                 int offset = (y * outputWidth + x) * 4;
-                BlendPremultipliedOver(destination.AsSpan(offset, 4), (patternRed * patternCoverage) >> 8, (patternGreen * patternCoverage) >> 8, (patternBlue * patternCoverage) >> 8, (patternAlpha * patternCoverage) >> 8);
+                SvgShaderPaint.Pattern(tile[tileOffset], tile[tileOffset + 1], tile[tileOffset + 2], tile[tileOffset + 3], pattern.Opacity).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
             }
             }
         }
@@ -1258,11 +1251,7 @@ public static class SvgConverter
             double denominator = directionX * directionX + directionY * directionY;
             double offsetSpan = definition.Offset2 - definition.Offset1;
             if (paint && offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
-            bool transparentStops = false;
-            foreach (SvgGradientStop stop in definition.Stops)
-            {
-                if (stop.Color.Alpha != 255) { transparentStops = true; break; }
-            }
+
             if (paint && (denominator != 0 || definition.Stops.Length == 1))
             for (int y = startY; y < endY; y++)
             {
@@ -1300,20 +1289,8 @@ public static class SvgConverter
                     if (local > 1) local = 1;
                 }
                 position = local;
-                double dither = GradientDither[x & 7, y & 7] / 64d;
                 int offset = (y * outputWidth + x) * 4;
-                if (transparentStops)
-                {
-                    (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, opacity);
-                    byte fillCoverage = raster.GetAlpha(x, y);
-                    int gradientCoverage = fillCoverage + 1;
-                    BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
-                }
-                else
-                {
-                    SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
-                    SvgAnalyticPaint.Shader(tileColor).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y), SvgAnalyticPaintKind.Direct);
-                }
+                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, opacity, GradientDither[x & 7, y & 7]).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
             }
             }
 
@@ -1337,11 +1314,7 @@ public static class SvgConverter
             SvgRectangleRaster raster = PrepareRectangle(area);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             if (paint && (definition.Radius <= 0 && definition.Stops.Length != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
-            bool transparentStops = false;
-            foreach (SvgGradientStop stop in definition.Stops)
-            {
-                if (stop.Color.Alpha != 255) { transparentStops = true; break; }
-            }
+
             if (paint)
             for (int y = startY; y < endY; y++)
             {
@@ -1435,20 +1408,8 @@ public static class SvgConverter
                     if (position < 0) position = 0;
                     if (position > 1) position = 1;
                 }
-                double dither = GradientDither[x & 7, y & 7] / 64d;
                 int offset = (y * outputWidth + x) * 4;
-                if (transparentStops)
-                {
-                    (int gradientRed, int gradientGreen, int gradientBlue, byte gradientMask) = InterpolateGradientRampPm(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, dither, opacity);
-                    byte fillCoverage = raster.GetAlpha(x, y);
-                    int gradientCoverage = fillCoverage + 1;
-                    BlendPremultipliedOver(destination.AsSpan(offset, 4), (gradientRed * gradientCoverage) >> 8, (gradientGreen * gradientCoverage) >> 8, (gradientBlue * gradientCoverage) >> 8, (gradientMask * gradientCoverage) >> 8);
-                }
-                else
-                {
-                    SvgColor tileColor = InterpolateGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, transparentStops, dither, opacity);
-                    SvgAnalyticPaint.Shader(tileColor).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y), SvgAnalyticPaintKind.Direct);
-                }
+                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, opacity, GradientDither[x & 7, y & 7]).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
             }
             }
         }

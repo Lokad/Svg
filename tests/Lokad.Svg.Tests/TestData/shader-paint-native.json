@@ -1,0 +1,30 @@
+{
+  "scope": "5,760 pixel vectors from original highp premul, scale_1_float, dither, scale_u8, srcover and store_8888 bodies; constant gradient samples and premultiplied pattern samples, nine opacities, eight coverages and four premultiplied destinations. x64 nearest-even store and fused mad. This does not validate gradient stop interpolation or coordinate transforms.",
+  "sourceRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sourceFiles": [
+    "src/opts/SkRasterPipeline_opts.h",
+    "src/core/SkRasterPipelineBlitter.cpp"
+  ],
+  "crossCheckedRevision": "8b8c3872fbc03f025855db96ce683f34ec98a815",
+  "compiler": "g++ C++20 -O2 -ffp-contract=off; std::fma for fused mad; SSE nearest-even conversion",
+  "cases": 5760,
+  "columns": [
+    "route",
+    "red",
+    "green",
+    "blue",
+    "alpha",
+    "opacity",
+    "coverage",
+    "x",
+    "y",
+    "dstRed",
+    "dstGreen",
+    "dstBlue",
+    "dstAlpha",
+    "outRed",
+    "outGreen",
+    "outBlue",
+    "outAlpha"
+  ]
+}

@@ -4832,3 +4832,46 @@ quantization, wider affine/large-coordinate behavior and S17 remain open.
 An exploratory parser probe also found that a direct definition rectangle's
 `clip-path` attribute is not retained; that accepted-input gap needs independent
 admission and is outside the retained-geometry mapping proof here.
+
+## Float rectangle shader arithmetic (2026-10-06)
+
+The six rectangle linear/pattern opacity controls isolated a material-stage loss:
+shader channels were converted to bytes before shape/clip coverage and blending.
+`SvgShaderPaint` retains premultiplied float lanes, applies paint opacity, centers
+gradient dithering at matrix/64 minus 63/128, clamps RGB to alpha, scales native
+byte coverage by 1/255 and performs fused source-over. The final RGBA8 store uses
+nearest-even rounding, matching native x64 SIMD. Patterns start from premultiplied
+tile bytes and use the same float opacity/coverage/blend stages without dithering.
+The shared helper serves linear/radial rectangle paints and pattern stamping;
+solid integer arithmetic and analytic polygon event arithmetic remain distinct.
+
+The original highp `premul`, `scale_1_float`, `dither`, `scale_u8`, `srcover` and
+`store_8888` bodies in `src/opts/SkRasterPipeline_opts.h` emit 5,760 compiled pixel
+vectors. A scalar collecting environment uses fused `mad` and the x64 SSE
+nearest-even store. All stage bodies match both the release-tag pin
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c` and studied revision
+`8b8c3872fbc03f025855db96ce683f34ec98a815`. The vectors cover four colors, nine
+opacities, eight coverages, four premultiplied destinations and gradient/pattern
+routes. They validate material staging and storage, not gradient coordinates or
+stop interpolation. Notices retain the 2018 Google LLC pipeline copyright.
+
+Nineteen fixture configurations and six research probes graduate using unchanged
+original browser images. The research SVGs and references are copied byte-for-byte
+into fixtures with their historical capture recipes; their original research
+files remain available. Four new CC0 SVGs add twelve configurations on three
+backgrounds, declared after the isolated prototype and before production editing
+and captures. All 36 fresh captures are healthy, cleaned and stable in triples.
+Nine comparisons are exact. The three transparent-stop/multistop controls remain
+known differences; authored stop alpha is still retained in byte `SvgColor`, and
+native stop interpolation needs separate evidence before that representation changes.
+
+The prior 1,041-case bank has 28 changed inexact PNGs, no disposition changes and
+no change to its 701 exact PNGs. The expanded bank contains 1,053 cases, including
+907 fixtures (735 exact, 145 known and 27 rejected), 54 research probes and 92
+legacy Default cases. All 258 corporate outcomes, 240 PNGs and comparisons are
+unchanged. Thirteen new core tests cover compiled native pixels, all six public
+outputs, work/memory denial and cancellation cleanup. No new raster storage is
+allocated; existing per-row cancellation and pixel work charges remain in force.
+Full validation, delivery and sixteen matched cost recipes are retained under
+ignored `artifacts/shader-paint-20261006/`. Stop-alpha/coordinate precision,
+polygon shader arithmetic, successive clips, cache history and S17 remain open.

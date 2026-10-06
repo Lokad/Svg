@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the rectangle checkpoint, the 889 current manifest entries contain
-701 exact decoded-pixel references, 161 known-difference renders and 27
+At the float shader checkpoint, the 907 current manifest entries contain
+735 exact decoded-pixel references, 145 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -40,6 +40,14 @@ material grid and translucent border band become exact; all 669 previous exact
 PNG identities are preserved. All nine IBM variants improve but remain inexact.
 Successive clip-alpha intersections, cache history and general paint fidelity
 remain open.
+
+Rectangle gradient and pattern samples now retain premultiplied float lanes
+through coverage and source-over, with one final byte conversion. All six prior
+rectangle shader controls become exact. Nineteen fixtures and six research probes
+graduate using their original images; twelve fresh controls add nine exact and
+three known multistop-alpha cases. All 701 prior exact PNGs and every corporate
+output are preserved. This establishes rectangle material arithmetic; authored
+stop-alpha precision, gradient interpolation and polygon shader routes remain open.
 
 Convex rectangular strips round coverage separately from the raw-rectangle
 calibration. Native event evidence closes YouTube's opaque triangle witness;

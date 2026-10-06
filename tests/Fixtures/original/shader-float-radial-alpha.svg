@@ -1,0 +1,3 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<!-- Original floating shader material/coverage control. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="32"><defs><radialGradient id="p"><stop offset="0" stop-color="#46596d"/><stop offset="1" stop-color="#46596d"/></radialGradient></defs><svg x=".15" y=".375" width="35.7" height="27.25" viewBox="0 0 35.7 27.25"><rect x="-2" y="-2" width="44" height="36" fill="url(#p)" fill-opacity=".63"/></svg></svg>
