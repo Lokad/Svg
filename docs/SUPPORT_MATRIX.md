@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the authored directed-fill checkpoint, the 1,046 manifest entries contain
-851 exact decoded-pixel references, 165 known-difference renders and 30
+At the endpoint-arc checkpoint, the 1,048 manifest entries contain
+853 exact decoded-pixel references, 165 known-difference renders and 30
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -26,8 +26,10 @@ marks 3/13 and wordmarks 5/14. Eligible authored fills preserve directed winding
 and retained curves after scene normalization, under either fill rule. Root/group
 placement composes before float rounding. Scene bounds, paint coordinates, clips
 and admission retain their existing contracts. All prior exact fixture/corporate
-PNGs are preserved; nine SimpleLogin variants worsen. General event and native
-coordinate fidelity remain open.
+PNGs are preserved. SVG endpoint arcs in eligible authored fills retain native
+float rational conics; all 54 changed corporate PNGs improve mismatch count.
+Stroke arcs retain their existing flattening. General event and native coordinate
+fidelity remain open.
 
 Straight solid open strokes retain native float normals, endpoint miter replacement
 and pivot inner joins through directed nonzero winding. Intersecting rings cannot

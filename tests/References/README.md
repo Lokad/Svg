@@ -15,19 +15,18 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current authored directed-fill checkpoint
+## Current endpoint-arc checkpoint
 
-Eligible path fills retain authored directions and curve verbs after scene
-normalization. Zero signed-area crossings and raw even-odd contours use directed
-analytic walking. Partial vertical cancellation consumes the incoming edge;
-total cancellation removes the previous edge. The bank has 1,046 fixtures (851
-exact, 165 known, 30 rejected), 36 research probes and 92 legacy Default cases.
-All prior fixture/research PNGs and outcomes are unchanged. Four new captured
-regressions are exact. Twenty legacy Default PNGs change without a matching-
-options fidelity claim. Corporate comparisons are 121 exact / 119 known; SimpleX,
-Omega and Google join the five exact documents. All nine SimpleLogin variants
-worsen. Original references remain frozen. Detailed comparisons stay under
-ignored `artifacts/authored-topology-20261006/`; code edits require no hash refresh.
+Eligible authored fills retain native float endpoint arcs as rational conics.
+The bank has 1,048 fixtures (853 exact, 165 known, 30 rejected), 36 research
+probes and 92 legacy Default cases. Two research arc probes also join the exact
+fixture bank with unchanged source/reference bytes and capture provenance.
+Every prior exact image and disposition is preserved. Both known original arc
+fixtures improve, and all 54 changed corporate PNGs improve mismatch count.
+Corporate comparisons remain 121 exact / 119 known, with 8/27 fully exact
+documents. Twelve legacy Default PNGs change without a matching-options claim.
+Original references remain frozen. Detailed comparisons stay under ignored
+`artifacts/endpoint-arcs-20261006/`; code edits require no hash refresh.
 
 ## Frozen corporate cohort
 

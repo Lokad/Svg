@@ -10067,6 +10067,8 @@
       "expectedFidelity": "exact",
       "oracleIdentity": "tests/References/original-authored-gradient-crossing-evenodd.json",
       "referenceSha256": "2ee51aeb8a4a82f91e74404254078d2e5d87680a306dcf894a0a687539825782"
-    }
+    },
+    {"id":"original-arc-solid-16x16","path":"original/arc-solid-16x16.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-28","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"6b28d77ccacc9e4a253c27eb6f0859a0e946abbd6f29d38e4b027e836551324f","materializedSha256":"6b28d77ccacc9e4a253c27eb6f0859a0e946abbd6f29d38e4b027e836551324f","featureTags":["geometry","arc","coverage","calibration"],"width":16,"height":16,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-arc-solid-16x16.json","referenceSha256":"d3e0c3fa6e14c5760fa635d216ea80a2ff11385a043bd6d91e952a54d15479fb"},
+    {"id":"original-elliptical-arc-solid-16x16","path":"original/elliptical-arc-solid-16x16.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-09-28","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"e64020687e6e31644483b6d6e6129960eefce70ea129862c5d6d4ad7bef4dad9","materializedSha256":"e64020687e6e31644483b6d6e6129960eefce70ea129862c5d6d4ad7bef4dad9","featureTags":["geometry","arc","coverage","calibration"],"width":16,"height":16,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-elliptical-arc-solid-16x16.json","referenceSha256":"6b959eb4ea331c3f5cd5e6960ba05f59d2d434df3c2758b7c3f11a38009f4ea1"}
   ]
 }

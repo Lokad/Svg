@@ -5547,3 +5547,42 @@ Detailed model comparisons, 66 capture diagnostics, ledgers and timing batches
 stay under ignored `artifacts/authored-topology-20261006/`. Test data retain reusable
 inputs, expected images and required oracle provenance. Git identifies code;
 no source, adapter, build or report hashes are introduced.
+
+## SVG endpoint-arc conics (2026-10-06)
+
+Authored fill replay now constructs endpoint arcs with the float operations in
+pinned Skia `SkPathBuilder::arcTo`. Radii correction, rotation, center selection,
+tiny-angle line fallback, integer-quarter snapping and final endpoint replacement
+produce at most three rational quadratics. The scanner reuses existing device
+conic subdivision and quad clipping. Scene admission/bounds, paint boxes and
+stroke construction keep their existing normalization; no document-specific
+dispatch or new public API is introduced.
+
+The caller charges the bounded normalization/conic phase before construction,
+reserves rounded span capacities before allocation and owns the fixed stack
+buffer. Eight fallback samples per conic support classification; retained verbs
+drive coverage. Cancellation and denied work/storage release scratch and leave
+the authored owner reusable. Twelve original native vectors cover both sweeps,
+large arcs, rotated ellipses, radii correction and degeneracy. All 36 recorded
+control/endpoint rows match float bits; Toyota's two endpoint conics also match
+the fresh browser picture.
+
+Against `8e41031e`, all 851 prior exact fixtures, all 121 exact corporate images
+and every disposition remain unchanged. Two existing known original arc fixtures
+improve (54 → 38 and 206 → 118 differing pixels). Two research arc probes become
+exact and also enter the fixture bank with unchanged assets/provenance. Twelve
+legacy Default PNGs change without a matching-options fidelity claim. All 54
+changed corporate PNGs improve; no document becomes fully exact. Transparent
+small/intended/large mismatch counts include SimpleLogin 211/429/1075 →
+112/316/669, Toyota 108/310/640 → 82/212/574 and Pepsi 2643/4597/10459 →
+1979/3458/7369. The frozen 8/27 result remains below S17's 23/27 exit.
+
+Three new flag/rotation/clipped-gradient controls have nine healthy, cleaned,
+stable fresh captures, but still differ in 11/48/16 pixels. They are diagnostic
+controls declared after the model and before capture, not fresh corporate
+holdouts. Construction parity does not establish general event/clip parity.
+Fifteen matched cost recipes record SimpleLogin's increased storage/allocation
+and slower local timings; representative performance remains open. Detailed
+reports, pixels, traces and timings stay under ignored
+`artifacts/endpoint-arcs-20261006/`. Git identifies implementation; no source,
+adapter, assembly, package or report hashes are introduced.

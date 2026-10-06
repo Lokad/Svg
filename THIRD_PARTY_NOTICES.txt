@@ -5,7 +5,7 @@ antialiased rectangle paint-clip dispatch and byte coverage, rounded plain
 rectangle coverage, and line-segment
 dash endpoint interpolation, high-precision shader pixel storage and
 linear/radial gradient coordinate construction and straight open-stroke
-normalization and join construction, rational round caps/joins and conic subdivision,
+normalization and join construction, rational round caps/joins, SVG endpoint-arc construction and conic subdivision,
 and live convex curve advancement.
 These adaptations do not depend on native Skia.
 
@@ -13,7 +13,7 @@ Source revision: f8b66b7597c4cc859d3ed190e9c6872241e6721c
 Source files: src/core/SkEdgeClipper.cpp, src/core/SkLineClipper.cpp, src/core/SkEdgeBuilder.cpp,
 src/core/SkGeometry.cpp, src/core/SkCubics.cpp, src/core/SkQuads.cpp,
 src/core/SkBezierCurves.cpp, src/core/SkFloatingPoint.cpp, src/core/SkScan_Path.cpp,
-src/core/SkStrokerPriv.cpp, src/core/SkStroke.cpp,
+src/core/SkStrokerPriv.cpp, src/core/SkStroke.cpp, src/core/SkPathBuilder.cpp,
 src/core/SkBlitter.h, src/core/SkMatrix.cpp, src/core/SkPoint.cpp, src/core/SkPathPriv.cpp,
 src/core/SkRasterClip.cpp, src/core/SkAAClip.cpp, src/core/SkScan_AAAPath.cpp,
 src/core/SkScan_AntiPath.cpp, src/core/SkScan_Antihair.cpp, src/core/SkAnalyticEdge.cpp, src/core/SkAnalyticEdge.h,
@@ -22,7 +22,7 @@ src/shaders/gradients/SkLinearGradient.cpp, src/shaders/gradients/SkRadialGradie
 and include/private/SkMath.h, include/private/SkFixed.h,
 include/private/SkFloatingPoint.h.
 Copyright 2006, 2008, 2009, 2011, 2016 The Android Open Source Project;
-2010, 2011, 2012, 2016 Google Inc.; 2018, 2023, 2025 Google LLC.
+2010, 2011, 2012, 2015, 2016 Google Inc.; 2018, 2023, 2025 Google LLC.
 
 Dash endpoint interpolation also adapts src/core/SkContourMeasure.cpp and
 include/core/SkScalar.h at 8b8c3872fbc03f025855db96ce683f34ec98a815.

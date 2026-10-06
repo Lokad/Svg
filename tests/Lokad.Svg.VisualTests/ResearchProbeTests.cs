@@ -53,7 +53,7 @@ public sealed class ResearchProbeTests
                 RgbaImage rendered = PngRgbaDecoder.Decode(png.ToArray(), checked(width * height));
                 PixelComparison comparison = PixelComparer.Compare(referenceImage, rendered);
                 Assert.True(comparison.DimensionsMatch);
-                Assert.False(comparison.IsExact);
+                Assert.Equal(admitted.GetProperty("changedPixelCount").GetInt32() == 0, comparison.IsExact);
                 Assert.Equal(admitted.GetProperty("changedPixelCount").GetInt32(), comparison.ChangedPixelCount);
                 Assert.Equal((byte)admitted.GetProperty("maximumChannelError").GetInt32(), comparison.MaximumChannelError);
                 Assert.Equal((byte)admitted.GetProperty("maximumAlphaError").GetInt32(), comparison.MaximumAlphaError);

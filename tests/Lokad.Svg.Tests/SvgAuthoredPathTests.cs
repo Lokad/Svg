@@ -178,6 +178,39 @@ public sealed class SvgAuthoredPathTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Denied_endpoint_arc_replay_releases_scratch_and_can_retry(bool denyWork)
+    {
+        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        using (SvgRoot root = Parse("<path d='M12,4 A8,8 0 1 1 20,12 Z'/>", budget))
+        {
+            SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
+            long retained = budget.Snapshot().CurrentBytes;
+            if (denyWork)
+            {
+                SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(authored.Commands.Length + 2), CancellationToken.None));
+                Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+            }
+            else
+            {
+                using (budget.Reserve(SvgRenderLimits.Default.MaximumAccountedBytes - retained - 100, SvgMemoryCategory.Surface))
+                {
+                    long padded = budget.Snapshot().CurrentBytes;
+                    SvgException denied = Assert.Throws<SvgException>(() => authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None));
+                    Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
+                    Assert.Equal(padded, budget.Snapshot().CurrentBytes);
+                }
+            }
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            using SvgMappedAuthoredPath retry = authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            Assert.Equal(3, retry.QuadSpans.Length);
+            Assert.Empty(retry.CubicSpans);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     private static SvgRoot Parse(string body, RenderBudget budget)
         => SvgRootParser.Parse(TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 32 32'>" + body + "</svg>"), SvgRenderLimits.Default, budget, null, new ParserWorkCounter(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None);
 }

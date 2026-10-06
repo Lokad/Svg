@@ -1673,3 +1673,29 @@ SimpleX allocates less; Google allocates slightly more. Most timing ranges overl
 and even unchanged tiny/cubic recipes show substantial process variation. These
 local measurements establish no representative latency or throughput improvement.
 All 25 memory scenarios pass. Wider fidelity, profiling and Linux remain open.
+
+## Endpoint-arc observations (2026-10-06)
+
+Compare `8e41031e` with endpoint-arc conics using the existing observation
+harness. Fifteen identical recipes include intended SimpleLogin/Toyota and small
+Pepsi. Each process warms eight times and retains three batches; process order
+is baseline/current then current/baseline. Concurrent validation jobs and host
+variation limit timing interpretation. Raw records stay under ignored
+`artifacts/endpoint-arcs-20261006/`; Git identifies code.
+
+| Recipe | Work through raster | Accounted peak bytes |
+| --- | --- | --- |
+| simplelogin | 88,688 → 91,064 | 2,229,760 → 2,319,520 |
+| toyota | 2,722,033 → 2,715,549 | 3,766,640 → 3,768,784 |
+| pepsi | 1,893,919 → 1,938,025 | 2,799,864 → 2,802,136 |
+| ford | 895,344 → 895,496 | 2,588,992 → 2,588,992 |
+
+Replay's capacity scan now charges each inspected command. Geometry and other
+fixed record sizes stay unchanged. All twelve earlier recipes keep the same
+accounted peak. SimpleLogin allocates 789,972 → 944,884 bytes per conversion;
+Toyota remains around 2.85 million bytes, while Pepsi falls 1,053,292 → 1,023,020 bytes.
+SimpleLogin batch times are 10.692–19.809 ms before and 15.154–25.701 ms after;
+both process orders are slower. Toyota and Pepsi timings vary substantially,
+and unchanged Ford varies 14.942–19.264 ms before versus 15.978–47.364 ms after.
+These local measurements establish no representative performance improvement.
+All 25 memory scenarios pass; throughput and Linux validation remain open.

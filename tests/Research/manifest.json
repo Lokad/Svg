@@ -339,14 +339,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 8,
-        "maximumChannelError": 48,
-        "maximumAlphaError": 48,
-        "alphaChangedPixelCount": 8,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 9,
-        "maximumMismatchX": 13,
-        "maximumMismatchY": 12
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/arc-solid-16x16.png",
@@ -465,14 +465,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 4,
-        "maximumChannelError": 20,
-        "maximumAlphaError": 20,
-        "alphaChangedPixelCount": 4,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 8,
-        "maximumMismatchX": 13,
-        "maximumMismatchY": 10
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/elliptical-arc-solid-16x16.png",

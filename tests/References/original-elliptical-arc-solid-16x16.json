@@ -1,0 +1,24 @@
+{
+  "fixtureId": "original-elliptical-arc-solid-16x16",
+  "referencePng": "original-elliptical-arc-solid-16x16.png",
+  "referenceSha256": "6b959eb4ea331c3f5cd5e6960ba05f59d2d434df3c2758b7c3f11a38009f4ea1",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "admittedAt": "Endpoint arc conic checkpoint, 2026-10-06"
+}

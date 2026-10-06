@@ -52,7 +52,13 @@ internal sealed class SvgAuthoredPath : IDisposable
         int contourCapacity = Math.Min(pointCapacity, Commands.Length);
         // Growing arrays temporarily retain old and new buffers. Span columns
         // round up from four slots; Get*Spans also materializes record arrays.
-        int spanCapacity = Math.Max(4, Math.Min(pointCapacity, checked(2 * Commands.Length)));
+        int maximumSpans = Commands.Length;
+        foreach (SvgAuthoredPathCommand command in Commands)
+        {
+            workCounter.Consume(cancellationToken);
+            if (command.Verb == SvgAuthoredPathVerb.Arc) maximumSpans = checked(maximumSpans + 2);
+        }
+        int spanCapacity = Math.Max(4, Math.Min(pointCapacity, checked(2 * maximumSpans)));
         long scratchBytes = checked(512 + 2 * ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity)
             + 4 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)
             + 3 * ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(spanCapacity)
@@ -61,16 +67,17 @@ internal sealed class SvgAuthoredPath : IDisposable
         SvgContourBuilder builder = SvgContourBuilder.CreateGrowing(pointCapacity, contourCapacity);
         builder.EnableQuadSpanRetention();
         builder.EnableCubicSpanRetention();
+        SvgDevicePoint current = default;
         foreach (SvgAuthoredPathCommand command in Commands)
         {
             workCounter.Consume(cancellationToken);
             switch (command.Verb)
             {
-                case SvgAuthoredPathVerb.Move: builder.BeginContour(command.First); break;
-                case SvgAuthoredPathVerb.Line: builder.AddLine(command.First); break;
-                case SvgAuthoredPathVerb.Quadratic: builder.AddQuadratic(command.First, command.Second, policy, cancellationToken); break;
-                case SvgAuthoredPathVerb.Cubic: builder.AddCubic(command.First, command.Second, command.Third, policy, cancellationToken); break;
-                case SvgAuthoredPathVerb.Arc: builder.AddArc(command.First.X, command.First.Y, command.Second.X, (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0, command.Third, policy, cancellationToken); break;
+                case SvgAuthoredPathVerb.Move: builder.BeginContour(command.First); current = command.First; break;
+                case SvgAuthoredPathVerb.Line: builder.AddLine(command.First); current = command.First; break;
+                case SvgAuthoredPathVerb.Quadratic: builder.AddQuadratic(command.First, command.Second, policy, cancellationToken); current = command.Second; break;
+                case SvgAuthoredPathVerb.Cubic: builder.AddCubic(command.First, command.Second, command.Third, policy, cancellationToken); current = command.Third; break;
+                case SvgAuthoredPathVerb.Arc: AppendEndpointArc(builder, current, command, workCounter, cancellationToken); current = command.Third; break;
                 case SvgAuthoredPathVerb.End: builder.EndContour(); break;
                 default: throw new InvalidOperationException("Invalid retained path verb.");
             }
@@ -96,6 +103,19 @@ internal sealed class SvgAuthoredPath : IDisposable
         foreach (SvgCubicSpan span in builder.GetCubicSpans())
             if (offsets[span.Contour] >= 0) cubics.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], FirstControl = MapPoint(map, span.FirstControl), SecondControl = MapPoint(map, span.SecondControl) });
         return CreateMapped(points, ends, quads, cubics, isEvenOdd, budget, workCounter, cancellationToken);
+
+        static void AppendEndpointArc(SvgContourBuilder builder, SvgDevicePoint start, SvgAuthoredPathCommand command, ParserWorkCounter workCounter, CancellationToken token)
+        {
+            // One normalization phase and at most three conic verbs, charged before numerical work.
+            for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) workCounter.Consume(token);
+            Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
+            int count = SvgEndpointArc.Convert(start, command.First.X, command.First.Y, command.Second.X,
+                (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0, command.Third, arcs, token);
+            if (count == 0) builder.AddLine(command.Third);
+            else for (int index = 0; index < count; index++)
+                // Samples support fallback classification; the scanner consumes the retained conic.
+                builder.AddConic(arcs[index].Control, arcs[index].End, arcs[index].Weight, 8, token);
+        }
 
         static SvgMappedAuthoredPath CreateMapped(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {

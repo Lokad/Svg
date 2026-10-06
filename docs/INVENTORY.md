@@ -29,7 +29,8 @@ references cover 240 rendered comparisons (121 exact, 119 known differences) and
 eighteen rejections. Exact documents are 8/27, marks 3/13 and wordmarks 5/14.
 SimpleX, Omega and Google join Ford, ROC HCVS, Artsy, YouTube and NASA after
 authored directed fill replay. Every prior exact comparison and disposition is
-preserved; nine SimpleLogin variants worsen against the original references.
+preserved. Endpoint-arc conics improve all 54 changed PNGs across SimpleLogin,
+Netflix, Liputan6, Toyota, Pepsi and IBM; exact-document counts remain unchanged.
 The dated checkpoint paragraphs below retain their historical results.
 There are no missing references or capture gaps. S17 still requires at least 80% exact documents overall and in each corporate
 stratum. YouTube is the selected curved mark; the first cohort is frozen below

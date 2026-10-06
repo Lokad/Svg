@@ -40,8 +40,10 @@ comparisons (121 exact, 119 different) and eighteen retained renderer rejections
 Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA and Google are exact in every
 declared variant: 8/27 documents. Authored fills retain directed winding and
 curves after scene normalization, with root/group composition before float
-rounding. All prior exact images remain exact; nine SimpleLogin variants worsen,
-as recorded in [the design record](docs/RASTERIZATION_DESIGN.md#authored-directed-fill-replay-2026-10-06).
+rounding. Endpoint arcs retain native rational conics; all 54 changed corporate
+images improve mismatch count, with every prior exact image preserved. Two
+existing arc probes become exact. Broader event fidelity remains open; see
+[the design record](docs/RASTERIZATION_DESIGN.md#svg-endpoint-arc-conics-2026-10-06).
 Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
 remaining variants. Native straight open-stroke construction and winding make
 six original miter/bevel probes and three viewBox configurations exact, and

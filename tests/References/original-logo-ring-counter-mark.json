@@ -14,24 +14,24 @@
   "background": "transparent",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateSha256": "2820367f5abae88512edf68792f5767fb3fd34d90d9cee75e2bd41cce27fef77",
+  "candidateSha256": "77002a6711e264428ac150a9943b3f24a72343a568d046068747c47eefbb3de6",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 206,
+    "changedPixelCount": 118,
     "maximumChannelError": 255,
-    "maximumAlphaError": 78,
-    "alphaChangedPixelCount": 206,
+    "maximumAlphaError": 50,
+    "alphaChangedPixelCount": 118,
     "minimumMismatchX": 8,
     "minimumMismatchY": 9,
     "maximumMismatchX": 55,
     "maximumMismatchY": 54,
     "exact": false,
-    "alphaErrorMass": 3823,
+    "alphaErrorMass": 707,
     "overCoveragePixelCount": 128,
     "underCoveragePixelCount": 78,
     "opaqueLostPixelCount": 0,
     "opaqueAddedPixelCount": 0
   },
   "admittedAt": "2026-09-24",
-  "comparisonUpdatedAt": "2026-10-04"
+  "comparisonUpdatedAt": "2026-10-06"
 }
