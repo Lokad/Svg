@@ -2703,8 +2703,6 @@ geometry distinction. It does not prove that these browser captures selected
 the analyzer, establish final color quantization, or cover clipping, transforms,
 operation limits, opacity layers or all paints. Those remain discriminators for
 the implementation slice; ordinary Skia blitter arithmetic alone is insufficient.
-The reviewed source file's SHA-256 is
-`3dd3ecadeefaed3197d83f980ea95dc6cf99a30f470b2d930ef6bcff2ad51537`.
 
 Reproduction: construct the inputs below with an SPDX CC0-1.0 comment. For each
 full-N control use an NxN canvas and two rectangles at 0,0 with size NxN.
@@ -3758,7 +3756,7 @@ Shared polygon preparation now follows the declared software oracle's CPU tile
 policy across solid, linear, radial and pattern consumers. The adapted calculator
 uses default 256×256, maximum untiled 512×512, one border texel, small-dimension
 expansion and 64-pixel rounding. Enumeration retains no tile tape and visits only
-interiors intersecting the drawing bounds. Source fingerprints/settings are in
+interiors intersecting the drawing bounds. Pinned source URLs and settings are in
 [the portable policy](../tests/References/cpu-raster-context-policy.json); the
 Chromium BSD notice ships beside the existing Skia notice. No native renderer or
 Chromium dependency is introduced.
@@ -3896,8 +3894,8 @@ clipping, whole-path dispatch and owned interiors remain intact. No buffers or
 limits are added. The two new core tests bank 3,072 compiled native
 selection/material vectors (four path-bound cases × three backgrounds × all byte
 coverages) and prove denial before control classification. Minimal native region/
-destination adapters are declared; this is bounded algorithm evidence. Source
-revision/file fingerprints and the additional BSD source notices are retained.
+destination adapters are declared; this is bounded algorithm evidence. Pinned
+source revisions and the additional BSD source notices are retained.
 
 Thirteen original CC0 sources / 18 configurations were declared before
 implementation. All 54 captures are healthy, profiles cleaned and byte-stable in
@@ -4264,8 +4262,7 @@ ring is convex. The original
 straight turns, up to two backwards reversals and implicit closure. At raw point
 index four, the first control of the second cubic, it sees cross
 +0.0014715790748596191 against the preceding negative turn;
-flattening omitted that control-polygon reversal. The matched file SHA-256 is
-`5cd42bb4cd931b0af3e667972bdc06364fd4733114202bccd615f6b084088a96`.
+flattening omitted that control-polygon reversal.
 
 The compiled adapter retains the original classifier/sign precheck unchanged,
 with finite single-contour points, staged float arithmetic and implicit closure.
