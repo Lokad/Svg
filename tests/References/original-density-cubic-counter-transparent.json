@@ -34,7 +34,14 @@
   ],
   "declaredBeforeProductionEdit": true,
   "declaredBeforeGenericCountPrototype": true,
-  "candidateOutcome": "UnsupportedFeature",
-  "candidateSha256": null,
-  "comparison": null
+  "candidateOutcome": "renders",
+  "candidateSha256": "57922dabfb1801cd598987ae4b22b5c4b671baf065312070659cfd54d46cebb1",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  }
 }

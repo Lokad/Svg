@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-clipped-contact",
+  "referencePng": "original-authored-fill-clipped-contact.png",
+  "referenceSha256": "0c1c524231d89811021c33bf6a2e2796f4622324fe182268c73f1a7a44eeb18b",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "b6de1ac858428bb71482516e1a1902f95ef5dd95ab2b9865d6cb021b305273a3",
+  "candidateSha256": "1ba38e1916e612f9c839d8ab01231f62b399972dffe7c6fdfda5fee6c90d2d60",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

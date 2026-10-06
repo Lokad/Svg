@@ -32,7 +32,7 @@ internal static class SvgLocalReferencePresentationResolver
             if (style.Dasharray is not null && !style.Dasharray.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed strokes on use elements are not implemented.");
             double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width, "use");
             if (width == 0) return null;
-            SvgStrokeJoin join = style.Linejoin is null ? SvgStrokeJoin.Miter : SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, false);
+            SvgStrokeJoin join = style.Linejoin is null ? SvgStrokeJoin.Miter : SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true);
             double? miterLimit = style.Miterlimit is null ? null : SvgStrokeStyleSyntax.ParseMiterLimit(style.Miterlimit);
             SvgPaint paint = SvgPaintResolver.Resolve(style.Stroke, null, null, inheritedPresentation.Paint, namedColors);
             return new SvgUseStrokeOverride(paint, width, join, miterLimit);

@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-crossing-nonzero",
+  "referencePng": "original-authored-fill-crossing-nonzero.png",
+  "referenceSha256": "9f71457e4f1446e6150d87b7d0cdfe049c28a266d84f8f4f24b13468de31a9e1",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "57983ba2857bf51d7c0331049ebe9450b5afc2a30bf8c3922d19541fb319f695",
+  "candidateSha256": "f80d485c43de8e3fc2e7f72a57c42f4e38a2719babee75e8f2c54d77b403219f",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

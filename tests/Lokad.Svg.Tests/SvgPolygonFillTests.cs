@@ -1653,16 +1653,20 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Variant_arc_pair_without_checks_stays_unsupported()
+    public void Variant_arc_pair_retains_both_directed_contours()
     {
-        // R34: the isolated variant pair keeps a multi-span same-directed endgame past
-        // span conforming, so it stays honestly gated while the positioned full path admits.
+        // The native winding renderer keeps this formerly rejected variant pair
+        // without conforming or merging its authored endpoint arcs.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='59' height='58' viewBox='0 0 58.894 57.681'><defs><linearGradient id='g' y1='0.5' x2='1' y2='0.5' gradientUnits='objectBoundingBox'><stop offset='0' stop-color='#e3156a'/><stop offset='1' stop-color='#91187f'/></linearGradient></defs><g transform='translate(1528.394 -821.497)'><path d='M-1501.434,839.988A25.146,25.146,0,0,1,-1512.389,833.742A25.162,25.162,0,0,1,-1523.4,840A17.836,17.836,0,0,0,-1523.716,843.349A17.852,17.852,0,0,0,-1501.434,839.988ZM-1512.389,833.742A25.162,25.162,0,0,1,-1523.4,840A17.836,17.836,0,0,0,-1523.716,843.349A25.146,25.146,0,0,1,-1512.389,833.742Z' fill='url(#g)'/></g></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only simple diagonal polygon contours are implemented;", rejected.Message);
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        using SvgMappedAuthoredPath mapped = authored.Prepare(SvgAffineTransform.Identity, false,
+            new(SvgRenderLimits.Default.MaximumAccountedBytes), new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None);
+        Assert.Equal(2, mapped.ContourEnds.Length);
+        Assert.NotEmpty(mapped.QuadSpans);
+        Assert.True(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).Length > 0);
     }
     [Fact]
     public void Touching_letter_parts_union_like_outline()

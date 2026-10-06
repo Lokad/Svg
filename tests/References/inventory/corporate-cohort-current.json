@@ -12,11 +12,11 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after native wider path stroke construction; original references and cohort options retained.",
+  "scope": "Frozen 27-document/258-variant measurement after directed authored-fill admission and retained centerline use strokes; original references and cohort options retained.",
   "rendererCounts": {
-    "renders": 240,
+    "renders": 249,
     "MalformedInput": 0,
-    "UnsupportedFeature": 18
+    "UnsupportedFeature": 9
   },
   "oracleCounts": {
     "unmeasured": 0,
@@ -25,9 +25,9 @@
   },
   "fidelityCounts": {
     "exact": 134,
-    "known-difference": 106,
+    "known-difference": 115,
     "withoutReference": 0,
-    "measuredRendererRejections": 18
+    "measuredRendererRejections": 9
   },
   "oracleTransportFailures": {
     "failures": [
@@ -14576,10 +14576,29 @@
     },
     {
       "id": "inv-102-small-transparent",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "renderOutcome": "renders",
       "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 258,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 0.04924242424242424,
+          "RootMeanSquareError": 2.038493370570891,
+          "MaximumAlphaError": 64,
+          "AlphaChangedPixelCount": 258,
+          "MinimumMismatchX": 55,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 306,
+          "MaximumMismatchY": 95,
+          "IsExact": false
+        },
+        "alphaMass": 2521,
+        "overCoveredPixels": 144,
+        "underCoveredPixels": 114,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-102-small-transparent.png",
       "captureProvenance": {
         "oracleInputSha256": "606b966cc112b473fb06fd0f3795d54603803f219c30acaf99a5d7c2a5ba8277",
@@ -14607,14 +14626,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "021ae589c11fcf471921fc9f89c48abd32b71f85b27a20632973707eeb3669b4"
+      "referenceSha256": "021ae589c11fcf471921fc9f89c48abd32b71f85b27a20632973707eeb3669b4",
+      "candidateSha256": "54465e97fd70f9df985d7103d6d2abdd6351a41a71c081e461caa58360fab1f6",
+      "width": 308,
+      "height": 96
     },
     {
       "id": "inv-102-small-white",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "renderOutcome": "renders",
       "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 258,
+          "MaximumChannelError": 57,
+          "MeanAbsoluteError": 0.03865665584415585,
+          "RootMeanSquareError": 0.9200761808521231,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 55,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 306,
+          "MaximumMismatchY": 95,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-102-small-white.png",
       "captureProvenance": {
         "oracleInputSha256": "606b966cc112b473fb06fd0f3795d54603803f219c30acaf99a5d7c2a5ba8277",
@@ -14642,14 +14683,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "289b60f3de4defbf1a50944051839fd72fbcd92d9fc5f54a283d05d3daf06e7e"
+      "referenceSha256": "289b60f3de4defbf1a50944051839fd72fbcd92d9fc5f54a283d05d3daf06e7e",
+      "candidateSha256": "b734fcd19b8bbb721826e7f3665016e2e91079499f91272220c55cad66c2b1a9",
+      "width": 308,
+      "height": 96
     },
     {
       "id": "inv-102-small-black",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "renderOutcome": "renders",
       "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 256,
+          "MaximumChannelError": 57,
+          "MeanAbsoluteError": 0.02528916396103896,
+          "RootMeanSquareError": 0.6966323308871254,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 55,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 306,
+          "MaximumMismatchY": 95,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-102-small-black.png",
       "captureProvenance": {
         "oracleInputSha256": "606b966cc112b473fb06fd0f3795d54603803f219c30acaf99a5d7c2a5ba8277",
@@ -14677,14 +14740,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "3b387a2adcdb6853a1014215a60ba71d8bb62d067f2a7ee193d48b2cb5ad3218"
+      "referenceSha256": "3b387a2adcdb6853a1014215a60ba71d8bb62d067f2a7ee193d48b2cb5ad3218",
+      "candidateSha256": "994365e8e2671501c655d38f187b7e17920a9850c77e0aea4310884841a4d2bf",
+      "width": 308,
+      "height": 96
     },
     {
       "id": "inv-102-intended-transparent",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "renderOutcome": "renders",
       "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 667,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 0.03348739990579369,
+          "RootMeanSquareError": 1.7977430307778461,
+          "MaximumAlphaError": 65,
+          "AlphaChangedPixelCount": 667,
+          "MinimumMismatchX": 60,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 615,
+          "MaximumMismatchY": 192,
+          "IsExact": false
+        },
+        "alphaMass": 5569,
+        "overCoveredPixels": 241,
+        "underCoveredPixels": 426,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-102-intended-transparent.png",
       "captureProvenance": {
         "oracleInputSha256": "014302419bb4334378f2476a318c0a8802800c68e252bcb89fcf40110f637724",
@@ -14712,14 +14797,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "13e7b3d4127baabb9f101665f6bfbaa224d22e023bfdc0ca55e3b532dc9a1015"
+      "referenceSha256": "13e7b3d4127baabb9f101665f6bfbaa224d22e023bfdc0ca55e3b532dc9a1015",
+      "candidateSha256": "417e9d221d4d512bed06d800841bfe89bcdbe1bc304e1773ac991e928c0ea760",
+      "width": 616,
+      "height": 193
     },
     {
       "id": "inv-102-intended-white",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "renderOutcome": "renders",
       "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 662,
+          "MaximumChannelError": 58,
+          "MeanAbsoluteError": 0.021219551174214386,
+          "RootMeanSquareError": 0.5605027477123755,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 60,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 615,
+          "MaximumMismatchY": 192,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-102-intended-white.png",
       "captureProvenance": {
         "oracleInputSha256": "014302419bb4334378f2476a318c0a8802800c68e252bcb89fcf40110f637724",
@@ -14747,14 +14854,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "12d2bbf339b117d35f58065c35f8242e567d6dde050641814f2158d41bea2d81"
+      "referenceSha256": "12d2bbf339b117d35f58065c35f8242e567d6dde050641814f2158d41bea2d81",
+      "candidateSha256": "9c35a1c37b9896091bd2e64308c53cc8c89b31b113fe007f16622ec6d5d59020",
+      "width": 616,
+      "height": 193
     },
     {
       "id": "inv-102-intended-black",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "renderOutcome": "renders",
       "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 663,
+          "MaximumChannelError": 59,
+          "MeanAbsoluteError": 0.013912253549559248,
+          "RootMeanSquareError": 0.4250628820194509,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 60,
+          "MinimumMismatchY": 0,
+          "MaximumMismatchX": 615,
+          "MaximumMismatchY": 192,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-102-intended-black.png",
       "captureProvenance": {
         "oracleInputSha256": "014302419bb4334378f2476a318c0a8802800c68e252bcb89fcf40110f637724",
@@ -14782,14 +14911,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "1600fd6f7446919472b5bcf6c32254f5a8933d33953a73409aa77fe7659bc456"
+      "referenceSha256": "1600fd6f7446919472b5bcf6c32254f5a8933d33953a73409aa77fe7659bc456",
+      "candidateSha256": "e7fe54caaca1af964d96fa36077d840eb53eb57d0d6ba5507f09d6a0e5d711fa",
+      "width": 616,
+      "height": 193
     },
     {
       "id": "inv-102-large-transparent",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "renderOutcome": "renders",
       "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1202,
+          "MaximumChannelError": 255,
+          "MeanAbsoluteError": 0.015043044714353004,
+          "RootMeanSquareError": 1.277048833707114,
+          "MaximumAlphaError": 62,
+          "AlphaChangedPixelCount": 1202,
+          "MinimumMismatchX": 219,
+          "MinimumMismatchY": 1,
+          "MaximumMismatchX": 1230,
+          "MaximumMismatchY": 385,
+          "IsExact": false
+        },
+        "alphaMass": 9246,
+        "overCoveredPixels": 725,
+        "underCoveredPixels": 477,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-102-large-transparent.png",
       "captureProvenance": {
         "oracleInputSha256": "1c11749148e3bb960fbf2e6a5d3d69e46f9022243a0a03810eb1d7d10410dcce",
@@ -14817,14 +14968,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "3c2064d2cee929ac7694dbe0180e20106e51a43fecaf9d2176ae43aefbc9ba7b"
+      "referenceSha256": "3c2064d2cee929ac7694dbe0180e20106e51a43fecaf9d2176ae43aefbc9ba7b",
+      "candidateSha256": "ecb4cad958c62a1f613ef43fc4ea6444b3ba529d24506f780f3843d332caa722",
+      "width": 1232,
+      "height": 386
     },
     {
       "id": "inv-102-large-white",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "renderOutcome": "renders",
       "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1192,
+          "MaximumChannelError": 55,
+          "MeanAbsoluteError": 0.008826058979880223,
+          "RootMeanSquareError": 0.327248932421397,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 219,
+          "MinimumMismatchY": 1,
+          "MaximumMismatchX": 1230,
+          "MaximumMismatchY": 385,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-102-large-white.png",
       "captureProvenance": {
         "oracleInputSha256": "1c11749148e3bb960fbf2e6a5d3d69e46f9022243a0a03810eb1d7d10410dcce",
@@ -14852,14 +15025,36 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "6046cf44c0c1f32499407f23c6dfb55e28ba7a7a28e8f208e0527e34ca239967"
+      "referenceSha256": "6046cf44c0c1f32499407f23c6dfb55e28ba7a7a28e8f208e0527e34ca239967",
+      "candidateSha256": "22f338bea05332bb60f9ed56fd9b3564d8b18dca0585f43d5fd7569c685a69c7",
+      "width": 1232,
+      "height": 386
     },
     {
       "id": "inv-102-large-black",
-      "renderOutcome": "UnsupportedFeature",
-      "message": "Only simple diagonal polygon contours are implemented; touching and self-intersecting contours stay unsupported.",
+      "renderOutcome": "renders",
       "inputSha256": "4fc464932a70e200ec6e825228543a8b3d3d12f73be9e47caee1d9a421daf52d",
-      "comparison": null,
+      "comparison": {
+        "diff": {
+          "DimensionsMatch": true,
+          "ChangedPixelCount": 1191,
+          "MaximumChannelError": 56,
+          "MeanAbsoluteError": 0.0057559425677949,
+          "RootMeanSquareError": 0.24821993451897614,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 219,
+          "MinimumMismatchY": 1,
+          "MaximumMismatchX": 1230,
+          "MaximumMismatchY": 385,
+          "IsExact": false
+        },
+        "alphaMass": 0,
+        "overCoveredPixels": 0,
+        "underCoveredPixels": 0,
+        "opaqueLost": 0,
+        "opaqueAdded": 0
+      },
       "referencePng": "inv-102-large-black.png",
       "captureProvenance": {
         "oracleInputSha256": "1c11749148e3bb960fbf2e6a5d3d69e46f9022243a0a03810eb1d7d10410dcce",
@@ -14887,11 +15082,14 @@
         ]
       },
       "oracleState": "measured",
-      "referenceSha256": "e628ef493bea5ee8586514bc6d3730caeb0738def9eac6319b3db860614ded6c"
+      "referenceSha256": "e628ef493bea5ee8586514bc6d3730caeb0738def9eac6319b3db860614ded6c",
+      "candidateSha256": "3f911cc80a65c54f5cc8c1958b50577ecb3d7f999cc6857a3d912281995cdf26",
+      "width": 1232,
+      "height": 386
     }
   ],
-  "rendererSourceBaselineCommit": "a3acec6e",
-  "rendererSourceState": "Native curve offsets, joins, caps and closure shared by paths and integer/fractional polylines.",
-  "measurementCheckpoint": "native-path-strokes-2026-10-06",
+  "rendererSourceBaselineCommit": "f7e59e0e",
+  "rendererSourceState": "Authored fills retain directed contacts; inherited path strokes consume original centerlines.",
+  "measurementCheckpoint": "authored-fill-admission-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

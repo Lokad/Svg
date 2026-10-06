@@ -69,16 +69,25 @@ public sealed class SvgCubicSpanRetentionTests
     }
 
     [Fact]
-    public void Duplicate_cubic_contours_drop_all_spans_through_merge()
+    public void Duplicate_cubic_contours_retain_both_directed_spans()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 C3,0 6,0 8,8 Z M0,8 C3,0 6,0 8,8 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 C3,0 6,0 8,8 Z M0,8 C3,0 6,0 8,8 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Empty(geometry.Polygon.QuadSpans);
-        Assert.Empty(geometry.Polygon.CubicSpans);
+        Assert.Equal(2, geometry.Polygon.CubicSpans.Length);
+        for (int contour = 0; contour < 2; contour++)
+        {
+            SvgCubicSpan span = geometry.Polygon.CubicSpans[contour];
+            Assert.Equal(contour, span.Contour);
+            Assert.Equal(new SvgDevicePoint(3, 0), span.FirstControl);
+            Assert.Equal(new SvgDevicePoint(6, 0), span.SecondControl);
+            Assert.Equal(new SvgDevicePoint(0, 8), geometry.Polygon.Points[span.StartIndex]);
+            Assert.Equal(new SvgDevicePoint(8, 8), geometry.Polygon.Points[span.EndIndex]);
+        }
     }
     [Fact]
-    public void Dusty_multi_contour_path_remaps_both_channels()
+    public void Dusty_multi_contour_path_retains_both_channels_and_authored_joints()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,8 Q4,0 8,8 Z M0,0 L0.0000000004,0 C2,-4 6,-4 8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
@@ -87,13 +96,16 @@ public sealed class SvgCubicSpanRetentionTests
         SvgCubicSpan cubic = Assert.Single(geometry.Polygon.CubicSpans);
         Assert.Equal(new SvgDevicePoint(2, -4), cubic.FirstControl);
         Assert.Equal(new SvgDevicePoint(6, -4), cubic.SecondControl);
-        Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[cubic.StartIndex]);
+        SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        Assert.Equal(authored.Commands.ToArray().Single(command => command.Verb == SvgAuthoredPathVerb.Line).First, geometry.Polygon.Points[cubic.StartIndex]);
+        Assert.InRange(geometry.Polygon.Points[cubic.StartIndex].X, double.Epsilon, 1e-9);
         Assert.Equal(new SvgDevicePoint(8, 0), geometry.Polygon.Points[cubic.EndIndex]);
     }
     [Fact]
-    public void Closing_dust_keeps_final_span_across_weld_compaction()
+    public void Closing_dust_keeps_final_span_and_authored_endpoint()
     {
-        // Row 5 closing-span retention: the dust-divergent closing joint snaps bitwise shut instead of compacting, so the closing span survives with exact verb endpoints (the Ford seg73 span was lost here, walking 60px of curve as chords).
+        // Retaining the directed path keeps the tiny closing joint and its curve;
+        // it must not snap the curve endpoint to the contour's initial vertex.
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 C2,-4 6,-4 8,0 L8,8 C6,8 2,8 0.0000000004,0.0000000004 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(2, geometry.Polygon.CubicSpans.Length);
@@ -106,7 +118,10 @@ public sealed class SvgCubicSpanRetentionTests
         Assert.Equal(new SvgDevicePoint(6, 8), closing.FirstControl);
         Assert.Equal(new SvgDevicePoint(2, 8), closing.SecondControl);
         Assert.Equal(new SvgDevicePoint(8, 8), geometry.Polygon.Points[closing.StartIndex]);
-        Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[closing.EndIndex]);
+        SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        Assert.Equal(authored.Commands.ToArray().Last(command => command.Verb == SvgAuthoredPathVerb.Cubic).Third, geometry.Polygon.Points[closing.EndIndex]);
+        Assert.InRange(geometry.Polygon.Points[closing.EndIndex].X, double.Epsilon, 1e-9);
+        Assert.InRange(geometry.Polygon.Points[closing.EndIndex].Y, double.Epsilon, 1e-9);
     }
     [Fact]
     public void Quarter_arc_records_kappa_controls_with_slice_indices()

@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-variant-arc-pair",
+  "referencePng": "original-authored-fill-variant-arc-pair.png",
+  "referenceSha256": "ca43073702c388e8fe6280688e2dbe974f487fb879e633d4969a0f81745504c3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 59,
+    "height": 58,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "14363fa431b4952e19d1ed380f38842503b9d1b80efec858db4e0646d7116814",
+  "candidateSha256": "0a9c3fac58ec52b2fb4eb36b3f805f7a8cac579debadef9fb594dcab7a8e9a5c",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 56,
+    "maximumChannelError": 255,
+    "maximumAlphaError": 59,
+    "exact": false,
+    "alphaErrorMass": 772
+  },
+  "declaredBeforeProductionEdit": false,
+  "declaredBeforeCaptures": true
+}

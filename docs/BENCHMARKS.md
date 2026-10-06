@@ -1931,3 +1931,37 @@ The unchanged pinned-browser smoke and new memory artifacts pass the Windows
 artifact validator. Detailed ledgers/timings stay under ignored
 `artifacts/native-stroke-preparation-20261006/`. General fidelity, representative
 performance, Linux and S17 remain open.
+
+## Directed authored-fill observations (2026-10-06)
+
+The frozen `f7e59e0e` renderer and directed scene retention reuse all 39 recipes
+on Windows X64 / .NET 10.0.12. Both execution orders contribute twenty batches
+per implementation/recipe. The frozen baseline ledger matches the preceding
+checkpoint exactly. All inputs, complete PNGs and geometry/paint value layouts
+remain identical. Twenty complete PNG/work/peak records are unchanged; nineteen
+use less parser and total work. Seven accounted peaks increase 24–3,308 bytes,
+eleven decrease and twenty-one remain equal.
+
+| Recipe | Parser work, before → after | Work through raster, before → after | Accounted peak bytes, before → after | Local ms, before / after | Allocated bytes, before / after |
+| --- | --- | --- | --- | --- | --- |
+| ikea | 2,915 → 737 | 43,756 → 41,578 | 2,189,816 → 2,191,988 | 2.179–2.679 / 0.878–1.235 | 205,747–205,766 / 182,048–182,073 |
+| simplelogin | 18,505 → 4,771 | 91,088 → 77,354 | 2,320,544 → 2,322,956 | 4.603–9.326 / 2.494–4.415 | 944,410–944,541 / 900,746–900,757 |
+| toyota | 166,041 → 1,244 | 2,715,549 → 2,550,752 | 3,768,912 → 3,770,248 | 54.557–64.613 / 35.542–41.802 | 2,851,448–2,854,066 / 2,741,536–2,743,762 |
+| omega | 3,896 → 2,432 | 104,138 → 102,674 | 2,273,064 → 2,276,372 | 5.457–9.210 / 2.367–3.191 | 567,914–568,068 / 503,466–503,508 |
+| google | 1,788 → 1,156 | 121,513 → 120,881 | 889,008 → 889,208 | 3.016–4.583 / 2.622–3.201 | 366,160–366,210 / 352,656–352,690 |
+| ford | 4,683 → 4,343 | 895,496 → 895,156 | 2,589,248 → 2,589,168 | 15.727–20.618 / 13.748–17.310 | 1,048,272–1,049,024 / 1,042,752–1,042,921 |
+
+Removing unused scene contact surgery cuts Toyota parser work 166,041 → 1,244,
+with complete pixels preserved. Its selected timing ranges improve
+54.557–64.613 → 35.542–41.802 ms; peak storage adds 1,336 bytes. Raw contours also
+raise Omega's peak by 3,308 bytes while avoiding normalization allocations.
+These exploratory local recipes do not establish representative speed or a
+release performance gate. Native stroke-instance construction changes Nepal and
+Kenya Default pixels; their independent oracle comparisons improve, separately
+from this matched-recipe matrix.
+
+All 3,780 tests, 25 memory scenarios and installed consumers pass. Windows
+artifact validation reuses existing pinned-browser smoke evidence. Captures,
+full regressions, ledgers and timing batches stay under ignored
+`artifacts/authored-fill-admission-20261006/`. General fidelity, representative
+performance, Linux and S17 remain open.

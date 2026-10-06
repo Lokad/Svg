@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-use-contact",
+  "referencePng": "original-authored-fill-use-contact.png",
+  "referenceSha256": "21c5977e2cb1ef80a322e6208c52580a57ef371e57dad051aa9283fbcb8da51a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "a7ce29a1adce498eb8eabe7d3035a546d8f32eb961ca39c26b01a591bf0a9a49",
+  "candidateSha256": "a0e348c7991166a31aea6d421ade62aaf008bb0350c857387a23d24da14a948d",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

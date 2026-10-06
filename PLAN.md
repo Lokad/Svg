@@ -1,44 +1,48 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-06. **Current validated renderer checkpoint: native wider path
-strokes.** Original quadratic, cubic and endpoint-conic centerlines construct
-native offset curves, joins, caps and closed seams before final placement.
-Paths and integer/fractional polylines share this constructor, including dashes
-and painted instances. Retained hairlines and normal-offset oval strokes remain.
+Updated 2026-10-06. **Current validated renderer checkpoint: directed authored
+fill admission.** Curved and fractional filled paths retain their original
+contacts and commands without legacy contour surgery. Stroked path instances
+consume those centerlines through the shared native constructor; eligible
+unstyled path definitions also admit round joins. Coordinate/transform gates,
+paint bounds, bounded work, cancellation and ownership remain enforced.
 
 The frozen corporate cohort remains **9/27 exact documents**, marks **3/13**,
-wordmarks **6/14**: **134 exact comparisons, 106 known differences and eighteen
-rejections** across 258 variants. All nine Zeppelin variants improve; every
-disposition and all 134 exact corporate PNGs are preserved. S17 requires **23/27**
+wordmarks **6/14**. Coca-Cola now renders all nine original variants, with
+transparent differences of 258/667/1,202 pixels at small/intended/large sizes.
+The other 249 records are unchanged: **134 exact comparisons, 115 known
+differences and nine rejections** across 258 variants. S17 requires **23/27**
 with both stratum minima; original inputs, options and references remain frozen.
 
-The bank executes **1,273 cases**: **1,145 fixtures = 937 exact + 178 known +
-30 rejected**, **36 research probes = twelve exact + 23 known + one rejected**,
-and 92 legacy Default renders. Forty-five prior PNGs improve (35 fixtures and ten
-research), including 21 fixture and five research comparisons becoming exact.
-All 908 prior exact fixture/research PNGs and every disposition are preserved.
-Five research originals graduate with unchanged references. Twenty-four untuned
-configurations preceded production edits/capture; four are exact. Eight later
-unit-contract controls add six exact and two known cases. All 96 fresh captures
-are stable, healthy and cleaned. Original references remain frozen.
+The bank executes **1,290 cases**: **1,162 fixtures = 955 exact + 183 known +
+24 rejected**, **36 research probes = twelve exact + 23 known + one rejected**,
+and 92 legacy Default renders. Six existing curved-counter variants graduate:
+three cubic variants are exact and three quadratic variants retain measured
+differences against their original PNGs. Seventeen new entries add fifteen exact
+and two known controls. All 949 prior exact fixture/research PNGs and every
+previously referenced render retain complete identity. Nepal and Kenya Default
+outputs improve; the other ninety legacy PNGs are unchanged.
 
-Validation passes **3,760 tests**, including 1,920 compiled-native construction
-cases / 27,890 outline commands, locked restore/nine-project Release build, all
-25 memory scenarios, pinned browser/artifact checks and installed package consumers.
-Private owners and retained storage are reserved before allocation; numerical
-scratch and output expansion are bounded. Multi-contour native strokes now omit
-unused pairwise contact scans. Thirty-nine matched recipes preserve all PNGs,
-parser work, value layouts and accounted peaks; eleven need less total work.
-The wider dashed cubic falls **466,033 → 27,985 work units** with identical pixels.
-Representative performance remains open.
-Detailed studies stay ignored; source edits and rebuilds require no hash refresh.
+Validation passes **3,780 tests** (3,614 core, 160 visual, six FontProbe),
+locked restore/nine-project Release build, all 25 memory scenarios and installed
+package consumers. Twenty configurations have sixty stable, healthy
+fresh captures with cleaned profiles. Twelve configurations preceded production
+edits; six supplementary controls and two legacy witnesses followed them. The
+original references remain frozen. Git identifies implementation; studies stay
+ignored and ordinary code edits require no hash refresh.
 
-**Next: remaining quadratic/cubic stroke scan, clip and paint residuals, native
-shape/paint hairline routes and bitmap contexts, and original corporate edge and
-clip residuals.** Preserve all earlier exact controls. Sampled rounded-rectangle
-and dashed-oval routes, transformed/pathLength dash browser coverage, general
-fidelity, representative performance and Linux remain open. The earlier
-live-convex-cubic and incoming-edge repairs remain in place.
+Thirty-nine matched recipes preserve inputs, all PNGs and value layouts. Twenty
+complete records are unchanged; nineteen use less parser and total work. Raw
+contour retention raises seven accounted peaks by 24–3,308 bytes and lowers
+eleven. Toyota parser work falls **166,041 → 1,244**. These observations do not
+establish representative performance. Windows artifact validation reuses the
+existing pinned-browser smoke; Linux/remote evidence remains open.
+
+**Next: remaining corporate curve/clip events, Target's inert style admission,
+native shape/paint hairline routes and bitmap contexts.** Preserve all earlier
+exact controls. Wider stroke scan/paint residuals, sampled rounded rectangles
+and dashed ovals, transformed/pathLength dash coverage, general fidelity,
+representative performance and Linux remain open.
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -75,6 +79,15 @@ has source/organizational-selection limits recorded in the
 nor the calibration fixtures establish a release rate.
 
 ## 1. Current validated checkpoint and its limits
+
+Authored filled paths retain directed scene contours for paint coordinates and
+original commands for output-space replay. Nonzero winding and parity process
+contacts without lowering-time splitting, merging or dust welding. Unit votes
+serve parity; absent signs preserve nonzero direction. Existing integer polygon
+and unpainted fallback admission stays unchanged. Stroked path instances use
+authored commands rather than a normalized fill boundary, including retained
+hairlines and native wider curves. Unsupported definition/style combinations
+remain categorized. See [the admission checkpoint](docs/RASTERIZATION_DESIGN.md#directed-authored-fill-admission-2026-10-06).
 
 Native wider strokes fit original source curves and retain their generated
 quadratics and rational joins/caps through directed nonzero coverage. Integer
@@ -128,14 +141,14 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,754 passed**: 3,588 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **3,780 passed**: 3,614 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | All 25 memory scenarios, runtime/symbol package inspection, isolated installed-consumer, Chrome smoke and artifact validation pass. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **1,145 entries = 937 exact + 178 known-difference renders + 30 rejections**; 649 base documents / 496 variants. Twenty-one existing known cases graduate; 37 entries add 15 exact and 22 known cases, including five unchanged research originals. Thirty-five prior fixture PNGs improve; all 901 prior exact fixture PNGs and every disposition are preserved. |
-| Executed research manifest | **36 probes = twelve exact + 23 known-difference renders + one rejection**. Ten prior PNGs improve; five become exact. Every disposition and all seven prior exact PNGs are preserved. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. All complete prior Default PNGs are preserved. The candidate directory has 100 files; eight holdouts belong to the corporate matrix. |
+| Executed fixture manifest | **1,162 entries = 955 exact + 183 known-difference renders + 24 rejections**; 666 base documents / 496 variants. Six curved-counter controls graduate with original references: three exact and three known. Seventeen entries add fifteen exact and two known cases. Every prior referenced render and all 937 prior exact fixture PNGs are preserved. |
+| Executed research manifest | **36 probes = twelve exact + 23 known-difference renders + one rejection**. All complete records, dispositions and twelve exact PNGs are preserved. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. Nepal improves 542 → 477 differing pixels, with alpha error 1,026 → zero; Kenya improves 139 → 61 with alpha already exact. The other ninety complete PNGs are preserved. Eight separate holdouts belong to the corporate matrix. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
-| Corporate measurement | **240 rendered comparisons = 134 exact + 106 known**, plus eighteen UnsupportedFeature cases. All nine Zeppelin PNGs improve; every disposition and all 134 exact PNGs are preserved. Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google remain exact: **9/27**, marks **3/13**, wordmarks **6/14**. S17 remains open. |
-| Performance and platform limits | Thirty-nine matching recipes preserve value layouts and 21 complete PNG/work/peak records. New controls and Zeppelin reduce raster work; construction adds parser work and one wider dashed cubic substantially increases raster work. Representative performance, Linux/remote CI and private-font metrics/pixels remain unproved. |
+| Corporate measurement | **249 rendered comparisons = 134 exact + 115 known**, plus nine UnsupportedFeature cases. Coca-Cola renders all nine variants with measured differences; all other 249 records and all 134 exact PNGs are preserved. Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google remain exact: **9/27**, marks **3/13**, wordmarks **6/14**. S17 remains open. |
+| Performance and platform limits | Thirty-nine matching recipes preserve inputs, every PNG and value layouts; twenty complete records are unchanged and nineteen use less parser/total work. Seven accounted peaks rise 24–3,308 bytes and eleven fall. Artifact validation reuses existing Windows Chrome smoke evidence. Representative performance, Linux/remote CI and private-font metrics/pixels remain unproved. |
 
 ### Native float root mapping for retained curves (2026-10-06)
 
@@ -840,7 +853,7 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
 3. **Preserve authored mapping/winding and resolve remaining corporate events.**
    Root/group matrices now compose before float point/control mapping. Authored
    fills retain their directed curves, raw even-odd contours and zero signed-area
-   crossings after scene normalization; partial and total vertical cancellation
+   crossings without scene contact surgery; partial and total vertical cancellation
    share the native rule across clipped and uncut preparation. Preserve all nine
    exact documents and the original known references. Remaining UAAR, SimpleLogin,
    Red Cross and other corporate residuals need native/browser evidence.
@@ -873,16 +886,17 @@ probing preserve input bytes/encodings and shared resource contracts. The 187 ne
 core controls cover nine encodings, six outputs, structural limits, work/memory
 denial and during-prolog cancellation. Four legacy Default cases now render.
 Zeppelin and SG Rotation Leipzig have nine known differences each; Artsy now
-has all nine variants exact after the bitmap-local straight-edge repair. Coca-Cola's nine touching-contour rejections and
-Target's nine `marker` style rejections remain measured blockers for subsequent
-shared work when the active target or cohort acceptance threshold requires it.
+has all nine variants exact after the bitmap-local straight-edge repair. Coca-Cola's
+nine variants now render with known differences after directed admission; Target's
+nine `marker` style rejections remain measured blockers for shared work.
 Holdouts receive no document-specific tuning. All failures/gaps keep their
 denominators.
 
 **Complete first-cohort evidence.** All 258 variants have browser references:
-134 exact, 106 known differences and eighteen rejections. The remaining 225
+134 exact, 115 known differences and nine rejections. The remaining 225
 references have 675 healthy, cleaned, byte-stable fresh captures. The original
-33 references and all 258 outcomes are preserved. The straight-edge repair made
+33 references remain preserved. Coca-Cola graduates from rejection to measured
+known differences; every other corporate record is preserved. The straight-edge repair made
 Artsy exact; native open strokes now improve all nine Rede Manchete variants. All
 70 prior exact corporate PNGs and every original reference remain unchanged.
 `capture-corporate-cohort.ps1` and VisualDiff's `--cohort` mode reproduce capture
@@ -900,10 +914,10 @@ Holdouts remain evaluation
 inputs. Representative performance, Linux delivery and S17 remain open.
 
 A bounded shared repair may land with independent mechanism-level improvement
-and nonregression across all nine Ford variants. Preserve all **937 currently
+and nonregression across all nine Ford variants. Preserve all **955 currently
 exact fixture entries**, twelve exact research probes, 134 exact corporate images
 and required categorized rejections. Intentional syntax graduations need explicit
-contract/tests/provenance updates. Compare the complete **1,273-case current
+contract/tests/provenance updates. Compare the complete **1,290-case current
 bank** and all 258 frozen corporate cases; retain the AA repair's separate
 896-case prior-bank comparison. Report fixture/research/legacy and corporate
 regression scopes separately.
@@ -1289,9 +1303,11 @@ check cancellation within bounded chunks and release owners on every exit.
 ### Validation and evidence policy
 
 - Tests check observable behavior. Git identifies our implementation; pinned
-  revisions and URLs identify upstream code. Do not hash source code, scripts,
-  local adapters, builds, packages or diagnostic reports. Asset hashes remain
-  useful for verifying fixtures, expected images, fonts and pinned tool downloads.
+  revisions and URLs identify upstream code. Do not record hashes of source code,
+  scripts, local adapters, our builds or packages, or diagnostic reports. Asset
+  hashes remain useful for verifying fixtures, expected images, fonts and pinned
+  tool downloads.
+  Keep dependency lockfile integrity hashes.
   Ordinary code edits and rebuilds require no reference metadata refresh.
 - Commit reusable inputs, expected behavior and necessary oracle provenance.
   Keep detailed run reports, pixel dumps, resource ledgers and timing batches under
@@ -1346,15 +1362,15 @@ records this cross-tabulation:
 
 | Renderer outcome | Measured | Unmeasured | Transport gap | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Renders | 240 | 0 | 0 | 240 |
-| UnsupportedFeature | 18 | 0 | 0 | 18 |
+| Renders | 249 | 0 | 0 | 249 |
+| UnsupportedFeature | 9 | 0 | 0 | 9 |
 | Total | 258 | 0 | 0 | 258 |
 
-The 240 measured renders contain 134 exact variants and 106 known differences.
-All nine Target and all nine Coca-Cola variants have browser references but retain
-UnsupportedFeature outcomes; reference availability and renderability are
-independent axes. The first cohort's complete reference matrix closes its S8
-measurement obligation, including browser behavior for rejected inputs. The 901
+The 249 measured renders contain 134 exact variants and 115 known differences.
+All nine Target variants have browser references but retain UnsupportedFeature
+outcomes; Coca-Cola renders all nine variants with measured differences. Reference
+availability and renderability remain independent axes. The first cohort's complete reference matrix closes its S8
+measurement obligation, including browser behavior for rejected inputs. The 955
 exact fixture entries remain separate from corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and
@@ -1376,8 +1392,8 @@ outcomes did not filter membership: all 19 retained brand/organization exports
 and eight predeclared fresh holdouts remain. The 22/27 rounded overall minimum
 and the 11/13 mark plus 12/14 wordmark minima all apply: **23 exact documents is
 the effective minimum** for this cohort. All 258 cases, including the fifteen former
-transport-limit gaps and eighteen UnsupportedFeature cases (Coca-Cola's touching
-contours and Target's `marker` style), retain their denominator. Combined identities
+transport-limit gaps and all currently failing variants (including Coca-Cola's
+known differences and Target's nine `marker` style rejections), retain their denominator. Combined identities
 already have a declared primary stratum. Public-domain source selection and the organizational
 mix limit representativeness; future cohorts must be selected before measurement
 as well.

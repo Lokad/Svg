@@ -483,7 +483,10 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, Array.Empty<SvgQuadSpan>(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
     }
 
-    /// <summary>Lowers device-space path data through affine flattening into one polygon fill with the caller mapping discipline.</summary>
+    /// <summary>Retains mapped path bounds and authored fill commands with the caller mapping discipline.</summary>
+    /// <remarks>Painted paths preserve directed contacts for output-space replay under either fill rule.
+    /// Scene arrays and the command owner are reserved before publication; copying observes caller work and cancellation.
+    /// Unpainted geometry without replay retains the legacy contour-separation admission.</remarks>
     internal SvgParsedGeometry LowerDeviceFill(string d, int commandCount, bool hasArc, bool hasCurve, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
@@ -571,9 +574,35 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
         if (kept != ends.Length) Array.Resize(ref ends, kept);
 
-        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
-        // Scene normalization still owns admission and paint coordinates. Raster
-        // replay keeps authored directions, including crossings and retraces.
+        SvgParsedGeometry result;
+        if (element.Presentation.HasFill)
+        {
+            // These arrays retain scene bounds and paint coordinates. The
+            // authored commands own raster winding, so no contour surgery or
+            // pairwise contact admission is needed before retaining them.
+            RenderBudget.BudgetReservation? reservation = ReserveScene(mapped.Count, ends.Length, _isEvenOdd ? ends.Length : 0, keptSpans.Count, keptCubicSpans.Count, budget);
+            try
+            {
+                SvgDevicePoint[] retained = new SvgDevicePoint[mapped.Count];
+                for (int index = 0; index < retained.Length; index++)
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    SvgDevicePoint vertex = mapped[index];
+                    if (!double.IsFinite(vertex.X) || !double.IsFinite(vertex.Y) || Math.Abs(vertex.X) > int.MaxValue || Math.Abs(vertex.Y) > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill coordinates exceed the admitted numeric range.");
+                    retained[index] = vertex;
+                }
+                int[]? signs = _isEvenOdd ? new int[ends.Length] : null;
+                if (signs is not null)
+                    for (int contour = 0; contour < signs.Length; contour++)
+                    {
+                        _workCounter.Consume(_cancellationToken);
+                        signs[contour] = 1;
+                    }
+                result = RetainPolygonFill(retained, ends, signs, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, true, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
+            }
+            catch { reservation?.Dispose(); throw; }
+        }
+        else result = FinishPolygonFill(mapped, ends, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, false, mapping, frame, budget);
         if (element.Presentation.HasFill && result.Geometries.Length == 1)
         {
             OwnedParserArray<SvgAuthoredPathCommand> commands = authored.Detach();
@@ -1257,8 +1286,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget) with { ElementCount = commandCount + 1 };
     }
 
-    /// <summary>Filters and strokes source verbs once, transferring their owner only to a successfully retained centerline.</summary>
-    private SvgParsedGeometry LowerNativeStrokeCommands(BudgetedParserList<SvgAuthoredPathCommand> authored,
+    /// <summary>Filters and strokes caller-owned source verbs, transferring their array only to a successfully retained centerline.</summary>
+    /// <remarks>Uses this lowerer's single-conversion work, cancellation and geometry owners.
+    /// The caller disposes its command list on every exit and adopts the returned geometry owners on success.
+    /// Device maps and width are already resolved; non-scaling construction offsets mapped commands before placement.</remarks>
+    internal SvgParsedGeometry LowerNativeStrokeCommands(BudgetedParserList<SvgAuthoredPathCommand> authored,
         SvgAffineTransform deviceMap, double deviceWidth, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join,
         double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill,
         double outputMagnification, SvgViewportFrame? frame, RenderBudget budget)

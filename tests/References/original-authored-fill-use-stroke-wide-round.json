@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-use-stroke-wide-round",
+  "referencePng": "original-authored-fill-use-stroke-wide-round.png",
+  "referenceSha256": "f4961c52960b7580239f77a7f1f12aebdbb2d0dd08203357ac710bc0e97d06ec",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "49e146cc92edf19fb284cd9cce273796c4770dd51b71e45915fa852e9fe9ece0",
+  "candidateSha256": "f61bcffcb7cb9fd249ab1506b780be6ac056b7239fab3b0c2179afe2b2cfce38",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": false,
+  "declaredBeforeCaptures": true
+}

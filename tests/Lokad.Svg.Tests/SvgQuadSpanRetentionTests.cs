@@ -32,12 +32,20 @@ public sealed class SvgQuadSpanRetentionTests
     }
 
     [Fact]
-    public void Duplicate_quad_contours_drop_spans_through_merge()
+    public void Duplicate_quad_contours_retain_both_directed_spans()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M0,8 Q4,0 8,8 Z M0,8 Q4,0 8,8 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M0,8 Q4,0 8,8 Z M0,8 Q4,0 8,8 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Empty(geometry.Polygon.QuadSpans);
+        Assert.Equal(2, geometry.Polygon.QuadSpans.Length);
+        for (int contour = 0; contour < 2; contour++)
+        {
+            SvgQuadSpan span = geometry.Polygon.QuadSpans[contour];
+            Assert.Equal(contour, span.Contour);
+            Assert.Equal(new SvgDevicePoint(4, 0), span.Control);
+            Assert.Equal(new SvgDevicePoint(0, 8), geometry.Polygon.Points[span.StartIndex]);
+            Assert.Equal(new SvgDevicePoint(8, 8), geometry.Polygon.Points[span.EndIndex]);
+        }
     }
 
     [Fact]
@@ -72,7 +80,7 @@ public sealed class SvgQuadSpanRetentionTests
     }
 
     [Fact]
-    public void Dusty_path_remaps_spans_across_weld_compaction()
+    public void Dusty_path_retains_spans_and_authored_joints()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L0.0000000004,0 L8,0 Q12,8 8,12 L0,12 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
@@ -82,9 +90,10 @@ public sealed class SvgQuadSpanRetentionTests
         Assert.Equal(new SvgDevicePoint(8, 12), geometry.Polygon.Points[span.EndIndex]);
     }
     [Fact]
-    public void Closing_dust_keeps_final_span_across_weld_compaction()
+    public void Closing_dust_keeps_final_span_and_authored_endpoint()
     {
-        // Row 5 closing-span retention: the dust-divergent closing joint snaps bitwise shut instead of compacting, so the closing span survives with exact verb endpoints (the Ford seg73 span was lost here, walking 60px of curve as chords).
+        // Retaining the directed path keeps the tiny closing joint and its curve;
+        // it must not snap the curve endpoint to the contour's initial vertex.
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 Q4,-4 8,0 L8,8 Q4,8 0.0000000004,0.0000000004 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(2, geometry.Polygon.QuadSpans.Length);
@@ -95,7 +104,10 @@ public sealed class SvgQuadSpanRetentionTests
         SvgQuadSpan closing = geometry.Polygon.QuadSpans[1];
         Assert.Equal(new SvgDevicePoint(4, 8), closing.Control);
         Assert.Equal(new SvgDevicePoint(8, 8), geometry.Polygon.Points[closing.StartIndex]);
-        Assert.Equal(new SvgDevicePoint(0, 0), geometry.Polygon.Points[closing.EndIndex]);
+        SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        Assert.Equal(authored.Commands.ToArray().Last(command => command.Verb == SvgAuthoredPathVerb.Quadratic).Second, geometry.Polygon.Points[closing.EndIndex]);
+        Assert.InRange(geometry.Polygon.Points[closing.EndIndex].X, double.Epsilon, 1e-9);
+        Assert.InRange(geometry.Polygon.Points[closing.EndIndex].Y, double.Epsilon, 1e-9);
     }
     [Fact]
     public void Quad_control_maps_exactly_through_nonuniform_scale()

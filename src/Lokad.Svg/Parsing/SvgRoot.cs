@@ -401,7 +401,7 @@ internal enum SvgPolygonMapping
     NativeFillEdges,
 }
 
-/// <summary>Retains one admitted diagonal solid polygon with separated simple contours and its scene-memory reservation until the scene is disposed.</summary>
+/// <summary>Retains one solid polygon's scene coordinates, contour storage and memory reservation until the scene is disposed.</summary>
 /// <remarks>
 /// <para>Points are device-space doubles with the caller transform and viewport shift applied; contour ends
 /// partition them exactly and even-odd nesting signs ride alongside when the fill rule needs them. Flattened
@@ -434,7 +434,7 @@ internal sealed class SvgPolygonFill : IDisposable
 
     internal int[] ContourEnds { get; }
 
-    /// <summary>Per-contour combination weights resolved at retention: parity signs for even-odd fills, winding roles for nonzero fills; the rasterizer falls back to signed accumulation when absent.</summary>
+    /// <summary>Per-contour combination weights for normalized fills; authored replay uses directed winding, with unit votes for parity and absent signs for nonzero accumulation.</summary>
     internal int[]? Signs { get; }
 
     /// <summary>Retained quadratic spans in retained-point index space; empty when the fill carries no analytic curves.</summary>

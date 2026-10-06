@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-linear-contact",
+  "referencePng": "original-authored-fill-linear-contact.png",
+  "referenceSha256": "c0360f27b68dc18975bebe06b100b704c2315a385a08b4b2746cf1decea56465",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "ea82f8f6c47e057dd3c9ab136f11e55616818e777c4941f300bce88800835f7f",
+  "candidateSha256": "028b5dffaa34c64917d725a90449601dc92bcd9cf563819146648bc7ca518050",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

@@ -7,17 +7,136 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgAuthoredPathTests
 {
     private const string Path = "<path d='M1.137 2.319 C3.913 1.137 6.619 2.137 7.813 5.319 L2.137 7.619 Z'/>";
+    private const string Contact = "M4 4 C4 1 20 1 20 4 L20 20 C20 23 4 23 4 20 Z M12 8 C12 5 28 5 28 8 L28 24 C28 27 12 27 12 24 Z";
+    private const string Retraced = "M4 4 C4 1 20 1 20 4 L20 20 L4 20 L4 4 C4 1 20 1 20 4 L4 20 Z";
+
+    [Theory]
+    [InlineData("<rect id='p' width='16' height='16'/>")]
+    [InlineData("<path id='p' stroke='blue' d='" + Retraced + "'/>")]
+    public void Round_joined_instance_strokes_reject_definitions_without_an_admitted_centerline(string definition)
+    {
+        byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + definition + "</defs><use href='#p' fill='none' stroke='red' stroke-linejoin='round'/></svg>");
+        SvgException denied = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, denied.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData(".5", "miter")]
+    [InlineData(".5", "round")]
+    [InlineData("4", "miter")]
+    [InlineData("4", "round")]
+    public void Stroked_instances_keep_the_authored_centerline_and_match_direct_paths(string width, string join)
+    {
+        string style = " fill='none' stroke='red' stroke-width='" + width + "' stroke-linejoin='" + join + "'";
+        string direct = "<path d='" + Retraced + "'" + style + "/>";
+        string instance = "<defs><path id='p' d='" + Retraced + "'/></defs><use href='#p'" + style + "/>";
+        string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>";
+        byte[] expected = SvgConverter.ConvertToPng(TextEncoding.UTF8.GetBytes(prefix + direct + "</svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] input = TextEncoding.UTF8.GetBytes(prefix + instance + "</svg>");
+        Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None))
+        {
+            SvgGeometry stroke = Assert.Single(root.Geometries.ToArray(), geometry => geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.HasFill);
+            SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(stroke.AuthoredPath);
+            Assert.NotNull(authored.StrokeStyle);
+            Assert.Equal(2, authored.Commands.ToArray().Count(command => command.Verb == SvgAuthoredPathVerb.Cubic));
+            Assert.Equal(SvgPolygonMapping.NativeStrokeEdges, stroke.Polygon.Mapping);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData(false, false, 255)]
+    [InlineData(true, false, 0)]
+    [InlineData(false, true, 0)]
+    [InlineData(true, true, 0)]
+    public void Coincident_curved_contours_observe_winding_and_parity(bool isEvenOdd, bool reverse, byte alpha)
+    {
+        const string first = "M4 4 C4 1 20 1 20 4 L20 20 C20 23 4 23 4 20 Z";
+        string second = reverse ? "M4 4 L4 20 C4 23 20 23 20 20 L20 4 C20 1 4 1 4 4 Z" : first;
+        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        using (SvgRoot root = Parse("<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='" + first + " " + second + "'/>", budget))
+        {
+            SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
+            Assert.Equal(2, polygon.ContourEnds.Length);
+            Assert.Equal(isEvenOdd ? new[] { 1, 1 } : null, polygon.Signs);
+            using SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.Equal(alpha, raster.Pixels[(6 * raster.Width + 6) * 4 + 3]);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData("<path fill='red' d='" + Contact + "'/>")]
+    [InlineData("<path fill='red' fill-rule='evenodd' d='" + Contact + "'/>")]
+    [InlineData("<defs><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><path fill='url(#g)' d='" + Contact + "'/>")]
+    [InlineData("<defs><radialGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><path fill='url(#g)' d='" + Contact + "'/>")]
+    [InlineData("<defs><pattern id='g' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='blue'/></pattern></defs><path fill='url(#g)' d='" + Contact + "'/>")]
+    [InlineData("<defs><clipPath id='c'><rect x='7.25' y='6.75' width='17.5' height='17.5'/></clipPath><path id='p' d='" + Contact + "'/></defs><use href='#p' x='1.25' y='.75' clip-path='url(#c)' fill='red'/>")]
+    [InlineData("<defs><path id='p' d='" + Retraced + "'/></defs><use href='#p' fill='none' stroke='red' stroke-width='4'/>")]
+    public async Task Directed_contacts_render_through_six_public_outputs(string body)
+    {
+        byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + body + "</svg>");
+        SvgRenderOptions options = SvgRenderOptions.Default;
+        byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        byte[] destination = new byte[expected.Length];
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream stream = new();
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, stream, options, CancellationToken.None));
+        Assert.Equal(expected, stream.ToArray());
+        Assert.Equal(expected, (await SvgConverter.ConvertToPngAsync(input, options, CancellationToken.None)).ToArray());
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, destination, options, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream asyncStream = new();
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, options, CancellationToken.None));
+        Assert.Equal(expected, asyncStream.ToArray());
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    public void Directed_contact_admission_releases_partial_storage_after_work_or_memory_denial(bool isEvenOdd, bool strokeInstance)
+    {
+        string body = strokeInstance
+            ? "<defs><path id='p' d='" + Retraced + "'/></defs><use href='#p' fill='none' stroke='red' stroke-width='4'/>"
+            : "<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='" + Contact + "'/>";
+        byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + body + "</svg>");
+        SvgRenderLimits limits = SvgRenderLimits.Default;
+        RenderBudget normal = new(limits.MaximumAccountedBytes);
+        long work;
+        using (SvgRoot root = SvgRootParser.Parse(input, limits, normal, null, new(limits.MaximumWorkUnits), CancellationToken.None)) work = root.ParserWorkUnits;
+        Assert.Equal(0, normal.Snapshot().CurrentBytes);
+        RenderBudget workBudget = new(limits.MaximumAccountedBytes);
+        SvgException workDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, workBudget, null, new(work - 1), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, workDenied.ErrorCode);
+        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
+        RenderBudget memoryBudget = new(normal.Snapshot().PeakBytes - 1);
+        SvgException memoryDenied = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, limits, memoryBudget, null, new(limits.MaximumWorkUnits), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, memoryDenied.ErrorCode);
+        Assert.Equal(0, memoryBudget.Snapshot().CurrentBytes);
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+        OperationCanceledException cancelled = Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(input, limits, workBudget, null, new(limits.MaximumWorkUnits), cancellation.Token));
+        Assert.Equal(cancellation.Token, cancelled.CancellationToken);
+        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
+        using (SvgRoot retry = SvgRootParser.Parse(input, limits, workBudget, null, new(limits.MaximumWorkUnits), CancellationToken.None))
+            Assert.NotEmpty(retry.Geometries.ToArray());
+        Assert.Equal(0, workBudget.Snapshot().CurrentBytes);
+    }
 
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Crossing_replay_keeps_original_curves_after_scene_normalization(bool isEvenOdd)
+    public void Crossing_replay_keeps_original_curves_without_scene_surgery(bool isEvenOdd)
     {
         RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
         using (SvgRoot root = Parse("<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z'/>", budget))
         {
             SvgGeometry geometry = Assert.Single(root.Geometries);
-            Assert.Equal(2, geometry.Polygon.ContourEnds.Length);
+            Assert.Single(geometry.Polygon.ContourEnds);
             SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
             using SvgMappedAuthoredPath mapped = authored.Prepare(SvgAffineTransform.Identity, isEvenOdd, budget, new ParserWorkCounter(100_000), CancellationToken.None);
             Assert.Single(mapped.ContourEnds);

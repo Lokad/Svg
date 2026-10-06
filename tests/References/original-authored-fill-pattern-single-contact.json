@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-pattern-single-contact",
+  "referencePng": "original-authored-fill-pattern-single-contact.png",
+  "referenceSha256": "ef4584dcd713cf67b5139221643fcb1f6c3b9e0f8eeb8b96511c1be953f43145",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "5ed64a7126455fc18693cdc22bf79a7841a1ec288636d37b951d1a92a91a19d2",
+  "candidateSha256": "13a907fe479750b6ff844ba4523ce989e17e1b2a8b76e947d3b6e3a0894981e2",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": false,
+  "declaredBeforeCaptures": true
+}

@@ -9,25 +9,28 @@ fixture/reference identities and upstream oracle pins.
 Regression records contain reusable inputs, expected behavior and oracle
 provenance. Keep raw run reports, resource ledgers and timing batches under
 ignored artifacts; retain useful summaries in the existing documentation.
+
 The metadata records the exact capture recipe used for each reference. Revision 1
 is retained historical provenance; revision 2 added an RGBA-transparent
 background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current native wider path-stroke checkpoint
+## Current directed authored-fill checkpoint
 
-The bank has 1,145 fixtures (937 exact, 178 known, 30 rejected), 36 research
+The bank has 1,162 fixtures (955 exact, 183 known, 24 rejected), 36 research
 probes (twelve exact, 23 known, one rejected) and 92 legacy Default cases:
-1,273 executed cases. Twenty-four untuned configurations preceded edits/capture;
-four become exact and all improve. Eight later unit-contract controls add six
-exact and two known cases. All 96 fresh captures are stable and healthy.
-Forty-five prior PNGs improve; 21 fixture and five research comparisons become
-exact. Five research originals graduate with unchanged SVG/PNG/provenance.
-All 908 prior exact fixture/research PNGs and every disposition are preserved.
-All nine Zeppelin variants improve; the corporate totals remain 134 exact /
-106 known / eighteen rejected, 9/27 fully exact documents. Original references
-remain frozen; detailed runs stay under ignored `artifacts/native-path-strokes-20261006/`.
+1,290 executed cases. Seventeen original control entries add fifteen exact and
+two known comparisons. Six curved-counter references are reused unchanged:
+three cubic variants become exact and three quadratic variants render with known
+differences. All 949 prior exact fixture/research PNGs and every previously
+referenced render retain complete identity. Nepal and Kenya Default improve;
+the other ninety legacy PNGs remain unchanged. Sixty fresh captures for twenty
+configurations are stable and healthy. Coca-Cola's nine original corporate
+variants now render with measured differences; all other 249 corporate records
+and reference PNGs remain unchanged. The corporate totals are 134 exact /
+115 known / nine rejected, 9/27 fully exact documents. Detailed runs stay under
+ignored `artifacts/authored-fill-admission-20261006/`.
 
 ## Frozen corporate cohort
 
@@ -43,8 +46,8 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 240 rendered comparisons (134 exact, 106 known differences)
-and eighteen renderer rejections. No variants lack references. All nine variants
+all 258 references: 249 rendered comparisons (134 exact, 115 known differences)
+and nine renderer rejections. No variants lack references. All nine variants
 of YouTube, Ford, ROC HCVS, Artsy and NASA remain exact. SimpleX, Omega and Google
 are now exact in all twelve/twelve/nine variants respectively. The YouTube PNGs retain
 stable healthy capture triples. `inv-027-native-route.json`

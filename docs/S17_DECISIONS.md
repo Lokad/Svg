@@ -1,50 +1,45 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Native wider path offsets, joins/caps and closed seams
-improve all 24 untuned controls and all nine Zeppelin variants.
-Multi-contour native stroke preparation now removes unused pairwise contact
-scans while preserving every bank/corporate result.
+Updated 2026-10-06. Directed authored-fill admission and retained centerline
+instance strokes remove a required wordmark's contour gate.
 [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
 Exact documents remain Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA,
 IKEA and Google: **9/27**, marks **3/13**, wordmarks **6/14**. S17 requires
 at least **23/27**, including 11/13 marks and 12/14 wordmarks. Membership,
 holdouts, options, original inputs and browser references remain frozen.
 
-Current evidence: **1,145 fixtures = 937 exact + 178 known + 30 rejected**,
-649 base documents / 496 variants; **36 research probes = twelve exact +
-23 known + one rejected**; and 92 legacy Default renders: **1,273 cases**.
-Forty-five prior PNGs improve (35 fixtures, ten research); every disposition
-and all 908 prior exact fixture/research PNGs are preserved. Twenty-one fixture
-and five research comparisons become exact; the five research originals graduate
-with unchanged references. Twenty-four controls preceded edits/capture and eight
-supplemental unit-contract controls followed the edit. All 96 fresh captures are
-stable/healthy; the 37 added fixture entries include 15 exact and 22 known cases.
+Current evidence: **1,162 fixtures = 955 exact + 183 known + 24 rejected**,
+666 base documents / 496 variants; **36 research probes = twelve exact +
+23 known + one rejected**; and 92 legacy Default renders: **1,290 cases**.
+Six existing curved-counter variants graduate against unchanged PNGs: three
+cubic variants are exact and three quadratic variants remain known differences.
+Seventeen new entries add fifteen exact and two known controls. All 949 prior
+exact fixture/research PNGs and every previously referenced render preserve
+complete identity. Nepal and Kenya Default improve; ninety other PNGs remain.
 
-Windows locked restore, nine-project Release build and **3,760 tests**
-(3,594 core + 160 visual + six FontProbe) pass. Unchanged compiled-native
-functions validate 1,920 cases / 27,890 complete offset/join/cap/closure commands.
-The adapters exclude native path iteration/lookahead, rectangle specialization,
-stroke-and-fill center removal and painting. All 25 memory scenarios,
-package/installed-consumer, Chrome smoke and artifact validation pass.
-Thirty-nine matching recipes preserve inputs, parser work, all PNGs, value
-layouts and accounted peaks; eleven use less total work. The wider dashed
-cubic falls 466,033 → 27,985 after removing unused contact scans.
-Representative performance remains open.
+The corporate matrix has **249 rendered comparisons (134 exact, 115 known)**
+and nine UnsupportedFeature outcomes. Coca-Cola now renders all nine original
+variants, with transparent differences of 258/667/1,202 pixels at small/
+intended/large sizes. All other 249 records and 134 exact PNGs are unchanged.
+The required wordmark remains in the failing denominator.
 
-All 258 corporate dispositions and 134 exact PNGs are preserved: **240 rendered
-comparisons (134 exact, 106 known)** and eighteen UnsupportedFeature outcomes.
-Only Zeppelin's nine PNGs change, with transparent mismatch counts falling
-385/859/1,826 → 271/573/1,165 at small/intended/large sizes. SG Rotation retains
-903/2,104/4,233 transparent differences. Eisenbahn small remains one/zero/one
-pixels from exact across backgrounds.
+Windows locked restore, nine-project Release build and **3,780 tests**
+(3,614 core + 160 visual + six FontProbe) pass. Sixty fresh captures for twenty
+configurations are stable, healthy and cleaned. Twelve preceded production
+edits; six supplementary controls and two legacy witnesses followed them.
+All 25 memory scenarios, package/installed-consumer and artifact checks pass.
+The Windows validator reuses the earlier pinned-browser smoke.
 
-Shared path/polyline construction now retains original source curves through
-fitting and placement, including painted instances. Bare movetos are empty;
-non-scaling dash lengths stay in host coordinates. Remaining stroke scan/clip/
-paint fidelity, sampled shape routes, transformed/pathLength dash coverage,
-other hairline contexts, conical/multistop coordinates, cache history,
-representative performance and Linux remain open. S8 measurement is complete
-for this cohort; S17 remains unmet. Detailed studies stay under ignored artifacts.
+Thirty-nine matched recipes preserve inputs, all PNGs and value layouts. Twenty
+complete records are unchanged; nineteen use less parser/total work. Seven
+accounted peaks increase 24–3,308 bytes and eleven decrease. These selected local
+observations do not establish representative performance.
+
+Remaining corporate curve/clip events, Target's inert style admission, shape/
+paint hairlines and bitmap contexts, sampled shape routes, transformed/pathLength
+dash coverage, conical/multistop coordinates, cache history, representative
+performance and Linux remain open. Detailed studies stay under ignored artifacts;
+Git identifies code and ordinary edits require no reference hash refresh.
 
 ## Q1 - numeric exact-document target: selected
 

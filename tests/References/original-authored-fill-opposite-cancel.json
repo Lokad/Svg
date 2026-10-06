@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-opposite-cancel",
+  "referencePng": "original-authored-fill-opposite-cancel.png",
+  "referenceSha256": "ac1437ba1e8504dc9895f3ee1a3b28fc0d478e2fd431049ed921f726c9882000",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "2880248a695c3461585f1d760e7bd92a06df89c72bf7e646cf7e8857e91d3f01",
+  "candidateSha256": "dc7c08cc41ace5d206bdac61330e7a7af84cc23dbf5af31cbf8d5a13e014d602",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

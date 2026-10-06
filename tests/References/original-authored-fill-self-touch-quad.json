@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-self-touch-quad",
+  "referencePng": "original-authored-fill-self-touch-quad.png",
+  "referenceSha256": "14dffc5ea2f6fc443507c4af4659e1f99270c9656c75761107ce1cf39876e11e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "111bbe0b3e3336be19e6ae0ff15f7f3779681fb5826929697496166fe9de44e7",
+  "candidateSha256": "705abb66cb6ade209d3e2b3755f961903ac0fb5be4f16931351f38442b1a7a6a",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 1,
+    "maximumChannelError": 5,
+    "maximumAlphaError": 5,
+    "exact": false,
+    "alphaErrorMass": 5
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

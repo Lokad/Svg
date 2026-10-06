@@ -5991,3 +5991,69 @@ peaks; local timing ranges remain exploratory. See the
 Detailed studies remain under ignored `artifacts/native-stroke-preparation-20261006/`.
 Remaining scan/clip/paint fidelity, representative performance, Linux and S17
 retain their existing requirements.
+
+## Directed authored-fill admission (2026-10-06)
+
+Curved and fractional filled paths retain scene coordinates and original native
+float commands without contact splitting, duplicate merging or dust welding.
+Scene bounds still serve paint boxes and instance placement. Raster replay owns
+directed nonzero winding and parity: absent signs retain winding direction;
+unit votes serve even-odd. Existing integer polygon, unpainted fallback,
+transform/arc and finite-coordinate gates remain. Reservations precede retained
+arrays and command owners; bounded copying observes shared work/cancellation.
+
+Inherited strokes on eligible unstyled path definitions consume authored
+centerlines through the same native constructor as direct paths. Stroked use
+placement keeps its existing width calculation and uniform-scale gates. This
+also retains hairlines and fitted wider curves instead of stroking a fill
+boundary altered by normalization. Round joins are admitted for eligible path
+definitions; incompatible rectangle/styled definitions still reject. Failed
+publication releases the temporary geometry owners.
+
+The first prototype exposed a legacy dependency: Nepal's use stroke outlined the
+new raw contour through the old sampled polyline routine, worsening Default
+542 → 2,399 differing pixels and 1,026 → 22,788 alpha error. Using original verbs
+repairs that regression and improves the original comparison to 477 pixels with
+zero alpha error. Kenya improves 139 → 61 pixels with alpha already exact. These
+two Default outputs change; ninety others remain identical.
+
+The complete prior 1,273-case sweep admits six curved-counter variants with their
+original references. Three cubic variants become exact. Quadratic variants
+retain 566/566/539 changed pixels on transparent/white/black, with transparent
+alpha error mass 6,022. Every previously referenced render, all 949 prior exact
+fixture/research PNGs and all other dispositions preserve complete records.
+Seventeen new fixture entries add fifteen exact and two known controls. The
+current 1,290-case bank contains 1,162 fixtures (955 exact, 183 known, 24 rejected),
+36 research probes (twelve exact, 23 known, one rejected) and 92 Default renders.
+
+All nine original Coca-Cola variants now render against their frozen references.
+Transparent differences remain 258/667/1,202 pixels at small/intended/large sizes;
+none is exact. All other 249 corporate records and 134 exact PNGs are unchanged.
+The cohort remains 9/27 exact documents, with 134 exact / 115 known / nine
+rejected comparisons. Target's inert style declarations remain its admission
+blocker. The full S17 denominator and stratum minima remain unchanged.
+
+Twelve independent configurations preceded production edits. Six supplementary
+contract controls and two legacy witnesses followed the edits. Their sixty
+fresh browser captures are byte-identical within every triple, healthy and
+profile-cleaned. One predeclared two-rectangle pattern remains rejected by the
+unchanged tile gate; it is retained in the ignored study. Existing density and
+corporate PNGs and capture provenance remain unchanged.
+
+All 3,780 tests (3,614 core, 160 visual, six FontProbe), locked restore/Release
+build, 25 memory scenarios and installed package checks pass. Tests cover
+coincident winding/parity, retained controls and tiny endpoints, seven material/
+instance combinations through six public outputs, work/memory denial, cleanup,
+cancellation and retry. The Windows artifact validator reuses earlier pinned
+Chrome smoke evidence. No Linux/remote execution is claimed.
+
+Thirty-nine matched recipes preserve all input/PNG identities and value layouts.
+Nineteen use less parser and total work; twenty complete records are unchanged.
+Seven accounted peaks rise by 24–3,308 bytes and eleven fall. Local timing and
+allocation observations remain exploratory; see the
+[benchmark record](BENCHMARKS.md#directed-authored-fill-observations-2026-10-06).
+Detailed captures, sweeps, ledgers and timing batches remain under ignored
+`artifacts/authored-fill-admission-20261006/`. Git identifies implementation;
+source/build/diagnostic hashes are not recorded. General numerical fidelity,
+shape/paint hairlines, bitmap contexts, representative performance, Linux and
+S17 remain open.

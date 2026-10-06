@@ -41,6 +41,8 @@ internal static class SvgReferenceResolver
         ArgumentNullException.ThrowIfNull(workCounter);
         if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbol(definition, symbolBox, reference, frame, state, workCounter, cancellationToken);
         if (reference.StrokeOverride is not null && reference.PaintServerId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked paint-server use instances are not implemented.");
+        if (reference.StrokeOverride is { Join: SvgStrokeJoin.Round } && (definition.InstanceStrokeMiterLimit is null || definition.Geometries.Length != 1 || definition.Geometries[0].Kind != SvgGeometryKind.PolygonFill))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round-joined use strokes require an unstyled path definition.");
         if (reference.PaintServerId is not null) return [LowerDirectInstancePaintFill(definition, reference, frame, state)];
         RequireUniformOutlineScales(definition, reference);
         RequireAdmittedInstanceMagnification(definition, reference);
@@ -67,7 +69,7 @@ internal static class SvgReferenceResolver
                         if (reference.StrokeOverride is not null)
                         {
                             if (definition.InstanceStrokeMiterLimit is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke styles on use elements require an unstyled single-contour definition.");
-                            foreach (SvgGeometry outline in ApplyInstanceStrokeOutlines(applied[^1].Polygon, definition, reference, reference.StrokeOverride.Value, frame, state, workCounter, cancellationToken)) applied.Add(outline);
+                            foreach (SvgGeometry outline in ApplyInstanceStrokeOutlines(applied[^1], definition, reference, reference.StrokeOverride.Value, frame, state, workCounter, cancellationToken)) applied.Add(outline);
                         }
                         break;
                     case SvgGeometryKind.GradientPolygon:
@@ -104,7 +106,7 @@ internal static class SvgReferenceResolver
                 foreach (SvgGeometry geometry in sources) geometry.Dispose();
         }
 
-        static SvgGeometry[] ApplyInstanceStrokeOutlines(SvgPolygonFill placed, SvgDefinition definition, SvgUseReference reference, SvgUseStrokeOverride stroke, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgGeometry[] ApplyInstanceStrokeOutlines(SvgGeometry placedGeometry, SvgDefinition definition, SvgUseReference reference, SvgUseStrokeOverride stroke, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(state);
             ArgumentNullException.ThrowIfNull(workCounter);
@@ -116,6 +118,27 @@ internal static class SvgReferenceResolver
             double deviceWidth = stroke.Width * Math.Abs(placementScale) * Math.Abs(frameScaleX);
             if (Math.Abs(deviceWidth - Math.Round(deviceWidth)) <= 1e-9) deviceWidth = Math.Round(deviceWidth);
             if (!double.IsFinite(deviceWidth) || deviceWidth <= 0 || deviceWidth > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
+            SvgPolygonFill placed = placedGeometry.Polygon;
+            if (placedGeometry.AuthoredPath is SvgAuthoredPath retained)
+            {
+                // Stroke the authored centerline, including contacts and curves,
+                // rather than a fill boundary changed by contour separation.
+                using RenderBudget.BudgetReservation owner = state.Budget.Reserve(128, SvgMemoryCategory.Geometry);
+                using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+                using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+                using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "path", true, false,
+                    int.MaxValue, state.Budget, workCounter, cancellationToken);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
+                foreach (SvgAuthoredPathCommand command in retained.Commands) commands.Add(command);
+                SvgColor nativeColor = SvgPaintResolver.ResolveFillColor(stroke.Paint, 255);
+                nativeColor = new(nativeColor.Red, nativeColor.Green, nativeColor.Blue, MultiplyAlpha(nativeColor.Alpha, reference.Opacity));
+                SvgViewportFrame? clipFrame = placed.Clip is SvgClipBox clip ? new(0, 0, 1, 1, null, null, clip, 0) : null;
+                using SvgParsedGeometry native = lowering.LowerNativeStrokeCommands(commands, retained.SceneMap,
+                    deviceWidth, deviceWidth, miterLimit, SvgStrokeCap.Butt, stroke.Join, null, 0, null,
+                    true, nativeColor, reference.IsPainted, state.OutputMagnification, clipFrame, state.Budget);
+                try { return native.Geometries.ToArray(); }
+                catch { native.Discard(); throw; }
+            }
             long wantedPoints = 6L * placed.Points.Length + 8;
             if (stroke.Join == SvgStrokeJoin.Round)
             {

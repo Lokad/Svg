@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-use-stroke-half-miter",
+  "referencePng": "original-authored-fill-use-stroke-half-miter.png",
+  "referenceSha256": "3b43a548d9fe5d2958cd72c482ccea44b894813b145b54ee9d33c439b717f4d2",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "bf208ec9d27c5dc62272bc089c5177864b6a9536f2b36d8cd9c3710293153866",
+  "candidateSha256": "d61eb5e2d5404d4437e15d4b6e309ba82079358030ab57eece5e1c027a29762e",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": false,
+  "declaredBeforeCaptures": true
+}

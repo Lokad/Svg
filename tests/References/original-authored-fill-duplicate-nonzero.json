@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-duplicate-nonzero",
+  "referencePng": "original-authored-fill-duplicate-nonzero.png",
+  "referenceSha256": "8b156e6be6504b588a225413cd4ffb10bb84f2d99f827c4271925a6b1fe01285",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "5a8ee43551cf0677fce9935e46a45885ee64cd5375837e8ccf2fad736bfc5beb",
+  "candidateSha256": "e5db3a597e1682b44a8d83f4c09dfd1276e4855ca650ba8b747de21292a3926d",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

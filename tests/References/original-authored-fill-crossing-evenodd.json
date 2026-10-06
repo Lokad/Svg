@@ -1,0 +1,31 @@
+{
+  "fixtureId": "original-authored-fill-crossing-evenodd",
+  "referencePng": "original-authored-fill-crossing-evenodd.png",
+  "referenceSha256": "b405d2749e52c1a8f0da5a895a7b337ec0b3da7f0d26230fe3bf96494156fda2",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "6555f86a509cb9c5875239d3e3c683139b0c97c7b83cd4cbaab8ad90981f0670",
+  "candidateSha256": "f658355a41a711963188f89e03222507fd2c947d090368cb77ff6f370c580254",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}
