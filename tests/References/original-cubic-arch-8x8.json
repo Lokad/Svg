@@ -1,0 +1,23 @@
+{
+  "fixtureId": "original-cubic-arch-8x8",
+  "referencePng": "original-cubic-arch-8x8.png",
+  "referenceSha256": "85a99a3939c0928043bd96d829b30b012facf19f25be414ae7cde0b192d2a5fc",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "2",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

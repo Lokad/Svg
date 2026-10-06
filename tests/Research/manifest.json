@@ -15,14 +15,14 @@
       "height": 8,
       "candidateError": "UnsupportedFeature",
     "admittedRendering": {
-      "changedPixelCount": 2,
-      "maximumChannelError": 4,
-      "maximumAlphaError": 4,
-      "alphaChangedPixelCount": 2,
-      "minimumMismatchX": 1,
-      "minimumMismatchY": 3,
-      "maximumMismatchX": 6,
-      "maximumMismatchY": 3
+      "changedPixelCount": 0,
+      "maximumChannelError": 0,
+      "maximumAlphaError": 0,
+      "alphaChangedPixelCount": 0,
+      "minimumMismatchX": 8,
+      "minimumMismatchY": 8,
+      "maximumMismatchX": -1,
+      "maximumMismatchY": -1
     },
       "oracle": {
         "referencePng": "references/cubic-arch-8x8.png",
@@ -380,10 +380,10 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 46,
+        "changedPixelCount": 48,
         "maximumChannelError": 77,
         "maximumAlphaError": 77,
-        "alphaChangedPixelCount": 46,
+        "alphaChangedPixelCount": 48,
         "minimumMismatchX": 2,
         "minimumMismatchY": 2,
         "maximumMismatchX": 13,
@@ -506,10 +506,10 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 53,
+        "changedPixelCount": 51,
         "maximumChannelError": 56,
         "maximumAlphaError": 56,
-        "alphaChangedPixelCount": 53,
+        "alphaChangedPixelCount": 51,
         "minimumMismatchX": 2,
         "minimumMismatchY": 2,
         "maximumMismatchX": 13,
@@ -1016,14 +1016,14 @@
       "width": 8,
       "height": 8,
       "admittedRendering": {
-        "changedPixelCount": 1,
-        "maximumChannelError": 1,
-        "maximumAlphaError": 1,
-        "alphaChangedPixelCount": 1,
-        "minimumMismatchX": 0,
-        "minimumMismatchY": 0,
-        "maximumMismatchX": 0,
-        "maximumMismatchY": 0
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 8,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/shared-pixel-030-8x8.png",
@@ -1051,14 +1051,14 @@
       "width": 8,
       "height": 8,
       "admittedRendering": {
-        "changedPixelCount": 1,
-        "maximumChannelError": 1,
-        "maximumAlphaError": 1,
-        "alphaChangedPixelCount": 1,
-        "minimumMismatchX": 0,
-        "minimumMismatchY": 0,
-        "maximumMismatchX": 0,
-        "maximumMismatchY": 0
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 8,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/shared-pixel-050-8x8.png",
@@ -1094,8 +1094,8 @@
       "height": 16,
       "admittedRendering": {
         "changedPixelCount": 44,
-        "maximumChannelError": 159,
-        "maximumAlphaError": 159,
+        "maximumChannelError": 160,
+        "maximumAlphaError": 160,
         "alphaChangedPixelCount": 44,
         "minimumMismatchX": 0,
         "minimumMismatchY": 6,
@@ -1116,7 +1116,7 @@
         "decodedPixelStability": "identical"
       }
     },
-    {"id":"research-dashed-cubic-16x16","path":"dashed-cubic-16x16.svg","creator":"Lokad.Svg contributors","retrievalDate":"2026-10-02","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","sourceSha256":"d3edcfb5c67deeb726f4335f03d2c69ae36900fe0bd9ca41f339b6a04ecd9d2d","featureTags":["geometry","stroke","dash","calibration"],"width":16,"height":16,"admittedRendering":{"changedPixelCount":36,"maximumChannelError":58,"maximumAlphaError":58,"alphaChangedPixelCount":36,"minimumMismatchX":1,"minimumMismatchY":4,"maximumMismatchX":15,"maximumMismatchY":10},"oracle":{"referencePng":"references/dashed-cubic-16x16.png","referenceSha256":"8e57c632348274f2d5edcdf82b9825176056fb1ff6c3969e41a22c3b1da5fdf0","chromeVersion":"153.0.8010.52","chromiumRevision":"1681091","chromeExecutableSha256":"f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9","platform":"win64","captureRecipeRevision":"3","deviceScaleFactor":1,"background":"transparent","freshProcessCaptures":3,"decodedPixelStability":"identical"},"admittedRenderingCandidateSha256":"d0f90ec40b32dcbd9402b9f8812c423ee98aabddd618738b48ac49ec08ab6a20"},
+    {"id":"research-dashed-cubic-16x16","path":"dashed-cubic-16x16.svg","creator":"Lokad.Svg contributors","retrievalDate":"2026-10-02","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","sourceSha256":"d3edcfb5c67deeb726f4335f03d2c69ae36900fe0bd9ca41f339b6a04ecd9d2d","featureTags":["geometry","stroke","dash","calibration"],"width":16,"height":16,"admittedRendering":{"changedPixelCount":36,"maximumChannelError":57,"maximumAlphaError":57,"alphaChangedPixelCount":36,"minimumMismatchX":1,"minimumMismatchY":4,"maximumMismatchX":15,"maximumMismatchY":10},"oracle":{"referencePng":"references/dashed-cubic-16x16.png","referenceSha256":"8e57c632348274f2d5edcdf82b9825176056fb1ff6c3969e41a22c3b1da5fdf0","chromeVersion":"153.0.8010.52","chromiumRevision":"1681091","chromeExecutableSha256":"f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9","platform":"win64","captureRecipeRevision":"3","deviceScaleFactor":1,"background":"transparent","freshProcessCaptures":3,"decodedPixelStability":"identical"},"admittedRenderingCandidateSha256":"d0f90ec40b32dcbd9402b9f8812c423ee98aabddd618738b48ac49ec08ab6a20"},
     {
       "id": "research-quad-stroke-16x16",
       "path": "quad-stroke-16x16.svg",

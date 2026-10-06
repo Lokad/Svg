@@ -6,7 +6,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgCubicSpanWalkerTests
 {
     [Fact]
-    public void Retained_cubic_expansion_reserves_all_kept_edges_before_allocation()
+    public void Convex_cubic_reserves_both_live_monotonic_edges_before_allocation()
     {
         SvgDevicePoint[] points = [new(8, 48), new(32, 8), new(56, 48)];
         SvgCubicSpan[] spans = [new(0, 0, 2, new(8, 0), new(56, 0))];
@@ -14,23 +14,30 @@ public sealed class SvgCubicSpanWalkerTests
         using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(points, [3], [], false, null, SvgPolygonMapping.FlattenedCurves, [], spans, 0, 64, 0, 64, 64, 64, budget, out long _, out bool eligible, CancellationToken.None);
 
         Assert.True(eligible);
-        Assert.True(walker.EdgeCount > points.Length);
+        Assert.Equal(2, walker.EdgeCount);
         // Each kept edge and the two sentinels need at least the live-state
         // object footprint; the three row buffers need another nine bytes/pixel.
         Assert.True(budget.Snapshot().CurrentBytes >= (walker.EdgeCount + 2L) * 176 + 64 * 9);
     }
 
-    [Fact]
-    public void Later_row_restores_live_curve_displacement_independently_of_previous_rows()
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void Later_row_restores_live_curve_displacement_independently_of_previous_rows(bool convex, bool clipped)
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,8 C52,4 56,60 8,56 C32,48 32,16 8,8 Z' fill='blue'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        byte[] input = convex
+            ? "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,48 C8,0 56,0 56,48 Z' fill='blue'/></svg>"u8.ToArray()
+            : "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><path d='M8,8 C52,4 56,60 8,56 C32,48 32,16 8,8 Z' fill='blue'/></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         var polygon = geometry.Polygon;
-        Assert.Equal(2, polygon.CubicSpans.Length);
+        Assert.Equal(convex ? 1 : 2, polygon.CubicSpans.Length);
         RenderBudget budget = new(1_000_000);
         ReadOnlySpan<int> votes = polygon.Signs is int[] roles ? roles : Array.Empty<int>();
-        using SvgAnalyticCoverage sequential = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, budget, out long _, out bool sequentialEligible, CancellationToken.None);
-        using SvgAnalyticCoverage skipped = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, budget, out long _, out bool skippedEligible, CancellationToken.None);
+        SvgAnalyticClipContext? clip = clipped ? new(new(10, 0, 48, 64)) : null;
+        using SvgAnalyticCoverage sequential = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, new(0, 64), clip, 1_000_000, budget, out long _, out bool sequentialEligible, CancellationToken.None);
+        using SvgAnalyticCoverage skipped = SvgAnalyticCoverage.Prepare(polygon.Points, polygon.ContourEnds, votes, polygon.IsEvenOdd, polygon.Signs, polygon.Mapping, polygon.QuadSpans, polygon.CubicSpans, 0, 64, 0, 64, 64, 64, new(0, 64), clip, 1_000_000, budget, out long _, out bool skippedEligible, CancellationToken.None);
         Assert.True(sequentialEligible);
         Assert.True(skippedEligible);
 
@@ -47,9 +54,49 @@ public sealed class SvgCubicSpanWalkerTests
             skipped.PaintPixel(x, skippedPixels.AsSpan(x * 4, 4), paint, SvgAnalyticClipCoverage.Full);
         }
         Assert.Equal(skippedPixels, sequentialPixels);
+        sequential.PrepareRow(24, out long _, CancellationToken.None);
+        byte[] repeatedPixels = new byte[64 * 4];
+        for (int x = 0; x < 64; x++)
+            sequential.PaintPixel(x, repeatedPixels.AsSpan(x * 4, 4), paint, SvgAnalyticClipCoverage.Full);
+        Assert.Equal(skippedPixels, repeatedPixels);
         // Skipping earlier rows may require growing the operation buffer here.
         Assert.True(skippedWork >= sequentialWork);
         Assert.Contains(Enumerable.Range(0, 64).Select(x => sequentialPixels[x * 4 + 3]), alpha => alpha > 0 && alpha < 255);
+    }
+
+    [Theory]
+    [InlineData("storage")]
+    [InlineData("work")]
+    [InlineData("cancel")]
+    public void Convex_cubic_denial_releases_storage_and_allows_retry(string deniedPhase)
+    {
+        SvgDevicePoint[] points = [new(8, 48), new(32, 8), new(56, 48)];
+        SvgCubicSpan[] spans = [new(0, 0, 2, new(8, 0), new(56, 0))];
+        SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.FlattenedCurves, [], spans, new(0, 0, 64, 64), 64, 64);
+        RenderBudget budget = new(deniedPhase == "storage" ? 1_000 : 1_000_000);
+        using CancellationTokenSource cancellation = new();
+        if (deniedPhase == "cancel") cancellation.Cancel();
+        try
+        {
+            using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, deniedPhase == "work" ? 0 : 1_000_000, budget, out long _, out bool _, cancellation.Token);
+            Assert.Fail("Preparation must honor the denied resource.");
+        }
+        catch (SvgException exception)
+        {
+            Assert.NotEqual("cancel", deniedPhase);
+            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        }
+        catch (OperationCanceledException) { Assert.Equal("cancel", deniedPhase); }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        RenderBudget retryBudget = new(1_000_000);
+        {
+            using SvgAnalyticCoverage retry = SvgAnalyticCoverage.Prepare(ref preparation, 0, 64, 0, 64, new(0, 64), null, SvgAnalyticPaintClip.Binary, 1_000_000, retryBudget, out long _, out bool eligible, CancellationToken.None);
+            Assert.True(eligible);
+            Assert.Equal(2, retry.EdgeCount);
+            retry.PrepareRow(24, out long work, CancellationToken.None);
+            Assert.True(work > 0);
+        }
+        Assert.Equal(0, retryBudget.Snapshot().CurrentBytes);
     }
 
     private static (SvgDevicePoint[] Points, int[] Ends, int[]? Signs, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans) LowerCubicArch(bool evenOdd)

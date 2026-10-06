@@ -129,7 +129,7 @@ public sealed class SvgStrokeFillTests
         // Row 4 stroke union: curve-sourced outlines bypass separation until row-6 curve-aware completion.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,12 Q8,2 14,12' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
 
-        Assert.Equal(8435, AlphaSum(pixels));
+        Assert.Equal(8434, AlphaSum(pixels));
         Assert.Equal(new SvgColor(255, 0, 0, 200), Pixel(pixels, 16, 6, 6));
         Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 16, 8, 8));
     }

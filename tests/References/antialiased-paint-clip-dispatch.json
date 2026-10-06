@@ -2185,24 +2185,24 @@
       },
       "after": {
         "dimensionsMatch": true,
-        "changedPixelCount": 74,
+        "changedPixelCount": 77,
         "maximumChannelError": 255,
-        "meanAbsoluteError": 0.0740966796875,
-        "rootMeanSquareError": 2.9585350576763494,
+        "meanAbsoluteError": 0.0728759765625,
+        "rootMeanSquareError": 2.9457165671106242,
         "maximumAlphaError": 44,
-        "alphaChangedPixelCount": 74,
+        "alphaChangedPixelCount": 77,
         "minimumMismatchX": 8,
         "minimumMismatchY": 8,
         "maximumMismatchX": 55,
         "maximumMismatchY": 55,
         "exact": false,
-        "alphaErrorMass": 704,
-        "overCoveragePixelCount": 34,
-        "underCoveragePixelCount": 40,
+        "alphaErrorMass": 684,
+        "overCoveragePixelCount": 33,
+        "underCoveragePixelCount": 44,
         "opaqueLostPixelCount": 0,
         "opaqueAddedPixelCount": 0
       },
-      "candidateSha256": "c01e82ea8489aa58eda03aadfcc4742ba94d9cf45d8c3ad305512da8c2876694"
+      "candidateSha256": "f741e131cb68387a3303a8406548095304d94c9e99f5080fc6d5069df62b45aa"
     },
     {
       "id": "original-aa-clip-mask-region-unmasked-transparent",
@@ -2248,24 +2248,24 @@
       },
       "after": {
         "dimensionsMatch": true,
-        "changedPixelCount": 74,
+        "changedPixelCount": 77,
         "maximumChannelError": 255,
-        "meanAbsoluteError": 0.0740966796875,
-        "rootMeanSquareError": 2.9585350576763494,
+        "meanAbsoluteError": 0.0728759765625,
+        "rootMeanSquareError": 2.9457165671106242,
         "maximumAlphaError": 44,
-        "alphaChangedPixelCount": 74,
+        "alphaChangedPixelCount": 77,
         "minimumMismatchX": 8,
         "minimumMismatchY": 8,
         "maximumMismatchX": 55,
         "maximumMismatchY": 55,
         "exact": false,
-        "alphaErrorMass": 704,
-        "overCoveragePixelCount": 34,
-        "underCoveragePixelCount": 40,
+        "alphaErrorMass": 684,
+        "overCoveragePixelCount": 33,
+        "underCoveragePixelCount": 44,
         "opaqueLostPixelCount": 0,
         "opaqueAddedPixelCount": 0
       },
-      "candidateSha256": "c01e82ea8489aa58eda03aadfcc4742ba94d9cf45d8c3ad305512da8c2876694"
+      "candidateSha256": "f741e131cb68387a3303a8406548095304d94c9e99f5080fc6d5069df62b45aa"
     }
   ],
   "pairWitnesses": [

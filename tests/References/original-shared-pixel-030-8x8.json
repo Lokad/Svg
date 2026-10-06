@@ -1,0 +1,23 @@
+{
+  "fixtureId": "original-shared-pixel-030-8x8",
+  "referencePng": "original-shared-pixel-030-8x8.png",
+  "referenceSha256": "a6c2aee0c5ea0c602f677c9e6fe0f32d5117f3f718f1fa1259157619094cd410",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 8,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "comparison": {
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

@@ -15,18 +15,20 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current endpoint-arc checkpoint
+## Current convex-cubic and incoming-edge checkpoint
 
-Eligible authored fills retain native float endpoint arcs as rational conics.
-The bank has 1,048 fixtures (853 exact, 165 known, 30 rejected), 36 research
-probes and 92 legacy Default cases. Two research arc probes also join the exact
-fixture bank with unchanged source/reference bytes and capture provenance.
-Every prior exact image and disposition is preserved. Both known original arc
-fixtures improve, and all 54 changed corporate PNGs improve mismatch count.
-Corporate comparisons remain 121 exact / 119 known, with 8/27 fully exact
-documents. Twelve legacy Default PNGs change without a matching-options claim.
-Original references remain frozen. Detailed comparisons stay under ignored
-`artifacts/endpoint-arcs-20261006/`; code edits require no hash refresh.
+Convex and clipped cubics retain live monotonic edges. Incoming-edge
+intersections constrain strips even under the density shortcut. The bank has
+1,051 fixtures (869 exact, 152 known, 30 rejected), 36 research probes (five
+exact, 30 known, one rejected) and 92 legacy Default cases. Thirteen known
+fixtures become exact; the cubic arch and two shared-pixel research probes also
+join the exact fixture bank with unchanged assets and capture provenance.
+All prior exact images and dispositions are preserved. Six known controls worsen
+in mismatch count and remain measured. Corporate comparisons are 133 exact /
+107 known, with 9/27 fully exact documents, including all nine IKEA variants.
+Ten legacy Default PNGs change without a matching-options claim. Original
+references remain frozen; raw comparisons stay under ignored
+`artifacts/convex-curve-rows-20261006/`. Code edits require no hash refresh.
 
 ## Frozen corporate cohort
 
@@ -42,7 +44,7 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 240 rendered comparisons (121 exact, 119 known differences)
+all 258 references: 240 rendered comparisons (133 exact, 107 known differences)
 and eighteen renderer rejections. No variants lack references. All nine variants
 of YouTube, Ford, ROC HCVS, Artsy and NASA remain exact. SimpleX, Omega and Google
 are now exact in all twelve/twelve/nine variants respectively. The YouTube PNGs retain
@@ -50,7 +52,7 @@ stable healthy capture triples. `inv-027-native-route.json`
 retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
-Eight documents are exact in every frozen variant (8/27). Known
+Nine documents are exact in every frozen variant (9/27), including IKEA. Known
 differences remain measured against the original images. The earlier native open-stroke
 construction improved all nine Rede Manchete variants, with no prior mismatch
 count increase and all 70 exact corporate PNGs preserved. Six original research

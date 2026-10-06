@@ -1699,3 +1699,45 @@ both process orders are slower. Toyota and Pepsi timings vary substantially,
 and unchanged Ford varies 14.942–19.264 ms before versus 15.978–47.364 ms after.
 These local measurements establish no representative performance improvement.
 All 25 memory scenarios pass; throughput and Linux validation remain open.
+
+## Convex cubic and incoming-edge observations (2026-10-06)
+
+Compare `b770997a` with live convex cubics and mandatory incoming-edge checks.
+Seventeen matched recipes add IKEA intended/large to the prior fifteen inputs.
+Each process warms eight times and records three batches; process order is
+baseline/current then current/baseline, after validation jobs finish. Input,
+viewport, scale, background and limits match. Raw observations remain under
+ignored `artifacts/convex-curve-rows-20261006/`; Git identifies implementation.
+
+All seventeen parser-work totals and accounted peaks are unchanged. IKEA
+intended raster work falls 48,672 → 43,756 and large falls 149,041 → 138,863;
+SimpleLogin grows 91,064 → 91,088. All fourteen other raster-work totals remain
+unchanged. The cubic scratch bound now reserves three live monotonic edges,
+rather than 192 independent line steps; clipped cubic pieces reserve one edge.
+The measured total-conversion peaks are dominated elsewhere. Geometry and other
+fixed record sizes remain unchanged.
+
+| Recipe | Before ms/conversion | After ms/conversion | Before allocated bytes | After allocated bytes |
+| --- | --- | --- | --- | --- |
+| ikea | 5.443–6.837 | 5.232–5.563 | 216,543–216,641 | 205,632–205,641 |
+| ikea-large | 5.690–10.088 | 5.560–8.949 | 319,433–319,828 | 308,273–308,874 |
+| simplelogin | 8.712–12.821 | 9.385–12.331 | 944,884–944,896 | 944,887–944,896 |
+| toyota | 53.733–66.009 | 55.411–64.008 | 2,851,200–2,853,418 | 2,851,200–2,853,426 |
+| pepsi | 20.958–23.719 | 21.677–24.029 | 1,022,860–1,022,940 | 1,022,860–1,022,908 |
+| simplex | 8.759–10.198 | 9.152–9.516 | 1,046,124–1,046,124 | 1,046,124–1,046,124 |
+| omega | 5.079–5.995 | 5.074–5.257 | 567,746–567,764 | 567,746–567,828 |
+| google | 3.021–3.716 | 2.798–3.033 | 365,768–365,852 | 365,728–365,780 |
+| tiny | 0.031–0.033 | 0.030–0.033 | 24,855–24,860 | 24,854–24,860 |
+| cap-unit | 0.048–0.057 | 0.047–0.053 | 35,527–35,530 | 35,527–35,530 |
+| cubic-meet | 0.133–0.164 | 0.130–0.139 | 43,750–43,763 | 43,750–43,763 |
+| cubic-slice | 0.198–0.213 | 0.193–0.203 | 47,740–47,745 | 47,740–47,745 |
+| nasa-small | 2.529–3.004 | 2.520–2.794 | 280,745–280,828 | 280,745–280,758 |
+| nasa-large | 20.117–25.060 | 20.180–21.247 | 1,470,964–1,471,081 | 1,470,964–1,471,017 |
+| nike | 13.028–13.758 | 13.100–13.476 | 1,606,284–1,607,529 | 1,605,356–1,607,488 |
+| blur | 18.763–19.673 | 18.941–19.514 | 1,801,228–1,802,800 | 1,801,940–1,802,736 |
+| ford | 15.099–16.654 | 15.645–16.149 | 1,048,152–1,048,305 | 1,048,120–1,048,241 |
+
+IKEA allocation decreases with live edge preparation. Host/JIT variation remains
+visible in unchanged recipes; these local ranges do not establish representative
+throughput or latency. All 25 memory scenarios and installed package consumers
+pass. Wider fidelity, representative profiling and Linux validation remain open.

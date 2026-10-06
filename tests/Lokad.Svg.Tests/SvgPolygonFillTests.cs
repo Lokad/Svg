@@ -443,12 +443,11 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(8, width);
         Assert.Equal(8, height);
         // R34: disjoint opposite contours share one pixel without cancelling.
-        // The sliver pins candidate identity (alpha 38) against the pinned
-        // Chrome triple (alpha 37, SHA-256 a6c2aee0); the twin below locks reversal invariance.
-        // The analytic multi walker adds disjoint sliver coverages like Chrome instead of
-        // cancelling opposite windings like the fan (23), closing the gap from 14 to 1.
-        Assert.Equal(new SvgColor(255, 0, 0, 38), Pixel(pixels, width, 0, 0));
-        Assert.Equal(38, AlphaSum(pixels));
+        // The six authored points trigger the density shortcut in this one-row
+        // shape. Newly arriving edges must still constrain the next strip.
+        // Its alpha now matches the unchanged pinned Chrome triple (37).
+        Assert.Equal(new SvgColor(255, 0, 0, 37), Pixel(pixels, width, 0, 0));
+        Assert.Equal(37, AlphaSum(pixels));
     }
 
     [Fact]

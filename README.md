@@ -36,14 +36,14 @@ and preserve the distinction between geometric clip edges and mask allocation
 bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
 paints apply the rectangle's snapped byte mask to each ordered operation.
 The frozen corporate matrix has all 258 reference images: 240 rendered
-comparisons (121 exact, 119 different) and eighteen retained renderer rejections.
-Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA and Google are exact in every
-declared variant: 8/27 documents. Authored fills retain directed winding and
+comparisons (133 exact, 107 different) and eighteen retained renderer rejections.
+Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google are exact in every
+declared variant: 9/27 documents. Authored fills retain directed winding and
 curves after scene normalization, with root/group composition before float
-rounding. Endpoint arcs retain native rational conics; all 54 changed corporate
-images improve mismatch count, with every prior exact image preserved. Two
-existing arc probes become exact. Broader event fidelity remains open; see
-[the design record](docs/RASTERIZATION_DESIGN.md#svg-endpoint-arc-conics-2026-10-06).
+rounding. Convex cubics retain live edges, and incoming intersections constrain
+dense-path strips. Every prior exact image is preserved; six known controls
+worsen slightly. Broader event fidelity remains open; see
+[the design record](docs/RASTERIZATION_DESIGN.md#convex-cubic-and-incoming-edge-rows-2026-10-06).
 Bitmap-local straight-edge clipping and float polygon mapping close Artsy's
 remaining variants. Native straight open-stroke construction and winding make
 six original miter/bevel probes and three viewBox configurations exact, and

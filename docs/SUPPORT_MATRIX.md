@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the endpoint-arc checkpoint, the 1,048 manifest entries contain
-853 exact decoded-pixel references, 165 known-difference renders and 30
+At the convex-cubic/incoming-edge checkpoint, the 1,051 manifest entries contain
+869 exact decoded-pixel references, 152 known-difference renders and 30
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -19,15 +19,18 @@ The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
 27 cases to rendering and nine Target cases to the existing unsupported `marker`
 style gate. At that checkpoint, previous rendered PNGs remained unchanged.
 The complete frozen matrix has
-240 rendered comparisons (121 exact, 119 known differences) and eighteen
+240 rendered comparisons (133 exact, 107 known differences) and eighteen
 independently captured renderer rejections. Ford, SimpleX, Omega, ROC HCVS, Artsy,
-YouTube, NASA and Google are exact in every declared variant: 8/27 documents,
-marks 3/13 and wordmarks 5/14. Eligible authored fills preserve directed winding
+YouTube, NASA, IKEA and Google are exact in every declared variant: 9/27 documents,
+marks 3/13 and wordmarks 6/14. Eligible authored fills preserve directed winding
 and retained curves after scene normalization, under either fill rule. Root/group
 placement composes before float rounding. Scene bounds, paint coordinates, clips
 and admission retain their existing contracts. All prior exact fixture/corporate
 PNGs are preserved. SVG endpoint arcs in eligible authored fills retain native
-float rational conics; all 54 changed corporate PNGs improve mismatch count.
+float rational conics. Convex cubics retain live edges and newly arriving edges
+retain intersection checks under dense walking. Of 45 changed corporate PNGs,
+42 improve mismatch count and three retain it. Six known synthetic cases worsen
+in mismatch count and remain measured.
 Stroke arcs retain their existing flattening. General event and native coordinate
 fidelity remain open.
 

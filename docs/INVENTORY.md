@@ -25,12 +25,14 @@ scope below. Ford's separately
 captured variant matrix does not turn the Default sweep into a fidelity rate.
 The selected curved corporate-mark checkpoint is achieved. The representative
 corporate rate is now fully measured for the first frozen cohort: all 258
-references cover 240 rendered comparisons (121 exact, 119 known differences) and
-eighteen rejections. Exact documents are 8/27, marks 3/13 and wordmarks 5/14.
+references cover 240 rendered comparisons (133 exact, 107 known differences) and
+eighteen rejections. Exact documents are 9/27, marks 3/13 and wordmarks 6/14.
 SimpleX, Omega and Google join Ford, ROC HCVS, Artsy, YouTube and NASA after
 authored directed fill replay. Every prior exact comparison and disposition is
-preserved. Endpoint-arc conics improve all 54 changed PNGs across SimpleLogin,
-Netflix, Liputan6, Toyota, Pepsi and IBM; exact-document counts remain unchanged.
+preserved. Live convex cubics and mandatory incoming-edge intersections make
+IKEA exact in all nine frozen variants. UAAR small also becomes exact; SDL
+intended improves. Of 45 changed corporate PNGs, 42 improve mismatch count and
+three retain it; none worsen.
 The dated checkpoint paragraphs below retain their historical results.
 There are no missing references or capture gaps. S17 still requires at least 80% exact documents overall and in each corporate
 stratum. YouTube is the selected curved mark; the first cohort is frozen below

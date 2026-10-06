@@ -1,37 +1,37 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Native float root mapping for retained curves makes all nine
-NASA variants exact. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain
-open. The exact documents are Ford, ROC HCVS, Artsy, YouTube and NASA: **5/27**,
-marks **3/13**, wordmarks **2/14**. S17 requires at least **23/27**, including at
-least 11/13 marks and 12/14 wordmarks. Membership, holdouts, options, inputs and
-original references remain frozen.
+Updated 2026-10-06. Live convex cubic edges and mandatory incoming-edge
+intersection checks make all nine IKEA variants exact. [PLAN.md](../PLAN.md)
+owns the queue; rows 3–7 and S17 remain open. Exact documents are Ford, SimpleX,
+Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google: **9/27**, marks **3/13**,
+wordmarks **6/14**. S17 requires at least **23/27**, including at least 11/13 marks
+and 12/14 wordmarks. Membership, holdouts, options, original inputs and browser
+references remain frozen.
 
-Current evidence: **1,042 fixtures = 847 exact + 165 known differences + 30
-rejections**, across 546 base documents / 496 variants. Research has 35 known
-renders + one rejection; legacy Default has 92 renders. The bank has **1,170
-cases**. Every prior fixture/research output, all 844 exact fixture PNGs and 70
-exact corporate PNGs are unchanged. Windows locked restore, nine-project Release
-build and **3,637 tests** (3,471 core + 160 visual + six FontProbe) pass. All 25
-memory scenarios, package/installed-consumer, Chrome smoke and artifact validation
-pass. Nine matched recipes record work/storage and overlapping local timings.
+Current evidence: **1,051 fixtures = 869 exact + 152 known differences + 30
+rejections**, across 555 base documents / 496 variants; **36 research probes =
+five exact + 30 known + one rejection**; and 92 legacy Default renders:
+**1,179 cases**. All 853 prior exact fixture PNGs and 121 exact corporate PNGs
+are preserved, as are all dispositions. Thirteen known fixtures become exact;
+three unchanged research probes also enter the exact bank. Windows locked
+restore, nine-project Release build and **3,690 tests** (3,524 core + 160 visual
++ six FontProbe) pass. All 25 memory scenarios, package/installed-consumer,
+Chrome smoke and artifact validation pass. Seventeen matched recipes record
+work/storage, allocations and local timing ranges.
 
-The corporate matrix has **240 rendered comparisons (73 exact, 167 known)** and
-eighteen UnsupportedFeature outcomes. Thirty-five PNGs change: seventeen improve
-in mismatch count, twelve worsen and six keep their count. Large SDL, SG Rotation,
-Party of Changes and Pepsi regressions remain measured. Nine fresh configurations
-add three exact, three known and three rejected cases; their 27 captures are
-stable and healthy, and their outcomes are unchanged by the repair. Controls
-were declared after the edit and before capture/comparison.
+The corporate matrix has **240 rendered comparisons (133 exact, 107 known)**
+and eighteen UnsupportedFeature outcomes. Forty-five PNGs change: 42 improve
+mismatch count and three retain their count; none worsen. Six known synthetic
+controls worsen in mismatch count, including the bevel probe's alpha-error mass;
+these remain measured against their original references. Ten legacy Default
+PNGs change without a matching-options fidelity claim.
 
-The earlier width-one cap regression remains sixteen differing pixels,
-alpha-error mass 42 and maximum alpha error eleven. Source/root operands still
-differ from recorded NASA browser coordinates despite exact output pixels.
-Thin/fractional events, closed/curved/dashed construction, clip/composition,
-conical/multistop coordinates, cache history, general fidelity, representative
-performance and Linux remain open. S8 measurement is complete for this cohort;
-S17 remains unmet. Studies stay under ignored
-`artifacts/corporate-curve-events-20261006/`.
+The width-one cap, thin/fractional events, closed/curved/dashed construction,
+clip/composition, conical/multistop coordinates, cache history, general fidelity,
+representative performance and Linux remain open. Earlier NASA operand
+discrepancies remain diagnostic evidence despite exact pixels. S8 measurement
+is complete for this cohort; S17 remains unmet. Detailed studies stay under
+ignored `artifacts/convex-curve-rows-20261006/`; Git identifies implementation.
 
 ## Q1 - numeric exact-document target: selected
 

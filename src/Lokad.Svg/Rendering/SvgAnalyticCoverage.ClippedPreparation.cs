@@ -14,7 +14,7 @@ internal ref partial struct SvgAnalyticCoverage
 
 
     /// <summary>Counts and constructs clipped verbs without retaining an intermediate piece tape.</summary>
-    /// <remarks>Both passes charge clipping, validation and traversal. Straight verbs construct edges in bitmap coordinates and then translate to canvas fixed space. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Rational convex edges retain live state; polynomial convex curves preserve their pre-stepped gate. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
+    /// <remarks>Both passes charge clipping, validation and traversal. Straight verbs construct edges in bitmap coordinates and then translate to canvas fixed space. Rational verbs convert after device mapping, one quadratic at a time through the same bounded piece buffer. The first pass proves an edge bound; the second reserves objects, list growth and final arrays before construction. Empty clipped curves stay empty. Cubic and rational convex edges retain live state; polynomial convex quadratics preserve their pre-stepped gate. Horizontal/AA paint clipping stays separate from curve clipping. Reservations transfer to the returned instance or release on every exception.</remarks>
     private static SvgAnalyticCoverage PrepareClipped(long nativePointCount, scoped ReadOnlySpan<SvgDevicePoint> points, scoped ReadOnlySpan<int> ends, scoped ReadOnlySpan<int> votes, bool hasVotes, bool isEvenOdd, SvgPolygonMapping mapping, SvgQuadSpan[] quads, SvgCubicSpan[] cubics, bool useSpans, bool convex, bool rawBox, bool useRunBlitter, SvgAnalyticPaintClip paintClip, bool usesHorizontalClip, int xStart, int xEnd, int yStart, int yEnd, SvgAnalyticClipBounds clip, SvgCpuBitmapOrigin origin, long maximumWork, RenderBudget budget, scoped ref long setupWork, out bool eligible, CancellationToken token)
     {
         eligible = false;
@@ -99,9 +99,9 @@ internal ref partial struct SvgAnalyticCoverage
                                 ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token);
                                 if (pass == 0)
                                 {
-                                    // Live pieces own one edge. Polynomial convex curves can
+                                    // Live pieces own one edge. Polynomial convex quadratics can
                                     // expand into at most 64 forward-difference steps.
-                                    maximumEdges += convex && !rational && piece.Kind != SvgAnalyticClipKind.Line ? 64 : 1;
+                                    maximumEdges += convex && !rational && piece.Kind == SvgAnalyticClipKind.Quad ? 64 : 1;
                                     continue;
                                 }
                                 if (kept is null) throw new InvalidOperationException("Clipped edge storage was not reserved.");
@@ -138,8 +138,7 @@ internal ref partial struct SvgAnalyticCoverage
                                         if (edgeWork == 0) edgeWork = 4;
                                         break;
                                     case SvgAnalyticClipKind.Cubic:
-                                        if (convex) AppendCubicPiece(kept, piece.First.Coordinates, piece.Second.Coordinates, piece.Third.Coordinates, piece.Fourth.Coordinates, ref contourEdges, ref edgeWork, token);
-                                        else BuildCubicLiveEdge(kept, piece.First.Coordinates, piece.Second.Coordinates, piece.Third.Coordinates, piece.Fourth.Coordinates, ref contourEdges, ref edgeWork);
+                                        BuildCubicLiveEdge(kept, piece.First.Coordinates, piece.Second.Coordinates, piece.Third.Coordinates, piece.Fourth.Coordinates, ref contourEdges, ref edgeWork);
                                         break;
                                     default: throw new InvalidOperationException("Unknown clipped analytic verb.");
                                 }

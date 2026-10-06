@@ -5586,3 +5586,56 @@ and slower local timings; representative performance remains open. Detailed
 reports, pixels, traces and timings stay under ignored
 `artifacts/endpoint-arcs-20261006/`. Git identifies implementation; no source,
 adapter, assembly, package or report hashes are introduced.
+
+## Convex cubic and incoming-edge rows (2026-10-06)
+
+Convex cubic preparation now retains the monotonic live edges already supported
+by convex walking, in clipped and uncut routes. Independent line expansion lost
+native smoothing at segment boundaries. Its obsolete helpers and unused static
+diagnostic counters are removed; reservations bound three live edges per cubic
+and one per clipped monotonic piece, retaining fallback capacity. Newly arriving
+edges always run the pinned native intersection checks, even when density skips
+checks on already active edges. Admission, polynomial quadratic construction,
+authored winding, paint boxes, clipping and stroke flattening keep their scope.
+
+A fresh IKEA browser picture confirms the yellow four-cubic oval's convex flag
+and all 109 authored wordmark commands/float points. The earlier isolated live
+model closed small/intended variants but left seven large lettering pixels. The
+incoming-edge repair restores row 33's missing quarter-strip constraint. All
+481 tick/trapezoid/add/direct events for that row match the pinned native walker.
+This diagnostic starts from managed initial states covered by separate native
+setter regressions; it does not establish complete native path construction.
+Raw pictures, commands, traces and reports stay under ignored
+`artifacts/convex-curve-rows-20261006/`; pinned upstream revisions identify code.
+
+Against `b770997a`, all 853 exact fixtures, all 121 exact corporate PNGs and every
+disposition are preserved. Thirteen known fixtures become exact, including the
+cubic/clip controls and dense one-row opposite-winding sliver. The cubic arch
+and two shared-pixel research probes become exact and also enter the exact
+fixture bank with unchanged SVG/PNG/provenance. Clipped/convex row checks cover
+sequential, skipped and repeated use; work/storage/cancellation denial leaves
+scratch released and the owner reusable. All 3,690 tests and Windows memory,
+browser/artifact and installed-package checks pass.
+
+Forty-five corporate PNGs change: 42 improve mismatch count and three retain it;
+none worsen. IKEA is exact in all nine frozen variants, taking the cohort to
+9/27 exact documents (marks 3/13, words 6/14) and 133 exact / 107 known rendered
+variants. UAAR small becomes exact; its intended variants remain six pixels
+different. SDL intended improves 13 → 6. Ten legacy Default PNGs change without
+a matching-options fidelity claim. Original inputs/options/references are frozen.
+
+Six known bank controls worsen in mismatch count. None loses or adds an opaque
+pixel, and maximum alpha error remains unchanged; the rounded controls improve
+absolute alpha-error mass while the bevel probe worsens:
+
+| Original control | Differing pixels | Alpha-error mass | Maximum alpha error |
+| --- | --- | --- | --- |
+| Gradient rounded mark | 76 → 79 | 706 → 684 | 44 |
+| Pattern rounded mark | 76 → 79 | 706 → 684 | 44 |
+| Mask rounded mark | 74 → 77 | 704 → 684 | 44 |
+| Mask-region masked twin | 74 → 77 | 704 → 684 | 44 |
+| Mask-region unmasked twin | 74 → 77 | 704 → 684 | 44 |
+| Research even-odd rounded bevel | 46 → 48 | 1,632 → 1,709 | 77 |
+
+General event/paint/stroke fidelity, representative performance, Linux and S17
+remain open. This checkpoint does not change the frozen release thresholds.
