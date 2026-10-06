@@ -35,13 +35,20 @@
   "declaredBeforeProductionEdit": true,
   "declaredBeforeGenericCountPrototype": true,
   "candidateOutcome": "renders",
-  "candidateSha256": "c6246cc927ade50897b10bef8d6b4028aa5657f735c19e731ca42ec0b128df35",
+  "candidateSha256": "605f8bf5b0d572f29c6a9b023f8cc9d1032dbc8c54189f456c5f1b0f48a2c89a",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 539,
-    "maximumChannelError": 19,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
-    "exact": false,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 640,
+    "minimumMismatchY": 400,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
     "alphaErrorMass": 0
   }
 }

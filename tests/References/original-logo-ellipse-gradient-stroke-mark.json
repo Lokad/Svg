@@ -14,22 +14,22 @@
   "background": "transparent",
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
-  "candidateSha256": "d074bd7e22c394d0538bbe3ad79e67ed3cf3b35e13c7a1a370e6d67d5ac330c7",
+  "candidateSha256": "db6aa1f88cdf6c561e884c6ddfae8c035a2aa215cb4332aac3de60cf49f9c532",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 36,
-    "maximumChannelError": 255,
-    "meanAbsoluteError": 0.0672607421875,
-    "rootMeanSquareError": 3.035234172905774,
-    "maximumAlphaError": 60,
-    "alphaChangedPixelCount": 36,
-    "minimumMismatchX": 8,
-    "minimumMismatchY": 20,
-    "maximumMismatchX": 55,
-    "maximumMismatchY": 31,
-    "exact": false,
-    "alphaErrorMass": 559
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 64,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
   },
   "admittedAt": "2026-09-26",
-  "comparisonUpdatedAt": "2026-10-06"
+  "comparisonUpdatedAt": "2026-10-07"
 }

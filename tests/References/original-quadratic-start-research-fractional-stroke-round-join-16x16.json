@@ -1,0 +1,36 @@
+{
+  "fixtureId": "original-quadratic-start-research-fractional-stroke-round-join-16x16",
+  "referencePng": "original-quadratic-start-research-fractional-stroke-round-join-16x16.png",
+  "referenceSha256": "6d88e407eea87da0e59fe6e4f32521568c742516d9aa79f35678c7a5b53051c3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "915b09194405f0a718e51a9827ed84a4f39ff4f1afcc16c7c5bd5bb8093d3066",
+  "candidateSha256": "18c4ccfd1908090ff041d4da84ee159e6ef50988726a9fc3c8819d946f10fe6b",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "graduatedFrom": "tests/Research/manifest.json#research-fractional-stroke-round-join-16x16"
+}

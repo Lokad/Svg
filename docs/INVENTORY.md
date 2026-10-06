@@ -5,6 +5,19 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Quadratic start-snap checkpoint (2026-10-07)
+
+Toyota (`inv-096`), Liputan6 (`inv-040`) and Coca-Cola (`inv-102`) become exact
+in every frozen variant. The cohort has **20/27 exact documents**, marks
+**8/13**, wordmarks **12/14**: 225 exact, 33 known and zero rejected comparisons.
+All 168 earlier exact corporate PNGs remain; all 90 changed images improve.
+Original sources, options, browser references and capture provenance stay frozen.
+
+S17 needs three more exact marks. [PLAN](../PLAN.md) owns the queue and current
+bank/check totals. Detailed comparisons stay under ignored
+`artifacts/quadratic-start-snap-20261007/`. Earlier checkpoints below retain
+their dated results.
+
 ## Radial matrix-order checkpoint (2026-10-07)
 
 SDL (`inv-003`) now matches all nine frozen variants. The cohort has

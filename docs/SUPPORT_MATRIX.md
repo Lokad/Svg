@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the radial matrix-order checkpoint, the 1,220 manifest entries contain
-1,017 exact decoded-pixel references, 179 known-difference renders and 24
+At the quadratic start-snap checkpoint, the 1,228 manifest entries contain
+1,129 exact decoded-pixel references, 75 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -22,8 +22,9 @@ translation moves into the bitmap before source point/control mapping; clipped
 edge construction and vertical combination stay local, then kept fixed-point
 walk/curve positions translate together. Raw-control raster bounds retain
 extrema missed by flattened samples. Solid, linear, radial and pattern fills
-share this preparation. Broader reflected quadratic/rational bitmap fidelity
-remains open; rational conversion still occurs after global mapping.
+share this preparation. Quadratic recurrence starts use snapped Y; clipped
+rational curves enter bitmap coordinates before subdivision. Broader shape,
+transform, stroke and paint fidelity remains open.
 
 Declaration-only DOCTYPE admission applies to bare, SYSTEM and PUBLIC declarations
 before the root. External identifiers are inert; internal subsets (even empty),
@@ -39,12 +40,12 @@ remain unsupported. `overflow:visible` is accepted on non-viewport targets;
 root/nested SVG viewports retain hidden clipping and reject visible overflow,
 including matched stylesheet declarations. These admissions add no painting.
 
-The complete frozen corporate matrix has 258 rendered comparisons: 168 exact
-and 90 known differences, with zero renderer rejections. SDL is now exact in
-every variant: **17/27 documents**, marks **7/13**, wordmarks **10/14**. Only
-three large SDL PNGs change; all 165 earlier exact PNGs remain. Original inputs,
-options and browser references stay frozen. S17 requires 23/27 and both stratum
-minima.
+The complete frozen corporate matrix has 258 rendered comparisons: 225 exact
+and 33 known differences, with zero renderer rejections. Toyota, Liputan6 and
+Coca-Cola become exact in every variant: **20/27 documents**, marks **8/13**,
+wordmarks **12/14**. All 168 earlier exact PNGs remain. Original inputs, options
+and browser references stay frozen. S17 requires three more exact marks and
+completion of the remaining delivery/performance gates.
 
 Concentric general radial paints retain separate shader-local and referencing
 matrices. The drawing CTM moves into bitmap coordinates before local-gradient

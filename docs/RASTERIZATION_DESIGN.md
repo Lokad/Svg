@@ -6307,3 +6307,39 @@ artifact consistency pass. Prior pinned-Chrome smoke is reused; no Linux, remote
 CI, timing or representative performance claim is made. Detailed comparisons,
 resource ledgers and delivery reports remain ignored under
 `artifacts/radial-matrix-sdl-20261007/`; Git identifies implementation.
+
+## Quadratic start snapping and local conics (2026-10-07)
+
+The native quadratic setter snaps `fQy` before its first update. Managed
+preparation previously snapped only the separate anchor, leaving the recurrence
+at the unsnapped Y. Both now start at the native snapped value. Clipped conics
+also map source controls into bitmap coordinates before device-tolerance
+subdivision. The three input mappings are charged before execution. Global
+classification and whole-path point counts retain their existing contracts;
+no storage, admission, public API or paint-policy change is introduced.
+
+Original pinned `SkAnalyticEdge` setter/update/goY/keepContinuous functions match
+all 208 complete fixed-state rows in 48 forward/reversed phase/scale cases.
+The source is [SkAnalyticEdge.cpp](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkAnalyticEdge.cpp).
+This verifies quadratic state transitions, rather than a complete native paint
+backend. One independent quadratic control is exact on three backgrounds from
+nine stable healthy captures; the prior renderer differs in 136/134/136 pixels.
+Additional rotated/gradient controls remain diagnostic known differences, and
+reflected endpoint arcs retain their existing admission rejection.
+
+Toyota, Liputan6 and Coca-Cola become exact in every frozen variant. Large
+Zeppelin and Pepsi variants also become exact; their small variants still fail.
+The cohort reaches 20/27 documents, marks 8/13 and wordmarks 12/14, with 225 exact
+and 33 known comparisons. All 90 changed corporate images improve, and all 168
+prior exact PNGs remain. Across the prior 1,348-case bank, 104 fixtures and five
+research probes become exact, with no mismatch-count increase or rejection
+change. All 1,034 prior exact fixture/research PNGs remain. The expanded bank
+has 1,356 cases, including the five copied research assets and three new control
+configurations. Browser reference bytes and provenance remain unchanged.
+
+The Release build, 3,843 tests and all 25 memory scenarios pass. Thirty-nine
+resource recipes retain parser work and peak storage; fifteen raster-work records
+change by -218 through +449 units. No timing or release claim is made. Full
+states, pixel comparisons, captures and ledgers stay under ignored
+`artifacts/quadratic-start-snap-20261007/`. S17 still needs three exact marks,
+representative performance and Linux delivery evidence.

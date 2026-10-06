@@ -1,0 +1,39 @@
+{
+  "fixtureId": "original-quadratic-start-phases-white",
+  "referencePng": "original-quadratic-start-phases-white.png",
+  "referenceSha256": "f677497ad7d8be60acfa00c932f545babe17246562fc9ab953b8e0be4fa48cd5",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 96,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "c3f1ae74639b0add71ec27a7eebf79604664105f8e88f521e027d91e46f6395c",
+  "candidateSha256": "a1405610b5312eb1f0a01d8be448e7af174564fae04e30a7f96e0eee96f5715a",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 96,
+    "minimumMismatchY": 64,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredAfterPrototype": true,
+  "declaredBeforeCaptures": true
+}

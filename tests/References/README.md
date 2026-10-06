@@ -16,20 +16,20 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current radial matrix-order checkpoint
+## Current quadratic start-snap checkpoint
 
-The bank contains 1,220 fixtures (1,017 exact, 179 known, 24 rejected), 36
-research probes (seventeen exact, eighteen known, one rejected) and 92 Default
-cases: 1,348 executions. Six radial controls add two base SVGs and four background
-variants from eighteen stable, healthy and cleaned captures. All 1,342 earlier
-complete records and PNGs remain. The controls were declared after the diagnostic
-model, before production edits and capture.
+The bank contains 1,228 fixtures (1,129 exact, 75 known, 24 rejected), 36
+research probes (22 exact, 13 known, one rejected) and 92 Default cases:
+1,356 executions. There are 104 existing fixture and five research graduations;
+the five research assets also enter the fixture bank with their original
+references. Three fractional-quadratic configurations have nine stable,
+healthy and cleaned captures. All prior exact fixture/research PNGs remain.
 
-SDL becomes exact in all nine frozen variants. Only three large SDL PNGs change;
-all 165 earlier exact corporate PNGs remain. Totals are 168 exact / 90 known /
-zero rejected, 17/27 documents, marks 7/13 and wordmarks 10/14. Detailed runs stay
-under ignored `artifacts/radial-matrix-sdl-20261007/`. Ordinary source edits
-require no hash refresh; fixture expectations change only with measured behavior.
+Toyota, Liputan6 and Coca-Cola become exact in every frozen variant. The cohort
+is 225 exact / 33 known / zero rejected, 20/27 documents, marks 8/13 and wordmarks
+12/14. All 168 earlier exact PNGs remain. Detailed runs stay under ignored
+`artifacts/quadratic-start-snap-20261007/`; expectations change with measured
+behavior, while browser reference images remain unchanged.
 
 ## Bitmap-local curve checkpoint (2026-10-06)
 
@@ -64,7 +64,7 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 258 rendered comparisons (168 exact, 90 known differences)
+all 258 references: 258 rendered comparisons (225 exact, 33 known differences)
 and zero renderer rejections. No variants lack references. All nine variants
 of YouTube, Ford, ROC HCVS, Artsy and NASA remain exact. SimpleX, Omega and Google
 are now exact in all twelve/twelve/nine variants respectively. The YouTube PNGs retain
@@ -72,7 +72,8 @@ stable healthy capture triples. `inv-027-native-route.json`
 retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
-Seventeen documents are exact in every frozen variant (17/27), including SDL, UAAR, Red Cross, Party of Changes, Blur and Nike. Known
+Twenty documents are exact in every frozen variant (20/27), including Toyota,
+Liputan6 and Coca-Cola. Known
 differences remain measured against the original images. The earlier native open-stroke
 construction improved all nine Rede Manchete variants, with no prior mismatch
 count increase and all 70 exact corporate PNGs preserved. Six original research

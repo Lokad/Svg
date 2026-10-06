@@ -894,8 +894,10 @@ internal ref partial struct SvgAnalyticCoverage
             qLastX >>= 2;
             qLastY >>= 2;
         }
+        // Native setQuadratic snaps the recurrence before its first update.
+        qy = SnapY(qy);
         int snappedX = qx;
-        int snappedY = SnapY(qy);
+        int snappedY = qy;
         qLastY = SnapY(qLastY);
         return new QuadSetup(winding, curveShift, count, qx, qy, qDx, qDy, qDDx, qDDy, qLastX, qLastY, snappedX, snappedY, false);
     }

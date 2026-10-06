@@ -37,24 +37,20 @@
   "declaredBeforeGenericPrototype": true,
   "declaredAfterNumericPrototype": false,
   "candidateOutcome": "renders",
-  "candidateSha256": "14ce069bacd5b075314a0f914d0485ee0d91013270a5e51b75057696c0cf99c4",
+  "candidateSha256": "4963255b4429847116f2b8bf6f951622cd9e534ef8bc1d26099ef4364c887585",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 94,
-    "maximumChannelError": 55,
-    "meanAbsoluteError": 0.02935546875,
-    "rootMeanSquareError": 0.7381882381886072,
+    "changedPixelCount": 15,
+    "maximumChannelError": 22,
+    "meanAbsoluteError": 0.001953125,
+    "rootMeanSquareError": 0.1414213562373095,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 13,
-    "minimumMismatchY": 21,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 78,
     "maximumMismatchX": 116,
-    "maximumMismatchY": 107,
+    "maximumMismatchY": 97,
     "exact": false,
-    "alphaErrorMass": 0,
-    "overCoveragePixelCount": 0,
-    "underCoveragePixelCount": 0,
-    "opaqueLostPixelCount": 0,
-    "opaqueAddedPixelCount": 0
+    "alphaErrorMass": 0
   }
 }

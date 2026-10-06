@@ -4,6 +4,25 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgRetainedCurveOutputMappingTests
 {
+    [Fact]
+    public async Task Fractional_quadratic_starts_preserve_six_output_parity()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "quadratic-start-phases.svg"));
+        byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] destination = new byte[expected.Length];
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream stream = new();
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, stream.ToArray());
+        Assert.Equal(expected, (await SvgConverter.ConvertToPngAsync(input, SvgRenderOptions.Default, CancellationToken.None)).ToArray());
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream asyncStream = new();
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, asyncStream.ToArray());
+    }
+
     [Theory]
     [InlineData("<path fill='red' d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z'/>")]
     [InlineData("<path fill='red' fill-rule='evenodd' d='M2,2 C14,2 14,14 2,14 Z M2,2 C14,2 14,14 2,14 Z'/>")]

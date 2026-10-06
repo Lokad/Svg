@@ -67,9 +67,14 @@ internal ref partial struct SvgAnalyticCoverage
                         bool rational = hasQuad && quads[quadCursor].ConicWeight != 1f;
                         if (rational)
                         {
-                            SvgQuadSpan conic = quads[quadCursor];
+                            SvgQuadSpan conic = source is null ? quads[quadCursor] : source.QuadSpans[quadCursor];
+                            ChargeClippedSetupWork(ref setupWork, 6, maximumWork, token);
                             CheckClippedSetupWork(setupWork + SvgRationalQuadratic.MaximumConversionWork, maximumWork, token);
-                            conicCount = SvgRationalQuadratic.Convert(points[index], conic.Control, points[conic.EndIndex], conic.ConicWeight,
+                            // Subdivide after mapping the source conic into this bitmap.
+                            SvgAnalyticClipPoint first = ToLocalClipPoint(sourcePoints[index], origin, localSourceMap);
+                            SvgAnalyticClipPoint control = ToLocalClipPoint(conic.Control, origin, localSourceMap);
+                            SvgAnalyticClipPoint last = ToLocalClipPoint(sourcePoints[conic.EndIndex], origin, localSourceMap);
+                            conicCount = SvgRationalQuadratic.Convert(new(first.X, first.Y), new(control.X, control.Y), new(last.X, last.Y), conic.ConicWeight,
                                 SvgRationalQuadratic.DeviceTolerance, conicPoints, out int conicWork, token);
                             ChargeClippedSetupWork(ref setupWork, conicWork, maximumWork, token);
                         }
@@ -82,7 +87,13 @@ internal ref partial struct SvgAnalyticCoverage
                                 if (hasQuad)
                                 {
                                     SvgQuadSpan quad = source is null ? quads[quadCursor] : source.QuadSpans[quadCursor];
-                                    if (rational) clipper.ClipQuad(ToLocalClipPoint(conicPoints[2 * conicIndex], origin, null), ToLocalClipPoint(conicPoints[2 * conicIndex + 1], origin, null), ToLocalClipPoint(conicPoints[2 * conicIndex + 2], origin, null));
+                                    if (rational)
+                                    {
+                                        clipper.ClipQuad(
+                                            new((float)conicPoints[2 * conicIndex].X, (float)conicPoints[2 * conicIndex].Y),
+                                            new((float)conicPoints[2 * conicIndex + 1].X, (float)conicPoints[2 * conicIndex + 1].Y),
+                                            new((float)conicPoints[2 * conicIndex + 2].X, (float)conicPoints[2 * conicIndex + 2].Y));
+                                    }
                                     else clipper.ClipQuad(ToLocalClipPoint(sourcePoints[sourceIndex], origin, localSourceMap), ToLocalClipPoint(quad.Control, origin, localSourceMap), ToLocalClipPoint(sourcePoints[quad.EndIndex], origin, localSourceMap));
                                     index = quad.EndIndex - 1;
                                 }

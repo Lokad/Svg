@@ -65,8 +65,8 @@ public sealed class SvgPathPointDensityReferenceTests
             if (comparison.IsExact) exact++;
             else known++;
         }
-        Assert.Equal(18, exact);
-        Assert.Equal(6, known);
+        Assert.Equal(24, exact);
+        Assert.Equal(0, known);
         Assert.Equal(0, rejected);
 
         static string Hash(ReadOnlySpan<byte> bytes) => Convert.ToHexStringLower(SHA256.HashData(bytes));

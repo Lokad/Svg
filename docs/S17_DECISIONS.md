@@ -1,38 +1,17 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-07. Bitmap-local radial drawing/shader matrix order makes SDL
-exact in every frozen variant. [PLAN.md](../PLAN.md) owns the queue; rows 3–7
-and S17 remain open. Exact documents are Ford, SDL, UAAR, SimpleX, Omega,
-Eisenbahn, ROC HCVS, Red Cross, Artsy, Party of Changes, YouTube, NASA, Blur,
-Nike, Target, IKEA and Google. S17 requires 23/27, including 11/13 marks and
-12/14 wordmarks; at least four more marks and two more wordmarks are needed.
+Updated 2026-10-07. Quadratic start snapping and bitmap-local conic subdivision
+make Toyota, Liputan6 and Coca-Cola exact in every frozen variant. The cohort is
+**20/27 exact documents**, marks **8/13**, wordmarks **12/14**, with 225 exact
+and 33 known comparisons across 258 variants. S17 requires three more exact
+marks, plus the remaining performance and delivery evidence.
 
-SDL (`inv-003`) now matches all nine frozen variants. The cohort has
-**17/27 exact documents**, marks **7/13**, wordmarks **10/14**: **168 exact
-comparisons, 90 known differences and zero rejections** across 258 variants.
-Only three large SDL PNGs change, each improving three RGB-only pixels to exact;
-all 165 earlier exact corporate PNGs remain. Membership, inputs, options,
-references and capture provenance stay frozen.
-
-The bank executes **1,348 cases**: **1,220 fixtures = 1,017 exact + 179 known +
-24 rejected**, **36 research probes = seventeen exact + eighteen known + one
-rejected**, and 92 legacy Default renders. Six independent configurations add
-six exact fixtures (two base documents and four background variants). All 1,342
-prior complete records and PNGs remain, including 1,028 exact fixture/research
-images and every rejection. Eighteen fresh captures are stable, healthy and
-profile-cleaned; controls were declared after the diagnostic model, before
-production edits and capture.
-
-Windows locked restore/nine-project Release build, **3,842 tests** (3,676 core,
-160 visual, six FontProbe), all 25 memory scenarios and installed runtime/symbol
-package consumers pass. Artifact validation reuses prior pinned-Chrome smoke;
-Linux/remote delivery remains open.
-
-The 39 prior resource recipes are unchanged. Three additional radial recipes
-verify increased retained paint charges and complete cleanup; SDL parser peak
-rises by 1,424 bytes. Reports stay under ignored
-`artifacts/radial-matrix-sdl-20261007/`; Git identifies implementation.
-No timing or representative performance result is claimed.
+Exact documents are Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, ROC HCVS,
+Red Cross, Artsy, Party of Changes, YouTube, Liputan6, NASA, Blur, Nike, Toyota,
+Target, IKEA, Google and Coca-Cola. Membership, inputs, options and references
+remain frozen. [PLAN.md](../PLAN.md) owns the current queue and validation totals;
+[the design record](RASTERIZATION_DESIGN.md#quadratic-start-snapping-and-local-conics-2026-10-07)
+explains the repair. Detailed diagnostics stay under ignored artifacts.
 
 ## Q1 - numeric exact-document target: selected
 

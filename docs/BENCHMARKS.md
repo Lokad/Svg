@@ -2040,3 +2040,12 @@ cancellation phase flag; the isolated retry passes all scenarios. Prior Chrome
 smoke is reused. No timing, representative performance, Linux or remote delivery
 claim is made. Detailed records remain under ignored
 `artifacts/radial-matrix-sdl-20261007/`; Git identifies implementation.
+
+## Quadratic start-snap resource observation (2026-10-07)
+
+The 39 existing resource recipes retain input identity, parser work, peak storage
+and value layouts. Fifteen raster-work records change by -218 through +449 units
+with native quadratic start snapping and charged bitmap-local conic mapping;
+their output identities change as expected. All 25 memory scenarios pass. These
+are resource observations, with no new latency or allocation-rate claim. Full
+before/after records stay under ignored `artifacts/quadratic-start-snap-20261007/`.

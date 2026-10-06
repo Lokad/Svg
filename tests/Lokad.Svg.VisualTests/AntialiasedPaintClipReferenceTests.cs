@@ -51,7 +51,7 @@ public sealed class AntialiasedPaintClipReferenceTests
             Assert.Equal(after.GetProperty("changedPixelCount").GetInt64(), comparison.ChangedPixelCount);
             if (comparison.IsExact) exact++; else known++;
         }
-        Assert.Equal((24, 8, 9), (exact, known, rejected));
+        Assert.Equal((27, 5, 9), (exact, known, rejected));
     }
 
     [Fact]
