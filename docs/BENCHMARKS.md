@@ -1773,3 +1773,37 @@ these observations do not establish representative throughput or latency. All
 25 memory scenarios and installed package consumers pass. Native curve/dash,
 shape/paint and bitmap-context hairlines, representative profiling and Linux
 validation remain open.
+
+## Path hairline curve observations (2026-10-06)
+
+Twenty-four matching input/options recipes compare `ae13bdc6` with retained
+hairline curve replay on Windows X64 / .NET 10.0.12. The baseline snapshot
+reproduces every previous recipe's complete PNG/work/peak record. Timing and
+allocation runs follow completed builds, tests, captures, corpus and package
+jobs, in both execution orders, with twenty batches per implementation/recipe.
+Detailed ledgers and batches stay under ignored `artifacts/hairline-curves-20261006/`.
+
+All recipes retain parser work, accounted memory peaks and geometry/paint value
+layouts. Quadratic/cubic/arc hairline recipes sharply reduce raster work; four
+prior line recipes save five to thirteen units after removing curve preflight.
+The round-cap probe adds two units for independently charged tangent extension.
+The other sixteen recipes retain raster work. New numerical scratch uses bounded
+stack buffers; no new heap owner or retained field is introduced.
+
+| Recipe | Work through raster, before → after | Unchanged accounted peak bytes | Local ms, before / after | Allocated bytes, before / after |
+| --- | --- | ---: | --- | --- |
+| curve-quad | 11,100 → 295 | 170,964 | 0.725–1.196 / 0.329–0.401 | 67,330–67,333 / 56,906–56,909 |
+| curve-cubic | 20,779 → 593 | 181,220 | 0.635–1.235 / 0.443–0.628 | 83,845–84,006 / 67,698–67,701 |
+| curve-arc | 11,326 → 516 | 170,964 | 0.379–0.624 / 0.350–0.526 | 67,770–67,933 / 57,066–57,228 |
+| eisenbahn-small | 16,594 → 16,581 | 163,840 | 2.765–3.606 / 2.776–5.556 | 65,528–65,616 / 65,528–65,696 |
+| rede-small | 500,058 → 500,053 | 340,578 | 5.777–10.737 / 6.272–24.852 | 395,248–395,298 / 395,200–395,298 |
+| rede-intended | 1,629,394 → 1,629,389 | 1,095,114 | 18.806–26.744 / 16.838–23.151 | 1,175,084–1,175,169 / 1,175,084–1,175,169 |
+| hairline-half | 407 → 402 | 163,840 | 0.087–0.145 / 0.087–0.100 | 49,103–49,109 / 49,103–49,109 |
+| ikea | 43,756 → 43,756 | 2,189,816 | 2.115–3.357 / 2.060–3.240 | 205,750–205,932 / 205,750–205,932 |
+| cap-unit | 114 → 116 | 163,840 | 0.033–0.039 / 0.035–0.048 | 34,166–34,170 / 34,166–34,170 |
+| ford | 895,496 → 895,496 | 2,589,248 | 16.053–20.010 / 14.957–19.242 | 1,048,408–1,048,555 / 1,048,392–1,048,545 |
+
+Local timing ranges remain variable, including unchanged recipes. These results
+do not establish representative throughput or latency. All 25 memory scenarios
+and installed package consumers pass. Dashes, shape/paint and bitmap contexts,
+broader corporate fidelity, representative profiling and Linux remain open.

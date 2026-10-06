@@ -1,0 +1,247 @@
+// Adapts SkScan_Hairline.cpp, SkGeometry.cpp and SkPoint.cpp at the pinned revision.
+// Copyright 2006, 2008 The Android Open Source Project.
+using System.Numerics;
+using Lokad.Svg.Parsing;
+
+namespace Lokad.Svg.Rendering;
+
+/// <summary>Subdivides mapped hairline curves and extends endpoint caps with native float operations.</summary>
+/// <remarks>All buffers are bounded stack storage. Cubics have at most four pieces and 512 lines per
+/// piece; quadratics have at most 32 lines and conics at most 32 quadratics. Each polynomial is checked
+/// for finite interior points before painting any of its lines. Work is charged before numerical
+/// phases and every evaluation, subdivision and paint is cancellable. Calls share no mutable state.</remarks>
+internal static class SvgHairlineCurves
+{
+    internal static void DrawQuadratic(ref SvgHairlineCoverage raster, scoped ReadOnlySpan<SvgDevicePoint> points,
+        ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        float x0 = (float)points[0].X, y0 = (float)points[0].Y;
+        float x1 = (float)points[1].X, y1 = (float)points[1].Y;
+        float x2 = (float)points[2].X, y2 = (float)points[2].Y;
+        uint dx = Distance(MathF.Abs((x0 + x2) / 2 - x1)), dy = Distance(MathF.Abs((y0 + y2) / 2 - y1));
+        uint distance = Math.Max(dx, dy) + (Math.Min(dx, dy) >> 1);
+        int level = Math.Min(5, (33 - BitOperations.LeadingZeroCount(distance)) >> 1);
+        Polynomial polynomial = new(false, 0, 0, x2 - 2 * x1 + x0, y2 - 2 * y1 + y0,
+            2 * (x1 - x0), 2 * (y1 - y0), x0, y0);
+        DrawPolynomial(ref raster, points[0], points[2], 1 << level, polynomial, work, token);
+
+        static uint Distance(float value) => value >= int.MaxValue || float.IsNaN(value) ? int.MaxValue : (uint)MathF.Ceiling(value);
+    }
+
+    internal static void DrawConic(ref SvgHairlineCoverage raster, scoped ReadOnlySpan<SvgDevicePoint> points, float weight,
+        ParserWorkCounter work, CancellationToken token)
+    {
+        for (int phase = 0; phase < SvgRationalQuadratic.MaximumConversionWork; phase++) work.Consume(token);
+        Span<SvgDevicePoint> quads = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
+        int count = SvgRationalQuadratic.Convert(points[0], points[1], points[2], weight,
+            SvgRationalQuadratic.DeviceTolerance, quads, out _, token);
+        for (int index = 0; index < count; index++) DrawQuadratic(ref raster, quads.Slice(2 * index, 3), work, token);
+    }
+
+    internal static void DrawCubic(ref SvgHairlineCoverage raster, scoped ReadOnlySpan<SvgDevicePoint> points,
+        ParserWorkCounter work, CancellationToken token)
+    {
+        // Reserve the constant root-solving and chopping phase before computing it.
+        for (int phase = 0; phase < 32; phase++) work.Consume(token);
+        if (Nice(points)) { DrawPiece(ref raster, points, work, token); return; }
+        Span<float> roots = stackalloc float[3];
+        int count = CurvatureRoots(points, roots);
+        Span<SvgDevicePoint> pieces = stackalloc SvgDevicePoint[13];
+        Chop(points, roots[..count], pieces);
+        for (int index = 0; index <= count; index++) DrawPiece(ref raster, pieces.Slice(index * 3, 4), work, token);
+
+        static bool Nice(ReadOnlySpan<SvgDevicePoint> p) => Dot(p[1], p[0], p[3]) >= 0 && Dot(p[2], p[0], p[3]) >= 0
+            && Dot(p[1], p[3], p[0]) >= 0 && Dot(p[2], p[3], p[0]) >= 0;
+        static float Dot(SvgDevicePoint a, SvgDevicePoint pivot, SvgDevicePoint b) =>
+            ((float)a.X - (float)pivot.X) * ((float)b.X - (float)pivot.X)
+            + ((float)a.Y - (float)pivot.Y) * ((float)b.Y - (float)pivot.Y);
+        static void DrawPiece(ref SvgHairlineCoverage painter, scoped ReadOnlySpan<SvgDevicePoint> p, ParserWorkCounter counter, CancellationToken cancellation)
+        {
+            counter.Consume(cancellation);
+            const float third = 1f / 3, twoThirds = 2f / 3;
+            float x0 = (float)p[0].X, y0 = (float)p[0].Y, x1 = (float)p[1].X, y1 = (float)p[1].Y;
+            float x2 = (float)p[2].X, y2 = (float)p[2].Y, x3 = (float)p[3].X, y3 = (float)p[3].Y;
+            float difference = MathF.Max(MathF.Max(MathF.Abs(x1 - (third * x3 + twoThirds * x0)), MathF.Abs(y1 - (third * y3 + twoThirds * y0))),
+                MathF.Max(MathF.Abs(x2 - (third * x0 + twoThirds * x3)), MathF.Abs(y2 - (third * y0 + twoThirds * y3))));
+            int level = 0;
+            for (float tolerance = .125f; level < 9 && !(difference < tolerance); level++) tolerance *= 4;
+            Polynomial polynomial = new(true, x3 + 3 * (x1 - x2) - x0, y3 + 3 * (y1 - y2) - y0,
+                3 * (x2 - 2 * x1 + x0), 3 * (y2 - 2 * y1 + y0), 3 * (x1 - x0), 3 * (y1 - y0), x0, y0);
+            DrawPolynomial(ref painter, p[0], p[3], 1 << level, polynomial, counter, cancellation);
+        }
+
+        static int CurvatureRoots(ReadOnlySpan<SvgDevicePoint> p, Span<float> roots)
+        {
+            Span<float> x = stackalloc float[4], y = stackalloc float[4];
+            Formulate((float)p[0].X, (float)p[1].X, (float)p[2].X, (float)p[3].X, x);
+            Formulate((float)p[0].Y, (float)p[1].Y, (float)p[2].Y, (float)p[3].Y, y);
+            for (int index = 0; index < 4; index++) x[index] += y[index];
+            int count;
+            if (MathF.Abs(x[0]) <= 1f / 4096) count = QuadraticRoots(x[1], x[2], x[3], roots);
+            else
+            {
+                float inverse = 1 / x[0], a = x[1] * inverse, b = x[2] * inverse, c = x[3] * inverse;
+                float q = (a * a - b * 3) / 9, r = (2 * a * a * a - 9 * a * b + 27 * c) / 54;
+                float q3 = q * q * q, discriminant = r * r - q3, third = a / 3;
+                if (discriminant < 0)
+                {
+                    float theta = MathF.Acos(Math.Clamp(r / MathF.Sqrt(q3), -1, 1)), scale = -2 * MathF.Sqrt(q);
+                    roots[0] = Math.Clamp(scale * MathF.Cos(theta / 3) - third, 0, 1);
+                    roots[1] = Math.Clamp(scale * MathF.Cos((theta + 2 * MathF.PI) / 3) - third, 0, 1);
+                    roots[2] = Math.Clamp(scale * MathF.Cos((theta - 2 * MathF.PI) / 3) - third, 0, 1);
+                    roots.Sort(); count = 3;
+                }
+                else
+                {
+                    float value = MathF.Pow(MathF.Abs(r) + MathF.Sqrt(discriminant), .3333333f);
+                    if (r > 0) value = -value;
+                    if (value != 0) value += q / value;
+                    roots[0] = Math.Clamp(value - third, 0, 1); count = 1;
+                }
+            }
+            int retained = 0;
+            for (int index = 0; index < count; index++)
+                if (roots[index] > 0 && roots[index] < 1 && (retained == 0 || roots[index] != roots[retained - 1])) roots[retained++] = roots[index];
+            return retained;
+
+            static void Formulate(float p0, float p1, float p2, float p3, Span<float> coefficients)
+            {
+                float a = p1 - p0, b = p2 - 2 * p1 + p0, c = p3 + 3 * (p1 - p2) - p0;
+                coefficients[0] = c * c; coefficients[1] = 3 * b * c;
+                coefficients[2] = 2 * b * b + c * a; coefficients[3] = a * b;
+            }
+            static int QuadraticRoots(float a, float b, float c, Span<float> values)
+            {
+                if (a == 0) return Divide(-c, b, out values[0]) ? 1 : 0;
+                double discriminant = (double)b * b - 4 * (double)a * c;
+                if (discriminant < 0) return 0;
+                float root = (float)Math.Sqrt(discriminant);
+                if (!float.IsFinite(root)) return 0;
+                float q = b < 0 ? -(b - root) / 2 : -(b + root) / 2;
+                int count = 0;
+                if (Divide(q, a, out float first)) values[count++] = first;
+                if (Divide(c, q, out float second)) values[count++] = second;
+                if (count == 2) { if (values[0] > values[1]) (values[0], values[1]) = (values[1], values[0]); else if (values[0] == values[1]) count = 1; }
+                return count;
+            }
+            static bool Divide(float numerator, float denominator, out float ratio)
+            {
+                if (numerator < 0) { numerator = -numerator; denominator = -denominator; }
+                ratio = 0;
+                if (denominator == 0 || numerator == 0 || numerator >= denominator) return false;
+                ratio = numerator / denominator;
+                return !float.IsNaN(ratio) && ratio != 0;
+            }
+        }
+
+        static void Chop(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<float> roots, Span<SvgDevicePoint> output)
+        {
+            points.CopyTo(output);
+            int offset = 0, index = 0;
+            for (; index < roots.Length - 1; index += 2)
+            {
+                float t0 = roots[index], t1 = roots[index + 1];
+                if (index != 0) { float last = roots[index - 1]; t0 = Math.Clamp((t0 - last) / (1 - last), 0, 1); t1 = Math.Clamp((t1 - last) / (1 - last), 0, 1); }
+                Span<SvgDevicePoint> p = output.Slice(offset, 10);
+                SvgDevicePoint p0 = p[0], p1 = p[1], p2 = p[2], p3 = p[3];
+                if (t1 == 1) { Single(p[..7], t0); p[7] = p[8] = p[9] = p3; }
+                else
+                {
+                    SvgDevicePoint ab0 = Mix(p0, p1, t0), bc0 = Mix(p1, p2, t0), cd0 = Mix(p2, p3, t0);
+                    SvgDevicePoint ab1 = Mix(p0, p1, t1), bc1 = Mix(p1, p2, t1), cd1 = Mix(p2, p3, t1);
+                    SvgDevicePoint abc0 = Mix(ab0, bc0, t0), bcd0 = Mix(bc0, cd0, t0);
+                    SvgDevicePoint abc1 = Mix(ab1, bc1, t1), bcd1 = Mix(bc1, cd1, t1);
+                    p[0] = p0; p[1] = ab0; p[2] = abc0; p[3] = Mix(abc0, bcd0, t0);
+                    p[4] = Mix(abc0, bcd0, t1); p[5] = Mix(abc1, bcd1, t0); p[6] = Mix(abc1, bcd1, t1);
+                    p[7] = bcd1; p[8] = cd1; p[9] = p3;
+                }
+                offset += 6;
+            }
+            if (index < roots.Length)
+            {
+                float t = roots[index];
+                if (index != 0) { float last = roots[index - 1]; t = Math.Clamp((t - last) / (1 - last), 0, 1); }
+                Single(output.Slice(offset, 7), t);
+            }
+
+            static SvgDevicePoint Mix(SvgDevicePoint a, SvgDevicePoint b, float t) => new(
+                (float)a.X + ((float)b.X - (float)a.X) * t, (float)a.Y + ((float)b.Y - (float)a.Y) * t);
+            static void Single(Span<SvgDevicePoint> p, float t)
+            {
+                SvgDevicePoint p0 = p[0], p1 = p[1], p2 = p[2], p3 = p[3];
+                if (t == 1) { p[4] = p[5] = p[6] = p3; return; }
+                SvgDevicePoint ab = Mix(p0, p1, t), bc = Mix(p1, p2, t), cd = Mix(p2, p3, t);
+                SvgDevicePoint abc = Mix(ab, bc, t), bcd = Mix(bc, cd, t);
+                p[0] = p0; p[1] = ab; p[2] = abc; p[3] = Mix(abc, bcd, t); p[4] = bcd; p[5] = cd; p[6] = p3;
+            }
+        }
+    }
+
+    internal static void ExtendCaps(Span<SvgDevicePoint> points, SvgStrokeCap cap, bool first, bool last,
+        ParserWorkCounter work, CancellationToken token)
+    {
+        if (cap == SvgStrokeCap.Butt) return;
+        work.Consume(token);
+        float outset = cap == SvgStrokeCap.Square ? .5f : MathF.PI / 8;
+        if (first) Extend(points, 0, 1, 1);
+        if (last) Extend(points, points.Length - 1, -1, -1);
+
+        void Extend(Span<SvgDevicePoint> p, int endpoint, int step, float fallback)
+        {
+            int control = endpoint, controls = p.Length - 1;
+            float dx, dy;
+            do
+            {
+                work.Consume(token);
+                control += step;
+                dx = (float)p[endpoint].X - (float)p[control].X;
+                dy = (float)p[endpoint].Y - (float)p[control].Y;
+            } while (dx == 0 && dy == 0 && --controls > 0);
+            if (dx == 0 && dy == 0) { dx = fallback; controls = p.Length - 1; }
+            else
+            {
+                double scale = 1 / Math.Sqrt((double)dx * dx + (double)dy * dy);
+                dx = (float)(dx * scale); dy = (float)(dy * scale);
+                if (!float.IsFinite(dx) || !float.IsFinite(dy) || (dx == 0 && dy == 0)) { dx = 0; dy = 0; }
+            }
+            do
+            {
+                work.Consume(token);
+                p[endpoint] = new((float)p[endpoint].X + dx * outset, (float)p[endpoint].Y + dy * outset);
+                endpoint += step;
+            } while (++controls < p.Length);
+        }
+    }
+
+    private readonly record struct Polynomial(bool Cubic, float AX, float AY, float BX, float BY, float CX, float CY, float DX, float DY)
+    {
+        internal SvgDevicePoint Evaluate(float t) => Cubic
+            ? new(((AX * t + BX) * t + CX) * t + DX, ((AY * t + BY) * t + CY) * t + DY)
+            : new((BX * t + CX) * t + DX, (BY * t + CY) * t + DY);
+    }
+
+    private static void DrawPolynomial(ref SvgHairlineCoverage raster, SvgDevicePoint start, SvgDevicePoint end,
+        int lines, Polynomial polynomial, ParserWorkCounter work, CancellationToken token)
+    {
+        // Validate first, then replay: native drops the whole polynomial if any interior point is nonfinite.
+        // Two bounded passes avoid the native cubic's 513-point stack buffer.
+        float dt = 1f / lines, t = 0;
+        for (int index = 1; index < lines; index++)
+        {
+            work.Consume(token);
+            t += dt;
+            SvgDevicePoint point = polynomial.Evaluate(t);
+            if (!float.IsFinite((float)point.X) || !float.IsFinite((float)point.Y)) return;
+        }
+        t = 0;
+        for (int index = 1; index <= lines; index++)
+        {
+            work.Consume(token);
+            t += dt;
+            SvgDevicePoint point = index == lines ? end : polynomial.Evaluate(t);
+            raster.DrawLine(start, point);
+            start = point;
+        }
+    }
+}

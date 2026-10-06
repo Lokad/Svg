@@ -15,17 +15,18 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current straight-path hairline checkpoint
+## Current path-hairline-curve checkpoint
 
-The bank has 1,059 fixtures (877 exact, 152 known, 30 rejected), 36 research
-probes (seven exact, 28 known, one rejected) and 92 legacy Default cases.
-All six independent hairline-dispatch controls are exact. The historical odd
-hairline and width-one round cap also enter the exact bank with unchanged SVGs,
-PNGs and capture provenance. All prior exact images and dispositions are
-preserved. Corporate comparisons are 134 exact / 106 known, with 9/27 fully
-exact documents. Nine corporate PNGs improve; three legacy Default PNGs change
-without a matching-options claim. Original references remain frozen; detailed
-comparisons stay under ignored `artifacts/hairline-implementation-20261006/`.
+The bank has 1,077 fixtures (889 exact, 158 known, 30 rejected), 36 research
+probes (seven exact, 28 known, one rejected) and 92 legacy Default cases:
+1,205 executed cases. Eighteen untuned curve configurations were declared before
+production edits/capture. All twelve thin controls are exact; six wider controls
+retain their measured differences. All 54 fresh captures are stable and healthy.
+Every prior fixture/research PNG and disposition is preserved. Five legacy
+Default PNGs change without matching-options claims. All 258 corporate outcomes
+and images remain unchanged: 134 exact / 106 known / eighteen rejected,
+9/27 fully exact documents. Original references remain frozen; detailed runs
+stay under ignored `artifacts/hairline-curves-20261006/`.
 
 ## Frozen corporate cohort
 
@@ -41,7 +42,7 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 240 rendered comparisons (133 exact, 107 known differences)
+all 258 references: 240 rendered comparisons (134 exact, 106 known differences)
 and eighteen renderer rejections. No variants lack references. All nine variants
 of YouTube, Ford, ROC HCVS, Artsy and NASA remain exact. SimpleX, Omega and Google
 are now exact in all twelve/twelve/nine variants respectively. The YouTube PNGs retain

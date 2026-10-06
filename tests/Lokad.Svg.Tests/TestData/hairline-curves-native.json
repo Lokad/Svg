@@ -1,0 +1,13 @@
+{
+  "nativePin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sourceFiles": [
+    "src/core/SkScan_Hairline.cpp",
+    "src/core/SkGeometry.cpp",
+    "src/core/SkPoint.cpp"
+  ],
+  "compiler": "g++ -std=c++20 -O2 -ffp-contract=off -ffunction-sections -fdata-sections -DNDEBUG -DSK_RELEASE -Wl,--gc-sections",
+  "contract": "Unchanged hair_quad/hair_cubic, niceness, maximum-curvature chop and cap-extension functions with original pinned geometry and point helpers; record adapter preserves every ordered float line endpoint. Tests compose these lines through the independently validated managed line coverage, not a complete native paint or AA-mask backend. Conic conversion retains its separate native vectors.",
+  "cases": 648,
+  "lineCount": 23472,
+  "dataSha256": "fc183680f5585e4c656b47a9bed6e1ecc53df70c644d6c5058838685b4990d43"
+}

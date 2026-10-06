@@ -1,39 +1,39 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-06. **Current validated renderer checkpoint: native straight
-path hairlines.** Solid undashed path strokes retain their authored centerlines,
-explicit closure and independent width maps. Eligible strokes up to one device
-pixel use ordered native fixed-point line coverage and endpoint cap extension.
-Wider, curved and dashed strokes retain their admitted outline route.
+Updated 2026-10-06. **Current validated renderer checkpoint: native path
+hairline curves.** Eligible solid undashed path strokes replay retained lines,
+quadratics, cubics and SVG endpoint-arc conics through native ordered hairline
+coverage. Curvature chopping, polynomial subdivision and coincident-control cap
+extension use mapped float points. Wider and dashed strokes keep their admitted
+outline route.
 
-Fully exact documents remain **9/27**, marks **3/13**, wordmarks **6/14**;
-S17 requires **23/27** with both stratum minima. The frozen **258-variant**
-cohort has **134 exact comparisons, 106 known differences and eighteen
-rejections**. Nine corporate PNGs improve: Eisenbahn und Höfen small changes
-106 → one/zero/one pixels across transparent/white/black; Rede Manchete small
-1,267 → 519 and intended 1,637 → 638 on each background. All prior exact
-images and dispositions are preserved. Original inputs, options and references
-remain frozen.
+The frozen corporate cohort remains **9/27 exact documents**, marks **3/13**,
+wordmarks **6/14**: **134 exact comparisons, 106 known differences and eighteen
+rejections** across 258 variants. Every corporate output is byte-identical to
+the preceding straight-path checkpoint. S17 requires **23/27** with both
+stratum minima; original inputs, options and references remain frozen.
 
-The bank has **1,059 fixtures = 877 exact + 152 known differences + 30
-rejections**, plus **36 research probes = seven exact + 28 known + one rejected**
-and 92 legacy Default renders: **1,187 executed cases**. Four fresh thin-stroke
-controls become exact; both wider controls remain exact. Two unchanged historical
-hairline/cap research probes also join the exact fixture bank. Three legacy
-Default PNGs change without a matching-options fidelity claim.
+Eighteen untuned curve configurations were declared before production edits and
+capture. All **twelve thin controls are exact**; six wider controls retain their
+known differences. The bank now executes **1,205 cases**: **1,077 fixtures =
+889 exact + 158 known + 30 rejected**, **36 research probes = seven exact +
+28 known + one rejected**, and 92 legacy Default renders. All prior fixture and
+research PNGs/dispositions are preserved. Five legacy Default PNGs change
+without a matching-options fidelity claim.
 
-Validation passes **3,696 tests**, 112 compiled-native line vectors across three
-materials, the nine-project Release build, all 25 memory scenarios, pinned
-browser/artifact checks and installed package consumers. Retained command storage,
-copy/transfer, independent non-scaling width maps, work denial and cancellation
-remain bounded. Detailed runs stay under ignored artifacts; ordinary code edits
-and rebuilds require no hash refresh.
+Validation passes **3,707 tests**, 648 compiled-native curve/cap vectors across
+three materials, locked restore/nine-project Release build, all 25 memory
+scenarios, pinned browser/artifact checks and installed package consumers.
+Numerical scratch is bounded stack storage; every phase charges work and checks
+cancellation. Twenty-four matched recipes retain parser work and accounted
+memory peaks; local timings remain exploratory. Detailed runs stay under ignored
+artifacts; ordinary source edits and rebuilds require no hash refresh.
 
-**Next: native hairline curves, dash construction, remaining shape/paint routes
-and bitmap contexts; then remaining original corporate edge, stroke and clip
-residuals.** The six fresh controls and all prior exact cases must remain exact.
-General fidelity, representative performance and Linux remain open. The previous
-live-convex-cubic and incoming-edge repairs remain in place.
+**Next: native dash construction, remaining hairline shape/paint routes and
+bitmap contexts; then remaining original corporate edge, stroke and clip
+residuals.** Preserve all previous exact controls and the twelve new exact curve
+controls. General fidelity, representative performance and Linux remain open.
+The previous live-convex-cubic and incoming-edge repairs remain in place.
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -71,31 +71,35 @@ nor the calibration fixtures establish a release rate.
 
 ## 1. Current validated checkpoint and its limits
 
-Hairline dispatch follows the pinned draw's mapped width-vector predicate and
-paint-alpha modulation. The line walker preserves fractional endpoint coverage,
-neighbor pairs, direction, large-line subdivision and ordered source-over.
-Scene outlines still own admission and fallback. Centerlines are distinct from
-fill commands and cannot be replayed accidentally as a fill after repainting.
-Native line vectors do not prove complete material/AA-clip or curve/dash parity;
-broader path, shape, paint and bitmap-context fidelity remain open. See
-[the design record](docs/RASTERIZATION_DESIGN.md#native-straight-path-hairlines-2026-10-06).
+Hairline dispatch follows the pinned mapped-width predicate and paint-alpha
+modulation. Quadratics choose bounded subdivision levels; cubics use native
+niceness and maximum-curvature chopping before polynomial line evaluation.
+Endpoint arcs retain their original conics through mapping, then convert at
+device tolerance. Cap extension moves coincident endpoint controls together.
+Two bounded evaluation passes preserve the native all-or-none finite check
+without a 513-point stack buffer. Scene outlines still own admission and wider
+stroke fallback; retained centerlines cannot be replayed as fills after repainting.
+
+The native vectors validate ordered curve/cap line coverage through the existing
+line painter. They do not execute a complete native material/AA-mask backend.
+General clip, dash, shape/paint and bitmap-context fidelity remain open. See
+[the design record](docs/RASTERIZATION_DESIGN.md#native-path-hairline-curves-2026-10-06).
 
 The DOCTYPE [regression inputs](tests/References/declaration-only-doctype.json)
 retain only fixture identities and the declaration-free comparison contract.
-Detailed run records stay under ignored artifacts; Git and the dated snapshots
-below retain historical implementation and measurement details.
+Detailed run records stay under ignored artifacts; Git identifies implementation.
 
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,696 passed**: 3,530 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **3,707 passed**: 3,541 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | All 25 memory scenarios, runtime/symbol package inspection, isolated installed-consumer, Chrome smoke and artifact validation pass. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **1,059 entries = 877 exact + 152 known-difference renders + 30 rejections**; 563 base documents / 496 variants. All prior exact images and outcomes are preserved. Four known hairline fixtures become exact; two unchanged research probes also join the exact fixture bank. Synthetic coverage is separate from corporate coverage. |
-| Executed research manifest | **36 probes = seven exact + 28 known-difference renders + one rejection**. The odd hairline and width-one round cap become exact with their original references. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. Three Default PNGs change without a matching-options fidelity claim. The candidate directory has 100 files; eight new holdouts belong to the corporate matrix. |
-| Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks, selected before fresh comparison. Membership, original sources, root-only materializations, options and references stay unchanged. All declared variants have stable browser references. |
-| Corporate measurement | **240 rendered comparisons = 134 exact + 106 known differences**, plus eighteen UnsupportedFeature cases. All 133 prior exact PNGs are preserved. Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google are exact: **9/27 exact documents**, marks **3/13**, wordmarks **6/14**. Nine changed PNGs improve mismatch count; none worsen. S17 remains open. |
-| Performance and platform limits | Twenty-one matching recipes record work/storage and local timings. Linux/remote CI, noncorporate variant regeneration, representative throughput and private-font metrics/pixels remain unproved. |
+| Executed fixture manifest | **1,077 entries = 889 exact + 158 known-difference renders + 30 rejections**; 581 base documents / 496 variants. Twelve new thin curves are exact; six wider controls retain their measured differences. All 877 prior exact fixture PNGs and every prior fixture output/disposition are preserved. |
+| Executed research manifest | **36 probes = seven exact + 28 known-difference renders + one rejection**. Every previous PNG and disposition is preserved. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. Five Default PNGs change without a matching-options fidelity claim. The candidate directory has 100 files; eight holdouts belong to the corporate matrix. |
+| Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
+| Corporate measurement | **240 rendered comparisons = 134 exact + 106 known**, plus eighteen UnsupportedFeature cases. Every output/disposition is byte-identical to the prior checkpoint. Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google remain exact: **9/27**, marks **3/13**, wordmarks **6/14**. S17 remains open. |
+| Performance and platform limits | Twenty-four matching recipes retain parser work, value layouts and accounted memory peaks. Three curve recipes reduce raster work sharply; the cap probe adds two units. Local timing/allocation observations do not establish representative throughput. Linux/remote CI and private-font metrics/pixels remain unproved. |
 
 ### Native float root mapping for retained curves (2026-10-06)
 
@@ -808,10 +812,12 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    coordinate parity remains open. Keep paint boxes, clips and reference admission
    separate from raster replay; the early scene-premapping model remains rejected.
 4. **Complete thin/fractional events and closed/curved/dashed stroke construction.**
-   Extend the pinned native hairline dispatch beyond straight paths up to one device
-   pixel, retaining the centerline and ordered segment paints. Six fresh controls
-   isolated this gap: widths 0.5 and 1 differed at both phases; width 1.5 was exact.
-   All six controls are now exact, with eighteen stable/healthy captures. See the [dispatch diagnosis](docs/RASTERIZATION_DESIGN.md#thin-stroke-hairline-dispatch-diagnosis-2026-10-06).
+   Extend the pinned native hairline dispatch beyond retained solid paths to
+   dashes, other shapes/paints and bitmap contexts. Lines, quadratics, cubics and
+   endpoint-arc conics now use ordered native hairline coverage. All six earlier
+   line controls and twelve new thin curves are exact; six wider curves remain
+   known differences. The eighteen new configurations have 54 stable/healthy
+   captures. See [the curve checkpoint](docs/RASTERIZATION_DESIGN.md#native-path-hairline-curves-2026-10-06).
    Keep geometry, clipping, cap behavior, alpha modulation, limits and ownership
    coherent; changing filled-outline rounding cannot reproduce the hairline kernel.
    Preserve native float normalization, endpoint replacement, rational caps/joins,

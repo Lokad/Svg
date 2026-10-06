@@ -5729,3 +5729,66 @@ hairline curves/dashes, other shapes/paints and bitmap contexts remain queued;
 wider and curved/dashed strokes keep the admitted outline route. Broader
 fidelity, representative performance and Linux remain open. Detailed runs stay
 under ignored `artifacts/hairline-implementation-20261006/`.
+
+## Native path hairline curves (2026-10-06)
+
+At baseline `ae13bdc6`, retained curves still selected their admitted outline
+route. Replay now accepts quadratics, cubics and SVG endpoint arcs for eligible
+solid undashed hairlines, using the pinned
+[SkScan_Hairline.cpp](https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkScan_Hairline.cpp)
+rules. Wider/dashed admission and fallback retain their existing behavior.
+
+Quadratic control distance selects at most 32 polynomial line segments. Nice
+cubics evaluate directly; other cubics use native maximum-curvature roots and
+paired/single chopping before at most 512 lines per piece. Float coefficients,
+evaluation order and original endpoints are retained. A validation pass rejects
+the whole polynomial if any interior point is nonfinite, then a second bounded
+pass paints it without retaining the native 513-point cubic buffer. Curvature
+work is charged before solving; each evaluation and line charges/checks the
+shared work/token. Conic conversion reserves its existing bounded phase before
+entry and uses a fixed 65-point stack buffer at device tolerance 0.25.
+
+Endpoint arcs convert in authored coordinates before one composed float map.
+Each original conic retains its weight; cap extension applies to the first/last
+source conics before subdivision. General cap extension searches past coincident
+controls and moves them with the endpoint. Native normalization keeps its double
+scale until multiplication, including finite/degenerate handling. Raw current
+points stay distinct from cap-mutated raster endpoints, and explicit closure
+uses the latter. No heap buffer, new owner field, public API or runtime dependency
+is introduced. Wider outlines still determine scene admission and paint bounds.
+
+Eighteen untuned configurations were declared before edits and captures: quadratic
+butt, reversing cubic round and rotated endpoint-arc square families × widths
+0.5/1/1.5 × phases 0/0.25. Every 0.5/1 control becomes exact against its original
+reference; six wider controls retain the previous differences. All 54 independent
+fresh-process captures are stable, healthy and profile-cleaned. Inputs and PNGs
+enter the existing fixture harness unchanged, including wider known failures.
+
+The 648 compiled-native numeric cases retain 23,472 ordered line pairs through
+phase, reversal, first/last cap combinations, coincident controls, long curves
+and nonfinite interior evaluation. Original native hair_quad/hair_cubic,
+niceness, cap extension and geometry/point helpers run unchanged with a recording
+line adapter. Managed tests compare their composed coverage under opaque black,
+opaque nonprimary red and alpha-127 red. This composes native line endpoints
+through the independently validated managed line painter; it does not execute a
+complete native material or AA-mask/region backend. Existing conic-conversion
+vectors and fresh arc captures retain their separate scope.
+
+The 1,205-case bank preserves all previous fixture/research PNGs and dispositions,
+including all 877 prior exact fixtures and seven exact research probes. Five
+legacy Default PNGs change (`inv-013`, `inv-014`, `inv-057`, `inv-064`, `inv-065`)
+without matching-options references. Every one of the 258 corporate outcomes
+and outputs is unchanged: 134 exact, 106 known, eighteen rejected; 9/27 documents.
+
+Tests cover all six output forms for the three curve families; work denial before
+and during numerical/painting phases; nonfinite all-or-none behavior; cancellation
+token identity; shared-budget surface denial/cleanup; immutable retained commands
+and successful retry. Every numerical/line visit checks cancellation, while
+deterministic cancellation during a single tiny curve is not separately claimed.
+Locked restore, nine-project Release build, all 3,707 tests, all 25 memory scenarios,
+Chrome/artifact validation and installed runtime/symbol-package consumers pass.
+Twenty-four matched recipes preserve parser work, layouts and accounted peaks.
+Detailed comparisons, captures, native probes and measurements stay under ignored
+`artifacts/hairline-curves-20261006/`; no source/build/diagnostic hashes are recorded.
+Dash, shape/paint, bitmap context, broader corporate fidelity, representative
+performance and Linux gates remain open.

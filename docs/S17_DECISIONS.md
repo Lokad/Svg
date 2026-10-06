@@ -1,36 +1,38 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Native straight-path hairline dispatch improves nine original
-corporate variants. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain
-open. Exact documents remain Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube,
-NASA, IKEA and Google: **9/27**, marks **3/13**, wordmarks **6/14**. S17 requires
-at least **23/27**, including at least 11/13 marks and 12/14 wordmarks. Membership,
+Updated 2026-10-06. Native path hairline curves add twelve exact thin-curve
+controls. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
+Exact documents remain Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA,
+IKEA and Google: **9/27**, marks **3/13**, wordmarks **6/14**. S17 requires
+at least **23/27**, including 11/13 marks and 12/14 wordmarks. Membership,
 holdouts, options, original inputs and browser references remain frozen.
 
-Current evidence: **1,059 fixtures = 877 exact + 152 known differences + 30
-rejections**, across 563 base documents / 496 variants; **36 research probes =
-seven exact + 28 known + one rejection**; and 92 legacy Default renders:
-**1,187 cases**. All 871 prior exact fixture PNGs and 133 exact corporate PNGs
-are preserved, as are all dispositions. Four known hairline fixtures become
-exact; two unchanged research probes also enter the exact bank. All six fresh
-hairline controls match their original stable captures. Windows locked restore,
-nine-project Release build and **3,696 tests** (3,530 core + 160 visual + six
-FontProbe) pass. All 25 memory scenarios, package/installed-consumer, Chrome
-smoke and artifact validation pass. Twenty-one matched recipes record work,
-storage, allocations and local timing ranges.
+Current evidence: **1,077 fixtures = 889 exact + 158 known + 30 rejected**,
+581 base documents / 496 variants; **36 research probes = seven exact +
+28 known + one rejected**; and 92 legacy Default renders: **1,205 cases**.
+Every prior fixture/research PNG and disposition is preserved. Five legacy
+Default PNGs change without matching-options fidelity claims. Twelve thin curves
+match their original native captures; six wider controls remain known differences.
+All 54 new fresh-process captures are stable and healthy.
 
-The corporate matrix has **240 rendered comparisons (134 exact, 106 known)**
-and eighteen UnsupportedFeature outcomes. All nine changed PNGs improve mismatch
-count; none worsen. Eisenbahn und Höfen small is one/zero/one pixels from exact
-across its backgrounds; Rede Manchete small/intended improve to 519/638 pixels.
-Three legacy Default PNGs change without a matching-options fidelity claim.
+Windows locked restore, nine-project Release build and **3,707 tests**
+(3,541 core + 160 visual + six FontProbe) pass. The 648 compiled-native
+curve/cap vectors run under three materials, alongside the existing line and
+conic vectors. All 25 memory scenarios, package/installed-consumer, Chrome smoke
+and artifact validation pass. Twenty-four matched recipes retain parser work,
+value layouts and accounted memory peaks. Local timings remain exploratory.
 
-Native hairline curves, dashes, other shape/paint routes and bitmap contexts,
-closed/curved/dashed stroke construction, clip/composition, conical/multistop
-coordinates, cache history, general fidelity, representative performance and
-Linux remain open. Earlier NASA operand discrepancies remain diagnostic evidence
-despite exact pixels. S8 measurement is complete for this cohort; S17 remains
-unmet. Detailed studies stay under ignored artifacts.
+All 258 corporate outputs/dispositions are unchanged: **240 rendered comparisons
+(134 exact, 106 known)** and eighteen UnsupportedFeature outcomes. Eisenbahn
+small remains one/zero/one pixels from exact across backgrounds; Rede Manchete
+small/intended remain 519/638 pixels from their original references.
+
+Hairline dashes, other shape/paint routes and bitmap contexts, wider closed/curved/
+dashed stroke construction, clip/composition, conical/multistop coordinates,
+cache history, general fidelity, representative performance and Linux remain
+open. Native curve vectors do not execute a complete native paint/AA-mask backend.
+S8 measurement is complete for this cohort; S17 remains unmet. Detailed studies
+stay under ignored artifacts.
 
 ## Q1 - numeric exact-document target: selected
 
