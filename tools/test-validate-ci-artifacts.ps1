@@ -43,7 +43,7 @@ function Write-Fingerprint([string] $Directory, [string] $RunId, [string[]] $Can
             elapsedMilliseconds = 20; debuggerReadyMilliseconds = 10; sandboxAccessFailures = 0
             networkServiceCrashes = 0; stderrTruncated = $false; stderr = ''; profileCleaned = $true; startupHealth = 'healthy'
         } } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $stderrPath -Encoding utf8
-        $diagnostics += @{ stderrFile = $stderrName; stderrSha256 = (Get-FileHash -LiteralPath $stderrPath -Algorithm SHA256).Hash.ToLowerInvariant(); captureElapsedMilliseconds = 30 }
+        $diagnostics += @{ stderrFile = $stderrName; captureElapsedMilliseconds = 30 }
     }
     $fingerprint = [ordered]@{
         schemaVersion = 4
@@ -257,8 +257,6 @@ foreach ($case in @('sandbox-failure', 'network-crash', 'profile-leak', 'bad-tim
         'lying-stderr' { $stderr.chromeLaunch.stderr = 'Sandbox cannot access executable'; $reason = '*contradicts healthy startup*' }
     }
     $stderr | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $stderrPath -Encoding utf8
-    $edited.captureDiagnostics[0].stderrSha256 = (Get-FileHash -LiteralPath $stderrPath -Algorithm SHA256).Hash.ToLowerInvariant()
-    $edited | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $caseFingerprint -Encoding utf8
     Assert-ValidatorRejects $caseDirectory $memoryDirectory $reason $case
 }
 $missingDiagnosticDirectory = Join-Path $runDirectory 'chrome-missing-diagnostics'

@@ -123,7 +123,6 @@ function Test-ChromeArtifact
         $stderrName = [string](Get-RequiredProperty $diagnostic 'stderrFile' 'Chrome diagnostic')
         if ($stderrName -cne ($candidateName + '.stderr.txt')) { Fail 'Chrome diagnostic filename does not match its candidate.' }
         $stderrPath = Join-Path $ChromeDirectory $stderrName
-        Assert-Hash (Get-RequiredProperty $diagnostic 'stderrSha256' 'Chrome diagnostic') (Get-Hash $stderrPath) 'Chrome stderr hash'
         if ((Get-Item -LiteralPath $stderrPath).Length -gt 262144) { Fail 'Chrome stderr exceeds the retained diagnostic bound.' }
         $launch = (Get-Content -LiteralPath $stderrPath -Raw | ConvertFrom-Json).chromeLaunch
         Assert-Equal 1 (Get-RequiredProperty $launch 'schemaVersion' 'Chrome launch') 'Chrome launch schema'

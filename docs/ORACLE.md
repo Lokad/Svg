@@ -53,8 +53,9 @@ plus redacted per-launch stderr files and a JSON runtime fingerprint. The finger
 each candidate hash as well as the pin JSON, archive and executable hashes,
 executable file version when exposed by the platform, input/reference hashes,
 OS/architecture/runtime, locale, time zone, recipe, actual capture deadline and
-headless/GPU/sandbox/viewport policy. Schema 4 additionally hashes each retained
-stderr file and records parent capture time. Its child report records Chrome's
+headless/GPU/sandbox/viewport policy. Schema 4 additionally names each retained
+stderr file and records parent capture time. Diagnostics are validated directly,
+without log hashes. Its child report records Chrome's
 lifetime/DevTools-ready time, sandbox-access failures, network-service crashes,
 bounded stderr/truncation and profile cleanup. Configured sandbox policy is not
 observed startup health: a sandbox-access failure or repeated service crash fails
@@ -90,8 +91,8 @@ the captures remote evidence or admitting a Linux baseline.
 
 Chrome fingerprint schema 4 requires the startup-health diagnostics; the memory
 summary remains schema 3. Reports identify inputs, outputs, browser and runtime;
-Git and CI workflow revisions identify the code. Solution source, script and
-assembly and diagnostic-report hashes are not recorded or required.
+Git and CI workflow revisions identify the code. Hashes of solution source,
+scripts, assemblies, diagnostic reports or logs are not recorded or required.
 Old Chrome schema-3 fingerprints do not establish observed
 sandbox health and are rejected by the current validator.
 

@@ -77,7 +77,6 @@ function Invoke-ChromeCapture {
             }
             return [PSCustomObject]@{
                 stderrFile = [IO.Path]::GetFileName($stderrPath)
-                stderrSha256 = (Get-FileHash -LiteralPath $stderrPath -Algorithm SHA256).Hash.ToLowerInvariant()
                 captureElapsedMilliseconds = $captureClock.ElapsedMilliseconds
             }
         }
