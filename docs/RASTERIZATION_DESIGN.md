@@ -6218,3 +6218,54 @@ layouts and accounted peaks. Fifteen raster work totals increase, twenty-four
 remain unchanged. No timing or representative performance claim is made. Full
 traces, comparisons, captures and ledgers remain ignored under
 `artifacts/interval-curve-state-20261006/`; Git identifies implementation.
+
+## SDL radial matrix factorization investigation (2026-10-06)
+
+The validated `a1fb0b3e` renderer retains three SDL large differences at
+(1260,575), (1163,621) and (1040,670), on every background. Alpha is identical;
+one RGB channel differs by one level at each pixel. Direct shader sampling
+reproduces those bytes, separating paint evaluation from coverage and walking.
+The original source operands and global float paint matrix already agree with
+the native arithmetic. Changing the decimal reader or global concatenation order
+is therefore not the repair.
+
+Pinned Skia `SkShaders::MatrixRec::apply` in `src/shaders/SkShaderBase.cpp`
+concatenates the already local drawing matrix with the pending local shader
+matrix, inverts the result, then concatenates the unit matrix. The current
+evaluator combines drawing and gradient matrices globally before subtracting
+the bitmap origin. At origin (1016,508), the current combined Y translation is
+-139; translating the drawing matrix first gives -138.99993896484375. The unit
+matrix's Y bias changes from -0.3781604766845703 to -0.3781595230102539. The
+native order resolves all three original RGB witnesses without changing alpha.
+
+An ignored shared model retains separate float gradient-local and referencing
+matrices, composes the output drawing map, and moves its translation into each
+bitmap before local-gradient concatenation. It makes all nine SDL variants
+exact: the model cohort is 168 exact / 90 known, 17/27 documents, marks 7/13
+and wordmarks 10/14. Only the three large SDL PNGs change. Every complete result
+and PNG in the 1,342-case bank is identical to the validated renderer; all 165
+earlier exact corporate PNGs remain. These are model results, not an adopted
+checkpoint or an S17 graduation.
+
+Three circle definitions, four general local matrices, four drawing maps and
+eight pixel/origin contexts produce 384 vectors using the unchanged pinned
+matrix/radius and shader stage bodies. The model matches every position bit,
+material lane bit and stored RGBA pixel. The record adapter does not execute
+the complete native shader, painting or browser pipeline.
+
+Six independent configurations were declared after the diagnostic model,
+before production edits and capture. All eighteen fresh browser captures are
+byte-stable, healthy and profile-cleaned. The translated general-gradient
+rectangle improves one pixel to exact on all backgrounds. The reflected
+general-gradient path preserves its three exact complete PNGs.
+
+Adoption remains pending. The prototype's radial-gradient value grows from
+152 to 208 bytes; its nullable matrix pair is 52 bytes with additional alignment.
+All 39 existing accounting/work/input/PNG ledgers remain identical, which does
+not establish accounting for this added retained storage. Extend the existing
+parser/scene storage charges before adopting the fields, verify denial, cleanup,
+retry and six-output parity, then run full resource/package/delivery gates.
+No timing or performance result is claimed. Sources, native vectors, captures,
+comparisons and resource observations stay under ignored
+`artifacts/radial-matrix-sdl-20261006/`. Git identifies implementation; no source
+or build fingerprints are introduced. The validated cohort remains 16/27.

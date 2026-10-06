@@ -37,7 +37,12 @@ made. Git identifies implementation; studies stay ignored and ordinary code
 edits require no hash refresh.
 
 **Next: remaining corporate curve/clip events and stroke/paint routes.** SDL
-large retains three pixels on every background. Preserve every exact control.
+large retains three RGB-only pixels on every background. A shared diagnostic
+model resolves them by applying the bitmap translation to the drawing matrix
+before concatenating the gradient-local matrix. It preserves the complete bank;
+retained matrix storage still needs accounting and delivery validation before
+adoption. See [the investigation](docs/RASTERIZATION_DESIGN.md#sdl-radial-matrix-factorization-investigation-2026-10-06).
+Preserve every exact control.
 General reflected quadratic/rational bitmap mapping, stroke scan/paint residuals,
 sampled rounded rectangles and dashed ovals, transformed/pathLength dash coverage,
 representative performance and Linux remain open.
@@ -879,7 +884,10 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    share the native rule across clipped and uncut preparation. Preserve all sixteen
    exact corporate documents and the original known references. Bitmap-local source
    mapping and raw-control bounds close UAAR, Red Cross, Party of Changes, Blur
-   and Nike. SDL large retains three pixels per background; SimpleLogin and the
+   and Nike. SDL large retains three RGB-only pixels per background. Native
+   local-before-concat radial matrix factorization resolves the diagnostic model;
+   account retained matrices before integration, then run denial/cleanup,
+   six-output and delivery gates. SimpleLogin and the
    other measured residuals need native/browser evidence.
    The NASA trace retains 163 coordinate differences despite exact pixels; wider
    coordinate parity remains open. Keep paint boxes, clips and reference admission
