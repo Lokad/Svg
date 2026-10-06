@@ -1371,7 +1371,7 @@ internal ref partial struct SvgAnalyticCoverage
         return bytes;
     }
     /// <summary>Validates retained contours like the shared fan path, then reserves analytic scratch within the admitted contact gates.</summary>
-    /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically. Single rings keep the exact legacy sequence, extended to nonzero pure-crossing rings on curve-flattened payloads whose signed winding the edge walk accumulates directly; multi-contour sets additionally admit disjoint-or-nested contact-free loops with per-contour area and vote filtering plus a set-level contact scan, extended to nonzero crossing-, touching- or self-touching sets on curve-flattened payloads without coincident contacts, keeping integer and fractional straight-edge payloads on the exact fan path, with self-touching loops walking their shared vertices through the same signed-winding accumulation, reporting ineligible without reserving otherwise, so the caller keeps the legacy path; the returned value still requires disposal. The setup cost covers validation, area, convexity and self-contact scoring, edge setup and a sorting upper bound for the caller work ledger.</remarks>
+    /// <remarks>Validation mirrors the fan coverage guards exactly (partitioned ends, role counts and values) so malformed payloads fail identically. Single rings keep the exact legacy sequence, extended to nonzero pure-crossing rings on curve-flattened payloads whose signed winding the edge walk accumulates directly; multi-contour sets additionally admit disjoint-or-nested contact-free loops with per-contour area and vote filtering plus a set-level contact scan, and nonzero span-free orthogonal contact sets with a cached, charged direction scan and signed-winding accumulation, extended to nonzero crossing-, touching- or self-touching sets on curve-flattened payloads without coincident contacts, keeping integer and fractional straight-edge payloads on the exact fan path, with self-touching loops walking their shared vertices through the same signed-winding accumulation, reporting ineligible without reserving otherwise, so the caller keeps the legacy path; the returned value still requires disposal. The setup cost covers validation, area, convexity and self-contact scoring, edge setup and a sorting upper bound for the caller work ledger.</remarks>
     internal static SvgAnalyticCoverage Prepare(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, int xStart, int xEnd, int yStart, int yEnd, int outputWidth, int outputHeight, RenderBudget budget, out long setupWork, out bool eligible, CancellationToken cancellationToken)
     {
         return Prepare(points, ends, nestingSigns, isEvenOdd, signs, mapping, Array.Empty<SvgQuadSpan>(), xStart, xEnd, yStart, yEnd, outputWidth, outputHeight, budget, out setupWork, out eligible, cancellationToken);
@@ -1421,6 +1421,21 @@ internal ref partial struct SvgAnalyticCoverage
         if (constructionClip is {} context && (context.Bounds.Left < 0 || context.Bounds.Top < 0 || context.Bounds.Right > outputWidth || context.Bounds.Bottom > outputHeight || context.Bounds.Right < context.Bounds.Left || context.Bounds.Bottom < context.Bounds.Top)) throw new ArgumentOutOfRangeException(nameof(constructionClip));
         ReadOnlySpan<int> votes = isEvenOdd ? nestingSigns : (signs is int[] roles ? roles : ReadOnlySpan<int>.Empty);
         bool hasVotes = isEvenOdd || signs is not null;
+        static bool IsOrthogonalSet(ReadOnlySpan<SvgDevicePoint> vertices, ReadOnlySpan<int> contourEnds, CancellationToken token)
+        {
+            int start = 0;
+            foreach (int end in contourEnds)
+            {
+                for (int index = start; index < end; index++)
+                {
+                    if ((index & 1023) == 0) token.ThrowIfCancellationRequested();
+                    SvgDevicePoint first = vertices[index], next = vertices[index + 1 == end ? start : index + 1];
+                    if (first.X != next.X && first.Y != next.Y) return false;
+                }
+                start = end;
+            }
+            return true;
+        }
         setupWork = 0;
         eligible = false;
         if (!preparation.BasicChecked)
@@ -1508,7 +1523,7 @@ internal ref partial struct SvgAnalyticCoverage
             // Transversal-only unions walk exact signed-winding intervals on any mapping: strict
             // crossings carry no shared vertices, so event handoff stays clean while each interval
             // keeps its own trapezoid fringe instead of the fan exact-area underestimate.
-            // Touches, self-touches, coincident spans and even-odd sets keep their gates.
+            // Other touches, self-touches, coincident spans and even-odd sets keep their gates.
             if (preparation.TransversalUnion is null)
             {
                 bool transversal = false;
@@ -1522,7 +1537,23 @@ internal ref partial struct SvgAnalyticCoverage
             }
             bool transversalUnion = preparation.TransversalUnion.Value;
             bool evenOddCrossings = isEvenOdd && setStructure == SvgContourFlags.ProperCrossing;
-            if (!evenOddCrossings && !transversalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
+            bool rigidContacts = (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None;
+            if (preparation.OrthogonalUnion is null)
+            {
+                bool orthogonal = !isEvenOdd && mapping != SvgPolygonMapping.FlattenedCurves && quadSpans.Length == 0 && cubicSpans.Length == 0 && (setStructure & SvgContourFlags.SelfTouch) == SvgContourFlags.None && rigidContacts;
+                if (orthogonal)
+                {
+                    CheckClippedSetupWork(setupWork + points.Length, maximumSetupWork, cancellationToken);
+                    orthogonal = IsOrthogonalSet(points, ends, cancellationToken);
+                    setupWork += points.Length;
+                }
+                preparation.OrthogonalUnion = orthogonal;
+            }
+            // Vertical edges keep their order between Y events. Coincident edges
+            // contribute their signed winding before a span paints, so orthogonal
+            // sets can use the native walker without losing tiny dash fringes.
+            bool orthogonalUnion = preparation.OrthogonalUnion.Value;
+            if (!evenOddCrossings && !transversalUnion && !orthogonalUnion && hasRigidContact && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap | SvgContourFlags.TouchesOtherContour)) != SvgContourFlags.None) return default;
             long multiPointCount = GetNativePointCount(ref preparation, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, maximumSetupWork, ref setupWork, cancellationToken);
             if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, quadSpans, cubicSpans, !isEvenOdd && mapping == SvgPolygonMapping.FlattenedCurves, false, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;

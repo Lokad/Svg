@@ -993,3 +993,40 @@ resource ledgers do not establish a causal speedup or regression threshold.
 Managed allocation medians vary by at most 1,506 bytes in these pairs; tiny and
 dense preserve their first-pair allocation counts. Representative throughput and
 Linux remain open.
+
+## Native dash/contact observations (2026-10-06)
+
+The same six guard-input recipes preserve parser/raster work, accounted peaks
+and full PNG identity. Two affected inputs add ROC at 200×200 and the Greek flag
+at Default 600×400, both transparent. Their parser work remains 90 and 187;
+admitting their orthogonal contacts changes the raster route and its storage.
+
+| Affected input | Work through raster, before → after | Accounted peak bytes, before → after |
+| --- | ---: | ---: |
+| ROC | 1,369,079 → 166,641 | 163,840 → 175,130 |
+| Greek flag | 5,381,002 → 836,498 | 971,763 → 972,802 |
+
+One sequential baseline-first/candidate-second process pair uses 32 warmups
+and three measured batches. The baseline is the preceding `3a09694b` build.
+Batch sizes remain 100 tiny, 10 Ford/intended YouTube and three dense/native-size/
+large YouTube, with 30 ROC and five Greek-flag conversions added. Cells are
+median milliseconds per conversion and median managed allocation bytes.
+
+| Input | Time before → after (ms) | Allocation before → after (bytes) |
+| --- | ---: | ---: |
+| tiny | .145 → .134 | 27,104 → 27,104 |
+| Ford | 18.024 → 18.690 | 854,195 → 857,010 |
+| dense | 279.512 → 280.163 | 7,186,408 → 7,186,408 |
+| native-size | 432.508 → 499.537 | 36,879,618 → 36,880,824 |
+| intended YouTube | 11.072 → 11.348 | 1,041,194 → 1,041,284 |
+| large YouTube | 35.044 → 36.069 | 3,948,453 → 3,948,453 |
+| ROC | 44.425 → 2.150 | 213,099 → 220,726 |
+| Greek flag | 123.283 → 8.231 | 1,019,916 → 1,054,596 |
+
+The affected-case timing improvement accompanies much lower charged raster work,
+with small increases in accounted peaks. Native-size timing varies despite its
+unchanged work ledger; this single-order shared-host pair does not establish a
+general speedup or regression threshold. Allocation traffic is separate from
+accounted peak memory. Raw ledgers, batches and the matching harness remain under
+ignored `artifacts/dash-endpoints-20261006/`. Representative throughput and Linux
+remain open.

@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the orthogonal-clip checkpoint, the 841 current manifest entries contain
-657 exact decoded-pixel references, 157 known-difference renders and 27
+At the dash/contact checkpoint, the 853 current manifest entries contain
+669 exact decoded-pixel references, 157 known-difference renders and 27
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -18,9 +18,17 @@ limits are preserved across root parsing, font discovery and scale probing.
 The four legacy DOCTYPE inputs now render; the frozen corporate matrix advances
 27 cases to rendering and nine Target cases to the existing unsupported `marker`
 style gate. All previous PNGs are unchanged. The complete frozen matrix has
-240 rendered comparisons (60 exact, 180 known differences) and eighteen
-independently captured renderer rejections. Only Ford and YouTube are exact in
-every declared variant: 2/27 documents, marks 1/13 and wordmarks 1/14.
+240 rendered comparisons (66 exact, 174 known differences) and eighteen
+independently captured renderer rejections. Ford, ROC HCVS and YouTube are exact in
+every declared variant: 3/27 documents, marks 2/13 and wordmarks 1/14.
+
+Straight dash endpoints now retain native float interpolation. Nonzero orthogonal
+contour sets without retained spans use signed-winding analytic walking through
+crossings and coincident edges, preserving the one-byte ROC fringe previously
+lost in geometric fallback. Classification is cached and charged once. All nine
+ROC variants and twelve fresh controls are exact; every prior exact PNG is
+preserved. Curves, self-touching contours and coincident even-odd sets retain their
+separate gates. General stroke and rectangle-paint fidelity remain open.
 
 Convex rectangular strips round coverage separately from the raw-rectangle
 calibration. Native event evidence closes YouTube's opaque triangle witness;
@@ -41,7 +49,7 @@ once and cached across raster contexts, preserving genuine convex routes and
 declined-hint fallback. The 75 native vectors match; twelve independent controls
 and one existing fractional shoulder become exact. All nine Ford variants retain
 exact PNG identity. Ford and YouTube now complete both selected checkpoints;
-the complete corporate matrix has 240 fidelity comparisons and two verified
+the complete corporate matrix has 240 fidelity comparisons and three verified
 exact documents. All eighteen renderer rejections have independent references.
 General mapped curve/paint events remain open.
 

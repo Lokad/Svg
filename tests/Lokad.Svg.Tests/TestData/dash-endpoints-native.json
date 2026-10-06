@@ -1,0 +1,16 @@
+{
+  "scope": "96 line-segment dash endpoints, compiled SkScalarInterp with SkContourMeasure line distance-to-t; forward/reverse, fractions, negative and larger origins.",
+  "sourceRevision": "8b8c3872fbc03f025855db96ce683f34ec98a815",
+  "sourceFiles": [
+    "include/core/SkScalar.h",
+    "src/core/SkContourMeasure.cpp"
+  ],
+  "compiler": "g++ C++20 -O2 -ffp-contract=off",
+  "columns": [
+    "start",
+    "end",
+    "distance",
+    "endpointBits"
+  ],
+  "cases": 96
+}

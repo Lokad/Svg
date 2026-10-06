@@ -944,7 +944,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 if (onEntry && !runOpen)
                 {
                     double openFrac = traveled == 0 ? 0 : traveled / segmentLength;
-                    active.Add(traveled == 0 ? segmentStart : DashCutPoint(segmentStart, segmentEnd, openFrac));
+                    active.Add(traveled == 0 ? segmentStart : DashCutPoint(segmentStart, segmentEnd, traveled, segmentLength, hasCurves));
                     if (runs == 0) { leadOpenSeg = index; leadOpenFrac = openFrac; }
                     else { currOpenSeg = index; currOpenFrac = openFrac; }
                     runOpen = true;
@@ -959,7 +959,7 @@ internal ref struct SvgOrthogonalGeometryLowering
                 if (onEntry)
                 {
                     double closeFrac = finished ? 1 : traveled / segmentLength;
-                    active.Add(finished ? segmentEnd : DashCutPoint(segmentStart, segmentEnd, closeFrac));
+                    active.Add(finished ? segmentEnd : DashCutPoint(segmentStart, segmentEnd, traveled, segmentLength, hasCurves));
                     int openSeg = runs == 0 ? leadOpenSeg : currOpenSeg;
                     double openFrac = runs == 0 ? leadOpenFrac : currOpenFrac;
                     if (runs == 0) { leadCloseSeg = index; leadCloseFrac = closeFrac; }
@@ -1021,8 +1021,21 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (endedAtEnd && current.Count > 0 && !SvgStrokeOutline.IsAllIdentical(current.AsSpan())) StrokeDashRun(current.AsSpan(), width, miterLimit, cap, join, contour, closed, currOpenSeg, currOpenFrac, currCloseSeg, currCloseFrac, hasCurves, outlines);
         }
 
-        static SvgDevicePoint DashCutPoint(SvgDevicePoint start, SvgDevicePoint end, double fraction)
-            => new(start.X + (end.X - start.X) * fraction, start.Y + (end.Y - start.Y) * fraction);
+        // SkContourMeasure's line interpolation rounds the fraction and each
+        // coordinate operation to float. Preserve those tiny endpoint fringes.
+        // Sampled curves keep their existing chord metric and endpoint tangents.
+        static SvgDevicePoint DashCutPoint(SvgDevicePoint start, SvgDevicePoint end, double distance, double length, bool hasCurves)
+        {
+            if (hasCurves)
+            {
+                double fraction = distance / length;
+                return new(start.X + (end.X - start.X) * fraction, start.Y + (end.Y - start.Y) * fraction);
+            }
+            float t = (float)distance / (float)length;
+            float dx = (float)end.X - (float)start.X;
+            float dy = (float)end.Y - (float)start.Y;
+            return new((float)start.X + dx * t, (float)start.Y + dy * t);
+        }
     }
 
     /// <summary>Strokes one dash run with parabolic end tangents on curves and chord caps elsewhere.</summary>

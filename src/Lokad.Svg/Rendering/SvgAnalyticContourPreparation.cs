@@ -29,6 +29,7 @@ internal ref struct SvgAnalyticContourPreparation
     internal bool? HasArea;
     internal SvgContourFlags? Structure;
     internal bool? TransversalUnion;
+    internal bool? OrthogonalUnion;
     internal bool? Convex;
     internal bool DesnapBox;
     internal bool UseCurveSpans;

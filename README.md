@@ -36,9 +36,12 @@ and preserve the distinction between geometric clip edges and mask allocation
 bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
 paints apply the rectangle's snapped byte mask to each ordered operation.
 The frozen corporate matrix now has all 258 reference images: 240 rendered
-comparisons (60 exact, 180 different) and eighteen retained renderer rejections.
-Only Ford and YouTube are exact in every declared variant: 2/27 documents.
-These checkpoints do not establish general logo coverage.
+comparisons (66 exact, 174 different) and eighteen retained renderer rejections.
+Ford, ROC HCVS and YouTube are exact in every declared variant: 3/27 documents.
+Straight dash cuts now preserve native float endpoints, and nonzero orthogonal
+contact sets retain their one-byte fringes through signed-winding analytic
+walking. All nine ROC variants and twelve fresh controls are exact. These
+checkpoints do not establish general logo coverage.
 
 Convex paths now round coverage for rectangular strips created by clipping a
 slanted edge, while raw rectangles retain their separate calibration. This closes

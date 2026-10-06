@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Update="TestData/dash-endpoints-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/dash-endpoints-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/clip-alpha-native.bin" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/analytic-paint-clip-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/raw-convexity-native.json" CopyToOutputDirectory="PreserveNewest" />

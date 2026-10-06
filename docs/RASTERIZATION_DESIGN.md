@@ -9,8 +9,9 @@ original Ford variants are now exact. The
 [raw-control checkpoint](#raw-control-point-convexity-checkpoint-2026-10-05)
 records native classification and its historical limits. Subsequent strip and
 clip-byte repairs make all nine YouTube variants exact. The current
-[orthogonal-clip checkpoint](#orthogonal-fill-clip-preservation-2026-10-06)
-preserves contours and AA clip ownership through lowering.
+[dash/contact checkpoint](#native-dash-endpoints-and-orthogonal-contacts-2026-10-06)
+retains float dash endpoints and analytic orthogonal contact walking. The preceding
+orthogonal-clip repair preserves contours and AA clip ownership through lowering.
 
 ## Initial transition requirements (historical)
 
@@ -4727,3 +4728,53 @@ identities are unchanged. Full local experiments remain under ignored
 `artifacts/rectangle-route-20261006/`; no current-source hash inventory is needed.
 General rectangle paint, successive clip-alpha intersections, cache history and
 corporate fidelity remain open.
+
+
+## Native dash endpoints and orthogonal contacts (2026-10-06)
+
+ROC's six nonexact variants missed a one-byte column. At intended size the
+native endpoint is 71.99999237060547, from float distance-to-t and coordinate
+interpolation in SkContourMeasure/SkScalarInterp. Double cuts landed on 72.
+Compiled native walking emits `Direct` coverage one at (71,100). Float cuts alone
+leave the image unchanged: the coincident dash outlines declined analytic
+preparation and geometric fallback discarded the tiny fringe. Routing them
+through the existing signed-winding analytic walker closes the shared cause.
+
+Straight dash cuts now perform float distance/length division, delta,
+multiplication and addition. Sampled curves retain their existing metric and
+endpoint tangents. Nonzero orthogonal contour sets without retained curve spans
+can walk their contacts: vertical edges keep their order between Y events;
+coincident edges update signed winding before an interval paints. Classification
+is cached and charged once with work/cancellation checks. Other rigid contacts,
+self-touching sets and coincident even-odd sets retain their gates. An attempted
+stroke-separation change was rejected: it did not close the contact fallback.
+No syntax or document-specific exception is added.
+
+All nine original ROC references are exact. The six prior failures improve to
+zero; all sixty prior exact corporate PNGs and every other corporate PNG remain
+unchanged. Corporate results are 66 exact / 174 known differences / eighteen
+rejections: three exact documents, marks 2/13 and wordmarks 1/14. Membership and
+all original references/provenance are preserved. The 993-case prior bank keeps
+all dispositions and 657 exact PNG identities; only ROC and the Greek flag's
+Default PNGs change. A fresh Greek-flag triple at 600×400 verifies improvement
+4,486 pixels / maximum channel error 41 → zero, outside the corporate denominator
+and without a full variant-matrix graduation.
+
+Four predeclared CC0 sources add twelve exact configurations across all backgrounds:
+horizontal/vertical compound paths, a single-line control and translated opacity.
+All 36 captures are healthy, cleaned and byte-identical in triples; the separate
+Greek-flag comparison adds three equally stable captures. Ninety-six compiled
+native float vectors cover forward/reverse directions, fractional/negative/large
+origins and varied cut distances. A compiled native orthogonal-contact witness
+emits `Direct` coverage one at (39,4). Ten core tests cover those endpoints/fringes,
+classification caching, six outputs, denial and cancellation cleanup.
+
+Locked restore, nine-project Release build (zero warnings/errors), all 3,499 tests
+(3,333 core / 160 visual / six FontProbe), all 25 memory scenarios, package and
+installed-consumer checks, Chrome smoke and artifact-validator controls pass.
+Matching guard work/peak/PNG ledgers are unchanged. ROC raster work drops
+1,369,079 → 166,641 while accounted peak grows 163,840 → 175,130 bytes; Greek-flag
+raster work drops 5,381,002 → 836,498 while peak grows 971,763 → 972,802 bytes.
+Parser work is unchanged in both. Complete local proofs remain under ignored
+`artifacts/dash-endpoints-20261006/`. General stroke, rectangle paint, clip stacks,
+affine/curve/layer fidelity, representative performance, Linux and S17 remain open.

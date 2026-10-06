@@ -1,7 +1,8 @@
 Lokad.Svg contains managed adaptations of Skia analytic curve/line clipping,
 polynomial solvers, vertical edge combination, horizontal clip paint routing,
 axis-aligned path mapping, raw control-point convexity classification and
-antialiased rectangle paint-clip dispatch and byte coverage.
+antialiased rectangle paint-clip dispatch and byte coverage, and line-segment
+dash endpoint interpolation.
 These adaptations do not depend on native Skia.
 
 Source revision: f8b66b7597c4cc859d3ed190e9c6872241e6721c
@@ -14,6 +15,10 @@ src/core/SkScan_AntiPath.cpp, src/core/SkAnalyticEdge.cpp, src/core/SkAnalyticEd
 and include/private/SkMath.h.
 Copyright 2006, 2009, 2016 The Android Open Source Project;
 2010, 2011, 2012 Google Inc.; 2023, 2025 Google LLC.
+
+Dash endpoint interpolation also adapts src/core/SkContourMeasure.cpp and
+include/core/SkScalar.h at 8b8c3872fbc03f025855db96ce683f34ec98a815.
+Copyright 2018 Google LLC.
 
 Skia license:
 

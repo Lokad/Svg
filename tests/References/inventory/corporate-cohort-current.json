@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Complete frozen 27-document/258-variant measurement: every variant has an independently captured browser reference. All 258 renderer outcomes are unchanged: 240 render (60 exact, 180 known differences), eighteen reject UnsupportedFeature. Only Ford and YouTube are exact in every declared variant (2/27; marks 1/13, wordmarks 1/14). This cohort has selection limits and does not establish a market/release coverage claim.",
+  "scope": "Frozen 27-document/258-variant measurement after float dash endpoint interpolation and nonzero orthogonal contact walking: all 258 renderer outcomes remain unchanged. 240 render (66 exact, 174 known differences), eighteen reject UnsupportedFeature. Ford, ROC HCVS and YouTube are exact in every declared variant (3/27; marks 2/13, wordmarks 1/14). Every original reference and capture provenance is preserved. This cohort has selection limits and does not establish market/release coverage.",
   "rendererCounts": {
     "renders": 240,
     "MalformedInput": 0,
@@ -24,8 +24,8 @@
     "transport-limit-gap": 0
   },
   "fidelityCounts": {
-    "exact": 60,
-    "known-difference": 180,
+    "exact": 66,
+    "known-difference": 174,
     "withoutReference": 0,
     "measuredRendererRejections": 18
   },
@@ -141,6 +141,7 @@
   },
   "verifiedExactDocuments": [
     "inv-002",
+    "inv-010",
     "inv-027"
   ],
   "documents": [
@@ -318,7 +319,7 @@
         "inv-010-large-white",
         "inv-010-large-black"
       ],
-      "verifiedExact": false
+      "verifiedExact": true
     },
     {
       "id": "inv-011",
@@ -12609,128 +12610,31 @@
       "id": "inv-010-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "40f1de11bc54091dfdd051cdbb521e3435484c0d8fc04429405e603c964b8878",
-      "candidateSha256": "11cf89211a3963260f6687c5a367801490d1dca1fdcece125b1684854c00e461",
+      "candidateSha256": "e67fcf9385b311d45da8c63d0270e6b891a11a44194a1bbff47e9ecc310a2e2a",
       "width": 100,
       "height": 100,
       "referenceSha256": "7ff250011ab3f34d43d4674e4dc6499ee723ae4b6d4a3b70b38ffec1eb0720e7",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 28,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.0007,
-          "RootMeanSquareError": 0.026457513110645904,
-          "MaximumAlphaError": 1,
-          "AlphaChangedPixelCount": 28,
-          "MinimumMismatchX": 35,
-          "MinimumMismatchY": 36,
-          "MaximumMismatchX": 35,
-          "MaximumMismatchY": 63,
-          "IsExact": false
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 100,
+          "MinimumMismatchY": 100,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
-        "alphaMass": 28,
+        "alphaMass": 0,
         "overCoveredPixels": 0,
-        "underCoveredPixels": 28,
+        "underCoveredPixels": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "X": 35,
-            "Y": 36,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 37,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 38,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 39,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 40,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 41,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 42,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 43,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 44,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 45,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 46,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 47,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 48,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 49,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 50,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 35,
-            "Y": 51,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-010-small-transparent.png",
       "captureProvenance": {
@@ -12764,128 +12668,31 @@
       "id": "inv-010-small-white",
       "renderOutcome": "renders",
       "inputSha256": "40f1de11bc54091dfdd051cdbb521e3435484c0d8fc04429405e603c964b8878",
-      "candidateSha256": "5bb8b47090bdb9bf06cb22504715af15ad5d11ff435c82c60236efa999c2b41a",
+      "candidateSha256": "b42ec56c914898072c360fcc6fbad02ec2ffb1445c787159f48e2049a4d84b29",
       "width": 100,
       "height": 100,
       "referenceSha256": "4311a2af48ed5734e63c5b7867190ca989f29fbe8cb14a5e9ce14188312b0335",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 28,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.0021,
-          "RootMeanSquareError": 0.0458257569495584,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 35,
-          "MinimumMismatchY": 36,
-          "MaximumMismatchX": 35,
-          "MaximumMismatchY": 63,
-          "IsExact": false
+          "MinimumMismatchX": 100,
+          "MinimumMismatchY": 100,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
         "underCoveredPixels": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "X": 35,
-            "Y": 36,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 37,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 38,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 39,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 40,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 41,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 42,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 43,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 44,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 45,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 46,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 47,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 48,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 49,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 50,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 35,
-            "Y": 51,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-010-small-white.png",
       "captureProvenance": {
@@ -12977,128 +12784,31 @@
       "id": "inv-010-intended-transparent",
       "renderOutcome": "renders",
       "inputSha256": "6be57e308a793eeead287b1601d31c95a1862de7fa9834625bc7c0a222d199a7",
-      "candidateSha256": "dcb6d9362f477d4cb4a522de2e2a341662ebaa1a301ad755fe675a169e1adf68",
+      "candidateSha256": "a63fbf8f9a5d739056bd7a0e11ff8c7f5a3ffe95078efe35ff3f31ab2d9bef8e",
       "width": 200,
       "height": 200,
       "referenceSha256": "c7d0d6be3c4aa195fdb9e58ae84603d5bd5fd057587a05b4630c5d4804b4f1c1",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 56,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.00035,
-          "RootMeanSquareError": 0.01870828693386971,
-          "MaximumAlphaError": 1,
-          "AlphaChangedPixelCount": 56,
-          "MinimumMismatchX": 71,
-          "MinimumMismatchY": 72,
-          "MaximumMismatchX": 71,
-          "MaximumMismatchY": 127,
-          "IsExact": false
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 200,
+          "MinimumMismatchY": 200,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
-        "alphaMass": 56,
+        "alphaMass": 0,
         "overCoveredPixels": 0,
-        "underCoveredPixels": 56,
+        "underCoveredPixels": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "X": 71,
-            "Y": 72,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 73,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 74,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 75,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 76,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 77,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 78,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 79,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 80,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 81,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 82,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 83,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 84,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 85,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 86,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 71,
-            "Y": 87,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-010-intended-transparent.png",
       "captureProvenance": {
@@ -13132,128 +12842,31 @@
       "id": "inv-010-intended-white",
       "renderOutcome": "renders",
       "inputSha256": "6be57e308a793eeead287b1601d31c95a1862de7fa9834625bc7c0a222d199a7",
-      "candidateSha256": "dd7166f2605de1dde8855415236b5075393432d494637999f64b3b8de7b98950",
+      "candidateSha256": "bed2782c4329c74d986a30b21eb4d4986331679ed4a763dd7695f32ba8fc2bac",
       "width": 200,
       "height": 200,
       "referenceSha256": "8a794d6f161c34d36cfcee5e13c34c1dcb272de8f0587dfdef514a3a42d9f110",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 56,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.00105,
-          "RootMeanSquareError": 0.0324037034920393,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 71,
-          "MinimumMismatchY": 72,
-          "MaximumMismatchX": 71,
-          "MaximumMismatchY": 127,
-          "IsExact": false
+          "MinimumMismatchX": 200,
+          "MinimumMismatchY": 200,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
         "underCoveredPixels": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "X": 71,
-            "Y": 72,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 73,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 74,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 75,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 76,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 77,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 78,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 79,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 80,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 81,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 82,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 83,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 84,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 85,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 86,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 71,
-            "Y": 87,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-010-intended-white.png",
       "captureProvenance": {
@@ -13345,128 +12958,31 @@
       "id": "inv-010-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "016935864861c537aa0bfd7c79e3fffdabbbce1a2167ab6b0b5377ff21d54367",
-      "candidateSha256": "62d69711dbbc0ba006ff529adcfc855552418228c02c953a0ee0dd65a9bcfad6",
+      "candidateSha256": "ac0b35f15cfa675ae1935480d963e5fb33f1b3cad7a5f2e8622813dbe855d5be",
       "width": 400,
       "height": 400,
       "referenceSha256": "fb04793fbda8279b47b0cbd268faa8b04dab5f5e1244bde61207a550d96f9ad4",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 112,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.000175,
-          "RootMeanSquareError": 0.013228756555322952,
-          "MaximumAlphaError": 1,
-          "AlphaChangedPixelCount": 112,
-          "MinimumMismatchX": 143,
-          "MinimumMismatchY": 144,
-          "MaximumMismatchX": 143,
-          "MaximumMismatchY": 255,
-          "IsExact": false
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 400,
+          "MinimumMismatchY": 400,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
-        "alphaMass": 112,
+        "alphaMass": 0,
         "overCoveredPixels": 0,
-        "underCoveredPixels": 112,
+        "underCoveredPixels": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "X": 143,
-            "Y": 144,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 145,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 146,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 147,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 148,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 149,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 150,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 151,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 152,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 153,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 154,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 155,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 156,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 157,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 158,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          },
-          {
-            "X": 143,
-            "Y": 159,
-            "Reference": "AAAAAQ==",
-            "Candidate": "AAAAAA=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-010-large-transparent.png",
       "captureProvenance": {
@@ -13500,128 +13016,31 @@
       "id": "inv-010-large-white",
       "renderOutcome": "renders",
       "inputSha256": "016935864861c537aa0bfd7c79e3fffdabbbce1a2167ab6b0b5377ff21d54367",
-      "candidateSha256": "b51916dabfe5c5b776c60aa388550c326e18c2063791062f85bdc0b36e60a2b7",
+      "candidateSha256": "459d02dd0e3286458f5a72703e3181bccd5957dfbbfd36727deb0458f41b78ed",
       "width": 400,
       "height": 400,
       "referenceSha256": "8582347ee9cbeaf4d9059c34971a996cffda6657061446a72963fb2c31467469",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 112,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.000525,
-          "RootMeanSquareError": 0.0229128784747792,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 143,
-          "MinimumMismatchY": 144,
-          "MaximumMismatchX": 143,
-          "MaximumMismatchY": 255,
-          "IsExact": false
+          "MinimumMismatchX": 400,
+          "MinimumMismatchY": 400,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
         "underCoveredPixels": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0,
-        "witnesses": [
-          {
-            "X": 143,
-            "Y": 144,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 145,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 146,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 147,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 148,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 149,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 150,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 151,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 152,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 153,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 154,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 155,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 156,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 157,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 158,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          },
-          {
-            "X": 143,
-            "Y": 159,
-            "Reference": "/v7+/w==",
-            "Candidate": "/////w=="
-          }
-        ]
+        "witnesses": []
       },
       "referencePng": "inv-010-large-white.png",
       "captureProvenance": {
@@ -32103,8 +31522,8 @@
       "referenceSha256": "e628ef493bea5ee8586514bc6d3730caeb0738def9eac6319b3db860614ded6c"
     }
   ],
-  "rendererSourceBaselineCommit": "19630e52",
-  "rendererSourceState": "AA rectangle byte coverage is applied independently to each ordered paint operation; geometric fallback is preserved.",
-  "measurementCheckpoint": "rectangle-clip-byte-coverage-2026-10-06",
+  "rendererSourceBaselineCommit": "3a09694b41d1d2deb05012423646651778361f41",
+  "rendererSourceState": "Straight dash endpoints retain float interpolation; nonzero orthogonal contact sets use signed-winding analytic walking. Curve, self-touch and coincident even-odd gates are preserved.",
+  "measurementCheckpoint": "orthogonal-dash-contact-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

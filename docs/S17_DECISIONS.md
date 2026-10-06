@@ -1,35 +1,37 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06: preserving the original orthogonal contour and separate AA
-paint clip closes all eleven former path-band control failures. All eighteen new
-scaled box/notch configurations are exact across path/polygon/filled-polyline
-spellings and backgrounds. Ford and YouTube retain all eighteen exact original
-PNGs. [PLAN.md](../PLAN.md) owns the current queue; rows 3–7 and S17 retain their
-general implementation/fidelity exits.
+Updated 2026-10-06: native float dash interpolation and signed-winding analytic
+walking for nonzero orthogonal contact sets make every ROC HCVS variant exact.
+All twelve fresh horizontal/vertical/single-line/opacity configurations match the
+browser. All 657 prior exact fixture PNGs and sixty prior exact corporate PNGs
+retain complete identity. [PLAN.md](../PLAN.md) owns the remaining queue; rows
+3–7 and S17 retain their general implementation/fidelity exits.
 
-Current evidence: 841 fixtures = 657 exact + 157 known-difference renders + 27
-rejections across 463 base documents / 378 variants; research remains 59 known
+Current evidence: 853 fixtures = 669 exact + 157 known-difference renders + 27
+rejections across 467 base documents / 386 variants; research remains 59 known
 renders + one rejection. Windows locked restore, nine-project Release build and
-3,323 core + 160 visual + six FontProbe tests (3,489 total) pass. All 25 memory
+3,333 core + 160 visual + six FontProbe tests (3,499 total) pass. All 25 memory
 scenarios, package/installed-consumer checks, Chrome smoke and artifact-validator
-controls pass. The 993-case bank preserves all 628 prior exact PNG identities and
-all 975 prior dispositions; only the eleven now-exact controls change. Their
-original references are preserved. Matching six-input work/peak ledgers and PNG
-identities are unchanged. Local evidence is under
-`artifacts/rectangle-route-20261006/`.
+controls pass. The 1,005-case bank preserves all 993 prior dispositions; only ROC
+and the Greek flag change their Default PNGs. The latter is exact at 600×400
+against a fresh triple; this does not complete its full variant matrix. Matching
+six-input guard ledgers are unchanged. Affected ROC/Greek raster work drops with
+11,290 / 1,039-byte peak increases. Local evidence is under
+`artifacts/dash-endpoints-20261006/`.
 
 All 258 corporate cases are executed: 240 render and eighteen are unsupported.
-All 258 references are available: 240 rendered comparisons (**60 exact /
-180 known differences**) and eighteen retained renderer rejections. There are
+All 258 references are available: 240 rendered comparisons (**66 exact /
+174 known differences**) and eighteen retained renderer rejections. There are
 no missing references or capture gaps. The remaining 225 references have 675
-stable healthy fresh captures at their frozen dimensions. Ford and YouTube
-remain the only verified exact documents: **2/27**, marks **1/13**, wordmarks
+stable healthy fresh captures at their frozen dimensions. Ford, ROC HCVS and YouTube
+are the verified exact documents: **3/27**, marks **2/13**, wordmarks
 **1/14**. Membership, original inputs/references, holdouts and denominators remain
-unchanged. All 258 dispositions and all 240 rendered PNGs are preserved.
+unchanged. All 258 dispositions and 234 rendered PNGs are preserved; six ROC
+PNGs improve to exact against their original references.
 S8 measurement is complete for this first cohort; the S17 target is still unmet.
 
-Native rectangle-mask fringes and all 65,536 byte products prove this shared
-cause. Orthogonal clipping now preserves those bytes through the shared polygon
+The preceding clip-byte checkpoint matches native rectangle-mask fringes
+and all 65,536 byte products. Orthogonal clipping now preserves those bytes through the shared polygon
 paint route. Actual `rect` paints, paint-server bands, successive clip intersections,
 cache history, general fidelity, representative performance and Linux remain
 open. The capture transport now admits 8,388,608 pixels with a screenshot-only
