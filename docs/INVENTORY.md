@@ -5,6 +5,34 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Radial matrix-order checkpoint (2026-10-07)
+
+SDL (`inv-003`) now matches all nine frozen variants. The cohort has
+**17/27 exact documents**, marks **7/13**, wordmarks **10/14**: **168 exact
+comparisons, 90 known differences and zero rejections** across 258 variants.
+Only three large SDL PNGs change, each improving three RGB-only pixels to exact;
+all 165 earlier exact corporate PNGs remain. Membership, inputs, options,
+references and capture provenance stay frozen.
+
+The bank executes **1,348 cases**: **1,220 fixtures = 1,017 exact + 179 known +
+24 rejected**, **36 research probes = seventeen exact + eighteen known + one
+rejected**, and 92 legacy Default renders. Six independent configurations add
+six exact fixtures (two base documents and four background variants). All 1,342
+prior complete records and PNGs remain, including 1,028 exact fixture/research
+images and every rejection. Eighteen fresh captures are stable, healthy and
+profile-cleaned; controls were declared after the diagnostic model, before
+production edits and capture.
+
+Windows locked restore/nine-project Release build, **3,842 tests** (3,676 core,
+160 visual, six FontProbe), all 25 memory scenarios and installed runtime/symbol
+package consumers pass. Artifact validation reuses prior pinned-Chrome smoke;
+Linux/remote delivery remains open.
+
+Detailed comparisons and resource observations remain under ignored
+`artifacts/radial-matrix-sdl-20261007/`. S17 still needs at least four more
+marks and two more outlined wordmarks. [PLAN](../PLAN.md) owns the queue.
+The earlier checkpoints below retain their dated results.
+
 ## Bitmap-local curve checkpoint (2026-10-06)
 
 UAAR (`inv-004`), Red Cross (`inv-011`), Party of Changes (`inv-026`), Blur

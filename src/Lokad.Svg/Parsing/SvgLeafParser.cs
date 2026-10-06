@@ -41,7 +41,7 @@ internal static class SvgLeafParser
     private static SvgParsedGeometry RetainSingleGeometry(SvgGeometry geometry, SvgDocumentState state, SvgPaintableElementContext context)
     {
         ArgumentNullException.ThrowIfNull(state);
-        using BudgetedParserList<SvgGeometry> retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         retained.Add(geometry);
         return new SvgParsedGeometry(retained.Detach(), 0);
     }

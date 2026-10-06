@@ -618,8 +618,9 @@ internal sealed class SvgGradientPolygon : IDisposable
 internal sealed class SvgRadialPolygon : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
+    private RenderBudget.BudgetReservation? _paintReservation;
 
-    private SvgRadialPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    private SvgRadialPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget.BudgetReservation? paintReservation)
     {
         Points = points;
         ContourEnds = contourEnds;
@@ -634,6 +635,7 @@ internal sealed class SvgRadialPolygon : IDisposable
         Mapping = mapping;
         Clip = clip;
         _reservation = reservation;
+        _paintReservation = paintReservation;
     }
 
     internal SvgDevicePoint[] Points { get; }
@@ -663,14 +665,14 @@ internal sealed class SvgRadialPolygon : IDisposable
 
     internal SvgClipBox? Clip { get; }
 
-    /// <summary>Creates one radial-gradient polygon fill; adopts the caller scene reservation when supplied, which must cover exactly points, contourEnds and signs, and otherwise reserves exact scene storage. Ownership transfers to the fill in both cases.</summary>
-    /// <summary>Creates one radial outline without recorded curves; spans stay empty on this route.</summary>
+    /// <summary>Creates one radial outline without recorded curves; spans stay empty on this route. Adopts caller contour storage only on success and reserves retained paint storage separately.</summary>
     internal static SvgRadialPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation, budget);
     }
 
-    /// <summary>Creates one radial outline carrying retained spans with exact scene storage.</summary>
+    /// <summary>Creates one radial outline carrying retained spans; the caller reservation covers contour arrays and transfers only on success.</summary>
+    /// <remarks>Paint storage is reserved separately before allocation. Without a caller reservation, the factory owns its exact array reservation. Failure releases only factory-owned reservations.</remarks>
     internal static SvgRadialPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRadialGradient gradient, SvgRectangle box, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -682,11 +684,19 @@ internal sealed class SvgRadialPolygon : IDisposable
         long bytes;
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
-        if (reservation is null)
+        RenderBudget.BudgetReservation paintReservation = budget.Reserve(SvgRadialGradient.RetainedStorageBytes, SvgMemoryCategory.Scene);
+        bool ownsArrays = reservation is null;
+        try
         {
-            reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+            if (ownsArrays) reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
+            return new SvgRadialPolygon(points, contourEnds, signs, quadSpans, cubicSpans, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation, paintReservation);
         }
-        return new SvgRadialPolygon(points, contourEnds, signs, quadSpans, cubicSpans, gradient, box, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
+        catch
+        {
+            paintReservation.Dispose();
+            if (ownsArrays) reservation?.Dispose();
+            throw;
+        }
     }
 
     /// <summary>Repaints one solid outline as a radial-gradient outline, rendering single-stop and degenerate paints as solid end-stop fills. Callers admit the paint once for identical errors.</summary>
@@ -709,14 +719,18 @@ internal sealed class SvgRadialPolygon : IDisposable
         byte stamped = SvgReferenceResolver.MultiplyAlpha(Opacity, value);
         SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
         RenderBudget.BudgetReservation? reservation = _reservation;
+        SvgRadialPolygon result = new(Points, ContourEnds, Signs, QuadSpans, CubicSpans, Gradient, Box, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation, _paintReservation);
         _reservation = null;
-        return new SvgRadialPolygon(Points, ContourEnds, Signs, QuadSpans, CubicSpans, Gradient, Box, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
+        _paintReservation = null;
+        return result;
     }
 
     public void Dispose()
     {
         _reservation?.Dispose();
         _reservation = null;
+        _paintReservation?.Dispose();
+        _paintReservation = null;
     }
 }
 
@@ -980,16 +994,27 @@ internal sealed class SvgGradientGeometry : IDisposable
     }
 }
 
-/// <summary>Owns retained radial-gradient stops with their circle and fill region.</summary>
+/// <summary>Owns retained radial paint-value storage with its circle and fill region; the scene separately reserves shared stops.</summary>
 internal sealed class SvgRadialGeometry : IDisposable
 {
-    internal SvgRadialGeometry(SvgRadialGradient Gradient, SvgRectangle Box, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke)
+    private RenderBudget.BudgetReservation? _paintReservation;
+
+    private SvgRadialGeometry(SvgRadialGradient Gradient, SvgRectangle Box, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke, RenderBudget.BudgetReservation? paintReservation)
     {
         this.Gradient = Gradient;
         this.Box = Box;
         this.Fill = Fill;
         this.Opacity = Opacity;
         this.Stroke = Stroke;
+        _paintReservation = paintReservation;
+    }
+
+    /// <summary>Reserves retained paint storage before allocation. The result owns it until disposal or clipping/mask transfer.</summary>
+    internal static SvgRadialGeometry Create(SvgRadialGradient gradient, SvgRectangle box, SvgRectangle fill, byte opacity, SvgStroke? stroke, RenderBudget budget)
+    {
+        RenderBudget.BudgetReservation reservation = budget.Reserve(SvgRadialGradient.RetainedStorageBytes, SvgMemoryCategory.Scene);
+        try { return new(gradient, box, fill, opacity, stroke, reservation); }
+        catch { reservation.Dispose(); throw; }
     }
 
     internal SvgRadialGradient Gradient { get; }
@@ -1002,14 +1027,27 @@ internal sealed class SvgRadialGeometry : IDisposable
 
     internal SvgStroke? Stroke { get; }
 
+    /// <summary>Clips the fill and transfers retained paint ownership; callers drop the source.</summary>
     internal SvgRadialGeometry ClipTo(SvgClipBox box)
-        => new(Gradient, Box, box.ClipRectangle(Fill), Opacity, Stroke);
+    {
+        SvgRadialGeometry result = new(Gradient, Box, box.ClipRectangle(Fill), Opacity, Stroke, _paintReservation);
+        _paintReservation = null;
+        return result;
+    }
 
+    /// <summary>Stamps alpha and transfers retained paint ownership; callers drop the source.</summary>
     internal SvgRadialGeometry Stamped(byte value)
-        => new(Gradient, Box, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width));
+    {
+        SvgStroke? stroke = Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width);
+        SvgRadialGeometry result = new(Gradient, Box, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), stroke, _paintReservation);
+        _paintReservation = null;
+        return result;
+    }
 
     public void Dispose()
     {
+        _paintReservation?.Dispose();
+        _paintReservation = null;
     }
 }
 

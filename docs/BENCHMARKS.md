@@ -2018,3 +2018,25 @@ representative performance result. All 25 memory scenarios and installed package
 consumers pass. Windows artifact validation reuses earlier pinned-browser smoke;
 Linux remains open. Ledgers stay under ignored
 `artifacts/interval-curve-state-20261006/`; Git identifies implementation.
+
+## Radial matrix-order resource observations (2026-10-07)
+
+The 39 prior Windows X64 / .NET 10.0.12 recipes retain complete input, parser/raster
+work, accounted peak, layout and PNG records. Three additional matched radial
+parser recipes cover SDL large and the two independent controls. The radial
+value grows 152 → 208 bytes; parser dictionary allowances use its actual size,
+and scene factories reserve the paint value plus 64 bytes before allocation.
+
+SDL scene storage rises 84,972 → 85,244 bytes and parser peak rises
+1,622,500 → 1,623,924 bytes. The rectangle control's scene charge rises
+456 → 728 bytes; the reflected path's rises 1,220 → 1,492. Their 163,840-byte XML
+allowance still dominates peaks, which remain unchanged. Parser work is unchanged
+and all owners release on success and tested denials. These are accounted storage
+observations, not resident-memory or throughput measurements.
+
+Full 3,842 tests, 25 memory scenarios, installed package consumers and Windows
+artifact consistency pass. One concurrent memory run missed its background-loop
+cancellation phase flag; the isolated retry passes all scenarios. Prior Chrome
+smoke is reused. No timing, representative performance, Linux or remote delivery
+claim is made. Detailed records remain under ignored
+`artifacts/radial-matrix-sdl-20261007/`; Git identifies implementation.

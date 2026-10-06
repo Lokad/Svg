@@ -1,38 +1,38 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Bitmap-local curve mapping and raw-control raster bounds
-make UAAR, Red Cross, Party of Changes, Blur and Nike exact in every frozen
-variant. [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
-Exact documents are Ford, UAAR, SimpleX, Omega, Eisenbahn, ROC HCVS, Red Cross,
-Artsy, Party of Changes, YouTube, NASA, Blur, Nike, Target, IKEA and Google:
-**16/27**, marks **7/13**, wordmarks **9/14**. S17 requires **23/27**, including
-11/13 marks and 12/14 wordmarks. Membership, holdouts, options, inputs and
-references stay frozen.
+Updated 2026-10-07. Bitmap-local radial drawing/shader matrix order makes SDL
+exact in every frozen variant. [PLAN.md](../PLAN.md) owns the queue; rows 3–7
+and S17 remain open. Exact documents are Ford, SDL, UAAR, SimpleX, Omega,
+Eisenbahn, ROC HCVS, Red Cross, Artsy, Party of Changes, YouTube, NASA, Blur,
+Nike, Target, IKEA and Google. S17 requires 23/27, including 11/13 marks and
+12/14 wordmarks; at least four more marks and two more wordmarks are needed.
 
-Current evidence: **1,214 fixtures = 1,011 exact + 179 known + 24 rejected**,
-706 base documents / 508 variants; **36 research probes = seventeen exact +
-eighteen known + one rejected**; and 92 legacy Default renders: **1,342 cases**.
-Eighteen controls add twelve exact and six known fixtures; the original research
-circle graduates. Four earlier fixtures and the circle become exact. All 1,010
-prior exact fixture/research PNGs and rejections remain. Eight Default PNGs change
-without matching-options fidelity claims.
+SDL (`inv-003`) now matches all nine frozen variants. The cohort has
+**17/27 exact documents**, marks **7/13**, wordmarks **10/14**: **168 exact
+comparisons, 90 known differences and zero rejections** across 258 variants.
+Only three large SDL PNGs change, each improving three RGB-only pixels to exact;
+all 165 earlier exact corporate PNGs remain. Membership, inputs, options,
+references and capture provenance stay frozen.
 
-All **258 corporate variants render: 165 exact and 93 known differences**.
-Forty-four PNGs change with no mismatch count increase; all 145 earlier exact
-PNGs remain. Known-difference documents retain their denominators.
+The bank executes **1,348 cases**: **1,220 fixtures = 1,017 exact + 179 known +
+24 rejected**, **36 research probes = seventeen exact + eighteen known + one
+rejected**, and 92 legacy Default renders. Six independent configurations add
+six exact fixtures (two base documents and four background variants). All 1,342
+prior complete records and PNGs remain, including 1,028 exact fixture/research
+images and every rejection. Eighteen fresh captures are stable, healthy and
+profile-cleaned; controls were declared after the diagnostic model, before
+production edits and capture.
 
-Windows locked restore, nine-project Release build and **3,829 tests**
-(3,663 core + 160 visual + six FontProbe), 25 memory scenarios and installed
-package consumers pass. Fifty-four fresh captures are stable, healthy and cleaned.
-Controls were declared after the prototype, before production edits and captures.
-Windows validation reuses earlier pinned-browser smoke; Linux/remote delivery
-remains unproved.
+Windows locked restore/nine-project Release build, **3,842 tests** (3,676 core,
+160 visual, six FontProbe), all 25 memory scenarios and installed runtime/symbol
+package consumers pass. Artifact validation reuses prior pinned-Chrome smoke;
+Linux/remote delivery remains open.
 
-Thirty-nine matching resource recipes preserve inputs, parser work, accounted
-peaks and geometry/paint layouts. Fifteen charged raster totals increase and
-twenty-four remain unchanged. No timing or representative performance result is
-claimed. Reports stay under ignored `artifacts/interval-curve-state-20261006/`;
-Git identifies code without source/build/report hashes.
+The 39 prior resource recipes are unchanged. Three additional radial recipes
+verify increased retained paint charges and complete cleanup; SDL parser peak
+rises by 1,424 bytes. Reports stay under ignored
+`artifacts/radial-matrix-sdl-20261007/`; Git identifies implementation.
+No timing or representative performance result is claimed.
 
 ## Q1 - numeric exact-document target: selected
 

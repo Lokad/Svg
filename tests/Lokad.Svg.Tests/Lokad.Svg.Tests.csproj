@@ -18,6 +18,10 @@
     <None Include="../Fixtures/original/bitmap-local-straight-clip.svg" Link="TestData/bitmap-local-straight-clip.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/bitmap-local-compound-clip.svg" Link="TestData/bitmap-local-compound-clip.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/float-polygon-viewbox.svg" Link="TestData/float-polygon-viewbox.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/radial-local-matrix-translated-rectangle.svg" Link="TestData/radial-local-matrix-translated-rectangle.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/radial-local-matrix-reflected-path.svg" Link="TestData/radial-local-matrix-reflected-path.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/radial-local-matrix-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/radial-local-matrix-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-coordinates-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-coordinates-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-transform-browser.json" CopyToOutputDirectory="PreserveNewest" />

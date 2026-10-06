@@ -85,7 +85,7 @@ internal static class SvgReferenceResolver
                         applied.Add(LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame));
                         break;
                     case SvgGeometryKind.RadialGradient:
-                        applied.Add(LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame));
+                        applied.Add(LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame, state.Budget));
                         break;
                     case SvgGeometryKind.PatternFill:
                         applied.Add(LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame));
@@ -221,14 +221,14 @@ internal static class SvgReferenceResolver
             return LowerInstanceGradientFill(band.Gradient, placement, box, composed, viewportFrame);
         }
 
-        static SvgGeometry LowerEmbeddedInstanceRadialFill(SvgRadialGeometry radial, SvgUseReference instance, SvgViewportFrame? viewportFrame)
+        static SvgGeometry LowerEmbeddedInstanceRadialFill(SvgRadialGeometry radial, SvgUseReference instance, SvgViewportFrame? viewportFrame, RenderBudget budget)
         {
             SvgRectangle placement = InstancePlacement(radial.Fill, instance);
             SvgRectangle box = InstanceBox(radial.Box, instance, viewportFrame);
             SvgRadialGradient circle = radial.Gradient;
             if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, instance.X, instance.Y) : circle with { CenterX = circle.CenterX + instance.X, CenterY = circle.CenterY + instance.Y, FocalX = circle.FocalX + instance.X, FocalY = circle.FocalY + instance.Y };
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(radial.Opacity, instance.Opacity), IsPainted = radial.Fill.HasFill && instance.IsPainted };
-            return LowerPlacedRadialFill(circle, placement, box, composed.Opacity, composed.IsPainted, instance.Transform, viewportFrame);
+            return LowerPlacedRadialFill(circle, placement, box, composed.Opacity, composed.IsPainted, instance.Transform, viewportFrame, budget);
         }
 
         static SvgGeometry LowerEmbeddedInstanceGradientStroke(SvgGradientStrokeGeometry stroke, SvgUseReference instance, SvgViewportFrame? viewportFrame)
@@ -858,7 +858,7 @@ internal static class SvgReferenceResolver
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
             SvgRadialGradient circle = radial.Gradient;
             if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y) : circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
-            return LowerPlacedRadialFill(circle, fill, box, MultiplyAlpha(radial.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame);
+            return LowerPlacedRadialFill(circle, fill, box, MultiplyAlpha(radial.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame, document.Budget);
         }
 
         static SvgGeometry ApplySymbolRadialPolygon(SvgGeometry geometry, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -1010,7 +1010,7 @@ internal static class SvgReferenceResolver
         string paintId = reference.PaintServerId ?? throw new InvalidOperationException("Instance paint lowering requires a paint-server reference.");
         if (state.Patterns.TryGetValue(paintId, out SvgPatternTile tile)) return LowerInstancePatternFill(tile, InstancePlacement(definition.Geometries[0].Rectangle, reference), reference, frame);
         if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient)) return LowerInstanceGradientFill(gradient, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame);
-        if (state.RadialGradients.TryGetValue(paintId, out SvgRadialGradient circle)) return LowerInstanceRadialFill(circle, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame);
+        if (state.RadialGradients.TryGetValue(paintId, out SvgRadialGradient circle)) return LowerInstanceRadialFill(circle, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame, state.Budget);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
     }
 
@@ -1036,10 +1036,10 @@ internal static class SvgReferenceResolver
         return LowerPlacedGradientFill(gradient, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame);
     }
 
-    private static SvgGeometry LowerInstanceRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame)
+    private static SvgGeometry LowerInstanceRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame, RenderBudget budget)
     {
         if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, reference.X, reference.Y) : circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
-        return LowerPlacedRadialFill(circle, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame);
+        return LowerPlacedRadialFill(circle, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame, budget);
     }
 
     private static SvgGeometry LowerPlacedGradientFill(SvgLinearGradient vector, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform vectorTransform, SvgViewportFrame? frame)
@@ -1067,18 +1067,18 @@ internal static class SvgReferenceResolver
         return SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill, opacity, null));
     }
 
-    private static SvgGeometry LowerPlacedRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform circleTransform, SvgViewportFrame? frame)
+    private static SvgGeometry LowerPlacedRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform circleTransform, SvgViewportFrame? frame, RenderBudget budget)
     {
         circle = SvgGradientSyntax.MapUserSpaceRadial(circleTransform, circle, frame);
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
-        return FinishInstanceRadialFill(circle, box, placement, opacity, painted);
+        return FinishInstanceRadialFill(circle, box, placement, opacity, painted, budget);
     }
 
-    private static SvgGeometry FinishInstanceRadialFill(SvgRadialGradient circle, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted)
+    private static SvgGeometry FinishInstanceRadialFill(SvgRadialGradient circle, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted, RenderBudget budget)
     {
         SvgRectangle fill = placement with { HasFill = painted && !circle.IsEmpty };
         if (circle.Stops.Length == 1 || (circle.Radius == 0 && !circle.IsEmpty)) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(circle.End, opacity) });
-        return SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, box, fill, opacity, null));
+        return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, fill, opacity, null, budget));
     }
 
     private static SvgGeometry FinishInstanceGradientFill(SvgLinearGradient gradient, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted)
@@ -1121,7 +1121,7 @@ internal static class SvgReferenceResolver
         {
             if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + reference.X, offsetY + reference.Y) : circle with { CenterX = (circle.CenterX * scaleX + offsetX) + reference.X, CenterY = (circle.CenterY * scaleY + offsetY) + reference.Y, FocalX = (circle.FocalX * scaleX + offsetX) + reference.X, FocalY = (circle.FocalY * scaleY + offsetY) + reference.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
             circle = SvgGradientSyntax.MapUserSpaceRadial(reference.Transform, circle, frame);
-            return FinishInstanceRadialFill(circle, box, fillBox, reference.Opacity, reference.IsPainted);
+            return FinishInstanceRadialFill(circle, box, fillBox, reference.Opacity, reference.IsPainted, state.Budget);
         }
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
     }
@@ -1236,6 +1236,7 @@ internal static class SvgReferenceResolver
             SvgAffineTransform unbaker = SvgAffineTransform.Identity;
             bool mustUnbake = !snapshot.AncestorTransform.Equals(SvgAffineTransform.Identity);
             if (mustUnbake && !snapshot.AncestorTransform.TryInvert(out unbaker)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with singular source transforms are not implemented.");
+            // This list borrows scene values while collecting a group snapshot; it owns only its array storage.
             using BudgetedParserList<SvgGeometry> collected = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
             for (int index = snapshot.GeometryStart; index < snapshot.GeometryStart + snapshot.GeometryCount; index++)
             {

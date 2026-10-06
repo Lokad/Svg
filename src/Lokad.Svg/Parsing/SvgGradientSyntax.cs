@@ -23,7 +23,14 @@ internal readonly record struct SvgGradientTemplate(double X1, double Y1, double
 
 /// <summary>Retains one admitted one-to-eight-stop radial gradient with a strictly inside focal point, contained focal circle and referencing scale record, with an inverse paint map for general transforms.</summary>
 /// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored circle after the local definition, so raster evaluation inverts the exact paint map under non-uniform referencing transforms.</remarks>
-internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation, SvgGradientTransform Inverse, bool HasGeneralTransform);
+internal readonly record struct SvgRadialGradient(SvgColor Start, SvgColor End, double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation, SvgGradientTransform Inverse, bool HasGeneralTransform)
+{
+    /// <summary>Retains the local shader matrix separately from referencing maps so bitmap translation precedes their float concatenation.</summary>
+    internal SvgGradientPaintMatrices? NativePaintMatrices { get; init; }
+
+    /// <summary>Covers the retained paint value and conservative owner/header overhead before a scene object is allocated.</summary>
+    internal static long RetainedStorageBytes => 64L + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgRadialGradient>();
+}
 
 /// <summary>Retains one parsed radial-gradient definition with attribute explicitness for href inheritance.</summary>
 internal readonly record struct SvgRadialTemplate(double CenterX, double CenterY, double Radius, double FocalX, double FocalY, double FocalRadius, bool IsUserSpace, SvgGradientTransform Transform, bool HasTransform, bool HasUnits, SvgGradientSpread Spread, bool HasSpread, string? Href, int VectorCount, bool HasCenterX, bool HasCenterY, bool HasRadius, bool HasFocalX, bool HasFocalY, bool HasFocalRadius);
@@ -375,7 +382,7 @@ internal static class SvgGradientSyntax
         SvgRectangle fill = placement with { HasFill = painted && !gradient.IsEmpty };
         if (gradient.Stops.Length == 1) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
         if (gradient.Radius == 0 && !gradient.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
-        return SvgGeometry.FromRadialFill(new SvgRadialGeometry(gradient, box, fill, fillOpacity, painted ? stroke : null));
+        return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(gradient, box, fill, fillOpacity, painted ? stroke : null, state.Budget));
     }
 
     /// <summary>Lowers one radial-gradient-filled orthogonal path or point-list shape into radial-evaluated rectangle bands sharing the shape box.</summary>
@@ -407,7 +414,7 @@ internal static class SvgGradientSyntax
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
             SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, budget);
-            using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             try
             {
                 SvgRectangle paintBox = gradient.IsUserSpace ? default : SvgOrthogonalShapeParser.BoxFromFilledGeometryBounds(filled, context.CancellationToken);
@@ -434,11 +441,15 @@ internal static class SvgGradientSyntax
         if (gradient.Stops.Length == 1 || (gradient.Radius == 0 && !gradient.IsEmpty)) return AppendPaintFillStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
         SvgParsedGeometry solid = lowering.Lower(default, painted && !gradient.IsEmpty, transform, frame);
         SvgGeometry[] bands = solid.Storage.Items;
-        for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
+        try
         {
-            context.WorkCounter.Consume(context.CancellationToken);
-            bands[bandIndex] = SvgGeometry.FromRadialFill(new SvgRadialGeometry(gradient, box, bands[bandIndex].Rectangle, opacity, null));
+            for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
+            {
+                context.WorkCounter.Consume(context.CancellationToken);
+                bands[bandIndex] = SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(gradient, box, bands[bandIndex].Rectangle, opacity, null, state.Budget));
+            }
         }
+        catch { solid.Discard(); throw; }
         return AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
 
         static SvgRectangle BoxFromRadialBands(BudgetedParserList<SvgPoint> points, SvgAffineTransform transform, SvgViewportFrame? frame, SvgPaintableElementContext context)
@@ -511,7 +522,7 @@ internal static class SvgGradientSyntax
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
             SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, budget);
-            using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             try
             {
                 if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
@@ -650,7 +661,7 @@ internal static class SvgGradientSyntax
         try
         {
             SvgRectangle paintBox = strokeBox;
-            using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             byte strokeOpacity = strokeShape.Presentation.Opacity;
             foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, outline, paintBox, strokeOpacity, budget)));
             int whiteCount = white.ElementCount;
@@ -672,7 +683,7 @@ internal static class SvgGradientSyntax
         bool whiteReleased = false;
         try
         {
-            using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             byte strokeOpacity = strokeShape.Presentation.Opacity;
             foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, budget)));
             int whiteCount = white.ElementCount;
@@ -695,7 +706,7 @@ internal static class SvgGradientSyntax
         try
         {
             SvgRectangle paintBox = strokeBox;
-            using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             byte strokeOpacity = strokeShape.Presentation.Opacity;
             foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, outlineCircle, paintBox, strokeOpacity, budget)));
             int whiteCount = white.ElementCount;
@@ -832,14 +843,20 @@ internal static class SvgGradientSyntax
     /// <summary>Shifts one general radial gradient through a translation, composing its inverse paint map.</summary>
     internal static SvgRadialGradient ShiftGeneralRadial(SvgRadialGradient gradient, double offsetX, double offsetY)
     {
-        return gradient with { Inverse = SvgGradientTransform.Compose(gradient.Inverse, new SvgGradientTransform(1, 0, 0, 1, -offsetX, -offsetY)) };
+        return ScaleGeneralRadial(gradient, 1, 1, offsetX, offsetY);
     }
 
     /// <summary>Shifts one general radial gradient through an axis-aligned scale plus offset, composing its inverse paint map.</summary>
     internal static SvgRadialGradient ScaleGeneralRadial(SvgRadialGradient gradient, double scaleX, double scaleY, double offsetX, double offsetY)
     {
         if (!TryInvertAxisMap(scaleX, scaleY, offsetX, offsetY, out SvgGradientTransform inverseMap)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular gradient referencing maps are not implemented.");
-        return gradient with { Inverse = SvgGradientTransform.Compose(gradient.Inverse, inverseMap) };
+        SvgGradientPaintMatrices? native = gradient.NativePaintMatrices;
+        if (native is {} matrices)
+        {
+            SvgShaderMatrix map = new((float)scaleX, 0, (float)offsetX, 0, (float)scaleY, (float)offsetY);
+            native = matrices with { Referencing = SvgShaderMatrix.Concat(map, matrices.Referencing) };
+        }
+        return gradient with { Inverse = SvgGradientTransform.Compose(gradient.Inverse, inverseMap), NativePaintMatrices = native };
     }
 
     internal static SvgLinearGradient MapUserSpaceVector(SvgAffineTransform transform, SvgLinearGradient gradient, SvgViewportFrame? frame)
@@ -979,9 +996,9 @@ internal static class SvgGradientSyntax
             left = frame.Value.Clip.ClipRectangle(frame.Value.Shift(left));
             right = frame.Value.Clip.ClipRectangle(frame.Value.Shift(right));
         }
-        using BudgetedParserList<SvgGeometry> stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         if (hasLinearFill) stroked.Add(LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
-        else if (hasRadialFill) stroked.Add(LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity));
+        else if (hasRadialFill) stroked.Add(LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity, state.Budget));
         if (probe is null)
         {
             // Zero width paints no stroke bands; probe nulls only on zero widths here.
@@ -1078,9 +1095,9 @@ internal static class SvgGradientSyntax
             left = frame.Value.Clip.ClipRectangle(frame.Value.Shift(left));
             right = frame.Value.Clip.ClipRectangle(frame.Value.Shift(right));
         }
-        using BudgetedParserList<SvgGeometry> stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         if (hasLinearFill) stroked.Add(LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
-        else if (hasRadialFill) stroked.Add(LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity));
+        else if (hasRadialFill) stroked.Add(LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity, state.Budget));
         else if (circle.Radius != 0 || circle.IsEmpty) stroked.Add(SvgGeometry.FromRectangle(fill));
         if (probe is null)
         {
@@ -1097,10 +1114,10 @@ internal static class SvgGradientSyntax
             return new SvgParsedGeometry(stroked.Detach(), 0);
         }
         bool paintBands = painted && !circle.IsEmpty;
-        stroked.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, box, top with { HasFill = paintBands }, opacity, null)));
-        stroked.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, box, bottom with { HasFill = paintBands }, opacity, null)));
-        stroked.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, box, left with { HasFill = paintBands }, opacity, null)));
-        stroked.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, box, right with { HasFill = paintBands }, opacity, null)));
+        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, top with { HasFill = paintBands }, opacity, null, state.Budget)));
+        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, bottom with { HasFill = paintBands }, opacity, null, state.Budget)));
+        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, left with { HasFill = paintBands }, opacity, null, state.Budget)));
+        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, right with { HasFill = paintBands }, opacity, null, state.Budget)));
         return new SvgParsedGeometry(stroked.Detach(), 0);
     }
 
@@ -1109,7 +1126,7 @@ internal static class SvgGradientSyntax
         // A zero width paints nothing for any paint, so it returns empty before dash, cap, and paint handling like the solid line kernel.
         if (SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1") == 0)
         {
-            using BudgetedParserList<SvgGeometry> none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             return new SvgParsedGeometry(none.Detach(), 0);
         }
         // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
@@ -1171,7 +1188,7 @@ internal static class SvgGradientSyntax
         try
         {
             SvgColor solid = SvgPaintResolver.ApplyOpacity(gradient.End, opacity);
-            using BudgetedParserList<SvgGeometry> repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             foreach (SvgGeometry existing in white.Geometries)
             {
                 if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(degenerate ? SvgGeometry.FromOrthogonalBand(existing.Rectangle with { Color = solid }) : SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, strokeBox, existing.Rectangle, opacity, null)));
@@ -1188,7 +1205,7 @@ internal static class SvgGradientSyntax
     {
         using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, squareCaps, dashes, dashOffset, pathLength, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
-        using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         bool degenerate = gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty;
         if (degenerate && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
         for (int runIndex = 0; runIndex < runRects.Count; runIndex++)
@@ -1203,7 +1220,7 @@ internal static class SvgGradientSyntax
     private static SvgParsedGeometry RetainSingleBand(SvgGeometry geometry, SvgDocumentState state, SvgPaintableElementContext context)
     {
         ArgumentNullException.ThrowIfNull(state);
-        using BudgetedParserList<SvgGeometry> retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         retained.Add(geometry);
         return new SvgParsedGeometry(retained.Detach(), 0);
     }
@@ -1214,7 +1231,7 @@ internal static class SvgGradientSyntax
         // A zero width paints nothing for any paint, so it returns empty before dash, cap, and paint handling like the solid line kernel.
         if (SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1") == 0)
         {
-            using BudgetedParserList<SvgGeometry> none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             return new SvgParsedGeometry(none.Detach(), 0);
         }
         // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
@@ -1255,7 +1272,7 @@ internal static class SvgGradientSyntax
             if (circle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
             return RetainSingleBand(SvgGeometry.FromOrthogonalBand(fill with { Color = SvgPaintResolver.ApplyOpacity(circle.End, opacity) }), state, context);
         }
-        return RetainSingleBand(SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, box, fill, opacity, null)), state, context);
+        return RetainSingleBand(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, fill, opacity, null, state.Budget)), state, context);
     }
 
     /// <summary>Reports whether one radial-gradient line stroke paints fully opaque runs.</summary>
@@ -1275,10 +1292,10 @@ internal static class SvgGradientSyntax
         try
         {
             SvgColor solid = SvgPaintResolver.ApplyOpacity(circle.End, opacity);
-            using BudgetedParserList<SvgGeometry> repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             foreach (SvgGeometry existing in white.Geometries)
             {
-                if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(degenerate ? SvgGeometry.FromOrthogonalBand(existing.Rectangle with { Color = solid }) : SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, strokeBox, existing.Rectangle, opacity, null)));
+                if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(degenerate ? SvgGeometry.FromOrthogonalBand(existing.Rectangle with { Color = solid }) : SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, strokeBox, existing.Rectangle, opacity, null, state.Budget)));
                 else if (degenerate) repainted.Add(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(existing.Polygon.Points, existing.Polygon.ContourEnds, existing.Polygon.Signs, solid, existing.Polygon.HasFill, existing.Polygon.IsEvenOdd, existing.Polygon.Mapping, existing.Polygon.Clip, null, state.Budget)));
                 else repainted.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, circle, strokeBox, opacity, state.Budget)));
             }
@@ -1292,14 +1309,14 @@ internal static class SvgGradientSyntax
     {
         using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, squareCaps, dashes, dashOffset, pathLength, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
-        using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         bool degenerate = circle.Radius == 0 && !circle.IsEmpty;
         if (degenerate && circle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
         for (int runIndex = 0; runIndex < runRects.Count; runIndex++)
         {
             SvgRectangle run = runRects[runIndex];
             if (degenerate) runs.Add(SvgGeometry.FromOrthogonalBand(run with { Color = SvgPaintResolver.ApplyOpacity(circle.End, opacity), HasFill = paintsAny && painted }));
-            else runs.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(circle, run, run with { HasFill = paintsAny && painted && !circle.IsEmpty }, opacity, null)));
+            else runs.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, run, run with { HasFill = paintsAny && painted && !circle.IsEmpty }, opacity, null, state.Budget)));
         }
         return new SvgParsedGeometry(runs.Detach(), 0);
     }
@@ -1317,11 +1334,11 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Lowers one radial gradient fill rectangle shared by combined fill-and-stroke lowerings, mirroring the fill-only lowering.</summary>
-    internal static SvgGeometry LowerRadialFillGeometry(SvgRadialGradient fillCircle, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity)
+    internal static SvgGeometry LowerRadialFillGeometry(SvgRadialGradient fillCircle, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity, RenderBudget budget)
     {
         if (fillCircle.Stops.Length == 1) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillCircle.End, fillOpacity), HasFill = fillHasFill });
         if (fillCircle.Radius == 0 && !fillCircle.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(fillCircle.End, fillOpacity), HasFill = fillHasFill });
-        return SvgGeometry.FromRadialFill(new SvgRadialGeometry(fillCircle, box, fill with { HasFill = fillHasFill }, fillOpacity, null));
+        return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(fillCircle, box, fill with { HasFill = fillHasFill }, fillOpacity, null, budget));
     }
 
     private static SvgStroke? ParseGradientStroke(XmlReader reader, SvgComputedStyle style, SvgPaintableElementContext context, SvgAffineTransform transform, SvgRectangle placement, byte opacity, bool painted)

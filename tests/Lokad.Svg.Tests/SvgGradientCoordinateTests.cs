@@ -89,4 +89,58 @@ public sealed class SvgGradientCoordinateTests
             Assert.Equal(v.Skip(20).Select(value => byte.Parse(value, CultureInfo.InvariantCulture)), destination);
         }
     }
+
+    [Fact]
+    public void Bitmap_local_radial_matrix_order_matches_native_positions_material_lanes_and_pixels()
+    {
+        string[] rows = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "TestData/radial-local-matrix-native.csv"));
+        Assert.Equal(385, rows.Length);
+        SvgGradientStop[] stops = [new(0, new(23, 169, 205, 255)) { Alpha = .27f }, new(1, new(195, 213, 55, 255)) { Alpha = .81f }];
+        SvgRectangle box = new(0, 0, 1476, 742, default, true, null);
+        SvgCpuRasterGrid grid = new(1476, 742);
+        foreach (string row in rows.Skip(1))
+        {
+            string[] cells = row.Split(',');
+            float[] values = cells.Take(15).Select(x => float.Parse(x, CultureInfo.InvariantCulture)).ToArray();
+            SvgShaderMatrix local = new(values[3], values[4], values[5], values[6], values[7], values[8]);
+            SvgShaderMatrix ctm = new(values[9], values[10], values[11], values[12], values[13], values[14]);
+            SvgGradientTransform forward = new(local.ScaleX, local.SkewY, local.SkewX, local.ScaleY, local.TranslateX, local.TranslateY);
+            if (!forward.TryInvert(out SvgGradientTransform inverse)) throw new InvalidDataException("Singular fixture.");
+            SvgRadialGradient gradient = new(stops[0].Color, stops[1].Color, values[0], values[1], values[2], values[0], values[1], 0, 0, 1, false, true, SvgGradientSpread.Pad, stops, 1, 1, true, inverse, true)
+            { NativePaintMatrices = new(local, ctm) };
+            SvgGradientCoordinates coordinates = SvgGradientCoordinates.CreateRadial(gradient, box, 1, 1, 0, 0);
+            int x = int.Parse(cells[15], CultureInfo.InvariantCulture), y = int.Parse(cells[16], CultureInfo.InvariantCulture);
+            SvgCpuBitmapOrigin expectedOrigin = new(int.Parse(cells[17], CultureInfo.InvariantCulture), int.Parse(cells[18], CultureInfo.InvariantCulture));
+            Assert.Equal(expectedOrigin, grid.GetBitmapOrigin(x, y));
+            Assert.True(coordinates.TryRadial(x, y, grid, out double position), row);
+            Assert.Equal(uint.Parse(cells[19], CultureInfo.InvariantCulture), BitConverter.SingleToUInt32Bits((float)position));
+            SvgShaderPaint sample = SvgShaderPaint.Ramp(stops, stops[0].Color, stops[1].Color, 0, 1, Math.Clamp(position, 0, 1), 201, grid.GetGradientDither(x, y));
+            uint[] lanes = [BitConverter.SingleToUInt32Bits(sample.Red), BitConverter.SingleToUInt32Bits(sample.Green), BitConverter.SingleToUInt32Bits(sample.Blue), BitConverter.SingleToUInt32Bits(sample.Alpha)];
+            Assert.Equal(cells.Skip(20).Take(4).Select(x => uint.Parse(x, CultureInfo.InvariantCulture)), lanes);
+            byte[] destination = [11, 23, 37, 97];
+            sample.Blend(destination, 191);
+            Assert.Equal(cells.Skip(24).Select(x => byte.Parse(x, CultureInfo.InvariantCulture)), destination);
+        }
+    }
+
+    [Theory]
+    [InlineData("translated-rectangle")]
+    [InlineData("reflected-path")]
+    public async Task Separate_radial_local_and_drawing_matrices_preserve_six_output_parity(string name)
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/radial-local-matrix-" + name + ".svg"));
+        byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] destination = new byte[expected.Length];
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream stream = new();
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, stream.ToArray());
+        Assert.Equal(expected, (await SvgConverter.ConvertToPngAsync(input, SvgRenderOptions.Default, CancellationToken.None)).ToArray());
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream asyncStream = new();
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, asyncStream.ToArray());
+    }
 }

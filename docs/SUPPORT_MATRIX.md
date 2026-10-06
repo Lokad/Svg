@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the bitmap-local curve checkpoint, the 1,214 manifest entries contain
-1,011 exact decoded-pixel references, 179 known-difference renders and 24
+At the radial matrix-order checkpoint, the 1,220 manifest entries contain
+1,017 exact decoded-pixel references, 179 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -39,12 +39,20 @@ remain unsupported. `overflow:visible` is accepted on non-viewport targets;
 root/nested SVG viewports retain hidden clipping and reject visible overflow,
 including matched stylesheet declarations. These admissions add no painting.
 
-The complete frozen corporate matrix has 258 rendered comparisons: 165 exact
-and 93 known differences, with zero renderer rejections. UAAR, Red Cross, Party
-of Changes, Blur and Nike become exact in every variant: **16/27 documents**,
-marks **7/13**, wordmarks **9/14**. Forty-four PNGs change with no mismatch count
-increase; all 145 earlier exact PNGs remain. Original inputs, options and browser
-references stay frozen. S17 still requires 23/27 and both stratum minima.
+The complete frozen corporate matrix has 258 rendered comparisons: 168 exact
+and 90 known differences, with zero renderer rejections. SDL is now exact in
+every variant: **17/27 documents**, marks **7/13**, wordmarks **10/14**. Only
+three large SDL PNGs change; all 165 earlier exact PNGs remain. Original inputs,
+options and browser references stay frozen. S17 requires 23/27 and both stratum
+minima.
+
+Concentric general radial paints retain separate shader-local and referencing
+matrices. The drawing CTM moves into bitmap coordinates before local-gradient
+concatenation, inversion and unit-circle mapping. Retained parser/scene paint
+storage is reserved before allocation and transferred through clipping/masks.
+The existing focal/conical fallback remains. Native numeric vectors and six
+independent browser controls verify this order; broader paint fidelity remains
+open.
 
 Eligible authored fills preserve directed winding and retained curves without
 scene contact surgery. Root/group placement composes before float rounding;

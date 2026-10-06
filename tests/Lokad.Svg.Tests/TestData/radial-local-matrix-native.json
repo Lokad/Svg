@@ -1,0 +1,15 @@
+{
+  "scope": "Original native affine concatenation/inversion, bitmap-local drawing CTM before gradient-local concatenation, circle/radius, material lanes and stored RGBA. This tests numeric stages, not a full native browser pipeline.",
+  "sourceRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sourceFiles": [
+    "src/core/SkMatrix.cpp",
+    "src/shaders/SkShaderBase.cpp",
+    "src/shaders/gradients/SkGradientBaseShader.cpp",
+    "src/shaders/gradients/SkRadialGradient.cpp",
+    "src/opts/SkRasterPipeline_opts.h"
+  ],
+  "chromiumSourceTag": "153.0.8010.52",
+  "chromiumSourceFile": "ui/gfx/color_conversions.cc",
+  "compiler": "g++ C++20 -O2 -mfma -ffp-contract=off; explicit hardware FMA and nearest-even SSE store",
+  "cases": 384
+}

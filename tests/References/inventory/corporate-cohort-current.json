@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after bitmap-local authored curve mapping and raw-control raster bounds; original references and cohort options retained.",
+  "scope": "Frozen 27-document/258-variant measurement after bitmap-local drawing CTM concatenation with the separate radial-gradient local matrix; original references and cohort options retained.",
   "rendererCounts": {
     "renders": 258,
     "MalformedInput": 0,
@@ -24,8 +24,8 @@
     "transport-limit-gap": 0
   },
   "fidelityCounts": {
-    "exact": 165,
-    "known-difference": 93,
+    "exact": 168,
+    "known-difference": 90,
     "withoutReference": 0,
     "measuredRendererRejections": 0
   },
@@ -141,6 +141,7 @@
   },
   "verifiedExactDocuments": [
     "inv-002",
+    "inv-003",
     "inv-004",
     "inv-005",
     "inv-006",
@@ -207,7 +208,7 @@
         "inv-003-large-white",
         "inv-003-large-black"
       ],
-      "verifiedExact": false
+      "verifiedExact": true
     },
     {
       "id": "inv-004",
@@ -1979,24 +1980,24 @@
       "id": "inv-003-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "5093b622ce83ea8a9c753035108868b75a90af90b3aed3f997a28873775a2347",
-      "candidateSha256": "12ec493d210b8cc0ea008b2dc1978210c3d2c2d67b28a8748d042259309b4cfd",
+      "candidateSha256": "cfd91f763e5fb061464fa4e7d64969276df238de997ebea44a60f5ded68802e8",
       "width": 1476,
       "height": 742,
       "referenceSha256": "e9388b53f397575e44979829bfb81f21198156131ea5396e4935ce1028c9562d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 6.848114303245458e-07,
-          "RootMeanSquareError": 0.0008275333409141567,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 1040,
-          "MinimumMismatchY": 575,
-          "MaximumMismatchX": 1260,
-          "MaximumMismatchY": 670,
-          "IsExact": false
+          "MinimumMismatchX": 1476,
+          "MinimumMismatchY": 742,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -2036,24 +2037,24 @@
       "id": "inv-003-large-white",
       "renderOutcome": "renders",
       "inputSha256": "5093b622ce83ea8a9c753035108868b75a90af90b3aed3f997a28873775a2347",
-      "candidateSha256": "ba66d46a1cca2371ce48d8d3f49ab97c8681f78e49eee424e2be145589c489b4",
+      "candidateSha256": "e89cf6b5e46ec231f14c9dd5dc5095d497e4eb36e1f4a7cb280643bf7e075b77",
       "width": 1476,
       "height": 742,
       "referenceSha256": "4bb62d44a7dd219471e42f0601a8647278733cdeb5194eff16187e0bae2fc829",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 6.848114303245458e-07,
-          "RootMeanSquareError": 0.0008275333409141567,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 1040,
-          "MinimumMismatchY": 575,
-          "MaximumMismatchX": 1260,
-          "MaximumMismatchY": 670,
-          "IsExact": false
+          "MinimumMismatchX": 1476,
+          "MinimumMismatchY": 742,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -2093,24 +2094,24 @@
       "id": "inv-003-large-black",
       "renderOutcome": "renders",
       "inputSha256": "5093b622ce83ea8a9c753035108868b75a90af90b3aed3f997a28873775a2347",
-      "candidateSha256": "e1ad230cd92484543ab684f1e7a0f555b86ece551ae52cdae9c68623116c0fce",
+      "candidateSha256": "bba5f6f379467faec12962d584852589c44f74b056646f4ff8b228eaa8cf5888",
       "width": 1476,
       "height": 742,
       "referenceSha256": "c1b81804415de120c0a2d2a988f113cdaaa853a5a06a0f45749ff5c4ecccef14",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 3,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 6.848114303245458e-07,
-          "RootMeanSquareError": 0.0008275333409141567,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 1040,
-          "MinimumMismatchY": 575,
-          "MaximumMismatchX": 1260,
-          "MaximumMismatchY": 670,
-          "IsExact": false
+          "MinimumMismatchX": 1476,
+          "MinimumMismatchY": 742,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -15293,8 +15294,8 @@
       "height": 386
     }
   ],
-  "rendererSourceBaselineCommit": "014dd3b1",
-  "rendererSourceState": "Retain source contour tape once; move float translation into each software bitmap before source mapping, clip and initialize locally, then translate kept edge state once. Raster bounds include raw controls.",
-  "measurementCheckpoint": "bitmap-local-curve-2026-10-06",
+  "rendererSourceBaselineCommit": "305e58bd",
+  "rendererSourceState": "Retain radial shader-local and referencing matrices separately; translate the drawing CTM into each software bitmap before local-matrix concatenation, inversion and unit-circle mapping. Parser/scene paint values are reserved before retention.",
+  "measurementCheckpoint": "radial-local-matrix-2026-10-07",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

@@ -95,7 +95,7 @@ internal static class SvgPatternSyntax
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
             SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, budget);
-            using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             try
             {
                 foreach (SvgGeometry existing in filled.Geometries)
@@ -119,7 +119,7 @@ internal static class SvgPatternSyntax
             SvgParsedGeometry white = lowering.LowerPolygonFill(default, painted, transform, frame, budget);
             try
             {
-                using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget)));
                 white.Dispose();
                 return SvgGradientSyntax.AppendPaintFillStroke(new SvgParsedGeometry(repainted.Detach(), white.ElementCount), reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
@@ -204,7 +204,7 @@ internal static class SvgPatternSyntax
             right = frame.Value.Clip.ClipRectangle(frame.Value.Shift(right));
         }
         bool combined = hasLinearStroke || hasRadialStroke;
-        using BudgetedParserList<SvgGeometry> lowered = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder lowered = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         lowered.Add(LowerPatternFillGeometry(tile, placement, painted, fillOpacity, combined ? null : (painted ? stroke : null)));
         // A zero width paints no stroke bands, so the pattern fill above reaches the scene alone; probe nulls only on zero widths here.
         if (combined && !zeroPaintStrokeWidth)
@@ -223,10 +223,10 @@ internal static class SvgPatternSyntax
             else
             {
                 bool paintBands = painted && !strokeCircle.IsEmpty;
-                lowered.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(strokeCircle, box, top with { HasFill = paintBands }, opacity, null)));
-                lowered.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(strokeCircle, box, bottom with { HasFill = paintBands }, opacity, null)));
-                lowered.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(strokeCircle, box, left with { HasFill = paintBands }, opacity, null)));
-                lowered.Add(SvgGeometry.FromRadialFill(new SvgRadialGeometry(strokeCircle, box, right with { HasFill = paintBands }, opacity, null)));
+                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, top with { HasFill = paintBands }, opacity, null, state.Budget)));
+                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, bottom with { HasFill = paintBands }, opacity, null, state.Budget)));
+                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, left with { HasFill = paintBands }, opacity, null, state.Budget)));
+                lowered.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(strokeCircle, box, right with { HasFill = paintBands }, opacity, null, state.Budget)));
             }
         }
         return new SvgParsedGeometry(lowered.Detach(), 0);
@@ -347,9 +347,9 @@ internal static class SvgPatternSyntax
         SvgGeometry? tileContent = tile.Content;
         bool paintBands = painted && tile.TileWidth != 0 && tile.TileHeight != 0 && tileContent.HasValue;
         SvgRectangle content = tileContent.HasValue ? tileContent.Value.Rectangle : default;
-        using BudgetedParserList<SvgGeometry> stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         if (hasLinearFill) stroked.Add(SvgGradientSyntax.LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
-        else if (hasRadialFill) stroked.Add(SvgGradientSyntax.LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity));
+        else if (hasRadialFill) stroked.Add(SvgGradientSyntax.LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity, state.Budget));
         else if (hasPatternFill) stroked.Add(LowerPatternFillGeometry(fillPatternTile, fill, fillHasFill, fillOpacity, null));
         else stroked.Add(SvgGeometry.FromRectangle(fill));
         if (probe is not null)
@@ -369,7 +369,7 @@ internal static class SvgPatternSyntax
         // A zero width paints nothing for any paint, so it returns empty before dash, cap, and paint handling like the solid line kernel.
         if (SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1") == 0)
         {
-            using BudgetedParserList<SvgGeometry> none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             return new SvgParsedGeometry(none.Detach(), 0);
         }
         // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
@@ -414,7 +414,7 @@ internal static class SvgPatternSyntax
         try
         {
             SvgRectangle content = paintContent.Value.Rectangle;
-            using BudgetedParserList<SvgGeometry> repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedGeometryBuilder repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             foreach (SvgGeometry existing in white.Geometries)
             {
                 if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, existing.Rectangle, opacity, null)));
@@ -430,7 +430,7 @@ internal static class SvgPatternSyntax
     {
         using BudgetedParserList<SvgRectangle> runRects = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         bool paintsAny = SvgLeafParser.AppendLineDashRunRects(syntax, strokeWidth, squareCaps, dashes, dashOffset, pathLength, frame, state.Budget, context.WorkCounter, context.CancellationToken, runRects);
-        using BudgetedParserList<SvgGeometry> runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder runs = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         for (int runIndex = 0; runIndex < runRects.Count; runIndex++)
         {
             SvgRectangle run = runRects[runIndex];
@@ -443,7 +443,7 @@ internal static class SvgPatternSyntax
     private static SvgParsedGeometry RetainSingleBand(SvgGeometry geometry, SvgDocumentState state, SvgPaintableElementContext context)
     {
         ArgumentNullException.ThrowIfNull(state);
-        using BudgetedParserList<SvgGeometry> retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+        using BudgetedGeometryBuilder retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         retained.Add(geometry);
         return new SvgParsedGeometry(retained.Detach(), 0);
     }

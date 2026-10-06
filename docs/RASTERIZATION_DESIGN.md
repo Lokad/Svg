@@ -6221,6 +6221,8 @@ traces, comparisons, captures and ledgers remain ignored under
 
 ## SDL radial matrix factorization investigation (2026-10-06)
 
+This records the pre-adoption study; the [validated adoption](#bitmap-local-radial-matrix-order-2026-10-07) follows below.
+
 The validated `a1fb0b3e` renderer retains three SDL large differences at
 (1260,575), (1163,621) and (1040,670), on every background. Alpha is identical;
 one RGB channel differs by one level at each pixel. Direct shader sampling
@@ -6269,3 +6271,39 @@ No timing or performance result is claimed. Sources, native vectors, captures,
 comparisons and resource observations stay under ignored
 `artifacts/radial-matrix-sdl-20261006/`. Git identifies implementation; no source
 or build fingerprints are introduced. The validated cohort remains 16/27.
+
+## Bitmap-local radial matrix order (2026-10-07)
+
+The shared factorization model is now adopted. Concentric general radial paints
+retain the float local shader matrix and separately accumulated referencing
+matrix. Output/box mapping forms the drawing CTM. The evaluator subtracts each
+software bitmap origin from that CTM before local-shader concatenation, inversion
+and unit-circle concatenation, matching pinned `SkShaders::MatrixRec::apply`.
+Legacy focal/conical evaluation retains its double inverse map and fallback.
+
+All nine SDL variants are exact. Only its three large PNGs change, resolving the
+original RGB-only witnesses. All 165 earlier exact corporate PNGs remain; the
+cohort is 168 exact / 90 known / zero rejected, 17/27 documents, marks 7/13 and
+wordmarks 10/14. Every complete result and PNG in the earlier 1,342-case bank is
+preserved. Six independent exact controls expand it to 1,348 cases; their eighteen
+captures were declared after the diagnostic model, before production edits and
+capture, and are stable, healthy and profile-cleaned.
+
+The radial value grows from 152 to 208 bytes. Parser dictionary entry allowances
+now include the actual radial value and bounded stops. Each scene paint factory
+reserves the actual radial value plus 64 bytes of conservative owner overhead
+before allocating its class. Polygon array reservations remain separate; a denied
+paint leaves caller arrays owned by the caller, while a denied array reservation
+releases the partial paint owner. Clipping/masks transfer paint and contour owners.
+Mask boundary validation precedes transfer. Temporary geometry builders release
+values on growth/detach failure. Group snapshot collection borrows scene values.
+
+The 384 native vectors match every radius-position bit, material lane and stored
+pixel; they validate numeric stages, not a complete native paint/browser pipeline.
+Tight memory denial/cleanup, partial lowering, borrowed group snapshots and two
+six-output parity cases pass. Full 3,842 tests, locked nine-project Release build,
+25 memory scenarios, installed runtime/symbol package consumers and Windows
+artifact consistency pass. Prior pinned-Chrome smoke is reused; no Linux, remote
+CI, timing or representative performance claim is made. Detailed comparisons,
+resource ledgers and delivery reports remain ignored under
+`artifacts/radial-matrix-sdl-20261007/`; Git identifies implementation.
