@@ -17,14 +17,20 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "inputSha256": "7722c1596faa37c2030d53d1c138776feca4ae1bcd40c6f42e19d3c922f6dd07",
-  "candidateSha256": "ad4f94671da85416097fd2dd30cab1987ad9e6e0222be7788776b86114df145b",
+  "candidateSha256": "bb380ab66020b8da933ea0db8086a2715a1b9ed629515606ef302ef5f4520d91",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 114,
+    "changedPixelCount": 47,
     "maximumChannelError": 255,
-    "maximumAlphaError": 65,
-    "exact": false,
-    "alphaErrorMass": 1627
+    "meanAbsoluteError": 0.10430908203125,
+    "rootMeanSquareError": 3.101956051857642,
+    "maximumAlphaError": 53,
+    "alphaChangedPixelCount": 47,
+    "minimumMismatchX": 5,
+    "minimumMismatchY": 17,
+    "maximumMismatchX": 56,
+    "maximumMismatchY": 39,
+    "exact": false
   },
   "declaredBeforeProductionEdit": true,
   "declaredBeforeCaptures": true,
@@ -34,5 +40,6 @@
     5,
     3
   ],
-  "cap": "butt"
+  "cap": "butt",
+  "comparisonUpdatedAt": "2026-10-06"
 }

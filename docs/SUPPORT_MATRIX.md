@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the native conic oval-stroke checkpoint, the 1,108 manifest entries contain
-901 exact decoded-pixel references, 177 known-difference renders and 30
+At the native wider path-stroke checkpoint, the 1,145 manifest entries contain
+937 exact decoded-pixel references, 178 known-difference renders and 30
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -31,7 +31,7 @@ float rational conics. Convex cubics retain live edges and newly arriving edges
 retain intersection checks under dense walking. Of 45 changed corporate PNGs,
 42 improve mismatch count and three retain it. Six known synthetic cases worsen
 in mismatch count and remain measured.
-Wider path endpoint arcs retain their existing outline flattening. Eligible solid path
+Wider path endpoint arcs construct retained native quadratic offset outlines. Eligible solid path
 hairlines, including dashes, retain native endpoint conics. General event and coordinate fidelity remain open.
 
 Solid path strokes retain centerlines, closure and width maps. Dashed paths use
@@ -44,8 +44,10 @@ conics through native fixed-point hairline coverage, ordered paints and
 butt/square/round cap extension. Twelve new thin curves match their stable native
 references; six wider controls retain their known differences. At that checkpoint,
 every previous fixture/research image and all 258 corporate outcomes/PNGs were preserved.
-Generic wider path strokes and other shape/paint routes retain their existing behavior
-while their remaining native construction and hairline routing are completed.
+Generic wider paths and integer/fractional polylines share native curve offsets,
+joins/caps, closure and directed retained outlines, including dashes and painted
+instances. Bare movetos paint nothing; non-scaling dashes keep host-coordinate
+lengths. Full stroke/paint/clip fidelity and other hairline contexts remain open.
 
 Circle/ellipse strokes fit normal offsets of original conics with retained
 quadratic verbs, including an inverted inner offset for very wide strokes.
@@ -54,7 +56,7 @@ Native-stroke quadratic coverage consumes retained controls even when fallback
 flattening has one chord. Linear/radial/pattern `use` copies preserve and reserve
 curve spans. All twelve fresh oval controls and all nine SG Rotation variants
 improve but remain inexact; all prior exact PNGs and dispositions are preserved.
-Full generic wider path joins/caps and remaining scan/paint residuals remain open.
+Remaining generic stroke scan/paint residuals and sampled shape routes remain open.
 
 Straight solid open strokes retain native float normals, endpoint miter replacement
 and pivot inner joins through directed nonzero winding. Intersecting rings cannot
@@ -69,8 +71,8 @@ and three fresh reversed-join configurations become exact. All 837 prior exact
 fixture PNGs and 70 exact corporate PNGs are preserved. Every Rede Manchete
 variant improves at that checkpoint. The width-one cap probe then worsened
 15 → 16 differing pixels; the subsequent hairline repair makes it exact against
-the same original reference. Broader fractional events, closed/curved/dashed construction and clip/
-composition fidelity remain open. Ordinary fill/contact gates retain their scope.
+the same original reference. Broader fractional events, curved/dashed overlap and clip/composition fidelity
+remain open. Ordinary fill/contact gates retain their scope.
 Bitmap-local edge clipping and float root mapping preserve all nine exact Artsy
 variants.
 

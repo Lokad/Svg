@@ -32,20 +32,20 @@
     true
   ],
   "declaredBeforeProductionEdit": false,
-  "candidateSha256": "9a4dcf1f3c1153efa860af551090216be20a0b96e8e5fce8240ace7f610d5c64",
+  "candidateSha256": "688beef4faba240f01fa2993758307ed53cbe45b41b54c83dca3dfd18cd42fd9",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 11,
-    "maximumChannelError": 22,
-    "meanAbsoluteError": 0.09375,
-    "rootMeanSquareError": 0.8805626752253357,
-    "maximumAlphaError": 8,
-    "alphaChangedPixelCount": 11,
-    "minimumMismatchX": 0,
-    "minimumMismatchY": 1,
-    "maximumMismatchX": 7,
-    "maximumMismatchY": 11,
-    "exact": false,
-    "alphaErrorMass": 47
-  }
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  },
+  "comparisonUpdatedAt": "2026-10-06"
 }

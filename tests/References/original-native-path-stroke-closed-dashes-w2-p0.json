@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-native-path-stroke-closed-dashes-w2-p0",
+  "referencePng": "original-native-path-stroke-closed-dashes-w2-p0.png",
+  "referenceSha256": "34f30a50639365553f4acbc734272826448279bea21ca484e83ddcc3a01a9944",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "dac615bd4dbc737cbd78654e5ab28d793239dc7884c0103a41e370541d67ad3b",
+  "candidateSha256": "d365e69b6c133ca4237859c1fdc6d7802bbf00bf4a69ca3705a60c80df00a5b4",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 89,
+    "maximumChannelError": 255,
+    "meanAbsoluteError": 0.15985107421875,
+    "rootMeanSquareError": 4.036144981116728,
+    "maximumAlphaError": 55,
+    "alphaChangedPixelCount": 89,
+    "minimumMismatchX": 8,
+    "minimumMismatchY": 11,
+    "maximumMismatchX": 53,
+    "maximumMismatchY": 51,
+    "exact": false
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

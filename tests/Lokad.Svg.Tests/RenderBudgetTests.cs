@@ -1050,7 +1050,7 @@ public sealed class RenderBudgetTests
         SvgException denied = Assert.Throws<SvgException>(() =>
         {
             using SvgOrthogonalGeometryLowering lowering = new(points, ends, "polyline", false, false, 100_000, roomyBudget, roomyCounter, CancellationToken.None);
-            return lowering.LowerStrokePolyline(points, false, SvgAffineTransform.Identity, 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, null, 0, null, false, new SvgColor(255, 0, 0, 255), false, null, tightBudget);
+            return lowering.LowerStrokePolyline(points, false, new(default, SvgAffineTransform.Identity, default, 1), 2, 4, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, null, 0, null, false, new SvgColor(255, 0, 0, 255), false, null, tightBudget);
         });
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         AssertBudgetReleased(tightBudget);

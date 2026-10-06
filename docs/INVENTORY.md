@@ -51,6 +51,13 @@ The numerator remains 9/27. Eight legacy Default PNGs change without matching
 options references (`inv-012`, `inv-017`, `inv-018`, `inv-032`, `inv-057`,
 `inv-060`, `inv-091`, `inv-094`). Detailed runs stay under ignored
 `artifacts/native-conic-strokes-20261006/`.
+The native wider path-stroke checkpoint improves all nine Zeppelin (`inv-007`)
+variants. Transparent mismatch counts fall 385/859/1,826 → 271/573/1,165 at
+small/intended/large sizes; white and black variants also improve. All 258
+outcomes, all 134 exact PNGs, the other 249 corporate outputs and every legacy
+Default PNG remain unchanged. Zeppelin retains its original geometry and
+references; the numerator remains 9/27. Detailed runs stay under ignored
+`artifacts/native-path-strokes-20261006/`.
 The dated checkpoint paragraphs below retain their historical results.
 There are no missing references or capture gaps. S17 still requires at least 80% exact documents overall and in each corporate
 stratum. YouTube is the selected curved mark; the first cohort is frozen below

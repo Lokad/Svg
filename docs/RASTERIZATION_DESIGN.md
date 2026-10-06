@@ -5890,3 +5890,75 @@ Full studies stay under ignored `artifacts/native-conic-strokes-20261006/`.
 Generic wider path joins/caps, closed/curved/dashed construction, remaining
 quadratic scan/paint/clip residuals, other hairline contexts, representative
 performance and Linux remain open.
+
+## Native wider path strokes (2026-10-06)
+
+Original quadratic, cubic and endpoint-conic centerlines now construct float
+normal-offset quadratics before final placement. Native miter/bevel/round joins,
+butt/square/round caps, reverse inner chains, closed seams and cusp circles feed
+one directed nonzero outline. Paths and integer/fractional polylines share this
+source-verb constructor. Dashes filter original verbs once, retaining their
+controls, weights and seam continuation. Ordinary strokes construct in source
+coordinates; non-scaling strokes construct in host coordinates. Generated
+quadratics and rational round verbs survive paint-server and `use` copies.
+Sampled rounded-rectangle and dashed-oval shape routes remain separate.
+
+Unchanged SkPathStroker contour/numerical functions and SkStrokerPriv join/cap
+procedures at Skia `f8b66b7597c4cc859d3ed190e9c6872241e6721c` compile through
+record path/matrix adapters. **1,920 cases / 27,890 complete outline commands**
+match float bits. Sixteen families include lines/corners/closed lines, quadratic
+reversals/coincident controls, cubic cusps, rational weights, mixed closed
+contours, multiple contours and zero-length segments; three caps, five join/
+miter-limit combinations, two widths, two resolution scales and two phases are
+crossed. This excludes native SkPath iteration/lookahead, rectangle specialization,
+stroke-and-fill center removal and painting. Adapter cusp circles use an oval
+record sink. Revisions/file paths identify native sources; only the reusable
+numerical asset carries an integrity hash. Hairlines and stroking share unchanged
+native cubic curvature-root arithmetic.
+
+Private buffer owners, budgeted output lists, counted fallback builder storage
+and retained scene arrays reserve before allocation. Recursive numerical scratch
+is bounded stack storage, and independent command/point limits cap expansion.
+Every verb, fit, join, reverse, copied point and numerical phase charges work and
+checks cancellation. Failed construction does not publish a scene; temporary
+owners release on all exits. Existing raster denial/cancellation/immutability/
+retry tests now cover wider dashed quadratic, cubic and closed-arc strokes
+through six outputs. No deterministic during-fit cancellation claim follows
+from the pre-cancelled constructor test.
+
+Construction vectors retain zero-length outline lines, but raster preparation
+discards their duplicate points as native edge setup does. This preserves round
+curve classification and restores all six offset/clipped-dot PNGs after the
+initial prototype regression. Stable browser captures establish that a bare
+moveto is empty while a zero-length round-capped segment paints a dot. Non-scaling
+dash twins retain host-coordinate dash lengths. The old open quadratic's legacy
+fringe assertions are replaced by the complete exact browser reference; the
+whisker fringe's oracle alpha is 253. Contained crossing rings retain one other
+fringe difference, and the original complete star remains known (173 → 25 pixels).
+
+Twenty-four untuned controls preceded production edits/capture: six quadratic/
+cubic/conic/join/closure/dash families at widths two/eight and phases zero/.25.
+All improve; four become exact. Eight later unit-contract controls add six exact
+and two known cases. All **96 fresh captures** are stable, healthy and cleaned.
+Original references are not replaced. Twenty-one existing fixture and five
+research comparisons become exact; five research originals graduate with
+unchanged SVG/PNG/provenance. The 37 new entries include 15 exact and 22 known
+cases. The bank executes **1,273 cases**: 1,145 fixtures (937 exact, 178 known,
+30 rejected), 36 research (twelve exact, 23 known, one rejected), 92 legacy renders.
+All 45 changed prior fixture/research PNGs improve; all 908 prior exact PNGs and
+every disposition are preserved. Every legacy Default PNG is unchanged.
+
+Only Zeppelin's nine corporate PNGs change. Transparent differences fall
+385/859/1,826 → 271/573/1,165 by size. All 258 dispositions and 134 exact images
+are preserved; S17 remains **9/27**, marks **3/13**, wordmarks **6/14** against
+23/27. All **3,754 tests**, locked restore/nine-project Release build, 25 memory
+scenarios, browser/artifact checks and installed runtime/symbol package consumers
+pass. Thirty-nine matched recipes preserve value layouts and 21 complete PNG/
+work/peak records. Most new controls and Zeppelin reduce raster work; construction
+adds parser work, and a wider dashed cubic substantially increases raster work.
+See [the measurements](BENCHMARKS.md#native-wider-path-stroke-observations-2026-10-06).
+Detailed studies stay under ignored `artifacts/native-path-strokes-20261006/`.
+
+Remaining quadratic/cubic scan, clip and paint residuals, sampled shape routes,
+other hairline contexts, transformed/pathLength dash coverage, full corporate
+fidelity, representative performance and Linux remain open.

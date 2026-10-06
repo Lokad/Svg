@@ -21,7 +21,10 @@ public sealed class SvgOrthogonalDashTests
             string data = "<svg xmlns='http://www.w3.org/2000/svg' width='2048' height='64'><path fill='none' stroke='black' stroke-width='2' stroke-dasharray='" + values[2] + " " + length.ToString("R", CultureInfo.InvariantCulture) + "' d='M" + values[0] + " 20H" + values[1] + " M" + values[0] + " 40H" + values[1] + "'/></svg>";
             using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(data), SvgRenderLimits.Default, CancellationToken.None);
             SvgPolygonFill polygon = Assert.Single(root.Geometries).Polygon;
-            Assert.Equal(8, polygon.Points.Length);
+            SvgAuthoredPath retained = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
+            SvgAuthoredPathCommand[] runs = retained.Commands.ToArray().Where(command => command.Verb == SvgAuthoredPathVerb.Line).ToArray();
+            Assert.Equal(2, runs.Length);
+            Assert.All(runs, command => Assert.Equal(expected, (float)command.First.X));
             Assert.Contains(polygon.Points, point => point.X == expected);
         }
     }

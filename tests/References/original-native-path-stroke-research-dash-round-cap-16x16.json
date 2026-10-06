@@ -1,0 +1,35 @@
+{
+  "referencePng": "original-native-path-stroke-research-dash-round-cap-16x16.png",
+  "referenceSha256": "da1f2907a9a1db5cbe0d90acf712dfeb94dfd801ee0d1a453d4388f93288bbf1",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "fixtureId": "original-native-path-stroke-research-dash-round-cap-16x16",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "candidateSha256": "7f239acd75b87aeccde8344bb8d3393e05ac803915c19b94e943148afa78eaea",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  },
+  "graduatedFrom": "research-dash-round-cap-16x16"
+}

@@ -754,7 +754,7 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
         Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[1].Kind);
         Assert.Equal(0, root.Geometries[1].PatternPolygon.OriginX);
-        Assert.Equal(new SvgDevicePoint(9, 1), root.Geometries[1].PatternPolygon.Points[0]);
+        Assert.Equal(new SvgDevicePoint(8, -1), root.Geometries[1].PatternPolygon.Points[0]);
     }
 
     [Fact]
@@ -809,7 +809,7 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
         Assert.Equal(8, root.Geometries[1].GradientPolygon.Gradient.X1);
         Assert.Equal(16, root.Geometries[1].GradientPolygon.Gradient.X2);
-        Assert.Equal(new SvgDevicePoint(9, 1), root.Geometries[1].GradientPolygon.Points[0]);
+        Assert.Equal(new SvgDevicePoint(8, -1), root.Geometries[1].GradientPolygon.Points[0]);
     }
 
     [Fact]
@@ -943,7 +943,7 @@ public sealed class SvgUseInstanceTests
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[1].Kind);
         Assert.Equal(16, root.Geometries[1].PatternPolygon.TileWidth);
-        Assert.Equal(new SvgDevicePoint(2, 2), root.Geometries[1].PatternPolygon.Points[0]);
+        Assert.Equal(new SvgDevicePoint(0, -2), root.Geometries[1].PatternPolygon.Points[0]);
     }
 
     [Fact]

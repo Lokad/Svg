@@ -381,9 +381,9 @@ internal ref struct SvgOrthogonalGeometryLowering
         using BudgetedParserList<SvgStrokeCurveSegment> inner = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         for (int quarter = 0; quarter < 4; quarter++)
         {
-            SvgConicStroke.Append(oval[quarter * 2], oval[quarter * 2 + 1], oval[quarter * 2 + 2], SvgRationalQuadratic.QuarterCircleWeight,
+            SvgCurveStroke.Append(oval[quarter * 2], oval[quarter * 2 + 1], oval[quarter * 2 + 2], SvgRationalQuadratic.QuarterCircleWeight,
                 radius, resolutionScale, SvgStrokeSide.Outer, outer, _workCounter, _cancellationToken);
-            SvgConicStroke.Append(oval[quarter * 2], oval[quarter * 2 + 1], oval[quarter * 2 + 2], SvgRationalQuadratic.QuarterCircleWeight,
+            SvgCurveStroke.Append(oval[quarter * 2], oval[quarter * 2 + 1], oval[quarter * 2 + 2], SvgRationalQuadratic.QuarterCircleWeight,
                 radius, resolutionScale, SvgStrokeSide.Inner, inner, _workCounter, _cancellationToken);
         }
         float dx = (float)oval[1].X - (float)oval[0].X, dy = (float)oval[1].Y - (float)oval[0].Y;
@@ -740,7 +740,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
     }
 
-    /// <summary>Strokes user-space fractional point-list vertices through device-space contours with the caller cap and join styles.</summary>
+    /// <summary>Strokes original fractional polyline verbs; sampled shape curves retain their separate contour route.</summary>
     internal SvgParsedGeometry LowerStrokePointList(BudgetedParserList<SvgFractionalPoint> points, bool closed, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -748,6 +748,22 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " stroke point count exceeds the configured path-command limit.");
         if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
+        if (!hasCurves)
+        {
+            double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
+            using RenderBudget.BudgetReservation sourceOwner = budget.Reserve(128, SvgMemoryCategory.Geometry);
+            using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+            for (int index = 0; index < points.Count; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                authored.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None,
+                    new(points[index].X, points[index].Y), default, default));
+            }
+            if (closed) authored.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+            authored.Add(new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
+            return LowerNativeStrokeCommands(authored, deviceMap, deviceWidth, width, miterLimit, cap, join, dashes,
+                dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget) with { ElementCount = points.Count + 1 };
+        }
         int pointCapacity = points.Count + 1 > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : points.Count + 1;
         long scratchBytes;
         try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1)); }
@@ -767,85 +783,26 @@ internal ref struct SvgOrthogonalGeometryLowering
         return stroked with { ElementCount = points.Count + 1 };
     }
 
-    /// <summary>Strokes one integer point contour with the caller cap and join styles into one nonzero outline fill.</summary>
-    internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, SvgAffineTransform transform, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
+    /// <summary>Strokes one original integer point contour through the shared native verb constructor.</summary>
+    internal SvgParsedGeometry LowerStrokePolyline(BudgetedParserList<SvgPoint> points, bool closed, SvgResolvedPaintableElement element, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _isPath ? "Path stroke point count exceeds the configured path-command limit." : _elementName + " stroke point count exceeds the configured path-command limit.");
-        double deviceWidth = StrokeDeviceWidth(width, transform, frame, nonScaling);
-        using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
+        using RenderBudget.BudgetReservation sourceOwner = budget.Reserve(128, SvgMemoryCategory.Geometry);
+        using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
         for (int index = 0; index < points.Count; index++)
         {
             _workCounter.Consume(_cancellationToken);
-            SvgDevicePoint mappedVertex = transform.Apply(points[index].X, points[index].Y);
-            mapped.Add(ShiftVertex(frame, mappedVertex.X, mappedVertex.Y));
+            authored.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None,
+                new(points[index].X, points[index].Y), default, default));
         }
-
-        if (dashes is null)
-        {
-            // Open miter joins emit up to five outline points per centerline vertex (inner butt pair plus outer ear triple across both chains).
-            long wantedPoints = 6L * mapped.Count + 8;
-            if ((cap != SvgStrokeCap.Butt && cap != SvgStrokeCap.Square) || join == SvgStrokeJoin.Round)
-            {
-                int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
-                try { wantedPoints = checked(4L * mapped.Count * (fanSegments + 1) + 32); }
-                catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
-            }
-            int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
-            long scratchBytes;
-            try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(closed ? 2 : 1) + (!closed && (cap == SvgStrokeCap.Round || join == SvgStrokeJoin.Round) ? StrokeConicScratchBytes((int)Math.Min(pointCapacity, (join == SvgStrokeJoin.Round ? 2L * mapped.Count : 0) + (cap == SvgStrokeCap.Round ? 4 : 0))) : 0)); }
-            catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
-            using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
-            SvgContourBuilder outlines = new(pointCapacity, closed ? 2 : 1);
-            if (!closed && (cap == SvgStrokeCap.Round || join == SvgStrokeJoin.Round)) outlines.EnableQuadSpanRetention();
-            if (closed) SvgStrokeOutline.StrokeClosedPolyline(mapped.AsSpan(), deviceWidth, miterLimit, join, outlines, _cancellationToken);
-            else SvgStrokeOutline.StrokeNativeOpenPolyline(mapped.AsSpan(), deviceWidth, miterLimit, cap, join, outlines, _cancellationToken);
-            int[] loopSubpaths = new int[outlines.ContourCount];
-            return (closed
-                ? FinishStrokeFill(outlines, loopSubpaths, color, hasFill, false, false, frame, budget)
-                : FinishDirectedStrokeFill(outlines, color, hasFill, SvgPolygonMapping.NativeStrokeEdges, frame, budget)) with { ElementCount = points.Count + 1 };
-        }
-        double dashScale = Math.Abs(DashDeviceScale(transform) * (frame?.ScaleX ?? 1));
-        return LowerDashedStrokePolyline(mapped, closed, deviceWidth, dashScale, miterLimit, cap, join, dashes, dashOffset, pathLength, color, hasFill, frame, budget) with { ElementCount = points.Count + 1 };
-    }
-
-    /// <summary>Strokes one mapped contour through the dash pattern into one nonzero outline fill.</summary>
-    private SvgParsedGeometry LowerDashedStrokePolyline(BudgetedParserList<SvgDevicePoint> mapped, bool closed, double deviceWidth, double dashScale, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[] dashes, double dashOffset, double? pathLength, SvgColor color, bool hasFill, SvgViewportFrame? frame, RenderBudget budget)
-    {
-        ArgumentNullException.ThrowIfNull(mapped);
-        ArgumentNullException.ThrowIfNull(dashes);
-        ArgumentNullException.ThrowIfNull(budget);
-        double[] pattern = ScaleDashPattern(dashes, dashScale);
-
-        double contourLength = DashContourLength(mapped.AsSpan(), closed);
-        double dashFactor = RescaleDashPattern(pattern, contourLength / dashScale, pathLength);
-        double minimumStep = DashMinimumStep(pattern);
-        long cuts;
-        try { cuts = double.IsFinite(contourLength) ? checked((long)(contourLength / minimumStep) + 2) : MaximumFlattenedContourPoints; }
-        catch (OverflowException) { cuts = MaximumFlattenedContourPoints; }
-        // Open miter joins emit up to five outline points per centerline vertex (inner butt pair plus outer ear triple across both chains).
-            long wantedPoints = checked(6L * (mapped.Count + cuts) + 8);
-        if (cap == SvgStrokeCap.Round || join == SvgStrokeJoin.Round)
-        {
-            int fanSegments = SvgStrokeOutline.MaxArcFanSegments(deviceWidth / 2, Math.PI);
-            try { wantedPoints = checked(4L * (mapped.Count + cuts) * (fanSegments + 1) + 32); }
-            catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
-        }
-
-        int pointCapacity = wantedPoints > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : (int)wantedPoints;
-        long contourCapacity = cuts + 3 > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : cuts + 3;
-        long scratchBytes;
-        try { scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + 2 * ParserCollectionMemory.GetArrayByteCount<int>((int)contourCapacity)); }
-        catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the supported expansion range."); }
-        using RenderBudget.BudgetReservation scratch = budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
-        SvgContourBuilder outlines = new(pointCapacity, (int)contourCapacity);
-        using BudgetedParserList<SvgDevicePoint> leading = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        using BudgetedParserList<SvgDevicePoint> current = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
-        double scaledOffset = dashOffset * dashScale * dashFactor;
-        if (!double.IsFinite(scaledOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
-        StrokeDashedContour(mapped.AsSpan(), closed, pattern, scaledOffset, deviceWidth, miterLimit, cap, join, false, outlines, leading, current);
-        return FinishStrokeFill(outlines, Array.Empty<int>(), color, hasFill, false, true, frame, budget);
+        if (closed) authored.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+        authored.Add(new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
+        return LowerNativeStrokeCommands(authored, deviceMap, deviceWidth, width, miterLimit, cap, join, dashes,
+            dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget) with { ElementCount = points.Count + 1 };
     }
 
     /// <summary>Scales one dash pattern into device units.</summary>
@@ -1293,26 +1250,115 @@ internal ref struct SvgOrthogonalGeometryLowering
         using BudgetedParserList<bool> closedEnds = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
         SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, closedEnds, hasFill ? authored : null);
-        SvgParsedGeometry stroked = LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget);
-        if (authored.Count != 0 && stroked.Geometries.Length == 1)
+        if (authored.Count == 0)
+            return LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget) with { ElementCount = commandCount + 1 };
+        if (builder.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke point count exceeds the configured path-command limit.");
+        return LowerNativeStrokeCommands(authored, deviceMap, deviceWidth, width, miterLimit, cap, join, dashes,
+            dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget) with { ElementCount = commandCount + 1 };
+    }
+
+    /// <summary>Filters and strokes source verbs once, transferring their owner only to a successfully retained centerline.</summary>
+    private SvgParsedGeometry LowerNativeStrokeCommands(BudgetedParserList<SvgAuthoredPathCommand> authored,
+        SvgAffineTransform deviceMap, double deviceWidth, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join,
+        double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill,
+        double outputMagnification, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        OwnedParserArray<SvgAuthoredPathCommand> commands = new([], null);
+        try
         {
-            OwnedParserArray<SvgAuthoredPathCommand> commands = new([], null);
+            SvgAffineTransform retainedMap = deviceMap;
+            double magnification = Math.Max(Math.Sqrt(deviceMap.A * deviceMap.A + deviceMap.B * deviceMap.B), Math.Sqrt(deviceMap.C * deviceMap.C + deviceMap.D * deviceMap.D));
+            if (dashes is null) commands = authored.Detach();
+            else
+            {
+                commands = SvgNativeDashPath.Filter(authored.AsSpan(), dashes, dashOffset, pathLength,
+                    nonScaling ? deviceMap : SvgAffineTransform.Identity, (float)(outputMagnification * (nonScaling ? 1 : magnification)), budget, _workCounter, _cancellationToken);
+                if (nonScaling) retainedMap = SvgAffineTransform.Identity;
+            }
+            SvgParsedGeometry stroked = LowerNativeStrokePath(commands.Items, nonScaling ? retainedMap : SvgAffineTransform.Identity,
+                nonScaling ? SvgAffineTransform.Identity : deviceMap, (float)(nonScaling ? deviceWidth : width) * .5f,
+                (float)(outputMagnification * (nonScaling ? 1 : magnification)), (float)miterLimit, cap, join, color, hasFill, outputMagnification, frame, budget);
             try
             {
-                SvgAffineTransform retainedMap = deviceMap;
-                if (dashes is null) commands = authored.Detach();
-                else
+                if (stroked.Geometries.Length == 1)
                 {
-                    double magnification = Math.Max(Math.Sqrt(deviceMap.A * deviceMap.A + deviceMap.B * deviceMap.B), Math.Sqrt(deviceMap.C * deviceMap.C + deviceMap.D * deviceMap.D));
-                    commands = SvgNativeDashPath.Filter(authored.AsSpan(), dashes, dashOffset, pathLength,
-                        nonScaling ? deviceMap : SvgAffineTransform.Identity, (float)(element.OutputMagnification * (nonScaling ? 1 : magnification)), budget, _workCounter, _cancellationToken);
-                    if (nonScaling) retainedMap = SvgAffineTransform.Identity;
+                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap), budget) };
+                    commands = new([], null);
                 }
-                stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap), budget) };
+                return stroked;
             }
-            catch { commands.Dispose(); stroked.Discard(); throw; }
+            catch { stroked.Discard(); throw; }
         }
-        return stroked with { ElementCount = commandCount + 1 };
+        finally { commands.Dispose(); }
+    }
+
+    /// <summary>Constructs retained native outlines, then reserves exact fallback storage before final placement.</summary>
+    private SvgParsedGeometry LowerNativeStrokePath(ReadOnlySpan<SvgAuthoredPathCommand> commands, SvgAffineTransform constructionMap,
+        SvgAffineTransform outlineMap, float radius, float resolutionScale, float miterLimit, SvgStrokeCap cap, SvgStrokeJoin join,
+        SvgColor color, bool hasFill, double outputMagnification, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        if (!float.IsFinite(radius) || !float.IsFinite(resolutionScale) || resolutionScale <= 0 || !float.IsFinite(miterLimit))
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Native path stroke parameters exceed the finite float range.");
+        using RenderBudget.BudgetReservation owners = budget.Reserve(512, SvgMemoryCategory.Geometry);
+        using BudgetedParserList<SvgStrokeOutlineCommand> outline = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        if (radius > 0) SvgNativePathStroke.Build(commands, radius, miterLimit, cap, join, resolutionScale, constructionMap, outline, budget, _workCounter, _cancellationToken);
+        SvgFlattenPolicy policy = new(ScaledFlatness(outputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
+        (int points, int contours, int spans) = Traverse(null, outline.AsSpan(), outlineMap, policy, _workCounter, _cancellationToken);
+        if (points == 0)
+        {
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            return new(empty.Detach(), 0);
+        }
+        long scratchBytes = 3 * ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points)
+            + 6 * ParserCollectionMemory.GetArrayByteCount<int>(contours) + (spans == 0 ? 0 : StrokeConicScratchBytes(spans));
+        using RenderBudget.BudgetReservation? scratch = scratchBytes == 0 ? null : budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
+        SvgContourBuilder outlines = new(points, contours);
+        outlines.EnableQuadSpanRetention();
+        _ = Traverse(outlines, outline.AsSpan(), outlineMap, policy, _workCounter, _cancellationToken);
+        return FinishDirectedStrokeFill(outlines, color, hasFill, SvgPolygonMapping.NativeStrokeEdges, frame, budget);
+
+        static (int Points, int Contours, int Spans) Traverse(SvgContourBuilder? builder, ReadOnlySpan<SvgStrokeOutlineCommand> commands,
+            SvgAffineTransform map, SvgFlattenPolicy policy, ParserWorkCounter work, CancellationToken token)
+        {
+            Span<SvgDevicePoint> samples = stackalloc SvgDevicePoint[CurveSegmentsPerCommand];
+            SvgDevicePoint current = default;
+            int points = 0, contours = 0, spans = 0;
+            foreach (SvgStrokeOutlineCommand command in commands)
+            {
+                work.Consume(token);
+                SvgDevicePoint end = SvgNativePathStroke.MapPoint(map, command.End.Device());
+                switch (command.Verb)
+                {
+                    case SvgStrokeOutlineVerb.Move: builder?.BeginContour(end); points++; break;
+                    case SvgStrokeOutlineVerb.Line:
+                        // The native edge builder discards zero-length lines.
+                        // Preserve them in construction vectors, but do not let
+                        // their duplicate points affect retained curve dispatch.
+                        if (end != current) { builder?.AddLine(end); points++; }
+                        break;
+                    case SvgStrokeOutlineVerb.Quadratic:
+                        SvgDevicePoint control = SvgNativePathStroke.MapPoint(map, command.Control.Device());
+                        if (builder is null)
+                        {
+                            int added = SvgCurveFlatten.FlattenQuadratic(current, control, end, policy, samples, token);
+                            for (int point = 0; point < added; point++) work.Consume(token);
+                            points = checked(points + added);
+                        }
+                        else builder.AddQuadratic(control, end, policy, token);
+                        spans++; break;
+                    case SvgStrokeOutlineVerb.Conic:
+                        if (builder is null)
+                        { for (int point = 0; point < 8; point++) work.Consume(token); points = checked(points + 8); }
+                        else builder.AddConic(SvgNativePathStroke.MapPoint(map, command.Control.Device()), end, command.Weight, 8, token);
+                        spans++; break;
+                    case SvgStrokeOutlineVerb.Close: builder?.EndContour(); contours++; break;
+                    default: throw new InvalidOperationException("Invalid native stroke outline verb.");
+                }
+                if (points > MaximumFlattenedContourPoints) throw new SvgException(SvgErrorCode.LimitExceeded, "Native path stroke point count exceeds the supported expansion range.");
+                current = end;
+            }
+            return (points, contours, spans);
+        }
     }
 
     /// <summary>Retains stroke outline loops as one nonzero fill through shared contour separation.</summary>
@@ -1503,7 +1549,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Retains directed stroke outlines as one nonzero fill without converting winding overlaps into touching bands.</summary>
-    /// <remarks>Native straight open strokes preserve float construction, rational round verbs and directed overlaps through their typed mapping. Surviving conics re-anchor to global indices after duplicate contour merging; caller scratch covers builder columns and returned verbs. Curved and dashed source outlines keep their existing mapping and merge: dense curve tessellation can misfire crossing subdivision. The caller retains ownership and charges point, contour and role traversals; returned scene reservations release on failure or disposal.</remarks>
+    /// <remarks>Native strokes preserve float construction, fitted quadratics, rational round verbs and directed overlaps through their typed mapping. Surviving curves re-anchor to global indices after duplicate contour merging; caller scratch covers builder columns and returned verbs. Sampled shape outlines retain their legacy mapping. The caller retains ownership and charges point, contour and role traversals; returned scene reservations release on failure or disposal.</remarks>
     private SvgParsedGeometry FinishDirectedStrokeFill(SvgContourBuilder outlines, SvgColor color, bool hasFill, SvgPolygonMapping sourceMapping, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(outlines);

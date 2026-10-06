@@ -1,0 +1,13 @@
+{
+  "skiaRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sources": [
+    "src/core/SkStroke.cpp",
+    "src/core/SkStrokerPriv.cpp",
+    "src/core/SkGeometry.cpp",
+    "src/core/SkPoint.cpp"
+  ],
+  "scope": "Unchanged compiled SkPathStroker contour/numerical functions and join/cap procedures through record path/matrix adapters. Direct verb calls exclude SkPath iteration/lookahead, rect specialization, stroke-and-fill center removal and painting. Cusp circles use the record adapter oval sink.",
+  "cases": 1920,
+  "commands": 27890,
+  "dataSha256": "19bb90f29f0c9a0d1d4527d128933a3ee38866187de6d8c5a4a35e4a61bc08ea"
+}

@@ -15,18 +15,19 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current native conic oval-stroke checkpoint
+## Current native wider path-stroke checkpoint
 
-The bank has 1,108 fixtures (901 exact, 177 known, 30 rejected), 36 research
-probes (seven exact, 28 known, one rejected) and 92 legacy Default cases:
-1,236 executed cases. Twelve untuned oval configurations preceded production
-edits/capture; all improve but remain known differences. The existing thick-circle
-regression receives a supplemental reference, declared after the edit. All 39
-fresh captures are stable and healthy. Nineteen prior PNGs change; all 908 prior
-exact fixture/research PNGs and every disposition are preserved. All nine SG
-Rotation variants improve; the corporate totals remain 134 exact / 106 known /
-eighteen rejected, 9/27 fully exact documents. Original references remain frozen;
-detailed runs stay under ignored `artifacts/native-conic-strokes-20261006/`.
+The bank has 1,145 fixtures (937 exact, 178 known, 30 rejected), 36 research
+probes (twelve exact, 23 known, one rejected) and 92 legacy Default cases:
+1,273 executed cases. Twenty-four untuned configurations preceded edits/capture;
+four become exact and all improve. Eight later unit-contract controls add six
+exact and two known cases. All 96 fresh captures are stable and healthy.
+Forty-five prior PNGs improve; 21 fixture and five research comparisons become
+exact. Five research originals graduate with unchanged SVG/PNG/provenance.
+All 908 prior exact fixture/research PNGs and every disposition are preserved.
+All nine Zeppelin variants improve; the corporate totals remain 134 exact /
+106 known / eighteen rejected, 9/27 fully exact documents. Original references
+remain frozen; detailed runs stay under ignored `artifacts/native-path-strokes-20261006/`.
 
 ## Frozen corporate cohort
 

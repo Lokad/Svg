@@ -1725,7 +1725,8 @@ public sealed class SvgPolygonFillTests
 
         Assert.Equal(800, width);
         Assert.Equal(480, height);
-        Assert.Equal(new SvgColor(0, 0, 0, 255), Pixel(union, width, 695, 139));
+        // Stable pinned-browser captures give this retained cubic fringe 253.
+        Assert.Equal(new SvgColor(0, 0, 0, 253), Pixel(union, width, 695, 139));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 0, 0));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 799, 479));
     }

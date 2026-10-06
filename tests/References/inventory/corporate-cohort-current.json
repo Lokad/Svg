@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after native conic oval stroke construction; original references and cohort options retained.",
+  "scope": "Frozen 27-document/258-variant measurement after native wider path stroke construction; original references and cohort options retained.",
   "rendererCounts": {
     "renders": 240,
     "MalformedInput": 0,
@@ -4027,10 +4027,10 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 385,
+          "ChangedPixelCount": 271,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.1578732394366197,
-          "RootMeanSquareError": 2.8560955323904773,
+          "MeanAbsoluteError": 0.10301408450704225,
+          "RootMeanSquareError": 2.6782483239063257,
           "MaximumAlphaError": 53,
           "AlphaChangedPixelCount": 98,
           "MinimumMismatchX": 94,
@@ -4072,7 +4072,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "b24ef5c91cc5e74f6e6a239e5be5296accc1d4a3432f9fa9a6f436ced595ebf1",
+      "candidateSha256": "175a2b8922bb3a9396573015ed2feb88d2bd7eb5f6c802d3b95827cdcbd475c2",
       "width": 250,
       "height": 71,
       "referenceSha256": "55268bdbbb14360ffc6ea783f64cee877c7ea6ac236c435ac9940df69fbeb625"
@@ -4084,10 +4084,10 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 377,
-          "MaximumChannelError": 45,
-          "MeanAbsoluteError": 0.11716901408450704,
-          "RootMeanSquareError": 1.3736196656700475,
+          "ChangedPixelCount": 263,
+          "MaximumChannelError": 43,
+          "MeanAbsoluteError": 0.06230985915492958,
+          "RootMeanSquareError": 0.9500333574573527,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 94,
@@ -4129,7 +4129,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "6602ab85f5cf52b1e9f9e2a80f4ffadd7a28c27209a718be6ec1dcc7b963d4d6",
+      "candidateSha256": "113955975e1a9006040fc736f59c097006e125223c60c25355a1f84f55934766",
       "width": 250,
       "height": 71,
       "referenceSha256": "fdf701abaa4e2b4677e874c3006a6d6a0e4e4a44fdaa9da5f70ab1c16e17bbcb"
@@ -4141,10 +4141,10 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 381,
-          "MaximumChannelError": 45,
-          "MeanAbsoluteError": 0.11059154929577465,
-          "RootMeanSquareError": 1.3202325872765914,
+          "ChangedPixelCount": 267,
+          "MaximumChannelError": 42,
+          "MeanAbsoluteError": 0.05573239436619718,
+          "RootMeanSquareError": 0.8710605483393444,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 94,
@@ -4186,7 +4186,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "2460afc5b9845d7f8a2a3e15e95e4862448acebe8acae10096d64ca46a7819a6",
+      "candidateSha256": "416c0efc4f7af342112ef3d7aae6a6f8d3afc9555e48892c03637441a6c40cb1",
       "width": 250,
       "height": 71,
       "referenceSha256": "432fa3b5204c711d4e09528d106302dcc31c9c7e0a06fa1239fbedbd65c52418"
@@ -4198,10 +4198,10 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 859,
+          "ChangedPixelCount": 573,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.09821328671328672,
-          "RootMeanSquareError": 2.0031173258146966,
+          "MeanAbsoluteError": 0.047765734265734265,
+          "RootMeanSquareError": 1.6274277185242296,
           "MaximumAlphaError": 61,
           "AlphaChangedPixelCount": 246,
           "MinimumMismatchX": 188,
@@ -4243,7 +4243,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "47c4f99c49caebce7450ba4cf1c7c9763ebb978ffaa881d1b2489ef663b6eff3",
+      "candidateSha256": "363060858dac3982e269ef6213b5a1fd97ccecabe275bfd3f2d19ea005868e5e",
       "width": 500,
       "height": 143,
       "referenceSha256": "aabc201800a4fa1aaa7d187667252c2a0e978664633566dd2210302f19dcb8d3"
@@ -4255,10 +4255,10 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 855,
-          "MaximumChannelError": 65,
-          "MeanAbsoluteError": 0.09001398601398601,
-          "RootMeanSquareError": 1.455387867942373,
+          "ChangedPixelCount": 569,
+          "MaximumChannelError": 49,
+          "MeanAbsoluteError": 0.039566433566433565,
+          "RootMeanSquareError": 0.8684444738702667,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 188,
@@ -4300,7 +4300,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "efa912ed59cbdb47ef88e4804ce1d6f5329594deb464d064410296d4730c741c",
+      "candidateSha256": "eb962a1c64c9e2c0deb45397a4d2b70824abe67ccb23b4469adba67bbd0a3ce2",
       "width": 500,
       "height": 143,
       "referenceSha256": "87472954a388a4eda7dd90214b29df1233838e749859e648e73da54fc4028a7f"
@@ -4312,10 +4312,10 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 853,
-          "MaximumChannelError": 65,
-          "MeanAbsoluteError": 0.08447202797202798,
-          "RootMeanSquareError": 1.3976941550457136,
+          "ChangedPixelCount": 567,
+          "MaximumChannelError": 47,
+          "MeanAbsoluteError": 0.034024475524475524,
+          "RootMeanSquareError": 0.767848233110495,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 188,
@@ -4357,7 +4357,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "df1511cac1b5eab9f2c6c2ceaec60679e2fb1bf53c99e46a6174fde008b344bc",
+      "candidateSha256": "e186aa4eb150c042cfb2d8004fc95375e7b6d1a28bd8e85f9d82cf71bfc4018b",
       "width": 500,
       "height": 143,
       "referenceSha256": "a6876d391dacb1ccfdea457dd8bbdf17a9cad9ec0e38ab0bd2a9a57f006858f3"
@@ -4369,10 +4369,10 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1826,
+          "ChangedPixelCount": 1165,
           "MaximumChannelError": 255,
-          "MeanAbsoluteError": 0.05417832167832168,
-          "RootMeanSquareError": 1.3618869314249307,
+          "MeanAbsoluteError": 0.013683566433566434,
+          "RootMeanSquareError": 0.8882950983868941,
           "MaximumAlphaError": 30,
           "AlphaChangedPixelCount": 551,
           "MinimumMismatchX": 377,
@@ -4414,7 +4414,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "608d8e4854c7459f143e3f8cf5b0bf908c4de0755cf4b0a981281da865fc9406",
+      "candidateSha256": "1204dc7a27fcfa075b114f62664668de8708d9a6c94a6ca21b3a2aa26b80fe69",
       "width": 1000,
       "height": 286,
       "referenceSha256": "1e308cd2c40178c87916964c984140c79ee53d653ca147074c64975cf30e6f7f"
@@ -4426,10 +4426,10 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1802,
-          "MaximumChannelError": 80,
-          "MeanAbsoluteError": 0.048794580419580416,
-          "RootMeanSquareError": 1.0653658388691514,
+          "ChangedPixelCount": 1141,
+          "MaximumChannelError": 43,
+          "MeanAbsoluteError": 0.008299825174825175,
+          "RootMeanSquareError": 0.26331832154549834,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 377,
@@ -4471,7 +4471,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "53b174e96a70928f53b76a0bd9c8493d59cc0a705eb19a8a9ef12306ab5a8ceb",
+      "candidateSha256": "de31f083f0acd2e0ef04d4e3865fe01962869e0e27d23b12799890855bb8a116",
       "width": 1000,
       "height": 286,
       "referenceSha256": "7cfcaa09a1890ea41ad84a0381dac82b216a8002f6afc038f236c5944b90b568"
@@ -4483,10 +4483,10 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1804,
-          "MaximumChannelError": 80,
-          "MeanAbsoluteError": 0.047333916083916086,
-          "RootMeanSquareError": 1.0582641810640088,
+          "ChangedPixelCount": 1143,
+          "MaximumChannelError": 43,
+          "MeanAbsoluteError": 0.006839160839160839,
+          "RootMeanSquareError": 0.2329275525893078,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
           "MinimumMismatchX": 377,
@@ -4528,7 +4528,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "0ef260cd1573524690588d2b7d463bfdfef7f10e0d6cdea9f388950fac431c97",
+      "candidateSha256": "b8ef816f4bcffa2bf684ab3c13243ecd7cb7fe1adaf6dbe5e184d75d3f6328a7",
       "width": 1000,
       "height": 286,
       "referenceSha256": "2442e8fdef61bab074e61e28ffa87ae2fc278b019612a11186518cf9de758e47"
@@ -14890,8 +14890,8 @@
       "referenceSha256": "e628ef493bea5ee8586514bc6d3730caeb0738def9eac6319b3db860614ded6c"
     }
   ],
-  "rendererSourceBaselineCommit": "764593a4",
-  "rendererSourceState": "Native conic normal offsets and retained quadratic oval stroke verbs.",
-  "measurementCheckpoint": "native-conic-oval-strokes-2026-10-06",
+  "rendererSourceBaselineCommit": "a3acec6e",
+  "rendererSourceState": "Native curve offsets, joins, caps and closure shared by paths and integer/fractional polylines.",
+  "measurementCheckpoint": "native-path-strokes-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

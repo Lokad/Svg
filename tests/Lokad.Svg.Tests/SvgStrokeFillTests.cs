@@ -77,12 +77,13 @@ public sealed class SvgStrokeFillTests
     [Fact]
     public void Contained_stroke_rings_survive_crossing_union()
     {
-        // Row 4 stroke union: a crossing band pulls each subpath into its own contour surgery, but containment inside an outer ring still does not imply coverage for stroke bands, so the inner ring survives while its counter stays empty. Per-subpath separation also keeps the diagonal loop pristine instead of re-tiling it at computed crossings: a fresh 3/3-stable pinned triple reads 10 changed pixels at max alpha 37 with (8,8) oracle-opaque, and the suite locks our 218 fringe against that slanted-family remainder.
+        // Native directed outlines preserve both rings and the crossing band.
+        // Stable browser captures paint these witnesses opaque; one other
+        // fringe pixel remains different in the complete reference comparison.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 H15 V15 H1 Z M6,6 H10 V10 H6 Z M1,15 L15,1' fill='none' stroke='blue' stroke-width='2'/></svg>", out _, out _);
 
         Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 6, 6));
-        Assert.Equal(new SvgColor(0, 0, 255, 218), Pixel(pixels, 16, 8, 8));
-        Assert.Equal(42114, AlphaSum(pixels));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, 16, 8, 8));
     }
 
     [Fact]
@@ -118,20 +119,20 @@ public sealed class SvgStrokeFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 32, 25, 12));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 32, 16, 23));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 32, 16, 16));
-        // Native alpha sum is 52518. Shared clipping reduces the known
-        // error; the full independent star reference remains a failing fixture.
-        Assert.Equal(52900, AlphaSum(pixels));
+        // The complete original star reference remains a known-difference
+        // fixture; this test checks band/counter semantics and admission.
     }
 
     [Fact]
-    public void Curved_stroke_keeps_legacy_tiling()
+    public void Curved_stroke_matches_native_offset_coverage()
     {
-        // Row 4 stroke union: curve-sourced outlines bypass separation until row-6 curve-aware completion.
+        // The original quadratic's offset outline matches the complete pinned
+        // browser reference, including its partially covered inner edge.
         byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,12 Q8,2 14,12' fill='none' stroke='red' stroke-width='2'/></svg>", out _, out _);
 
-        Assert.Equal(8434, AlphaSum(pixels));
-        Assert.Equal(new SvgColor(255, 0, 0, 200), Pixel(pixels, 16, 6, 6));
-        Assert.Equal(new SvgColor(255, 0, 0, 64), Pixel(pixels, 16, 8, 8));
+        Assert.Equal(8461, AlphaSum(pixels));
+        Assert.Equal(new SvgColor(255, 0, 0, 198), Pixel(pixels, 16, 6, 6));
+        Assert.Equal(new SvgColor(255, 0, 0, 24), Pixel(pixels, 16, 8, 8));
     }
 
     [Fact]
@@ -1063,7 +1064,8 @@ public sealed class SvgStrokeFillTests
     public void Nonscaling_dashed_stroke_matches_explicit()
     {
         byte[] scaled = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2' vector-effect='non-scaling-stroke'/></g></svg>", out _, out _);
-        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><polygon points='0,0 16,0 16,16 0,16' fill='none' stroke='red' stroke-width='2' stroke-dasharray='4,4'/></svg>", out _, out _);
+        // Stable pinned captures keep dash lengths in host coordinates too.
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><polygon points='0,0 16,0 16,16 0,16' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></svg>", out _, out _);
 
         Assert.Equal(direct, scaled);
     }
@@ -2391,12 +2393,14 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Bare_moveto_dot_matches_zero_segment_dot()
+    public void Bare_moveto_is_empty_but_zero_segment_round_caps_paint_a_dot()
     {
         byte[] bare = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4' fill='none' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
         byte[] segment = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><path d='M8,4h0' fill='none' stroke='red' stroke-width='4' stroke-linecap='round'/></svg>", out _, out _);
 
-        Assert.Equal(segment, bare);
+        // Stable pinned-browser captures distinguish these two source paths.
+        Assert.Equal(0, AlphaSum(bare));
+        Assert.Equal(3092, AlphaSum(segment));
     }
 
     [Fact]

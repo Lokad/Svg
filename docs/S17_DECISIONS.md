@@ -1,44 +1,48 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Native conic oval strokes improve twelve untuned controls
-and all nine SG Rotation variants without adding an exact document.
+Updated 2026-10-06. Native wider path offsets, joins/caps and closed seams
+improve all 24 untuned controls and all nine Zeppelin variants.
 [PLAN.md](../PLAN.md) owns the queue; rows 3–7 and S17 remain open.
 Exact documents remain Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA,
 IKEA and Google: **9/27**, marks **3/13**, wordmarks **6/14**. S17 requires
 at least **23/27**, including 11/13 marks and 12/14 wordmarks. Membership,
 holdouts, options, original inputs and browser references remain frozen.
 
-Current evidence: **1,108 fixtures = 901 exact + 177 known + 30 rejected**,
-612 base documents / 496 variants; **36 research probes = seven exact +
-28 known + one rejected**; and 92 legacy Default renders: **1,236 cases**.
-Nineteen prior PNGs change (ten fixtures, one research, eight legacy); every
-disposition and all 908 prior exact fixture/research PNGs are preserved.
-Thirteen new oval references remain known differences. Twelve configurations
-preceded production edits/capture; the existing thick-circle regression's
-supplemental capture followed the edit. All 39 fresh captures are stable/healthy.
+Current evidence: **1,145 fixtures = 937 exact + 178 known + 30 rejected**,
+649 base documents / 496 variants; **36 research probes = twelve exact +
+23 known + one rejected**; and 92 legacy Default renders: **1,273 cases**.
+Forty-five prior PNGs improve (35 fixtures, ten research); every disposition
+and all 908 prior exact fixture/research PNGs are preserved. Twenty-one fixture
+and five research comparisons become exact; the five research originals graduate
+with unchanged references. Twenty-four controls preceded edits/capture and eight
+supplemental unit-contract controls followed the edit. All 96 fresh captures are
+stable/healthy; the 37 added fixture entries include 15 exact and 22 known cases.
 
-Windows locked restore, nine-project Release build and **3,742 tests**
-(3,576 core + 160 visual + six FontProbe) pass. New compiled-native vectors cover
-960 conic fitting cases and 2,880 segments, alongside existing curve/cap,
-dash, line and conic controls. The adapters validate bounded numerical functions, not
-a complete native dash/stroke/paint backend. All 25 memory scenarios,
+Windows locked restore, nine-project Release build and **3,754 tests**
+(3,588 core + 160 visual + six FontProbe) pass. New unchanged compiled-native
+functions validate 1,920 cases / 27,890 complete offset/join/cap/closure commands.
+The adapters exclude native path iteration/lookahead, rectangle specialization,
+stroke-and-fill center removal and painting. All 25 memory scenarios,
 package/installed-consumer, Chrome smoke and artifact validation pass.
-Thirty-three matching recipes preserve all 28 previous complete PNG/work/peak
-records. Five oval/SG recipes add work; oval peaks decrease and SG peaks add
-3,136 bytes. Local timing ranges overlap and remain exploratory.
+Thirty-nine matching recipes preserve value layouts and 21 complete PNG/work/peak
+records. New controls and Zeppelin reduce raster work; construction adds
+parser work and a wider dashed cubic substantially increases raster work.
+Representative performance remains open.
 
 All 258 corporate dispositions and 134 exact PNGs are preserved: **240 rendered
 comparisons (134 exact, 106 known)** and eighteen UnsupportedFeature outcomes.
-Only SG Rotation's nine PNGs change, with transparent mismatch counts falling
-1,344/3,147/5,799 → 903/2,104/4,233 at small/intended/large sizes. Eisenbahn
-small remains one/zero/one pixels from exact across backgrounds; Rede Manchete
-small/intended remain 519/638 pixels from their original references.
+Only Zeppelin's nine PNGs change, with transparent mismatch counts falling
+385/859/1,826 → 271/573/1,165 at small/intended/large sizes. SG Rotation retains
+903/2,104/4,233 transparent differences. Eisenbahn small remains one/zero/one
+pixels from exact across backgrounds.
 
-Transformed/pathLength dash browser coverage, other shape/paint routes and bitmap
-contexts, wider closed/curved/dashed stroke construction, clip/composition,
-conical/multistop coordinates, cache history, general fidelity, representative
-performance and Linux remain open. S8 measurement is complete for this cohort;
-S17 remains unmet. Detailed studies stay under ignored artifacts.
+Shared path/polyline construction now retains original source curves through
+fitting and placement, including painted instances. Bare movetos are empty;
+non-scaling dash lengths stay in host coordinates. Remaining stroke scan/clip/
+paint fidelity, sampled shape routes, transformed/pathLength dash coverage,
+other hairline contexts, conical/multistop coordinates, cache history,
+representative performance and Linux remain open. S8 measurement is complete
+for this cohort; S17 remains unmet. Detailed studies stay under ignored artifacts.
 
 ## Q1 - numeric exact-document target: selected
 

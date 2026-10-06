@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-native-path-stroke-whisker-curves-unit",
+  "referencePng": "original-native-path-stroke-whisker-curves-unit.png",
+  "referenceSha256": "c813fbcc2a586ff42b23768c8c724e76dd76364a8357cc6ba2155e2b82634ce2",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 800,
+    "height": 480,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "e39e94f0956dd9fbeae886db832e15d96ebe95c03ccb713d8ec5d328bca6f8e2",
+  "candidateSha256": "9dce2a14ab67a803a7daef2697fc83b07ab2882ca9deabd51dd5198d9c437045",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 1152,
+    "maximumChannelError": 76,
+    "meanAbsoluteError": 0.008942708333333334,
+    "rootMeanSquareError": 0.4954243761665346,
+    "maximumAlphaError": 76,
+    "alphaChangedPixelCount": 1152,
+    "minimumMismatchX": 243,
+    "minimumMismatchY": 130,
+    "maximumMismatchX": 696,
+    "maximumMismatchY": 415,
+    "exact": false
+  },
+  "declaredBeforeProductionEdit": false,
+  "declaredBeforeCaptures": true
+}

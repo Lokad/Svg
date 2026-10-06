@@ -1865,3 +1865,37 @@ decreases, but timings overlap and unchanged recipes show host/JIT variation.
 These local observations do not establish representative throughput or latency.
 All 25 memory scenarios and installed consumers pass. Generic wider path strokes,
 corporate fidelity, representative profiling and Linux remain open.
+
+## Native wider path-stroke observations (2026-10-06)
+
+Thirty-nine matched recipes compare the frozen `a3acec6e` renderer with shared
+native source-verb path/polyline construction on Windows X64 / .NET 10.0.12.
+The preceding 33 recipes remain, with four wider controls and two Zeppelin
+sizes added. Both execution orders contribute twenty batches per implementation/
+recipe. Geometry/paint value layouts and 21 complete PNG/work/peak records are
+preserved. Ledgers and timing batches remain under ignored
+`artifacts/native-path-strokes-20261006/`.
+
+| Recipe | Parser work, before → after | Work through raster, before → after | Accounted peak bytes, before → after | Local ms, before / after | Allocated bytes, before / after |
+| --- | --- | --- | --- | --- | --- |
+| path-quad-butt-w2-p0 | 121 → 200 | 11,497 → 6,425 | 171,988 → 171,652 | 0.710–3.285 / 0.660–1.803 | 70,184–70,189 / 59,976–59,981 |
+| path-quad-butt-w8-p0 | 121 → 200 | 15,867 → 7,964 | 171,988 → 171,652 | 0.935–1.837 / 0.693–0.855 | 74,320–74,482 / 60,312–60,317 |
+| path-cubic-round-w8-p0 | 134 → 398 | 27,549 → 19,097 | 178,532 → 176,644 | 0.744–3.418 / 0.896–1.032 | 83,845–84,006 / 69,416–69,579 |
+| path-closed-dashes-w8-p0 | 950 → 2,229 | 80,944 → 76,674 | 232,348 → 246,164 | 1.292–2.875 / 1.329–3.428 | 122,861–123,026 / 130,549–130,706 |
+| zeppelin-small | 1,791 → 2,475 | 191,789 → 112,104 | 1,324,568 → 1,324,088 | 3.394–5.447 / 3.055–8.328 | 454,330–454,364 / 396,830–396,890 |
+| zeppelin-intended | 1,786 → 2,470 | 434,814 → 322,797 | 1,542,240 → 1,541,760 | 6.175–10.455 / 5.934–13.903 | 703,826–706,420 / 641,568–641,856 |
+| dash-wider | 816 → 2,834 | 98,526 → 466,033 | 205,476 → 219,492 | 0.685–0.851 / 2.073–2.806 | 151,279–151,288 / 142,705–142,715 |
+
+Source-curve fitting adds parser work, including for unchanged thin-stroke PNGs.
+The new wider controls generally reduce raster work and small peaks; closed
+dashes add 13,816 peak bytes. Zeppelin adds parser work but reduces raster work
+and peak storage. The wider dashed cubic is a clear cost regression: work rises
+98,526 → 466,033 and peak storage adds 14,016 bytes despite improved pixels.
+Its retained native offset curves drive more scan work; optimizing that remaining
+curve/event path must preserve the original references. This checkpoint does
+not meet representative performance gates. Timing ranges include host/JIT
+variation and are exploratory.
+
+All 25 memory scenarios and installed package consumers pass. Remaining stroke
+scan/paint/clip fidelity, shape/hairline contexts, representative profiling and
+Linux remain open.

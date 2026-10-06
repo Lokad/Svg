@@ -20,7 +20,7 @@ public sealed class SvgConicStrokeTests
             RenderBudget budget = new(16_777_216);
             using (BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry))
             {
-                SvgConicStroke.Append(new(p[0], p[1]), new(p[2], p[3]), new(p[4], p[5]), Number(fields[1]), Number(fields[2]), Number(fields[3]),
+                SvgCurveStroke.Append(new(p[0], p[1]), new(p[2], p[3]), new(p[4], p[5]), Number(fields[1]), Number(fields[2]), Number(fields[3]),
                     (SvgStrokeSide)int.Parse(fields[4], CultureInfo.InvariantCulture), output, new ParserWorkCounter(100_000), CancellationToken.None);
                 string[] expected = fields[6].Split(';');
                 Assert.Equal(expected.Length, output.Count);
@@ -70,7 +70,7 @@ public sealed class SvgConicStrokeTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
 
         static void Append(BudgetedParserList<SvgStrokeCurveSegment> output, ParserWorkCounter work, CancellationToken token)
-            => SvgConicStroke.Append(new(80, 48), new(80, 65), new(48, 65), SvgRationalQuadratic.QuarterCircleWeight, 5, 4, SvgStrokeSide.Inner, output, work, token);
+            => SvgCurveStroke.Append(new(80, 48), new(80, 65), new(48, 65), SvgRationalQuadratic.QuarterCircleWeight, 5, 4, SvgStrokeSide.Inner, output, work, token);
     }
 
     private static IEnumerable<string> NativeRows()
@@ -90,7 +90,7 @@ public sealed class SvgConicStrokeTests
     {
         RenderBudget budget = new(1);
         using BudgetedParserList<SvgStrokeCurveSegment> output = new(budget, SvgMemoryCategory.Geometry);
-        SvgException error = Assert.Throws<SvgException>(() => SvgConicStroke.Append(new(80, 48), new(80, 65), new(48, 65),
+        SvgException error = Assert.Throws<SvgException>(() => SvgCurveStroke.Append(new(80, 48), new(80, 65), new(48, 65),
             SvgRationalQuadratic.QuarterCircleWeight, 5, 1, SvgStrokeSide.Outer, output, new ParserWorkCounter(100_000), CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
         Assert.Equal(0, output.Count);

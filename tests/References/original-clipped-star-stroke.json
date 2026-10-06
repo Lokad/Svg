@@ -16,7 +16,7 @@
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
   "inputSha256": "ea7241086c19407d95bf08d6ab749a39faa00a49a5ac30b504f9157cf6b42dcb",
-  "candidateSha256": "53c1d14823db5d1e5bc0739b18fa49bb6666f7976395667de44398b0628f1b9f",
+  "candidateSha256": "d55d3dd3d5c1d18e28e36e96c7275f582a966628f289579d7ce1790f26dfaa17",
   "admittedAt": "Clipped preparation construction witness, 2026-10-05",
   "captureSha256": [
     "035619a4d03ff3ae37da88bb8e47d3ae3a2f405299ede5c5541fc892ab726571",
@@ -37,19 +37,17 @@
   "declarationReason": "Existing unit-test construction witness; declared after first integrated render and before independent captures.",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 173,
+    "changedPixelCount": 25,
     "maximumChannelError": 255,
-    "maximumAlphaError": 27,
-    "alphaChangedPixelCount": 173,
-    "minimumMismatchX": 2,
-    "minimumMismatchY": 0,
-    "maximumMismatchX": 31,
-    "maximumMismatchY": 31,
-    "exact": false,
-    "alphaErrorMass": 1128,
-    "overCoveragePixelCount": 119,
-    "underCoveragePixelCount": 54,
-    "opaqueLostPixelCount": 0,
-    "opaqueAddedPixelCount": 0
-  }
+    "meanAbsoluteError": 0.833251953125,
+    "rootMeanSquareError": 14.370524099371776,
+    "maximumAlphaError": 7,
+    "alphaChangedPixelCount": 25,
+    "minimumMismatchX": 5,
+    "minimumMismatchY": 1,
+    "maximumMismatchX": 26,
+    "maximumMismatchY": 28,
+    "exact": false
+  },
+  "comparisonUpdatedAt": "2026-10-06"
 }

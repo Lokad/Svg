@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Update="TestData/path-stroke-native.csv.gz" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/path-stroke-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/conic-stroke-native.csv.gz" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/conic-stroke-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/curve-measure-native.csv.gz" CopyToOutputDirectory="PreserveNewest" />

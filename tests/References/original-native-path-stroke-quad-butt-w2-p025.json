@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-native-path-stroke-quad-butt-w2-p025",
+  "referencePng": "original-native-path-stroke-quad-butt-w2-p025.png",
+  "referenceSha256": "1172028f33d8b9ddf5d8e3a73c5a38126d5492424c36ca2ee2ce64ceffc2e0d9",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "c0a02f797627e822d1262df3cc98e757f33e8005515dd5d4e28c38bef8f8f383",
+  "candidateSha256": "197999801a36b2cabf7efc7373355775324ee40552ae995afa84d3d2ab43c4db",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 64,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

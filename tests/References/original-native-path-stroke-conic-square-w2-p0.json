@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-native-path-stroke-conic-square-w2-p0",
+  "referencePng": "original-native-path-stroke-conic-square-w2-p0.png",
+  "referenceSha256": "4a2c33cce9fa5f47ec76c4a51b92204247fd0aced09bea98f00a57df22706bfc",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "b42bf19a65a1a2077b21ae46f881c62c858977ae7bfa322554471d57f9af2327",
+  "candidateSha256": "8bfbcec362639e934ae081a8e51a52f2eec46a2ebac2a9bfa5994dbeef866353",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 151,
+    "maximumChannelError": 255,
+    "meanAbsoluteError": 0.37762451171875,
+    "rootMeanSquareError": 6.834446265917872,
+    "maximumAlphaError": 68,
+    "alphaChangedPixelCount": 151,
+    "minimumMismatchX": 0,
+    "minimumMismatchY": 7,
+    "maximumMismatchX": 56,
+    "maximumMismatchY": 47,
+    "exact": false
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true
+}

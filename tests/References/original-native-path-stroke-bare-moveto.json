@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-native-path-stroke-bare-moveto",
+  "referencePng": "original-native-path-stroke-bare-moveto.png",
+  "referenceSha256": "c6f0067e6b34cb1a2c728653cfe98f563022c048494a056f56d552dd2c5f8b0f",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 8,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "4f6cf4d57234b6754111cc4d78f49157dba8838b8dd2e8602d36f82aec24c3f0",
+  "candidateSha256": "25e37ee22106a8160045840518dc3bde6ae4ff80e75c22e8d662f6fc16a46d69",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 8,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  },
+  "declaredBeforeProductionEdit": false,
+  "declaredBeforeCaptures": true
+}

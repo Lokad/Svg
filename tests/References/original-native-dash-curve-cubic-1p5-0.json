@@ -17,14 +17,20 @@
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
   "inputSha256": "a80cbdad222d26cb840e3c58480ff34d0f16dda525be99ede48c5d4e25af7ee3",
-  "candidateSha256": "c487374092a4593a2005d8ef2f4f0260c767898172ad634c6bb572427b0d4c28",
+  "candidateSha256": "e899489d13e03c0f6701ef925f6e5756d6edac0b5851141612957db25ba23ed6",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 185,
+    "changedPixelCount": 60,
     "maximumChannelError": 255,
-    "maximumAlphaError": 72,
-    "exact": false,
-    "alphaErrorMass": 3190
+    "meanAbsoluteError": 0.0556640625,
+    "rootMeanSquareError": 2.0962846132354023,
+    "maximumAlphaError": 22,
+    "alphaChangedPixelCount": 60,
+    "minimumMismatchX": 2,
+    "minimumMismatchY": 13,
+    "maximumMismatchX": 61,
+    "maximumMismatchY": 38,
+    "exact": false
   },
   "declaredBeforeProductionEdit": true,
   "declaredBeforeCaptures": true,
@@ -34,5 +40,6 @@
     5,
     3
   ],
-  "cap": "round"
+  "cap": "round",
+  "comparisonUpdatedAt": "2026-10-06"
 }
