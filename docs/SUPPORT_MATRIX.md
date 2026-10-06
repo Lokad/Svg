@@ -5,10 +5,17 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the inactive-presentation checkpoint, the 1,168 manifest entries contain
-961 exact decoded-pixel references, 183 known-difference renders and 24
+At the directed integer-fill checkpoint, the 1,195 manifest entries contain
+994 exact decoded-pixel references, 177 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
+
+Painted integer paths with diagonal edges retain directed authored contours,
+including touching/coincident subpaths and even-odd crossings. Linear/radial
+gradient and pattern paths retain whole fill contours and scene paint boxes.
+Solid orthogonal paths keep checked integer bands. Authored straight replay uses
+command-bounded scratch; rectangle mask and additive-run boundary bytes differ.
+Original independent controls remain exact; broader fidelity is still open.
 
 Declaration-only DOCTYPE admission applies to bare, SYSTEM and PUBLIC declarations
 before the root. External identifiers are inert; internal subsets (even empty),
@@ -24,10 +31,10 @@ remain unsupported. `overflow:visible` is accepted on non-viewport targets;
 root/nested SVG viewports retain hidden clipping and reject visible overflow,
 including matched stylesheet declarations. These admissions add no painting.
 
-The complete frozen corporate matrix has 258 rendered comparisons: 143 exact
-and 115 known differences, with zero renderer rejections. Target is exact in all
+The complete frozen corporate matrix has 258 rendered comparisons: 145 exact
+and 113 known differences, with zero renderer rejections. Target is exact in all
 nine original variants, joining Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube,
-NASA, IKEA and Google: 10/27 documents, marks 4/13 and wordmarks 6/14.
+NASA, IKEA and Google: 11/27 documents, marks 5/13 and wordmarks 6/14.
 All other 249 records and 134 earlier exact PNGs remain unchanged. This is below
 S17's required 23/27 exact documents and both stratum minima.
 

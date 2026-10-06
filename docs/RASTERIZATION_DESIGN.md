@@ -6103,3 +6103,49 @@ artifact validation reuses earlier pinned-browser smoke; Linux/remote evidence
 remains open. Detailed studies stay under ignored
 `artifacts/inert-presentation-20261006/`; Git identifies implementation without
 source/build/report hashes.
+
+## Directed integer polygon and shader fills (2026-10-06)
+
+Integer polygon paths now retain their authored float commands before contact
+normalization. Coincident, touching and repeated contours keep directed winding;
+even-odd uses parity without splitting or dropping the original subpaths. Linear,
+radial and pattern path fills retain the same whole-path geometry and original
+scene paint boxes. Solid orthogonal paths retain the checked integer-band
+specialization, including its full int32 extent and range rejection contract.
+
+The native mask/run choice must precede rectangle boundary rounding. Small
+rectangle masks retain truncated boundary bytes; larger authored box fills use
+the additive run route. The pinned Skia scan source distinguishes the bounded
+mask from the run blitter. Independent browser controls discriminate touching
+interior contours, nested direction, even-odd, collinear verbs, two paint passes,
+and small/large bounds. Replaying a normalized rectangle instead of the original
+three-contour fill changes Eisenbahn's corner alpha 207 to 206. Retaining the
+commands closes the two residual small variants; all nine original variants are
+now exact. Every other corporate result and every earlier exact image remains.
+
+Replay scratch derives point capacity from straight commands plus the conservative
+expansion of curve commands. A straight path no longer reserves a curve expansion
+for every line. Two tests replay integer contacts under a 16 KiB scratch budget,
+check winding/parity and empty curve columns, and verify complete owner release.
+Nine added six-output cases cover integer contacts, paint servers and the former
+contact admission gates. Earlier nonzero/parity contact tests keep their interior
+and exterior behavior; complete browser references pin their distinct AA fringes.
+
+Twelve controls preceded production edits. Eleven existing-test witnesses were
+captured after the prototype, before test contract updates. All 69 captures are
+stable, healthy and cleaned. Intrinsic-size cropped exploratory captures are
+excluded. Six existing shader variants and four original research probes become
+exact; research graduates retain their original SVG/PNG/capture provenance.
+
+The 1,323-case bank contains 1,195 fixtures (994 exact, 177 known, 24 rejected),
+36 research records (sixteen exact, nineteen known, one rejected), and 92 Default
+renders. All 973 earlier exact fixture/research PNGs, rejections and Default PNGs
+remain identical. The corporate cohort is 145 exact / 113 known / zero rejected,
+11/27 documents, marks 5/13 and wordmarks 6/14. S17 remains open.
+
+Locked Release build, all 3,824 tests, 25 memory scenarios and installed consumers
+pass. Windows artifact validation reuses earlier Chrome smoke; it proves artifact
+consistency, not Linux or remote delivery. Thirty-nine matching resource recipes
+preserve value layouts. Fourteen peaks decrease, two add 716 bytes, and Eisenbahn
+raster work falls 16,432 → 6,662. No timing claim is made. Detailed comparisons,
+ledgers and captures stay ignored under `artifacts/bitmap-corner-fill-20261006/`.

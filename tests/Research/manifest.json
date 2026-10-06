@@ -876,14 +876,14 @@
       "width": 16,
       "height": 16,
       "admittedRendering": {
-        "changedPixelCount": 1,
-        "maximumChannelError": 1,
-        "maximumAlphaError": 1,
-        "alphaChangedPixelCount": 1,
-        "minimumMismatchX": 5,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 5,
-        "maximumMismatchY": 6
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/diagonal-overlap-same-fill-16x16.png",
@@ -907,18 +907,25 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
       "sourceSha256": "2114fcb817e44ca7ad8249604e953d3e4bad90900e95118e3ab74a052f8712ce",
-      "featureTags": ["geometry", "path", "diagonal-edge", "coincident-overlap", "union", "coverage"],
+      "featureTags": [
+        "geometry",
+        "path",
+        "diagonal-edge",
+        "coincident-overlap",
+        "union",
+        "coverage"
+      ],
       "width": 16,
       "height": 16,
       "admittedRendering": {
-        "changedPixelCount": 4,
-        "maximumChannelError": 1,
-        "maximumAlphaError": 1,
-        "alphaChangedPixelCount": 4,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 9,
-        "maximumMismatchY": 5
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/union-coincident-share-diag-16x16.png",
@@ -942,18 +949,25 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
       "sourceSha256": "59f0d398d03eb201407e0f030ceb068d30f79768ad61678f2b2be8be7925c59f",
-      "featureTags": ["geometry", "path", "diagonal-edge", "coincident-overlap", "union", "coverage"],
+      "featureTags": [
+        "geometry",
+        "path",
+        "diagonal-edge",
+        "coincident-overlap",
+        "union",
+        "coverage"
+      ],
       "width": 16,
       "height": 16,
       "admittedRendering": {
-        "changedPixelCount": 9,
-        "maximumChannelError": 11,
-        "maximumAlphaError": 11,
-        "alphaChangedPixelCount": 9,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 3,
-        "maximumMismatchX": 10,
-        "maximumMismatchY": 11
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/union-double-strike-diag-16x16.png",
@@ -977,18 +991,25 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original work dedicated through the SPDX CC0-1.0 declaration in the asset.",
       "sourceSha256": "5581e7d73d7fed9f2cacb2a561252e329628b5478c9cf3aed9aaa338fc2f1b43",
-      "featureTags": ["geometry", "path", "diagonal-edge", "coincident-overlap", "adjacent-union", "coverage"],
+      "featureTags": [
+        "geometry",
+        "path",
+        "diagonal-edge",
+        "coincident-overlap",
+        "adjacent-union",
+        "coverage"
+      ],
       "width": 16,
       "height": 16,
       "admittedRendering": {
-        "changedPixelCount": 16,
-        "maximumChannelError": 1,
-        "maximumAlphaError": 1,
-        "alphaChangedPixelCount": 16,
-        "minimumMismatchX": 0,
-        "minimumMismatchY": 0,
-        "maximumMismatchX": 15,
-        "maximumMismatchY": 15
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/union-opposite-adjacent-16x16.png",

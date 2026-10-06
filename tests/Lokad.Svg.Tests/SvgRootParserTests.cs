@@ -2426,18 +2426,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Lowers_gradient_filled_paths_into_gradient_bands()
+    public void Retains_gradient_path_contours_and_the_original_paint_box()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        foreach (SvgGeometry geometry in root.Geometries)
-        {
-            Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-            Assert.Equal(new SvgRectangle(1, 1, 6, 6, default, true, null), geometry.Gradient.Box);
-        }
-        Assert.Equal(new SvgRectangle(1, 1, 6, 2, default, true, null), root.Geometries[0].Gradient.Fill);
-        Assert.Equal(new SvgRectangle(1, 3, 2, 4, default, true, null), root.Geometries[1].Gradient.Fill);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
+        Assert.Equal(new SvgRectangle(1, 1, 6, 6, default, true, null), geometry.GradientPolygon.Box);
+        Assert.Equal(6, geometry.GradientPolygon.Points.Length);
+        Assert.NotNull(geometry.AuthoredPath);
     }
 
     [Fact]
@@ -2538,16 +2535,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Renders_single_stop_gradient_paths_as_solid_bands()
+    public void Retains_single_stop_gradient_paths_as_solid_contours()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' spreadMethod='repeat'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        foreach (SvgGeometry geometry in root.Geometries)
-        {
-            Assert.Equal(SvgGeometryKind.OrthogonalBand, geometry.Kind);
-            Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Rectangle.Color);
-        }
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
+        Assert.NotNull(geometry.AuthoredPath);
     }
 
     [Fact]
@@ -2734,18 +2729,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Lowers_pattern_filled_paths_into_pattern_bands()
+    public void Retains_pattern_path_contours()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        foreach (SvgGeometry geometry in root.Geometries)
-        {
-            Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
-            Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), geometry.Pattern.Content);
-        }
-        Assert.Equal(new SvgRectangle(1, 1, 6, 2, default, true, null), root.Geometries[0].Pattern.Fill);
-        Assert.Equal(new SvgRectangle(1, 3, 2, 4, default, true, null), root.Geometries[1].Pattern.Fill);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, geometry.Kind);
+        Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), geometry.PatternPolygon.Content);
+        Assert.Equal(6, geometry.PatternPolygon.Points.Length);
+        Assert.NotNull(geometry.AuthoredPath);
     }
 
     [Fact]
@@ -2775,12 +2767,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Routes_gradient_and_pattern_paints_to_their_own_band_lowerers()
+    public void Routes_gradient_and_pattern_paths_to_retained_contours()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs><path d='M0,0 H4 V4 H0 Z' fill='url(#g)'/><path d='M4,4 H8 V8 H4 Z' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
-        Assert.Equal(SvgGeometryKind.PatternFill, root.Geometries[1].Kind);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[0].Kind);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[1].Kind);
     }
 
     [Theory]
@@ -2942,13 +2934,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Clips_gradient_bands_to_their_clip_path_box()
+    public void Retains_gradient_path_bounds_and_the_separate_clip_box()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><clipPath id='c'><rect x='2' y='0' width='4' height='8'/></clipPath></defs><path d='M0,0 H8 V8 H0 Z' fill='url(#g)' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null) { Clip = new(2, 0, 4, 8) }, geometry.Gradient.Fill);
+        Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.GradientPolygon.Box);
+        Assert.Equal(new SvgClipBox(2, 0, 4, 8), geometry.GradientPolygon.Clip);
     }
 
     [Fact]
@@ -3427,13 +3420,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Relative_touch_union_keeps_positive_roles()
+    public void Relative_touch_union_retains_directed_contours()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='m0,0 l2,0 l0,2 l-2,0 z m2,1 l2,-1 l0,2 z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.NotNull(geometry.Polygon.Signs);
-        Assert.Equal([1, 1], geometry.Polygon.Signs);
+        Assert.Null(geometry.Polygon.Signs);
+        Assert.Equal(2, geometry.Polygon.ContourEnds.Length);
+        Assert.NotNull(geometry.AuthoredPath);
     }
 
     [Fact]

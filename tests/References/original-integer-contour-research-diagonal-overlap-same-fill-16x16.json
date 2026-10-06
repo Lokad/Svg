@@ -1,0 +1,36 @@
+{
+  "fixtureId": "original-integer-contour-research-diagonal-overlap-same-fill-16x16",
+  "referencePng": "original-integer-contour-research-diagonal-overlap-same-fill-16x16.png",
+  "referenceSha256": "c531e8cde9cd4dc6132267df532064c1d3e0761bd1759ad0bc70ffb21f60dfb1",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "41a8a0bc733c1e2483a25513cecdd29f25dcc99bede4e436dee433853f26b03d",
+  "candidateSha256": "aff94d48dd7247fbeefe8fc53c1d83afe8cb31975e7059f6328971cf0e384d25",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "graduatedFrom": "tests/Research/manifest.json#research-diagonal-overlap-same-fill-16x16"
+}

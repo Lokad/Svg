@@ -1665,7 +1665,9 @@ internal ref partial struct SvgAnalyticCoverage
                 }
             }
             preparation.Convex = convexRing;
-            preparation.DesnapBox = box;
+            // Small authored boxes retain the mask rectangle's truncated
+            // boundary bytes; larger fills use the additive run route.
+            preparation.DesnapBox = box && (mapping != SvgPolygonMapping.NativeFillEdges || !preparation.UsesRunBlitter);
             preparation.UseCurveSpans = retained;
         }
         bool convex = preparation.Convex.Value;

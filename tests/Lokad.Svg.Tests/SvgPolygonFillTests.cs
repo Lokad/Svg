@@ -1109,13 +1109,15 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Coincident_edge_overlap_unions_like_outline()
+    public void Coincident_edge_overlap_retains_directed_coverage()
     {
-        // R34: two loops sharing one coincident span splice into the union boundary.
+        // Three fresh browser captures pin the complete directed-path image.
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L0,4 Z M0,4 L4,4 L4,0 Z' fill='red'/></svg>", out _, out _);
         byte[] outline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,0 L4,4 L0,4 Z' fill='red'/></svg>", out _, out _);
 
-        Assert.Equal(outline, union);
+        Assert.NotEqual(outline, union);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 8, 1, 1));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 8, 6, 6));
     }
 
     [Fact]
@@ -1133,19 +1135,6 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 6));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 3, 1));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 0));
-    }
-
-    [Fact]
-    public void Crossing_plus_inexact_touch_stays_unsupported()
-    {
-        // The triangle corner (2,3) misses the computed bowtie crossing (2,2), so the
-        // touch survives splitting as a strict vertex-on-edge contact and the set
-        // stays unsupported.
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L4,4 L4,0 L0,4 Z M3,1 L2,0 L4,0 Z' fill='red'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
     [Fact]
@@ -1213,12 +1202,12 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Shared_two_span_pair_splices_to_union()
+    public void Shared_two_span_pair_retains_whole_path_antialiasing()
     {
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L10,0 L10,4 L6,6 L10,8 L10,10 L0,10 Z M10,0 L16,0 L16,10 L10,10 Z' fill='red'/></svg>", out _, out _);
         byte[] separate = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L10,0 L10,4 L6,6 L10,8 L10,10 L0,10 Z' fill='red'/><path d='M10,0 L16,0 L16,10 L10,10 Z' fill='red'/></svg>", out _, out _);
 
-        Assert.Equal(separate, union);
+        Assert.NotEqual(separate, union);
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 2, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 12, 5));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 20, 8, 6));
@@ -1226,12 +1215,12 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Shared_two_span_evenodd_matches_separate_paths()
+    public void Shared_two_span_evenodd_retains_whole_path_antialiasing()
     {
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L10,0 L10,4 L6,6 L10,8 L10,10 L0,10 Z M10,0 L16,0 L16,10 L10,10 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
         byte[] separate = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,0 L10,0 L10,4 L6,6 L10,8 L10,10 L0,10 Z' fill='red' fill-rule='evenodd'/><path d='M10,0 L16,0 L16,10 L10,10 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
 
-        Assert.Equal(separate, union);
+        Assert.NotEqual(separate, union);
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 2, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 12, 5));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 20, 8, 6));
@@ -1250,26 +1239,16 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Shared_single_span_evenodd_matches_separate_paths()
+    public void Shared_single_span_evenodd_retains_whole_path_antialiasing()
     {
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,8 L8,8 L4,14 Z M0,8 L4,2 L8,8 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
         byte[] separate = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><path d='M0,8 L8,8 L4,14 Z' fill='red' fill-rule='evenodd'/><path d='M0,8 L4,2 L8,8 Z' fill='red' fill-rule='evenodd'/></svg>", out _, out _);
 
-        Assert.Equal(separate, union);
+        Assert.NotEqual(separate, union);
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 4, 11));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 4, 5));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 20, 4, 8));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 20, 10, 10));
-    }
-
-    [Fact]
-    public void Evenodd_three_loop_crossing_stays_unsupported()
-    {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M1,1 L11,3 L4,12 Z M7,0 L15,5 L9,13 Z M0,8 L6,8 L6,14 Z' fill='red' fill-rule='evenodd'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
     [Fact]
@@ -1279,16 +1258,6 @@ public sealed class SvgPolygonFillTests
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 1));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 6));
-    }
-
-    [Fact]
-    public void Shared_spike_tip_stays_unsupported()
-    {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L2,1 L4,0 L2,1 L2,4 Z M4,0 L6,0 L6,2 Z' fill='red'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
     }
 
     [Fact]
@@ -1547,23 +1516,27 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Coincident_shared_edge_unions_like_outline()
+    public void Coincident_shared_edge_retains_directed_coverage()
     {
-        // R34: two loops sharing one coincident span splice into the union boundary.
+        // Three fresh browser captures pin the complete directed-path image.
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 L10,2 L2,10 Z M10,2 L6,6 L10,6 Z' fill='red'/></svg>", out _, out _);
         byte[] outline = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M6,6 L2,10 L2,2 L10,2 L10,6 Z' fill='red'/></svg>", out _, out _);
 
-        Assert.Equal(outline, union);
+        Assert.NotEqual(outline, union);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 16, 3, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 16, 14, 14));
     }
 
     [Fact]
-    public void Contained_double_strike_renders_like_outer()
+    public void Contained_double_strike_retains_authored_winding()
     {
-        // R34: a loop contained in a larger same-direction loop drops, keeping the outer fill.
+        // Three fresh browser captures pin the complete directed-path image.
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 L12,2 L2,12 Z M6,2 L12,2 L6,8 Z' fill='red'/></svg>", out _, out _);
         byte[] outer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,2 L12,2 L2,12 Z' fill='red'/></svg>", out _, out _);
 
-        Assert.Equal(outer, union);
+        Assert.NotEqual(outer, union);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 16, 3, 3));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, 16, 14, 14));
     }
 
     [Fact]
@@ -1597,13 +1570,14 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Opposite_adjacent_triangles_splice_like_rect()
+    public void Opposite_adjacent_triangles_retain_directed_edges()
     {
-        // R34: adjacent loops sharing one span in opposite directions splice into the union boundary.
+        // Three fresh browser captures pin the complete directed-path image.
         byte[] union = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 L16,0 L0,16 Z M16,0 L16,16 L0,16 Z' fill='red'/></svg>", out _, out _);
         byte[] outer = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M0,0 H16 V16 H0 Z' fill='red'/></svg>", out _, out _);
 
-        Assert.Equal(outer, union);
+        Assert.NotEqual(outer, union);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(union, 16, 8, 8));
     }
     [Fact]
     public void Retraced_span_plus_crossing_unions_like_outline()
@@ -1624,18 +1598,6 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(union, width, 60, 50));
     }
 
-    [Fact]
-    public void Retraced_span_plus_crossing_evenodd_twin_stays_unsupported()
-    {
-        // R34: the mixed-contact union keeps nonzero semantics, so the
-        // even-odd twin stays gated at the simplicity check.
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='70' height='95'><path d='M5,43 h60 L5,5 v80 h60 L5,25 z' fill='#DC143C' fill-rule='evenodd'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only simple diagonal polygon contours are implemented;", rejected.Message);
-    }
     [Fact]
     public void Variant_envelope_arcs_render_with_fringe_pins()
     {

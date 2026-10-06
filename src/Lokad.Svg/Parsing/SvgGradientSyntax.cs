@@ -398,32 +398,29 @@ internal static class SvgGradientSyntax
         if (isPath && painted && !gradient.IsEmpty)
         {
             string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            (int commandCount, bool hasCurve, bool hasArc, bool hasFractional) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
-            if (hasCurve || hasFractional)
+            (int commandCount, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            // Retain authored path contours and repaint their shared fill with the radial circle.
+            SvgComputedStyle solidFill = style with { Fill = "black" };
+            SvgResolvedPaintableElement curveShape = context.ResolveShape(solidFill, reader, true);
+            using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
+            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, budget);
+            using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            try
             {
-                // Curved and fractional fills flatten through shared device outlines, repainted with the radial circle like gradient outlines.
-                SvgComputedStyle solidFill = style with { Fill = "black" };
-                SvgResolvedPaintableElement curveShape = context.ResolveShape(solidFill, reader, true);
-                using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
-                SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, budget);
-                using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                try
+                SvgRectangle paintBox = gradient.IsUserSpace ? default : SvgOrthogonalShapeParser.BoxFromFilledGeometryBounds(filled, context.CancellationToken);
+                foreach (SvgGeometry existing in filled.Geometries)
                 {
-                    SvgRectangle paintBox = gradient.IsUserSpace ? default : SvgOrthogonalShapeParser.BoxFromFilledGeometryBounds(filled, context.CancellationToken);
-                    foreach (SvgGeometry existing in filled.Geometries)
-                    {
-                        SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity, budget));
-                        try { repainted.Add(repaint); }
-                        catch { repaint.Dispose(); throw; }
-                    }
-                    filled.Dispose();
-                    return AppendPaintFillStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
+                    SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity, budget));
+                    try { repainted.Add(repaint); }
+                    catch { repaint.Dispose(); throw; }
                 }
-                catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); filled.Discard(); throw; }
+                filled.Dispose();
+                return AppendPaintFillStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
             }
+            catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); filled.Discard(); throw; }
         }
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalShapeParser.TokenizeBands(reader, elementName, isPath, true, maximumGeometryElements, budget, context, contourEnds);
@@ -503,38 +500,35 @@ internal static class SvgGradientSyntax
         if (isPath && painted && !gradient.IsEmpty)
         {
             string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            (int commandCount, bool hasCurve, bool hasArc, bool hasFractional) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            (int commandCount, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
 
-            if (hasCurve || hasFractional)
+            // Retain authored path contours and repaint their shared fill with the gradient.
+            // The gradient url is not a parseable color; resolve a solid placeholder (discarded by the repaint below) for transform and fill state.
+            SvgComputedStyle solidFill = strokeStyle with { Fill = "black" };
+            SvgResolvedPaintableElement curveShape = context.ResolveShape(solidFill, reader, true);
+            using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
+            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, budget);
+            using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            try
             {
-                // Curved and fractional fills flatten through shared device outlines, repainted with the gradient like stroke outlines.
-                // The gradient url is not a parseable color; resolve a solid placeholder (discarded by the repaint below) for transform and fill state.
-                SvgComputedStyle solidFill = strokeStyle with { Fill = "black" };
-                SvgResolvedPaintableElement curveShape = context.ResolveShape(solidFill, reader, true);
-                using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
-                SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, budget);
-                using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                try
+                if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
+                SvgRectangle paintBox = gradient.IsUserSpace ? default : SvgOrthogonalShapeParser.BoxFromFilledGeometryBounds(filled, context.CancellationToken);
+                foreach (SvgGeometry existing in filled.Geometries)
                 {
-                    if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
-                    SvgRectangle paintBox = gradient.IsUserSpace ? default : SvgOrthogonalShapeParser.BoxFromFilledGeometryBounds(filled, context.CancellationToken);
-                    foreach (SvgGeometry existing in filled.Geometries)
-                    {
-                        SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity, budget));
-                        try { repainted.Add(repaint); }
-                        catch { repaint.Dispose(); throw; }
-                    }
-                    filled.Dispose();
-                    if (!paintStroke && !paintRadialStroke && !paintPatternStroke) return AppendPaintFillStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
-                    if (paintPatternStroke) return AppendPaintOutlineStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineTile);
-                    if (paintRadialStroke) return AppendPaintOutlineStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineCircle, paintBox);
-                    return AppendPaintOutlineStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineGradient, paintBox);
+                    SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity, budget));
+                    try { repainted.Add(repaint); }
+                    catch { repaint.Dispose(); throw; }
                 }
-                catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); filled.Discard(); throw; }
+                filled.Dispose();
+                if (!paintStroke && !paintRadialStroke && !paintPatternStroke) return AppendPaintFillStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
+                if (paintPatternStroke) return AppendPaintOutlineStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineTile);
+                if (paintRadialStroke) return AppendPaintOutlineStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineCircle, paintBox);
+                return AppendPaintOutlineStrokePath(new SvgParsedGeometry(repainted.Detach(), filled.ElementCount), d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineGradient, paintBox);
             }
+            catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); filled.Discard(); throw; }
         }
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalShapeParser.TokenizeBands(reader, elementName, isPath, true, maximumGeometryElements, budget, context, contourEnds);

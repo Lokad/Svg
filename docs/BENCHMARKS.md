@@ -1980,3 +1980,20 @@ All 3,817 tests, 25 memory scenarios and installed consumers pass. Windows artif
 validation reuses existing pinned-browser smoke. Full reports/ledgers stay under
 ignored `artifacts/inert-presentation-20261006/`; Git identifies implementation.
 General fidelity, representative performance, Linux and S17 remain open.
+
+## Directed integer-fill resource observations (2026-10-06)
+
+The frozen `d146a6a8` renderer and directed integer-fill change reuse 39 resource
+recipes on Windows X64 / .NET 10.0.12. Inputs and geometry/paint layouts are
+identical. Only Eisenbahn's PNG changes, improving its one-pixel residual to exact.
+Its parser work falls 518 → 364 and work through raster falls 16,432 → 6,662.
+Rede Manchete parser/raster work adds 13/28 units and 716 accounted peak bytes in
+each of two recipes. Other work records are unchanged.
+
+Command-bounded replay cuts accounted peaks in fourteen recipes. Examples:
+Zeppelin small 1,324,000 → 832,480 bytes; IKEA 2,191,988 → 1,572,884;
+Toyota 3,770,248 → 3,311,496; Pepsi 2,802,800 → 1,526,992. Twenty-three peaks are
+unchanged. These are accounted storage observations, not resident memory or timing
+claims. The 25 fresh-process memory scenarios and installed package consumers pass;
+representative performance and Linux remain open. Detailed ledgers stay under
+ignored `artifacts/bitmap-corner-fill-20261006/`; Git identifies implementation.

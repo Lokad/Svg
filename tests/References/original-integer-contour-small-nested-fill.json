@@ -1,0 +1,40 @@
+{
+  "fixtureId": "original-integer-contour-small-nested-fill",
+  "referencePng": "original-integer-contour-small-nested-fill.png",
+  "referenceSha256": "68d092c19fc7d8aecda07ec8ec058e0370f08a68851ded762394f59507296d2e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 32,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "0c0cc78a6f5b29ff8d9aa56fe64d82ccdae4ac9fadc0034bfbbcd9b310d268f1",
+  "candidateSha256": "d3c45efa6fbcc3d522ee422d126a4286823ab41d75da528e9af14c1a26a6774e",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 32,
+    "minimumMismatchY": 32,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "declaredBeforeProductionEdit": true,
+  "declaredBeforeCaptures": true,
+  "oracleInputSha256": "dffb51dfea316b8e7989ad5a6f5c496a5d902ae3eafe4acab369cc6819c984f7",
+  "inputMaterialization": "UTF-8 LF normalization; original captured CRLF input and graphical content preserved."
+}

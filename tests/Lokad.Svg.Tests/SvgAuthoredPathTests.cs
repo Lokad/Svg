@@ -11,6 +11,30 @@ public sealed class SvgAuthoredPathTests
     private const string Retraced = "M4 4 C4 1 20 1 20 4 L20 20 L4 20 L4 4 C4 1 20 1 20 4 L4 20 Z";
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Integer_contact_replay_preserves_contours_with_a_small_scratch_budget(bool isEvenOdd)
+    {
+        RenderBudget sceneBudget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        using (SvgRoot root = Parse("<path fill-rule='" + (isEvenOdd ? "evenodd" : "nonzero") + "' d='M1 1H29V29H1Z M12 1V8H6 M18 22H26V29'/>", sceneBudget))
+        {
+            SvgAuthoredPath path = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
+            SvgAuthoredPathCommand[] commands = path.Commands.ToArray();
+            RenderBudget replayBudget = new(16 * 1024);
+            using (SvgMappedAuthoredPath mapped = path.Prepare(SvgAffineTransform.Identity, isEvenOdd, replayBudget, new ParserWorkCounter(100_000), CancellationToken.None))
+            {
+                Assert.Equal(3, mapped.ContourEnds.Length);
+                Assert.Equal(isEvenOdd ? new[] { 1, 1, 1 } : null, mapped.Signs);
+                Assert.Empty(mapped.QuadSpans);
+                Assert.Empty(mapped.CubicSpans);
+            }
+            Assert.Equal(commands, path.Commands.ToArray());
+            Assert.Equal(0, replayBudget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("<rect id='p' width='16' height='16'/>")]
     [InlineData("<path id='p' stroke='blue' d='" + Retraced + "'/>")]
     public void Round_joined_instance_strokes_reject_definitions_without_an_admitted_centerline(string definition)
@@ -75,6 +99,15 @@ public sealed class SvgAuthoredPathTests
     [InlineData("<defs><pattern id='g' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='blue'/></pattern></defs><path fill='url(#g)' d='" + Contact + "'/>")]
     [InlineData("<defs><clipPath id='c'><rect x='7.25' y='6.75' width='17.5' height='17.5'/></clipPath><path id='p' d='" + Contact + "'/></defs><use href='#p' x='1.25' y='.75' clip-path='url(#c)' fill='red'/>")]
     [InlineData("<defs><path id='p' d='" + Retraced + "'/></defs><use href='#p' fill='none' stroke='red' stroke-width='4'/>")]
+    [InlineData("<path fill='red' d='M1 1H29V29H1Z M12 1V8H6 M18 22H26V29'/>")]
+    [InlineData("<path fill='red' fill-rule='evenodd' d='M1 1H29V29H1Z M12 1V8H6 M18 22H26V29'/>")]
+    [InlineData("<defs><linearGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><path fill='url(#g)' d='M1 1H29V12H12V29H1Z'/>")]
+    [InlineData("<defs><radialGradient id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient></defs><path fill='url(#g)' d='M1 1H29V12H12V29H1Z'/>")]
+    [InlineData("<defs><pattern id='g' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='blue'/></pattern></defs><path fill='url(#g)' d='M1 1H29V12H12V29H1Z'/>")]
+    [InlineData("<path fill='red' d='M0 0L4 4L4 0L0 4Z M3 1L2 0L4 0Z'/>")]
+    [InlineData("<path fill='red' fill-rule='evenodd' d='M1 1L11 3L4 12Z M7 0L15 5L9 13Z M0 8L6 8L6 14Z'/>")]
+    [InlineData("<path fill='red' d='M0 0L2 1L4 0L2 1L2 4Z M4 0L6 0L6 2Z'/>")]
+    [InlineData("<path fill='#DC143C' fill-rule='evenodd' d='M5 43h60L5 5v80h60L5 25z'/>")]
     public async Task Directed_contacts_render_through_six_public_outputs(string body)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + body + "</svg>");

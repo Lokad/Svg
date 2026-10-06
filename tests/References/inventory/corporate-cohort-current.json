@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after shared inactive marker/background admission and non-viewport visible overflow; original references and cohort options retained.",
+  "scope": "Frozen 27-document/258-variant measurement after directed integer polygon and shader-path retention with additive-run rectangle coverage; original references and cohort options retained.",
   "rendererCounts": {
     "renders": 258,
     "MalformedInput": 0,
@@ -24,8 +24,8 @@
     "transport-limit-gap": 0
   },
   "fidelityCounts": {
-    "exact": 143,
-    "known-difference": 115,
+    "exact": 145,
+    "known-difference": 113,
     "withoutReference": 0,
     "measuredRendererRejections": 0
   },
@@ -143,6 +143,7 @@
     "inv-002",
     "inv-005",
     "inv-006",
+    "inv-008",
     "inv-010",
     "inv-020",
     "inv-027",
@@ -292,7 +293,7 @@
         "inv-008-large-white",
         "inv-008-large-black"
       ],
-      "verifiedExact": false
+      "verifiedExact": true
     },
     {
       "id": "inv-009",
@@ -4538,28 +4539,28 @@
       "id": "inv-008-small-transparent",
       "renderOutcome": "renders",
       "inputSha256": "4c9ce2ca7cdeeab18c127ac2c0c913573b19b17d1e4e50168cb942bff0e1d1d9",
-      "candidateSha256": "8d65e5b121a265c4789a2d0044a80296c8f993dbeba05d35902d1b13df98ee87",
+      "candidateSha256": "68bc8ecdaadcb9f355448bbead043259dd2647a0ef45296c0298abd617594f43",
       "width": 36,
       "height": 36,
       "referenceSha256": "25b1c0ceff6245bdd9337641009258293cc63aeea785b12072d971e8b8708c17",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.0007716049382716049,
-          "RootMeanSquareError": 0.027777777777777776,
-          "MaximumAlphaError": 1,
-          "AlphaChangedPixelCount": 1,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
-          "MaximumMismatchX": 0,
-          "MaximumMismatchY": 0,
-          "IsExact": false
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 36,
+          "MinimumMismatchY": 36,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
-        "alphaMass": 1,
+        "alphaMass": 0,
         "overCoveredPixels": 0,
-        "underCoveredPixels": 1,
+        "underCoveredPixels": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0
       },
@@ -4652,24 +4653,24 @@
       "id": "inv-008-small-black",
       "renderOutcome": "renders",
       "inputSha256": "4c9ce2ca7cdeeab18c127ac2c0c913573b19b17d1e4e50168cb942bff0e1d1d9",
-      "candidateSha256": "6cd5924c23df248701c1d8f46bc7671f28278e9c13274f03f40a73f5333a1aec",
+      "candidateSha256": "2d321565ca1725dab35bc1071281395054e55bbbaf9cf3300dd5e017128fca44",
       "width": 36,
       "height": 36,
       "referenceSha256": "bead551897f0c604676cf845ba8858e87a4e91cd62733b93f5ad80b52b13feac",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 0.00038580246913580245,
-          "RootMeanSquareError": 0.019641855032959652,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 0,
-          "MinimumMismatchY": 0,
-          "MaximumMismatchX": 0,
-          "MaximumMismatchY": 0,
-          "IsExact": false
+          "MinimumMismatchX": 36,
+          "MinimumMismatchY": 36,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -15287,8 +15288,8 @@
       "height": 386
     }
   ],
-  "rendererSourceBaselineCommit": "d112fc98",
-  "rendererSourceState": "Inactive marker/background values are validated and discarded; visible overflow is admitted only on targets that do not establish viewports.",
-  "measurementCheckpoint": "inert-presentation-admission-2026-10-06",
+  "rendererSourceBaselineCommit": "d146a6a8",
+  "rendererSourceState": "Directed integer polygon and shader fills preserve authored contours; solid orthogonal paths keep checked integer bands. Straight replay reserves command-bounded storage.",
+  "measurementCheckpoint": "integer-directed-fill-2026-10-06",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

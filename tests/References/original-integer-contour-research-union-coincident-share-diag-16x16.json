@@ -1,0 +1,36 @@
+{
+  "fixtureId": "original-integer-contour-research-union-coincident-share-diag-16x16",
+  "referencePng": "original-integer-contour-research-union-coincident-share-diag-16x16.png",
+  "referenceSha256": "8e4aeb1a7abc628d7cd299e65770bcbcdda804dd0de1f6c707c652688663f644",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "2114fcb817e44ca7ad8249604e953d3e4bad90900e95118e3ab74a052f8712ce",
+  "candidateSha256": "f1ff7177801cb71a7448d4f1c8b8d82f01efcaa84909b6cb2a6fedc4806591c4",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "graduatedFrom": "tests/Research/manifest.json#research-union-coincident-share-diag-16x16"
+}

@@ -64,7 +64,11 @@ internal static class SvgOrthogonalShapeParser
             {
                 bool diagonalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
                 using SvgOrthogonalGeometryLowering diagonalLowering = new(points, contourEnds, "path", true, diagonalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                filled = diagonalLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
+                // Retain directed finite contours before contact normalization.
+                // Solid orthogonal paths keep their checked integer-band fast path.
+                filled = shape.Presentation.HasFill
+                    ? diagonalLowering.LowerDeviceFill(d, commandCount, false, false, SvgPolygonMapping.FiniteEdges, shape, frame, budget) with { ElementCount = commandCount + 1 }
+                    : diagonalLowering.LowerPolygonFill(shape.Presentation.Color, false, shape.Transform, frame, budget);
             }
             else
             {

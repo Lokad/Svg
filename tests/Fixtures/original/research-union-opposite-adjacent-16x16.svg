@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+  <path d="M0,0 L16,0 L0,16 Z M16,0 L16,16 L0,16 Z" fill="red"/>
+</svg>

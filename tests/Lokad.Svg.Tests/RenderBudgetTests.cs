@@ -557,7 +557,7 @@ public sealed class RenderBudgetTests
     [Fact]
     public void Polygon_rasterization_denies_mapping_work_before_mapped_reservation()
     {
-        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L8,0 L0,8 Z' fill='red'/></svg>");
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
         RenderBudget parseBudget = new(limits.MaximumAccountedBytes);
         using SvgRoot root = SvgRootParser.Parse(svg, limits, parseBudget, CancellationToken.None);

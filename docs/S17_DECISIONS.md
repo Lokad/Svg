@@ -1,36 +1,35 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-06. Shared inactive presentation admission makes Target exact
-in all nine original variants. [PLAN.md](../PLAN.md) owns the queue; rows 3–7
-and S17 remain open. Exact documents are Ford, SimpleX, Omega, ROC HCVS, Artsy,
-YouTube, NASA, Target, IKEA and Google: **10/27**, marks **4/13**, wordmarks
-**6/14**. S17 still requires **23/27**, including 11/13 marks and 12/14 wordmarks.
-Membership, holdouts, options, original inputs and browser references remain frozen.
+Updated 2026-10-06. Directed integer polygon and shader-path retention makes
+Eisenbahn exact in every frozen variant. [PLAN.md](../PLAN.md) owns the queue;
+rows 3–7 and S17 remain open. Exact documents are Ford, SimpleX, Omega,
+Eisenbahn, ROC HCVS, Artsy, YouTube, NASA, Target, IKEA and Google: **11/27**,
+marks **5/13**, wordmarks **6/14**. S17 requires **23/27**, including 11/13 marks
+and 12/14 wordmarks. Membership, holdouts, options, inputs and references stay frozen.
 
-Current evidence: **1,168 fixtures = 961 exact + 183 known + 24 rejected**,
-672 base documents / 496 variants; **36 research probes = twelve exact +
-23 known + one rejected**; and 92 legacy Default renders: **1,296 cases**.
-Six independent controls are exact. Every prior render/disposition and all
-955 prior exact fixture/twelve exact research PNGs are preserved. One active
-marker rejection now reports the shared value-validation diagnostic.
+Current evidence: **1,195 fixtures = 994 exact + 177 known + 24 rejected**,
+699 base documents / 496 variants; **36 research probes = sixteen exact +
+nineteen known + one rejected**; and 92 legacy Default renders: **1,323 cases**.
+Twenty-three independent controls and four original research graduates add exact
+fixtures. Six earlier shader variants and four research witnesses become exact.
+All 973 prior exact fixture/research PNGs, rejections and Default PNGs are preserved.
 
-All **258 corporate variants render: 143 exact and 115 known differences**.
-Only Target's nine records change; all other 249 records and 134 prior exact
-PNGs remain. Required known-difference documents retain their failing denominators.
+All **258 corporate variants render: 145 exact and 113 known differences**.
+Only Eisenbahn small transparent/black changes; all other 256 records and 143
+prior exact PNGs remain. Known-difference documents retain their denominators.
 
-Windows locked restore, nine-project Release build and **3,817 tests**
-(3,651 core + 160 visual + six FontProbe) pass. Eighteen fresh captures for
-six configurations are stable, healthy and cleaned. Four controls were declared
-before edits; two supplementary overflow controls followed edits, before capture.
-All 25 memory scenarios, package/installed-consumer and artifact checks pass.
-The Windows validator reuses the earlier pinned-browser smoke.
+Windows locked restore, nine-project Release build and **3,824 tests**
+(3,658 core + 160 visual + six FontProbe), 25 memory scenarios and installed
+package consumers pass. Sixty-nine fresh captures are stable, healthy and cleaned.
+Twelve controls preceded production edits; eleven existing-test witnesses were
+captured after the prototype, before test contract changes. Cropped exploratory
+captures are excluded. Windows validation reuses earlier pinned-browser smoke;
+Linux/remote delivery remains unproved.
 
-Thirty-nine matched recipes preserve complete input/PNG/work/peak records and
-geometry/paint layouts. These checks do not establish representative performance.
-Remaining corporate curve/clip events, shape/paint hairlines and bitmap contexts,
-sampled shape routes, transformed/pathLength dash coverage, conical/multistop
-coordinates, cache history, representative performance and Linux remain open.
-Detailed studies stay ignored; Git identifies code without source/build hashes.
+Thirty-nine matching resource recipes preserve geometry/paint layouts. Fourteen
+peaks fall and two add 716 bytes; Eisenbahn raster work falls 16,432 → 6,662.
+No new timing or representative performance result is claimed. Detailed reports
+stay under ignored `artifacts/bitmap-corner-fill-20261006/`; Git identifies code.
 
 ## Q1 - numeric exact-document target: selected
 

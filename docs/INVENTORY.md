@@ -5,6 +5,23 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Directed integer-fill checkpoint (2026-10-06)
+
+Eisenbahn (`inv-008`) now matches all nine original frozen variants. Retaining its
+integer polygon contours closes the one-pixel small transparent/black differences;
+all other 256 corporate results and 143 prior exact PNGs are preserved. The cohort
+is 145 exact / 113 known / zero rejected, 11/27 exact documents, marks 5/13 and
+wordmarks 6/14. No member, holdout, source, root materialization, option or browser
+reference changes. All 92 legacy Default records and PNGs are unchanged.
+
+Twenty-three independent controls and four original research graduates add exact
+fixtures. Six existing shader variants also become exact. The bank is 1,323 cases:
+1,195 fixtures (994 exact, 177 known, 24 rejected), 36 research records (sixteen
+exact, nineteen known, one rejected) and 92 Default renders. All 973 earlier exact
+fixture/research PNGs remain unchanged. Detailed records stay under ignored
+`artifacts/bitmap-corner-fill-20261006/`. S17 requires 23/27 with both stratum
+minima and remains open; [PLAN](../PLAN.md) owns the next work.
+
 ## Status
 
 Current assessment (2026-10-06): all 258 frozen corporate variants render,

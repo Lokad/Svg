@@ -55,16 +55,19 @@ internal sealed class SvgAuthoredPath : IDisposable
         SvgAffineTransform map = outputMap.ComposeChecked(SceneMap);
         double magnification = Math.Max(Math.Sqrt(map.A * map.A + map.B * map.B), Math.Sqrt(map.C * map.C + map.D * map.D));
         SvgFlattenPolicy policy = new(SvgOrthogonalGeometryLowering.ScaledFlatness(magnification), SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand);
-        int pointCapacity = (int)Math.Min(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints, (long)Commands.Length * (SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand + 1));
-        int contourCapacity = Math.Min(pointCapacity, Commands.Length);
         // Growing arrays temporarily retain old and new buffers. Span columns
         // round up from four slots; Get*Spans also materializes record arrays.
         int maximumSpans = Commands.Length;
+        long maximumPoints = Commands.Length;
         foreach (SvgAuthoredPathCommand command in Commands)
         {
             workCounter.Consume(cancellationToken);
             if (command.Verb == SvgAuthoredPathVerb.Arc) maximumSpans = checked(maximumSpans + 2);
+            if (command.Verb is SvgAuthoredPathVerb.Quadratic or SvgAuthoredPathVerb.Cubic or SvgAuthoredPathVerb.Conic or SvgAuthoredPathVerb.Arc)
+                maximumPoints += SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand;
         }
+        int pointCapacity = (int)Math.Min(SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints, maximumPoints);
+        int contourCapacity = Math.Min(pointCapacity, Commands.Length);
         int spanCapacity = Math.Max(4, Math.Min(pointCapacity, checked(2 * maximumSpans)));
         long scratchBytes = checked(512 + 2 * ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity)
             + 4 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)
