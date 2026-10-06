@@ -93,13 +93,13 @@ below retain historical implementation and measurement details.
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows locked restore / Release solution build | Nine projects, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,637 passed**: 3,471 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **3,654 passed**: 3,488 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | All 25 memory scenarios, runtime/symbol package inspection, isolated installed-consumer, Chrome smoke and artifact validation pass. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **1,042 entries = 847 exact + 165 known-difference renders + 30 rejections**; 546 base documents / 496 variants. All 1,033 prior fixture outputs and 844 exact PNGs are unchanged. Synthetic coverage is separate from corporate coverage. |
+| Executed fixture manifest | **1,042 entries = 847 exact + 165 known-difference renders + 30 rejections**; 546 base documents / 496 variants. Every fixture output and outcome is unchanged by authored fill mapping. Synthetic coverage is separate from corporate coverage. |
 | Executed research manifest | **36 probes = 35 known-difference renders + one rejection**. Every output is unchanged; the width-one cap remains inexact. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. Nine known Default PNGs change without a matching-options fidelity claim. The candidate directory has 100 files; eight new holdouts belong to the corporate matrix. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. Six Default PNGs change without a matching-options fidelity claim. The candidate directory has 100 files; eight new holdouts belong to the corporate matrix. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks, selected before fresh comparison. Membership, original sources, root-only materializations, options and references stay unchanged. All declared variants have stable browser references. |
-| Corporate measurement | **240 rendered comparisons = 73 exact + 167 known differences**, plus eighteen UnsupportedFeature cases. All 70 prior exact PNGs are preserved. NASA adds three exact small variants; all nine are exact. Ford, ROC HCVS, Artsy, YouTube and NASA give **5/27 exact documents**, marks **3/13**, wordmarks **2/14**. Twelve known variants worsen; S17 remains open. |
+| Corporate measurement | **240 rendered comparisons = 76 exact + 164 known differences**, plus eighteen UnsupportedFeature cases. All 73 prior exact PNGs are preserved. UAAR adds three exact large variants. Ford, ROC HCVS, Artsy, YouTube and NASA give **5/27 exact documents**, marks **3/13**, wordmarks **2/14**. Eleven known variants worsen; S17 remains open. |
 | Performance and platform limits | Nine matching recipes record work/storage and local timings. Linux/remote CI, noncorporate variant regeneration, representative throughput and private-font metrics/pixels remain unproved. |
 
 ### Native float root mapping for retained curves (2026-10-06)
@@ -1245,19 +1245,14 @@ check cancellation within bounded chunks and release owners on every exit.
 
 ### Validation and evidence policy
 
-- Identify implementation with Git commits and upstream code with pinned revisions
-  and URLs. Keep detailed per-run diagnostics under ignored artifacts; commit
-  reusable regressions and concise reproduction details. Tests assert behavior
-  and protect input/reference identity. Hash test assets and pinned external binary
-  downloads where integrity is checked. Do not maintain hashes of source files,
-  extracted code snippets, scripts, local adapters, solution binaries, packages,
-  diagnostic reports or logs, including in ignored run reports. Refresh measured
-  outcomes when behavior changes; ordinary source edits and rebuilds require no
-  reference metadata refresh.
-- Keep test records focused on reusable inputs, expected behavior and necessary
-  oracle provenance. Do not embed per-pixel witness dumps, raw build/test
-  reports, resource ledgers or timing batches in test data. Keep those under ignored artifacts and summarize
-  useful findings in the existing documentation; Git retains previous records.
+- Tests check observable behavior. Git identifies our implementation; pinned
+  revisions and URLs identify upstream code. Do not hash source code, scripts,
+  local adapters, builds, packages or diagnostic reports. Asset hashes remain
+  useful for verifying fixtures, expected images, fonts and pinned tool downloads.
+  Ordinary code edits and rebuilds require no reference metadata refresh.
+- Commit reusable inputs, expected behavior and necessary oracle provenance.
+  Keep detailed run reports, pixel dumps, resource ledgers and timing batches under
+  ignored artifacts; summarize useful findings in the existing documentation.
 - Each implementation slice includes locked restore/Release build/tests,
   independent semantic/numeric/negative vectors and relevant documentation.
   Current exact references must remain exact. Changes to known mismatches require
@@ -1312,11 +1307,11 @@ records this cross-tabulation:
 | UnsupportedFeature | 18 | 0 | 0 | 18 |
 | Total | 258 | 0 | 0 | 258 |
 
-The 240 measured renders contain 70 exact variants and 170 known differences.
+The 240 measured renders contain 76 exact variants and 164 known differences.
 All nine Target and all nine Coca-Cola variants have browser references but retain
 UnsupportedFeature outcomes; reference availability and renderability are
 independent axes. The first cohort's complete reference matrix closes its S8
-measurement obligation, including browser behavior for rejected inputs. The 830
+measurement obligation, including browser behavior for rejected inputs. The 847
 exact fixture entries remain separate from corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and

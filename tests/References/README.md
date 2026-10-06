@@ -15,18 +15,17 @@ background before capture. Revision 3 also configures the blank target before
 navigating to the data-URL page. Do not mass-update a reference's recipe revision:
 baseline changes require explicit recapture and review.
 
-## Current retained-curve root-mapping checkpoint
+## Current authored fill mapping checkpoint
 
-Final curve controls and endpoints use native float multiply/add operations.
-NASA's small variants become exact and all nine frozen variants now pass. The
-bank has 1,042 fixtures (847 exact, 165 known, 30 rejected) and 36 research probes.
-All 1,033 prior fixture outputs, 36 research outcomes and 70 exact corporate PNGs
-are unchanged. Nine fresh configurations retain three exact cubic-slice, three
-known cubic-meet and three rejected anisotropic quadratic outcomes. Their 27
-fresh captures are stable and healthy; controls were declared after the edit
-and before capture/comparison. Original images stay frozen. Known large SDL,
-SG Rotation, Party of Changes and Pepsi variants worsen; the width-one cap
-regression remains unchanged. Source edits alone require no metadata refresh.
+Eligible path fills retain authored commands and compose root/group placement
+before float point/control rounding. The bank has 1,042 fixtures (847 exact,
+165 known, 30 rejected), 36 research probes and 92 legacy Default cases. Every
+fixture/research output and outcome is preserved. Six legacy Default PNGs change
+without a matching-options fidelity claim. The corporate matrix has 76 exact
+variants; UAAR adds three exact large variants, while its smaller variants remain
+inexact. Eleven known variants worsen. Original references stay frozen; detailed
+comparisons remain under ignored `artifacts/deferred-root-map-20261006/`.
+Source edits alone require no metadata refresh.
 
 ## Frozen corporate cohort
 
@@ -42,7 +41,7 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 240 rendered comparisons (73 exact, 167 known differences)
+all 258 references: 240 rendered comparisons (76 exact, 164 known differences)
 and eighteen renderer rejections. No variants lack references. All nine variants
 of YouTube, Ford, ROC HCVS, Artsy and NASA are now exact. The YouTube PNGs retain
 stable healthy capture triples. `inv-027-native-route.json`
@@ -50,8 +49,8 @@ retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
 Ford, ROC HCVS, Artsy, YouTube and NASA are exact in every variant (5/27). Known
-differences remain measured against the original images. At the earlier native open-stroke
-construction improves all nine Rede Manchete variants, with no prior mismatch
+differences remain measured against the original images. The earlier native open-stroke
+construction improved all nine Rede Manchete variants, with no prior mismatch
 count increase and all 70 exact corporate PNGs preserved. Six original research
 miter/bevel probes graduate with unchanged SVG/PNG/provenance; three existing
 viewBox configurations and nine supplemental controls become exact. Three new
