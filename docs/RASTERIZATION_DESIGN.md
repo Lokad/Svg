@@ -4505,8 +4505,8 @@ fringe witnesses and mask/browser twins. The original mask equality test remains
 unchanged. Shared cache/geometry state is not contaminated by the paint context.
 
 The [portable checkpoint](../tests/References/antialiased-paint-clip-dispatch.json)
-identifies implementation commit `86554a94` and the validated precommit DLL.
-Full gates and complete image identities remain under
+identifies implementation commit `86554a94` and retains reusable control outcomes,
+original captures and pixel witnesses. Full gate reports remain under
 ignored `artifacts/aa-clip-dispatch-20261005/`; matching six-input timings and
 resource ledgers are in [BENCHMARKS](BENCHMARKS.md#antialiased-rectangle-paint-clip-checkpoint-2026-10-05).
 Per-side clip metadata increases some unchanged-input storage; AA run dispatch
@@ -4527,9 +4527,10 @@ Zeppelin, SG Rotation Leipzig, Artsy and Target, all without internal subsets.
 Three are corporate marks, so the former reject-all-DTD policy left at most 10/13
 marks renderable against an 11/13 exact-document requirement. The change is a
 shared XML admission, with no document or geometry exception. The
-[portable checkpoint](../tests/References/declaration-only-doctype.json) retains
-its predeclared semantic cases, encodings, original identities and disposition
-comparisons. All original sources and reference PNGs remain unchanged.
+[regression inputs](../tests/References/declaration-only-doctype.json) retain
+four original fixture identities and their declaration-free pixel comparison.
+The core tests cover semantic cases, encodings and resource limits. All original
+sources and reference PNGs remain unchanged.
 
 A local .NET runtime probe showed why merely selecting `DtdProcessing.Ignore`
 was insufficient: it skips empty internal subsets and accepts successive DOCTYPE
@@ -4556,8 +4557,8 @@ The 187 new core cases include 18 independent semantic cases across nine byte
 encodings, BOM/default-encoding controls, meaningful font discovery, six-output
 PNG parity, input/node/depth/attribute limits, work/storage denial, cancellation
 inside an allocated prolog pass, and bounded guard allocations for long comments
-and system identifiers. One visual regression verifies original bytes and all
-four newly rendered legacy Default PNG identities. The positive synthetic pixel
+and system identifiers. One visual regression verifies original fixture bytes
+and pixel parity with all four declaration-free twins. The positive synthetic pixel
 controls use the independently established solid-red reference; no newly admitted
 corporate document is claimed exact.
 
@@ -4579,8 +4580,8 @@ All 3,445 tests pass (3,296 core, 143 visual and six FontProbe), as do all 25 me
 scenarios and runtime/symbol package plus isolated installed-consumer checks.
 Matching observations retain the guard's work, allocation and workspace cost in
 [the benchmark record](BENCHMARKS.md). Full raw records remain under ignored
-`artifacts/doctype-20261005/`; the portable checkpoint retains their identities
-and summaries. No wider browser-fidelity, representative-performance, Linux or
+`artifacts/doctype-20261005/`; Git revision `1876cf6e` retains the historical run
+record. No wider browser-fidelity, representative-performance, Linux or
 S17 completion follows from this syntax admission.
 
 

@@ -6,6 +6,9 @@ Do not store hashes of source files, extracted code snippets, scripts, local pro
 adapters, solution binaries, packages, diagnostic reports or traces in reference
 metadata. Ordinary source edits must not require metadata refreshes. Keep
 fixture/reference identities and upstream oracle pins.
+Regression records contain reusable inputs, expected behavior and oracle
+provenance. Keep raw run reports, resource ledgers and timing batches under
+ignored artifacts; retain useful summaries in the existing documentation.
 The metadata records the exact capture recipe used for each reference. Revision 1
 is retained historical provenance; revision 2 added an RGBA-transparent
 background before capture. Revision 3 also configures the blank target before

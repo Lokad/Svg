@@ -77,9 +77,10 @@ nine supplemental configurations. NASA's exact PNGs establish a document exit;
 163 mapped-coordinate differences and a root-offset discrepancy remain in the
 recorded browser comparison. Scope, numerical evidence and known regressions are
 in [the design record](docs/RASTERIZATION_DESIGN.md#native-float-root-mapping-for-retained-curves-2026-10-06).
-The prior DOCTYPE [portable record](tests/References/declaration-only-doctype.json)
-retains historical measurements and its implementation commit. Detailed run
-records stay under ignored artifacts; dated snapshots below retain their scope.
+The DOCTYPE [regression inputs](tests/References/declaration-only-doctype.json)
+retain only fixture identities and the declaration-free comparison contract.
+Detailed run records stay under ignored artifacts; Git and the dated snapshots
+below retain historical implementation and measurement details.
 
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
@@ -490,9 +491,10 @@ Root parsing and discovery borrow their caller's work counter; output-scale
 probing retains its existing separately bounded probe counter. There is no DOM,
 whole-input string, external resolution, DTD defaulting or declared-entity expansion.
 
-The [portable record](tests/References/declaration-only-doctype.json) retains the
-predeclared 18 semantic cases across nine encodings, resource controls, all four
-legacy disposition changes and all 36 corporate advances. All **601 exact fixture
+The [core tests](tests/Lokad.Svg.Tests/SvgDoctypeTests.cs) cover 18 semantic cases
+across nine encodings and resource controls; the [visual regression inputs](tests/References/declaration-only-doctype.json)
+retain four original fixtures for declaration-free pixel comparisons. At this
+checkpoint, 36 corporate dispositions advance. All **601 exact fixture
 PNGs**, every previous known-difference PNG and every original source/reference
 are unchanged. Three corporate documents become renderable; Target remains
 unsupported at a subsequent style gate. No newly admitted corporate variant has
@@ -1239,6 +1241,10 @@ check cancellation within bounded chunks and release owners on every exit.
   diagnostic reports or logs, including in ignored run reports. Refresh measured
   outcomes when behavior changes; ordinary source edits and rebuilds require no
   reference metadata refresh.
+- Keep test records focused on reusable inputs, expected behavior and necessary
+  oracle provenance. Do not embed raw build/test reports, resource ledgers or
+  timing batches in test data. Keep those under ignored artifacts and summarize
+  useful findings in the existing documentation; Git retains previous records.
 - Each implementation slice includes locked restore/Release build/tests,
   independent semantic/numeric/negative vectors and relevant documentation.
   Current exact references must remain exact. Changes to known mismatches require

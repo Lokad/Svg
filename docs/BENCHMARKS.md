@@ -873,9 +873,10 @@ separately archived; its renderer source and all image outputs are unchanged.
 These are matching local observations of the declaration-only input policy,
 separate from BenchmarkDotNet throughput and the retained AA observations above.
 Baseline source is `86554a94`; declaration-only admission is committed in
-`1876cf6e`. The
-[portable checkpoint](../tests/References/declaration-only-doctype.json) retains
-source identity, full ledgers, all raw batches and both process orders.
+`1876cf6e`. Full ledgers, raw batches and both process orders are historical run
+records under ignored `artifacts/doctype-20261005/` and in that Git revision.
+The [regression inputs](../tests/References/declaration-only-doctype.json) retain
+the four original fixture identities and their semantic comparison contract.
 
 All SVG validation jobs had terminated before observation. Four fresh processes
 ran sequentially: baseline first / candidate second, then candidate first /
