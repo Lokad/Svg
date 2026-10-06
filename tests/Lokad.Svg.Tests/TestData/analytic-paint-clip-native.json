@@ -10,7 +10,6 @@
     "src/core/SkBlitter.h": "5fc3ed0d16355d58908ae6731d91f3c13e254d95c952fcdb03082184c11743ea"
   },
   "extractedPredicateSha256": "1d0c131775e1fe6188b84d80a58905aaa88b2c8240e7f80da7eb90d11398de1f",
-  "adapterSha256": "27af24f45c13b55e823f4cdc27ae5d8f5dfbd161fbc777d64b9064ba26711f55",
   "compiler": "g++ -std=c++20 -O2 -ffp-contract=off -DNDEBUG -DSK_RELEASE",
   "contract": "Original nearly_integral and SkAnalyticEdge::setLine compiled unchanged. Adapter applies the all-four BW shortcut and determines whether native snapped rectangle boundaries leave a fractional edge within an integer bitmap. This is numerical classification evidence; it does not execute full SkRasterClip/SkAAClip mask construction, successive clip intersections, clipping cache transitions or rendering. Independent browser controls additionally adjudicate opaque-tile and AA dispatch behavior.",
   "vectors": [

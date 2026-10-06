@@ -1065,9 +1065,10 @@ check cancellation within bounded chunks and release owners on every exit.
   diagnostics under ignored artifacts; commit reusable regressions and concise
   reproduction details. Tests assert behavior and protect input/reference
   identity. Do not record or validate hashes of this solution's source files,
-  scripts or compiled assemblies in references or run reports. Identify CI runs
-  through their workflow revision. Refresh measured outcomes when behavior changes;
-  comments, formatting, refactors and rebuilds require no reference metadata refresh.
+  scripts, local probe adapters, compiled binaries or packages in references or
+  run reports. Identify CI runs through their workflow revision. Refresh measured
+  outcomes when behavior changes. Comments, formatting, refactors and rebuilds
+  require no reference metadata refresh.
 - Each implementation slice includes locked restore/Release build/tests,
   independent semantic/numeric/negative vectors and relevant documentation.
   Current exact references must remain exact. Changes to known mismatches require

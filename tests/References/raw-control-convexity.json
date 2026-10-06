@@ -1563,10 +1563,10 @@
     ],
     "representativePerformance": "open",
     "linux": "open",
-    "packages": {
-      "Lokad.Svg.0.1.0-preview.1.nupkg": "186e7fde98d26da4eefa748db91a5b82927cc82d79791a334ede36b53b602fd1",
-      "Lokad.Svg.0.1.0-preview.1.snupkg": "e3f7c8353330a34c67d84bdccea219b00cfa6d06688733b53a66acd9ff317f80"
-    }
+    "packages": [
+      "Lokad.Svg.0.1.0-preview.1.nupkg",
+      "Lokad.Svg.0.1.0-preview.1.snupkg"
+    ]
   },
   "localMeasurements": {
     "orders": [

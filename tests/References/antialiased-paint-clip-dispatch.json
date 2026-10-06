@@ -2538,8 +2538,6 @@
       "summarySha256": "338b170318452ab06b50cbb894e2f50d67bd2a85bb2f6cfb0f4d6aabaa993eb9"
     },
     "package": {
-      "runtimeSha256": "db06af8a9778dd97fa55b7d2dff23339552797da7cbb9a003119017d7cf9cdc0",
-      "symbolSha256": "5a1a6a849ed8d2d5d04d3e5bc8e93416f3ecb32e8e3222a277fbdee8d3f8188d",
       "noticesSha256": "35dc3c9fdd1be8724ff0e25bdab7fa849e5b1fcd134f550b858a26dea610ed74",
       "inspectionAndConsumerChecksPassed": true,
       "runtimeDependencies": 0,

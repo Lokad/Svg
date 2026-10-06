@@ -163,7 +163,6 @@
     {"Id":"near-quadratic-binary-root-witness","Kind":4,"Clip":[8,10000,56,11000],"Cull":false,"Points":[10,0,10,0,10,10000,10,30000.001953125],"DeclaredBeforeImplementation":false,"ExpectedPieces":[[4,1092616192,1176256512,1092616192,1176589714,1092616192,1176931047,1092616192,1177280512]]}
   ],
   "NativePin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
-  "NativeExecutableSha256": "8826bce7d45d8a750c2184ce7a3da2633fd196355273d20819a0e860c041912d",
   "NativeOutputSha256": "db005ffba6550da120c409e9950b166a3196d836bdd55776db3fe2b8eb1227ac",
   "Compiler": "GCC 13.2.0 C++20 -O2 -DNDEBUG -DSK_RELEASE; SK_RASTERIZE_EVEN_ROUNDING undefined",
   "SourceIdentities": {

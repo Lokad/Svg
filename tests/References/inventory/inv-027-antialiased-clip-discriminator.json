@@ -1190,8 +1190,6 @@
       "-ffp-contract=off"
     ],
     "adapter": "Only matrix type/getter accessors are substituted; exact native Scale_pts and pinned SkVx float vectors are compiled. Inputs narrow authored doubles to native floats. Separate multiply/add output bits are recorded. This proves that bounded mapper, not browser composition or backend dispatch.",
-    "executableSha256": "e0fabdd440170b98edafc819602eacfb45dc8bafe0be6922b2963fe84652c154",
-    "adapterSha256": "08edf8f67bb8c807f65a68e2b207904ab5024c605659e97d986eeb8796909b7a",
     "currentInputSha256": "8be4da6a4d3c19698caccf0fc8fb648d799eced4679d747e1477d0be376c4df0",
     "currentOutputSha256": "5cdffd4dca52c17350a64b72de90e7f3ed4f2b7b287590081ca08989f4b1a861"
   },
@@ -1525,19 +1523,13 @@
       "C:\\Users\\JoannesVermorel\\code\\svg\\artifacts\\cubic-native-tip-20261005\\native"
     ],
     "sources": {
-      "artifacts\\mapped-events-20261005\\native\\walk.cpp": "2fc5a5b53cc343bf3a1fbe15f2e807296d87452b3c4ae167bcd28987d098fd2f",
-      "artifacts\\cubic-native-tip-20261005\\native\\fatal.cpp": "1d4378aad29b192127ee4de9897eb8e38125b6f2176ecdd73acbe93251ed2394",
-      "artifacts\\cubic-native-tip-20261005\\native\\curve-geometry.cpp": "1f7cd10df0b7dc99df7646008478c6c18a8b1e754c68bb49921814dccf4d1a04",
-      "artifacts\\cubic-native-tip-20261005\\native\\curve-clipper.cpp": "3bd4a37032fc4ee8b76dac7e929946450ef263d917826a1b12ada6406ce2299a",
-      "artifacts\\cubic-native-tip-20261005\\native\\rectangle-bounds.cpp": "a051592cb99294a8a21e4195924bf5d2a1c3183c5d5425793aab9698c3197b27",
       "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkAnalyticEdge.cpp": "27420132d6c3560e32118f9dc0fc3e5cce4fd421f3da7695634e23dd38f5d963",
       "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkLineClipper.cpp": "48eff4d3d08449677618dcfeb4887dee172c81ea4299411c3c7d641d61baaf4a",
       "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkBezierCurves.cpp": "dae94574f95b69e252add33f24296d0cc86d3fcaa518e34f8ff89ed6c4db309c",
       "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkCubics.cpp": "d05c07ad527d4133c677446ef5e3b00826777e606a00998cdb3abe7530bc65bf",
       "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkQuads.cpp": "86a8b996c61bf7bbe2aa1d0c6815647ce08cd25a2f11d7fce493c1aae377ebd4",
       "artifacts\\cubic-native-tip-20261005\\native\\pinned\\src\\core\\SkFloatingPoint.cpp": "36e1ab6f637f737b5ddbce88cdba5e9536287d40a015932db4c81ee9f63eb09b",
-      "artifacts\\cubic-native-tip-20261005\\native\\native-walk.inc": "2a909d042de6d9b072d2e2f8aeb9076f2ef4c28668389874135bcfb4e6c6fbce",
-      "artifacts/mapped-events-20261005/native/walk.cpp": "b0ff8bc83c4b350c07234235d6f7c4a6b1a5f3e9b364977bab799f9545f4c98e"
+      "artifacts\\cubic-native-tip-20261005\\native\\native-walk.inc": "2a909d042de6d9b072d2e2f8aeb9076f2ef4c28668389874135bcfb4e6c6fbce"
     },
     "walkExtraction": {
       "Pin": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
@@ -1548,8 +1540,7 @@
       "ExtractedSha256": "2a909d042de6d9b072d2e2f8aeb9076f2ef4c28668389874135bcfb4e6c6fbce",
       "Observation": "One log_trap call; all extracted arithmetic and list/walk control unchanged."
     },
-    "adapterLimits": "Compiled native numeric and AAA walk functions; projected vertical combination and actual pending-run flush/pixel paint are not implemented by this event adapter.",
-    "executableSha256": "84e543a6fe4d97126158c2bc1e4aab3f60ce487e82664e46fa8627c41eb1e744"
+    "adapterLimits": "Compiled native numeric and AAA walk functions; projected vertical combination and actual pending-run flush/pixel paint are not implemented by this event adapter."
   },
   "nativeWitness": {
     "pixel": [

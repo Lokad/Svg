@@ -33,7 +33,6 @@
     }
   ],
   "extractedConvexicatorSha256": "5afa3fa075e4cce91f9f811976a33be077406233e6bb303b2759456319410d07",
-  "adapterSha256": "f3e41fd11542a7a7c546aafdeccbc22ef376e38234f2ee60d0951e8be90b2ccd",
   "compiler": "g++ -std=c++20 -O2 -ffp-contract=off",
   "contract": "Original pinned Convexicator and its sign precheck unchanged; wrapper supplies one finite raw control contour and implicit closure. No multi-contour, conic weighting, transformed-cache provenance, rendering or complete backend parity claimed.",
   "vectors": [

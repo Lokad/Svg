@@ -4342,8 +4342,8 @@ Production remains at `dfcac0ef`; the compatible raw-control repair and its
 ignored diagnostic copies and all nine original YouTube references. No new
 reference, exact case, corporate document or integration gate is claimed. The
 [portable discriminator](../tests/References/inventory/inv-027-antialiased-clip-discriminator.json)
-retains source/adapter hashes, all variant comparisons and declarations, native
-events, point bits, saved browser tiles and model residuals. Full tapes and
+retains upstream source identities, all variant comparisons and declarations,
+native events, point bits, saved browser tiles and model residuals. Full tapes and
 binaries remain under ignored `artifacts/mapped-events-20261005/`.
 The 54 diagnostic model cases complete, five diagnostic C# builds have zero
 warnings/errors, and all 139 existing visual-project tests pass again with the
