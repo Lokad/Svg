@@ -61,3 +61,7 @@ Detailed experiments stay under ignored `artifacts/stroke-construction-20261006/
 Source changes alone require no reference refresh.
 The capture script and VisualDiff `--cohort` command reproduce the full matrix;
 see [the oracle instructions](../../docs/ORACLE.md#frozen-corporate-captures).
+
+Per-pixel witness dumps belong in ignored run diagnostics. Current cohort
+records retain candidate identity and comparison summaries, so code edits that
+change a few pixels do not rewrite large debug dumps in test data.
