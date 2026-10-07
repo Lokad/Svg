@@ -27,17 +27,20 @@ internal sealed class SvgAuthoredPath : IDisposable
     private SvgAuthoredPath? _strokeOutline;
     private RenderBudget.BudgetReservation? _ownerReservation;
 
-    private SvgAuthoredPath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, RenderBudget.BudgetReservation ownerReservation)
+    private SvgAuthoredPath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, bool isKnownConvex, RenderBudget.BudgetReservation ownerReservation)
     {
         _commands = commands;
         SceneMap = sceneMap;
         StrokeStyle = strokeStyle;
         _strokeOutline = strokeOutline;
         _ownerReservation = ownerReservation;
+        IsKnownConvex = isKnownConvex;
     }
 
     internal ReadOnlySpan<SvgAuthoredPathCommand> Commands => _commands.Items;
     internal SvgAffineTransform SceneMap { get; }
+    /// <summary>Preserves native convex classification for one validated source shape under affine placement.</summary>
+    internal bool IsKnownConvex { get; }
     internal SvgAuthoredStrokeStyle? StrokeStyle { get; }
     /// <summary>Borrows the generated source outline until this centerline owner is disposed or transferred.</summary>
     internal SvgAuthoredPath? StrokeOutline => _strokeOutline;
@@ -46,7 +49,7 @@ internal sealed class SvgAuthoredPath : IDisposable
     internal SvgAuthoredPath Transfer()
     {
         RenderBudget.BudgetReservation owner = _ownerReservation ?? throw new InvalidOperationException("Authored path ownership has already transferred.");
-        SvgAuthoredPath result = new(_commands, SceneMap, StrokeStyle, _strokeOutline, owner);
+        SvgAuthoredPath result = new(_commands, SceneMap, StrokeStyle, _strokeOutline, IsKnownConvex, owner);
         _commands = new([], null);
         _strokeOutline = null;
         _ownerReservation = null;
@@ -129,7 +132,7 @@ internal sealed class SvgAuthoredPath : IDisposable
             if (offsets[span.Contour] >= 0) quads.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], Control = mapCoordinates ? MapPoint(map, span.Control, new(0, 0)) : span.Control });
         foreach (SvgCubicSpan span in builder.GetCubicSpans())
             if (offsets[span.Contour] >= 0) cubics.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], FirstControl = mapCoordinates ? MapPoint(map, span.FirstControl, new(0, 0)) : span.FirstControl, SecondControl = mapCoordinates ? MapPoint(map, span.SecondControl, new(0, 0)) : span.SecondControl });
-        return CreateContours(points, ends, quads, cubics, _commands.Items, isEvenOdd, budget, workCounter, cancellationToken);
+        return CreateContours(points, ends, quads, cubics, _commands.Items, isEvenOdd, IsKnownConvex, budget, workCounter, cancellationToken);
 
         static void AppendEndpointArc(SvgContourBuilder builder, SvgDevicePoint start, SvgAuthoredPathCommand command, ParserWorkCounter workCounter, CancellationToken token)
         {
@@ -144,7 +147,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                 builder.AddConic(arcs[index].Control, arcs[index].End, arcs[index].Weight, 8, token);
         }
 
-        static SvgPreparedPathContours CreateContours(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, SvgAuthoredPathCommand[] commands, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgPreparedPathContours CreateContours(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, SvgAuthoredPathCommand[] commands, bool isEvenOdd, bool isKnownConvex, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             RenderBudget.BudgetReservation owner = budget.Reserve(128, SvgMemoryCategory.Surface);
             OwnedParserArray<SvgDevicePoint> points = new([], null);
@@ -162,7 +165,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                     for (int contour = 0; contour < ends.Items.Length; contour++) signBuilder.Add(1);
                     signs = signBuilder.Detach();
                 }
-                return new(points, ends, quads, cubics, signs, commands, owner);
+                return new(points, ends, quads, cubics, signs, commands, isKnownConvex, owner);
             }
             catch { points.Dispose(); ends.Dispose(); quads.Dispose(); cubics.Dispose(); signs.Dispose(); owner.Dispose(); throw; }
         }
@@ -182,7 +185,13 @@ internal sealed class SvgAuthoredPath : IDisposable
 
     /// <summary>Adopts command-array ownership only on success; the caller releases the array on failure.</summary>
     internal static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
-        => Create(commands, sceneMap, null, null, budget);
+        => Create(commands, sceneMap, null, null, false, budget);
+
+    /// <summary>Adopts one validated convex source shape, preserving its native classification without changing its verbs.</summary>
+    /// <remarks>The caller supplies one rectangle, rounded rectangle or oval generated in source float coordinates.
+    /// Command ownership transfers only on success; later affine copies retain this classification.</remarks>
+    internal static SvgAuthoredPath CreateConvexShape(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
+        => Create(commands, sceneMap, null, null, true, budget);
 
     /// <summary>Adopts the source centerline and its generated outline only on success.</summary>
     /// <remarks>The caller retains both owners on failure. The outline is a filled child with its
@@ -192,13 +201,13 @@ internal sealed class SvgAuthoredPath : IDisposable
     {
         ArgumentNullException.ThrowIfNull(strokeOutline);
         if (strokeOutline.StrokeStyle is not null) throw new ArgumentException("A stroke outline must be filled source commands.", nameof(strokeOutline));
-        return Create(commands, sceneMap, strokeStyle, strokeOutline, budget);
+        return Create(commands, sceneMap, strokeStyle, strokeOutline, false, budget);
     }
 
-    private static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, RenderBudget budget)
+    private static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, bool isKnownConvex, RenderBudget budget)
     {
         RenderBudget.BudgetReservation owner = budget.Reserve(OwnerBytes, SvgMemoryCategory.Scene);
-        try { return new SvgAuthoredPath(commands, sceneMap, strokeStyle, strokeOutline, owner); }
+        try { return new SvgAuthoredPath(commands, sceneMap, strokeStyle, strokeOutline, isKnownConvex, owner); }
         catch { owner.Dispose(); throw; }
     }
 
@@ -214,7 +223,7 @@ internal sealed class SvgAuthoredPath : IDisposable
             SvgAuthoredStrokeStyle? copiedStyle = StrokeStyle is SvgAuthoredStrokeStyle style
                 ? style with { WidthMap = placement.ComposeChecked(style.WidthMap) } : null;
             copiedOutline = _strokeOutline?.Copy(placement, budget, workCounter, cancellationToken);
-            return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, copiedOutline, budget);
+            return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, copiedOutline, IsKnownConvex, budget);
         }
         catch { owned.Dispose(); copiedOutline?.Dispose(); throw; }
     }
@@ -245,12 +254,14 @@ internal sealed class SvgPreparedPathContours : IDisposable
     private RenderBudget.BudgetReservation? _owner;
     private ReadOnlyMemory<SvgAuthoredPathCommand> _commands;
 
-    internal SvgPreparedPathContours(OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<SvgQuadSpan> quads, OwnedParserArray<SvgCubicSpan> cubics, OwnedParserArray<int> signs, SvgAuthoredPathCommand[] commands, RenderBudget.BudgetReservation owner)
+    internal SvgPreparedPathContours(OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<SvgQuadSpan> quads, OwnedParserArray<SvgCubicSpan> cubics, OwnedParserArray<int> signs, SvgAuthoredPathCommand[] commands, bool isKnownConvex, RenderBudget.BudgetReservation owner)
     {
         _points = points; _ends = ends; _quads = quads; _cubics = cubics; _signs = signs; _owner = owner;
         _commands = commands;
+        IsKnownConvex = isKnownConvex;
     }
 
+    internal bool IsKnownConvex { get; }
     internal SvgDevicePoint[] Points => _points.Items;
     internal int[] ContourEnds => _ends.Items;
     internal SvgQuadSpan[] QuadSpans => _quads.Items;

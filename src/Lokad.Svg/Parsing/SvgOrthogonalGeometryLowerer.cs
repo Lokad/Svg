@@ -450,7 +450,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerRoundedRectFill(double x, double y, double width, double height, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        (_, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         SvgRectangle placed = element.Transform.Apply(new SvgRectangle(x, y, width, height, default, false, null));
         SvgRectangle shifted = frame is null ? placed : frame.Value.Shift(placed);
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
@@ -480,7 +480,38 @@ internal ref struct SvgOrthogonalGeometryLowering
             cubicCursor = cubicRunEnd;
         }
 
-        return FinishPolygonFill(mapped, ends, Array.Empty<SvgQuadSpan>(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
+        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, Array.Empty<SvgQuadSpan>(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
+        OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
+        try
+        {
+            if (element.Presentation.HasFill && result.Geometries.Length == 1)
+            {
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                SvgRoundedRectPath.Append(commands, x, y, width, height, radiusX, radiusY);
+                owned = commands.Detach();
+                result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateConvexShape(owned, deviceMap, budget) };
+                owned = new([], null);
+            }
+            return result;
+        }
+        catch { result.Discard(); throw; }
+        finally { owned.Dispose(); }
+    }
+
+    /// <summary>Strokes retained rounded-rectangle conics through the shared native source constructor.</summary>
+    internal SvgParsedGeometry LowerRoundedRectStroke(double x, double y, double width, double height,
+        double radiusX, double radiusY, SvgResolvedPaintableElement element,
+        SvgStrokeStyleSyntax.SvgAdmittedStroke stroke, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
+        double deviceWidth = StrokeDeviceWidth(stroke.Width, element.Transform, frame, stroke.NonScalingStroke);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+        SvgRoundedRectPath.Append(commands, x, y, width, height, radiusX, radiusY);
+        int count = commands.Count;
+        return LowerNativeStrokeCommands(commands, deviceMap, deviceWidth, stroke.Width, stroke.MiterLimit,
+            stroke.Cap, stroke.Join, stroke.DashPattern, stroke.DashOffset, stroke.PathLength,
+            stroke.NonScalingStroke, stroke.Color, element.Presentation.IsPainted, element.OutputMagnification,
+            frame, budget) with { ElementCount = count };
     }
 
     /// <summary>Retains mapped path bounds and authored fill commands with the caller mapping discipline.</summary>

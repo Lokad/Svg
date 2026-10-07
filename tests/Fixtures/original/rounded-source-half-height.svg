@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="41" height="35"><defs>
+<linearGradient id="l"><stop stop-color="#2168ad"/><stop offset="1" stop-color="#dc713b"/></linearGradient>
+<radialGradient id="r"><stop stop-color="#2168ad"/><stop offset="1" stop-color="#dc713b"/></radialGradient>
+<pattern id="p" width="5" height="7" patternUnits="userSpaceOnUse"><rect width="5" height="7" fill="#2168ad"/></pattern>
+<clipPath id="c"><rect x="9" y="8" width="22" height="19"/></clipPath>
+<mask id="m"><rect width="41" height="35" fill="#808080"/></mask>
+</defs><rect x="4.25" y="6.5" width="25.5" height="19" rx="5" ry="9.5" fill="#2168ad"/></svg>

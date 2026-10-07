@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-rounded-source-reflection.png",
+  "referenceSha256": "0cd4571dac762249503f6101a2189a4901dec0200392b4e2fb56d9021b5fdaf4",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "d3e9d5de7151e187e437f2130b03cf033fcebb47f35f02799252de55fc5b5140",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent body declared before prototype edits and capture/comparison. Fresh SPDX materialization captures preserve every original pixel.",
+  "fixtureId": "original-rounded-source-reflection",
+  "inputSha256": "f2627a151d9ae049c52fe2e2f43e9a646f0c96bf2f12dcd1a1fc59d7554d079f",
+  "viewport": {
+    "width": 41,
+    "height": 35,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

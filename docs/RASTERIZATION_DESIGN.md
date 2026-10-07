@@ -6813,3 +6813,54 @@ supplement. No new timing claim. General coverage/paint/mask/nested-layer fideli
 other known corpus differences and S17 remote CI retain their open scope.
 Detailed prototypes, compiled adapters and audits stay under ignored
 artifacts/group-image-blend-20261007.
+
+## Native rounded-rectangle source commands (2026-10-07)
+
+Rounded fills previously retained kappa-cubic corners, while rounded strokes
+expanded sampled polylines. Both routes now share original float bounds and
+rational quarter-circle conics. The pinned `SkRRect::setRectXY`, `SkPathMakers.h`,
+`SkPathRawShapes` and `SkPathBuilder::addRRect` define radius scaling, default CW
+start index six and rectangle/oval simplification. SVG radii clamp independently
+before native construction. Ovals start at index three; all source verbs, including
+zero-length straight edges at half-side radii, remain intact.
+
+Native shape builders carry known convexity. Reclassifying their sampled contours
+as generic paths loses that flag when a straight edge has zero length and selects
+different curve advancement. The first conic prototype left half-side residuals;
+retaining the source shape's convex classification makes all three pill/clamped
+controls exact. Generic authored fills and generated stroke outlines keep their
+existing classification. Affine copying, transfer and surface preparation retain
+the immutable shape flag; scene geometry still owns admission and paint boxes.
+Rounded stroke source verbs use the existing native wider/hairline construction,
+with separate centerline and filled-outline owners.
+
+Twenty-seven independent configurations were declared before prototype edits and
+capture/comparison. Twenty-one are exact, five retain layer/mask-color,
+hairline-color or oval-stroke differences, and one retains its `vector-effect`
+syntax rejection. Their 81 captures are stable, healthy and cleaned. Eight exact
+fixtures and five known research controls have fresh SPDX materialization triples
+(39 captures), preserving every original reference pixel. Original browser assets
+are reused for eleven fixture and three research graduations; none is rebaselined.
+
+The complete 1,422-case bank has identical Windows/Linux reports and PNG bytes.
+Every prior exact result, admission and rejection remains; inv-042 changes only in
+the unmeasured Default sweep. All 258 corporate reports/images remain unchanged:
+27/27 exact documents on both platforms against their platform references.
+Release builds, 3,926 tests per platform and fresh 25-scenario memory checks pass.
+Eleven new core cases cover shape classification, owner copying/transfer, bounded
+construction/replay, partial failures and cancellation tokens. Eight browser
+reference cases exercise all six public outputs. Smooth rounded corners preserve
+the same bevel/miter pixels; the earlier differing-pixel assertion measured the
+polyline approximation. The original AA-clip bank now has 32 exact controls and
+nine retained rejections, including the two graduated rounded-mask controls.
+
+Twenty-six matched Windows recipes retain both process orders. Work changes by
+−5,245 through +1,265 units; accounted peak changes by zero through +75,978 bytes.
+Owned-output allocation traffic changes by −63,200 through +9,992 bytes per
+conversion. Timings are exploratory on a loaded host and establish no
+representative throughput claim. Existing scene/surface owner allowances cover
+the immutable flag; command arrays and stroke children retain their reservations.
+No runtime dependency, public API or native asset is added. Broader composition,
+clipping, stroke and mapping gaps remain; source inspection and the browser
+controls establish this bounded repair. Detailed evidence stays under ignored
+`artifacts/rounded-rectangle-conics-20261007/`.

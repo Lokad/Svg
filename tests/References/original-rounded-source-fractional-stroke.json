@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-rounded-source-fractional-stroke.png",
+  "referenceSha256": "a1db3d1ed181aa214ed8dc34ed4b908fefc868b417c5aa2853c33a099384825e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "2f4f37dc9d44ca6c1b1359e900351dc54a5f979906db78419012391fa120647d",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent body declared before prototype edits and capture/comparison. Fresh SPDX materialization captures preserve every original pixel.",
+  "fixtureId": "original-rounded-source-fractional-stroke",
+  "inputSha256": "a4b34cecda3ace028ecce4efe60ec3c6907d68ab497c98b22f821950b66f2cf1",
+  "viewport": {
+    "width": 41,
+    "height": 35,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

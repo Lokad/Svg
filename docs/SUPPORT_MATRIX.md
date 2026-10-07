@@ -5,10 +5,17 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-The current 1,278 manifest entries contain
-1,202 exact decoded-pixel references, 52 known-difference renders and 24
+The current 1,289 manifest entries contain
+1,224 exact decoded-pixel references, 41 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
+
+Rounded rectangle fills and strokes retain shared native float source commands,
+with rational conic corners and native rectangle/oval simplification. Validated
+source shapes retain their known convexity through preparation and placement,
+including half-side radii with zero-length straight edges. Independent fractional,
+clamped, reflected and painted controls are exact; layer/mask color, hairline color
+and oval-stroke residuals remain measured research cases.
 
 Painted integer paths with diagonal edges retain directed authored contours,
 including touching/coincident subpaths and even-odd crossings. Linear/radial

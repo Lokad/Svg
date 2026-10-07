@@ -2170,3 +2170,23 @@ AA clips retain the analytic run route. Accounted peak is live renderer storage;
 these ledgers measure neither allocation traffic nor elapsed time and establish
 no throughput claim. The earlier 258-recipe ShortRun remains the performance
 baseline. Raw ledgers stay under ignored `artifacts/simplelogin-20261007/`.
+
+## Rounded-rectangle source commands (2026-10-07)
+
+Twenty-six matching independent Windows recipes compare the validated
+`3aeffaa5` renderer with retained rounded conics and native shape convexity.
+Inputs/options stay unchanged; both process orders retain parser/raster work,
+accounted peak storage and three owned-output allocation/timing batches.
+
+| Measured quantity | Change per conversion |
+| --- | ---: |
+| Parser plus raster work | −5,245 to +1,265 units |
+| Accounted peak live storage | zero to +75,978 bytes |
+| Managed allocation traffic | −63,200 to +9,992 bytes |
+
+Filled shapes add retained source storage and replay; strokes replace sampled
+polyline expansion with source-native outlines. The largest accounted increase
+belongs to the oval-stroke control. These are small synthetic recipes, not the
+representative cohort performance baseline. Timing directions vary by recipe and
+process order on a loaded host; no throughput improvement is claimed. Full
+ledgers and batches stay under ignored `artifacts/rounded-rectangle-conics-20261007/`.

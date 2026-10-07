@@ -28,7 +28,7 @@ probing use the same bounded policy.
 
 The pinned-browser full-canvas solid-rectangle route preserves original
 fill-opacity separately from ordinary byte composition. Its independent routing
-controls are banked, while general layer composition and curved corporate-logo
+controls are banked, while general layer composition and broader curve
 fidelity remain open; the support matrix records those limits.
 
 Antialiased rectangle paint clips now have independent native/browser regressions
@@ -48,6 +48,10 @@ their native output classification, with independent browser regressions and
 bounded ownership checks. Fractional filled point lists retain source commands
 through final mapping. Native float rectangle endpoints close IBM's three large
 variants, completing the frozen-cohort fidelity target on both platforms.
+
+Rounded rectangles retain native conic corners and convex shape classification.
+Fills and strokes share source commands through final mapping, with independent
+browser regressions for fractional coordinates, clamped radii and reflected shapes.
 See [the rectangle repair](docs/RASTERIZATION_DESIGN.md#native-rectangle-source-operands-2026-10-07).
 See [the source-outline repair](docs/RASTERIZATION_DESIGN.md#source-native-stroke-outlines-2026-10-07).
 

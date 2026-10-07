@@ -231,23 +231,10 @@ internal static class SvgLeafParser
 
         static SvgParsedGeometry LowerRoundedStroke(XmlReader reader, SvgPaintableElementContext context, SvgRectangleSyntax syntax, double cornerX, double cornerY, SvgResolvedPaintableElement element, SvgStrokeStyleSyntax.SvgAdmittedStroke stroke, SvgViewportFrame? frame, SvgDocumentState state)
         {
-            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.SampledOutlineCapacity(4, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
-            using RenderBudget.BudgetReservation scratch = state.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(SvgOrthogonalGeometryLowering.SampledOutlineCapacity(4, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), 1);
-            builder.AddRoundedRect(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.ScaledFlatness(context.OutputMagnification), SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), context.CancellationToken);
-
-            if (builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rounded rectangle stroke contours are not implemented.");
-            using BudgetedParserList<SvgFractionalPoint> roundedPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            int vertexIndex = 0;
-            foreach (SvgDevicePoint vertex in builder.GetContour(0))
-            {
-                if ((vertexIndex++ & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
-                roundedPoints.Add(new SvgFractionalPoint(vertex.X, vertex.Y));
-            }
             using BudgetedParserList<SvgPoint> noStrokePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, "rect", false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
-            return strokeLowering.LowerStrokePointList(roundedPoints, true, cornerX > 0 || cornerY > 0, element, stroke.Color, element.Presentation.IsPainted, stroke.Width, stroke.MiterLimit, stroke.Cap, stroke.Join, stroke.DashPattern, stroke.DashOffset, stroke.PathLength, stroke.NonScalingStroke, frame, state.Budget);
+            return strokeLowering.LowerRoundedRectStroke(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, element, stroke, frame, state.Budget);
         }
     }
 

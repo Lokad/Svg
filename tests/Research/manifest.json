@@ -298,14 +298,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 20,
-        "maximumChannelError": 44,
-        "maximumAlphaError": 44,
-        "alphaChangedPixelCount": 20,
-        "minimumMismatchX": 3,
-        "minimumMismatchY": 3,
-        "maximumMismatchX": 12,
-        "maximumMismatchY": 12
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/rounded-rect-solid-16x16.png",
@@ -380,14 +380,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 48,
-        "maximumChannelError": 77,
-        "maximumAlphaError": 77,
-        "alphaChangedPixelCount": 48,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 13,
-        "maximumMismatchY": 13
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/bevel-rounded-even-16x16.png",
@@ -629,14 +629,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 48,
-        "maximumChannelError": 74,
-        "maximumAlphaError": 74,
-        "alphaChangedPixelCount": 48,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 13,
-        "maximumMismatchY": 13
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/stroked-rounded-rect-16x16.png",
@@ -1381,6 +1381,221 @@
         "background": "transparent",
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
+      }
+    },
+    {
+      "id": "research-rounded-source-layer-transparent",
+      "path": "rounded-source-layer-transparent.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Independent control dedicated through the leading SPDX declaration.",
+      "sourceSha256": "e2efbcb4132d225cc09c02a73c4b5f4fb63bf90bf272c1cd45e6e17cf65e9975",
+      "featureTags": [
+        "geometry",
+        "rounded-rectangle",
+        "regression",
+        "composition"
+      ],
+      "width": 41,
+      "height": 35,
+      "admittedRendering": {
+        "changedPixelCount": 9,
+        "maximumChannelError": 8,
+        "maximumAlphaError": 1,
+        "alphaChangedPixelCount": 5,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 7,
+        "maximumMismatchX": 29,
+        "maximumMismatchY": 24
+      },
+      "candidateSha256": "03a50c5acbf43a2f751376508dae91aba155d1a079605bc5db72f286b8d1e181",
+      "oracle": {
+        "referencePng": "references/rounded-source-layer-transparent.png",
+        "referenceSha256": "2e00464291ac1407af9611e7dd7e25e3ffba3fb7f7ed745bcfcd04ee7f9eb04c",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true
+      }
+    },
+    {
+      "id": "research-rounded-source-layer-white",
+      "path": "rounded-source-layer-white.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Independent control dedicated through the leading SPDX declaration.",
+      "sourceSha256": "e2efbcb4132d225cc09c02a73c4b5f4fb63bf90bf272c1cd45e6e17cf65e9975",
+      "featureTags": [
+        "geometry",
+        "rounded-rectangle",
+        "regression",
+        "composition"
+      ],
+      "width": 41,
+      "height": 35,
+      "admittedRendering": {
+        "changedPixelCount": 488,
+        "maximumChannelError": 1,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 29,
+        "maximumMismatchY": 25
+      },
+      "candidateSha256": "4da22a53757ac6e940fd12d31b5756a3d2563c4821d96a59ca7092ecb577d45b",
+      "oracle": {
+        "referencePng": "references/rounded-source-layer-white.png",
+        "referenceSha256": "f94608f3591ac810d1da7d19fbab58ff9bf5d41da0e544a30874d9529adf2566",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "white",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true
+      }
+    },
+    {
+      "id": "research-rounded-source-mask-color",
+      "path": "rounded-source-mask-color.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Independent control dedicated through the leading SPDX declaration.",
+      "sourceSha256": "3e54718d02bcefe5d0a144ae918b6f19df66d44d34c241b99bfc2e3671f8e7a9",
+      "featureTags": [
+        "geometry",
+        "rounded-rectangle",
+        "regression",
+        "composition"
+      ],
+      "width": 41,
+      "height": 35,
+      "admittedRendering": {
+        "changedPixelCount": 53,
+        "maximumChannelError": 255,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 4,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 29,
+        "maximumMismatchY": 25
+      },
+      "candidateSha256": "a4551decb8d1dc7f1329f238c6fafa0423d5a9bd170481fc47ea3f1ba06977de",
+      "oracle": {
+        "referencePng": "references/rounded-source-mask-color.png",
+        "referenceSha256": "b00c36e44130309e00cb4a69fd5d9e21fc5111126a1f7ea31c81036e4dc49302",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true
+      }
+    },
+    {
+      "id": "research-rounded-source-hairline-color",
+      "path": "rounded-source-hairline-color.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Independent control dedicated through the leading SPDX declaration.",
+      "sourceSha256": "5b65615ff5ac72de6a0805e36489f51580ea8d275e614208da308770c8234908",
+      "featureTags": [
+        "geometry",
+        "rounded-rectangle",
+        "regression",
+        "stroke"
+      ],
+      "width": 41,
+      "height": 35,
+      "admittedRendering": {
+        "changedPixelCount": 3,
+        "maximumChannelError": 9,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 3,
+        "minimumMismatchY": 6,
+        "maximumMismatchX": 9,
+        "maximumMismatchY": 22
+      },
+      "candidateSha256": "9bced3508b40d1c9573e515527c56361b2cd95d1209fbd96f347376655449404",
+      "oracle": {
+        "referencePng": "references/rounded-source-hairline-color.png",
+        "referenceSha256": "a5030eb351da168a80e44315311f25bda80b2231e52bbf8ec6a5d7819ecb6652",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true
+      }
+    },
+    {
+      "id": "research-rounded-source-oval-stroke",
+      "path": "rounded-source-oval-stroke.svg",
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Independent control dedicated through the leading SPDX declaration.",
+      "sourceSha256": "3de1a7de02219f7261a196eb39a20543a1aa477894c2cd73891f012a5dcae7b1",
+      "featureTags": [
+        "geometry",
+        "rounded-rectangle",
+        "regression",
+        "stroke"
+      ],
+      "width": 41,
+      "height": 35,
+      "admittedRendering": {
+        "changedPixelCount": 1,
+        "maximumChannelError": 3,
+        "maximumAlphaError": 2,
+        "alphaChangedPixelCount": 1,
+        "minimumMismatchX": 5,
+        "minimumMismatchY": 15,
+        "maximumMismatchX": 5,
+        "maximumMismatchY": 15
+      },
+      "candidateSha256": "6a4a9018048625619cc6b8c5e6a1480d21f739da597784a93b76391e268f533c",
+      "oracle": {
+        "referencePng": "references/rounded-source-oval-stroke.png",
+        "referenceSha256": "2f9e1b21d40b562b84e7c9f031eb2c7f1247ccb02aef34c23e9046562d297041",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true
       }
     }
   ]

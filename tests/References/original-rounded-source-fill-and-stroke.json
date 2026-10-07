@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-rounded-source-fill-and-stroke.png",
+  "referenceSha256": "f3d7a5efbb991b3d93ecd6d2f9c9b42d75391c0974f5b0e8d278d7eb95155baa",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "149a34441b5338f45e68d7de3cc3205bd1e0dfaf8dac31bc8e5ee889c8e2239f",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent body declared before prototype edits and capture/comparison. Fresh SPDX materialization captures preserve every original pixel.",
+  "fixtureId": "original-rounded-source-fill-and-stroke",
+  "inputSha256": "d84ffcd36990c745fc7902186ddadaac9034e2e01ee8cd707f3b843e300b0579",
+  "viewport": {
+    "width": 41,
+    "height": 35,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

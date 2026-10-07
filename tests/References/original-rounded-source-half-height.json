@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-rounded-source-half-height.png",
+  "referenceSha256": "747d516087fa0fa773cf682ec504d796094ea0ee8542311346347f1d62d02746",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "eece687ea00b075df55fa2a7464b51b86d275569cf273b9ba7cf95995f704b75",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent body declared before prototype edits and capture/comparison. Fresh SPDX materialization captures preserve every original pixel.",
+  "fixtureId": "original-rounded-source-half-height",
+  "inputSha256": "4c07d7f51cbc9b34f2d729a698d8e4660ab899a8d8d100cc52f72cc0f454a5fe",
+  "viewport": {
+    "width": 41,
+    "height": 35,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

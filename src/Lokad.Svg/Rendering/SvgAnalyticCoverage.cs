@@ -1691,10 +1691,12 @@ internal ref partial struct SvgAnalyticCoverage
         {
             CheckClippedSetupWork(setupWork + points.Length, maximumSetupWork, cancellationToken);
             // Equal turn signs do not prove convexity for an intersecting ring.
-            bool convexRing = IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
+            // Native shape builders retain convexity even when full-side radii produce zero-length lines.
+            bool knownConvex = preparation.Source?.IsKnownConvex == true;
+            bool convexRing = knownConvex || IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
             bool retained = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure, cancellationToken);
             setupWork += points.Length;
-            if (convexRing && retained)
+            if (convexRing && retained && !knownConvex)
             {
                 // Raw controls can reverse a turn that flattened samples omit. Reserve the
                 // complete traversal before classifying; later contexts reuse the decision.

@@ -1038,7 +1038,7 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Bevel_joins_render_differently_from_miter_on_rounded_rectangles()
+    public void Smooth_rounded_rectangle_corners_preserve_the_same_pixels_for_bevel_and_miter_joins()
     {
         byte[] miter = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\"/></svg>");
         byte[] bevel = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"bevel\"/></svg>");
@@ -1046,7 +1046,7 @@ public sealed class SvgRootParserTests
         ReadOnlyMemory<byte> miterPng = SvgConverter.ConvertToPng(miter, SvgRenderOptions.Default, CancellationToken.None);
         ReadOnlyMemory<byte> bevelPng = SvgConverter.ConvertToPng(bevel, SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.False(bevelPng.Span.SequenceEqual(miterPng.Span));
+        Assert.True(bevelPng.Span.SequenceEqual(miterPng.Span));
     }
 
     [Fact]

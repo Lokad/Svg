@@ -1,0 +1,29 @@
+{
+  "referencePng": "original-research-rounded-rect-solid-16x16.png",
+  "referenceSha256": "7770f22c4a9337381f90242328594271ad3e216c88b4f55a1e5c9d383945da35",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "candidateSha256": "65980a96a209df85d47237915ab4d129312f1f5aeccdbb9482c44faefdcac3ed",
+  "graduatedFrom": "research-rounded-rect-solid-16x16",
+  "fixtureId": "original-research-rounded-rect-solid-16x16",
+  "inputSha256": "832f1e56e29f3a3c99eb34033a84d3c15d29b0db3b5b1cf3c2c4bf2ac4a0a47f",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

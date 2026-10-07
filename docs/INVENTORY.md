@@ -3,25 +3,27 @@
 This document defines the versioned representative inventory required by PLAN.md R26.
 It records the selection rules, record schema, legal handling, and coverage accounting
 so that document sourcing can proceed without changing the rules midstream.
-No selection is claimed until documents are actually inventoried below.
+The frozen selection and measured outcomes are recorded below.
 
-## Isolated image-layer checkpoint (2026-10-07)
+## Rounded-rectangle source checkpoint (2026-10-07)
 
 The current cohort retains **27/27 exact documents**, marks **13/13**, wordmarks
 **14/14**: **258 exact, zero known and zero rejected** variants on Windows/Linux.
-Every corporate report and PNG remains unchanged under the image-layer repair.
+Every corporate report and PNG remains unchanged under the rounded-source repair.
 Membership, inputs, options and references stay frozen; holdouts receive no
 document-specific tuning.
 
-The bank has 1,278 fixtures (1,202 exact, 52 known, 24 rejected), 36 research
-probes (23 exact, 12 known, one rejected) and 92 Default renders:
-**1,406 executions**, with identical Windows/Linux results and PNG bytes.
-Three original opacity references graduate without recapture; the curved layer
-improves 1,510 differing pixels to one. Four independent regressions enter from
-twelve stable, healthy, cleaned captures; all other preceding bank results remain.
-[The design record](RASTERIZATION_DESIGN.md#isolated-image-layer-composition-2026-10-07)
-records the mechanism, broader controls and proof limits. PLAN owns the current
-queue; preceding checkpoints retain their historical totals.
+The bank has 1,289 fixtures (1,224 exact, 41 known, 24 rejected), 41 research
+probes (26 exact, 14 known, one rejected) and 92 Default renders:
+**1,422 executions**, with identical Windows/Linux results and PNG bytes.
+Eleven original fixture references and three original research probes become
+exact without recapture. The research originals remain, with fixture graduations;
+eight independent exact fixtures and five explicit known-difference research
+cases retain the new controls. All earlier exact results and rejections remain.
+Only inv-042 changes in the Default sweep, where it has no matching oracle.
+[The design record](RASTERIZATION_DESIGN.md#native-rounded-rectangle-source-commands-2026-10-07)
+records the mechanism, resources and proof limits. PLAN owns the current queue;
+preceding checkpoints retain their historical totals.
 
 ## Source-curve paint-bounds checkpoint (2026-10-07)
 
