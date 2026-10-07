@@ -7073,3 +7073,81 @@ new tracked corpus entries are introduced by this investigation.
 The preceding white-mask-copy probe uses `fill-opacity="0.7"`, not element opacity.
 Its residual belongs to paint-alpha/coverage and copy composition; the earlier
 checkpoint descriptions have been corrected accordingly.
+
+### Float factors and recorded state
+
+Sixteen supplemental authored CC0 sources / 48 configurations were declared
+after the byte-fold comparison, before the float/operation prototype and their
+own captures. They vary compound orthogonal fills, dashed lines, stroke-only and
+filled/stroked rectangles, local clips, group transforms and one/two use instances.
+All 144 supplemental captures are byte-stable, healthy and cleaned. Together with
+the first study, this gives 144 configurations / 432 validated reference captures.
+
+| Independently declared configurations | Production | Final isolated float/record model |
+| --- | --- | --- |
+| First 96 opacity configurations | 45 exact, 45 known differences, six rejected | 90 exact, six known differences, zero rejected |
+| Supplemental 48 operation configurations | 26 exact, 16 known differences, six rejected | 36 exact, 12 known differences, zero rejected |
+| Combined 144 configurations | 71 exact, 61 known differences, 12 rejected | 126 exact, 18 known differences, zero rejected |
+
+The model assigns logical identities before lowering, preserves them across
+fragments and remaps them per instance. It retains float element/group alpha,
+keeps separate solid and paint-server factors, and applies element opacity after
+ordered fill/stroke batches. This admits the six direct filled/stroked rounded
+rectangle configurations exactly. The six newly admitted plain filled/stroked
+rectangle configurations still differ by 20 pixels each; six translated rounded
+fills and six overlapping-child groups retain one differing pixel each.
+
+Logical identity alone failed: the first float model mis-folded clipped shapes,
+dashed lines and translated use instances. Pinned Chrome LayerTree snapshots in
+the same SVG-image wrapper provide direct recording evidence. Eight successful
+record captures produce screenshot bytes identical to the existing frozen
+references; timed-out attempts are excluded. The observed playback operations are:
+
+| Source operation at opacity 0.3125 | Observed native playback |
+| --- | --- |
+| Compound orthogonal fill / rounded stroke-only rectangle | One alpha-folded DrawPath; no opacity layer, despite several managed geometries. |
+| Dashed line with default fill | Opacity layer around two DrawPath operations: a zero-area fill followed by the stroke. An invisible fill still counts. |
+| Filled/stroked plain rectangle | Opacity layer around separate fill and stroke DrawRect operations. |
+| Local clip on the child | Opacity layer containing save/clip/draw/restore. |
+| Translated use instance | Opacity layer containing save/translate/draw/restore. |
+| Transform on the opacity group | Alpha-folded draw with the transform outside the folded record. |
+| Two use instances | Retained opacity layer and separate instance state/draw records. |
+
+These are playback snapshots, not a proof of original float operand bits or a
+complete native recording implementation. They confirm the pinned iterator's
+operation-count rule and show why the placement of state operations matters.
+The revised model preserves the three observed barriers. Record placement
+distinguishes child-local state from state outside the group's opacity record.
+
+Five targeted state/precision twins were then declared after model comparison and
+record inspection, before their own captures. All fifteen fresh native captures
+are healthy and cleaned; each triple has identical screenshot bytes and complete
+normalized command logs. A zero-position use, group-local clip and translucent
+RGBA fill fold and become exact. Moving translation from use x/y to its transform
+attribute preserves the native opacity layer: the earlier model regressed an
+exact image by 462 pixels. Retaining that local transform record restores exactness.
+The fifth twin, a dashed line with explicit `fill="none"`, records one folded native
+draw but remains rejected by production and the model because the line parser
+rejects its fill attribute. Keep that valid combination for the later scope audit.
+
+The final isolated model has four exact results and one unchanged rejection on
+these five post-model twins. Its full 1,558-case comparison closes the same five
+old research configurations as the byte model and preserves every other complete
+report and actual PNG except two legacy Default outputs (`inv-013`, `inv-014`).
+Those Default changes lack matching-option comparisons in this sweep and are not
+classified as improvements. Every corporate report and actual PNG is unchanged
+across all 258 variants. Earlier prototype regressions in pattern-box alpha and
+stroke-only rectangle paint counting are retained in the experiment evidence.
+
+This remains a Windows-only prototype. Geometry values grow 264 → 304 bytes and
+draw commands 72 → 88 bytes; complete budget/ownership checks, broader record
+parity and platform delivery are unproved. Production integration needs typed,
+bounded ownership of paint identity and scope-sensitive state, without adopting
+these enlarged payloads as an incidental cost. Definition/symbol copying, local
+versus inherited transforms/clips, rounded-to-opaque factors, material overrides,
+pattern content, denial/cancellation and all six outputs need their own gates.
+The remaining pixel differences retain separate geometry/material investigations.
+Production counts, source inputs, corporate membership and references remain
+unchanged; no prototype or new control is promoted by this record. Complete
+comparisons, actual PNGs, capture diagnostics, native records and rejected model
+results stay under ignored `artifacts/opacity-folding-20261007/`.

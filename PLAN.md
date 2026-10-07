@@ -829,7 +829,7 @@ completed stage: the remaining exit evidence below governs completion.
 | --- | --- | --- |
 | 1 | **Complete: bounded semantic repairs.** S12 miter threshold and R41 zero-area objectBoundingBox gradient path strokes are repaired. | Preserve acute-limit branches, degenerate path/use and userSpace controls; no reopened defect. |
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
-| 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. Next resolve single-paint opacity folding with logical paint-operation provenance and retained float opacity; preserve isolation for multiple paints. Byte-only folding is insufficient. General coverage/alpha and nested-layer composition retain independent gates; original white-background opacity controls are now exact. |
+| 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. Resolve single-paint opacity folding with retained float factors and drawing/state record boundaries, including invisible fills and local clip/transform operations; preserve isolation for multiple paints. Byte-only folding and visible geometry counts are insufficient. General coverage/alpha and nested-layer composition retain independent gates; original white-background opacity controls are now exact. |
 | 4 | **Shared scan conversion landed; general event fidelity remains open with rows 3 and 5.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows, retained cubics, clipped construction, CPU contexts and retained-path-point density have landed across the shared paint boundary. | Preserve the full exact corporate matrix, density/admission/cache regressions, X/Y splitting, projected winding, two-pass storage, whole-path dispatch, bitmap-bounded rows and exclusive interiors. Order remaining fractional events, crossings, counters and overlaps from known-difference fixtures, research probes and independent controls. |
 | 5 | **Retained curves and final device mapping remain partial with row 4.** Device-map threading, retained controls, live non-convex cubics, curve/walk separation, one-chord cubic and authored quadratic admission, source-curve paint bounds, axis-aligned float mapping, coupled numeric reading and compatible raw-control convexity, retained conic fills, live rational convex advancement native round-stroke conics and retained-curve float root mapping, authored directed fill replay and bitmap-local curve setup with raw-control bounds have landed. All 436 recorded authored points and the actual Ford CTM match; density integration makes all nine PNGs exact. | Preserve transform/instance and large-translation evidence and the closed row-6, (740,30), (375,269), (269,187) and lower-row witnesses. NASA is exact in all nine variants; remaining root/source operands still differ from recorded browser coordinates. Exact documents do not establish general mapping/event parity. Wider affine/instance, fractional-event and quad/convex/stroke work retains separate gates. |
 | 6 | **Partial: curve-aware stroke completion.** Native straight open-stroke winding, curve measurement/dash cuts and seam continuation, retained conic hairlines and normal-offset oval quadratics are retained. Native wider path offsets, joins/caps and closed seams now share source verbs with polylines and rounded rectangles; painted instances preserve their curve spans. | Remaining stroke curve/event/paint/clip fidelity, sampled shape routes and round/miter/hairline/pathLength/non-scaling coverage through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
@@ -857,12 +857,20 @@ failing pixels cannot become implementation predicates or tuned fixtures.
    retain their measured status; full cohort exactness does not close their gaps.
    Rounded fill/stroke source geometry, uniform group-mask composition and
    adjacent command ranges and leaf/use-instance mask composition are repaired.
-   Start with single-paint group opacity and paint-alpha precision, retaining
-   logical paint-operation boundaries through lowering and use expansion.
-   The isolated byte-fold model closes five existing research configurations
-   but worsens three independently selected translucent controls; it remains
-   experimental. Preserve float factors until the appropriate solid/shader
-   quantization boundary and isolate complete multiple-paint element batches.
+   Start with single-paint group opacity and paint-alpha precision. Preserve
+   drawing and state record boundaries through lowering and use expansion:
+   invisible fills, local clips and local transforms can retain a native layer,
+   while several managed geometries can represent one native draw operation.
+   Retain float factors through the distinct solid/shader quantization boundaries
+   and isolate complete multiple-paint element batches. The isolated Windows float model
+   reaches 126/144 exact new controls and closes five existing research cases;
+   it preserves all existing exact results and the full corporate matrix, but
+   remains experimental. Complete scope-sensitive record handling, definition/
+   symbol/paint-copy coverage and matching-option checks for changed Default
+   images before integration. Replace the prototype's enlarged per-geometry and
+   command payloads with bounded, owned state, then pass the affected resource,
+   six-output and Windows/Linux delivery gates. The design record retains the
+   rejected byte-only and incomplete record models, plus native-operation twins.
    See [the opacity investigation](docs/RASTERIZATION_DESIGN.md#single-paint-opacity-investigation-2026-10-07).
    Continue gradient/custom-region and circle/ellipse masks, hairline color,
    oval-stroke and remaining clip, paint and curve gaps with independent controls.
