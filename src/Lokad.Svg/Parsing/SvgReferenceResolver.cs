@@ -1114,16 +1114,16 @@ internal static class SvgReferenceResolver
     private static SvgGeometry FinishInstanceRadialFill(SvgRadialGradient circle, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted, RenderBudget budget)
     {
         SvgRectangle fill = placement with { HasFill = painted && !circle.IsEmpty };
-        if (circle.Stops.Length == 1 || (circle.Radius == 0 && !circle.IsEmpty)) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(circle.End, opacity) });
+        if (circle.Stops.Length > 1 && circle.Radius == 0 && !circle.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(circle.End, opacity) });
         return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, fill, opacity, null, budget));
     }
 
     private static SvgGeometry FinishInstanceGradientFill(SvgLinearGradient gradient, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted)
     {
         SvgRectangle fill = placement with { HasFill = painted && !gradient.IsEmpty };
-        if (gradient.Stops.Length == 1 || (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty))
+        if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
-            if (gradient.Stops.Length > 1 && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
+            if (gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
             return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, opacity) });
         }
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, opacity, null));

@@ -347,8 +347,8 @@ internal static class SvgGradientSyntax
             box = frame.Value.Shift(box);
         }
         SvgRectangle fill = placement with { HasFill = painted && !gradient.IsEmpty };
-        if (gradient.Stops.Length == 1) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
-        if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
+        // A single stop retains shader alpha and bitmap-local dithering.
+        if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
             if (gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
             return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
@@ -380,8 +380,7 @@ internal static class SvgGradientSyntax
             box = frame.Value.Shift(box);
         }
         SvgRectangle fill = placement with { HasFill = painted && !gradient.IsEmpty };
-        if (gradient.Stops.Length == 1) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
-        if (gradient.Radius == 0 && !gradient.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
+        if (gradient.Stops.Length > 1 && gradient.Radius == 0 && !gradient.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
         return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(gradient, box, fill, fillOpacity, painted ? stroke : null, state.Budget));
     }
 

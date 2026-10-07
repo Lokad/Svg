@@ -1,36 +1,23 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-07. **Current fidelity: 27/27 exact documents and 258/258 exact
+Updated 2026-10-08. **Current corporate fidelity: 27/27 exact documents and 258/258 exact
 variants on Windows and Linux**, with zero known differences and zero rejections.
 Marks are 13/13 exact; outlined wordmarks are 14/14. Membership, inputs, options
 and browser references stay frozen.
 
-The leaf/instance mask repair applies a leaf or use-instance mask after
-its complete fill/stroke batch composes. Copied source masks preserve their regions, nesting
-and distinct instance boundaries. Three original research configurations improve
-from 71 differing pixels to exact; 57 new control configurations become exact,
-including three valid backward-mask/forward-clip admission graduations. All other
-1,474 preceding bank results and all 258 corporate reports/images remain unchanged.
-The complete 1,558-case bank produces identical Windows/Linux output bytes;
-Release builds, 3,997 tests and fresh 25-scenario memory checks pass on each platform.
-See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#leaf-and-instance-mask-composition-2026-10-07).
-Gradient/custom-region masks, fill-opacity precision and circle/ellipse controls retain
-measured differences; multiple-child symbols expose a retained valid-SVG rejection.
+The latest repair retains shader alpha and bitmap-local dithering for one-stop
+linear/radial rectangle gradients and rectangle instances. Two direct browser
+controls become exact from 540 differing pixels each. Five unchanged CC0 inputs
+retain fifteen stable browser captures; three opacity controls preserve measured
+differences for the pending float-opacity work. See
+[the repair and its limits](docs/RASTERIZATION_DESIGN.md#single-stop-rectangle-shaders-2026-10-08).
 
-The subsequent fill/stroke cleanup releases unpublished geometry when rounded
-stroke admission/construction or concatenation fails. Four new core cases pass;
-all 1,558 bank results and all 258 corporate images remain unchanged on both
-platforms. See [the cleanup](docs/RASTERIZATION_DESIGN.md#production-fillstroke-failure-cleanup).
-
-Integer closed path definitions now preserve their authored source for strokes
-supplied by `<use>`. Miter instances previously rendered blank; round instances
-rejected valid unstyled paths. Four new CC0 browser controls retain two exact
-leaf-opacity results and two known parent-opacity results (220 changed pixels
-each). Six core cases cover rendering, denial and cleanup; four visual cases
-cover all six outputs. The current bank has **1,562 executions**; all 1,558 preceding
-results and all 258 corporate images remain unchanged. Both platforms pass
-**4,007 tests**, Release builds, memory and installed-package checks.
-See [the repair and its remaining opacity gap](docs/RASTERIZATION_DESIGN.md#integer-path-instance-strokes-2026-10-07).
+The current bank has **1,567 executions**, including 1,539 rendered PNGs, with
+identical Windows/Linux reports and output bytes. All 1,562 preceding bank results
+and all 258 corporate reports/images remain unchanged. Both platforms pass
+Release builds, **4,024 tests**, 25-scenario memory checks and installed-package
+checks. Earlier mask, stroke-source and ownership checkpoints retain their dated
+evidence in the design record and inventory.
 
 **The full frozen-cohort fidelity target is achieved.** Preserve these exact
 results while improving shared renderer behavior beyond this cohort. S17's remote
@@ -155,13 +142,13 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,007 passed on each platform**: 3,785 core, 216 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **4,024 passed on each platform**: 3,797 core, 221 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | Parser-owned mask operations/nodes use reserved, bounded iterative mapping and command emission; scenes retain values after borrowed links clear. Sixteen new core cases cover copy/region/sibling boundaries, root opacity, deep chains, memory/work denial and cleanup. Exhaustive work denial also repairs definition registration, instance-transfer and temporary group-clone leaks. Twenty-three visual cases cover 69 exact configurations × six outputs. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API or runtime dependency changes; remote CI remains open. |
-| Executed fixture manifest | **1,405 entries = 1,338 exact + 43 known-difference renders + 24 rejections**; 794 base documents / 611 variants. The leaf/instance checkpoint added 66 exact controls and three original research graduations. The integer-path instance repair adds two exact and two known-opacity controls; all preceding outcomes/images stay unchanged. |
+| Executed fixture manifest | **1,410 entries = 1,340 exact + 46 known-difference renders + 24 rejections**; 799 base documents / 611 variants. The leaf/instance checkpoint added 66 exact controls and three original research graduations. Integer-path instances add two exact and two known-opacity controls; the one-stop shader repair adds two exact and three known-opacity controls. All preceding outcomes/images stay unchanged. |
 | Executed research manifest | **65 probes = 30 exact + 31 known-difference renders + four rejections**. Three original leaf-mask probes become exact without recapture and retain their original evidence alongside fixture graduations. Nine new gradient/fill-opacity/circle/ellipse controls retain known differences. Three unchanged multiple-child symbol configurations retain an erroneous MalformedInput rejection of valid SVG for the later scope audit. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. All preceding rounded-source outputs remain unchanged. These Default outputs do not establish matching-options corporate fidelity. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
-| Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the leaf/instance repair. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
+| Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared mask, stroke and one-stop shader repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Seventy-two matched admitted mask recipes in both process orders change total work by -2,230 to +12,702 units, accounted peak by +0 to +7,868 bytes and owned-output allocation traffic by +224 to +62,046 bytes. Geometry values grow 256 → 264 bytes even without masks; command values remain 72 bytes. The preceding 258-recipe Windows ShortRun is historical; no new representative throughput claim. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
@@ -851,7 +838,7 @@ completed stage: the remaining exit evidence below governs completion.
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings, retained paint clips, shared float shaders, isolated uniform masks on groups, leaves and use instances, and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Complete: full frozen-cohort fidelity.** Both selected logo checkpoints, S8 measurement and the stronger 27/27-document / 258/258-variant objective are achieved on Windows/Linux. Every variant has a stable browser reference and an exact reproducible report. | Preserve every exact result, membership, inputs, options and references. Remote CI remains an open S17 release requirement; retain selection/ShortRun limits and the independent exits for rows 3–7. |
 
-### Current work order: preserve fidelity and finish release evidence (2026-10-07)
+### Current work order: finish fidelity gaps, then audit SVG support (2026-10-08)
 
 The frozen-cohort target is achieved on both platforms: **27/27 documents,
 13/13 marks, 14/14 wordmarks, 258/258 variants, zero known differences and zero
@@ -862,13 +849,16 @@ close IBM. Each repair uses shared renderer behavior and independent controls.
 IBM remains an evaluation holdout; its coordinates, variant sizes and observed
 failing pixels cannot become implementation predicates or tuned fixtures.
 
-1. **Complete S17 remote CI evidence.** Retain fresh local Windows/Linux delivery
-   and platform-reference results; obtain remote build/test/package/resource
-   evidence before claiming S17 complete. The public GitHub repository is currently
-   empty; obtaining runs requires publishing the reviewed branch.
-2. **Continue shared fidelity work under rows 3–7.** Use independent phase,
+S17 remote CI remains an open release requirement. Retain fresh local
+Windows/Linux delivery and platform-reference results; obtain remote
+build/test/package/resource evidence before claiming S17 complete. The public
+GitHub repository is empty at the recorded checkpoint; obtaining runs requires
+publishing the reviewed branch. This release requirement does not close or
+replace the renderer work below.
+
+1. **Continue shared fidelity work under rows 3–7.** Use independent phase,
    transform, coverage, stroke, clip and paint controls to distinguish remaining
-   mechanisms. The 43 known-difference fixture renders and 31 research renders
+   mechanisms. The 46 known-difference fixture renders and 31 research renders
    retain their measured status; full cohort exactness does not close their gaps.
    Rounded fill/stroke source geometry, uniform group-mask composition and
    adjacent command ranges and leaf/use-instance mask composition are repaired.
@@ -889,10 +879,17 @@ failing pixels cannot become implementation predicates or tuned fixtures.
    and all preceding bank reports/PNGs unchanged. The integer-path stroke source
    repair has landed separately; parent-opacity controls preserve its remaining
    color/coverage gap. Complete recording-scope handling, definition/symbol/paint-copy
-   ownership and the full opacity-control regression sweep. Add independent
-   constant/degenerate shader, symbol paint-override and nested-viewport controls,
-   plus matching-option checks for changed Default
-   images before integration. The prototype's owned paint storage reduces geometry
+   ownership and the full opacity-control regression sweep. Preserve the independent
+   constant/degenerate shader, symbol paint-override and nested-viewport controls.
+   The 35 independently declared material controls have 105 stable, healthy,
+   cleaned browser captures. The extended prototype reaches 21 exact, six
+   known-difference renders and eight categorized rejections; two-paint shader
+   strokes, symbol gradient overrides and degenerate-gradient fill-opacity
+   remain open. Preserve those valid rejected inputs for the later admission
+   audit. The standalone one-stop rectangle/instance repair retains shader alpha
+   and dithering, making the direct linear/radial controls exact; element and
+   parent opacity remain separate gaps. Add matching-option checks for changed
+   Default images before integrating the larger prototype. Its owned paint storage reduces geometry
    values to 272 bytes and keeps commands at 72 bytes; finish ownership across all
    affected routes, then pass the affected resource,
    six-output and Windows/Linux delivery gates. The design record retains the
@@ -900,11 +897,11 @@ failing pixels cannot become implementation predicates or tuned fixtures.
    See [the opacity investigation](docs/RASTERIZATION_DESIGN.md#single-paint-opacity-investigation-2026-10-07).
    Continue gradient/custom-region and circle/ellipse masks, hairline color,
    oval-stroke and remaining clip, paint and curve gaps with independent controls.
-3. **Preserve the complete exact matrix.** Compare shared raster changes across
+2. **Preserve the complete exact matrix.** Compare shared raster changes across
    every declared fixture, research and Default case and all 258 corporate
    variants on Windows/Linux. Keep categorized rejections and selection limits
    explicit; select any future representative cohort before measurement.
-4. **Then revise the plan around remaining SVG gaps within the original scope.**
+3. **Then revise the plan around remaining SVG gaps within the original scope.**
    After the identified renderer shortcomings are resolved, audit the support
    matrix against the original static, self-contained SVG requirements and
    replace the completed repair queue with the remaining feature work. Include
@@ -1063,10 +1060,10 @@ open for S17.
 
 A bounded shared repair may land with independent mechanism-level improvement
 and nonregression across the full exact corporate matrix. Preserve all
-**1,338 currently exact fixture entries**, 30 exact research probes, 258 exact corporate images
+**1,340 currently exact fixture entries**, 30 exact research probes, 258 exact corporate images
 and required categorized rejections. Intentional syntax graduations need explicit
 contract/tests/provenance updates. Shared rasterization changes require comparison
-across the complete **1,562-case current bank** and all 258 frozen corporate cases.
+across the complete **1,567-case current bank** and all 258 frozen corporate cases.
 Earlier bank comparisons remain historical evidence. Report fixture/research/legacy
 and corporate regression scopes separately.
 Run affected ownership/work/cancellation,

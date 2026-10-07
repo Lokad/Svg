@@ -5,9 +5,37 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Single-stop rectangle shader checkpoint (2026-10-08)
+
+The current bank has **1,410 fixtures** (1,340 exact, 46 known, 24 rejected),
+**65 research probes** (30 exact, 31 known, four rejected) and 92 Default renders:
+**1,567 executions**, including 1,539 rendered PNGs. The five new local CC0 inputs
+retain their original bytes and fifteen stable, healthy, cleaned browser captures,
+selected from independent material controls declared before this repair.
+
+Direct linear/radial one-stop rectangles become exact from 540 differing pixels
+each. Leaf-opacity and instance-override controls retain 177 differing pixels;
+the parent-opacity control retains 252. Those three were 228 each before the
+shader repair: the parent control exposes the unresolved opacity mechanism more
+strongly. Preserve its original browser reference and measured status. This repair
+does not close the larger float-opacity, paint-copy or recording investigation.
+Twelve core cases cover the shader route, instances, degenerate single-stop
+coordinates and ownership denial; five visual cases cover all six outputs.
+See [the design record](RASTERIZATION_DESIGN.md#single-stop-rectangle-shaders-2026-10-08).
+
+All 1,562 preceding bank reports and PNGs remain unchanged. The complete current
+bank has identical Windows/Linux reports and PNG bytes; the frozen corporate
+cohort remains 27/27 documents and 258/258 variants exact against each platform's
+validated references. Both Release builds, 4,024 tests, 25 memory scenarios and
+installed-package checks pass.
+
+Online sourcing remains a later phase: finish the identified renderer shortcomings,
+then audit the original static SVG scope and retain explicitly public-domain/CC0
+online examples of missing support or incorrect rendering, with provenance.
+
 ## Integer path instance stroke checkpoint (2026-10-07)
 
-The current bank has **1,405 fixtures** (1,338 exact, 43 known, 24 rejected),
+That checkpoint has **1,405 fixtures** (1,338 exact, 43 known, 24 rejected),
 **65 research probes** (30 exact, 31 known, four rejected) and 92 Default renders:
 **1,562 executions**. All 1,558 preceding reports and rendered PNGs remain unchanged;
 Windows/Linux bank results match. The frozen corporate cohort stays **27/27 exact

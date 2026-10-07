@@ -1,0 +1,35 @@
+{
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "referencePng": "original-one-stop-alpha-direct.png",
+  "referenceSha256": "02f38d0c621c8148d8a76f82c5e230015264545dd7993468d04db63c328a1442",
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent material controls were declared and captured before the standalone one-stop shader repair. Each retained input has three identical, healthy, cleaned screenshots from the pinned browser. Unused definitions are retained with the original bytes.",
+  "fixtureId": "original-one-stop-alpha-direct",
+  "inputSha256": "1be17f63122e57358f039ce8d3e8464fee30f3d78ec963f0a99ed3bcaac34ab5",
+  "viewport": {
+    "width": 61,
+    "height": 47,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 61,
+    "minimumMismatchY": 47,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

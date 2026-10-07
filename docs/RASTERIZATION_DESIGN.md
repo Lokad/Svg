@@ -7300,3 +7300,60 @@ instance and plain-rectangle fill/stroke coverage. Whole opacity-control,
 constant/degenerate shader, symbol override, viewport scope, ownership, matching
 Default-option and platform integration gates remain open. This experiment has
 not changed production opacity arithmetic.
+
+## Single-stop rectangle shaders (2026-10-08)
+
+Independent material controls expose a separate production defect: one-stop
+linear/radial rectangle gradients become solid paints before rasterization.
+That discards authored stop alpha and bitmap-local shader dithering. Both direct
+controls differ at 540 pixels despite having the expected coverage and alpha.
+Retaining the existing gradient geometry makes both controls pixel-exact.
+
+Rectangle lowering and rectangle-instance paint overrides now retain one-stop
+shaders, including zero-vector/zero-radius single-stop definitions. Existing
+multi-stop degenerate solid fallback and spread admission remain unchanged.
+Polygon, outline, stroke and other solid-lowered routes keep their existing
+behavior; their one-stop fidelity remains separate work. This repair introduces
+no paint arena, public API, dependency or geometry/command layout change.
+
+Five unchanged CC0 source bodies retain fifteen identical, healthy, cleaned
+screenshots from Chrome 153.0.8010.52 win64, recipe 3. They were declared and
+captured before the production repair, among 35 material controls with 105
+validated captures. The two direct controls are exact. The leaf-opacity and
+instance-override controls retain 177 differing pixels; the parent-opacity
+control retains 252. Maximum channel error is six with no changed alpha pixels.
+Each was 228 before the repair: the parent control exposes a larger residual
+after the shader route is corrected. These original references and measured
+differences remain in the bank for the pending opacity work.
+
+Twelve core cases check independently captured browser pixels, direct/instance
+routes, degenerate single-stop coordinates, every parser work denial, sampled
+memory denial, raster work boundaries and canceled parser/raster ownership.
+Five visual cases verify browser comparisons through all six output forms.
+The earlier parser assertion that one-stop rectangles must become solid geometry
+is replaced by a check that authored shader alpha survives parsing.
+
+The isolated larger paint/recording prototype is still experimental. Its material
+extension preserves shader-origin fallback alpha, retains one-stop shaders,
+counts shader fill/stroke as separate paints, restores the correct stroke paint
+around solid rectangle-stroke bands, guards definition/symbol copy owners and
+maps symbol shader-override metadata. It reaches 21 exact controls, six known
+differences and eight categorized rejections across the 35 material controls.
+The residuals include two-paint shader-stroke color, symbol gradient overrides
+and degenerate-gradient fill-opacity arithmetic. Valid symbol fill-opacity and
+parent nested-viewport inputs remain admission gaps; nested-group opacity keeps
+its existing categorized rejection. Full preceding opacity-control, copy-owner,
+matching Default-option, resource and platform gates remain required before
+integrating that model. Inspector picture replay is not the screenshot oracle.
+
+Both nine-project Release builds pass with zero warnings/errors. Each platform
+passes 4,024 tests (3,797 core, 221 visual-project, six FontProbe), 25 memory
+scenarios, runtime/symbol packages and installed-consumer checks. All 1,562
+preceding bank reports and their 1,534 PNGs remain unchanged; the complete
+1,567-case bank produces identical Windows/Linux reports and 1,539 PNG bytes.
+Corporate membership, inputs, options and references stay frozen: 27/27 documents
+and 258/258 variants remain exact against each platform's validated references,
+with all preceding reports/images unchanged. Geometry and commands stay at
+264 and 72 bytes. Measurements remain in ignored `artifacts/opacity-folding-20261007/`
+and `artifacts/linux-delivery-20261007/single-stop-final-20261008/`; Git identifies
+the implementation without implementation fingerprints in tracked references.

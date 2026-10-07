@@ -2527,11 +2527,16 @@ public sealed class SvgRootParserTests
         Assert.True(gradientPng.Span.SequenceEqual(baselinePng.Span));
     }
     [Fact]
-    public void Renders_single_stop_gradient_rects_as_solids()
+    public void Retains_single_stop_rectangle_shader_alpha()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.3' stop-color='#ff0000'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0.3' stop-color='#ff0000' stop-opacity='.27'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgGradientGeometry gradient = Assert.Single(root.Geometries).Gradient;
+        Assert.Equal(8, gradient.Fill.Width);
+        Assert.Equal(8, gradient.Fill.Height);
+        SvgGradientStop stop = Assert.Single(gradient.Gradient.Stops);
+        Assert.Equal(.27f, stop.Alpha);
+        Assert.Equal(new SvgColor(255, 0, 0, 69), stop.Color);
     }
 
     [Fact]
