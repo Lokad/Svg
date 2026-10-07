@@ -7009,7 +7009,7 @@ on each platform. No public API, runtime dependency or implementation hash is ad
 
 The legacy default-region bounding-box admission remains; these controls do not
 prove general fill-bounds, wide-stroke/default-region or wider affine/custom-region
-semantics. Fractional custom-region, gradient material, element-opacity and
+semantics. Fractional custom-region, gradient material, fill-opacity precision and
 circle/ellipse residuals remain measured. Source clips copied before deferred
 resolution retain their separate gates. Genuine nested-opacity and spatial-mask
 rejections remain. Copied mask-chain storage grows quadratically for the shallow
@@ -7025,3 +7025,51 @@ throughput claim. See [the benchmark record](BENCHMARKS.md#leaf-and-instance-mas
 Full ledgers and capture evidence stay under ignored
 `artifacts/leaf-mask-scopes-20261007/`; Git identifies implementation. The remaining
 original-scope audit and online public-domain/CC0 sourcing phase has not started.
+
+## Single-paint opacity investigation (2026-10-07)
+
+This is an isolated Windows experiment against production `2204ab1b`, not a
+renderer repair. Production counts and the validated delivery checkpoint above
+remain unchanged. Thirty-two authored CC0 sources / 96 configurations were
+declared before prototype edits or browser capture/comparison. They vary direct
+versus group opacity, two opacity values, three backgrounds, rounded/straight/path
+fills, gradients, translucent fills, fill/stroke and disjoint/overlapping children.
+All 288 retained fresh-process captures are byte-stable, healthy and cleaned.
+Four failed attempt sets remain separate; their complete triples were retried
+sequentially rather than accepting PNGs from timed-out invocations.
+
+The pinned Chromium [playback iterator](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/cc/paint/paint_op_buffer_iterator.cc)
+folds a SaveLayerAlpha/drawing-op/Restore sequence only when the nested record
+contains one eligible paint operation. Text blobs and multiple-operation records
+retain the layer. [Raster flags](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/cc/paint/scoped_raster_flags.h)
+multiply float alpha. This is native paint-operation provenance, not SVG child
+count or managed geometry count: one stroke can lower into several geometries,
+and one managed rectangle can contain both fill and stroke paints. State operations
+inside a record can also prevent folding.
+
+Production renders 45 configurations exactly and 45 with differences, rejecting
+six direct filled/stroked rounded rectangles with element opacity. Browser twins
+confirm identical direct/group images for the six single-element shape families,
+including fill/stroke; the two multiple-child families have distinct outputs.
+The diagnostic immediate-single-geometry byte-fold model produces 66 exact,
+24 differing and six rejected configurations. It closes 21 controls and five old
+research configurations, preserves every other complete report/PNG in the
+1,558-case bank and every corporate report/PNG in the 258-variant matrix, but
+worsens all three translucent-fill controls at opacity 0.4375. These are model
+results, not fixture graduations or platform delivery evidence.
+
+For example, independently rounding fill opacity 0.7 and group opacity 0.4375
+gives byte factors 179 and 112, whose round/255 product is 79. Multiplying the
+source floats before solid-color packing gives 78. The pinned [Blink paint resolver](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/paint/svg_object_painter.cc)
+retains solid-color alpha as float while quantizing paint-server fill/stroke opacity
+before layer folding. [Skia solid packing](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkSwizzlePriv.h)
+uses the final float value. The next repair must retain these distinct precision
+boundaries, logical operation identity and complete multiple-paint element effects,
+with bounded copying, ownership and resource checks. A physical geometry shortcut
+does not establish the required semantics. Full experimental evidence stays under
+ignored `artifacts/opacity-folding-20261007/`; no implementation fingerprints or
+new tracked corpus entries are introduced by this investigation.
+
+The preceding white-mask-copy probe uses `fill-opacity="0.7"`, not element opacity.
+Its residual belongs to paint-alpha/coverage and copy composition; the earlier
+checkpoint descriptions have been corrected accordingly.

@@ -14,7 +14,7 @@ including three valid backward-mask/forward-clip admission graduations. All othe
 The complete 1,558-case bank produces identical Windows/Linux output bytes;
 Release builds, 3,993 tests and fresh 25-scenario memory checks pass on each platform.
 See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#leaf-and-instance-mask-composition-2026-10-07).
-Gradient/custom-region masks, element opacity and circle/ellipse controls retain
+Gradient/custom-region masks, fill-opacity precision and circle/ellipse controls retain
 measured differences; multiple-child symbols expose a retained valid-SVG rejection.
 
 **The full frozen-cohort fidelity target is achieved.** Preserve these exact
@@ -143,7 +143,7 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Full tests, including corporate selection/measurement | **3,993 passed on each platform**: 3,775 core, 212 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | Parser-owned mask operations/nodes use reserved, bounded iterative mapping and command emission; scenes retain values after borrowed links clear. Sixteen new core cases cover copy/region/sibling boundaries, root opacity, deep chains, memory/work denial and cleanup. Exhaustive work denial also repairs definition registration, instance-transfer and temporary group-clone leaks. Twenty-three visual cases cover 69 exact configurations × six outputs. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API or runtime dependency changes; remote CI remains open. |
 | Executed fixture manifest | **1,401 entries = 1,336 exact + 41 known-difference renders + 24 rejections**; 790 base documents / 611 variants. Sixty-six new exact controls and three original research graduations enter the bank. All prior fixture outcomes/images and declared rejections stay unchanged; three new controls graduate the valid backward-mask/forward-clip combination. |
-| Executed research manifest | **65 probes = 30 exact + 31 known-difference renders + four rejections**. Three original leaf-mask probes become exact without recapture and retain their original evidence alongside fixture graduations. Nine new gradient/element-opacity/circle/ellipse controls retain known differences. Three unchanged multiple-child symbol configurations retain an erroneous MalformedInput rejection of valid SVG for the later scope audit. |
+| Executed research manifest | **65 probes = 30 exact + 31 known-difference renders + four rejections**. Three original leaf-mask probes become exact without recapture and retain their original evidence alongside fixture graduations. Nine new gradient/fill-opacity/circle/ellipse controls retain known differences. Three unchanged multiple-child symbol configurations retain an erroneous MalformedInput rejection of valid SVG for the later scope audit. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. All preceding rounded-source outputs remain unchanged. These Default outputs do not establish matching-options corporate fidelity. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the leaf/instance repair. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
@@ -829,7 +829,7 @@ completed stage: the remaining exit evidence below governs completion.
 | --- | --- | --- |
 | 1 | **Complete: bounded semantic repairs.** S12 miter threshold and R41 zero-area objectBoundingBox gradient path strokes are repaired. | Preserve acute-limit branches, degenerate path/use and userSpace controls; no reopened defect. |
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
-| 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. General coverage/alpha and nested-layer composition need independent controls; original white-background opacity controls are now exact. |
+| 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. Next resolve single-paint opacity folding with logical paint-operation provenance and retained float opacity; preserve isolation for multiple paints. Byte-only folding is insufficient. General coverage/alpha and nested-layer composition retain independent gates; original white-background opacity controls are now exact. |
 | 4 | **Shared scan conversion landed; general event fidelity remains open with rows 3 and 5.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows, retained cubics, clipped construction, CPU contexts and retained-path-point density have landed across the shared paint boundary. | Preserve the full exact corporate matrix, density/admission/cache regressions, X/Y splitting, projected winding, two-pass storage, whole-path dispatch, bitmap-bounded rows and exclusive interiors. Order remaining fractional events, crossings, counters and overlaps from known-difference fixtures, research probes and independent controls. |
 | 5 | **Retained curves and final device mapping remain partial with row 4.** Device-map threading, retained controls, live non-convex cubics, curve/walk separation, one-chord cubic and authored quadratic admission, source-curve paint bounds, axis-aligned float mapping, coupled numeric reading and compatible raw-control convexity, retained conic fills, live rational convex advancement native round-stroke conics and retained-curve float root mapping, authored directed fill replay and bitmap-local curve setup with raw-control bounds have landed. All 436 recorded authored points and the actual Ford CTM match; density integration makes all nine PNGs exact. | Preserve transform/instance and large-translation evidence and the closed row-6, (740,30), (375,269), (269,187) and lower-row witnesses. NASA is exact in all nine variants; remaining root/source operands still differ from recorded browser coordinates. Exact documents do not establish general mapping/event parity. Wider affine/instance, fractional-event and quad/convex/stroke work retains separate gates. |
 | 6 | **Partial: curve-aware stroke completion.** Native straight open-stroke winding, curve measurement/dash cuts and seam continuation, retained conic hairlines and normal-offset oval quadratics are retained. Native wider path offsets, joins/caps and closed seams now share source verbs with polylines and rounded rectangles; painted instances preserve their curve spans. | Remaining stroke curve/event/paint/clip fidelity, sampled shape routes and round/miter/hairline/pathLength/non-scaling coverage through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
@@ -857,9 +857,15 @@ failing pixels cannot become implementation predicates or tuned fixtures.
    retain their measured status; full cohort exactness does not close their gaps.
    Rounded fill/stroke source geometry, uniform group-mask composition and
    adjacent command ranges and leaf/use-instance mask composition are repaired.
-   Investigate gradient/custom-region and circle/ellipse masks, element and
-   ordinary layer opacity, hairline color and oval-stroke residuals with
-   independent controls, alongside remaining clip, paint and curve gaps.
+   Start with single-paint group opacity and paint-alpha precision, retaining
+   logical paint-operation boundaries through lowering and use expansion.
+   The isolated byte-fold model closes five existing research configurations
+   but worsens three independently selected translucent controls; it remains
+   experimental. Preserve float factors until the appropriate solid/shader
+   quantization boundary and isolate complete multiple-paint element batches.
+   See [the opacity investigation](docs/RASTERIZATION_DESIGN.md#single-paint-opacity-investigation-2026-10-07).
+   Continue gradient/custom-region and circle/ellipse masks, hairline color,
+   oval-stroke and remaining clip, paint and curve gaps with independent controls.
 3. **Preserve the complete exact matrix.** Compare shared raster changes across
    every declared fixture, research and Default case and all 258 corporate
    variants on Windows/Linux. Keep categorized rejections and selection limits
@@ -867,13 +873,24 @@ failing pixels cannot become implementation predicates or tuned fixtures.
 4. **Then revise the plan around remaining SVG gaps within the original scope.**
    After the identified renderer shortcomings are resolved, audit the support
    matrix against the original static, self-contained SVG requirements and
-   replace the completed repair queue with the remaining feature work. Find more
-   explicitly public-domain or CC0 SVG images online, preserving original bytes,
-   source links and license evidence. Retain rejected or incorrectly rendered
-   examples as development cases with categorized failures and stable browser
-   references. Use the existing inventory and comparison tooling. A bank selected
-   for failures guides implementation; future representative cohorts still need
-   selection before measurement. Preserve the current frozen exact cohort.
+   replace the completed repair queue with the remaining feature work. Include
+   valid SVG currently rejected by admitted feature combinations, such as the
+   retained multiple-child symbol, alongside missing static features. Rank work
+   by ordinary export usage and shared mechanisms; give each item concrete
+   failing examples and an admission/fidelity exit criterion.
+   Find more explicitly public-domain or CC0 SVG images online. Retain original
+   downloaded bytes, source/creator links, retrieval dates and explicit license
+   evidence in the existing inventory. Keep examples with missing or ambiguous
+   license evidence out of the tracked corpus. Record any test materialization
+   separately from the original. Retain in-scope rejected or incorrectly rendered
+   examples as development cases, with the failure category, rendering options
+   and stable browser references. Prefer new feature combinations over duplicate
+   examples of an already represented failure. Use the existing comparison tools
+   and reuse references while inputs, options and the oracle pin stay unchanged.
+   This failure-selected bank guides implementation; future representative cohorts
+   still need selection before measurement. Preserve the current frozen exact
+   cohort and the pure-managed, dependency-free contract; the original exclusions
+   in section 5 continue to govern scope.
 
 Reuse stable, validated browser references while inputs, options and the oracle
 pin remain unchanged. New independent controls need their own stable captures;

@@ -26,7 +26,7 @@ symbol controls were declared after supplemental comparison and before their
 own capture/comparison. These are development controls, not representative holdouts.
 Fifty-seven become exact, including three valid backward-mask/forward-clip
 admission graduations. Sixty-six exact configurations enter fixtures; nine known
-gradient, element-opacity and circle/ellipse configurations stay in research.
+gradient, fill-opacity and circle/ellipse configurations stay in research.
 The original multiple-child symbol source and all three browser configurations
 remain unchanged in research: valid SVG incorrectly rejected as MalformedInput,
 not a malformed asset. The later original-scope audit can use this example.

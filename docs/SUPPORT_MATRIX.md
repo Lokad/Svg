@@ -20,7 +20,7 @@ produce no scope. Leaf fill/stroke batches and masked use instances now compose
 before uniform mask application; copied masks retain sharing within one instance
 and distinct identity between instances. Backward masks with forward clips on
 direct leaves have exact independent controls. Gradient/custom-region masks,
-element opacity and circle/ellipse masks retain measured gaps. Default-region
+fill-opacity precision and circle/ellipse masks retain measured gaps. Default-region
 bounds, wider affine/custom-region combinations and copied forward clips are not
 established by these controls. Multiple-child symbols are valid SVG currently
 rejected as MalformedInput by duplicate-ID registration; that is a renderer gap.
