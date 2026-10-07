@@ -191,6 +191,11 @@ try {
             elseif ($request -eq 1)
             {
                 if ($context.Request.RawUrl -ne '/synthetic-http-retry-pack/synthetic.ttf') { $context.Response.StatusCode = 404; $context.Response.Close(); throw 'The HTTP retry font probe requested an unexpected program path.' }
+                # Abort alone can produce a valid empty response on Linux. Declare an incomplete body
+                # so both platforms exercise a transport failure rather than a font-length mismatch.
+                $context.Response.StatusCode = 200
+                $context.Response.ContentLength64 = 1
+                $context.Response.OutputStream.Flush()
                 $context.Response.Abort()
             }
             else

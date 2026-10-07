@@ -1,6 +1,10 @@
 {
   "sourceRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
   "sourceUrl": "https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathBuilder.cpp",
+  "vectorPlatforms": {
+    "endpoint-arc-native.csv": "Windows x64: original native function with the record/matrix adapter.",
+    "endpoint-arc-native-linux.csv": "Ubuntu 24.04 x64, glibc 2.39, GCC 13.3 -O2 -ffp-contract=off: the same original function and adapter. Only rotated-negative differs; all 36 managed rows match native bits on their platform."
+  },
   "cases": [
     {
       "id": "quarter",

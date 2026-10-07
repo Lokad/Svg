@@ -48,8 +48,11 @@ function Get-SingleFile([string] $Directory, [string] $Filter, [string] $Context
 function Assert-PlatformOsArchitecture([object] $Fingerprint, [string] $Context)
 {
     $operatingSystem = [string](Get-RequiredProperty $Fingerprint 'operatingSystem' $Context)
-    if ($Platform -eq 'Windows' -and -not $operatingSystem.StartsWith('Microsoft Windows', [StringComparison]::OrdinalIgnoreCase)) { Fail "$Context is not a Windows fingerprint: $operatingSystem" }
-    if ($Platform -eq 'Linux' -and $operatingSystem -notmatch 'Linux') { Fail "$Context is not a Linux fingerprint: $operatingSystem" }
+    # This gate validates fresh artifacts on their producing CI worker. Linux descriptions can be
+    # distribution names such as Ubuntu; classify the worker through the runtime API instead.
+    $expectedPlatform = [Runtime.InteropServices.OSPlatform]::Create($Platform.ToUpperInvariant())
+    if (-not [Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($expectedPlatform)) { Fail "Validator worker does not run $Platform." }
+    Assert-Equal ([Runtime.InteropServices.RuntimeInformation]::OSDescription) $operatingSystem "$Context operating system"
     Assert-Equal 'X64' (Get-RequiredProperty $Fingerprint 'processArchitecture' $Context) "$Context process architecture"
 }
 
@@ -89,7 +92,10 @@ function Test-ChromeArtifact
     if ($chromeRuntimes -cnotcontains $captureToolVersion) { Fail "Chrome capture-tool runtime $captureToolFramework is not among the recorded dotnet runtimes." }
     Assert-Equal 3 (Get-RequiredProperty $fingerprint 'freshProcessCaptures' 'Chrome fingerprint') 'Chrome fresh-process capture count'
     Assert-Equal 120000 (Get-RequiredProperty $fingerprint 'captureTimeoutMilliseconds' 'Chrome fingerprint') 'Chrome capture timeout'
-    foreach ($name in @('locale', 'timeZone', 'headlessMode', 'gpuPolicy', 'sandbox', 'resourcePolicy', 'colorSpacePolicy', 'fontPolicy', 'background')) { [void](Get-RequiredProperty $fingerprint $name 'Chrome fingerprint') }
+    # CultureInfo.InvariantCulture.Name is empty; it is a valid recorded locale.
+    $locale = $fingerprint.PSObject.Properties['locale']
+    if ($null -eq $locale -or $null -eq $locale.Value) { Fail 'Chrome fingerprint is missing locale.' }
+    foreach ($name in @('timeZone', 'headlessMode', 'gpuPolicy', 'sandbox', 'resourcePolicy', 'colorSpacePolicy', 'fontPolicy', 'background')) { [void](Get-RequiredProperty $fingerprint $name 'Chrome fingerprint') }
     Assert-Equal 'new' $fingerprint.headlessMode 'Chrome headless mode'
     Assert-Equal 'disabled' $fingerprint.gpuPolicy 'Chrome GPU policy'
     Assert-Equal 'enabled' $fingerprint.sandbox 'Chrome sandbox policy'

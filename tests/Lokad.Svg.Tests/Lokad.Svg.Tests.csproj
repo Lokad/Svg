@@ -56,6 +56,7 @@
     <None Update="TestData/stroke-round-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/stroke-round-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/endpoint-arc-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/endpoint-arc-native-linux.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/endpoint-arc-native.json" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />

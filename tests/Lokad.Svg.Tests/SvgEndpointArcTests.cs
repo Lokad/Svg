@@ -27,7 +27,10 @@ public sealed class SvgEndpointArcTests
         double[] p = item.GetProperty("p").EnumerateArray().Select(value => value.GetDouble()).ToArray();
         SvgEndpointConic[] output = new SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
         int count = SvgEndpointArc.Convert(new(p[0], p[1]), p[2], p[3], p[4], p[5] != 0, p[6] != 0, new(p[7], p[8]), output, CancellationToken.None);
-        string[][] rows = File.ReadAllLines(Path.Combine(directory, "endpoint-arc-native.csv")).Skip(1).Select(line => line.Split(',')).Where(row => row[0] == id).ToArray();
+        // Native float transcendental functions differ between the Windows CRT and Linux libm.
+        // Both sets were measured from the original function; neither permits a bit tolerance.
+        string vectors = OperatingSystem.IsLinux() ? "endpoint-arc-native-linux.csv" : "endpoint-arc-native.csv";
+        string[][] rows = File.ReadAllLines(Path.Combine(directory, vectors)).Skip(1).Select(line => line.Split(',')).Where(row => row[0] == id).ToArray();
         Assert.Equal(2 * count, rows.Length);
         for (int index = 0; index < count; index++)
         {

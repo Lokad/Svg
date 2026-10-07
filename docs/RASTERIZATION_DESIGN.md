@@ -5545,6 +5545,41 @@ stay under ignored `artifacts/authored-topology-20261006/`. Test data retain reu
 inputs, expected images and required oracle provenance. Git identifies code;
 no source, adapter, build or report hashes are introduced.
 
+## Linux delivery and platform expectations (2026-10-07)
+
+An isolated LF archive runs on WSL Ubuntu 24.04.3 x64 with SDK 10.0.401 /
+.NET 10.0.12 and PowerShell 7.6.6. Both Windows and Linux nine-project Release
+builds and all 3,861 tests pass. All 1,359 bank outcomes and rendered PNG bytes
+match Windows. Eight fixture identities previously recorded working-tree CRLF
+rather than the existing LF repository bytes; their metadata is corrected
+without changing SVG content or pixels.
+
+The original native endpoint-arc function compiled with GCC 13.3,
+`-O2 -ffp-contract=off` and glibc 2.39 matches all 36 managed Linux point rows.
+Four rotated-negative rows differ from Windows CRT results. Separate numeric
+goldens preserve exact native bits on each supported platform; no tolerance or
+production math change is introduced.
+
+Of 258 Linux corporate candidates, 255 reproduce Windows PNG bytes. The three
+small Pepsi backgrounds differ from Windows in 22 RGB-only pixels each, maximum
+channel error four and no alpha difference. Each matches pinned Linux Chrome
+exactly across three healthy, cleaned, byte-identical fresh captures. Supplemental
+references retain the same version, revision, recipe and frozen SVG/options;
+the original Windows references remain. Exact cohort tests compare decoded pixels;
+known differences retain complete candidate identities. Passing Linux tests uses
+255 frozen Windows references and three independently captured Linux references.
+This is not a complete fresh Linux-browser matrix or remote CI evidence.
+
+The font-tool retry harness declares an incomplete one-byte response before
+aborting: plain `HttpListenerResponse.Abort()` on Linux produced a valid empty
+response, causing a length mismatch rather than transport retry. Both platforms
+now exercise the retry and reject the malformed font. Artifact validation uses
+runtime OS classification and the producing worker's description; Ubuntu's
+description does not contain the word Linux. An empty invariant-culture locale
+is valid, while a missing locale or mismatched OS attribution is rejected.
+Detailed diagnostics remain ignored under `artifacts/linux-delivery-20261007/`;
+no source/build/report hashes are added.
+
 ## SVG endpoint-arc conics (2026-10-06)
 
 Authored fill replay now constructs endpoint arcs with the float operations in

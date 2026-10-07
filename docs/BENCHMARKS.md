@@ -2116,5 +2116,7 @@ iterations leave broad confidence intervals: no speedup, regression threshold,
 cold-start latency, concurrent-service capacity or broader SVG rate is inferred.
 Fresh Windows Release, 25 memory scenarios, installed runtime/symbol-package
 consumers, pinned-browser smoke, font tooling and artifact consistency pass.
-The current renderer's 3,861-test result remains valid. Linux/remote delivery
-and platform-appropriate oracle evidence remain open.
+The renderer's 3,861 tests now also pass on local WSL Linux with native platform
+vectors and three independently captured Pepsi references. No Linux timing claim
+is made. A complete fresh Linux oracle matrix and remote CI evidence remain open;
+see [the platform record](RASTERIZATION_DESIGN.md#linux-delivery-and-platform-expectations-2026-10-07).

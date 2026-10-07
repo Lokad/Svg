@@ -5,6 +5,17 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Linux platform-reference supplement (2026-10-07)
+
+Local Linux renders reproduce all 1,359 Windows bank outcomes and PNG bytes.
+Across the frozen corporate matrix, 255/258 PNGs are identical to Windows.
+Pepsi's three small backgrounds differ in 22 RGB-only pixels each, but match
+the same pinned Chrome version/revision on Linux in nine healthy, cleaned,
+stable fresh captures. The [supplement](../tests/References/inventory/corporate-cohort-linux64.json)
+keeps the original Windows freeze, inputs, options and denominator. Both platforms
+pass the cohort tests; Linux uses the supplement for those three variants.
+A complete fresh Linux-browser cohort measurement and remote CI remain open.
+
 ## Legacy conic subdivision checkpoint (2026-10-07)
 
 Rede Manchete (`inv-009`), Tokyo Tsukurou (`inv-019`) and Pepsi (`inv-097`)

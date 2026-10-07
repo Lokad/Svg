@@ -223,6 +223,23 @@ function Copy-ChromeFingerprint([string] $Destination) {
     return (Join-Path $Destination $fingerprints[0].Name)
 }
 
+$localeChrome = Join-Path $runDirectory 'chrome-invariant-locale'
+$localeFingerprint = Copy-ChromeFingerprint $localeChrome
+$localeEdited = Get-Content -LiteralPath $localeFingerprint -Raw | ConvertFrom-Json
+$localeEdited.locale = ''
+$localeEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $localeFingerprint -NoNewline -Encoding utf8
+Invoke-Validator $localeChrome $memoryDirectory | Out-Null
+$localeEdited.PSObject.Properties.Remove('locale')
+$localeEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $localeFingerprint -NoNewline -Encoding utf8
+Assert-ValidatorRejects $localeChrome $memoryDirectory '*missing locale*' 'a missing recorded locale'
+
+$osChrome = Join-Path $runDirectory 'chrome-wrong-operating-system'
+$osFingerprint = Copy-ChromeFingerprint $osChrome
+$osEdited = Get-Content -LiteralPath $osFingerprint -Raw | ConvertFrom-Json
+$osEdited.operatingSystem = if ($Platform -eq 'Windows') { 'Ubuntu 24.04.3 LTS' } else { 'Microsoft Windows 10.0.19045' }
+$osEdited | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $osFingerprint -NoNewline -Encoding utf8
+Assert-ValidatorRejects $osChrome $memoryDirectory '*operating system*' 'a mismatched artifact operating system'
+
 $toolRuntimeChrome = Join-Path $runDirectory 'chrome-unknown-tool-runtime'
 $toolRuntimeFingerprint = Copy-ChromeFingerprint $toolRuntimeChrome
 $toolRuntimeEdited = Get-Content -LiteralPath $toolRuntimeFingerprint -Raw | ConvertFrom-Json

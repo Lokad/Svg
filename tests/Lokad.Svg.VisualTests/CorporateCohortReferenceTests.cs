@@ -12,6 +12,14 @@ public sealed class CorporateCohortReferenceTests
         string directory = Path.Combine(AppContext.BaseDirectory, "tests/References/inventory");
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "corporate-cohort-v1.json")));
         using JsonDocument measurements = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "corporate-cohort-current.json")));
+        using JsonDocument linuxReferences = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "corporate-cohort-linux64.json")));
+        Assert.Equal(Required(manifest.RootElement, "cohortId"), Required(linuxReferences.RootElement, "cohortId"));
+        JsonElement linuxPin = linuxReferences.RootElement.GetProperty("oraclePin");
+        Assert.Equal("linux64", Required(linuxPin, "platform"));
+        foreach (string property in new[] { "version", "chromiumRevision", "captureRecipeRevision" })
+            Assert.Equal(Required(manifest.RootElement.GetProperty("oraclePin"), property), Required(linuxPin, property));
+        Dictionary<string, JsonElement> linuxResults = linuxReferences.RootElement.GetProperty("results").EnumerateArray().ToDictionary(result => Required(result, "id"), StringComparer.Ordinal);
+        Assert.Equal(new[] { "inv-097-small-black", "inv-097-small-transparent", "inv-097-small-white" }, linuxResults.Keys.Order(StringComparer.Ordinal));
         Dictionary<string, JsonElement> results = measurements.RootElement.GetProperty("results").EnumerateArray().ToDictionary(result => Required(result, "id"), StringComparer.Ordinal);
         Assert.Equal(258, results.Count);
         Assert.Equal(27, measurements.RootElement.GetProperty("documents").GetArrayLength());
@@ -47,9 +55,16 @@ public sealed class CorporateCohortReferenceTests
                 RgbaImage? oracle = null;
                 if (state == "measured")
                 {
-                    byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(result, "referencePng")));
-                    Assert.Equal(Required(result, "referenceSha256"), Hash(reference));
-                    JsonElement provenance = result.GetProperty("captureProvenance");
+                    JsonElement oracleResult = result;
+                    if (OperatingSystem.IsLinux() && linuxResults.TryGetValue(id, out JsonElement linuxResult))
+                    {
+                        Assert.True(result.GetProperty("comparison").GetProperty("diff").GetProperty("IsExact").GetBoolean());
+                        Assert.Equal(Hash(input), Required(linuxResult, "inputSha256"));
+                        oracleResult = linuxResult;
+                    }
+                    byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(oracleResult, "referencePng")));
+                    Assert.Equal(Required(oracleResult, "referenceSha256"), Hash(reference));
+                    JsonElement provenance = oracleResult.GetProperty("captureProvenance");
                     Assert.Equal(Required(variant, "oracleInputSha256"), Required(provenance, "oracleInputSha256"));
                     JsonElement[] captures = provenance.GetProperty("captures").EnumerateArray().ToArray();
                     Assert.Equal(3, captures.Length);
@@ -77,7 +92,10 @@ public sealed class CorporateCohortReferenceTests
                     continue;
                 }
                 byte[] png = SvgConverter.ConvertToPng(input, Options(variant), CancellationToken.None).ToArray();
-                Assert.Equal(Required(result, "candidateSha256"), Hash(png));
+                // Exact cases are defined by their decoded oracle pixels, independently of PNG encoding.
+                // Retain complete candidate identities for known differences; summary maxima alone are insufficient.
+                if (!result.GetProperty("comparison").GetProperty("diff").GetProperty("IsExact").GetBoolean())
+                    Assert.Equal(Required(result, "candidateSha256"), Hash(png));
                 RgbaImage candidate = PngRgbaDecoder.Decode(png, checked(width * height));
                 Assert.Equal(width, candidate.Width);
                 Assert.Equal(height, candidate.Height);

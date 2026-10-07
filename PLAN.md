@@ -18,11 +18,20 @@ independent circle controls have nine stable, healthy and cleaned captures.
 All 1,151 earlier exact fixture/research PNGs and every rejection remain.
 Seven Default PNGs change without a matching-options fidelity claim.
 
-The nine-project Windows Release build and **3,861 tests** (3,695 core, 160
-visual, six FontProbe) pass. Thirty-nine resource recipes keep their input,
-parser-work and peak-storage values; fifteen raster-work records increase by
+The nine-project Windows and Linux Release builds and **3,861 tests** on each
+(3,695 core, 160 visual, six FontProbe) pass. Thirty-nine Windows resource recipes
+keep their input, parser-work and peak-storage values; fifteen raster-work records increase by
 four through 356 units. Fresh Windows memory/package/consumer, pinned-browser,
-font and artifact checks pass. Detailed studies stay ignored.
+font and artifact checks pass. Fresh Linux memory, package/consumer, pinned-browser,
+font and artifact checks also pass. Detailed studies stay ignored.
+
+The complete 1,359-case bank reproduces Windows output bytes on Linux. Three
+small Pepsi variants differ from Windows in 22 RGB-only pixels each, but match
+Linux Chrome exactly in nine stable, healthy, cleaned captures. Supplemental
+Linux references preserve the original Windows freeze. Native arc vectors use
+the original function's platform-specific float results without bit tolerance.
+Eight fixture identities now describe the existing canonical LF repository bytes.
+See [the platform evidence](docs/RASTERIZATION_DESIGN.md#linux-delivery-and-platform-expectations-2026-10-07).
 
 All 258 frozen recipes complete a representative Windows owned-memory ShortRun.
 Intended-size medians across variant means are **16.37 ms for marks / 10.52 ms
@@ -30,11 +39,12 @@ for wordmarks**, with median allocation **1.46 / 1.00 MiB**. These are warmed,
 machine-scoped observations with three iterations, not request percentiles or
 a speedup claim. See [the baseline](docs/BENCHMARKS.md#frozen-corporate-cohort-baseline-2026-10-07).
 
-**Next: fresh Linux delivery and platform-appropriate oracle evidence.** S17's
+**Next: complete the fresh Linux oracle matrix and collect remote CI evidence.** S17's
 numerical minimum is met; S17 remains open. SimpleLogin, Zeppelin, SG Rotation
 Leipzig and IBM retain measured failures in the frozen denominator. Preserve
-exact controls and collect Linux/remote evidence; WSL Ubuntu is available,
-with isolated tool provisioning still required. See
+exact controls. Local Linux delivery uses WSL Ubuntu 24.04.3, isolated SDK
+10.0.401 / runtime 10.0.12 and PowerShell 7.6.6. The three-reference supplement
+does not establish a complete fresh Linux-browser cohort measurement. See
 [the conic repair](docs/RASTERIZATION_DESIGN.md#legacy-conic-subdivision-rounding-2026-10-07).
 
 The reviewed renderer baseline
@@ -140,15 +150,15 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
-| Windows Release solution build | Nine projects, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,861 passed**: 3,695 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Fresh Windows 25-scenario memory, package/consumer, pinned-browser, font-tool and artifact checks pass. Linux/remote delivery remains open. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
+| Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
+| Full tests, including corporate selection/measurement | **3,861 passed on each platform**: 3,695 core, 160 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Fresh Windows/Linux 25-scenario memory, package/consumer, pinned-browser, font-tool and artifact checks pass. Full Linux oracle and remote CI evidence remain open. Complete Skia/Chromium BSD notices remain; no runtime package dependencies, native assets or packaged SVG fixtures. |
 | Executed fixture manifest | **1,231 entries = 1,145 exact + 62 known-difference renders + 24 rejections**; 717 base documents / 514 variants. Thirteen existing fixtures graduate; three independent circle controls enter the bank. All earlier exact PNGs and rejections remain. |
 | Executed research manifest | **36 probes = 22 exact + 13 known-difference renders + one rejection**. Complete results and PNGs remain unchanged. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Seven PNGs change. These Default outputs do not establish matching-options corporate fidelity. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 234 exact + 24 known**, zero rejections. Rede Manchete, Tokyo Tsukurou and Pepsi become exact in every frozen variant; all 225 earlier exact PNGs remain. **23/27 documents**, marks **11/13**, wordmarks **12/14**. Numerical minimum met; S17 remains open. |
-| Performance and platform limits | All 258 frozen recipes have Windows owned-memory ShortRun latency/allocation data. Intended-size medians are 16.37/10.52 ms and 1.46/1.00 MiB for marks/wordmarks; three iterations limit inference. Thirty-nine resource recipes preserve parser work, peak storage and layouts. Linux/remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | All 258 frozen recipes have Windows owned-memory ShortRun latency/allocation data. Intended-size medians are 16.37/10.52 ms and 1.46/1.00 MiB for marks/wordmarks; three iterations limit inference. Thirty-nine Windows resource recipes preserve parser work, peak storage and layouts. A complete fresh Linux oracle matrix, remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -1253,11 +1263,11 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 
 | ID | Current disposition and remaining closure |
 | --- | --- |
-| R26 | First-cohort selection and measurement complete: all 27 documents / 258 variants, including eight fresh holdouts, have browser references and Windows latency/allocation observations. All variants render: 234 exact, 24 known differences. Exact documents are 23/27, meeting both stratum minima; broader representativeness and Linux/remote delivery remain open. Historical exact labels and the legacy 92-file Default bank are not S17 rates. Preserve failures and original assets. |
+| R26 | First-cohort selection and Windows measurement complete: all 27 documents / 258 variants, including eight fresh holdouts, have browser references and Windows latency/allocation observations. All variants render: 234 exact, 24 known differences. Exact documents are 23/27, meeting both stratum minima. Local Linux tests pass with three independently captured Pepsi references; a complete fresh Linux oracle matrix, remote CI and broader representativeness remain open. Historical exact labels and the legacy 92-file Default bank are not S17 rates. Preserve failures and original assets. |
 | R27 | Every fixture is executed. Still retain complete decoded candidate identity/diff, validate historical/current oracle identity, distinguish render/reject from fidelity, and graduate positive research controls instead of deleting them. |
 | R28 | Original pattern/root-map repair and inverse gradient maps retained. Paint/alpha one-step residuals remain S11/S13. |
 | R30 | Shared contour preparation, ownership and coverage traversal have landed across the four paints. Preserve that boundary while changing curve state; remaining repeated binding/typed-state work follows demonstrated dependencies, not a repository rewrite. |
-| R31 | CI artifact-validator hooks, Windows sandbox setup/health, wrapper deadline/drain and atomic publication are repaired. Opt-in corporate capture and VisualDiff cohort reporting now cover the entire frozen matrix. Representative performance and remote platform evidence remain. Git identifies code; input/output/browser hashes protect the measured artifacts. |
+| R31 | CI artifact-validator hooks, Windows sandbox setup/health, wrapper deadline/drain and atomic publication are repaired. Corporate capture/reporting covers the frozen matrix; its representative Windows performance baseline exists. Linux delivery checks now exercise native platform vectors, browser references, HTTP retry simulation and OS/locale metadata validation. Full Linux oracle and remote CI evidence remain. Git identifies code; input/output/browser hashes protect measured assets. |
 | R33 | Original scaled clip-coordinate fault repaired; fractional mapped coverage and exact independent controls exist. Contained raw edges use a distinct scan window. Escaping control bounds trigger native clipped construction, even when the tip fits: this is demonstrated on Ford. Construction clipping is integrated; the separate AA paint-clip dispatch and mask-bound provenance contract is validated with native/browser, resource and delivery evidence. Full AA masks/cache intersections remain open. Preserve exact controls and Ford while resolving general clip/event combinations. |
 | R34 | Shared scan conversion, analytic coverage, contact/union, straight-source sibling-stroke separation, operation/material preservation, contained-edge scan windows and one-chord cubic admission have landed. Clipped construction followed by path-point density now makes all nine Ford variants exact; uncut tip recurrence and sampled existing-edge operations match compiled native code. Complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
 | R35 | Retained controls, device-map threading, live non-convex cubic fills, curve/walk state separation and one-chord cubic admission have landed. Axis-aligned float mapping closes (375,269) and preserves independent large translations. Shared numeric reading and relative/smooth arithmetic have also landed: they match all 436 recorded authored points and the actual large CTM and close (269,187) on the original input. Earlier injected/mapping discriminators retain their historical limitations. The independently demonstrated lower-row path-point density decision has landed with row 4 and closes all ten residuals. General tile-local/affine/instance mapping, fractional events and quad/convex/stroke migration remain bounded follow-ups; row 5. |
@@ -1292,7 +1302,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 | S1–S5 | Core foundations and original repairs exist; preserve API, parser, memory/work and output contracts throughout. |
 | S6 | Disposable single-use preparation exists; preserve resource leases and six-output behavior. |
 | S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
-| S8 | Complete for the first frozen corporate cohort: 27 documents / 258 variants including eight fresh holdouts, all renderer cases executed, all references available and reusable capture/reporting tools. Results are 234 exact variants and 24 known differences, with zero rejections; exact documents 23/27. Selection limits remain explicit; S17's numerical minimum is met, with performance and delivery evidence open. The historical 92-file bank stays separate. |
+| S8 | Complete for the first frozen Windows corporate cohort: 27 documents / 258 variants including eight fresh holdouts, all renderer cases executed, all references available and reusable capture/reporting tools. Results are 234 exact variants and 24 known differences, with zero rejections; exact documents 23/27. Selection limits remain explicit; representative Windows performance is measured. Full fresh Linux oracle and remote CI evidence remain open. The historical 92-file bank stays separate. |
 | S9 | Styles/references/viewports, declaration-only DOCTYPEs and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
 | S10 | Full path-command/affine kernels, retained controls, live non-convex cubics, curve/walk state separation and one-chord cubic admission exist. Raw-control classification is integrated; fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
@@ -1301,7 +1311,7 @@ blockers order later shared work; the eight holdouts remain evaluation inputs.
 | S14 | Rectangle clips, contained-edge scan windows, limited masks and isolated opacity exist. Bounded CPU raster contexts separate bitmap construction bounds from owned interiors. Clipped construction is integrated when path/control bounds escape the bitmap, canvas or explicit clip, including curves whose geometry fits. AA paint-clip dispatch is integrated for contained and clipped paths with geometric boundary provenance separate from mask allocation regions. The bounded predicate/setup and paint-context proof excludes full native AA masks/cache intersections. Preserve X/Y pieces, projected winding, whole-path dispatch, bitmap-bounded storage, exclusive interiors and fractional paint coverage. General clipped event fidelity, clips, mask regions/content and bounded nested composition remain open. |
 | S15 | Live-text wordmarks are experimental, not required for outlined wordmarks. Follow section 6 and shared glyph contours, not a separate renderer. |
 | S16 | Uniform embedded PNGs and narrow patterns exist. General raster decoding/resampling, multi-element patterns, markers, filters/blending and additional static CSS only for measured blockers. |
-| S17 | Numerical criterion met: 23/27 exact documents, including 11/13 marks and 12/14 wordmarks, with every declared variant exact for counted documents. Representative Windows latency/allocation baseline and fresh local delivery checks exist. Not achieved overall: Linux/remote delivery and platform oracle evidence remain open. Report selection and ShortRun limits; broader representativeness remains unproved. |
+| S17 | Windows numerical criterion met: 23/27 exact documents, including 11/13 marks and 12/14 wordmarks, with every declared variant exact for counted documents. Representative Windows latency/allocation baseline and fresh local Windows/Linux delivery checks exist. Not achieved overall: a complete fresh Linux oracle matrix and remote CI evidence remain open. Report selection and ShortRun limits; broader representativeness remains unproved. |
 
 ## 5. Product contract, evidence and completion
 
