@@ -1,47 +1,17 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-07. **Current validated renderer checkpoint: native filled-path
-rectangles.** Original line verbs select the clipped float rectangle shortcut
-under whole-path mask eligibility and binary paint clipping. Coverage preserves
-float fringe multiplication, native byte clamping and direct paint operations.
-Thin/nonrectangle native fills use ordinary quarter-snapped analytic edges.
-The shortcut owns no edge/row scratch; source commands are borrowed, not copied.
+Updated 2026-10-07. **Current fidelity: 24/27 exact documents and 240/258 exact
+variants on Windows and Linux**, with 18 known differences and zero rejections.
+Marks are 12/13 exact; outlined wordmarks are 12/14. Membership, inputs, options
+and browser references stay frozen.
 
-SimpleLogin's three small variants become exact; intended and large variants
-retain one and three differing pixels respectively, with maximum transparent
-alpha error one. The cohort remains **24/27 exact documents**, marks **12/13**,
-wordmarks **12/14**: **240 exact comparisons, 18 known differences and zero
-rejections** across 258 variants on Windows and Linux. Only its nine PNGs change;
-all 237 earlier exact corporate images and every other complete comparison remain.
-Membership, inputs, options and browser references stay frozen.
-
-The expanded bank executes **1,377 cases**: **1,249 fixtures = 1,163 exact + 62
-known + 24 rejected**, **36 research probes = 22 exact + 13 known + one rejected**,
-and 92 legacy Default renders. All 1,170 earlier exact fixture/research PNGs and
-every rejection remain. Only Default SimpleLogin changes, without a matching-options
-fidelity claim. Fifteen untuned independent rectangle/verb/paint/boundary controls
-enter the exact bank from 45 stable, healthy, cleaned captures. Follow-ups were
-declared after a prototype and before their first capture/comparison.
-
-The nine-project Windows/Linux Release builds and **3,878 tests** on each
-(3,705 core, 167 visual, six FontProbe) pass. Both platforms pass memory and installed
-package-consumer checks. Unchanged native functions match 3,365 coverage samples
-and 21 rectangle-recognition cases on both platforms. Thirty-two matching Windows
-resource recipes preserve parser work and accounted peak; SimpleLogin adds 35
-raster units at small/intended size and saves 175 at large size. The five new
-control documents save 1,085–2,431 units. These ledgers establish no timing claim.
-
-The complete bank reproduces Windows output bytes on Linux. The Linux cohort
-measurement reuses all **774 stable, healthy, cleaned captures** from the platform
-checkpoint, with no reference refresh or Windows fallback. Its existing three
-small Pepsi supplement remains. Detailed studies stay ignored; Git identifies
-implementation. See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#native-filled-path-rectangles-2026-10-07).
-
-The earlier full 258-recipe Windows owned-memory ShortRun remains a baseline:
-intended-size medians were **16.37 ms for marks / 10.52 ms for wordmarks**, with
-median allocation **1.46 / 1.00 MiB**. These warmed, machine-scoped observations
-have three iterations and predate the latest repairs. See
-[the baseline](docs/BENCHMARKS.md#frozen-corporate-cohort-baseline-2026-10-07).
+The latest validated repair matches native filled-path rectangle recognition
+and coverage. SimpleLogin's three small variants become exact; intended and large
+variants retain one and three differing pixels respectively. All earlier exact
+images remain exact. The complete 1,377-case bank produces identical Windows/Linux
+output bytes; Release builds, 3,878 tests per platform, memory and installed
+package-consumer checks pass. See the checkpoint table below and
+[the repair and its limits](docs/RASTERIZATION_DESIGN.md#native-filled-path-rectangles-2026-10-07).
 
 **Next: reach 27/27 exact documents and 258/258 exact variants on Windows and
 Linux.** Resolve the remaining SimpleLogin, Zeppelin and IBM differences through
@@ -835,13 +805,14 @@ affect a counted document, even when our geometry is closer to ideal area.
    pixel-tolerance or oracle-quirk budget. The aligned policy record is
    [S17_DECISIONS.md](docs/S17_DECISIONS.md).
 
-Make small, buildable commits with relevant regression evidence, support
-documentation and actual validation. Update the current row/status in place.
-Git retains previous checkpoints; the design record retains experiment details.
-After two experiments without a mechanism-level improvement, record the
-remaining uncertainty and choose the next architectural step. Do not substitute
-another census, source audit or mismatch-maxima refresh for implementation.
-Record a concrete blocker and return condition before switching slices.
+Make small, buildable commits with relevant regression evidence and actual
+validation. Update documentation when behavior, a decision or validated status
+changes; ordinary refactoring needs no checkpoint write-up or metadata refresh.
+Update current status in place. Git retains previous checkpoints; detailed
+experiments stay under ignored artifacts, with useful conclusions in the design
+record. If an investigation stalls, state the unresolved mechanism and select
+the next useful experiment or development case. Judge progress by demonstrated
+shared renderer improvements.
 
 ## 3. Ordered implementation queue
 
@@ -884,10 +855,9 @@ Work in this order:
    the browser reference and the managed intended-size residual; relative-command
    spelling does not explain that witness. Independent controls must adjudicate
    the next mechanism before advancing checkpoint counts.
-2. **Resolve the remaining development witnesses.** Use residual SimpleLogin
-   curve pixels and Zeppelin's RGB-only pixels to select the next shared repair.
-   Add a reusable regression for each demonstrated mechanism. Keep failed models
-   in the design record and detailed traces under ignored artifacts.
+2. **Zeppelin: resolve the small-size RGB differences.** Trace material arithmetic
+   and direct/run paint dispatch using its RGB-only witnesses. Demonstrate the
+   mechanism with independent controls and add a reusable regression.
 3. **Evaluate the complete cohort.** Compare shared coverage/paint changes across
    the complete bank (currently 1,377 cases) and all 258 corporate variants on
    Windows and Linux, including all eight holdouts. Preserve every current exact
@@ -1428,12 +1398,15 @@ check cancellation within bounded chunks and release owners on every exit.
 - Commit reusable inputs, expected behavior and necessary oracle provenance.
   Keep detailed run reports, pixel dumps, resource ledgers and timing batches under
   ignored artifacts. Update existing documentation when findings change a contract,
-  implementation decision or release assessment.
+  implementation decision or release assessment. A renderer edit needs no new
+  evidence manifest, per-file fingerprint or repeated historical summary.
 - Scale validation to the change. Documentation edits need consistency and diff
   review. Code changes need a Release build and affected tests; changed semantics
   or numerical behavior need relevant regression cases. Run resource, package,
   performance and platform checks when those areas change or for release claims.
-  Reuse valid results for unchanged inputs and contracts.
+  Reuse valid results for unchanged inputs and contracts. Do not rerun the full
+  delivery checklist for each experiment; validate the production repair before
+  landing it, and run full delivery checks when their contracts change or at release.
   Current exact references must remain exact. Changes to known mismatches require
   full before/after comparison and explanation, not merely refreshed maxima.
 - Preserve exact controls. Graduate useful original research cases into the exact fixture
