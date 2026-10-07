@@ -1,0 +1,35 @@
+{
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "referencePng": "original-integer-path-use-miter-leaf-opacity.png",
+  "referenceSha256": "c81bfcc9d8257074ebcd554e678452acdab2c623c3cb06823ea214c4e8a1f784",
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "The four independent source bodies were declared by failing core tests before the production fix. SPDX materialization captures follow the fix; all twelve accepted 41x35 captures are stable, healthy and cleaned. Earlier 61x47 captures failed dimension validation and were excluded.",
+  "fixtureId": "original-integer-path-use-miter-leaf-opacity",
+  "inputSha256": "c4173ff79db66b55d3f65bae3060b7575ea8a13580fb2afd46327e4456c22b80",
+  "viewport": {
+    "width": 41,
+    "height": 35,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 41,
+    "minimumMismatchY": 35,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  }
+}

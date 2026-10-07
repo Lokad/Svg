@@ -7241,3 +7241,62 @@ platform-native references: **27/27 documents**. The cleanup adds no public API,
 storage layout, runtime dependency or implementation fingerprint. Full failure
 and delivery evidence stays under ignored `artifacts/opacity-folding-20261007/`
 and `artifacts/linux-delivery-20261007/rounded-owner-cleanup-20261007/`.
+
+### Integer path instance strokes (2026-10-07)
+
+An unstyled closed orthogonal path with integer coordinates previously lowered
+to fill bands in definitions. Copying those bands ignored the stroke supplied by
+`<use>`; disabling the fill made a miter instance blank. Round joins rejected the
+same valid source because its lowered geometry lacked the existing path-stroke
+admission metadata. Fractional and curved definitions already retained the source
+needed by the shared native stroker.
+
+An ephemeral parsing-context flag now preserves authored paths for closed
+definitions eligible for instance-supplied strokes. It uses the existing style
+and unit-scale definition-transform conditions, rather than coordinate or asset
+predicates. The shared finite-path lowerer retains the commands and contour;
+reference resolution supplies stroke paint and the existing stroker constructs
+its outline. Direct integer fills keep their band route. Geometry values stay
+264 bytes and draw commands stay 72 bytes; retained commands and outlines use
+their existing reserved owners. Definition array copies now reserve before
+allocation. Failure while detaching commands or resolving unpublished definition
+metadata discards the geometry owners as well as their containers.
+
+Four core rendering cases fail before the fix: two blank miter instances and two
+round-join rejections. All pass afterward and match direct-path twins, including
+paint outside the original fill and a transparent stroke interior. Two further
+core cases cover every parser-work denial, sampled memory limits, the memory
+peak boundary, raster-work boundary, parser/raster pre-cancellation token identity
+and complete release.
+
+Four CC0 source bodies were declared in those failing tests before production
+edits. Their subsequent SPDX materializations have twelve accepted stable,
+healthy, cleaned captures at 41x35 with Chrome 153.0.8010.52 win64, recipe 3.
+An initial 61x47 capture set failed dimension validation and remains excluded.
+Leaf-opacity miter and round instances are exact. Parent-opacity instances each
+retain 220 changed pixels: miter maximum channel/alpha errors 1/0; round 2/1,
+with one changed alpha pixel. The stroke repair does not complete float-opacity
+folding. Original browser references and the complete measured comparisons stay
+in the fixture bank; four visual cases verify all six outputs without rebasing
+the known differences.
+
+Both nine-project Release builds pass with zero warnings/errors. Each platform
+passes 4,007 tests (3,785 core, 216 visual-project, six FontProbe), 25 memory
+scenarios, runtime/symbol package and installed-consumer checks. The 1,562-case
+bank preserves all 1,558 preceding reports and all their rendered PNG bytes;
+Windows/Linux bank output matches. Corporate membership and options stay frozen:
+27/27 documents and 258/258 variants remain exact against the validated references
+for each platform. No public API, dependency or implementation fingerprint changes.
+Measurements stay under ignored `artifacts/opacity-folding-20261007/` and
+`artifacts/linux-delivery-20261007/integer-use-stroke-final-20261007/`.
+
+The independent copy experiment additionally declares 28 source bodies covering
+use opacity, solid/shader overrides and single-child symbols before its changes
+or captures. All 84 fresh captures are stable, healthy and cleaned. Its latest
+prototype reaches 23 exact controls and five known differences, with no rejection;
+all 1,558 preceding bank reports and PNG bytes match the scoped prototype.
+The remaining controls include three source/instance translations, a transformed
+instance and plain-rectangle fill/stroke coverage. Whole opacity-control,
+constant/degenerate shader, symbol override, viewport scope, ownership, matching
+Default-option and platform integration gates remain open. This experiment has
+not changed production opacity arithmetic.

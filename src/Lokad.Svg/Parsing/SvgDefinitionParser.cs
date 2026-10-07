@@ -986,17 +986,38 @@ internal static class SvgDefinitionParser
         string? pathData = reader.LocalName == "path" ? reader.GetAttribute("d") : null;
         string? definitionTransform = reader.LocalName == "path" ? reader.GetAttribute("transform") : null;
         string? vectorEffect = reader.LocalName == "path" ? reader.GetAttribute("vector-effect") : null;
+        if (pathData is not null && style.Stroke is null && style.Width is null && style.StrokeOpacity is null
+            && (style.Linejoin is null || style.Linejoin.AsSpan().Trim().Equals("miter".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            && (style.Dasharray is null || style.Dasharray.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            && (vectorEffect is null || !SvgStrokeStyleSyntax.ParseVectorEffect(vectorEffect))
+            && SvgPathDataParser.IsSingleClosedPath(pathData, context.WorkCounter, context.CancellationToken))
+        {
+            if (definitionTransform is null) localContext = localContext with { RetainInstanceStrokePath = true };
+            else
+            {
+                SvgAffineTransform elementMap = SvgGeometrySyntax.ParseTransform(definitionTransform, context.WorkCounter, context.CancellationToken);
+                if (elementMap.TryGetUniformScale(out double definitionScale) && Math.Abs(definitionScale - 1) <= 1e-9)
+                    localContext = localContext with { RetainInstanceStrokePath = true };
+            }
+        }
         SvgGeometry[] geometries = reader.LocalName switch
         {
-            "polygon" or "polyline" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, localContext, int.MaxValue, state.Budget, null, state)),
-            "path" => RetainParsedGeometries(SvgOrthogonalShapeParser.ParsePath(reader, localContext, int.MaxValue, state.Budget, null, state)),
-            "circle" => RetainCircleGeometries(SvgLeafParser.ParseCircle(reader, localContext, null, state)),
-            "ellipse" => RetainParsedGeometries(SvgLeafParser.ParseEllipse(reader, localContext, null, state)),
-            "rect" => RetainParsedGeometries(SvgLeafParser.ParseRoundedRectangleDefinition(reader, localContext, state)),
+            "polygon" or "polyline" => RetainDefinitionGeometries(SvgOrthogonalShapeParser.ParsePointList(reader, reader.LocalName, localContext, int.MaxValue, state.Budget, null, state), state),
+            "path" => RetainDefinitionGeometries(SvgOrthogonalShapeParser.ParsePath(reader, localContext, int.MaxValue, state.Budget, null, state), state),
+            "circle" => RetainDefinitionGeometries(SvgLeafParser.ParseCircle(reader, localContext, null, state), state),
+            "ellipse" => RetainDefinitionGeometries(SvgLeafParser.ParseEllipse(reader, localContext, null, state), state),
+            "rect" => RetainDefinitionGeometries(SvgLeafParser.ParseRoundedRectangleDefinition(reader, localContext, state), state),
             _ => throw new InvalidOperationException("Unsupported definition leaf reached shape lowering."),
         };
-        if (geometries.Length > 0) state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Scene));
-        return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), ResolveInstanceStrokeMiterLimit(style, geometries, pathData, definitionTransform, vectorEffect, context.WorkCounter, context.CancellationToken), symbolViewBox);
+        try
+        {
+            return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), ResolveInstanceStrokeMiterLimit(style, geometries, pathData, definitionTransform, vectorEffect, context.WorkCounter, context.CancellationToken), symbolViewBox);
+        }
+        catch
+        {
+            foreach (SvgGeometry geometry in geometries) geometry.Dispose();
+            throw;
+        }
 
         static double? ResolveInstanceStrokeMiterLimit(SvgComputedStyle computed, SvgGeometry[] lowered, string? pathData, string? transformAttribute, string? vectorEffect, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -1015,9 +1036,21 @@ internal static class SvgDefinitionParser
             return SvgStrokeStyleSyntax.ParseMiterLimit(computed.Miterlimit);
         }
 
-        static SvgGeometry[] RetainCircleGeometries(SvgParsedGeometry parsed)
+        static SvgGeometry[] RetainDefinitionGeometries(SvgParsedGeometry parsed, SvgDocumentState state)
         {
-            try { return parsed.Geometries.ToArray(); }
+            try
+            {
+                if (parsed.Geometries.Length == 0) return [];
+                RenderBudget.BudgetReservation reservation = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(parsed.Geometries.Length), SvgMemoryCategory.Scene);
+                try
+                {
+                    SvgGeometry[] retained = parsed.Geometries.ToArray();
+                    state.DefinitionReservations.Add(reservation);
+                    return retained;
+                }
+                catch { reservation.Dispose(); throw; }
+            }
+            catch { parsed.Discard(); throw; }
             finally { parsed.Dispose(); }
         }
 

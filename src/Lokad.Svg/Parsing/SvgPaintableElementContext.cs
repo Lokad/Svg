@@ -6,6 +6,9 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Supplies one paintable element with its inherited rendering context and bounded style resolution.</summary>
 internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, SvgInheritedStrokeStyle InheritedStroke, InlineStyle StyleSheet, IReadOnlyDictionary<string, SvgColor> NamedColors, ParserWorkCounter WorkCounter, CancellationToken CancellationToken, double OutputMagnification, string? InheritedFillRule)
 {
+    /// <summary>Preserves a closed definition's source path for stroke paint supplied by a later instance.</summary>
+    internal bool RetainInstanceStrokePath { get; init; }
+
     internal static SvgPaintableElementContext Create(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgInheritedPresentation inheritedPresentation = state.Groups.Count == 0 ? root.InheritedPresentation : state.Groups[^1].InheritedPresentation;

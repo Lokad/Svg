@@ -38,7 +38,12 @@ gradient and pattern paths retain whole fill contours and scene paint boxes.
 Axis-aligned authored fill paint boxes use original float curve extrema before
 scene mapping, including polynomial and rational curves and endpoint arcs.
 General affine, legacy and stroked geometry retain their existing box route.
-Solid orthogonal paths keep checked integer bands. Authored straight replay uses
+Direct solid orthogonal paths keep checked integer bands. Closed definitions
+eligible for instance-supplied strokes preserve authored paths instead, so a
+`<use fill="none" stroke="...">` keeps its stroke with integer source coordinates.
+The existing unstyled-source and definition-transform stroke gates remain.
+Two independent leaf-opacity controls are exact; parent-opacity controls retain
+measured color/coverage differences. Authored straight replay uses
 command-bounded scratch; rectangle mask and additive-run boundary bytes differ.
 Original independent controls remain exact; broader fidelity is still open. Native
 filled-path rectangles recognize original line verbs, including monotone collinear

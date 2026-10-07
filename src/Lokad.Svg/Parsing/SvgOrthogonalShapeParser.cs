@@ -40,7 +40,7 @@ internal static class SvgOrthogonalShapeParser
             SvgParsedGeometry curved = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, SvgPolygonMapping.FlattenedCurves, shape, frame, budget);
             filled = curved with { ElementCount = commandCount + 1 };
         }
-        else if (hasFractional)
+        else if (hasFractional || context.RetainInstanceStrokePath)
         {
             bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);

@@ -5,13 +5,34 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Integer path instance stroke checkpoint (2026-10-07)
+
+The current bank has **1,405 fixtures** (1,338 exact, 43 known, 24 rejected),
+**65 research probes** (30 exact, 31 known, four rejected) and 92 Default renders:
+**1,562 executions**. All 1,558 preceding reports and rendered PNGs remain unchanged;
+Windows/Linux bank results match. The frozen corporate cohort stays **27/27 exact
+documents and 258/258 exact variants** against each platform's validated references.
+
+Four local CC0 sources retain twelve stable, healthy, cleaned browser captures.
+The source bodies were declared by failing core tests before the production fix;
+SPDX materialization and captures followed the fix. Earlier captures at the wrong
+viewport size were excluded. Leaf-opacity miter/round instances are exact;
+both parent-opacity instances render with 220 differing pixels and retain their
+original references for the pending opacity work. Six core cases and four visual
+cases cover the repair, ownership denial and all six output forms.
+See [the design record](RASTERIZATION_DESIGN.md#integer-path-instance-strokes-2026-10-07).
+
+Online sourcing remains a later phase: finish the identified renderer shortcomings,
+then audit the original static SVG scope and retain explicitly public-domain/CC0
+online examples of missing support or incorrect rendering, with provenance.
+
 ## Leaf and instance mask checkpoint (2026-10-07)
 
 The current frozen cohort retains **27/27 exact documents** and **258/258 exact
 variants** on Windows/Linux, with every corporate report and PNG unchanged.
 Membership, original inputs, options and platform-native references stay frozen.
 
-The current bank has **1,401 fixtures** (1,336 exact, 41 known, 24 rejected),
+At that checkpoint the bank had **1,401 fixtures** (1,336 exact, 41 known, 24 rejected),
 **65 research probes** (30 exact, 31 known, four rejected) and 92 Default renders:
 **1,558 executions**, with identical Windows/Linux reports and PNG bytes.
 Three original research leaf-mask configurations improve 71 → zero differing

@@ -636,9 +636,13 @@ internal ref struct SvgOrthogonalGeometryLowering
         else result = FinishPolygonFill(mapped, ends, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, false, mapping, frame, budget);
         if (element.Presentation.HasFill && result.Geometries.Length == 1)
         {
-            OwnedParserArray<SvgAuthoredPathCommand> commands = authored.Detach();
-            try { result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.Create(commands, deviceMap, budget) }; }
-            catch { commands.Dispose(); result.Discard(); throw; }
+            try
+            {
+                OwnedParserArray<SvgAuthoredPathCommand> commands = authored.Detach();
+                try { result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.Create(commands, deviceMap, budget) }; }
+                catch { commands.Dispose(); throw; }
+            }
+            catch { result.Discard(); throw; }
         }
         return result;
     }
