@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-point-list-source-shallow-521-transparent",
+  "referencePng": "original-point-list-source-shallow-521-transparent.png",
+  "referenceSha256": "7647f6d423ea231c24f6fde6b5a36646f35fb5f00d031d47a4db8be1aa9e7776",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 521,
+    "height": 261,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "4691f2e1e5482b93422a5ac37345fbb55b3f76f7181f57a4e5c5b6fbf42367f3",
+  "candidateSha256": "35d294a6e7fb74fbf14cb45c622fdff4c53a6548a0c3d2cc359d6be16e1a039e",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 521,
+    "minimumMismatchY": 261,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Long, shallow point-list/path twins with canonical binary fractions; predeclared before capture/comparison to distinguish single-row, general run and native rectangle fringe arithmetic. Source-retention prototype already exists. No holdout-derived geometry, recipes or failing pixels."
+}

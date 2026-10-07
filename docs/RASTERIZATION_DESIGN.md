@@ -6703,3 +6703,42 @@ adapters and audits stay under ignored artifacts/zeppelin-curves-20261007.
 Independent coverage/clip/paint controls govern the next shared repair; IBM cannot
 supply tuned coordinates or failing pixels as development fixtures. Full cohort
 exactness and remote CI retain their open scope.
+
+## Fractional point-list source replay (2026-10-07)
+
+Fractional filled polygons and polylines retain original source float vertices
+and closure beside existing scene admission and paint geometry. Authored-fill
+replay composes placement before final float mapping, preserving native path
+classification. Polygon closure stays distinct from implicit polyline fill
+closure. Existing budgeted command owners reserve storage and charge work before
+allocation; partial failure releases both command and scene owners. Copy survival
+after original-scene disposal, tight memory/work denial, cancellation cleanup and
+six-output parity pass. No public API changes.
+
+A uniform 27-document route census identifies point lists as a source-retention
+gap without collecting logo coordinates or failing pixel positions. Independent
+polygon/path twins use canonical binary fractions, earlier independent numeric
+literals and long shallow rectangles, declared before capture/comparison after
+an integer-path prototype. Binary rectangles improve three and 92 pixels to zero;
+decimal rectangles improve 282 and two; shallow rectangles improve 256 and 489.
+Every path twin stays exact. Six polygon regressions enter the bank from 18 stable,
+healthy, cleaned captures; other diagnostics remain in ignored artifacts.
+
+An integer-band prototype closes twelve independent path/polygon failures while
+two actual rectangles stay exact; it changes two Default outputs without matching
+references and leaves IBM unchanged. It remains an ignored experiment. Alternative
+point-list numeric reading and rectangle root-edge mapping also leave IBM's three
+remaining comparisons unchanged and are not landed. These results exclude the
+attempted repairs for this residual; they do not prove general numeric parity.
+
+All nine IBM outputs improve: small/intended become exact; large retains 111
+pixels per background, with maximum transparent alpha error one. All 249 earlier
+exact corporate outputs and every previous bank result remain unchanged. The
+cohort has 255 exact variants and 26 exact documents on both platforms; its
+membership, inputs, options and references stay frozen. IBM remains a holdout.
+The 1,400-case bank agrees byte-for-byte across Windows/Linux; 3,901 tests pass
+per platform. Memory probes and installed package consumers pass. Linux reuses
+all 774 validated platform captures, including the existing Pepsi supplement.
+No new timing claim. General mapping, coverage/clip/material fidelity, the three
+large comparisons and remote CI remain open. Detailed controls and reports stay
+under ignored artifacts/orthogonal-fill-groups-20261007.

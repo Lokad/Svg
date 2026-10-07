@@ -120,8 +120,8 @@ public sealed class CorporateCohortReferenceTests
         Assert.Equal(0, malformed);
         Assert.Equal(0, unsupported);
         Assert.Equal(258, measured);
-        Assert.Equal(249, exact);
-        Assert.Equal(9, known);
+        Assert.Equal(255, exact);
+        Assert.Equal(3, known);
         Assert.Equal(0, gaps);
         Assert.Equal(0, unmeasured);
         Assert.Equal(measured, measurements.RootElement.GetProperty("oracleCounts").GetProperty("measured").GetInt32());

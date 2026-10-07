@@ -741,7 +741,11 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    /// <summary>Lowers user-space fractional point-list vertices through the device map into one polygon fill.</summary>
+    /// <summary>Lowers fractional point lists with existing admission and retains source verbs for filled output.</summary>
+    /// <remarks>Scene geometry preserves paint bounds and admission. A filled result owns immutable source
+    /// commands and its composed scene map, with storage/work charged before allocation and cancellation
+    /// checked through the shared budgeted list. Partial failure releases both scene and command owners.
+    /// Explicit polygon closure stays distinct from the implicit fill closure of a polyline.</remarks>
     internal SvgParsedGeometry LowerFractionalPointList(BudgetedParserList<SvgFractionalPoint> points, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
@@ -766,7 +770,28 @@ internal ref struct SvgOrthogonalGeometryLowering
 
         if (mapped.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + _elementName + " contours are implemented.");
         int[] ends = [mapped.Count];
-        return FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
+        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, element.Presentation.Color, element.Presentation.HasFill, mapping, frame, budget);
+        OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
+        try
+        {
+            if (element.Presentation.HasFill && result.Geometries.Length == 1)
+            {
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                for (int index = 0; index < points.Count; index++)
+                {
+                    SvgFractionalPoint point = points[index];
+                    // Match source float operands before composing scene and output placement.
+                    commands.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new((float)point.X, (float)point.Y), default, default));
+                }
+                commands.Add(new(_elementName == "polygon" ? SvgAuthoredPathVerb.Close : SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
+                owned = commands.Detach();
+                result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.Create(owned, deviceMap, budget) };
+                owned = new([], null);
+            }
+            return result;
+        }
+        catch { result.Discard(); throw; }
+        finally { owned.Dispose(); }
     }
 
     /// <summary>Strokes original fractional polyline verbs; sampled shape curves retain their separate contour route.</summary>

@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-point-list-source-rectangle-137-transparent",
+  "referencePng": "original-point-list-source-rectangle-137-transparent.png",
+  "referenceSha256": "a395ffa947884cc13a49796f84a9544e04deee4924f3de072b71763d85c54493",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 137,
+    "height": 83,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "120810d0fda570762204a4889e372474d25d0e8229d58cb2d60c37eb80e2d579",
+  "candidateSha256": "ffb8d34175db22286568b377c4c4e5bd09956f8eda3165b57fb66f3b65ed5592",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 137,
+    "minimumMismatchY": 83,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Fractional point-list/path twins selected after the integer prototype and a uniform all-cohort route census, before capture/comparison or fractional-route edits. Canonical untuned rectangle, trapezoid and staircase operands exercise source retention, fractional root maps, translation and reflection; no holdout coordinates, recipes or failing pixels used."
+}

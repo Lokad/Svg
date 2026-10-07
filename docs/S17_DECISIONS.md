@@ -1,12 +1,12 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-07. Generated source stroke outlines make all nine Zeppelin
-variants exact on Windows and Linux. The cohort now has **26/27 exact documents**,
-marks **13/13**, wordmarks **13/14**, with **249 exact and nine known** comparisons
-across 258 variants. Only its three small PNGs change; all 246 earlier exact
-images and every other complete comparison remain. The original numerical release
-criterion is met. The active target is 27/27 documents and 258/258 variants on both
-platforms; remote CI remains open.
+Updated 2026-10-07. Fractional point-list source replay makes IBM exact at small
+and intended size on Windows/Linux. Large improves to 111 pixels per background,
+with maximum transparent alpha error one. The cohort has **26/27 exact documents**,
+marks **13/13**, wordmarks **13/14**, with **255 exact and three known** comparisons
+across 258 variants. All 249 earlier exact corporate outputs remain unchanged.
+The original numerical release criterion is met. The active target remains
+27/27 documents and 258/258 variants on both platforms; remote CI remains open.
 
 Exact documents are SimpleLogin, Ford, SDL, UAAR, SimpleX, Zeppelin, Omega,
 Eisenbahn, Rede Manchete, ROC HCVS, Red Cross, SG Rotation Leipzig, Tokyo Tsukurou,
@@ -14,14 +14,14 @@ Artsy, Party of Changes, YouTube, Liputan6, NASA, Blur, Nike, Toyota, Pepsi,
 Target, IKEA, Google and Coca-Cola.
 Membership, inputs, options and references remain frozen.
 [PLAN.md](../PLAN.md) owns the current queue and validation totals;
-[the design record](RASTERIZATION_DESIGN.md#source-native-stroke-outlines-2026-10-07)
+[the design record](RASTERIZATION_DESIGN.md#fractional-point-list-source-replay-2026-10-07)
 explains the repair. Detailed diagnostics stay under ignored artifacts.
 
 The remaining failed document stays in the denominator:
 
 | Document | Failed variants | Current pixel difference |
 | --- | ---: | --- |
-| IBM (`inv-099`) | Nine | 209 through 942 pixels; transparent alpha errors reach 23. |
+| IBM (`inv-099`) | Three large | 111 pixels per background; transparent alpha error at most one. |
 
 These are measured residuals against unchanged references. Their mechanisms and
 broader coverage remain implementation work; no pixel difference is waived.
