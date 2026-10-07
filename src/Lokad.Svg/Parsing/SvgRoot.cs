@@ -1110,8 +1110,8 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
 
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
-/// <summary>References retained scene geometry or marks an opacity-scope boundary.</summary>
-internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, byte Opacity, SvgClipBox? MaskRegion, int MaskContentIndex);
+/// <summary>References retained geometry or marks an isolated layer; mask alpha applies before the separate outer opacity.</summary>
+internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, byte Opacity, SvgClipBox? MaskRegion, int MaskContentIndex, byte MaskAlpha);
 
 internal readonly record struct SvgPoint(int X, int Y);
 
@@ -1222,7 +1222,7 @@ internal sealed class SvgSceneBuilder : IDisposable
             ReserveGradientStops(geometry);
             int geometryIndex = _geometries.Count;
             _geometries.Add(geometry);
-            _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255, null, -1));
+            _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, geometryIndex, 255, null, -1, 255));
         }
         catch { geometry.Dispose(); throw; }
     }
@@ -1268,7 +1268,7 @@ internal sealed class SvgSceneBuilder : IDisposable
             foreach (SvgGeometry geometry in geometries) ReserveGradientStops(geometry);
             int firstGeometryIndex = _geometries.Count;
             _geometries.AddRange(geometries);
-            for (int index = 0; index < geometries.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1));
+            for (int index = 0; index < geometries.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1, 255));
         }
         catch { foreach (SvgGeometry geometry in geometries) geometry.Dispose(); throw; }
     }
@@ -1277,7 +1277,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     {
         SvgSceneSlot slot = new(_geometries.Count, _commands.Count);
         _geometries.Add(default);
-        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null, -1));
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null, -1, 255));
         return slot;
     }
 
@@ -1287,19 +1287,19 @@ internal sealed class SvgSceneBuilder : IDisposable
         if (applied.Length == 0) throw new InvalidOperationException("Deferred reference resolution requires at least one geometry.");
         foreach (SvgGeometry geometry in applied) ReserveGradientStops(geometry);
         _geometries[slot.GeometryIndex] = applied[0];
-        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null, -1);
+        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null, -1, 255);
         if (applied.Length == 1) return 0;
         int firstGeometryIndex = _geometries.Count;
         for (int index = 1; index < applied.Length; index++) _geometries.Add(applied[index]);
         SvgDrawCommand[] extra = new SvgDrawCommand[applied.Length - 1];
-        for (int index = 0; index < extra.Length; index++) extra[index] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1);
+        for (int index = 0; index < extra.Length; index++) extra[index] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1, 255);
         _commands.Insert(slot.CommandIndex + 1, extra);
         return extra.Length;
     }
 
-    internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, null, -1));
+    internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, null, -1, 255));
 
-    internal void EndOpacityScope() => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1));
+    internal void EndOpacityScope() => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255));
 
     /// <summary>Copies one mask content evaluation under scene ownership, returning its command index.</summary>
     internal int AddMaskContent(SvgMaskContent content)

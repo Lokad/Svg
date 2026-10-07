@@ -51,6 +51,11 @@ variants, completing the frozen-cohort fidelity target on both platforms.
 See [the rectangle repair](docs/RASTERIZATION_DESIGN.md#native-rectangle-source-operands-2026-10-07).
 See [the source-outline repair](docs/RASTERIZATION_DESIGN.md#source-native-stroke-outlines-2026-10-07).
 
+Isolated opacity layers now use native image compositing, with masks applied
+before outer opacity. This closes the original white-background group/root
+controls and preserves the complete exact corporate matrix.
+See [the layer repair](docs/RASTERIZATION_DESIGN.md#isolated-image-layer-composition-2026-10-07).
+
 The following implementation checkpoints retain their historical results.
 Authored fills retain directed winding and
 curves after scene normalization, with root/group composition before float

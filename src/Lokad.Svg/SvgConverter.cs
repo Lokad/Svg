@@ -415,23 +415,21 @@ public static class SvgConverter
                         cancellationToken.ThrowIfCancellationRequested();
                         int offset = pixel * 4;
                         byte extra = command.Opacity;
+                        byte maskAlpha = command.MaskAlpha;
                         if (hasMaskContent)
                         {
                             byte contentAlpha = maskSurface[offset + 3];
                             byte maskValue = maskIsAlpha ? contentAlpha : (byte)(contentAlpha * maskLuminance / 255);
-                            extra = MultiplyAlpha(extra, maskValue);
+                            maskAlpha = MultiplyAlpha(maskAlpha, maskValue);
                         }
                         if (command.MaskRegion is not null)
                         {
                             int x = pixel % outputWidth;
                             int y = pixel / outputWidth;
-                            extra = (byte)(extra * ClipBoxCoverage((regionLeft, regionTop, regionRight, regionBottom), x, y));
+                            maskAlpha = (byte)(maskAlpha * ClipBoxCoverage((regionLeft, regionTop, regionRight, regionBottom), x, y));
                         }
-                        if (extra == 0 || groupPixels[offset + 3] == 0) continue;
-                        // Round-half-up modulation mirrors the inline stamped-mask alpha chain
-                        // (SvgMaskSyntax stamp sites use MultiplyAlpha), keeping single-geometry group
-                        // and direct spellings identical through one shared backend.
-                        BlendPremultipliedOver(destination.AsSpan(offset, 4), (groupPixels[offset] * extra + 127) / 255, (groupPixels[offset + 1] * extra + 127) / 255, (groupPixels[offset + 2] * extra + 127) / 255, MultiplyAlpha(groupPixels[offset + 3], extra));
+                        if (extra == 0 || maskAlpha == 0 || groupPixels[offset + 3] == 0) continue;
+                        BlendLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha);
                     }
                     continue;
                 }
@@ -440,6 +438,18 @@ public static class SvgConverter
             }
             if (stopsAtGroupEnd) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
             return index;
+
+            // The native image blitter sums scaled source/destination lanes before
+            // their final byte shift. Masks affect the isolated surface first;
+            // outer opacity remains a separate image-draw scale.
+            static void BlendLayerPixel(Span<byte> destination, ReadOnlySpan<byte> source, byte opacity, byte maskAlpha)
+            {
+                int sourceScale = opacity + 1;
+                int inverse = 65535 - MultiplyAlpha(source[3], maskAlpha) * sourceScale;
+                int destinationScale = (inverse + (inverse >> 8)) >> 8;
+                for (int lane = 0; lane < 4; lane++)
+                    destination[lane] = (byte)((MultiplyAlpha(source[lane], maskAlpha) * sourceScale + destination[lane] * destinationScale) >> 8);
+            }
         }
 
         void RasterizeGeometry(SvgGeometry geometry, byte[] destination)

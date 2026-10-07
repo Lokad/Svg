@@ -5,22 +5,22 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
-## Native rectangle source-operands checkpoint (2026-10-07)
+## Isolated image-layer checkpoint (2026-10-07)
 
-The current cohort has **27/27 exact documents**, marks **13/13**, wordmarks
+The current cohort retains **27/27 exact documents**, marks **13/13**, wordmarks
 **14/14**: **258 exact, zero known and zero rejected** variants on Windows/Linux.
-Only IBM's three large PNGs change, from 111 differing pixels each to zero;
-all 255 earlier exact images and every other complete comparison remain.
-Membership, inputs, options and references stay frozen; IBM remains an evaluation
-holdout, without document-specific tuning.
+Every corporate report and PNG remains unchanged under the image-layer repair.
+Membership, inputs, options and references stay frozen; holdouts receive no
+document-specific tuning.
 
-The bank has 1,274 fixtures (1,195 exact, 55 known, 24 rejected), 36 research
+The bank has 1,278 fixtures (1,202 exact, 52 known, 24 rejected), 36 research
 probes (23 exact, 12 known, one rejected) and 92 Default renders:
-**1,402 executions**, with identical Windows/Linux results and PNG bytes.
-Two new exact decimal-endpoint controls have six stable, healthy, cleaned captures.
-Every preceding bank result remains unchanged.
-[The design record](RASTERIZATION_DESIGN.md#native-rectangle-source-operands-2026-10-07)
-records the mechanism, control selection and proof limits. PLAN owns the current
+**1,406 executions**, with identical Windows/Linux results and PNG bytes.
+Three original opacity references graduate without recapture; the curved layer
+improves 1,510 differing pixels to one. Four independent regressions enter from
+twelve stable, healthy, cleaned captures; all other preceding bank results remain.
+[The design record](RASTERIZATION_DESIGN.md#isolated-image-layer-composition-2026-10-07)
+records the mechanism, broader controls and proof limits. PLAN owns the current
 queue; preceding checkpoints retain their historical totals.
 
 ## Source-curve paint-bounds checkpoint (2026-10-07)
@@ -87,7 +87,7 @@ records mechanism and limits. Earlier checkpoint totals below remain historical.
 
 ## Linux platform-reference supplement (2026-10-07)
 
-Local Linux renders reproduce all 1,402 Windows bank outcomes and PNG bytes.
+Local Linux renders reproduce all 1,406 Windows bank outcomes and PNG bytes.
 Across the frozen corporate matrix, 255/258 candidate PNGs are identical to Windows.
 Pepsi's three small backgrounds differ in 22 RGB-only pixels each, but match
 the same pinned Chrome version/revision on Linux in nine healthy, cleaned,

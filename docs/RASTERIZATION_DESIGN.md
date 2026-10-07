@@ -6773,3 +6773,43 @@ platform captures and existing Pepsi supplement. No new timing claim accompanies
 this repair. Selection limits, broader SVG fidelity, other known-difference
 fixtures/research probes and S17 remote CI remain open. Detailed controls and
 audits stay under ignored artifacts/rectangle-operands-20261007.
+
+## Isolated image-layer composition (2026-10-07)
+
+The pinned `SkBlendARGB32` image blitter scales the source by opacity+1,
+derives the destination scale from the unrounded source-alpha product, then sums
+both products before shifting to bytes. Rounding each opacity-scaled source lane
+before source-over loses this operation order. The shared layer restore now uses
+the native arithmetic, with no per-pixel allocations. Mask alpha remains a
+separate draw-command factor: it multiplies the isolated surface before outer
+opacity. Uniform backward masks follow the existing deferred resolution route;
+opaque uniform masks retain their existing inline stamping route. The new factor
+fits existing padding: draw commands remain 72 bytes. Collection reservations,
+bounded traversal, copying, cancellation, disposal and nested-opacity admission
+remain covered by their existing contracts; parser characterization now asserts
+separate mask/opacity factors. No public API or runtime dependency changes.
+
+Unchanged compiled native scalar and SSE2 image-blend functions agree with the
+managed lane arithmetic in 3,600 valid premultiplied boundary cases. These are
+function-level record adapters, without full native image/layer iteration.
+Twenty-four independent browser configurations cover four opacity values,
+opaque/translucent content, three backgrounds, root/group scopes and
+forward/backward uniform masks. All are exact; twenty improve from 42–99 differing
+pixels. Controls were declared after each prototype, before capture/comparison.
+All 72 captures are stable, healthy and cleaned; four regressions enter the bank
+from twelve captures. No corporate coordinates, recipes or failing pixels are
+used to select or implement the controls.
+
+The three original root/group white-background controls become exact against
+unchanged references. The large curved layer improves 1,510 pixels to one at
+(24,35), with maximum channel error ten and alpha error one; this residual stays
+known and does not establish general layer exactness. Every other prior bank
+report, including all earlier exact images and rejections, remains unchanged.
+The 1,406-case bank agrees byte-for-byte across Windows/Linux. All 258 corporate
+reports/PNGs and 27 exact documents remain unchanged on each platform. Release
+builds, 3,907 tests per platform, fresh memory probes and installed consumers pass.
+Linux reuses all 774 validated platform captures and the existing Pepsi
+supplement. No new timing claim. General coverage/paint/mask/nested-layer fidelity,
+other known corpus differences and S17 remote CI retain their open scope.
+Detailed prototypes, compiled adapters and audits stay under ignored
+artifacts/group-image-blend-20261007.

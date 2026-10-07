@@ -320,18 +320,18 @@ internal static class SvgMaskSyntax
                 if (pending.Parent is not null && !pending.Parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
                 ValidateNoGlyphText(state, pending, workCounter, cancellationToken);
                 int contentIndex = state.Scene.AddMaskContent(content);
-                if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, pending.Opacity, maskRegion, contentIndex);
-                else InsertGroupMaskScope(state, pending, pending.Opacity, maskRegion, contentIndex, workCounter, cancellationToken);
+                if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, pending.Opacity, 255, maskRegion, contentIndex);
+                else InsertGroupMaskScope(state, pending, pending.Opacity, 255, maskRegion, contentIndex, workCounter, cancellationToken);
                 continue;
             }
             byte combined = SvgReferenceResolver.MultiplyAlpha(pending.Opacity, value);
             if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox contentBox)) ValidateGroupMaskCoverage(state, pending, contentBox, workCounter, cancellationToken);
-            if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, combined, maskRegion, -1);
+            if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, pending.Opacity, value, maskRegion, -1);
             else if (pending.DefinedMask && pending.Opacity == 255 && combined != 255 && TryStampUniformGroupMask(state, pending, value, workCounter, cancellationToken))
             {
                 // Stamped inline like direct leaves; no isolation scope is needed.
             }
-            else if (combined != 255 || maskRegion is not null) InsertGroupMaskScope(state, pending, combined, maskRegion, -1, workCounter, cancellationToken);
+            else if (combined != 255 || maskRegion is not null) InsertGroupMaskScope(state, pending, pending.Opacity, value, maskRegion, -1, workCounter, cancellationToken);
             }
 
         static void ValidateNoGlyphText(SvgDocumentState state, PendingGroupMask pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -359,22 +359,22 @@ internal static class SvgMaskSyntax
             }
         }
 
-        static void RewriteGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte combined, SvgClipBox? maskRegion, int maskContentIndex)
+        static void RewriteGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte opacity, byte maskAlpha, SvgClipBox? maskRegion, int maskContentIndex)
         {
             SvgDrawCommand scope = state.Scene.CommandAt(pending.FirstCommandIndex);
             if (scope.Kind != SvgDrawCommandKind.BeginGroup) throw new InvalidOperationException("Deferred group mask resolution requires its isolation scope.");
-            state.Scene.ReplaceCommand(pending.FirstCommandIndex, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, combined, maskRegion, maskContentIndex));
+            state.Scene.ReplaceCommand(pending.FirstCommandIndex, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, maskRegion, maskContentIndex, maskAlpha));
         }
 
-        static void InsertGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte combined, SvgClipBox? maskRegion, int maskContentIndex, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static void InsertGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte opacity, byte maskAlpha, SvgClipBox? maskRegion, int maskContentIndex, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
             {
                 workCounter.Consume(cancellationToken);
-                if (combined != 255 && state.Scene.CommandAt(commandIndex).Kind == SvgDrawCommandKind.BeginGroup) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
+                if ((opacity != 255 || maskAlpha != 255) && state.Scene.CommandAt(commandIndex).Kind == SvgDrawCommandKind.BeginGroup) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
             }
-            state.Scene.InsertCommands(pending.EndCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1)]);
-            state.Scene.InsertCommands(pending.FirstCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, combined, maskRegion, maskContentIndex)]);
+            state.Scene.InsertCommands(pending.EndCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255)]);
+            state.Scene.InsertCommands(pending.FirstCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, maskRegion, maskContentIndex, maskAlpha)]);
             SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.FirstCommandIndex, 1, workCounter, cancellationToken);
             SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.EndCommandIndex + 1, 1, workCounter, cancellationToken);
         }

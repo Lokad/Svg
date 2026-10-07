@@ -1,0 +1,29 @@
+{
+  "fixtureId": "original-image-layer-low-opacity-white",
+  "referencePng": "original-image-layer-low-opacity-white.png",
+  "referenceSha256": "e6e7ed0be5ab8b8bd0fe527fe73ed741e6e9d2d2935cb63ea8b924f027068062",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 11,
+    "height": 9,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "b3cfb0f50a6aed339ea2062a3707ce86630020d7d9c6868d2581c5f311a7dc04",
+  "candidateSha256": "3342fe529458334fc2057f3c49208d38c08460abef214b3a6ead8c40b983006f",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  },
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent opaque and partially transparent image-layer source-over controls across four opacity values and three caller backgrounds, plus root/group scopes. Declared after the native-image arithmetic prototype, before browser capture/comparison; no corporate inputs or failed-pixel tuning."
+}

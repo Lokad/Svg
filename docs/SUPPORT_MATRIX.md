@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-The current 1,274 manifest entries contain
-1,195 exact decoded-pixel references, 55 known-difference renders and 24
+The current 1,278 manifest entries contain
+1,202 exact decoded-pixel references, 52 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -66,6 +66,13 @@ float precision before scene placement. IBM is exact in all nine variants,
 completing the full frozen-cohort target. S17's numerical minimum is also met.
 Representative Windows performance, local Windows/Linux delivery and the full
 Linux browser matrix are validated. Remote CI remains open.
+
+Isolated root/group opacity uses native image-layer source-over, summing scaled
+source and destination lanes before the final byte shift. Uniform masks retain
+their factor separately and multiply the isolated surface before outer opacity,
+including forward references. Original white-background opacity controls are
+exact; the curved-layer control retains one differing pixel. Spatial masks,
+region gates and nested-opacity restrictions keep their existing scope.
 
 Concentric general radial paints retain separate shader-local and referencing
 matrices. The drawing CTM moves into bitmap coordinates before local-gradient

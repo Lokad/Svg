@@ -28,11 +28,11 @@ internal static class SvgGroupParser
                 deferredMask = state.Strings.Copy(maskId);
                 mask = null;
             }
-            if (mask is not null && resolved.Opacity == 255 && !reader.IsEmptyElement)
+            if (mask is not null && !reader.IsEmptyElement)
             {
-                // Defined uniform masks on opaque groups take the deferred path so resolution stamps
-                // the value inline like direct leaves instead of isolating through an opacity scope; both
-                // spellings then share one computation through the premultiplied backend.
+                // Preserve mask multiplication before outer opacity. Deferred resolution
+                // retains both factors on an isolated group, while opaque uniform groups
+                // may still stamp their mask into children like direct leaves.
                 deferredMask = state.Strings.Copy(maskId);
                 mask = null;
             }
