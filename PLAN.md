@@ -51,8 +51,9 @@ references. The active work order below starts from
 development cases; IBM remains an evaluation holdout. S17's original numerical
 minimum is met on both platforms; remote CI evidence remains a separate open
 release requirement. Local Linux delivery uses WSL Ubuntu 24.04.3, isolated SDK
-10.0.401 / runtime 10.0.12 and PowerShell 7.6.6. The full Linux measurement uses
-fresh references for every variant, with no Windows-reference fallback. See
+10.0.401 / runtime 10.0.12 and PowerShell 7.6.6. The full Linux measurement reuses
+the validated Linux references for every variant, with no Windows-reference
+fallback. See
 [the contained-edge repair](docs/RASTERIZATION_DESIGN.md#contained-bitmap-edge-construction-2026-10-07).
 
 The reviewed renderer baseline
@@ -67,11 +68,11 @@ checkpoint summaries below retain their dates, while detailed experiments stay i
 [the inventory](docs/INVENTORY.md), and timings in
 [the benchmark record](docs/BENCHMARKS.md).
 
-**Objective:** render most ordinary, static, self-contained corporate SVG logos,
-including outlined wordmarks, pixel-exact against the pinned browser oracle.
-The next fidelity target is **27/27 exact documents (13/13 marks, 14/14 outlined
-wordmarks) and 258/258 exact variants on both platforms** in the existing frozen
-cohort. The original S17 release minimum remains **at least 80% exact documents**,
+**Active objective:** achieve **27/27 exact documents (13/13 marks, 14/14 outlined
+wordmarks) and 258/258 exact variants on Windows and Linux** in the existing
+frozen cohort. Improve shared renderer behavior toward ordinary, static,
+self-contained corporate SVG logos, including outlined wordmarks.
+The original S17 release minimum remains **at least 80% exact documents**,
 both overall and within each corporate-mark/outlined-wordmark stratum of a frozen
 representative cohort.
 Every declared variant of a counted document must be pixel-exact; the document
@@ -866,20 +867,38 @@ references. The starting measurement is the same on Windows and Linux:
 
 | Document | Remaining variants | Measured difference | Investigation role |
 | --- | ---: | --- | --- |
-| SimpleLogin (`inv-001`) | Nine | Four through 22 pixels; transparent alpha errors reach 26. | Development case for coverage/mapping and paint witnesses. |
-| Zeppelin (`inv-007`) | Three small | 26 RGB-only pixels, maximum channel error five. | Development case for paint arithmetic and dispatch witnesses. |
+| SimpleLogin (`inv-001`) | Nine | Four through 22 pixels; transparent alpha errors reach 26. | First development case: filled-path rectangle dispatch and coverage, followed by remaining curve events. |
+| Zeppelin (`inv-007`) | Three small | 26 RGB-only pixels, maximum channel error five. | Next development case: material arithmetic and direct/run paint dispatch. |
 | IBM (`inv-099`) | Nine | 209 through 942 pixels; transparent alpha errors reach 23. | Evaluation holdout; no document-specific tuning. |
 
 SG Rotation Leipzig is closed by shared bitmap-local uncut construction; its
 three large one-pixel differences are zero on both platforms.
 
 These difference classes guide investigation; they do not establish the cause.
-Start with the two remaining development documents to isolate a shared mechanism
-using pixel witnesses and independent native/browser controls. Land a bounded repair
-with a regression for that mechanism, then compare the complete 1,362-case bank
-and all 258 corporate variants on Windows and Linux. Evaluate all eight holdouts
-with each shared repair. Preserve every current exact image and categorized
-rejection; record complete before/after results for changed known differences.
+Work in this order:
+
+1. **SimpleLogin: establish the native filled-rectangle route.** Compare original
+   path-verb recognition, thin/wide rectangle dispatch, float coverage and
+   direct/additive painting. Test independent width, phase, opacity and bitmap
+   boundary controls; preserve whole-path dispatch when bounded storage splits a path.
+   Keep any remaining curve-event differences visible. These are hypotheses,
+   not a validated repair or a reason to advance the checkpoint counts.
+2. **Resolve the remaining development witnesses.** Use residual SimpleLogin
+   curve pixels and Zeppelin's RGB-only pixels to select the next shared repair.
+   Add a reusable regression for each demonstrated mechanism. Keep failed models
+   in the design record and detailed traces under ignored artifacts.
+3. **Evaluate the complete cohort.** Compare shared coverage/paint changes across
+   the complete bank (currently 1,362 cases) and all 258 corporate variants on
+   Windows and Linux, including all eight holdouts. Preserve every current exact
+   image and categorized rejection; record complete before/after results for
+   changed known differences. IBM remains an evaluation holdout with no
+   document-specific tuning.
+
+Reuse stable, validated browser references while inputs, options and the oracle
+pin remain unchanged. New independent controls need their own stable captures;
+ordinary renderer edits require no recapture or implementation-hash refresh.
+Apply the validation policy in section 5 to builds, affected tests and resource
+checks. Update current counts only after the production repair is validated.
 
 The target is achieved only when every frozen variant is pixel-exact against its
 platform-appropriate reference: **27/27 documents, 13/13 marks, 14/14 wordmarks,
@@ -1285,13 +1304,11 @@ performance, the corporate cohort, Linux or S17.
 
 Subsequent slices must preserve all exact fixtures, output API parity, existing
 admission and categorized failures, cancellation/ownership behavior and Default
-resource limits. Record complete candidate/reference identities, total and
-directional alpha errors and opaque/hole changes for every affected banked image.
-Run full fixture/research and available inventory variants, with missing captures
-and unmeasured variants listed explicitly. The legacy 92-file Default sweep is
-not full independent-variant validation; those gaps cannot shrink a denominator.
-Measure matching before/after tiny/Ford/dense/native-size time, managed allocation,
-charged work and peaks; local timings do not replace representative throughput.
+resource limits. Use section 5's validation policy: broad coverage, transform or
+composition changes need complete bank and cohort comparisons; measure resources
+and performance when the changed mechanism affects them. Reuse valid evidence
+for unchanged contracts. The legacy 92-file Default sweep does not replace
+matching-options corporate comparisons or shrink the frozen denominator.
 
 The two selected exits are established: all nine Ford and all nine YouTube
 variants are exact. Preserve raw classification, AA dispatch, triangle coverage
@@ -1404,6 +1421,8 @@ check cancellation within bounded chunks and release owners on every exit.
   tool downloads.
   Keep dependency lockfile integrity hashes.
   Ordinary code edits and rebuilds require no reference metadata refresh.
+  Tests must not fail merely because implementation bytes changed. Update
+  behavioral expectations only when the intended behavior changes.
 - Commit reusable inputs, expected behavior and necessary oracle provenance.
   Keep detailed run reports, pixel dumps, resource ledgers and timing batches under
   ignored artifacts. Update existing documentation when findings change a contract,
