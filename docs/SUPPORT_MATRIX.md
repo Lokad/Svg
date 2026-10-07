@@ -47,8 +47,9 @@ and 24 known differences, with zero renderer rejections. Rede Manchete, Tokyo
 Tsukurou and Pepsi become exact in every variant: **23/27 documents**, marks
 **11/13**, wordmarks **12/14**. All 225 earlier exact PNGs remain. Original inputs,
 options and browser references stay frozen. S17's numerical minimum is met.
-Representative Windows performance and local Windows/Linux delivery are
-validated; the full fresh Linux browser matrix and remote CI remain open.
+Representative Windows performance, local Windows/Linux delivery and the full
+fresh Linux browser matrix are validated. Linux has the same exact/known counts
+and document numerators; remote CI remains open.
 
 Concentric general radial paints retain separate shader-local and referencing
 matrices. The drawing CTM moves into bitmap coordinates before local-gradient

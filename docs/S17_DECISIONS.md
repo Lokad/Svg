@@ -5,8 +5,9 @@ Tokyo Tsukurou and Pepsi exact in every frozen variant. The cohort is **23/27
 exact documents**, marks **11/13**, wordmarks **12/14**, with 234 exact and 24
 known comparisons across 258 variants. The numerical criterion is met.
 Representative Windows performance and fresh local Windows/Linux delivery
-evidence are recorded. A complete fresh Linux browser matrix and remote CI
-evidence remain open.
+evidence are recorded. The full fresh Linux browser matrix reproduces the same
+234 exact variants, 24 known differences and 23/27 exact documents. Remote CI
+evidence remains open.
 
 Exact documents are Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, Rede Manchete,
 ROC HCVS, Red Cross, Tokyo Tsukurou, Artsy, Party of Changes, YouTube, Liputan6,
@@ -36,8 +37,9 @@ ShortRun. Intended-size medians across variant means are 16.37 ms for marks and
 records sizes, maxima, machine scope and confidence limits. This is a warmed
 Windows measurement, with no speedup or service-latency claim. Fresh local
 Windows and Linux build, tests, memory, package consumers, browser/font tools
-and artifact consistency pass. The three supplemental Linux Pepsi references
-do not establish a complete fresh Linux browser matrix; remote CI is pending.
+and artifact consistency pass. All 258 Linux variants have independent fresh
+reference triples: 774 stable, healthy, cleaned captures with no failures or gaps.
+Remote CI is pending.
 
 ## Q1 - numeric exact-document target: selected
 

@@ -210,6 +210,8 @@ It preserves the declared
 geometry, sizing and backgrounds. Capturing an image does not establish renderer
 fidelity. Ordinary `CorporateCohortReferenceTests` compare the admitted reference
 matrix offline, including independently captured renderer rejections.
+Run `test-chrome.ps1` without concurrent capture batches on the same host:
+its cleanup check compares the shared temporary-profile namespace before and after.
 
 Measure the renderer against those captures with the existing VisualDiff tool:
 

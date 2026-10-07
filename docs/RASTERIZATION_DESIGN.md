@@ -5549,7 +5549,7 @@ no source, adapter, build or report hashes are introduced.
 
 An isolated LF archive runs on WSL Ubuntu 24.04.3 x64 with SDK 10.0.401 /
 .NET 10.0.12 and PowerShell 7.6.6. Both Windows and Linux nine-project Release
-builds and all 3,861 tests pass. All 1,359 bank outcomes and rendered PNG bytes
+builds and all 3,868 tests pass. All 1,359 bank outcomes and rendered PNG bytes
 match Windows. Eight fixture identities previously recorded working-tree CRLF
 rather than the existing LF repository bytes; their metadata is corrected
 without changing SVG content or pixels.
@@ -5568,7 +5568,16 @@ references retain the same version, revision, recipe and frozen SVG/options;
 the original Windows references remain. Exact cohort tests compare decoded pixels;
 known differences retain complete candidate identities. Passing Linux tests uses
 255 frozen Windows references and three independently captured Linux references.
-This is not a complete fresh Linux-browser matrix or remote CI evidence.
+The subsequent complete Linux matrix uses 774 new fresh-process captures for
+all 258 frozen variants. Every triple is stable, healthy, cleaned and has complete
+diagnostics; no capture failure or unmeasured variant remains. All 255 other
+Linux reference PNGs are byte-identical to Windows, and the nine new small Pepsi
+captures reproduce the existing Linux supplement. The fresh Linux measurement
+has 234 exact variants, 24 known differences and zero rejections, with the same
+23/27 exact documents, 11/13 marks and 12/14 wordmarks. Every counted document's
+declared variants are exact; SimpleLogin, Zeppelin, SG Rotation Leipzig and IBM
+retain their failures and denominator. The original Windows freeze is unchanged.
+Remote CI evidence remains pending.
 
 The font-tool retry harness declares an incomplete one-byte response before
 aborting: plain `HttpListenerResponse.Abort()` on Linux produced a valid empty
@@ -5577,6 +5586,10 @@ now exercise the retry and reject the malformed font. Artifact validation uses
 runtime OS classification and the producing worker's description; Ubuntu's
 description does not contain the word Linux. An empty invariant-culture locale
 is valid, while a missing locale or mismatched OS attribution is rejected.
+After the full capture batch, isolated Linux wrapper checks pass for healthy
+smoke captures, failure/deadline handling, atomic publication and profile cleanup.
+The updated batch manifest also passes a fresh Linux named-subset capture and
+leaves no staging file. Producing-worker CI artifact consistency passes.
 Detailed diagnostics remain ignored under `artifacts/linux-delivery-20261007/`;
 no source/build/report hashes are added.
 

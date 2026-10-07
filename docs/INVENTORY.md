@@ -8,13 +8,19 @@ No selection is claimed until documents are actually inventoried below.
 ## Linux platform-reference supplement (2026-10-07)
 
 Local Linux renders reproduce all 1,359 Windows bank outcomes and PNG bytes.
-Across the frozen corporate matrix, 255/258 PNGs are identical to Windows.
+Across the frozen corporate matrix, 255/258 candidate PNGs are identical to Windows.
 Pepsi's three small backgrounds differ in 22 RGB-only pixels each, but match
 the same pinned Chrome version/revision on Linux in nine healthy, cleaned,
 stable fresh captures. The [supplement](../tests/References/inventory/corporate-cohort-linux64.json)
 keeps the original Windows freeze, inputs, options and denominator. Both platforms
 pass the cohort tests; Linux uses the supplement for those three variants.
-A complete fresh Linux-browser cohort measurement and remote CI remain open.
+The complete fresh Linux-browser matrix now covers all 258 frozen variants with
+774 stable, healthy, cleaned captures. Of the reference PNGs, 255 match Windows
+bytes, while all nine new small Pepsi captures reproduce the existing supplement.
+The Linux result is 234 exact variants, 24 known differences, zero rejections and
+the same 23/27 exact documents, marks 11/13 and wordmarks 12/14. No failure or
+unmeasured variant is omitted. Remote CI remains open; detailed evidence stays
+under ignored `artifacts/linux-delivery-20261007/`.
 
 ## Legacy conic subdivision checkpoint (2026-10-07)
 
@@ -29,9 +35,9 @@ measured failures and denominators.
 The bank has 1,231 fixtures (1,145 exact, 62 known, 24 rejected), 36 research
 probes (22 exact, 13 known, one rejected) and 92 Default cases: 1,359 executions.
 Thirteen fixtures graduate and three independent circle controls enter the bank
-with nine stable, healthy and cleaned captures. S17's numerical minimum is met;
-representative performance and delivery evidence remains open. [PLAN](../PLAN.md)
-owns the queue. Detailed comparisons stay under ignored
+with nine stable, healthy and cleaned captures. At that checkpoint S17's numerical
+minimum was met, while representative performance and delivery were pending.
+[PLAN](../PLAN.md) owns the current queue. Detailed comparisons stay under ignored
 `artifacts/oval-residuals-20261007/`.
 
 ## Quadratic start-snap checkpoint (2026-10-07)
