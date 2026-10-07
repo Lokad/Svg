@@ -31,8 +31,8 @@ internal static class SvgGroupParser
             if (mask is not null && !reader.IsEmptyElement)
             {
                 // Preserve mask multiplication before outer opacity. Deferred resolution
-                // retains both factors on an isolated group, while opaque uniform groups
-                // may still stamp their mask into children like direct leaves.
+                // retains both factors on an isolated group, including uniform masks
+                // whose value must apply after all children have composed.
                 deferredMask = state.Strings.Copy(maskId);
                 mask = null;
             }

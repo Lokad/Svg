@@ -55,6 +55,12 @@ browser regressions for fractional coordinates, clamped radii and reflected shap
 See [the rectangle repair](docs/RASTERIZATION_DESIGN.md#native-rectangle-source-operands-2026-10-07).
 See [the source-outline repair](docs/RASTERIZATION_DESIGN.md#source-native-stroke-outlines-2026-10-07).
 
+Uniform group masks apply after the children compose, preserving overlap alpha
+and antialiased colors independently of mask definition order. Independent
+rounded-fill/stroke, pattern and mask-value controls match the browser on three
+backgrounds; other mask and layer combinations remain in the support matrix.
+See [the group-mask repair](docs/RASTERIZATION_DESIGN.md#uniform-group-mask-composition-2026-10-07).
+
 Isolated opacity layers now use native image compositing, with masks applied
 before outer opacity. This closes the original white-background group/root
 controls and preserves the complete exact corporate matrix.

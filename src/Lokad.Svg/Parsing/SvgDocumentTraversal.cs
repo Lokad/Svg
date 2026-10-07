@@ -200,8 +200,7 @@ internal static class SvgDocumentTraversal
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
                         if (parsedGroup.DeferredMask is not null)
                         {
-                            bool definedMask = parsedGroup.Opacity == 255 && state.Masks.TryGetValue(parsedGroup.DeferredMask, out _) && !SvgMaskSyntax.HasCustomRegion(reader, state);
-                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, parsedGroup.Opacity, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame, definedMask));
+                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, parsedGroup.Opacity, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame));
                         }
                         if (parsedGroup.Scope.IsolatesOpacity)
                         {

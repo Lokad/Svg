@@ -5,23 +5,22 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
-## Rounded-rectangle source checkpoint (2026-10-07)
+## Uniform group-mask checkpoint (2026-10-07)
 
 The current cohort retains **27/27 exact documents**, marks **13/13**, wordmarks
 **14/14**: **258 exact, zero known and zero rejected** variants on Windows/Linux.
-Every corporate report and PNG remains unchanged under the rounded-source repair.
+Every corporate report and PNG remains unchanged under the group-mask repair.
 Membership, inputs, options and references stay frozen; holdouts receive no
 document-specific tuning.
 
-The bank has 1,289 fixtures (1,224 exact, 41 known, 24 rejected), 41 research
-probes (26 exact, 14 known, one rejected) and 92 Default renders:
-**1,422 executions**, with identical Windows/Linux results and PNG bytes.
-Eleven original fixture references and three original research probes become
-exact without recapture. The research originals remain, with fixture graduations;
-eight independent exact fixtures and five explicit known-difference research
-cases retain the new controls. All earlier exact results and rejections remain.
-Only inv-042 changes in the Default sweep, where it has no matching oracle.
-[The design record](RASTERIZATION_DESIGN.md#native-rounded-rectangle-source-commands-2026-10-07)
+The bank has 1,323 fixtures (1,258 exact, 41 known, 24 rejected), 53 research
+probes (27 exact, 25 known, one rejected) and 92 Default renders:
+**1,468 executions**, with identical Windows/Linux results and PNG bytes.
+One original rounded-mask research probe becomes exact without recapture and
+retains its research evidence alongside a fixture graduation. Thirty-three
+independent exact configurations and twelve known controls enter the bank.
+Every other preceding bank result and all rejections remain unchanged.
+[The design record](RASTERIZATION_DESIGN.md#uniform-group-mask-composition-2026-10-07)
 records the mechanism, resources and proof limits. PLAN owns the current queue;
 preceding checkpoints retain their historical totals.
 

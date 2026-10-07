@@ -1953,12 +1953,12 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Gray_masked_group_outline_matches_direct_masked_outline()
+    public void Gray_masked_group_outline_preserves_pixels_when_the_mask_definition_moves_forward()
     {
         byte[] grouped = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='m'><rect x='-8' y='-8' width='24' height='24' fill='#808080'/></mask></defs><g mask='url(#m)'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></g></svg>", out _, out _);
-        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='m'><rect x='-8' y='-8' width='24' height='24' fill='#808080'/></mask></defs><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2' mask='url(#m)'/></svg>", out _, out _);
+        byte[] forward = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><g mask='url(#m)'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></g><defs><mask id='m'><rect x='-8' y='-8' width='24' height='24' fill='#808080'/></mask></defs></svg>", out _, out _);
 
-        Assert.Equal(direct, grouped);
+        Assert.Equal(forward, grouped);
     }
 
     [Fact]

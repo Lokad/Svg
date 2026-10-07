@@ -5,16 +5,16 @@ variants on Windows and Linux**, with zero known differences and zero rejections
 Marks are 13/13 exact; outlined wordmarks are 14/14. Membership, inputs, options
 and browser references stay frozen.
 
-The latest validated repair retains native conic corners and convex shape
-classification for rounded rectangles. Fill and stroke share source commands
-through final mapping. Eleven existing fixture failures and three research probes
-become exact against their original browser references. All 258 exact corporate
-reports and images, every other prior measured bank result and all rejections
-remain unchanged; one Default rounded-shape output also changes without a matching
-oracle. Eight independent exact regressions and five known-difference controls
-join the bank. The complete 1,422-case bank produces identical Windows/Linux output
-bytes; Release builds and 3,926 tests per platform pass. See
-[the repair and its limits](docs/RASTERIZATION_DESIGN.md#native-rounded-rectangle-source-commands-2026-10-07).
+The latest validated repair applies uniform group masks after child composition,
+independently of mask definition order. It removes per-child paint stamping;
+overlaps, antialiased colors and grouped strokes now use the existing isolated
+surface operation. One original research probe and 24 independent configurations
+become exact. All 258 corporate reports/images and every other preceding bank
+result remain unchanged. Thirty-three exact independent configurations and twelve
+known controls enter the bank. The complete 1,468-case bank produces identical
+Windows/Linux output bytes; Release builds, 3,943 tests and fresh 25-scenario
+memory checks pass on each platform. See
+[the repair and its limits](docs/RASTERIZATION_DESIGN.md#uniform-group-mask-composition-2026-10-07).
 
 **The full frozen-cohort fidelity target is achieved.** Preserve these exact
 results while improving shared renderer behavior beyond this cohort. S17's remote
@@ -139,14 +139,14 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,926 passed on each platform**: 3,745 core, 175 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Rounded source commands use reserved scene storage and bounded work. Native convex shape classification survives copying, transfer and preparation within existing owner allowances; generated stroke outlines keep their own classification. Tight memory/work denial, cleanup, cancellation-token and eight browser controls × six outputs pass. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API, runtime dependencies, native assets or packaged SVG fixtures. Remote CI remains open. |
-| Executed fixture manifest | **1,289 entries = 1,224 exact + 41 known-difference renders + 24 rejections**; 752 base documents / 537 variants. Eleven existing rounded fill/stroke/paint/mask controls graduate without recapture; three original research graduations and eight independent exact controls enter the fixture bank. Every other preceding measured bank result and all rejections remain unchanged. |
-| Executed research manifest | **41 probes = 26 exact + 14 known-difference renders + one rejection**. Three original rounded probes become exact and remain as historical research evidence alongside their fixture graduations. Five independent layer, mask-color, hairline-color and oval-stroke residuals remain explicit. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. Only inv-042 changes under rounded source replay, without a matching oracle in this sweep. These Default outputs do not establish matching-options corporate fidelity. |
+| Full tests, including corporate selection/measurement | **3,943 passed on each platform**: 3,751 core, 186 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Uniform group masks use existing reserved isolated surfaces and bounded command insertion/work; the old stamping staging list and definition-order flag are removed. Six new core cases cover deferred use/sibling ranges, partial memory/work denial, cleanup and cancellation tokens. Eleven browser cases cover 33 configurations × six outputs. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API, runtime dependencies, native assets or packaged SVG fixtures. Remote CI remains open. |
+| Executed fixture manifest | **1,323 entries = 1,258 exact + 41 known-difference renders + 24 rejections**; 764 base documents / 559 variants. One original research graduation and 33 independent exact configurations enter the fixture bank. Every other preceding bank result and all rejections remain unchanged. |
+| Executed research manifest | **53 probes = 27 exact + 25 known-difference renders + one rejection**. The original rounded-mask color probe becomes exact without recapture and retains its research evidence alongside a fixture graduation. Twelve independent direct-leaf, gradient, custom-region and ordinary-opacity controls retain explicit known differences. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. All preceding rounded-source outputs remain unchanged. These Default outputs do not establish matching-options corporate fidelity. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
-| Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the rounded-source repair. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | The preceding Windows owned-memory ShortRun baseline covers all 258 recipes. Twenty-six matched rounded-shape recipes record work, peak storage and allocation changes in both process orders; exploratory timings establish no representative throughput claim. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the group-mask repair. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
+| Performance and platform limits | The preceding Windows owned-memory ShortRun baseline covers all 258 recipes. Forty-five matched admitted mask controls record work, peak storage and allocation changes in both process orders; exploratory timings establish no representative throughput claim. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -832,7 +832,7 @@ completed stage: the remaining exit evidence below governs completion.
 | 4 | **Shared scan conversion landed; general event fidelity remains open with rows 3 and 5.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows, retained cubics, clipped construction, CPU contexts and retained-path-point density have landed across the shared paint boundary. | Preserve the full exact corporate matrix, density/admission/cache regressions, X/Y splitting, projected winding, two-pass storage, whole-path dispatch, bitmap-bounded rows and exclusive interiors. Order remaining fractional events, crossings, counters and overlaps from known-difference fixtures, research probes and independent controls. |
 | 5 | **Retained curves and final device mapping remain partial with row 4.** Device-map threading, retained controls, live non-convex cubics, curve/walk separation, one-chord cubic and authored quadratic admission, source-curve paint bounds, axis-aligned float mapping, coupled numeric reading and compatible raw-control convexity, retained conic fills, live rational convex advancement native round-stroke conics and retained-curve float root mapping, authored directed fill replay and bitmap-local curve setup with raw-control bounds have landed. All 436 recorded authored points and the actual Ford CTM match; density integration makes all nine PNGs exact. | Preserve transform/instance and large-translation evidence and the closed row-6, (740,30), (375,269), (269,187) and lower-row witnesses. NASA is exact in all nine variants; remaining root/source operands still differ from recorded browser coordinates. Exact documents do not establish general mapping/event parity. Wider affine/instance, fractional-event and quad/convex/stroke work retains separate gates. |
 | 6 | **Partial: curve-aware stroke completion.** Native straight open-stroke winding, curve measurement/dash cuts and seam continuation, retained conic hairlines and normal-offset oval quadratics are retained. Native wider path offsets, joins/caps and closed seams now share source verbs with polylines and rounded rectangles; painted instances preserve their curve spans. | Remaining stroke curve/event/paint/clip fidelity, sampled shape routes and round/miter/hairline/pathLength/non-scaling coverage through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
-| 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings, retained paint clips, shared float shaders and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
+| 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings, retained paint clips, shared float shaders, uniform group-mask isolation and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
 | 8 | **Complete: full frozen-cohort fidelity.** Both selected logo checkpoints, S8 measurement and the stronger 27/27-document / 258/258-variant objective are achieved on Windows/Linux. Every variant has a stable browser reference and an exact reproducible report. | Preserve every exact result, membership, inputs, options and references. Remote CI remains an open S17 release requirement; retain selection/ShortRun limits and the independent exits for rows 3–7. |
 
 ### Current work order: preserve fidelity and finish release evidence (2026-10-07)
@@ -852,11 +852,12 @@ failing pixels cannot become implementation predicates or tuned fixtures.
    empty; obtaining runs requires publishing the reviewed branch.
 2. **Continue shared fidelity work under rows 3–7.** Use independent phase,
    transform, coverage, stroke, clip and paint controls to distinguish remaining
-   mechanisms. The 41 known-difference fixture renders and 14 research renders
+   mechanisms. The 41 known-difference fixture renders and 25 research renders
    retain their measured status; full cohort exactness does not close their gaps.
-   Rounded fill/stroke source geometry is repaired. Investigate the retained
-   layer/mask color, hairline color and oval-stroke residuals with independent
-   controls, alongside the remaining clip, paint and curve gaps.
+   Rounded fill/stroke source geometry and uniform group-mask composition are
+   repaired. Investigate direct-leaf masks, gradient/custom-region masks,
+   ordinary layer opacity, hairline color and oval-stroke residuals with
+   independent controls, alongside remaining clip, paint and curve gaps.
 3. **Preserve the complete exact matrix.** Compare shared raster changes across
    every declared fixture, research and Default case and all 258 corporate
    variants on Windows/Linux. Keep categorized rejections and selection limits
@@ -1009,10 +1010,10 @@ open for S17.
 
 A bounded shared repair may land with independent mechanism-level improvement
 and nonregression across the full exact corporate matrix. Preserve all
-**1,224 currently exact fixture entries**, 26 exact research probes, 258 exact corporate images
+**1,258 currently exact fixture entries**, 27 exact research probes, 258 exact corporate images
 and required categorized rejections. Intentional syntax graduations need explicit
 contract/tests/provenance updates. Shared rasterization changes require comparison
-across the complete **1,422-case current bank** and all 258 frozen corporate cases.
+across the complete **1,468-case current bank** and all 258 frozen corporate cases.
 Earlier bank comparisons remain historical evidence. Report fixture/research/legacy
 and corporate regression scopes separately.
 Run affected ownership/work/cancellation,
@@ -1476,7 +1477,7 @@ All 258 measured renders are exact on each platform.
 All nine Target variants are exact against their original browser references;
 Coca-Cola is also exact in all nine variants. Reference
 availability and renderability remain independent axes. The first cohort's complete reference matrix closes its S8
-measurement obligation, including browser behavior for rejected inputs. The 1,224
+measurement obligation, including browser behavior for rejected inputs. The 1,258
 exact fixture entries remain separate from corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and

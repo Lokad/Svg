@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-mask-layer-overlap-forward-white.png",
+  "referenceSha256": "c524f2ab11572b59fc97f318b9227aa1c69ce352fe3d578cd0cae7ff93149900",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent original declared before prototype edits and capture/comparison; three stable, healthy, cleaned fresh-process captures.",
+  "fixtureId": "original-mask-layer-overlap-forward-white",
+  "inputSha256": "c14dbc9553c0ec9cde33b933e715481535d5a5abf9fdecdce6f5d2356ca6494c",
+  "candidateSha256": "007be59f0ccfa9f189207e3f7634ff7246bd324c9babc85a5878dbcc12a40c3e",
+  "viewport": {
+    "width": 43,
+    "height": 37,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

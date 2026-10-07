@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-mask-layer-fractional-box-white.png",
+  "referenceSha256": "a95e820fd61c75a56b9b5e496e5f92da0d9c68997cd0c3cbe3ee0a1b70d40e50",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent original declared before prototype edits and capture/comparison; three stable, healthy, cleaned fresh-process captures.",
+  "fixtureId": "original-mask-layer-fractional-box-white",
+  "inputSha256": "67046df090329d1370c3f079e3f387cb7b726ef0659c94523beb64043d6b58e4",
+  "candidateSha256": "68623373e9ae70f3a888a8a7955cecf5bfe406a275c9ad54faa331c67228b0e4",
+  "viewport": {
+    "width": 43,
+    "height": 37,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

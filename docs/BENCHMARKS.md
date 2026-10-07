@@ -2190,3 +2190,25 @@ belongs to the oval-stroke control. These are small synthetic recipes, not the
 representative cohort performance baseline. Timing directions vary by recipe and
 process order on a loaded host; no throughput improvement is claimed. Full
 ledgers and batches stay under ignored `artifacts/rounded-rectangle-conics-20261007/`.
+
+## Uniform group-mask composition (2026-10-07)
+
+Forty-five matching admitted independent Windows recipes compare `70bdf463`
+with isolated uniform group masks. Inputs and options stay unchanged, including
+backward/forward references, overlaps, paints, mask values and three backgrounds.
+Both process orders record total conversion work, accounted peak and three
+owned-output allocation/timing batches.
+
+| Measured quantity | Change per conversion |
+| --- | ---: |
+| Total accounted conversion work | zero to +1,590 units |
+| Accounted peak live storage | zero to +6,508 bytes |
+| Managed allocation traffic | −28 to +5,416 bytes |
+
+Surface work includes parsing; total work counts it once. Backward masks now
+allocate one existing isolated bitmap instead of stamping
+each child's paint. Parse peak can dominate these small inputs even when raster
+storage increases. These controls establish resource costs, not representative
+throughput; exploratory timing on a loaded host carries no performance claim.
+The earlier 258-recipe ShortRun retains its baseline scope. Full ledgers stay
+under ignored `artifacts/uniform-mask-layers-20261007/`.

@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-research-rounded-source-mask-color.png",
+  "referenceSha256": "b00c36e44130309e00cb4a69fd5d9e21fc5111126a1f7ea31c81036e4dc49302",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "graduatedFrom": "research-rounded-source-mask-color",
+  "fixtureId": "original-research-rounded-source-mask-color",
+  "inputSha256": "3e54718d02bcefe5d0a144ae918b6f19df66d44d34c241b99bfc2e3671f8e7a9",
+  "candidateSha256": "d9c5d6c8cbb5e010a9d819b43ad003748b0eb490d7cc54b4033ce6f4afe4f2d5",
+  "viewport": {
+    "width": 41,
+    "height": 35,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

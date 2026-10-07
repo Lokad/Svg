@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-mask-layer-round-gray-40-black.png",
+  "referenceSha256": "ed0c57d8dd90eb1fa60ccb371c30df881028034c9819c2a428ebcd45ff2a1814",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent original declared before prototype edits and capture/comparison; three stable, healthy, cleaned fresh-process captures.",
+  "fixtureId": "original-mask-layer-round-gray-40-black",
+  "inputSha256": "d25cb4014c8b9e0e77a6e48ad43b8e22d8800b82b2fdc780b84b745799bba6b8",
+  "candidateSha256": "dfd567ed3661475c53a60f7b319a2108db9fa15f237af77773cc5b202b8ea2b6",
+  "viewport": {
+    "width": 43,
+    "height": 37,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

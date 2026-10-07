@@ -6864,3 +6864,55 @@ No runtime dependency, public API or native asset is added. Broader composition,
 clipping, stroke and mapping gaps remain; source inspection and the browser
 controls establish this bounded repair. Detailed evidence stays under ignored
 `artifacts/rounded-rectangle-conics-20261007/`.
+
+## Uniform group-mask composition (2026-10-07)
+
+Backward uniform group masks previously stamped their alpha value into each
+child's paint, while forward references used an isolated surface. This changed
+both overlap alpha and the order of coverage/color rounding. All admitted
+non-white uniform groups now use the same bounded isolated composition path:
+render the children, apply the mask to premultiplied lanes, then composite the
+group. This follows [SVG masking semantics](https://www.w3.org/TR/SVG11/masking.html#Masking).
+Mask multiplication remains separate from outer opacity. Fully white masks
+retain passthrough; custom regions, spatial masks and nested-opacity rejection
+keep their existing routes. Deferred ranges resolve after use expansion and
+shift following group/clip ranges through the existing reserved scene insertion.
+
+The per-child staging list and its definition-order flag are removed. Command
+insertion and the full bitmap surface remain reserved and charged before use;
+composition consumes bounded work and checks cancellation. Six new core cases
+cover backward/forward masks around deferred use, unmasked siblings, two mask
+values, partial parse/raster memory/work failures, cleanup and cancellation
+tokens. Existing parser assertions now require isolated scopes with unchanged
+child paint; the gradient-outline source-order test compares forward/backward
+group masks. Direct-leaf masking remains a separate known-difference route.
+
+Sixteen original CC0 sources / 48 configurations were declared before prototype
+edits and capture/comparison. All 144 fresh-process captures are stable, healthy
+and cleaned. Results are **33 exact + twelve known + three retained rejections**;
+24 configurations become exact, including opaque-child overlaps on all three
+backgrounds. Eleven exact sources enter the fixture bank with their 33 references,
+and eleven visual cases exercise every configuration through all six public
+outputs. Four known sources / twelve configurations remain in research: direct
+leaf masks, gradient fills, fractional custom mask regions and ordinary opacity.
+The gradient mask improves; no baseline-exact control regresses. The original
+rounded-mask color probe improves from 53 differing pixels to zero against its
+unchanged browser reference and graduates without recapture.
+
+The complete **1,468-case** bank has identical Windows/Linux reports and PNG
+bytes. Every other preceding bank result and rejection remains unchanged;
+all 258 corporate reports/images are unchanged and exact on both platforms
+against their platform references: **27/27 documents**. Nine-project Release
+builds, **3,943 tests per platform**, fresh 25-scenario memory checks, runtime/symbol
+package checks and installed-consumer checks pass.
+
+Forty-five matching admitted Windows recipes retain both process orders.
+Total accounted conversion work increases by zero through 1,590 units;
+accounted peak live storage increases by zero through 6,508 bytes. Owned-output allocation traffic
+changes by −28 through +5,416 bytes per conversion. Parse peak dominates some
+small recipes even when raster surfaces increase; peak is not allocation traffic.
+Timings are exploratory on a loaded host and establish no representative
+throughput claim. Broader mask, opacity, clip and stroke gaps remain explicit;
+S17 remote CI remains open. No public API, runtime dependency, native asset or
+new implementation fingerprint is introduced. Detailed evidence stays under
+ignored `artifacts/uniform-mask-layers-20261007/`.

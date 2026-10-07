@@ -3,7 +3,7 @@
 These are original CC0 calibration inputs, not supported-product fixtures. Each
 probe has a pinned-Chrome reference in `references/` and records either a
 categorized rejection or an admitted render with an explicit pixel difference.
-The current manifest contains 41 probes: 26 exact, 14 known-difference renders
+The current manifest contains 53 probes: 27 exact, 25 known-difference renders
 and one rejection. Exact probes retain their original evidence and graduate to
 the fixture bank with their original inputs, references and capture provenance.
 Research records preserve reproducible evidence for geometry
