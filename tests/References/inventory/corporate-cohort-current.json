@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after source retention for fractional filled point lists; all cohort assets and options remain unchanged.",
+  "scope": "Frozen 27-document/258-variant measurement after native float rectangle operand and XYWH endpoint construction; all cohort assets, options and references remain unchanged.",
   "rendererCounts": {
     "renders": 258,
     "MalformedInput": 0,
@@ -24,8 +24,8 @@
     "transport-limit-gap": 0
   },
   "fidelityCounts": {
-    "exact": 255,
-    "known-difference": 3,
+    "exact": 258,
+    "known-difference": 0,
     "withoutReference": 0,
     "measuredRendererRejections": 0
   },
@@ -140,11 +140,13 @@
     "status": "Historical two-million-pixel rejections; all fifteen references acquired with the bounded transport extension on 2026-10-06."
   },
   "verifiedExactDocuments": [
+    "inv-001",
     "inv-002",
     "inv-003",
     "inv-004",
     "inv-005",
     "inv-006",
+    "inv-007",
     "inv-008",
     "inv-009",
     "inv-010",
@@ -161,6 +163,7 @@
     "inv-096",
     "inv-097",
     "inv-098",
+    "inv-099",
     "inv-100",
     "inv-101",
     "inv-102"
@@ -587,7 +590,7 @@
         "inv-099-large-white",
         "inv-099-large-black"
       ],
-      "verifiedExact": false
+      "verifiedExact": true
     },
     {
       "id": "inv-100",
@@ -13594,28 +13597,28 @@
       "id": "inv-099-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "c2313206407ac27a3b4bd68012404cf1e957eefb63e04eb8a175deb93eb18733",
+      "candidateSha256": "68a40e8d14298a2355fab2e897038689f5f0f0c92386a573d76a8865cde49b58",
       "width": 2150,
       "height": 804,
       "referenceSha256": "2706c2d425fe50b77d82e614116e41a383e8cab043d5c021cfd74e864780925d",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 111,
-          "MaximumChannelError": 11,
-          "MeanAbsoluteError": 0.0001937984496124031,
-          "RootMeanSquareError": 0.02861591799098425,
-          "MaximumAlphaError": 1,
-          "AlphaChangedPixelCount": 111,
-          "MinimumMismatchX": 1389,
-          "MinimumMismatchY": 640,
-          "MaximumMismatchX": 1389,
-          "MaximumMismatchY": 802,
-          "IsExact": false
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
+          "MaximumAlphaError": 0,
+          "AlphaChangedPixelCount": 0,
+          "MinimumMismatchX": 2150,
+          "MinimumMismatchY": 804,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
-        "alphaMass": 111,
+        "alphaMass": 0,
         "overCoveredPixels": 0,
-        "underCoveredPixels": 111,
+        "underCoveredPixels": 0,
         "opaqueLost": 0,
         "opaqueAdded": 0
       },
@@ -13651,24 +13654,24 @@
       "id": "inv-099-large-white",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "6d7bc1df2c238f71f9246ce1bfbf7430aeda276511f13877e24153ae7a03fa0e",
+      "candidateSha256": "4b77cd2741f57df42b06538d80b47a95787040799f4a62e16cb68860a71b397d",
       "width": 2150,
       "height": 804,
       "referenceSha256": "e698bad575014d26a7a9cf34c160e165d90ca3219096d9a7e7db892e4bdbb72b",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 111,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 3.2106907323845885e-05,
-          "RootMeanSquareError": 0.0056662957321204025,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 1389,
-          "MinimumMismatchY": 640,
-          "MaximumMismatchX": 1389,
-          "MaximumMismatchY": 802,
-          "IsExact": false
+          "MinimumMismatchX": 2150,
+          "MinimumMismatchY": 804,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -13708,24 +13711,24 @@
       "id": "inv-099-large-black",
       "renderOutcome": "renders",
       "inputSha256": "e8cf75280cbf46bf015f59859182ecec0c83c1b3d3d03323e151c6e91d4c339c",
-      "candidateSha256": "43f4a18ea61ce29ad873757f56743f54870f86fe56314ab16c35ddce99eadd41",
+      "candidateSha256": "3151e4c8c81132139ede81468a81ea99483905d6410320e99d903d819a5bf313",
       "width": 2150,
       "height": 804,
       "referenceSha256": "95c552b29eba4fa5fcb0a8c3e74eb05ce5d2a1de0cc890b5908fe51ddb6a1f1a",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 111,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 1.6053453661922942e-05,
-          "RootMeanSquareError": 0.004006676136390729,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 1389,
-          "MinimumMismatchY": 640,
-          "MaximumMismatchX": 1389,
-          "MaximumMismatchY": 802,
-          "IsExact": false
+          "MinimumMismatchX": 2150,
+          "MinimumMismatchY": 804,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -15301,8 +15304,8 @@
       "height": 386
     }
   ],
-  "rendererSourceBaselineCommit": "7ed87e77",
-  "rendererSourceState": "Fractional solid polygon/polyline fills retain original source vertices and closure beside scene admission/paint geometry, using the existing authored fill replay and mapping.",
-  "measurementCheckpoint": "fractional-point-list-source-replay-2026-10-07",
+  "rendererSourceBaselineCommit": "8fe3eda0",
+  "rendererSourceState": "Rectangle coordinates and dimensions retain native float source endpoints after original-value validation, before scene placement. Existing source path and stroke retention remains.",
+  "measurementCheckpoint": "native-rectangle-source-operands-2026-10-07",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

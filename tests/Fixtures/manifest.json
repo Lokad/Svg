@@ -13599,6 +13599,56 @@
       "oracleIdentity": "tests/References/original-point-list-source-shallow-521-transparent.json",
       "referenceSha256": "7647f6d423ea231c24f6fde6b5a36646f35fb5f00d031d47a4db8be1aa9e7776",
       "variantOf": "original-point-list-source-shallow-137-transparent"
+    },
+    {
+      "id": "original-rectangle-float-endpoint-down-transparent",
+      "path": "original/rectangle-float-endpoint-down.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original independent control dedicated through its leading SPDX declaration.",
+      "originalSha256": "98a3bc2ab792585718b1822bf8b4d4d5a4503d302715ee11a7ea630aefa53fd1",
+      "materializedSha256": "98a3bc2ab792585718b1822bf8b4d4d5a4503d302715ee11a7ea630aefa53fd1",
+      "featureTags": [
+        "geometry",
+        "rectangle",
+        "float-source-operands",
+        "regression"
+      ],
+      "width": 2053,
+      "height": 773,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-rectangle-float-endpoint-down-transparent.json",
+      "referenceSha256": "c34c248ca9d92fd5b2f2d151c43a54a3b0b321dc3779d0c64c06bab3d1cc2fbf"
+    },
+    {
+      "id": "original-rectangle-float-endpoint-up-transparent",
+      "path": "original/rectangle-float-endpoint-up.svg",
+      "sourceUrl": null,
+      "creator": "Lokad.Svg contributors",
+      "retrievalDate": "2026-10-07",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original independent control dedicated through its leading SPDX declaration.",
+      "originalSha256": "cbe9c124a5f181585c7bbd500b24c33d1802a991a3693aec953288c07899bb83",
+      "materializedSha256": "cbe9c124a5f181585c7bbd500b24c33d1802a991a3693aec953288c07899bb83",
+      "featureTags": [
+        "geometry",
+        "rectangle",
+        "float-source-operands",
+        "regression"
+      ],
+      "width": 2053,
+      "height": 773,
+      "scale": 1,
+      "background": "transparent",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-rectangle-float-endpoint-up-transparent.json",
+      "referenceSha256": "e7ed51cd67ad5222e376ac7bff067928888cd757d0093cb976b014c532c0ec51"
     }
   ]
 }

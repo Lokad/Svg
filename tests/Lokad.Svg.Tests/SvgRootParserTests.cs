@@ -2030,7 +2030,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0.1' width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(0.1, root.Rectangles[0].X);
+        Assert.Equal((double)0.1f, root.Rectangles[0].X);
     }
 
     [Fact]

@@ -1,30 +1,24 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-07. Fractional point-list source replay makes IBM exact at small
-and intended size on Windows/Linux. Large improves to 111 pixels per background,
-with maximum transparent alpha error one. The cohort has **26/27 exact documents**,
-marks **13/13**, wordmarks **13/14**, with **255 exact and three known** comparisons
-across 258 variants. All 249 earlier exact corporate outputs remain unchanged.
-The original numerical release criterion is met. The active target remains
-27/27 documents and 258/258 variants on both platforms; remote CI remains open.
+Updated 2026-10-07. Native float rectangle operands and endpoint construction
+close IBM's three large variants on Windows/Linux. The cohort has **27/27 exact
+documents**, marks **13/13**, wordmarks **14/14**, with **258 exact, zero known
+and zero rejected** comparisons. All 255 earlier exact corporate outputs remain
+unchanged. The full frozen-cohort fidelity target and original numerical release
+criterion are met; S17 remote CI evidence remains open.
 
 Exact documents are SimpleLogin, Ford, SDL, UAAR, SimpleX, Zeppelin, Omega,
 Eisenbahn, Rede Manchete, ROC HCVS, Red Cross, SG Rotation Leipzig, Tokyo Tsukurou,
 Artsy, Party of Changes, YouTube, Liputan6, NASA, Blur, Nike, Toyota, Pepsi,
-Target, IKEA, Google and Coca-Cola.
+Target, IKEA, Google, IBM and Coca-Cola.
 Membership, inputs, options and references remain frozen.
 [PLAN.md](../PLAN.md) owns the current queue and validation totals;
-[the design record](RASTERIZATION_DESIGN.md#fractional-point-list-source-replay-2026-10-07)
+[the design record](RASTERIZATION_DESIGN.md#native-rectangle-source-operands-2026-10-07)
 explains the repair. Detailed diagnostics stay under ignored artifacts.
 
-The remaining failed document stays in the denominator:
-
-| Document | Failed variants | Current pixel difference |
-| --- | ---: | --- |
-| IBM (`inv-099`) | Three large | 111 pixels per background; transparent alpha error at most one. |
-
-These are measured residuals against unchanged references. Their mechanisms and
-broader coverage remain implementation work; no pixel difference is waived.
+Every frozen variant is measured against its original platform-appropriate
+reference. Broader geometry, coverage, paint and composition fidelity retain
+their independent exit criteria; no pixel difference is waived.
 
 The preceding renderer completed all 258 frozen recipes through the synchronous
 owned-memory BenchmarkDotNet ShortRun. Intended-size medians across variant means

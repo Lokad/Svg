@@ -6742,3 +6742,34 @@ all 774 validated platform captures, including the existing Pepsi supplement.
 No new timing claim. General mapping, coverage/clip/material fidelity, the three
 large comparisons and remote CI remain open. Detailed controls and reports stay
 under ignored artifacts/orthogonal-fill-groups-20261007.
+
+## Native rectangle source operands (2026-10-07)
+
+The pinned native `SkRect::MakeXYWH(float, float, float, float)` adds narrowed
+source operands at float precision. Adding double rectangle attributes and
+narrowing only after scene placement can move a large-output edge across a
+1/256-pixel coverage boundary. Rectangle syntax now retains native float X/Y
+and right/bottom endpoints, with double widths storing their exact differences.
+Original coordinate/unit validation, negative-dimension checks and resource
+limits run before narrowing. Corner-radius parsing, public APIs, storage owners
+and work accounting retain their existing contracts. The internal parser's
+0.1-coordinate assertion now expects the promoted native float value.
+
+Twelve independent decimal rectangles cover six deterministic source operands
+at two output sizes. Operands were selected from seed 20261007 by mathematical
+endpoint-quantum differences before browser capture/comparison, after the
+prototype, without logo coordinates or failed pixels. All twelve controls are
+exact: six large cases improve 464–466 alpha-one pixels to zero, while the six
+small cases remain exact. Thirty-six fresh captures are stable, healthy and
+cleaned. Two opposite rounding directions enter the exact bank from six captures.
+
+Only IBM's three large corporate outputs change, from 111 differing pixels each
+to zero. All 255 earlier exact corporate outputs and all 1,400 previous bank
+results remain unchanged. Both platforms have 27/27 exact documents and 258/258
+exact variants against their unchanged references. The expanded 1,402-case bank
+agrees byte-for-byte across Windows/Linux; 3,903 tests per platform, fresh memory
+probes and installed package-consumer checks pass. Linux reuses its 774 validated
+platform captures and existing Pepsi supplement. No new timing claim accompanies
+this repair. Selection limits, broader SVG fidelity, other known-difference
+fixtures/research probes and S17 remote CI remain open. Detailed controls and
+audits stay under ignored artifacts/rectangle-operands-20261007.

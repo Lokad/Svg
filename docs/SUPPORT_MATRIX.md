@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-The current 1,272 manifest entries contain
-1,193 exact decoded-pixel references, 55 known-difference renders and 24
+The current 1,274 manifest entries contain
+1,195 exact decoded-pixel references, 55 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -53,17 +53,19 @@ remain unsupported. `overflow:visible` is accepted on non-viewport targets;
 root/nested SVG viewports retain hidden clipping and reject visible overflow,
 including matched stylesheet declarations. These admissions add no painting.
 
-The complete frozen corporate matrix has 258 rendered comparisons: 255 exact
-and three known differences, with zero renderer rejections: **26/27 documents**,
-marks **13/13**, wordmarks **13/14**. All nine Zeppelin variants are exact after
+The complete frozen corporate matrix has 258 rendered comparisons: 258 exact,
+zero known differences and zero renderer rejections: **27/27 documents**,
+marks **13/13**, wordmarks **14/14**. All nine Zeppelin variants are exact after
 retaining generated source stroke outlines until the composed final map. Every
 earlier exact image and categorized rejection remains. Original inputs, options
 and browser references stay frozen. Fractional filled polygons and polylines retain
 source vertices and closure beside scene admission and paint geometry; bounded
-command owners replay through the composed final map. IBM is exact at small and
-intended size; its three large variants remain an evaluation holdout. S17's
-numerical minimum is met. Representative Windows performance, local Windows/Linux
-delivery and the full Linux browser matrix are validated. Remote CI remains open.
+command owners replay through the composed final map. Rectangle operands narrow
+to native floats after original-value validation; source endpoints are added at
+float precision before scene placement. IBM is exact in all nine variants,
+completing the full frozen-cohort target. S17's numerical minimum is also met.
+Representative Windows performance, local Windows/Linux delivery and the full
+Linux browser matrix are validated. Remote CI remains open.
 
 Concentric general radial paints retain separate shader-local and referencing
 matrices. The drawing CTM moves into bitmap coordinates before local-gradient

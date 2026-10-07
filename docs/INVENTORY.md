@@ -5,21 +5,21 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
-## Fractional point-list checkpoint (2026-10-07)
+## Native rectangle source-operands checkpoint (2026-10-07)
 
-The current cohort has **26/27 exact documents**, marks **13/13**, wordmarks
-**13/14**: **255 exact, three known and zero rejected** variants on Windows/Linux.
-IBM is exact at small and intended size; all three large variants improve to
-111 pixels, with maximum transparent alpha error one. Only IBM's nine PNGs change;
-all 249 earlier exact images and every other complete comparison remain.
+The current cohort has **27/27 exact documents**, marks **13/13**, wordmarks
+**14/14**: **258 exact, zero known and zero rejected** variants on Windows/Linux.
+Only IBM's three large PNGs change, from 111 differing pixels each to zero;
+all 255 earlier exact images and every other complete comparison remain.
 Membership, inputs, options and references stay frozen; IBM remains an evaluation
 holdout, without document-specific tuning.
 
-The bank has 1,272 fixtures (1,193 exact, 55 known, 24 rejected), 36 research
+The bank has 1,274 fixtures (1,195 exact, 55 known, 24 rejected), 36 research
 probes (23 exact, 12 known, one rejected) and 92 Default renders:
-**1,400 executions**, with identical Windows/Linux results and PNG bytes.
-Six new exact controls have 18 stable, healthy, cleaned captures. Every preceding
-bank result remains unchanged. [The design record](RASTERIZATION_DESIGN.md#fractional-point-list-source-replay-2026-10-07)
+**1,402 executions**, with identical Windows/Linux results and PNG bytes.
+Two new exact decimal-endpoint controls have six stable, healthy, cleaned captures.
+Every preceding bank result remains unchanged.
+[The design record](RASTERIZATION_DESIGN.md#native-rectangle-source-operands-2026-10-07)
 records the mechanism, control selection and proof limits. PLAN owns the current
 queue; preceding checkpoints retain their historical totals.
 
@@ -87,7 +87,7 @@ records mechanism and limits. Earlier checkpoint totals below remain historical.
 
 ## Linux platform-reference supplement (2026-10-07)
 
-Local Linux renders reproduce all 1,400 Windows bank outcomes and PNG bytes.
+Local Linux renders reproduce all 1,402 Windows bank outcomes and PNG bytes.
 Across the frozen corporate matrix, 255/258 candidate PNGs are identical to Windows.
 Pepsi's three small backgrounds differ in 22 RGB-only pixels each, but match
 the same pinned Chrome version/revision on Linux in nine healthy, cleaned,
@@ -97,8 +97,8 @@ pass the cohort tests; Linux uses the supplement for those three variants.
 The validated Linux-browser matrix covers all 258 frozen variants with
 774 stable, healthy, cleaned captures. Of the reference PNGs, 255 match Windows
 bytes, while all nine new small Pepsi captures reproduce the existing supplement.
-The current Linux result is 255 exact variants, three known differences, zero rejections and
-the same 26/27 exact documents, marks 13/13 and wordmarks 13/14. No failure or
+The current Linux result is 258 exact variants, zero known differences, zero rejections and
+the same 27/27 exact documents, marks 13/13 and wordmarks 14/14. No failure or
 unmeasured variant is omitted. Remote CI remains open; detailed evidence stays
 under ignored `artifacts/linux-delivery-20261007/`.
 

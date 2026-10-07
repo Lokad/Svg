@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-rectangle-float-endpoint-up-transparent",
+  "referencePng": "original-rectangle-float-endpoint-up-transparent.png",
+  "referenceSha256": "e7ed51cd67ad5222e376ac7bff067928888cd757d0093cb976b014c532c0ec51",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 2053,
+    "height": 773,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "cbe9c124a5f181585c7bbd500b24c33d1802a991a3693aec953288c07899bb83",
+  "candidateSha256": "13902fbb84d6a2b7dbbbc30e33df7aeea1e634a0814abb17753b2f585c0e76c0",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 2053,
+    "minimumMismatchY": 773,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Float rectangle operand/XYWH addition controls chosen from a deterministic independent decimal-number stream using the declared 1/256 edge quantizer, before browser capture/comparison. Native MakeXYWH float addition differs from double-operand construction. These numeric boundary controls do not use corporate inputs, dimensions or failed pixels. 137/2053 roots reuse preceding independent control widths."
+}

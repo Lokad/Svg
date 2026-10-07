@@ -120,15 +120,16 @@ public sealed class CorporateCohortReferenceTests
         Assert.Equal(0, malformed);
         Assert.Equal(0, unsupported);
         Assert.Equal(258, measured);
-        Assert.Equal(255, exact);
-        Assert.Equal(3, known);
+        Assert.Equal(258, exact);
+        Assert.Equal(0, known);
         Assert.Equal(0, gaps);
         Assert.Equal(0, unmeasured);
         Assert.Equal(measured, measurements.RootElement.GetProperty("oracleCounts").GetProperty("measured").GetInt32());
         Assert.Equal(exact, measurements.RootElement.GetProperty("fidelityCounts").GetProperty("exact").GetInt32());
         Assert.Equal(known, measurements.RootElement.GetProperty("fidelityCounts").GetProperty("known-difference").GetInt32());
         Assert.Equal(measured - exact - known, measurements.RootElement.GetProperty("fidelityCounts").GetProperty("measuredRendererRejections").GetInt32());
-        Assert.Equal(new[] { "inv-001", "inv-002", "inv-003", "inv-004", "inv-005", "inv-006", "inv-007", "inv-008", "inv-009", "inv-010", "inv-011", "inv-012", "inv-019", "inv-020", "inv-026", "inv-027", "inv-040", "inv-066", "inv-092", "inv-095", "inv-096", "inv-097", "inv-098", "inv-100", "inv-101", "inv-102" }, exactDocuments);
+        Assert.Equal(new[] { "inv-001", "inv-002", "inv-003", "inv-004", "inv-005", "inv-006", "inv-007", "inv-008", "inv-009", "inv-010", "inv-011", "inv-012", "inv-019", "inv-020", "inv-026", "inv-027", "inv-040", "inv-066", "inv-092", "inv-095", "inv-096", "inv-097", "inv-098", "inv-099", "inv-100", "inv-101", "inv-102" }, exactDocuments);
+        Assert.Equal(exactDocuments, measurements.RootElement.GetProperty("verifiedExactDocuments").EnumerateArray().Select(item => item.GetString()));
         Assert.Equal(15, measurements.RootElement.GetProperty("oracleTransportFailures").GetProperty("failures").GetArrayLength());
     }
 

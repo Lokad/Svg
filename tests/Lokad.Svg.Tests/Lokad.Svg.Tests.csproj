@@ -76,6 +76,8 @@
     <None Update="TestData/endpoint-arc-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/point-list-source-rectangle-37.svg" Link="TestData/fractional-rectangle-polygon-37.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/point-list-source-rectangle-137.svg" Link="TestData/fractional-rectangle-polygon-137.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/rectangle-float-endpoint-down.svg" Link="TestData/rectangle-float-endpoint-down.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/rectangle-float-endpoint-up.svg" Link="TestData/rectangle-float-endpoint-up.svg" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
