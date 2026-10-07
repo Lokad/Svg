@@ -815,9 +815,10 @@ affect a counted document, even when our geometry is closer to ideal area.
 5. **Keep release policy separate from implementation.** S17's exact-document
    target is 80%, overall and in each corporate stratum. The
    first cohort and its explicit variants are frozen; all 258 references are
-   available, covering 240 rendered comparisons and eighteen retained rejections.
-   Ford, ROC, Artsy and YouTube are exact in every variant: 4/27 documents. The measured
-   result falls short of the target. There is no
+   available, covering 234 exact comparisons and 24 known differences, with zero
+   rejections. Every variant is exact for 23/27 documents, including 11/13 marks
+   and 12/14 wordmarks; the numerical target is met. The full fresh Linux browser
+   matrix and remote CI evidence remain open. There is no
    pixel-tolerance or oracle-quirk budget. The aligned policy record is
    [S17_DECISIONS.md](docs/S17_DECISIONS.md).
 
@@ -897,7 +898,7 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    Root/group matrices now compose before float point/control mapping. Authored
    fills retain their directed curves, raw even-odd contours and zero signed-area
    crossings without scene contact surgery; partial and total vertical cancellation
-   share the native rule across clipped and uncut preparation. Preserve all seventeen
+   share the native rule across clipped and uncut preparation. Preserve all 23
    exact corporate documents and the original known references. Bitmap-local source
    mapping and raw-control bounds close UAAR, Red Cross, Party of Changes, Blur
    and Nike. Bitmap-local drawing-before-shader concatenation makes all SDL
@@ -960,8 +961,9 @@ These observations order investigation; they do not prove a common cause.
 Keep the now-exact original path-band controls and eighteen scaled controls;
 use mechanism-level browser/native evidence before changing shared paint code.
 Holdouts remain evaluation
-inputs. Representative Windows cohort latency/allocation is now recorded;
-Linux/remote delivery and S17 remain open.
+inputs. Representative Windows cohort latency/allocation and local Windows/Linux
+delivery are recorded; the full fresh Linux browser matrix and remote CI remain
+open for S17.
 
 A bounded shared repair may land with independent mechanism-level improvement
 and nonregression across all nine Ford variants. Preserve all **1,145 currently
@@ -1253,8 +1255,8 @@ The two selected exits are established: all nine Ford and all nine YouTube
 variants are exact. Preserve raw classification, AA dispatch, triangle coverage
 and byte clip arithmetic; proceed with the measured cohort and remaining shader,
 clip and curve arithmetic above.
-S17 still needs the exact-document threshold
-and the delivery evidence described above. The complete cohort's measured
+S17's exact-document threshold is met. The full fresh Linux browser matrix and
+remote CI evidence remain open. The complete cohort's measured
 blockers order later shared work; the eight holdouts remain evaluation inputs.
 
 ## 4. Findings and stage ledger
