@@ -35,10 +35,15 @@ Antialiased rectangle paint clips now have independent native/browser regression
 and preserve the distinction between geometric clip edges and mask allocation
 bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
 paints apply the rectangle's snapped byte mask to each ordered operation.
-The frozen corporate matrix has all 258 reference images: 240 rendered
-comparisons (134 exact, 106 different) and eighteen retained renderer rejections.
-Ford, SimpleX, Omega, ROC HCVS, Artsy, YouTube, NASA, IKEA and Google are exact in every
-declared variant: 9/27 documents. Authored fills retain directed winding and
+The frozen Windows corporate matrix has 258 rendered comparisons: 234 exact,
+24 known differences and zero rejections. Every declared variant is exact for
+23/27 documents, including 11/13 marks and 12/14 outlined wordmarks. Local
+Windows and Linux delivery checks pass; a complete fresh Linux browser matrix
+and remote CI evidence remain pending. See [PLAN.md](PLAN.md) for the current
+release assessment and cohort selection limits.
+
+The following implementation checkpoints retain their historical results.
+Authored fills retain directed winding and
 curves after scene normalization, with root/group composition before float
 rounding. Convex cubics retain live edges, and incoming intersections constrain
 dense-path strips. Every prior exact image is preserved; six known controls

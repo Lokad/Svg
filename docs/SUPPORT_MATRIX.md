@@ -46,8 +46,9 @@ The complete frozen corporate matrix has 258 rendered comparisons: 234 exact
 and 24 known differences, with zero renderer rejections. Rede Manchete, Tokyo
 Tsukurou and Pepsi become exact in every variant: **23/27 documents**, marks
 **11/13**, wordmarks **12/14**. All 225 earlier exact PNGs remain. Original inputs,
-options and browser references stay frozen. S17's numerical minimum is met;
-delivery/performance gates remain open.
+options and browser references stay frozen. S17's numerical minimum is met.
+Representative Windows performance and local Windows/Linux delivery are
+validated; the full fresh Linux browser matrix and remote CI remain open.
 
 Concentric general radial paints retain separate shader-local and referencing
 matrices. The drawing CTM moves into bitmap coordinates before local-gradient
@@ -175,9 +176,9 @@ from sampled-ring convexity. Float sign/turn/reversal classification is charged
 once and cached across raster contexts, preserving genuine convex routes and
 declined-hint fallback. The 75 native vectors match; twelve independent controls
 and one existing fractional shoulder become exact. All nine Ford variants retain
-exact PNG identity. Ford and YouTube now complete both selected checkpoints;
-the complete corporate matrix has 240 fidelity comparisons and four verified
-exact documents. All eighteen renderer rejections have independent references.
+exact PNG identity. Ford and YouTube completed both selected checkpoints;
+at that checkpoint the corporate matrix had 240 fidelity comparisons and four
+verified exact documents. All eighteen then-rejected variants had independent references.
 General mapped curve/paint events remain open.
 
 Rectangle paint-clip classification is independent of construction clipping and

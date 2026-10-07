@@ -4,8 +4,9 @@ Updated 2026-10-07. Native legacy conic subdivision rounding makes Rede Manchete
 Tokyo Tsukurou and Pepsi exact in every frozen variant. The cohort is **23/27
 exact documents**, marks **11/13**, wordmarks **12/14**, with 234 exact and 24
 known comparisons across 258 variants. The numerical criterion is met.
-Representative Windows performance and fresh local Windows delivery evidence
-are now recorded; Linux/remote delivery and platform oracle evidence remain open.
+Representative Windows performance and fresh local Windows/Linux delivery
+evidence are recorded. A complete fresh Linux browser matrix and remote CI
+evidence remain open.
 
 Exact documents are Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, Rede Manchete,
 ROC HCVS, Red Cross, Tokyo Tsukurou, Artsy, Party of Changes, YouTube, Liputan6,
@@ -34,8 +35,9 @@ ShortRun. Intended-size medians across variant means are 16.37 ms for marks and
 [The complete-cohort baseline](BENCHMARKS.md#frozen-corporate-cohort-baseline-2026-10-07)
 records sizes, maxima, machine scope and confidence limits. This is a warmed
 Windows measurement, with no speedup or service-latency claim. Fresh local
-Windows build, memory, package consumers, browser/font tools and artifact
-consistency pass; they do not establish Linux or remote CI delivery.
+Windows and Linux build, tests, memory, package consumers, browser/font tools
+and artifact consistency pass. The three supplemental Linux Pepsi references
+do not establish a complete fresh Linux browser matrix; remote CI is pending.
 
 ## Q1 - numeric exact-document target: selected
 
