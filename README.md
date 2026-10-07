@@ -36,7 +36,7 @@ and preserve the distinction between geometric clip edges and mask allocation
 bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
 paints apply the rectangle's snapped byte mask to each ordered operation.
 The frozen corporate matrix has 258 rendered comparisons on Windows and Linux:
-240 exact, 18 known differences and zero rejections. Every declared variant is exact for
+243 exact, 15 known differences and zero rejections. Every declared variant is exact for
 24/27 documents, including 12/13 marks and 12/14 outlined wordmarks. Local
 Windows and Linux delivery checks and the complete fresh Linux browser matrix
 pass; remote CI evidence remains pending. See [PLAN.md](PLAN.md) for the current

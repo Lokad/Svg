@@ -6543,3 +6543,43 @@ rejected prototypes, captures, comparisons and ledgers stay under ignored
 `artifacts/linux-delivery-20261007/fat-paths-20261007/`. Git identifies implementation;
 no implementation/report fingerprints are recorded. Full-cohort exactness remains
 the active target; remote CI is a separate release requirement.
+
+## One-chord authored quadratics (2026-10-07)
+
+Native filled-path preparation now retains polynomial quadratic controls even
+when fallback flattening emits one chord. Both single- and multi-contour routes
+use their existing retained-curve constructors; stroke, clipped preparation and
+legacy flattened-curve gates remain unchanged. No new storage or public API is
+introduced; existing conservative curve reservations, work limits and owner
+cleanup cover the retained edges.
+
+A diagnostic Chrome capture with the frozen intended-size oracle input matches
+the original reference exactly. Its recorded Path_172 verbs, operands and float
+matrix match managed replay. Original pinned arc/conic conversion, chopping,
+quadratic setup and general walking functions agree with the corresponding
+managed inputs. Rebuilding the full edge sequence exposes one discarded
+quadratic at each affected size: the managed one-chord gate substitutes a line.
+Retaining that native edge raises intended alpha 215 → 216 and large alpha
+58 → 59, matching the original browser witnesses. Numerical adapters exclude
+the complete browser paint backend; integrated captures remain the pixel evidence.
+
+Six independent configurations cover single/multiple contours, both fill rules,
+opacity, nonmonotonic chopping and two sizes. They were declared after the
+prototype, before capture/comparison, without vertex tuning. All 18 fresh captures
+are stable, healthy and cleaned; prior differences of 12–26 pixels become zero.
+Three gradient controls hit an existing group-paint syntax rejection and provide
+no gradient fidelity evidence. Detailed traces and adapters stay under ignored
+`artifacts/curve-rows-20261007/`.
+
+SimpleLogin intended becomes exact on all backgrounds; large improves three
+pixels to one RGB-only pixel, with alpha exact. Only six corporate PNGs change;
+all 240 prior exact images and the other complete comparisons remain unchanged.
+The frozen cohort has 243 exact / 15 known / zero rejected variants, still 24/27
+exact documents on both platforms. All 1,377 prior bank outputs remain unchanged;
+the six new exact controls bring the bank to 1,383 executions with identical
+Windows/Linux PNG bytes. Nine-project Release builds and 3,885 tests per platform
+pass, including storage/setup denial, cancellation cleanup and six-output parity.
+Linux uses its original 774 validated platform captures and Pepsi supplement.
+Prior package/memory delivery evidence retains its scope; no new timing claim is
+made. The next development work concerns SimpleLogin's remaining large RGB
+witness and Zeppelin's small RGB differences; IBM remains an evaluation holdout.

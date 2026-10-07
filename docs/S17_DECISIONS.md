@@ -1,9 +1,9 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-07. Native filled-path rectangle dispatch makes SimpleLogin's
-three small variants exact on Windows and Linux. The cohort remains **24/27 exact
-documents**, marks **12/13**, wordmarks **12/14**, with **240 exact and 18 known**
-comparisons across 258 variants. Only its nine PNGs change; all 237 earlier exact
+Updated 2026-10-07. Retaining one-chord authored quadratics makes SimpleLogin's
+three intended variants exact on Windows and Linux. The cohort remains **24/27 exact
+documents**, marks **12/13**, wordmarks **12/14**, with **243 exact and 15 known**
+comparisons across 258 variants. Only its six intended/large PNGs change; all 240 earlier exact
 images and every other complete comparison remain. The original numerical release
 criterion is met. The active target is 27/27 documents and 258/258 variants on both
 platforms; remote CI remains open.
@@ -13,14 +13,14 @@ ROC HCVS, Red Cross, SG Rotation Leipzig, Tokyo Tsukurou, Artsy, Party of Change
 YouTube, Liputan6, NASA, Blur, Nike, Toyota, Pepsi, Target, IKEA, Google and Coca-Cola.
 Membership, inputs, options and references remain frozen.
 [PLAN.md](../PLAN.md) owns the current queue and validation totals;
-[the design record](RASTERIZATION_DESIGN.md#native-filled-path-rectangles-2026-10-07)
+[the design record](RASTERIZATION_DESIGN.md#one-chord-authored-quadratics-2026-10-07)
 explains the repair. Detailed diagnostics stay under ignored artifacts.
 
 The three remaining failed documents stay in the denominator:
 
 | Document | Failed variants | Current pixel difference |
 | --- | ---: | --- |
-| SimpleLogin (`inv-001`) | Six intended/large | One/three pixels; maximum transparent alpha error one. |
+| SimpleLogin (`inv-001`) | Three large | One RGB-only pixel per background; alpha exact. |
 | Zeppelin (`inv-007`) | Three small | 26 RGB-only pixels, maximum channel error five. |
 | IBM (`inv-099`) | Nine | 209 through 942 pixels; transparent alpha errors reach 23. |
 
@@ -33,10 +33,11 @@ are 16.37 ms for marks and 10.52 ms for wordmarks, with median allocation traffi
 1.46 and 1.00 MiB.
 [The complete-cohort baseline](BENCHMARKS.md#frozen-corporate-cohort-baseline-2026-10-07)
 records sizes, maxima, machine scope and confidence limits. This is a warmed
-Windows measurement, with no speedup or service-latency claim. Fresh local
-Windows and Linux build, tests, memory, package consumers, browser/font tools
-and artifact consistency pass. All 258 Linux variants have independent fresh
-reference triples: 774 stable, healthy, cleaned captures with no failures or gaps.
+Windows measurement, with no speedup or service-latency claim. Current Windows
+and Linux builds, tests and complete bank/cohort comparisons pass. Memory,
+package consumers and browser/font tools retain their preceding delivery scope.
+All 258 Linux variants reuse independent reference triples: 774 stable, healthy,
+cleaned captures with no failures or gaps.
 Remote CI is pending.
 
 ## Q1 - numeric exact-document target: selected

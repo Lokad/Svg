@@ -45,6 +45,8 @@
     <None Update="TestData/rectangle-recognition-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/fat-path-paints.svg" Link="TestData/fat-path-paints.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/fat-path-boundary-verbs.svg" Link="TestData/fat-path-boundary-verbs.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/one-chord-quad-shoulders72.svg" Link="TestData/one-chord-quad-shoulders72.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/one-chord-quad-shoulders144.svg" Link="TestData/one-chord-quad-shoulders144.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/dash-endpoints-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/dash-endpoints-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/clip-alpha-native.bin" CopyToOutputDirectory="PreserveNewest" />

@@ -1620,7 +1620,8 @@ internal ref partial struct SvgAnalyticCoverage
                         {
                             SvgQuadSpan span = constructionPoints.GetQuad(quadSpans[quadAt], quadAt, ref setupWork, maximumSetupWork, cancellationToken);
                             quadAt++;
-                            if ((mapping == SvgPolygonMapping.NativeStrokeEdges || span.EndIndex - index >= 2 || span.ConicWeight != 1f) && AppendRetainedQuadEdges(multiKept, constructionPoints, span, true, ref contourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0)
+                            // Native verbs keep their controls even when flattening emits one chord.
+                            if ((mapping is (SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges) || span.EndIndex - index >= 2 || span.ConicWeight != 1f) && AppendRetainedQuadEdges(multiKept, constructionPoints, span, true, ref contourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0)
                             {
                                 index = span.EndIndex - 1;
                                 continue;
@@ -1742,7 +1743,8 @@ internal ref partial struct SvgAnalyticCoverage
                     spanCursor++;
                     int spanContourEdges = kept.Count;
                     bool quadSubstituted = false;
-                    if (mapping == SvgPolygonMapping.NativeStrokeEdges || span.EndIndex - index >= 2 || span.ConicWeight != 1f)
+                    // Fallback sample density does not change an authored quadratic into a line.
+                    if (mapping is (SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges) || span.EndIndex - index >= 2 || span.ConicWeight != 1f)
                     {
                         if ((!convex || span.ConicWeight != 1f) && AppendRetainedQuadEdges(kept, constructionPoints, span, true, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;
                         else if (AppendRetainedQuadEdges(kept, constructionPoints, span, false, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;

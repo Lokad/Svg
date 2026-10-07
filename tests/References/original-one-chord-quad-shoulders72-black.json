@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-one-chord-quad-shoulders72-black",
+  "referencePng": "original-one-chord-quad-shoulders72-black.png",
+  "referenceSha256": "6024334c13e116725de5d2ad7350a95001679968375dfd53accd70187b9c58ff",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 72,
+    "height": 48,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "47715aed2e706666d05baee75b79fad5a82b8b6f2c5bb73713b36ed754649049",
+  "candidateSha256": "163379724ed526a44f4b801dcac80279dcdb7c5a9874b8c5bea2e33bed7bfd40",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 72,
+    "minimumMismatchY": 48,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "selection": "Untuned short-quadratic controls declared after the prototype and before their first capture/comparison; development controls, not cohort holdouts."
+}

@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-The current 1,249 manifest entries contain
-1,163 exact decoded-pixel references, 62 known-difference renders and 24
+The current 1,255 manifest entries contain
+1,169 exact decoded-pixel references, 62 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -21,6 +21,9 @@ pieces and repeated points. Eligible clipped boxes use float fringe coverage and
 direct painting; thin or declined boxes retain quarter-snapped edges. Mask/run
 eligibility uses whole-path bounds; AA paint clips keep their existing forced-run
 route. The rectangle shortcut allocates no edge/row scratch.
+Authored quadratic fills retain their controls when fallback flattening emits
+one chord, across single/multiple contours and both fill rules. Existing stroke,
+clipped preparation and legacy flattened-curve admission remain unchanged.
 
 Authored fills retain source contours once for bitmap-local mapping. Float
 translation moves into the bitmap before source point/control mapping; clipped
