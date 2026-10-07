@@ -58,7 +58,9 @@ See [the source-outline repair](docs/RASTERIZATION_DESIGN.md#source-native-strok
 Uniform group masks apply after the children compose, preserving overlap alpha
 and antialiased colors independently of mask definition order. Independent
 rounded-fill/stroke, pattern and mask-value controls match the browser on three
-backgrounds; other mask and layer combinations remain in the support matrix.
+backgrounds. Adjacent groups preserve their distinct masks through reference
+expansion and scope insertion; validated empty groups add no scope. Other mask
+and layer combinations remain in the support matrix.
 See [the group-mask repair](docs/RASTERIZATION_DESIGN.md#uniform-group-mask-composition-2026-10-07).
 
 Isolated opacity layers now use native image compositing, with masks applied

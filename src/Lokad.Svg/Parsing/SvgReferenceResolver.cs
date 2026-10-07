@@ -1201,7 +1201,7 @@ internal static class SvgReferenceResolver
         int adjustedCommand = pendingUse.Slot.CommandIndex + commandShift;
         int insertedCommands = scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = adjustedCommand }, applied);
         commandShift += insertedCommands;
-        ShiftPendingCommandRanges(state, adjustedCommand + 1, insertedCommands, workCounter, cancellationToken);
+        ShiftPendingCommandRanges(state, adjustedCommand + 1, insertedCommands, true, workCounter, cancellationToken);
         if (insertedCommands > 0)
         {
             System.Collections.Generic.List<int> extras = new(insertedCommands);
@@ -1396,8 +1396,11 @@ internal static class SvgReferenceResolver
     /// <summary>Returns one axis column length for magnification checks, exact for axis-aligned transforms.</summary>
     private static double ColumnLength(double x, double y) => Math.Sqrt(x * x + y * y);
 
-    /// <summary>Shifts retained command ranges right after scene insertions, keeping deferred group clips and masks aligned.</summary>
-    internal static void ShiftPendingCommandRanges(SvgDocumentState state, int insertPosition, int insertedCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <summary>Shifts retained command ranges after an insertion, keeping deferred group clips and masks aligned.</summary>
+    /// <remarks>Starts at an inserted end marker or expanded-reference boundary move right.
+    /// Starts at an inserted begin marker stay in place so the containing range includes its child scope.
+    /// Each visited range consumes bounded work and observes cancellation; the scene owner releases partial insertions on failure.</remarks>
+    internal static void ShiftPendingCommandRanges(SvgDocumentState state, int insertPosition, int insertedCount, bool shiftStartsAtInsertion, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
@@ -1406,7 +1409,7 @@ internal static class SvgReferenceResolver
         {
             workCounter.Consume(cancellationToken);
             PendingGroupClip group = state.PendingGroupClips[groupIndex];
-            int first = group.FirstCommandIndex > insertPosition ? group.FirstCommandIndex + insertedCount : group.FirstCommandIndex;
+            int first = group.FirstCommandIndex > insertPosition || shiftStartsAtInsertion && group.FirstCommandIndex == insertPosition ? group.FirstCommandIndex + insertedCount : group.FirstCommandIndex;
             int end = group.EndCommandIndex >= insertPosition ? group.EndCommandIndex + insertedCount : group.EndCommandIndex;
             state.PendingGroupClips[groupIndex] = group with { FirstCommandIndex = first, EndCommandIndex = end };
         }
@@ -1414,7 +1417,7 @@ internal static class SvgReferenceResolver
         {
             workCounter.Consume(cancellationToken);
             PendingGroupMask mask = state.PendingGroupMasks[maskIndex];
-            int first = mask.FirstCommandIndex > insertPosition ? mask.FirstCommandIndex + insertedCount : mask.FirstCommandIndex;
+            int first = mask.FirstCommandIndex > insertPosition || shiftStartsAtInsertion && mask.FirstCommandIndex == insertPosition ? mask.FirstCommandIndex + insertedCount : mask.FirstCommandIndex;
             int end = mask.EndCommandIndex >= insertPosition ? mask.EndCommandIndex + insertedCount : mask.EndCommandIndex;
             state.PendingGroupMasks[maskIndex] = mask with { FirstCommandIndex = first, EndCommandIndex = end };
         }

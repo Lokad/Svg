@@ -365,15 +365,18 @@ internal static class SvgMaskSyntax
 
         static void InsertGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte opacity, byte maskAlpha, SvgClipBox? maskRegion, int maskContentIndex, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
+            // A validated empty range has no pixels to isolate and shares its boundary
+            // with following siblings. It must not acquire their commands.
+            if (pending.FirstCommandIndex == pending.EndCommandIndex) return;
             for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
             {
                 workCounter.Consume(cancellationToken);
                 if ((opacity != 255 || maskAlpha != 255) && state.Scene.CommandAt(commandIndex).Kind == SvgDrawCommandKind.BeginGroup) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
             }
             state.Scene.InsertCommands(pending.EndCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255)]);
+            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.EndCommandIndex, 1, true, workCounter, cancellationToken);
             state.Scene.InsertCommands(pending.FirstCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, maskRegion, maskContentIndex, maskAlpha)]);
-            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.FirstCommandIndex, 1, workCounter, cancellationToken);
-            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.EndCommandIndex + 1, 1, workCounter, cancellationToken);
+            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.FirstCommandIndex, 1, false, workCounter, cancellationToken);
         }
 
     }

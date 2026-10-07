@@ -2212,3 +2212,15 @@ storage increases. These controls establish resource costs, not representative
 throughput; exploratory timing on a loaded host carries no performance claim.
 The earlier 258-recipe ShortRun retains its baseline scope. Full ledgers stay
 under ignored `artifacts/uniform-mask-layers-20261007/`.
+
+## Adjacent mask command ranges (2026-10-07)
+
+Six matching admitted Windows recipes compare `52153a4a` with corrected sibling
+range insertion, using the same inputs/options in both process orders. Parser
+work and total conversion work each decrease by two units; surface work includes
+parsing and is counted once. Accounted peak live storage is unchanged. Owned-output
+allocation traffic increases by eight bytes on transparent backgrounds and 24
+bytes on white/black; encoded output changes with the corrected composition.
+Three newly admitted empty-group configurations have no baseline conversion and
+are excluded. Exploratory timing batches establish no representative throughput
+claim. Full ledgers stay under ignored `artifacts/leaf-mask-scopes-20261007/`.

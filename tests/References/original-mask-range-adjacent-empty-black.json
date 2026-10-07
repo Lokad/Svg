@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-mask-range-adjacent-empty-black.png",
+  "referenceSha256": "c5bcb537460992935e6fbb5086c3fbb30bf75d0bd58df39c22c908b1eda87df3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Independent range control declared before prototype edits and capture/comparison; three stable, healthy, cleaned fresh-process captures.",
+  "fixtureId": "original-mask-range-adjacent-empty-black",
+  "inputSha256": "b6c175822d833ce51a823ce097b437b77e2c398047daee3f5bfea4cbc9fd4388",
+  "candidateSha256": "5bae1af8e531ded064a5261ffec4a37e17cd1b99313fda724f4fc99f19825f93",
+  "viewport": {
+    "width": 47,
+    "height": 41,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

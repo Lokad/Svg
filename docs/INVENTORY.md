@@ -5,24 +5,35 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
-## Uniform group-mask checkpoint (2026-10-07)
+## Adjacent mask-range checkpoint (2026-10-07)
 
 The current cohort retains **27/27 exact documents**, marks **13/13**, wordmarks
 **14/14**: **258 exact, zero known and zero rejected** variants on Windows/Linux.
-Every corporate report and PNG remains unchanged under the group-mask repair.
+Every corporate report and PNG remains unchanged under the command-range repair.
 Membership, inputs, options and references stay frozen; holdouts receive no
 document-specific tuning.
 
-The bank has 1,323 fixtures (1,258 exact, 41 known, 24 rejected), 53 research
+The bank has 1,332 fixtures (1,267 exact, 41 known, 24 rejected), 53 research
 probes (27 exact, 25 known, one rejected) and 92 Default renders:
-**1,468 executions**, with identical Windows/Linux results and PNG bytes.
-One original rounded-mask research probe becomes exact without recapture and
-retains its research evidence alongside a fixture graduation. Thirty-three
-independent exact configurations and twelve known controls enter the bank.
-Every other preceding bank result and all rejections remain unchanged.
-[The design record](RASTERIZATION_DESIGN.md#uniform-group-mask-composition-2026-10-07)
+**1,477 executions**, with identical Windows/Linux results and PNG bytes.
+All 1,468 preceding bank results and declared rejections remain unchanged.
+Three original CC0 sources / nine configurations were declared before prototype
+edits and capture/comparison. All 27 fresh captures are stable, healthy and
+cleaned. Six adjacent-group configurations improve from 483 differing pixels
+to exact; three empty-group configurations change from erroneous unsupported
+rejection to exact. All nine enter the fixture bank. The primary 39 leaf-mask
+study controls retain their separate measured gaps and stay in ignored artifacts.
+[The design record](RASTERIZATION_DESIGN.md#adjacent-mask-command-ranges-2026-10-07)
 records the mechanism, resources and proof limits. PLAN owns the current queue;
 preceding checkpoints retain their historical totals.
+
+The preceding uniform group-mask checkpoint had 1,323 fixtures, 53 research
+probes and 92 Default renders: **1,468 executions**. One original rounded-mask
+research probe and 24 independent configurations became exact. Thirty-three
+independent exact configurations and twelve known controls entered the bank;
+all other preceding results remained unchanged. Its
+[design record](RASTERIZATION_DESIGN.md#uniform-group-mask-composition-2026-10-07)
+retains the original proof and resources.
 
 ## Source-curve paint-bounds checkpoint (2026-10-07)
 

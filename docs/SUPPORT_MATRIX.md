@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-The current 1,323 manifest entries contain
-1,258 exact decoded-pixel references, 41 known-difference renders and 24
+The current 1,332 manifest entries contain
+1,267 exact decoded-pixel references, 41 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -14,7 +14,9 @@ Uniform group masks apply once to composed children through an isolated surface,
 independently of backward/forward definition order. Overlapping children, rounded
 fills/strokes, patterns and alpha/gray values have exact independent references
 on three backgrounds. Fully white uniform masks retain their passthrough route;
-nested opacity retains its rejection. Direct-leaf masks, gradient/custom-region
+nested opacity retains its rejection. Adjacent groups preserve distinct mask
+values through command insertion and reference expansion; validated empty groups
+produce no scope. Direct-leaf masks, gradient/custom-region
 masks and ordinary opacity retain separate measured gaps.
 
 Rounded rectangle fills and strokes retain shared native float source commands,

@@ -6916,3 +6916,42 @@ throughput claim. Broader mask, opacity, clip and stroke gaps remain explicit;
 S17 remote CI remains open. No public API, runtime dependency, native asset or
 new implementation fingerprint is introduced. Detailed evidence stays under
 ignored `artifacts/uniform-mask-layers-20261007/`.
+
+## Adjacent mask command ranges (2026-10-07)
+
+A leaf-mask investigation exposed a prerequisite range error. Inserting a mask
+end marker left a following sibling's start on that marker; distinct sibling
+values then formed nested scopes around the wrong commands. Reference expansion
+at the same boundary could cause the same error. The shared range shift now takes
+an explicit boundary policy: end-marker/reference insertions move equal starts,
+while begin-marker insertions preserve the containing range's start. Each marker
+insertion shifts ranges immediately. Validated empty masked groups return before
+insertion so they cannot acquire a following sibling's commands.
+
+Three original CC0 sources / nine configurations were declared before the
+prototype and capture/comparison. All 27 pinned-Chrome fresh-process captures
+are stable, healthy and cleaned. Six backward/forward distinct-value configurations
+improve from 483 differing pixels each to exact; three empty-group configurations
+change from erroneous UnsupportedFeature to exact. Nine references enter the
+fixture bank. Three visual cases cover all backgrounds and six public outputs;
+eight core cases cover command ownership, expanded references, partial memory/work
+denial, cleanup and cancellation tokens. Mask content validation and genuine
+nested-opacity rejection remain in force. The primary 39 leaf-mask study reports
+remain unchanged; leaf fill/stroke and instance composition are still open.
+
+The complete **1,477-case** bank has identical Windows/Linux reports and PNG
+bytes. All 1,468 preceding reports/images and declared rejections remain unchanged.
+All 258 corporate reports/images remain unchanged and exact against each platform's
+references: **27/27 documents**. Nine-project Release builds, **3,954 tests per
+platform**, fresh 25-scenario memory checks, runtime/symbol packages and installed
+consumers pass. No public API, allocation route, runtime dependency or native asset
+is added; Git identifies implementation without source fingerprints.
+
+Six matching admitted Windows recipes retain both process orders. Parser and total
+conversion work each decrease by two units; surface work includes parser work and
+is counted once. Accounted peak storage is unchanged; owned-output allocation
+traffic increases by 8–24 bytes because encoded output changes. Three newly
+admitted empty controls have no matching baseline conversion and are excluded
+from this comparison. Timings remain exploratory and establish no representative
+throughput claim. S17 remote CI remains open. Detailed evidence stays under
+ignored `artifacts/leaf-mask-scopes-20261007/`.
