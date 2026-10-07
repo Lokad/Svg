@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="792" height="806" viewBox="0 0 395.681 402.978">
+  <defs>
+    <linearGradient id="linear"><stop stop-color="#32639f"/><stop offset="1" stop-color="#e19839"/></linearGradient>
+    <radialGradient id="radial"><stop stop-color="#e19839"/><stop offset="1" stop-color="#32639f"/></radialGradient>
+  </defs>
+  <path fill="#346598" d="M333.244 167.824L330.145 149.923L340.213 154.317L334.129 159.773L340.61005 166.73104Z"/>
+  <path fill="#32639f" d="M320.145 184.923C319.237 174.413 331.783 171.129 334.917 180.627L328.143 179.291L331.617 188.413Z"/>
+  <path fill="#e19839" d="M343.291 193.129Q357.617 184.237 359.413 200.791L351.129 196.413L346.917 205.627Z"/>
+</svg>

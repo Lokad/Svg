@@ -1,0 +1,39 @@
+{
+  "fixtureId": "original-bitmap-contained-transparent",
+  "referencePng": "original-bitmap-contained-transparent.png",
+  "referenceSha256": "22301eeb133748ddbc9e4ec12a54e30fbd61d280c951192c5e7bfba69ca22b7a",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 792,
+    "height": 806,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "a8fb99d3465e632e129e4bb096ee9b6caeda5bada5d756455d02da2025f142fc",
+  "candidateSha256": "835cfc136478884171b6ecd88f4a4bd496e1eeef72e671120e33afd9a0d6d10b",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 792,
+    "minimumMismatchY": 806,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "selection": "Untuned follow-up geometry selected before its first capture/comparison; solid twins preserve vertices and replace gradient fills to isolate geometry. Selected after the production prototype.",
+  "oracleInputSha256": "90fb0adac2aee5e5818f740d1383f5e2fdf993ef333d17b1e1d67c3a20c22d79",
+  "inputNormalization": "Fixture line endings are canonical LF; capture input used CRLF. The executed LF fixture matches the same reference pixels."
+}

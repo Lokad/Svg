@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after adopting the original native legacy conic subdivision expression and finite-output fallback; original references and cohort options retained.",
+  "scope": "Frozen 27-document/258-variant measurement after bitmap-local uncut authored-edge construction; original references and cohort options retained.",
   "rendererCounts": {
     "renders": 258,
     "MalformedInput": 0,
@@ -24,8 +24,8 @@
     "transport-limit-gap": 0
   },
   "fidelityCounts": {
-    "exact": 234,
-    "known-difference": 24,
+    "exact": 237,
+    "known-difference": 21,
     "withoutReference": 0,
     "measuredRendererRejections": 0
   },
@@ -149,6 +149,7 @@
     "inv-009",
     "inv-010",
     "inv-011",
+    "inv-012",
     "inv-019",
     "inv-020",
     "inv-026",
@@ -379,7 +380,7 @@
         "inv-012-large-white",
         "inv-012-large-black"
       ],
-      "verifiedExact": false
+      "verifiedExact": true
     },
     {
       "id": "inv-019",
@@ -7290,17 +7291,17 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 1.1749003684487555e-06,
-          "RootMeanSquareError": 0.0010839282118520375,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 670,
-          "MinimumMismatchY": 335,
-          "MaximumMismatchX": 670,
-          "MaximumMismatchY": 335,
-          "IsExact": false
+          "MinimumMismatchX": 792,
+          "MinimumMismatchY": 806,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -7335,7 +7336,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "f1ba814c8981ae35c9a1689a4d12617c47b2ee40c2cd3995fb0f6f04ecddf597",
+      "candidateSha256": "57cb7d4573efcf9154050aa6a85711aea7ee787cabb3e0df5a16928644aeb170",
       "width": 792,
       "height": 806,
       "referenceSha256": "6a184aae1c7d5391252aac4454b4bca8b441ad2dd4303a645529e82b7cf2761a"
@@ -7347,17 +7348,17 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 1.1749003684487555e-06,
-          "RootMeanSquareError": 0.0010839282118520375,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 670,
-          "MinimumMismatchY": 335,
-          "MaximumMismatchX": 670,
-          "MaximumMismatchY": 335,
-          "IsExact": false
+          "MinimumMismatchX": 792,
+          "MinimumMismatchY": 806,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -7392,7 +7393,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "d0426892257f88edbd58d6665374208b953eb8ec711df1100a52f1b5d82caa54",
+      "candidateSha256": "14d6b153087110ccbc3b057fd7519ff33db60f9bb811205da66692f3a292df1d",
       "width": 792,
       "height": 806,
       "referenceSha256": "904af535d32bad2737c6aa6867c0fc4185f8ea9cfab55f2cf0ccee38650ec761"
@@ -7404,17 +7405,17 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 1.1749003684487555e-06,
-          "RootMeanSquareError": 0.0010839282118520375,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 670,
-          "MinimumMismatchY": 335,
-          "MaximumMismatchX": 670,
-          "MaximumMismatchY": 335,
-          "IsExact": false
+          "MinimumMismatchX": 792,
+          "MinimumMismatchY": 806,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -7449,7 +7450,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "d3400c8c11e6060f3cc0576792e3169d78f604cabc28b3306ca95eb3bca48916",
+      "candidateSha256": "fbc2dcd09ff600be6e120b270463cb74f6472fc116db8fae62e90f55b1da3bb2",
       "width": 792,
       "height": 806,
       "referenceSha256": "d8ce081f73854fbfb3267b74d1cce7702e4a84714adf5f397ab1aa7666fe7eb7"
@@ -15300,8 +15301,8 @@
       "height": 386
     }
   ],
-  "rendererSourceBaselineCommit": "36cf21ad",
-  "rendererSourceState": "Preserve native legacy conic subdivision float rounding, midpoint fallback, collapse predicate and final finite-point repair under bounded work.",
-  "measurementCheckpoint": "legacy-conic-subdivision-2026-10-07",
+  "rendererSourceBaselineCommit": "849f8519",
+  "rendererSourceState": "Contained authored paths map source operands into the owning CPU bitmap before original uncut line/curve construction; fixed state translates back under bounded work without additional point storage.",
+  "measurementCheckpoint": "contained-bitmap-edge-construction-2026-10-07",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

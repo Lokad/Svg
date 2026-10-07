@@ -1,7 +1,8 @@
 # Local benchmark baseline
 
-The current frozen-cohort measurement is recorded in
-[the corporate baseline](#frozen-corporate-cohort-baseline-2026-10-07).
+The full frozen-cohort baseline predates the latest contained-edge repair;
+see [the corporate baseline](#frozen-corporate-cohort-baseline-2026-10-07) and
+[the current resource comparison](#contained-bitmap-edge-construction-cost-2026-10-07).
 The earlier calibration and implementation checkpoints below retain their dates.
 
 This is the initial local baseline for the current supported subset. It is a
@@ -2120,3 +2121,30 @@ The renderer's 3,861 tests now also pass on local WSL Linux with native platform
 vectors and three independently captured Pepsi references. No Linux timing claim
 is made. A complete fresh Linux oracle matrix and remote CI evidence remain open;
 see [the platform record](RASTERIZATION_DESIGN.md#linux-delivery-and-platform-expectations-2026-10-07).
+
+## Contained bitmap-edge construction cost (2026-10-07)
+
+The shared contained-path repair maps borrowed source operands on demand and
+translates constructed fixed state under the existing work limit. No point tape
+or new owner is allocated. Thirty-nine matching Windows ledger recipes retain
+their input identities, parser work, accounted peak and value-type layouts.
+SimpleX adds 384 raster-work units; the other 38 complete records are identical.
+
+Five additional matching recipes include the affected large SG Rotation case.
+Parser work and accounted peaks remain equal in every case:
+
+| Recipe | Raster work before → after | Accounted peak bytes, both |
+| --- | ---: | ---: |
+| 8×8 triangle | 238 → 238 | 163,840 |
+| Ford, 500×200 | 917,007 → 917,007 | 2,589,168 |
+| Dense inventory `inv-082`, Default | 15,721,321 → 15,721,491 | 4,073,248 |
+| Gradient inventory `inv-050`, Default | 73,251,810 → 73,251,810 | 33,581,608 |
+| SG Rotation, 792×806 | 5,415,275 → 5,421,494 | 3,640,716 |
+
+The SG Rotation increase is 6,219 units (about 0.115%) and closes its one-pixel
+large-variant difference. Accounted peak is live renderer storage, distinct from
+managed allocation traffic and OS working set. Matching warmed stopwatch batches
+also remain in the ignored study. A reverse-order follow-up showed wide timing
+variation, so these batches establish neither a latency regression nor a speedup
+and do not replace the full-cohort ShortRun. Raw ledgers and measurements stay under ignored
+`artifacts/cohort-residuals-20261007/`.

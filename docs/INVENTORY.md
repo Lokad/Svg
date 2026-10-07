@@ -5,9 +5,30 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Contained bitmap-edge checkpoint (2026-10-07)
+
+SG Rotation Leipzig (`inv-012`) becomes exact in all nine frozen variants on
+Windows and Linux. The current cohort has **24/27 exact documents**, marks
+**12/13**, wordmarks **12/14**: **237 exact, 21 known and zero rejected** variants.
+Only its three large one-pixel differences change; all 234 earlier exact corporate
+PNGs and every other complete comparison remain. Sources, options, browser
+references and provenance stay frozen. SimpleLogin, Zeppelin and IBM remain.
+
+The expanded bank has 1,234 fixtures (1,148 exact, 62 known, 24 rejected), 36
+research probes (22 exact, 13 known, one rejected) and 92 Default renders:
+1,362 executions with identical complete Windows/Linux outcomes and PNG bytes.
+All 1,167 earlier exact fixture/research PNGs remain. One Default PNG changes
+without a matching-options claim. Three new untuned solid-path controls become
+exact from 20–21 differing pixels; gradient twins retain 230 RGB-only differences
+each after their alpha errors disappear. Eighteen captures are stable, healthy
+and cleaned. The follow-up geometry was selected before its first comparison,
+after the production prototype. [PLAN](../PLAN.md) owns the current queue;
+[the design record](RASTERIZATION_DESIGN.md#contained-bitmap-edge-construction-2026-10-07)
+records mechanism and limits. Earlier checkpoint totals below remain historical.
+
 ## Linux platform-reference supplement (2026-10-07)
 
-Local Linux renders reproduce all 1,359 Windows bank outcomes and PNG bytes.
+Local Linux renders reproduce all 1,362 Windows bank outcomes and PNG bytes.
 Across the frozen corporate matrix, 255/258 candidate PNGs are identical to Windows.
 Pepsi's three small backgrounds differ in 22 RGB-only pixels each, but match
 the same pinned Chrome version/revision on Linux in nine healthy, cleaned,
@@ -17,8 +38,8 @@ pass the cohort tests; Linux uses the supplement for those three variants.
 The complete fresh Linux-browser matrix now covers all 258 frozen variants with
 774 stable, healthy, cleaned captures. Of the reference PNGs, 255 match Windows
 bytes, while all nine new small Pepsi captures reproduce the existing supplement.
-The Linux result is 234 exact variants, 24 known differences, zero rejections and
-the same 23/27 exact documents, marks 11/13 and wordmarks 12/14. No failure or
+The Linux result is 237 exact variants, 21 known differences, zero rejections and
+the same 24/27 exact documents, marks 12/13 and wordmarks 12/14. No failure or
 unmeasured variant is omitted. Remote CI remains open; detailed evidence stays
 under ignored `artifacts/linux-delivery-20261007/`.
 

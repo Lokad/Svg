@@ -43,7 +43,7 @@ internal ref struct SvgAnalyticContourPreparation
         : this(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, pathBounds, outputWidth, outputHeight, null, SvgAffineTransform.Identity) { }
 
     /// <summary>Borrows aligned source contours alongside the globally mapped classification geometry.</summary>
-    /// <remarks>Source storage remains owned by the mapped polygon; clip construction remaps its matching indices into each bitmap without allocating another contour tape.</remarks>
+    /// <remarks>Source storage remains owned by the mapped polygon; clipped and contained edge construction remap its matching indices into each bitmap without allocating another contour tape.</remarks>
     internal SvgAnalyticContourPreparation(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgAnalyticClipBounds pathBounds, int outputWidth, int outputHeight, SvgPreparedPathContours? source, SvgAffineTransform sourceMap)
     {
         ArgumentNullException.ThrowIfNull(quadSpans);

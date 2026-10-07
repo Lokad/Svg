@@ -44,6 +44,102 @@ public sealed class SvgAuthoredPathTests
         Assert.Equal(expected, asyncStream.ToArray());
     }
 
+    [Theory]
+    [InlineData("solid")]
+    [InlineData("linear")]
+    [InlineData("radial")]
+    [InlineData("pattern")]
+    public async Task Contained_bitmap_curves_preserve_all_six_outputs(string paint)
+    {
+        string definition = paint switch
+        {
+            "solid" => "",
+            "linear" => "<defs><linearGradient id='p'><stop stop-color='#40b080'/><stop offset='1' stop-color='#906030'/></linearGradient></defs>",
+            "radial" => "<defs><radialGradient id='p'><stop stop-color='#40b080'/><stop offset='1' stop-color='#906030'/></radialGradient></defs>",
+            "pattern" => "<defs><pattern id='p' patternUnits='userSpaceOnUse' width='12' height='12'><rect width='12' height='12' fill='#40b080'/></pattern></defs>",
+            _ => throw new ArgumentOutOfRangeException(nameof(paint)),
+        };
+        string fill = paint == "solid" ? "#40b080" : "url(#p)";
+        string viewport = paint == "pattern" ? "" : " viewBox='0 0 395.681 402.978'";
+        string path = paint == "pattern"
+            ? "M640.145 370.923C639.237 350.413 661.783 342.129 670.917 360.627L656.143 358.291L663.617 378.413Z"
+            : "M320.145 184.923C319.237 174.413 331.783 171.129 334.917 180.627L328.143 179.291L331.617 188.413Z";
+        byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='792' height='806'" + viewport + ">" + definition
+            + "<path fill='" + fill + "' d='" + path + "'/></svg>");
+        byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] destination = new byte[expected.Length];
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream stream = new();
+        Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, stream.ToArray());
+        Assert.Equal(expected, (await SvgConverter.ConvertToPngAsync(input, SvgRenderOptions.Default, CancellationToken.None)).ToArray());
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, destination, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, destination);
+        using MemoryStream asyncStream = new();
+        Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(expected, asyncStream.ToArray());
+    }
+
+    [Fact]
+    public void Contained_bitmap_mapping_denial_releases_scratch_and_preserves_source_curves()
+    {
+        RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
+        byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='792' height='806'><path d='M640.137 350.319C635.619 343.137 661.913 341.619 671.813 368.319L644.137 377.619Z'/></svg>");
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new ParserWorkCounter(100_000), CancellationToken.None))
+        {
+            SvgAuthoredPath authored = Assert.IsType<SvgAuthoredPath>(Assert.Single(root.Geometries).AuthoredPath);
+            using SvgPreparedPathContours mapped = authored.Prepare(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            using SvgPreparedPathContours source = authored.PrepareSource(SvgAffineTransform.Identity, false, budget, new ParserWorkCounter(100_000), CancellationToken.None);
+            SvgDevicePoint[] originalPoints = source.Points.ToArray();
+            SvgCubicSpan[] originalCubics = source.CubicSpans.ToArray();
+            long retained = budget.Snapshot().CurrentBytes;
+            SvgAnalyticContourPreparation preparation = new(mapped.Points, mapped.ContourEnds, [], false, null, SvgPolygonMapping.NativeFillEdges,
+                mapped.QuadSpans, mapped.CubicSpans, new(635, 341, 672, 378), 792, 806, source, authored.SceneMap);
+            long setup;
+            long storage;
+            using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
+                SvgAnalyticPaintClip.Binary, 100_000, budget, out long _, out bool eligible, CancellationToken.None))
+            {
+                Assert.True(eligible);
+                storage = budget.Snapshot().CurrentBytes - retained;
+            }
+            using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
+                SvgAnalyticPaintClip.Binary, 100_000, budget, out setup, out bool eligible, CancellationToken.None)) Assert.True(eligible);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            try
+            {
+                using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
+                    SvgAnalyticPaintClip.Binary, setup - 1, budget, out long _, out bool _, CancellationToken.None);
+                Assert.Fail("Contained mapping and fixed-state translation must fit the work limit.");
+            }
+            catch (SvgException error) { Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode); }
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            RenderBudget tight = new(storage - 1);
+            try
+            {
+                using SvgAnalyticCoverage denied = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
+                    SvgAnalyticPaintClip.Binary, 100_000, tight, out long _, out bool _, CancellationToken.None);
+                Assert.Fail("Contained construction must release its edge storage after denial.");
+            }
+            catch (SvgException error) { Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode); }
+            Assert.Equal(0, tight.Snapshot().CurrentBytes);
+            using CancellationTokenSource cancellation = new();
+            cancellation.Cancel();
+            try
+            {
+                using SvgAnalyticCoverage canceled = SvgAnalyticCoverage.Prepare(ref preparation, 635, 672, 341, 378, new(508, 764), new(508, 254), null,
+                    SvgAnalyticPaintClip.Binary, 100_000, budget, out long _, out bool _, cancellation.Token);
+                Assert.Fail("Cached contained construction must observe cancellation.");
+            }
+            catch (OperationCanceledException error) { Assert.Equal(cancellation.Token, error.CancellationToken); }
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            Assert.Equal(originalPoints, source.Points);
+            Assert.Equal(originalCubics, source.CubicSpans);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Denied_bitmap_curve_construction_releases_scratch_and_preserves_borrowed_sources()
     {

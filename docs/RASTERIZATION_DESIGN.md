@@ -6436,3 +6436,50 @@ ownership and delivery contracts. No representative timing or fresh Linux
 claim is made. S17's numerical minimum is met; performance and platform/delivery
 gates remain open. Detailed records stay ignored under
 `artifacts/oval-residuals-20261007/`.
+
+## Contained bitmap-edge construction (2026-10-07)
+
+SG Rotation Leipzig's large witness at (670,335) was gray 203 instead of the
+browser's 204. The original native walker, when supplied managed initial edges,
+reproduced coverage 52; the browser pixel requires 51 with the established paint
+arithmetic. Relative/absolute command twins and the recorded browser CTM excluded
+those mapping hypotheses for this witness. Fully contained authored paths had
+bypassed bitmap-local construction. Folding the bitmap origin into source mapping
+before the original uncut line/quadratic/cubic setup closes all three large
+differences. Forcing contained paths through construction clipping instead fixed
+the witness but introduced 812 other glyph/curve differences, so that model was
+rejected. Supplied-edge native agreement alone does not establish full browser
+path preparation or painting.
+
+The shared four-paint preparation now receives bitmap origin independently of
+optional construction clipping. A borrowed ref-struct maps source operands on
+demand, charging work before mapping; fixed current and initial curve state then
+translates back under the same limit. Global classification, native-point density,
+uncut curve dispatch and paint-clip selection remain shared. No point tape or
+new owner is allocated. Tests cover cached work denial, reservation denial,
+pre-cancellation, immutable source curves, released storage and six-output parity
+for solid, linear, radial and admitted unscaled-pattern fills.
+
+Only three of 258 corporate PNGs change, each from one differing pixel to zero;
+24/27 documents and 237/258 variants are exact on Windows/Linux. All 234 earlier
+exact corporate images remain. The original 1,359-case bank preserves all 1,167
+exact fixture/research PNGs and categorized rejections; only legacy Default
+`inv-070` changes, with no matching-options fidelity claim. Untuned follow-up
+straight/cubic/quadratic controls were selected before their first captures and
+comparisons, after the prototype. Their solid twins preserve all vertices and
+become exact from 20–21 differing pixels across three backgrounds; gradient twins
+drop from 251–252 differing pixels to 230 RGB-only pixels, with zero alpha error.
+Those shader residuals remain open. All eighteen captures are stable, healthy
+and cleaned. The three solid controls enter the expanded 1,362-case bank;
+canonical LF fixtures reproduce the CRLF capture inputs' reference pixels.
+
+Final nine-project Release builds and 3,873 tests pass on each platform; the
+expanded bank has identical Windows/Linux outcomes and PNG bytes. Linux cohort
+comparison reuses the preceding checkpoint's 774 independently captured platform
+references, preserving the Pepsi supplement. Fresh memory and installed package
+checks pass. Thirty-nine matching Windows resource recipes preserve parser work,
+peak storage and layouts; SimpleX adds 384 raster-work units, the other 38 records
+remain identical. Detailed native traces, controls, complete matrices and resource
+reports stay under ignored `artifacts/cohort-residuals-20261007/` and
+`artifacts/linux-delivery-20261007/contained-paths-20261007/`; no implementation
+or report hashes are checked in.

@@ -158,9 +158,7 @@ internal ref partial struct SvgAnalyticCoverage
             if (kept is null) throw new InvalidOperationException("Clipped edge storage was not constructed.");
             foreach (AnalyticEdge edge in kept)
             {
-                int translationWork = edge.InitialCurveCount == 0 ? 5 : edge.InitialCurveCount < 0 ? 13 : 15;
-                ChargeClippedSetupWork(ref setupWork, translationWork, maximumWork, token);
-                TranslateEdge(edge, origin);
+                TranslateConstructedEdge(edge, origin, ref setupWork, maximumWork, token);
             }
             int levels = 0;
             for (int level = kept.Count; level > 0; level >>= 1) levels++;
@@ -193,19 +191,6 @@ internal ref partial struct SvgAnalyticCoverage
             work += units;
         }
 
-
-        static void TranslateEdge(AnalyticEdge edge, SvgCpuBitmapOrigin origin)
-        {
-            int dx = origin.X << 16, dy = origin.Y << 16;
-            edge.X += dx; edge.UpperX += dx;
-            edge.Y += dy; edge.UpperY += dy; edge.LowerY += dy;
-            if (edge.InitialCurveCount == 0) return;
-            edge.FCx += dx; edge.FCy += dy;
-            edge.FCLastX += dx; edge.FCLastY += dy; edge.SnappedY += dy;
-            edge.InitialFCx += dx; edge.InitialFCy += dy; edge.InitialSnappedY += dy;
-            if (edge.InitialCurveCount < 0) return;
-            edge.QSnappedX += dx; edge.InitialQSnappedX += dx;
-        }
         static SvgAnalyticClipPoint ToLocalClipPoint(SvgDevicePoint point, SvgCpuBitmapOrigin origin, SvgAffineTransform? sourceMap)
         {
             SvgDevicePoint local = sourceMap is {} map ? SvgAuthoredPath.MapPoint(map, point, origin) : new(point.X - origin.X, point.Y - origin.Y);
