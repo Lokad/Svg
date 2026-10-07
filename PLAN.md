@@ -856,45 +856,36 @@ GitHub repository is empty at the recorded checkpoint; obtaining runs requires
 publishing the reviewed branch. This release requirement does not close or
 replace the renderer work below.
 
-1. **Continue shared fidelity work under rows 3–7.** Use independent phase,
-   transform, coverage, stroke, clip and paint controls to distinguish remaining
-   mechanisms. The 46 known-difference fixture renders and 31 research renders
-   retain their measured status; full cohort exactness does not close their gaps.
-   Rounded fill/stroke source geometry, uniform group-mask composition and
-   adjacent command ranges and leaf/use-instance mask composition are repaired.
-   Start with single-paint group opacity and paint-alpha precision. Preserve
-   drawing and state record boundaries through lowering and use expansion:
-   invisible fills, local clips and local transforms can retain a native layer,
-   while several managed geometries can represent one native draw operation.
-   Retain float factors through the distinct solid/shader quantization boundaries
-   and isolate complete multiple-paint element batches. The isolated Windows float model
-   reaches 126/144 exact new controls and closes five existing research cases;
-   it preserves all existing exact results and the full corporate matrix, but
-   remains experimental. A later model owns compact paint values and recording
-   scopes, preserves that set and reaches 10/12 exact new scope controls, with
-   clean denial/cancellation results. Keep nested effects until deciding whether
-   to fold the parent's opacity: inspector pictures can simplify them and replay
-   different pixels from actual browser screenshots. A copy prototype reaches
-   **23/28 exact new controls**, with 84 stable, healthy, cleaned browser captures
-   and all preceding bank reports/PNGs unchanged. The integer-path stroke source
-   repair has landed separately; parent-opacity controls preserve its remaining
-   color/coverage gap. Complete recording-scope handling, definition/symbol/paint-copy
-   ownership and the full opacity-control regression sweep. Preserve the independent
-   constant/degenerate shader, symbol paint-override and nested-viewport controls.
-   The 35 independently declared material controls have 105 stable, healthy,
-   cleaned browser captures. The extended prototype reaches 21 exact, six
-   known-difference renders and eight categorized rejections; two-paint shader
-   strokes, symbol gradient overrides and degenerate-gradient fill-opacity
-   remain open. Preserve those valid rejected inputs for the later admission
-   audit. The standalone one-stop rectangle/instance repair retains shader alpha
-   and dithering, making the direct linear/radial controls exact; element and
-   parent opacity remain separate gaps. Add matching-option checks for changed
-   Default images before integrating the larger prototype. Its owned paint storage reduces geometry
-   values to 272 bytes and keeps commands at 72 bytes; finish ownership across all
-   affected routes, then pass the affected resource,
-   six-output and Windows/Linux delivery gates. The design record retains the
-   rejected byte-only and incomplete record models, plus native-operation twins.
-   See [the opacity investigation](docs/RASTERIZATION_DESIGN.md#single-paint-opacity-investigation-2026-10-07).
+1. **Continue shared fidelity work under rows 3–7.** The production bank retains
+   46 known-difference fixture renders and 31 research renders; the exact corporate
+   cohort does not close those gaps. Next integrate the shared paint-recording and
+   float-opacity repair after its remaining gates pass. Preserve drawing/state
+   boundaries through lowering and use expansion, distinguish logical draw identity
+   from material values, retain float factors through solid/shader quantization,
+   and keep resolved mask regions and physical layer origins for shader dithering.
+   Local clips, transforms and invisible fills can retain a native layer; several
+   managed geometries can represent one draw. Use actual browser screenshots as
+   the pixel oracle, with independent controls for admission and fidelity.
+   The isolated Windows prototype gains **19 exact comparisons** in the complete
+   1,567-case bank, preserves every preceding exact result and rejection outcome,
+   and keeps all 258 corporate reports/PNG bytes unchanged. It reaches 27 exact
+   material controls / eight valid-input rejections, 10/12 exact numeric phase
+   controls including the 700×90 tile crossing, twenty exact linear/radial/pattern
+   stroke controls and six exact fractional constant-gradient controls. Earlier
+   opacity, scope, copy and state controls keep their measured results and
+   remaining differences. Preserve rejected percentage-mask, symbol paint-override
+   and nested-viewport inputs for the later admission audit.
+   Matching 300×150 Default checks make `inv-013` exact and reduce `inv-014` from
+   6,317 to 850 differing pixels; original inputs and root-only browser sizing
+   materializations produce identical candidate PNGs. Resource sweeps cover 92
+   admitted cases and separately exercise 22 rejected inputs with clean ownership
+   and cancellation. These remain prototype results; production counts above
+   stay unchanged. A typed integration builds all nine projects. Review the
+   affected unit assertions and newly admitted opacity combinations, finish
+   copy/definition ownership, then pass the six-output and Windows/Linux resource,
+   test, package and full-bank gates before landing it. Geometry/command/paint
+   values remain 272/72/28 bytes. Detailed controls, rejected models and current
+   limits are in [the integration investigation](docs/RASTERIZATION_DESIGN.md#paint-recording-integration-investigation-2026-10-08).
    Continue gradient/custom-region and circle/ellipse masks, hairline color,
    oval-stroke and remaining clip, paint and curve gaps with independent controls.
 2. **Preserve the complete exact matrix.** Compare shared raster changes across

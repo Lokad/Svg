@@ -7357,3 +7357,114 @@ with all preceding reports/images unchanged. Geometry and commands stay at
 264 and 72 bytes. Measurements remain in ignored `artifacts/opacity-folding-20261007/`
 and `artifacts/linux-delivery-20261007/single-stop-final-20261008/`; Git identifies
 the implementation without implementation fingerprints in tracked references.
+
+### Paint recording integration investigation (2026-10-08)
+
+This is an isolated Windows investigation after the single-stop production
+checkpoint. Production remains at that checkpoint; the results below are not
+a claim that the larger integration has passed unit or platform delivery gates.
+
+The material prototype now retains separate source-value handles and logical
+paint-operation identities when copying definitions and symbols. Caches key
+materials by their source handle, while a separate bounded map preserves shared
+draw identity within each instance. Both maps reserve ownership before allocation
+and release partial construction; counter exhaustion reports LimitExceeded.
+The production definition-array transfer guards, authored-stroke unit-transform
+gate and lowerer detach cleanup have been ported into the prototype.
+
+Degenerate multi-stop rectangle gradients retain their authored final stop and
+float paint factors through premultiplication. Constant shaders pack their lanes
+once, skip dithering and replay coverage/source-over through the pinned bounded
+low-precision stages. The official pinned
+[constant-color constructor](https://raw.githubusercontent.com/google/skia/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkRasterPipeline.cpp)
+and retained raster-pipeline/blitter sources establish those arithmetic boundaries.
+The earlier float-only and approximate source-over trials remain negative
+evidence: destination overlap distinguishes them from the correct packed route.
+Normal single-stop gradient shaders retain the preceding production dither route.
+
+Solid fills and gradient/pattern stroke bands retain distinct paint values and
+draw identities. Linear gradient-stroked rectangles also switch to the stroke
+value while painting their complete ring, restoring the previous paint afterward.
+Radial and pattern bands carry an explicit source-stroke role before attachment.
+Layer bounds include the painted bands as well as the shader's coordinate box;
+using only that coordinate box gave correct alpha with incorrect dither colors.
+
+Physical layer origins now determine shader dither phase, intersected with CPU
+tile origins. The bounded bounds scan precedes allocation, charges work and checks
+cancellation; full-canvas storage and coverage replay remain unchanged. Uniform
+masks retain their resolved default regions, including white masks. The native
+records show the default padding in the layer allocation bounds; dropping those
+regions shifted gradient dither. Both original rounded-gradient mask families
+become exact against their unchanged tracked references, and all three original
+white-mask-copy configurations become exact as well. Fresh diagnostic screenshots
+for the two gradient sources are byte-identical to their retained references;
+picture replay remains diagnostic rather than the pixel oracle.
+
+The original 35 material cases now measure **27 exact / eight UnsupportedFeature**,
+with their original 105 stable, healthy, cleaned captures. The preceding six
+material differences are closed. Twelve phase controls were declared before the
+layer-origin mechanism; their common unused percentage-sized mask definition
+causes a valid-input admission failure in all twelve original documents. Separate
+numeric-mask materializations were declared after that failure was discovered;
+their painted content and browser pixels remain unchanged. Ten are exact and two
+remain rejected. Both source sets retain stable validated triples, including
+fresh 700×90 captures. Six initial large-image captures made at 61×47 remain
+excluded and are replaced, without reusing their incorrect viewport comparison.
+
+Eight new linear-stroke controls were declared and captured before the aggregate
+paint repair; twelve radial/pattern controls preceded the split-band repair.
+All twenty are exact. Six further fractional constant-gradient checks, declared
+after the implementation, are exact over transparent, opaque and translucent
+destinations. They validate the packed source's coverage and overlap boundaries.
+Each new control retains three identical, healthy, cleaned browser screenshots.
+
+The complete **1,567 executions / 1,539 PNGs** preserve all prior render/rejection
+outcomes and every previously exact comparison. Nineteen known comparisons become
+exact: five fixture controls and fourteen research configurations. Only those
+nineteen and two legacy Default images change; all other PNG bytes remain equal
+to production. All **258 corporate reports and PNG bytes** are unchanged.
+The earlier 144 opacity/operation controls remain 126 exact / eighteen known;
+scope controls remain 10/12 exact, copy controls 23/28 exact and state controls
+four exact / one retained rejection. These remaining differences are not waived.
+
+Matching-option checks use the actual 300×150 Default output dimensions for
+`inv-013` and `inv-014`. Root width/height are the only browser sizing
+materialization; unchanged originals and sized inputs produce identical candidate
+PNGs. `inv-013` improves from 4,834 differing pixels to zero; `inv-014` improves
+from 6,317 to 850, with maximum alpha error five. Three fresh captures per source
+are stable, healthy and cleaned. Four additional checks use the unchanged
+4×4 opacity unit-test inputs over the recipe's white page background. Group
+opacity without a mask yields white lanes 127 rather than the old asserted 126;
+root opacity and forward/backward gray masks retain their expected lanes. All
+four prototype outputs match the actual screenshot triples. The old group
+assertion was not a valid current-oracle golden.
+
+Exhaustive parser work denial, sampled memory denial, raster work boundaries and
+pre-parser/pre-raster cancellation pass for **92 admitted cases** across material,
+phase, stroke, research-mask, scope and copy routes. Twenty-two rejected original
+or materialized inputs receive separate parser work/memory/cancellation sweeps;
+rejected roots are never rasterized. Every owner is released after disposal,
+and cancellation preserves the caller's token. This does not substitute for the
+production unit, six-output, memory-probe or Windows/Linux package gates.
+
+A separate integration checkout replaces experimental names with recorded-paint
+domains and gives logical paint-operation identities their own four-byte type.
+All nine Release projects build with zero warnings/errors. The first unchanged
+core suite passes 3,722/3,797 tests; its 75 failures require review of layer/paint
+representation assertions, retained owner accounting, opacity admission and
+browser-derived pixel expectations before integration. In particular, the
+192-byte pattern-table failure measured the live scene arena before disposal;
+it was not a demonstrated leak. The degenerate-gradient failure came from the
+legacy internal rectangle projection, not public input rejection. The isolated
+opacity assertion and pattern-owner lifetime checks have been corrected; all five
+affected targeted tests pass. Valid inputs newly admitted by deferred element
+opacity still need independent browser checks. No production unit or platform
+gate is claimed for this integration yet.
+
+Geometry, command and paint-value sizes remain **272 / 72 / 28 bytes**; packed
+constant samples are transient. Evidence and frozen prototype checkpoints remain
+under ignored `artifacts/opacity-folding-20261007/`, including the final material
+bank, corporate matrix, matching Default audit, capture receipts, denial results
+and integration build/test logs. Git will identify the eventual production
+implementation; no implementation fingerprints or candidate-based references
+are introduced.
