@@ -16,32 +16,39 @@ internal readonly record struct SvgAuthoredPathCommand(SvgAuthoredPathVerb Verb,
 
 /// <summary>Owns immutable authored commands and their scene map until one geometry releases them.</summary>
 /// <remarks>Creation, copying and disposal belong to one conversion's single-threaded budget.
-/// Readers borrow immutable storage. Copies reserve and own distinct storage; no global state or shared mutable owner exists.</remarks>
+/// Readers borrow immutable storage. A stroke owns one filled child containing its generated
+/// source outline; children cannot themselves own a stroke. Copies reserve distinct storage
+/// for both command sets, and transfer moves both owners. No shared mutable owner exists.</remarks>
 internal sealed class SvgAuthoredPath : IDisposable
 {
     // Covers the owner, geometry slot and transient old/new owner during transfer.
     private const long OwnerBytes = 384;
     private OwnedParserArray<SvgAuthoredPathCommand> _commands;
+    private SvgAuthoredPath? _strokeOutline;
     private RenderBudget.BudgetReservation? _ownerReservation;
 
-    private SvgAuthoredPath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, RenderBudget.BudgetReservation ownerReservation)
+    private SvgAuthoredPath(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, RenderBudget.BudgetReservation ownerReservation)
     {
         _commands = commands;
         SceneMap = sceneMap;
         StrokeStyle = strokeStyle;
+        _strokeOutline = strokeOutline;
         _ownerReservation = ownerReservation;
     }
 
     internal ReadOnlySpan<SvgAuthoredPathCommand> Commands => _commands.Items;
     internal SvgAffineTransform SceneMap { get; }
     internal SvgAuthoredStrokeStyle? StrokeStyle { get; }
+    /// <summary>Borrows the generated source outline until this centerline owner is disposed or transferred.</summary>
+    internal SvgAuthoredPath? StrokeOutline => _strokeOutline;
 
     /// <summary>Transfers storage to a replacement owner; later disposal of this dropped owner is harmless.</summary>
     internal SvgAuthoredPath Transfer()
     {
         RenderBudget.BudgetReservation owner = _ownerReservation ?? throw new InvalidOperationException("Authored path ownership has already transferred.");
-        SvgAuthoredPath result = new(_commands, SceneMap, StrokeStyle, owner);
+        SvgAuthoredPath result = new(_commands, SceneMap, StrokeStyle, _strokeOutline, owner);
         _commands = new([], null);
+        _strokeOutline = null;
         _ownerReservation = null;
         return result;
     }
@@ -175,38 +182,49 @@ internal sealed class SvgAuthoredPath : IDisposable
 
     /// <summary>Adopts command-array ownership only on success; the caller releases the array on failure.</summary>
     internal static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
-        => Create(commands, sceneMap, null, budget);
+        => Create(commands, sceneMap, null, null, budget);
 
-    /// <summary>Adopts a source centerline only on success, with the same ownership rules as authored fills.</summary>
-    internal static SvgAuthoredPath CreateStroke(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle strokeStyle, RenderBudget budget)
-        => Create(commands, sceneMap, strokeStyle, budget);
+    /// <summary>Adopts the source centerline and its generated outline only on success.</summary>
+    /// <remarks>The caller retains both owners on failure. The outline is a filled child with its
+    /// independent scene map, so non-scaling construction and later instance placement stay distinct.
+    /// Its command reservation is already charged; this call reserves the centerline owner.</remarks>
+    internal static SvgAuthoredPath CreateStroke(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle strokeStyle, SvgAuthoredPath strokeOutline, RenderBudget budget)
+    {
+        ArgumentNullException.ThrowIfNull(strokeOutline);
+        if (strokeOutline.StrokeStyle is not null) throw new ArgumentException("A stroke outline must be filled source commands.", nameof(strokeOutline));
+        return Create(commands, sceneMap, strokeStyle, strokeOutline, budget);
+    }
 
-    private static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, RenderBudget budget)
+    private static SvgAuthoredPath Create(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, SvgAuthoredStrokeStyle? strokeStyle, SvgAuthoredPath? strokeOutline, RenderBudget budget)
     {
         RenderBudget.BudgetReservation owner = budget.Reserve(OwnerBytes, SvgMemoryCategory.Scene);
-        try { return new SvgAuthoredPath(commands, sceneMap, strokeStyle, owner); }
+        try { return new SvgAuthoredPath(commands, sceneMap, strokeStyle, strokeOutline, owner); }
         catch { owner.Dispose(); throw; }
     }
 
-    /// <summary>Copies commands with bounded work and cancellation, composing an additional scene map.</summary>
+    /// <summary>Copies both command owners with bounded work and cancellation, composing an additional scene map.</summary>
     internal SvgAuthoredPath Copy(SvgAffineTransform placement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
         foreach (SvgAuthoredPathCommand command in Commands) commands.Add(command);
         OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
+        SvgAuthoredPath? copiedOutline = null;
         try
         {
             SvgAuthoredStrokeStyle? copiedStyle = StrokeStyle is SvgAuthoredStrokeStyle style
                 ? style with { WidthMap = placement.ComposeChecked(style.WidthMap) } : null;
-            return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, budget);
+            copiedOutline = _strokeOutline?.Copy(placement, budget, workCounter, cancellationToken);
+            return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, copiedOutline, budget);
         }
-        catch { owned.Dispose(); throw; }
+        catch { owned.Dispose(); copiedOutline?.Dispose(); throw; }
     }
 
     public void Dispose()
     {
         _commands.Dispose();
+        _strokeOutline?.Dispose();
         _commands = new([], null);
+        _strokeOutline = null;
         _ownerReservation?.Dispose();
         _ownerReservation = null;
     }

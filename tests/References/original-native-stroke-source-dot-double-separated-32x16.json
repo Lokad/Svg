@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-native-stroke-source-dot-double-separated-32x16",
+  "referencePng": "original-native-stroke-source-dot-double-separated-32x16.png",
+  "referenceSha256": "1b8245db81b390396f3f4c1645f74d957b7e3bdb101e08e6241643d9f636b78e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 32,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "30c531fb4471810d771b5f2d46081866ebe1cb1ecbdef2c7458e948521dd1b2e",
+  "candidateSha256": "cc433d1b946c9c05a451b61323a0633aa0870d4ba6ca56d4778f9c5e08a1260d",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 32,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Adjudicate the existing duplicate-dot equivalence assertion, with unchanged coordinates and paint; controls declared before independent capture and candidate comparison."
+}

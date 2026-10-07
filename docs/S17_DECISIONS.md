@@ -1,26 +1,26 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-07. Original source-curve paint bounds make all nine SimpleLogin
-variants exact on Windows and Linux. The cohort now has **25/27 exact documents**,
-marks **13/13**, wordmarks **12/14**, with **246 exact and 12 known** comparisons
-across 258 variants. Only its three large PNGs change; all 243 earlier exact
+Updated 2026-10-07. Generated source stroke outlines make all nine Zeppelin
+variants exact on Windows and Linux. The cohort now has **26/27 exact documents**,
+marks **13/13**, wordmarks **13/14**, with **249 exact and nine known** comparisons
+across 258 variants. Only its three small PNGs change; all 246 earlier exact
 images and every other complete comparison remain. The original numerical release
 criterion is met. The active target is 27/27 documents and 258/258 variants on both
 platforms; remote CI remains open.
 
-Exact documents are SimpleLogin, Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, Rede Manchete,
-ROC HCVS, Red Cross, SG Rotation Leipzig, Tokyo Tsukurou, Artsy, Party of Changes,
-YouTube, Liputan6, NASA, Blur, Nike, Toyota, Pepsi, Target, IKEA, Google and Coca-Cola.
+Exact documents are SimpleLogin, Ford, SDL, UAAR, SimpleX, Zeppelin, Omega,
+Eisenbahn, Rede Manchete, ROC HCVS, Red Cross, SG Rotation Leipzig, Tokyo Tsukurou,
+Artsy, Party of Changes, YouTube, Liputan6, NASA, Blur, Nike, Toyota, Pepsi,
+Target, IKEA, Google and Coca-Cola.
 Membership, inputs, options and references remain frozen.
 [PLAN.md](../PLAN.md) owns the current queue and validation totals;
-[the design record](RASTERIZATION_DESIGN.md#source-curve-paint-bounds-2026-10-07)
+[the design record](RASTERIZATION_DESIGN.md#source-native-stroke-outlines-2026-10-07)
 explains the repair. Detailed diagnostics stay under ignored artifacts.
 
-The two remaining failed documents stay in the denominator:
+The remaining failed document stays in the denominator:
 
 | Document | Failed variants | Current pixel difference |
 | --- | ---: | --- |
-| Zeppelin (`inv-007`) | Three small | 26 RGB-only pixels, maximum channel error five. |
 | IBM (`inv-099`) | Nine | 209 through 942 pixels; transparent alpha errors reach 23. |
 
 These are measured residuals against unchanged references. Their mechanisms and
@@ -33,8 +33,9 @@ are 16.37 ms for marks and 10.52 ms for wordmarks, with median allocation traffi
 [The complete-cohort baseline](BENCHMARKS.md#frozen-corporate-cohort-baseline-2026-10-07)
 records sizes, maxima, machine scope and confidence limits. This is a warmed
 Windows measurement, with no speedup or service-latency claim. Current Windows
-and Linux builds, tests and complete bank/cohort comparisons pass. Memory,
-package consumers and browser/font tools retain their preceding delivery scope.
+and Linux builds, tests and complete bank/cohort comparisons pass. Memory
+and installed package-consumer checks pass on each platform; browser/font tools
+retain their preceding delivery scope.
 All 258 Linux variants reuse independent reference triples: 774 stable, healthy,
 cleaned captures with no failures or gaps.
 Remote CI is pending.

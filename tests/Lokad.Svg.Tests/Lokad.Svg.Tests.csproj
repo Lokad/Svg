@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Fixtures/original/native-stroke-source-ring-161.svg" Link="TestData/native-stroke-source-ring-161.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/native-stroke-source-clipped-cubic-161.svg" Link="TestData/native-stroke-source-clipped-cubic-161.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/stroke-duplicate-diagonal-16x16.svg" Link="TestData/stroke-duplicate-diagonal-16x16.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/quadratic-start-phases.svg" Link="TestData/quadratic-start-phases.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/conic-chop-device-circle.svg" Link="TestData/conic-chop-device-circle.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/conic-chop-scaled-circle.svg" Link="TestData/conic-chop-scaled-circle.svg" CopyToOutputDirectory="PreserveNewest" />

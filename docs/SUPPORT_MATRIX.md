@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-The current 1,255 manifest entries contain
-1,176 exact decoded-pixel references, 55 known-difference renders and 24
+The current 1,266 manifest entries contain
+1,187 exact decoded-pixel references, 55 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -53,14 +53,14 @@ remain unsupported. `overflow:visible` is accepted on non-viewport targets;
 root/nested SVG viewports retain hidden clipping and reject visible overflow,
 including matched stylesheet declarations. These admissions add no painting.
 
-The complete frozen corporate matrix has 258 rendered comparisons: 234 exact
-and 24 known differences, with zero renderer rejections. Rede Manchete, Tokyo
-Tsukurou and Pepsi become exact in every variant: **23/27 documents**, marks
-**11/13**, wordmarks **12/14**. All 225 earlier exact PNGs remain. Original inputs,
-options and browser references stay frozen. S17's numerical minimum is met.
-Representative Windows performance, local Windows/Linux delivery and the full
-fresh Linux browser matrix are validated. Linux has the same exact/known counts
-and document numerators; remote CI remains open.
+The complete frozen corporate matrix has 258 rendered comparisons: 249 exact
+and nine known differences, with zero renderer rejections: **26/27 documents**,
+marks **13/13**, wordmarks **13/14**. All nine Zeppelin variants are exact after
+retaining generated source stroke outlines until the composed final map. Every
+earlier exact image and categorized rejection remains. Original inputs, options
+and browser references stay frozen; IBM remains an evaluation holdout. S17's
+numerical minimum is met. Representative Windows performance, local Windows/Linux
+delivery and the full Linux browser matrix are validated. Remote CI remains open.
 
 Concentric general radial paints retain separate shader-local and referencing
 matrices. The drawing CTM moves into bitmap coordinates before local-gradient
@@ -89,8 +89,12 @@ references; six wider controls retain their known differences. At that checkpoin
 every previous fixture/research image and all 258 corporate outcomes/PNGs were preserved.
 Generic wider paths and integer/fractional polylines share native curve offsets,
 joins/caps, closure and directed retained outlines, including dashes and painted
-instances. Bare movetos paint nothing; non-scaling dashes keep host-coordinate
-lengths. Full stroke/paint/clip fidelity and other hairline contexts remain open.
+instances. Generated outline commands retain source operands and directed contours
+before scene normalization; their owned storage and instance copies are bounded
+and released with the centerline. Single and coincident round-dot paths can have
+different native pixels; independent controls preserve that distinction.
+Bare movetos paint nothing; non-scaling dashes keep host-coordinate lengths.
+Full stroke/paint/clip fidelity and other hairline contexts remain open.
 
 Circle/ellipse strokes fit normal offsets of original conics with retained
 quadratic verbs, including an inverted inner offset for very wide strokes.

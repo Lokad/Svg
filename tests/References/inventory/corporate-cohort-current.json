@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after original source-curve paint bounds; membership, inputs, options and original references retained.",
+  "scope": "Frozen 27-document/258-variant measurement after retaining generated native stroke outlines before scene mapping; membership, inputs, options and original references retained.",
   "rendererCounts": {
     "renders": 258,
     "MalformedInput": 0,
@@ -24,8 +24,8 @@
     "transport-limit-gap": 0
   },
   "fidelityCounts": {
-    "exact": 246,
-    "known-difference": 12,
+    "exact": 249,
+    "known-difference": 9,
     "withoutReference": 0,
     "measuredRendererRejections": 0
   },
@@ -289,7 +289,7 @@
         "inv-007-large-white",
         "inv-007-large-black"
       ],
-      "verifiedExact": false
+      "verifiedExact": true
     },
     {
       "id": "inv-008",
@@ -4042,17 +4042,17 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 26,
-          "MaximumChannelError": 5,
-          "MeanAbsoluteError": 0.0007887323943661971,
-          "RootMeanSquareError": 0.0359968699734758,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 107,
-          "MinimumMismatchY": 7,
-          "MaximumMismatchX": 144,
-          "MaximumMismatchY": 63,
-          "IsExact": false
+          "MinimumMismatchX": 250,
+          "MinimumMismatchY": 71,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -4087,7 +4087,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "d1a9a1229d3e97b7c6f64b4338a2debb77ff3358f2921975055e4e562e1ccf3d",
+      "candidateSha256": "731eb988e98ae4ed6b9e12a8ebf4d63253141bde497b0b187d44f83ccd976d97",
       "width": 250,
       "height": 71,
       "referenceSha256": "55268bdbbb14360ffc6ea783f64cee877c7ea6ac236c435ac9940df69fbeb625"
@@ -4099,17 +4099,17 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 26,
-          "MaximumChannelError": 5,
-          "MeanAbsoluteError": 0.0007887323943661971,
-          "RootMeanSquareError": 0.0359968699734758,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 107,
-          "MinimumMismatchY": 7,
-          "MaximumMismatchX": 144,
-          "MaximumMismatchY": 63,
-          "IsExact": false
+          "MinimumMismatchX": 250,
+          "MinimumMismatchY": 71,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -4144,7 +4144,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "3da8a67e6287ab318301d4a31b8469a2477770337166109e723dd18964e4cc75",
+      "candidateSha256": "02f00063f1d9853fce8a64454e4570b199b8e268b4b37d885a977bcec9759fd0",
       "width": 250,
       "height": 71,
       "referenceSha256": "fdf701abaa4e2b4677e874c3006a6d6a0e4e4a44fdaa9da5f70ab1c16e17bbcb"
@@ -4156,17 +4156,17 @@
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 26,
-          "MaximumChannelError": 5,
-          "MeanAbsoluteError": 0.0007887323943661971,
-          "RootMeanSquareError": 0.0359968699734758,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 107,
-          "MinimumMismatchY": 7,
-          "MaximumMismatchX": 144,
-          "MaximumMismatchY": 63,
-          "IsExact": false
+          "MinimumMismatchX": 250,
+          "MinimumMismatchY": 71,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -4201,7 +4201,7 @@
         ]
       },
       "oracleState": "measured",
-      "candidateSha256": "feff7477ecb1d1ac0379a737c80befd09d3a98fc70299386b37e66bc206d7d4b",
+      "candidateSha256": "c70cd796e0477130fd75a5fdfe15fddda4eca3385712bd5ed2fe5796c17c3731",
       "width": 250,
       "height": 71,
       "referenceSha256": "432fa3b5204c711d4e09528d106302dcc31c9c7e0a06fa1239fbedbd65c52418"
@@ -15301,8 +15301,8 @@
       "height": 386
     }
   ],
-  "rendererSourceBaselineCommit": "2cfaaf49",
-  "rendererSourceState": "Axis-aligned authored fill paint boxes use original native float curve extrema before scene mapping; other geometry retains its lowered bounds.",
-  "measurementCheckpoint": "source-curve-paint-bounds-2026-10-07",
+  "rendererSourceBaselineCommit": "ad61e6c7",
+  "rendererSourceState": "Wider path strokes retain generated source-outline commands beside the centerline; composed scene/output mapping preserves native curves and directed contours.",
+  "measurementCheckpoint": "source-native-stroke-outlines-2026-10-07",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

@@ -1314,7 +1314,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 if (stroked.Geometries.Length == 1)
                 {
-                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap), budget) };
+                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap), stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Missing native stroke outline."), budget) };
                     commands = new([], null);
                 }
                 return stroked;
@@ -1324,7 +1324,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         finally { commands.Dispose(); }
     }
 
-    /// <summary>Constructs retained native outlines, then reserves exact fallback storage before final placement.</summary>
+    /// <summary>Constructs native source outlines and scene fallback geometry, reserving both before allocation.</summary>
     private SvgParsedGeometry LowerNativeStrokePath(ReadOnlySpan<SvgAuthoredPathCommand> commands, SvgAffineTransform constructionMap,
         SvgAffineTransform outlineMap, float radius, float resolutionScale, float miterLimit, SvgStrokeCap cap, SvgStrokeJoin join,
         SvgColor color, bool hasFill, double outputMagnification, SvgViewportFrame? frame, RenderBudget budget)
@@ -1347,7 +1347,39 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgContourBuilder outlines = new(points, contours);
         outlines.EnableQuadSpanRetention();
         _ = Traverse(outlines, outline.AsSpan(), outlineMap, policy, _workCounter, _cancellationToken);
-        return FinishDirectedStrokeFill(outlines, color, hasFill, SvgPolygonMapping.NativeStrokeEdges, frame, budget);
+        SvgParsedGeometry result = FinishDirectedStrokeFill(outlines, color, hasFill, SvgPolygonMapping.NativeStrokeEdges, frame, budget);
+        try
+        {
+            if (result.Geometries.Length == 1)
+            {
+                using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                SvgDevicePoint previous = default;
+                foreach (SvgStrokeOutlineCommand command in outline.AsSpan())
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    SvgDevicePoint endpoint = command.End.Device();
+                    // Match Traverse: duplicate line endpoints must not change
+                    // native curve classification when the source outline is replayed.
+                    if (command.Verb == SvgStrokeOutlineVerb.Line && endpoint == previous) continue;
+                    SvgAuthoredPathCommand verb = command.Verb switch
+                    {
+                        SvgStrokeOutlineVerb.Move => new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, command.End.Device(), default, default),
+                        SvgStrokeOutlineVerb.Line => new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, command.End.Device(), default, default),
+                        SvgStrokeOutlineVerb.Quadratic => new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, command.Control.Device(), command.End.Device(), default),
+                        SvgStrokeOutlineVerb.Conic => new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, command.Control.Device(), command.End.Device(), new(command.Weight, 0)),
+                        SvgStrokeOutlineVerb.Close => new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default),
+                        _ => throw new InvalidOperationException("Invalid native stroke outline verb."),
+                    };
+                    source.Add(verb);
+                    previous = endpoint;
+                }
+                OwnedParserArray<SvgAuthoredPathCommand> owned = source.Detach();
+                try { result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.Create(owned, outlineMap, budget) }; }
+                catch { owned.Dispose(); throw; }
+            }
+            return result;
+        }
+        catch { result.Discard(); throw; }
 
         static (int Points, int Contours, int Spans) Traverse(SvgContourBuilder? builder, ReadOnlySpan<SvgStrokeOutlineCommand> commands,
             SvgAffineTransform map, SvgFlattenPolicy policy, ParserWorkCounter work, CancellationToken token)

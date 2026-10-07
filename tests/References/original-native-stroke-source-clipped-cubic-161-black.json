@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-native-stroke-source-clipped-cubic-161-black",
+  "referencePng": "original-native-stroke-source-clipped-cubic-161-black.png",
+  "referenceSha256": "06e72fb3dff2be13fff176cacd34f5c91e39297e51574f9d37510ca4abeb06e0",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 161,
+    "height": 97,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "974903fef481b17ae6802b93e50e46151c710145a4515b7a7a50b754a7993a3e",
+  "candidateSha256": "0b5db50ea57822fd35c3fa58008165f9de015d751e3f73cd7acfcc5253ae6557",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 161,
+    "minimumMismatchY": 97,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Supplemental root-size variants declared before capture/comparison, after the first independent controls showed no rounding witness at their power-of-two scale. Geometry, paints and transforms remain unchanged. Odd viewports exercise a non-power-of-two root map; no vertex tuning."
+}

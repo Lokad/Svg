@@ -6630,3 +6630,76 @@ stroke's alpha delta. At (119,7), changing direct coverage 62 → 63 gives the
 reference RGB. Curve construction, mapping and walking still need evidence;
 RGB-only classification does not establish a material-only cause. IBM remains
 an evaluation holdout. Full-cohort exactness and remote CI retain their open scope.
+
+## Source native-stroke outlines (2026-10-07)
+
+Generated wider path outlines now retain source coordinates until composed
+scene/output mapping. Scene fallback still owns admission, paint bounds and
+legacy preparation; the original centerline remains separate for hairlines and
+mapped-width dispatch. Source replay uses NativeStrokeEdges, preserving the wider
+stroke route rather than selecting filled-path rectangle specialization.
+Zero-length generated line endpoints are discarded consistently with the existing
+outline traversal, preserving round-dot curve classification. Directed generated
+contours survive scene duplicate merging in the output route.
+
+Zeppelin's original gold ring has four conics. The managed endpoint-arc operands,
+weights and all 20 generated outline commands match the pinned, unchanged compiled
+SkPathStroker/SkStrokerPriv functions bit-for-bit. A diagnostic SVG made from that
+native source outline is exact against the frozen small reference. Intermediate
+scene float mapping loses precision before the final root map; retaining source
+operands closes the direct-coverage witness at (119,7), 62 → 63, and all 26 small
+RGB differences on each background. Opaque blue underpaint had hidden the alpha
+delta. The traced fresh browser screenshot also reproduces the frozen reference.
+Numerical record adapters exclude full native path iteration, specialized path
+flags and painting; their agreement alone does not establish full browser parity.
+
+One stroke owns its centerline commands and one filled child containing generated
+outline commands with an independent scene map. Children cannot own strokes.
+Storage is reserved before allocation; copying reserves distinct arrays and
+composes both maps, transfer moves both owners, and disposal releases both.
+Replay borrows immutable source storage and uses existing bounded, cancellable
+preparation. Partial parse/copy denial, token-preserving cancellation, cleanup,
+survival after original-scene disposal and all six public output paths pass.
+
+Independent controls were declared after the prototype, before their capture and
+comparison. Initial 160×96 ring/cubic controls have power-of-two root mapping and
+were already exact. A nonuniform reflected-arc control retains its existing
+UnsupportedFeature rejection and provides no fidelity evidence. Supplemental
+161×97 viewports keep geometry, transforms and paint unchanged, exercising a
+non-power-of-two root map without vertex tuning. Their ring improves 12/12/11 →
+zero pixels on transparent/white/black; the bitmap-clipped cubic stays exact.
+The six supplemental configurations have 18 stable, healthy, cleaned captures.
+
+The existing research duplicate diagonal stroke improves 28 → zero pixels against
+its original source/reference. A fresh three-capture triple reproduces its original
+decoded pixels; the graduated fixture copy retains its research provenance.
+Full tests exposed an old assertion that two coincident round-cap dots must have
+the same PNG as one dot. Four unchanged test-coordinate controls were declared
+before capture/comparison: single, coincident pair, separated pair, and coincident
+pair plus a separated dot. Twelve stable, healthy, cleaned captures disprove that
+pixel-equivalence assumption: the preceding renderer misses six pixels in the
+coincident pair, while source replay matches all four controls exactly. The core
+test retains its fallback contour/span index checks; independent visual fixtures
+now protect native output rather than asserting false equivalence.
+
+Sixty control captures are stable, healthy and cleaned in this study: 27 initial,
+18 supplemental, three research-graduation and twelve dot captures. Thirty-three
+support eleven new exact fixture entries. This is mechanism-level evidence with
+declared selection timing, not an independent representative release rate.
+Only Zeppelin's three small corporate PNGs change; all 246 earlier exact images
+and every other complete comparison remain. The cohort has 249 exact / nine known
+/ zero rejected variants and 26/27 exact documents on both platforms, marks 13/13
+and wordmarks 13/14. IBM's nine variants remain an evaluation holdout.
+
+The bank has 1,266 fixtures (1,187 exact, 55 known, 24 rejected), 36 research probes
+(23 exact, 12 known, one rejected) and 92 Default renders. All 1,394 executions
+have identical Windows/Linux outcomes and PNG bytes. Among the preceding 1,383
+bank cases, only the research duplicate probe changes; every earlier exact output
+and categorized rejection remains. Nine-project Release builds and 3,897 tests
+per platform pass. Fresh 25-scenario memory and installed package-consumer checks
+pass on each platform. Linux reuses its 774 validated platform captures and Pepsi
+supplement. No new timing claim or public API is introduced. Detailed traces,
+adapters and audits stay under ignored artifacts/zeppelin-curves-20261007.
+Independent coverage/clip/paint controls govern the next shared repair; IBM cannot
+supply tuned coordinates or failing pixels as development fixtures. Full cohort
+exactness and remote CI retain their open scope.

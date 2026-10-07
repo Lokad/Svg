@@ -5,14 +5,35 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Source native-stroke outline checkpoint (2026-10-07)
+
+All nine Zeppelin variants are exact on Windows/Linux. The current cohort is
+**26/27 exact documents**, marks **13/13**, wordmarks **13/14**: **249 exact,
+nine known and zero rejected** variants. Only its three small corporate PNGs
+change; all 246 earlier exact images and every other complete comparison remain.
+Membership, inputs, options and original references stay frozen. IBM's nine
+variants remain an evaluation holdout, with no document-specific tuning.
+
+The bank has 1,266 fixtures (1,187 exact, 55 known, 24 rejected), 36 research
+probes (23 exact, 12 known, one rejected) and 92 Default renders:
+**1,394 executions**, with identical Windows/Linux outcomes and PNG bytes.
+The duplicate diagonal research probe improves 28 → zero against its original
+reference. Eleven new exact entries have 33 stable, healthy, cleaned captures:
+six odd-root controls, four controls adjudicating the existing duplicate-dot
+assertion, and one graduated research copy. Selection timing and proof limits are
+in [the design record](RASTERIZATION_DESIGN.md#source-native-stroke-outlines-2026-10-07).
+PLAN owns the current queue; preceding checkpoints retain their historical totals.
+
 ## Source-curve paint-bounds checkpoint (2026-10-07)
 
-All nine SimpleLogin variants are exact on Windows/Linux. The current cohort is
+All nine SimpleLogin variants became exact on Windows/Linux. At that checkpoint
+the cohort had
 **25/27 exact documents**, marks **13/13**, wordmarks **12/14**: **246 exact,
 12 known and zero rejected** variants. Only its three large corporate PNGs change;
 all 243 earlier exact images and every other complete comparison remain.
 Membership, inputs, options and original references stay frozen. Zeppelin's three
-small variants are the next development case; IBM's nine remain an evaluation holdout.
+small variants were the next development case; IBM's nine remained an evaluation
+holdout.
 
 The unchanged bank has 1,255 fixtures (1,176 exact, 55 known, 24 rejected), 36
 research probes (22 exact, 13 known, one rejected) and 92 Default renders:
@@ -67,7 +88,7 @@ records mechanism and limits. Earlier checkpoint totals below remain historical.
 
 ## Linux platform-reference supplement (2026-10-07)
 
-Local Linux renders reproduce all 1,383 Windows bank outcomes and PNG bytes.
+Local Linux renders reproduce all 1,394 Windows bank outcomes and PNG bytes.
 Across the frozen corporate matrix, 255/258 candidate PNGs are identical to Windows.
 Pepsi's three small backgrounds differ in 22 RGB-only pixels each, but match
 the same pinned Chrome version/revision on Linux in nine healthy, cleaned,
@@ -77,8 +98,8 @@ pass the cohort tests; Linux uses the supplement for those three variants.
 The validated Linux-browser matrix covers all 258 frozen variants with
 774 stable, healthy, cleaned captures. Of the reference PNGs, 255 match Windows
 bytes, while all nine new small Pepsi captures reproduce the existing supplement.
-The current Linux result is 246 exact variants, 12 known differences, zero rejections and
-the same 25/27 exact documents, marks 13/13 and wordmarks 12/14. No failure or
+The current Linux result is 249 exact variants, nine known differences, zero rejections and
+the same 26/27 exact documents, marks 13/13 and wordmarks 13/14. No failure or
 unmeasured variant is omitted. Remote CI remains open; detailed evidence stays
 under ignored `artifacts/linux-delivery-20261007/`.
 

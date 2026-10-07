@@ -1,0 +1,38 @@
+{
+  "fixtureId": "original-native-stroke-source-duplicate-diagonal-16x16",
+  "referencePng": "original-native-stroke-source-duplicate-diagonal-16x16.png",
+  "referenceSha256": "45e007bc95cd507b14ebc1696116573b2287088d6d524d0b07637cf1c5eddd5d",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 16,
+    "height": 16,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "inputSha256": "554af5c8b62633ddcc6e38b5ae6e1ea10e329b14a0c95a81849c5e89affa9038",
+  "candidateSha256": "c483ff7bf130267140772acd4c689d7dc9251478574d373a26afd38193508b19",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 16,
+    "minimumMismatchY": 16,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Original independently selected research probe; original source and research oracle retained.",
+  "graduatedFrom": "research-stroke-duplicate-diagonal-16x16"
+}

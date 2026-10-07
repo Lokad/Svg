@@ -523,14 +523,18 @@ public static class SvgConverter
         {
             SvgPreparedPathContours? authored = null;
             SvgAffineTransform authoredMap = SvgAffineTransform.Identity;
-            if (authoredPath is not null && authoredPath.StrokeStyle is null)
+            SvgAuthoredPath? replay = authoredPath;
+            // Wider strokes replay their generated source outline; the original
+            // centerline remains separate for hairline coverage and width dispatch.
+            if (authoredPath?.StrokeStyle is not null) replay = authoredPath.StrokeOutline;
+            if (replay is not null)
             {
                 ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
-                authored = authoredPath.PrepareSource(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), isEvenOdd, budget, preparationWork, cancellationToken);
+                authored = replay.PrepareSource(SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), isEvenOdd, budget, preparationWork, cancellationToken);
                 workUnits += preparationWork.Used;
-                authoredMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(authoredPath.SceneMap);
+                authoredMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(replay.SceneMap);
                 points = authored.Points; contourEnds = authored.ContourEnds; signs = authored.Signs;
-                mapping = SvgPolygonMapping.NativeFillEdges;
+                mapping = authoredPath?.StrokeStyle is null ? SvgPolygonMapping.NativeFillEdges : SvgPolygonMapping.NativeStrokeEdges;
                 quadSpans = authored.QuadSpans; cubicSpans = authored.CubicSpans;
             }
             bool transferred = false;

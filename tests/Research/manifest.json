@@ -711,14 +711,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 28,
-        "maximumChannelError": 5,
-        "maximumAlphaError": 5,
-        "alphaChangedPixelCount": 28,
-        "minimumMismatchX": 1,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 14,
-        "maximumMismatchY": 14
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/stroke-duplicate-diagonal-16x16.png",

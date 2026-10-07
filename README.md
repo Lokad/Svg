@@ -36,11 +36,17 @@ and preserve the distinction between geometric clip edges and mask allocation
 bounds. Ford and YouTube are each exact in all nine declared variants. Analytic
 paints apply the rectangle's snapped byte mask to each ordered operation.
 The frozen corporate matrix has 258 rendered comparisons on Windows and Linux:
-246 exact, 12 known differences and zero rejections. Every declared variant is exact for
-25/27 documents, including 13/13 marks and 12/14 outlined wordmarks. Local
+249 exact, nine known differences and zero rejections. Every declared variant is exact for
+26/27 documents, including 13/13 marks and 13/14 outlined wordmarks. Local
 Windows and Linux delivery checks and the complete fresh Linux browser matrix
 pass; remote CI evidence remains pending. See [PLAN.md](PLAN.md) for the current
 release assessment and cohort selection limits.
+
+Generated native stroke outlines retain source operands until final mapping,
+making all nine Zeppelin variants exact. Coincident stroke contours preserve
+their native output classification, with independent browser regressions and
+bounded ownership checks. IBM's nine variants remain the evaluation holdout.
+See [the source-outline repair](docs/RASTERIZATION_DESIGN.md#source-native-stroke-outlines-2026-10-07).
 
 The following implementation checkpoints retain their historical results.
 Authored fills retain directed winding and
