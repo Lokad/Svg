@@ -141,11 +141,14 @@ internal static class SvgLeafParser
             {
                 return LowerPaintedRoundedStroke(reader, context, syntax, cornerX, cornerY, element, parsed, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, frame, state);
             }
-            SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = ResolveRoundedStroke(reader, element, parsed.Geometries[0]);
-            if (stroke is null) return parsed;
             SvgParsedGeometry stroked;
-            try { stroked = LowerRoundedStroke(reader, context, syntax, cornerX, cornerY, element, stroke.Value, frame, state); }
-            catch { parsed.Dispose(); throw; }
+            try
+            {
+                SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = ResolveRoundedStroke(reader, element, parsed.Geometries[0]);
+                if (stroke is null) return parsed;
+                stroked = LowerRoundedStroke(reader, context, syntax, cornerX, cornerY, element, stroke.Value, frame, state);
+            }
+            catch { parsed.Discard(); throw; }
             return SvgOrthogonalShapeParser.ConcatParsedGeometries(parsed, stroked, state.Budget, context.WorkCounter, context.CancellationToken);
         }
         try

@@ -369,8 +369,8 @@ internal static class SvgOrthogonalShapeParser
         }
         catch
         {
-            first.Dispose();
-            second.Dispose();
+            first.Discard();
+            second.Discard();
             throw;
         }
     }

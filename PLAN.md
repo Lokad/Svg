@@ -5,17 +5,22 @@ variants on Windows and Linux**, with zero known differences and zero rejections
 Marks are 13/13 exact; outlined wordmarks are 14/14. Membership, inputs, options
 and browser references stay frozen.
 
-The latest validated repair applies a leaf or use-instance mask after its complete
-fill/stroke batch composes. Copied source masks preserve their regions, nesting
+The latest validated fidelity repair applies a leaf or use-instance mask after
+its complete fill/stroke batch composes. Copied source masks preserve their regions, nesting
 and distinct instance boundaries. Three original research configurations improve
 from 71 differing pixels to exact; 57 new control configurations become exact,
 including three valid backward-mask/forward-clip admission graduations. All other
 1,474 preceding bank results and all 258 corporate reports/images remain unchanged.
 The complete 1,558-case bank produces identical Windows/Linux output bytes;
-Release builds, 3,993 tests and fresh 25-scenario memory checks pass on each platform.
+Release builds, 3,997 tests and fresh 25-scenario memory checks pass on each platform.
 See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#leaf-and-instance-mask-composition-2026-10-07).
 Gradient/custom-region masks, fill-opacity precision and circle/ellipse controls retain
 measured differences; multiple-child symbols expose a retained valid-SVG rejection.
+
+The subsequent fill/stroke cleanup releases unpublished geometry when rounded
+stroke admission/construction or concatenation fails. Four new core cases pass;
+all 1,558 bank results and all 258 corporate images remain unchanged on both
+platforms. See [the cleanup](docs/RASTERIZATION_DESIGN.md#production-fillstroke-failure-cleanup).
 
 **The full frozen-cohort fidelity target is achieved.** Preserve these exact
 results while improving shared renderer behavior beyond this cohort. S17's remote
@@ -140,7 +145,7 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,993 passed on each platform**: 3,775 core, 212 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **3,997 passed on each platform**: 3,779 core, 212 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | Parser-owned mask operations/nodes use reserved, bounded iterative mapping and command emission; scenes retain values after borrowed links clear. Sixteen new core cases cover copy/region/sibling boundaries, root opacity, deep chains, memory/work denial and cleanup. Exhaustive work denial also repairs definition registration, instance-transfer and temporary group-clone leaks. Twenty-three visual cases cover 69 exact configurations × six outputs. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API or runtime dependency changes; remote CI remains open. |
 | Executed fixture manifest | **1,401 entries = 1,336 exact + 41 known-difference renders + 24 rejections**; 790 base documents / 611 variants. Sixty-six new exact controls and three original research graduations enter the bank. All prior fixture outcomes/images and declared rejections stay unchanged; three new controls graduate the valid backward-mask/forward-clip combination. |
 | Executed research manifest | **65 probes = 30 exact + 31 known-difference renders + four rejections**. Three original leaf-mask probes become exact without recapture and retain their original evidence alongside fixture graduations. Nine new gradient/fill-opacity/circle/ellipse controls retain known differences. Three unchanged multiple-child symbol configurations retain an erroneous MalformedInput rejection of valid SVG for the later scope audit. |
@@ -865,10 +870,15 @@ failing pixels cannot become implementation predicates or tuned fixtures.
    and isolate complete multiple-paint element batches. The isolated Windows float model
    reaches 126/144 exact new controls and closes five existing research cases;
    it preserves all existing exact results and the full corporate matrix, but
-   remains experimental. Complete scope-sensitive record handling, definition/
+   remains experimental. A later model owns compact paint values and recording
+   scopes, preserves that set and reaches 10/12 exact new scope controls, with
+   clean denial/cancellation results. Keep nested effects until deciding whether
+   to fold the parent's opacity: inspector pictures can simplify them and replay
+   different pixels from actual browser screenshots. Complete recording-scope handling, definition/
    symbol/paint-copy coverage and matching-option checks for changed Default
-   images before integration. Replace the prototype's enlarged per-geometry and
-   command payloads with bounded, owned state, then pass the affected resource,
+   images before integration. The prototype's owned paint storage reduces geometry
+   values to 272 bytes and keeps commands at 72 bytes; finish ownership across all
+   affected routes, then pass the affected resource,
    six-output and Windows/Linux delivery gates. The design record retains the
    rejected byte-only and incomplete record models, plus native-operation twins.
    See [the opacity investigation](docs/RASTERIZATION_DESIGN.md#single-paint-opacity-investigation-2026-10-07).

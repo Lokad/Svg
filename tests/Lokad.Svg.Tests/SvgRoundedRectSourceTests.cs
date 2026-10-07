@@ -120,6 +120,46 @@ public sealed class SvgRoundedRectSourceTests
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
     }
 
+    [Theory]
+    [InlineData("fill='none' stroke='rgba(86,137,193,0.37)' stroke-width='3'")]
+    [InlineData("fill='#2168ad' stroke='#ab7128' stroke-width='3'")]
+    public void Every_fill_stroke_construction_work_boundary_releases_unpublished_geometry(string paint)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>"
+            + "<rect x='4.25' y='6.5' width='25.5' height='19' rx='5' ry='9.5' " + paint + "/></svg>");
+        RenderBudget measured = new(1_000_000);
+        ParserWorkCounter complete = new(1_000_000);
+        using (SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, complete, CancellationToken.None)) { }
+        Assert.Equal(0, measured.Snapshot().CurrentBytes);
+        for (long limit = 0; limit < complete.Used; limit++)
+        {
+            RenderBudget denied = new(1_000_000);
+            SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None));
+            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        for (long limit = 256; limit < measured.Snapshot().PeakBytes; limit += 256)
+        {
+            RenderBudget denied = new(limit);
+            SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None));
+            Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+    }
+
+    [Theory]
+    [InlineData("fill='#2168ad' stroke='rgba(86,137,193,0.37)' stroke-width='3'")]
+    [InlineData("fill='none' stroke='#2168ad' stroke-width='3' stroke-dasharray='2 3'")]
+    public void Stroke_admission_failure_releases_the_preceding_rounded_fill(string paint)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>"
+            + "<rect x='4.25' y='6.5' width='25.5' height='19' rx='5' ry='9.5' " + paint + "/></svg>");
+        RenderBudget budget = new(1_000_000);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     private static byte[] Input(bool stroke) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='41' height='35'>"
         + "<rect x='4.25' y='6.5' width='25.5' height='19' rx='5' ry='9.5' "
         + (stroke ? "fill='none' stroke='#2168ad' stroke-width='2'" : "fill='#2168ad'") + "/></svg>");

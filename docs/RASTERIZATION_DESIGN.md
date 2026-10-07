@@ -7083,7 +7083,7 @@ filled/stroked rectangles, local clips, group transforms and one/two use instanc
 All 144 supplemental captures are byte-stable, healthy and cleaned. Together with
 the first study, this gives 144 configurations / 432 validated reference captures.
 
-| Independently declared configurations | Production | Final isolated float/record model |
+| Independently declared configurations | Production | Earlier isolated float/record model |
 | --- | --- | --- |
 | First 96 opacity configurations | 45 exact, 45 known differences, six rejected | 90 exact, six known differences, zero rejected |
 | Supplemental 48 operation configurations | 26 exact, 16 known differences, six rejected | 36 exact, 12 known differences, zero rejected |
@@ -7099,11 +7099,11 @@ fills and six overlapping-child groups retain one differing pixel each.
 
 Logical identity alone failed: the first float model mis-folded clipped shapes,
 dashed lines and translated use instances. Pinned Chrome LayerTree snapshots in
-the same SVG-image wrapper provide direct recording evidence. Eight successful
+the same SVG-image wrapper provide diagnostic picture playback traces. Eight successful
 record captures produce screenshot bytes identical to the existing frozen
 references; timed-out attempts are excluded. The observed playback operations are:
 
-| Source operation at opacity 0.3125 | Observed native playback |
+| Source operation at opacity 0.3125 | Observed inspector-picture playback |
 | --- | --- |
 | Compound orthogonal fill / rounded stroke-only rectangle | One alpha-folded DrawPath; no opacity layer, despite several managed geometries. |
 | Dashed line with default fill | Opacity layer around two DrawPath operations: a zero-area fill followed by the stroke. An invisible fill still counts. |
@@ -7113,9 +7113,10 @@ references; timed-out attempts are excluded. The observed playback operations ar
 | Transform on the opacity group | Alpha-folded draw with the transform outside the folded record. |
 | Two use instances | Retained opacity layer and separate instance state/draw records. |
 
-These are playback snapshots, not a proof of original float operand bits or a
-complete native recording implementation. They confirm the pinned iterator's
-operation-count rule and show why the placement of state operations matters.
+These snapshots replay a re-recorded SkPicture; they do not expose the original
+paint-operation buffer or prove its float operands or nested effect structure.
+The traces are consistent with the pinned iterator's operation-count rule and
+help distinguish state placement, subject to the replay counterexample below.
 The revised model preserves the three observed barriers. Record placement
 distinguishes child-local state from state outside the group's opacity record.
 
@@ -7130,7 +7131,7 @@ The fifth twin, a dashed line with explicit `fill="none"`, records one folded na
 draw but remains rejected by production and the model because the line parser
 rejects its fill attribute. Keep that valid combination for the later scope audit.
 
-The final isolated model has four exact results and one unchanged rejection on
+The earlier isolated model has four exact results and one unchanged rejection on
 these five post-model twins. Its full 1,558-case comparison closes the same five
 old research configurations as the byte model and preserves every other complete
 report and actual PNG except two legacy Default outputs (`inv-013`, `inv-014`).
@@ -7151,3 +7152,92 @@ Production counts, source inputs, corporate membership and references remain
 unchanged; no prototype or new control is promoted by this record. Complete
 comparisons, actual PNGs, capture diagnostics, native records and rejected model
 results stay under ignored `artifacts/opacity-folding-20261007/`.
+
+### Owned paint values, recording scopes and inspector replay
+
+Twelve further authored CC0 controls were declared after the earlier model
+comparison, before their own edits or capture/comparison. All 36 fresh-process
+captures are byte-stable, healthy and cleaned. They move transforms and clips
+between parents and leaves, copy source opacity through zero/translated instances,
+nest parent/source opacity, and cover translucent strokes, near-opaque gradients,
+root opacity and a white mask. Production has eight exact and four differing
+results. The earlier global foldability flag has four exact and eight differing
+results, including five regressions of previously exact controls. An old-bank
+comparison alone therefore did not establish recording-state parity.
+
+The revised isolated model gives each logical paint and opacity command a typed
+recording scope. Local clip/transform state outside a leaf's own opacity stays
+distinct from state inside its parent's opacity; mask and root viewport state
+retain their separate barriers. Instance mapping copies scope values through
+bounded parser-owned caches. It reaches **10/12 exact**, with one differing pixel
+in each transformed control, preserves the earlier **126/144** and four exact
+state twins, and retains the explicit line-fill rejection. All eight production
+exact results in the new set remain exact.
+
+The first scoped attempt regressed three full-canvas fixtures by sixteen pixels
+each because the fast path still read geometry alpha instead of the owned paint
+value; that consumer now reads the retained value. Early collapse of source
+opacity separately regressed the nested parent/source zero-position instance by
+462 pixels and was removed. The pinned
+[playback iterator](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/cc/paint/paint_op_buffer_iterator.cc)
+decides whether to fold a parent before replaying its nested record; an inner
+opacity operation can prevent that fold. Preserve the nested effects until this
+decision, then fold the eligible inner paint during playback.
+
+Inspector snapshots cannot justify removing those nested effects. The pinned
+[PictureLayer implementation](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/cc/layers/picture_layer.cc)
+rasters the display list into a SkPictureRecorder. The inspector
+[PictureSnapshot implementation](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/platform/graphics/picture_snapshot.cc)
+then logs or replays that picture. Re-recording may simplify operations. Three
+fresh, healthy, cleaned snapshot/replay probes keep actual screenshot bytes
+identical to the frozen controls. The single-source and root-opacity picture
+replays match those screenshots, but the nested parent/source replay differs by
+**462 pixels**, maximum channel error 34 and maximum alpha error one. Its complete
+mismatch tuple equals the rejected early-collapse model. The derived picture
+shows no opacity layer even though its pixels differ from actual page rendering.
+This proves a limitation of the inspector evidence; it does not identify every
+original browser operation. Actual browser screenshots remain the fidelity oracle.
+
+Paint values now belong to a reserved scene arena. Geometries retain two four-byte
+handles; commands retain source opacity without growing their layout. Geometry
+values are **272 bytes**, versus 264 in production and 304 in the earlier model;
+commands return to **72 bytes**, versus 88. The arena reserves its owner and
+capacity before allocation and transfers its values to scene storage. Parser
+scope caches own their reservations; rendering retains copied values after parser
+teardown. On the twelve controls, 2,512 parser-work invocations, 22,535 sampled
+memory limits, 72 raster-work limits and 24 cancellation invocations have the
+expected disposition and release all reservations. These checks found and repaired
+failed metadata attachment that released only the geometry container.
+
+The revised model's complete 1,558-case comparison closes the same five old
+research configurations, preserves every earlier exact result and changes only
+those five PNGs plus the two unclassified Default outputs (`inv-013`, `inv-014`).
+Every corporate report and actual PNG remains unchanged across all 258 variants.
+This remains a Windows-only experiment. Symbol mapping, material overrides,
+pattern content, remaining definition/use routes and broader scope combinations
+need their own gates, as do matching-option comparisons for the changed Default
+images and full platform/six-output delivery. No prototype, reference or new
+control enters the tracked bank through this investigation.
+
+### Production fill/stroke failure cleanup
+
+The scoped-model denial sweep also exposed an existing production defect:
+rounded fill geometry survived a later stroke admission/construction failure,
+and failed fill/stroke concatenation released containers without discarding their
+unpublished geometry owners. Both paths now release those owners. Four core cases
+cover every parser-work boundary and sampled memory limits for solid and
+translucent stroke construction, plus rejected translucent strokes on filled
+rectangles and dashed rounded strokes. Three cases fail before the repair with outstanding
+reservations and all four pass afterward. This cleanup changes failure ownership;
+successful paint values, command layouts and pixel behavior remain unchanged.
+
+Both nine-project Release builds pass with zero warnings/errors. Each platform
+passes **3,997 tests** (3,779 core, 212 visual-project, six FontProbe), fresh
+25-scenario memory checks, runtime/symbol packages and installed consumers.
+All 1,558 complete bank reports and 1,530 rendered PNGs remain unchanged against
+the previous production checkpoint, with identical Windows/Linux bank bytes.
+All 258 corporate reports and PNGs remain unchanged and exact against their
+platform-native references: **27/27 documents**. The cleanup adds no public API,
+storage layout, runtime dependency or implementation fingerprint. Full failure
+and delivery evidence stays under ignored `artifacts/opacity-folding-20261007/`
+and `artifacts/linux-delivery-20261007/rounded-owner-cleanup-20261007/`.
