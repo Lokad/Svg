@@ -45,6 +45,8 @@ representative cohort.
 Every declared variant of a counted document must be pixel-exact; the document
 target never permits pixel tolerance. Preserve the pure-managed,
 dependency-free library contract.
+The full exact matrix is the regression gate for subsequent renderer changes;
+the original 80% release minimum does not authorize losing currently exact results.
 
 The outlined-wordmark checkpoint is established by Ford (`inv-002`): all three
 sizes × transparent/white/black are exact. The independently selected flat curved
@@ -792,10 +794,11 @@ affect a counted document, even when our geometry is closer to ideal area.
    six-site floor256 replacement, globally disable live cubics, snap the final
    coverage mask globally, or desnap endpoints alone. Native run-flush snapping
    applies only to pending additive runs; direct fringe paints bypass that flush.
-   Each has retained counterexamples. Further syntax admissions wait unless
-   the active target or the frozen cohort's acceptance threshold demonstrates a
-   dependency. The measured declaration-only DOCTYPE blocker is such a dependency,
-   now admitted after the validated AA-clip checkpoint; regression repairs may interrupt.
+   Each has retained counterexamples. Further syntax admissions require a measured
+   blocker and independent controls demonstrating the shared semantics. The
+   declaration-only DOCTYPE repair is an established example. Preserve the
+   now-exact cohort as a regression bank and use independently demonstrated
+   defects to order broader renderer work. Regression repairs may interrupt.
 5. **Keep release policy separate from implementation.** S17's exact-document
    release minimum is 80%, overall and in each corporate stratum. The stronger
    renderer target is achieved: 27/27 exact documents and 258/258 exact variants
@@ -824,7 +827,7 @@ completed stage: the remaining exit evidence below governs completion.
 | 1 | **Complete: bounded semantic repairs.** S12 miter threshold and R41 zero-area objectBoundingBox gradient path strokes are repaired. | Preserve acute-limit branches, degenerate path/use and userSpace controls; no reopened defect. |
 | 2 | **Shared contour/paint ownership boundary landed.** R30/R38/R39 preparation, mapping and reservation repairs support the scanner. | Preserve reserve-before-allocation, growth peaks and ownership transfer; audit new traversal/state storage, denial, cancellation, disposal and six-output parity. Existing foundations are not a new rewrite. |
 | 3 | **Full-canvas solid-paint routing landed; general composition fidelity remains open.** Opaque coverage correction, premultiplied source-over and source-opacity precision are retained. | Preserve the 79 exact new routing configurations and the graduated integer overlap. General coverage/alpha and nested-layer composition need independent controls; original white-background opacity controls are now exact. |
-| 4 | **Shared scan conversion landed; general event fidelity remains open with rows 3 and 5.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows, retained cubics, clipped construction, CPU contexts and retained-path-point density have landed across the shared paint boundary. | Preserve all nine exact Ford variants, density/admission/cache regressions, X/Y splitting, projected winding, two-pass storage, whole-path dispatch, bitmap-bounded rows and exclusive interiors. Order remaining fractional events, crossings, counters and overlaps from the frozen corporate cohort. |
+| 4 | **Shared scan conversion landed; general event fidelity remains open with rows 3 and 5.** Spatial membership, analytic rows, contact/straight-source union, operation-preserving mask/run paint, contained-edge scan windows, retained cubics, clipped construction, CPU contexts and retained-path-point density have landed across the shared paint boundary. | Preserve the full exact corporate matrix, density/admission/cache regressions, X/Y splitting, projected winding, two-pass storage, whole-path dispatch, bitmap-bounded rows and exclusive interiors. Order remaining fractional events, crossings, counters and overlaps from known-difference fixtures, research probes and independent controls. |
 | 5 | **Retained curves and final device mapping remain partial with row 4.** Device-map threading, retained controls, live non-convex cubics, curve/walk separation, one-chord cubic and authored quadratic admission, source-curve paint bounds, axis-aligned float mapping, coupled numeric reading and compatible raw-control convexity, retained conic fills, live rational convex advancement native round-stroke conics and retained-curve float root mapping, authored directed fill replay and bitmap-local curve setup with raw-control bounds have landed. All 436 recorded authored points and the actual Ford CTM match; density integration makes all nine PNGs exact. | Preserve transform/instance and large-translation evidence and the closed row-6, (740,30), (375,269), (269,187) and lower-row witnesses. NASA is exact in all nine variants; remaining root/source operands still differ from recorded browser coordinates. Exact documents do not establish general mapping/event parity. Wider affine/instance, fractional-event and quad/convex/stroke work retains separate gates. |
 | 6 | **Partial: curve-aware stroke completion.** Native straight open-stroke winding, curve measurement/dash cuts and seam continuation, retained conic hairlines and normal-offset oval quadratics are retained. Native wider path offsets, joins/caps and closed seams now share source verbs with polylines; painted instances preserve their curve spans. | Remaining stroke curve/event/paint/clip fidelity, sampled shape routes and round/miter/hairline/pathLength/non-scaling coverage through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings, retained paint clips, shared float shaders and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
@@ -849,6 +852,8 @@ failing pixels cannot become implementation predicates or tuned fixtures.
    transform, coverage, stroke, clip and paint controls to distinguish remaining
    mechanisms. The 52 known-difference fixture renders and 12 research renders
    retain their measured status; full cohort exactness does not close their gaps.
+   Start with rounded-rectangle fill/stroke source geometry, using independent
+   radius, transform and paint controls before changing the shared route.
 3. **Preserve the complete exact matrix.** Compare shared raster changes across
    every declared fixture, research and Default case and all 258 corporate
    variants on Windows/Linux. Keep categorized rejections and selection limits
@@ -903,26 +908,27 @@ all exact controls and Ford. Full native AA-mask/cache history remains unproved.
    vectors, thirty new exact controls and two graduations. The subsequent rectangle
     and polygon float repairs close those six shader differences. Preserve source
     stop-opacity, byte color alpha, 5,760 native shader vectors and the twenty-one
-    fresh exact shader/stop configurations; investigate notched-edge and corporate
+    fresh exact shader/stop configurations; investigate remaining shader and edge
     residuals from native/browser evidence. Preserve clipping through pattern content, symbols and use mapping.
    Preserve native float dash cuts, the orthogonal signed-winding gate, all nine
    ROC references and the twelve fresh horizontal/vertical/opacity controls.
    Preserve original references and report improvements and regressions separately.
    Successive clip intersections, cache history, general
    affine, quad/convex/stroke and layer work retain their own gates.
-3. **Preserve authored mapping/winding and resolve remaining corporate events.**
+3. **Preserve authored mapping/winding and investigate broader mapping/event gaps.**
    Root/group matrices now compose before float point/control mapping. Authored
    fills retain their directed curves, raw even-odd contours and zero signed-area
    crossings without scene contact surgery; partial and total vertical cancellation
-   share the native rule across clipped and uncut preparation. Preserve all 26
-   exact corporate documents and the original known references. Bitmap-local source
+   share the native rule across clipped and uncut preparation. Preserve all 27
+   exact corporate documents and their original references. Bitmap-local source
    mapping and raw-control bounds close UAAR, Red Cross, Party of Changes, Blur
    and Nike. Bitmap-local drawing-before-shader concatenation makes all SDL
    variants exact, with retained paint accounting, denial/cleanup, six-output
    and delivery gates verified. Source-curve paint bounds close SimpleLogin;
-   generated source-outline replay closes Zeppelin. IBM is exact at small and intended size after fractional point-list replay;
-   three large variants remain. Independent controls must establish subsequent
-   shared repairs.
+   generated source-outline replay closes Zeppelin. Fractional point-list replay
+   closes IBM at small and intended size; native rectangle endpoints close its
+   three large variants. Independent controls must establish subsequent shared
+   repairs beyond the achieved cohort target.
    The NASA trace retains 163 coordinate differences despite exact pixels; wider
    coordinate parity remains open. Keep paint boxes, clips and reference admission
    separate from raster replay; the early scene-premapping model remains rejected.
@@ -959,9 +965,9 @@ Holdouts receive no document-specific tuning. All failures/gaps keep their
 denominators.
 
 **Complete first-cohort evidence.** All 258 variants have browser references:
-258 exact, zero known differences and zero rejections. The remaining 225
-references have 675 healthy, cleaned, byte-stable fresh captures. The original
-33 references remain preserved. Coca-Cola graduated from rejection to measured
+258 exact, zero known differences and zero rejections. The 225 references added
+after the initial capture have 675 healthy, cleaned, byte-stable fresh captures.
+The original 33 references remain preserved. Coca-Cola graduated from rejection to measured
 differences and subsequently became exact; Target also became exact without
 recapture. The straight-edge repair made Artsy exact; native conic rounding makes
 Rede Manchete exact; bitmap-local uncut construction makes SG Rotation Leipzig exact.
@@ -969,7 +975,8 @@ Rectangle coverage, retained short quadratics and source-curve paint bounds make
 all nine SimpleLogin variants exact. Generated source-outline replay then closes
 Zeppelin's three small variants; all 246 preceding exact corporate PNGs and every
 original reference remain unchanged. Fractional point-list replay closes six IBM
-variants and improves large; all 249 preceding exact corporate PNGs remain.
+variants; native rectangle endpoints close the final three. All 258 corporate
+variants are now exact against their unchanged platform references.
 `capture-corporate-cohort.ps1` and VisualDiff's `--cohort` mode reproduce capture
 and categorized per-variant/document reporting under ignored artifacts. Neither
 command refreshes the immutable selection or rewrites references automatically.
@@ -988,8 +995,8 @@ delivery and the full fresh Linux browser matrix are recorded; remote CI remains
 open for S17.
 
 A bounded shared repair may land with independent mechanism-level improvement
-and nonregression across all nine Ford variants. Preserve all **1,202 currently
-exact fixture entries**, 23 exact research probes, 258 exact corporate images
+and nonregression across the full exact corporate matrix. Preserve all
+**1,202 currently exact fixture entries**, 23 exact research probes, 258 exact corporate images
 and required categorized rejections. Intentional syntax graduations need explicit
 contract/tests/provenance updates. Shared rasterization changes require comparison
 across the complete **1,406-case current bank** and all 258 frozen corporate cases.
@@ -1274,12 +1281,11 @@ matching-options corporate comparisons or shrink the frozen denominator.
 
 The two selected exits are established: all nine Ford and all nine YouTube
 variants are exact. Preserve raw classification, AA dispatch, triangle coverage
-and byte clip arithmetic; proceed with the measured cohort and remaining shader,
-clip and curve arithmetic above.
-S17's original exact-document threshold is met on Windows and Linux. Continue
-shared renderer work toward 27/27 exact documents and 258/258 exact variants;
-remote CI evidence remains a separate release requirement. The complete cohort's
-measured differences order this work; the eight holdouts remain evaluation inputs.
+and byte clip arithmetic while improving remaining shader, clip and curve behavior.
+The full target of 27/27 documents and 258/258 variants is achieved on Windows and
+Linux. Preserve this matrix while using independent controls and the remaining
+known-difference bank to order shared renderer work. Remote CI evidence remains
+a separate release requirement; the eight holdouts remain evaluation inputs.
 
 ## 4. Findings and stage ledger
 
@@ -1296,7 +1302,7 @@ measured differences order this work; the eight holdouts remain evaluation input
 | R34 | Shared scan conversion, analytic coverage, contact/union, straight-source sibling-stroke separation, operation/material preservation, contained-edge scan windows and one-chord cubic admission have landed. Clipped construction followed by path-point density now makes all nine Ford variants exact; uncut tip recurrence and sampled existing-edge operations match compiled native code. Complex parity/contact cases and curved/dashed stroke unions retain their gates or known differences. Preserve the exact twin-ring repair; rows 4/6. |
 | R35 | Retained controls, device-map threading, live non-convex cubic fills, curve/walk state separation and one-chord cubic admission have landed. Axis-aligned float mapping closes (375,269) and preserves independent large translations. Shared numeric reading and relative/smooth arithmetic have also landed: they match all 436 recorded authored points and the actual large CTM and close (269,187) on the original input. Earlier injected/mapping discriminators retain their historical limitations. The independently demonstrated lower-row path-point density decision has landed with row 4 and closes all ten residuals. General tile-local/affine/instance mapping, fractional events and quad/convex/stroke migration remain bounded follow-ups; row 5. |
 | R36 | Cascaded cap/join/dash/width values are carried and many spelling twins pass. Finish shared typed state and practical inheritance without reopening repaired attribute/inline cases. |
-| R37 | Fractional/scientific curves, root sizing, relative-moveto repairs, similarity maps and arc-free path-fill skew admission have landed. Preserve the support matrix's remaining arc/stroke/instance and general-transform gates; new admissions require the active target's dependency evidence. |
+| R37 | Fractional/scientific curves, root sizing, relative-moveto repairs, similarity maps and arc-free path-fill skew admission have landed. Preserve the support matrix's remaining arc/stroke/instance and general-transform gates; new admissions require measured blockers and independent semantic controls. |
 | R38 | Maximum scratch allocations substantially reduced; continue actual-size storage, ownership transfer and measured many-curve/wordmark allocation work. |
 | R39 | Mapping/definition lifetime and shared preparation reservation repairs are retained. Audit each new curve-state buffer, growth peak and setup/advance/coverage cost before allocation or work; preserve during-phase cancellation and cleanup. Passing existing memory scenarios does not prove every new allocation bounded. |
 
@@ -1327,7 +1333,7 @@ measured differences order this work; the eight holdouts remain evaluation input
 | S6 | Disposable single-use preparation exists; preserve resource leases and six-output behavior. |
 | S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
 | S8 | Complete for the first frozen corporate cohort on Windows/Linux: 27 documents / 258 variants including eight fresh holdouts, all renderer cases executed, all references available and reusable capture/reporting tools. Each platform has 258 exact variants, zero known differences and zero rejections; exact documents 27/27. Selection limits remain explicit; representative Windows performance is measured. Remote CI evidence remains open. The historical 92-file bank stays separate. |
-| S9 | Styles/references/viewports, declaration-only DOCTYPEs and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
+| S9 | Styles/references/viewports, declaration-only DOCTYPEs and measured inventory admissions are implemented in explicit subsets. Remaining combinations require measured blockers, independent controls and shared semantics; preserve the exact corporate matrix. |
 | S10 | Full path-command/affine kernels, retained controls, live non-convex cubics, curve/walk state separation and one-chord cubic admission exist. Raw-control classification is integrated; fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
 | S12 | Caps/joins/dashes/stroke outlines and the bounded row-1 repairs exist. Remaining curved/dashed union, tangent and antialiasing errors belong to row 6 using common coverage. |
@@ -1383,6 +1389,8 @@ check cancellation within bounded chunks and release owners on every exit.
   tool downloads.
   Keep dependency lockfile integrity hashes.
   Ordinary code edits and rebuilds require no reference metadata refresh.
+  Remove obsolete implementation fingerprint checks and manifests instead of
+  refreshing them; retain necessary fixture and oracle asset identities.
   Tests must not fail merely because implementation bytes changed. Update
   behavioral expectations only when the intended behavior changes.
 - Commit reusable inputs, expected behavior and necessary oracle provenance.
@@ -1428,8 +1436,8 @@ check cancellation within bounded chunks and release owners on every exit.
 
 ### S8/S17 accounting and remaining release decisions
 
-Keep original files, hashes, source/license evidence and generator provenance when
-known. Never redraw/simplify hard logos, select easier variants after failure, or
+Keep original asset files and hashes, source/license evidence and generator
+provenance when known. Never redraw/simplify hard logos, select easier variants after failure, or
 reuse retired inv-033/inv-036 IDs. Public-domain candidates are not contributor
 CC0 originals; preserve their provenance and keep private assets untracked.
 
