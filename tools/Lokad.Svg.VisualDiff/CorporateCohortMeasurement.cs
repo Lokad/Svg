@@ -6,7 +6,7 @@ namespace Lokad.Svg.VisualDiff;
 /// <summary>Measures every frozen corporate variant against verified fresh or banked references.</summary>
 internal static class CorporateCohortMeasurement
 {
-    /// <remarks>Runs sequentially with Default renderer limits. Fresh references require three complete, healthy, byte-identical captures; acceptance never depends on candidate pixels. Inputs and reference identities are checked before use. The caller owns cancellation; files and render storage are scoped to each case. Only the explicitly supplied report directory receives candidate PNGs and reports.</remarks>
+    /// <remarks>Runs sequentially with Default renderer limits. Fresh references require three complete, healthy, byte-identical captures; acceptance never depends on candidate pixels. A Linux pin preserves the frozen version/revision/recipe and matches the checked-in platform pin. Banked references cannot substitute across platforms. Inputs and reference identities are checked before use. The caller owns cancellation; files and render storage are scoped to each case. Only the explicitly supplied report directory receives candidate PNGs and reports.</remarks>
     internal static void Run(string repositoryDirectory, string captureDirectory, string reportDirectory, CancellationToken cancellationToken)
     {
         string repository = Path.GetFullPath(repositoryDirectory);
@@ -16,8 +16,19 @@ internal static class CorporateCohortMeasurement
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(references, "corporate-cohort-v1.json")));
         using JsonDocument bank = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(references, "corporate-cohort-current.json")));
         using JsonDocument fresh = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(captures, "captures.json")));
-        VerifyPin(manifest.RootElement.GetProperty("oraclePin"), bank.RootElement.GetProperty("oraclePin"));
-        VerifyPin(manifest.RootElement.GetProperty("oraclePin"), fresh.RootElement.GetProperty("oraclePin"));
+        JsonElement frozenPin = manifest.RootElement.GetProperty("oraclePin"), freshPin = fresh.RootElement.GetProperty("oraclePin");
+        VerifyPin(frozenPin, bank.RootElement.GetProperty("oraclePin"));
+        bool samePlatform = Required(frozenPin, "platform") == Required(freshPin, "platform");
+        if (samePlatform) VerifyPin(frozenPin, freshPin);
+        else
+        {
+            foreach (string property in new[] { "version", "chromiumRevision", "captureRecipeRevision" })
+                if (!freshPin.TryGetProperty(property, out JsonElement value) || !JsonElement.DeepEquals(frozenPin.GetProperty(property), value))
+                    throw new InvalidDataException("Capture pin differs from the frozen manifest: " + property);
+            if (Required(freshPin, "platform") != "linux64") throw new InvalidDataException("Unsupported cohort capture platform.");
+            using JsonDocument platformPin = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(repository, "tools/chrome-for-testing.linux64.json")));
+            VerifyPin(platformPin.RootElement, freshPin);
+        }
         if (Required(manifest.RootElement, "cohortId") != Required(fresh.RootElement, "cohortId")) throw new InvalidDataException("Capture cohort identity differs from the frozen manifest.");
         Dictionary<string, JsonElement> banked = bank.RootElement.GetProperty("results").EnumerateArray().ToDictionary(item => Required(item, "id"), StringComparer.Ordinal);
         Dictionary<string, JsonElement> captured = fresh.RootElement.GetProperty("results").EnumerateArray().ToDictionary(item => Required(item, "id"), StringComparer.Ordinal);
@@ -54,7 +65,7 @@ internal static class CorporateCohortMeasurement
                         provenance = capture;
                     }
                 }
-                if (reference is null && banked.TryGetValue(id, out JsonElement recorded) && Required(recorded, "oracleState") == "measured")
+                if (reference is null && samePlatform && banked.TryGetValue(id, out JsonElement recorded) && Required(recorded, "oracleState") == "measured")
                 {
                     reference = File.ReadAllBytes(Path.Combine(references, Required(recorded, "referencePng")));
                     if (Hash(reference) != Required(recorded, "referenceSha256")) throw new InvalidDataException("Banked reference changed: " + id);
@@ -98,7 +109,7 @@ internal static class CorporateCohortMeasurement
             }
             documents.Add(new { Id = Required(document, "id"), Stratum = Required(document, "stratum"), Role = Required(document, "role"), Variants = variants, References = measured, Renders = rendered, Rejections = rejected, ExactVariants = exact, KnownDifferences = known, VerifiedExact = variants > 0 && exact == variants });
         }
-        File.WriteAllText(Path.Combine(output, "summary.json"), JsonSerializer.Serialize(new { CohortId = Required(manifest.RootElement, "cohortId"), OraclePin = manifest.RootElement.GetProperty("oraclePin"), Documents = documents, Reports = reports }, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(Path.Combine(output, "summary.json"), JsonSerializer.Serialize(new { CohortId = Required(manifest.RootElement, "cohortId"), OraclePin = freshPin, Documents = documents, Reports = reports }, new JsonSerializerOptions { WriteIndented = true }));
         Console.WriteLine("Measured " + reports.Count + " frozen variants under " + output + ".");
 
         static void VerifyPin(JsonElement expected, JsonElement actual)

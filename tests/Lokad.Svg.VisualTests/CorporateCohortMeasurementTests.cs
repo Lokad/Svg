@@ -90,6 +90,50 @@ public sealed class CorporateCohortMeasurementTests
     }
 
     [Fact]
+    public void Linux_references_preserve_the_frozen_version_recipe_and_report_their_actual_pin()
+    {
+        using MiniCohort cohort = new(Red, true);
+        cohort.UseLinuxPin();
+        using JsonDocument report = cohort.Measure();
+        Assert.Equal("linux64", report.RootElement.GetProperty("OraclePin").GetProperty("platform").GetString());
+        Assert.True(report.RootElement.GetProperty("Reports")[0].GetProperty("Comparison").GetProperty("Diff").GetProperty("IsExact").GetBoolean());
+    }
+
+    [Theory]
+    [InlineData("version")]
+    [InlineData("chromiumRevision")]
+    [InlineData("captureRecipeRevision")]
+    [InlineData("executableSha256")]
+    public void Linux_capture_cannot_change_the_version_recipe_or_pinned_executable(string property)
+    {
+        using MiniCohort cohort = new(Red, true);
+        cohort.UseLinuxPin();
+        cohort.ChangeCapturePin(property);
+        InvalidDataException error = Assert.Throws<InvalidDataException>(() => cohort.Measure());
+        Assert.Contains(property, error.Message);
+        Assert.False(File.Exists(Path.Combine(cohort.Output, "summary.json")));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Missing_or_failed_Linux_capture_cannot_use_a_Windows_reference(bool failed)
+    {
+        using MiniCohort cohort = new(Red, true);
+        cohort.UseLinuxPin();
+        if (failed) cohort.MarkCaptureFailure();
+        else cohort.ClearFreshCaptures();
+        using JsonDocument report = cohort.Measure();
+        JsonElement result = report.RootElement.GetProperty("Reports")[0];
+        Assert.Equal("renders", result.GetProperty("Outcome").GetString());
+        Assert.Equal(JsonValueKind.Null, result.GetProperty("ReferenceSha256").ValueKind);
+        Assert.Equal(JsonValueKind.Null, result.GetProperty("Comparison").ValueKind);
+        Assert.Equal(1, report.RootElement.GetProperty("Documents")[0].GetProperty("Variants").GetInt32());
+        Assert.Equal(0, report.RootElement.GetProperty("Documents")[0].GetProperty("References").GetInt32());
+        Assert.False(report.RootElement.GetProperty("Documents")[0].GetProperty("VerifiedExact").GetBoolean());
+    }
+
+    [Fact]
     public void Cancellation_preserves_its_token_and_does_not_publish_a_report()
     {
         using MiniCohort cohort = new(Red, false);
@@ -105,6 +149,7 @@ public sealed class CorporateCohortMeasurementTests
     private sealed class MiniCohort : IDisposable
     {
         private readonly string _directory = Path.Combine(Path.GetTempPath(), "lokad-svg-cohort-" + Guid.NewGuid().ToString("N"));
+        private TestBrowserPin _capturePin = Pin("win64");
         internal string Repository => Path.Combine(_directory, "repository");
         internal string Captures => Path.Combine(_directory, "captures");
         internal string Output => Path.Combine(_directory, "output");
@@ -119,7 +164,7 @@ public sealed class CorporateCohortMeasurementTests
             string inputHash = Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(Repository, "input.svg"))));
             byte[] reference = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests/References/original-solid-red.png"));
             ReferenceHash = Convert.ToHexStringLower(SHA256.HashData(reference));
-            object pin = new { version = "synthetic-test-pin" };
+            TestBrowserPin pin = _capturePin;
             object provenance = new { oracleInputSha256 = inputHash, captures = Enumerable.Repeat(new { pngSha256 = ReferenceHash, startupHealth = "healthy", profileCleaned = true, stderrTruncated = false }, 3).ToArray() };
             object variant = new { id = "mini", width = 2, height = 2, background = "transparent", renderInput = "input.svg", renderInputSha256 = inputHash, oracleInputSha256 = inputHash, logicalViewport = new { width = 2, height = 2 }, outputScale = 1 };
             File.WriteAllText(Path.Combine(inventory, "corporate-cohort-v1.json"), JsonSerializer.Serialize(new { cohortId = "synthetic-test-cohort", oraclePin = pin, documents = new[] { new { id = "mini-document", stratum = "corporate-mark", role = "development", variants = new[] { variant } } } }));
@@ -131,7 +176,32 @@ public sealed class CorporateCohortMeasurementTests
             for (int repeat = 1; repeat <= 3; repeat++) File.WriteAllBytes(Path.Combine(Captures, "mini-r" + repeat + ".png"), reference);
         }
 
-        internal void ClearFreshCaptures() => File.WriteAllText(Path.Combine(Captures, "captures.json"), JsonSerializer.Serialize(new { cohortId = "synthetic-test-cohort", oraclePin = new { version = "synthetic-test-pin" }, results = Array.Empty<object>() }));
+        internal void ClearFreshCaptures() => File.WriteAllText(Path.Combine(Captures, "captures.json"), JsonSerializer.Serialize(new { cohortId = "synthetic-test-cohort", oraclePin = _capturePin, results = Array.Empty<object>() }));
+
+        internal void UseLinuxPin()
+        {
+            _capturePin = Pin("linux64");
+            Directory.CreateDirectory(Path.Combine(Repository, "tools"));
+            File.WriteAllText(Path.Combine(Repository, "tools/chrome-for-testing.linux64.json"), JsonSerializer.Serialize(_capturePin));
+            string path = Path.Combine(Captures, "captures.json");
+            using JsonDocument record = JsonDocument.Parse(File.ReadAllBytes(path));
+            File.WriteAllText(path, JsonSerializer.Serialize(new { cohortId = "synthetic-test-cohort", oraclePin = _capturePin, results = record.RootElement.GetProperty("results") }));
+        }
+
+        internal void ChangeCapturePin(string property)
+        {
+            string path = Path.Combine(Captures, "captures.json");
+            using JsonDocument record = JsonDocument.Parse(File.ReadAllBytes(path));
+            Dictionary<string, JsonElement> pin = record.RootElement.GetProperty("oraclePin").EnumerateObject().ToDictionary(item => item.Name, item => item.Value.Clone(), StringComparer.Ordinal);
+            pin[property] = JsonSerializer.SerializeToElement("changed");
+            File.WriteAllText(path, JsonSerializer.Serialize(new { cohortId = "synthetic-test-cohort", oraclePin = pin, results = record.RootElement.GetProperty("results") }));
+        }
+
+        private static TestBrowserPin Pin(string platform) => new("synthetic-test-pin", "synthetic-test-revision",
+            platform, "3", new string(platform == "linux64" ? 'b' : 'a', 64));
+
+        private sealed record TestBrowserPin(string version, string chromiumRevision, string platform,
+            string captureRecipeRevision, string executableSha256);
 
         internal void MarkCaptureFailure()
         {

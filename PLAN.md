@@ -18,8 +18,8 @@ independent circle controls have nine stable, healthy and cleaned captures.
 All 1,151 earlier exact fixture/research PNGs and every rejection remain.
 Seven Default PNGs change without a matching-options fidelity claim.
 
-The nine-project Windows and Linux Release builds and **3,861 tests** on each
-(3,695 core, 160 visual, six FontProbe) pass. Thirty-nine Windows resource recipes
+The nine-project Windows and Linux Release builds and **3,868 tests** on each
+(3,695 core, 167 visual, six FontProbe) pass. Thirty-nine Windows resource recipes
 keep their input, parser-work and peak-storage values; fifteen raster-work records increase by
 four through 356 units. Fresh Windows memory/package/consumer, pinned-browser,
 font and artifact checks pass. Fresh Linux memory, package/consumer, pinned-browser,

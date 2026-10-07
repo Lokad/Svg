@@ -197,12 +197,16 @@ After a Release build, capture every frozen case, or a named subset:
 ```powershell
 tools/capture-corporate-cohort.ps1 -OutputDirectory artifacts/corporate-captures -CacheDirectory artifacts/chrome
 tools/capture-corporate-cohort.ps1 -OutputDirectory artifacts/corporate-large -CacheDirectory artifacts/chrome -CaseId inv-020-large-transparent,inv-026-large-transparent
+tools/capture-corporate-cohort.ps1 -OutputDirectory artifacts/corporate-linux -CacheDirectory artifacts/chrome-linux -PinPath tools/chrome-for-testing.linux64.json
 ```
 
-The opt-in script verifies the manifest's pin and input hashes, launches three
+The opt-in script verifies the frozen version/revision/recipe, the chosen platform
+pin and input hashes. It authenticates the browser installation once per batch and launches three
 sequential fresh processes per configuration, and retains PNGs, launch stderr and
 `captures.json` under the supplied output directory. Failures remain recorded;
-only stable healthy triples qualify as references. It preserves the declared
+only stable healthy triples qualify as references. Each completed case publishes
+the updated manifest atomically so readers see a complete JSON record.
+It preserves the declared
 geometry, sizing and backgrounds. Capturing an image does not establish renderer
 fidelity. Ordinary `CorporateCohortReferenceTests` compare the admitted reference
 matrix offline, including independently captured renderer rejections.
@@ -215,7 +219,9 @@ dotnet tools/Lokad.Svg.VisualDiff/bin/Release/net10.0/Lokad.Svg.VisualDiff.dll -
 
 The command verifies the immutable variant options, pin, input identities and all
 three actual capture PNGs. For cases absent from a fresh batch it can use a
-verified banked reference. It renders every declared variant with default SDK
+verified banked reference from the same platform. A missing or failed Linux
+capture cannot borrow a Windows reference. The summary records the actual
+capture pin. It renders every declared variant with default SDK
 limits and writes candidate PNGs plus `summary.json` under the report directory.
 The report separates capture failures, missing references, renderer rejections,
 exact pixels and known differences; its document numerator requires every
