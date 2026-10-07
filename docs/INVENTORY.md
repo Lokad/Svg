@@ -5,10 +5,31 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Native filled-path rectangle checkpoint (2026-10-07)
+
+SimpleLogin's three small variants become exact. Intended/large retain one/three
+pixels, with maximum transparent alpha error one. The current cohort is **24/27
+exact documents**, marks **12/13**, wordmarks **12/14**: **240 exact, 18 known and
+zero rejected** variants on Windows/Linux. Only its nine corporate PNGs change;
+all 237 earlier exact images and every other complete comparison remain.
+Membership, inputs, options and original references stay frozen.
+
+The expanded bank has 1,249 fixtures (1,163 exact, 62 known, 24 rejected), 36
+research probes (22 exact, 13 known, one rejected) and 92 Default renders:
+**1,377 executions**, with identical Windows/Linux outcomes and PNG bytes.
+All 1,170 earlier exact fixture/research PNGs and rejections remain. Only Default
+SimpleLogin changes, without a matching-options claim. Fifteen independent
+rectangle/verb/paint/boundary configurations enter the exact bank; 45 captures
+are stable, healthy and cleaned. These untuned follow-ups were declared after a
+prototype, before capture/comparison. Two inputs add only an SPDX license comment;
+their captured input identities and unchanged reference PNGs remain recorded.
+[The design record](RASTERIZATION_DESIGN.md#native-filled-path-rectangles-2026-10-07)
+records mechanism and limits. The preceding checkpoint below is historical.
+
 ## Contained bitmap-edge checkpoint (2026-10-07)
 
 SG Rotation Leipzig (`inv-012`) becomes exact in all nine frozen variants on
-Windows and Linux. The current cohort has **24/27 exact documents**, marks
+Windows and Linux. At that checkpoint the cohort had **24/27 exact documents**, marks
 **12/13**, wordmarks **12/14**: **237 exact, 21 known and zero rejected** variants.
 Only its three large one-pixel differences change; all 234 earlier exact corporate
 PNGs and every other complete comparison remain. Sources, options, browser
@@ -28,17 +49,17 @@ records mechanism and limits. Earlier checkpoint totals below remain historical.
 
 ## Linux platform-reference supplement (2026-10-07)
 
-Local Linux renders reproduce all 1,362 Windows bank outcomes and PNG bytes.
+Local Linux renders reproduce all 1,377 Windows bank outcomes and PNG bytes.
 Across the frozen corporate matrix, 255/258 candidate PNGs are identical to Windows.
 Pepsi's three small backgrounds differ in 22 RGB-only pixels each, but match
 the same pinned Chrome version/revision on Linux in nine healthy, cleaned,
 stable fresh captures. The [supplement](../tests/References/inventory/corporate-cohort-linux64.json)
 keeps the original Windows freeze, inputs, options and denominator. Both platforms
 pass the cohort tests; Linux uses the supplement for those three variants.
-The complete fresh Linux-browser matrix now covers all 258 frozen variants with
+The validated Linux-browser matrix covers all 258 frozen variants with
 774 stable, healthy, cleaned captures. Of the reference PNGs, 255 match Windows
 bytes, while all nine new small Pepsi captures reproduce the existing supplement.
-The Linux result is 237 exact variants, 21 known differences, zero rejections and
+The current Linux result is 240 exact variants, 18 known differences, zero rejections and
 the same 24/27 exact documents, marks 12/13 and wordmarks 12/14. No failure or
 unmeasured variant is omitted. Remote CI remains open; detailed evidence stays
 under ignored `artifacts/linux-delivery-20261007/`.

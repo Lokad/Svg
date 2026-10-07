@@ -1,26 +1,26 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-07. Bitmap-local uncut edge construction makes SG Rotation
-Leipzig exact in all nine frozen variants on Windows and Linux. The cohort is
-**24/27 exact documents**, marks **12/13**, wordmarks **12/14**, with 237 exact
-and 21 known comparisons across 258 variants. Only its three large PNGs change;
-all 234 earlier exact images and every other complete comparison remain.
-The original numerical release criterion is met. The active fidelity target is
-27/27 documents and 258/258 variants on both platforms; remote CI remains open.
+Updated 2026-10-07. Native filled-path rectangle dispatch makes SimpleLogin's
+three small variants exact on Windows and Linux. The cohort remains **24/27 exact
+documents**, marks **12/13**, wordmarks **12/14**, with **240 exact and 18 known**
+comparisons across 258 variants. Only its nine PNGs change; all 237 earlier exact
+images and every other complete comparison remain. The original numerical release
+criterion is met. The active target is 27/27 documents and 258/258 variants on both
+platforms; remote CI remains open.
 
 Exact documents are Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, Rede Manchete,
 ROC HCVS, Red Cross, SG Rotation Leipzig, Tokyo Tsukurou, Artsy, Party of Changes,
 YouTube, Liputan6, NASA, Blur, Nike, Toyota, Pepsi, Target, IKEA, Google and Coca-Cola.
 Membership, inputs, options and references remain frozen.
 [PLAN.md](../PLAN.md) owns the current queue and validation totals;
-[the design record](RASTERIZATION_DESIGN.md#contained-bitmap-edge-construction-2026-10-07)
+[the design record](RASTERIZATION_DESIGN.md#native-filled-path-rectangles-2026-10-07)
 explains the repair. Detailed diagnostics stay under ignored artifacts.
 
 The three remaining failed documents stay in the denominator:
 
 | Document | Failed variants | Current pixel difference |
 | --- | ---: | --- |
-| SimpleLogin (`inv-001`) | Nine | Four through 22 pixels; transparent variants include alpha errors up to 26. |
+| SimpleLogin (`inv-001`) | Six intended/large | One/three pixels; maximum transparent alpha error one. |
 | Zeppelin (`inv-007`) | Three small | 26 RGB-only pixels, maximum channel error five. |
 | IBM (`inv-099`) | Nine | 209 through 942 pixels; transparent alpha errors reach 23. |
 

@@ -1,0 +1,12 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<!-- Original CC0 control: Lokad.Svg contributors. Untuned follow-up, declared before first capture. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="768" height="384" viewBox="0 0 768 384"><path d="M253.125 17.968H255.4375V26.965H253.125Z M507.125 17.968H509.4375V26.965H507.125Z" fill="#406080"/>
+<path d="M253.125 49.968H261.9375V49.988H253.125Z" fill="#406080"/>
+<path d="M507.125 81.13H511.9375V87.803H507.125Z" fill="#406080"/>
+<path d="M72.125 2.13H76V2.13H79.938V9.997H75V9.997H72.125Z" fill="#406080"/>
+<path d="M92.125 2.13H99.938V9.997H92.125" fill="#406080"/>
+<path d="M112.125 2.13H119.938V9.997H112.125Z M140 14" fill="#406080"/>
+<path d="M152.125 2.13H159.938V9.997H156H158H152.125Z" fill="#406080"/>
+<path d="M172.125 2.13Q172.125 5 172.125 9.997H179.938V2.13Z" fill="#406080"/>
+<path d="M20.125 253.968H27.938V258.965H20.125Z" fill="#406080"/>
+<path d="M40.125 253.984H47.938V254.004H40.125Z" fill="#406080"/></svg>

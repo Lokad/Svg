@@ -1,0 +1,39 @@
+{
+  "fixtureId": "original-fat-path-paints-black",
+  "referencePng": "original-fat-path-paints-black.png",
+  "referenceSha256": "2047a239060e50d5e2df1b43f665cbfbb47963ec93778d00139d8e1fc12436aa",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 144,
+    "height": 128,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "a5eb5d4c24a8073ac16216618d5047496ad06d00458225380bb941e3ac381804",
+  "candidateSha256": "ce9746a787d8bcd7f3e58bf2967cdbf1a9a4d9d0ecf0db4084d4724ca979a838",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 144,
+    "minimumMismatchY": 128,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "selection": "Untuned independent follow-up selected after a rectangle prototype, before its first capture/comparison. Original vertices and references retained.",
+  "oracleInputSha256": "6100a2edca9d008032b64008b999bd850f196a36b25c8d32e4201e97b6bd42ca",
+  "inputNormalization": "The banked input adds an SPDX license comment and canonical LF line endings to the captured CC0 source. SVG geometry and options are unchanged; the normalized fixture is compared against the original stable browser reference."
+}

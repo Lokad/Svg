@@ -1,0 +1,39 @@
+{
+  "fixtureId": "original-fat-path-boundary-verbs-white",
+  "referencePng": "original-fat-path-boundary-verbs-white.png",
+  "referenceSha256": "defce2e190dbe17c074b8c02ff3a081ddb8568e1d01111263ddfba4cf8e2d1cd",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 768,
+    "height": 384,
+    "deviceScaleFactor": 1
+  },
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "24593b2db0e9f9e61ecae48584bae8076051ef1f6a47601515df95b7adf938c3",
+  "candidateSha256": "8f842b96a1181c8855224cf0639f175e0c17d55239c2a9f16498a4f273020bd9",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 768,
+    "minimumMismatchY": 384,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "selection": "Untuned independent follow-up selected after a rectangle prototype, before its first capture/comparison. Original vertices and references retained.",
+  "oracleInputSha256": "3b1eb34119985504f09c6484e2beed068c9335ac04c7751c86bfbda6b3c309a3",
+  "inputNormalization": "The banked input adds an SPDX license comment and canonical LF line endings to the captured CC0 source. SVG geometry and options are unchanged; the normalized fixture is compared against the original stable browser reference."
+}

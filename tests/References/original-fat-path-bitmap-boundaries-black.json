@@ -1,0 +1,37 @@
+{
+  "fixtureId": "original-fat-path-bitmap-boundaries-black",
+  "referencePng": "original-fat-path-bitmap-boundaries-black.png",
+  "referenceSha256": "04e630af770ee20314278a5b6ffd18c6b087b605f32b18b0c564adf25cd5f09e",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 600,
+    "height": 96,
+    "deviceScaleFactor": 1
+  },
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "inputSha256": "4350f9ebf64b9d1806d92aa057676f5ec2905f3e885556eff9e79587d3fbf6ec",
+  "candidateSha256": "de0113bdb18532a3c580e85eaaf58c93782431bf2ac372329f8a4234ab8eaade",
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 600,
+    "minimumMismatchY": 96,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "selection": "Untuned independent follow-up selected after a rectangle prototype, before its first capture/comparison. Original vertices and references retained."
+}

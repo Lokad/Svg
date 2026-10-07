@@ -122,7 +122,7 @@ internal sealed class SvgAuthoredPath : IDisposable
             if (offsets[span.Contour] >= 0) quads.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], Control = mapCoordinates ? MapPoint(map, span.Control, new(0, 0)) : span.Control });
         foreach (SvgCubicSpan span in builder.GetCubicSpans())
             if (offsets[span.Contour] >= 0) cubics.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], FirstControl = mapCoordinates ? MapPoint(map, span.FirstControl, new(0, 0)) : span.FirstControl, SecondControl = mapCoordinates ? MapPoint(map, span.SecondControl, new(0, 0)) : span.SecondControl });
-        return CreateContours(points, ends, quads, cubics, isEvenOdd, budget, workCounter, cancellationToken);
+        return CreateContours(points, ends, quads, cubics, _commands.Items, isEvenOdd, budget, workCounter, cancellationToken);
 
         static void AppendEndpointArc(SvgContourBuilder builder, SvgDevicePoint start, SvgAuthoredPathCommand command, ParserWorkCounter workCounter, CancellationToken token)
         {
@@ -137,7 +137,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                 builder.AddConic(arcs[index].Control, arcs[index].End, arcs[index].Weight, 8, token);
         }
 
-        static SvgPreparedPathContours CreateContours(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgPreparedPathContours CreateContours(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, SvgAuthoredPathCommand[] commands, bool isEvenOdd, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             RenderBudget.BudgetReservation owner = budget.Reserve(128, SvgMemoryCategory.Surface);
             OwnedParserArray<SvgDevicePoint> points = new([], null);
@@ -155,7 +155,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                     for (int contour = 0; contour < ends.Items.Length; contour++) signBuilder.Add(1);
                     signs = signBuilder.Detach();
                 }
-                return new(points, ends, quads, cubics, signs, owner);
+                return new(points, ends, quads, cubics, signs, commands, owner);
             }
             catch { points.Dispose(); ends.Dispose(); quads.Dispose(); cubics.Dispose(); signs.Dispose(); owner.Dispose(); throw; }
         }
@@ -212,8 +212,11 @@ internal sealed class SvgAuthoredPath : IDisposable
     }
 }
 
-/// <summary>Exclusively owns replayed authored contours and their surface-budgeted arrays.</summary>
-/// <remarks>Prepare returns output coordinates; PrepareSource retains source coordinates. Consumers borrow immutable arrays, remain single-threaded and release this owner after all borrowed views.</remarks>
+/// <summary>Owns replayed surface arrays and borrows original immutable commands until disposal.</summary>
+/// <remarks>Prepare returns output coordinates; PrepareSource retains source coordinates. Consumers
+/// borrow immutable arrays and release this owner after all borrowed views. The scene command
+/// owner must outlive this single-threaded prepared scope. The existing
+/// 128-byte owner allowance covers the arrays' ownership slots, command borrow and object header.</remarks>
 internal sealed class SvgPreparedPathContours : IDisposable
 {
     private OwnedParserArray<SvgDevicePoint> _points;
@@ -222,10 +225,12 @@ internal sealed class SvgPreparedPathContours : IDisposable
     private OwnedParserArray<SvgCubicSpan> _cubics;
     private OwnedParserArray<int> _signs;
     private RenderBudget.BudgetReservation? _owner;
+    private ReadOnlyMemory<SvgAuthoredPathCommand> _commands;
 
-    internal SvgPreparedPathContours(OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<SvgQuadSpan> quads, OwnedParserArray<SvgCubicSpan> cubics, OwnedParserArray<int> signs, RenderBudget.BudgetReservation owner)
+    internal SvgPreparedPathContours(OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<SvgQuadSpan> quads, OwnedParserArray<SvgCubicSpan> cubics, OwnedParserArray<int> signs, SvgAuthoredPathCommand[] commands, RenderBudget.BudgetReservation owner)
     {
         _points = points; _ends = ends; _quads = quads; _cubics = cubics; _signs = signs; _owner = owner;
+        _commands = commands;
     }
 
     internal SvgDevicePoint[] Points => _points.Items;
@@ -233,11 +238,14 @@ internal sealed class SvgPreparedPathContours : IDisposable
     internal SvgQuadSpan[] QuadSpans => _quads.Items;
     internal SvgCubicSpan[] CubicSpans => _cubics.Items;
     internal int[]? Signs => _signs.Items.Length == 0 ? null : _signs.Items;
+    /// <summary>Borrows original verbs from the scene owner, which must outlive this prepared value.</summary>
+    internal ReadOnlySpan<SvgAuthoredPathCommand> Commands => _commands.Span;
 
 
     public void Dispose()
     {
         _points.Dispose(); _ends.Dispose(); _quads.Dispose(); _cubics.Dispose(); _signs.Dispose();
+        _commands = default;
         _owner?.Dispose(); _owner = null;
     }
 }

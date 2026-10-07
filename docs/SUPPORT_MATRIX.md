@@ -5,8 +5,8 @@
 The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
-At the legacy conic subdivision checkpoint, the 1,231 manifest entries contain
-1,145 exact decoded-pixel references, 62 known-difference renders and 24
+The current 1,249 manifest entries contain
+1,163 exact decoded-pixel references, 62 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -15,7 +15,12 @@ including touching/coincident subpaths and even-odd crossings. Linear/radial
 gradient and pattern paths retain whole fill contours and scene paint boxes.
 Solid orthogonal paths keep checked integer bands. Authored straight replay uses
 command-bounded scratch; rectangle mask and additive-run boundary bytes differ.
-Original independent controls remain exact; broader fidelity is still open.
+Original independent controls remain exact; broader fidelity is still open. Native
+filled-path rectangles recognize original line verbs, including monotone collinear
+pieces and repeated points. Eligible clipped boxes use float fringe coverage and
+direct painting; thin or declined boxes retain quarter-snapped edges. Mask/run
+eligibility uses whole-path bounds; AA paint clips keep their existing forced-run
+route. The rectangle shortcut allocates no edge/row scratch.
 
 Authored fills retain source contours once for bitmap-local mapping. Float
 translation moves into the bitmap before source point/control mapping; clipped

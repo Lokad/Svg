@@ -1,0 +1,11 @@
+{
+  "sourceRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+  "sourceFiles": ["src/core/SkBlitter.cpp", "src/core/SkPathPriv.cpp"],
+  "coverageFunction": "SkBlitter::blitFatAntiRect",
+  "recognitionFunction": "SkPathPriv::IsRectContour (including trivial_rect and rect_make_dir)",
+  "method": "Original pinned function bodies compiled unchanged with g++ -O2 -ffp-contract=off. A record blitter collects blitAntiH/blitAntiRect bytes; raw point/verb adapters supply the recognizer. No complete native path builder, raster-clip wrapper, paint backend or Chrome execution is included.",
+  "coverageCases": 160,
+  "coverageSamples": 3365,
+  "recognitionCases": 21,
+  "data": ["fat-rectangle-native.csv", "rectangle-recognition-inputs.json", "rectangle-recognition-native.csv"]
+}

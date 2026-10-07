@@ -39,6 +39,12 @@
     <None Update="TestData/shader-paint-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/rectangle-coverage-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/rectangle-coverage-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/fat-rectangle-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/fat-rectangle-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/rectangle-recognition-inputs.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/rectangle-recognition-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/fat-path-paints.svg" Link="TestData/fat-path-paints.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/fat-path-boundary-verbs.svg" Link="TestData/fat-path-boundary-verbs.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/dash-endpoints-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/dash-endpoints-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/clip-alpha-native.bin" CopyToOutputDirectory="PreserveNewest" />

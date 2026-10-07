@@ -1,8 +1,8 @@
 # Local benchmark baseline
 
-The full frozen-cohort baseline predates the latest contained-edge repair;
+The full frozen-cohort baseline predates the latest renderer repairs;
 see [the corporate baseline](#frozen-corporate-cohort-baseline-2026-10-07) and
-[the current resource comparison](#contained-bitmap-edge-construction-cost-2026-10-07).
+[the current resource comparison](#native-filled-path-rectangle-cost-2026-10-07).
 The earlier calibration and implementation checkpoints below retain their dates.
 
 This is the initial local baseline for the current supported subset. It is a
@@ -2148,3 +2148,25 @@ also remain in the ignored study. A reverse-order follow-up showed wide timing
 variation, so these batches establish neither a latency regression nor a speedup
 and do not replace the full-cohort ShortRun. Raw ledgers and measurements stay under ignored
 `artifacts/cohort-residuals-20261007/`.
+
+## Native filled-path rectangle cost (2026-10-07)
+
+Thirty-two matching Windows recipes compare the Git baseline `381d4abf` with the
+native rectangle repair: nine variants each of SimpleLogin, Zeppelin and IBM,
+plus the five new independent control documents. Parser work and accounted peak
+remain equal in every recipe. Prepared contours add a 16-byte borrowed command
+view, retaining no extra tape; their x64 owner fits the existing 128-byte allowance.
+Eligible rectangles allocate no edge/row/event scratch.
+
+| Recipes | Change in work through raster |
+| --- | ---: |
+| SimpleLogin, small/intended, each background | +35 |
+| SimpleLogin, large, each background | −175 |
+| Zeppelin and IBM, all eighteen recipes | 0 |
+| Five independent control documents | −1,085 through −2,431 |
+
+The added recognition charge precedes bounded mapping/clipping. Wider masks and
+AA clips retain the analytic run route. Accounted peak is live renderer storage;
+these ledgers measure neither allocation traffic nor elapsed time and establish
+no throughput claim. The earlier 258-recipe ShortRun remains the performance
+baseline. Raw ledgers stay under ignored `artifacts/simplelogin-20261007/`.

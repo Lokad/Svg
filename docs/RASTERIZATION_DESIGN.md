@@ -6483,3 +6483,63 @@ remain identical. Detailed native traces, controls, complete matrices and resour
 reports stay under ignored `artifacts/cohort-residuals-20261007/` and
 `artifacts/linux-delivery-20261007/contained-paths-20261007/`; no implementation
 or report hashes are checked in.
+
+## Native filled-path rectangles (2026-10-07)
+
+The previous renderer gave all small geometric boxes unsnapped Y and truncated
+fixed-point mask coverage. The pinned native path distinguishes original line-verb
+rectangles from geometric approximations and tries its float rectangle blitter
+only under whole-path mask eligibility, binary paint clipping and a clipped
+outward-rounded width of at least three. Thin/declined boxes retain ordinary
+quarter-snapped analytic edges. The shortcut multiplies original float fringes,
+truncates area × 255, clamps values below eight to zero and above 247 to 255,
+and paints directly. AA clips preserve their forced-run route.
+
+The production value retains local float edges and bitmap origin, with no edge,
+mask, row or event storage. Prepared contours borrow original scene commands
+instead of copying another tape. The borrow is cleared at disposal; the scene
+owner outlives it. Five 16-byte ownership slots, a 16-byte borrow, owner reference
+and object header total 120 bytes on x64 within the existing 128-byte allowance.
+Recognition/mapping/clipping are charged before work; rows charge one unit and
+pixels use the existing caller raster charge. Denial, paint cancellation, disposal
+and six-output parity have regressions. Legacy geometric-box calibration remains.
+
+The first prototype fixed thin-box dispatch but left float fringe errors. Its float
+successor exposed repeated-point recognition and clipped-return gaps in independent
+controls. Correct original-verb recognition accepts monotone collinear pieces and
+zero-length lines, while rejecting reversals and curves; clipped coverage enters
+the same allocation-free route. Fifteen configurations cover thin/wide boxes,
+mask width/storage thresholds, byte clamp boundaries, one-row heights, opacity,
+solid/linear/radial/pattern paints, AA clips, open/closed/repeated/backtracking
+verbs and X/Y bitmap boundaries. All 45 fresh captures are healthy, cleaned and
+stable; all fifteen production comparisons are exact. Follow-ups were selected
+after a prototype, before their first capture/comparison, without vertex tuning.
+
+Unchanged compiled SkBlitter::blitFatAntiRect and SkPathPriv::IsRectContour bodies
+at the notice pin match 3,365 coverage samples and 21 recognition cases on Windows
+and Linux. Record adapters exclude full native path building, clip wrappers and
+paint backend; the independent Chrome controls cover the integrated route.
+
+SimpleLogin small becomes exact on all three backgrounds. Intended/large retain
+one/three pixels, with maximum transparent alpha error one. Its outlined “s”
+retains those curve witnesses. An absolute spelling of the current parsed float
+commands yields the original intended browser PNG and the same managed residual,
+so relative-command spelling does not explain that pixel. The earlier native
+rectangle repair is retained while curve construction/walking remains the next
+development task. Zeppelin and IBM keep their original complete comparisons.
+
+All 237 earlier exact corporate PNGs remain; only nine SimpleLogin corporate
+PNGs change. The complete frozen cohort has 240 exact / 18 known / zero rejected
+variants, still 24/27 exact documents on both platforms. The expanded 1,377-case
+bank preserves all 1,170 earlier exact fixture/research PNGs and every rejection;
+only Default SimpleLogin changes. Linux reproduces every bank output byte and
+reuses its original 774 stable platform captures and Pepsi supplement.
+
+Nine-project Release builds and all 3,878 tests pass on each platform; memory and
+installed runtime/symbol package consumers pass. Thirty-two matched resource
+recipes preserve parser work and accounted peak. Detailed native adapters, traces,
+rejected prototypes, captures, comparisons and ledgers stay under ignored
+`artifacts/simplelogin-20261007/` and
+`artifacts/linux-delivery-20261007/fat-paths-20261007/`. Git identifies implementation;
+no implementation/report fingerprints are recorded. Full-cohort exactness remains
+the active target; remote CI is a separate release requirement.

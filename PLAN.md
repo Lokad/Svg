@@ -1,47 +1,46 @@
 # Lokad.Svg — pixel-exact corporate-logo delivery plan
 
-Updated 2026-10-07. **Current validated renderer checkpoint: bitmap-local
-construction for contained authored paths.** Source operands now map into the
-owning CPU bitmap before original uncut line/curve setup; fixed state then
-translates back to the canvas. Mapping and translation consume bounded work
-without a second point array. Construction clipping retains its own dispatch.
+Updated 2026-10-07. **Current validated renderer checkpoint: native filled-path
+rectangles.** Original line verbs select the clipped float rectangle shortcut
+under whole-path mask eligibility and binary paint clipping. Coverage preserves
+float fringe multiplication, native byte clamping and direct paint operations.
+Thin/nonrectangle native fills use ordinary quarter-snapped analytic edges.
+The shortcut owns no edge/row scratch; source commands are borrowed, not copied.
 
-SG Rotation Leipzig becomes exact in all nine frozen variants. The cohort has
-**24/27 exact documents**, marks **12/13**, wordmarks **12/14**: **237 exact
-comparisons, 21 known differences and zero rejections** across 258 variants on
-Windows and Linux. Only its three large PNGs change; all 234 earlier exact
-corporate images and every other complete comparison remain. Membership, inputs,
-options and browser references stay frozen.
+SimpleLogin's three small variants become exact; intended and large variants
+retain one and three differing pixels respectively, with maximum transparent
+alpha error one. The cohort remains **24/27 exact documents**, marks **12/13**,
+wordmarks **12/14**: **240 exact comparisons, 18 known differences and zero
+rejections** across 258 variants on Windows and Linux. Only its nine PNGs change;
+all 237 earlier exact corporate images and every other complete comparison remain.
+Membership, inputs, options and browser references stay frozen.
 
-The expanded bank executes **1,362 cases**: **1,234 fixtures = 1,148 exact + 62
+The expanded bank executes **1,377 cases**: **1,249 fixtures = 1,163 exact + 62
 known + 24 rejected**, **36 research probes = 22 exact + 13 known + one rejected**,
-and 92 legacy Default renders. All 1,167 earlier exact fixture/research PNGs and
-every rejection remain. One Default PNG changes without a matching-options
-fidelity claim. Three independent solid controls graduate from 20–21 differing
-pixels to zero; their gradient twins lose all alpha errors but retain 230 RGB-only
-differences each. All eighteen control captures are stable, healthy and cleaned.
-Follow-up geometry was selected before its first capture/comparison, after the
-production prototype, without vertex tuning.
+and 92 legacy Default renders. All 1,170 earlier exact fixture/research PNGs and
+every rejection remain. Only Default SimpleLogin changes, without a matching-options
+fidelity claim. Fifteen untuned independent rectangle/verb/paint/boundary controls
+enter the exact bank from 45 stable, healthy, cleaned captures. Follow-ups were
+declared after a prototype and before their first capture/comparison.
 
-The nine-project Windows/Linux Release builds and **3,873 tests** on each
-(3,700 core, 167 visual, six FontProbe) pass. Thirty-nine matching Windows resource
-recipes preserve parser work, peak storage and layouts; SimpleX adds 384 raster
-work units, while the other 38 records remain identical. Fresh Windows/Linux
-memory and installed package-consumer checks pass. Detailed studies stay ignored;
-Git identifies implementation.
+The nine-project Windows/Linux Release builds and **3,878 tests** on each
+(3,705 core, 167 visual, six FontProbe) pass. Both platforms pass memory and installed
+package-consumer checks. Unchanged native functions match 3,365 coverage samples
+and 21 rectangle-recognition cases on both platforms. Thirty-two matching Windows
+resource recipes preserve parser work and accounted peak; SimpleLogin adds 35
+raster units at small/intended size and saves 175 at large size. The five new
+control documents save 1,085–2,431 units. These ledgers establish no timing claim.
 
-The complete expanded bank reproduces Windows output bytes on Linux. The Linux
-cohort measurement uses all **774 stable, healthy, cleaned captures** from the
-preceding platform checkpoint, with no reference refresh or Windows fallback.
-Of the reference PNGs, 255 are byte-identical to Windows; three small Pepsi
-variants preserve their existing Linux supplement. Native arc vectors retain
-the original function's platform-specific float results without bit tolerance.
-See [the platform evidence](docs/RASTERIZATION_DESIGN.md#linux-delivery-and-platform-expectations-2026-10-07).
+The complete bank reproduces Windows output bytes on Linux. The Linux cohort
+measurement reuses all **774 stable, healthy, cleaned captures** from the platform
+checkpoint, with no reference refresh or Windows fallback. Its existing three
+small Pepsi supplement remains. Detailed studies stay ignored; Git identifies
+implementation. See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#native-filled-path-rectangles-2026-10-07).
 
-The preceding renderer's full 258-recipe Windows owned-memory ShortRun remains a
-baseline: intended-size medians were **16.37 ms for marks / 10.52 ms for wordmarks**,
-with median allocation **1.46 / 1.00 MiB**. These warmed, machine-scoped observations
-have three iterations and predate the contained-edge repair. See
+The earlier full 258-recipe Windows owned-memory ShortRun remains a baseline:
+intended-size medians were **16.37 ms for marks / 10.52 ms for wordmarks**, with
+median allocation **1.46 / 1.00 MiB**. These warmed, machine-scoped observations
+have three iterations and predate the latest repairs. See
 [the baseline](docs/BENCHMARKS.md#frozen-corporate-cohort-baseline-2026-10-07).
 
 **Next: reach 27/27 exact documents and 258/258 exact variants on Windows and
@@ -54,7 +53,7 @@ release requirement. Local Linux delivery uses WSL Ubuntu 24.04.3, isolated SDK
 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6. The full Linux measurement reuses
 the validated Linux references for every variant, with no Windows-reference
 fallback. See
-[the contained-edge repair](docs/RASTERIZATION_DESIGN.md#contained-bitmap-edge-construction-2026-10-07).
+[the rectangle repair](docs/RASTERIZATION_DESIGN.md#native-filled-path-rectangles-2026-10-07).
 
 The reviewed renderer baseline
 `f633c86bc5df0584edd1c4741c0a2218d49d3a32` is historical. Curve/walk separation,
@@ -163,14 +162,14 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **3,873 passed on each platform**: 3,700 core, 167 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **3,878 passed on each platform**: 3,705 core, 167 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | Fresh Windows/Linux 25-scenario memory and installed package-consumer checks pass. Pinned-browser, font-tool and artifact checks remain from the preceding delivery checkpoint; control captures are independently healthy and cleaned. The full Linux cohort measurement passes; remote CI evidence remains open. No runtime package dependencies, native assets or packaged SVG fixtures. |
-| Executed fixture manifest | **1,234 entries = 1,148 exact + 62 known-difference renders + 24 rejections**; 718 base documents / 516 variants. Three independent contained-path controls enter the bank. All 1,145 earlier exact fixture PNGs and rejections remain. |
+| Executed fixture manifest | **1,249 entries = 1,163 exact + 62 known-difference renders + 24 rejections**; 723 base documents / 526 variants. Fifteen independent rectangle controls enter the bank. All 1,148 earlier exact fixture PNGs and rejections remain. |
 | Executed research manifest | **36 probes = 22 exact + 13 known-difference renders + one rejection**. Complete results and PNGs remain unchanged. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. One PNG changes. These Default outputs do not establish matching-options corporate fidelity. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
-| Corporate measurement | **258 rendered comparisons = 237 exact + 21 known on each platform**, zero rejections. SG Rotation Leipzig is exact in all nine frozen variants; all 234 earlier exact corporate PNGs remain. **24/27 documents**, marks **12/13**, wordmarks **12/14**. Numerical minimum met; S17 remains open. |
-| Performance and platform limits | The preceding renderer has Windows owned-memory ShortRun data for all 258 recipes: intended-size medians 16.37/10.52 ms and 1.46/1.00 MiB for marks/wordmarks. Thirty-nine matching resource recipes preserve parser work, peak storage and layouts; SimpleX adds 384 raster-work units. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Corporate measurement | **258 rendered comparisons = 240 exact + 18 known on each platform**, zero rejections. SimpleLogin is exact at small size; intended/large retain one/three differing pixels. All 237 earlier exact corporate PNGs remain. **24/27 documents**, marks **12/13**, wordmarks **12/14**. Numerical minimum met; S17 remains open. |
+| Performance and platform limits | The preceding renderer has Windows owned-memory ShortRun data for all 258 recipes: intended-size medians 16.37/10.52 ms and 1.46/1.00 MiB for marks/wordmarks. Thirty-two matching resource recipes preserve parser work and peak storage; SimpleLogin adds 35 raster units at small/intended size and saves 175 at large size. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -828,7 +827,7 @@ affect a counted document, even when our geometry is closer to ideal area.
    release minimum is 80%, overall and in each corporate stratum. The active
    renderer target is 27/27 exact documents and 258/258 exact variants on Windows
    and Linux. The first cohort and its explicit variants are frozen; all 258 references are
-   available, covering 237 exact comparisons and 21 known differences, with zero
+   available, covering 240 exact comparisons and 18 known differences, with zero
    rejections. Every variant is exact for 24/27 documents, including 12/13 marks
    and 12/14 wordmarks; the release minimum is met on Windows and Linux. The full
    fresh Linux browser matrix is validated; remote CI evidence remains open as a
@@ -858,16 +857,16 @@ completed stage: the remaining exit evidence below governs completion.
 | 5 | **Retained curves and final device mapping remain partial with row 4.** Device-map threading, retained controls, live non-convex cubics, curve/walk separation, one-chord cubic admission, axis-aligned float mapping, coupled numeric reading and compatible raw-control convexity, retained conic fills, live rational convex advancement native round-stroke conics and retained-curve float root mapping, authored directed fill replay and bitmap-local curve setup with raw-control bounds have landed. All 436 recorded authored points and the actual Ford CTM match; density integration makes all nine PNGs exact. | Preserve transform/instance and large-translation evidence and the closed row-6, (740,30), (375,269), (269,187) and lower-row witnesses. NASA is exact in all nine variants; remaining root/source operands still differ from recorded browser coordinates. Exact documents do not establish general mapping/event parity. Wider affine/instance, fractional-event and quad/convex/stroke work retains separate gates. |
 | 6 | **Partial: curve-aware stroke completion.** Native straight open-stroke winding, curve measurement/dash cuts and seam continuation, retained conic hairlines and normal-offset oval quadratics are retained. Native wider path offsets, joins/caps and closed seams now share source verbs with polylines; painted instances preserve their curve spans. | Remaining stroke curve/event/paint/clip fidelity, sampled shape routes and round/miter/hairline/pathLength/non-scaling coverage through the common kernel. Mathematical outline agreement alone does not close Chrome pixels. |
 | 7 | **Partial: practical exports, paints and bounded layers.** Many inventory blockers, affine paint maps, use/reference bindings, retained paint clips, shared float shaders and bounded composition paths have landed. | Remaining clip/mask/style/paint combinations, alpha/dither/group composition and supported transform gates, with source-order binding, temporary-surface bounds and per-input oracle evidence. |
-| 8 | **Active target: full frozen-cohort fidelity.** Both selected logo checkpoints are achieved; S8 measurement is complete and S17's original numerical minimum is met on Windows/Linux. All 27 documents / 258 variants have browser references and reproducible reports on both platforms; 24 documents / 237 variants are exact. | Reach 27/27 exact documents and 258/258 exact variants on both platforms through shared repairs in rows 3–7. Preserve all existing exact results, membership, inputs, options and references. Remote CI remains a separate S17 release requirement; retain selection/ShortRun limits. |
+| 8 | **Active target: full frozen-cohort fidelity.** Both selected logo checkpoints are achieved; S8 measurement is complete and S17's original numerical minimum is met on Windows/Linux. All 27 documents / 258 variants have browser references and reproducible reports on both platforms; 24 documents / 240 variants are exact. | Reach 27/27 exact documents and 258/258 exact variants on both platforms through shared repairs in rows 3–7. Preserve all existing exact results, membership, inputs, options and references. Remote CI remains a separate S17 release requirement; retain selection/ShortRun limits. |
 
 ### Active work order: full frozen-cohort fidelity (2026-10-07)
 
-Close the remaining **three documents / 21 variants** against the existing pinned
+Close the remaining **three documents / 18 variants** against the existing pinned
 references. The starting measurement is the same on Windows and Linux:
 
 | Document | Remaining variants | Measured difference | Investigation role |
 | --- | ---: | --- | --- |
-| SimpleLogin (`inv-001`) | Nine | Four through 22 pixels; transparent alpha errors reach 26. | First development case: filled-path rectangle dispatch and coverage, followed by remaining curve events. |
+| SimpleLogin (`inv-001`) | Six intended/large | One/three pixels; maximum transparent alpha error one. | First development case: remaining outlined curve events. Rectangle dispatch and coverage are validated. |
 | Zeppelin (`inv-007`) | Three small | 26 RGB-only pixels, maximum channel error five. | Next development case: material arithmetic and direct/run paint dispatch. |
 | IBM (`inv-099`) | Nine | 209 through 942 pixels; transparent alpha errors reach 23. | Evaluation holdout; no document-specific tuning. |
 
@@ -877,18 +876,20 @@ three large one-pixel differences are zero on both platforms.
 These difference classes guide investigation; they do not establish the cause.
 Work in this order:
 
-1. **SimpleLogin: establish the native filled-rectangle route.** Compare original
-   path-verb recognition, thin/wide rectangle dispatch, float coverage and
-   direct/additive painting. Test independent width, phase, opacity and bitmap
-   boundary controls; preserve whole-path dispatch when bounded storage splits a path.
-   Keep any remaining curve-event differences visible. These are hypotheses,
-   not a validated repair or a reason to advance the checkpoint counts.
+1. **SimpleLogin: resolve the remaining curve events.** Preserve the validated
+   original-verb rectangle dispatch, float coverage and direct painting, including
+   thin/wide, repeated-point, opacity, paint and bitmap-boundary controls. Trace
+   the remaining outlined “s” witnesses through native curve construction and
+   walking. An absolute spelling of its current parsed float commands preserves
+   the browser reference and the managed intended-size residual; relative-command
+   spelling does not explain that witness. Independent controls must adjudicate
+   the next mechanism before advancing checkpoint counts.
 2. **Resolve the remaining development witnesses.** Use residual SimpleLogin
    curve pixels and Zeppelin's RGB-only pixels to select the next shared repair.
    Add a reusable regression for each demonstrated mechanism. Keep failed models
    in the design record and detailed traces under ignored artifacts.
 3. **Evaluate the complete cohort.** Compare shared coverage/paint changes across
-   the complete bank (currently 1,362 cases) and all 258 corporate variants on
+   the complete bank (currently 1,377 cases) and all 258 corporate variants on
    Windows and Linux, including all eight holdouts. Preserve every current exact
    image and categorized rejection; record complete before/after results for
    changed known differences. IBM remains an evaluation holdout with no
@@ -1001,13 +1002,14 @@ Holdouts receive no document-specific tuning. All failures/gaps keep their
 denominators.
 
 **Complete first-cohort evidence.** All 258 variants have browser references:
-237 exact, 21 known differences and zero rejections. The remaining 225
+240 exact, 18 known differences and zero rejections. The remaining 225
 references have 675 healthy, cleaned, byte-stable fresh captures. The original
 33 references remain preserved. Coca-Cola graduated from rejection to measured
 differences and subsequently became exact; Target also became exact without
 recapture. The straight-edge repair made Artsy exact; native conic rounding makes
-Rede Manchete exact; bitmap-local uncut construction makes SG Rotation Leipzig exact. All 234 previously exact corporate PNGs and every original
-reference remain unchanged.
+Rede Manchete exact; bitmap-local uncut construction makes SG Rotation Leipzig exact. The filled-path rectangle repair makes SimpleLogin small exact and leaves its
+intended/large curve residuals visible. All 237 previously exact corporate PNGs
+and every original reference remain unchanged.
 `capture-corporate-cohort.ps1` and VisualDiff's `--cohort` mode reproduce capture
 and categorized per-variant/document reporting under ignored artifacts. Neither
 command refreshes the immutable selection or rewrites references automatically.
@@ -1026,11 +1028,11 @@ delivery and the full fresh Linux browser matrix are recorded; remote CI remains
 open for S17.
 
 A bounded shared repair may land with independent mechanism-level improvement
-and nonregression across all nine Ford variants. Preserve all **1,148 currently
-exact fixture entries**, 22 exact research probes, 237 exact corporate images
+and nonregression across all nine Ford variants. Preserve all **1,163 currently
+exact fixture entries**, 22 exact research probes, 240 exact corporate images
 and required categorized rejections. Intentional syntax graduations need explicit
 contract/tests/provenance updates. Shared rasterization changes require comparison
-across the complete **1,362-case current bank** and all 258 frozen corporate cases.
+across the complete **1,377-case current bank** and all 258 frozen corporate cases.
 Earlier bank comparisons remain historical evidence. Report fixture/research/legacy
 and corporate regression scopes separately.
 Run affected ownership/work/cancellation,
@@ -1325,7 +1327,7 @@ measured differences order this work; the eight holdouts remain evaluation input
 
 | ID | Current disposition and remaining closure |
 | --- | --- |
-| R26 | First-cohort selection and Windows/Linux measurement complete: all 27 documents / 258 variants, including eight fresh holdouts, have browser references and Windows latency/allocation observations. Both platforms render every variant: 237 exact, 21 known differences. Exact documents are 24/27, meeting both stratum minima. All 774 fresh Linux captures are stable, healthy and cleaned; 255 reference PNGs match Windows bytes and three reproduce the existing Linux Pepsi supplement. Remote CI and broader representativeness remain open. Historical exact labels and the legacy 92-file Default bank are not S17 rates. Preserve failures and original assets. |
+| R26 | First-cohort selection and Windows/Linux measurement complete: all 27 documents / 258 variants, including eight fresh holdouts, have browser references and Windows latency/allocation observations. Both platforms render every variant: 240 exact, 18 known differences. Exact documents are 24/27, meeting both stratum minima. All 774 fresh Linux captures are stable, healthy and cleaned; 255 reference PNGs match Windows bytes and three reproduce the existing Linux Pepsi supplement. Remote CI and broader representativeness remain open. Historical exact labels and the legacy 92-file Default bank are not S17 rates. Preserve failures and original assets. |
 | R27 | Every fixture is executed. Still retain complete decoded candidate identity/diff, validate historical/current oracle identity, distinguish render/reject from fidelity, and graduate positive research controls instead of deleting them. |
 | R28 | Original pattern/root-map repair and inverse gradient maps retained. Paint/alpha one-step residuals remain S11/S13. |
 | R30 | Shared contour preparation, ownership and coverage traversal have landed across the four paints. Preserve that boundary while changing curve state; remaining repeated binding/typed-state work follows demonstrated dependencies, not a repository rewrite. |
@@ -1364,7 +1366,7 @@ measured differences order this work; the eight holdouts remain evaluation input
 | S1–S5 | Core foundations and original repairs exist; preserve API, parser, memory/work and output contracts throughout. |
 | S6 | Disposable single-use preparation exists; preserve resource leases and six-output behavior. |
 | S7 | Generic local/stdin/HTTP supplied-font host exists; actual-pack and same-font metrics/pixels remain separate work under section 6. |
-| S8 | Complete for the first frozen corporate cohort on Windows/Linux: 27 documents / 258 variants including eight fresh holdouts, all renderer cases executed, all references available and reusable capture/reporting tools. Each platform has 237 exact variants and 21 known differences, with zero rejections; exact documents 24/27. Selection limits remain explicit; representative Windows performance is measured. Remote CI evidence remains open. The historical 92-file bank stays separate. |
+| S8 | Complete for the first frozen corporate cohort on Windows/Linux: 27 documents / 258 variants including eight fresh holdouts, all renderer cases executed, all references available and reusable capture/reporting tools. Each platform has 240 exact variants and 18 known differences, with zero rejections; exact documents 24/27. Selection limits remain explicit; representative Windows performance is measured. Remote CI evidence remains open. The historical 92-file bank stays separate. |
 | S9 | Styles/references/viewports, declaration-only DOCTYPEs and measured inventory admissions are implemented in explicit subsets. Remaining combinations follow independent corporate-cohort evidence and shared semantics. |
 | S10 | Full path-command/affine kernels, retained controls, live non-convex cubics, curve/walk state separation and one-chord cubic admission exist. Raw-control classification is integrated; fractional-event fidelity, remaining transform/instance gates and fallback migrations need per-input evidence. |
 | S11 | Critical path: general Chrome-exact coverage/curves/composition unproved. Require exact held-out phase/scale/paint/alpha families. |
@@ -1484,11 +1486,11 @@ records this cross-tabulation:
 | UnsupportedFeature | 0 | 0 | 0 | 0 |
 | Total | 258 | 0 | 0 | 258 |
 
-The 258 measured renders contain 237 exact variants and 21 known differences.
+The 258 measured renders contain 240 exact variants and 18 known differences.
 All nine Target variants are exact against their original browser references;
 Coca-Cola is also exact in all nine variants. Reference
 availability and renderability remain independent axes. The first cohort's complete reference matrix closes its S8
-measurement obligation, including browser behavior for rejected inputs. The 1,148
+measurement obligation, including browser behavior for rejected inputs. The 1,163
 exact fixture entries remain separate from corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and

@@ -1,0 +1,25 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96">
+  <g fill="#406080">
+    <path d="M1.125 1.13H1.825V8.34H1.125Z"/>
+    <path d="M4.25 1.251H4.95V9.924H4.25Z"/>
+    <path d="M7.12 1.13H9.02V8.34H7.12Z"/>
+    <path d="M10 1.251H11.9V9.924H10Z"/>
+    <path d="M13.999 1.984H14.874V9.194H13.999Z"/>
+    <path d="M16.001 1.968H18V10.965H16.001Z"/>
+    <path d="M20.13 1.251H25.068V9.924H20.13Z"/>
+    <path d="M28.13 1.968H33.068V10.965H28.13Z"/>
+    <path d="M42.125 1.984H49.9375V2H42.125Z"/>
+    <path d="M52.125 1.968H59.9375V1.988H52.125Z"/>
+    <path d="M1.125 17.125H31.875V17.875H1.125Z"/>
+    <path d="M1 21.13H33.01V29.34H1Z"/>
+    <path d="M1 33.13H32.99V41.34H1Z"/>
+    <path d="M39.125 23.13H55.625V83.34H39.125Z"/>
+    <path d="M61.125 23.968H77.625V64.965H61.125Z"/>
+  </g>
+  <path fill="#a04060" fill-opacity=".5" d="M62.125 2.13H69.938V9.997H62.125Z"/>
+  <path fill="#a04060" d="M72.125 2.13H76V2.13H79.938V9.997H75V9.997H72.125Z"/>
+  <path fill="#a04060" d="M82.125 2.13Q82.125 5 82.125 9.997H89.938V2.13Z"/>
+  <defs><clipPath id="clip"><rect x="1.25" y="50.125" width="27.3" height="18.9"/></clipPath></defs>
+  <path fill="#408060" clip-path="url(#clip)" d="M1.125 49.13H29.938V70.997H1.125Z"/>
+</svg>

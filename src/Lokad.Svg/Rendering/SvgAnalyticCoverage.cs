@@ -8,7 +8,7 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Prepares analytic mask coverage and ordered paint operations for eligible contours.</summary>
 /// <remarks>
 /// <para>Row preparation walks retained analytic edges into winding intervals and trapezoid coverage. Small path bounds select an accumulated mask; larger bounds retain direct paint events separately from pending additive runs. Only pending runs snap coverage at flush. Convex rings use the existing convex walker; eligible non-convex fills also retain live curve state. Multi-contour sets walk kept contours together with their winding votes. Escaping path/control bounds select bounded clipped construction; degenerate, non-finite, out-of-range and contact-gated payloads retain the existing fallback.</para>
-/// <para>Ownership: preparation reserves edge/mask scratch plus the run route's pixel links before allocation. Direct operation buffers grow under the same conversion budget with both old/new arrays live during copying; Dispose releases every reservation. PrepareRow charges recording, growth and replay before growing buffers and observes cancellation during setup, row walking, copying and replay. Row contains only pending coverage; direct paints remain separate. All row state is valid until the next PrepareRow call. Instances and their destination consumers are single-threaded.</para>
+/// <para>Ownership: preparation reserves edge/mask scratch plus the run route's pixel links before allocation. Eligible native rectangles instead retain an immutable float coverage value with no edge/row scratch. Direct operation buffers grow under the same conversion budget with both old/new arrays live during copying; Dispose releases every reservation. PrepareRow charges recording, growth and replay before growing buffers and observes cancellation during setup, row walking, copying and replay. Row contains only pending coverage; direct paints remain separate. All row state is valid until the next PrepareRow call. Instances and their destination consumers are single-threaded.</para>
 /// </remarks>
 internal ref partial struct SvgAnalyticCoverage
 {
@@ -166,8 +166,8 @@ internal ref partial struct SvgAnalyticCoverage
     ];
 
     private readonly AnalyticEdge[] _edges;
-    private readonly AnalyticEdge _head;
-    private readonly AnalyticEdge _tail;
+    private readonly AnalyticEdge? _head;
+    private readonly AnalyticEdge? _tail;
     private readonly byte[] _row;
     private readonly int[] _temp;
     private readonly int _xStart;
@@ -176,6 +176,8 @@ internal ref partial struct SvgAnalyticCoverage
     private readonly bool _isEvenOdd;
     private readonly bool _convex;
     private readonly bool _rawBox;
+    private readonly SvgFatRectangleCoverage? _fatRectangle;
+    private int _rectangleRow;
     private readonly int _leftClip;
     private readonly int _rightClip;
     private readonly int[] _alphas;
@@ -240,6 +242,20 @@ internal ref partial struct SvgAnalyticCoverage
         _strips = 0;
     }
 
+    private SvgAnalyticCoverage(SvgFatRectangleCoverage rectangle, int xStart)
+    {
+        this = default;
+        _fatRectangle = rectangle;
+        _xStart = xStart;
+        _edges = [];
+        _row = [];
+        _temp = [];
+        _alphas = [];
+        _directLinks = [];
+        _directOperations = [];
+        _directSpans = [];
+    }
+
     public void Dispose()
     {
         _directOperationReservation?.Dispose();
@@ -253,6 +269,12 @@ internal ref partial struct SvgAnalyticCoverage
     internal void PaintPixel(int x, Span<byte> destination, SvgAnalyticPaint paint, SvgAnalyticClipCoverage clipCoverage)
     {
         if (clipCoverage.IsEmpty) return;
+        if (_fatRectangle is {} rectangle)
+        {
+            _rowCancellationToken.ThrowIfCancellationRequested();
+            paint.Blend(destination, clipCoverage.Apply(rectangle.GetAlpha(x + _xStart, _rectangleRow)), SvgAnalyticPaintKind.Direct);
+            return;
+        }
         if (_useRunBlitter)
         {
             int next = _directLinks[x].First;
@@ -376,7 +398,7 @@ internal ref partial struct SvgAnalyticCoverage
     }
 
     /// <summary>Gets pending mask/run coverage, indexed from the preparation x start. Direct paint events must be replayed separately through PaintPixel.</summary>
-    internal ReadOnlySpan<byte> Row => new(_row, 1, _width);
+    internal ReadOnlySpan<byte> Row => _fatRectangle is not null ? ReadOnlySpan<byte>.Empty : new(_row, 1, _width);
     /// <summary>Gets the retained edge count for resource and traversal diagnostics.</summary>
     internal int EdgeCount => _edges.Length;
     private static int FixedMul(int left, int right) => (int)(((long)left * right) >> 16);
@@ -1463,6 +1485,17 @@ internal ref partial struct SvgAnalyticCoverage
         }
         if (ends.Length < 1 || points.Length < 3 || xEnd <= xStart || !preparation.PointValuesEligible || (constructionClip is null && !preparation.PointsFitCanvas)) return default;
         cancellationToken.ThrowIfCancellationRequested();
+        if (ends.Length == 1 && mapping == SvgPolygonMapping.NativeFillEdges && !preparation.UsesRunBlitter && paintClip == SvgAnalyticPaintClip.Binary)
+        {
+            ReadOnlySpan<SvgAuthoredPathCommand> commands = preparation.Source is {} source ? source.Commands : ReadOnlySpan<SvgAuthoredPathCommand>.Empty;
+            SvgAnalyticClipBounds rectangleClip = constructionClip is {} clippedRectangle ? clippedRectangle.Bounds : new(window.Left, 0, window.Right, outputHeight);
+            SvgFatRectangleCoverage? rectangle = SvgFatRectangleCoverage.TryCreate(commands, points, preparation.SourceMap, bitmapOrigin, rectangleClip, ref setupWork, maximumSetupWork, cancellationToken);
+            if (rectangle is {} fatRectangle)
+            {
+                eligible = true;
+                return new(fatRectangle, xStart);
+            }
+        }
         if (ends.Length > 1)
         {
             bool directedContours = mapping == SvgPolygonMapping.NativeFillEdges
@@ -1681,9 +1714,9 @@ internal ref partial struct SvgAnalyticCoverage
                 }
             }
             preparation.Convex = convexRing;
-            // Small authored boxes retain the mask rectangle's truncated
-            // boundary bytes; larger fills use the additive run route.
-            preparation.DesnapBox = box && (mapping != SvgPolygonMapping.NativeFillEdges || !preparation.UsesRunBlitter);
+            // Native fills that decline the float rectangle shortcut keep ordinary
+            // quarter-snapped edge setup. Legacy geometric boxes retain their calibration.
+            preparation.DesnapBox = box && mapping != SvgPolygonMapping.NativeFillEdges;
             preparation.UseCurveSpans = retained;
         }
         bool convex = preparation.Convex.Value;
@@ -2102,19 +2135,21 @@ internal ref partial struct SvgAnalyticCoverage
     }
     private void WalkEdgesRow(int target, CancellationToken cancellationToken)
     {
-        _head.X = _head.UpperX = _leftClip;
-        _tail.X = _tail.UpperX = _rightClip;
-        int y = _head.Next is AnalyticEdge first ? first.UpperY : 0;
+        AnalyticEdge head = _head ?? throw new InvalidOperationException("Edge walking requires constructed sentinels.");
+        AnalyticEdge tail = _tail ?? throw new InvalidOperationException("Edge walking requires constructed sentinels.");
+        head.X = head.UpperX = _leftClip;
+        tail.X = tail.UpperX = _rightClip;
+        int y = head.Next is AnalyticEdge first ? first.UpperY : 0;
         _nextNextY = int.MaxValue;
         _walkY = y;
-        for (AnalyticEdge? edge = _head.Next; edge is not null && edge.UpperY <= y; edge = edge.Next)
+        for (AnalyticEdge? edge = head.Next; edge is not null && edge.UpperY <= y; edge = edge.Next)
         {
             if ((_strips & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
             GoY(edge, y);
             UpdateNextNext(edge.LowerY);
             _strips++;
         }
-        AnalyticEdge? probe = _head.Next;
+        AnalyticEdge? probe = head.Next;
         while (probe is not null && probe.UpperY <= y) probe = probe.Next;
         if (probe is not null) UpdateNextNext(probe.UpperY);
         int windingMask = _isEvenOdd ? 1 : -1;
@@ -2124,10 +2159,10 @@ internal ref partial struct SvgAnalyticCoverage
             _strips++;
             int winding = 0;
             bool inside = false;
-            int previousX = _head.X;
+            int previousX = head.X;
             int nextY = Math.Min(_nextNextY, FixedCeilToFixed(y + 1));
-            AnalyticEdge? current = _head.Next;
-            AnalyticEdge leftEdge = _head;
+            AnalyticEdge? current = head.Next;
+            AnalyticEdge leftEdge = head;
             int left = _leftClip;
             int leftDY = 0;
             int previousRite = FixedFloorToInt(_leftClip);
@@ -2214,7 +2249,7 @@ internal ref partial struct SvgAnalyticCoverage
     }
     private void WalkConvexRow(int target, CancellationToken cancellationToken)
     {
-        if (_head.Next is not AnalyticEdge leftEdge || leftEdge.Next is not AnalyticEdge rightEdge) return;
+        if (_head?.Next is not AnalyticEdge leftEdge || leftEdge.Next is not AnalyticEdge rightEdge) return;
         AnalyticEdge? current = rightEdge.Next;
         int y = Math.Max(leftEdge.UpperY, rightEdge.UpperY);
         while (true)
@@ -2367,6 +2402,13 @@ internal ref partial struct SvgAnalyticCoverage
     {
         cancellationToken.ThrowIfCancellationRequested();
         _rowCancellationToken = cancellationToken;
+        if (_fatRectangle is not null)
+        {
+            if (maximumRowWork < 1) throw new SvgException(SvgErrorCode.LimitExceeded, "Filled rectangle row exceeds the remaining work limit.");
+            _rectangleRow = y;
+            rowWork = 1;
+            return;
+        }
         _strips = 0;
         _rowOperationWork = 0;
         _rowOperationWorkLimit = maximumRowWork - _width - (long)_edges.Length * 3;
@@ -2412,16 +2454,18 @@ internal ref partial struct SvgAnalyticCoverage
                 _edges[index].Y = _edges[index].UpperY;
             }
         }
-        _head.Next = _edges[0];
-        _edges[0].Prev = _head;
+        AnalyticEdge head = _head ?? throw new InvalidOperationException("Edge walking requires constructed sentinels.");
+        AnalyticEdge tail = _tail ?? throw new InvalidOperationException("Edge walking requires constructed sentinels.");
+        head.Next = _edges[0];
+        _edges[0].Prev = head;
         for (int index = 1; index < _edges.Length; index++)
         {
             if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
             _edges[index - 1].Next = _edges[index];
             _edges[index].Prev = _edges[index - 1];
         }
-        _edges[^1].Next = _tail;
-        _tail.Prev = _edges[^1];
+        _edges[^1].Next = tail;
+        tail.Prev = _edges[^1];
         if (_convex) WalkConvexRow(y, cancellationToken);
         else WalkEdgesRow(y, cancellationToken);
 
