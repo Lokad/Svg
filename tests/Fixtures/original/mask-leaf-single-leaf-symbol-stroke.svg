@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="49" height="43"><defs><mask id="m"><rect width="79" height="73" fill="#404040"/></mask><symbol id="s" viewBox="0 0 39 33"><rect x="4.375" y="5.25" width="23.125" height="19.5" rx="5.25" ry="3.75" fill="#267eb5" stroke="#b95873" stroke-width="3"/></symbol></defs><use href="#s" x="3" y="2" width="39" height="33" mask="url(#m)"/></svg>

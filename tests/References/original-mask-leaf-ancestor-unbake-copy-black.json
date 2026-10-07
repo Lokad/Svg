@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-mask-leaf-ancestor-unbake-copy-black.png",
+  "referenceSha256": "3d513eff885981f70249fb5d26f7ba746e364abe277cc215ef160a1c31bb0664",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures.",
+  "fixtureId": "original-mask-leaf-ancestor-unbake-copy-black",
+  "inputSha256": "dcc977c859b29806d50cab299af5a3f2407462d67613a10475867ce3bbe371db",
+  "candidateSha256": "755d91fcbe4540ac1130f67ae83f34d4864bb55c30adc889ade213b32f32de38",
+  "viewport": {
+    "width": 49,
+    "height": 43,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

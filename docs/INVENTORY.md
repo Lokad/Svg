@@ -5,15 +5,46 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Leaf and instance mask checkpoint (2026-10-07)
+
+The current frozen cohort retains **27/27 exact documents** and **258/258 exact
+variants** on Windows/Linux, with every corporate report and PNG unchanged.
+Membership, original inputs, options and platform-native references stay frozen.
+
+The current bank has **1,401 fixtures** (1,336 exact, 41 known, 24 rejected),
+**65 research probes** (30 exact, 31 known, four rejected) and 92 Default renders:
+**1,558 executions**, with identical Windows/Linux reports and PNG bytes.
+Three original research leaf-mask configurations improve 71 → zero differing
+pixels against their unchanged references and graduate to fixtures. All other
+1,474 preceding results and rendered PNGs remain unchanged.
+
+Twenty-six local CC0 originals / 78 configurations retain 234 stable, healthy,
+cleaned browser captures. The primary 39 configurations were declared before
+prototype edits and capture/comparison. The supplemental 36 were declared after
+the prototype but before their own capture/comparison; the final three single-leaf
+symbol controls were declared after supplemental comparison and before their
+own capture/comparison. These are development controls, not representative holdouts.
+Fifty-seven become exact, including three valid backward-mask/forward-clip
+admission graduations. Sixty-six exact configurations enter fixtures; nine known
+gradient, element-opacity and circle/ellipse configurations stay in research.
+The original multiple-child symbol source and all three browser configurations
+remain unchanged in research: valid SVG incorrectly rejected as MalformedInput,
+not a malformed asset. The later original-scope audit can use this example.
+
+No online SVG sourcing has started for that subsequent audit. PLAN retains the
+user's requested public-domain/CC0 failure-selected corpus phase after the
+identified renderer shortcomings. [The design record](RASTERIZATION_DESIGN.md#leaf-and-instance-mask-composition-2026-10-07)
+records the mechanism and validation limits; preceding totals below are historical.
+
 ## Adjacent mask-range checkpoint (2026-10-07)
 
-The current cohort retains **27/27 exact documents**, marks **13/13**, wordmarks
+At that checkpoint the cohort retained **27/27 exact documents**, marks **13/13**, wordmarks
 **14/14**: **258 exact, zero known and zero rejected** variants on Windows/Linux.
 Every corporate report and PNG remains unchanged under the command-range repair.
 Membership, inputs, options and references stay frozen; holdouts receive no
 document-specific tuning.
 
-The bank has 1,332 fixtures (1,267 exact, 41 known, 24 rejected), 53 research
+At that checkpoint the bank had 1,332 fixtures (1,267 exact, 41 known, 24 rejected), 53 research
 probes (27 exact, 25 known, one rejected) and 92 Default renders:
 **1,477 executions**, with identical Windows/Linux results and PNG bytes.
 All 1,468 preceding bank results and declared rejections remain unchanged.

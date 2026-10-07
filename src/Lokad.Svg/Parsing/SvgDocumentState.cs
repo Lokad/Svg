@@ -5,6 +5,8 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Owns the bounded mutable state for one SVG document while XML traversal remains streaming.</summary>
 internal sealed class SvgDocumentState : IDisposable
 {
+    private BudgetedParserList<SvgGeometry>? _temporaryGroupGeometries;
+    private RenderBudget.BudgetReservation? _temporaryGroupOwner;
     private const int DefinitionStorageBytes = 256;
     private const int ClipStorageBytes = 128;
     // The tile embeds nullable scene geometry. Include its actual value size,
@@ -44,6 +46,7 @@ internal sealed class SvgDocumentState : IDisposable
         GroupSnapshotStarts = new BudgetedParserList<SvgGroupSnapshotStart>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLeafClips = new BudgetedParserList<PendingLeafClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingGroupClips = new BudgetedParserList<PendingGroupClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        LeafMaskOwners = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLeafMasks = new BudgetedParserList<PendingLeafMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingGroupMasks = new BudgetedParserList<PendingGroupMask>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLinearGradientHrefs = new BudgetedParserList<PendingLinearGradientHref>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -125,6 +128,8 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<PendingGroupClip> PendingGroupClips { get; }
 
+    internal BudgetedParserList<SvgLeafMaskOwner> LeafMaskOwners { get; }
+
     internal BudgetedParserList<PendingLeafMask> PendingLeafMasks { get; }
 
     internal BudgetedParserList<PendingGroupMask> PendingGroupMasks { get; }
@@ -136,8 +141,6 @@ internal sealed class SvgDocumentState : IDisposable
     internal int GeometryElementCount { get; set; }
 
     internal bool DeferringLeafClip { get; set; }
-
-    internal bool DeferringLeafMask { get; set; }
 
     /// <summary>Gets or sets whether a gradient href drain is already running, guarding reentrant drains during nested registration.</summary>
     internal bool DrainingGradientHrefs { get; set; }
@@ -226,6 +229,29 @@ internal sealed class SvgDocumentState : IDisposable
 
     private bool _definitionsReleased;
 
+    /// <summary>Owns a newly mapped/unbaked group value until parser teardown; final instances copy its native owners.</summary>
+    /// <remarks>Lazy registry ownership is reserved before allocation. Growth charges work and memory;
+    /// failure disposes the incoming value, while registered values release without observing cancellation.</remarks>
+    internal SvgGeometry RetainTemporaryGroupGeometry(SvgGeometry geometry, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (_temporaryGroupGeometries is null)
+            {
+                RenderBudget.BudgetReservation owner = Budget.Reserve(256, SvgMemoryCategory.Parser);
+                try
+                {
+                    _temporaryGroupGeometries = new(Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
+                    _temporaryGroupOwner = owner;
+                }
+                catch { owner.Dispose(); throw; }
+            }
+            _temporaryGroupGeometries.Add(geometry);
+            return geometry;
+        }
+        catch { geometry.Dispose(); throw; }
+    }
+
     /// <summary>Releases definition-owned geometry reservations exactly once, covering success after scene build and failure or cancellation during teardown.</summary>
     internal void ReleaseDefinitions()
     {
@@ -239,12 +265,20 @@ internal sealed class SvgDocumentState : IDisposable
     public void Dispose()
     {
         ReleaseDefinitions();
+        if (_temporaryGroupGeometries is not null)
+        {
+            foreach (SvgGeometry geometry in _temporaryGroupGeometries.AsSpan()) geometry.Dispose();
+            _temporaryGroupGeometries.Dispose();
+        }
+        _temporaryGroupOwner?.Dispose();
         PendingUses.Dispose();
         GroupSnapshots.Dispose();
         GroupSnapshotStarts.Dispose();
         PendingLeafClips.Dispose();
         PendingGroupClips.Dispose();
         PendingLeafMasks.Dispose();
+        foreach (SvgLeafMaskOwner owner in LeafMaskOwners.AsSpan()) owner.Owner.Dispose();
+        LeafMaskOwners.Dispose();
         PendingGroupMasks.Dispose();
         PendingLinearGradientHrefs.Dispose();
         PendingRadialGradientHrefs.Dispose();

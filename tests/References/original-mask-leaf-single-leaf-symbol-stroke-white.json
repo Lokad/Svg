@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-mask-leaf-single-leaf-symbol-stroke-white.png",
+  "referenceSha256": "db1f8880bce1d1bce255433d44c3d86486fbc213c40ea9b5210168a3b854a532",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Single-leaf symbol follow-up declared after supplemental comparison, before its own capture/comparison; the original multiple-child symbol rejection remains retained separately; three stable, healthy, cleaned captures.",
+  "fixtureId": "original-mask-leaf-single-leaf-symbol-stroke-white",
+  "inputSha256": "399797e3ea1a76bf8dbc3c12253bc4428a878282106f99e29e67eed5d2c11ecf",
+  "candidateSha256": "4602b8f1b89aa9d6433c0a23f126657bd832ac02540f49746512b277786b7c24",
+  "viewport": {
+    "width": 49,
+    "height": 43,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

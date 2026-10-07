@@ -24,13 +24,19 @@ internal static class SvgDefinitionParser
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, symbolViewBox)
                 : reader.LocalName == "line" ? new SvgDefinition(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state)), false, null, symbolViewBox)
                 : ParseShapeDefinition(reader, context, state, symbolViewBox);
-            if (id is not null)
+            bool retained = false;
+            try
             {
-                workCounter.Consume(cancellationToken);
-                if (state.Definitions.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
-                string retainedId = state.Strings.Copy(id);
-                if (!state.Definitions.TryAdd(retainedId, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                if (id is not null)
+                {
+                    workCounter.Consume(cancellationToken);
+                    if (state.Definitions.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                    string retainedId = state.Strings.Copy(id);
+                    if (!state.Definitions.TryAdd(retainedId, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                    retained = true;
+                }
             }
+            finally { if (!retained) foreach (SvgGeometry geometry in definition.Geometries) geometry.Dispose(); }
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
             state.SawStyleableNode = true;
             return inDefinitions;

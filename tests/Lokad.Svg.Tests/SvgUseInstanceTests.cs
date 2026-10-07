@@ -760,11 +760,12 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Applies_a_gray_mask_to_a_pattern_outline_use_instance()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern><mask id='fade'><rect x='-4' y='-4' width='24' height='16' fill='#808080'/></mask></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></defs><use href='#q' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern><mask id='fade'><rect x='-4' y='-4' width='24' height='16' fill='#808080'/></mask></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></defs><use href='#q' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[1].Kind);
-        Assert.Equal(128, root.Geometries[1].PatternPolygon.Opacity);
+        Assert.Equal(255, root.Geometries[1].PatternPolygon.Opacity);
+        SvgLeafMaskAssertions.UniformScope(root, 128, null);
     }
 
     [Fact]
@@ -792,11 +793,12 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Applies_a_gray_mask_to_a_radial_outline_use_instance()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient><mask id='fade'><rect x='-4' y='-4' width='24' height='16' fill='#808080'/></mask></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient><mask id='fade'><rect x='-4' y='-4' width='24' height='16' fill='#808080'/></mask></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.RadialPolygon, root.Geometries[1].Kind);
-        Assert.Equal(128, root.Geometries[1].RadialPolygon.Opacity);
+        Assert.Equal(255, root.Geometries[1].RadialPolygon.Opacity);
+        SvgLeafMaskAssertions.UniformScope(root, 128, null);
     }
 
     [Fact]
@@ -825,11 +827,12 @@ public sealed class SvgUseInstanceTests
     [Fact]
     public void Applies_a_gray_mask_to_a_gradient_outline_use_instance()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='fade'><rect x='-4' y='-4' width='24' height='16' fill='#808080'/></mask></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient><mask id='fade'><rect x='-4' y='-4' width='24' height='16' fill='#808080'/></mask></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' mask='url(#fade)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(2, root.Geometries.Length);
         Assert.Equal(SvgGeometryKind.GradientPolygon, root.Geometries[1].Kind);
-        Assert.Equal(128, root.Geometries[1].GradientPolygon.Opacity);
+        Assert.Equal(255, root.Geometries[1].GradientPolygon.Opacity);
+        SvgLeafMaskAssertions.UniformScope(root, 128, null);
     }
 
     [Fact]

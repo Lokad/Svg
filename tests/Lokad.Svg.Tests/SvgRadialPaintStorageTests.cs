@@ -85,7 +85,7 @@ public sealed class SvgRadialPaintStorageTests
         SvgRectangle box = new(0, 0, 2, 2, default, true, null);
         using (SvgRadialGeometry fill = SvgRadialGeometry.Create(Gradient(), box, box, 255, new(new SvgColor(0, 0, 0, 255), 2), budget))
         {
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgMaskSyntax.ApplyMask(SvgGeometry.FromRadialFill(fill), 127, new(0, 0, 2, 2))).ErrorCode);
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgLeafMaskComposition.ValidateRegion(SvgGeometry.FromRadialFill(fill), new(0, 0, 2, 2))).ErrorCode);
             Assert.Equal(SvgRadialGradient.RetainedStorageBytes, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

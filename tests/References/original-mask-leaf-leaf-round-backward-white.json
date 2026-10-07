@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-mask-leaf-leaf-round-backward-white.png",
+  "referenceSha256": "0b8a5700460094e05c599395516626cc1165e785812a65b8a517f4b4b85d02b3",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "white",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Primary control declared before prototype edits and capture/comparison; three stable, healthy, cleaned fresh-process captures.",
+  "fixtureId": "original-mask-leaf-leaf-round-backward-white",
+  "inputSha256": "55df7cb32084517ed34faf811a2232bb9dc6611632e59ecc17ec6272e9589b19",
+  "candidateSha256": "2788c7c3bd237d6e7af27d6fef539a44021f0036ba807d6e05ed3ceeed064a63",
+  "viewport": {
+    "width": 47,
+    "height": 41,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

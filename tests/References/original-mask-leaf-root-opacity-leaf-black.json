@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-mask-leaf-root-opacity-leaf-black.png",
+  "referenceSha256": "5e36d865f6a041bd18441b3dc70a80f04d4aa48067d65feb98c74a8b28d61fdd",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures.",
+  "fixtureId": "original-mask-leaf-root-opacity-leaf-black",
+  "inputSha256": "c528334c61332d381c46f8648b496df5730fef189beb4532e6e54d8112ee79ed",
+  "candidateSha256": "3432cda3ef5153ddfb49f40362250ce98467fc842750cba67bd3257146900b5d",
+  "viewport": {
+    "width": 49,
+    "height": 43,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

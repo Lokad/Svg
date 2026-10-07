@@ -6955,3 +6955,73 @@ admitted empty controls have no matching baseline conversion and are excluded
 from this comparison. Timings remain exploratory and establish no representative
 throughput claim. S17 remote CI remains open. Detailed evidence stays under
 ignored `artifacts/leaf-mask-scopes-20261007/`.
+
+## Leaf and instance mask composition (2026-10-07)
+
+Direct leaves previously stamped mask alpha into each lowered paint. A filled,
+stroked element therefore masked two paints independently, changing their overlap
+and antialiased color. Use instances also lost source-child mask boundaries or
+masked each copied geometry separately. The renderer now retains each element's
+mask effect until its complete ordered fill/stroke batch has composed, then
+applies it through the existing isolated compositor. An instance's own mask wraps
+its entire copied batch while source-child masks remain inside.
+
+Geometry temporarily borrows a parser-owned binding chain. Operations hold a
+value/region or a lazy map from an earlier operation. Iterative instance caches
+preserve operation identity within one copied batch and create distinct identity
+between instances. Group ancestor unbaking maps metadata with geometry. Clipped
+replacement geometry keeps its binding. After deferred clips and existing group
+validation resolve, a single bounded command rewrite emits common outer scopes,
+preserves sibling/instance boundaries and clears all borrowed links before scene
+transfer. Scenes retain copied values; parser teardown owns every node/operation
+reservation. The obsolete per-paint stamping helpers are removed.
+
+Operations, bindings, mapper owners, cache entries and scratch growth reserve
+before allocation and charge bounded cancellable work. Failure sweeps caught and
+repaired definition geometry between parsing and dictionary registration, plus
+mapped-instance validation/transfer cleanup. A lazy, reserved registry also owns
+new group clones produced by ancestor unbaking and nested placeholder mapping;
+final instances copy these native owners before parser teardown. Sixteen new core
+cases cover denials, region placement, fill/stroke/sibling identities, root opacity, deep
+chains and disposal. Twenty-three visual cases check 69 exact configurations
+through all six public output forms. Parser-native geometry values grow 256 → 264
+bytes even without a mask; draw-command values remain 72 bytes.
+
+The 78 independent configurations retain 234 byte-stable, healthy, cleaned
+captures: 39 declared before the prototype, 36 declared after it but before their
+own capture/comparison, and three single-leaf-symbol follow-ups declared after
+supplemental comparison but before their own capture/comparison. Fifty-seven
+become exact, including three backward-mask/forward-clip admission graduations.
+Sixty-six exact configurations enter fixtures; nine known and three rejected
+configurations enter research. The original multiple-child symbol remains valid
+SVG incorrectly rejected as MalformedInput; the single-child follow-up does not
+replace or reclassify it. These are development controls with explicit selection
+limits, not a representative release measurement.
+
+Three original research leaf-mask configurations improve 71 → zero pixels against
+their unchanged references; all other 1,474 preceding reports and rendered PNG
+bytes remain unchanged. The complete **1,558-case** bank has identical Windows/Linux
+reports and actual PNG bytes. All **258/258** corporate images and reports remain
+unchanged and exact against platform-native references: **27/27 documents**.
+Both nine-project Release builds pass without warnings/errors, with **3,993 tests**,
+fresh 25-scenario memory checks, runtime/symbol packages and installed consumers
+on each platform. No public API, runtime dependency or implementation hash is added.
+
+The legacy default-region bounding-box admission remains; these controls do not
+prove general fill-bounds, wide-stroke/default-region or wider affine/custom-region
+semantics. Fractional custom-region, gradient material, element-opacity and
+circle/ellipse residuals remain measured. Source clips copied before deferred
+resolution retain their separate gates. Genuine nested-opacity and spatial-mask
+rejections remain. Copied mask-chain storage grows quadratically for the shallow
+chained-use experiment: depths through 512 render with cleanup, while depth 1,024
+reaches the default accounted-memory limit and releases all reservations on both
+platforms. Parser metadata traversal is iterative; raised caller limits do not
+establish arbitrary raster stack depth. No arbitrary feature cap is introduced.
+
+Seventy-two matching admitted Windows recipes in both process orders record
+resource costs, excluding six controls with no baseline render. Surface work
+includes parsing and is counted once; exploratory timings carry no representative
+throughput claim. See [the benchmark record](BENCHMARKS.md#leaf-and-instance-mask-composition-2026-10-07).
+Full ledgers and capture evidence stay under ignored
+`artifacts/leaf-mask-scopes-20261007/`; Git identifies implementation. The remaining
+original-scope audit and online public-domain/CC0 sourcing phase has not started.

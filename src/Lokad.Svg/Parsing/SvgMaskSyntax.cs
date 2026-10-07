@@ -5,7 +5,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one direct leaf geometry range whose mask reference resolves at document end.</summary>
-internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int GeometryCount, string MaskId, SvgViewportFrame? Parent);
+internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int GeometryCount, string MaskId, SvgViewportFrame? Parent, SvgLeafMaskOperation Operation);
 
 /// <summary>Retains one masked group command range whose mask reference resolves at document end.</summary>
 /// <remarks>Uniform and spatial group masks apply after child composition, independently of definition order.</remarks>
@@ -79,7 +79,7 @@ internal static class SvgMaskSyntax
         return id;
     }
 
-    /// <summary>Reports the unknown mask reference of one direct leaf for end-of-document resolution, or nothing when absent or already defined.</summary>
+    /// <summary>Retains one direct-leaf mask reference for composition after geometry and clip resolution.</summary>
     internal static string? PendingMaskId(XmlReader reader, SvgDocumentState state)
     {
         ArgumentNullException.ThrowIfNull(reader);
@@ -87,7 +87,6 @@ internal static class SvgMaskSyntax
         string? reference = reader.GetAttribute("mask");
         if (reference is null) return null;
         string id = ParseMaskId(reference);
-        if (state.Masks.TryGetValue(id, out _)) return null;
         return state.Strings.Copy(id);
     }
 
@@ -103,46 +102,7 @@ internal static class SvgMaskSyntax
     internal static SvgClipBox MaskRegion(SvgRectangle box)
         => new(box.X - box.Width / 10, box.Y - box.Height / 10, box.Width * 1.2, box.Height * 1.2);
 
-    /// <summary>Stamps one lowered geometry with a mask value inside its mask region.</summary>
-    internal static SvgGeometry ApplyMaskedLeaf(XmlReader reader, SvgDocumentState state, SvgGeometry geometry)
-    {
-        ArgumentNullException.ThrowIfNull(reader);
-        ArgumentNullException.ThrowIfNull(state);
-        string? reference = reader.GetAttribute("mask");
-        if (reference is null) return geometry;
-        byte value = ResolveMaskValue(reference, state);
-        SvgRectangle fallback = BoundingBox(geometry);
-        ValidateMaskCoverage(reference, state, fallback);
-        return ApplyMask(geometry, value, ResolveRegion(reader, state, fallback));
-    }
-
-    internal static void ApplyMaskToBands(XmlReader reader, SvgDocumentState state, SvgGeometry[] geometries)
-    {
-        ArgumentNullException.ThrowIfNull(reader);
-        ArgumentNullException.ThrowIfNull(state);
-        ArgumentNullException.ThrowIfNull(geometries);
-        string? reference = reader.GetAttribute("mask");
-        if (reference is null || geometries.Length == 0) return;
-        byte value = ResolveMaskValue(reference, state);
-        double left = double.PositiveInfinity;
-        double top = double.PositiveInfinity;
-        double right = double.NegativeInfinity;
-        double bottom = double.NegativeInfinity;
-        foreach (SvgGeometry geometry in geometries)
-        {
-            SvgRectangle box = BoundingBox(geometry);
-            left = Math.Min(left, box.X);
-            top = Math.Min(top, box.Y);
-            right = Math.Max(right, box.X + box.Width);
-            bottom = Math.Max(bottom, box.Y + box.Height);
-        }
-        SvgRectangle fallback = new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null);
-        ValidateMaskCoverage(reference, state, fallback);
-        SvgClipBox region = ResolveRegion(reader, state, fallback);
-        for (int index = 0; index < geometries.Length; index++) geometries[index] = ApplyMask(geometries[index], value, region);
-    }
-
-    /// <summary>Applies deferred mask values and regions to direct leaf geometry ranges at document end, after clip resolution.</summary>
+    /// <summary>Resolves direct-leaf effect values and validates retained regions after clip resolution; paint remains unchanged.</summary>
     internal static void ResolvePendingLeafMasks(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
@@ -156,14 +116,17 @@ internal static class SvgMaskSyntax
                 if (state.MaskContents.TryGetValue(pending.MaskId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content on masked leaves is not implemented.");
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
             }
+            pending.Operation.Value = value;
+            pending.Operation.Resolved = true;
             if (pending.GeometryCount == 0) continue;
             SvgRectangle fallback = UnionBounds(state, pending, workCounter, cancellationToken);
             if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
             SvgClipBox region = ResolveDeferredRegion(state, pending, fallback);
+            pending.Operation.Region = state.MaskRegions.TryGetValue(pending.MaskId, out _) || state.MaskFractionRegions.TryGetValue(pending.MaskId, out _) ? region : null;
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
             {
                 workCounter.Consume(cancellationToken);
-                state.Scene.ReplaceGeometry(geometryIndex, ApplyMask(state.Scene.GeometryAt(geometryIndex), value, region));
+                SvgLeafMaskComposition.ValidateRegion(state.Scene.GeometryAt(geometryIndex), region);
             }
         }
 
@@ -259,45 +222,6 @@ internal static class SvgMaskSyntax
         ArgumentNullException.ThrowIfNull(state);
         string? reference = reader.GetAttribute("mask");
         return reference is not null && (state.MaskRegions.TryGetValue(ParseMaskId(reference), out _) || state.MaskFractionRegions.TryGetValue(ParseMaskId(reference), out _));
-    }
-
-    /// <summary>Resolves the explicit mask region or falls back to the default bounding-box region.</summary>
-    internal static SvgClipBox ResolveRegion(XmlReader reader, SvgDocumentState state, SvgRectangle fallback)
-    {
-        ArgumentNullException.ThrowIfNull(reader);
-        ArgumentNullException.ThrowIfNull(state);
-        string? reference = reader.GetAttribute("mask");
-        if (reference is not null && state.MaskRegions.TryGetValue(ParseMaskId(reference), out SvgClipBox custom))
-        {
-            if (state.EffectiveFrame is not null && !state.EffectiveFrame.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
-            return custom;
-        }
-        if (reference is not null && state.MaskFractionRegions.TryGetValue(ParseMaskId(reference), out SvgClipBox fractions))
-        {
-            if (state.EffectiveFrame is not null && !state.EffectiveFrame.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
-            SvgClipBox resolved = new(fallback.X + fractions.X * fallback.Width, fallback.Y + fractions.Y * fallback.Height, fractions.Width * fallback.Width, fractions.Height * fallback.Height);
-            if (state.MaskContentBoxes.TryGetValue(ParseMaskId(reference), out SvgClipBox cover) && !cover.Contains(resolved.X, resolved.Y, resolved.X + resolved.Width, resolved.Y + resolved.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
-            return resolved;
-        }
-        return MaskRegion(fallback);
-    }
-    internal static byte? ResolveOptionalMask(XmlReader reader, SvgDocumentState state)
-    {
-        ArgumentNullException.ThrowIfNull(reader);
-        ArgumentNullException.ThrowIfNull(state);
-        string? reference = reader.GetAttribute("mask");
-        if (reference is null) return null;
-        return ResolveMaskValue(reference, state);
-    }
-
-    private static byte ResolveMaskValue(string reference, SvgDocumentState state)
-    {
-        if (!state.Masks.TryGetValue(ParseMaskId(reference), out byte value))
-        {
-            if (state.MaskContents.TryGetValue(ParseMaskId(reference), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content on leaves and use instances is not implemented.");
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-        }
-        return value;
     }
 
     /// <summary>Resolves deferred group masks at document end, rewriting or inserting isolation scopes after use expansion.</summary>
@@ -464,94 +388,4 @@ internal static class SvgMaskSyntax
         }
     }
 
-        private static SvgGeometry ApplyPatternMask(SvgPatternGeometry pattern, byte value, SvgClipBox region)
-    {
-        SvgPatternGeometry stamped = pattern.Stamped(value);
-        if (stamped.Stroke is not null)
-        {
-            double halfWidth = stamped.Stroke.Value.Width / 2d;
-            SvgRectangle fill = stamped.Fill;
-            if (!region.Contains(fill.X - halfWidth, fill.Y - halfWidth, fill.X + fill.Width + halfWidth, fill.Y + fill.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked pattern fills crossing a mask region boundary are not implemented.");
-        }
-        return SvgGeometry.FromPatternFill(stamped.ClipTo(region));
-    }
-
-    private static SvgGeometry ApplyGradientMask(SvgGradientGeometry gradient, byte value, SvgClipBox region)
-    {
-        SvgGradientGeometry stamped = gradient.Stamped(value);
-        if (stamped.Stroke is not null)
-        {
-            double halfWidth = stamped.Stroke.Value.Width / 2d;
-            SvgRectangle fill = stamped.Fill;
-            if (!region.Contains(fill.X - halfWidth, fill.Y - halfWidth, fill.X + fill.Width + halfWidth, fill.Y + fill.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked gradient fills crossing a mask region boundary are not implemented.");
-        }
-        return SvgGeometry.FromGradientFill(stamped.ClipTo(region));
-    }
-
-    private static SvgGeometry ApplyRadialMask(SvgRadialGeometry radial, byte value, SvgClipBox region)
-    {
-        if (radial.Stroke is not null)
-        {
-            double halfWidth = radial.Stroke.Value.Width / 2d;
-            SvgRectangle fill = radial.Fill;
-            if (!region.Contains(fill.X - halfWidth, fill.Y - halfWidth, fill.X + fill.Width + halfWidth, fill.Y + fill.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked radial fills crossing a mask region boundary are not implemented.");
-        }
-        return SvgGeometry.FromRadialFill(radial.Stamped(value).ClipTo(region));
-    }
-
-    private static SvgGeometry ApplyGradientStrokeMask(SvgGradientStrokeGeometry stroke, byte value, SvgClipBox region)
-        => SvgGeometry.FromGradientStroke(stroke.Stamped(value).ClipTo(region));
-
-    internal static SvgGeometry ApplyMask(SvgGeometry geometry, byte value, SvgClipBox region)
-    {
-        // A mask region bounds its surface; it is not a geometric AA clip on
-        // the source fill. Keep existing geometric boundary provenance when
-        // intersecting this region with an already clipped polygon.
-        region = region with { Antialiasing = SvgClipAntialiasing.None };
-        SvgGeometry result = geometry.Kind switch
-        {
-            SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(StampRectangle(ClipStrokedRectangle(geometry.Rectangle, region), value)),
-            SvgGeometryKind.AxisAlignedLine => StampLine(region.ClipLine(geometry.AxisAlignedLine), value),
-            SvgGeometryKind.OrthogonalBand => SvgGeometry.FromOrthogonalBand(StampRectangle(region.ClipRectangle(geometry.Rectangle), value)),
-            SvgGeometryKind.PatternFill => ApplyPatternMask(geometry.Pattern, value, region),
-            SvgGeometryKind.GradientFill => ApplyGradientMask(geometry.Gradient, value, region),
-            SvgGeometryKind.RadialGradient => ApplyRadialMask(geometry.Radial, value, region),
-            SvgGeometryKind.GradientStroke => ApplyGradientStrokeMask(geometry.GradientStroke, value, region),
-            SvgGeometryKind.PolygonFill => SvgGeometry.FromPolygonFill(geometry.Polygon.Stamped(value, region)),
-            SvgGeometryKind.GradientPolygon => SvgGeometry.FromGradientPolygon(geometry.GradientPolygon.Stamped(value, region)),
-            SvgGeometryKind.RadialPolygon => SvgGeometry.FromRadialPolygon(geometry.RadialPolygon.Stamped(value, region)),
-            SvgGeometryKind.PatternPolygon => SvgGeometry.FromPatternPolygon(geometry.PatternPolygon.Stamped(value, region)),
-            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on this geometry are not implemented.")
-        };
-        return geometry.TransferAuthoredPathTo(result);
-    }
-
-    private static SvgRectangle ClipStrokedRectangle(SvgRectangle rectangle, SvgClipBox region)
-    {
-        if (rectangle.Stroke is null) return region.ClipRectangle(rectangle);
-        double halfWidth = rectangle.Stroke.Value.Width / 2d;
-        if (!region.Contains(rectangle.X - halfWidth, rectangle.Y - halfWidth, rectangle.X + rectangle.Width + halfWidth, rectangle.Y + rectangle.Height + halfWidth)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a mask region boundary are not implemented.");
-        return rectangle;
-    }
-
-    private static SvgRectangle StampRectangle(SvgRectangle rectangle, byte value)
-    {
-        SvgColor color = rectangle.Color;
-        SvgColor stamped = new(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, value));
-        SvgStroke? stroke = rectangle.Stroke;
-        SvgStroke? stampedStroke = stroke is null ? null : new SvgStroke(new SvgColor(stroke.Value.Color.Red, stroke.Value.Color.Green, stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(stroke.Value.Color.Alpha, value)), stroke.Value.Width);
-        return rectangle with { Color = stamped, Stroke = stampedStroke };
-    }
-
-    private static SvgGeometry StampLine(SvgGeometry geometry, byte value)
-    {
-        if (geometry.Kind == SvgGeometryKind.AxisAlignedLine)
-        {
-            SvgAxisAlignedLine line = geometry.AxisAlignedLine;
-            SvgColor color = line.Color;
-            return SvgGeometry.FromAxisAlignedLine(line with { Color = new SvgColor(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, value)) });
-        }
-        SvgRectangle band = geometry.Rectangle;
-        return SvgGeometry.FromOrthogonalBand(StampRectangle(band, value));
-    }
 }

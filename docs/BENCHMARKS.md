@@ -2224,3 +2224,27 @@ bytes on white/black; encoded output changes with the corrected composition.
 Three newly admitted empty-group configurations have no baseline conversion and
 are excluded. Exploratory timing batches establish no representative throughput
 claim. Full ledgers stay under ignored `artifacts/leaf-mask-scopes-20261007/`.
+
+## Leaf and instance mask composition (2026-10-07)
+
+Seventy-two matching admitted Windows recipes compare `7b3f549d` with isolated
+leaf/use-instance masks. Original input bytes and background recipes match in
+both process orders. Six controls rejected by the baseline have no matching
+conversion and are excluded. Three batches measure owned-output allocation
+traffic; surface work includes parser work and is counted once.
+
+| Measured quantity | Change per conversion |
+| --- | ---: |
+| Parser work | +0 to +72 units |
+| Total accounted conversion work | -2,230 to +12,702 units |
+| Accounted peak live storage | +0 to +7,868 bytes |
+| Managed allocation traffic | +224 to +62,046 bytes |
+
+Temporary group clones now have parser-owned storage and release on success,
+work/memory denial and cancellation. Geometry values grow 256 → 264 bytes, including unmasked inputs and retained
+pattern geometry; arrays charge the actual value size. Draw commands remain 72
+bytes. New parser metadata and isolated surfaces have real costs; removed paint
+stamping can reduce other allocations. This study does not measure a representative
+workload or establish throughput. The preceding 258-recipe Windows ShortRun
+retains its historical scope. Full recipes and both-order ledgers stay under
+ignored `artifacts/leaf-mask-scopes-20261007/`.

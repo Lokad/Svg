@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="49" height="43"><defs><mask id="a"><rect width="79" height="73" fill="#404040"/></mask><mask id="b"><rect width="79" height="73" fill="#c0c0c0"/></mask><mask id="w"><rect width="79" height="73" fill="white"/></mask></defs><rect x="4.375" y="5.25" width="29.125" height="23.5" rx="5.25" fill="#267eb5" mask="url(#a)" clip-path="url(#c)"/><defs><clipPath id="c"><rect x="9" y="10" width="17" height="13"/></clipPath></defs></svg>

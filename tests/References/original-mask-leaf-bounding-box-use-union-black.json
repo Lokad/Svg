@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-mask-leaf-bounding-box-use-union-black.png",
+  "referenceSha256": "5f60accfafc6e76429ece01e983403771388490a1ee8b325e53d97cfd53e9c76",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures.",
+  "fixtureId": "original-mask-leaf-bounding-box-use-union-black",
+  "inputSha256": "061fb204b45939e75d5988a94579c1341cb2956669137b663c99f98dee4a6926",
+  "candidateSha256": "c74f75ac91105390e0b8b95fa5353d809dbb6848e2e4c6ec83792d274937b797",
+  "viewport": {
+    "width": 49,
+    "height": 43,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

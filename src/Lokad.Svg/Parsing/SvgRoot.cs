@@ -46,6 +46,8 @@ internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalB
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly struct SvgGeometry
 {
+    /// <summary>Borrows a parser-owned element mask chain until final command emission clears it before scene transfer.</summary>
+    internal SvgLeafMaskBinding? LeafMask { get; init; }
     /// <summary>Gets source paint only for native solid rectangle draws without an opacity layer. Generated bands, images and paint-server fallbacks remain distinct.</summary>
     internal SvgSolidPaint? SolidPaint { get; init; }
 
@@ -1196,7 +1198,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
     private readonly BudgetedSceneList<SvgGeometry> _geometries;
-    private readonly BudgetedSceneList<SvgDrawCommand> _commands;
+    private BudgetedSceneList<SvgDrawCommand> _commands;
     private List<RenderBudget.BudgetReservation> _paintReservations = new();
     private readonly BudgetedSceneList<SvgMaskContent> _maskContents;
     private List<RenderBudget.BudgetReservation> _maskReservations = new();
@@ -1237,11 +1239,22 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     internal void ReplaceCommand(int index, SvgDrawCommand command) => _commands[index] = command;
 
+    /// <summary>Updates borrowed metadata without disposing or transferring the geometry's native owners.</summary>
+    internal void AssignLeafMask(int index, SvgLeafMaskBinding? binding) => _geometries[index] = _geometries[index] with { LeafMask = binding };
+
+    /// <summary>Adopts reserved replacement commands, releasing the former array; the caller must stop disposing the replacement.</summary>
+    internal void AdoptCommands(BudgetedSceneList<SvgDrawCommand> commands)
+    {
+        _commands.Dispose();
+        _commands = commands;
+    }
+
     internal void InsertCommands(int index, ReadOnlySpan<SvgDrawCommand> commands) => _commands.Insert(index, commands);
 
     /// <summary>Replaces one retained scene geometry with its clipped successor, keeping commands and releasing replaced storage.</summary>
     internal void ReplaceGeometry(int index, SvgGeometry geometry)
     {
+        geometry = geometry with { LeafMask = _geometries[index].LeafMask };
         ReserveGradientStops(geometry);
         _geometries[index].Dispose();
         _geometries[index] = geometry;

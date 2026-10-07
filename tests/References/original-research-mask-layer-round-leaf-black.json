@@ -1,0 +1,31 @@
+{
+  "referencePng": "original-research-mask-layer-round-leaf-black.png",
+  "referenceSha256": "9ae60446599d38e8b2e2199534f3b4d535ec517dafac567a6ee46c99246ae125",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "deviceScaleFactor": 1,
+  "background": "black",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "graduatedFrom": "research-mask-layer-round-leaf-black",
+  "fixtureId": "original-research-mask-layer-round-leaf-black",
+  "inputSha256": "522bba2bf9589d9f2eb04ea3434f4409dc8cf655d4243515161d8394ff00d9c0",
+  "candidateSha256": "b951bb3a01eb3f3c18c9760e2b748f452865bd1e7995d584019b1fa8b4aee75a",
+  "viewport": {
+    "width": 43,
+    "height": 37,
+    "deviceScaleFactor": 1
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0,
+    "exact": true
+  }
+}

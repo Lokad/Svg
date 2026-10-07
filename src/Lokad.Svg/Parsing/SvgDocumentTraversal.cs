@@ -348,6 +348,7 @@ internal static class SvgDocumentTraversal
                     SvgMaskSyntax.ResolvePendingLeafMasks(state, workCounter, cancellationToken);
                     SvgMaskSyntax.ResolvePendingGroupMasks(state, workCounter, cancellationToken);
                     if (root.Opacity != 255) state.Scene.EndOpacityScope();
+                    SvgLeafMaskComposition.Emit(state, workCounter, cancellationToken);
                     SvgSceneStorage sceneStorage = state.Scene.Build();
                     state.ReleaseDefinitions();
                     try
