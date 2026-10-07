@@ -5,10 +5,28 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 No selection is claimed until documents are actually inventoried below.
 
+## Source-curve paint-bounds checkpoint (2026-10-07)
+
+All nine SimpleLogin variants are exact on Windows/Linux. The current cohort is
+**25/27 exact documents**, marks **13/13**, wordmarks **12/14**: **246 exact,
+12 known and zero rejected** variants. Only its three large corporate PNGs change;
+all 243 earlier exact images and every other complete comparison remain.
+Membership, inputs, options and original references stay frozen. Zeppelin's three
+small variants are the next development case; IBM's nine remain an evaluation holdout.
+
+The unchanged bank has 1,255 fixtures (1,176 exact, 55 known, 24 rejected), 36
+research probes (22 exact, 13 known, one rejected) and 92 Default renders:
+**1,383 executions**, with identical Windows/Linux outcomes and PNG bytes.
+Seven existing independent shader controls become exact against their original
+stable references; no new fixtures or browser references are needed.
+[The design record](RASTERIZATION_DESIGN.md#source-curve-paint-bounds-2026-10-07)
+records the mechanism and limits. PLAN owns the current queue; preceding checkpoints
+below retain their historical totals.
+
 ## One-chord authored-quadratic checkpoint (2026-10-07)
 
 SimpleLogin is exact at small and intended size; each large variant retains one
-RGB-only pixel, with alpha exact. The current cohort is **24/27 exact documents**,
+RGB-only pixel, with alpha exact. At that checkpoint the cohort had **24/27 exact documents**,
 marks **12/13**, wordmarks **12/14**: **243 exact, 15 known and zero rejected**
 variants on Windows/Linux. Only its six intended/large corporate PNGs change;
 all 240 earlier exact images and every other complete comparison remain.
@@ -59,8 +77,8 @@ pass the cohort tests; Linux uses the supplement for those three variants.
 The validated Linux-browser matrix covers all 258 frozen variants with
 774 stable, healthy, cleaned captures. Of the reference PNGs, 255 match Windows
 bytes, while all nine new small Pepsi captures reproduce the existing supplement.
-The current Linux result is 243 exact variants, 15 known differences, zero rejections and
-the same 24/27 exact documents, marks 12/13 and wordmarks 12/14. No failure or
+The current Linux result is 246 exact variants, 12 known differences, zero rejections and
+the same 25/27 exact documents, marks 13/13 and wordmarks 12/14. No failure or
 unmeasured variant is omitted. Remote CI remains open; detailed evidence stays
 under ignored `artifacts/linux-delivery-20261007/`.
 

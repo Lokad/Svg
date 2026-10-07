@@ -126,7 +126,7 @@ internal static class SvgOrthogonalShapeParser
         }
 
         SvgRectangle BoxFromFilledOutlineBounds()
-            => BoxFromFilledGeometryBounds(filled, context.CancellationToken);
+            => BoxFromFilledGeometryBounds(filled, context.WorkCounter, context.CancellationToken);
 
         try
         {
@@ -246,7 +246,7 @@ internal static class SvgOrthogonalShapeParser
                 if (paintOutline || paintRadialOutline || paintPatternOutline)
                 {
                     bool needsFractionalBox = (paintOutline && !outlineCandidate.IsUserSpace) || (paintRadialOutline && !outlineRadialCandidate.IsUserSpace);
-                    SvgRectangle fractionalBox = needsFractionalBox ? BoxFromFilledGeometryBounds(filled, context.CancellationToken) : default;
+                    SvgRectangle fractionalBox = needsFractionalBox ? BoxFromFilledGeometryBounds(filled, context.WorkCounter, context.CancellationToken) : default;
                     using BudgetedParserList<SvgGeometry> repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                     foreach (SvgGeometry existing in fractionalStroked.Geometries)
                     {
@@ -386,8 +386,9 @@ internal static class SvgOrthogonalShapeParser
             && state.RadialGradients.TryGetValue(outlinePaintId, out circle);
     }
 
-    /// <summary>Reads output-space fill-geometry bounds for bounding-box outline paints, sharing one helper across path and fractional lowerings.</summary>
-    internal static SvgRectangle BoxFromFilledGeometryBounds(SvgParsedGeometry filled, CancellationToken cancellationToken)
+    /// <summary>Reads scene-space fill bounds for object-bounding-box paints. Axis-aligned authored
+    /// paths map original source-curve extrema; other geometry retains its lowered bounds.</summary>
+    internal static SvgRectangle BoxFromFilledGeometryBounds(SvgParsedGeometry filled, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         double left = double.PositiveInfinity;
         double top = double.PositiveInfinity;
@@ -405,6 +406,17 @@ internal static class SvgOrthogonalShapeParser
                     bottom = Math.Max(bottom, existing.Rectangle.Y + existing.Rectangle.Height);
                     break;
                 case SvgGeometryKind.PolygonFill:
+                    if (existing.AuthoredPath is { } path && path.StrokeStyle is null && path.SceneMap.IsAxisAligned)
+                    {
+                        SvgRectangle box = SvgPathBounds.Compute(path.Commands, workCounter, cancellationToken);
+                        SvgDevicePoint first = SvgAuthoredPath.MapPoint(path.SceneMap, new(box.X, box.Y), new(0, 0));
+                        SvgDevicePoint second = SvgAuthoredPath.MapPoint(path.SceneMap, new(box.X + box.Width, box.Y + box.Height), new(0, 0));
+                        left = Math.Min(left, Math.Min(first.X, second.X));
+                        right = Math.Max(right, Math.Max(first.X, second.X));
+                        top = Math.Min(top, Math.Min(first.Y, second.Y));
+                        bottom = Math.Max(bottom, Math.Max(first.Y, second.Y));
+                        break;
+                    }
                     int vertexIndex = 0;
                     foreach (SvgDevicePoint vertex in existing.Polygon.Points)
                     {

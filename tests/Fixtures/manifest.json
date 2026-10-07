@@ -1491,7 +1491,7 @@
     {"id":"original-clip-pair-black-transparent","path":"original/clip-pair-black.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-10-05","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"297d37a94ff3ab1cc3c047beb0af87dbcad11cc5fe7f220ed8daec52d1b5a2ae","materializedSha256":"297d37a94ff3ab1cc3c047beb0af87dbcad11cc5fe7f220ed8daec52d1b5a2ae","featureTags":["geometry","analytic-clipping","clip-paint-routing"],"width":200,"height":120,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-clip-pair-black-transparent.json","referenceSha256":"a8d767f26ddd6b1dbeab3f8e2edbbc72ab0586bb17a901173e4b3a879766dcb4"},
     {"id":"original-clip-pair-tiled-transparent","path":"original/clip-pair-tiled.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-10-05","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"563352772daa3ce7b0e08f793d6b01710652673d3c9a3a6759a72cb175beada0","materializedSha256":"563352772daa3ce7b0e08f793d6b01710652673d3c9a3a6759a72cb175beada0","featureTags":["geometry","analytic-clipping","clip-paint-routing"],"width":640,"height":320,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-clip-pair-tiled-transparent.json","referenceSha256":"c78376e45e91f0feb7c001708b8ee0d0571b2f3772c2b2cfe0b93aa9662f5d80"},
     {"id":"original-clip-pair-linear-transparent","path":"original/clip-pair-linear.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-10-05","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"2e29a917eda57bb914d2f83999175d8e0fcde8cd80ba8ccd94fc4b759af0d859","materializedSha256":"2e29a917eda57bb914d2f83999175d8e0fcde8cd80ba8ccd94fc4b759af0d859","featureTags":["geometry","analytic-clipping","clip-paint-routing"],"width":200,"height":120,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-clip-pair-linear-transparent.json","referenceSha256":"b8e7b2238c2d96f59479db9205196239bc5d0f4cc0c5a1c4ddf91feb45ea02e6"},
-    {"id":"original-clip-pair-radial-transparent","path":"original/clip-pair-radial.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-10-05","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"fb99ede13efb20ef7d4789ad21ed6a5891e7bfcaea45ca353bc46655ab2ca182","materializedSha256":"fb99ede13efb20ef7d4789ad21ed6a5891e7bfcaea45ca353bc46655ab2ca182","featureTags":["geometry","analytic-clipping","clip-paint-routing"],"width":200,"height":120,"scale":1,"background":"transparent","expectedSupport":"unsupported","expectedFidelity":"unsupported","observedBehavior":"renders","knownDifferenceIdentity":"tests/References/original-clip-pair-radial-transparent.json","unsupportedReason":"Original shader differences remain against the independent captured reference."},
+    {"id":"original-clip-pair-radial-transparent","path":"original/clip-pair-radial.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-10-05","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"fb99ede13efb20ef7d4789ad21ed6a5891e7bfcaea45ca353bc46655ab2ca182","materializedSha256":"fb99ede13efb20ef7d4789ad21ed6a5891e7bfcaea45ca353bc46655ab2ca182","featureTags":["geometry","analytic-clipping","clip-paint-routing"],"width":200,"height":120,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-clip-pair-radial-transparent.json","referenceSha256":"06767e062f7861638f483f69f7864ed1467874233c4c78f8c3288e2c187f381b"},
     {"id":"original-clip-pair-pattern-transparent","path":"original/clip-pair-pattern.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-10-05","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset.","originalSha256":"24dcadb0f09483c946bce959932de907eb29de687bfa552dff51bf7df012917c","materializedSha256":"24dcadb0f09483c946bce959932de907eb29de687bfa552dff51bf7df012917c","featureTags":["geometry","analytic-clipping","clip-paint-routing"],"width":200,"height":120,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-clip-pair-pattern-transparent.json","referenceSha256":"299b7fcc6c3d7092b45cb4489286f192b64ebbd2d5411d48ee77d4937987a11d"},
     {"id":"original-device-map-million-authored-transparent","path":"original/device-map-million-authored.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-10-05","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset. Authored/float-baked/relative families retain the original 2026-10-04 declaration and the reflection is a new holdout.","originalSha256":"24ee38902b92932d855b99dca97052d90fe953f77391243c203e5267deb6ecba","materializedSha256":"24ee38902b92932d855b99dca97052d90fe953f77391243c203e5267deb6ecba","featureTags":["geometry","path-device-mapping","large-translation"],"width":128,"height":128,"scale":1,"background":"transparent","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-device-map-million-authored-transparent.json","referenceSha256":"51e941dd9197058acbfbde45244b3e3bbf2b03ca1b0d53b06053994b0d92a6fc"},
     {"id":"original-device-map-million-authored-white","path":"original/device-map-million-authored.svg","sourceUrl":null,"creator":"Lokad.Svg contributors","retrievalDate":"2026-10-05","license":"CC0-1.0","licenseEvidence":"Original work dedicated through the SPDX CC0-1.0 declaration in the asset. Authored/float-baked/relative families retain the original 2026-10-04 declaration and the reflection is a new holdout.","originalSha256":"24ee38902b92932d855b99dca97052d90fe953f77391243c203e5267deb6ecba","materializedSha256":"24ee38902b92932d855b99dca97052d90fe953f77391243c203e5267deb6ecba","featureTags":["geometry","path-device-mapping","large-translation"],"width":128,"height":128,"scale":1,"background":"white","expectedSupport":"exact","expectedFidelity":"exact","oracleIdentity":"tests/References/original-device-map-million-authored-white.json","referenceSha256":"39f5b0792a4108f524d72cbb98ef48ba895b297f6665156c0d6c7908356d1e54","variantOf":"original-device-map-million-authored-transparent"},
@@ -2204,11 +2204,10 @@
       "height": 64,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-raw-cubic-tangent-shader-transparent.json",
-      "unsupportedReason": "Raw-control dispatch is preserved; the pinned browser still differs at mapped curve or shader events."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-raw-cubic-tangent-shader-transparent.json",
+      "referenceSha256": "ed8c1dfee1ec454622faf4d91cbfecb778ff3625513aeaf7a1583520ade8162a"
     },
     {
       "id": "original-raw-cubic-tangent-shader-white",
@@ -2230,12 +2229,11 @@
       "height": 64,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
       "variantOf": "original-raw-cubic-tangent-shader-transparent",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-raw-cubic-tangent-shader-white.json",
-      "unsupportedReason": "Raw-control dispatch is preserved; the pinned browser still differs at mapped curve or shader events."
+      "oracleIdentity": "tests/References/original-raw-cubic-tangent-shader-white.json",
+      "referenceSha256": "66ecec1b05bc1489746664722bc6588d1e19fbb77a5120b3b3da86da69a18171"
     },
     {
       "id": "original-raw-cubic-tangent-shader-black",
@@ -2257,12 +2255,11 @@
       "height": 64,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
       "variantOf": "original-raw-cubic-tangent-shader-transparent",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-raw-cubic-tangent-shader-black.json",
-      "unsupportedReason": "Raw-control dispatch is preserved; the pinned browser still differs at mapped curve or shader events."
+      "oracleIdentity": "tests/References/original-raw-cubic-tangent-shader-black.json",
+      "referenceSha256": "087cde4b64765ae55964365e512c0d0014320f1b97edf4001e112fd59fb02ee4"
     },
     {
       "id": "original-raw-cubic-tangent-opacity-transparent",
@@ -3174,11 +3171,10 @@
       "height": 80,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-aa-clip-root-shader-transparent.json",
-      "unsupportedReason": "AA paint-clip dispatch improves this control; original Chrome pixels still differ at curve or shader events."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-aa-clip-root-shader-transparent.json",
+      "referenceSha256": "56bdbf70d1620ced7840db5df4ca2ee6360d2ba60638fee7baf834ba8082dd98"
     },
     {
       "id": "original-aa-clip-root-shader-white",
@@ -3199,12 +3195,11 @@
       "height": 80,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
       "variantOf": "original-aa-clip-root-shader-transparent",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-aa-clip-root-shader-white.json",
-      "unsupportedReason": "AA paint-clip dispatch improves this control; original Chrome pixels still differ at curve or shader events."
+      "oracleIdentity": "tests/References/original-aa-clip-root-shader-white.json",
+      "referenceSha256": "2a8ff0309c454648e9d6bc5f77948a4a328453b5038f31ad6e5dfd0f52354daa"
     },
     {
       "id": "original-aa-clip-root-shader-black",
@@ -3225,12 +3220,11 @@
       "height": 80,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
       "variantOf": "original-aa-clip-root-shader-transparent",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-aa-clip-root-shader-black.json",
-      "unsupportedReason": "AA paint-clip dispatch improves this control; original Chrome pixels still differ at curve or shader events."
+      "oracleIdentity": "tests/References/original-aa-clip-root-shader-black.json",
+      "referenceSha256": "a17f4f6756224eefa4cb626f5dfc7c60f2aea6328ca65a01e0657da67d5be14c"
     },
     {
       "id": "original-aa-clip-root-material-pairs-transparent",

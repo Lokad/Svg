@@ -6583,3 +6583,50 @@ Linux uses its original 774 validated platform captures and Pepsi supplement.
 Prior package/memory delivery evidence retains its scope; no new timing claim is
 made. The next development work concerns SimpleLogin's remaining large RGB
 witness and Zeppelin's small RGB differences; IBM remains an evaluation holdout.
+
+## Source-curve paint bounds (2026-10-07)
+
+Axis-aligned authored fill paint boxes now use original source-curve extrema,
+then map the box into the scene. Flattened samples can miss a curve's extrema,
+changing objectBoundingBox shader coordinates while coverage remains exact.
+Polynomial quadratics, cubics and rational conics use the pinned float root and
+evaluation order; endpoint arcs reuse the native conic converter. Movetos and
+endpoints participate in the box. General affine, legacy and stroked box routes
+retain their existing behavior; this repair does not establish those routes' parity.
+
+SimpleLogin's Path_172 local width was 32.690185546875 from flattened samples.
+Chrome DOM getBBox and the unchanged compiled native extrema functions both give
+32.6956787109375. With the original curve box, the remaining large shader sample
+changes from 0.46566274762153625 to 0.46558454632759094. Its stored premultiplied
+red crosses 100.49752 → 100.500946, matching the reference after rounding and
+unpremultiplication. DOM bounds are diagnostic geometry evidence; the unchanged
+image references establish pixel fidelity.
+
+Forty-five original compiled native vectors cover lines, polynomial/rational
+extrema, monotonic and degenerate curves, movetos, zero/positive weights and
+large translations. Windows/Linux numerical results match bit-for-bit. Record
+adapters exclude full native path iteration, scene mapping and painting. The
+helper borrows immutable commands, charges bounded work and checks cancellation;
+fixed stack buffers add no heap storage or owner. Work denial, token-preserving
+cancellation, repeated zero-heap queries and six-output parity pass.
+
+All nine SimpleLogin variants are exact. Only its three large PNGs change; all
+243 earlier exact corporate PNGs and every other complete comparison remain.
+The cohort has 246 exact / 12 known / zero rejected variants and 25/27 exact
+documents on both platforms. Seven existing independent shader controls graduate:
+clip-pair radial 784 → zero pixels, raw cubic tangent shader 321 → zero on three
+backgrounds, and AA clip root shader 325 → zero on three backgrounds. Their
+original stable captures are reused; no new bank entries or reference PNGs are
+introduced. Every other bank result remains unchanged. The historical AA-clip
+checkpoint is retained; its regression reads current fixture expectations.
+
+The complete 1,383-case bank has identical Windows/Linux outcomes and PNG bytes.
+Nine-project Release builds and 3,891 tests per platform pass. Linux reuses its
+774 validated platform captures and Pepsi supplement. Prior memory/package
+delivery evidence retains its scope; no new timing claim is made. Detailed
+adapters, traces and audits stay under ignored `artifacts/material-events-20261007/`.
+Zeppelin is the next development case: opaque blue underpaint hides the gold
+stroke's alpha delta. At (119,7), changing direct coverage 62 → 63 gives the
+reference RGB. Curve construction, mapping and walking still need evidence;
+RGB-only classification does not establish a material-only cause. IBM remains
+an evaluation holdout. Full-cohort exactness and remote CI retain their open scope.

@@ -12,7 +12,7 @@
     "executableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
     "captureRecipeRevision": "3"
   },
-  "scope": "Frozen 27-document/258-variant measurement after retaining one-chord authored quadratics; membership, inputs, options and original references retained.",
+  "scope": "Frozen 27-document/258-variant measurement after original source-curve paint bounds; membership, inputs, options and original references retained.",
   "rendererCounts": {
     "renders": 258,
     "MalformedInput": 0,
@@ -24,8 +24,8 @@
     "transport-limit-gap": 0
   },
   "fidelityCounts": {
-    "exact": 243,
-    "known-difference": 15,
+    "exact": 246,
+    "known-difference": 12,
     "withoutReference": 0,
     "measuredRendererRejections": 0
   },
@@ -181,7 +181,7 @@
         "inv-001-large-white",
         "inv-001-large-black"
       ],
-      "verifiedExact": false
+      "verifiedExact": true
     },
     {
       "id": "inv-002",
@@ -988,24 +988,24 @@
       "id": "inv-001-large-transparent",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "7d7060ed8b609850004df717060f9f2c06298633818b941d0f50591d885ace3c",
+      "candidateSha256": "f7ef897708c553612581f07ef0acbe6a9fab90acb152ca6b8656181aadfaf44c",
       "width": 118,
       "height": 116,
       "referenceSha256": "68e4d147f87ac169250fc0dda57d6a1c8ea8f7c4b7e635f588ddcd975c18290a",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 1.8264172998246638e-05,
-          "RootMeanSquareError": 0.004273660374695986,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 30,
-          "MinimumMismatchY": 98,
-          "MaximumMismatchX": 30,
-          "MaximumMismatchY": 98,
-          "IsExact": false
+          "MinimumMismatchX": 118,
+          "MinimumMismatchY": 116,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -1045,24 +1045,24 @@
       "id": "inv-001-large-white",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "78a5e2ca8f8a8c99858b29dd87b1a0202b7ed28a426c7a650160e1fd2b1c81b5",
+      "candidateSha256": "40bcd929dc6b0146c70bd66aec2d885634c0ecdf7a8f408fcd9723d2888f95f5",
       "width": 118,
       "height": 116,
       "referenceSha256": "dd8810c470cff7ba4f38c24c4eb3791280d7c573ed0f4e710a6b14dde489531e",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 1.8264172998246638e-05,
-          "RootMeanSquareError": 0.004273660374695986,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 30,
-          "MinimumMismatchY": 98,
-          "MaximumMismatchX": 30,
-          "MaximumMismatchY": 98,
-          "IsExact": false
+          "MinimumMismatchX": 118,
+          "MinimumMismatchY": 116,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -1102,24 +1102,24 @@
       "id": "inv-001-large-black",
       "renderOutcome": "renders",
       "inputSha256": "bff82f97d7a113ba10b4def3341bd2d5fd43ff3e5bad648157708f27a1bfdd6b",
-      "candidateSha256": "d5432895a33148f08240333ba4e1e3c08a13c7e43fa16bef12cccd1f5b60ec37",
+      "candidateSha256": "fc1ec1d5ea5b97e9061d9db65e225d767de341e9b716d38541a596056973467e",
       "width": 118,
       "height": 116,
       "referenceSha256": "977c07c8390ad8a2dd0de6599cbb82a94e0bd743b660028b9b3f7f5ca7154dad",
       "comparison": {
         "diff": {
           "DimensionsMatch": true,
-          "ChangedPixelCount": 1,
-          "MaximumChannelError": 1,
-          "MeanAbsoluteError": 1.8264172998246638e-05,
-          "RootMeanSquareError": 0.004273660374695986,
+          "ChangedPixelCount": 0,
+          "MaximumChannelError": 0,
+          "MeanAbsoluteError": 0,
+          "RootMeanSquareError": 0,
           "MaximumAlphaError": 0,
           "AlphaChangedPixelCount": 0,
-          "MinimumMismatchX": 30,
-          "MinimumMismatchY": 98,
-          "MaximumMismatchX": 30,
-          "MaximumMismatchY": 98,
-          "IsExact": false
+          "MinimumMismatchX": 118,
+          "MinimumMismatchY": 116,
+          "MaximumMismatchX": -1,
+          "MaximumMismatchY": -1,
+          "IsExact": true
         },
         "alphaMass": 0,
         "overCoveredPixels": 0,
@@ -15301,8 +15301,8 @@
       "height": 386
     }
   ],
-  "rendererSourceBaselineCommit": "27a4d000",
-  "rendererSourceState": "Native filled-path quadratics retain their controls even when fallback flattening emits one chord; existing clipped, stroke and legacy flattening routes preserved.",
-  "measurementCheckpoint": "one-chord-authored-quadratics-2026-10-07",
+  "rendererSourceBaselineCommit": "2cfaaf49",
+  "rendererSourceState": "Axis-aligned authored fill paint boxes use original native float curve extrema before scene mapping; other geometry retains its lowered bounds.",
+  "measurementCheckpoint": "source-curve-paint-bounds-2026-10-07",
   "referenceCheckpoint": "complete-frozen-corporate-cohort-2026-10-06"
 }

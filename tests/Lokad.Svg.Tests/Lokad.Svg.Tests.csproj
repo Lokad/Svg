@@ -28,6 +28,11 @@
     <None Update="TestData/radial-local-matrix-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-coordinates-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-coordinates-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/path-bounds-native.csv" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/path-bounds-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/clip-pair-radial.svg" Link="TestData/clip-pair-radial.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/raw-cubic-tangent-shader.svg" Link="TestData/raw-cubic-tangent-shader.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/original/aa-clip-root-shader.svg" Link="TestData/aa-clip-root-shader.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-transform-browser.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/shader-coordinate-linear.svg" Link="TestData/shader-coordinate-linear.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/shader-coordinate-affine.svg" Link="TestData/shader-coordinate-affine.svg" CopyToOutputDirectory="PreserveNewest" />

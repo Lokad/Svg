@@ -6,13 +6,16 @@ The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
 The current 1,255 manifest entries contain
-1,169 exact decoded-pixel references, 62 known-difference renders and 24
+1,176 exact decoded-pixel references, 55 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
 Painted integer paths with diagonal edges retain directed authored contours,
 including touching/coincident subpaths and even-odd crossings. Linear/radial
 gradient and pattern paths retain whole fill contours and scene paint boxes.
+Axis-aligned authored fill paint boxes use original float curve extrema before
+scene mapping, including polynomial and rational curves and endpoint arcs.
+General affine, legacy and stroked geometry retain their existing box route.
 Solid orthogonal paths keep checked integer bands. Authored straight replay uses
 command-bounded scratch; rectangle mask and additive-run boundary bytes differ.
 Original independent controls remain exact; broader fidelity is still open. Native

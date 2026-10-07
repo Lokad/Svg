@@ -1,26 +1,25 @@
 # S17 release criteria and decisions
 
-Updated 2026-10-07. Retaining one-chord authored quadratics makes SimpleLogin's
-three intended variants exact on Windows and Linux. The cohort remains **24/27 exact
-documents**, marks **12/13**, wordmarks **12/14**, with **243 exact and 15 known**
-comparisons across 258 variants. Only its six intended/large PNGs change; all 240 earlier exact
+Updated 2026-10-07. Original source-curve paint bounds make all nine SimpleLogin
+variants exact on Windows and Linux. The cohort now has **25/27 exact documents**,
+marks **13/13**, wordmarks **12/14**, with **246 exact and 12 known** comparisons
+across 258 variants. Only its three large PNGs change; all 243 earlier exact
 images and every other complete comparison remain. The original numerical release
 criterion is met. The active target is 27/27 documents and 258/258 variants on both
 platforms; remote CI remains open.
 
-Exact documents are Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, Rede Manchete,
+Exact documents are SimpleLogin, Ford, SDL, UAAR, SimpleX, Omega, Eisenbahn, Rede Manchete,
 ROC HCVS, Red Cross, SG Rotation Leipzig, Tokyo Tsukurou, Artsy, Party of Changes,
 YouTube, Liputan6, NASA, Blur, Nike, Toyota, Pepsi, Target, IKEA, Google and Coca-Cola.
 Membership, inputs, options and references remain frozen.
 [PLAN.md](../PLAN.md) owns the current queue and validation totals;
-[the design record](RASTERIZATION_DESIGN.md#one-chord-authored-quadratics-2026-10-07)
+[the design record](RASTERIZATION_DESIGN.md#source-curve-paint-bounds-2026-10-07)
 explains the repair. Detailed diagnostics stay under ignored artifacts.
 
-The three remaining failed documents stay in the denominator:
+The two remaining failed documents stay in the denominator:
 
 | Document | Failed variants | Current pixel difference |
 | --- | ---: | --- |
-| SimpleLogin (`inv-001`) | Three large | One RGB-only pixel per background; alpha exact. |
 | Zeppelin (`inv-007`) | Three small | 26 RGB-only pixels, maximum channel error five. |
 | IBM (`inv-099`) | Nine | 209 through 942 pixels; transparent alpha errors reach 23. |
 

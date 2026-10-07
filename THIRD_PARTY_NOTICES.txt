@@ -6,7 +6,7 @@ rectangle coverage, filled-path rectangle recognition and float fringe coverage,
 dash endpoint interpolation, high-precision shader pixel storage and
 linear/radial gradient coordinate construction and straight open-stroke
 normalization and join construction, rational round caps/joins, SVG endpoint-arc construction and conic subdivision,
-live convex curve advancement, curve measurement and dash cutting,
+live convex curve advancement, curve measurement and dash cutting, tight source-curve paint bounds,
 and antialiased line/curve hairline coverage/dispatch.
 These adaptations do not depend on native Skia.
 
