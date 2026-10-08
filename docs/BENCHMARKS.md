@@ -2473,3 +2473,20 @@ Summed per-recipe median timings read **16.253 → 14.538 ms** with the baseline
 first and **18.683 → 15.897 ms** with the repair first. These selected controls
 do not establish representative throughput or Linux timing. Recipes, batches and
 ledgers remain ignored under `artifacts/native-ellipse-dashes-20261008/`.
+
+## Zero-area native stroke winding cost (2026-10-08)
+
+Three admitted solid recipes use the same sources, options and process-order
+pairs: baseline-first and repair-first, eight warmups and three batches of twenty
+conversions. Retaining directed winding edges leaves parser work and accounted
+peak unchanged. Conversion work adds 397/613/1,135 units for direct/translated/
+scaled placement; median managed allocations add 1,120/1,168/1,136 bytes per
+conversion. The nine paint-server controls reject and remain in the evidence
+inventory; they are not successful conversion cost recipes.
+
+Selected sums of median times are 2.430 → 3.110 ms baseline-first and 2.164 →
+2.705 ms repair-first. These tiny recipes establish no representative throughput
+rate. Layouts remain 272/72/68 bytes. Three admitted and nine rejected resource
+sweeps pass on each platform. Existing wider memory/package evidence retains
+its dated scope. Raw records stay under ignored
+`artifacts/contained-stroke-ring-20261008/`.

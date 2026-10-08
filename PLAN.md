@@ -5,20 +5,19 @@ variants on Windows and Linux**, with zero known differences and zero rejections
 Marks are 13/13 exact; outlined wordmarks are 14/14. Membership, inputs, options
 and browser references stay frozen.
 
-The latest repair measures and cuts original circle/ellipse conics through the
-shared native dash/stroke route. Four retained logo fixtures and five research
-dash probes become exact against unchanged browser references. All other original
-reports and 1,530 PNG byte sequences stay unchanged. Twelve new independent CC0
-dash controls are exact, with 36 healthy, cleaned, stable captures.
-See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#source-conic-ellipse-dashes-2026-10-08).
+The latest repair keeps zero-signed-area contours that carry local nonzero
+winding in native stroke coverage, including clipped construction. The final
+retained fixture difference becomes exact against its original browser reference.
+All other original reports and 1,538 PNG byte sequences stay unchanged.
+See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
 
 The original bank retains **1,567 executions / 1,539 PNGs**, with identical
 Windows/Linux reports and output bytes. All 258 corporate reports/images stay
-unchanged against each platform's own references. A further **137 retained paint
-controls = 129 exact + eight valid-input rejections** pass all six public outputs.
-Both platforms pass Release builds and **4,245 tests**. Twelve affected/neighbor
-resource cases pass denial/cancellation and owner cleanup checks. Earlier full
-resource, memory and installed-package evidence retains its dated scope.
+unchanged against each platform's own references. A further **149 retained paint
+controls = 132 exact + 17 valid-input rejections** pass all six public outputs.
+Both platforms pass Release builds and **4,261 tests**. Three fresh admitted and
+nine rejected resource cases pass denial/cancellation and owner cleanup checks.
+Earlier full resource, memory and installed-package evidence retains its dated scope.
 
 **The full frozen-cohort fidelity target is achieved.** Preserve these exact
 results while improving shared renderer behavior beyond this cohort. S17's remote
@@ -143,15 +142,15 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,245 passed on each platform**: 3,881 core, 358 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Source conics, native dash measurements/cuts and generated outlines share bounded work/cancellation and owned storage. Twelve fresh admitted resource sweeps pass tight parser/raster work and memory limits, caller-token cancellation and owner cleanup. Eleven new tests fail on the preceding renderer and pass after the repair: cut-conic/outline ownership through direct, scaled-group and translated-use placement, plus zero-radius circles/ellipses that paint nothing instead of throwing an internal exception. All 137 six-output controls retain fidelity. Earlier full resource, 25-scenario memory and installed runtime/symbol package checks retain their dated scope. No public API or runtime dependency changes; remote CI remains open. |
-| Executed fixture manifest | **1,410 entries = 1,385 exact + one known-difference render + 24 rejections**; 799 base documents / 611 variants. Four circle/ellipse dash marks become exact. Every other fixture report and PNG stays unchanged. |
-| Executed research manifest | **65 probes = 61 exact + zero known-difference renders + four rejections**. Five circle/ellipse dash probes become exact. Every other research report and PNG stays unchanged. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the later scope audit. |
-| Supplemental recorded-paint inventory | **137 controls = 129 exact + eight valid-input rejections**. Twelve original CC0 oval dash controls were declared before implementation/captures/comparison; all 36 captures are healthy, cleaned and stable, and all twelve controls are exact across offsets, seams, thin widths, scaling, pathLength, clipping and fill/stroke. Previous controls and all six output checks remain. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
+| Full tests, including corporate selection/measurement | **4,261 passed on each platform**: 3,885 core, 370 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Four focused tests fail on the preceding renderer and pass after the repair, covering single/multiple zero-area native stroke contours with and without clipping. Three fresh admitted resource sweeps and nine valid-input rejection sweeps preserve tight work/memory denial, caller-token cancellation and owner cleanup. All 149 six-output controls retain their measured outcomes. Earlier full resource, 25-scenario memory and installed runtime/symbol package checks retain their dated scope. No public API or runtime dependency changes; remote CI remains open. |
+| Executed fixture manifest | **1,410 entries = 1,386 exact + zero known-difference renders + 24 rejections**; 799 base documents / 611 variants. The contained native stroke-ring witness becomes exact. Every other fixture report and PNG stays unchanged. |
+| Executed research manifest | **65 probes = 61 exact + zero known-difference renders + four rejections**. Every research report and PNG stays unchanged. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the scope audit. |
+| Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**. Twelve new original CC0 controls were declared before the isolated model/captures/comparison; all 36 captures are healthy, cleaned and stable. Three solid controls are exact; nine linear/radial/pattern strokes on mixed closed/open subpaths retain an existing admission rejection. Previous controls and all six output checks remain. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Every Default report and PNG stays unchanged, preserving the preceding matching-browser STOP-sign gain and earlier `inv-013` exact result / `inv-014` residual. These Default outputs do not establish corporate fidelity or a representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**. Twelve matching Windows recipes add 151–1,304 parser-work units; total conversion work falls by 29–31,173 units. Accounted peak deltas range from 0 to +706,788 bytes; median managed allocation deltas range from −12,544 to +30,656 bytes per conversion. See [the cost record](docs/BENCHMARKS.md#source-conic-ellipse-dash-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**. Three matching Windows recipes preserve parser work and accounted peak; retaining winding edges adds 397–1,135 conversion-work units and 1,120–1,168 median managed allocation bytes per conversion. See [the cost record](docs/BENCHMARKS.md#zero-area-native-stroke-winding-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -858,37 +857,16 @@ GitHub repository is empty at the recorded checkpoint; obtaining runs requires
 publishing the reviewed branch. This release requirement does not close or
 replace the renderer work below.
 
-1. **Continue shared fidelity work under rows 3–7.** The shared paint/opacity
-   repair is integrated and passes the unit, six-output, ownership and
-   Windows/Linux delivery gates. One retained fixture difference remains:
-   the contained native stroke-ring witness. All research render comparisons
-   are exact; their four admission rejections retain separate scope-audit work.
-   The hard custom-region edge and content-layer dither repairs close three more
-   research comparisons. Bitmap-local isolated curve construction closes all
-   three circle/ellipse alpha-mask comparisons and both curved-opacity controls.
-   Direct-paint fringe retention closes the scaled-mask control and three more
-   wide-ellipse comparisons. SVG rounded-rectangle source order closes the retained
-   hairline-color and oval-stroke comparisons. Live convex quadratics close fifteen
-   fixture comparisons and the solid/linear-outline/radial-outline research trio.
-   Group clip placement closes both fractional cubic/quadratic clip controls.
-   Whole-path blitter dispatch closes all fourteen control-bound comparisons and
-   the clipped star stroke. Integer point-list source replay closes the bowtie
-   crossing. Source-conic circle/ellipse dashes close four fixture and five research
-   comparisons, with twelve new independent exact controls. Resolve the contained
-   native stroke-ring witness against its original reference; forcing intersection
-   checks worsens it and remains rejected. Keep other drawing-state combinations
-   covered by the retained opacity/operation, scope and copy controls.
-   Keep the valid percentage-mask, symbol override, direct `fill="none"` line,
-   translucent pattern-tile stroke, transformed custom-mask and nested-viewport
-   rejections for the later admission audit. Broader object/visual bounds and override combinations still
-   need their own evidence. The integrated repair, measured controls and rejected
-   models are in [the design record](docs/RASTERIZATION_DESIGN.md#source-conic-ellipse-dashes-2026-10-08).
-   Finish this phase when the identified renderer differences are exact against
-   their retained references and the shared repairs preserve existing exact
-   results. Keep unresolved cases visible; moving them to a new list or changing
-   references does not resolve them. Valid-input admission gaps remain inputs to
-   the support audit below. Remote CI is a separate release gate and does not
-   prevent that audit once the renderer repairs are complete.
+1. **Identified renderer fidelity repairs are complete.** All admitted fixture
+   and research comparisons are exact against their retained references. Native
+   stroke winding now retains zero-signed-area contours through clipped and
+   unclipped preparation, closing the last contained-ring witness. Forcing
+   intersection checks worsened that witness and remains a rejected model.
+   Windows/Linux builds, tests, full banks and platform-reference corporate
+   matrices pass. Preserve the shared mechanisms and independent controls as
+   regression requirements; these results do not establish general SVG support.
+   Valid-input rejections now belong to the original-scope support audit below.
+   See [the final repair](docs/RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
 2. **Preserve the complete exact matrix.** Compare shared raster changes across
    every declared fixture, research and Default case and all 258 corporate
    variants on Windows/Linux. Keep categorized rejections and selection limits

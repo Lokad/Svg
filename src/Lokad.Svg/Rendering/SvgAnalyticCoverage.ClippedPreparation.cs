@@ -47,7 +47,7 @@ internal ref partial struct SvgAnalyticCoverage
                     int end = ends[contour];
                     priorEnd = end;
                     ChargeClippedSetupWork(ref setupWork, end - start + 1L, maximumWork, token);
-                    if (end - start < 3 || (hasVotes && votes[contour] == 0) || (mapping != SvgPolygonMapping.NativeFillEdges && TwiceArea(points[start..end]) == 0)) continue;
+                    if (end - start < 3 || (hasVotes && votes[contour] == 0) || (mapping != SvgPolygonMapping.NativeFillEdges && (mapping != SvgPolygonMapping.NativeStrokeEdges || isEvenOdd) && TwiceArea(points[start..end]) == 0)) continue;
                     while (quadCursor < quads.Length && quads[quadCursor].Contour < contour) { ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token); quadCursor++; }
                     while (cubicCursor < cubics.Length && cubics[cubicCursor].Contour < contour) { ChargeClippedSetupWork(ref setupWork, 1, maximumWork, token); cubicCursor++; }
                     int quadEnd = quadCursor;

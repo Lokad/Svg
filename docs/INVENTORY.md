@@ -5,6 +5,27 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Zero-area native stroke winding checkpoint (2026-10-08)
+
+The final contained-ring fixture becomes exact against its unchanged browser
+PNG. The bank retains **1,567 executions / 1,539 PNGs**: **1,410 fixtures =
+1,386 exact + zero known + 24 rejected**, **65 research probes = 61 exact + zero
+known + four rejected**, and 92 Default renders. Every other report and 1,538 PNG
+byte sequences stay unchanged. Windows/Linux reports and bytes agree; each
+platform preserves **27/27 corporate documents / 258/258 variants exact** against
+its own references.
+
+Twelve original CC0 controls were declared before the isolated model, captures
+and comparison. All 36 captures are healthy, cleaned and byte-stable. Three solid
+controls are exact; nine linear/radial/pattern controls retain the existing
+mixed-closed/open-subpath stroke rejection. All are retained for the support audit,
+with no outcome filtering. The separate six-output recorded-paint inventory is
+**149 pairs = 132 exact + 17 valid-input rejections**. Existing source/reference
+bytes and capture metadata remain frozen. Both platforms pass **4,261 tests**,
+three fresh admitted resource sweeps and nine rejection resource sweeps.
+The identified renderer repair phase is complete; remaining original-scope
+admission and feature gaps now govern the queue. See [the repair](RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
+
 ## Source-conic ellipse dash checkpoint (2026-10-08)
 
 Four retained circle/ellipse dash marks and five research dash probes become

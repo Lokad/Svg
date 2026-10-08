@@ -1424,10 +1424,10 @@ internal ref partial struct SvgAnalyticCoverage
                 return new(fatRectangle, xStart);
             }
         }
+        bool directedWinding = mapping == SvgPolygonMapping.NativeFillEdges
+            || !isEvenOdd && mapping == SvgPolygonMapping.NativeStrokeEdges;
         if (ends.Length > 1)
         {
-            bool directedContours = mapping == SvgPolygonMapping.NativeFillEdges
-                || !isEvenOdd && mapping == SvgPolygonMapping.NativeStrokeEdges;
 
             if (preparation.KeptContours is null)
             {
@@ -1440,7 +1440,7 @@ internal ref partial struct SvgAnalyticCoverage
                     int end = ends[contour];
                     previousEnd = end;
                     int count = end - start;
-                    if (count < 3 || (!isEvenOdd && mapping != SvgPolygonMapping.NativeFillEdges && TwiceArea(points.Slice(start, count)) == 0) || (hasVotes && votes[contour] == 0)) continue;
+                    if (count < 3 || (!isEvenOdd && !directedWinding && TwiceArea(points.Slice(start, count)) == 0) || (hasVotes && votes[contour] == 0)) continue;
                     keptContours++;
                 }
                 preparation.KeptContours = keptContours;
@@ -1452,7 +1452,7 @@ internal ref partial struct SvgAnalyticCoverage
                 // winding. Their interval walker handles contacts directly;
                 // no pairwise graph scan is needed for multi-contour admission.
                 // Single-contour convexity keeps its separate classification.
-                if (directedContours) preparation.Structure = SvgContourFlags.None;
+                if (directedWinding) preparation.Structure = SvgContourFlags.None;
                 else
                 {
                     CheckClippedSetupWork(setupWork + (long)points.Length * points.Length, maximumSetupWork, cancellationToken);
@@ -1470,7 +1470,7 @@ internal ref partial struct SvgAnalyticCoverage
             if (preparation.TransversalUnion is null)
             {
                 bool transversal = false;
-                if (!directedContours && !isEvenOdd && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) == SvgContourFlags.None)
+                if (!directedWinding && !isEvenOdd && (setStructure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) == SvgContourFlags.None)
                 {
                     CheckClippedSetupWork(setupWork + (long)points.Length * points.Length, maximumSetupWork, cancellationToken);
                     transversal = SvgContourStructure.AllInterLoopContactsTransversal(points, ends, cancellationToken);
@@ -1519,7 +1519,7 @@ internal ref partial struct SvgAnalyticCoverage
                     priorEnd = end;
                     int count = end - start;
                     if (count < 3) continue;
-                    if (!isEvenOdd && mapping != SvgPolygonMapping.NativeFillEdges && TwiceArea(points.Slice(start, count)) == 0) continue;
+                    if (!isEvenOdd && !directedWinding && TwiceArea(points.Slice(start, count)) == 0) continue;
                     if (hasVotes && votes[contour] == 0) continue;
                     bool contourSpans = false;
                     int quadRun = quadCursor;
@@ -1603,7 +1603,7 @@ internal ref partial struct SvgAnalyticCoverage
             }
             catch { multiScratch?.Dispose(); throw; }
         }
-        preparation.HasArea ??= isEvenOdd || mapping == SvgPolygonMapping.NativeFillEdges || TwiceArea(points) != 0;
+        preparation.HasArea ??= isEvenOdd || directedWinding || TwiceArea(points) != 0;
         if (!preparation.HasArea.Value) return default;
         if (preparation.Structure is null)
         {
@@ -1612,7 +1612,6 @@ internal ref partial struct SvgAnalyticCoverage
             setupWork += (long)points.Length * (points.Length - 1) / 2;
         }
         SvgContourFlags structure = preparation.Structure.Value;
-        bool directedWinding = mapping == SvgPolygonMapping.NativeFillEdges || !isEvenOdd && mapping == SvgPolygonMapping.NativeStrokeEdges;
         bool rigidRing = !directedWinding && (structure != SvgContourFlags.ProperCrossing || (!isEvenOdd && mapping != SvgPolygonMapping.FlattenedCurves));
         if (rigidRing && (structure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) != SvgContourFlags.None) return default;
         if (preparation.Convex is null)

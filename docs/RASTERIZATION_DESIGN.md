@@ -8033,3 +8033,46 @@ retains its dated scope; remote CI remains open. Reports stay ignored under
 The contained native stroke-ring fixture remains one differing pixel. Resolve it
 against the original reference before the original-scope support audit and online
 public-domain/CC0 sourcing; these are still separate later work.
+
+## Zero-area native stroke winding (2026-10-08)
+
+The last original fixture, `original-native-path-stroke-contained-rings-unit`,
+differed at one pixel: candidate alpha 255 versus retained browser alpha 221.
+Its native generated stroke outline contains five contours; the small inner ring
+has zero total signed area but nonzero local directed winding. Native fill replay
+kept it, while native stroke preparation discarded it. Chrome and Lokad filled
+replays of the diagnostic generated outline both match the original stroke
+reference. That derived outline is diagnostic evidence, not an independent holdout.
+
+Native nonzero stroke preparation now shares the directed-winding zero-area
+retention rule with native fills. Both clipped contour-construction passes and
+single/multiple contour routes preserve it. Legacy and even-odd admission retain
+their prior area rules. The earlier forced-intersection model worsened one pixel
+to nine and remains rejected. No native stroker, curve, paint, density, public API
+or layout changes are needed.
+
+Four focused tests cover single/multiple contours with and without clipping:
+four fail on the preceding renderer and four pass after repair. Twelve independent
+original CC0 source configurations were declared before the model, captures or
+candidate comparison; all 36 captures are healthy, cleaned and byte-stable. Three
+solid controls are exact. Nine linear/radial/pattern controls retain the existing
+mixed closed/open-subpath restriction, `Only closed axis-aligned integer path
+contours are implemented.` They remain support-audit inputs rather than discarded
+controls. The recorded-paint inventory is **149 = 132 exact + 17 rejected**,
+checked through all six public output APIs.
+
+Windows/Linux nine-project Release builds have zero warnings/errors and **4,261
+tests** pass: 3,885 core, 370 visual-project and six FontProbe. The **1,567-execution
+/ 1,539-PNG** original bank changes only this fixture to exact; all other reports
+and 1,538 PNG bytes remain unchanged and platforms agree. Fixtures are **1,386
+exact + zero known + 24 rejected**; research is **61 exact + zero known + four
+rejected**. Corporate reports/PNGs remain unchanged, **27/27 documents / 258/258
+variants exact** against each platform's own retained references.
+
+Three admitted and nine rejected fresh resource sweeps per platform pass bounded
+work/memory denial, token preservation and owner cleanup. Geometry/command/paint
+layouts remain 272/72/68 bytes. Matching costs are in [the benchmark record](BENCHMARKS.md#zero-area-native-stroke-winding-cost-2026-10-08);
+earlier broad memory/package checks retain their dated scope. Evidence is under
+ignored `artifacts/contained-stroke-ring-20261008/` and the Linux
+`zero-area-stroke-final-20261008/` delivery checkout. The identified fidelity
+repair phase is complete; original-scope support gaps and remote CI remain open.

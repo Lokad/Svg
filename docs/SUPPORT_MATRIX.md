@@ -6,9 +6,15 @@ The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
 The current 1,410 manifest entries contain
-1,385 exact decoded-pixel references, one known-difference render and 24
+1,386 exact decoded-pixel references, zero known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
+
+Native nonzero stroke coverage retains zero-signed-area contours carrying local
+directed winding, through single/multiple and clipped/unclipped preparation.
+The final contained-ring fixture is exact. Mixed closed/open-subpath strokes with
+linear, radial or pattern paint still hit an existing admission restriction; nine
+retained browser controls make that support gap explicit. See [the repair](RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
 
 Butt-capped solid-paint circle/ellipse dashes now measure and cut original float
 oval conics through the shared native dash/stroke route. Directed generated
