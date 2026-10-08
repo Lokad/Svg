@@ -1325,13 +1325,13 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Rotated_rectangle_stays_unsupported()
+    public void Rotated_rectangle_paints_its_interior()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='4' y='4' width='8' height='8' fill='red' transform='rotate(30)'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='4' y='4' width='8' height='8' fill='red' transform='rotate(30)'/></svg>", out int width, out int height);
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 2, 10));
+        Assert.Equal(SvgColor.Transparent, Pixel(pixels, 16, 15, 0));
     }
 
     [Fact]

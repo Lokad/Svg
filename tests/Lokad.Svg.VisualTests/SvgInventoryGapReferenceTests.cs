@@ -15,7 +15,7 @@ public sealed class SvgInventoryGapReferenceTests
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public void Sourced_support_gaps_keep_their_originals_oracles_and_measured_outcomes(string identity)
+    public async Task Sourced_support_gaps_keep_their_originals_oracles_and_measured_outcomes(string identity)
     {
         using JsonDocument manifest = ReadManifest();
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(value => Required(value, "id") == identity);
@@ -53,6 +53,18 @@ public sealed class SvgInventoryGapReferenceTests
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         PixelComparison comparison = PixelComparer.Compare(reference, PngRgbaDecoder.Decode(png, checked(width * height)));
         Assert.True(comparison.IsExact, identity + " differs from its retained browser reference.");
+        byte[] destination = new byte[png.Length];
+        Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
+        Assert.Equal(png, destination);
+        using MemoryStream stream = new();
+        Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, stream, options, CancellationToken.None));
+        Assert.Equal(png, stream.ToArray());
+        Assert.Equal(png, (await SvgConverter.ConvertToPngAsync(input, options, CancellationToken.None)).ToArray());
+        Assert.Equal(png.Length, await SvgConverter.ConvertToPngAsync(input, destination, options, CancellationToken.None));
+        Assert.Equal(png, destination);
+        using MemoryStream asyncStream = new();
+        Assert.Equal(png.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, options, CancellationToken.None));
+        Assert.Equal(png, asyncStream.ToArray());
     }
 
     private static JsonDocument ReadManifest() => JsonDocument.Parse(File.ReadAllBytes(Resolve("tests/References/inventory/svg-gap-cases.json")));

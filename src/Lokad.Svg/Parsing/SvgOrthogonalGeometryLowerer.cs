@@ -838,7 +838,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
     }
 
-    /// <summary>Lowers fractional point lists with existing admission and retains source verbs for filled output.</summary>
+    /// <summary>Lowers fractional straight contours under composed affine placement and retains source verbs for filled output.</summary>
     /// <remarks>Scene geometry preserves paint bounds and admission. A filled result owns immutable source
     /// commands and its composed scene map, with storage/work charged before allocation and cancellation
     /// checked through the shared budgeted list. Partial failure releases both scene and command owners.
@@ -848,7 +848,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(budget);
         if (points.Count >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, _elementName + " vertex count exceeds the configured path-command limit.");
-        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         SvgFractionalPoint previous = default;
         SvgFractionalPoint first = default;
@@ -880,9 +880,10 @@ internal ref struct SvgOrthogonalGeometryLowering
                     // Match source float operands before composing scene and output placement.
                     commands.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new((float)point.X, (float)point.Y), default, default));
                 }
-                commands.Add(new(_elementName == "polygon" ? SvgAuthoredPathVerb.Close : SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
+                commands.Add(new(_elementName == "polyline" ? SvgAuthoredPathVerb.End : SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
                 owned = commands.Detach();
-                result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.Create(owned, deviceMap, budget) };
+                result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = _elementName == "rect"
+                    ? SvgAuthoredPath.CreateConvexShape(owned, deviceMap, budget) : SvgAuthoredPath.Create(owned, deviceMap, budget) };
                 owned = new([], null);
             }
             return result;

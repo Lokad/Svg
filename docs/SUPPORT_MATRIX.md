@@ -7,7 +7,7 @@ rendering differences are resolved; the original-scope admission and feature
 gaps in [PLAN.md](../PLAN.md#3-ordered-support-queue) remain open. Do not infer
 that every unlisted visible SVG construct is rejected correctly.
 The current 1,410 manifest entries contain
-1,389 exact decoded-pixel references, zero known-difference renders and 21
+1,390 exact decoded-pixel references, zero known-difference renders and 20
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -26,9 +26,9 @@ criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
 
 | Queue | Supported boundary / missing combination | Retained evidence |
 | --- | --- | --- |
-| G1 | Declaration validation landed: attributes and admitted inline/stylesheet paths share `new` / `accumulate` / `inherit` validation without backdrop allocation. Complete and numeric partial rectangles require finite numbers and nonnegative dimensions. | Eleven six-output contexts plus malformed/priority/resource/discovery controls; the unchanged `inv-105` now reaches G3. |
+| G1 | Declaration validation landed: attributes and admitted inline/stylesheet paths share `new` / `accumulate` / `inherit` validation without backdrop allocation. Complete and numeric partial rectangles require finite numbers and nonnegative dimensions. | Eleven six-output contexts plus malformed/priority/resource/discovery controls; the unchanged `inv-105` is now complete after G3 rectangle support. |
 | G2 | Ordered symbol leaves, nested groups/local uses and native-backed magnified instances render. Root and rendered-group locations, anonymous owners and descriptive metadata work. Solid use color/fill-opacity, numeric stroke-opacity and admitted stroke paint/width/mechanics inheritance bind in clones; group display/visibility propagate; reference graphs validate and expand iteratively. Unstyled closed unpainted paths retain centerlines for use strokes. Rendered groups replay authored styles/fill rules and local transforms through shared lowerers, including nested/forward uses and aliases; copied leaf/use masks preserve their batches. Instance shader fills and independent fill opacity now replay through ordinary lowerers; solid borders and admitted pattern phase/scaling survive mapping. Root/group/link/symbol shader fills inherit through the admitted cascade; fractional point-list shader fills retain native contours (patterns require untransformed placement). Lines/images ignore non-applicable fill paint. Root/nested viewBox extents now supply user-space percentage bases to ordinary use positions/sizes, default use sizes, nested viewports and admitted images; percentage roots resolve against the containing viewport or existing intrinsic defaults without a viewBox. Scaled nested viewport uses, other locations and affine combinations remain open. | Both original families exact on three backgrounds; all 46 preceding controls now exact. All sixteen retained-content controls and three diagnostic twins are exact after the viewport-opacity repair. The preceding symbol bank remains 83 exact comparisons through six outputs. The use-paint bank has 31 cases: 30 exact and one explicit rejection; thirty rectangle-path stroke controls are exact. The stroke-opacity bank has 70 exact and 11 explicit rejections. The stroke-style bank has 96 exact and three translucent shader-circle rejections; the rendered-group bank has 114 exact and nine explicit rejections. All 150 instance-shader/opacity controls and 192 container-shader controls are exact through six outputs. The 81 percentage-base controls retain 78 exact and three scaled-use rejections. |
-| G3 | Some axis-aligned/similarity/path transforms exist; rotated rectangles, general matrix curve/shape combinations and non-uniform curve output remain gated. Pattern reflection and compound curved even-odd fill admission are also gated. | `inv-105`, `inv-106`, `original-logo-rotated-mark`, `original-number-general-map`, `original-curve-root-quad-none`, tiger and `group-clip-reflected-pattern`. |
+| G3 | Plain transformed rectangle fills now use shared straight-contour lowering with native convex source identity; rotation/reflection and composed non-uniform placement are admitted, including inherited group clips and rendered-group aliases. General matrix syntax, transformed leaf clips, rounded/stroked/shader rectangles and non-uniform curve output retain separate gates. Pattern reflection and compound curved even-odd fill admission are also gated. | `inv-105` and `original-logo-rotated-mark` are exact; fifteen focused controls retain nine exact and six rejected outcomes. Remaining cases: `inv-106`, `original-number-general-map`, `original-curve-root-quad-none`, tiger and `group-clip-reflected-pattern`. |
 | G4 | Fractional rectangle strokes preserve ordered hull/frame/inverse-fringe coverage; the retained instance family is exact. Native solid strokes render; gradient/pattern mixed closed/open subpaths and gradient direct `fill="none"` lines still reject. Oval dash caps/paint/transform combinations remain narrower than solid paths. | `use-paint-properties/current-color-rectangle-stroke-*` and twelve new fractional/thin/collapsed/shader-fill frame controls are exact. Three new clip-crossing controls and the inline transformed twin reject separately. Nine `zero-area-stroke-*` paint-server controls, two `line-bounds-*-square-width6-fill-none` controls; shared stroke and paint admission. |
 | G5 | Fractional symbol viewport clipping around isolated translucent groups now renders exactly; native symbol stroke instances are exact after shared closed-rectangle path construction; broader viewport/use-opacity combinations need independent controls. Nested SVG style attributes, nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `symbol-content/group-alias-use` and its inline diagnostic are exact on unchanged references; eighteen fractional/integral, nested-scope and translucent-content controls are exact on three backgrounds. The three native symbol stroke backgrounds and their inline twin match unchanged references; thirty new rectangle-path stroke controls are exact. Earlier gates: `original-aa-clip-admitted-shader`, material pairs and `mask-region-half-translated`. |
 | G6 | One rectangle tile with integer source user-space coordinates exists. Instance maps retain fractional/negative phase and positive-axis scaling with integral device tile dimensions; mapped content edges may be fractional. Direct rectangle fills retain container placement; tile fill opacity survives storage before byte quantization. Transformed fractional point-list fills, circle/path/multiple-child tiles, local pattern inheritance, fractional tile sizes, reflected/general maps and bounding-box units remain unsupported. | `inv-103`, `inv-104`, `original-cpu-raster-cubic-pattern`; `SvgDefinitionParser` and `SvgPatternSyntax`. |
@@ -42,15 +42,17 @@ They are failure-selected development cases, outside the 27-document corporate
 cohort and original fixture/research denominators. No new renderer behavior is
 claimed by recording a rejection. First-blocker removal may expose further
 admission or pixel failures; all remain visible until the unchanged reference is exact.
-None of these four complete documents is exact yet (0/4). The Illustrator heart
-is the next deliverable; remaining G2 combinations are dependencies only when a
-selected document needs them. Finite planned G2–G9 exits live in PLAN; they do
+The complete Illustrator heart is exact on Windows/Linux through all six outputs
+(1/4 documents complete), with source/options/reference unchanged. Three fresh
+matching Linux browser captures are byte-identical to the retained reference.
+The I Ching library is next; remaining G2 combinations are dependencies only when
+the selected document needs them. Finite planned G2–G9 exits live in PLAN; they do
 not change the currently admitted subsets recorded here.
 
 Shared background declaration validation charges text work before span-only
 tokenization and retains no backdrop or token-array owners. Active filter effects
-remain categorized. The heart's new rotated-rectangle rejection is recorded in
-the case manifest; its original and reference remain frozen. See [the repair](RASTERIZATION_DESIGN.md#shared-exporter-background-validation-2026-10-08).
+remain categorized. The case manifest now records the heart's complete exact
+outcome; its original and reference remain frozen. See [the repair](RASTERIZATION_DESIGN.md#shared-exporter-background-validation-2026-10-08).
 
 ## Symbols and instances (2026-10-08)
 

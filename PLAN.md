@@ -14,8 +14,8 @@ See [the repair](docs/RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-20
 
 The shared `enable-background` validator now admits `new`, `accumulate` and
 `inherit` consistently through presentation attributes and the admitted inline/
-stylesheet paths. The Illustrator heart (`inv-105`) advances to the rotated-
-rectangle gate, **G3**, and remains rejected; no source or browser reference changes.
+stylesheet paths. That repair removed the Illustrator heart's first declaration
+blocker; its complete rendering is now exact after the shared G3 rectangle repair.
 
 **G2 now retains ordered nested groups and local uses.** The three previously
 rejected nested-content controls are exact against unchanged browser references.
@@ -103,15 +103,22 @@ controls and three explicit scaled-viewport use rejections through six outputs.
 Its baseline had 57 incorrect renders, fifteen rejections and nine exact cases.
 Eight resource sweeps, three semantic checks and a discovery boundary pass.
 
-**Next deliverable: finish the retained Illustrator heart (`inv-105`).** Its
-declared 512×401 transparent output must match its unchanged reference through
-all six outputs. The first blocker is G3's rotated rectangle gate. Follow every
-subsequent rejection and pixel mismatch until the complete document is exact;
-use small synthetic controls to diagnose and protect each shared correction.
-Scaled nested viewport uses and other G2 combinations remain on the checklist,
-and become dependencies only when they block the selected document.
+**The Illustrator heart (`inv-105`) is complete.** Its unchanged 512×401
+transparent output matches the frozen reference through all six outputs on
+Windows/Linux. Three fresh Linux browser captures also match that reference
+byte-for-byte. Plain transformed rectangle fills now share straight-contour
+lowering and native convex source replay, preserving the axis-aligned route.
+The fifteen focused controls have nine exact results and six explicit boundary
+rejections; all 45 browser captures are stable, healthy and cleaned. The original
+rotated-mark fixture also becomes exact, with its first independent reference.
 
-**Retained gap documents completed: 0/4**, alongside the preserved corporate
+**Next deliverable: finish the retained I Ching library (`inv-106`).** Follow its
+compound curved even-odd path rejection and every subsequent blocker until the
+unchanged 280×720 reference is exact, keeping all 79 symbols/uses. Implement G2
+dependencies only when they block this document; other combinations remain on
+their checklist. Use focused controls to diagnose shared fixes.
+
+**Retained gap documents completed: 1/4**, alongside the preserved corporate
 **27/27 documents / 258/258 variants**. Control-bank totals measure mechanisms;
 they do not count as completed documents.
 
@@ -148,9 +155,9 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **5,338 passed on each platform**: 4,073 core, 1,259 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Forty-eight preceding exhaustive parser-work/memory ownership inputs pass. Five additional stroke-opacity inputs cover solid/shader channels, nested uses and newly stroked unpainted curves, including every parser work limit, memory denial, raster work boundaries and cancellation/retry. Eighteen graph, duplicate-ID, empty-target, deep-chain, expansion-denial, sealing-cancellation/retry and discovery checks pass. Partial forward insertion disposes unadopted native owners and reserves extra command storage before allocation. All 83 preceding six-output symbol comparisons stay exact; the 31-case use-paint bank preserves 30 exact and one unsupported outcome through six outputs. Fifteen frame cases preserve twelve exact and three unsupported outcomes; frame work-denial checks release surface owners. All thirty rectangle-path stroke controls are exact through six outputs; 480 compiled native outlines match float bits. Every admitted work/memory denial for the three join styles releases output owners; cancellation/retry and four construction-map controls pass. The 81 opacity cases preserve 70 exact and 11 unsupported outcomes through six outputs. Seven additional stroke-style inputs sweep every parser work denial, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry. All 99 new style cases preserve 96 exact and three unsupported outcomes through six outputs. Assembly cancellation releases source-sidecar scratch before retry. The 123 rendered-group controls preserve 114 exact and nine unsupported outcomes through six outputs; eleven further ownership/resource inputs pass, including copied masks, thin ellipses and empty forward targets. Empty scenes enforce the rendering work limit before surface allocation. All 150 new instance-shader/opacity controls are exact through six outputs; twelve further inputs sweep parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional pattern filtering. All 192 container-shader controls are exact through six outputs; fifteen additional inputs sweep discovery/parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional point-list fills, copied pattern groups and tile alpha. Two transformed fractional pattern-point gates release owners. The 81 percentage-base controls preserve 78 exact and three scaled-use rejections through six outputs; eight further resource sweeps cover parser/discovery work, memory denial, raster work boundaries and cancellation/retry, with three semantic assertions and a later-font discovery boundary. Source fill/stroke roles, authored opacity precedence and independent alphas have focused checks; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
-| Executed fixture manifest | **1,410 entries = 1,389 exact + zero known-difference renders + 21 rejections**; 799 base documents / 611 variants. Three magnified-instance cases graduate against their unchanged references; other fixture outcomes and PNGs stay unchanged. |
+| Full tests, including corporate selection/measurement | **5,358 passed on each platform**: 4,078 core, 1,274 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Forty-eight preceding exhaustive parser-work/memory ownership inputs pass. Five additional stroke-opacity inputs cover solid/shader channels, nested uses and newly stroked unpainted curves, including every parser work limit, memory denial, raster work boundaries and cancellation/retry. Eighteen graph, duplicate-ID, empty-target, deep-chain, expansion-denial, sealing-cancellation/retry and discovery checks pass. Partial forward insertion disposes unadopted native owners and reserves extra command storage before allocation. All 83 preceding six-output symbol comparisons stay exact; the 31-case use-paint bank preserves 30 exact and one unsupported outcome through six outputs. Fifteen frame cases preserve twelve exact and three unsupported outcomes; frame work-denial checks release surface owners. All thirty rectangle-path stroke controls are exact through six outputs; 480 compiled native outlines match float bits. Every admitted work/memory denial for the three join styles releases output owners; cancellation/retry and four construction-map controls pass. The 81 opacity cases preserve 70 exact and 11 unsupported outcomes through six outputs. Seven additional stroke-style inputs sweep every parser work denial, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry. All 99 new style cases preserve 96 exact and three unsupported outcomes through six outputs. Assembly cancellation releases source-sidecar scratch before retry. The 123 rendered-group controls preserve 114 exact and nine unsupported outcomes through six outputs; eleven further ownership/resource inputs pass, including copied masks, thin ellipses and empty forward targets. Empty scenes enforce the rendering work limit before surface allocation. All 150 new instance-shader/opacity controls are exact through six outputs; twelve further inputs sweep parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional pattern filtering. All 192 container-shader controls are exact through six outputs; fifteen additional inputs sweep discovery/parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional point-list fills, copied pattern groups and tile alpha. Two transformed fractional pattern-point gates release owners. Three transformed-fill inputs now sweep discovery/parser work, sampled/peak memory denial, raster work boundaries and cancellation/retry. The complete heart releases partial owners on early/middle/late work denial and peak memory denial, then retries; the transformed leaf-clip gate releases owners. The 81 percentage-base controls preserve 78 exact and three scaled-use rejections through six outputs; eight further resource sweeps cover parser/discovery work, memory denial, raster work boundaries and cancellation/retry, with three semantic assertions and a later-font discovery boundary. Source fill/stroke roles, authored opacity precedence and independent alphas have focused checks; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
+| Executed fixture manifest | **1,410 entries = 1,390 exact + zero known-difference renders + 20 rejections**; 799 base documents / 611 variants. The original rotated mark graduates against a new independent browser reference; its source/options and all preceding exact assets remain unchanged. |
 | Executed research manifest | **65 probes = 64 exact + zero known-difference renders + one rejection**. Three multiple-child symbol cases graduate from the erroneous MalformedInput rejection; other research outcomes and PNGs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Every Default report and PNG stays unchanged, preserving the preceding matching-browser STOP-sign gain and earlier `inv-013` exact result / `inv-014` residual. These Default outputs do not establish corporate fidelity or a representative rate. |
@@ -158,11 +165,12 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. No added surfaces or quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and 5,338 tests. All 1,567 original execution
-reports and all 1,545 PNG byte sequences remain unchanged from the preceding
-container-shader checkpoint; Windows/Linux banks agree. Every corporate result
-is unchanged and exact against its platform's own references. Four retained online failures
-remain; the heart and new I Ching library are G3, the two patterns are G6. WSL
+Both platforms pass Release builds and 5,358 tests. The original bank retains
+1,567 reports and now has 1,546 PNGs: only the formerly rejected rotated mark
+report graduates, while all 1,545 preceding PNGs stay byte-identical. Windows/Linux
+banks agree. Every corporate result stays unchanged and exact against its
+platform's own references. One of four retained gap documents is complete;
+the I Ching library remains G3 and the two patterns remain G6. WSL
 Ubuntu 24.04.3 uses isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6.
 Earlier package, memory and timing evidence keeps its dated scope; remote CI
 remains open.
@@ -193,8 +201,8 @@ remains open.
 The audit uses executed fixture/research/recorded-paint failures and actual parser
 gates. Group numbers identify support responsibilities, not sequential prerequisites.
 Select the next shared implementation change by the retained document it
-advances. Finish the heart first, then select the I Ching library or a pattern
-document from their demonstrated dependencies. Exhaustive G2 completion does
+advances. The heart is complete; finish the I Ching library next, then select a
+pattern document from its demonstrated dependencies. Exhaustive G2 completion does
 not block G3–G6. Keep other promised combinations visible in their group exits.
 Prioritize composed transforms, paint-coordinate mapping and bounded pattern
 content where they remove several gates. Extend the existing geometry and
@@ -207,9 +215,9 @@ landed mechanisms remain regression requirements.
 
 | Priority | Work | Failure class | Dependencies / stages |
 | --- | --- | --- | --- |
-| G1 | **Declaration validation landed.** Inert exporter presentation values share one validator; the heart continues under G3. | Original syntax-location inconsistency resolved; the heart now exposes G3 | Remaining nested style/root selector gates stay G5/G7; S9 |
+| G1 | **Declaration validation landed.** Inert exporter presentation values share one validator. | Original syntax-location inconsistency resolved; the heart is now complete | Remaining nested style/root selector gates stay G5/G7; S9 |
 | G2 | **Solid/shader use and container paint, stroke inheritance and rendered-group styling implemented.** Complete remaining practical symbol/instance combinations. | User-space percentage bases repaired; scaled nested viewport uses, other locations and affine combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
-| G3 | Complete curved geometry and static transforms across shapes, curves and instances | Missing combinations behind shape-specific and non-uniform gates | Source-curve replay and paint-coordinate maps; S10/S11 |
+| G3 | **Heart document complete; plain transformed rectangle fills admitted.** Complete remaining curved geometry and static maps | Compound even-odd curves, transformed strokes/paints and remaining affine gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | **Fractional rectangle-stroke fidelity repaired.** Complete paint-server strokes on ordinary geometry | Three retained rectangle comparisons and twelve new frame controls are exact; broader paints retain admission gates | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
 | G6 | Practical patterns: content, inheritance and coordinate systems | Missing static paint support | G2/G3/G5, bounded tile rendering; S13/S16 |
@@ -221,8 +229,8 @@ landed mechanisms remain regression requirements.
 
 | Retained document | Frozen declared output | Current outcome / next dependency |
 | --- | --- | --- |
-| `inv-105` Illustrator heart — **next** | 512×401, transparent | Rejected: rotated rectangles (G3). Ordinary filled paths and stylesheet paints must retain exact pixels after admission. |
-| `inv-106` I Ching library | 280×720, transparent | Rejected: compound curved even-odd path (G3); keep all 79 symbol/use instances in the complete comparison. |
+| `inv-105` Illustrator heart — **complete** | 512×401, transparent | Exact on Windows/Linux through six outputs, against unchanged source/options/reference; matching Linux browser triple retained. |
+| `inv-106` I Ching library — **next** | 280×720, transparent | Rejected: compound curved even-odd path (G3); keep all 79 symbol/use instances in the complete comparison. |
 | `inv-103` pattern example | 200×200, transparent | Rejected: circle tile content (G6). |
 | `inv-104` Inkscape pattern | 178×135, transparent | Rejected: local pattern inheritance (G6); path content and fractional placement remain part of the document. |
 
@@ -235,10 +243,10 @@ Further variants may be declared as separate development cases before comparison
 Use the same retained reference throughout the correction; platform fidelity
 requires a matching pinned browser reference under section 5.
 
-For the heart, remove the rectangle gate through shared composed geometry,
-rerun the entire retained input, and diagnose the next actual outcome. A rotated
-rectangle control passing does not finish the heart. After completion, select
-the next complete retained document by the shared dependencies it exposes.
+The heart's full-document comparison is exact after the shared rectangle change;
+its completion does not close G3. For the I Ching library, repair the compound
+curved path mechanism, rerun the full input, and follow the next actual outcome.
+An isolated Yin/Yang control passing does not finish its 79-instance document.
 Acquire more public-domain/CC0 failures when these documents no longer supply
 the next useful in-scope gap; keep already exact downloads out of the failure queue.
 
@@ -253,12 +261,11 @@ duplicate declarations or `!important`; active filters still reject. Root, group
 leaf, use, viewport-attribute and inherited locations have six-output controls;
 font discovery agrees and tight denial/cancellation releases owners.
 
-`inv-105` no longer rejects its Illustrator root CSS declaration. It now reaches
-`Only axis-aligned rectangle transforms are implemented.` under **G3**; the
-original, root-sized input and browser reference remain unchanged. Nested SVG
-`style` attributes and root-targeting stylesheet selectors retain separate
-admission gates under **G5/G7**. This closes the shared declaration-validation
-inconsistency, not the heart's complete rendering or those wider CSS gaps.
+`inv-105` no longer rejects its Illustrator root CSS declaration. Its subsequent
+G3 rectangle gate is repaired too; the full declared document now matches the
+unchanged reference. Nested SVG `style` attributes and root-targeting stylesheet
+selectors retain separate admission gates under **G5/G7**. The G1 validator alone
+does not claim those wider CSS combinations.
 See [the repair](docs/RASTERIZATION_DESIGN.md#shared-exporter-background-validation-2026-10-08).
 
 ### G2 — symbols and instances
@@ -394,8 +401,9 @@ Remaining G2 completion checklist, independent of the next document:
 - [ ] Compose static instance maps through G3 and viewport/opacity/clip/mask
   boundaries through G5; preserve source precedence and ancestor exclusion.
 
-The heart has no `use` dependency visible in its source. Do not expand these
-combinations before the heart merely to close G2. For a document that needs them,
+The completed heart needed no `use` dependency. The next I Ching library has
+79 symbols/uses; implement only combinations that actually block its complete
+comparison before widening G2. For a document that needs them,
 declare focused viewport/authored-override twins before production editing and
 capture; keep mechanism denominators separate. G2 exits when this finite location,
 reference and composition checklist is supported with exact retained examples,
@@ -420,8 +428,19 @@ retain original geometry and a stable 280×720 browser reference. This geometry
 combination belongs to S10 alongside the maps below; removing the first gate
 must not hide later failures.
 
-`original-logo-rotated-mark` rejects a rotated rectangle, even though some path
-rotations are admitted. `original-number-general-map` and the retained tiger reject
+The heart and `original-logo-rotated-mark` now render exactly. Plain fill-only
+rectangles under admitted rotations/reflections and composed non-uniform maps
+share fractional straight-contour lowering, retaining native convex shape identity
+and source float endpoints. Admitted rendered-group aliases, group clips and
+independent fill/element opacity keep their existing shared routes. The fifteen
+focused controls are nine exact and six explicit rejections: general matrix and
+singular syntax, group targets inside defs, transformed leaf clips, shader fills
+and active strokes. The prototype's leaf-clip mismatch remains diagnostic;
+the original axis-aligned clip cannot represent transformed clip geometry.
+Three resource sweeps, full-heart denial/retry and clip-gate cleanup pass.
+See [the completed document](docs/RASTERIZATION_DESIGN.md#illustrator-heart-and-transformed-rectangle-fills-2026-10-08).
+
+`original-number-general-map` and the retained tiger reject
 general matrix transforms. `original-curve-root-quad-none` rejects non-uniform
 viewBox/output curve mapping. Reflected pattern groups and magnified use add
 shape/paint/instance gates. Complete these through one composed affine map,
@@ -431,8 +450,8 @@ retained line/quadratic/cubic/arc paths; nonzero and even-odd compound fills;
 translation, rotation, skew, reflection and non-uniform affine scaling at root,
 group, leaf and admitted instance placement. Degenerate finite maps must have an
 explicit nonpainting or categorized outcome, without invalid owners. Perspective
-maps are outside this static SVG subset. The heart is the first complete-document
-acceptance case; the I Ching, retained general-map and non-uniform curve cases
+maps are outside this static SVG subset. The heart is the first completed
+document; the I Ching, retained general-map and non-uniform curve cases
 remain promised. Exit: these retained documents/families and focused map controls
 are exact without normalized or flattened source substitution; no corporate or
 prior exact regression.
@@ -625,8 +644,8 @@ interruptions are resolved; numeric stroke opacity is now exact for the admitted
 instance controls. Rendered-group styling is now exact for the admitted slice;
 instance shader fills and independent opacity are now exact too. Container shader
 fill inheritance is exact for the admitted slice. Root/nested viewBox percentage
-bases are repaired. Finish the Illustrator heart next, followed by complete
-retained documents selected by shared dependencies. Keep the remaining instance
+bases are repaired. The Illustrator heart is complete; finish the I Ching library
+next, followed by the retained pattern documents. Keep the remaining instance
 combinations visible without making them a prerequisite for G3–G6.
 
 1. Audit actual parser/renderer gates and existing rejected examples against the
@@ -837,7 +856,7 @@ All 258 measured renders are exact on each platform.
 All nine Target variants are exact against their original browser references;
 Coca-Cola is also exact in all nine variants. Reference
 availability and renderability remain independent axes. The first cohort's complete reference matrix closes its S8
-measurement obligation, including browser behavior for rejected inputs. The 1,389
+measurement obligation, including browser behavior for rejected inputs. The 1,390
 exact fixture entries remain separate from corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and

@@ -8899,3 +8899,62 @@ artifacts/linux-delivery-20261007/viewport-percentage-bases-final-20261008/.
 Scaled nested viewport uses, other locations and affine combinations keep G2
 open; G3–G9 and S17 remote CI remain open. PLAN.md retains the public-domain/CC0
 sourcing workflow for remaining original-scope SVG gaps.
+
+## Illustrator heart and transformed rectangle fills (2026-10-08)
+
+The retained CC0 Illustrator heart (`inv-105`) is a complete exact document at
+its declared 512x401 transparent output on Windows/Linux, through all six APIs.
+Original download, root-sized input, options and browser reference remain
+unchanged. Three fresh sandboxed Linux Chrome 153.0.8010.52 / Chromium 1681091 /
+recipe-3 captures are healthy, cleaned, stable and byte-identical to the frozen
+Windows reference. The gap manifest records the matching Linux oracle without
+duplicating its PNG. The failure-selected document ledger advances from 0/4 to 1/4;
+the corporate cohort remains separately frozen at 27/27 and 258/258.
+
+The early axis-aligned rectangle placement gate prevented otherwise admitted
+rotation matrices from reaching shared geometry. Plain fill-only non-rounded
+rectangles now enter the existing fractional straight-contour lowerer. Source
+float endpoints and native rectangle order survive as immutable commands; the
+existing convex-shape classification stays distinct from an arbitrary polygon.
+The source map composes with the caller's viewport placement and output map at
+raster replay. Straight contour mapping needs no similarity constraint, while
+curve/stroke consumers retain their independent gates. Axis-aligned rectangle
+coverage and shader/stroke routes keep their existing dispatch.
+
+Fifteen focused controls retain nine exact results and six explicit rejections.
+Twelve were declared before production/capture/comparison; three witnesses for
+composed non-uniform placement, group clipping and rendered-source aliases were
+declared after the first prototype, before their captures/comparisons. All 45
+browser captures are healthy, cleaned and stable. The frozen baseline rejects all
+fifteen. The prototype exposed a 246-pixel transformed-leaf clip mismatch: SVG
+clip geometry uses the leaf's transformed user space, while the available clip
+is an axis-aligned scene box. That admission now rejects explicitly under G5;
+an independently clipped group witness is exact. General/singular matrix syntax,
+defs-group targets, shader fills and active rectangle strokes remain their own
+observed gates. Source/reference substitution was not used to hide them.
+
+The original rotated-mark fixture graduates too, preserving its original source
+and options. It had no reference while rejected; its first independent browser
+reference comes from three healthy, cleaned, stable captures. The full original
+bank retains 1,567 reports and now 1,546 PNGs; only this report changes, and every
+preceding 1,545 PNG byte sequence stays unchanged. No established exact result
+regresses. Other mechanism banks and corporate reports/images stay unchanged.
+
+Three inputs sweep discovery/parser work denial, sampled/peak memory denial,
+raster work boundaries and cancellation/retry. Full-heart early/middle/late work
+denial and peak memory denial release partial owners, then retry; leaf-clip gate
+cleanup passes. The lowerer reuses budget-owned point/command arrays and existing
+scene transfers, with no new surface or cache. Layout remains 72/272/68 bytes.
+No quantitative performance claim follows.
+
+Both Release builds have zero warnings/errors; each platform passes 5,358 tests
+(4,078 core, 1,274 visual-project, six FontProbe), without failure/skip. The first
+Windows test run identified obsolete rotated-rectangle rejection assertions and
+an invalid legacy Rectangles-view assertion on polygon geometry; these now check
+the unchanged inputs' admitted painting. Final verification uses the corrected
+tests and the caller-supplied viewport frame, preserving source ancestor exclusion.
+Evidence stays under artifacts/illustrator-heart-20261008/ and
+artifacts/linux-delivery-20261007/illustrator-heart-final-20261008/.
+The I Ching library is the next complete-document deliverable; remaining G2
+combinations are dependencies only when that document requires them. G3–G9 and
+S17 remote CI remain open.

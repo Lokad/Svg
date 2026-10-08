@@ -20,11 +20,14 @@ internal static class SvgLeafParser
         SvgComputedStyle patternStyle = context.ResolveStyle(reader);
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         SvgAffineTransform earlyTransform = context.ResolveTransform(reader);
-        SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
-        SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
         double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
         bool rounded = cornerX != 0 || cornerY != 0;
+        if (!earlyTransform.IsAxisAligned && !rounded && !SvgGradientSyntax.IsGradientFill(patternStyle.Fill)
+            && (patternStyle.Stroke is null or "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth)))
+            return LowerTransformedFill(reader, context, syntax, frame, state);
+        SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
+        SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
         // A zero width paints no stroke bands, so paint strokes fall through to the fill-only solid path below.
         if (SvgPatternSyntax.IsPatternStroke(patternStyle.Stroke, state) && !rounded && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width)) return SvgPatternSyntax.LowerPatternStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke) && SvgGradientSyntax.IsGradientFill(patternStyle.Fill) && !rounded && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width))
@@ -44,6 +47,32 @@ internal static class SvgLeafParser
         if (effectiveFrame is not null) rectangle = ClipStrokedRectangle(rectangle, stroke, effectiveFrame.Value);
         SvgSolidPaint? solidPaint = SvgColorParser.ParsePaintOpacity(element.Style.Opacity).Value == 1 ? SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint) : null;
         return RetainSingleGeometry(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }) with { SolidPaint = solidPaint }, state, context);
+
+        static SvgParsedGeometry LowerTransformedFill(XmlReader input, SvgPaintableElementContext elementContext, SvgRectangleSyntax rectangle, SvgViewportFrame? clip, SvgDocumentState document)
+        {
+            SvgResolvedPaintableElement element = elementContext.ResolveShape(input, true);
+            // A leaf's clip uses the same transformed user space; an axis-aligned
+            // scene clip cannot stand in for its rotated geometry.
+            if (input.GetAttribute("clip-path") is not null)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on transformed rectangle fills are not implemented.");
+            if (rectangle.Width == 0 || rectangle.Height == 0 || element.Transform.A * element.Transform.D == element.Transform.B * element.Transform.C)
+            {
+                using BudgetedGeometryBuilder empty = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
+                return new SvgParsedGeometry(empty.Detach(), 0);
+            }
+            using BudgetedParserList<SvgFractionalPoint> points = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
+            double right = rectangle.X + rectangle.Width, bottom = rectangle.Y + rectangle.Height;
+            // Match native rectangle source order and float endpoints; the shared
+            // contour route composes placement, while raster replay keeps shape identity.
+            points.Add(new(rectangle.X, bottom));
+            points.Add(new(rectangle.X, rectangle.Y));
+            points.Add(new(right, rectangle.Y));
+            points.Add(new(right, bottom));
+            using BudgetedParserList<SvgPoint> noPoints = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
+            using BudgetedParserList<int> noEnds = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
+            using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "rect", false, false, int.MaxValue, document.Budget, elementContext.WorkCounter, elementContext.CancellationToken);
+            return lowering.LowerFractionalPointList(points, SvgPolygonMapping.FiniteEdges, element, clip, document.Budget) with { ElementCount = 0 };
+        }
     }
 
     private static SvgParsedGeometry RetainSingleGeometry(SvgGeometry geometry, SvgDocumentState state, SvgPaintableElementContext context)

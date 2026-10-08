@@ -2103,11 +2103,19 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
-    [Fact]
-    public void Rejects_visible_rectangle_attributes_that_are_not_implemented()
+    [Theory]
+    [InlineData("1")]
+    [InlineData("45")]
+    public void Admits_plain_rotated_rectangles(string angle)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff0000' transform='rotate(1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1' fill='#ff0000' transform='rotate(" + angle + ")'/></svg>");
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.Equal(SvgGeometryKind.PolygonFill, Assert.Single(root.Geometries).Kind);
+        RenderBudget budget = new(1_000_000);
+        using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None);
+        Assert.Equal(255, surface.Pixels[0]);
+        Assert.True(surface.Pixels[3] > 0);
     }
 
     [Fact]
@@ -2384,7 +2392,6 @@ public sealed class SvgRootParserTests
     [InlineData("matrix(0,0,0,1,0,0)")]
     [InlineData("matrix(1,1,0,1,0,0)")]
     [InlineData("matrix(1,0,1,1,0,0)")]
-    [InlineData("rotate(45)")]
     public void Rejects_zero_and_skewed_geometry_transforms(string transform)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect width='8' height='8' transform='" + transform + "'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
