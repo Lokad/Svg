@@ -1118,7 +1118,20 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
     internal bool BorrowedFromSymbol { get; init; }
 }
 
-internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintOpacity? FillOpacity, SvgColor? CurrentColor);
+/// <summary>Retains a solid fill's independently inherited properties until a symbol or child alias is instanced.
+/// Stroke channels and paint servers keep their separately lowered paint.</summary>
+internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintOpacity? FillOpacity, SvgColor? CurrentColor)
+{
+    internal SvgPaint? AuthoredFill { get; init; }
+    internal bool IsPainted { get; init; } = true;
+    internal bool ResolvesFill => IsInherited || AuthoredFill is not null;
+
+    internal SvgPaint Resolve(SvgPaint instancePaint)
+    {
+        SvgPaint fill = AuthoredFill ?? instancePaint;
+        return fill with { HasFill = fill.HasFill && IsPainted, FillOpacity = FillOpacity ?? instancePaint.FillOpacity, CurrentColor = CurrentColor ?? instancePaint.CurrentColor };
+    }
+}
 
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 

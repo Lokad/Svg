@@ -7,7 +7,7 @@ and references remain frozen. This complete matrix is the regression gate.
 
 **The identified renderer fidelity repair phase is complete.** All admitted
 fixture and research comparisons are exact against their original references.
-The final repair preserves native stroke contours with zero total signed area
+The final repair in that phase preserves native stroke contours with zero total signed area
 but nonzero local winding, including clipped construction. It changes one
 original PNG; the other 1,538 PNGs and every corporate report/image stay unchanged.
 See [the repair](docs/RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
@@ -20,13 +20,19 @@ rectangle gate, **G3**, and remains rejected; no source or browser reference cha
 **G2's direct-leaf and symbol-location repairs are implemented.** Both retained
 symbol/instance families now render exactly on three backgrounds, with unchanged inputs and
 references. Symbols also work directly under the root or rendered groups, without
-copying definition-ancestor transforms or visibility. Thirty independent symbol
-controls retain 27 exact results and three nested-content rejections through all
+copying definition-ancestor transforms or visibility. Forty-six independent symbol
+controls retain 43 exact results and three nested-content rejections through all
 six outputs. Anonymous symbols and descriptive metadata have bounded ownership
 and shared font-discovery checks. The next active item remains **G2's remaining
 symbol and instance combinations**:
 nested group/use contents, inherited stroke/paint overrides, remaining definition
 locations and broader viewport mapping. G2 is not a general symbol-support claim.
+
+Solid fill bindings now preserve a leaf's own display/visibility and resolve
+`currentColor` and fill opacity independently at instance time. Ten of sixteen
+new controls previously rendered incorrect pixels; all sixteen now match their
+unchanged browser references through six outputs. This repair also covers child
+aliases; stroke inheritance and cloned-container visibility remain open.
 
 The next work is ordinary static SVG support within the original product scope:
 remove erroneous admission gates, then fill the missing geometry, reference,
@@ -54,8 +60,8 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,359 passed on each platform**: 3,949 core, 404 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Twenty-nine exhaustive parser-work/memory ownership inputs pass, including three fresh location/anonymous cases. Thirteen duplicate-ID controls keep MalformedInput and zero live storage. During-assembly cancellation/retry remains covered. Eighteen new location/metadata/discovery checks and five font-provider paths pass. Thirty six-output symbol controls retain 27 exact results and three valid-input nested-content rejections; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
+| Full tests, including corporate selection/measurement | **4,379 passed on each platform**: 3,953 core, 420 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Thirty-three exhaustive parser-work/memory ownership inputs pass, including four fresh presentation cases covering recolored native owners, hidden leaves, aliases and opacity scopes. Thirteen duplicate-ID controls keep MalformedInput and zero live storage. During-assembly cancellation/retry remains covered. Eighteen new location/metadata/discovery checks and five font-provider paths pass. Forty-six six-output symbol controls retain 43 exact results and three valid-input nested-content rejections; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,389 exact + zero known-difference renders + 21 rejections**; 799 base documents / 611 variants. Three magnified-instance cases graduate against their unchanged references; other fixture outcomes and PNGs stay unchanged. |
 | Executed research manifest | **65 probes = 64 exact + zero known-difference renders + one rejection**. Three multiple-child symbol cases graduate from the erroneous MalformedInput rejection; other research outcomes and PNGs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
@@ -64,10 +70,10 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; original curve commands replay through existing final mapping. No new raster fields or surfaces and no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and 4,359 tests. All 1,567 original execution
+Both platforms pass Release builds and 4,379 tests. All 1,567 original execution
 reports and all 1,545 PNG byte sequences remain unchanged from the preceding
-symbol repair; Windows/Linux banks agree. Every corporate result is unchanged
-and exact against its platform's own references. Four retained online failures
+symbol-location checkpoint; Windows/Linux banks agree. Every corporate result
+is unchanged and exact against its platform's own references. Four retained online failures
 remain; the heart and new I Ching library are G3, the two patterns are G6. WSL
 Ubuntu 24.04.3 uses isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6.
 Earlier package, memory and timing evidence keeps its dated scope; remote CI
@@ -167,16 +173,25 @@ and retains later direct-text requests. Eleven new controls are browser-exact;
 three unchanged nested group/backward-use/forward-use controls retain their G2
 rejections and provide the next measured work.
 
+Solid fills now retain authored paint separately from inherited color and fill
+opacity. Each clone resolves these properties from its use context while keeping
+explicit leaf/symbol values and the leaf's own display/visibility. The same
+resolved paint controls geometry and recorded alpha. Sixteen further controls
+are exact through six outputs; four new exhaustive work/memory inputs exercise
+newly recolored native owners and partial cleanup.
+
 **G2 remains open.** Implement the retained nested group/use cases, then measure
-container/leaf visibility and display, color/currentColor inheritance, stroke and
-paint-server overrides, child aliases inheriting stroke, other definition
-locations, and viewBox percentage-base/affine combinations.
+visibility/display propagation through cloned containers, currentColor strokes,
+inherited stroke and paint-server overrides, child aliases inheriting stroke,
+use color/fill-opacity attributes, other definition locations, and viewBox
+percentage-base/affine combinations.
 Select bounded slices from those failures and audit cycle categorization; broader
 transform maps stay G3 and deeper reference/composition scopes stay G5. Exit:
 the selected practical combinations are exact on unchanged references with no
 regression to current exact inputs or resource contracts.
 See [the repair](docs/RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08).
 The [location/ownership follow-up](docs/RASTERIZATION_DESIGN.md#non-rendering-symbol-locations-anonymous-owners-and-descriptions-2026-10-08) records the current repair.
+The [solid-fill presentation repair](docs/RASTERIZATION_DESIGN.md#symbol-solid-fill-presentation-at-instance-time-2026-10-08) records the new fidelity fixes.
 
 ### G3 — curved geometry and transforms
 

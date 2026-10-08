@@ -1054,6 +1054,10 @@ internal static class SvgDefinitionParser
         bool inherited = reader.LocalName != "line" && style.Fill is null && (!includesSymbolPresentation || !symbol.HasAuthoredFill);
         SvgPaintOpacity? opacity = style.FillOpacity is null ? (includesSymbolPresentation ? symbol.FillOpacity : null) : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
         SvgColor? color = style.Color is null ? (includesSymbolPresentation ? symbol.CurrentColor : null) : SvgColorParser.Parse(style.Color, context.NamedColors);
+        SvgPaint? authoredFill = !inherited && reader.LocalName != "line" && !SvgPatternSyntax.IsPatternFill(style.Fill)
+            ? SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, includesSymbolPresentation ? symbol.Paint : SvgPaint.Default, context.NamedColors)
+            : null;
+        bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, true, true);
         SvgPaintOperationIdentity fill = state.Scene.GetRecordedPaintValue(definition.Geometries[0].RecordedPaint).Identity;
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(128 + ParserCollectionMemory.GetArrayByteCount<SvgSymbolFillBinding>(definition.Geometries.Length), SvgMemoryCategory.Scene);
         try
@@ -1063,7 +1067,7 @@ internal static class SvgDefinitionParser
             {
                 work.Consume(token);
                 bool fillChannel = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint).Identity == fill;
-                bindings[index] = new(inherited && fillChannel, opacity, color);
+                bindings[index] = new(inherited && fillChannel, opacity, color) { AuthoredFill = fillChannel ? authoredFill : null, IsPainted = isPainted };
             }
             state.DefinitionReservations.Add(reservation);
             return definition with { SymbolFillBindings = bindings };

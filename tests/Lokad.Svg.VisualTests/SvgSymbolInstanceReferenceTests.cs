@@ -8,16 +8,19 @@ public sealed class SvgSymbolInstanceReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "symbol-instances", "manifest.json")));
-        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
-            yield return new object[] { RequiredString(item, "id") };
+        foreach (string family in new[] { "symbol-instances", "symbol-presentation" })
+        {
+            using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", family, "manifest.json")));
+            foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
+                yield return new object[] { family, RequiredString(item, "id") };
+        }
     }
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Symbol_instances_match_stable_browser_references_through_all_six_outputs(string identity)
+    public async Task Symbol_instances_match_stable_browser_references_through_all_six_outputs(string family, string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "symbol-instances");
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
         Assert.Equal(16, root.GetProperty("cases").GetArrayLength());

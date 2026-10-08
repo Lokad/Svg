@@ -27,7 +27,7 @@ criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
 | Queue | Supported boundary / missing combination | Retained evidence |
 | --- | --- | --- |
 | G1 | Declaration validation landed: attributes and admitted inline/stylesheet paths share `new` / `accumulate` / `inherit` validation without backdrop allocation. Complete and numeric partial rectangles require finite numbers and nonnegative dimensions. | Eleven six-output contexts plus malformed/priority/resource/discovery controls; the unchanged `inv-105` now reaches G3. |
-| G2 | Ordered direct-leaf symbols, inherited fill channels, container styles/opacity and native-backed magnified instances render. Root and rendered-group symbol locations also work, including anonymous definitions and descriptive metadata. Nested groups/uses, stroke/paint overrides, other locations and broader viewports remain open. | Both original families exact on three backgrounds; thirty six-output controls retain 27 exact results and three nested-content rejections in `Research/symbol-instances` and `Research/symbol-locations`. |
+| G2 | Ordered direct-leaf symbols, inherited fill channels, container styles/opacity and native-backed magnified instances render. Root and rendered-group symbol locations also work, including anonymous definitions and descriptive metadata. Solid fills retain leaf display/visibility and bind color/fill opacity at instance time. Nested groups/uses, cloned-container visibility, stroke/paint overrides, other locations and broader viewports remain open. | Both original families exact on three backgrounds; forty-six six-output controls retain 43 exact results and three nested-content rejections across the symbol instance, location and presentation banks. |
 | G3 | Some axis-aligned/similarity/path transforms exist; rotated rectangles, general matrix curve/shape combinations and non-uniform curve output remain gated. Pattern reflection and compound curved even-odd fill admission are also gated. | `inv-105`, `inv-106`, `original-logo-rotated-mark`, `original-number-general-map`, `original-curve-root-quad-none`, tiger and `group-clip-reflected-pattern`. |
 | G4 | Native solid strokes render; gradient/pattern mixed closed/open subpaths and gradient direct `fill="none"` lines still reject. Oval dash caps/paint/transform combinations remain narrower than solid paths. | Nine `zero-area-stroke-*` paint-server controls, two `line-bounds-*-square-width6-fill-none` controls; shared stroke and paint admission. |
 | G5 | Nested viewport sizing/clips and limited masks exist; nested SVG style attributes, nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `original-aa-clip-admitted-shader`, material pairs, `mask-region-half-translated`; definition scopes, `SvgMaskSyntax` and `SvgNestedViewportSyntax`. |
@@ -69,10 +69,15 @@ provider/lowering scenarios and two fresh denial/retry checks cover that boundar
 
 Symbol presentation attributes and admitted inline/stylesheet declarations
 resolve fill/color/fill-opacity/fill-rule, basic inherited stroke and container
-opacity. Authored fills win over a use fill; unstyled fill channels inherit from
-use and its ancestors. Stroke channels keep their own paint. Child, symbol and
-use opacity compose in separate scopes. Container visibility/display and wider
-paint-server/stroke override combinations remain explicit gaps. Use viewport
+opacity. Authored solid fills win over a use fill; unstyled fill channels inherit
+from use and its ancestors. Color and fill opacity inherit independently of fill:
+`currentColor` resolves in each clone, explicit leaf/symbol values win, and child
+aliases exclude the symbol's values. A leaf's own display/visibility cannot be
+reactivated by inherited fill. Geometry and recorded alpha share that resolution.
+Stroke channels keep their separately lowered paint. Child, symbol and use opacity
+compose in separate scopes. Cloned-container visibility/display, currentColor
+strokes, use color/fill-opacity attributes and wider paint-server/stroke override
+combinations remain explicit gaps. Use viewport
 defaults and magnified uniform curve maps have exact independent controls;
 non-uniform/scaled-nested-viewport and other existing consumer gates remain.
 
@@ -83,7 +88,11 @@ Both original families are exact on three unchanged references each, and sixteen
 independent controls are exact through six outputs. Denied allocation/work and
 partial assembly cancellation preserve cleanup and retry. Eleven additional
 location controls are exact, while three nested-content controls retain their
-rejections. See [the repair](RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08).
+rejections. Sixteen further solid-fill presentation controls repair ten preceding
+pixel failures while preserving six already exact controls. All are exact through
+six outputs; four new exhaustive ownership inputs protect recolored native
+geometry and partial failures. See [the initial repair](RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08)
+and [the presentation follow-up](RASTERIZATION_DESIGN.md#symbol-solid-fill-presentation-at-instance-time-2026-10-08).
 
 ## Retained renderer foundations
 

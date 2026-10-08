@@ -8218,3 +8218,39 @@ performance claim is made; earlier package/memory/timing records keep their date
 scope. Raw results stay ignored under `artifacts/symbol-locations-20261008/` and
 isolated Linux `symbol-locations-final-20261008/`. G2 nested content/style/other
 locations/viewports, G3 geometry/maps and S17 remote CI remain open.
+
+## Symbol solid-fill presentation at instance time (2026-10-08)
+
+Ten of sixteen independently declared controls rendered incorrect pixels:
+inherited fill reactivated hidden leaves, authored `currentColor` froze at the
+definition's color, and authored fill stopped fill opacity from inheriting. The
+other six controls were already exact. The controls were declared before the
+prototype or captures; their original SVGs and three stable browser captures
+are retained in [the manifest](../tests/Research/symbol-presentation/manifest.json).
+
+A solid-fill binding now retains authored paint, optional authored color and fill
+opacity, and the leaf's own painting visibility separately. At instance time,
+authored fill survives a use fill override while missing color/fill opacity come
+from the use context. Child aliases exclude the enclosing symbol's presentation.
+One allocation-free binding resolver supplies both recolored geometry and
+recorded alpha, preserving child/symbol/use opacity scopes. These independent
+properties follow [SVG paint and inheritance](https://www.w3.org/TR/SVG11/painting.html#SpecifyingPaint)
+and [use inheritance](https://www.w3.org/TR/SVG11/struct.html#UseElement).
+
+Instance cleanup owns all newly recolored channels, including authored solid
+fills with inherited properties; stroke and paint-server channels remain borrowed.
+Binding arrays charge their actual element size before allocation. Native copies,
+staging arrays and copy work retain existing reservations and denial cleanup.
+Four new exhaustive work/memory inputs cover hidden native leaves, currentColor,
+child aliases and separate opacity scopes. All sixteen controls are now exact
+through the existing six-output harness, with unchanged references.
+
+Windows/Linux Release builds have zero warnings/errors and **4,379 tests pass
+per platform**. All preceding 1,567 original reports / 1,545 PNG byte sequences
+and all corporate reports/PNGs remain unchanged; **27/27 / 258/258** remain exact
+against each platform's own retained references. Raster fields/surfaces, public
+APIs and runtime dependencies are unchanged. No quantitative performance claim
+is made. Detailed results remain ignored under `artifacts/symbol-presentation-20261008/`
+and isolated Linux `symbol-presentation-final-20261008/`. Nested symbol contents,
+cloned-container visibility, currentColor strokes, wider instance styles and
+viewport combinations remain G2 work; S17 remote CI remains open.

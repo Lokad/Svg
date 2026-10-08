@@ -117,7 +117,7 @@ internal static class SvgReferenceResolver
                 {
                     SvgSymbolFillBinding fillBinding = symbolBindings[index];
                     SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
-                    paintReference = reference with { FillOverride = fillBinding.IsInherited ? fill with { FillOpacity = fillBinding.FillOpacity ?? fill.FillOpacity, CurrentColor = fillBinding.CurrentColor ?? fill.CurrentColor } : null };
+                    paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill) : null };
                 }
                 SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, PlainInstancePlacement(reference, frame));
                 SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, true, PlainInstancePlacement(reference, frame));
@@ -774,7 +774,7 @@ internal static class SvgReferenceResolver
         {
             if (_owner is null) return;
             for (int index = 0; index < Geometries.Length; index++)
-                if (_bindings is null || _bindings[index].IsInherited) Geometries[index].Dispose();
+                if (_bindings is null || _bindings[index].ResolvesFill) Geometries[index].Dispose();
             _owner.Dispose();
         }
     }
@@ -790,13 +790,13 @@ internal static class SvgReferenceResolver
         }
         else
         {
-            bool inherited = false;
+            bool resolvesFill = false;
             foreach (SvgSymbolFillBinding binding in bindings)
             {
                 work.Consume(token);
-                inherited |= binding.IsInherited;
+                resolvesFill |= binding.ResolvesFill;
             }
-            if (!inherited) return new(definition.Geometries, bindings, null);
+            if (!resolvesFill) return new(definition.Geometries, bindings, null);
         }
         RenderBudget.BudgetReservation owner = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(definition.Geometries.Length), SvgMemoryCategory.Parser);
         SvgGeometry[] sources;
@@ -809,14 +809,13 @@ internal static class SvgReferenceResolver
             {
                 work.Consume(token);
                 SvgGeometry source = definition.Geometries[index];
-                if (bindings is not null && !bindings[index].IsInherited) sources[index] = source;
+                if (bindings is not null && !bindings[index].ResolvesFill) sources[index] = source;
                 else
                 {
                     SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
                     if (bindings is not null)
                     {
-                        SvgSymbolFillBinding binding = bindings[index];
-                        fill = fill with { FillOpacity = binding.FillOpacity ?? fill.FillOpacity, CurrentColor = binding.CurrentColor ?? fill.CurrentColor };
+                        fill = bindings[index].Resolve(fill);
                     }
                     sources[index] = Recolor(source, fill, state);
                 }
@@ -827,7 +826,7 @@ internal static class SvgReferenceResolver
         catch
         {
             for (int index = 0; index < retained; index++)
-                if (bindings is null || bindings[index].IsInherited) sources[index].Dispose();
+                if (bindings is null || bindings[index].ResolvesFill) sources[index].Dispose();
             owner.Dispose();
             throw;
         }
@@ -933,7 +932,7 @@ internal static class SvgReferenceResolver
                     {
                         SvgSymbolFillBinding fillBinding = symbolBindings[index];
                         SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
-                        paintReference = reference with { FillOverride = fillBinding.IsInherited ? fill with { FillOpacity = fillBinding.FillOpacity ?? fill.FillOpacity, CurrentColor = fillBinding.CurrentColor ?? fill.CurrentColor } : null };
+                        paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill) : null };
                     }
                     SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, SymbolInstancePlacement(symbolBox, reference, frame));
                     SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, true, SymbolInstancePlacement(symbolBox, reference, frame));
