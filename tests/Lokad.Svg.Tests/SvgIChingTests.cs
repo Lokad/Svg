@@ -10,6 +10,7 @@ public sealed class SvgIChingTests
     [InlineData("closed-numeric-tail")]
     [InlineData("rotated-symbol-opacity")]
     [InlineData("nested-rotated-symbol")]
+    [InlineData("nested-rotated-opacity")]
     public void I_Ching_mechanisms_release_all_owners_on_denial_and_cancellation(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "iching-library", identity + ".svg"));

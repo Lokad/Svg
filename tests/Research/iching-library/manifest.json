@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Twenty-five focused controls advancing the complete retained I Ching library: 22 exact, two explicit boundary rejections, one measured nested-affine-opacity residual. Separate from the original/corporate denominators.",
+  "purpose": "Twenty-five focused controls advancing the complete retained I Ching library: 23 exact and two explicit boundary rejections. Separate from the original/corporate denominators.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -335,22 +335,7 @@
       "width": 64,
       "height": 64,
       "background": "transparent",
-      "role": "known-difference",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 32,
-        "MaximumChannelError": 51,
-        "MeanAbsoluteError": 0.023193359375,
-        "RootMeanSquareError": 0.7255957950625816,
-        "MaximumAlphaError": 1,
-        "AlphaChangedPixelCount": 21,
-        "MinimumMismatchX": 19,
-        "MinimumMismatchY": 20,
-        "MaximumMismatchX": 44,
-        "MaximumMismatchY": 43,
-        "IsExact": false
-      },
-      "remainingGap": "G5: successive affine clips and nested isolated opacity restoration; 32 pixels. Does not block the complete retained I Ching document."
+      "role": "fidelity"
     },
     {
       "id": "offcanvas-rotated-symbol",

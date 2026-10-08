@@ -5,8 +5,10 @@ probe has a pinned-Chrome reference in `references/` and records either a
 categorized rejection or an admitted render with an explicit pixel difference.
 The main manifest contains 65 probes: 64 exact and one rejection. Separate
 mechanism banks retain their own denominators. `iching-library/manifest.json`
-has 25 controls: 22 exact, two categorized rejections and one measured nested
-affine-opacity difference against frozen references. The complete retained
+has 25 controls: 23 exact and two categorized rejections against frozen
+references. The nested affine-opacity defect now matches its unchanged PNG;
+`nested-affine-opacity/` adds seven exact independent twins protecting clip and
+isolation order through six outputs. The complete retained
 I Ching document is measured separately in the online gap manifest.
 `pattern-vector-content/manifest.json` retains eighteen controls: seventeen exact
 and one explicit recursive-paint rejection. Its full 200×200 retained online

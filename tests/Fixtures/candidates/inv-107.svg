@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg width="744.09" height="1052.4" xmlns="http://www.w3.org/2000/svg">
+ <linearGradient id="a" x1="214.15" x2="477.8" y1="454.85" y2="454.85" gradientUnits="userSpaceOnUse">
+  <stop offset="0"/>
+  <stop stop-color="#fff" offset="1"/>
+ </linearGradient>
+ <mask id="b" maskUnits="userSpaceOnUse">
+  <rect x="214.15" y="330.1" width="263.65" height="249.51" fill="url(#a)"/>
+ </mask>
+ <rect x="255.57" y="420.01" width="243.45" height="257.59" fill="#ff00a6" mask="url(#b)" opacity=".7"/>
+</svg>

@@ -244,6 +244,53 @@
         "referenceSha256": "47e74a3571c6823815aeb5c61ef86f4072bad0fe0bb94d63c407c58affb7f470",
         "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
       }
+    },
+    {
+      "id": "inv-107",
+      "title": "SVG mask.svg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVG_mask.svg",
+      "sourceRevisionUrl": "https://commons.wikimedia.org/wiki/File:SVG_mask.svg?oldid=451796771",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/7/76/SVG_mask.svg",
+      "creator": "Kelvinsong",
+      "creatorUrl": "https://commons.wikimedia.org/wiki/User:Kelvinsong",
+      "retrievalDate": "2026-10-09",
+      "license": "CC0-1.0",
+      "licenseEvidence": "The creator dedicates this own work under CC0 1.0 Universal on the file page; the page also identifies it as public-domain simple geometry.",
+      "licenseEvidenceUrl": "https://commons.wikimedia.org/wiki/File:SVG_mask.svg?oldid=451796771",
+      "original": "Fixtures/candidates/inv-107.svg",
+      "originalSha256": "5cf4b718b1705870601f820616629ccbd4952dd139d696aa0e63aaa4402de430",
+      "input": "tests/References/inventory/gap-inputs/inv-107.svg",
+      "inputSha256": "f9d53730ae862bf4e5dc3c0f1bbca1dd460befeba6bb050814f9d3ca932ee640",
+      "materialization": "Only root width/height changed from 744.09/1052.4 to explicit 744/1052 integer pixel sizes; all other bytes and authored geometry preserved.",
+      "featureTags": [
+        "root-local-definitions",
+        "linear-gradient",
+        "luminance-mask",
+        "fractional-rectangle",
+        "opacity"
+      ],
+      "gap": "G5",
+      "width": 744,
+      "height": 1052,
+      "outputScale": 1,
+      "background": "transparent",
+      "viewport": null,
+      "renderOutcome": "UnsupportedFeature",
+      "observedMessage": "Only defined local mask references are implemented.",
+      "reference": "tests/References/inventory/inv-107-transparent.png",
+      "referenceSha256": "6846de1b286a8d445b326ab34a7a20553f7d5bfac6816b602f22e3839056f8a9",
+      "oracle": {
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true,
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+      }
     }
   ]
 }

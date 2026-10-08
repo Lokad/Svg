@@ -5,6 +5,26 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Current development documents (2026-10-09)
+
+The first four retained documents remain exact on Windows/Linux. A newly screened
+CC0 mask document is pending: **4/5 complete**, separate from the preserved
+corporate 27/27 documents and 258/258 variants. The complete I Ching library's
+nested affine-opacity mechanism defect is also repaired against its frozen PNG.
+
+### inv-107 — SVG mask.svg
+
+- Original: [untouched download](../tests/Fixtures/candidates/inv-107.svg), 634 bytes.
+- Source and license: [Commons revision](https://commons.wikimedia.org/wiki/File:SVG_mask.svg?oldid=451796771), retrieved 2026-10-09. Creator **Kelvinsong**, own work, explicitly **CC0-1.0**; simple-geometry public-domain evidence is also present.
+- Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-107.svg), changing only fractional root dimensions 744.09/1052.4 to 744/1052 integer pixels. Geometry, gradient, mask, opacity and declaration-only DOCTYPE stay untouched. Scale 1, transparent, no explicit viewport or supplied fonts.
+- Frozen reference: [PNG](../tests/References/inventory/inv-107-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3; three fresh healthy, cleaned, byte-identical captures. This new document has no matching Linux browser qualification yet.
+- Current outcome: **UnsupportedFeature**, "Only defined local mask references are implemented." Root-local definitions and gradient mask-content replay feed the next finite G5 slice. Fixing that first blocker will not establish completion; every further gate and mismatch must resolve against the same reference.
+
+The source page/license and capture diagnostics are retained under ignored
+`artifacts/nested-affine-opacity-20261009/`. This small sourcing follow-up retains
+one demonstrated failing document; it does not alter the corporate cohort or
+any original fixture/research denominator.
+
 ## Original-scope support audit and online batch (2026-10-08)
 
 The identified original fixture/research rendering differences are resolved.
@@ -50,7 +70,7 @@ Full API responses and capture diagnostics remain under ignored
 - Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-105.svg); only root width/height replaced with 512×401 pixel dimensions. Authored geometry and all other source bytes retained. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
 - Browser reference: [PNG](../tests/References/inventory/inv-105-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3, device scale 1; three stable healthy captures.
 - Current outcome: **exact complete document**, 512×401 transparent, through all six outputs on Windows/Linux. Shared background validation removed G1; shared transformed-rectangle source replay removes the subsequent G3 blocker without changing original/input/reference bytes. Three fresh Linux Chrome 153 captures are healthy, cleaned and byte-identical to the frozen Windows reference, so the same retained PNG serves both platform oracles. The gap manifest records that Linux provenance; no extra background or size was added to the document denominator.
-- The four failure-selected gap documents now have **4/4 completed**: the heart, I Ching library and both patterns. This is development progress, separate from the unchanged corporate 27/27 documents / 258/258 variants. Fifteen focused mechanism controls retain nine exact results and six explicit boundary rejections. See [the repair](RASTERIZATION_DESIGN.md#illustrator-heart-and-transformed-rectangle-fills-2026-10-08).
+- The first four failure-selected gap documents are complete: the heart, I Ching library and both patterns. This is development progress, separate from the unchanged corporate 27/27 documents / 258/258 variants. Fifteen focused mechanism controls retain nine exact results and six explicit boundary rejections. See [the repair](RASTERIZATION_DESIGN.md#illustrator-heart-and-transformed-rectangle-fills-2026-10-08).
 
 The checkerboard sourcing control is [Indolences' public-domain geometric SVG](https://commons.wikimedia.org/wiki/File:Checkerboard_pattern.svg).
 At its declared 500×500 transparent viewport it is pixel-exact; its three stable
@@ -74,7 +94,7 @@ and descriptive metadata now have independent exact browser evidence.
 - Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-106.svg); only explicit 280×720 root pixel dimensions inserted, preserving the original viewBox, 79 symbols, 79 uses, all geometry and remaining bytes. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
 - Browser reference: [PNG](../tests/References/inventory/inv-106-transparent.png); Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3 / device scale 1, three stable healthy/cleaned captures. Both empty and painted areas are present.
 - Current outcome: **exact complete document**, 280×720 transparent, all 79 symbols/uses, through six outputs on Windows/Linux against unchanged original/input/options/reference. Three fresh healthy, cleaned Linux browser captures are byte-identical to the frozen Windows PNG; the manifest records that matching oracle.
-- Diagnosis corrected the original blocker attribution: the compound even-odd Yin/Yang witness was already exact. `Hexagram_U4DCA` ends with a stray `z0`; browser-compatible complete-prefix recovery exposes rotated symbol viewport clips and group titles, then native contour/clip pixel differences. Shared source replay and affine clip coverage close every blocker in the full document. The 25 focused CC0 controls retain 22 exact results, two explicit rejections and one measured 32-pixel nested-opacity defect. Source/reference substitution was not used. See [the repair](RASTERIZATION_DESIGN.md#i-ching-library-path-prefixes-and-affine-symbol-clips-2026-10-08).
+- Diagnosis corrected the original blocker attribution: the compound even-odd Yin/Yang witness was already exact. `Hexagram_U4DCA` ends with a stray `z0`; browser-compatible complete-prefix recovery exposes rotated symbol viewport clips and group titles, then native contour/clip pixel differences. Shared source replay and affine clip coverage close every blocker in the full document. The 25 focused CC0 controls retain 23 exact results and two explicit rejections; the formerly measured 32-pixel nested-opacity defect now matches its unchanged reference. Seven independent twins protect clip/instance-opacity order. Source/reference substitution was not used. See [the repair](RASTERIZATION_DESIGN.md#i-ching-library-path-prefixes-and-affine-symbol-clips-2026-10-08).
 
 The follow-up brings the online development set to four retained failures, after
 five screened sources including the earlier exact checkerboard. It establishes

@@ -25,7 +25,16 @@ internal static class SvgSymbolContentRenderer
                 if (frame.Next == frame.Range.Start + frame.Range.Count)
                 {
                     SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(frame.OutputStart), null, null, frame.MaskReference, state, work, token);
-                    SvgPaintRecording.WrapInstance(output.AsMutableSpan().Slice(frame.OutputStart), frame.Opacity, frame.Scope, frame.CompositionClip, frame.AffineClip, state, work, token);
+                    Span<SvgGeometry> contents = output.AsMutableSpan().Slice(frame.OutputStart);
+                    if (frame.AffineClip is not null && frame.Opacity.Value != 1)
+                    {
+                        // Instance opacity surrounds the instantiated viewport. Keep its
+                        // clip inside that layer so nested isolation restores coverage
+                        // before the outer opacity's separate byte scaling.
+                        SvgPaintRecording.WrapInstance(contents, SvgPaintOpacity.Opaque, frame.Scope, null, frame.AffineClip, state, work, token);
+                        SvgPaintRecording.WrapInstance(contents, frame.Opacity, frame.Scope, state, work, token);
+                    }
+                    else SvgPaintRecording.WrapInstance(contents, frame.Opacity, frame.Scope, frame.CompositionClip, frame.AffineClip, state, work, token);
                     stack.RemoveLast(); continue;
                 }
                 SvgSymbolContentNode node = frame.Range.Content.Nodes[frame.Next];

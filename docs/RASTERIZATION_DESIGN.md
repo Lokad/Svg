@@ -9173,3 +9173,47 @@ bank PNGs, established rendering outcomes and frozen corporate results remain
 unchanged. The corporate matrix remains 27/27 documents and 258/258 variants exact
 against each platform's own references. All four online gap documents are complete.
 G6's remaining container/unit/affine combinations and G2–G9's finite exits stay open.
+
+## Nested affine viewport and instance opacity order (2026-10-09)
+
+The retained 64×64 `iching-library/nested-rotated-opacity` now matches its
+unchanged transparent reference through all six outputs on Windows/Linux.
+Its previous 32 differing pixels (maximum channel error 51, alpha error 1)
+came from combining nested instance opacity and viewport clipping into one
+restoration. Browser command records place the opacity `saveLayer` before the
+instantiated viewport clip; the nested group restores through clip coverage
+before the instance layer applies its separate opacity byte scale. The previous
+combined restoration inverted these rounding steps. Removing middle instance
+opacity made the diagnostic exact, isolating the operation-order defect.
+
+Retained symbol expansion now creates the viewport operation first and wraps it
+with the existing instance-opacity operation. Inherited composition clips on
+ordinary isolated groups retain their separate ordering. No raster arithmetic,
+shape-specific renderer, document predicate or reference changes were needed.
+The existing clip/opacity owners reserve storage before allocation; added metadata
+and traversal consume parser work and memory. Native RLE clip coverage, sprite
+versus image-shader restoration, source contours and layer origins remain intact.
+
+Seven CC0 twins were declared before production editing/capture: independently
+opaque outer/middle/inner scopes, clips only, unrotated opacity, and white/black
+backgrounds. All 21 fresh Windows browser captures are healthy, cleaned and
+byte-stable. Five previously differed; all seven are exact after the correction.
+The original I Ching bank is now 23 exact and two explicit rejections. The added
+resource sweep covers each parser/discovery work denial, sampled/peak memory
+denials, raster work boundaries and cancellation/retry with zero retained owners.
+No general clip-stack or G5 completion is claimed.
+
+Both Release builds have zero warnings/errors; 5,473 tests pass on each platform
+(4,125 core, 1,342 visual-project, six FontProbe), with zero failure/skip.
+The original 1,567 reports/1,547 PNGs and every prior exact control are unchanged.
+Only the established nested-affine-opacity residual graduates. All four previously
+completed online documents and corporate 27/27 documents / 258/258 variants remain
+exact against their own frozen references. Layout stays 72/272/68 bytes. No
+quantitative performance claim is made. Evidence is retained under ignored
+`artifacts/nested-affine-opacity-20261009/` and
+`artifacts/linux-delivery-20261007/nested-affine-opacity-final-20261009/`.
+
+A newly retained CC0 complete mask example (`inv-107`) rejects its root-local
+mask reference, with untouched downloaded geometry and a three-capture frozen
+744×1052 transparent PNG. It supplies the next G5 document; 4/5 development
+documents are complete. G2–G9 and S17 remain open; finite promises are unchanged.
