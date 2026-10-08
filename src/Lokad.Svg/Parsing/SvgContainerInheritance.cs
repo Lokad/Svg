@@ -23,13 +23,13 @@ internal static class SvgContainerInheritance
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(inheritedTextStyle);
         ArgumentNullException.ThrowIfNull(namedColors);
-        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(computedStyle, inheritedPresentation.Paint, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible, namedColors);
+        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(computedStyle, inheritedPresentation.Paint, inheritedPresentation.PaintServerFill, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible, namedColors);
         if (presentation.Opacity != 255 && inheritedHasOpacityScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
         SvgAffineTransform transform = inheritedPresentation.Transform.ComposeChecked(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken));
         SvgInheritedTextStyle textStyle = SvgTextInheritance.Resolve(reader, inheritedTextStyle, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important));
         SvgInheritedStrokeStyle stroke = inheritedStroke.ResolveChild(computedStyle);
         return new SvgInheritedContainer(
-            new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform),
+            new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform) { PaintServerFill = presentation.PaintServerFill },
             textStyle,
             computedStyle.FillRule ?? inheritedFillRule,
             inheritedHasOpacityScope || presentation.Opacity != 255,

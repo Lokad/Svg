@@ -85,9 +85,19 @@ Pattern instances retain integer/fractional/negative phase and positive-axis
 scaling with integral device tile dimensions; mapped rectangle content may have
 fractional edges. Twelve new resource sweeps pass.
 
-**Next, continue G2 with container paint-server inheritance and viewport combinations.**
-Root/group/symbol paint-server fill inheritance, remaining instance locations
-and percentage-base/affine mappings need independent controls. Rendered-group
+**G2 now admits container shader fill inheritance.** Root, group, link and symbol
+fills flow through the admitted cascade and source replay; authored overrides,
+aliases and definition ancestors retain their existing precedence. Fractional
+polygon/polyline fills share native source replay for linear/radial paints and
+untransformed patterns. Lines and images retain their independent paint behavior.
+All 192 new controls are exact through six outputs; their baseline had 183
+rejections, four incorrect renders and five exact renders. Pattern rectangles now
+retain direct group placement, and tile fills preserve opacity before byte
+quantization. Fifteen resource sweeps and two placement-gate checks pass.
+
+**Next, continue G2 with viewport and remaining instance combinations.** Other
+instance locations and percentage-base/affine mappings need independent controls.
+Rendered-group
 opacity, clip/mask and viewport boundaries remain G5; the inline transformed
 rectangle stays G3. Wider pattern content and coordinate systems remain G6.
 
@@ -124,8 +134,8 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **5,036 passed on each platform**: 4,044 core, 986 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Forty-eight preceding exhaustive parser-work/memory ownership inputs pass. Five additional stroke-opacity inputs cover solid/shader channels, nested uses and newly stroked unpainted curves, including every parser work limit, memory denial, raster work boundaries and cancellation/retry. Eighteen graph, duplicate-ID, empty-target, deep-chain, expansion-denial, sealing-cancellation/retry and discovery checks pass. Partial forward insertion disposes unadopted native owners and reserves extra command storage before allocation. All 83 preceding six-output symbol comparisons stay exact; the 31-case use-paint bank preserves 30 exact and one unsupported outcome through six outputs. Fifteen frame cases preserve twelve exact and three unsupported outcomes; frame work-denial checks release surface owners. All thirty rectangle-path stroke controls are exact through six outputs; 480 compiled native outlines match float bits. Every admitted work/memory denial for the three join styles releases output owners; cancellation/retry and four construction-map controls pass. The 81 opacity cases preserve 70 exact and 11 unsupported outcomes through six outputs. Seven additional stroke-style inputs sweep every parser work denial, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry. All 99 new style cases preserve 96 exact and three unsupported outcomes through six outputs. Assembly cancellation releases source-sidecar scratch before retry. The 123 rendered-group controls preserve 114 exact and nine unsupported outcomes through six outputs; eleven further ownership/resource inputs pass, including copied masks, thin ellipses and empty forward targets. Empty scenes enforce the rendering work limit before surface allocation. All 150 new instance-shader/opacity controls are exact through six outputs; twelve further inputs sweep parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional pattern filtering. Source fill/stroke roles, authored opacity precedence and independent alphas have focused checks; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
+| Full tests, including corporate selection/measurement | **5,245 passed on each platform**: 4,061 core, 1,178 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Forty-eight preceding exhaustive parser-work/memory ownership inputs pass. Five additional stroke-opacity inputs cover solid/shader channels, nested uses and newly stroked unpainted curves, including every parser work limit, memory denial, raster work boundaries and cancellation/retry. Eighteen graph, duplicate-ID, empty-target, deep-chain, expansion-denial, sealing-cancellation/retry and discovery checks pass. Partial forward insertion disposes unadopted native owners and reserves extra command storage before allocation. All 83 preceding six-output symbol comparisons stay exact; the 31-case use-paint bank preserves 30 exact and one unsupported outcome through six outputs. Fifteen frame cases preserve twelve exact and three unsupported outcomes; frame work-denial checks release surface owners. All thirty rectangle-path stroke controls are exact through six outputs; 480 compiled native outlines match float bits. Every admitted work/memory denial for the three join styles releases output owners; cancellation/retry and four construction-map controls pass. The 81 opacity cases preserve 70 exact and 11 unsupported outcomes through six outputs. Seven additional stroke-style inputs sweep every parser work denial, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry. All 99 new style cases preserve 96 exact and three unsupported outcomes through six outputs. Assembly cancellation releases source-sidecar scratch before retry. The 123 rendered-group controls preserve 114 exact and nine unsupported outcomes through six outputs; eleven further ownership/resource inputs pass, including copied masks, thin ellipses and empty forward targets. Empty scenes enforce the rendering work limit before surface allocation. All 150 new instance-shader/opacity controls are exact through six outputs; twelve further inputs sweep parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional pattern filtering. All 192 container-shader controls are exact through six outputs; fifteen additional inputs sweep discovery/parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional point-list fills, copied pattern groups and tile alpha. Two transformed fractional pattern-point gates release owners. Source fill/stroke roles, authored opacity precedence and independent alphas have focused checks; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,389 exact + zero known-difference renders + 21 rejections**; 799 base documents / 611 variants. Three magnified-instance cases graduate against their unchanged references; other fixture outcomes and PNGs stay unchanged. |
 | Executed research manifest | **65 probes = 64 exact + zero known-difference renders + one rejection**. Three multiple-child symbol cases graduate from the erroneous MalformedInput rejection; other research outcomes and PNGs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
@@ -134,9 +144,9 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. No added surfaces or quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and 5,036 tests. All 1,567 original execution
+Both platforms pass Release builds and 5,245 tests. All 1,567 original execution
 reports and all 1,545 PNG byte sequences remain unchanged from the preceding
-rendered-group checkpoint; Windows/Linux banks agree. Every corporate result
+instance-shader checkpoint; Windows/Linux banks agree. Every corporate result
 is unchanged and exact against its platform's own references. Four retained online failures
 remain; the heart and new I Ching library are G3, the two patterns are G6. WSL
 Ubuntu 24.04.3 uses isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6.
@@ -179,7 +189,7 @@ landed mechanisms remain regression requirements.
 | Priority | Work | Failure class | Dependencies / stages |
 | --- | --- | --- | --- |
 | G1 | **Declaration validation landed.** Inert exporter presentation values share one validator; G2 is next. | Original syntax-location inconsistency resolved; the heart now exposes G3 | Remaining nested style/root selector gates stay G5/G7; S9 |
-| G2 | **Solid/shader use paint, stroke inheritance and rendered-group styling implemented.** Complete remaining practical symbol/instance combinations. | Container paint-server inheritance, other-location and viewport combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
+| G2 | **Solid/shader use and container paint, stroke inheritance and rendered-group styling implemented.** Complete remaining practical symbol/instance combinations. | Other-location and viewport combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
 | G3 | Complete curved geometry and static transforms across shapes, curves and instances | Missing combinations behind shape-specific and non-uniform gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | **Fractional rectangle-stroke fidelity repaired.** Complete paint-server strokes on ordinary geometry | Three retained rectangle comparisons and twelve new frame controls are exact; broader paints retain admission gates | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
@@ -308,13 +318,22 @@ exact through six outputs on both platforms. Its 450 browser captures are health
 cleaned and byte-stable; eight older failures graduate without asset changes.
 Twelve additional resource inputs protect construction, tile mapping and filtering.
 
-Next implement container paint-server fill inheritance, other locations and viewBox
-percentage-base/affine combinations. Capture root/group/symbol inherited URL fills
-and authored override twins before editing production code; keep their denominators
-separate. Select bounded slices from demonstrated failures; broader
+Root/group/link/symbol shader fills now inherit through independently retained
+container paint. The [192-case bank](tests/Research/container-shader-inheritance/manifest.json)
+is exact through six outputs on both platforms; all 576 browser captures are
+healthy, cleaned and byte-stable. The baseline rejected 183, rendered four
+incorrectly and matched five. Fractional point-list shader fills reuse native
+source contours; direct pattern rectangles carry container placement, and tile
+fill alpha survives storage and replay. Fifteen resource inputs and two retained
+placement gates protect discovery, lowering, mapping and retry.
+
+Next investigate other locations and viewBox percentage-base/affine combinations.
+Declare viewport and authored-override twins before production edits and retain
+independent captures; keep their denominators separate. Select bounded slices from demonstrated failures; broader
 transform maps stay G3 and deeper reference/composition scopes stay G5. Exit:
 the selected practical combinations are exact on unchanged references with no
 regression to current exact inputs or resource contracts.
+See [the container-shader slice](docs/RASTERIZATION_DESIGN.md#container-shader-inheritance-and-tile-paint-2026-10-08).
 See [the instance-shader slice](docs/RASTERIZATION_DESIGN.md#instance-shader-fills-opacity-and-pattern-placement-2026-10-08).
 See [the rendered-group slice](docs/RASTERIZATION_DESIGN.md#rendered-group-styles-and-native-source-replay-2026-10-08).
 See [the stroke-style slice](docs/RASTERIZATION_DESIGN.md#instance-stroke-paint-width-and-mechanics-2026-10-08).
@@ -397,7 +416,9 @@ fractional translation; its first rejection is the inheritance attribute.
 support is one bounded rectangle tile with integer source user-space coordinates.
 Instance placement now retains integer/fractional/negative phase and positive-axis
 scales when device tile dimensions are integral. Mapped content edges can be
-fractional; repeat sampling uses bounded premultiplied bilinear filtering. Broader
+fractional; repeat sampling uses bounded premultiplied bilinear filtering. Direct
+rectangle fills retain container placement; tile fill opacity is preserved before
+byte quantization. Transformed fractional point-list pattern fills, broader
 fractional tile sizes, reflected/general maps and nested viewport gates remain.
 Add bounded multi-element vector tiles, local inheritance with cycle checks,
 pattern transforms, viewBox/content units and objectBoundingBox units in measured
@@ -427,8 +448,9 @@ New fidelity defects may interrupt the support queue; fixing an admission gate
 alone does not close a case. The group clipping/opacity and native rectangle-stroke
 interruptions are resolved; numeric stroke opacity is now exact for the admitted
 instance controls. Rendered-group styling is now exact for the admitted slice;
-instance shader fills and independent opacity are now exact too. Continue container
-paint-server inheritance and viewport combinations from retained failures.
+instance shader fills and independent opacity are now exact too. Container shader
+fill inheritance is exact for the admitted slice. Continue viewport and remaining
+instance combinations from retained failures.
 
 1. Audit actual parser/renderer gates and existing rejected examples against the
    product scope. Select the next shared feature combination from demonstrated

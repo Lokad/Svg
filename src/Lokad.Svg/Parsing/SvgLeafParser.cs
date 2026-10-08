@@ -57,7 +57,10 @@ internal static class SvgLeafParser
     internal static SvgGeometry ParseImage(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget)
     {
         SvgImageSyntax syntax = SvgImageSyntax.Parse(reader, baseWidth, baseHeight);
-        SvgResolvedPaintableElement element = context.ResolveShape(reader, false);
+        SvgComputedStyle style = context.ResolveStyle(reader);
+        // SVG fill does not paint image pixels; a container's shader cannot recolor them.
+        if (SvgPatternSyntax.IsPatternFill(style.Fill)) style = style with { Fill = "white" };
+        SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
         double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         DecodedSolidImage image = DecodeImage(syntax.Href, element, limits, budget, context.WorkCounter, context.CancellationToken);
@@ -591,6 +594,8 @@ internal static class SvgLeafParser
         SvgComputedStyle style = context.ResolveStyle(reader);
         if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return SvgPatternSyntax.LowerPatternStrokeLine(reader, context, style, syntax, state, frame);
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return SvgGradientSyntax.LowerGradientStrokeLine(reader, context, style, syntax, state, frame);
+        // A line has no fill operation, independently of its inherited fill server.
+        if (SvgPatternSyntax.IsPatternFill(style.Fill)) style = style with { Fill = "none" };
         SvgResolvedPaintableElement element = context.ResolveShape(style, reader, true);
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         SvgColor? strokeColor = element.Presentation.StrokeColor;

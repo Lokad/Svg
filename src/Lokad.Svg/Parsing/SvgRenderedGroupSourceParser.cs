@@ -32,18 +32,21 @@ internal static class SvgRenderedGroupSourceParser
         }
         else content = state.RenderedGroupContent;
         id = id is null ? null : Copy(id);
-        SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, SvgPaint.Default, colors);
+        bool shader = SvgPatternSyntax.IsPatternFill(style.Fill);
+        string? shaderFill = shader ? Copy(style.Fill) : null;
+        string? shaderId = shaderFill is null ? null : Copy(SvgGradientSyntax.ParsePaintId(shaderFill));
+        SvgPaint paint = SvgPaintResolver.Resolve(shader ? "#ffffff" : style.Fill, style.FillOpacity, style.Color, SvgPaint.Default, colors);
         SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset),
             Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
         SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
         SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
         SvgPaintOpacity opacity = SvgColorParser.ParsePaintOpacity(style.Opacity);
         string? fillRule = Copy(style.FillRule);
-        SvgSymbolPresentation presentation = new(paint, stroke, fillRule, style.Fill is not null, fillOpacity, color, opacity);
+        SvgSymbolPresentation presentation = new(paint, stroke, fillRule, style.Fill is not null, fillOpacity, color, opacity) { PaintServerFill = shaderFill, PaintServerId = shaderId };
         content.BeginGroup(reader.Depth, id, presentation,
             new(paint, style.Fill is not null, fillOpacity, color, opacity, SvgPresentationResolver.ParseDisplay(style.Display),
                 style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true))
-            { Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
+            { PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
             SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
         if (id is not null) state.RenderedGroupDefinitions.TryAdd(id, new([], false, null, null)
             { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true, RenderedGroupId = id });
@@ -89,7 +92,7 @@ internal static class SvgRenderedGroupSourceParser
             InheritedTransform = SvgAffineTransform.Identity, InheritedFillRule = Copy(style.FillRule), SourceMaskReference = Copy(reader.GetAttribute("mask")) };
         content.AddUse(reference, style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity),
             style.Color is null ? null : SvgColorParser.Parse(style.Color, context.NamedColors),
-            style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity), stroke,
+            style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity), stroke, style.Fill is not null,
             SvgPresentationResolver.ParseDisplay(style.Display), style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true));
         if (reader.GetAttribute("clip-path") is not null) content.AddUnsupported();
 

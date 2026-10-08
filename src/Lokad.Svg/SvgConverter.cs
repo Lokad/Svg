@@ -1312,7 +1312,7 @@ public static class SvgConverter
             using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             using RenderBudget.BudgetReservation sourcePatternOwner = budget.Reserve(512, SvgMemoryCategory.Geometry);
-            SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null);
+            SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null) { ContentPaint = outline.ContentPaint };
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(source) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry tile = mappedTile ?? source;
@@ -1411,7 +1411,7 @@ public static class SvgConverter
             double contentWidth = pattern.Content.Width * scaleX, contentHeight = pattern.Content.Height * scaleY;
             SvgClipBox? contentClip = pattern.Content.Clip is {} clip ? new SvgClipBox((clip.X - pattern.OriginX) * scaleX, (clip.Y - pattern.OriginY) * scaleY, clip.Width * scaleX, clip.Height * scaleY) { Antialiasing = clip.Antialiasing } : null;
             mapped = new SvgPatternGeometry(new SvgRectangle(contentX, contentY, contentWidth, contentHeight, pattern.Content.Color, pattern.Content.HasFill, pattern.Content.Stroke) { Clip = contentClip }, 0, 0, (int)tileWidth, (int)tileHeight, pattern.Fill, pattern.Opacity, pattern.Stroke)
-                { ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY) };
+                { ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY), ContentPaint = pattern.ContentPaint };
             return true;
 
             static bool IsDeviceInteger(double value)
@@ -1435,18 +1435,18 @@ public static class SvgConverter
 
         void BlitPatternTile(SvgPatternGeometry pattern, byte[] tile)
         {
-            BlitPatternBox(pattern.Content, tile, pattern);
+            BlitPatternBox(pattern.Content, tile, pattern, pattern.ContentPaint);
             if (pattern.Content.Stroke is SvgStroke stroke)
             {
                 double halfWidth = stroke.Width / 2d;
-                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern);
-                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + pattern.Content.Height - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern);
-                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern);
-                BlitPatternBox(new SvgRectangle(pattern.Content.X + pattern.Content.Width - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern, null);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + pattern.Content.Height - halfWidth, pattern.Content.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern, null);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern, null);
+                BlitPatternBox(new SvgRectangle(pattern.Content.X + pattern.Content.Width - halfWidth, pattern.Content.Y + halfWidth, stroke.Width, pattern.Content.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Content.Clip }, tile, pattern, null);
             }
         }
 
-        void BlitPatternBox(SvgRectangle box, byte[] tile, SvgPatternGeometry pattern)
+        void BlitPatternBox(SvgRectangle box, byte[] tile, SvgPatternGeometry pattern, SvgSolidPaint? sourcePaint)
         {
             int setupVisits = box.Clip is null ? 4 : 8;
             if (setupVisits > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern rectangle preparation exceeds the configured work limit.");
@@ -1465,7 +1465,9 @@ public static class SvgConverter
             workUnits += blitted;
             // Pattern content is rasterized into an image before repeat sampling.
             // Its constant-shader byte coverage retains the native rounded lane scale.
-            SvgConstantShaderPaint paint = new(Premultiply(box.Color.Red, box.Color.Alpha), Premultiply(box.Color.Green, box.Color.Alpha), Premultiply(box.Color.Blue, box.Color.Alpha), box.Color.Alpha);
+            SvgConstantShaderPaint paint = sourcePaint is {} solid
+                ? new(Quantize(solid.Color.Red * (1f / 255f) * solid.Alpha), Quantize(solid.Color.Green * (1f / 255f) * solid.Alpha), Quantize(solid.Color.Blue * (1f / 255f) * solid.Alpha), Quantize(solid.Alpha))
+                : new(Premultiply(box.Color.Red, box.Color.Alpha), Premultiply(box.Color.Green, box.Color.Alpha), Premultiply(box.Color.Blue, box.Color.Alpha), box.Color.Alpha);
             for (int y = startY; y < endY; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -1480,6 +1482,7 @@ public static class SvgConverter
             }
 
             static byte Premultiply(byte color, byte alpha) => (byte)((color * alpha + 127) / 255);
+            static byte Quantize(float value) => (byte)Math.Clamp((int)(value * 255f + 0.5f), 0, 255);
         }
 
         void StampPatternFill(SvgPatternGeometry pattern, byte[] tile, byte[] destination)

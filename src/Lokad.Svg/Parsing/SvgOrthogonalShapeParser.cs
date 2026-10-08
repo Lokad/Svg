@@ -226,18 +226,19 @@ internal static class SvgOrthogonalShapeParser
         bool paintRadialOutline = TryResolveOutlineRadial(style, state, out SvgRadialGradient outlineRadialCandidate);
         bool paintPatternOutline = TryResolveOutlinePattern(style, state, out SvgPatternTile outlineTile);
         SvgComputedStyle fillStyle = (paintOutline || paintRadialOutline || paintPatternOutline) ? style with { Stroke = "none" } : style;
-        if (SvgGradientSyntax.IsGradientFill(style.Fill))
+        string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
+        bool hasFractional = pointsValue.Contains('.') || pointsValue.Contains('e') || pointsValue.Contains('E');
+        bool shaderFill = SvgGradientSyntax.IsGradientFill(style.Fill);
+        if (shaderFill && !hasFractional)
         {
             if (state.Patterns.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out _)) return SvgPatternSyntax.LowerPatternBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
             return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
         }
-        string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
-        bool hasFractional = pointsValue.Contains('.') || pointsValue.Contains('e') || pointsValue.Contains('E');
         if (hasFractional)
         {
-            shape = context.ResolveShape(fillStyle, reader, true);
+            shape = context.ResolveShape(shaderFill ? fillStyle with { Fill = "#ffffff" } : fillStyle, reader, true);
             bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
             using BudgetedParserList<SvgFractionalPoint> fractionalPoints = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
@@ -246,11 +247,12 @@ internal static class SvgOrthogonalShapeParser
             filled = fractionalLowering.LowerFractionalPointList(fractionalPoints, SvgPolygonMapping.FiniteEdges, shape, frame, budget) with { ElementCount = fractionalPoints.Count + 1 };
             try
             {
+                if (shaderFill) filled = RepaintFractionalFill(filled);
                 SvgStrokeStyleSyntax.SvgAdmittedStroke? fractionalStroke;
                 SvgParsedGeometry fractionalStroked;
                 SvgLinearGradient fractionalGradient = default;
                 SvgRadialGradient fractionalCircle = default;
-                SvgComputedStyle fractionalStrokeStyle = style;
+                SvgComputedStyle fractionalStrokeStyle = shaderFill ? style with { Fill = "#ffffff" } : style;
                 SvgResolvedPaintableElement fractionalStrokeShape = shape;
                 if (paintOutline || paintRadialOutline || paintPatternOutline)
                 {
@@ -261,7 +263,7 @@ internal static class SvgOrthogonalShapeParser
                     }
                     else if (paintRadialOutline) fractionalCircle = SvgGradientSyntax.MapUserSpaceRadial(shape.Transform, outlineRadialCandidate, frame);
                     // Lower the outline exactly as a solid stroke so caps, joins, dashes and transforms behave identically, then repaint it below. The solid color never reaches the scene.
-                    fractionalStrokeStyle = style with { Stroke = "#ffffff" };
+                    fractionalStrokeStyle = fractionalStrokeStyle with { Stroke = "#ffffff" };
                     fractionalStrokeShape = context.ResolveShape(fractionalStrokeStyle, reader, true);
                 }
                 try
@@ -292,6 +294,45 @@ internal static class SvgOrthogonalShapeParser
                 return ConcatParsedGeometries(filled, fractionalStroked, budget, context.WorkCounter, context.CancellationToken);
             }
             catch { filled.Discard(); throw; }
+
+            SvgParsedGeometry RepaintFractionalFill(SvgParsedGeometry source)
+            {
+                string id = SvgGradientSyntax.ParsePaintId(style.Fill);
+                SvgAffineTransform transform = shape.Transform;
+                bool linear = state.Gradients.TryGetValue(id, out SvgLinearGradient gradient);
+                SvgRadialGradient circle = default;
+                bool radial = !linear && state.RadialGradients.TryGetValue(id, out circle);
+                SvgPatternTile tile = default;
+                bool pattern = !linear && !radial && state.Patterns.TryGetValue(id, out tile);
+                if (!linear && !radial && !pattern) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local paint references are implemented.");
+                if (linear)
+                {
+                    gradient = SvgGradientSyntax.MirrorBoundingBoxVector(transform, SvgGradientSyntax.MapUserSpaceVector(transform, gradient, frame));
+                    if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && gradient.Spread != SvgGradientSpread.Pad)
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
+                }
+                if (radial) circle = SvgGradientSyntax.MapUserSpaceRadial(transform, circle, frame);
+                if (pattern && (transform != SvgAffineTransform.Identity || frame is { IsScaled: true } || frame is { OffsetX: not 0 } || frame is { OffsetY: not 0 }))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed fractional point-list pattern placements are implemented.");
+                SvgRectangle box = linear && gradient.IsUserSpace || radial && circle.IsUserSpace || pattern ? default : BoxFromFilledGeometryBounds(source, context.WorkCounter, context.CancellationToken);
+                byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
+                using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                try
+                {
+                    foreach (SvgGeometry existing in source.Geometries)
+                    {
+                        context.WorkCounter.Consume(context.CancellationToken);
+                        SvgGeometry mapped = linear ? existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, box, opacity, budget))
+                            : radial ? existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, circle, box, opacity, budget))
+                            : existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, budget));
+                        try { repainted.Add(mapped); }
+                        catch { mapped.Dispose(); throw; }
+                    }
+                    source.Dispose();
+                    return new SvgParsedGeometry(repainted.Detach(), source.ElementCount) { SourceObjectBox = source.SourceObjectBox, SourceObjectMap = source.SourceObjectMap };
+                }
+                catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); source.Discard(); throw; }
+            }
         }
         using BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePointList(pointsValue, elementName, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, true);
         using BudgetedParserList<int> contourEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);

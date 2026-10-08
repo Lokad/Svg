@@ -2,7 +2,11 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal readonly record struct SvgSymbolPresentation(SvgPaint Paint, SvgInheritedStrokeStyle Stroke, string? FillRule, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? CurrentColor, SvgPaintOpacity SourceOpacity);
+internal readonly record struct SvgSymbolPresentation(SvgPaint Paint, SvgInheritedStrokeStyle Stroke, string? FillRule, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? CurrentColor, SvgPaintOpacity SourceOpacity)
+{
+    internal string? PaintServerFill { get; init; }
+    internal string? PaintServerId { get; init; }
+}
 
 /// <summary>Owns one open symbol's ordered children until its complete definition transfers to the document registry.</summary>
 /// <remarks>Storage and copies charge the parser budget and work counter before allocation. Failure and cancellation

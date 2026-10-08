@@ -8782,3 +8782,65 @@ Ignored evidence is under artifacts/instance-shader-opacity-20261008/ and
 artifacts/linux-delivery-20261007/instance-shader-opacity-final-20261008/.
 Container paint-server inheritance and remaining viewport combinations keep G2
 open; G3–G9 and S17 remote CI remain open too.
+
+## Container shader inheritance and tile paint (2026-10-08)
+
+Root, group, link and symbol local shader fills now retain a separate budget-owned
+URL channel alongside numeric paint. Numeric fill opacity and currentColor stay
+independent. Ordinary leaves consume inherited paint through the existing shape
+lowerers; source replay keeps authored values separate from resolved ancestor
+paint, so aliases and definitions exclude referenced ancestors. Retained symbol
+and rendered-group contexts carry independently authored shader bindings through
+nested/forward instances. Shader fills over an inherited `none` fill restore the
+fill channel. Non-filling lines and images ignore that channel; shader text remains
+behind its existing unsupported-paint boundary, shared with font discovery.
+
+Fractional polygons and polylines now repaint their existing native contours with
+linear/radial or untransformed pattern fills. Solid borders retain their own
+construction and shader strokes keep their existing gates. Transformed fractional
+pattern point lists reject explicitly until their independent placement is retained.
+The old inherited-gradient orthogonal-path rejection becomes a positive regression
+with its original body; three browser controls independently confirm the pixels.
+Undefined shader references remain rejected.
+
+The first 180 controls measured 167 exact, four incorrect and nine rejected.
+Fractional point-list admission caused the nine rejections. Direct rendered-group
+pattern rectangles lost their shader translation on three backgrounds; placement
+now travels with the original tile through the existing mapping and sampler.
+The remaining mismatch was a 72-pixel, one-byte residual in two color lanes on
+white: source tile alpha `.625` was discarded during definition registration.
+The existing raw solid paint now survives tile retention, polygon/band lowering,
+mask stamping and direct/instance mapping. Premultiplied color quantizes from
+the original float opacity before alpha becomes a byte, matching the existing
+native constant-shader lane rounding. Tile borders retain independent byte paint.
+No new surface kind or reference adjustment is involved.
+
+The complete bank contains 192 exact controls through all six outputs on Windows
+and Linux. The frozen bf49ce3f baseline rejects 183, renders four incorrectly and
+matches five. The first 150 were declared before production edits and capture;
+nine additional `none`-ancestor cases preceded production edits while captures ran.
+Twenty-one native-shape/line/image cases followed the first wiring, before their
+captures and comparisons. The final twelve tile-alpha and old-path controls were
+declared after the prototype findings, before their captures and tile-paint repair.
+All 576 fresh-process captures are healthy, cleaned and byte-identical. Sources
+and references are frozen CC0 controls, separate from the original/corporate
+denominators. Implementation hashes are absent.
+
+Fifteen inputs sweep every parser/discovery work denial, sampled and peak-edge
+memory denial, raster work boundaries and cancellation/retry. Two transformed
+fractional point-list pattern gates release all owners. Text copies charge work
+before budget-owned storage; replay borrows retained URLs. Draw command, geometry
+and recorded paint layouts remain 72/272/68 bytes. Existing tile and surface limits
+apply, with no quantitative performance claim.
+
+Release builds on both platforms have zero warnings/errors and each passes 5,245
+tests (4,061 core, 1,178 visual-project, six FontProbe), without failures/skips.
+All 1,567 original reports and 1,545 PNGs remain unchanged from the preceding
+instance-shader checkpoint. Each platform preserves 27/27 corporate documents and
+258/258 exact variants against its own references, with unchanged reports/PNGs.
+All previous control banks and the four online failure cases retain their outcomes.
+Ignored evidence is under artifacts/container-shader-inheritance-20261008/ and
+artifacts/linux-delivery-20261007/container-shader-inheritance-final-20261008/.
+Viewport and remaining instance combinations keep G2 open; G3–G9 and S17 remote
+CI remain open. PLAN.md retains the failure-selected public-domain/CC0 sourcing
+workflow for wider static SVG gaps.

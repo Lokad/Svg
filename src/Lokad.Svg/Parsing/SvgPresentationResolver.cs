@@ -3,6 +3,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Resolves the common inherited paint, display, visibility and opacity state before element-specific validation.</summary>
 internal readonly record struct SvgResolvedPresentation(SvgPaint Paint, bool IsDisplayed, bool IsVisible, byte Opacity)
 {
+    internal string? PaintServerFill { get; init; }
     internal bool IsPainted => IsDisplayed && IsVisible;
 }
 

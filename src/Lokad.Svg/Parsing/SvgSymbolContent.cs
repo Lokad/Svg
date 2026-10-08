@@ -7,6 +7,8 @@ internal enum SvgSymbolContentKind { Leaf, Group, EndGroup, Use, Unsupported }
 /// <summary>Retains independently authored container paint; absent properties inherit from the instance context.</summary>
 internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? Color, SvgPaintOpacity Opacity, bool IsDisplayed, bool? IsVisible)
 {
+    internal string? PaintServerFill { get; init; }
+    internal string? PaintServerId { get; init; }
     internal SvgPaintOpacity? StrokeOpacity { get; init; }
     internal SvgInheritedStrokeStyle Stroke { get; init; }
     internal string? FillRule { get; init; }
@@ -56,7 +58,7 @@ internal sealed class SvgSymbolContent : IDisposable
             content = new(budget, work, token, presentation, owner);
             content._building.Add(new(SvgSymbolContentKind.Group, default, default,
                 new(presentation.Paint, presentation.HasAuthoredFill, presentation.FillOpacity, presentation.CurrentColor, presentation.SourceOpacity, true, null)
-                { FillRule = presentation.FillRule, Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
+                { PaintServerFill = presentation.PaintServerFill, PaintServerId = presentation.PaintServerId, FillRule = presentation.FillRule, Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
             return content;
         }
         catch { if (content is null) owner.Dispose(); else content.Dispose(); throw; }
@@ -82,11 +84,12 @@ internal sealed class SvgSymbolContent : IDisposable
         catch { _groups.RemoveLast(); throw; }
     }
 
-    internal int AddUse(SvgUseReference reference, SvgPaintOpacity? fillOpacity, SvgColor? color, SvgPaintOpacity? strokeOpacity, SvgInheritedStrokeStyle stroke, bool displayed, bool? visible)
+    internal int AddUse(SvgUseReference reference, SvgPaintOpacity? fillOpacity, SvgColor? color, SvgPaintOpacity? strokeOpacity, SvgInheritedStrokeStyle stroke, bool hasAuthoredFill, bool displayed, bool? visible)
     {
         int start = _building.Count;
+        if (!hasAuthoredFill) reference = reference with { PaintServerId = null, PaintServerFill = null, FillOverride = null };
         _building.Add(new(SvgSymbolContentKind.Use, default, reference,
-            new(reference.InheritedFill, reference.FillOverride is not null || reference.PaintServerId is not null, fillOpacity, color, reference.SourceOpacity, displayed, visible)
+            new(reference.InheritedFill, hasAuthoredFill, fillOpacity, color, reference.SourceOpacity, displayed, visible)
             { Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgAffineTransform.Identity, -1));
         return start;
     }

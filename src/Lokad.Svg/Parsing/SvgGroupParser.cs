@@ -13,6 +13,11 @@ internal static class SvgGroupParser
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
         SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet);
         SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, context.StyleSheet, context.InheritedPresentation, context.InheritedFillRule, context.InheritedTextStyle, context.InheritedStroke, root.Opacity != 255 || state.HasOpacityScope, namedColors, workCounter, cancellationToken);
+        if (style.Fill is not null && resolved.Presentation.PaintServerFill is string fill)
+        {
+            workCounter.ConsumeText(fill.Length, cancellationToken);
+            resolved = resolved with { Presentation = resolved.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
+        }
         string? maskReference = reader.GetAttribute("mask");
         byte? mask = null;
         string? deferredMask = null;

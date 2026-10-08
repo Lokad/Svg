@@ -53,6 +53,11 @@ internal static class SvgDocumentTraversal
         using SvgDocumentState state = new(budget, workCounter, cancellationToken);
         // The root element consumes one node, matching font-request discovery's uniform per-element count.
         state.NodeCount = 1;
+        if (root.InheritedPresentation.PaintServerFill is string rootFill)
+        {
+            workCounter.ConsumeText(rootFill.Length, cancellationToken);
+            root = root with { InheritedPresentation = root.InheritedPresentation with { PaintServerFill = state.Strings.Copy(rootFill) } };
+        }
         state.OutputMagnification = System.Math.Max(System.Math.Abs(outputScaleX), System.Math.Abs(outputScaleY));
         if (root.SourceOpacity.Value != 1) state.Scene.BeginSourceOpacityScope(root.SourceOpacity, new(0));
         while (reader.Read())

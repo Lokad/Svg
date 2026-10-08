@@ -134,7 +134,7 @@ internal static class SvgPatternSyntax
             for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
             {
                 context.WorkCounter.Consume(context.CancellationToken);
-                bands[bandIndex] = SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bands[bandIndex].Rectangle, opacity, null));
+                bands[bandIndex] = SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bands[bandIndex].Rectangle, opacity, null) { ContentPaint = tile.Content?.SolidPaint });
             }
             return SvgGradientSyntax.AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
         }
@@ -142,10 +142,10 @@ internal static class SvgPatternSyntax
     }
 
     /// <summary>Lowers one pattern fill region shared by fill-only and fill-plus-stroke lowerings.</summary>
-    internal static SvgGeometry LowerPatternFillGeometry(SvgPatternTile tile, SvgRectangle fill, bool fillHasFill, byte fillOpacity, SvgStroke? stroke)
+    internal static SvgGeometry LowerPatternFillGeometry(SvgPatternTile tile, SvgRectangle fill, bool fillHasFill, byte fillOpacity, SvgStroke? stroke, SvgAffineTransform shaderPlacement)
     {
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromOrthogonalBand(new SvgRectangle(fill.X, fill.Y, fill.Width, fill.Height, SvgColor.Transparent, false, null));
-        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill with { HasFill = fillHasFill }, fillOpacity, stroke));
+        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill with { HasFill = fillHasFill }, fillOpacity, stroke) { ShaderPlacement = shaderPlacement, ContentPaint = tile.Content.Value.SolidPaint });
     }
 
     internal static SvgParsedGeometry LowerPatternRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
@@ -209,7 +209,8 @@ internal static class SvgPatternSyntax
         }
         bool combined = hasLinearStroke || hasRadialStroke;
         using BudgetedGeometryBuilder lowered = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        lowered.Add(LowerPatternFillGeometry(tile, placement, painted, fillOpacity, combined ? null : (painted ? stroke : null)));
+        SvgAffineTransform shaderPlacement = frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform;
+        lowered.Add(LowerPatternFillGeometry(tile, placement, painted, fillOpacity, combined ? null : (painted ? stroke : null), shaderPlacement));
         // A zero width paints no stroke bands, so the pattern fill above reaches the scene alone; probe nulls only on zero widths here.
         if (combined && !zeroPaintStrokeWidth)
         {
@@ -354,15 +355,15 @@ internal static class SvgPatternSyntax
         using BudgetedGeometryBuilder stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         if (hasLinearFill) stroked.Add(SvgGradientSyntax.LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
         else if (hasRadialFill) stroked.Add(SvgGradientSyntax.LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity, state.Budget));
-        else if (hasPatternFill) stroked.Add(LowerPatternFillGeometry(fillPatternTile, fill, fillHasFill, fillOpacity, null));
+        else if (hasPatternFill) stroked.Add(LowerPatternFillGeometry(fillPatternTile, fill, fillHasFill, fillOpacity, null, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform));
         else stroked.Add(SvgGeometry.FromRectangle(fill));
         if (probe is not null)
         {
             // A zero width paints no stroke bands, so the pattern fill above reaches the scene alone.
-            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, top with { HasFill = paintBands }, opacity, null)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
-            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bottom with { HasFill = paintBands }, opacity, null)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
-            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, left with { HasFill = paintBands }, opacity, null)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
-            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, right with { HasFill = paintBands }, opacity, null)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, top with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bottom with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, left with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, right with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
         }
         return new SvgParsedGeometry(stroked.Detach(), 0);
     }
@@ -402,7 +403,7 @@ internal static class SvgPatternSyntax
         if (frame is not null) band = frame.Value.ClipShifted(band);
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return RetainSingleBand(SvgGeometry.FromOrthogonalBand(band with { HasFill = false }), state, context);
         SvgRectangle content = tile.Content.Value.Rectangle;
-        return RetainSingleBand(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, band, opacity, null)), state, context);
+        return RetainSingleBand(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, band, opacity, null) { ContentPaint = tile.Content?.SolidPaint }), state, context);
     }
 
     /// <summary>Lowers one round-capped pattern-tile line stroke into one tile-evaluated band with two repainted tip discs.</summary>
@@ -421,7 +422,7 @@ internal static class SvgPatternSyntax
             using BudgetedGeometryBuilder repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             foreach (SvgGeometry existing in white.Geometries)
             {
-                if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, existing.Rectangle, opacity, null)));
+                if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, existing.Rectangle, opacity, null) { ContentPaint = tile.Content?.SolidPaint }));
                 else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, state.Budget)));
             }
             white.Dispose();
@@ -439,7 +440,7 @@ internal static class SvgPatternSyntax
         {
             SvgRectangle run = runRects[runIndex];
             if (tile.Content is not SvgGeometry tileContent || tile.TileWidth == 0 || tile.TileHeight == 0) runs.Add(SvgGeometry.FromOrthogonalBand(run with { HasFill = false }));
-            else runs.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(tileContent.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, run with { HasFill = paintsAny && painted }, opacity, null)));
+            else runs.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(tileContent.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, run with { HasFill = paintsAny && painted }, opacity, null) { ContentPaint = tileContent.SolidPaint }));
         }
         return new SvgParsedGeometry(runs.Detach(), 0);
     }

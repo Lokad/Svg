@@ -743,7 +743,7 @@ internal sealed class SvgPatternPolygon : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    private SvgPatternPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    private SvgPatternPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
     {
         Points = points;
         ContourEnds = contourEnds;
@@ -751,6 +751,7 @@ internal sealed class SvgPatternPolygon : IDisposable
         QuadSpans = quadSpans;
         CubicSpans = cubicSpans;
         Content = content;
+        ContentPaint = contentPaint;
         OriginX = originX;
         OriginY = originY;
         TileWidth = tileWidth;
@@ -778,6 +779,9 @@ internal sealed class SvgPatternPolygon : IDisposable
 
     internal SvgRectangle Content { get; }
 
+    /// <summary>Preserves tile fill opacity before byte quantization; stroke paint retains its independent byte color.</summary>
+    internal SvgSolidPaint? ContentPaint { get; }
+
     internal int OriginX { get; }
 
     internal int OriginY { get; }
@@ -797,13 +801,13 @@ internal sealed class SvgPatternPolygon : IDisposable
     internal SvgClipBox? Clip { get; }
 
     /// <summary>Creates one pattern outline without recorded curves; spans stay empty on this route.</summary>
-    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRectangle content, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRectangle content, SvgSolidPaint? contentPaint, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
     {
-        return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, budget);
+        return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, budget);
     }
 
     /// <summary>Creates one pattern outline carrying retained spans with exact scene storage.</summary>
-    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
@@ -815,14 +819,14 @@ internal sealed class SvgPatternPolygon : IDisposable
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
         RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
-        return new SvgPatternPolygon(points, contourEnds, signs, quadSpans, cubicSpans, content, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
+        return new SvgPatternPolygon(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
     }
 
     /// <summary>Repaints one solid outline as a pattern-tile outline, rendering empty tiles as unpainted fills. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, RenderBudget budget)
     {
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return Adopt(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget)));
-        return Adopt(SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, tile.Content.Value.Rectangle, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget)));
+        return Adopt(SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, tile.Content.Value.Rectangle, tile.Content.Value.SolidPaint, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget)));
 
         SvgGeometry Adopt(SvgGeometry repaint)
         {
@@ -839,7 +843,7 @@ internal sealed class SvgPatternPolygon : IDisposable
         SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
         RenderBudget.BudgetReservation? reservation = _reservation;
         _reservation = null;
-        return new SvgPatternPolygon(Points, ContourEnds, Signs, QuadSpans, CubicSpans, Content, OriginX, OriginY, TileWidth, TileHeight, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
+        return new SvgPatternPolygon(Points, ContourEnds, Signs, QuadSpans, CubicSpans, Content, ContentPaint, OriginX, OriginY, TileWidth, TileHeight, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
     }
 
     public void Dispose()
@@ -957,11 +961,14 @@ internal sealed class SvgPatternGeometry : IDisposable
     /// <summary>Maps original tile coordinates into the instance coordinate space; rasterization composes the output map.</summary>
     internal SvgAffineTransform ShaderPlacement { get; init; } = SvgAffineTransform.Identity;
 
+    /// <summary>Preserves tile fill opacity before byte quantization; null uses the retained byte paint.</summary>
+    internal SvgSolidPaint? ContentPaint { get; init; }
+
     internal SvgPatternGeometry ClipTo(SvgClipBox box)
-        => new(Content, OriginX, OriginY, TileWidth, TileHeight, box.ClipRectangle(Fill), Opacity, Stroke) { ShaderPlacement = ShaderPlacement };
+        => new(Content, OriginX, OriginY, TileWidth, TileHeight, box.ClipRectangle(Fill), Opacity, Stroke) { ShaderPlacement = ShaderPlacement, ContentPaint = ContentPaint };
 
     internal SvgPatternGeometry Stamped(byte value)
-        => new(Content, OriginX, OriginY, TileWidth, TileHeight, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width)) { ShaderPlacement = ShaderPlacement };
+        => new(Content, OriginX, OriginY, TileWidth, TileHeight, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width)) { ShaderPlacement = ShaderPlacement, ContentPaint = ContentPaint };
 
     public void Dispose()
     {

@@ -2,4 +2,8 @@ namespace Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
 /// <summary>Represents the resolved container state inherited by a paintable child, including its accumulated transform.</summary>
-internal readonly record struct SvgInheritedPresentation(SvgPaint Paint, bool IsDisplayed, bool IsVisible, SvgAffineTransform Transform);
+internal readonly record struct SvgInheritedPresentation(SvgPaint Paint, bool IsDisplayed, bool IsVisible, SvgAffineTransform Transform)
+{
+    /// <summary>Retains the budget-owned local fill URL independently of numeric opacity and solid paint.</summary>
+    internal string? PaintServerFill { get; init; }
+}

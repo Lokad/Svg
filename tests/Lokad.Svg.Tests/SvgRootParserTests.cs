@@ -22,7 +22,7 @@ public sealed class SvgRootParserTests
         IReadOnlyDictionary<string, SvgColor> namedColors = new Dictionary<string, SvgColor>(StringComparer.OrdinalIgnoreCase) { ["red"] = new SvgColor(255, 0, 0, 255) };
         SvgComputedStyle style = new("red", "currentColor", "0.5", "none", "none", "hidden", "0.5", null);
 
-        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
+        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, null, true, true, namedColors);
 
         Assert.Equal(new SvgColor(255, 0, 0, 255), presentation.Paint.CurrentColor);
         Assert.True(presentation.Paint.FillUsesCurrentColor);
@@ -2748,12 +2748,20 @@ public sealed class SvgRootParserTests
     }
     [Theory]
     [InlineData("<path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#h)'/>")]
-    [InlineData("<g fill='url(#g)'><path d='M1,1 H7 V3 H3 V7 H1 Z'/></g>")]
     public void Rejects_unsupported_gradient_path_forms(string body)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Inherits_gradient_fill_on_an_orthogonal_path()
+    {
+        using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><g fill='url(#g)'><path d='M1,1 H7 V3 H3 V7 H1 Z'/></g></svg>"), SvgRenderLimits.Default, CancellationToken.None);
+
+        Assert.NotEmpty(root.Geometries);
+        Assert.All(root.Geometries, geometry => Assert.Equal(SvgGeometryKind.GradientPolygon, geometry.Kind));
     }
 
     [Fact]

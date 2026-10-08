@@ -22,7 +22,7 @@ internal static class SvgLocalReferencePresentationResolver
         bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         bool paintServer = style.Fill is not null && SvgPatternSyntax.IsPatternFill(style.Fill);
-        SvgPaint paint = SvgPaintResolver.Resolve(paintServer ? null : style.Fill, style.FillOpacity, style.Color, inheritedPresentation.Paint, namedColors);
+        SvgPaint paint = SvgPaintResolver.Resolve(paintServer ? "#ffffff" : style.Fill, style.FillOpacity, style.Color, inheritedPresentation.Paint, namedColors);
         SvgUseStrokeOverride? stroke = ResolveStrokeOverride(style, inheritedPresentation with { Paint = paint }, namedColors);
         SvgPaintOpacity strokeOpacity = SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
         if (paintServer) return new SvgResolvedLocalReferencePresentation(opacity, isPainted, null, strings.Copy(SvgGradientSyntax.ParsePaintId(style.Fill)), stroke) { Paint = paint, StrokeOpacity = strokeOpacity };

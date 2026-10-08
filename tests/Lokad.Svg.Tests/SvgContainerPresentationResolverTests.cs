@@ -36,7 +36,7 @@ public sealed class SvgContainerPresentationResolverTests
         };
         SvgComputedStyle style = new("blue", "currentColor", "0.5", "none", "none", "hidden", "0.5", null);
 
-        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, namedColors);
+        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, null, true, true, namedColors);
 
         Assert.Equal(new SvgPaint(SvgColor.Transparent, true, new SvgPaintOpacity(128, 0.5f), new SvgColor(0, 0, 255, 255), true), presentation.Paint);
         Assert.False(presentation.IsDisplayed);
@@ -49,7 +49,7 @@ public sealed class SvgContainerPresentationResolverTests
     {
         SvgComputedStyle style = new(null, null, null, "red", null, null, null, null);
 
-        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, true, true, new Dictionary<string, SvgColor>());
+        SvgResolvedPresentation presentation = SvgContainerPresentationResolver.Resolve(style, SvgPaint.Default, null, true, true, new Dictionary<string, SvgColor>());
 
         Assert.True(presentation.IsPainted);
     }
