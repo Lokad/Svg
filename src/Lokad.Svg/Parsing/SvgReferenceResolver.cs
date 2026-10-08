@@ -10,6 +10,8 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgRecordingScope RecordingScope { get; init; }
     internal SvgPaintOpacity SourceOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
+    internal bool HasPaintContextOverride { get; init; }
+    internal bool HasFillOpacityOverride { get; init; }
     internal bool IsDisplayed { get; init; } = true;
     internal bool IsVisible { get; init; } = true;
 }
@@ -46,6 +48,7 @@ internal static class SvgReferenceResolver
         ArgumentNullException.ThrowIfNull(workCounter);
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbol(definition, symbolBox, reference, frame, state, workCounter, cancellationToken);
+        definition = definition with { SymbolFillBindings = definition.SymbolFillBindings ?? definition.SourceFillBindings };
         if (reference.StrokeOverride is not null && reference.PaintServerId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked paint-server use instances are not implemented.");
         if (reference.StrokeOverride is { Join: SvgStrokeJoin.Round } && (definition.InstanceStrokeMiterLimit is null || definition.Geometries.Length != 1 || definition.Geometries[0].Kind != SvgGeometryKind.PolygonFill))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round-joined use strokes require an unstyled path definition.");
@@ -123,7 +126,9 @@ internal static class SvgReferenceResolver
                     paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill) : null };
                 }
                 SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, PlainInstancePlacement(reference, frame));
-                SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, true, PlainInstancePlacement(reference, frame));
+                SvgSymbolFillBinding? strokeBinding = definition.SymbolFillBindings is {} paintBindings ? paintBindings[index] : null;
+                SvgUseReference strokeReference = strokeBinding is { AuthoredStroke: not null } currentColorStroke ? reference with { FillOverride = currentColorStroke.ResolveStroke(reference.FillOverride ?? reference.InheritedFill) } : reference;
+                SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, strokeReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, strokeBinding?.AuthoredStroke is null, PlainInstancePlacement(reference, frame));
                 SvgRecordedPaint addedStroke = default;
                 if (reference.StrokeOverride is SvgUseStrokeOverride instanceStroke && applied.Count > firstApplied + 1)
                 {
@@ -797,6 +802,8 @@ internal static class SvgReferenceResolver
             foreach (SvgSymbolFillBinding binding in bindings)
             {
                 work.Consume(token);
+                if (binding.IsPaintServer && binding.FillOpacity is null && reference.HasFillOpacityOverride)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inherited fill-opacity on retained paint-server definitions is not implemented.");
                 resolvesFill |= binding.ResolvesFill;
             }
             if (!resolvesFill) return new(definition.Geometries, bindings, null);
@@ -820,7 +827,7 @@ internal static class SvgReferenceResolver
                     {
                         fill = bindings[index].Resolve(fill);
                     }
-                    sources[index] = Recolor(source, fill, state);
+                    sources[index] = Recolor(source, fill, bindings is null ? null : bindings[index], reference.FillOverride ?? reference.InheritedFill, state);
                 }
                 retained++;
             }
@@ -834,13 +841,17 @@ internal static class SvgReferenceResolver
             throw;
         }
 
-        static SvgGeometry Recolor(SvgGeometry source, SvgPaint fill, SvgDocumentState document)
+        static SvgGeometry Recolor(SvgGeometry source, SvgPaint fill, SvgSymbolFillBinding? binding, SvgPaint instancePaint, SvgDocumentState document)
         {
             SvgColor color = SvgPaintResolver.ResolveFillColor(fill, 255);
+            SvgStroke? stroke = source.Kind == SvgGeometryKind.Rectangle ? source.Rectangle.Stroke : null;
+            if (stroke is {} original && binding is { AuthoredStroke: not null } currentColorStroke)
+                stroke = original with { Color = SvgPaintResolver.ResolveFillColor(currentColorStroke.ResolveStroke(instancePaint), 255) };
             return source.Kind switch
             {
-                SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(source.Rectangle with { Color = color, HasFill = fill.HasFill }) with { SolidPaint = source.SolidPaint is null ? null : SvgPaintResolver.ResolveSolidPaint(fill) },
+                SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(source.Rectangle with { Color = color, HasFill = fill.HasFill, Stroke = stroke }) with { SolidPaint = source.SolidPaint is null ? null : SvgPaintResolver.ResolveSolidPaint(fill) },
                 SvgGeometryKind.OrthogonalBand => SvgGeometry.FromOrthogonalBand(source.Rectangle with { Color = color, HasFill = fill.HasFill }),
+                SvgGeometryKind.AxisAlignedLine => SvgGeometry.FromAxisAlignedLine(source.AxisAlignedLine with { Color = color, IsPainted = fill.HasFill }),
                 SvgGeometryKind.PolygonFill => SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(source.Polygon.Points, source.Polygon.ContourEnds, source.Polygon.Signs, source.Polygon.QuadSpans, source.Polygon.CubicSpans, color, fill.HasFill, source.Polygon.IsEvenOdd, source.Polygon.Mapping, source.Polygon.Clip, null, document.Budget)),
                 SvgGeometryKind.GradientStroke => SvgGeometry.FromGradientStroke(new(source.GradientStroke.Fill with { Color = color, HasFill = fill.HasFill }, source.GradientStroke.Top, source.GradientStroke.Bottom, source.GradientStroke.Left, source.GradientStroke.Right, source.GradientStroke.Gradient, source.GradientStroke.Box, source.GradientStroke.Opacity, source.GradientStroke.HasStroke)),
                 _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inherited fill on this symbol geometry is not implemented."),
@@ -874,7 +885,7 @@ internal static class SvgReferenceResolver
         work.Consume(token);
         if (cache.TryGetValue(source, out SvgRecordedPaint previous)) return previous;
         float alpha = !stroke && reference.FillOverride is SvgPaint fill ? SvgPaintResolver.ResolveSolidPaint(fill).Alpha : value.Alpha;
-        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
+        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { IsStroke = value.IsStroke, VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
         cache.TryAdd(source, result);
         return result;
     }
@@ -938,7 +949,9 @@ internal static class SvgReferenceResolver
                         paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill) : null };
                     }
                     SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, SymbolInstancePlacement(symbolBox, reference, frame));
-                    SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, true, SymbolInstancePlacement(symbolBox, reference, frame));
+                    SvgSymbolFillBinding? strokeBinding = definition.SymbolFillBindings is {} paintBindings ? paintBindings[index] : null;
+                    SvgUseReference strokeReference = strokeBinding is { AuthoredStroke: not null } currentColorStroke ? reference with { FillOverride = currentColorStroke.ResolveStroke(reference.FillOverride ?? reference.InheritedFill) } : reference;
+                    SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, strokeReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, strokeBinding?.AuthoredStroke is null, SymbolInstancePlacement(symbolBox, reference, frame));
                     for (int mapped = firstApplied; mapped < applied.Count; mapped++)
                         applied[mapped] = applied[mapped] with { RecordedPaint = expandedStroke && mapped > firstApplied ? strokePaint : fillPaint };
                     if (definition.Geometries[index].LeafMask is SvgLeafMaskBinding binding)
@@ -1406,6 +1419,7 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!state.GroupSnapshots.TryGetValue(pendingUse.Reference.Id, out _)) continue;
+            if (pendingUse.Reference.HasPaintContextOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color and fill-opacity overrides on rendered-group use instances are not implemented.");
             if (pendingUse.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
             state.GroupUseExpanded = true;
             SvgGeometry[] expanded = ExpandGroupUse(pendingUse.Reference.Id, new HashSet<string>(StringComparer.Ordinal), scene, state, workCounter, cancellationToken);
@@ -1506,6 +1520,7 @@ internal static class SvgReferenceResolver
                 }
                 if (owner is null) throw new InvalidOperationException("Group snapshot placeholder has no owning use.");
                 if (state.Definitions.TryGetValue(owner.Value.Reference.Id, out _)) throw new InvalidOperationException("Group snapshot placeholder owns a resolved leaf use.");
+                if (owner.Value.Reference.HasPaintContextOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color and fill-opacity overrides on rendered-group use instances are not implemented.");
                 if (owner.Value.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
                 SvgGeometry[] nested = ExpandGroupUse(owner.Value.Reference.Id, visited, scene, state, workCounter, cancellationToken);
                 SvgGeometry[] mapped = ResolveUseGeometries(new SvgDefinition(nested, false, null, null), owner.Value, state, workCounter, cancellationToken);

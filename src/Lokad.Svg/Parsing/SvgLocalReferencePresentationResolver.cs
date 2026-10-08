@@ -9,6 +9,7 @@ internal readonly record struct SvgUseStrokeOverride(SvgPaint Paint, double Widt
 internal readonly record struct SvgResolvedLocalReferencePresentation(byte Opacity, bool IsPainted, SvgPaint? FillOverride, string? PaintServerId, SvgUseStrokeOverride? StrokeOverride)
 {
     internal bool AllowsSolidPaintAnalysis { get; init; }
+    internal SvgPaint Paint { get; init; } = SvgPaint.Default;
 }
 
 /// <summary>Owns validation and resolution of the supported local-use presentation subset.</summary>
@@ -16,12 +17,16 @@ internal static class SvgLocalReferencePresentationResolver
 {
     internal static SvgResolvedLocalReferencePresentation Resolve(SvgComputedStyle style, SvgInheritedPresentation inheritedPresentation, IReadOnlyDictionary<string, SvgColor> namedColors, BudgetedParserStringStore strings)
     {
-        if (style.Color is not null || style.FillOpacity is not null || style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only inherited-rectangle fill styles on use elements are implemented.");
+        if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill-rule overrides on use elements are not implemented.");
         bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
-        if (style.Fill is not null && SvgPatternSyntax.IsPatternFill(style.Fill)) return new SvgResolvedLocalReferencePresentation(opacity, isPainted, null, strings.Copy(SvgGradientSyntax.ParsePaintId(style.Fill)), ResolveStrokeOverride(style, inheritedPresentation, namedColors));
-        SvgPaint? fillOverride = style.Fill is null ? null : SvgPaintResolver.Resolve(style.Fill, null, null, inheritedPresentation.Paint, namedColors);
-        return new SvgResolvedLocalReferencePresentation(opacity, isPainted, fillOverride, null, ResolveStrokeOverride(style, inheritedPresentation, namedColors)) { AllowsSolidPaintAnalysis = SvgColorParser.ParsePaintOpacity(style.Opacity).Value == 1 };
+        bool paintServer = style.Fill is not null && SvgPatternSyntax.IsPatternFill(style.Fill);
+        if (paintServer && style.FillOpacity is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill-opacity overrides on paint-server use instances are not implemented.");
+        SvgPaint paint = SvgPaintResolver.Resolve(paintServer ? null : style.Fill, style.FillOpacity, style.Color, inheritedPresentation.Paint, namedColors);
+        SvgUseStrokeOverride? stroke = ResolveStrokeOverride(style, inheritedPresentation with { Paint = paint }, namedColors);
+        if (paintServer) return new SvgResolvedLocalReferencePresentation(opacity, isPainted, null, strings.Copy(SvgGradientSyntax.ParsePaintId(style.Fill)), stroke) { Paint = paint };
+        SvgPaint? fillOverride = style.Fill is null ? null : paint;
+        return new SvgResolvedLocalReferencePresentation(opacity, isPainted, fillOverride, null, stroke) { Paint = paint, AllowsSolidPaintAnalysis = SvgColorParser.ParsePaintOpacity(style.Opacity).Value == 1 };
 
         static SvgUseStrokeOverride? ResolveStrokeOverride(SvgComputedStyle style, SvgInheritedPresentation inheritedPresentation, IReadOnlyDictionary<string, SvgColor> namedColors)
         {
@@ -34,7 +39,7 @@ internal static class SvgLocalReferencePresentationResolver
             if (width == 0) return null;
             SvgStrokeJoin join = style.Linejoin is null ? SvgStrokeJoin.Miter : SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true);
             double? miterLimit = style.Miterlimit is null ? null : SvgStrokeStyleSyntax.ParseMiterLimit(style.Miterlimit);
-            SvgPaint paint = SvgPaintResolver.Resolve(style.Stroke, null, null, inheritedPresentation.Paint, namedColors);
+            SvgPaint paint = SvgPaintResolver.Resolve(style.Stroke, null, null, inheritedPresentation.Paint with { FillOpacity = SvgPaintOpacity.Opaque }, namedColors);
             return new SvgUseStrokeOverride(paint, width, join, miterLimit);
         }
     }

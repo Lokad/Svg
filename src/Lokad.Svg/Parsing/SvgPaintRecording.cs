@@ -11,8 +11,11 @@ internal readonly record struct SvgRecordedPaint(int Identity)
 }
 internal readonly record struct SvgRecordingScope(int Value);
 internal readonly record struct SvgPaintOperationIdentity(int Value);
-internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
+internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, bool IsStroke, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
 {
+    /// <summary>Retains the previous constructor contract; source recording assigns the stroke role explicitly.</summary>
+    internal SvgRecordedPaintValue(SvgPaintOperationIdentity identity, float alpha, bool foldable, SvgRecordingScope scope, SvgPaintOpacity elementOpacity, SvgRecordingScope opacityScope)
+        : this(identity, alpha, foldable, false, scope, elementOpacity, opacityScope) { }
     // Source visual bounds survive lowering; they do not describe a shader coordinate box or a clip.
     internal SvgPaintBounds? VisualBounds { get; init; }
     internal SvgPaintBounds? ObjectBounds { get; init; }
@@ -199,7 +202,7 @@ internal static class SvgPaintRecording
 
             SvgRecordedPaint GetPaint(ref SvgRecordedPaint cached, SvgPaintOperationIdentity identity, float alpha, bool foldable)
             {
-                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { VisualBounds = visualBounds, ObjectBounds = objectBounds });
+                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { IsStroke = identity == strokeId, VisualBounds = visualBounds, ObjectBounds = objectBounds });
                 return cached;
             }
         }

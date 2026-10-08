@@ -45,7 +45,9 @@ internal static class SvgSymbolContentParser
             double? width = state.SymbolViewBox?.Width ?? root.Width?.ToAbsoluteOrNull();
             double? height = state.SymbolViewBox?.Height ?? root.Height?.ToAbsoluteOrNull();
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, width, height, state);
-            int start = content.AddUse(reference, displayed, visible);
+            SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
+            SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
+            int start = content.AddUse(reference, fillOpacity, color, displayed, visible);
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true });
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
         }

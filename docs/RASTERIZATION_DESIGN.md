@@ -8345,3 +8345,62 @@ report/PNG is unchanged. Ignored evidence lives under
 `artifacts/symbol-viewport-opacity-20261008/` and isolated Linux
 `symbol-viewport-opacity-final-20261008/`. Remaining inherited stroke/paint and
 use styling stay G2; wider viewport, clip and mask combinations stay G5.
+
+## Use paint properties and source stroke identity (2026-10-08)
+
+The local-use attribute policy and presentation resolver now admit solid `color`
+and `fill-opacity` together. Source paint properties remain independently authored
+or inherited, following [SVG use inheritance](https://www.w3.org/TR/SVG2/struct.html#UseStyleInheritance).
+Nested retained uses resolve their own typed style against the current instance
+context rather than replacing their authored color/opacity with the parent values.
+Ordinary definitions reuse their retained source bindings, so authored fills win
+over use fills and line strokes ignore use fill. Four former rejection assertions
+now verify that source precedence instead of preserving erroneous admission gates.
+
+Source recording retains fill/stroke identity after lowering markers disappear.
+The tag sits beside the existing Boolean in recorded paint, preserving its 68-byte
+size; geometry remains 272 bytes and commands 72 bytes. CurrentColor strokes bind
+against source/instance color with their independent stroke opacity. Fill opacity
+does not dim that channel. Native recoloring and mapped paint alpha use the same
+resolved source binding. Binding arrays reserve their actual expanded element size;
+six new exhaustive ownership sweeps cover success, partial expansion and two
+retained rejection cases. Malformed numeric use paint values release parser owners.
+
+[Thirty-one retained controls](../tests/Research/use-paint-properties/manifest.json)
+give twenty exact comparisons, six measured stroke differences and five explicit
+rejections through all six outputs. The main 27 cases were declared before editing
+and browser comparison; four supplemental diagnostics were declared after the first
+prototype to distinguish raster/admission boundaries. All 93 accepted captures are
+stable healthy fresh-process triples with cleaned profiles. Eighteen preceding
+color/fill-opacity rejections become exact. The existing simple symbol paint-server
+anchor and the native inline twin remain exact. Paint-server use fill opacity,
+inherited shader-definition opacity, inherited symbol stroke, rendered-group use
+paint and transformed inline rectangle strokes retain explicit gates.
+
+The native-stroke symbol family differs at two pixels on each background; transparent
+output has maximum channel error 10 and no alpha error. Its native inline twin is
+exact under both the preceding and current renderer. Fractional instanced rectangle
+strokes differ at 85/81/85 pixels; transparent output has 46 alpha differences and
+maximum channel/alpha error 19. Chrome's retained trace draws a stroked frame, while
+the renderer paints four rectangle bands. The pinned `SkScan_Antihair.cpp::AntiFrameRect`
+keeps outer hull, frame and inverse-biased inner fringe operations separate; the
+current seam/corner model still needs repair. The inline rectangle twin hits its
+separate transform/paint gate. Sources, references and all measured differences
+stay frozen for the next G4/G5 fidelity work; source retention alone is not exactness.
+
+A contained-path clip-classification trial was discarded: the native symbol family
+worsened to 183/185/160 pixels and previously exact mixed/nested/alias controls
+became inexact. Native AA wrappers force RLE in `SkScan_AntiPath.cpp`; geometric
+containment alone does not justify changing that routing. This is negative evidence,
+not a production rule or an alias-specific exception.
+
+Windows and isolated Linux Release builds pass with zero warnings/errors and 4,485
+tests each (3,991 core, 488 visual-project, six FontProbe). All 83 preceding symbol
+comparisons and all 149 supplemental paint outcomes are unchanged. Every original
+bank report (1,567) and PNG (1,545) is unchanged from the viewport-opacity checkpoint.
+Corporate results stay 27/27 documents and 258/258 variants exact against each
+platform's own references, with unchanged reports/PNGs. Public APIs, dependencies
+and surface count are unchanged; no quantitative performance claim is made.
+Ignored evidence lives under `artifacts/use-paint-properties-20261008/` and isolated
+Linux `use-paint-properties-final-20261008/`. The new six stroke differences interrupt
+G2 before wider styling, paint-server and viewport additions; remote CI remains open.

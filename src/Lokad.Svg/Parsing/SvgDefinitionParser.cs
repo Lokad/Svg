@@ -1063,7 +1063,9 @@ internal static class SvgDefinitionParser
             ? SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, includesSymbolPresentation ? symbol.Paint : SvgPaint.Default, context.NamedColors)
             : null;
         bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, true, true);
-        SvgPaintOperationIdentity fill = state.Scene.GetRecordedPaintValue(definition.Geometries[0].RecordedPaint).Identity;
+        string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
+        SvgPaint? authoredStroke = stroke is not null && stroke.Equals("currentColor", StringComparison.OrdinalIgnoreCase)
+            ? SvgPaintResolver.Resolve(stroke, style.StrokeOpacity, null, SvgPaint.Default, context.NamedColors) : null;
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(128 + ParserCollectionMemory.GetArrayByteCount<SvgSymbolFillBinding>(definition.Geometries.Length), SvgMemoryCategory.Scene);
         try
         {
@@ -1071,8 +1073,9 @@ internal static class SvgDefinitionParser
             for (int index = 0; index < bindings.Length; index++)
             {
                 work.Consume(token);
-                bool fillChannel = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint).Identity == fill;
-                bindings[index] = new(inherited && fillChannel, opacity, color) { AuthoredFill = fillChannel ? authoredFill : null, IsPainted = isPainted };
+                bool strokeChannel = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint).IsStroke;
+                bool hasStroke = strokeChannel || definition.Geometries[index].RecordedStrokePaint.Identity != 0;
+                bindings[index] = new(inherited && !strokeChannel, opacity, color) { AuthoredFill = strokeChannel ? null : authoredFill, AuthoredStroke = hasStroke ? authoredStroke : null, IsStroke = strokeChannel, IsPainted = isPainted, IsPaintServer = !strokeChannel && style.Fill is not null && SvgLocalUrl.TryParseId(style.Fill, out _) };
             }
             state.DefinitionReservations.Add(reservation);
             return definition with { SymbolFillBindings = bindings };

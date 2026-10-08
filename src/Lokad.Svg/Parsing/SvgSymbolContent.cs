@@ -76,11 +76,11 @@ internal sealed class SvgSymbolContent : IDisposable
         catch { _groups.RemoveLast(); throw; }
     }
 
-    internal int AddUse(SvgUseReference reference, bool displayed, bool? visible)
+    internal int AddUse(SvgUseReference reference, SvgPaintOpacity? fillOpacity, SvgColor? color, bool displayed, bool? visible)
     {
         int start = _building.Count;
         _building.Add(new(SvgSymbolContentKind.Use, default, reference,
-            new(default, false, null, null, reference.SourceOpacity, displayed, visible), SvgAffineTransform.Identity, -1));
+            new(reference.InheritedFill, reference.FillOverride is not null, fillOpacity, color, reference.SourceOpacity, displayed, visible), SvgAffineTransform.Identity, -1));
         return start;
     }
 

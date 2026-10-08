@@ -1694,19 +1694,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_fill_style_on_explicitly_painted_rectangle_use_instances()
+    public void Authored_rectangle_fill_wins_over_use_fill()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='1' height='1' fill='blue'/></defs><use href='#tile' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='1' height='1' fill='blue'/></defs><use href='#tile' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Assert.Single(root.Rectangles).Color);
     }
 
     [Fact]
-    public void Rejects_fill_style_on_axis_aligned_line_use_instances()
+    public void Use_fill_does_not_replace_an_authored_line_stroke()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><line id='line' x2='2' stroke='blue' stroke-width='2'/></defs><use href='#line' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><line id='line' x1='2' y1='4' x2='6' y2='4' stroke='blue' stroke-width='2'/></defs><use href='#line' fill='red'/></svg>"u8.ToArray();
+        byte[] direct = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='2' y1='4' x2='6' y2='4' stroke='blue' stroke-width='2'/></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(direct, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
@@ -4198,11 +4197,11 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_a_fill_override_on_a_stroked_polygon_pair()
+    public void Use_fill_preserves_the_authored_fill_and_stroke_of_a_polygon_pair()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red' stroke='blue' stroke-width='2'/></defs><use href='#p' fill='green'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><polygon id='p' points='0,0 8,0 0,8' fill='red' stroke='blue' stroke-width='2'/></defs><use href='#p' fill='green'/></svg>"u8.ToArray();
+        byte[] direct = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red' stroke='blue' stroke-width='2'/></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(direct, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]

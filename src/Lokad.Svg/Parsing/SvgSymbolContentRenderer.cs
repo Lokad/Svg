@@ -54,8 +54,8 @@ internal static class SvgSymbolContentRenderer
                 }
                 if (!state.Definitions.TryGetValue(node.Reference.Id, out SvgDefinition target))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local references in symbol content are implemented.");
-                SvgPaint? fillOverride = node.Reference.FillOverride is {} authored ? authored with { FillOpacity = frame.Context.Paint.FillOpacity, CurrentColor = frame.Context.Paint.CurrentColor } : null;
-                SvgUseReference use = node.Reference with { Transform = frame.Context.Transform.ComposeChecked(node.Reference.Transform), InheritedTransform = frame.Context.Transform, InheritedFill = frame.Context.Paint, FillOverride = fillOverride, Opacity = 255, IsPainted = displayed && visible, IsDisplayed = displayed, IsVisible = visible, RecordingScope = state.NewRecordingScope() };
+                SvgPaint instancePaint = node.Style.Resolve(frame.Context.Paint);
+                SvgUseReference use = node.Reference with { Transform = frame.Context.Transform.ComposeChecked(node.Reference.Transform), InheritedTransform = frame.Context.Transform, InheritedFill = instancePaint, FillOverride = node.Reference.FillOverride is null ? null : instancePaint, Opacity = 255, IsPainted = displayed && visible, IsDisplayed = displayed, IsVisible = visible, RecordingScope = state.NewRecordingScope() };
                 if (target.SymbolContent is {} range)
                 {
                     if (use.PaintServerId is not null || use.StrokeOverride is not null)

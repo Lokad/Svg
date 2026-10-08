@@ -31,12 +31,23 @@ public sealed class SvgLocalReferencePresentationResolverTests
     }
 
     [Fact]
-    public void Rejects_unsupported_use_instance_paint_properties()
+    public void Resolves_use_color_and_fill_opacity_independently_of_stroke_opacity()
     {
-        SvgComputedStyle style = new(null, null, "0.5", null, null, null, null, null);
+        SvgComputedStyle style = new("#297fb3", "currentColor", ".375", "currentColor", null, null, null, null);
+        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(style, new(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000)));
+        Assert.Equal(new SvgColor(41, 127, 179, 255), resolved.Paint.CurrentColor);
+        Assert.Equal(.375f, resolved.Paint.FillOpacity.Value);
+        Assert.Equal(resolved.Paint, resolved.FillOverride);
+        SvgUseStrokeOverride stroke = Assert.IsType<SvgUseStrokeOverride>(resolved.StrokeOverride);
+        Assert.Equal(resolved.Paint.CurrentColor, stroke.Paint.CurrentColor);
+        Assert.Equal(SvgPaintOpacity.Opaque, stroke.Paint.FillOpacity);
+    }
 
+    [Fact]
+    public void Retains_the_use_fill_rule_admission_boundary()
+    {
+        SvgComputedStyle style = new(null, null, null, null, null, null, null, "evenodd");
         SvgException exception = Assert.Throws<SvgException>(() => SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000))));
-
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
