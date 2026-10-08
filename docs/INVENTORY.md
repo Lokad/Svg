@@ -5,9 +5,33 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Hard mask-region and layer-bounds checkpoint (2026-10-08)
+
+Three existing custom-region mask comparisons become exact from 21 differing
+pixels each against their unchanged references. The original bank retains
+**1,567 executions / 1,539 PNGs**: **1,410 fixtures** (1,345 exact, 41 known,
+24 rejected), **65 research probes** (47 exact, 14 known, four rejected) and
+92 Default renders. Every other report and 1,536 PNG byte sequences stay unchanged.
+The frozen corporate matrix remains **27/27 documents and 258/258 variants exact**
+against each platform's retained references.
+
+The [recorded-paint inventory](../tests/Research/paint-recording/manifest.json)
+now retains **64 pairs: 55 exact, two known differences and seven valid-input
+rejections**. Twelve original CC0 controls declared before the repair have
+36 healthy, cleaned, byte-stable captures. They cover each half-pixel edge, both
+sides of the boundary, leaf/copy/scaled-root placement and a gradient's layer
+origin. Eleven are exact; the transformed custom group mask remains rejected.
+All six public output forms retain these results.
+
+Windows/Linux Release builds, **4,128 tests**, 25-scenario memory checks and
+installed-package checks pass. Resource checks cover **149 admitted / 29 rejected**
+cases. See [the repair record](RASTERIZATION_DESIGN.md#hard-mask-region-rounding-and-layer-bounds-2026-10-08)
+and [the measured bounds-scan cost](BENCHMARKS.md#hard-mask-region-and-layer-bounds-cost-2026-10-08).
+Online sourcing follows the remaining fidelity repairs and original-scope audit.
+
 ## Shared paint and opacity checkpoint (2026-10-08)
 
-The original bank retains **1,410 fixtures** (1,345 exact, 41 known, 24 rejected),
+At this preceding checkpoint, the bank retained **1,410 fixtures** (1,345 exact, 41 known, 24 rejected),
 **65 research probes** (44 exact, 17 known, four rejected) and 92 Default renders:
 **1,567 executions / 1,539 PNGs**. Nineteen original comparisons become exact
 against unchanged references. Three custom-region mask comparisons improve from

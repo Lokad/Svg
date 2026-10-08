@@ -1873,16 +1873,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 21,
-        "maximumChannelError": 193,
-        "maximumAlphaError": 128,
-        "alphaChangedPixelCount": 21,
-        "minimumMismatchX": 9,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 29,
-        "maximumMismatchY": 6
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 43,
+        "minimumMismatchY": 37,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "d83093e3ffe19bdd6761500793aba9cca6981868cf6d1132eae9dde6b9a1864a",
+      "candidateSha256": "1541ee0bf2bb8841324bbd75f4adcbee8fcbaa25a853afe9fa1b2864459de0ac",
       "oracle": {
         "referencePng": "references/mask-layer-round-region-transparent.png",
         "referenceSha256": "d4f86235eeaca9334e25e789d7789d6f130a2411c1a0faeb69d1bbcac4170350",
@@ -1916,16 +1916,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 21,
-        "maximumChannelError": 106,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 9,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 29,
-        "maximumMismatchY": 6
+        "minimumMismatchX": 43,
+        "minimumMismatchY": 37,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "2604db8a6004c3130f7500e85687ae9ecd61dbf5d77875c70a8a3bb1bdced57f",
+      "candidateSha256": "3aa29d0b3cb5ba428f05c054664d531ca0188ff5194236b48860432392b1c89a",
       "oracle": {
         "referencePng": "references/mask-layer-round-region-white.png",
         "referenceSha256": "5e195f1a07e0df83de87bc9e64dce53a66137c79997ce3cb26ec0a48e59ce66d",
@@ -1959,16 +1959,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 21,
-        "maximumChannelError": 97,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 9,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 29,
-        "maximumMismatchY": 6
+        "minimumMismatchX": 43,
+        "minimumMismatchY": 37,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "7ff2aa4396342817db560f6112726d6c4b3d1f0aa26084e3b54fa5aaf93f968b",
+      "candidateSha256": "a73d190fca61538c06993faad84bf12a2811c5bb0200a03450ec82eceb50443b",
       "oracle": {
         "referencePng": "references/mask-layer-round-region-black.png",
         "referenceSha256": "3efe36bb271083b9caacfb09de0166647583b52c098293a8b45bf2812b28f306",

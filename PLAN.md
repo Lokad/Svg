@@ -5,19 +5,19 @@ variants on Windows and Linux**, with zero known differences and zero rejections
 Marks are 13/13 exact; outlined wordmarks are 14/14. Membership, inputs, options
 and browser references stay frozen.
 
-The latest shared repair retains source paint values, logical draw identities,
-float element opacity and distinct object/visual bounds through lowering and use
-expansion. It preserves default mask regions and physical layer origins for
-gradient dithering. Nineteen original comparisons become exact; three custom
-mask-region comparisons improve from 78 to 21 differing pixels. See
-[the repair and its limits](docs/RASTERIZATION_DESIGN.md#shared-recorded-paint-and-opacity-checkpoint-2026-10-08).
+The latest repair rounds all four hard mask-region edges in output coordinates,
+with half-pixel ties toward positive infinity. Isolated content keeps the union
+of content and mask bounds for its gradient dither origin. Three custom-region
+comparisons become exact from 21 differing pixels each. It preserves the preceding
+source-paint repair's nineteen exact gains and separate object/visual bounds.
+See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#hard-mask-region-rounding-and-layer-bounds-2026-10-08).
 
 The original bank retains **1,567 executions / 1,539 PNGs**, with identical
 Windows/Linux reports and output bytes. Every preceding exact result and rejection
 outcome is preserved; all 258 corporate reports/images stay unchanged. A further
-52 retained paint controls measure 44 exact, two known differences and six
+64 retained paint controls measure 55 exact, two known differences and seven
 valid-input rejections through all six public outputs. Both platforms pass
-Release builds, **4,116 tests**, 25-scenario memory checks and installed-package
+Release builds, **4,128 tests**, 25-scenario memory checks and installed-package
 checks. Earlier checkpoints retain their dated evidence in the design record
 and inventory.
 
@@ -144,15 +144,15 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,116 passed on each platform**: 3,837 core, 273 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Scene-owned paint records and bounded copy maps reserve storage before allocation. Work/memory denial and cancellation pass for 138 admitted cases and 28 retained rejections; partial curve, polygon, band-repaint and tile owners are released. Forty new core cases and 52 new six-output cases protect the shared repair. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API or runtime dependency changes; remote CI remains open. |
+| Full tests, including corporate selection/measurement | **4,128 passed on each platform**: 3,837 core, 285 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Scene-owned paint records and bounded copy maps reserve storage before allocation. Work/memory denial and cancellation pass for 149 admitted cases and 29 retained rejections; partial curve, polygon, band-repaint and tile owners are released. Forty retained core cases and 64 six-output cases protect paint/bounds behavior. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API or runtime dependency changes; remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,345 exact + 41 known-difference renders + 24 rejections**; 799 base documents / 611 variants. Five existing parent/leaf/override opacity configurations become exact against their unchanged references. |
-| Executed research manifest | **65 probes = 44 exact + 17 known-difference renders + four rejections**. Fourteen existing layer/gradient/opacity/mask-copy comparisons become exact without recapture; three custom-region comparisons improve to 21 differing pixels each. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the later scope audit. |
-| Supplemental recorded-paint inventory | **52 controls = 44 exact + two known differences + six valid-input rejections**. Unchanged MIT unit inputs and original MIT/CC0 controls retain stable browser triples and all six output checks. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
+| Executed research manifest | **65 probes = 47 exact + 14 known-difference renders + four rejections**. The three custom-region mask comparisons become exact against unchanged references, preserving the preceding fourteen paint/opacity gains. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the later scope audit. |
+| Supplemental recorded-paint inventory | **64 controls = 55 exact + two known differences + seven valid-input rejections**. Twelve additional original CC0 controls retain 36 healthy, cleaned, stable captures: eleven exact, one rejected transformed custom mask. Unchanged MIT unit inputs and original MIT/CC0 controls retain all six output checks. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Two images change: matching 300×150 browser checks make `inv-013` exact and reduce `inv-014` from 6,317 to 850 differing pixels. These Default outputs do not establish matching-options corporate fidelity. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Geometry/command/recorded-paint values are **272 / 72 / 68 bytes**; geometry stores two four-byte paint handles. The paint arena reserves a 192-byte owner and capacity before allocation. Seventy-two matched recipes in both process orders add 12–4,263 total work units, zero–568 accounted peak bytes and 760–20,711 managed allocation bytes per conversion. See [the cost record](docs/BENCHMARKS.md#recorded-paint-and-opacity-cost-2026-10-08). This repair establishes no representative throughput rate. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**. Seventy-two matched recipes in both process orders add 8–232 total work units for the mask bounds repair; parser work and accounted peak bytes stay unchanged. See [the current cost record](docs/BENCHMARKS.md#hard-mask-region-and-layer-bounds-cost-2026-10-08) and [the preceding arena costs](docs/BENCHMARKS.md#recorded-paint-and-opacity-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -861,15 +861,17 @@ replace the renderer work below.
 
 1. **Continue shared fidelity work under rows 3–7.** The shared paint/opacity
    repair is integrated and passes the unit, six-output, ownership and
-   Windows/Linux delivery gates. Continue the remaining 41 fixture and 17
-   research differences, plus the two newly retained curved-opacity controls.
-   Prioritize custom-region and circle/ellipse masks, hairline color, oval strokes
+   Windows/Linux delivery gates. Continue the remaining 41 fixture and 14
+   research differences, plus the two retained curved-opacity controls.
+   The hard custom-region edge and content-layer dither repairs close three more
+   research comparisons. Prioritize
+   circle/ellipse masks, hairline color, oval strokes
    and remaining clip, paint and curve behavior with independent browser controls.
    Preserve the earlier opacity/operation, scope and copy controls' remaining
    differences; the repair does not close every drawing-state combination.
    Keep the valid percentage-mask, symbol override, direct `fill="none"` line,
-   translucent pattern-tile stroke and nested-viewport rejections for the later
-   admission audit. Broader object/visual bounds and override combinations still
+   translucent pattern-tile stroke, transformed custom-mask and nested-viewport
+   rejections for the later admission audit. Broader object/visual bounds and override combinations still
    need their own evidence. The integrated repair, measured controls and rejected
    models are in [the design record](docs/RASTERIZATION_DESIGN.md#shared-recorded-paint-and-opacity-checkpoint-2026-10-08).
 2. **Preserve the complete exact matrix.** Compare shared raster changes across

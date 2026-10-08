@@ -19,8 +19,12 @@ values through command insertion and reference expansion; validated empty groups
 produce no scope. Leaf fill/stroke batches and masked use instances now compose
 before uniform mask application; copied masks retain sharing within one instance
 and distinct identity between instances. Backward masks with forward clips on
-direct leaves have exact independent controls. Gradient/custom-region masks,
-fill-opacity precision and circle/ellipse masks retain measured gaps. Selected
+direct leaves have exact independent controls. Circle/ellipse masks and curved
+opacity retain measured gaps. Hard mask-region edges round in output coordinates
+with half-pixel ties toward positive infinity. Content and mask bounds both
+contribute to the isolated layer's dither origin; the mask clip stays separate.
+Independent group/leaf/copy/scaled-root controls are exact. Transformed custom
+group masks retain a valid-input rejection. Selected
 default mask regions use object bounds without strokes and hard region clipping;
 source visual bounds survive lowering and tested use/viewport placement. Wider
 affine/custom-region combinations and copied forward clips remain unproved. Multiple-child symbols are valid SVG currently
@@ -37,7 +41,7 @@ destination-overlap controls are exact. Other solid-lowered routes retain their
 existing behavior and measured precision gaps.
 
 The [recorded-paint controls](../tests/Research/paint-recording/manifest.json)
-retain 44 exact results, two curved-opacity differences and six valid-input
+retain 55 exact results, two curved-opacity differences and seven valid-input
 rejections. Translucent paint-stroke combinations newly admitted by deferred
 opacity have independent browser evidence; this does not establish all stroke,
 pattern, mask or override combinations.

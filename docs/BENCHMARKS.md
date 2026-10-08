@@ -2,7 +2,7 @@
 
 The full frozen-cohort baseline predates the latest renderer repairs;
 see [the corporate baseline](#frozen-corporate-cohort-baseline-2026-10-07) and
-[the current resource comparison](#recorded-paint-and-opacity-cost-2026-10-08).
+[the current resource comparison](#hard-mask-region-and-layer-bounds-cost-2026-10-08).
 The earlier calibration and implementation checkpoints below retain their dates.
 
 This is the initial local baseline for the current supported subset. It is a
@@ -2280,3 +2280,23 @@ improvement. The earlier 258-recipe Windows ShortRun retains its historical
 scope. Full recipes, batches, resource ledgers and the production audit remain
 under ignored `artifacts/opacity-folding-20261007/paint-cost-*` and
 `paint-production-audit.json`; Git identifies the implementation.
+
+## Hard mask-region and layer-bounds cost (2026-10-08)
+
+Seventy-two matching admitted Windows recipes compare `ae95dbbb` with hard
+mask-region rounding and the union of content/mask layer bounds. Original SVG
+bytes, backgrounds and owned-memory output match in both process orders. Each
+process warms up eight conversions and records three batches of twenty per recipe;
+allocation deltas compare medians across six batches per renderer.
+
+Parser work and accounted peak live storage are unchanged. Total accounted
+conversion work adds **8–232 units** for the content bounds scan; surface work
+includes parsing and is counted once. Geometry/command/paint-value sizes remain
+**272 / 72 / 68 bytes**. Observed managed allocation deltas range from −112 to
++89 bytes per conversion; this is allocation traffic, not retained storage.
+
+Summed per-recipe median timings read 93.696 → 76.010 ms when the baseline runs
+first, and 75.120 → 80.522 ms when the repair runs first. Opposite directions
+and the loaded host do not support a representative throughput claim. The earlier
+258-recipe Windows ShortRun retains its historical scope. Full recipes, batches
+and resource ledgers remain under ignored `artifacts/mask-region-rounding-20261008/`.

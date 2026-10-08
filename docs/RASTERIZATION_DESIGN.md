@@ -7550,3 +7550,57 @@ audits and capture receipts. Linux delivery, bank, resource and
 native corporate evidence is under
 `artifacts/linux-delivery-20261007/paint-integration-final-20261008/`. The public
 recorded-paint inventory and tests retain the portable regressions.
+
+### Hard mask-region rounding and layer bounds (2026-10-08)
+
+The remaining custom-region mask error was one complete boundary row: 21 pixels
+at a half-pixel top edge. Hard mask-region clips now round each mapped edge to
+the nearest integer, with half-pixel ties toward positive infinity. The bounds
+remain half-open after rounding. This applies to all four edges in output space,
+including root scaling; antialiased geometry coverage stays separate.
+
+An independent masked-gradient control exposed a second issue: the mask's
+clipping region had replaced the content bounds when choosing a layer's dither
+origin. Pinned browser drawing records retain the content layer before the mask
+clip. Content and mask bounds must both contribute to that layer's bounds.
+Using content alone made the new control exact but regressed six retained gradient
+comparisons with expanded default mask regions. The union preserves those six
+and makes the new gradient exact. The mask region still clips mask alpha during
+composition; it does not discard the content bounds scan.
+
+The twelve original CC0 controls were declared before implementation. All 36
+fresh-process captures are healthy, cleaned and byte-stable in triples. Eleven
+controls are exact: separate half-pixel edges, both neighboring phases, group,
+leaf, copy, scaled-root and gradient routes. The transformed custom group mask
+remains a valid-input UnsupportedFeature rejection for the later admission audit.
+All twelve unchanged SVG/reference pairs are retained in the recorded-paint
+inventory and tested through all six public outputs. The inventory now contains
+64 controls: 55 exact, two curved-opacity differences and seven valid rejections.
+
+The original bank retains **1,567 executions / 1,539 PNGs**. Only the three
+custom-region research comparisons change, from 21 differing pixels to exact.
+Every other complete report and 1,536 PNG byte sequences stay unchanged; exactness
+and rejection outcomes do not regress. Both platforms retain **27/27 corporate
+documents and 258/258 variants exact** against their own unchanged references.
+
+Nine-project Release builds, **4,128 tests = 3,837 core + 285 visual + six FontProbe**,
+25-scenario memory checks, runtime/symbol packages and installed consumers pass
+on Windows/Linux. Work/memory denial, raster boundaries and cancellation pass for
+149 admitted cases; 29 retained rejections pass separate parser checks. All tested
+owners release after disposal and cancellation retains the caller token. Public
+API and runtime dependencies stay unchanged.
+
+Seventy-two matching recipes in both process orders add 8–232 total work units;
+parser work and accounted peak bytes stay unchanged. The
+[cost record](BENCHMARKS.md#hard-mask-region-and-layer-bounds-cost-2026-10-08)
+retains allocation/timing observations and their limits. Pinned Skia hard-clip
+rounding retains BSD attribution. Git identifies the implementation; no renderer,
+source, script or build fingerprints are added.
+
+Evidence stays under ignored `artifacts/mask-region-rounding-20261008/`: control
+declarations/captures, rejected content-only model, full bank and two-order cost
+audits, and Windows delivery/resource results. Linux evidence is under
+`artifacts/linux-delivery-20261007/mask-region-final-20261008/`. Circle/ellipse
+masks, curved opacity, hairline color, oval strokes and the other retained
+clip/paint/curve differences remain open before the original-scope support audit
+and online public-domain/CC0 sourcing.

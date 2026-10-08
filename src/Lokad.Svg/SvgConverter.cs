@@ -404,6 +404,8 @@ public static class SvgConverter
             double right = double.NegativeInfinity, bottom = double.NegativeInfinity;
             SvgAffineTransform outputMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             int depth = 0;
+            // Content and mask bounds both contribute to the isolated layer;
+            // the mask region clips the mask surface during composition.
             if (retainedRegion is SvgClipBox region) IncludeBox(new(region.X, region.Y, region.Width, region.Height, default, false, null), outputMap, 0);
             for (int cursor = first; cursor < root.Commands.Length; cursor++)
             {
@@ -422,7 +424,6 @@ public static class SvgConverter
                     IncludeBox(new(visual.Left, visual.Top, visual.Right - visual.Left, visual.Bottom - visual.Top, default, false, null), outputMap, 0);
                     continue;
                 }
-                if (retainedRegion is not null) continue;
                 SvgAuthoredPath? source = geometry.AuthoredPath?.StrokeOutline ?? geometry.AuthoredPath;
                 if (source is not null)
                 {
@@ -598,6 +599,11 @@ public static class SvgConverter
                     if (compositionWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Group opacity composition exceeds the configured limit.");
                     workUnits += compositionWork;
                     (double regionLeft, double regionTop, double regionRight, double regionBottom) = command.MaskRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
+                    // Skia hard-rectangle clipping rounds each mapped edge to the nearest integer
+                    // (Copyright 2006 The Android Open Source Project; see THIRD_PARTY_NOTICES.txt);
+                    // half-pixel ties move toward positive infinity on both sides.
+                    SvgAnalyticClipBounds maskBounds = new(ClampFloor(regionLeft + 0.5, outputWidth), ClampFloor(regionTop + 0.5, outputHeight),
+                        ClampFloor(regionRight + 0.5, outputWidth), ClampFloor(regionBottom + 0.5, outputHeight));
                     byte[] maskSurface = [];
                     byte maskLuminance = 255;
                     bool maskIsAlpha = false;
@@ -638,7 +644,7 @@ public static class SvgConverter
                         {
                             int x = pixel % outputWidth;
                             int y = pixel / outputWidth;
-                            if (x + 0.5 < regionLeft || x + 0.5 >= regionRight || y + 0.5 < regionTop || y + 0.5 >= regionBottom)
+                            if (x < maskBounds.Left || x >= maskBounds.Right || y < maskBounds.Top || y >= maskBounds.Bottom)
                                 maskAlpha = 0;
                         }
                         if (extra == 0 || maskAlpha == 0 || groupPixels[offset + 3] == 0) continue;
