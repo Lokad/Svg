@@ -246,22 +246,41 @@ features and preserved exact corporate results.
 
 ### Development sourcing and release work
 
-Source more explicitly public-domain or CC0 SVGs in small batches guided by these
-gaps. Keep untouched downloads in `tests/Fixtures/candidates/`, source/creator and
-license links, retrieval dates and explicit options. Record any root-only test
-materialization separately. Retain distinct in-scope rejections or rendering
-failures, with three stable sandboxed browser captures. Extend the existing offline
-visual tests; do not add a separate renderer or recapture unchanged assets.
-Successful renders need not enlarge this failure-selected corpus. Sources with
-ambiguous rights, external resources or out-of-scope behavior stay outside it.
-Keep further blockers visible after a first rejection is repaired. Future
-representative cohorts must still be selected before comparison.
+The identified fidelity repairs are complete; the plan now covers unsupported
+SVG within the original static, self-contained product scope in section 5.
+Refresh G2–G9 as retained examples reveal remaining gaps and their dependencies.
+New fidelity defects may interrupt the support queue; fixing an admission gate
+alone does not close a case.
+
+1. Audit actual parser/renderer gates and existing rejected examples against the
+   product scope. Select the next shared feature combination from demonstrated
+   failures; seek new examples where the queue lacks a useful development case.
+2. Search public-domain or CC0 SVGs in small batches, starting with the existing
+   Wikimedia Commons and Openclipart sources. Verify each asset's license evidence
+   and screen for distinct in-scope gaps. Keep rejections and incorrect renders;
+   already exact examples need not enlarge this failure-selected corpus. There
+   is no corpus-size target. Sources with ambiguous rights, external resources or
+   out-of-scope behavior stay outside it.
+3. Retain untouched downloads in `tests/Fixtures/candidates/` and record source,
+   creator, license links, retrieval date, feature tags and explicit render options
+   in the existing gap manifest. Record any root-only sizing separately; preserve
+   authored geometry. Obtain a stable browser reference from three sandboxed
+   captures using the existing tooling, then add the case to offline visual tests.
+4. Repair shared semantics and rerun the complete retained document against its
+   unchanged references. Record further blockers instead of declaring success at
+   the first gate. Once every declared variant is exact, keep the case as a
+   regression and revise the remaining queue from the observed gaps.
+
+Reuse unchanged assets and references. This development corpus remains separate
+from the frozen 27-document / 258-variant regression gate and establishes no
+representative success rate. Future representative cohorts must be selected
+before comparison.
 
 Remote Windows/Linux build/test/package/resource CI evidence remains S17's open
 release gate. Local platform-reference fidelity is complete. Publishing the
 reviewed branch is a separate authorized action; lack of remote runs does not
 block the support queue. No release or general SVG compatibility claim follows
-from the three newly retained failures.
+from the four retained online failures.
 
 ## 4. Findings and stage ledger
 
