@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='4' fill='#025bc7'/></pattern><symbol id='s' viewBox='0 0 32 32'><rect width='32' height='32' fill='url(#p)'/></symbol></defs><use href='#s' width='64' height='64'/></svg>

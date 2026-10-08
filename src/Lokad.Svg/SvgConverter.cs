@@ -197,6 +197,10 @@ public static class SvgConverter
 
     /// <summary>Renders one parsed scene while retaining its surface reservation until the returned surface is disposed.</summary>
     internal static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+        => Rasterize(root, options, budget, RasterSurfaceMode.Capture, cancellationToken);
+
+    /// <summary>Renders a borrowed scene with shared budget/cancellation; pattern surfaces remain premultiplied for image-shader sampling.</summary>
+    private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, CancellationToken cancellationToken)
     {
         (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
         double scaledWidth = Math.Round(width * options.OutputScale, MidpointRounding.AwayFromZero);
@@ -262,7 +266,7 @@ public static class SvgConverter
                     pixels[offset + 3] = options.BackgroundColor.Alpha;
                 }
             }
-            if (TryResolveSolidCanvas(out SvgColor solidColor))
+            if (surfaceMode == RasterSurfaceMode.Capture && TryResolveSolidCanvas(out SvgColor solidColor))
             {
                 int red = (solidColor.Red * solidColor.Alpha + 127) / 255;
                 int green = (solidColor.Green * solidColor.Alpha + 127) / 255;
@@ -289,7 +293,7 @@ public static class SvgConverter
                 int commandIndex = RenderCommands(0, pixels, false);
                 if (commandIndex != root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
             }
-            ApplyCaptureUnpremultiply(pixels, pixelCount, cancellationToken);
+            if (surfaceMode == RasterSurfaceMode.Capture) ApplyCaptureUnpremultiply(pixels, pixelCount, cancellationToken);
             return new RasterizedSurface(outputWidth, outputHeight, pixels, surface, workUnits);
         }
         catch
@@ -398,6 +402,16 @@ public static class SvgConverter
             float alpha = (activePaint.Identity.Value == 0 ? color.Alpha / 255f : activePaint.Alpha) * foldedOpacity;
             return new(color.Red, color.Green, color.Blue, (byte)Math.Clamp((int)(alpha * 255f + 0.5f), 0, 255));
         }
+        // Picture-backed pattern tiles use a constant raster-pipeline paint. Their rounded
+        // premultiplied lanes and coverage scale differ from the ordinary solid blitter.
+        SvgConstantShaderPaint PatternSolidPaint(SvgColor color)
+            => SvgShaderPaint.ConstantGradient(new SvgGradientStop(0, color) { Alpha = ShaderAlpha(color.Alpha) }, 1);
+
+        SvgAnalyticPaint ResolveSolidPaint(SvgColor color)
+            => surfaceMode == RasterSurfaceMode.PremultipliedPattern
+                ? SvgAnalyticPaint.Constant(PatternSolidPaint(color))
+                : SvgAnalyticPaint.Solid(ResolveSolidColor(color));
+
         float ShaderAlpha(byte opacity) => (activePaint.Identity.Value == 0 ? opacity / 255f : activePaint.Alpha) * foldedOpacity;
 
         SvgCpuRasterContext LayerRasterContext(SvgCpuRasterContext tile)
@@ -812,7 +826,7 @@ public static class SvgConverter
                 ParserWorkCounter hairlineWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 SvgPolygonFill stroke = geometry.Polygon;
                 bool rendered = stroke.HasFill && SvgHairlineStroke.TryRasterize(centerline,
-                    SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), ResolveSolidColor(stroke.Color),
+                    SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), ResolveSolidColor(stroke.Color), surfaceMode == RasterSurfaceMode.PremultipliedPattern ? PatternSolidPaint(stroke.Color) : null,
                     stroke.Clip is SvgClipBox clip ? MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
                     stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, activeViewportClip, destination, outputWidth, outputHeight, hairlineWork, cancellationToken);
                 workUnits += hairlineWork.Used;
@@ -1019,7 +1033,7 @@ public static class SvgConverter
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
             using MappedPolygon raster = MapPolygon(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip, authoredPath);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
-            SvgAnalyticPaint analyticPaint = SvgAnalyticPaint.Solid(ResolveSolidColor(polygon.Color));
+            SvgAnalyticPaint analyticPaint = ResolveSolidPaint(polygon.Color);
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
@@ -1082,6 +1096,7 @@ public static class SvgConverter
                         double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                         int offset = (y * outputWidth + x) * 4;
                         if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), analyticPaint, PolygonClipCoverage(raster, x, y));
+                        else if (surfaceMode == RasterSurfaceMode.PremultipliedPattern) analyticPaint.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
                         else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(polygon.Color, pixelCoverage * (activeViewportClip.Length == 0 ? 1 : activeViewportClip[offset + 3] / 255.0)));
                     }
                 }
@@ -1385,15 +1400,12 @@ public static class SvgConverter
             using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             using RenderBudget.BudgetReservation sourcePatternOwner = budget.Reserve(512, SvgMemoryCategory.Geometry);
-            SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null) { ContentPaint = outline.ContentPaint };
+            SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null) { ContentPaint = outline.ContentPaint, VectorContent = outline.VectorContent, ShaderPlacement = outline.ShaderPlacement };
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(source) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry tile = mappedTile ?? source;
-            long tilePixels = (long)tile.TileWidth * tile.TileHeight;
-            if (tilePixels <= 0 || tilePixels > options.Limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile surface exceeds the configured pixel limit.");
-            using RenderBudget.BudgetReservation tileReservation = budget.Reserve(checked(tilePixels * 4), SvgMemoryCategory.Surface);
-            byte[] blitted = new byte[(int)tilePixels * 4];
-            BlitPatternTile(tile, blitted);
+            using RasterizedSurface texture = PreparePatternTile(tile);
+            byte[] blitted = texture.Pixels;
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
@@ -1484,7 +1496,7 @@ public static class SvgConverter
             double contentWidth = pattern.Content.Width * scaleX, contentHeight = pattern.Content.Height * scaleY;
             SvgClipBox? contentClip = pattern.Content.Clip is {} clip ? new SvgClipBox((clip.X - pattern.OriginX) * scaleX, (clip.Y - pattern.OriginY) * scaleY, clip.Width * scaleX, clip.Height * scaleY) { Antialiasing = clip.Antialiasing } : null;
             mapped = new SvgPatternGeometry(new SvgRectangle(contentX, contentY, contentWidth, contentHeight, pattern.Content.Color, pattern.Content.HasFill, pattern.Content.Stroke) { Clip = contentClip }, 0, 0, (int)tileWidth, (int)tileHeight, pattern.Fill, pattern.Opacity, pattern.Stroke)
-                { ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY), ContentPaint = pattern.ContentPaint };
+                { ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY), ContentPaint = pattern.ContentPaint, VectorContent = pattern.VectorContent };
             return true;
 
             static bool IsDeviceInteger(double value)
@@ -1497,13 +1509,41 @@ public static class SvgConverter
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(pattern) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(pattern, out SvgPatternGeometry? mapped)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry source = mapped ?? pattern;
-            long tilePixels = (long)source.TileWidth * source.TileHeight;
-            if (tilePixels <= 0 || tilePixels > options.Limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile surface exceeds the configured pixel limit.");
-            using RenderBudget.BudgetReservation tileReservation = budget.Reserve(checked(tilePixels * 4), SvgMemoryCategory.Surface);
-            byte[] tile = new byte[(int)tilePixels * 4];
-            BlitPatternTile(source, tile);
+            using RasterizedSurface texture = PreparePatternTile(source);
+            byte[] tile = texture.Pixels;
             if (source.Fill.HasFill) StampPatternFill(source, tile, destination);
             if (source.Stroke is SvgStroke stroke) RasterizePatternStroke(source, stroke, destination);
+        }
+
+        // Tile scenes borrow their parent-owned storage and use the same native geometry/paint
+        // machinery as ordinary scenes. Only the final capture conversion is omitted.
+        RasterizedSurface PreparePatternTile(SvgPatternGeometry pattern)
+        {
+            long tilePixels = (long)pattern.TileWidth * pattern.TileHeight;
+            if (tilePixels <= 0 || tilePixels > options.Limits.MaximumPixels || tilePixels > int.MaxValue / 4) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile surface exceeds the configured pixel limit.");
+            cancellationToken.ThrowIfCancellationRequested();
+            if (pattern.VectorContent is {} content)
+            {
+                long remaining = options.Limits.MaximumWorkUnits - workUnits;
+                if (remaining <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile rendering exceeds the configured work limit.");
+                using RenderBudget.BudgetReservation setup = budget.Reserve(256, SvgMemoryCategory.Geometry);
+                SvgRenderLimits limits = options.Limits;
+                SvgRenderLimits tileLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)remaining), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+                SvgRenderOptions tileOptions = new(new SvgViewport(pattern.TileWidth, pattern.TileHeight), 1, SvgColor.Transparent, tileLimits);
+                SvgSceneStorage scene = content.Scene;
+                SvgRoot tileRoot = new(null, null, content.SourceBox, scene.Geometries, scene.Commands, false, 0, scene);
+                RasterizedSurface rendered = Rasterize(tileRoot, tileOptions, budget, RasterSurfaceMode.PremultipliedPattern, cancellationToken);
+                workUnits += rendered.WorkUnits;
+                return rendered;
+            }
+            RenderBudget.BudgetReservation reservation = budget.Reserve(checked(tilePixels * 4), SvgMemoryCategory.Surface);
+            try
+            {
+                byte[] pixels = new byte[(int)tilePixels * 4];
+                BlitPatternTile(pattern, pixels);
+                return new RasterizedSurface(pattern.TileWidth, pattern.TileHeight, pixels, reservation, 0);
+            }
+            catch { reservation.Dispose(); throw; }
         }
 
         void BlitPatternTile(SvgPatternGeometry pattern, byte[] tile)
@@ -1977,7 +2017,7 @@ public static class SvgConverter
             long rasterWork = 5 * pixels;
             if (rasterWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame raster exceeds the configured work limit.");
             workUnits += rasterWork;
-            SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(ResolveSolidColor(stroke.Color));
+            SvgAnalyticPaint paint = ResolveSolidPaint(stroke.Color);
             Span<byte> alphas = stackalloc byte[4];
             for (int y = top; y < bottom; y++)
             {
@@ -2000,7 +2040,7 @@ public static class SvgConverter
         {
             SvgRectangleRaster raster = PrepareRectangle(rectangle);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
-            SvgAnalyticPaint rectanglePaint = SvgAnalyticPaint.Solid(ResolveSolidColor(rectangle.Color));
+            SvgAnalyticPaint rectanglePaint = ResolveSolidPaint(rectangle.Color);
             for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();
@@ -2238,6 +2278,8 @@ public static class SvgConverter
     }
 
     private static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);
+
+    private enum RasterSurfaceMode { Capture, PremultipliedPattern }
 
     /// <summary>Owns the pixel surface and its budget reservation until encoding or a failed caller releases it.</summary>
     internal readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation, long WorkUnits) : IDisposable

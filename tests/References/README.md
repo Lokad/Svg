@@ -105,3 +105,10 @@ see [the oracle instructions](../../docs/ORACLE.md#frozen-corporate-captures).
 Per-pixel witness dumps belong in ignored run diagnostics. Current cohort
 records retain candidate identity and comparison summaries, so code edits that
 change a few pixels do not rewrite large debug dumps in test data.
+
+The bounded vector tile repair graduates the original two-child cubic-pattern
+fixture against its unchanged PNG and capture provenance. The complete retained
+200×200 pattern example also matches its frozen reference through six outputs
+on Windows/Linux; three fresh Linux captures match that PNG byte-for-byte.
+Eighteen separate vector-tile controls retain seventeen exact results and one
+recursive-paint boundary. Existing exact asset bytes require no recapture.

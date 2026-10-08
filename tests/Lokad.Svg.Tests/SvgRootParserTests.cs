@@ -6463,11 +6463,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_multi_rectangle_pattern_tiles()
+    public void Admits_multi_rectangle_pattern_tiles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/><rect x='8' y='8' width='8' height='8' fill='blue'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/><rect x='8' y='8' width='8' height='8' fill='blue'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.Single(root.Geometries);
+        SvgPatternContent content = Assert.IsType<SvgPatternContent>(root.Geometries[0].Pattern.VectorContent);
+        Assert.Equal(2, content.Scene.Geometries.Length);
     }
 
     [Fact]

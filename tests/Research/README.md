@@ -7,7 +7,10 @@ The main manifest contains 65 probes: 64 exact and one rejection. Separate
 mechanism banks retain their own denominators. `iching-library/manifest.json`
 has 25 controls: 22 exact, two categorized rejections and one measured nested
 affine-opacity difference against frozen references. The complete retained
-I Ching document is measured separately in the online gap manifest. Exact probes retain their original evidence and graduate to
+I Ching document is measured separately in the online gap manifest.
+`pattern-vector-content/manifest.json` retains eighteen controls: seventeen exact
+and one explicit recursive-paint rejection. Its full 200×200 retained online
+document is complete separately; source, options and reference remain frozen. Exact probes retain their original evidence and graduate to
 the fixture bank with their original inputs, references and capture provenance.
 Research records preserve reproducible evidence for geometry
 and paint-server work without treating an inexact render as a product baseline.

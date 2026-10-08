@@ -10,7 +10,7 @@ namespace Lokad.Svg.Rendering;
 /// keep their admitted outline route. Numerical curve scratch is bounded stack storage.</remarks>
 internal static class SvgHairlineStroke
 {
-    internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color,
+    internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color, SvgConstantShaderPaint? constantPaint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
         ReadOnlySpan<byte> viewportMask, Span<byte> destination, int width, int height, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -25,7 +25,10 @@ internal static class SvgHairlineStroke
         ReadOnlySpan<SvgAuthoredPathCommand> commands = path.Commands;
         float coverage = (lengthX + lengthY) * .5f;
         byte alpha = coverage == 1 ? color.Alpha : (byte)((color.Alpha * (int)(coverage * 256)) >> 8);
-        SvgHairlineCoverage raster = new(destination, width, height, SvgAnalyticPaint.Solid(color with { Alpha = alpha }), clip, antialiasing, viewportMask, workCounter, cancellationToken);
+        SvgAnalyticPaint paint = constantPaint is {} constant
+            ? SvgAnalyticPaint.Constant(coverage == 1 ? constant : SvgShaderPaint.ConstantGradient(new SvgGradientStop(0, color) { Alpha = alpha / 255f }, 1))
+            : SvgAnalyticPaint.Solid(color with { Alpha = alpha });
+        SvgHairlineCoverage raster = new(destination, width, height, paint, clip, antialiasing, viewportMask, workCounter, cancellationToken);
         SvgDevicePoint current = default, contourStart = default, first = default, last = default;
         Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
         Span<SvgEndpointConic> conics = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];

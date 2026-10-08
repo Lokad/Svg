@@ -11,8 +11,21 @@ namespace Lokad.Svg.Rendering;
 internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byte Blue, byte Alpha)
 {
     internal void Blend(Span<byte> destination, byte coverage)
+        => Blend(destination, coverage, false);
+
+    /// <summary>Optionally preserves native opaque SrcOver-to-Src reduction before coverage interpolation.</summary>
+    internal void Blend(Span<byte> destination, byte coverage, bool reduceOpaqueSource)
     {
         if (coverage == 0 || Alpha == 0) return;
+        if (reduceOpaqueSource && Alpha == 255)
+        {
+            int inverseCoverage = 255 - coverage;
+            destination[0] = (byte)((destination[0] * inverseCoverage + Red * coverage + 255) >> 8);
+            destination[1] = (byte)((destination[1] * inverseCoverage + Green * coverage + 255) >> 8);
+            destination[2] = (byte)((destination[2] * inverseCoverage + Blue * coverage + 255) >> 8);
+            destination[3] = (byte)((destination[3] * inverseCoverage + 255 * coverage + 255) >> 8);
+            return;
+        }
         int red = (Red * coverage + 255) >> 8;
         int green = (Green * coverage + 255) >> 8;
         int blue = (Blue * coverage + 255) >> 8;

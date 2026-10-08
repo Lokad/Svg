@@ -199,6 +199,10 @@ internal static class SvgLeafMaskComposition
     /// drops its parser-owned link before registry disposal; failure releases staging and the scene owner
     /// releases any adopted partial result. Group validation runs before these leaf scopes appear.</remarks>
     internal static void Emit(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        => Emit(state, state.Scene, work, token);
+
+    /// <summary>Compiles leaf scopes into the specified scene, retaining the document's bounded shared operation registry.</summary>
+    internal static void Emit(SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
     {
         if (state.LeafMaskOwners.Count == 0) return;
         BudgetedSceneList<SvgDrawCommand> commands = new(state.Budget, work, token);
@@ -208,15 +212,15 @@ internal static class SvgLeafMaskComposition
         using BudgetedParserList<SvgLeafMaskOperationReference> unresolved = new(state.Budget, SvgMemoryCategory.Parser, work, token);
         try
         {
-            int count = state.Scene.CommandCount;
+            int count = scene.CommandCount;
             for (int index = 0; index <= count; index++)
             {
                 work.Consume(token);
                 desired.Clear();
-                SvgDrawCommand command = index < count ? state.Scene.CommandAt(index) : default;
+                SvgDrawCommand command = index < count ? scene.CommandAt(index) : default;
                 if (index < count && command.Kind == SvgDrawCommandKind.Geometry)
                 {
-                    for (SvgLeafMaskBinding? binding = state.Scene.GeometryAt(command.GeometryIndex).LeafMask; binding is not null; binding = binding.Inner)
+                    for (SvgLeafMaskBinding? binding = scene.GeometryAt(command.GeometryIndex).LeafMask; binding is not null; binding = binding.Inner)
                     {
                         work.Consume(token);
                         SvgLeafMaskOperation operation = binding.Operation;
@@ -245,7 +249,7 @@ internal static class SvgLeafMaskComposition
                             mapped.Resolved = true;
                         }
                         if (operation.AffineViewport is {} clip && operation.ContentIndex < 0)
-                            (operation.Region, operation.ContentIndex) = clip.Register(state, work, token);
+                            (operation.Region, operation.ContentIndex) = clip.Register(state, scene, work, token);
                         if (operation.Value != 255 || operation.Region is not null || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
                     }
                 }
@@ -265,12 +269,12 @@ internal static class SvgLeafMaskComposition
                 active.AddRange(desired.AsSpan());
                 if (index < count) commands.Add(command);
             }
-            state.Scene.AdoptCommands(commands);
+            scene.AdoptCommands(commands);
             transferred = true;
-            for (int index = 0; index < state.Scene.GeometryCount; index++)
+            for (int index = 0; index < scene.GeometryCount; index++)
             {
                 work.Consume(token);
-                state.Scene.AssignLeafMask(index, null);
+                scene.AssignLeafMask(index, null);
             }
         }
         finally { if (!transferred) commands.Dispose(); }

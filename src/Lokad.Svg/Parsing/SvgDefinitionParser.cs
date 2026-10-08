@@ -211,9 +211,8 @@ internal static class SvgDefinitionParser
         }
         if (state.PatternDepth >= 0 && reader.Depth == state.PatternDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
-            if (reader.LocalName == "rect")
+            if (reader.LocalName == "rect" && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
             {
-                if (state.PatternTile?.Content is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle pattern tiles are implemented.");
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
                 SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
@@ -230,11 +229,60 @@ internal static class SvgDefinitionParser
                     if (shifted.X < tile.OriginX || shifted.Y < tile.OriginY || shifted.X + shifted.Width > tile.OriginX + tile.TileWidth || shifted.Y + shifted.Height > tile.OriginY + tile.TileHeight) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern tile content shifted outside its tile is not implemented.");
                     if (shifted.Stroke is SvgStroke contentStroke && (shifted.X - contentStroke.Width / 2d < tile.OriginX || shifted.Y - contentStroke.Width / 2d < tile.OriginY || shifted.X + shifted.Width + contentStroke.Width / 2d > tile.OriginX + tile.TileWidth || shifted.Y + shifted.Height + contentStroke.Width / 2d > tile.OriginY + tile.TileHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern tile content strokes overflowing their tile are not implemented.");
                     state.PatternTile = tile with { Content = SvgGeometry.FromRectangle(shifted) with { SolidPaint = validated.SolidPaint } };
+                    // Preserve authored attributes for promotion; resolved rectangle bytes remain the
+                    // legacy one-leaf fast path, while vector scenes need native opacity/stroke recording.
+                    state.PatternRectangleSource = SvgDefinitionLeafSource.Capture(reader, tileContext, state);
+                    state.PatternRectangleContext = tileContext;
                     state.HasUnsupportedContent |= !reader.IsEmptyElement;
                     state.SawStyleableNode = true;
                     return true;
                 }
                 catch { parsedContent.Discard(); throw; }
+            }
+            if (reader.LocalName is "rect" or "circle" or "ellipse" or "path" or "polygon" or "polyline" or "line")
+            {
+                switch (reader.LocalName)
+                {
+                    case "rect": SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken); break;
+                    case "circle": case "ellipse": SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken); break;
+                    case "path": SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken); break;
+                    case "line": SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken); break;
+                    default: SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken); break;
+                }
+                if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
+                SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Vector pattern content requires a tile grid.");
+                SvgSceneBuilder builder = state.PatternContentBuilder ??= new(state.Budget, workCounter, cancellationToken);
+                if (tile.Content is not null)
+                {
+                    SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
+                    SvgPaintableElementContext previous = state.PatternRectangleContext;
+                    AdoptLeaf(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, false, state));
+                    state.PatternTile = tile with { Content = null };
+                }
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
+                SvgComputedStyle style = context.ResolveStyle(reader);
+                if (style.Fill is {} fill && SvgLocalUrl.TryParseId(fill, out string fillId) && (fillId == state.PatternId || state.Patterns.TryGetValue(fillId, out _))
+                    || style.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out string strokeId) && (strokeId == state.PatternId || state.Patterns.TryGetValue(strokeId, out _)))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern paints inside pattern content are not implemented.");
+                AdoptLeaf(LowerInstanceSource(reader, context, state));
+                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                state.SawStyleableNode = true;
+                return true;
+
+                void AdoptLeaf(SvgDefinition lowered)
+                {
+                    try
+                    {
+                        foreach (SvgGeometry geometry in lowered.Geometries)
+                        {
+                            SvgRecordedPaint fillPaint = geometry.RecordedPaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedPaint)) : geometry.RecordedPaint;
+                            SvgRecordedPaint strokePaint = geometry.RecordedStrokePaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint)) : geometry.RecordedStrokePaint;
+                            builder.AddGeometry(geometry with { RecordedPaint = fillPaint, RecordedStrokePaint = strokePaint });
+                        }
+                    }
+                    catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
+                }
             }
             state.HasUnsupportedContent = true;
             return true;
@@ -982,6 +1030,15 @@ internal static class SvgDefinitionParser
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.PatternId ?? throw new InvalidOperationException("Pattern registration requires an identifier."));
         SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern registration requires pattern dimensions.");
+        if (state.Patterns.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
+        if (state.PatternContentBuilder is {} builder)
+        {
+            SvgLeafMaskComposition.Emit(state, builder, workCounter, cancellationToken);
+            SvgPatternContent content = SvgPatternContent.Create(builder.Build(), tile, state.Budget);
+            try { state.Scene.AdoptPatternContent(content); }
+            catch { content.Dispose(); throw; }
+            tile = tile with { Content = null, VectorContent = content };
+        }
         if (!state.Patterns.TryAdd(retainedId, tile)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
     }
 

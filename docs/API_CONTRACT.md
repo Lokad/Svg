@@ -18,6 +18,15 @@ configured command/work limits and observes cancellation. This policy does not
 recover malformed XML, missing required path data, clip/mask path syntax or
 unsupported geometry/paint combinations; those retain categorized failures.
 
+Pattern vector content borrows a bounded tile scene owned by its parent scene.
+The admitted direct leaves share ordinary geometry and recorded paint, then
+render into a premultiplied tile surface under the same memory, pixel, dimension,
+work and cancellation limits. Child raster work consumes the parent's remaining
+work allowance; failure/cancellation releases scratch while preserving the
+borrowed scene for retry. Repeat sampling retains its existing bounded filtering.
+Recursive pattern paints and currently unsupported tile containers/coordinate
+systems produce categorized errors; the admitted subset is in the support matrix.
+
 Every `SvgConverter` conversion API requires explicit `SvgRenderOptions` and `CancellationToken`.
 The owned-memory result is independently owned and valid indefinitely. The
 corresponding synchronous and asynchronous overloads also write into caller-owned

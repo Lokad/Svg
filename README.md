@@ -59,13 +59,14 @@ public-domain/CC0 failures retained in the development inventory.
 
 Inert `enable-background` declarations now share validation across attributes and
 admitted styles, including Illustrator's `new` rectangle hint. The retained heart
-and complete 79-instance I Ching library now match their frozen references on
-Windows/Linux through all six outputs: two of four retained gap documents are
-complete. Shared path-prefix recovery, affine symbol viewport clipping and native
-source-contour replay close the library's gates. Its new controls retain 22 exact
-cases, two explicit rejections and one measured nested-opacity defect. The next
-deliverable is the retained circle-pattern example; remaining transforms and
-composition combinations stay visible in [PLAN.md](PLAN.md#3-ordered-support-queue).
+and complete 79-instance I Ching library match their frozen references on
+Windows/Linux through all six outputs. The 200×200 pattern example now joins
+them: three of four retained gap documents are complete. Bounded vector tile
+scenes share source lowering, native paint and premultiplied repeat sampling;
+seventeen new controls are exact, with one explicit recursive-paint rejection.
+The original two-child cubic-pattern fixture is also exact against its retained
+reference. The next deliverable is the Inkscape pattern's inheritance and
+fractional mapping; remaining combinations stay visible in [PLAN.md](PLAN.md#3-ordered-support-queue).
 
 Direct-leaf symbols now preserve multiple children in document order, inherited
 fill channels and separate child/symbol/use opacity. Magnified native-backed

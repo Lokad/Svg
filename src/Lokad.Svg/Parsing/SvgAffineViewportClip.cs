@@ -7,7 +7,7 @@ namespace Lokad.Svg.Parsing;
 /// the existing mask-content scene owner; failures release the temporary contour and commands.</remarks>
 internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineTransform Map)
 {
-    internal (SvgClipBox Bounds, int ContentIndex) Register(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal (SvgClipBox Bounds, int ContentIndex) Register(SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
     {
         RenderBudget budget = state.Budget;
         float left = (float)Box.X, top = (float)Box.Y, right = (float)(Box.X + Box.Width), bottom = (float)(Box.Y + Box.Height);
@@ -35,7 +35,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             try { geometry = geometry with { AuthoredPath = SvgAuthoredPath.CreateConvexShape(owned, Map, budget) }; }
             catch { owned.Dispose(); throw; }
             using RenderBudget.BudgetReservation array = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1), SvgMemoryCategory.Parser);
-            int index = state.Scene.AddMaskContent(new([geometry], 255, true));
+            int index = scene.AddMaskContent(new([geometry], 255, true));
             return (new(x1, y1, x2 - x1, y2 - y1), index);
         }
         finally { geometry.Dispose(); reservation.Dispose(); }

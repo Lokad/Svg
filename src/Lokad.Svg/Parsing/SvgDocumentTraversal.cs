@@ -260,6 +260,10 @@ internal static class SvgDocumentTraversal
                 if (reader.Depth == state.PatternDepth)
                 {
                     if (state.PatternId is not null) SvgDefinitionParser.RegisterPattern(state, workCounter, cancellationToken);
+                    state.PatternContentBuilder?.Dispose();
+                    state.PatternContentBuilder = null;
+                    state.PatternRectangleSource = null;
+                    state.PatternRectangleContext = default;
                     state.PatternDepth = -1;
                     state.PatternId = null;
                     state.PatternTile = null;

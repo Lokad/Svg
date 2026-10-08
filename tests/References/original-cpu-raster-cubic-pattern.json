@@ -16,8 +16,8 @@
   "freshProcessCaptures": 3,
   "decodedPixelStability": "identical",
   "inputSha256": "9da020f258a58a205f8daf6f8a8055ff603847ada71dabe154672557d8acc76d",
-  "candidateOutcome": "UnsupportedFeature",
-  "candidateSha256": null,
+  "candidateOutcome": "renders",
+  "candidateSha256": "d89ec9e114203f2b94621f6fbd1e2ef071fc926d7602361658301319d43ea053",
   "admittedAt": "CPU raster context, 2026-10-05",
   "captureSha256": [
     "039644a5adc26b361a1023a3fe6155ab02d313abeefca9adb970109256778472",
@@ -36,5 +36,20 @@
   ],
   "declaredBeforeImplementation": true,
   "declarationReason": "Same independent concave cubic crossing bordered CPU tiles, across all four material consumers.",
-  "comparison": null
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 640,
+    "minimumMismatchY": 320,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
+    "alphaErrorMass": 0
+  },
+  "graduatedAt": "Bounded native vector pattern content, 2026-10-08"
 }

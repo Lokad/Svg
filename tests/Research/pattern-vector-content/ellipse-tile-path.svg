@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><ellipse cx='8' cy='8' rx='6' ry='3' fill='#dc0816'/></pattern></defs><path d='M4 8C32 -3 58 11 57 34C60 58 25 62 8 45Z' fill='url(#p)'/></svg>

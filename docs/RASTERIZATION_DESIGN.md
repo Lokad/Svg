@@ -9053,3 +9053,67 @@ pattern paint on an ordinary circle. Remaining G2 combinations stay visible
 without blocking G3-G6; the nested-affine-opacity defect stays G5. G2-G9 and S17
 remote CI remain open. Existing frozen references require no recapture or source
 fingerprint refresh merely for documentation changes.
+
+## Bounded native vector pattern content (2026-10-08)
+
+The retained pattern example (`inv-103`) now matches its unchanged 200×200
+transparent reference through all six outputs on Windows/Linux. Three fresh
+Linux browser captures are healthy, cleaned and byte-identical to that reference.
+The frozen renderer rejected every one of eighteen new controls; the corrected
+renderer has seventeen exact results and one explicit recursive-paint rejection.
+All 54 Windows captures are stable, healthy and cleaned. This completes the third
+of four retained gap documents, separately from the corporate denominator.
+
+The first blocker was single-rectangle tile storage. Ordinary circles already
+supported pattern paint. Vector tiles now own a bounded immutable scene built
+through shared leaf source lowering, recorded paint and scope emission. Paint
+geometries borrow this owner from their parent scene. Ordered leaves, curves,
+admitted strokes, gradients and independent opacity share ordinary geometry and
+native source replay. Overflow clips to the tile surface; recursive pattern
+paints retain an explicit boundary. Groups/local uses and wider coordinate-unit
+systems remain promised G6 work, with the finite exit unchanged.
+
+Rasterization borrows the tile scene and renders it directly into the sampled
+texture, retaining premultiplied pixels instead of capture unpremultiplication.
+Its work limit is the parent's remaining allowance and its consumed work is
+added once to the parent. Scratch, tile pixels and setup reserve storage before
+allocation; cancellation/failure releases surfaces without disposing the
+borrowed scene. Anonymous/unused tiles, duplicate IDs and failed promotion keep
+their owners. Seven focused inputs sweep discovery/parser work, sampled/peak
+memory denial and exact raster-work boundaries; child replay cancellation then
+retry, anonymous promotion and rejection cleanup pass. Layout stays 72/272/68
+bytes for draw commands, geometry and recorded paint. No performance claim.
+
+The controls exposed a native material distinction. Picture-backed tile solids
+use rounded constant raster-pipeline lanes and coverage arithmetic, while
+ordinary solids keep their existing blitter route. Opaque constants reduce
+SrcOver to Src before coverage interpolation over previous tile ink; translucent
+constants retain source-over. This follows SkRasterPipelineBlitter.cpp and the
+low-precision scale/lerp stages in SkRasterPipeline_opts.h at the release pin
+f8b66b7597c4cc859d3ed190e9c6872241e6721c, under the existing BSD notice. The
+rectangle-first opacity witness detects both authored-source promotion and that
+opaque interpolation distinction. Thin strokes retain native byte-alpha width
+adjustment; gradients keep their existing shader arithmetic.
+
+Retained attributes replay the first rectangle when another leaf promotes its
+legacy tile to a vector scene. Shader placement composes once with the original
+grid, survives native outline repaint and remains borrowed through existing
+forward uses/symbol maps. Integer translation and positive-axis scaling retain
+integral device tile dimensions; fractional phase shares existing bilinear repeat.
+The legacy one-rectangle route and every preceding exact image stay unchanged.
+
+Both Release builds have zero warnings/errors; each platform passes 5,431 tests
+(4,108 core, 1,317 visual-project, six FontProbe), without failure/skip. The
+original bank retains 1,567 reports and now 1,547 PNGs: only the formerly rejected
+two-child cubic-pattern fixture graduates against its unchanged reference. All
+1,546 preceding PNGs and other reports stay unchanged. Older banks preserve
+their measured outcomes, and each platform retains unchanged own-reference
+27/27 documents and 258/258 exact corporate variants. Evidence remains under
+artifacts/pattern-content-20261008/ and
+artifacts/linux-delivery-20261007/pattern-content-final-20261008/.
+
+The next complete document is `inv-104`, whose local forward pattern inheritance
+and fractional tile dimensions/translation remain actual dependencies. Retained
+path content now has shared scene machinery. Other G2 combinations remain on
+their finite checklist without blocking that document; G2–G9 and S17 remote CI
+remain open. Unchanged qualification is not repeated for documentation edits.

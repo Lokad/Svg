@@ -779,6 +779,12 @@ internal sealed class SvgPatternPolygon : IDisposable
 
     internal SvgRectangle Content { get; }
 
+    /// <summary>Borrowed vector tile owner; parent scene storage controls its lifetime.</summary>
+    internal SvgPatternContent? VectorContent { get; init; }
+
+    /// <summary>Maps vector tile coordinates into the paint instance; legacy rectangle tiles retain their existing grid.</summary>
+    internal SvgAffineTransform ShaderPlacement { get; init; } = SvgAffineTransform.Identity;
+
     /// <summary>Preserves tile fill opacity before byte quantization; stroke paint retains its independent byte color.</summary>
     internal SvgSolidPaint? ContentPaint { get; }
 
@@ -808,6 +814,10 @@ internal sealed class SvgPatternPolygon : IDisposable
 
     /// <summary>Creates one pattern outline carrying retained spans with exact scene storage.</summary>
     internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+        => Create(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, null, SvgAffineTransform.Identity, budget);
+
+    /// <summary>Creates an outline borrowing its vector tile from the parent scene; disposal releases only contour storage.</summary>
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, SvgPatternContent? vectorContent, SvgAffineTransform shaderPlacement, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
@@ -819,14 +829,18 @@ internal sealed class SvgPatternPolygon : IDisposable
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
         RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
-        return new SvgPatternPolygon(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation);
+        return new SvgPatternPolygon(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation) { VectorContent = vectorContent, ShaderPlacement = shaderPlacement };
     }
 
     /// <summary>Repaints one solid outline as a pattern-tile outline, rendering empty tiles as unpainted fills. Callers admit the paint once for identical errors.</summary>
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, RenderBudget budget)
+        => RepaintOutline(solid, tile, opacity, SvgAffineTransform.Identity, budget);
+
+    /// <summary>Repaints a retained contour while composing placement only for vector tiles; legacy tile pixels keep their established route.</summary>
+    internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, SvgAffineTransform shaderPlacement, RenderBudget budget)
     {
-        if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return Adopt(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget)));
-        return Adopt(SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, tile.Content.Value.Rectangle, tile.Content.Value.SolidPaint, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, budget)));
+        if (tile.TileWidth == 0 || tile.TileHeight == 0 || !tile.HasContent) return Adopt(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget)));
+        return Adopt(SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, tile.Content?.Rectangle ?? default, tile.Content?.SolidPaint, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, tile.VectorContent, tile.VectorContent is null ? SvgAffineTransform.Identity : shaderPlacement.ComposeChecked(tile.VectorPlacement), budget)));
 
         SvgGeometry Adopt(SvgGeometry repaint)
         {
@@ -843,7 +857,7 @@ internal sealed class SvgPatternPolygon : IDisposable
         SvgClipBox clipped = Clip is null ? region : Clip.Value.Intersect(region);
         RenderBudget.BudgetReservation? reservation = _reservation;
         _reservation = null;
-        return new SvgPatternPolygon(Points, ContourEnds, Signs, QuadSpans, CubicSpans, Content, ContentPaint, OriginX, OriginY, TileWidth, TileHeight, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation);
+        return new SvgPatternPolygon(Points, ContourEnds, Signs, QuadSpans, CubicSpans, Content, ContentPaint, OriginX, OriginY, TileWidth, TileHeight, HasFill, IsEvenOdd, stamped, Mapping, clipped, reservation) { VectorContent = VectorContent, ShaderPlacement = ShaderPlacement };
     }
 
     public void Dispose()
@@ -944,6 +958,9 @@ internal sealed class SvgPatternGeometry : IDisposable
 
     internal SvgRectangle Content { get; }
 
+    /// <summary>Borrowed vector tile owner; parent scene storage controls its lifetime.</summary>
+    internal SvgPatternContent? VectorContent { get; init; }
+
     internal int OriginX { get; }
 
     internal int OriginY { get; }
@@ -965,10 +982,10 @@ internal sealed class SvgPatternGeometry : IDisposable
     internal SvgSolidPaint? ContentPaint { get; init; }
 
     internal SvgPatternGeometry ClipTo(SvgClipBox box)
-        => new(Content, OriginX, OriginY, TileWidth, TileHeight, box.ClipRectangle(Fill), Opacity, Stroke) { ShaderPlacement = ShaderPlacement, ContentPaint = ContentPaint };
+        => new(Content, OriginX, OriginY, TileWidth, TileHeight, box.ClipRectangle(Fill), Opacity, Stroke) { ShaderPlacement = ShaderPlacement, ContentPaint = ContentPaint, VectorContent = VectorContent };
 
     internal SvgPatternGeometry Stamped(byte value)
-        => new(Content, OriginX, OriginY, TileWidth, TileHeight, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width)) { ShaderPlacement = ShaderPlacement, ContentPaint = ContentPaint };
+        => new(Content, OriginX, OriginY, TileWidth, TileHeight, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width)) { ShaderPlacement = ShaderPlacement, ContentPaint = ContentPaint, VectorContent = VectorContent };
 
     public void Dispose()
     {
@@ -1190,12 +1207,14 @@ internal sealed class SvgSceneStorage : IDisposable
     private readonly RenderBudget.BudgetReservation? _maskContentReservation;
     private readonly List<RenderBudget.BudgetReservation> _maskReservations;
     private readonly OwnedSceneArray<SvgRecordedPaintValue> _recordedPaintValues;
+    private readonly OwnedSceneArray<SvgPatternContentOwner> _patternContents;
     private readonly RenderBudget.BudgetReservation _recordedPaintOwner;
     internal SvgRecordedPaintValue[] RecordedPaintValues => _recordedPaintValues.Items;
 
-    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation, List<RenderBudget.BudgetReservation> paintReservations, SvgMaskContent[] maskContents, RenderBudget.BudgetReservation? maskContentReservation, List<RenderBudget.BudgetReservation> maskReservations, OwnedSceneArray<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner)
+    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation, List<RenderBudget.BudgetReservation> paintReservations, SvgMaskContent[] maskContents, RenderBudget.BudgetReservation? maskContentReservation, List<RenderBudget.BudgetReservation> maskReservations, OwnedSceneArray<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner, OwnedSceneArray<SvgPatternContentOwner> patternContents)
     {
         _recordedPaintValues = recordedPaintValues;
+        _patternContents = patternContents;
         _recordedPaintOwner = recordedPaintOwner;
         Geometries = geometries;
         Commands = commands;
@@ -1216,7 +1235,7 @@ internal sealed class SvgSceneStorage : IDisposable
 
     internal SvgMaskContent[] MaskContents { get; }
 
-    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands, List<RenderBudget.BudgetReservation> paintReservations, BudgetedSceneList<SvgMaskContent> maskContents, List<RenderBudget.BudgetReservation> maskReservations, BudgetedSceneList<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner)
+    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands, List<RenderBudget.BudgetReservation> paintReservations, BudgetedSceneList<SvgMaskContent> maskContents, List<RenderBudget.BudgetReservation> maskReservations, BudgetedSceneList<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner, BudgetedSceneList<SvgPatternContentOwner>? patternContents)
     {
         ArgumentNullException.ThrowIfNull(paintReservations);
         ArgumentNullException.ThrowIfNull(maskContents);
@@ -1233,7 +1252,17 @@ internal sealed class SvgSceneStorage : IDisposable
                     OwnedSceneArray<SvgRecordedPaintValue> ownedPaints = recordedPaintValues.Detach();
                     try
                     {
-                        return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation, paintReservations, ownedMasks.Items, ownedMasks.Reservation, maskReservations, ownedPaints, recordedPaintOwner);
+                        OwnedSceneArray<SvgPatternContentOwner> ownedPatterns = patternContents is null ? new([], null) : patternContents.Detach();
+                        try
+                        {
+                            return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation, paintReservations, ownedMasks.Items, ownedMasks.Reservation, maskReservations, ownedPaints, recordedPaintOwner, ownedPatterns);
+                        }
+                        catch
+                        {
+                            foreach (SvgPatternContentOwner content in ownedPatterns.Items) content.Dispose();
+                            ownedPatterns.Dispose();
+                            throw;
+                        }
                     }
                     catch { ownedPaints.Dispose(); throw; }
                 }
@@ -1271,6 +1300,8 @@ internal sealed class SvgSceneStorage : IDisposable
         foreach (RenderBudget.BudgetReservation reservation in _maskReservations) reservation.Dispose();
         _recordedPaintValues.Dispose();
         _recordedPaintOwner.Dispose();
+        foreach (SvgPatternContentOwner content in _patternContents.Items) content.Dispose();
+        _patternContents.Dispose();
     }
 }
 
@@ -1290,6 +1321,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     private readonly BudgetedSceneList<SvgRecordedPaintValue> _recordedPaintValues;
     internal const long RecordedPaintOwnerBytes = 192;
     private RenderBudget.BudgetReservation? _recordedPaintOwner;
+    private BudgetedSceneList<SvgPatternContentOwner>? _patternContents;
 
     internal SvgSceneBuilder(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -1304,6 +1336,13 @@ internal sealed class SvgSceneBuilder : IDisposable
         _recordedPaintOwner = budget.Reserve(RecordedPaintOwnerBytes, SvgMemoryCategory.Scene);
         try { _recordedPaintValues = new(budget, workCounter, cancellationToken); }
         catch { _recordedPaintOwner.Dispose(); throw; }
+    }
+
+    /// <summary>Adopts an immutable tile owner once; a failed insertion leaves disposal to the caller.</summary>
+    internal void AdoptPatternContent(SvgPatternContent content)
+    {
+        _patternContents ??= new(_budget, _workCounter, _cancellationToken);
+        _patternContents.Add(new(content));
     }
 
     internal void AddGeometry(SvgGeometry geometry)
@@ -1509,7 +1548,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     {
         if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
         _built = true;
-        SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations, _recordedPaintValues, _recordedPaintOwner ?? throw new InvalidOperationException("Paint arena has already transferred."));
+        SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations, _recordedPaintValues, _recordedPaintOwner ?? throw new InvalidOperationException("Paint arena has already transferred."), _patternContents);
         _recordedPaintOwner = null;
         _paintReservations = new();
         _maskReservations = new();
@@ -1523,6 +1562,11 @@ internal sealed class SvgSceneBuilder : IDisposable
         _commands.Dispose();
         _recordedPaintValues.Dispose();
         _recordedPaintOwner?.Dispose();
+        if (_patternContents is {} patterns)
+        {
+            foreach (SvgPatternContentOwner content in patterns.Items) content.Dispose();
+            patterns.Dispose();
+        }
         foreach (RenderBudget.BudgetReservation reservation in _paintReservations) reservation.Dispose();
         _paintReservations.Clear();
         foreach (SvgMaskContent content in _maskContents.Items)

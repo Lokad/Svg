@@ -216,6 +216,9 @@ internal sealed class SvgDocumentState : IDisposable
     internal int RadialGradientDepth { get; set; } = -1;
 
     internal SvgPatternTile? PatternTile { get; set; }
+    internal SvgSceneBuilder? PatternContentBuilder { get; set; }
+    internal SvgDefinitionLeafSource? PatternRectangleSource { get; set; }
+    internal SvgPaintableElementContext PatternRectangleContext { get; set; }
 
     internal string? MaskId { get; set; }
 
@@ -340,6 +343,7 @@ internal sealed class SvgDocumentState : IDisposable
         MaskRegions.Dispose();
         MaskFractionRegions.Dispose();
         MaskContentBoxes.Dispose();
+        PatternContentBuilder?.Dispose();
         Patterns.Dispose();
         Gradients.Dispose();
         RadialGradients.Dispose();

@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='16' y2='16'><stop stop-color='#dc0816'/><stop offset='1' stop-color='#025bc7'/></linearGradient><pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='5' fill='url(#g)'/></pattern></defs><rect width='64' height='64' fill='url(#p)'/></svg>

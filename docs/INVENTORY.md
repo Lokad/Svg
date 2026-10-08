@@ -31,7 +31,7 @@ Full API responses and capture diagnostics remain under ignored
 - Creator: [FischX](https://commons.wikimedia.org/wiki/User:FischX). License: **Public domain**. The copyright holder dedicates the work to the public domain worldwide (PD-self).
 - Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-103.svg); only root width/height replaced with 200×200 pixel dimensions. Authored geometry and all other source bytes retained. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
 - Browser reference: [PNG](../tests/References/inventory/inv-103-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3, device scale 1; three stable healthy captures.
-- Current next deliverable: **UnsupportedFeature**, `This SVG child element is not implemented yet.`. Queue **G6**. Bounded circle tile content and shared pattern paint on the ordinary circle are the demonstrated dependencies. Follow all subsequent blockers to the same frozen reference.
+- Current outcome: **exact complete document**, 200×200 transparent, through six outputs on Windows/Linux. Bounded native vector tile scenes and shared premultiplied sampling remove G6 without changing original/input/reference bytes. Three fresh Linux Chrome captures are healthy, cleaned and byte-identical to the frozen reference. Eighteen focused controls retain seventeen exact results and one explicit recursive-paint boundary. The original two-child cubic-pattern fixture also graduates against its existing reference. See [the repair](RASTERIZATION_DESIGN.md#bounded-native-vector-pattern-content-2026-10-08).
 
 ### inv-104 — PatternA.svg
 
@@ -40,7 +40,7 @@ Full API responses and capture diagnostics remain under ignored
 - Creator: [Enricopedia](https://commons.wikimedia.org/wiki/User:Enricopedia). License: **Public domain**. The author releases the work into the public domain worldwide (PD-user).
 - Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-104.svg); only root width/height replaced with 178×135 pixel dimensions. Authored geometry and all other source bytes retained. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
 - Browser reference: [PNG](../tests/References/inventory/inv-104-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3, device scale 1; three stable healthy captures.
-- Observed failure: **UnsupportedFeature**, `Pattern attribute 'xlink:href' is not implemented.`. Queue **G6**. This first rejection does not exclude additional blockers.
+- Next complete deliverable: **UnsupportedFeature**, `Pattern attribute 'xlink:href' is not implemented.`. Queue **G6**. Its forward inheritance and fractional tile dimensions/translation are demonstrated dependencies; retained path content now has shared bounded scene machinery. Follow subsequent gates or mismatches to the frozen 178×135 reference.
 
 ### inv-105 — WP20Symbols heart.svg
 
@@ -50,7 +50,7 @@ Full API responses and capture diagnostics remain under ignored
 - Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-105.svg); only root width/height replaced with 512×401 pixel dimensions. Authored geometry and all other source bytes retained. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
 - Browser reference: [PNG](../tests/References/inventory/inv-105-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3, device scale 1; three stable healthy captures.
 - Current outcome: **exact complete document**, 512×401 transparent, through all six outputs on Windows/Linux. Shared background validation removed G1; shared transformed-rectangle source replay removes the subsequent G3 blocker without changing original/input/reference bytes. Three fresh Linux Chrome 153 captures are healthy, cleaned and byte-identical to the frozen Windows reference, so the same retained PNG serves both platform oracles. The gap manifest records that Linux provenance; no extra background or size was added to the document denominator.
-- The four failure-selected gap documents now have **2/4 completed**: the heart and I Ching library; the two patterns remain rejected. This is development progress, separate from the unchanged corporate 27/27 documents / 258/258 variants. Fifteen focused mechanism controls retain nine exact results and six explicit boundary rejections. See [the repair](RASTERIZATION_DESIGN.md#illustrator-heart-and-transformed-rectangle-fills-2026-10-08).
+- The four failure-selected gap documents now have **3/4 completed**: the heart, I Ching library and pattern example; the Inkscape pattern remains rejected. This is development progress, separate from the unchanged corporate 27/27 documents / 258/258 variants. Fifteen focused mechanism controls retain nine exact results and six explicit boundary rejections. See [the repair](RASTERIZATION_DESIGN.md#illustrator-heart-and-transformed-rectangle-fills-2026-10-08).
 
 The checkerboard sourcing control is [Indolences' public-domain geometric SVG](https://commons.wikimedia.org/wiki/File:Checkerboard_pattern.svg).
 At its declared 500×500 transparent viewport it is pixel-exact; its three stable
