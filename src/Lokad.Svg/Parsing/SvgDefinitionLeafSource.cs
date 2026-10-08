@@ -3,7 +3,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Retains one validated shape's immutable attributes and authored style for instance stroke construction.</summary>
+/// <summary>Retains one validated shape's immutable attributes and authored style for instance fill and stroke construction.</summary>
 /// <remarks>The document string store owns copied values; the document reservation list owns the reader and
 /// attribute array. This is an attribute adapter for existing leaf lowerers, with no child tree or serialized XML.
 /// Replay is confined to the parser thread. Attribute scans charge work and observe cancellation.</remarks>
@@ -16,6 +16,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     private readonly SvgInheritedStrokeStyle _constructedStroke;
     private readonly string? _constructedFillRule;
     private readonly bool _unconstructed;
+    private readonly SvgColor _constructedCurrentColor;
     private readonly IReadOnlyDictionary<string, SvgColor> _colors;
     private readonly XmlNameTable _names = new NameTable();
     private readonly ParserWorkCounter _work;
@@ -24,11 +25,11 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     private SvgDefinitionLeafSource(string element, Attribute[] attributes, SvgComputedStyle authored,
         SvgInheritedStrokeStyle constructedStroke, IReadOnlyDictionary<string, SvgColor> colors,
-        ParserWorkCounter work, CancellationToken token, string? constructedFillRule, bool unconstructed)
+        ParserWorkCounter work, CancellationToken token, string? constructedFillRule, bool unconstructed, SvgColor constructedCurrentColor)
     {
         _element = element; _attributes = attributes; _authored = authored;
         _constructedStroke = constructedStroke; _colors = colors; _work = work; _token = token;
-        _constructedFillRule = constructedFillRule; _unconstructed = unconstructed;
+        _constructedFillRule = constructedFillRule; _unconstructed = unconstructed; _constructedCurrentColor = constructedCurrentColor;
     }
 
     internal static SvgDefinitionLeafSource Capture(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
@@ -61,7 +62,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             }
             reader.MoveToElement();
             SvgInheritedStrokeStyle constructed = context.InheritedStroke.ResolveChild(authored);
-            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.WorkCounter, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed);
+            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.WorkCounter, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed, context.InheritedPresentation.Paint.CurrentColor);
             state.DefinitionReservations.Add(reservation);
             return source;
         }
@@ -75,28 +76,32 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         }
     }
 
-    internal bool RequiresConstruction(SvgInheritedStrokeStyle inherited, string? fillRule)
+    internal bool RequiresConstruction(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill)
     {
         _work.Consume(_token);
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
-        // Opacity and currentColor are already rebound through recorded paint. Only
-        // a different stroke or construction property requires geometry lowering.
-        return _unconstructed || (_authored.FillRule ?? fillRule) != (_authored.FillRule ?? _constructedFillRule)
+        // Numeric opacity binds through recorded paint. Shader fills and native
+        // stroke colors require source lowering when their inherited values change.
+        bool inheritedShader = _element != "line" && _authored.Fill is null && paintServerFill is not null;
+        bool strokeColorChanged = _authored.Color is null && resolved.Stroke is not null
+            && resolved.Stroke.Equals("currentColor", StringComparison.OrdinalIgnoreCase) && paint.CurrentColor != _constructedCurrentColor;
+        return _unconstructed || inheritedShader || strokeColorChanged || (_authored.FillRule ?? fillRule) != (_authored.FillRule ?? _constructedFillRule)
             || resolved with { StrokeOpacity = null } != _constructedStroke with { StrokeOpacity = null };
     }
 
-    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, SvgDocumentState state)
+    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgDocumentState state)
     {
         _attribute = -1;
-        if (_authored.Fill is not null && SvgLocalUrl.TryParseId(_authored.Fill, out _)
-            && _authored.FillOpacity is null && paint.FillOpacity != SvgPaintOpacity.Opaque)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inherited fill-opacity on retained paint-server definitions is not implemented.");
+        // A use supplies fill only where the source did not author one. The original
+        // budget-owned URL is borrowed during replay; opacity and color remain independent.
+        SvgComputedStyle authored = _authored;
+        if (_element != "line" && authored.Fill is null && paintServerFill is not null) authored = authored with { Fill = paintServerFill };
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
         SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default,
             resolved, default, _colors, _work, _token, state.OutputMagnification, fillRule)
         {
             RecordingScope = new(1),
-            AuthoredStyle = _authored
+            AuthoredStyle = authored
         };
         return SvgDefinitionParser.LowerInstanceSource(this, context, state);
     }

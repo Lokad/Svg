@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Rendered-group instance styling, source precedence, nested and forward use graphs, aliases, CSS, stroke mechanics, native thin oval strokes, mask replay and local transforms. 111 exact cases and twelve explicit composition, transformed-inline and inherited-shader-opacity rejections. Development controls remain separate from the original and corporate denominators.",
+  "purpose": "Rendered-group instance styling, source precedence, nested and forward use graphs, aliases, CSS, stroke mechanics, native thin oval strokes, mask replay, shader opacity and local transforms. 114 exact cases and nine explicit composition or transformed-inline rejections. Development controls remain separate from the original and corporate denominators.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -1670,8 +1670,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "shader-inherited-opacity-white",
@@ -1685,8 +1684,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "shader-inherited-opacity-black",
@@ -1700,8 +1698,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "shader-authored-opacity-transparent",

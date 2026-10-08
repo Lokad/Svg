@@ -5,13 +5,11 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Expands retained symbol scopes through the existing instance geometry and recorded-paint machinery.</summary>
 internal static class SvgSymbolContentRenderer
 {
-    private readonly record struct Context(SvgPaint Paint, SvgPaintOpacity StrokeOpacity, SvgInheritedStrokeStyle Stroke, string? FillRule, SvgAffineTransform Transform, SvgClipBox? Clip, bool Displayed, bool Visible);
+    private readonly record struct Context(SvgPaint Paint, string? PaintServerId, string? PaintServerFill, SvgPaintOpacity StrokeOpacity, SvgInheritedStrokeStyle Stroke, string? FillRule, SvgAffineTransform Transform, SvgClipBox? Clip, bool Displayed, bool Visible);
     private readonly record struct Frame(SvgSymbolContentRange Range, int Next, Context Context, int OutputStart, SvgPaintOpacity Opacity, SvgRecordingScope Scope, SvgClipBox? CompositionClip, string? MaskReference);
 
     internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? viewport, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
-        if (reference.PaintServerId is not null)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Paint-server and stroke overrides on retained symbol content are not implemented.");
         ValidateRenderedGroup(definition);
         SvgSymbolContentRange root = definition.SymbolContent ?? throw new InvalidOperationException("Retained content requires a source range.");
         using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Parser, work, token);
@@ -34,7 +32,7 @@ internal static class SvgSymbolContentRenderer
                 stack[^1] = frame with { Next = frame.Next + 1 };
                 if (node.Kind == SvgSymbolContentKind.Group)
                 {
-                    Context child = frame.Context with { Paint = node.Style.Resolve(frame.Context.Paint), StrokeOpacity = node.Style.StrokeOpacity ?? frame.Context.StrokeOpacity, Stroke = node.Style.Stroke.InheritFrom(frame.Context.Stroke), FillRule = node.Style.FillRule ?? frame.Context.FillRule, Transform = frame.Context.Transform.ComposeChecked(node.Transform), Displayed = frame.Context.Displayed && node.Style.IsDisplayed, Visible = node.Style.IsVisible ?? frame.Context.Visible };
+                    Context child = frame.Context with { Paint = node.Style.Resolve(frame.Context.Paint), PaintServerId = node.Style.HasAuthoredFill ? null : frame.Context.PaintServerId, PaintServerFill = node.Style.HasAuthoredFill ? null : frame.Context.PaintServerFill, StrokeOpacity = node.Style.StrokeOpacity ?? frame.Context.StrokeOpacity, Stroke = node.Style.Stroke.InheritFrom(frame.Context.Stroke), FillRule = node.Style.FillRule ?? frame.Context.FillRule, Transform = frame.Context.Transform.ComposeChecked(node.Transform), Displayed = frame.Context.Displayed && node.Style.IsDisplayed, Visible = node.Style.IsVisible ?? frame.Context.Visible };
                     stack[^1] = frame with { Next = node.End + 1 };
                     SvgSymbolContentRange contents = new(frame.Range.Content, frame.Next + 1, node.End - frame.Next - 1);
                     SvgClipBox? compositionClip = node.Style.Opacity.Value != 1 ? child.Clip : null;
@@ -51,18 +49,16 @@ internal static class SvgSymbolContentRenderer
                 if (node.Kind == SvgSymbolContentKind.Leaf)
                 {
                     SvgUseReference leaf = new(string.Empty, 0, 0, null, null, frame.Context.Transform, SvgAffineTransform.Identity, 255, displayed && visible, null, null, null)
-                    { InheritedFill = frame.Context.Paint, InheritedStrokeOpacity = frame.Context.StrokeOpacity, InheritedStroke = frame.Context.Stroke, InheritedFillRule = frame.Context.FillRule, RecordingScope = state.NewRecordingScope(), AllowsSolidPaintAnalysis = true, IsDisplayed = displayed, IsVisible = visible };
+                    { InheritedFill = frame.Context.Paint, PaintServerId = frame.Context.PaintServerId, PaintServerFill = frame.Context.PaintServerFill, InheritedStrokeOpacity = frame.Context.StrokeOpacity, InheritedStroke = frame.Context.Stroke, InheritedFillRule = frame.Context.FillRule, RecordingScope = state.NewRecordingScope(), AllowsSolidPaintAnalysis = true, IsDisplayed = displayed, IsVisible = visible };
                     AddMapped(node.Definition, leaf, frame.Context.Clip);
                     continue;
                 }
                 if (!state.Definitions.TryGetValue(node.Reference.Id, out SvgDefinition target) && !state.RenderedGroupDefinitions.TryGetValue(node.Reference.Id, out target))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local references in symbol content are implemented.");
                 SvgPaint instancePaint = node.Style.Resolve(frame.Context.Paint);
-                SvgUseReference use = node.Reference with { Transform = frame.Context.Transform.ComposeChecked(node.Reference.Transform), InheritedTransform = frame.Context.Transform, InheritedFill = instancePaint, InheritedStrokeOpacity = node.Style.StrokeOpacity ?? frame.Context.StrokeOpacity, InheritedStroke = node.Style.Stroke.InheritFrom(frame.Context.Stroke), InheritedFillRule = node.Reference.InheritedFillRule ?? frame.Context.FillRule, FillOverride = node.Reference.FillOverride is null ? null : instancePaint, Opacity = 255, IsPainted = displayed && visible, IsDisplayed = displayed, IsVisible = visible, RecordingScope = state.NewRecordingScope() };
+                SvgUseReference use = node.Reference with { Transform = frame.Context.Transform.ComposeChecked(node.Reference.Transform), InheritedTransform = frame.Context.Transform, InheritedFill = instancePaint, PaintServerId = node.Reference.PaintServerId ?? (node.Style.HasAuthoredFill ? null : frame.Context.PaintServerId), PaintServerFill = node.Reference.PaintServerFill ?? (node.Style.HasAuthoredFill ? null : frame.Context.PaintServerFill), InheritedStrokeOpacity = node.Style.StrokeOpacity ?? frame.Context.StrokeOpacity, InheritedStroke = node.Style.Stroke.InheritFrom(frame.Context.Stroke), InheritedFillRule = node.Reference.InheritedFillRule ?? frame.Context.FillRule, FillOverride = node.Reference.FillOverride is null ? null : instancePaint, Opacity = 255, IsPainted = displayed && visible, IsDisplayed = displayed, IsVisible = visible, RecordingScope = state.NewRecordingScope() };
                 if (target.SymbolContent is {} range)
                 {
-                    if (use.PaintServerId is not null)
-                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Paint-server and stroke overrides on retained symbol content are not implemented.");
                     ValidateRenderedGroup(target);
                     Context child = Place(target, use, ClipFrame(frame.Context.Clip), displayed, visible);
                     stack.Add(new(range, range.Start, child, output.Count, node.Reference.SourceOpacity, use.RecordingScope, null, node.Reference.SourceMaskReference));
@@ -114,6 +110,6 @@ internal static class SvgSymbolContentRenderer
             if (frame is {} viewport) local = new(local.X * viewport.ScaleX + viewport.OffsetX, local.Y * viewport.ScaleY + viewport.OffsetY, local.Width * viewport.ScaleX, local.Height * viewport.ScaleY);
             clip = clip is {} parent ? local.Intersect(parent) : local;
         }
-        return new(reference.FillOverride ?? reference.InheritedFill, reference.InheritedStrokeOpacity, reference.InheritedStroke, reference.InheritedFillRule, map, clip, displayed, visible);
+        return new(reference.FillOverride ?? reference.InheritedFill, reference.PaintServerId, reference.PaintServerFill, reference.InheritedStrokeOpacity, reference.InheritedStroke, reference.InheritedFillRule, map, clip, displayed, visible);
     }
 }

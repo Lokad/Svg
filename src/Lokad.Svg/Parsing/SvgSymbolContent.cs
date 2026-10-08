@@ -86,7 +86,7 @@ internal sealed class SvgSymbolContent : IDisposable
     {
         int start = _building.Count;
         _building.Add(new(SvgSymbolContentKind.Use, default, reference,
-            new(reference.InheritedFill, reference.FillOverride is not null, fillOpacity, color, reference.SourceOpacity, displayed, visible)
+            new(reference.InheritedFill, reference.FillOverride is not null || reference.PaintServerId is not null, fillOpacity, color, reference.SourceOpacity, displayed, visible)
             { Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgAffineTransform.Identity, -1));
         return start;
     }

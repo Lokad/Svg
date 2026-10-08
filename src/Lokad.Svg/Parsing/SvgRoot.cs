@@ -954,11 +954,14 @@ internal sealed class SvgPatternGeometry : IDisposable
 
     internal SvgStroke? Stroke { get; }
 
+    /// <summary>Maps original tile coordinates into the instance coordinate space; rasterization composes the output map.</summary>
+    internal SvgAffineTransform ShaderPlacement { get; init; } = SvgAffineTransform.Identity;
+
     internal SvgPatternGeometry ClipTo(SvgClipBox box)
-        => new(Content, OriginX, OriginY, TileWidth, TileHeight, box.ClipRectangle(Fill), Opacity, Stroke);
+        => new(Content, OriginX, OriginY, TileWidth, TileHeight, box.ClipRectangle(Fill), Opacity, Stroke) { ShaderPlacement = ShaderPlacement };
 
     internal SvgPatternGeometry Stamped(byte value)
-        => new(Content, OriginX, OriginY, TileWidth, TileHeight, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width));
+        => new(Content, OriginX, OriginY, TileWidth, TileHeight, Fill, SvgReferenceResolver.MultiplyAlpha(Opacity, value), Stroke is null ? null : new SvgStroke(new SvgColor(Stroke.Value.Color.Red, Stroke.Value.Color.Green, Stroke.Value.Color.Blue, SvgReferenceResolver.MultiplyAlpha(Stroke.Value.Color.Alpha, value)), Stroke.Value.Width)) { ShaderPlacement = ShaderPlacement };
 
     public void Dispose()
     {

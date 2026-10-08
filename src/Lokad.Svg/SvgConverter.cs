@@ -1311,7 +1311,9 @@ public static class SvgConverter
             if (!outline.HasFill || outline.Points.Length < 3) return;
             using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
+            using RenderBudget.BudgetReservation sourcePatternOwner = budget.Reserve(512, SvgMemoryCategory.Geometry);
             SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null);
+            using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(source) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry tile = mappedTile ?? source;
             long tilePixels = (long)tile.TileWidth * tile.TileHeight;
@@ -1378,11 +1380,8 @@ public static class SvgConverter
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
-                    int tileX = PositiveModulo(x - tile.OriginX, tile.TileWidth);
-                    int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
-                    int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SvgShaderPaint.Pattern(blitted[tileOffset], blitted[tileOffset + 1], blitted[tileOffset + 2], blitted[tileOffset + 3], ShaderAlpha(tile.Opacity));
+                    SvgShaderPaint sample = SamplePattern(tile, blitted, x, y);
                     if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), CoverageAlpha(255, pixelCoverage));
                 }
@@ -1392,22 +1391,27 @@ public static class SvgConverter
             }
         }
 
+        bool NeedsPatternMapping(SvgPatternGeometry pattern)
+            => horizontalScale != 1 || verticalScale != 1 || horizontalOffset != 0 || verticalOffset != 0 || pattern.ShaderPlacement != SvgAffineTransform.Identity;
+
         bool TryMapPatternTile(SvgPatternGeometry pattern, out SvgPatternGeometry? mapped)
         {
             mapped = null;
-            if (horizontalScale == 1 && verticalScale == 1 && horizontalOffset == 0 && verticalOffset == 0) return true;
-            if (pattern.Content.Stroke is not null) return false;
-            double originX = pattern.OriginX * horizontalScale + horizontalOffset;
-            double originY = pattern.OriginY * verticalScale + verticalOffset;
-            double tileWidth = pattern.TileWidth * horizontalScale;
-            double tileHeight = pattern.TileHeight * verticalScale;
-            double contentX = pattern.Content.X * horizontalScale + horizontalOffset;
-            double contentY = pattern.Content.Y * verticalScale + verticalOffset;
-            double contentWidth = pattern.Content.Width * horizontalScale;
-            double contentHeight = pattern.Content.Height * verticalScale;
-            if (!IsDeviceInteger(originX) || !IsDeviceInteger(originY) || !IsDeviceInteger(tileWidth) || !IsDeviceInteger(tileHeight) || !IsDeviceInteger(contentX) || !IsDeviceInteger(contentY) || !IsDeviceInteger(contentWidth) || !IsDeviceInteger(contentHeight)) return false;
-            SvgClipBox? contentClip = pattern.Content.Clip is {} clip ? new SvgClipBox(clip.X * horizontalScale + horizontalOffset, clip.Y * verticalScale + verticalOffset, clip.Width * horizontalScale, clip.Height * verticalScale) { Antialiasing = clip.Antialiasing } : null;
-            mapped = new SvgPatternGeometry(new SvgRectangle(contentX, contentY, contentWidth, contentHeight, pattern.Content.Color, pattern.Content.HasFill, null) { Clip = contentClip }, (int)originX, (int)originY, (int)tileWidth, (int)tileHeight, pattern.Fill, pattern.Opacity, pattern.Stroke);
+            SvgAffineTransform shader = pattern.ShaderPlacement;
+            if (horizontalScale == 1 && verticalScale == 1 && horizontalOffset == 0 && verticalOffset == 0 && shader == SvgAffineTransform.Identity) return true;
+            if (!shader.IsAxisAligned || shader.A <= 0 || shader.D <= 0) return false;
+            double scaleX = shader.A * horizontalScale, scaleY = shader.D * verticalScale;
+            if (pattern.Content.Stroke is not null && (scaleX != 1 || scaleY != 1)) return false;
+            double originX = (pattern.OriginX * shader.A + shader.E) * horizontalScale + horizontalOffset;
+            double originY = (pattern.OriginY * shader.D + shader.F) * verticalScale + verticalOffset;
+            double tileWidth = pattern.TileWidth * scaleX, tileHeight = pattern.TileHeight * scaleY;
+            if (!IsDeviceInteger(tileWidth) || !IsDeviceInteger(tileHeight) || !float.IsFinite((float)originX) || !float.IsFinite((float)originY)) return false;
+            double contentX = (pattern.Content.X - pattern.OriginX) * scaleX;
+            double contentY = (pattern.Content.Y - pattern.OriginY) * scaleY;
+            double contentWidth = pattern.Content.Width * scaleX, contentHeight = pattern.Content.Height * scaleY;
+            SvgClipBox? contentClip = pattern.Content.Clip is {} clip ? new SvgClipBox((clip.X - pattern.OriginX) * scaleX, (clip.Y - pattern.OriginY) * scaleY, clip.Width * scaleX, clip.Height * scaleY) { Antialiasing = clip.Antialiasing } : null;
+            mapped = new SvgPatternGeometry(new SvgRectangle(contentX, contentY, contentWidth, contentHeight, pattern.Content.Color, pattern.Content.HasFill, pattern.Content.Stroke) { Clip = contentClip }, 0, 0, (int)tileWidth, (int)tileHeight, pattern.Fill, pattern.Opacity, pattern.Stroke)
+                { ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY) };
             return true;
 
             static bool IsDeviceInteger(double value)
@@ -1417,6 +1421,7 @@ public static class SvgConverter
         void RasterizePatternFill(SvgPatternGeometry pattern, byte[] destination)
         {
             if (!pattern.Fill.HasFill && pattern.Stroke is null) return;
+            using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(pattern) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(pattern, out SvgPatternGeometry? mapped)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry source = mapped ?? pattern;
             long tilePixels = (long)source.TileWidth * source.TileHeight;
@@ -1458,7 +1463,9 @@ public static class SvgConverter
             long blitted = (long)(endY - startY) * (endX - startX);
             if (blitted > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile raster work exceeds the configured limit.");
             workUnits += blitted;
-            SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(box.Color);
+            // Pattern content is rasterized into an image before repeat sampling.
+            // Its constant-shader byte coverage retains the native rounded lane scale.
+            SvgConstantShaderPaint paint = new(Premultiply(box.Color.Red, box.Color.Alpha), Premultiply(box.Color.Green, box.Color.Alpha), Premultiply(box.Color.Blue, box.Color.Alpha), box.Color.Alpha);
             for (int y = startY; y < endY; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -1468,9 +1475,11 @@ public static class SvgConverter
                     int offset = (y * pattern.TileWidth + x) * 4;
                     byte alpha = coverage.GetAlpha(x, y);
                     if (clip is {} paintClip) alpha = SvgAnalyticRectangleClip.GetCoverage((paintClip.X, paintClip.Y, paintClip.Right, paintClip.Bottom), paintClip.Antialiasing, x, y).Apply(alpha);
-                    paint.Blend(tile.AsSpan(offset, 4), alpha, SvgAnalyticPaintKind.Direct);
+                    paint.Blend(tile.AsSpan(offset, 4), alpha);
                 }
             }
+
+            static byte Premultiply(byte color, byte alpha) => (byte)((color * alpha + 127) / 255);
         }
 
         void StampPatternFill(SvgPatternGeometry pattern, byte[] tile, byte[] destination)
@@ -1482,12 +1491,51 @@ public static class SvgConverter
             cancellationToken.ThrowIfCancellationRequested();
             for (int x = startX; x < endX; x++)
             {
-                int tileX = PositiveModulo(x - pattern.OriginX, pattern.TileWidth);
-                int tileY = PositiveModulo(y - pattern.OriginY, pattern.TileHeight);
-                int tileOffset = (tileY * pattern.TileWidth + tileX) * 4;
                 int offset = (y * outputWidth + x) * 4;
-                SvgShaderPaint.Pattern(tile[tileOffset], tile[tileOffset + 1], tile[tileOffset + 2], tile[tileOffset + 3], ShaderAlpha(pattern.Opacity)).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
+                if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
+                SamplePattern(pattern, tile, x, y).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
             }
+            }
+        }
+
+        // Bounded adaptation of SkRasterPipeline_opts.h repeat bilinear sampling
+        // at f8b66b7597c4cc859d3ed190e9c6872241e6721c; BSD notice is retained.
+        // The repeat shader samples premultiplied tile lanes. Integral phase keeps
+        // the existing single-tap route; fractional phase uses four bounded native
+        // bilinear contributions before the independent shader alpha is applied.
+        SvgShaderPaint SamplePattern(SvgPatternGeometry pattern, byte[] tile, int x, int y)
+        {
+            float sampleX = x - (float)(pattern.OriginX + pattern.ShaderPlacement.E);
+            float sampleY = y - (float)(pattern.OriginY + pattern.ShaderPlacement.F);
+            float floorX = MathF.Floor(sampleX), floorY = MathF.Floor(sampleY);
+            int tileX = (int)((floorX % pattern.TileWidth + pattern.TileWidth) % pattern.TileWidth);
+            int tileY = (int)((floorY % pattern.TileHeight + pattern.TileHeight) % pattern.TileHeight);
+            float fx = sampleX - floorX, fy = sampleY - floorY;
+            float opacity = ShaderAlpha(pattern.Opacity);
+            if (fx == 0 && fy == 0)
+            {
+                int offset = (tileY * pattern.TileWidth + tileX) * 4;
+                return SvgShaderPaint.Pattern(tile[offset], tile[offset + 1], tile[offset + 2], tile[offset + 3], opacity);
+            }
+            if (4 > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern filter work exceeds the configured limit.");
+            workUnits += 4;
+            int nextX = tileX + 1 == pattern.TileWidth ? 0 : tileX + 1;
+            int nextY = tileY + 1 == pattern.TileHeight ? 0 : tileY + 1;
+            float red = 0, green = 0, blue = 0, alpha = 0;
+            Add(tileX, tileY, (1 - fx) * (1 - fy));
+            Add(tileX, nextY, (1 - fx) * fy);
+            Add(nextX, tileY, fx * (1 - fy));
+            Add(nextX, nextY, fx * fy);
+            return new(red * opacity, green * opacity, blue * opacity, alpha * opacity);
+
+            void Add(int column, int row, float weight)
+            {
+                int offset = (row * pattern.TileWidth + column) * 4;
+                const float scale = 1f / 255f;
+                red = MathF.FusedMultiplyAdd(weight, tile[offset] * scale, red);
+                green = MathF.FusedMultiplyAdd(weight, tile[offset + 1] * scale, green);
+                blue = MathF.FusedMultiplyAdd(weight, tile[offset + 2] * scale, blue);
+                alpha = MathF.FusedMultiplyAdd(weight, tile[offset + 3] * scale, alpha);
             }
         }
 
@@ -1495,8 +1543,6 @@ public static class SvgConverter
         {
             RasterizeShaderRectangleStroke(pattern.Fill, stroke, destination);
         }
-
-        static int PositiveModulo(int value, int modulus) => ((value % modulus) + modulus) % modulus;
 
         void RasterizeGradientFill(SvgGradientGeometry gradient, byte[] destination)
         {

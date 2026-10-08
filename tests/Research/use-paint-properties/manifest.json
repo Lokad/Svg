@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Use paint/style controls: 28 exact cases and three retained paint-server or transformed-inline rejections, through all six outputs.",
+  "purpose": "Use paint properties: 30 exact cases and one retained transformed-inline rectangle-stroke rejection, through all six outputs.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -432,9 +432,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "support-diagnostic",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Fill-opacity overrides on paint-server use instances are not implemented."
+      "role": "fidelity"
     },
     {
       "id": "paint-server-definition-opacity",
@@ -448,9 +446,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "support-diagnostic",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only basic CSS named colors, comma-form rgb()/rgba(), #RGB, #RGBA, #RRGGBB, and #RRGGBBAA rectangle fills are implemented."
+      "role": "fidelity"
     }
   ]
 }

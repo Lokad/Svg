@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/instance-shader-opacity/*.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/use-stroke-style/*.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/rendered-group-styles/*.svg" Link="TestData/rendered-group-styles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/use-stroke-opacity/*.svg" Link="TestData/use-stroke-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

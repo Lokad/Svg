@@ -1268,7 +1268,8 @@ internal static class SvgDefinitionParser
         SvgComputedStyle style = context.ResolveStyle(reader);
         SvgParsedGeometry geometry;
         bool allowsOverride = false;
-        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) geometry = SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null);
+        if (SvgPatternSyntax.IsPatternFill(style.Fill)) geometry = SvgLeafParser.ParseRectangleCore(reader, context, null, state);
+        else if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) geometry = SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null);
         else if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) geometry = SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null);
         else
         {

@@ -14,7 +14,7 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgInheritedStrokeStyle InheritedStroke { get; init; }
     internal string? InheritedFillRule { get; init; }
     internal string? SourceMaskReference { get; init; }
-    internal bool HasFillOpacityOverride { get; init; }
+    internal string? PaintServerFill { get; init; }
     internal bool IsDisplayed { get; init; } = true;
     internal bool IsVisible { get; init; } = true;
 }
@@ -49,20 +49,26 @@ internal static class SvgReferenceResolver
     internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
-        if (definition.StrokeContent is {} strokeContent && (reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default))
+        if (definition.StrokeContent is {} strokeContent && (reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default || reference.PaintServerId is not null))
             return SvgSymbolContentRenderer.Apply(definition with { SymbolContent = strokeContent }, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
         if (definition.LeafSource is SvgDefinitionLeafSource source)
         {
-            if (source.RequiresConstruction(reference.InheritedStroke, reference.InheritedFillRule))
+            if (reference.PaintServerId is not null && (definition.SourceFillBindings ?? definition.SymbolFillBindings) is {} authoredBindings)
+            {
+                bool inheritsFill = false;
+                foreach (SvgSymbolFillBinding binding in authoredBindings) { workCounter.Consume(cancellationToken); inheritsFill |= binding.IsInherited; }
+                if (!inheritsFill) reference = reference with { PaintServerId = null, PaintServerFill = null };
+            }
+            if (source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill))
             {
                 foreach (SvgGeometry geometry in definition.Geometries)
                 {
                     workCounter.Consume(cancellationToken);
                     if (geometry.LeafMask is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, state);
-                try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox }, reference with { StrokeOverride = null }, frame, state, workCounter, cancellationToken); }
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, state);
+                try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }
             reference = reference with { StrokeOverride = null };
@@ -145,7 +151,7 @@ internal static class SvgReferenceResolver
                     SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
                     paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill, reference.InheritedStrokeOpacity) : null };
                 }
-                SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, definition.SymbolFillBindings?[index] is { IsStroke: true, IsStrokePaintServer: true } shaderStroke ? shaderStroke.StrokeOpacity ?? reference.InheritedStrokeOpacity : null, PlainInstancePlacement(reference, frame));
+                SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, definition.SymbolFillBindings?[index] is { IsStroke: true, IsStrokePaintServer: true } shaderStroke ? shaderStroke.StrokeOpacity ?? reference.InheritedStrokeOpacity : definition.SymbolFillBindings?[index] is { IsPaintServer: true } shaderFill ? shaderFill.FillOpacity ?? reference.InheritedFill.FillOpacity : null, PlainInstancePlacement(reference, frame));
                 SvgSymbolFillBinding? strokeBinding = definition.SymbolFillBindings is {} paintBindings ? paintBindings[index] : null;
                 SvgUseReference strokeReference = strokeBinding is { AuthoredStroke: not null } solidStroke ? reference with { FillOverride = solidStroke.ResolveStroke(reference.FillOverride ?? reference.InheritedFill, reference.InheritedStrokeOpacity) } : reference;
                 SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, strokeReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, strokeBinding?.AuthoredStroke is null, strokeBinding is { IsStrokePaintServer: true } shaderBinding ? shaderBinding.StrokeOpacity ?? reference.InheritedStrokeOpacity : null, PlainInstancePlacement(reference, frame));
@@ -271,7 +277,7 @@ internal static class SvgReferenceResolver
             SvgPatternTile tile = new(SvgGeometry.FromRectangle(band.Content), band.OriginX, band.OriginY, band.TileWidth, band.TileHeight, 0, 0);
             SvgRectangle placement = InstancePlacement(band.Fill, instance);
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
-            return LowerInstancePatternFill(tile, placement, composed, viewportFrame);
+            return LowerInstancePatternFill(tile, placement, composed, viewportFrame, MapInstanceSolidStroke(band.Fill, band.Stroke, instance, viewportFrame), band.ShaderPlacement);
         }
 
         static SvgGeometry ClipStrokedInstance(SvgRectangle rectangle, SvgViewportFrame? frame)
@@ -291,7 +297,7 @@ internal static class SvgReferenceResolver
             SvgRectangle placement = InstancePlacement(band.Fill, instance);
             SvgRectangle box = InstanceBox(band.Box, instance, viewportFrame);
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
-            return LowerInstanceGradientFill(band.Gradient, placement, box, composed, viewportFrame);
+            return LowerInstanceGradientFill(band.Gradient, placement, box, composed, viewportFrame, MapInstanceSolidStroke(band.Fill, band.Stroke, instance, viewportFrame));
         }
 
         static SvgGeometry LowerEmbeddedInstanceRadialFill(SvgRadialGeometry radial, SvgUseReference instance, SvgViewportFrame? viewportFrame, RenderBudget budget)
@@ -301,7 +307,7 @@ internal static class SvgReferenceResolver
             SvgRadialGradient circle = radial.Gradient;
             if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, instance.X, instance.Y) : circle with { CenterX = circle.CenterX + instance.X, CenterY = circle.CenterY + instance.Y, FocalX = circle.FocalX + instance.X, FocalY = circle.FocalY + instance.Y };
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(radial.Opacity, instance.Opacity), IsPainted = radial.Fill.HasFill && instance.IsPainted };
-            return LowerPlacedRadialFill(circle, placement, box, composed.Opacity, composed.IsPainted, instance.Transform, viewportFrame, budget);
+            return LowerPlacedRadialFill(circle, placement, box, composed.Opacity, composed.IsPainted, instance.Transform, viewportFrame, budget, MapInstanceSolidStroke(radial.Fill, radial.Stroke, instance, viewportFrame));
         }
 
         static SvgGeometry LowerEmbeddedInstanceGradientStroke(SvgGradientStrokeGeometry stroke, SvgUseReference instance, SvgViewportFrame? viewportFrame)
@@ -839,8 +845,6 @@ internal static class SvgReferenceResolver
             foreach (SvgSymbolFillBinding binding in bindings)
             {
                 work.Consume(token);
-                if (binding.IsPaintServer && binding.FillOpacity is null && reference.HasFillOpacityOverride)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inherited fill-opacity on retained paint-server definitions is not implemented.");
                 resolvesFill |= binding.ResolvesFill;
             }
             if (!resolvesFill) return new(definition.Geometries, bindings, null);
@@ -915,13 +919,13 @@ internal static class SvgReferenceResolver
         catch { reservation.Dispose(); throw; }
     }
 
-    private static SvgRecordedPaint MapRecordedPaint(SvgRecordedPaint source, SvgUseReference reference, SvgDocumentState state, BudgetedParserDictionary<SvgRecordedPaint, SvgRecordedPaint> cache, SvgRecordingMapper mapper, ParserWorkCounter work, CancellationToken token, bool stroke, SvgPaintOpacity? shaderStrokeOpacity, SvgAffineTransform placement)
+    private static SvgRecordedPaint MapRecordedPaint(SvgRecordedPaint source, SvgUseReference reference, SvgDocumentState state, BudgetedParserDictionary<SvgRecordedPaint, SvgRecordedPaint> cache, SvgRecordingMapper mapper, ParserWorkCounter work, CancellationToken token, bool stroke, SvgPaintOpacity? shaderOpacity, SvgAffineTransform placement)
     {
         if (source.Identity == 0 || reference.PaintServerId is not null) return default;
         SvgRecordedPaintValue value = state.Scene.GetRecordedPaintValue(source);
         work.Consume(token);
         if (cache.TryGetValue(source, out SvgRecordedPaint previous)) return previous;
-        float alpha = shaderStrokeOpacity is SvgPaintOpacity shader ? shader.Alpha / 255f
+        float alpha = shaderOpacity is SvgPaintOpacity shader ? shader.Alpha / 255f
             : !stroke && reference.FillOverride is SvgPaint fill ? SvgPaintResolver.ResolveSolidPaint(fill).Alpha : value.Alpha;
         SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { IsStroke = value.IsStroke, VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
         cache.TryAdd(source, result);
@@ -986,7 +990,7 @@ internal static class SvgReferenceResolver
                         SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
                         paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill, reference.InheritedStrokeOpacity) : null };
                     }
-                    SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, definition.SymbolFillBindings?[index] is { IsStroke: true, IsStrokePaintServer: true } shaderStroke ? shaderStroke.StrokeOpacity ?? reference.InheritedStrokeOpacity : null, SymbolInstancePlacement(symbolBox, reference, frame));
+                    SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, definition.SymbolFillBindings?[index] is { IsStroke: true, IsStrokePaintServer: true } shaderStroke ? shaderStroke.StrokeOpacity ?? reference.InheritedStrokeOpacity : definition.SymbolFillBindings?[index] is { IsPaintServer: true } shaderFill ? shaderFill.FillOpacity ?? reference.InheritedFill.FillOpacity : null, SymbolInstancePlacement(symbolBox, reference, frame));
                     SvgSymbolFillBinding? strokeBinding = definition.SymbolFillBindings is {} paintBindings ? paintBindings[index] : null;
                     SvgUseReference strokeReference = strokeBinding is { AuthoredStroke: not null } solidStroke ? reference with { FillOverride = solidStroke.ResolveStroke(reference.FillOverride ?? reference.InheritedFill, reference.InheritedStrokeOpacity) } : reference;
                     SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, strokeReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, strokeBinding?.AuthoredStroke is null, strokeBinding is { IsStrokePaintServer: true } shaderBinding ? shaderBinding.StrokeOpacity ?? reference.InheritedStrokeOpacity : null, SymbolInstancePlacement(symbolBox, reference, frame));
@@ -1099,19 +1103,19 @@ internal static class SvgReferenceResolver
         {
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            SvgRectangle fill = ApplySymbolInstance(SvgGeometry.FromRectangle(band.Fill), viewBox, instance, viewportFrame, document, workCounter, cancellationToken).Rectangle;
+            SvgRectangle fill = ApplySymbolInstance(SvgGeometry.FromRectangle(band.Fill with { Stroke = band.Stroke }), viewBox, instance, viewportFrame, document, workCounter, cancellationToken).Rectangle;
             SvgRectangle contentBox = band.Box;
             SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
             SvgLinearGradient vector = band.Gradient;
             if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 * scaleX + offsetX + instance.X, Y1 = vector.Y1 * scaleY + offsetY + instance.Y, X2 = vector.X2 * scaleX + offsetX + instance.X, Y2 = vector.Y2 * scaleY + offsetY + instance.Y, ReferenceScaleX = vector.ReferenceScaleX * scaleX, ReferenceScaleY = vector.ReferenceScaleY * scaleY };
-            return LowerPlacedGradientFill(vector, fill, box, MultiplyAlpha(band.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame);
+            return LowerPlacedGradientFill(vector, fill, box, MultiplyAlpha(band.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame, fill.Stroke);
         }
         static SvgGeometry ApplySymbolPatternFill(SvgPatternGeometry band, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            SvgRectangle fill = ApplySymbolInstance(SvgGeometry.FromRectangle(band.Fill), viewBox, instance, viewportFrame, document, workCounter, cancellationToken).Rectangle;
+            SvgRectangle fill = ApplySymbolInstance(SvgGeometry.FromRectangle(band.Fill with { Stroke = band.Stroke }), viewBox, instance, viewportFrame, document, workCounter, cancellationToken).Rectangle;
             double originX = band.OriginX * scaleX + offsetX;
             double originY = band.OriginY * scaleY + offsetY;
             double tileWidth = band.TileWidth * scaleX;
@@ -1120,11 +1124,11 @@ internal static class SvgReferenceResolver
             double contentY = band.Content.Y * scaleY + offsetY;
             double contentWidth = band.Content.Width * scaleX;
             double contentHeight = band.Content.Height * scaleY;
-            if (!IsIntegerGrid(originX) || !IsIntegerGrid(originY) || !IsIntegerGrid(tileWidth) || !IsIntegerGrid(tileHeight) || !IsIntegerGrid(contentX) || !IsIntegerGrid(contentY) || !IsIntegerGrid(contentWidth) || !IsIntegerGrid(contentHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped symbol-held pattern tiles are implemented.");
+            if (!IsIntegerGrid(originX) || !IsIntegerGrid(originY) || !IsIntegerGrid(tileWidth) || !IsIntegerGrid(tileHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped symbol-held pattern tiles are implemented.");
             SvgRectangle content = new(contentX, contentY, contentWidth, contentHeight, band.Content.Color, band.Content.HasFill, band.Content.Stroke);
             SvgPatternTile tile = new(SvgGeometry.FromRectangle(content), (int)originX, (int)originY, (int)tileWidth, (int)tileHeight, 0, 0);
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
-            return LowerInstancePatternFill(tile, fill, composed, viewportFrame);
+            return LowerInstancePatternFill(tile, fill, composed, viewportFrame, fill.Stroke, band.ShaderPlacement);
 
             static bool IsIntegerGrid(double value)
                 => double.IsFinite(value) && value == Math.Truncate(value) && value >= int.MinValue && value <= int.MaxValue;
@@ -1135,13 +1139,13 @@ internal static class SvgReferenceResolver
             ArgumentNullException.ThrowIfNull(document);
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
-            SvgRectangle fill = ApplySymbolInstance(SvgGeometry.FromRectangle(radial.Fill), viewBox, instance, viewportFrame, document, workCounter, cancellationToken).Rectangle;
+            SvgRectangle fill = ApplySymbolInstance(SvgGeometry.FromRectangle(radial.Fill with { Stroke = radial.Stroke }), viewBox, instance, viewportFrame, document, workCounter, cancellationToken).Rectangle;
             SvgRectangle contentBox = radial.Box;
             SvgRectangle box = instance.Transform.Apply(new SvgRectangle(contentBox.X * scaleX + offsetX + instance.X, contentBox.Y * scaleY + offsetY + instance.Y, contentBox.Width * scaleX, contentBox.Height * scaleY, default, true, null));
             if (viewportFrame is not null) box = viewportFrame.Value.Shift(box);
             SvgRadialGradient circle = radial.Gradient;
             if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + instance.X, offsetY + instance.Y) : circle with { CenterX = circle.CenterX * scaleX + offsetX + instance.X, CenterY = circle.CenterY * scaleY + offsetY + instance.Y, FocalX = circle.FocalX * scaleX + offsetX + instance.X, FocalY = circle.FocalY * scaleY + offsetY + instance.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
-            return LowerPlacedRadialFill(circle, fill, box, MultiplyAlpha(radial.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame, document.Budget);
+            return LowerPlacedRadialFill(circle, fill, box, MultiplyAlpha(radial.Opacity, instance.Opacity), fill.HasFill, instance.Transform, viewportFrame, document.Budget, fill.Stroke);
         }
 
         static SvgGeometry ApplySymbolRadialPolygon(SvgGeometry geometry, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -1292,13 +1296,29 @@ internal static class SvgReferenceResolver
         catch { shader.Dispose(); throw; }
     }
 
+    /// <summary>Preserves the independently painted solid border while mapping a shader rectangle instance.</summary>
+    private static SvgStroke? MapInstanceSolidStroke(SvgRectangle fill, SvgStroke? stroke, SvgUseReference reference, SvgViewportFrame? frame)
+    {
+        if (stroke is null) return null;
+        SvgRectangle placed = ApplyRectangle(fill with { Stroke = stroke }, reference);
+        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
+        if (frame is not null)
+        {
+            placed = frame.Value.Shift(placed);
+            double half = placed.Stroke is SvgStroke mapped ? mapped.Width / 2 : 0;
+            if (!frame.Value.Clip.Contains(placed.X - half, placed.Y - half, placed.X + placed.Width + half, placed.Y + placed.Height + half))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle strokes crossing a nested viewport boundary are not implemented.");
+        }
+        return placed.Stroke;
+    }
+
     private static SvgGeometry LowerDirectInstancePaintFill(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
     {
         if (definition.Geometries.Length != 1 || definition.Geometries[0].Kind != SvgGeometryKind.Rectangle || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible rectangle definition.");
         if (definition.Geometries[0].Rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rectangle use references with strokes are not implemented.");
         string paintId = reference.PaintServerId ?? throw new InvalidOperationException("Instance paint lowering requires a paint-server reference.");
-        if (state.Patterns.TryGetValue(paintId, out SvgPatternTile tile)) return LowerInstancePatternFill(tile, InstancePlacement(definition.Geometries[0].Rectangle, reference), reference, frame);
-        if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient)) return LowerInstanceGradientFill(gradient, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame);
+        if (state.Patterns.TryGetValue(paintId, out SvgPatternTile tile)) return LowerInstancePatternFill(tile, InstancePlacement(definition.Geometries[0].Rectangle, reference), reference, frame, null, SvgAffineTransform.Identity);
+        if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient)) return LowerInstanceGradientFill(gradient, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame, null);
         if (state.RadialGradients.TryGetValue(paintId, out SvgRadialGradient circle)) return LowerInstanceRadialFill(circle, InstancePlacement(definition.Geometries[0].Rectangle, reference), InstanceBox(definition.Geometries[0].Rectangle, reference, frame), reference, frame, state.Budget);
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
     }
@@ -1319,64 +1339,64 @@ internal static class SvgReferenceResolver
         return frame is null ? box : frame.Value.Shift(box);
     }
 
-    private static SvgGeometry LowerInstanceGradientFill(SvgLinearGradient gradient, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame)
+    private static SvgGeometry LowerInstanceGradientFill(SvgLinearGradient gradient, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame, SvgStroke? stroke)
     {
         if (gradient.IsUserSpace) gradient = gradient with { X1 = gradient.X1 + reference.X, Y1 = gradient.Y1 + reference.Y, X2 = gradient.X2 + reference.X, Y2 = gradient.Y2 + reference.Y };
-        return LowerPlacedGradientFill(gradient, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame);
+        return LowerPlacedGradientFill(gradient, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame, stroke);
     }
 
     private static SvgGeometry LowerInstanceRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, SvgUseReference reference, SvgViewportFrame? frame, RenderBudget budget)
     {
         if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ShiftGeneralRadial(circle, reference.X, reference.Y) : circle with { CenterX = circle.CenterX + reference.X, CenterY = circle.CenterY + reference.Y, FocalX = circle.FocalX + reference.X, FocalY = circle.FocalY + reference.Y };
-        return LowerPlacedRadialFill(circle, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame, budget);
+        return LowerPlacedRadialFill(circle, placement, box, reference.Opacity, reference.IsPainted, reference.Transform, frame, budget, null);
     }
 
-    private static SvgGeometry LowerPlacedGradientFill(SvgLinearGradient vector, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform vectorTransform, SvgViewportFrame? frame)
+    private static SvgGeometry LowerPlacedGradientFill(SvgLinearGradient vector, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform vectorTransform, SvgViewportFrame? frame, SvgStroke? stroke)
     {
         vector = SvgGradientSyntax.MapUserSpaceVector(vectorTransform, vector, frame);
         vector = SvgGradientSyntax.MirrorBoundingBoxVector(vectorTransform, vector);
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
-        return FinishInstanceGradientFill(vector, box, placement, opacity, painted);
+        return FinishInstanceGradientFill(vector, box, placement, opacity, painted, stroke);
     }
 
-    private static SvgGeometry LowerInstancePatternFill(SvgPatternTile tile, SvgRectangle placement, SvgUseReference reference, SvgViewportFrame? frame)
+    private static SvgGeometry LowerInstancePatternFill(SvgPatternTile tile, SvgRectangle placement, SvgUseReference reference, SvgViewportFrame? frame, SvgStroke? stroke, SvgAffineTransform sourcePlacement)
     {
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
         if (!reference.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
         if (reference.Transform.A < 0 || reference.Transform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
-        return FinishInstancePatternFill(tile, placement, reference.Opacity, reference.IsPainted);
+        return FinishInstancePatternFill(tile, placement, reference.Opacity, reference.IsPainted, stroke, PlainInstancePlacement(reference, frame).ComposeChecked(sourcePlacement));
     }
 
-    private static SvgGeometry FinishInstancePatternFill(SvgPatternTile tile, SvgRectangle placement, byte opacity, bool painted)
+    private static SvgGeometry FinishInstancePatternFill(SvgPatternTile tile, SvgRectangle placement, byte opacity, bool painted, SvgStroke? stroke, SvgAffineTransform shaderPlacement)
     {
         SvgRectangle fill = placement with { HasFill = painted };
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || tile.Content is null) return SvgGeometry.FromOrthogonalBand(new SvgRectangle(fill.X, fill.Y, fill.Width, fill.Height, SvgColor.Transparent, false, null));
         SvgRectangle content = tile.Content.Value.Rectangle;
-        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill, opacity, null));
+        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill, opacity, stroke) { ShaderPlacement = shaderPlacement });
     }
 
-    private static SvgGeometry LowerPlacedRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform circleTransform, SvgViewportFrame? frame, RenderBudget budget)
+    private static SvgGeometry LowerPlacedRadialFill(SvgRadialGradient circle, SvgRectangle placement, SvgRectangle box, byte opacity, bool painted, SvgAffineTransform circleTransform, SvgViewportFrame? frame, RenderBudget budget, SvgStroke? stroke)
     {
         circle = SvgGradientSyntax.MapUserSpaceRadial(circleTransform, circle, frame);
         if (frame is not null) placement = frame.Value.Clip.ClipRectangle(frame.Value.Shift(placement));
-        return FinishInstanceRadialFill(circle, box, placement, opacity, painted, budget);
+        return FinishInstanceRadialFill(circle, box, placement, opacity, painted, budget, stroke);
     }
 
-    private static SvgGeometry FinishInstanceRadialFill(SvgRadialGradient circle, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted, RenderBudget budget)
+    private static SvgGeometry FinishInstanceRadialFill(SvgRadialGradient circle, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted, RenderBudget budget, SvgStroke? stroke)
     {
         SvgRectangle fill = placement with { HasFill = painted && !circle.IsEmpty };
-        return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, fill, opacity, null, budget));
+        return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, fill, opacity, stroke, budget));
     }
 
-    private static SvgGeometry FinishInstanceGradientFill(SvgLinearGradient gradient, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted)
+    private static SvgGeometry FinishInstanceGradientFill(SvgLinearGradient gradient, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted, SvgStroke? stroke)
     {
         SvgRectangle fill = placement with { HasFill = painted && !gradient.IsEmpty };
         if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
             if (gradient.Stops.Length > 1 && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
         }
-        return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, opacity, null));
+        return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, opacity, stroke));
     }
 
     private static SvgGeometry ApplySymbolPaintServerFill(SvgDefinition definition, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -1395,20 +1415,20 @@ internal static class SvgReferenceResolver
             if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
             if (!reference.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
             if (reference.Transform.A < 0 || reference.Transform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
-            return FinishInstancePatternFill(tile, fillBox, reference.Opacity, reference.IsPainted);
+            return FinishInstancePatternFill(tile, fillBox, reference.Opacity, reference.IsPainted, null, PlainInstancePlacement(reference, frame));
         }
         if (state.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient))
         {
             if (gradient.IsUserSpace) gradient = gradient with { X1 = (gradient.X1 * scaleX + offsetX) + reference.X, Y1 = (gradient.Y1 * scaleY + offsetY) + reference.Y, X2 = (gradient.X2 * scaleX + offsetX) + reference.X, Y2 = (gradient.Y2 * scaleY + offsetY) + reference.Y, ReferenceScaleX = gradient.ReferenceScaleX * scaleX, ReferenceScaleY = gradient.ReferenceScaleY * scaleY };
             gradient = SvgGradientSyntax.MapUserSpaceVector(reference.Transform, gradient, frame);
             gradient = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, gradient);
-            return FinishInstanceGradientFill(gradient, box, fillBox, reference.Opacity, reference.IsPainted);
+            return FinishInstanceGradientFill(gradient, box, fillBox, reference.Opacity, reference.IsPainted, null);
         }
         if (state.RadialGradients.TryGetValue(paintId, out SvgRadialGradient circle))
         {
             if (circle.IsUserSpace) circle = circle.HasGeneralTransform ? SvgGradientSyntax.ScaleGeneralRadial(circle, scaleX, scaleY, offsetX + reference.X, offsetY + reference.Y) : circle with { CenterX = (circle.CenterX * scaleX + offsetX) + reference.X, CenterY = (circle.CenterY * scaleY + offsetY) + reference.Y, FocalX = (circle.FocalX * scaleX + offsetX) + reference.X, FocalY = (circle.FocalY * scaleY + offsetY) + reference.Y, Radius = circle.Radius * Math.Abs(scaleX), FocalRadius = circle.FocalRadius * Math.Abs(scaleX), ReferenceScaleX = circle.ReferenceScaleX * scaleX, ReferenceScaleY = circle.ReferenceScaleY * scaleY };
             circle = SvgGradientSyntax.MapUserSpaceRadial(reference.Transform, circle, frame);
-            return FinishInstanceRadialFill(circle, box, fillBox, reference.Opacity, reference.IsPainted, state.Budget);
+            return FinishInstanceRadialFill(circle, box, fillBox, reference.Opacity, reference.IsPainted, state.Budget, null);
         }
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern or gradient references are implemented.");
     }

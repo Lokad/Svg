@@ -22,7 +22,6 @@ internal static class SvgLocalReferencePresentationResolver
         bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
         bool paintServer = style.Fill is not null && SvgPatternSyntax.IsPatternFill(style.Fill);
-        if (paintServer && style.FillOpacity is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill-opacity overrides on paint-server use instances are not implemented.");
         SvgPaint paint = SvgPaintResolver.Resolve(paintServer ? null : style.Fill, style.FillOpacity, style.Color, inheritedPresentation.Paint, namedColors);
         SvgUseStrokeOverride? stroke = ResolveStrokeOverride(style, inheritedPresentation with { Paint = paint }, namedColors);
         SvgPaintOpacity strokeOpacity = SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);

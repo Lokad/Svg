@@ -8716,3 +8716,69 @@ under `artifacts/rendered-group-styles-20261008/` and
 `artifacts/linux-delivery-20261007/rendered-group-styles-final-20261008/`.
 Wider paint-server/viewport instance combinations remain G2; G3–G9 and S17 remote
 CI stay open. The four licensed online failure cases remain unchanged.
+
+## Instance shader fills, opacity and pattern placement (2026-10-08)
+
+Local linear/radial/pattern use fills now flow through the existing immutable
+source replay and iterative symbol/group contexts. The original budget-owned URL
+is borrowed during replay; no synthesized URL or serialized XML tree is retained.
+Source-authored solid, none and shader fills win over inherited use paint, while
+color and numeric fill opacity remain independent. A source's explicit one/zero
+opacity wins as before. Shader opacity binds at its own byte boundary, separate
+from stop alpha, solid stroke opacity and element/use composition layers.
+Ordinary/forward leaves, mixed symbols, rendered groups, nested uses and aliases
+reuse the ordinary geometry lowerers and exclude referenced ancestors.
+
+The 150 new development controls are exact through all six outputs on Windows and
+Linux. The frozen preceding renderer rejected all 150. The first 114 were declared
+before production editing and capture; eighteen more were declared before editing
+while the preceding capture batch ran. The final eighteen followed the first
+prototype's lost-border and pattern-placement findings, before their own captures,
+comparisons and mapping repairs. All 450 fresh-process browser captures are
+healthy, profile-cleaned and byte-identical. This failure-selected mechanism bank
+is separate from the original and corporate denominators; it is not a general
+coverage rate. No source or reference is normalized to fit the renderer.
+
+The first prototype exposed lost solid borders when embedded shader rectangles
+were mapped. Shared instance mapping now carries the independently constructed
+border through direct and symbol placement, retaining the existing width,
+viewport and clip-crossing gates. Source replay reconstructs currentColor borders
+when the inherited color changes. Native shader-filled paths, circles and rounded
+rectangles use the same ordinary lowerers rather than separate instance kernels.
+
+Patterns retain their original tile coordinates plus an immutable shader placement
+map. Output mapping composes positive-axis instance scales and translation, then
+rasterizes the existing bounded tile at integral device dimensions. Content edges
+may fall between pixels. Fractional/negative phase repeats with four premultiplied
+bilinear taps; integral phase keeps the existing single-tap route. Tap work is
+charged before sampling, cancellation is observed in bounded pixel chunks, and
+temporary mapped metadata is reserved before allocation. The bounded sampling
+arithmetic adapts SkRasterPipeline_opts.h at the existing Skia release pin
+f8b66b7597c4cc859d3ed190e9c6872241e6721c, with the BSD notice retained in source and
+THIRD_PARTY_NOTICES.txt. Partial tile edges use the existing native constant-shader
+rounded byte coverage: direct floor scaling produced five one-channel residuals,
+and the corrected shared blit makes all 150 controls exact. Fractional tile sizes,
+reflections/general maps, richer content, pattern inheritance and broader viewport
+combinations retain their gates. The four online failures remain unchanged.
+
+Eight older failures graduate against untouched source/reference bytes: the two
+use paint-server opacity cases, three shader-fill/solid-border opacity cases and
+three rendered-group inherited shader-opacity cases. The older banks now measure
+30 exact/one rejection (use paint), 70 exact/eleven rejections (stroke opacity) and
+114 exact/nine rejections (rendered groups). Stroke style stays 96 exact/three
+rejections. Twelve additional inputs sweep every parser work denial, sampled and
+peak-edge memory denial, raster work boundaries and cancellation/retry; owners
+release on every path. Layout stays 72/272/68 bytes for draw commands, geometry and
+recorded paint. Existing tile/surface budgets remain; no new surface type or
+quantitative performance claim is made.
+
+Windows/Linux Release builds have zero warnings/errors, and each passes 5,036
+tests (4,044 core, 986 visual-project and six FontProbe), with no failures/skips.
+All 1,567 original reports and 1,545 PNGs remain byte-identical to the preceding
+rendered-group checkpoint. Each platform retains 27/27 corporate documents and
+258/258 exact variants against its own references, with unchanged reports/PNGs.
+Preceding symbol, rectangle/frame, style and support-audit outcomes remain unchanged.
+Ignored evidence is under artifacts/instance-shader-opacity-20261008/ and
+artifacts/linux-delivery-20261007/instance-shader-opacity-final-20261008/.
+Container paint-server inheritance and remaining viewport combinations keep G2
+open; G3–G9 and S17 remote CI remain open too.

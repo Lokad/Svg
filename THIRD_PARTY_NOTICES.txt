@@ -7,7 +7,8 @@ rectangle coverage and ordered rectangle-frame hull/interior coverage,
 shared filled/stroked-path rectangle recognition, native closed-rectangle stroke
 contours and float fringe coverage, and line-segment
 dash endpoint interpolation, isolated image-layer source-over, high-precision shader pixel storage,
-constant shader construction and low-precision pixel replay, and
+constant shader construction and low-precision pixel replay, bilinear repeat
+image-shader sampling, and
 linear/radial gradient coordinate construction and straight open-stroke
 normalization and join construction, clipped image-shader layer restoration,
 rational round caps/joins, SVG endpoint-arc construction and conic subdivision,

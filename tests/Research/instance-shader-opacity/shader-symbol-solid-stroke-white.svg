@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><rect width='256' height='192' fill='white'/><defs><radialGradient id='g'><stop stop-color='#297fb3' stop-opacity='.625'/><stop offset='1' stop-color='#b64872'/></radialGradient><symbol id='s' viewBox='0 0 32 32'><rect x='4.5' y='6.25' width='21' height='17.25' fill='url(#g)' stroke='currentColor' stroke-width='2'/></symbol></defs><use href='#s' x='40.25' y='8.5' width='48' height='48' fill-opacity='.375' stroke-opacity='.625' color='#bc9334'/></svg>
