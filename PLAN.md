@@ -5,20 +5,19 @@ variants on Windows and Linux**, with zero known differences and zero rejections
 Marks are 13/13 exact; outlined wordmarks are 14/14. Membership, inputs, options
 and browser references stay frozen.
 
-The latest repair places rectangle clips in the referencing group's transformed
-space, for definitions before or after the group. The fractional cubic and
-quadratic clip comparisons become exact against unchanged references. Every
-other original-bank report and 1,537 PNG byte sequences stay unchanged.
-See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#group-rectangle-clip-placement-2026-10-08).
+The latest repair chooses mask/run rendering from the complete outward-rounded
+vertex/control bounds before canvas, bitmap or SVG clipping. Fourteen control-bound
+comparisons and the clipped star stroke become exact against unchanged references;
+all other original-bank reports and 1,524 PNG byte sequences stay unchanged.
+See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#whole-path-blitter-dispatch-bounds-2026-10-08).
 
 The original bank retains **1,567 executions / 1,539 PNGs**, with identical
 Windows/Linux reports and output bytes. All 258 corporate reports/images stay
 unchanged against each platform's own references. A further **125 retained paint
 controls = 117 exact + eight valid-input rejections** pass all six public outputs.
-Both platforms pass Release builds and **4,209 tests**. Eleven new admitted
-resource cases and one retained rejection pass denial/cancellation and owner
-cleanup checks. Earlier memory and installed-package evidence retains its dated
-scope; earlier checkpoints remain in the design record and inventory.
+Both platforms pass Release builds and **4,214 tests**. Eight affected/neighbor
+resource cases pass denial/cancellation and owner cleanup checks. Earlier full
+resource, memory and installed-package evidence retains its dated scope.
 
 **The full frozen-cohort fidelity target is achieved.** Preserve these exact
 results while improving shared renderer behavior beyond this cohort. S17's remote
@@ -143,15 +142,15 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,209 passed on each platform**: 3,857 core, 346 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Group clip mapping charges four boundary visits before arithmetic; deferred references reserve their retained transform in the existing budgeted parser list. Eleven fresh admitted cases and one valid-input rejection pass work/memory denial, token cancellation and owner cleanup. Six core cases cover both definition orders, inherited/reflected maps, child transforms, parent intersections and viewport offsets; 125 six-output cases retain fidelity. Earlier full resource, 25-scenario memory and installed runtime/symbol package checks retain their dated scope. No public API or runtime dependency changes; remote CI remains open. |
-| Executed fixture manifest | **1,410 entries = 1,366 exact + 20 known-difference renders + 24 rejections**; 799 base documents / 611 variants. Both fractional group-clip comparisons become exact. Every other fixture report and PNG stays unchanged. |
+| Full tests, including corporate selection/measurement | **4,214 passed on each platform**: 3,862 core, 346 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Dispatch bounds remain separate from canvas-clamped storage, bitmap walking and paint clips. Eight fresh admitted resource sweeps pass tight parser/raster work and memory limits, caller-token cancellation and owner cleanup. Five core regressions fail on the preceding renderer and pass after the repair: four paint fringes and wide dispatch dimensions with bounded run storage. All 125 six-output controls retain fidelity. Earlier full resource, 25-scenario memory and installed runtime/symbol package checks retain their dated scope. No public API or runtime dependency changes; remote CI remains open. |
+| Executed fixture manifest | **1,410 entries = 1,381 exact + five known-difference renders + 24 rejections**; 799 base documents / 611 variants. Fourteen control-bound comparisons and the clipped star stroke become exact. Every other fixture report and PNG stays unchanged. |
 | Executed research manifest | **65 probes = 55 exact + six known-difference renders + four rejections**. Every research report and PNG stays unchanged. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the later scope audit. |
 | Supplemental recorded-paint inventory | **125 controls = 117 exact + eight valid-input rejections**. Twelve original CC0 group-clip controls retain 36 healthy, cleaned, stable captures. Eleven become exact across translated/scaled/reflected placement and solid/linear/radial/pattern paints; the reflected-pattern combination retains its valid-input rejection. These calibration controls were declared after integration. Unchanged MIT unit inputs and original MIT/CC0 controls retain all six output checks. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Every Default report and PNG stays unchanged, preserving the preceding matching-browser STOP-sign gain and earlier `inv-013` exact result / `inv-014` residual. These Default outputs do not establish corporate fidelity or a representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**; a deferred group-clip record grows **152 → 200 bytes**. Eleven matching Windows recipes add four parser-work units; measured total-work deltas range from +4 to +291 units and accounted peaks from unchanged to +192 bytes. See [the cost record](docs/BENCHMARKS.md#group-rectangle-clip-placement-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**; this repair adds no retained fields. Eight matching Windows recipes preserve parser work and accounted peaks; total-work deltas range from 0 to +775 units and median managed-allocation deltas from 0 to +776 bytes per conversion. See [the cost record](docs/BENCHMARKS.md#whole-path-blitter-dispatch-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -860,7 +859,7 @@ replace the renderer work below.
 
 1. **Continue shared fidelity work under rows 3–7.** The shared paint/opacity
    repair is integrated and passes the unit, six-output, ownership and
-   Windows/Linux delivery gates. Continue the remaining 20 fixture and six
+   Windows/Linux delivery gates. Continue the remaining five fixture and six
    research differences.
    The hard custom-region edge and content-layer dither repairs close three more
    research comparisons. Bitmap-local isolated curve construction closes all
@@ -870,14 +869,16 @@ replace the renderer work below.
    hairline-color and oval-stroke comparisons. Live convex quadratics close fifteen
    fixture comparisons and the solid/linear-outline/radial-outline research trio.
    Group clip placement closes both fractional cubic/quadratic clip controls.
-   Prioritize raw control-bounds dispatch, bowtie coverage and circle/ellipse dash
-   construction with independent browser controls. Keep other drawing-state
-   combinations covered by the retained opacity/operation, scope and copy controls.
+   Whole-path blitter dispatch closes all fourteen control-bound comparisons and
+   the clipped star stroke. Prioritize the contained native stroke-ring witness,
+   bowtie coverage and circle/ellipse dash construction with independent browser
+   controls. Keep other drawing-state combinations covered by the retained
+   opacity/operation, scope and copy controls.
    Keep the valid percentage-mask, symbol override, direct `fill="none"` line,
    translucent pattern-tile stroke, transformed custom-mask and nested-viewport
    rejections for the later admission audit. Broader object/visual bounds and override combinations still
    need their own evidence. The integrated repair, measured controls and rejected
-   models are in [the design record](docs/RASTERIZATION_DESIGN.md#group-rectangle-clip-placement-2026-10-08).
+   models are in [the design record](docs/RASTERIZATION_DESIGN.md#whole-path-blitter-dispatch-bounds-2026-10-08).
    Finish this phase when the identified renderer differences are exact against
    their retained references and the shared repairs preserve existing exact
    results. Keep unresolved cases visible; moving them to a new list or changing

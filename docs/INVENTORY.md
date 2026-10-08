@@ -5,11 +5,24 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Whole-path blitter dispatch checkpoint (2026-10-08)
+
+Fourteen retained control-bound comparisons and the clipped star stroke become
+exact against their original browser PNGs. The bank remains **1,567 executions /
+1,539 PNGs**: **1,410 fixtures = 1,381 exact + five known + 24 rejected**, **65
+research probes = 55 exact + six known + four rejected**, and 92 Default renders.
+All other reports and 1,524 PNG byte sequences stay unchanged. Windows/Linux
+original-bank reports and bytes agree; each platform preserves **27/27 documents /
+258/258 variants exact** against its own corporate references. The separate
+recorded-paint inventory remains **125 = 117 exact + eight rejected**, checked
+through all six outputs. No SVG or browser PNG is added or changed. See
+[the repair and scoped validation](RASTERIZATION_DESIGN.md#whole-path-blitter-dispatch-bounds-2026-10-08).
+
 ## Group rectangle clip placement checkpoint (2026-10-08)
 
 Both retained fractional cubic/quadratic group-clip comparisons become exact
 against their original references. All other original-bank and corporate
-reports/PNGs remain unchanged on Windows/Linux. The current fixture split is
+reports/PNGs remain unchanged on Windows/Linux. The fixture split at that checkpoint is
 **1,366 exact + 20 known + 24 rejected**; research stays **55 exact + six known +
 four rejected**. The exact corporate matrix remains **27/27 documents / 258/258
 variants** per platform.

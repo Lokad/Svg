@@ -8,6 +8,47 @@ public sealed class SvgClippedPreparationTests
     private const string Curve = "M44.5,8 C46.9,7.2 43.1,5.3 41.7,6.5 L41.7,43 C44,55 50,73 52,51 L56,8 Z";
     private const string ScaledInput = "<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><g transform='scale(2)'><path d='" + Curve + "' fill='#003478'/></g></svg>";
 
+    [Theory]
+    [InlineData("solid")]
+    [InlineData("linear")]
+    [InlineData("radial")]
+    [InlineData("pattern")]
+    public void Escaping_controls_preserve_native_run_fringe_across_four_paints(string material)
+    {
+        string definitions = "<defs><linearGradient id='linear'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><radialGradient id='radial'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><pattern id='pattern' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='red'/></pattern></defs>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'>" + definitions + "<path d='" + Curve + "' fill='" + (material == "solid" ? "#003478" : "url(#" + material + ")") + "'/></svg>");
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgConverter.RasterizedSurface image = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            // The retained control-bounds browser references have these coverage
+            // bytes. Clamping the escaped control to height 64 chooses a mask
+            // and loses the opaque snap at (42,6) and zero snap at (45,6).
+            Assert.Equal((byte)255, image.Pixels[(6 * image.Width + 42) * 4 + 3]);
+            Assert.Equal((byte)0, image.Pixels[(6 * image.Width + 45) * 4 + 3]);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Wide_dispatch_bounds_keep_run_storage_canvas_bounded()
+    {
+        SvgDevicePoint[] points = [new(2, 2), new(12, 2), new(6, 12)];
+        SvgAnalyticContourPreparation preparation = new(points, [3], [], false, null, SvgPolygonMapping.QuarterEdges, [], [], new(int.MinValue, int.MinValue, int.MaxValue, int.MaxValue), 16, 16);
+        Assert.True(preparation.UsesRunBlitter);
+        RenderBudget budget = new(100_000);
+        using (SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, 0, 16, 0, 16, new(0, 16), null, SvgAnalyticPaintClip.Binary, 100_000, budget, out long _, out bool eligible, CancellationToken.None))
+        {
+            Assert.True(eligible);
+            walker.PrepareRow(6, out long _, CancellationToken.None);
+            Assert.Equal(16, walker.Row.Length);
+            byte[] pixel = new byte[4];
+            walker.PaintPixel(6, pixel, SvgAnalyticPaint.Solid(new(255, 0, 0, 255)), SvgAnalyticClipCoverage.Full);
+            Assert.Equal((byte)255, pixel[3]);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Opposite_projected_verticals_cancel_without_flattened_fallback()
     {

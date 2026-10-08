@@ -1,5 +1,6 @@
 Lokad.Svg contains managed adaptations of Skia analytic curve/line clipping,
 polynomial solvers, vertical edge combination, horizontal clip paint routing,
+whole-path mask/run dispatch bounds,
 axis-aligned path mapping, raw control-point convexity classification and
 antialiased rectangle paint-clip dispatch and byte coverage, hard mask-region rounding, rounded plain
 rectangle coverage, filled-path rectangle recognition and float fringe coverage, and line-segment

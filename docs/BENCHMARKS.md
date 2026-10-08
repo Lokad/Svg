@@ -2410,3 +2410,22 @@ with the baseline first and **9.546 → 9.906 ms** with the
 repair first. These selected controls measure the cost of corrected clipping;
 they do not establish representative throughput or Linux timing. Detailed
 batches and ledgers stay ignored under `artifacts/clip-state-20261008/`.
+
+## Whole-path blitter dispatch cost (2026-10-08)
+
+Eight matching Windows recipes compare complete-bound dispatch with the preceding
+production renderer: base/fractional/scaled control bounds, four paints and the
+clipped star stroke. Each process warms up eight conversions and records three
+batches of twenty per recipe in both process orders. Inputs, options and output
+forms match. Parser work and accounted peaks stay unchanged. Total-work deltas
+range from **0 to +775 units**; median managed-allocation deltas across six batches
+per renderer range from **0 to +776 bytes per conversion**. The already-correct
+scaled control has zero deltas; the other recipes now choose run rendering.
+Geometry/command/paint layouts remain **272 / 72 / 68 bytes**, with no added
+retained fields. Eight separate resource sweeps pass denial and owner cleanup.
+
+Summed per-recipe median timings read **12.755 → 12.968 ms** with the baseline
+first and **13.189 → 13.038 ms** with the repair first. These selected controls
+measure the corrected dispatch and do not establish representative throughput
+or Linux timing. Detailed batches and ledgers stay ignored under
+`artifacts/raw-dispatch-bounds-20261008/`.

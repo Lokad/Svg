@@ -7888,3 +7888,41 @@ control-bounds witnesses warrant checking the current canvas-clamped dispatch
 dimensions next. Bowtie coverage and circle/ellipse dashes also remain open.
 The original-scope support audit and online public-domain/CC0 sourcing follow
 these renderer repairs.
+
+## Whole-path blitter dispatch bounds (2026-10-08)
+
+The native mask/run selector receives complete rounded path bounds before clip
+intersection. Lokad.Svg passed canvas-clamped storage bounds instead. In the
+retained cubic witness, raw bounds round to [41,5,56,73]: a 16-byte aligned row
+across 68 rows needs 1,088 bytes, selecting runs. Canvas clipping reduced this
+to 944 bytes and incorrectly selected a mask, changing native fringe snaps.
+
+All four polygon paints now pass complete outward-rounded vertex/control bounds
+to shared preparation. Coordinate saturation follows the pinned native
+`safeRoundOut` limit (`int.MaxValue >> 2`); dimension arithmetic uses long integers.
+These bounds select the blitter only. Canvas-clamped row allocation, bitmap
+walking, construction clips, AA paint dispatch and owned interiors stay separate.
+Rounding reuses the existing bounds without another geometry traversal or added
+retained fields. Parser work and public APIs stay unchanged.
+
+Fourteen original control-bound comparisons and the clipped star stroke become
+pixel-exact against unchanged browser PNGs. The other 1,524 PNG sequences and
+all rejection outcomes stay unchanged in the 1,567-execution bank. Windows/Linux
+reports and bytes agree; each platform preserves all 27 corporate documents /
+258 variants exact against its own references. No new captures or assets are needed.
+
+Five focused regressions fail on the preceding renderer and pass after the repair:
+four paint fringes and wide dispatch dimensions with canvas-bounded run storage.
+Both platforms pass nine-project Release builds and 4,214 tests (3,862 core,
+346 visual, six FontProbe), with no failures/skips. Eight affected/neighbor
+resource sweeps pass tight parser/raster work and memory limits, token cancellation
+and owner cleanup. The 125 recorded-paint controls retain all six outputs. Earlier
+full memory/package evidence retains its dated scope; remote CI remains open.
+[Matching Windows costs](BENCHMARKS.md#whole-path-blitter-dispatch-cost-2026-10-08)
+record the switch to run storage. Detailed reports stay under ignored
+`artifacts/raw-dispatch-bounds-20261008/` and
+`artifacts/linux-delivery-20261007/raw-dispatch-final-20261008/`.
+
+Five fixture and six research differences remain: contained native stroke rings,
+bowtie coverage and circle/ellipse dashes. The original-scope support audit and
+online public-domain/CC0 sourcing follow these renderer repairs.

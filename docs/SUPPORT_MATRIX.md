@@ -6,9 +6,17 @@ The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
 The current 1,410 manifest entries contain
-1,366 exact decoded-pixel references, 20 known-difference renders and 24
+1,381 exact decoded-pixel references, five known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
+
+Mask/run dispatch uses complete outward-rounded vertex/control bounds before
+canvas, bitmap or SVG clipping. Canvas-clamped row storage, bitmap scan windows
+and paint clips retain their separate roles. This closes the fourteen retained
+control-bound comparisons and the clipped star stroke across the shared four-paint
+boundary. Eight resource sweeps preserve bounded setup/storage, denial cleanup
+and caller-token cancellation. Other stroke and fractional-event differences
+remain open. See [the repair record](RASTERIZATION_DESIGN.md#whole-path-blitter-dispatch-bounds-2026-10-08).
 
 Convex polynomial quadratics now retain live curve state in both unclipped
 and clipped construction. This preserves native strip-boundary advancement and

@@ -16,7 +16,8 @@ internal ref struct SvgAnalyticContourPreparation
     internal readonly SvgPolygonMapping Mapping;
     internal readonly SvgQuadSpan[] QuadSpans;
     internal readonly SvgCubicSpan[] CubicSpans;
-    internal readonly SvgAnalyticClipBounds PathBounds;
+    /// <summary>Outward-rounded complete vertex/control bounds before any canvas, bitmap or SVG clipping; used only for mask/run selection.</summary>
+    internal readonly SvgAnalyticClipBounds DispatchBounds;
     internal readonly int OutputWidth;
     internal readonly int OutputHeight;
     /// <summary>Complete horizontal raw path bounds for clip-wrapper selection, distinct from clamped storage.</summary>
@@ -37,14 +38,14 @@ internal ref struct SvgAnalyticContourPreparation
     internal bool UseCurveSpans;
 
     /// <summary>Native mask/run dispatch uses the whole path, independent of bounded row storage.</summary>
-    internal readonly bool UsesRunBlitter => !(PathBounds.Right - PathBounds.Left <= 32 && ((PathBounds.Right - PathBounds.Left + 3L) & ~3L) * (PathBounds.Bottom - PathBounds.Top) <= 1024);
+    internal readonly bool UsesRunBlitter => !((long)DispatchBounds.Right - DispatchBounds.Left <= 32 && (((long)DispatchBounds.Right - DispatchBounds.Left + 3L) & ~3L) * ((long)DispatchBounds.Bottom - DispatchBounds.Top) <= 1024);
 
-    internal SvgAnalyticContourPreparation(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgAnalyticClipBounds pathBounds, int outputWidth, int outputHeight)
-        : this(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, pathBounds, outputWidth, outputHeight, null, SvgAffineTransform.Identity) { }
+    internal SvgAnalyticContourPreparation(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgAnalyticClipBounds dispatchBounds, int outputWidth, int outputHeight)
+        : this(points, ends, nestingSigns, isEvenOdd, signs, mapping, quadSpans, cubicSpans, dispatchBounds, outputWidth, outputHeight, null, SvgAffineTransform.Identity) { }
 
     /// <summary>Borrows aligned source contours alongside the globally mapped classification geometry.</summary>
     /// <remarks>Source storage remains owned by the mapped polygon; clipped and contained edge construction remap its matching indices into each bitmap without allocating another contour tape.</remarks>
-    internal SvgAnalyticContourPreparation(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgAnalyticClipBounds pathBounds, int outputWidth, int outputHeight, SvgPreparedPathContours? source, SvgAffineTransform sourceMap)
+    internal SvgAnalyticContourPreparation(ReadOnlySpan<SvgDevicePoint> points, ReadOnlySpan<int> ends, ReadOnlySpan<int> nestingSigns, bool isEvenOdd, int[]? signs, SvgPolygonMapping mapping, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgAnalyticClipBounds dispatchBounds, int outputWidth, int outputHeight, SvgPreparedPathContours? source, SvgAffineTransform sourceMap)
     {
         ArgumentNullException.ThrowIfNull(quadSpans);
         ArgumentNullException.ThrowIfNull(cubicSpans);
@@ -58,7 +59,7 @@ internal ref struct SvgAnalyticContourPreparation
         Mapping = mapping;
         QuadSpans = quadSpans;
         CubicSpans = cubicSpans;
-        PathBounds = pathBounds;
+        DispatchBounds = dispatchBounds;
         OutputWidth = outputWidth;
         OutputHeight = outputHeight;
     }
