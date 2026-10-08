@@ -5,14 +5,14 @@ using Lokad.Svg.Parsing;
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Dispatches retained centerlines to native thin-stroke curve and line coverage.</summary>
-/// <remarks>Allocates no storage and borrows immutable commands and the caller's surface. Every command,
+/// <remarks>Allocates no storage and borrows immutable commands, the caller's surface and optional canvas-sized RGBA clip tape. The caller keeps the tape alive throughout replay; each pixel visit includes its rounded clip-alpha product. Every command,
 /// closure lookahead and coverage operation is charged and cancellable. Wider strokes
 /// keep their admitted outline route. Numerical curve scratch is bounded stack storage.</remarks>
 internal static class SvgHairlineStroke
 {
     internal static bool TryRasterize(SvgAuthoredPath path, SvgAffineTransform outputMap, SvgColor color,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
-        Span<byte> destination, int width, int height, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        ReadOnlySpan<byte> viewportMask, Span<byte> destination, int width, int height, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (path.StrokeStyle is not SvgAuthoredStrokeStyle style) return false;
         workCounter.Consume(cancellationToken);
@@ -25,7 +25,7 @@ internal static class SvgHairlineStroke
         ReadOnlySpan<SvgAuthoredPathCommand> commands = path.Commands;
         float coverage = (lengthX + lengthY) * .5f;
         byte alpha = coverage == 1 ? color.Alpha : (byte)((color.Alpha * (int)(coverage * 256)) >> 8);
-        SvgHairlineCoverage raster = new(destination, width, height, SvgAnalyticPaint.Solid(color with { Alpha = alpha }), clip, antialiasing, workCounter, cancellationToken);
+        SvgHairlineCoverage raster = new(destination, width, height, SvgAnalyticPaint.Solid(color with { Alpha = alpha }), clip, antialiasing, viewportMask, workCounter, cancellationToken);
         SvgDevicePoint current = default, contourStart = default, first = default, last = default;
         Span<SvgDevicePoint> points = stackalloc SvgDevicePoint[4];
         Span<SvgEndpointConic> conics = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];

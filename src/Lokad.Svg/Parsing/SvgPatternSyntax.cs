@@ -84,8 +84,10 @@ internal static class SvgPatternSyntax
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
         if (isPath && painted && tile.Content is not null && tile.TileWidth != 0 && tile.TileHeight != 0)
         {
-            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            (int commandCount, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            string d = renderData.Value;
+            (_, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            int commandCount = renderData.CommandCount;
 
             // Retain authored path contours and repaint their shared fill with the tile.
             SvgComputedStyle solidFill = style with { Fill = "black" };

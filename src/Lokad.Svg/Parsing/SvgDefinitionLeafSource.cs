@@ -90,7 +90,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             || resolved with { StrokeOpacity = null } != _constructedStroke with { StrokeOpacity = null };
     }
 
-    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgDocumentState state)
+    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, bool retainMappedContour, SvgDocumentState state)
     {
         _attribute = -1;
         // A use supplies fill only where the source did not author one. The original
@@ -102,7 +102,8 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             resolved, default, _colors, _work, _token, state.OutputMagnification, fillRule)
         {
             RecordingScope = new(1),
-            AuthoredStyle = authored
+            AuthoredStyle = authored,
+            RetainInstanceStrokePath = retainMappedContour
         };
         return SvgDefinitionParser.LowerInstanceSource(this, context, state);
     }

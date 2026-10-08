@@ -95,6 +95,8 @@
     <None Include="../Fixtures/original/rectangle-float-endpoint-up.svg" Link="TestData/rectangle-float-endpoint-up.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/transformed-rectangle-fills/*.svg" Link="TestData/transformed-rectangle-fills/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../References/inventory/gap-inputs/inv-105.svg" Link="TestData/illustrator-heart.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/iching-library/*.svg" Link="TestData/iching-library/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../References/inventory/gap-inputs/inv-106.svg" Link="TestData/iching-library.svg" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />

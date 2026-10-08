@@ -11,6 +11,13 @@ reserves an additional fixed 32 KiB workspace, releases it before ordinary parsi
 and charges bounded traversal work with cancellation checkpoints. Input, node,
 depth and per-element attribute limits continue to apply.
 
+Drawable `path` data follows SVG's complete-prefix error handling: completed
+segments before the first malformed command remain renderable, and an error
+before a complete moveto paints nothing. The full attribute still consumes the
+configured command/work limits and observes cancellation. This policy does not
+recover malformed XML, missing required path data, clip/mask path syntax or
+unsupported geometry/paint combinations; those retain categorized failures.
+
 Every `SvgConverter` conversion API requires explicit `SvgRenderOptions` and `CancellationToken`.
 The owned-memory result is independently owned and valid indefinitely. The
 corresponding synchronous and asynchronous overloads also write into caller-owned

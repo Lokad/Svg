@@ -10,7 +10,10 @@ internal static class SvgStructuralVocabulary
     internal static bool IsGroupContainer(string localName) => localName == "g";
 
     /// <summary>Identifies the metadata containers whose subtrees never render.</summary>
-    internal static bool IsInertContainer(string localName) => localName is "defs" or "title" or "desc" or "metadata";
+    internal static bool IsInertContainer(string localName) => localName == "defs" || IsDescriptiveElement(localName);
+
+    /// <summary>Identifies descriptive subtrees that do not paint or define reference targets at any admitted location.</summary>
+    internal static bool IsDescriptiveElement(string localName) => localName is "title" or "desc" or "metadata";
 
     /// <summary>Identifies the definition leaves that count as styleable content.</summary>
     internal static bool IsDefinitionLeaf(string localName) => localName is "rect" or "line" or "polygon" or "polyline" or "path" or "circle" or "ellipse";

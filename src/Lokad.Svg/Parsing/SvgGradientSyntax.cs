@@ -400,8 +400,10 @@ internal static class SvgGradientSyntax
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
         if (isPath && painted && !gradient.IsEmpty)
         {
-            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            (int commandCount, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            string d = renderData.Value;
+            (_, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            int commandCount = renderData.CommandCount;
             // Retain authored path contours and repaint their shared fill with the radial circle.
             SvgComputedStyle solidFill = style with { Fill = "black" };
             SvgResolvedPaintableElement curveShape = context.ResolveShape(solidFill, reader, true);
@@ -506,8 +508,10 @@ internal static class SvgGradientSyntax
         bool isEvenOdd = style.FillRule is not null && style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
         if (isPath && painted && !gradient.IsEmpty)
         {
-            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            (int commandCount, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            string d = renderData.Value;
+            (_, bool hasCurve, bool hasArc, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            int commandCount = renderData.CommandCount;
 
             // Retain authored path contours and repaint their shared fill with the gradient.
             // The gradient url is not a parseable color; resolve a solid placeholder (discarded by the repaint below) for transform and fill state.
@@ -591,8 +595,10 @@ internal static class SvgGradientSyntax
         if (stroke is null) return filled;
         if (isPath)
         {
-            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            (int commandCount, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            string d = renderData.Value;
+            (_, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            int commandCount = renderData.CommandCount;
             return AppendPaintFillStrokePath(filled, d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, stroke, strokeShape);
         }
         try
@@ -743,8 +749,10 @@ internal static class SvgGradientSyntax
         if (stroke is null) return filled;
         if (isPath)
         {
-            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            (int commandCount, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            string d = renderData.Value;
+            (_, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            int commandCount = renderData.CommandCount;
             return AppendPaintOutlineStrokePath(filled, d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, stroke, strokeShape, outline, strokeBox);
         }
         SvgParsedGeometry white;
@@ -765,8 +773,10 @@ internal static class SvgGradientSyntax
         if (stroke is null) return filled;
         if (isPath)
         {
-            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            (int commandCount, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            string d = renderData.Value;
+            (_, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            int commandCount = renderData.CommandCount;
             return AppendPaintOutlineStrokePath(filled, d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, stroke, strokeShape, outlineTile);
         }
         SvgParsedGeometry white;
@@ -787,8 +797,10 @@ internal static class SvgGradientSyntax
         if (stroke is null) return filled;
         if (isPath)
         {
-            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-            (int commandCount, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            string d = renderData.Value;
+            (_, bool hasArc, bool hasCurve, _) = SvgOrthogonalShapeParser.ScanPathData(d, context.WorkCounter, context.CancellationToken);
+            int commandCount = renderData.CommandCount;
             return AppendPaintOutlineStrokePath(filled, d, commandCount, hasArc, hasCurve, reader, context, elementName, frame, maximumGeometryElements, budget, stroke, strokeShape, outlineCircle, strokeBox);
         }
         SvgParsedGeometry white;

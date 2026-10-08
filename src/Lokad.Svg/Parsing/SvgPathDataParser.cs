@@ -26,6 +26,57 @@ namespace Lokad.Svg.Parsing;
 /// </remarks>
 internal static class SvgPathDataParser
 {
+    /// <summary>Finds the drawable prefix through the last complete segment, using the strict parser's number and flag grammar.</summary>
+    /// <remarks>Only malformed path syntax ends the prefix. Full-input command/work limits and cancellation remain failures.
+    /// This scan owns no storage; the rendering caller reserves any shortened string before copying it.
+    /// Strict contour parsing remains available for callers requiring syntax errors.</remarks>
+    internal static (int Length, int CommandCount) ReadRenderablePrefix(string value, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        if (maximumCommands < 1) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
+        int count = ValidateCommandBudget(value, maximumCommands, workCounter, cancellationToken);
+        PathDataReader reader = new(value, workCounter, cancellationToken);
+        int completed = 0;
+        try
+        {
+            if (reader.End) return (value.Length, count);
+            char command = reader.ReadCommand();
+            if (command is not ('M' or 'm')) return (0, count);
+            while (true)
+            {
+                int parameters = command switch
+                {
+                    'M' or 'm' or 'L' or 'l' or 'T' or 't' => 2,
+                    'H' or 'h' or 'V' or 'v' => 1,
+                    'Q' or 'q' or 'S' or 's' => 4,
+                    'C' or 'c' => 6,
+                    'A' or 'a' => 7,
+                    'Z' or 'z' => 0,
+                    _ => -1,
+                };
+                if (parameters < 0) return (completed, count);
+                if (parameters == 0) completed = reader.Position;
+                else
+                {
+                    do
+                    {
+                        for (int index = 0; index < parameters; index++)
+                        {
+                            if (command is 'A' or 'a' && index is 3 or 4) reader.ReadFlag();
+                            else reader.ReadNumber();
+                        }
+                        completed = reader.Position;
+                    } while (reader.PeekNumberStart());
+                }
+                if (reader.End) return (value.Length, count);
+                if (reader.PeekNumberStart()) return (completed, count);
+                command = reader.ReadCommand();
+            }
+        }
+        catch (SvgException error) when (error.ErrorCode == SvgErrorCode.MalformedInput) { return (completed, count); }
+    }
+
     /// <summary>Parses path data, mapping each vertex and appending sealed contours to the builder.</summary>
     /// <summary>Reports whether path data holds one moveto subpath sealed by a trailing closepath.</summary>
     /// <remarks>Letters outside digit-or-dot exponents are commands, so single M/m plus single Z/z with a trailing Z reads closed-single without tokenizing; lowering validates the grammar first, so callers only invoke this on successfully lowered paths. Charges scanning work by input length and observes cancellation through the counter.</remarks>
@@ -376,7 +427,7 @@ internal static class SvgPathDataParser
         }
     }
 
-    private static void ValidateCommandBudget(string value, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static int ValidateCommandBudget(string value, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         int commandCount = 0;
         for (int index = 0; index < value.Length; index++)
@@ -386,6 +437,7 @@ internal static class SvgPathDataParser
             if (commandCount >= maximumCommands) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured limit.");
             commandCount++;
         }
+        return commandCount;
     }
 
     private static double RequireFinite(double value)
@@ -409,6 +461,8 @@ internal static class SvgPathDataParser
             _workCounter = workCounter;
             _cancellationToken = cancellationToken;
         }
+
+        internal int Position => _position;
 
         internal bool End
         {

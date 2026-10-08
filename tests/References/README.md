@@ -78,17 +78,19 @@ triples. Measurement records are separate from the immutable selection/options.
 See [the inventory](../../docs/INVENTORY.md#frozen-corporate-cohort-2026-10-05).
 
 `inventory/corporate-cohort-current.json` records all 258 renderer outcomes and
-all 258 references: 258 rendered comparisons (225 exact, 33 known differences)
-and zero renderer rejections. No variants lack references. All nine variants
+all 258 references: **258 exact comparisons**, zero known differences and zero
+renderer rejections. No variants lack references. Windows/Linux complete checks
+preserve all **27/27 documents / 258/258 variants** against each platform's own
+retained references. All nine variants
 of YouTube, Ford, ROC HCVS, Artsy and NASA remain exact. SimpleX, Omega and Google
 are now exact in all twelve/twelve/nine variants respectively. The YouTube PNGs retain
 stable healthy capture triples. `inv-027-native-route.json`
 retains the byte-identical traced browser picture's raw convex flags and two
 isolated diagnostic models. `CorporateCohortReferenceTests` runs every frozen
 case offline, preserves original Ford references and keeps failures measurable.
-Twenty documents are exact in every frozen variant (20/27), including Toyota,
-Liputan6 and Coca-Cola. Known
-differences remain measured against the original images. The earlier native open-stroke
+All 27 documents are exact in every frozen variant, including Toyota, Liputan6
+and Coca-Cola. References remain frozen; earlier repair evidence keeps its dated
+scope in the rasterization design record. The earlier native open-stroke
 construction improved all nine Rede Manchete variants, with no prior mismatch
 count increase and all 70 exact corporate PNGs preserved. Six original research
 miter/bevel probes graduate with unchanged SVG/PNG/provenance; three existing

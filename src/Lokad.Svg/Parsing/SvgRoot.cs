@@ -1165,7 +1165,7 @@ internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintO
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
 /// <summary>Separates a mask allocation region from a geometric viewport clip at layer restore.</summary>
-internal enum SvgLayerRegionKind : byte { Mask, Viewport }
+internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport }
 
 /// <summary>References retained geometry or marks an isolated layer; mask alpha applies before the separate outer opacity.</summary>
 internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, SvgPaintOpacity SourceOpacity, SvgClipBox? MaskRegion, int MaskContentIndex, byte MaskAlpha)
@@ -1447,9 +1447,11 @@ internal sealed class SvgSceneBuilder : IDisposable
     /// <summary>Copies one mask content evaluation under scene ownership, returning its command index.</summary>
     internal int AddMaskContent(SvgMaskContent content)
     {
-        SvgGeometry[] copied = new SvgGeometry[content.Geometries.Length];
+        RenderBudget.BudgetReservation arrayReservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(content.Geometries.Length), SvgMemoryCategory.Scene);
+        SvgGeometry[] copied = [];
         try
         {
+            copied = new SvgGeometry[content.Geometries.Length];
             for (int index = 0; index < content.Geometries.Length; index++)
             {
                 _workCounter.Consume(_cancellationToken);
@@ -1490,16 +1492,17 @@ internal sealed class SvgSceneBuilder : IDisposable
                 }
                 copied[index] = content.Geometries[index].CopyAuthoredPathTo(copied[index], SvgAffineTransform.Identity, _budget, _workCounter, _cancellationToken);
             }
+            int contentIndex = _maskContents.Count;
+            _maskContents.Add(new SvgMaskContent(copied, content.Luminance, content.IsAlpha));
+            _maskReservations.Add(arrayReservation);
+            return contentIndex;
         }
         catch
         {
             foreach (SvgGeometry geometry in copied) geometry.Dispose();
+            arrayReservation.Dispose();
             throw;
         }
-        _maskReservations.Add(_budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(copied.Length), SvgMemoryCategory.Scene));
-        int contentIndex = _maskContents.Count;
-        _maskContents.Add(new SvgMaskContent(copied, content.Luminance, content.IsAlpha));
-        return contentIndex;
     }
 
     internal SvgSceneStorage Build()
@@ -1522,6 +1525,8 @@ internal sealed class SvgSceneBuilder : IDisposable
         _recordedPaintOwner?.Dispose();
         foreach (RenderBudget.BudgetReservation reservation in _paintReservations) reservation.Dispose();
         _paintReservations.Clear();
+        foreach (SvgMaskContent content in _maskContents.Items)
+            foreach (SvgGeometry geometry in content.Geometries) geometry.Dispose();
         _maskContents.Dispose();
         foreach (RenderBudget.BudgetReservation reservation in _maskReservations) reservation.Dispose();
         _maskReservations.Clear();

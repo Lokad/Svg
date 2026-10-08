@@ -186,8 +186,8 @@
       "outputScale": 1,
       "background": "transparent",
       "viewport": null,
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Only closed axis-aligned integer paths are implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Exact against the unchanged declared 280x720 transparent reference through all six outputs; all 79 symbols/uses retained.",
       "reference": "tests/References/inventory/inv-106-transparent.png",
       "referenceSha256": "47e74a3571c6823815aeb5c61ef86f4072bad0fe0bb94d63c407c58affb7f470",
       "oracle": {
@@ -201,6 +201,20 @@
         "captureStartupHealth": "healthy",
         "captureProfilesCleaned": true,
         "deviceScaleFactor": 1
+      },
+      "linuxOracle": {
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "linux64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true,
+        "reference": "tests/References/inventory/inv-106-transparent.png",
+        "referenceSha256": "47e74a3571c6823815aeb5c61ef86f4072bad0fe0bb94d63c407c58affb7f470",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
       }
     }
   ]

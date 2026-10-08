@@ -275,12 +275,16 @@ internal static class SvgPaintRecording
     /// <summary>Wraps a borrowed geometry span with owned parser metadata for opacity and an optional outer viewport clip.
     /// Metadata reserves before allocation; each geometry update charges work and cancellation. No native geometry owner changes.</summary>
     internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgClipBox? viewportClip, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        => WrapInstance(geometries, opacity, scope, viewportClip, null, state, work, token);
+
+    internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgClipBox? viewportClip, SvgAffineViewportClip? affineViewport, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
-        if ((opacity.Value == 1 && viewportClip is null) || geometries.Length == 0) return;
+        if ((opacity.Value == 1 && viewportClip is null && affineViewport is null) || geometries.Length == 0) return;
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Resolved = true; operation.Value = 255; operation.SourceOpacity = opacity; operation.RecordingScope = scope;
         operation.Region = viewportClip;
-        operation.RegionKind = viewportClip is null ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.Viewport;
+        operation.AffineViewport = affineViewport;
+        operation.RegionKind = affineViewport is not null ? SvgLayerRegionKind.AffineViewport : viewportClip is null ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.Viewport;
         SvgLeafMaskBinding? lastInner = null;
         SvgLeafMaskBinding? binding = null;
         for (int index = 0; index < geometries.Length; index++)

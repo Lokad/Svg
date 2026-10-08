@@ -308,13 +308,25 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Dangling_segment_after_close_stays_malformed()
+    public void Dangling_path_syntax_does_not_hide_malformed_xml()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 Z h' fill='red'/>");
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.MalformedInput, rejected.ErrorCode);
-        Assert.Contains("Path data ends inside a command.", rejected.Message);
+        Assert.Contains("SVG XML is malformed:", rejected.Message);
+    }
+
+    [Theory]
+    [InlineData(" h")]
+    [InlineData("0")]
+    public void Invalid_tail_after_close_renders_completed_prefix(string tail)
+    {
+        byte[] completed = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 Z' fill='red'/></svg>", out _, out _);
+        byte[] recovered = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 H8 V8 Z" + tail + "' fill='red'/></svg>", out _, out _);
+
+        Assert.Equal(completed, recovered);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(recovered, 8, 6, 1));
     }
 
     [Fact]

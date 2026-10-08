@@ -26,6 +26,8 @@ internal sealed class SvgLeafMaskOperation : IDisposable
     internal SvgRecordingScope RecordingScope { get; set; } = new(-1);
     internal SvgClipBox? Region { get; set; }
     internal SvgLayerRegionKind RegionKind { get; set; }
+    internal SvgAffineViewportClip? AffineViewport { get; set; }
+    internal int ContentIndex { get; set; } = -1;
     /// <summary>Releases this metadata reservation without disposing borrowed operations or observing cancellation.</summary>
     /// <remarks>Only the conversion owner disposes this single-threaded value; budget release is idempotent.</remarks>
     public void Dispose() => _reservation.Dispose();
@@ -231,10 +233,19 @@ internal static class SvgLeafMaskComposition
                             SvgLeafMaskOperation source = mapped.Source ?? throw new InvalidOperationException("Leaf mask was not resolved.");
                             mapped.Value = source.Value;
                             mapped.SourceOpacity = source.SourceOpacity;
-                            mapped.Region = source.Region is SvgClipBox region ? mapped.Map.Apply(region) : null;
                             mapped.RegionKind = source.RegionKind;
+                            if (source.AffineViewport is {} affine)
+                                mapped.AffineViewport = affine with { Map = mapped.Map.ComposeChecked(affine.Map) };
+                            else if (source.RegionKind == SvgLayerRegionKind.Viewport && !mapped.Map.IsAxisAligned && source.Region is SvgClipBox viewport)
+                            {
+                                mapped.AffineViewport = new(viewport, mapped.Map);
+                                mapped.RegionKind = SvgLayerRegionKind.AffineViewport;
+                            }
+                            else mapped.Region = source.Region is SvgClipBox region ? mapped.Map.Apply(region) : null;
                             mapped.Resolved = true;
                         }
+                        if (operation.AffineViewport is {} clip && operation.ContentIndex < 0)
+                            (operation.Region, operation.ContentIndex) = clip.Register(state, work, token);
                         if (operation.Value != 255 || operation.Region is not null || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
                     }
                 }
@@ -248,7 +259,7 @@ internal static class SvgLeafMaskComposition
                 for (int begin = common; begin < desired.Count; begin++)
                 {
                     SvgLeafMaskOperation operation = desired[begin].Operation;
-                    commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, operation.RecordingScope.Value, operation.SourceOpacity, operation.Region, -1, operation.Value) { RegionKind = operation.RegionKind });
+                    commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, operation.RecordingScope.Value, operation.SourceOpacity, operation.Region, operation.ContentIndex, operation.Value) { RegionKind = operation.RegionKind });
                 }
                 active.Clear();
                 active.AddRange(desired.AsSpan());

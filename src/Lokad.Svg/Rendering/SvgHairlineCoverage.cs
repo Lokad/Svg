@@ -15,13 +15,21 @@ internal ref struct SvgHairlineCoverage
     private readonly SvgAnalyticPaint _paint;
     private readonly (double Left, double Top, double Right, double Bottom)? _clip;
     private readonly SvgClipAntialiasing _antialiasing;
+    private readonly ReadOnlySpan<byte> _viewportMask;
     private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
 
     internal SvgHairlineCoverage(Span<byte> destination, int width, int height, SvgAnalyticPaint paint,
         (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing,
         ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        : this(destination, width, height, paint, clip, antialiasing, ReadOnlySpan<byte>.Empty, workCounter, cancellationToken) { }
+
+    internal SvgHairlineCoverage(Span<byte> destination, int width, int height, SvgAnalyticPaint paint,
+        (double Left, double Top, double Right, double Bottom)? clip, SvgClipAntialiasing antialiasing, ReadOnlySpan<byte> viewportMask,
+        ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        if (!viewportMask.IsEmpty && viewportMask.Length != checked(width * height * 4)) throw new ArgumentException("Viewport mask must match the destination canvas.", nameof(viewportMask));
+        _viewportMask = viewportMask;
         _destination = destination; _width = width; _height = height; _paint = paint;
         _clip = clip; _antialiasing = antialiasing; _work = workCounter; _token = cancellationToken;
     }
@@ -103,6 +111,11 @@ internal ref struct SvgHairlineCoverage
             byte clipped = coverage.Apply(alpha);
             if (clipped != alpha) kind = SvgAnalyticPaintKind.Direct;
             alpha = clipped;
+        }
+        if (!_viewportMask.IsEmpty)
+        {
+            alpha = (byte)((alpha * _viewportMask[(y * _width + x) * 4 + 3] + 127) / 255);
+            kind = SvgAnalyticPaintKind.Direct;
         }
         _paint.Blend(_destination.Slice((y * _width + x) * 4, 4), alpha, kind);
     }

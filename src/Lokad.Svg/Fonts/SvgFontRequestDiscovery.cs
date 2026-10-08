@@ -64,6 +64,7 @@ internal static class SvgFontRequestDiscovery
             bool hasUnsupportedContent = false;
             int nodeCount = 0;
             int inertDepth = -1;
+            int descriptionDepth = -1;
             int definitionsDepth = -1;
             int symbolDepth = -1;
             int groupDepth = 0;
@@ -125,6 +126,13 @@ internal static class SvgFontRequestDiscovery
                         }
                         else switchScopes[switchScopes.Count - 1] = top with { FirstChildConsumed = true };
                     }
+                    if (descriptionDepth >= 0 && reader.Depth > descriptionDepth)
+                    {
+                        if (isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
+                        sterile = true;
+                    }
+                    else if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName) && !reader.IsEmptyElement)
+                        descriptionDepth = reader.Depth;
                     bool rootElement = reader.Depth == rootDepth;
                     TextStyle style;
                     if (inheritedLevels.Count == 0)
@@ -180,7 +188,7 @@ internal static class SvgFontRequestDiscovery
                     if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "switch" && (parentAllowsText || viewportSizes.Count > 0 || clipDepths.Count > 0) && !reader.IsEmptyElement) switchScopes.Add(new SwitchScope(reader.Depth, false));
                     bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "switch" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop");
                     bool isInertForeignElement = !isSvgElement && reader.IsEmptyElement;
-                    bool unsupportedContainer = (!rootElement && (reader.LocalName == "style" || (reader.LocalName == "symbol" && !symbolDefinition))) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && reader.LocalName is ("title" or "desc" or "metadata")) || (!directChild && !hasGroupAncestor && reader.LocalName == "defs");
+                    bool unsupportedContainer = (!rootElement && (reader.LocalName == "style" || (reader.LocalName == "symbol" && !symbolDefinition))) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && !hasGroupAncestor && reader.LocalName == "defs");
                     bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "image");
                     bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyRenderedLeaf);
                     // Retain requests admitted before this point: lowering still paints them before conversion rejects the unsupported sibling, so clearing here would omit a font lowering requires.
@@ -245,6 +253,7 @@ internal static class SvgFontRequestDiscovery
                     if (reader.Depth == skipDepth) skipDepth = -1;
                     if (switchScopes.Count > 0 && switchScopes[switchScopes.Count - 1].Depth == reader.Depth) switchScopes.RemoveLast();
                     if (reader.Depth == inertDepth) inertDepth = -1;
+                    if (reader.Depth == descriptionDepth) descriptionDepth = -1;
                     if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                     if (reader.Depth == symbolDepth) symbolDepth = -1;
                     if (viewportSizes.Count > 0 && viewportSizes[^1].Depth == reader.Depth) viewportSizes.RemoveLast();

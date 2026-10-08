@@ -49,7 +49,7 @@ internal static class SvgReferenceResolver
     internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
-        if (definition.StrokeContent is {} strokeContent && (reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default || reference.PaintServerId is not null))
+        if (definition.StrokeContent is {} strokeContent && (reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default || reference.PaintServerId is not null || !reference.Transform.IsAxisAligned))
             return SvgSymbolContentRenderer.Apply(definition with { SymbolContent = strokeContent }, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
         if (definition.LeafSource is SvgDefinitionLeafSource source)
@@ -60,14 +60,20 @@ internal static class SvgReferenceResolver
                 foreach (SvgSymbolFillBinding binding in authoredBindings) { workCounter.Consume(cancellationToken); inheritsFill |= binding.IsInherited; }
                 if (!inheritsFill) reference = reference with { PaintServerId = null, PaintServerFill = null };
             }
-            if (source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill))
+            // An instanced path is one native draw. Replaying generated integer
+            // bands as separate rectangles changes fractional AA and paint order.
+            bool retainMappedContour = source.LocalName == "path" && definition.Geometries.Length > 0
+                && (definition.Geometries[0].Kind is SvgGeometryKind.OrthogonalBand or SvgGeometryKind.Rectangle
+                    || definition.Geometries[0].AuthoredPath is { StrokeStyle: null })
+                || !reference.Transform.IsAxisAligned && source.LocalName is "path" or "rect" or "polygon" or "polyline";
+            if (retainMappedContour || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill))
             {
                 foreach (SvgGeometry geometry in definition.Geometries)
                 {
                     workCounter.Consume(cancellationToken);
                     if (geometry.LeafMask is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, retainMappedContour, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }

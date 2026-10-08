@@ -97,12 +97,6 @@ internal static class SvgDefinitionParser
             else state.SymbolDepth = reader.Depth;
             return true;
         }
-        if (state.SymbolDepth >= 0 && reader.Depth == state.SymbolDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg"
-            && reader.LocalName is "title" or "desc" or "metadata")
-        {
-            if (!reader.IsEmptyElement) state.SymbolDescriptionDepth = reader.Depth;
-            return true;
-        }
         bool inClipDefinitions = state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1;
         if ((inClipDefinitions || rootDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "clipPath")
         {

@@ -3,8 +3,11 @@
 These are original CC0 calibration inputs, not supported-product fixtures. Each
 probe has a pinned-Chrome reference in `references/` and records either a
 categorized rejection or an admitted render with an explicit pixel difference.
-The current manifest contains 53 probes: 27 exact, 25 known-difference renders
-and one rejection. Exact probes retain their original evidence and graduate to
+The main manifest contains 65 probes: 64 exact and one rejection. Separate
+mechanism banks retain their own denominators. `iching-library/manifest.json`
+has 25 controls: 22 exact, two categorized rejections and one measured nested
+affine-opacity difference against frozen references. The complete retained
+I Ching document is measured separately in the online gap manifest. Exact probes retain their original evidence and graduate to
 the fixture bank with their original inputs, references and capture provenance.
 Research records preserve reproducible evidence for geometry
 and paint-server work without treating an inexact render as a product baseline.

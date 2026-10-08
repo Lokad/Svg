@@ -88,10 +88,14 @@ internal static class SvgDocumentTraversal
                 {
                     // Skipped switch content never renders and never invalidates the operation.
                 }
-                else if (state.SymbolDescriptionDepth >= 0 && reader.Depth > state.SymbolDescriptionDepth)
+                else if (state.DescriptionDepth >= 0 && reader.Depth > state.DescriptionDepth)
                 {
                     // Descriptive subtrees never create drawing or reference definitions. Active content still invalidates the operation.
                     if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
+                }
+                else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName))
+                {
+                    if (!reader.IsEmptyElement) state.DescriptionDepth = reader.Depth;
                 }
                 else if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, namedColors, workCounter, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
@@ -234,7 +238,7 @@ internal static class SvgDocumentTraversal
             if (reader.NodeType == XmlNodeType.EndElement)
             {
                 if (reader.Depth == state.SkipDepth) state.SkipDepth = -1;
-                if (reader.Depth == state.SymbolDescriptionDepth) state.SymbolDescriptionDepth = -1;
+                if (reader.Depth == state.DescriptionDepth) state.DescriptionDepth = -1;
                 if (reader.Depth == state.DefinitionsDepth) SvgDefinitionParser.DrainPendingGradientHrefs(state, workCounter, cancellationToken);
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
                 if (reader.Depth == state.GradientDepth)

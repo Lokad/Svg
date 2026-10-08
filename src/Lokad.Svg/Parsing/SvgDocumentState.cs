@@ -183,7 +183,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal int SymbolDepth { get; set; } = -1;
 
-    internal int SymbolDescriptionDepth { get; set; } = -1;
+    internal int DescriptionDepth { get; set; } = -1;
 
     internal int ClipPathDepth { get; set; } = -1;
 

@@ -8958,3 +8958,98 @@ artifacts/linux-delivery-20261007/illustrator-heart-final-20261008/.
 The I Ching library is the next complete-document deliverable; remaining G2
 combinations are dependencies only when that document requires them. G3–G9 and
 S17 remote CI remain open.
+
+
+## I Ching library, path prefixes and affine symbol clips (2026-10-08)
+
+The complete retained CC0 I Ching library (`inv-106`) matches its unchanged
+280x720 transparent browser reference through all six outputs on Windows/Linux.
+All 79 symbols and uses, the original download, root-sized input and declared
+options remain unchanged. Three fresh healthy, cleaned Linux Chrome 153.0.8010.52 /
+Chromium 1681091 / recipe-3 captures reproduce that reference byte-for-byte.
+Two of four retained gap documents are complete; this development ledger remains
+separate from the preserved corporate 27/27 documents and 258/258 variants.
+
+Diagnosis corrected the earlier compound-curve attribution: the even-odd
+Yin/Yang witness already rendered exactly. The first rejection was
+`Hexagram_U4DCA`'s trailing `z0`. Shared drawable-path normalization now retains
+the last complete segment according to [SVG path error handling](https://www.w3.org/TR/SVG2/paths.html#PathDataErrorHandling).
+Incomplete repeated parameter groups preserve earlier complete groups. The
+existing strict reader supplies number and arc-flag grammar; limits and
+cancellation propagate, including the full original attribute's command/work
+scan. Whole valid values remain borrowed; a shortened prefix reserves its copy
+before allocation and releases it after lowering. Missing path data, malformed
+XML and strict clip/mask path consumers retain their existing categorized errors.
+The source SVG is neither repaired nor replaced.
+
+Composed non-axis-aligned symbol viewports now retain the rectangle plus its
+source map as a sidecar. Emission registers an owned native convex contour with
+the existing mask-content scene machinery. Raster replay reuses the existing
+force-RLE antialiased paint-clip route, retaining native mask/run and direct-paint
+distinctions. Coverage intersects using rounded byte products and applies to
+individual paint operations. Simply masking the already composed content, or
+allowing the small analytic-mask shortcut while collecting clip alpha, produced
+incorrect pixels and remains rejected evidence.
+
+Instance source replay preserves authored single and compound bar contours
+instead of reducing them to separate rectangle draws. The source transform
+composes through existing geometry; preserving an already retained authored path
+when stroke-construction replay runs also keeps the last single Yang bar exact.
+Fractional/rotated placement therefore follows the same native contour identity
+as the browser, without shape/paint/instance-specific rasterizers or source-ID
+exceptions. Hairline strokes borrow the current canvas clip tape, including the
+native direct-pair distinction under clipping.
+
+Affine clip scopes paint directly when they need no isolation. Isolated opacity
+clears inherited clip alpha during child rendering and applies it at restoration;
+its bounded layer origin accounts for the enclosing clip bounds. Existing sprite
+and image-shader restoration arithmetic stays separate. Successive affine clips
+with nested isolation are not generally exact: the independently captured
+`nested-rotated-opacity` control retains 32 differing pixels, maximum channel
+error 51 and alpha error 1. Its source/reference and complete measured residual
+remain frozen under G5. `rotated-symbol-gradient` retains the separate G3
+axis-aligned paint gate; active SVG inside descriptions retains its explicit
+unsupported outcome.
+
+Title/desc/metadata subtrees under admitted groups and links are inert in both
+lowering and font discovery. Descendant shape attributes and IDs neither paint
+nor become definitions or font requests; subsequent eligible text still requests
+its supplied font. Active SVG script/style/animation remains unsupported. Node,
+attribute, depth and work limits still traverse that content. The old group/link
+description tests now check successful discovery and rendering on unchanged
+inputs. A malformed-XML test preserves its XML boundary; valid completed-prefix
+twins cover both a stray number and a dangling command after closepath.
+
+The 25 focused CC0 controls retain 22 exact, two rejected and one measured
+residual through all six outputs. Sixteen were declared before implementation
+and capture; two descriptions preceded their own correction; six follow-ups
+were declared after the prototype and before capture; the hairline witness was
+declared before capture and its consumer correction. All 75 Windows captures
+are healthy, cleaned and stable. This bank measures mechanisms, not documents.
+
+Three inputs sweep discovery/parser work limits, sampled and peak-edge memory
+denials, raster work boundaries and cancellation/retry. The complete library
+releases owners on early/middle/late work denial and peak memory denial, then
+retries. Cancellation during clipped native replay releases scratch before a
+successful retry. Clip registration reserves geometry-array storage before
+allocation; scene-builder failure disposes registered mask contours, while a
+successful scene transfer empties those owners. The affine tape costs four bytes
+per output pixel per active clip and charges intersection/replay work; isolated
+layers keep their own existing surface charge. Layout stays 72/272/68 bytes.
+No quantitative allocation or performance improvement is claimed.
+
+Both Release builds have zero warnings/errors and each platform passes 5,399
+tests (4,094 core, 1,299 visual-project, six FontProbe), without failure/skip.
+Every preceding 1,567 original report and 1,546 PNG remains unchanged from the
+heart checkpoint. All older control banks and corporate reports/images remain
+unchanged; each platform preserves its own-reference 27/27 and 258/258 exact
+matrix. The separate online bank's I Ching entry is the only graduated report.
+Source/asset bytes in the fresh Linux checkout match the Windows compiler inputs.
+Evidence stays under artifacts/iching-library-20261008/ and
+artifacts/linux-delivery-20261007/iching-library-final-20261008/.
+
+The next complete document is `inv-103`: bounded circle tile content and shared
+pattern paint on an ordinary circle. Remaining G2 combinations stay visible
+without blocking G3-G6; the nested-affine-opacity defect stays G5. G2-G9 and S17
+remote CI remain open. Existing frozen references require no recapture or source
+fingerprint refresh merely for documentation changes.

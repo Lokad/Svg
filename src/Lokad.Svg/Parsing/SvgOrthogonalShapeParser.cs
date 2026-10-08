@@ -27,12 +27,14 @@ internal static class SvgOrthogonalShapeParser
             if (state.Patterns.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out _)) return SvgPatternSyntax.LowerPatternBands(reader, context, style, state, "path", true, maximumGeometryElements, budget, frame);
             return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, "path", true, maximumGeometryElements, budget, frame);
         }
-        string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
-        (int commandCount, bool hasCurve, bool hasArc, bool hasFractional) = ScanPathData(d, context.WorkCounter, context.CancellationToken);
+        using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+        string d = renderData.Value;
+        (_, bool hasCurve, bool hasArc, bool hasFractional) = ScanPathData(d, context.WorkCounter, context.CancellationToken);
+        int commandCount = renderData.CommandCount;
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
         shape = context.ResolveShape(fillStyle, reader, true);
-        if (!shape.Presentation.HasFill && !context.RetainInstanceStrokePath && !paintOutline && !paintRadialOutline && !paintPatternOutline && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
+        if (d.Length == 0 || !shape.Presentation.HasFill && !context.RetainInstanceStrokePath && !paintOutline && !paintRadialOutline && !paintPatternOutline && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
         {
             // Unpainted fills contribute no area and feed no paint-server boxes, masks or clips here, so degenerate
             // subpaths skip fill validation while stroke lowering still outlines every subpath below.
@@ -194,7 +196,8 @@ internal static class SvgOrthogonalShapeParser
     {
         if (isPath)
         {
-            string d = reader.GetAttribute("d") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Path data is required.");
+            using SvgRenderablePathData renderData = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+            string d = renderData.Value;
             BudgetedParserList<SvgPoint> points = SvgOrthogonalGeometryTokenizer.ParsePath(d, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken, contourEnds, false);
             try { SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, elementName, context.WorkCounter, context.CancellationToken, allowDiagonal); }
             catch { points.Dispose(); throw; }
@@ -229,14 +232,14 @@ internal static class SvgOrthogonalShapeParser
         string pointsValue = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, elementName + " points are required.");
         bool hasFractional = pointsValue.Contains('.') || pointsValue.Contains('e') || pointsValue.Contains('E');
         bool shaderFill = SvgGradientSyntax.IsGradientFill(style.Fill);
-        if (shaderFill && !hasFractional)
+        if (shaderFill && !hasFractional && !context.RetainInstanceStrokePath)
         {
             if (state.Patterns.TryGetValue(SvgGradientSyntax.ParsePaintId(style.Fill), out _)) return SvgPatternSyntax.LowerPatternBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
             return SvgGradientSyntax.LowerGradientBands(reader, context, style, state, elementName, false, maximumGeometryElements, budget, frame);
         }
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
-        if (hasFractional)
+        if (hasFractional || context.RetainInstanceStrokePath)
         {
             shape = context.ResolveShape(shaderFill ? fillStyle with { Fill = "#ffffff" } : fillStyle, reader, true);
             bool fractionalEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
