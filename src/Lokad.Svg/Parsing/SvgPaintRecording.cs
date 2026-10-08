@@ -262,7 +262,13 @@ internal static class SvgPaintRecording
 
     internal static SvgGeometry[] WrapInstance(SvgGeometry[] geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
-        if (opacity.Value == 1 || geometries.Length == 0) return geometries;
+        WrapInstance(geometries.AsSpan(), opacity, scope, state, work, token);
+        return geometries;
+    }
+
+    internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (opacity.Value == 1 || geometries.Length == 0) return;
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Resolved = true; operation.Value = 255; operation.SourceOpacity = opacity; operation.RecordingScope = scope;
         SvgLeafMaskBinding? lastInner = null;
@@ -278,6 +284,5 @@ internal static class SvgPaintRecording
             }
             geometries[index] = geometry with { LeafMask = binding };
         }
-        return geometries;
     }
 }

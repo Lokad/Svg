@@ -8,7 +8,7 @@ public sealed class SvgSymbolInstanceReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "symbol-instances", "symbol-presentation" })
+        foreach (string family in new[] { "symbol-instances", "symbol-presentation", "symbol-content", "symbol-content-diagnostics" })
         {
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", family, "manifest.json")));
             foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
@@ -18,12 +18,12 @@ public sealed class SvgSymbolInstanceReferenceTests
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Symbol_instances_match_stable_browser_references_through_all_six_outputs(string family, string identity)
+    public async Task Symbol_instances_retain_browser_comparisons_through_all_six_outputs(string family, string identity)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(16, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family == "symbol-content-diagnostics" ? 3 : 16, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("identical", RequiredString(root, "decodedPixelStability"));
         Assert.Equal("healthy", RequiredString(root, "captureStartupHealth"));
@@ -44,7 +44,10 @@ public sealed class SvgSymbolInstanceReferenceTests
         Assert.Equal(height, reference.Height);
         byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
         PixelComparison comparison = PixelComparer.Compare(reference, PngRgbaDecoder.Decode(expected, checked(width * height)));
-        Assert.True(comparison.IsExact, identity + ": " + comparison);
+        if (item.TryGetProperty("knownDifference", out JsonElement difference))
+            Assert.Equal(difference.Deserialize<PixelComparison>(), comparison);
+        else
+            Assert.True(comparison.IsExact, identity + ": " + comparison);
         byte[] destination = new byte[expected.Length];
         Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(expected, destination);

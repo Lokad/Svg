@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Retained symbol group/use controls with unchanged browser references. The fractional viewport/opacity residual is explicitly measured; these cases are separate from the original bank and corporate denominators.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "cases": [
+    {
+      "id": "sibling-opacity-inlined",
+      "input": "sibling-opacity-inlined.svg",
+      "reference": "references/sibling-opacity-inlined.png",
+      "sourceSha256": "3c6b9091697af32aced82e544a59d5f9c469fd5fcc3efcb0f1bb3343b16a97df",
+      "referenceSha256": "c0fc111ce1a2abc8d95e630154fe040b773464b9284d5dc52d853545c6a592b3",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before its production comparison and browser capture; the original duplicate-attribute draft was rejected before capture, and its correction is retained in the ignored study.",
+      "width": 128,
+      "height": 96,
+      "background": "transparent",
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 123,
+        "MaximumChannelError": 30,
+        "MeanAbsoluteError": 0.013997395833333334,
+        "RootMeanSquareError": 0.5083130545818525,
+        "MaximumAlphaError": 30,
+        "AlphaChangedPixelCount": 21,
+        "MinimumMismatchX": 31,
+        "MinimumMismatchY": 21,
+        "MaximumMismatchX": 51,
+        "MaximumMismatchY": 44
+      }
+    },
+    {
+      "id": "sibling-opacity-opaque",
+      "input": "sibling-opacity-opaque.svg",
+      "reference": "references/sibling-opacity-opaque.png",
+      "sourceSha256": "eb335c784a7ec07c41a805b42cd7d7ffc583d6db02b52195b62a8f0e4421b775",
+      "referenceSha256": "c5a4c1f4d48b716d141a500e7fc6145930ce7b09cba4a762be2c4303b2fa8260",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before its production comparison and browser capture; the original duplicate-attribute draft was rejected before capture, and its correction is retained in the ignored study.",
+      "width": 128,
+      "height": 96,
+      "background": "transparent"
+    },
+    {
+      "id": "sibling-opacity-unclipped",
+      "input": "sibling-opacity-unclipped.svg",
+      "reference": "references/sibling-opacity-unclipped.png",
+      "sourceSha256": "98cb5334f1f09b52502062e1819b0c07719aac869a3d8be707b65b0e96acc545",
+      "referenceSha256": "ee10d624b8f5549dcf62da3ae89371242b7fea7a5a5e2253cc5f405866ba3f24",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before its production comparison and browser capture; the original duplicate-attribute draft was rejected before capture, and its correction is retained in the ignored study.",
+      "width": 128,
+      "height": 96,
+      "background": "transparent"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><symbol id='s' viewBox='0 0 48 40' ><circle cx='25.75' cy='23.5' r='10.25' fill='#268ab5'/><g fill='#b54975'><rect x='5.5' y='6.25' width='24.5' height='20.5' rx='4.5'/></g><circle cx='25.75' cy='23.5' r='10.25' transform='translate(22 10)' fill='#268ab5'/></symbol><use href='#s' x='3.25' y='4.5' width='48' height='40' /><rect x='112' y='83' width='10' height='8' fill='#d48a24'/></svg>

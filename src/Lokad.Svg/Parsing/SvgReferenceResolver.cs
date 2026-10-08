@@ -10,6 +10,8 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgRecordingScope RecordingScope { get; init; }
     internal SvgPaintOpacity SourceOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
+    internal bool IsDisplayed { get; init; } = true;
+    internal bool IsVisible { get; init; } = true;
 }
 
 /// <summary>Retains one clip-path reference whose box needs a forward definition or clip-path definition.</summary>
@@ -26,7 +28,7 @@ internal static class SvgReferenceResolver
     internal static void ResolveOrDefer(SvgUseReference reference, BudgetedParserDictionary<string, SvgDefinition> definitions, BudgetedParserList<PendingUse> pendingUses, SvgSceneBuilder scene, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDeferredClip? deferredClip, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
-        if (deferredClip is null && (maskReference is null || mask is not null) && definitions.TryGetValue(reference.Id, out SvgDefinition definition))
+        if (deferredClip is null && (maskReference is null || mask is not null) && definitions.TryGetValue(reference.Id, out SvgDefinition definition) && definition.SymbolContent is null)
         {
             SvgGeometry[] applied = ApplyInstanceMask(definition, reference, frame, mask, maskReference, state, workCounter, cancellationToken);
             scene.AddGeometries(applied);
@@ -42,6 +44,7 @@ internal static class SvgReferenceResolver
     internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
+        if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbol(definition, symbolBox, reference, frame, state, workCounter, cancellationToken);
         if (reference.StrokeOverride is not null && reference.PaintServerId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked paint-server use instances are not implemented.");
         if (reference.StrokeOverride is { Join: SvgStrokeJoin.Round } && (definition.InstanceStrokeMiterLimit is null || definition.Geometries.Length != 1 || definition.Geometries[0].Kind != SvgGeometryKind.PolygonFill))
@@ -307,13 +310,13 @@ internal static class SvgReferenceResolver
         }
     }
 
-    private static SvgAffineTransform PlainInstancePlacement(SvgUseReference reference, SvgViewportFrame? frame)
+    internal static SvgAffineTransform PlainInstancePlacement(SvgUseReference reference, SvgViewportFrame? frame)
     {
         SvgAffineTransform placement = reference.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(1, 1, reference.X, reference.Y));
         return frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(placement) : placement;
     }
 
-    private static SvgAffineTransform SymbolInstancePlacement(SvgViewBox box, SvgUseReference reference, SvgViewportFrame? frame)
+    internal static SvgAffineTransform SymbolInstancePlacement(SvgViewBox box, SvgUseReference reference, SvgViewportFrame? frame)
     {
         if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
         (double sx, double sy, double ox, double oy) = SvgGeometrySyntax.MapViewBox(box, reference.Width.Value, reference.Height.Value);
@@ -846,7 +849,7 @@ internal static class SvgReferenceResolver
     }
 
     /// <summary>Reserves a mapped batch before copying; the document holds its staging-array reservation until teardown.</summary>
-    private static SvgGeometry[] RetainInstanceBatch(ReadOnlySpan<SvgGeometry> geometries, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    internal static SvgGeometry[] RetainInstanceBatch(ReadOnlySpan<SvgGeometry> geometries, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         if (geometries.IsEmpty) return [];
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(128 + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Parser);

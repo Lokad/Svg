@@ -8,7 +8,9 @@ internal static class SvgDefinitionParser
 {
     internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        bool inDefinitions = (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1) || (state.SymbolDepth >= 0 && reader.Depth == state.SymbolDepth + 1);
+        bool symbolLocation = state.SymbolDepth >= 0 && state.SymbolDefinition is {} activeSymbol && reader.Depth == activeSymbol.ChildDepth(state.SymbolDepth);
+        if (symbolLocation && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgSymbolContentParser.TryParse(reader, root, state, namedColors, workCounter, cancellationToken)) return true;
+        bool inDefinitions = (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1) || symbolLocation;
         bool rootDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && directChild && reader.GetAttribute("id") is not null;
         bool groupNestedDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && state.PatternId is null && state.MaskId is null && state.ClipPathId is null && state.GroupDepth > 0 && reader.GetAttribute("id") is not null;
         if ((inDefinitions || rootDefinition || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
@@ -36,6 +38,9 @@ internal static class SvgDefinitionParser
             try
             {
                 SvgPaintRecording.FinishDefinition(definition.Geometries, state, workCounter, cancellationToken);
+                SvgDefinition source = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false);
+                SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
+                definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = SvgPresentationResolver.ParseDisplay(sourceStyle.Display), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true) };
                 if (symbolChild)
                 {
                     definition = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, true);
@@ -48,7 +53,7 @@ internal static class SvgDefinitionParser
                     workCounter.Consume(cancellationToken);
                     if (state.Definitions.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     string retainedId = state.Strings.Copy(id);
-                    SvgDefinition registered = symbolChild ? BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false) with { BorrowedFromSymbol = true } : definition;
+                    SvgDefinition registered = symbolChild ? definition with { SymbolFillBindings = source.SymbolFillBindings, BorrowedFromSymbol = true } : definition;
                     if (!state.Definitions.TryAdd(retainedId, registered)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     retained = true;
                 }
@@ -1037,7 +1042,7 @@ internal static class SvgDefinitionParser
         }
         finally
         {
-            if (!retained) foreach (SvgGeometry geometry in definition.Geometries) geometry.Dispose();
+            if (!retained) { foreach (SvgGeometry geometry in definition.Geometries) geometry.Dispose(); definition.SymbolContent?.Content.Dispose(); }
             builder.Dispose();
             state.SymbolDefinition = null;
             state.SymbolDepth = -1;
@@ -1050,7 +1055,7 @@ internal static class SvgDefinitionParser
     {
         if (definition.Geometries.Length == 0) return definition with { SymbolFillBindings = [] };
         SvgComputedStyle style = context.ResolveStyle(reader);
-        SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol fills require a presentation context.")).Presentation;
+        SvgSymbolPresentation symbol = includesSymbolPresentation ? (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol fills require a presentation context.")).Presentation : default;
         bool inherited = reader.LocalName != "line" && style.Fill is null && (!includesSymbolPresentation || !symbol.HasAuthoredFill);
         SvgPaintOpacity? opacity = style.FillOpacity is null ? (includesSymbolPresentation ? symbol.FillOpacity : null) : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
         SvgColor? color = style.Color is null ? (includesSymbolPresentation ? symbol.CurrentColor : null) : SvgColorParser.Parse(style.Color, context.NamedColors);

@@ -8254,3 +8254,45 @@ is made. Detailed results remain ignored under `artifacts/symbol-presentation-20
 and isolated Linux `symbol-presentation-final-20261008/`. Nested symbol contents,
 cloned-container visibility, currentColor strokes, wider instance styles and
 viewport combinations remain G2 work; S17 remote CI remains open.
+
+## Retained symbol groups and local reference graphs (2026-10-08)
+
+Nested symbol groups and local uses retain ordered typed source nodes rather
+than XML or an eagerly transformed scene. The direct-leaf route stays available.
+Entering the content route migrates existing leaf owners only after successful
+append; group/use/leaf aliases borrow their own range or geometry. Sealing reserves
+the source array before allocation, releases construction storage on success,
+and preserves owners after work denial or cancellation so assembly can retry.
+
+An iterative validator checks local references, including unused/anonymous
+definitions. Circular dependencies are MalformedInput; undefined local targets
+remain UnsupportedFeature. The expander uses budgeted frames and the existing
+instance geometry/paint mapping. Each clone composes source-order transforms,
+independent solid-fill inheritance, display/visibility and opacity scopes.
+Repeated acyclic references remain separate paints. Empty forward targets keep
+a typed non-painting placeholder so later scene commands remain valid.
+Partial forward insertion now disposes every unadopted native owner and reserves
+extra command storage before allocation; two new ownership sweeps exposed that
+cleanup gap. Six new exhaustive sweeps and eighteen graph, depth, expansion,
+sealing/retry, empty-target and discovery checks cover the slice.
+
+All three retained nested-content rejections graduate to exact results without
+source/reference changes. [Sixteen new controls](../tests/Research/symbol-content/manifest.json)
+give fifteen exact results and one measured difference. In `group-alias-use`,
+a fractional symbol viewport intersects a translucent group: 123 pixels differ,
+including 21 alpha pixels, maximum channel/alpha error 30. [Three diagnostic
+twins](../tests/Research/symbol-content-diagnostics/manifest.json) retain the same
+difference in the equivalent inline group, while opaque and unclipped forms
+are exact. This isolates a clipping/opacity interaction; its full mechanism
+remains unproved. No alias-specific pixel rule is justified.
+
+A trial that deferred the viewport clip to group composition did not match:
+137 pixels differed, 14 alpha pixels, maximum alpha error 16 and maximum channel
+error 255. It was discarded. The unchanged originals, stable healthy browser
+capture triples and measured differences remain visible for the next G5 repair.
+Every one of the 65 symbol comparisons runs through all six outputs: 63 exact
+and two known differences. These controls stay outside the original bank and
+corporate denominators. Raster fields/surfaces, public APIs and dependencies
+are unchanged; no quantitative performance claim is made. Detailed results
+remain ignored under `artifacts/symbol-content-20261008/` and isolated Linux
+`symbol-content-final-20261008/`.

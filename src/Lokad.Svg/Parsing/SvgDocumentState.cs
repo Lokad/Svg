@@ -287,6 +287,18 @@ internal sealed class SvgDocumentState : IDisposable
         catch { geometry.Dispose(); throw; }
     }
 
+    /// <summary>Enables graph validation only when the document retains group/use source content.</summary>
+    internal bool HasRetainedSymbolContent { get; set; }
+
+    internal void ValidateSymbolReferences(ParserWorkCounter work, CancellationToken token)
+    {
+        if (!HasRetainedSymbolContent) return;
+        using SvgSymbolReferenceValidator validator = SvgSymbolReferenceValidator.Create(this, work, token);
+        foreach (SvgDefinition value in Definitions.Values) { work.Consume(token); validator.Validate(value); }
+        if (_anonymousSymbols is not null)
+            foreach (SvgDefinition value in _anonymousSymbols.AsSpan()) { work.Consume(token); validator.Validate(value); }
+    }
+
     /// <summary>Releases definition-owned geometry reservations exactly once, covering success after scene build and failure or cancellation during teardown.</summary>
     internal void ReleaseDefinitions()
     {
@@ -294,10 +306,16 @@ internal sealed class SvgDocumentState : IDisposable
         _definitionsReleased = true;
         foreach (SvgDefinition value in Definitions.Values)
             if (!value.BorrowedFromSymbol)
+            {
                 foreach (SvgGeometry geometry in value.Geometries) geometry.Dispose();
+                value.SymbolContent?.Content.Dispose();
+            }
         if (_anonymousSymbols is not null)
             foreach (SvgDefinition value in _anonymousSymbols.AsSpan())
+            {
                 foreach (SvgGeometry geometry in value.Geometries) geometry.Dispose();
+                value.SymbolContent?.Content.Dispose();
+            }
     }
 
     public void Dispose()

@@ -1116,6 +1116,10 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
     internal SvgSymbolFillBinding[]? SymbolFillBindings { get; init; }
     /// <summary>Marks a child-ID alias whose geometry owner is the enclosing symbol or its open builder.</summary>
     internal bool BorrowedFromSymbol { get; init; }
+    internal SvgSymbolContentRange? SymbolContent { get; init; }
+    internal SvgSymbolFillBinding[]? SourceFillBindings { get; init; }
+    internal bool SourceDisplayed { get; init; } = true;
+    internal bool? SourceVisible { get; init; }
 }
 
 /// <summary>Retains a solid fill's independently inherited properties until a symbol or child alias is instanced.
@@ -1374,19 +1378,37 @@ internal sealed class SvgSceneBuilder : IDisposable
     }
 
     /// <summary>Expands one deferred reference placeholder into its resolved geometries, returning the inserted extra-command count that later slots must add.</summary>
+    /// <remarks>Adopts the input owners on entry. On failure the scene keeps adopted geometries and this method
+    /// releases the remainder. Extra command storage reserves before allocation; copy loops charge work and cancellation.</remarks>
     internal int ReplaceWithMany(SvgSceneSlot slot, ReadOnlySpan<SvgGeometry> applied)
     {
-        if (applied.Length == 0) throw new InvalidOperationException("Deferred reference resolution requires at least one geometry.");
-        foreach (SvgGeometry geometry in applied) ReserveGradientStops(geometry);
-        _geometries[slot.GeometryIndex] = applied[0];
-        _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null, -1, 255);
-        if (applied.Length == 1) return 0;
-        int firstGeometryIndex = _geometries.Count;
-        for (int index = 1; index < applied.Length; index++) _geometries.Add(applied[index]);
-        SvgDrawCommand[] extra = new SvgDrawCommand[applied.Length - 1];
-        for (int index = 0; index < extra.Length; index++) extra[index] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1, 255);
-        _commands.Insert(slot.CommandIndex + 1, extra);
-        return extra.Length;
+        // Empty targets resolve to a typed non-painting geometry without shifting later commands.
+        if (applied.Length == 0)
+        {
+            _geometries[slot.GeometryIndex] = SvgGeometry.FromRectangle(new(0, 0, 0, 0, SvgColor.Transparent, false, null));
+            return 0;
+        }
+        int adopted = 0;
+        try
+        {
+            foreach (SvgGeometry geometry in applied) ReserveGradientStops(geometry);
+            _geometries[slot.GeometryIndex] = applied[0];
+            adopted = 1;
+            _commands[slot.CommandIndex] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, slot.GeometryIndex, 255, null, -1, 255);
+            if (applied.Length == 1) return 0;
+            int firstGeometryIndex = _geometries.Count;
+            for (; adopted < applied.Length; adopted++) _geometries.Add(applied[adopted]);
+            using RenderBudget.BudgetReservation commandOwner = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(applied.Length - 1), SvgMemoryCategory.Parser);
+            SvgDrawCommand[] extra = new SvgDrawCommand[applied.Length - 1];
+            for (int index = 0; index < extra.Length; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                extra[index] = new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1, 255);
+            }
+            _commands.Insert(slot.CommandIndex + 1, extra);
+            return extra.Length;
+        }
+        catch { for (int index = adopted; index < applied.Length; index++) applied[index].Dispose(); throw; }
     }
 
     internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, null, -1, 255));

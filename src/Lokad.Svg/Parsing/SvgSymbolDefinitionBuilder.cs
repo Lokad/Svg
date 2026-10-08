@@ -11,18 +11,40 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
 {
     private readonly BudgetedParserList<SvgDefinition> _children;
     private readonly RenderBudget.BudgetReservation _owner;
+    private readonly RenderBudget _budget;
+    private readonly ParserWorkCounter _work;
+    private readonly CancellationToken _token;
+    private readonly SvgSymbolPresentation _presentation;
+    private SvgSymbolContent? _content;
 
     private SvgSymbolDefinitionBuilder(RenderBudget budget, ParserWorkCounter work, CancellationToken token, SvgSymbolPresentation presentation, RenderBudget.BudgetReservation owner)
     {
         _children = new(budget, SvgMemoryCategory.Parser, work, token);
-        Presentation = presentation;
+        _presentation = presentation; _budget = budget; _work = work; _token = token;
         _owner = owner;
     }
 
-    internal SvgSymbolPresentation Presentation { get; }
+    internal SvgSymbolPresentation Presentation => _content?.Presentation ?? _presentation;
+    internal int ChildDepth(int symbolDepth) => _content?.ChildDepth(symbolDepth) ?? symbolDepth + 1;
+    internal bool EndGroup(int depth, SvgDocumentState state) => _content?.EndGroup(depth, state) ?? false;
+
+    internal SvgSymbolContent EnableContent()
+    {
+        if (_content is not null) return _content;
+        SvgSymbolContent content = SvgSymbolContent.Create(_budget, _work, _token, _presentation);
+        try
+        {
+            foreach (SvgDefinition child in _children.AsSpan()) content.AddLeaf(child, child.SourceDisplayed, child.SourceVisible);
+            content.ClaimLeafOwnership();
+            _children.Clear();
+            _content = content;
+            return content;
+        }
+        catch { content.Dispose(); throw; }
+    }
 
     /// <summary>Optional assembly observer for deterministic cancellation tests. Runs on the owning parser thread
-    /// after each copied geometry; a throwing observer leaves children owned by this builder and releases assembly scratch.</summary>
+    /// after each copied geometry or retained source node; a throwing observer leaves children owned by this builder and releases assembly scratch.</summary>
     internal Action<int>? AssemblyCheckpoint { private get; set; }
 
     internal static SvgSymbolDefinitionBuilder Create(RenderBudget budget, ParserWorkCounter work, CancellationToken token, SvgSymbolPresentation presentation)
@@ -33,11 +55,21 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
     }
 
     /// <summary>Transfers a complete child's geometries on success; the caller retains ownership if growth fails.</summary>
-    internal void Add(SvgDefinition definition) => _children.Add(definition);
+    internal void Add(SvgDefinition definition)
+    {
+        if (_content is null) _children.Add(definition);
+        else _content.AddLeaf(definition, definition.SourceDisplayed, definition.SourceVisible);
+    }
 
     /// <summary>Transfers all ordered geometry owners into one symbol, retaining separate inherited-fill bindings per child channel.</summary>
     internal SvgDefinition Build(SvgViewBox? viewBox, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
+        if (_content is SvgSymbolContent content)
+        {
+            SvgSymbolContentRange range = content.Seal(work, token, AssemblyCheckpoint);
+            _content = null;
+            return new([], false, null, viewBox) { SymbolContent = range };
+        }
         if (_children.Count == 0) return new([], false, null, viewBox) { SymbolFillBindings = [] };
         if (_children.Count == 1 && Presentation.SourceOpacity.Value == 1)
         {
@@ -88,6 +120,7 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
     {
         foreach (SvgDefinition child in _children.AsSpan())
             foreach (SvgGeometry geometry in child.Geometries) geometry.Dispose();
+        _content?.Dispose();
         _children.Dispose();
         _owner.Dispose();
     }

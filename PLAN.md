@@ -5,8 +5,8 @@ on Windows and Linux**, against each platform's retained browser references.
 Marks are 13/13; outlined wordmarks are 14/14. Membership, input bytes, options
 and references remain frozen. This complete matrix is the regression gate.
 
-**The identified renderer fidelity repair phase is complete.** All admitted
-fixture and research comparisons are exact against their original references.
+**The original renderer fidelity repair phase is complete.** All admitted
+original fixture and research comparisons are exact against their original references.
 The final repair in that phase preserves native stroke contours with zero total signed area
 but nonzero local winding, including clipped construction. It changes one
 original PNG; the other 1,538 PNGs and every corporate report/image stay unchanged.
@@ -17,26 +17,31 @@ The shared `enable-background` validator now admits `new`, `accumulate` and
 stylesheet paths. The Illustrator heart (`inv-105`) advances to the rotated-
 rectangle gate, **G3**, and remains rejected; no source or browser reference changes.
 
-**G2's direct-leaf and symbol-location repairs are implemented.** Both retained
-symbol/instance families now render exactly on three backgrounds, with unchanged inputs and
-references. Symbols also work directly under the root or rendered groups, without
-copying definition-ancestor transforms or visibility. Forty-six independent symbol
-controls retain 43 exact results and three nested-content rejections through all
-six outputs. Anonymous symbols and descriptive metadata have bounded ownership
-and shared font-discovery checks. The next active item remains **G2's remaining
-symbol and instance combinations**:
-nested group/use contents, inherited stroke/paint overrides, remaining definition
-locations and broader viewport mapping. G2 is not a general symbol-support claim.
+**G2 now retains ordered nested groups and local uses.** The three previously
+rejected nested-content controls are exact against unchanged browser references.
+Sixteen new controls give fifteen exact results and one clipping/opacity residual;
+three diagnostic twins give two exact results and the same residual. Across the
+symbol banks, **65 six-output comparisons = 63 exact + two known differences**.
+Reference graphs validate and expand iteratively with bounded storage and work.
+Anonymous definitions, borrowed aliases and empty forward targets keep their owners.
+
+**The next fidelity repair is the fractional symbol-viewport clip intersecting
+a translucent group**, under G5. The alias and equivalent inline cases each differ
+at 123 pixels, maximum channel/alpha error 30. Opaque and unclipped twins are exact.
+Admission has exposed a new rendering defect; the original SVGs and references
+remain frozen. After that repair, continue G2's inherited stroke/paint overrides,
+remaining definition locations and broader viewport mapping. G2 remains open.
 
 Solid fill bindings now preserve a leaf's own display/visibility and resolve
 `currentColor` and fill opacity independently at instance time. Ten of sixteen
 new controls previously rendered incorrect pixels; all sixteen now match their
 unchanged browser references through six outputs. This repair also covers child
-aliases; stroke inheritance and cloned-container visibility remain open.
+aliases; nested group display and visibility now propagate through clones.
+Broader stroke inheritance and instance styling remain open.
 
-The next work is ordinary static SVG support within the original product scope:
-remove erroneous admission gates, then fill the missing geometry, reference,
-paint and composition combinations below. Passing the frozen cohort does not
+The remaining support queue covers static SVG within the original product scope:
+repair newly exposed fidelity defects, remove erroneous admission gates, and fill
+missing geometry, reference, paint and composition combinations below. Passing the frozen cohort does not
 prove general SVG support. S17 remote CI remains a separate release requirement.
 
 The first new online sourcing batch screens four public-domain/CC0 SVGs and
@@ -60,8 +65,8 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,379 passed on each platform**: 3,953 core, 420 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Thirty-three exhaustive parser-work/memory ownership inputs pass, including four fresh presentation cases covering recolored native owners, hidden leaves, aliases and opacity scopes. Thirteen duplicate-ID controls keep MalformedInput and zero live storage. During-assembly cancellation/retry remains covered. Eighteen new location/metadata/discovery checks and five font-provider paths pass. Forty-six six-output symbol controls retain 43 exact results and three valid-input nested-content rejections; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
+| Full tests, including corporate selection/measurement | **4,422 passed on each platform**: 3,977 core, 439 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Thirty-nine exhaustive parser-work/memory ownership inputs pass. Eighteen new graph, duplicate-ID, empty-target, deep-chain, expansion-denial, sealing-cancellation/retry and discovery checks pass. Partial forward insertion disposes unadopted native owners and reserves extra command storage before allocation. Sixty-five six-output symbol comparisons retain 63 exact results and two measured clipping/opacity differences; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,389 exact + zero known-difference renders + 21 rejections**; 799 base documents / 611 variants. Three magnified-instance cases graduate against their unchanged references; other fixture outcomes and PNGs stay unchanged. |
 | Executed research manifest | **65 probes = 64 exact + zero known-difference renders + one rejection**. Three multiple-child symbol cases graduate from the erroneous MalformedInput rejection; other research outcomes and PNGs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
@@ -70,9 +75,9 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; original curve commands replay through existing final mapping. No new raster fields or surfaces and no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and 4,379 tests. All 1,567 original execution
+Both platforms pass Release builds and 4,422 tests. All 1,567 original execution
 reports and all 1,545 PNG byte sequences remain unchanged from the preceding
-symbol-location checkpoint; Windows/Linux banks agree. Every corporate result
+symbol-presentation checkpoint; Windows/Linux banks agree. Every corporate result
 is unchanged and exact against its platform's own references. Four retained online failures
 remain; the heart and new I Ching library are G3, the two patterns are G6. WSL
 Ubuntu 24.04.3 uses isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6.
@@ -115,10 +120,10 @@ landed mechanisms remain regression requirements.
 | Priority | Work | Failure class | Dependencies / stages |
 | --- | --- | --- | --- |
 | G1 | **Declaration validation landed.** Inert exporter presentation values share one validator; G2 is next. | Original syntax-location inconsistency resolved; the heart now exposes G3 | Remaining nested style/root selector gates stay G5/G7; S9 |
-| G2 | **Direct-leaf accumulation and native curve replay implemented.** Complete remaining practical symbol/instance combinations. | First retained failures exact; nested/style/other-location/viewport combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
+| G2 | **Direct leaves, nested groups/uses and native curve replay implemented.** Complete remaining practical symbol/instance combinations. | Retained nested rejections now exact; remaining stroke/style/other-location/viewport combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
 | G3 | Complete curved geometry and static transforms across shapes, curves and instances | Missing combinations behind shape-specific and non-uniform gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | Paint-server strokes on ordinary geometry | Missing combinations; no observed pixel residual after rejection | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
-| G5 | Nested viewport paints, general clips, masks and opacity composition | Missing reference/coordinate/composition combinations | G2/G3, bounded layers and reference scopes; S9/S14 |
+| G5 | **Next: repair fractional viewport clipping with translucent groups**, then nested viewport paints, general clips and masks | Two measured clipping/opacity residuals; further missing reference/coordinate/composition combinations | G2/G3, bounded layers and reference scopes; S9/S14 |
 | G6 | Practical patterns: content, inheritance and coordinate systems | Missing static paint support | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded raster images and remaining static CSS | Missing static features/subsets; capture an export before selecting a slice | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Markers and a measured subset of filter/blending effects | Missing static features; lower priority than outlined logos | G3–G5, bounded intermediate surfaces; S16 |
@@ -170,8 +175,8 @@ description and metadata subtrees do not draw or register geometry; active
 content remains rejected and structural/node/work limits still apply. Font
 discovery shares symbol location and late-stylesheet rules, ignores symbol text
 and retains later direct-text requests. Eleven new controls are browser-exact;
-three unchanged nested group/backward-use/forward-use controls retain their G2
-rejections and provide the next measured work.
+the three unchanged nested group/backward-use/forward-use controls now render
+exactly through the retained-content route.
 
 Solid fills now retain authored paint separately from inherited color and fill
 opacity. Each clone resolves these properties from its use context while keeping
@@ -180,18 +185,28 @@ resolved paint controls geometry and recorded alpha. Sixteen further controls
 are exact through six outputs; four new exhaustive work/memory inputs exercise
 newly recolored native owners and partial cleanup.
 
-**G2 remains open.** Implement the retained nested group/use cases, then measure
-visibility/display propagation through cloned containers, currentColor strokes,
+Nested groups and local backward/forward uses retain typed ordered source nodes,
+local transforms, independently inherited solid fill/color/opacity and container
+display/visibility. Group, leaf and use ID aliases borrow their own source range;
+referenced ancestors do not enter the clone. Iterative validation rejects circular
+dependencies as MalformedInput, including unused/anonymous definitions, while
+missing targets remain UnsupportedFeature. Repeated acyclic dependencies preserve
+paint order. Expansion and sealing observe memory/work denial and cancellation.
+The sixteen new controls have fifteen exact results; the clipped translucent
+alias and its inline diagnostic remain explicit G5 differences.
+
+**G2 remains open.** After the G5 fidelity repair, measure currentColor strokes,
 inherited stroke and paint-server overrides, child aliases inheriting stroke,
 use color/fill-opacity attributes, other definition locations, and viewBox
 percentage-base/affine combinations.
-Select bounded slices from those failures and audit cycle categorization; broader
+Select bounded slices from those failures; broader
 transform maps stay G3 and deeper reference/composition scopes stay G5. Exit:
 the selected practical combinations are exact on unchanged references with no
 regression to current exact inputs or resource contracts.
 See [the repair](docs/RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08).
 The [location/ownership follow-up](docs/RASTERIZATION_DESIGN.md#non-rendering-symbol-locations-anonymous-owners-and-descriptions-2026-10-08) records the current repair.
 The [solid-fill presentation repair](docs/RASTERIZATION_DESIGN.md#symbol-solid-fill-presentation-at-instance-time-2026-10-08) records the new fidelity fixes.
+The [retained-content slice](docs/RASTERIZATION_DESIGN.md#retained-symbol-groups-and-local-reference-graphs-2026-10-08) records the expansion and new clipping residual.
 
 ### G3 — curved geometry and transforms
 
@@ -222,6 +237,13 @@ as measured follow-ups. Exit: solid/linear/radial/pattern twins share source str
 semantics, declared clips and placements are exact, and ownership/budget checks pass.
 
 ### G5 — viewports, clips, masks and composition
+
+First repair `symbol-content/group-alias-use` and its inline diagnostic: each
+differs at 123 pixels, including 21 alpha pixels with maximum error 30, under a
+fractional symbol viewport and group opacity. The opaque and unclipped twins are
+exact. Preserve all source/reference bytes and diagnose shared clipping/layer
+composition before extending this support slice. Moving the clip to composition
+alone failed the unchanged comparisons and is not an accepted model.
 
 `original-aa-clip-admitted-shader` rejects a gradient defined inside a nested
 viewport as undefined. The material-pair family rejects patterns in scaled
@@ -261,11 +283,12 @@ features and preserved exact corporate results.
 
 ### Development sourcing and release work
 
-The identified fidelity repairs are complete; the plan now covers unsupported
+The original fidelity repairs are complete; the plan now covers unsupported
 SVG within the original static, self-contained product scope in section 5.
 Refresh G2–G9 as retained examples reveal remaining gaps and their dependencies.
 New fidelity defects may interrupt the support queue; fixing an admission gate
-alone does not close a case.
+alone does not close a case. The current fractional clipping/opacity defect
+interrupts G2–G9 until its retained comparisons are exact.
 
 1. Audit actual parser/renderer gates and existing rejected examples against the
    product scope. Select the next shared feature combination from demonstrated
@@ -292,8 +315,8 @@ representative success rate. Future representative cohorts must be selected
 before comparison.
 
 Remote Windows/Linux build/test/package/resource CI evidence remains S17's open
-release gate. Local platform-reference fidelity is complete. Publishing the
-reviewed branch is a separate authorized action; lack of remote runs does not
+release gate. The frozen corporate matrix is exact locally on both platforms.
+Publishing the reviewed branch is a separate authorized action; lack of remote runs does not
 block the support queue. No release or general SVG compatibility claim follows
 from the four retained online failures.
 

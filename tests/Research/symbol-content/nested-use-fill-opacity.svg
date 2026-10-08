@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><defs><rect x='5.5' y='6.25' width='24.5' height='20.5' rx='4.5' id='leaf' fill='#268ab5'/><symbol id='s' viewBox='0 0 48 40' ><g fill-opacity='.375'><use href='#leaf' fill='#b54975' opacity='.5'/><use href='#leaf' x='11.5' y='4.25'/></g></symbol></defs><use href='#s' x='3.25' y='4.5' width='48' height='40' /><rect x='112' y='83' width='10' height='8' fill='#d48a24'/></svg>

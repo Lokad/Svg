@@ -378,6 +378,10 @@ internal sealed class BudgetedParserList<T> : IDisposable where T : struct
 
     internal ReadOnlySpan<T> AsSpan() => _items.AsSpan(0, _count);
 
+    /// <summary>Views retained slots only; growth invalidates the view. Callers charge mutation work,
+    /// observe cancellation and preserve value ownership without changing the collection count.</summary>
+    internal Span<T> AsMutableSpan() => _items.AsSpan(0, _count);
+
     internal void Clear()
     {
         _count = 0;
@@ -548,6 +552,13 @@ internal sealed class BudgetedParserDictionary<TKey, TValue> : IDisposable where
     }
 
     internal bool TryGetValue(TKey key, out TValue value) => _items.TryGetValue(key, out value);
+
+    /// <summary>Replaces a known entry without allocation or growth; the caller charges work and owns any value resources.</summary>
+    internal void Replace(TKey key, TValue value)
+    {
+        if (!_items.ContainsKey(key)) throw new InvalidOperationException("Only retained dictionary entries can be replaced.");
+        _items[key] = value;
+    }
 
     /// <summary>Enumerates retained values so owners can release value-owned resources on teardown.</summary>
     internal IEnumerable<TValue> Values => _items.Values;

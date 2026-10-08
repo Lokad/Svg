@@ -27,10 +27,10 @@ criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
 | Queue | Supported boundary / missing combination | Retained evidence |
 | --- | --- | --- |
 | G1 | Declaration validation landed: attributes and admitted inline/stylesheet paths share `new` / `accumulate` / `inherit` validation without backdrop allocation. Complete and numeric partial rectangles require finite numbers and nonnegative dimensions. | Eleven six-output contexts plus malformed/priority/resource/discovery controls; the unchanged `inv-105` now reaches G3. |
-| G2 | Ordered direct-leaf symbols, inherited fill channels, container styles/opacity and native-backed magnified instances render. Root and rendered-group symbol locations also work, including anonymous definitions and descriptive metadata. Solid fills retain leaf display/visibility and bind color/fill opacity at instance time. Nested groups/uses, cloned-container visibility, stroke/paint overrides, other locations and broader viewports remain open. | Both original families exact on three backgrounds; forty-six six-output controls retain 43 exact results and three nested-content rejections across the symbol instance, location and presentation banks. |
+| G2 | Ordered symbol leaves, nested groups/local uses and native-backed magnified instances render. Root and rendered-group locations, anonymous owners and descriptive metadata work. Solid fills and group display/visibility bind in clones; reference graphs validate and expand iteratively. Stroke/paint overrides, other locations and broader viewports remain open. | Both original families exact on three backgrounds; all 46 preceding controls now exact. Sixteen new controls give 15 exact and one G5 residual; three diagnostic twins give two exact and the same residual. All 65 comparisons run through six outputs. |
 | G3 | Some axis-aligned/similarity/path transforms exist; rotated rectangles, general matrix curve/shape combinations and non-uniform curve output remain gated. Pattern reflection and compound curved even-odd fill admission are also gated. | `inv-105`, `inv-106`, `original-logo-rotated-mark`, `original-number-general-map`, `original-curve-root-quad-none`, tiger and `group-clip-reflected-pattern`. |
 | G4 | Native solid strokes render; gradient/pattern mixed closed/open subpaths and gradient direct `fill="none"` lines still reject. Oval dash caps/paint/transform combinations remain narrower than solid paths. | Nine `zero-area-stroke-*` paint-server controls, two `line-bounds-*-square-width6-fill-none` controls; shared stroke and paint admission. |
-| G5 | Nested viewport sizing/clips and limited masks exist; nested SVG style attributes, nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `original-aa-clip-admitted-shader`, material pairs, `mask-region-half-translated`; definition scopes, `SvgMaskSyntax` and `SvgNestedViewportSyntax`. |
+| G5 | Fractional symbol viewport clipping with a translucent group has a measured pixel residual and is the next repair. Nested SVG style attributes, nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `symbol-content/group-alias-use` and its inline diagnostic: 123 differing pixels, 21 alpha differences, maximum channel/alpha error 30; opaque and unclipped twins exact. Earlier gates: `original-aa-clip-admitted-shader`, material pairs and `mask-region-half-translated`. |
 | G6 | One rectangle tile with integer user-space coordinates exists; circle/path/multiple-child tiles, local pattern inheritance, fractional/general maps and bounding-box units are missing. | `inv-103`, `inv-104`, `original-cpu-raster-cubic-pattern`; `SvgDefinitionParser` and `SvgPatternSyntax`. |
 | G7 | Embedded PNG and static CSS have explicit narrow subsets; non-uniform image content/resampling, root-targeting stylesheet selectors and additional export combinations need measured slices. | `SvgImageSyntax`, PNG decoder, `SvgStyleSheet`; source distinct export failures before expanding. |
 | G8 | Active markers and filter effects reject. These are later static features with bounded surface/expansion requirements. | `original-logo-marker-mark`, `original-logo-filter-mark`. |
@@ -48,17 +48,19 @@ tokenization and retains no backdrop or token-array owners. Active filter effect
 remain categorized. The heart's new rotated-rectangle rejection is recorded in
 the case manifest; its original and reference remain frozen. See [the repair](RASTERIZATION_DESIGN.md#shared-exporter-background-validation-2026-10-08).
 
-## Direct-leaf symbols and instances (2026-10-08)
+## Symbols and instances (2026-10-08)
 
 Symbols directly inside admitted `defs`, the root or rendered groups retain zero
-or more supported self-closing geometry leaves in document order. Empty symbols paint nothing;
+or more supported self-closing geometry leaves, nested groups and local uses in document order. Empty symbols paint nothing;
 multiple children share one owned definition. Distinct child IDs are aliases,
 while duplicate authored IDs remain malformed. Tested aliases exclude the
 enclosing symbol's viewBox, fill and opacity; inherited stroke on aliases remains
 an open combination. Definition ancestors do not supply transforms, visibility
 or opacity to copies. Symbol IDs are optional; anonymous definitions retain
-child-ID owners through scene construction. Nested group/use content and other
-definition locations remain gaps.
+child-ID owners through scene construction. Group/use ID aliases borrow typed
+source ranges and exclude referenced ancestors. Container display/visibility and
+independent solid-fill properties resolve through the instance context. Other
+definition locations and broader instance styling remain gaps.
 
 Title/description/metadata subtrees are non-rendering and cannot register child
 geometry IDs. Active SVG content still rejects; all nodes, attributes, XML depth
@@ -75,8 +77,8 @@ from use and its ancestors. Color and fill opacity inherit independently of fill
 aliases exclude the symbol's values. A leaf's own display/visibility cannot be
 reactivated by inherited fill. Geometry and recorded alpha share that resolution.
 Stroke channels keep their separately lowered paint. Child, symbol and use opacity
-compose in separate scopes. Cloned-container visibility/display, currentColor
-strokes, use color/fill-opacity attributes and wider paint-server/stroke override
+compose in separate scopes. Nested group visibility/display now propagates in
+clones. CurrentColor strokes, use color/fill-opacity attributes and wider paint-server/stroke override
 combinations remain explicit gaps. Use viewport
 defaults and magnified uniform curve maps have exact independent controls;
 non-uniform/scaled-nested-viewport and other existing consumer gates remain.
@@ -86,13 +88,17 @@ Definition circle/ellipse fills retain original float conics for that replay;
 flattened outlines without an authored tape retain the magnification rejection.
 Both original families are exact on three unchanged references each, and sixteen
 independent controls are exact through six outputs. Denied allocation/work and
-partial assembly cancellation preserve cleanup and retry. Eleven additional
-location controls are exact, while three nested-content controls retain their
+partial assembly cancellation preserve cleanup and retry. All fourteen additional
+location controls are exact, including the three former nested-content
 rejections. Sixteen further solid-fill presentation controls repair ten preceding
 pixel failures while preserving six already exact controls. All are exact through
 six outputs; four new exhaustive ownership inputs protect recolored native
 geometry and partial failures. See [the initial repair](RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08)
 and [the presentation follow-up](RASTERIZATION_DESIGN.md#symbol-solid-fill-presentation-at-instance-time-2026-10-08).
+Sixteen retained-content controls and three diagnostic twins give seventeen
+exact comparisons and two explicit fractional clipping/opacity differences.
+The [content slice](RASTERIZATION_DESIGN.md#retained-symbol-groups-and-local-reference-graphs-2026-10-08)
+records iterative graph validation/expansion and the next fidelity repair.
 
 ## Retained renderer foundations
 

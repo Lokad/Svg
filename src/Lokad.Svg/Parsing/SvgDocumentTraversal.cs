@@ -288,6 +288,7 @@ internal static class SvgDocumentTraversal
                     state.ClipPolygon = null;
                     state.ClipIsObjectBoundingBox = false;
                 }
+                state.SymbolDefinition?.EndGroup(reader.Depth, state);
                 if (reader.Depth == state.SymbolDepth) SvgDefinitionParser.RegisterSymbol(state, workCounter, cancellationToken);
                 if (state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth) state.Viewports.RemoveLast();
                 if (state.ViewportOpacityDepth == reader.Depth)
@@ -348,6 +349,7 @@ internal static class SvgDocumentTraversal
                 if (reader.Depth == rootDepth)
                 {
                     SvgDefinitionParser.ResolvePendingGradientHrefs(state, workCounter, cancellationToken);
+                    state.ValidateSymbolReferences(workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);
