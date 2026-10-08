@@ -5,6 +5,57 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Original-scope support audit and online batch (2026-10-08)
+
+The identified original fixture/research rendering differences are resolved.
+Remaining valid-input rejections now feed [PLAN's ordered G1–G9 support queue](../PLAN.md#3-ordered-support-queue).
+The first online development batch screened four static self-contained sources:
+three distinct failures are retained, and a pixel-exact checkerboard remains
+outside the failure corpus. All twelve fresh sandboxed browser captures are
+healthy, cleaned and byte-stable in triples. Commons API license metadata, size
+and SHA-1 agree with the downloads. The retained originals themselves have no
+line-ending normalization or added contributor license headers.
+
+This is a failure-selected development batch, separate from the frozen corporate
+cohort, the 92-file historical Default sweep and the original fixture/research
+bank. It establishes no representative success rate. The offline visual suite
+executes every declared case in [svg-gap-cases.json](../tests/References/inventory/svg-gap-cases.json).
+Input/oracle asset hashes identify retained bytes; Git identifies implementation.
+Full API responses and capture diagnostics remain under ignored
+`artifacts/support-audit-20261008/`.
+
+### inv-103 — Pattern example.svg
+
+- Original: [candidate SVG](../tests/Fixtures/candidates/inv-103.svg); untouched downloaded bytes.
+- Source/revision and license evidence: [Commons file page](https://commons.wikimedia.org/wiki/File:Pattern_example.svg?oldid=1207079582). Retrieved 2026-10-08.
+- Creator: [FischX](https://commons.wikimedia.org/wiki/User:FischX). License: **Public domain**. The copyright holder dedicates the work to the public domain worldwide (PD-self).
+- Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-103.svg); only root width/height replaced with 200×200 pixel dimensions. Authored geometry and all other source bytes retained. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
+- Browser reference: [PNG](../tests/References/inventory/inv-103-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3, device scale 1; three stable healthy captures.
+- Observed failure: **UnsupportedFeature**, `This SVG child element is not implemented yet.`. Queue **G6**. This first rejection does not exclude additional blockers.
+
+### inv-104 — PatternA.svg
+
+- Original: [candidate SVG](../tests/Fixtures/candidates/inv-104.svg); untouched downloaded bytes.
+- Source/revision and license evidence: [Commons file page](https://commons.wikimedia.org/wiki/File:PatternA.svg?oldid=458884734). Retrieved 2026-10-08.
+- Creator: [Enricopedia](https://commons.wikimedia.org/wiki/User:Enricopedia). License: **Public domain**. The author releases the work into the public domain worldwide (PD-user).
+- Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-104.svg); only root width/height replaced with 178×135 pixel dimensions. Authored geometry and all other source bytes retained. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
+- Browser reference: [PNG](../tests/References/inventory/inv-104-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3, device scale 1; three stable healthy captures.
+- Observed failure: **UnsupportedFeature**, `Pattern attribute 'xlink:href' is not implemented.`. Queue **G6**. This first rejection does not exclude additional blockers.
+
+### inv-105 — WP20Symbols heart.svg
+
+- Original: [candidate SVG](../tests/Fixtures/candidates/inv-105.svg); untouched downloaded bytes.
+- Source/revision and license evidence: [Commons file page](https://commons.wikimedia.org/wiki/File:WP20Symbols_heart.svg?oldid=1144279214). Retrieved 2026-10-08.
+- Creator: [Jasmina El Bouamraoui and Karabo Poppy Moletsane](https://commons.wikimedia.org/wiki/File:WP20Symbols_heart.svg). License: **CC0-1.0**. The file is explicitly offered under the CC0 1.0 Universal Public Domain Dedication.
+- Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-105.svg); only root width/height replaced with 512×401 pixel dimensions. Authored geometry and all other source bytes retained. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
+- Browser reference: [PNG](../tests/References/inventory/inv-105-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3, device scale 1; three stable healthy captures.
+- Observed failure: **UnsupportedFeature**, `Only accumulate enable-background presentation values are implemented.`. Queue **G1**. This first rejection does not exclude additional blockers.
+
+The checkerboard sourcing control is [Indolences' public-domain geometric SVG](https://commons.wikimedia.org/wiki/File:Checkerboard_pattern.svg).
+At its declared 500×500 transparent viewport it is pixel-exact; its three stable
+captures and comparison remain ignored. No successful-source or failing-source
+denominator has been silently repurposed as a representative rate.
+
 ## Zero-area native stroke winding checkpoint (2026-10-08)
 
 The final contained-ring fixture becomes exact against its unchanged browser

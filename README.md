@@ -51,6 +51,12 @@ The retained integer bowtie is exact against its original browser PNG. Native fl
 rectangle endpoints close IBM's three large variants, completing the frozen-cohort
 fidelity target on both platforms.
 
+All admitted original fixture and research comparisons are now exact. Native
+stroke coverage keeps zero-signed-area contours carrying local winding, closing
+the final contained-ring witness. [The support queue](PLAN.md#3-ordered-support-queue)
+now targets remaining static SVG combinations, with three newly sourced
+public-domain/CC0 failures retained in the development inventory.
+
 Circle and ellipse dashes now cut original conics through the shared native
 path-dash constructor. All nine retained dash failures and twelve new independent
 controls are exact, including thin widths, offsets, seams, scaling, pathLength

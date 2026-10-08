@@ -2,9 +2,10 @@
 
 ## Current state
 
-The renderer is a narrow prototype. It supports only the explicit subset listed
-below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
-open. Do not infer that every unlisted visible SVG construct is rejected correctly.
+The renderer supports the explicit subsets listed below. The original retained
+rendering differences are resolved; the original-scope admission and feature
+gaps in [PLAN.md](../PLAN.md#3-ordered-support-queue) remain open. Do not infer
+that every unlisted visible SVG construct is rejected correctly.
 The current 1,410 manifest entries contain
 1,386 exact decoded-pixel references, zero known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
@@ -16,13 +17,44 @@ The final contained-ring fixture is exact. Mixed closed/open-subpath strokes wit
 linear, radial or pattern paint still hit an existing admission restriction; nine
 retained browser controls make that support gap explicit. See [the repair](RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
 
+## Original-scope support audit (2026-10-08)
+
+The following are current observed gates, checked against the executed bank,
+recorded-paint controls, new online sources and parser code. Older implementation
+checkpoint paragraphs below retain their dates. The ordered work and exit
+criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
+
+| Queue | Supported boundary / missing combination | Retained evidence |
+| --- | --- | --- |
+| G1 | Root attribute `enable-background:new` is admitted, but the same inline CSS declaration rejects; reconcile static inert declarations. | `inv-105`, Illustrator CC0 heart; `SvgRootAttributes` versus `SvgInertPresentationSyntax`. |
+| G2 | Single-leaf symbol definitions exist; multiple symbol children collide under one ID and valid input is misreported as malformed. Magnified flattened-curve use copies remain gated. | `research-mask-leaf-multi-leaf-symbol`, `original-number-transform-instance`; `SvgDefinitionParser`. |
+| G3 | Some axis-aligned/similarity/path transforms exist; rotated rectangles, general matrix curve/shape combinations and non-uniform curve output remain gated. Pattern reflection is also rejected. | `original-logo-rotated-mark`, `original-number-general-map`, `original-curve-root-quad-none`, tiger and `group-clip-reflected-pattern`. |
+| G4 | Native solid strokes render; gradient/pattern mixed closed/open subpaths and gradient direct `fill="none"` lines still reject. Oval dash caps/paint/transform combinations remain narrower than solid paths. | Nine `zero-area-stroke-*` paint-server controls, two `line-bounds-*-square-width6-fill-none` controls; shared stroke and paint admission. |
+| G5 | Nested viewport sizing/clips and limited masks exist; nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `original-aa-clip-admitted-shader`, material pairs, `mask-region-half-translated`; definition scopes, `SvgMaskSyntax` and `SvgNestedViewportSyntax`. |
+| G6 | One rectangle tile with integer user-space coordinates exists; circle/path/multiple-child tiles, local pattern inheritance, fractional/general maps and bounding-box units are missing. | `inv-103`, `inv-104`, `original-cpu-raster-cubic-pattern`; `SvgDefinitionParser` and `SvgPatternSyntax`. |
+| G7 | Embedded PNG and static CSS have explicit narrow subsets; non-uniform image content/resampling and additional selector/export combinations need measured slices. | `SvgImageSyntax`, PNG decoder, `SvgStyleSheet`; source distinct export failures before expanding. |
+| G8 | Active markers and filter effects reject. These are later static features with bounded surface/expansion requirements. | `original-logo-marker-mark`, `original-logo-filter-mark`. |
+| G9 | Direct text requires a prepared supplied-font snapshot; broader text/tspan/text-path layout is experimental. | `original-logo-live-text`, `original-logo-text-path`; PLAN section 6. |
+
+The three online failures have original bytes, separate root-sized render inputs
+and stable browser references in [the inventory manifest](../tests/References/inventory/svg-gap-cases.json).
+They are failure-selected development cases, outside the 27-document corporate
+cohort and original fixture/research denominators. No new renderer behavior is
+claimed by recording a rejection. First-blocker removal may expose further
+admission or pixel failures; all remain visible until the unchanged reference is exact.
+
+## Retained renderer foundations
+
+These implementation notes retain their checkpoint measurements. Current
+outcomes and remaining work are governed by the status and support audit above.
+
 Butt-capped solid-paint circle/ellipse dashes now measure and cut original float
 oval conics through the shared native dash/stroke route. Directed generated
 outlines and filtered centerlines retain curves through final mapping; zero-radius
 ovals paint nothing. Offsets, seams, thin widths, root scaling, non-scaling strokes,
 pathLength and rectangle clips have independent exact browser controls. Existing
 non-uniform/reflected placement, round/square dash caps, paint-server dash and
-magnified-use admission restrictions remain inputs to the later scope audit.
+magnified-use admission restrictions remain in G2–G4 of the support queue.
 See [the repair record](RASTERIZATION_DESIGN.md#source-conic-ellipse-dashes-2026-10-08).
 
 Admitted integer diagonal polygon/polyline fills retain original source commands
