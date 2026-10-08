@@ -7,6 +7,8 @@ public sealed class SvgCurveOwnershipTests
 {
     public static IEnumerable<object[]> Inputs()
     {
+        foreach (string name in new[] { "mixed-leaves", "stroked-fill-override", "child-alias", "magnified-symbol-curves" })
+            yield return new object[] { "symbol-" + name, File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "symbol-instances", name + ".svg")), false };
         yield return new object[] { "rejects-translucent-paint-strokes-on-circles-1", "<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><circle cx=\"4\" cy=\"4\" r=\"4\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"2\" opacity=\"0.5\"/></svg>", false };
         yield return new object[] { "rejects-translucent-paint-strokes-on-rounded-definitions-1", "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"64\" height=\"64\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><defs><rect id=\"r\" x=\"8\" y=\"8\" width=\"48\" height=\"48\" rx=\"12\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"8\" opacity=\"0.5\"/></defs><use href=\"#r\"/></svg>", false };
         yield return new object[] { "rejects-translucent-round-capped-paint-lines-1", "<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\" gradientUnits=\"userSpaceOnUse\" x1=\"0\" y1=\"0\" x2=\"16\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"url(#g)\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\"0.5\"/></svg>", false };

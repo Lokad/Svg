@@ -56,6 +56,30 @@ At its declared 500×500 transparent viewport it is pixel-exact; its three stabl
 captures and comparison remain ignored. No successful-source or failing-source
 denominator has been silently repurposed as a representative rate.
 
+## Direct-leaf symbol and native instance checkpoint (2026-10-08)
+
+The existing multi-child-symbol and magnified-number-instance families become
+exact on all three backgrounds, with every original SVG and browser PNG unchanged.
+The 1,567-execution bank now has 1,545 PNGs: **1,410 fixtures = 1,389 exact + 21
+rejected**, **65 research probes = 64 exact + one rejected**, and 92 Default
+renders. Exactly six reports change; the preceding 1,539 PNG bytes stay identical.
+
+[Sixteen original CC0 mechanism controls](../tests/Research/symbol-instances/manifest.json)
+retain unchanged 128×96 transparent inputs and three stable healthy/cleaned
+captures each, Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3 / device
+scale 1. Thirteen were declared before the first symbol prototype; three
+stylesheet/parent-opacity/child-alias controls were added after that prototype
+and before their own captures/comparisons. All are exact through all six outputs.
+This mechanism bank is separate from original, corporate and online development
+denominators. Asset hashes identify SVG/PNG bytes; no implementation fingerprint
+is recorded. Raw diagnostics remain ignored under `artifacts/symbol-instances-20261008/`.
+
+Windows/Linux Release builds and **4,318 tests each** pass; bank reports and PNGs
+agree across platforms. Every corporate result remains unchanged and exact,
+**27/27 documents / 258/258 variants**, against each platform's own retained
+references. The three online failures retain their current G3/G6 gates. Broader
+symbols remain G2; remote CI and earlier package/timing limits remain open.
+
 ## Zero-area native stroke winding checkpoint (2026-10-08)
 
 The final contained-ring fixture becomes exact against its unchanged browser

@@ -75,16 +75,12 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
-    public void Magnified_curve_use_stays_unsupported()
+    public void Magnified_curve_use_replays_authored_curves_at_the_instance_scale()
     {
-        // R35: definition curves flatten at the nominal device tolerance, so a
-        // magnifying instance scale would stretch the subdivision error past it.
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs><use href=\"#q\" transform=\"scale(8)\"/></svg>");
+        byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs><use href=\"#q\" transform=\"scale(8)\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><path d=\"M0,64 Q32,0 64,64 Z\" fill=\"red\"/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only unmagnified use instances of flattened curve outlines are implemented.", rejected.Message);
+        Assert.Equal(direct, instanced);
     }
 
     [Fact]
@@ -122,16 +118,12 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
-    public void Magnified_symbol_curve_use_stays_unsupported()
+    public void Magnified_symbol_curve_use_replays_authored_curves_at_the_instance_scale()
     {
-        // R35: symbol viewBox maps magnify the same lowering-time subdivision
-        // error as direct instance scales, so magnified maps reject too.
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><symbol id=\"s\" viewBox=\"0 0 8 8\"><path d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></symbol></defs><use href=\"#s\" width=\"64\" height=\"64\"/></svg>");
+        byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><defs><symbol id=\"s\" viewBox=\"0 0 8 8\"><path d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></symbol></defs><use href=\"#s\" width=\"64\" height=\"64\"/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><path d=\"M0,64 Q32,0 64,64 Z\" fill=\"red\"/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only unmagnified symbol instances of flattened curve outlines are implemented.", rejected.Message);
+        Assert.Equal(direct, instanced);
     }
 
     [Fact]
@@ -171,16 +163,12 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
-    public void Forward_magnified_curve_use_stays_unsupported()
+    public void Forward_magnified_curve_use_replays_authored_curves_at_the_instance_scale()
     {
-        // R35: deferred forward-use resolution routes through the same instance
-        // mapping, so the magnification gate holds on the late path too.
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><use href=\"#q\" transform=\"scale(8)\"/><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs></svg>");
+        byte[] instanced = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><use href=\"#q\" transform=\"scale(8)\"/><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><path d=\"M0,64 Q32,0 64,64 Z\" fill=\"red\"/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only unmagnified use instances of flattened curve outlines are implemented.", rejected.Message);
+        Assert.Equal(direct, instanced);
     }
 
     [Fact]

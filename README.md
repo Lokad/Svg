@@ -61,6 +61,13 @@ Inert `enable-background` declarations now share validation across attributes an
 admitted styles, including Illustrator's `new` rectangle hint. The retained heart
 advances to its rotated-rectangle restriction; remaining transforms stay in G3.
 
+Direct-leaf symbols now preserve multiple children in document order, inherited
+fill channels and separate child/symbol/use opacity. Magnified native-backed
+instances replay original curve commands. Both retained families are exact on
+three backgrounds, and sixteen independent controls match through all six
+outputs. Root-level symbols, nested symbol content and wider style/viewport
+combinations remain in G2; see [the supported boundary](docs/SUPPORT_MATRIX.md#direct-leaf-symbols-and-instances-2026-10-08).
+
 Circle and ellipse dashes now cut original conics through the shared native
 path-dash constructor. All nine retained dash failures and twelve new independent
 controls are exact, including thin widths, offsets, seams, scaling, pathLength

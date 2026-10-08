@@ -521,19 +521,21 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Stylesheets_targeting_symbol_definitions_are_rejected_before_instancing()
+    public void Stylesheets_targeting_symbol_definitions_apply_before_instancing()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><style>#tile { fill: red; }</style><defs><symbol id='tile'><rect width='1' height='1'/></symbol></defs><use href='#tile'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        ReadOnlyMemory<byte> instanced = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><style>#tile { fill: red; }</style><defs><symbol id='tile'><rect width='1' height='1'/></symbol></defs><use href='#tile'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> direct = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.True(direct.Span.SequenceEqual(instanced.Span));
     }
 
     [Fact]
-    public void Extra_content_in_an_instantiated_symbol_is_rejected_like_multi_rectangle_symbols()
+    public void Mixed_symbol_children_render_in_document_order()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><symbol id='tile'><rect width='1' height='1' fill='red'/><circle cx='0' cy='0' r='1'/></symbol></defs><use href='#tile'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        ReadOnlyMemory<byte> instanced = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><symbol id='tile'><rect width='1' height='1' fill='red'/><circle cx='0' cy='0' r='1'/></symbol></defs><use href='#tile'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> direct = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/><circle cx='0' cy='0' r='1'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.MalformedInput, exception.ErrorCode);
+        Assert.True(direct.Span.SequenceEqual(instanced.Span));
     }
 
     [Theory]

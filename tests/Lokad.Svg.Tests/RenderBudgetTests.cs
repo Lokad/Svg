@@ -422,10 +422,10 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
-    public void Use_instance_mapping_charges_one_work_unit_per_mapped_point()
+    public void Use_instance_mapping_charges_points_and_retained_batch_copies()
     {
-        // R39: mapping work is charged incrementally per mapped polygon point
-        // inside the Apply dispatch rather than post-hoc at entry points.
+        // Mapping charges three polygon points and two geometry copies into the
+        // retained instance batch; denial cannot skip either bounded loop.
         RenderBudget budget = new(100_000);
         SvgDevicePoint[] points = [new(0, 0), new(8, 0), new(0, 8)];
         int[] ends = [3];
@@ -436,8 +436,12 @@ public sealed class RenderBudgetTests
             using SvgDocumentState state = new(new RenderBudget(100_000), new ParserWorkCounter(100_000), CancellationToken.None);
             ParserWorkCounter workCounter = new(100_000);
             SvgGeometry[] applied = SvgReferenceResolver.Apply(definition, new SvgUseReference("tile", 0, 0, 0, 0, SvgAffineTransform.Identity, SvgAffineTransform.Identity, 255, true, null, null, null), null, state, workCounter, CancellationToken.None);
-            Assert.Equal(3, workCounter.Used);
-            Assert.Equal(2, applied.Length);
+            try
+            {
+                Assert.Equal(5, workCounter.Used);
+                Assert.Equal(2, applied.Length);
+            }
+            finally { foreach (SvgGeometry geometry in applied) geometry.Dispose(); }
         }
         finally { fill.Dispose(); }
         AssertBudgetReleased(budget);

@@ -1110,7 +1110,15 @@ internal sealed class SvgGradientStrokeGeometry : IDisposable
 }
 
 /// <summary>Retains one local definition's typed geometry and the narrow instance-style override capability.</summary>
-internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool AllowsInstanceFillOverride, double? InstanceStrokeMiterLimit, SvgViewBox? SymbolViewBox);
+internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool AllowsInstanceFillOverride, double? InstanceStrokeMiterLimit, SvgViewBox? SymbolViewBox)
+{
+    /// <summary>Retains per-geometry fill inheritance for symbol children, independent of authored stroke channels.</summary>
+    internal SvgSymbolFillBinding[]? SymbolFillBindings { get; init; }
+    /// <summary>Marks a child-ID alias whose geometry owner is the enclosing symbol or its open builder.</summary>
+    internal bool BorrowedFromSymbol { get; init; }
+}
+
+internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintOpacity? FillOpacity, SvgColor? CurrentColor);
 
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 

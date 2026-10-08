@@ -9,6 +9,7 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal bool AllowsSolidPaintAnalysis { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal SvgPaintOpacity SourceOpacity { get; init; } = SvgPaintOpacity.Opaque;
+    internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
 }
 
 /// <summary>Retains one clip-path reference whose box needs a forward definition or clip-path definition.</summary>
@@ -57,8 +58,9 @@ internal static class SvgReferenceResolver
         }
         RequireUniformOutlineScales(definition, reference);
         RequireAdmittedInstanceMagnification(definition, reference);
-        SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
-        List<SvgGeometry> applied = new(sources.Length);
+        using InstanceFillGeometries instanceFill = ApplyInstanceFill(definition, reference, state, workCounter, cancellationToken);
+        SvgGeometry[] sources = instanceFill.Geometries;
+        using BudgetedParserList<SvgGeometry> applied = new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         SvgLeafMaskMapper? maskMapper = null;
         try
         {
@@ -71,46 +73,53 @@ internal static class SvgReferenceResolver
                 switch (sources[index].Kind)
                 {
                     case SvgGeometryKind.Rectangle:
-                        applied.Add(ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame) with { SolidPaint = reference.AllowsSolidPaintAnalysis ? sources[index].SolidPaint : null });
+                        AddInstanceGeometry(applied, ClipStrokedInstance(ApplyRectangle(sources[index].Rectangle, reference), frame) with { SolidPaint = reference.AllowsSolidPaintAnalysis ? sources[index].SolidPaint : null });
                         break;
                     case SvgGeometryKind.OrthogonalBand:
-                        applied.Add(SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)));
+                        AddInstanceGeometry(applied, SvgGeometry.FromRectangle(ClipRectangle(ApplyRectangle(sources[index].Rectangle, reference), frame)));
                         break;
                     case SvgGeometryKind.AxisAlignedLine:
-                        applied.Add(ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame));
+                        AddInstanceGeometry(applied, ClipLine(ApplyAxisAlignedLine(sources[index].AxisAlignedLine, reference), frame));
                         break;
                     case SvgGeometryKind.PolygonFill:
-                        applied.Add(ApplyPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
+                        AddInstanceGeometry(applied, ApplyPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
                         if (reference.StrokeOverride is not null)
                         {
                             if (definition.InstanceStrokeMiterLimit is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke styles on use elements require an unstyled single-contour definition.");
-                            foreach (SvgGeometry outline in ApplyInstanceStrokeOutlines(applied[^1], definition, reference, reference.StrokeOverride.Value, frame, state, workCounter, cancellationToken)) applied.Add(outline);
+                            AddInstanceGeometries(applied, ApplyInstanceStrokeOutlines(applied[^1], definition, reference, reference.StrokeOverride.Value, frame, state, workCounter, cancellationToken));
                         }
                         break;
                     case SvgGeometryKind.GradientPolygon:
-                        applied.Add(ApplyGradientPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
+                        AddInstanceGeometry(applied, ApplyGradientPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
                         break;
                     case SvgGeometryKind.RadialPolygon:
-                        applied.Add(ApplyRadialPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
+                        AddInstanceGeometry(applied, ApplyRadialPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
                         break;
                     case SvgGeometryKind.PatternPolygon:
-                        applied.Add(ApplyPatternPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
+                        AddInstanceGeometry(applied, ApplyPatternPolygon(authoredSource, reference, frame, state, workCounter, cancellationToken));
                         break;
                     case SvgGeometryKind.GradientFill:
-                        applied.Add(LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame));
+                        AddInstanceGeometry(applied, LowerEmbeddedInstanceGradientFill(sources[index].Gradient, reference, frame));
                         break;
                     case SvgGeometryKind.RadialGradient:
-                        applied.Add(LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame, state.Budget));
+                        AddInstanceGeometry(applied, LowerEmbeddedInstanceRadialFill(sources[index].Radial, reference, frame, state.Budget));
                         break;
                     case SvgGeometryKind.PatternFill:
-                        applied.Add(LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame));
+                        AddInstanceGeometry(applied, LowerEmbeddedInstancePatternFill(sources[index].Pattern, reference, frame));
                         break;
                     case SvgGeometryKind.GradientStroke:
-                        applied.Add(LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame));
+                        AddInstanceGeometry(applied, LowerEmbeddedInstanceGradientStroke(sources[index].GradientStroke, reference, frame));
                         break;
                     default: throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.");
                 }
-                SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, PlainInstancePlacement(reference, frame));
+                SvgUseReference paintReference = reference;
+                if (definition.SymbolFillBindings is {} symbolBindings)
+                {
+                    SvgSymbolFillBinding fillBinding = symbolBindings[index];
+                    SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
+                    paintReference = reference with { FillOverride = fillBinding.IsInherited ? fill with { FillOpacity = fillBinding.FillOpacity ?? fill.FillOpacity, CurrentColor = fillBinding.CurrentColor ?? fill.CurrentColor } : null };
+                }
+                SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, PlainInstancePlacement(reference, frame));
                 SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, true, PlainInstancePlacement(reference, frame));
                 SvgRecordedPaint addedStroke = default;
                 if (reference.StrokeOverride is SvgUseStrokeOverride instanceStroke && applied.Count > firstApplied + 1)
@@ -134,14 +143,12 @@ internal static class SvgReferenceResolver
                 }
             }
 
-            return applied.ToArray();
+            return RetainInstanceBatch(applied.AsSpan(), state, workCounter, cancellationToken);
         }
-        catch { foreach (SvgGeometry geometry in applied) geometry.Dispose(); throw; }
+        catch { foreach (SvgGeometry geometry in applied.AsSpan()) geometry.Dispose(); throw; }
         finally
         {
             maskMapper?.Dispose();
-            if (reference.FillOverride is not null)
-                foreach (SvgGeometry geometry in sources) geometry.Dispose();
         }
 
         static SvgGeometry[] ApplyInstanceStrokeOutlines(SvgGeometry placedGeometry, SvgDefinition definition, SvgUseReference reference, SvgUseStrokeOverride stroke, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -503,9 +510,9 @@ internal static class SvgReferenceResolver
     }
 
     /// <summary>Rejects magnified symbol viewBox maps of tolerance-flattened curve outlines, whose lowering-time subdivision error would magnify past the admitted device tolerance.</summary>
-    private static void RequireAdmittedSymbolMagnification(SvgPolygonMapping mapping, double viewBoxScale, SvgUseReference instance)
+    private static void RequireAdmittedSymbolMagnification(SvgGeometry geometry, SvgPolygonMapping mapping, double viewBoxScale, SvgUseReference instance)
     {
-        if (mapping != SvgPolygonMapping.FlattenedCurves) return;
+        if (mapping != SvgPolygonMapping.FlattenedCurves || geometry.AuthoredPath is not null) return;
         double magnification = viewBoxScale * Math.Max(ColumnLength(instance.Transform.A, instance.Transform.B), ColumnLength(instance.Transform.C, instance.Transform.D));
         if (magnification > 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only unmagnified symbol instances of flattened curve outlines are implemented.");
     }
@@ -526,7 +533,7 @@ internal static class SvgReferenceResolver
                 SvgGeometryKind.PatternPolygon => source.PatternPolygon.Mapping,
                 _ => null,
             };
-            if (mapping == SvgPolygonMapping.FlattenedCurves) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only unmagnified use instances of flattened curve outlines are implemented.");
+            if (mapping == SvgPolygonMapping.FlattenedCurves && source.AuthoredPath is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only unmagnified use instances of flattened curve outlines are implemented.");
         }
     }
 
@@ -578,7 +585,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
-            RequireAdmittedSymbolMagnification(source.Mapping, scaleX, instance);
+            RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
@@ -739,24 +746,123 @@ internal static class SvgReferenceResolver
 
     private static SvgGeometry ClipLine(SvgAxisAlignedLine line, SvgViewportFrame? frame) => frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line);
 
-    private static SvgGeometry[] ApplyInstanceFill(SvgDefinition definition, SvgUseReference reference, SvgDocumentState state)
+    private static void AddInstanceGeometry(BudgetedParserList<SvgGeometry> destination, SvgGeometry geometry)
     {
-        if (reference.FillOverride is null) return definition.Geometries;
-        if (definition.Geometries.Length != 1 || !definition.AllowsInstanceFillOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible single-geometry definition.");
-        SvgPaint fill = reference.FillOverride.Value;
-        return definition.Geometries[0].Kind switch
-        {
-            SvgGeometryKind.Rectangle => [SvgGeometry.FromRectangle(definition.Geometries[0].Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill }) with { SolidPaint = definition.Geometries[0].SolidPaint is null ? null : SvgPaintResolver.ResolveSolidPaint(fill) }],
-            SvgGeometryKind.OrthogonalBand => [SvgGeometry.FromOrthogonalBand(definition.Geometries[0].Rectangle with { Color = SvgPaintResolver.ResolveFillColor(fill, 255), HasFill = fill.HasFill })],
-            SvgGeometryKind.PolygonFill => [ApplyInstancePolygonFill(definition.Geometries[0].Polygon, fill, state)],
-            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible single-geometry definition."),
-        };
+        try { destination.Add(geometry); }
+        catch { geometry.Dispose(); throw; }
+    }
 
-        static SvgGeometry ApplyInstancePolygonFill(SvgPolygonFill source, SvgPaint paint, SvgDocumentState document)
+    private static void AddInstanceGeometries(BudgetedParserList<SvgGeometry> destination, SvgGeometry[] geometries)
+    {
+        try { destination.AddRange(geometries); }
+        catch { foreach (SvgGeometry geometry in geometries) geometry.Dispose(); throw; }
+    }
+
+    /// <summary>Owns only newly recolored fill channels; authored stroke and fill channels remain borrowed from the definition.</summary>
+    private readonly struct InstanceFillGeometries : IDisposable
+    {
+        private readonly RenderBudget.BudgetReservation? _owner;
+        private readonly SvgSymbolFillBinding[]? _bindings;
+        internal InstanceFillGeometries(SvgGeometry[] geometries, SvgSymbolFillBinding[]? bindings, RenderBudget.BudgetReservation? owner)
         {
-            ArgumentNullException.ThrowIfNull(document);
-            return SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(source.Points, source.ContourEnds, source.Signs, source.QuadSpans, source.CubicSpans, SvgPaintResolver.ResolveFillColor(paint, 255), paint.HasFill, source.IsEvenOdd, source.Mapping, source.Clip, null, document.Budget));
+            Geometries = geometries;
+            _bindings = bindings;
+            _owner = owner;
         }
+        internal SvgGeometry[] Geometries { get; }
+        public void Dispose()
+        {
+            if (_owner is null) return;
+            for (int index = 0; index < Geometries.Length; index++)
+                if (_bindings is null || _bindings[index].IsInherited) Geometries[index].Dispose();
+            _owner.Dispose();
+        }
+    }
+
+    private static InstanceFillGeometries ApplyInstanceFill(SvgDefinition definition, SvgUseReference reference, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgSymbolFillBinding[]? bindings = definition.SymbolFillBindings;
+        if (bindings is null)
+        {
+            if (reference.FillOverride is null) return new(definition.Geometries, null, null);
+            if (definition.Geometries.Length != 1 || !definition.AllowsInstanceFillOverride)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill styles on use elements require an unstyled visible single-geometry definition.");
+        }
+        else
+        {
+            bool inherited = false;
+            foreach (SvgSymbolFillBinding binding in bindings)
+            {
+                work.Consume(token);
+                inherited |= binding.IsInherited;
+            }
+            if (!inherited) return new(definition.Geometries, bindings, null);
+        }
+        RenderBudget.BudgetReservation owner = state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(definition.Geometries.Length), SvgMemoryCategory.Parser);
+        SvgGeometry[] sources;
+        try { sources = new SvgGeometry[definition.Geometries.Length]; }
+        catch { owner.Dispose(); throw; }
+        int retained = 0;
+        try
+        {
+            for (int index = 0; index < sources.Length; index++)
+            {
+                work.Consume(token);
+                SvgGeometry source = definition.Geometries[index];
+                if (bindings is not null && !bindings[index].IsInherited) sources[index] = source;
+                else
+                {
+                    SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
+                    if (bindings is not null)
+                    {
+                        SvgSymbolFillBinding binding = bindings[index];
+                        fill = fill with { FillOpacity = binding.FillOpacity ?? fill.FillOpacity, CurrentColor = binding.CurrentColor ?? fill.CurrentColor };
+                    }
+                    sources[index] = Recolor(source, fill, state);
+                }
+                retained++;
+            }
+            return new(sources, bindings, owner);
+        }
+        catch
+        {
+            for (int index = 0; index < retained; index++)
+                if (bindings is null || bindings[index].IsInherited) sources[index].Dispose();
+            owner.Dispose();
+            throw;
+        }
+
+        static SvgGeometry Recolor(SvgGeometry source, SvgPaint fill, SvgDocumentState document)
+        {
+            SvgColor color = SvgPaintResolver.ResolveFillColor(fill, 255);
+            return source.Kind switch
+            {
+                SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(source.Rectangle with { Color = color, HasFill = fill.HasFill }) with { SolidPaint = source.SolidPaint is null ? null : SvgPaintResolver.ResolveSolidPaint(fill) },
+                SvgGeometryKind.OrthogonalBand => SvgGeometry.FromOrthogonalBand(source.Rectangle with { Color = color, HasFill = fill.HasFill }),
+                SvgGeometryKind.PolygonFill => SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(source.Polygon.Points, source.Polygon.ContourEnds, source.Polygon.Signs, source.Polygon.QuadSpans, source.Polygon.CubicSpans, color, fill.HasFill, source.Polygon.IsEvenOdd, source.Polygon.Mapping, source.Polygon.Clip, null, document.Budget)),
+                SvgGeometryKind.GradientStroke => SvgGeometry.FromGradientStroke(new(source.GradientStroke.Fill with { Color = color, HasFill = fill.HasFill }, source.GradientStroke.Top, source.GradientStroke.Bottom, source.GradientStroke.Left, source.GradientStroke.Right, source.GradientStroke.Gradient, source.GradientStroke.Box, source.GradientStroke.Opacity, source.GradientStroke.HasStroke)),
+                _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inherited fill on this symbol geometry is not implemented."),
+            };
+        }
+    }
+
+    /// <summary>Reserves a mapped batch before copying; the document holds its staging-array reservation until teardown.</summary>
+    private static SvgGeometry[] RetainInstanceBatch(ReadOnlySpan<SvgGeometry> geometries, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (geometries.IsEmpty) return [];
+        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(128 + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(geometries.Length), SvgMemoryCategory.Parser);
+        try
+        {
+            SvgGeometry[] retained = new SvgGeometry[geometries.Length];
+            for (int index = 0; index < retained.Length; index++)
+            {
+                work.Consume(token);
+                retained[index] = geometries[index];
+            }
+            state.DefinitionReservations.Add(reservation);
+            return retained;
+        }
+        catch { reservation.Dispose(); throw; }
     }
 
     private static SvgRecordedPaint MapRecordedPaint(SvgRecordedPaint source, SvgUseReference reference, SvgDocumentState state, BudgetedParserDictionary<SvgRecordedPaint, SvgRecordedPaint> cache, SvgRecordingMapper mapper, ParserWorkCounter work, CancellationToken token, bool stroke, SvgAffineTransform placement)
@@ -794,8 +900,9 @@ internal static class SvgReferenceResolver
         if (reference.PaintServerId is null)
         {
             RequireUniformOutlineScales(definition, reference);
-            SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
-            List<SvgGeometry> applied = new(sources.Length);
+            using InstanceFillGeometries instanceFill = ApplyInstanceFill(definition, reference, state, workCounter, cancellationToken);
+            SvgGeometry[] sources = instanceFill.Geometries;
+            using BudgetedParserList<SvgGeometry> applied = new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
             SvgLeafMaskMapper? maskMapper = null;
             try
             {
@@ -808,9 +915,9 @@ internal static class SvgReferenceResolver
                     SvgGeometry authoredSource = sources[index] with { AuthoredPath = definition.Geometries[index].AuthoredPath };
                     if (expandedStroke)
                     {
-                        foreach (SvgGeometry expanded in ApplySymbolStrokedRectangle(sources[index].Rectangle, symbolBox, reference, frame, state, workCounter, cancellationToken)) applied.Add(expanded);
+                        AddInstanceGeometries(applied, ApplySymbolStrokedRectangle(sources[index].Rectangle, symbolBox, reference, frame, state, workCounter, cancellationToken));
                     }
-                    else applied.Add(sources[index].Kind switch
+                    else AddInstanceGeometry(applied, sources[index].Kind switch
                     {
                         SvgGeometryKind.GradientFill => ApplySymbolGradientFill(sources[index].Gradient, symbolBox, reference, frame, state, workCounter, cancellationToken),
                         SvgGeometryKind.PatternFill => ApplySymbolPatternFill(sources[index].Pattern, symbolBox, reference, frame, state, workCounter, cancellationToken),
@@ -821,7 +928,14 @@ internal static class SvgReferenceResolver
                         SvgGeometryKind.PatternPolygon => ApplySymbolPatternPolygon(authoredSource, symbolBox, reference, frame, state, workCounter, cancellationToken),
                         _ => ApplySymbolInstance(authoredSource, symbolBox, reference, frame, state, workCounter, cancellationToken),
                     });
-                    SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, SymbolInstancePlacement(symbolBox, reference, frame));
+                    SvgUseReference paintReference = reference;
+                    if (definition.SymbolFillBindings is {} symbolBindings)
+                    {
+                        SvgSymbolFillBinding fillBinding = symbolBindings[index];
+                        SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
+                        paintReference = reference with { FillOverride = fillBinding.IsInherited ? fill with { FillOpacity = fillBinding.FillOpacity ?? fill.FillOpacity, CurrentColor = fillBinding.CurrentColor ?? fill.CurrentColor } : null };
+                    }
+                    SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, SymbolInstancePlacement(symbolBox, reference, frame));
                     SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, true, SymbolInstancePlacement(symbolBox, reference, frame));
                     for (int mapped = firstApplied; mapped < applied.Count; mapped++)
                         applied[mapped] = applied[mapped] with { RecordedPaint = expandedStroke && mapped > firstApplied ? strokePaint : fillPaint };
@@ -836,14 +950,12 @@ internal static class SvgReferenceResolver
                         }
                     }
                 }
-                return applied.ToArray();
+                return RetainInstanceBatch(applied.AsSpan(), state, workCounter, cancellationToken);
             }
-            catch { foreach (SvgGeometry geometry in applied) geometry.Dispose(); throw; }
+            catch { foreach (SvgGeometry geometry in applied.AsSpan()) geometry.Dispose(); throw; }
             finally
             {
                 maskMapper?.Dispose();
-                if (reference.FillOverride is not null)
-                    foreach (SvgGeometry geometry in sources) geometry.Dispose();
             }
 
         static SvgGeometry[] ApplySymbolStrokedRectangle(SvgRectangle source, SvgViewBox viewBox, SvgUseReference instance, SvgViewportFrame? viewportFrame, SvgDocumentState document, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -883,7 +995,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
-            RequireAdmittedSymbolMagnification(source.Mapping, scaleX, instance);
+            RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
@@ -986,7 +1098,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
-            RequireAdmittedSymbolMagnification(source.Mapping, scaleX, instance);
+            RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];
             for (int index = 0; index < mapped.Length; index++)
@@ -1040,7 +1152,7 @@ internal static class SvgReferenceResolver
             if (instance.Width is null || instance.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol use dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
             (double scaleX, double scaleY, double offsetX, double offsetY) = SvgGeometrySyntax.MapViewBox(viewBox, instance.Width.Value, instance.Height.Value);
             if (scaleX != scaleY) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-uniform symbol viewBox scaling of polygon content is not implemented.");
-            RequireAdmittedSymbolMagnification(source.Mapping, scaleX, instance);
+            RequireAdmittedSymbolMagnification(geometry, source.Mapping, scaleX, instance);
             if (viewportFrame is not null && viewportFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
             using RenderBudget.BudgetReservation mappedReservation = document.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Points.Length), SvgMemoryCategory.Geometry);
             SvgDevicePoint[] mapped = new SvgDevicePoint[source.Points.Length];

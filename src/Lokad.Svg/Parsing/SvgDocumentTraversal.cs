@@ -282,7 +282,7 @@ internal static class SvgDocumentTraversal
                     state.ClipPolygon = null;
                     state.ClipIsObjectBoundingBox = false;
                 }
-                if (reader.Depth == state.SymbolDepth) { state.SymbolDepth = -1; state.SymbolId = null; state.SymbolViewBox = null; }
+                if (reader.Depth == state.SymbolDepth) SvgDefinitionParser.RegisterSymbol(state, workCounter, cancellationToken);
                 if (state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth) state.Viewports.RemoveLast();
                 if (state.ViewportOpacityDepth == reader.Depth)
                 {

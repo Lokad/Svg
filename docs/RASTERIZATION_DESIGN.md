@@ -8124,3 +8124,56 @@ evidence retains its dated scope; no quantitative throughput claim is made.
 Raw runs stay under ignored `artifacts/exporter-background-20261008/` and the
 isolated Linux `exporter-background-final-20261008/` checkout. G2 is next; G3/G5/G7
 remain open and S17 still requires remote CI evidence.
+
+## Ordered symbol children and native instance replay (2026-10-08)
+
+Each child had previously been registered under its containing symbol ID, so
+valid multiple-child symbols failed as duplicate IDs. A bounded builder now
+owns ordered child definitions until one complete symbol transfers to the
+registry. Child IDs borrow geometry owners; symbol wrapping copies geometry
+slots when necessary so aliases exclude container opacity/viewBox. Failure
+disposes unregistered children, while registry cleanup skips borrowed aliases.
+All child, binding and instance-array growth/copies reserve storage and charge
+work before allocation. A newly mapped geometry retains a guard until list
+insertion succeeds; exhaustive denial caught and closed the earlier gap between
+native mapping and denied list growth.
+
+Per-channel fill bindings distinguish inherited fill from authored child/symbol
+fill and from stroke. Instance fill changes only the inherited channels; opacity
+and color retain their own inheritance. Container styles use the shared cascade,
+and child/symbol/use opacity retain separate recording scopes. The admitted
+subset follows [SVG 1.1 use inheritance](https://www.w3.org/TR/SVG11/struct.html#UseElement):
+authored properties belong to the referenced content and inherited properties
+come from use and its ancestors. Tested child aliases exclude the enclosing
+symbol's fill and opacity; alias stroke inheritance remains an explicit gap.
+
+Magnification no longer rejects geometry that retains original curve commands.
+It replays those commands through the existing final map rather than scaling
+lowering-time subdivision error. Circle/ellipse definition fills retain original
+float oval conics too, closing omitted-viewport magnification. Fallback flattened
+content without an authored tape and existing non-uniform/consumer gates remain.
+No observed document coordinates, identifiers or failure pixels select behavior.
+
+Both original families are exact on transparent/white/black unchanged references;
+sixteen independent order/copy/style/opacity/alias/viewport/curve controls are
+exact through all six outputs. The frozen preceding renderer rejects all sixteen
+and all six retained variants. Twenty-six exhaustive parser-work/memory ownership
+inputs pass, including four fresh symbols. Seven genuine duplicate-ID controls
+remain malformed with zero live storage; cancellation after the first assembled
+geometry releases scratch, keeps child owners and permits retry.
+
+Windows/Linux Release builds have zero warnings/errors and **4,318 tests** pass
+on each (3,923 core, 389 visual-project, six FontProbe). Exactly six of 1,567
+original reports change; all preceding 1,539 PNG bytes remain identical, with six
+new exact renders. All corporate reports/PNGs stay unchanged, **27/27 / 258/258
+exact**, against each platform's own references. The 149 recorded-paint outcomes
+and the four online-screening comparisons retain their scope and behavior.
+Original/development SVGs and retained browser PNGs are never replaced.
+
+This changes parser/reference storage and admission, without a public API,
+runtime dependency or raster field/surface change. No quantitative performance
+claim is made; earlier package/memory/timing records keep their dated scope.
+Raw runs remain ignored under `artifacts/symbol-instances-20261008/` and Linux
+`symbol-instances-final-20261008/`. Root-level symbols, nested content, wider
+visibility/stroke/paint overrides and viewports remain G2/G3/G5; S17 remote CI
+remains open.

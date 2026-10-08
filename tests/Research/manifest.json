@@ -2291,8 +2291,16 @@
         "captureProfilesCleaned": true,
         "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
-      "candidateError": "MalformedInput",
-      "limitation": "Valid SVG: the current parser incorrectly registers multiple symbol children under the same definition ID and reports MalformedInput. The unchanged original is retained for the original-scope support audit."
+      "admittedRendering": {
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 49,
+        "minimumMismatchY": 43,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
+      }
     },
     {
       "id": "research-mask-leaf-multi-leaf-symbol-white",
@@ -2327,8 +2335,16 @@
         "captureProfilesCleaned": true,
         "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
-      "candidateError": "MalformedInput",
-      "limitation": "Valid SVG: the current parser incorrectly registers multiple symbol children under the same definition ID and reports MalformedInput. The unchanged original is retained for the original-scope support audit."
+      "admittedRendering": {
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 49,
+        "minimumMismatchY": 43,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
+      }
     },
     {
       "id": "research-mask-leaf-multi-leaf-symbol-black",
@@ -2363,8 +2379,16 @@
         "captureProfilesCleaned": true,
         "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
-      "candidateError": "MalformedInput",
-      "limitation": "Valid SVG: the current parser incorrectly registers multiple symbol children under the same definition ID and reports MalformedInput. The unchanged original is retained for the original-scope support audit."
+      "admittedRendering": {
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 49,
+        "minimumMismatchY": 43,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
+      }
     },
     {
       "id": "research-mask-leaf-white-mask-copy-transparent",

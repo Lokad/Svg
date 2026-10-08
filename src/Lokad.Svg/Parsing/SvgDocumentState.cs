@@ -239,6 +239,8 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal SvgViewBox? SymbolViewBox { get; set; }
 
+    internal SvgSymbolDefinitionBuilder? SymbolDefinition { get; set; }
+
     private bool _definitionsReleased;
 
     /// <summary>Owns a newly mapped/unbaked group value until parser teardown; final instances copy its native owners.</summary>
@@ -270,12 +272,13 @@ internal sealed class SvgDocumentState : IDisposable
         if (_definitionsReleased) return;
         _definitionsReleased = true;
         foreach (SvgDefinition value in Definitions.Values)
-            foreach (SvgGeometry geometry in value.Geometries)
-                geometry.Dispose();
+            if (!value.BorrowedFromSymbol)
+                foreach (SvgGeometry geometry in value.Geometries) geometry.Dispose();
     }
 
     public void Dispose()
     {
+        SymbolDefinition?.Dispose();
         ReleaseDefinitions();
         if (_temporaryGroupGeometries is not null)
         {

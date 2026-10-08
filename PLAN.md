@@ -16,7 +16,13 @@ The shared `enable-background` validator now admits `new`, `accumulate` and
 `inherit` consistently through presentation attributes and the admitted inline/
 stylesheet paths. The Illustrator heart (`inv-105`) advances to the rotated-
 rectangle gate, **G3**, and remains rejected; no source or browser reference changes.
-The next active item is **G2, multi-child symbols and practical instances**.
+
+**G2's direct-leaf symbol repair is implemented.** Both retained symbol/instance
+families now render exactly on three backgrounds, with unchanged inputs and
+references. Sixteen independent controls are exact through all six outputs.
+The next active item remains **G2's remaining symbol and instance combinations**:
+root-level symbols, nested group/use contents, inherited stroke/paint overrides
+and broader viewport mapping. G2 is not a general symbol-support claim.
 
 The next work is ordinary static SVG support within the original product scope:
 remove erroneous admission gates, then fill the missing geometry, reference,
@@ -43,23 +49,24 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,290 passed on each platform**: 3,911 core, 373 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Sixty-three focused inert-declaration tests pass, including eleven new six-output placement contexts, malformed rectangles, duplicate/priority validation, discovery parity and three fresh tight work/memory/token/cleanup checks. Background tokenization retains no arrays or backdrop storage; text validation work is charged before scanning. The 149 six-output paint controls retain their outcomes. Earlier broad resource, 25-scenario memory and installed-package checks keep their dated scope. No public API or runtime dependency changes; remote CI remains open. |
-| Executed fixture manifest | **1,410 entries = 1,386 exact + zero known-difference renders + 24 rejections**; 799 base documents / 611 variants. Every fixture report and PNG stays unchanged. |
-| Executed research manifest | **65 probes = 61 exact + zero known-difference renders + four rejections**. Every research report and PNG stays unchanged. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the scope audit. |
+| Full tests, including corporate selection/measurement | **4,318 passed on each platform**: 3,923 core, 389 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Twenty-six exhaustive parser-work/memory ownership inputs pass, including four fresh symbol cases; seven duplicate-ID controls retain MalformedInput and zero live storage. During-assembly cancellation releases scratch, preserves child owners and allows retry. Sixteen fresh symbol controls pass all six outputs; the 149 recorded-paint controls retain their outcomes. Earlier broad resource, memory and installed-package evidence keeps its dated scope. No public API or runtime dependency changes; remote CI remains open. |
+| Executed fixture manifest | **1,410 entries = 1,389 exact + zero known-difference renders + 21 rejections**; 799 base documents / 611 variants. Three magnified-instance cases graduate against their unchanged references; other fixture outcomes and PNGs stay unchanged. |
+| Executed research manifest | **65 probes = 64 exact + zero known-difference renders + one rejection**. Three multiple-child symbol cases graduate from the erroneous MalformedInput rejection; other research outcomes and PNGs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Every Default report and PNG stays unchanged, preserving the preceding matching-browser STOP-sign gain and earlier `inv-013` exact result / `inv-014` residual. These Default outputs do not establish corporate fidelity or a representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | The support repair changes parser validation only; it removes the root token-array allocation and adds bounded text-work charges, without new raster fields or surfaces. No quantitative performance claim is made. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; original curve commands replay through existing final mapping. No new raster fields or surfaces and no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and 4,290 tests, including the three offline
-sourcing checks. All 1,567 original reports and 1,539 PNG byte sequences remain
-unchanged; the banks agree across platforms. The development corpus still has
-three rejected documents; the heart's current first blocker is now G3. WSL Ubuntu
-24.04.3 uses isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6. Earlier
-resource, memory and installed-package evidence keeps its dated scope; remote CI
-remains open.
+Both platforms pass Release builds and 4,318 tests, including the three offline
+sourcing checks and sixteen symbol-reference cases. The original bank retains
+1,567 executions and now produces 1,545 PNGs: six former rejections become exact,
+while the other 1,561 reports and all preceding 1,539 PNG byte sequences stay
+unchanged. Windows/Linux banks agree. The development corpus still has three
+rejected documents; the heart's first blocker remains G3. WSL Ubuntu 24.04.3 uses
+isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6. Earlier package,
+memory and timing evidence keeps its dated scope; remote CI remains open.
 
 ## 2. Execution decisions
 
@@ -86,9 +93,10 @@ remains open.
 
 The audit uses executed fixture/research/recorded-paint failures and actual parser
 gates. The order below prioritizes shared combinations used by ordinary exports;
-it is an engineering judgment, not a measured prevalence ranking. G2–G6 have
-concrete retained failures. G7–G9 are bounded later work and need fresh development
-examples before their implementation slices are selected. Regression repairs may
+it is an engineering judgment, not a measured prevalence ranking. G3–G6 have
+concrete retained failures; G2's first retained failures are now exact and its
+remaining combinations need independent cases before implementation. G7–G9 are
+bounded later work and need fresh development examples before their implementation slices are selected. Regression repairs may
 interrupt this order. The identified fidelity repairs under historical rows
 1–7 are complete; remaining feature/admission work now maps to G1–G9. Their
 landed mechanisms remain regression requirements.
@@ -96,7 +104,7 @@ landed mechanisms remain regression requirements.
 | Priority | Work | Failure class | Dependencies / stages |
 | --- | --- | --- | --- |
 | G1 | **Declaration validation landed.** Inert exporter presentation values share one validator; G2 is next. | Original syntax-location inconsistency resolved; the heart now exposes G3 | Remaining nested style/root selector gates stay G5/G7; S9 |
-| G2 | Multi-child local symbols and practical instance semantics | Valid input misreported as malformed; missing instance combinations | Definition ownership, expansion and bounded reference graph; S9/S10 |
+| G2 | **Direct-leaf accumulation and native curve replay implemented.** Complete remaining practical symbol/instance combinations. | First retained failures exact; root-level/nested/style/viewport combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
 | G3 | Complete static transforms across shapes, curves and instances | Missing combinations behind shape-specific and non-uniform gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | Paint-server strokes on ordinary geometry | Missing combinations; no observed pixel residual after rejection | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | Nested viewport paints, general clips, masks and opacity composition | Missing reference/coordinate/composition combinations | G2/G3, bounded layers and reference scopes; S9/S14 |
@@ -126,14 +134,31 @@ See [the repair](docs/RASTERIZATION_DESIGN.md#shared-exporter-background-validat
 
 ### G2 — symbols and instances
 
-The valid `research-mask-leaf-multi-leaf-symbol` source rejects all three backgrounds
-as `MalformedInput`, because each symbol child is registered under the same ID.
-Accumulate one owned definition with all children; duplicate authored IDs and
-cycles remain categorized. Audit inherited styles, use overrides and symbol
-viewport defaults alongside `original-number-transform-instance`, which rejects
-magnified flattened-curve copies. Exit: the retained multi-child case renders
-exactly on every declared background; independent multi-child/override/copy
-controls pass and bounded expansion, denial/cancellation and cleanup remain intact.
+One owned definition now accumulates ordered direct symbol leaves. The retained
+`research-mask-leaf-multi-leaf-symbol` and `original-number-transform-instance`
+families are exact on transparent/white/black backgrounds. Real duplicate IDs
+remain malformed. Child-ID references borrow geometry owners without acquiring
+the enclosing symbol's viewBox or opacity. Authored child/symbol fills survive
+use overrides; unstyled fill channels inherit from use and its ancestors. Child,
+symbol and use opacity retain separate composition scopes. Empty symbols render
+nothing. Native-backed curves replay original commands under admitted uniform
+magnification; flattened content without source commands retains its gate.
+
+Sixteen independent controls cover order, mixed leaves, forward references,
+copies, fill inheritance/overrides, symbol styles, opacity, aliases, viewport
+defaults and magnified curves. All are browser-exact through six outputs; all
+six original comparisons are exact without reference replacement. Four new
+exhaustive work/memory sweeps, duplicate-ID cleanup and during-assembly
+cancellation/retry protect ownership and bounded expansion.
+
+**G2 remains open.** Source and measure root-level symbols, nested group/use
+contents, visibility/display, inherited stroke and paint-server overrides,
+child aliases inheriting stroke, and viewBox percentage-base/affine combinations.
+Select bounded slices from those failures and audit cycle categorization; broader
+transform maps stay G3 and deeper reference/composition scopes stay G5. Exit:
+the selected practical combinations are exact on unchanged references with no
+regression to current exact inputs or resource contracts.
+See [the repair](docs/RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08).
 
 ### G3 — transforms
 
@@ -390,7 +415,7 @@ All 258 measured renders are exact on each platform.
 All nine Target variants are exact against their original browser references;
 Coca-Cola is also exact in all nine variants. Reference
 availability and renderability remain independent axes. The first cohort's complete reference matrix closes its S8
-measurement obligation, including browser behavior for rejected inputs. The 1,386
+measurement obligation, including browser behavior for rejected inputs. The 1,389
 exact fixture entries remain separate from corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and

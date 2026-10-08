@@ -13,27 +13,43 @@ internal static class SvgDefinitionParser
         bool groupNestedDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && state.PatternId is null && state.MaskId is null && state.ClipPathId is null && state.GroupDepth > 0 && reader.GetAttribute("id") is not null;
         if ((inDefinitions || rootDefinition || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
         {
-            string? id = state.SymbolDepth >= 0 ? state.SymbolId : reader.GetAttribute("id");
+            bool symbolChild = state.SymbolDepth >= 0;
+            string? id = reader.GetAttribute("id");
+            if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _)))
+                throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
             else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
             else if (reader.LocalName == "path") SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
             else if (reader.LocalName == "circle" || reader.LocalName == "ellipse") SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
             else SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-            SvgViewBox? symbolViewBox = state.SymbolDepth >= 0 ? state.SymbolViewBox : null;
+            if (symbolChild)
+            {
+                SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).Presentation;
+                context = context with { InheritedPresentation = context.InheritedPresentation with { Paint = symbol.Paint }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule };
+            }
+            SvgViewBox? symbolViewBox = null;
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, symbolViewBox)
-                : reader.LocalName == "line" ? new SvgDefinition(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state)), false, null, symbolViewBox)
+                : reader.LocalName == "line" ? new SvgDefinition(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state), state, workCounter, cancellationToken), false, null, symbolViewBox)
                 : ParseShapeDefinition(reader, context, state, symbolViewBox);
             bool retained = false;
             try
             {
                 SvgPaintRecording.FinishDefinition(definition.Geometries, state, workCounter, cancellationToken);
+                if (symbolChild)
+                {
+                    definition = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, true);
+                    SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require an open definition builder.");
+                    builder.Add(definition);
+                    retained = true;
+                }
                 if (id is not null)
                 {
                     workCounter.Consume(cancellationToken);
                     if (state.Definitions.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     string retainedId = state.Strings.Copy(id);
-                    if (!state.Definitions.TryAdd(retainedId, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                    SvgDefinition registered = symbolChild ? BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false) with { BorrowedFromSymbol = true } : definition;
+                    if (!state.Definitions.TryAdd(retainedId, registered)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     retained = true;
                 }
             }
@@ -45,10 +61,21 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol")
         {
             SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
-            if (SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken) != default) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules on symbol definitions are not implemented.");
-            state.SymbolId = reader.GetAttribute("id") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A symbol requires an id.");
+            InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken);
+            SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken);
+            if (style.Display is not null || style.Visibility is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Display and visibility on symbol containers are not implemented.");
+            SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, SvgPaint.Default, namedColors);
+            SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
+            SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), style.Fill is not null,
+                style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), SvgColorParser.ParsePaintOpacity(style.Opacity));
+            string id = reader.GetAttribute("id") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A symbol requires an id.");
+            if (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            state.SymbolId = state.Strings.Copy(id);
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
-            if (!reader.IsEmptyElement) state.SymbolDepth = reader.Depth;
+            state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
+            state.SawStyleableNode = true;
+            if (reader.IsEmptyElement) RegisterSymbol(state, workCounter, cancellationToken);
+            else state.SymbolDepth = reader.Depth;
             return true;
         }
         bool inClipDefinitions = state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1;
@@ -260,6 +287,8 @@ internal static class SvgDefinitionParser
             return true;
         }
         return false;
+
+        static string? CopyStyleValue(string? value, SvgDocumentState document) => value is null ? null : document.Strings.Copy(value);
 
         static SvgDeferredClip? ResolveDeferredClip(XmlReader useReader, SvgUseReference useReference, SvgDocumentState document)
         {
@@ -983,6 +1012,55 @@ internal static class SvgDefinitionParser
         return content;
     }
 
+    internal static void RegisterSymbol(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol registration requires an open builder.");
+        SvgDefinition definition = builder.Build(state.SymbolViewBox, state, work, token);
+        bool retained = false;
+        try
+        {
+            SvgPaintRecording.WrapInstance(definition.Geometries, builder.Presentation.SourceOpacity, state.NewRecordingScope(), state, work, token);
+            work.Consume(token);
+            string id = state.SymbolId ?? throw new InvalidOperationException("Symbol registration requires an identifier.");
+            if (!state.Definitions.TryAdd(id, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            retained = true;
+        }
+        finally
+        {
+            if (!retained) foreach (SvgGeometry geometry in definition.Geometries) geometry.Dispose();
+            builder.Dispose();
+            state.SymbolDefinition = null;
+            state.SymbolDepth = -1;
+            state.SymbolId = null;
+            state.SymbolViewBox = null;
+        }
+    }
+
+    private static SvgDefinition BindSymbolFill(SvgDefinition definition, XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, ParserWorkCounter work, CancellationToken token, bool includesSymbolPresentation)
+    {
+        if (definition.Geometries.Length == 0) return definition with { SymbolFillBindings = [] };
+        SvgComputedStyle style = context.ResolveStyle(reader);
+        SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol fills require a presentation context.")).Presentation;
+        bool inherited = reader.LocalName != "line" && style.Fill is null && (!includesSymbolPresentation || !symbol.HasAuthoredFill);
+        SvgPaintOpacity? opacity = style.FillOpacity is null ? (includesSymbolPresentation ? symbol.FillOpacity : null) : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
+        SvgColor? color = style.Color is null ? (includesSymbolPresentation ? symbol.CurrentColor : null) : SvgColorParser.Parse(style.Color, context.NamedColors);
+        SvgPaintOperationIdentity fill = state.Scene.GetRecordedPaintValue(definition.Geometries[0].RecordedPaint).Identity;
+        RenderBudget.BudgetReservation reservation = state.Budget.Reserve(128 + ParserCollectionMemory.GetArrayByteCount<SvgSymbolFillBinding>(definition.Geometries.Length), SvgMemoryCategory.Scene);
+        try
+        {
+            SvgSymbolFillBinding[] bindings = new SvgSymbolFillBinding[definition.Geometries.Length];
+            for (int index = 0; index < bindings.Length; index++)
+            {
+                work.Consume(token);
+                bool fillChannel = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint).Identity == fill;
+                bindings[index] = new(inherited && fillChannel, opacity, color);
+            }
+            state.DefinitionReservations.Add(reservation);
+            return definition with { SymbolFillBindings = bindings };
+        }
+        catch { reservation.Dispose(); throw; }
+    }
+
     private static SvgDefinition ParseShapeDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);
@@ -1017,6 +1095,27 @@ internal static class SvgDefinitionParser
         };
         try
         {
+            if ((reader.LocalName is "circle" or "ellipse") && geometries.Length > 0 && geometries[0].AuthoredPath is null)
+            {
+                SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader) : SvgEllipseSyntax.ParseEllipse(reader);
+                if (oval.RadiusX > 0 && oval.RadiusY > 0)
+                {
+                    float left = (float)oval.CenterX - (float)oval.RadiusX, right = (float)oval.CenterX + (float)oval.RadiusX;
+                    float top = (float)oval.CenterY - (float)oval.RadiusY, bottom = (float)oval.CenterY + (float)oval.RadiusY;
+                    if (!float.IsFinite(left) || !float.IsFinite(right) || !float.IsFinite(top) || !float.IsFinite(bottom)) throw new SvgException(SvgErrorCode.LimitExceeded, "Oval instance coordinates exceed the finite float range.");
+                    float midX = (float)(0.5 * ((double)left + right)), midY = (float)(0.5 * ((double)top + bottom));
+                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, context.WorkCounter, context.CancellationToken);
+                    commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(right, midY), default, default));
+                    commands.Add(new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, new(right, bottom), new(midX, bottom), new(SvgRationalQuadratic.QuarterCircleWeight, 0)));
+                    commands.Add(new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, new(left, bottom), new(left, midY), new(SvgRationalQuadratic.QuarterCircleWeight, 0)));
+                    commands.Add(new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, new(left, top), new(midX, top), new(SvgRationalQuadratic.QuarterCircleWeight, 0)));
+                    commands.Add(new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, new(right, top), new(right, midY), new(SvgRationalQuadratic.QuarterCircleWeight, 0)));
+                    commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+                    OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
+                    try { geometries[0] = geometries[0] with { AuthoredPath = SvgAuthoredPath.CreateConvexShape(owned, localContext.ResolveTransform(reader), state.Budget) }; }
+                    catch { owned.Dispose(); throw; }
+                }
+            }
             return new SvgDefinition(geometries, IsOverrideableFill(style, geometries), ResolveInstanceStrokeMiterLimit(style, geometries, pathData, definitionTransform, vectorEffect, context.WorkCounter, context.CancellationToken), symbolViewBox);
         }
         catch
@@ -1072,9 +1171,26 @@ internal static class SvgDefinitionParser
         }
     }
 
-    private static SvgGeometry[] RetainParsedGeometries(SvgParsedGeometry parsed)
+    private static SvgGeometry[] RetainParsedGeometries(SvgParsedGeometry parsed, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
-        try { return parsed.Geometries.ToArray(); }
+        try
+        {
+            if (parsed.Geometries.Length == 0) return [];
+            RenderBudget.BudgetReservation reservation = state.Budget.Reserve(128 + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(parsed.Geometries.Length), SvgMemoryCategory.Scene);
+            try
+            {
+                SvgGeometry[] retained = new SvgGeometry[parsed.Geometries.Length];
+                for (int index = 0; index < retained.Length; index++)
+                {
+                    work.Consume(token);
+                    retained[index] = parsed.Geometries[index];
+                }
+                state.DefinitionReservations.Add(reservation);
+                return retained;
+            }
+            catch { reservation.Dispose(); throw; }
+        }
+        catch { parsed.Discard(); throw; }
         finally { parsed.Dispose(); }
     }
 
@@ -1100,6 +1216,6 @@ internal static class SvgDefinitionParser
             geometry = new(retained.Detach(), 0);
         }
         SvgParsedGeometry attached = SvgPaintRecording.Attach(geometry, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
-        return new SvgDefinition(RetainParsedGeometries(attached), allowsOverride, null, symbolViewBox);
+        return new SvgDefinition(RetainParsedGeometries(attached, state, context.WorkCounter, context.CancellationToken), allowsOverride, null, symbolViewBox);
     }
 }
