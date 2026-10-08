@@ -1727,11 +1727,7 @@ public static class SvgConverter
             if (activeStrokePaint.Identity.Value != 0) activePaint = activeStrokePaint;
             try
             {
-                double halfWidth = stroke.Width / 2d;
-                RasterizeSolidRectangle(new SvgRectangle(fill.X - halfWidth, fill.Y - halfWidth, fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = fill.Clip }, destination);
-                RasterizeSolidRectangle(new SvgRectangle(fill.X - halfWidth, fill.Y + fill.Height - halfWidth, fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = fill.Clip }, destination);
-                RasterizeSolidRectangle(new SvgRectangle(fill.X - halfWidth, fill.Y + halfWidth, stroke.Width, fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = fill.Clip }, destination);
-                RasterizeSolidRectangle(new SvgRectangle(fill.X + fill.Width - halfWidth, fill.Y + halfWidth, stroke.Width, fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = fill.Clip }, destination);
+                RasterizeRectangleStroke(fill, stroke, destination);
             }
             finally { activePaint = previous; }
         }
@@ -1816,13 +1812,64 @@ public static class SvgConverter
                 activePaint = activeStrokePaint;
                 try
                 {
-                double halfWidth = stroke.Width / 2d;
-                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
-                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + rectangle.Height - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
-                RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
-                RasterizeSolidRectangle(new SvgRectangle(rectangle.X + rectangle.Width - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
+                    RasterizeRectangleStroke(rectangle, stroke, destination);
                 }
                 finally { activePaint = previous; }
+            }
+        }
+
+        void RasterizeRectangleStroke(SvgRectangle rectangle, SvgStroke stroke, byte[] destination)
+        {
+            int setup = rectangle.Clip is null ? 8 : 12;
+            if (setup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame preparation exceeds the configured work limit.");
+            workUnits += setup;
+            cancellationToken.ThrowIfCancellationRequested();
+            SvgRectangleFrameCoverage frame = SvgRectangleFrameCoverage.Create(
+                MapRectangleEdge(rectangle.X, horizontalScale, horizontalOffset), MapRectangleEdge(rectangle.Y, verticalScale, verticalOffset),
+                MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, horizontalOffset), MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, verticalOffset),
+                MapEdge(stroke.Width, horizontalScale, 0), MapEdge(stroke.Width, verticalScale, 0));
+            SvgClipBox? clip = null;
+            if (rectangle.Clip is {} sourceClip)
+            {
+                (double l, double t, double r, double b) = MapClipBounds(sourceClip, horizontalScale, horizontalOffset, verticalScale, verticalOffset);
+                clip = new SvgClipBox(l, t, Math.Max(0, r - l), Math.Max(0, b - t)) { Antialiasing = sourceClip.Antialiasing };
+            }
+            int left = (int)Math.Clamp(frame.OuterLeft >> 8, 0, outputWidth), right = (int)Math.Clamp((frame.OuterRight + 255) >> 8, left, outputWidth);
+            int top = (int)Math.Clamp(frame.OuterTop >> 8, 0, outputHeight), bottom = (int)Math.Clamp((frame.OuterBottom + 255) >> 8, top, outputHeight);
+            if (clip is {} bounds)
+            {
+                left = Math.Max(left, ClampFloor(bounds.X, outputWidth)); right = Math.Max(left, Math.Min(right, ClampCeiling(bounds.Right, outputWidth)));
+                top = Math.Max(top, ClampFloor(bounds.Y, outputHeight)); bottom = Math.Max(top, Math.Min(bottom, ClampCeiling(bounds.Bottom, outputHeight)));
+            }
+            long rows = 2L * (bottom - top);
+            if (rows > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame rows exceed the configured work limit.");
+            workUnits += rows;
+            long pixels = 0;
+            for (int y = top; y < bottom; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                (int end, int start) = frame.GetRowSpans(y, left, right);
+                pixels += end - left + right - Math.Max(end, start);
+            }
+            long rasterWork = 5 * pixels;
+            if (rasterWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame raster exceeds the configured work limit.");
+            workUnits += rasterWork;
+            SvgAnalyticPaint paint = SvgAnalyticPaint.Solid(ResolveSolidColor(stroke.Color));
+            Span<byte> alphas = stackalloc byte[4];
+            for (int y = top; y < bottom; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                (int end, int start) = frame.GetRowSpans(y, left, right);
+                int second = Math.Max(end, start);
+                int visited = end - left + right - second;
+                for (int index = 0; index < visited; index++)
+                {
+                    int x = index < end - left ? left + index : second + index - (end - left);
+                    int count = frame.GetOperations(x, y, alphas);
+                    SvgAnalyticClipCoverage coverage = clip is {} paintClip ? SvgAnalyticRectangleClip.GetCoverage((paintClip.X, paintClip.Y, paintClip.Right, paintClip.Bottom), paintClip.Antialiasing, x, y) : SvgAnalyticClipCoverage.Full;
+                    Span<byte> pixel = destination.AsSpan((y * outputWidth + x) * 4, 4);
+                    for (int operation = 0; operation < count; operation++) paint.Blend(pixel, coverage.Apply(alphas[operation]), SvgAnalyticPaintKind.Direct);
+                }
             }
         }
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Use-level solid paint controls and retained raster/support diagnostics: authored and inherited color/fill opacity, nested uses/aliases, currentColor strokes, shader boundaries and inline twins. Twenty cases are exact; six stroke cases retain measured differences; five unsupported cases remain explicit. This development bank is separate from the original and corporate denominators.",
+  "purpose": "Use-level solid paint controls and retained raster/support diagnostics: authored and inherited color/fill opacity, nested uses/aliases, currentColor strokes, shader boundaries and inline twins. Twenty-three cases are exact; three native stroke cases retain measured differences; five unsupported cases remain explicit. This development bank is separate from the original and corporate denominators.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -359,21 +359,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 85,
-        "MaximumChannelError": 19,
-        "MeanAbsoluteError": 0.01336669921875,
-        "RootMeanSquareError": 0.31628566374995565,
-        "MaximumAlphaError": 19,
-        "AlphaChangedPixelCount": 46,
-        "MinimumMismatchX": 10,
-        "MinimumMismatchY": 14,
-        "MaximumMismatchX": 114,
-        "MaximumMismatchY": 31,
-        "IsExact": false
-      }
+      "role": "fidelity"
     },
     {
       "id": "current-color-rectangle-stroke-white",
@@ -387,21 +373,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 81,
-        "MaximumChannelError": 14,
-        "MeanAbsoluteError": 0.010640462239583334,
-        "RootMeanSquareError": 0.26451206799422844,
-        "MaximumAlphaError": 0,
-        "AlphaChangedPixelCount": 0,
-        "MinimumMismatchX": 11,
-        "MinimumMismatchY": 14,
-        "MaximumMismatchX": 114,
-        "MaximumMismatchY": 31,
-        "IsExact": false
-      }
+      "role": "fidelity"
     },
     {
       "id": "current-color-rectangle-stroke-black",
@@ -415,21 +387,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 85,
-        "MaximumChannelError": 14,
-        "MeanAbsoluteError": 0.010640462239583334,
-        "RootMeanSquareError": 0.25812796356248713,
-        "MaximumAlphaError": 0,
-        "AlphaChangedPixelCount": 0,
-        "MinimumMismatchX": 10,
-        "MinimumMismatchY": 14,
-        "MaximumMismatchX": 114,
-        "MaximumMismatchY": 31,
-        "IsExact": false
-      }
+      "role": "fidelity"
     },
     {
       "id": "inherited-symbol-stroke",

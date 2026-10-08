@@ -3,7 +3,8 @@ polynomial solvers, vertical edge combination, horizontal clip paint routing,
 whole-path mask/run dispatch bounds,
 axis-aligned path mapping, raw control-point convexity classification and
 antialiased rectangle paint-clip dispatch and byte coverage, hard mask-region rounding, rounded plain
-rectangle coverage, filled-path rectangle recognition and float fringe coverage, and line-segment
+rectangle coverage and ordered rectangle-frame hull/interior coverage,
+filled-path rectangle recognition and float fringe coverage, and line-segment
 dash endpoint interpolation, isolated image-layer source-over, high-precision shader pixel storage,
 constant shader construction and low-precision pixel replay, and
 linear/radial gradient coordinate construction and straight open-stroke

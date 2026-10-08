@@ -8404,3 +8404,55 @@ and surface count are unchanged; no quantitative performance claim is made.
 Ignored evidence lives under `artifacts/use-paint-properties-20261008/` and isolated
 Linux `use-paint-properties-final-20261008/`. The new six stroke differences interrupt
 G2 before wider styling, paint-server and viewport additions; remote CI remains open.
+
+## Ordered rectangle stroke frames (2026-10-08)
+
+The three retained currentColor rectangle-stroke comparisons now match their
+unchanged browser references. Previously they differed at 85/81/85 pixels; the
+transparent comparison had 46 alpha differences and maximum channel/alpha error
+19. The browser trace emits a stroked rectangle, while the previous renderer
+painted four separately antialiased fractional bands. Their corners and seams
+had different coverage and repeated source-over arithmetic.
+
+`SvgRectangleFrameCoverage` adapts the pinned `SkScan_Antihair.cpp::AntiFrameRect`:
+truncate mapped float edges to 24.8, align subpixel thin hulls, paint the outer
+hull, fill the integer middle frame, then emit the inverse inner fringe with
+rounded inverse-alpha union. Each pixel retains up to four operations in source
+order, including two coincident inner edges. A collapsed inner box becomes a
+filled middle. Solid strokes over solid, linear/radial and pattern fills share
+this route; fill painting remains independent.
+
+The immutable frame owns no storage and borrows only a four-byte stack span per
+call. The converter charges setup, both row passes and coverage/operation visits
+before painting; empty interiors are skipped. Cancellation is checked during
+setup and each row of both passes. Three work-denial checks cover narrow, wide
+and collapsed frames and confirm that surface owners release. Draw commands,
+geometry and recorded paint remain 72/272/68 bytes, with no added surfaces,
+public APIs or dependencies and no quantitative performance claim.
+
+[Fifteen independent controls](../tests/Research/rectangle-frames/manifest.json)
+were declared after the first frame prototype and before their captures or
+comparisons. Forty-five healthy, cleaned fresh-process captures form stable
+triples. Twelve prior render differences become exact through six outputs:
+fractional frames, root-scaled subpixel strokes, collapsed inner boxes and
+shader-fill frames, each on transparent/white/black backgrounds. Three explicit
+clip-crossing cases retain the viewport-boundary admission gate. The earlier
+transformed inline rectangle twin retains its separate gate; frame fidelity does
+not establish those combinations as supported.
+
+The 31-case use-paint bank is now 23 exact, three native symbol stroke differences
+and five unsupported outcomes. The native stroke family still differs at two
+pixels per background; the inline twin remains exact. Parsed source/instance
+colors and independent alphas agree, leaving the clip/raster routing to diagnose.
+The discarded whole-path-contained clip classification remains negative evidence;
+no such routing change is part of this repair.
+
+Windows and isolated Linux Release builds pass with zero warnings/errors and
+4,503 tests each (3,994 core, 503 visual-project, six FontProbe). All 83 preceding
+symbol comparisons and 149 supplemental paint outcomes remain unchanged.
+All 1,567 original bank reports and 1,545 PNG bytes remain unchanged from the
+use-paint checkpoint. Corporate reports and PNGs remain unchanged and exact at
+27/27 documents and 258/258 variants against each platform's own references.
+Ignored evidence is under `artifacts/rectangle-frame-stroke-20261008/` and Linux
+`rectangle-frame-stroke-final-20261008/`. Native stroke fidelity is next; wider
+support combinations and S17 remote CI remain open.
