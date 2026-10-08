@@ -45,9 +45,11 @@ release assessment and cohort selection limits.
 Generated native stroke outlines retain source operands until final mapping,
 making all nine Zeppelin variants exact. Coincident stroke contours preserve
 their native output classification, with independent browser regressions and
-bounded ownership checks. Fractional filled point lists retain source commands
-through final mapping. Native float rectangle endpoints close IBM's three large
-variants, completing the frozen-cohort fidelity target on both platforms.
+bounded ownership checks. Integer and fractional diagonal filled point lists
+retain source commands through final mapping, preserving directed crossing events.
+The retained integer bowtie is exact against its original browser PNG. Native float
+rectangle endpoints close IBM's three large variants, completing the frozen-cohort
+fidelity target on both platforms.
 
 Rounded rectangles retain native conic corners and convex shape classification.
 Fills and strokes share source commands through final mapping, with independent

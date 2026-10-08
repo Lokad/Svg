@@ -117,10 +117,8 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 2));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
-        // Sixteen half-coverage edge pixels quantize 127.5 up to 128, hence 8168
-        // over the naive area-times-255 value 8160; the loops share only the crossing
-        // point, so no coverage doubles.
-        Assert.Equal(8168, AlphaSum(pixels));
+        // Original retained browser coverage includes the directed crossing event.
+        Assert.Equal(8199, AlphaSum(pixels));
     }
 
     [Fact]
@@ -131,7 +129,7 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 6, 2));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 4, 2));
-        Assert.Equal(8168, AlphaSum(pixels));
+        Assert.Equal(8199, AlphaSum(pixels));
     }
 
     [Fact]
@@ -745,10 +743,9 @@ public sealed class SvgPolygonFillTests
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 7, 7));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 6, 4));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 8, 3, 0));
-        // The three split triangles meet pairwise at single points. Float
-        // mapping of their generated vertices gives 4226 aggregate alpha,
-        // compared with the independently derived ideal union area of 4225.7.
-        Assert.Equal(4226, AlphaSum(pixels));
+        // Normalized loops own scene bounds; raster coverage keeps the source edges.
+        byte[] authored = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 L6,6 L6,2 L0,8 L6,8 Z' fill='red'/></svg>", out _, out _);
+        Assert.Equal(authored, pixels);
     }
 
     [Fact]

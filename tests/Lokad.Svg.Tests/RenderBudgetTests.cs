@@ -558,7 +558,7 @@ public sealed class RenderBudgetTests
     }
 
     [Fact]
-    public void Polygon_rasterization_denies_mapping_work_before_mapped_reservation()
+    public void Polygon_rasterization_denies_authored_replay_work_before_scratch_reservation()
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 0,8' fill='red'/></svg>");
         SvgRenderLimits limits = SvgRenderLimits.Default;
@@ -568,7 +568,7 @@ public sealed class RenderBudgetTests
         RenderBudget rasterBudget = new(deniedLimits.MaximumAccountedBytes);
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, deniedLimits), rasterBudget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("vertex mapping", exception.Message);
+        Assert.Equal(0, rasterBudget.Snapshot().DeniedReservationCount);
         Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
     }
 
@@ -1008,7 +1008,8 @@ public sealed class RenderBudgetTests
     public void Polygon_retention_transfers_exact_scene_bytes_to_the_fill()
     {
         // R39: the adopted pre-reservation single-counts retained arrays, so a
-        // successful lowering holds exactly points, ends and signs in Scene.
+        // successful lowering holds scene points/ends/signs plus original fill
+        // commands and their conservatively accounted owner in Scene.
         RenderBudget budget = new(100_000);
         ParserWorkCounter counter = new(100_000);
         using (BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, counter, CancellationToken.None))
@@ -1023,7 +1024,7 @@ public sealed class RenderBudgetTests
         {
             Assert.Equal(1, parsed.Geometries.Length);
             Assert.Equal(SvgGeometryKind.PolygonFill, parsed.Geometries[0].Kind);
-            Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(3) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1), SceneBytes(budget));
+            Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(3) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<int>(1) + ParserCollectionMemory.GetArrayByteCount<SvgAuthoredPathCommand>(4) + 384, SceneBytes(budget));
             foreach (SvgGeometry geometry in parsed.Geometries) geometry.Dispose();
         }
         }

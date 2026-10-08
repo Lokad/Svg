@@ -10,6 +10,14 @@ The current 1,410 manifest entries contain
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
+Admitted integer diagonal polygon/polyline fills retain original source commands
+for directed raster coverage across solid, linear, radial and pattern paints.
+Normalized loops still own scene bounds and admission; open polyline fills close
+implicitly while their source tape preserves the open ending for stroke semantics.
+The retained integer bowtie is exact against its original browser PNG. Existing
+multi-crossing even-odd and reflected-pattern-group admission gates stay explicit.
+See [the repair record](RASTERIZATION_DESIGN.md#integer-point-list-source-replay-2026-10-08).
+
 Mask/run dispatch uses complete outward-rounded vertex/control bounds before
 canvas, bitmap or SVG clipping. Canvas-clamped row storage, bitmap scan windows
 and paint clips retain their separate roles. This closes the fourteen retained

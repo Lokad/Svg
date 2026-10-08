@@ -172,7 +172,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = MapDiagonalContours(transform, frame, mapped);
-        return FinishPolygonFill(mapped, ends, color, hasFill, SvgPolygonMapping.QuarterEdges, frame, budget);
+        return RetainIntegerPointList(FinishPolygonFill(mapped, ends, color, hasFill, SvgPolygonMapping.QuarterEdges, frame, budget), hasFill, transform, frame, budget);
     }
 
     /// <summary>Lowers diagonal linear-gradient polygons with separated simple contours to retained device points with their paint box.</summary>
@@ -181,7 +181,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = MapDiagonalContours(transform, frame, mapped);
-        return FinishGradientPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget);
+        return RetainIntegerPointList(FinishGradientPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget), hasFill, transform, frame, budget);
     }
 
     /// <summary>Lowers diagonal radial-gradient polygons with separated simple contours to retained device points with their paint box.</summary>
@@ -190,7 +190,34 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         int[] ends = MapDiagonalContours(transform, frame, mapped);
-        return FinishRadialPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget);
+        return RetainIntegerPointList(FinishRadialPolygonFill(mapped, ends, gradient, box, hasFill, opacity, SvgPolygonMapping.QuarterEdges, frame, budget), hasFill, transform, frame, budget);
+    }
+
+    /// <summary>Retains original integer polygon/polyline fill verbs alongside normalized paint geometry.</summary>
+    /// <remarks>Commands own directed raster winding; scene bounds and stroke construction keep their existing representation. Budgeted command copying observes work/cancellation; failed handoff releases geometry and command owners.</remarks>
+    private SvgParsedGeometry RetainIntegerPointList(SvgParsedGeometry result, bool hasFill, SvgAffineTransform transform, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
+        try
+        {
+            if (!_isPath && _elementName is "polygon" or "polyline" && hasFill && result.Geometries.Length == 1)
+            {
+                (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(transform, frame, false);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                for (int index = 0; index < _points.Count; index++)
+                {
+                    SvgPoint point = _points[index];
+                    commands.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new((float)point.X, (float)point.Y), default, default));
+                }
+                commands.Add(new(_elementName == "polygon" ? SvgAuthoredPathVerb.Close : SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
+                owned = commands.Detach();
+                result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.Create(owned, deviceMap, budget) };
+                owned = new([], null);
+            }
+            return result;
+        }
+        catch { result.Discard(); throw; }
+        finally { owned.Dispose(); }
     }
 
     private int[] MapDiagonalContours(SvgAffineTransform transform, SvgViewportFrame? frame, BudgetedParserList<SvgDevicePoint> mapped)

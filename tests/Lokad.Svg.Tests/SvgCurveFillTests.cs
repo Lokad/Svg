@@ -277,8 +277,8 @@ public sealed class SvgCurveFillTests
     {
         // Fresh pinned Chrome 153.0.8010.52 captures record alpha 130 at (3,3)
         // for these authored cubics. Splitting their flattened crossing into
-        // separate loops loses that native curve event. The normalized polygon
-        // retains its legacy alpha 128; the opaque lobes agree.
+        // separate loops loses that native curve event. The straight polygon
+        // keeps the browser's alpha 127 through its original directed edges.
         byte[] curved = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><path d='M0,0 C2,2 6,6 8,8 L8,0 C6,2 2,6 0,8 Z' fill='red'/></svg>", out _, out _);
         byte[] straight = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,8 8,0 0,8' fill='red'/></svg>", out _, out _);
 
@@ -289,7 +289,7 @@ public sealed class SvgCurveFillTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(straight, 8, 1, 2));
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(straight, 8, 6, 2));
         Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(straight, 8, 4, 2));
-        Assert.Equal(new SvgColor(255, 0, 0, 128), Pixel(straight, 8, 3, 3));
+        Assert.Equal(new SvgColor(255, 0, 0, 127), Pixel(straight, 8, 3, 3));
     }
 
     [Fact]

@@ -93,14 +93,14 @@
       "height": 8,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 3,
-        "maximumChannelError": 16,
-        "maximumAlphaError": 16,
-        "alphaChangedPixelCount": 3,
-        "minimumMismatchX": 3,
-        "minimumMismatchY": 3,
-        "maximumMismatchX": 4,
-        "maximumMismatchY": 4
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 8,
+        "minimumMismatchY": 8,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/diagonal-bowtie-8x8.png",

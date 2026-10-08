@@ -2429,3 +2429,25 @@ first and **13.189 → 13.038 ms** with the repair first. These selected control
 measure the corrected dispatch and do not establish representative throughput
 or Linux timing. Detailed batches and ledgers stay ignored under
 `artifacts/raw-dispatch-bounds-20261008/`.
+
+## Integer point-list source replay cost (2026-10-08)
+
+Eleven matching Windows recipes compare the preceding renderer with retained
+integer fill commands: the original bowtie, polygon/polyline forms across four
+paints, and reflected solid/linear use instances. Inputs, options and output forms
+match in both process orders. Each process warms up eight conversions and records
+three batches of twenty per recipe. Allocations compare medians across six batches
+per renderer; timings sum each recipe's batch median.
+
+Parser work rises by **2–20 units**; total conversion work falls by **175–193
+units** because raster replay uses original directed edges rather than split
+loops. Accounted peak deltas range from **0 to +1,392 bytes**; managed allocation
+traffic rises by **3,952–5,904 bytes per conversion**. The retained command array
+and conservative owner charge remain distinct from replay scratch and allocation
+traffic. Geometry/command/paint layouts remain **272 / 72 / 68 bytes**.
+Eleven separate resource sweeps verify denial, cancellation and owner cleanup.
+
+Summed per-recipe median timings read **4.716 → 3.814 ms** with the baseline
+first and **5.133 → 4.488 ms** with the repair first. These selected small controls
+do not establish representative throughput or Linux timing. Batches and ledgers
+remain ignored under `artifacts/analytic-event-walk-20261008/`.

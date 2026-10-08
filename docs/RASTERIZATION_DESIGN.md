@@ -7926,3 +7926,53 @@ record the switch to run storage. Detailed reports stay under ignored
 Five fixture and six research differences remain: contained native stroke rings,
 bowtie coverage and circle/ellipse dashes. The original-scope support audit and
 online public-domain/CC0 sourcing follow these renderer repairs.
+
+## Integer point-list source replay (2026-10-08)
+
+The retained 8×8 bowtie polygon was split into two simple loops before raster
+preparation. Its equivalent authored path already matched the original browser
+PNG. The polygon instead produced alpha 128 at three crossing pixels where the
+reference records 127, 144 and 144. Retaining its four original directed edges
+restores the native event sequence without changing normalized scene bounds.
+
+The shared solid/linear/radial point-list fill finishers now retain budgeted
+source commands for admitted integer polygons and polylines; pattern repaint
+uses the same solid boundary. Source commands compose the final map and retain
+polygon Close versus polyline End. Scene normalization, paint bounds, stroke
+construction and existing admission gates keep their roles. Copying charges
+work and observes cancellation before allocation; failed handoff releases both
+command storage and geometry owners.
+
+The full 1,567-execution bank changes only this bowtie: three pixels and maximum
+alpha error 16 become zero. The other 1,538 PNG byte sequences and every rejection
+stay unchanged; Windows/Linux reports and bytes agree. The bank contains 1,381
+exact / five known / 24 rejected fixtures and 56 exact / five known / four rejected
+research probes. Each platform preserves all 27 corporate documents / 258 variants
+exact against its own retained references. No source SVG, browser PNG or oracle
+metadata is regenerated, and no new captures are needed for this existing defect.
+
+Eight new theory cases fail on the preceding renderer and pass after the repair.
+They cover four paints, both fill rules, polygon/polyline endings and reflected
+group/use maps, asserting crossing coverage and equivalent authored-path pixels.
+Reflected pattern groups retain their existing valid-input rejection. Six older
+pixel/ownership assertions now account for directed browser crossings and the
+new command owner; the multiple-crossing control checks equivalent source-path
+pixels instead of generated-triangle coverage. These synthetic controls are
+regressions, not independent browser holdouts.
+
+Both platforms pass nine-project Release builds and **4,222 tests** (3,870 core,
+346 visual, six FontProbe), with no failures/skips. Eleven fresh admitted resource
+sweeps pass tight work/memory limits, caller-token cancellation and owner cleanup.
+All 125 recorded-paint controls retain their six output checks. Earlier full
+resource, memory and installed-package evidence retains its dated scope; remote
+CI remains open. [Matching Windows costs](BENCHMARKS.md#integer-point-list-source-replay-cost-2026-10-08)
+record the additional command storage. Studies remain ignored under
+`artifacts/analytic-event-walk-20261008/` and
+`artifacts/linux-delivery-20261007/pointlist-final-20261008/`.
+
+The contained native stroke-ring witness remains one differing pixel. Forcing
+intersection checks worsens it to nine pixels while leaving the original pixel
+wrong; that model is rejected and is not integrated. Five fixture and five
+research differences remain: this stroke-ring witness and circle/ellipse dashes.
+The original-scope support audit and online public-domain/CC0 sourcing follow
+these renderer repairs.

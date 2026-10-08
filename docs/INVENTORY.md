@@ -5,6 +5,20 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Integer point-list source replay checkpoint (2026-10-08)
+
+The original 8×8 integer bowtie becomes exact against its retained browser PNG:
+three differing crossing pixels become zero. The bank retains **1,567 executions /
+1,539 PNGs**, with **1,410 fixtures = 1,381 exact + five known + 24 rejected**,
+**65 research probes = 56 exact + five known + four rejected**, and 92 Default
+renders. Every other report and 1,538 PNG byte sequences stay unchanged.
+Windows/Linux original-bank reports and bytes agree. Each platform preserves
+**27/27 corporate documents / 258/258 variants exact** against its own references.
+The separate recorded-paint inventory stays **125 = 117 exact + eight rejected**,
+checked through all six outputs. No SVG, browser PNG or oracle metadata changes.
+Synthetic ownership/path-equivalence controls do not establish new independent
+browser fidelity. See [the repair and scoped validation](RASTERIZATION_DESIGN.md#integer-point-list-source-replay-2026-10-08).
+
 ## Whole-path blitter dispatch checkpoint (2026-10-08)
 
 Fourteen retained control-bound comparisons and the clipped star stroke become
