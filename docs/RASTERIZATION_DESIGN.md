@@ -8257,6 +8257,9 @@ viewport combinations remain G2 work; S17 remote CI remains open.
 
 ## Retained symbol groups and local reference graphs (2026-10-08)
 
+This section records the initial retained-content checkpoint. Its two measured
+clipping differences are repaired in the [viewport-opacity follow-up](#isolated-opacity-under-symbol-viewport-clips-2026-10-08) below.
+
 Nested symbol groups and local uses retain ordered typed source nodes rather
 than XML or an eagerly transformed scene. The direct-leaf route stays available.
 Entering the content route migrates existing leaf owners only after successful
@@ -8296,3 +8299,49 @@ corporate denominators. Raster fields/surfaces, public APIs and dependencies
 are unchanged; no quantitative performance claim is made. Detailed results
 remain ignored under `artifacts/symbol-content-20261008/` and isolated Linux
 `symbol-content-final-20261008/`.
+
+## Isolated opacity under symbol viewport clips (2026-10-08)
+
+The retained alias and equivalent inline group each differed at 123 pixels,
+including 21 alpha pixels, under a fractional symbol viewport and opacity.
+Their opaque and unclipped twins were exact. Clipping each child before
+isolation repeated viewport coverage; restoring a clipped layer through the
+existing direct image blitter still used the wrong opacity/coverage order.
+
+At the pinned Skia revision, `SkDraw.cpp::clipHandlesSprite` accepts a BW clip
+or an image wholly within opaque AA runs. Otherwise `drawSprite` uses an
+unfiltered image shader: `SkBitmapProcState.cpp` scales premultiplied lanes by
+paint opacity before `SkBlitter_ARGB32.cpp` applies the AA run through the native
+row blend. The managed restore now follows that dispatch and arithmetic.
+Inherited viewport clips wrap isolated symbol groups; children retain their
+local clips. Viewport allocation bounds round outward, while existing mask
+regions keep their separate hard-edge policy. Source path ink bounds enclose
+in source coordinates before the device map, preserving the isolated bitmap
+origin. The region discriminator occupies existing command padding; draw commands
+remain 72 bytes, geometry 272 bytes and recorded paint values 68 bytes.
+
+[Eighteen predeclared controls](../tests/Research/symbol-viewport-opacity/manifest.json)
+cover right/bottom and left/top crossings, integral placement, nested scopes,
+different paints and translucent content on transparent, white and black
+backgrounds. Three healthy fresh-process captures per case are stable and cleaned.
+The preceding renderer matched only three controls. The shader-order repair
+initially left three nested-scope cases with a one-byte color error at one pixel;
+rounding source bounds before mapping removes it. All eighteen controls and both
+retained residuals now match unchanged references through all six outputs.
+The earlier clip-placement-only trial remains rejected; the missing shader
+dispatch and source-bound order explain why placement alone was insufficient.
+
+Windows and isolated Linux Release builds have zero warnings/errors and 4,444
+passing tests each (3,981 core, 457 visual-project, six FontProbe). All 83 symbol
+comparisons are exact. Three additional exhaustive work/memory sweeps protect
+retained viewport/group metadata; focused tests distinguish viewport restoration from
+mask allocation regions. Clip setup charges bounded work; cleanup preserves
+the existing cancellation and ownership contracts. Public APIs, dependencies
+and surface count are unchanged; no quantitative performance claim is made.
+All 1,567 original reports and 1,545 PNG bytes remain unchanged from the preceding
+retained-content checkpoint. Corporate results remain 27/27 documents and
+258/258 variants exact against each platform's own references; every corporate
+report/PNG is unchanged. Ignored evidence lives under
+`artifacts/symbol-viewport-opacity-20261008/` and isolated Linux
+`symbol-viewport-opacity-final-20261008/`. Remaining inherited stroke/paint and
+use styling stay G2; wider viewport, clip and mask combinations stay G5.

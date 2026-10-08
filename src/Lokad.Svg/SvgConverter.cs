@@ -447,6 +447,9 @@ public static class SvgConverter
                 if (source is not null)
                 {
                     SvgRectangle box = SvgPathBounds.Compute(source.Commands, boundsWork, cancellationToken);
+                    // SVG visual bounds enclose source ink before the layer's device map.
+                    double sourceRight = Math.Ceiling(box.X + box.Width), sourceBottom = Math.Ceiling(box.Y + box.Height);
+                    box = box with { X = Math.Floor(box.X), Y = Math.Floor(box.Y), Width = sourceRight - Math.Floor(box.X), Height = sourceBottom - Math.Floor(box.Y) };
                     IncludeBox(box, outputMap.ComposeChecked(source.SceneMap), 0);
                     continue;
                 }
@@ -608,7 +611,29 @@ public static class SvgConverter
                         continue;
                     }
                     SvgAnalyticClipBounds previousLayer = layerBounds;
-                    SvgAnalyticClipBounds layer = LayerPaintBounds(index, previousLayer, command.MaskRegion);
+                    bool viewportClip = command.RegionKind == SvgLayerRegionKind.Viewport && command.MaskRegion is not null;
+                    (double regionLeft, double regionTop, double regionRight, double regionBottom) = command.MaskRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
+                    SvgAnalyticClipBounds layer = LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion);
+                    bool shaderRestore = false;
+                    if (viewportClip)
+                    {
+                        const long clipSetupWork = 8;
+                        if (clipSetupWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip setup exceeds the configured limit.");
+                        workUnits += clipSetupWork;
+                        int left = Math.Max(layer.Left, ClampFloor(regionLeft, outputWidth));
+                        int top = Math.Max(layer.Top, ClampFloor(regionTop, outputHeight));
+                        int right = Math.Min(layer.Right, ClampCeiling(regionRight, outputWidth));
+                        int bottom = Math.Min(layer.Bottom, ClampCeiling(regionBottom, outputHeight));
+                        layer = new(left, top, Math.Max(left, right), Math.Max(top, bottom));
+                        var bounds = (Left: regionLeft, Top: regionTop, Right: regionRight, Bottom: regionBottom);
+                        SvgClipAntialiasing antialiasing = command.MaskRegion.GetValueOrDefault().Antialiasing;
+                        // SkDraw::clipHandlesSprite permits the direct image blitter for a BW
+                        // clip or an image wholly contained in opaque AA runs. Otherwise the
+                        // image shader shades opacity first, then applies clip coverage.
+                        shaderRestore = SvgAnalyticRectangleClip.Classify(regionLeft, regionTop, regionRight, regionBottom, previousLayer, antialiasing) == SvgAnalyticPaintClip.Antialiased
+                            && (SvgAnalyticRectangleClip.GetCoverage(bounds, antialiasing, layer.Left, layer.Top).Apply(255) != 255
+                                || SvgAnalyticRectangleClip.GetCoverage(bounds, antialiasing, layer.Right - 1, layer.Bottom - 1).Apply(255) != 255);
+                    }
                     using RenderBudget.BudgetReservation groupReservation = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
                     byte[] groupPixels = new byte[checked(pixelCount * 4)];
                     layerBounds = layer;
@@ -617,7 +642,6 @@ public static class SvgConverter
                     long compositionWork = pixelCount;
                     if (compositionWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Group opacity composition exceeds the configured limit.");
                     workUnits += compositionWork;
-                    (double regionLeft, double regionTop, double regionRight, double regionBottom) = command.MaskRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
                     // Skia hard-rectangle clipping rounds each mapped edge to the nearest integer
                     // (Copyright 2006 The Android Open Source Project; see THIRD_PARTY_NOTICES.txt);
                     // half-pixel ties move toward positive infinity on both sides.
@@ -659,15 +683,19 @@ public static class SvgConverter
                             byte maskValue = maskIsAlpha ? contentAlpha : (byte)(contentAlpha * maskLuminance / 255);
                             maskAlpha = MultiplyAlpha(maskAlpha, maskValue);
                         }
-                        if (command.MaskRegion is not null)
+                        byte clipAlpha = 255;
+                        if (viewportClip)
+                            clipAlpha = SvgAnalyticRectangleClip.GetCoverage((regionLeft, regionTop, regionRight, regionBottom), command.MaskRegion.GetValueOrDefault().Antialiasing, pixel % outputWidth, pixel / outputWidth).Apply(255);
+                        else if (command.MaskRegion is not null)
                         {
                             int x = pixel % outputWidth;
                             int y = pixel / outputWidth;
                             if (x < maskBounds.Left || x >= maskBounds.Right || y < maskBounds.Top || y >= maskBounds.Bottom)
                                 maskAlpha = 0;
                         }
-                        if (extra == 0 || maskAlpha == 0 || groupPixels[offset + 3] == 0) continue;
-                        BlendLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha);
+                        if (extra == 0 || maskAlpha == 0 || clipAlpha == 0 || groupPixels[offset + 3] == 0) continue;
+                        if (shaderRestore) BlendClippedLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha, clipAlpha);
+                        else BlendLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha);
                     }
                     continue;
                 }
@@ -687,6 +715,22 @@ public static class SvgConverter
                 int destinationScale = (inverse + (inverse >> 8)) >> 8;
                 for (int lane = 0; lane < 4; lane++)
                     destination[lane] = (byte)((MultiplyAlpha(source[lane], maskAlpha) * sourceScale + destination[lane] * destinationScale) >> 8);
+            }
+
+            static void BlendClippedLayerPixel(Span<byte> destination, ReadOnlySpan<byte> source, byte opacity, byte maskAlpha, byte coverage)
+            {
+                // SkBitmapProcState's unfiltered shader scales each premultiplied lane
+                // before SkARGB32_Shader_Blitter applies the AA run through SkBlendARGB32.
+                int opacityScale = opacity + 1;
+                int alpha = MultiplyAlpha(source[3], maskAlpha) * opacityScale >> 8;
+                int sourceScale = coverage + 1;
+                int inverse = 65535 - alpha * sourceScale;
+                int destinationScale = (inverse + (inverse >> 8)) >> 8;
+                for (int lane = 0; lane < 4; lane++)
+                {
+                    int shaded = MultiplyAlpha(source[lane], maskAlpha) * opacityScale >> 8;
+                    destination[lane] = (byte)((shaded * sourceScale + destination[lane] * destinationScale) >> 8);
+                }
             }
         }
 

@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgSymbolContentRenderer
 {
     private readonly record struct Context(SvgPaint Paint, SvgAffineTransform Transform, SvgClipBox? Clip, bool Displayed, bool Visible);
-    private readonly record struct Frame(SvgSymbolContentRange Range, int Next, Context Context, int OutputStart, SvgPaintOpacity Opacity, SvgRecordingScope Scope);
+    private readonly record struct Frame(SvgSymbolContentRange Range, int Next, Context Context, int OutputStart, SvgPaintOpacity Opacity, SvgRecordingScope Scope, SvgClipBox? CompositionClip);
 
     internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? viewport, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
@@ -16,7 +16,7 @@ internal static class SvgSymbolContentRenderer
         using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Parser, work, token);
         using BudgetedParserList<Frame> stack = new(state.Budget, SvgMemoryCategory.Parser, work, token);
         Context context = Place(definition, reference, viewport, reference.IsDisplayed, reference.IsVisible);
-        stack.Add(new(root, root.Start, context, 0, SvgPaintOpacity.Opaque, state.NewRecordingScope()));
+        stack.Add(new(root, root.Start, context, 0, SvgPaintOpacity.Opaque, state.NewRecordingScope(), null));
         try
         {
             while (stack.Count > 0)
@@ -25,7 +25,7 @@ internal static class SvgSymbolContentRenderer
                 Frame frame = stack[^1];
                 if (frame.Next == frame.Range.Start + frame.Range.Count)
                 {
-                    SvgPaintRecording.WrapInstance(output.AsMutableSpan().Slice(frame.OutputStart), frame.Opacity, frame.Scope, state, work, token);
+                    SvgPaintRecording.WrapInstance(output.AsMutableSpan().Slice(frame.OutputStart), frame.Opacity, frame.Scope, frame.CompositionClip, state, work, token);
                     stack.RemoveLast(); continue;
                 }
                 SvgSymbolContentNode node = frame.Range.Content.Nodes[frame.Next];
@@ -35,7 +35,11 @@ internal static class SvgSymbolContentRenderer
                     Context child = frame.Context with { Paint = node.Style.Resolve(frame.Context.Paint), Transform = frame.Context.Transform.ComposeChecked(node.Transform), Displayed = frame.Context.Displayed && node.Style.IsDisplayed, Visible = node.Style.IsVisible ?? frame.Context.Visible };
                     stack[^1] = frame with { Next = node.End + 1 };
                     SvgSymbolContentRange contents = new(frame.Range.Content, frame.Next + 1, node.End - frame.Next - 1);
-                    stack.Add(new(contents, contents.Start, child, output.Count, node.Style.Opacity, state.NewRecordingScope()));
+                    SvgClipBox? compositionClip = node.Style.Opacity.Value != 1 ? child.Clip : null;
+                    // An inherited viewport clip surrounds the isolated container. Apply it
+                    // once when restoring the group; children retain only their local clips.
+                    if (compositionClip is not null) child = child with { Clip = null };
+                    stack.Add(new(contents, contents.Start, child, output.Count, node.Style.Opacity, state.NewRecordingScope(), compositionClip));
                     continue;
                 }
                 if (node.Kind == SvgSymbolContentKind.EndGroup) throw new InvalidOperationException("Symbol range includes an unmatched end marker.");
@@ -57,7 +61,7 @@ internal static class SvgSymbolContentRenderer
                     if (use.PaintServerId is not null || use.StrokeOverride is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Paint-server and stroke overrides on retained symbol content are not implemented.");
                     Context child = Place(target, use, ClipFrame(frame.Context.Clip), displayed, visible);
-                    stack.Add(new(range, range.Start, child, output.Count, node.Reference.SourceOpacity, use.RecordingScope));
+                    stack.Add(new(range, range.Start, child, output.Count, node.Reference.SourceOpacity, use.RecordingScope, null));
                 }
                 else
                 {

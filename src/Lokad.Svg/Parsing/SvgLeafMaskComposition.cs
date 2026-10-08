@@ -25,6 +25,7 @@ internal sealed class SvgLeafMaskOperation : IDisposable
     internal SvgPaintOpacity SourceOpacity { get; set; } = SvgPaintOpacity.Opaque;
     internal SvgRecordingScope RecordingScope { get; set; } = new(-1);
     internal SvgClipBox? Region { get; set; }
+    internal SvgLayerRegionKind RegionKind { get; set; }
     /// <summary>Releases this metadata reservation without disposing borrowed operations or observing cancellation.</summary>
     /// <remarks>Only the conversion owner disposes this single-threaded value; budget release is idempotent.</remarks>
     public void Dispose() => _reservation.Dispose();
@@ -231,6 +232,7 @@ internal static class SvgLeafMaskComposition
                             mapped.Value = source.Value;
                             mapped.SourceOpacity = source.SourceOpacity;
                             mapped.Region = source.Region is SvgClipBox region ? mapped.Map.Apply(region) : null;
+                            mapped.RegionKind = source.RegionKind;
                             mapped.Resolved = true;
                         }
                         if (operation.Value != 255 || operation.Region is not null || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
@@ -246,7 +248,7 @@ internal static class SvgLeafMaskComposition
                 for (int begin = common; begin < desired.Count; begin++)
                 {
                     SvgLeafMaskOperation operation = desired[begin].Operation;
-                    commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, operation.RecordingScope.Value, operation.SourceOpacity, operation.Region, -1, operation.Value));
+                    commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, operation.RecordingScope.Value, operation.SourceOpacity, operation.Region, -1, operation.Value) { RegionKind = operation.RegionKind });
                 }
                 active.Clear();
                 active.AddRange(desired.AsSpan());

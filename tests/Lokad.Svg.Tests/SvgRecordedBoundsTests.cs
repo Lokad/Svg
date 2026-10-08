@@ -27,6 +27,7 @@ public sealed class SvgRecordedBoundsTests
             Assert.Equal(38.4, region.Width, 6);
             Assert.Equal(38.4, region.Height, 6);
             Assert.Equal(128, mask.MaskAlpha);
+            Assert.Equal(SvgLayerRegionKind.Mask, mask.RegionKind);
             Assert.Equal(SvgPaintOpacity.Opaque, mask.SourceOpacity);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);

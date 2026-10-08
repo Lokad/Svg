@@ -267,10 +267,17 @@ internal static class SvgPaintRecording
     }
 
     internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        => WrapInstance(geometries, opacity, scope, null, state, work, token);
+
+    /// <summary>Wraps a borrowed geometry span with owned parser metadata for opacity and an optional outer viewport clip.
+    /// Metadata reserves before allocation; each geometry update charges work and cancellation. No native geometry owner changes.</summary>
+    internal static void WrapInstance(Span<SvgGeometry> geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgClipBox? viewportClip, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
-        if (opacity.Value == 1 || geometries.Length == 0) return;
+        if ((opacity.Value == 1 && viewportClip is null) || geometries.Length == 0) return;
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Resolved = true; operation.Value = 255; operation.SourceOpacity = opacity; operation.RecordingScope = scope;
+        operation.Region = viewportClip;
+        operation.RegionKind = viewportClip is null ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.Viewport;
         SvgLeafMaskBinding? lastInner = null;
         SvgLeafMaskBinding? binding = null;
         for (int index = 0; index < geometries.Length; index++)

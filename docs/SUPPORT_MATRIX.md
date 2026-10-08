@@ -27,10 +27,10 @@ criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
 | Queue | Supported boundary / missing combination | Retained evidence |
 | --- | --- | --- |
 | G1 | Declaration validation landed: attributes and admitted inline/stylesheet paths share `new` / `accumulate` / `inherit` validation without backdrop allocation. Complete and numeric partial rectangles require finite numbers and nonnegative dimensions. | Eleven six-output contexts plus malformed/priority/resource/discovery controls; the unchanged `inv-105` now reaches G3. |
-| G2 | Ordered symbol leaves, nested groups/local uses and native-backed magnified instances render. Root and rendered-group locations, anonymous owners and descriptive metadata work. Solid fills and group display/visibility bind in clones; reference graphs validate and expand iteratively. Stroke/paint overrides, other locations and broader viewports remain open. | Both original families exact on three backgrounds; all 46 preceding controls now exact. Sixteen new controls give 15 exact and one G5 residual; three diagnostic twins give two exact and the same residual. All 65 comparisons run through six outputs. |
+| G2 | Ordered symbol leaves, nested groups/local uses and native-backed magnified instances render. Root and rendered-group locations, anonymous owners and descriptive metadata work. Solid fills and group display/visibility bind in clones; reference graphs validate and expand iteratively. Stroke/paint overrides, other locations and broader viewports remain open. | Both original families exact on three backgrounds; all 46 preceding controls now exact. All sixteen retained-content controls and three diagnostic twins are exact after the viewport-opacity repair. Eighteen additional controls bring the symbol bank to 83 exact comparisons through six outputs. |
 | G3 | Some axis-aligned/similarity/path transforms exist; rotated rectangles, general matrix curve/shape combinations and non-uniform curve output remain gated. Pattern reflection and compound curved even-odd fill admission are also gated. | `inv-105`, `inv-106`, `original-logo-rotated-mark`, `original-number-general-map`, `original-curve-root-quad-none`, tiger and `group-clip-reflected-pattern`. |
 | G4 | Native solid strokes render; gradient/pattern mixed closed/open subpaths and gradient direct `fill="none"` lines still reject. Oval dash caps/paint/transform combinations remain narrower than solid paths. | Nine `zero-area-stroke-*` paint-server controls, two `line-bounds-*-square-width6-fill-none` controls; shared stroke and paint admission. |
-| G5 | Fractional symbol viewport clipping with a translucent group has a measured pixel residual and is the next repair. Nested SVG style attributes, nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `symbol-content/group-alias-use` and its inline diagnostic: 123 differing pixels, 21 alpha differences, maximum channel/alpha error 30; opaque and unclipped twins exact. Earlier gates: `original-aa-clip-admitted-shader`, material pairs and `mask-region-half-translated`. |
+| G5 | Fractional symbol viewport clipping around isolated translucent groups now renders exactly; broader viewport/use-opacity combinations need independent controls. Nested SVG style attributes, nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `symbol-content/group-alias-use` and its inline diagnostic are exact on unchanged references; eighteen fractional/integral, nested-scope and translucent-content controls are exact on three backgrounds. Earlier gates: `original-aa-clip-admitted-shader`, material pairs and `mask-region-half-translated`. |
 | G6 | One rectangle tile with integer user-space coordinates exists; circle/path/multiple-child tiles, local pattern inheritance, fractional/general maps and bounding-box units are missing. | `inv-103`, `inv-104`, `original-cpu-raster-cubic-pattern`; `SvgDefinitionParser` and `SvgPatternSyntax`. |
 | G7 | Embedded PNG and static CSS have explicit narrow subsets; non-uniform image content/resampling, root-targeting stylesheet selectors and additional export combinations need measured slices. | `SvgImageSyntax`, PNG decoder, `SvgStyleSheet`; source distinct export failures before expanding. |
 | G8 | Active markers and filter effects reject. These are later static features with bounded surface/expansion requirements. | `original-logo-marker-mark`, `original-logo-filter-mark`. |
@@ -95,10 +95,13 @@ pixel failures while preserving six already exact controls. All are exact throug
 six outputs; four new exhaustive ownership inputs protect recolored native
 geometry and partial failures. See [the initial repair](RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08)
 and [the presentation follow-up](RASTERIZATION_DESIGN.md#symbol-solid-fill-presentation-at-instance-time-2026-10-08).
-Sixteen retained-content controls and three diagnostic twins give seventeen
-exact comparisons and two explicit fractional clipping/opacity differences.
+Sixteen retained-content controls and three diagnostic twins are exact against
+unchanged references after the shared viewport-opacity repair. Eighteen new
+controls bring the complete symbol bank to 83 exact six-output comparisons.
 The [content slice](RASTERIZATION_DESIGN.md#retained-symbol-groups-and-local-reference-graphs-2026-10-08)
-records iterative graph validation/expansion and the next fidelity repair.
+records iterative graph validation/expansion; the [viewport follow-up](RASTERIZATION_DESIGN.md#isolated-opacity-under-symbol-viewport-clips-2026-10-08)
+records the repaired clipping/layer arithmetic. Broader instance and viewport
+combinations remain open under G2/G5.
 
 ## Retained renderer foundations
 
