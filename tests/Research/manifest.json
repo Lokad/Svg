@@ -1529,16 +1529,17 @@
       "width": 41,
       "height": 35,
       "admittedRendering": {
-        "changedPixelCount": 3,
-        "maximumChannelError": 9,
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 3,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 9,
-        "maximumMismatchY": 22
+        "minimumMismatchX": 41,
+        "minimumMismatchY": 35,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "9bced3508b40d1c9573e515527c56361b2cd95d1209fbd96f347376655449404",
+      "candidateSha256": "7a9ee338fa4a92c6c573d07bd15685cb948937622e5005a8ffd6f79799cde190",
       "oracle": {
         "referencePng": "references/rounded-source-hairline-color.png",
         "referenceSha256": "a5030eb351da168a80e44315311f25bda80b2231e52bbf8ec6a5d7819ecb6652",
@@ -1553,7 +1554,8 @@
         "decodedPixelStability": "identical",
         "captureStartupHealth": "healthy",
         "captureProfilesCleaned": true
-      }
+      },
+      "repairedAt": "SVG rounded-rectangle source order, 2026-10-08"
     },
     {
       "id": "research-rounded-source-oval-stroke",
@@ -1572,16 +1574,17 @@
       "width": 41,
       "height": 35,
       "admittedRendering": {
-        "changedPixelCount": 1,
-        "maximumChannelError": 3,
-        "maximumAlphaError": 2,
-        "alphaChangedPixelCount": 1,
-        "minimumMismatchX": 5,
-        "minimumMismatchY": 15,
-        "maximumMismatchX": 5,
-        "maximumMismatchY": 15
+        "dimensionsMatch": true,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 41,
+        "minimumMismatchY": 35,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "6a4a9018048625619cc6b8c5e6a1480d21f739da597784a93b76391e268f533c",
+      "candidateSha256": "b38b1339362b105e56e479f1ddf5a1906dee348bd798b09beed13fc1460619bb",
       "oracle": {
         "referencePng": "references/rounded-source-oval-stroke.png",
         "referenceSha256": "2f9e1b21d40b562b84e7c9f031eb2c7f1247ccb02aef34c23e9046562d297041",
@@ -1596,7 +1599,8 @@
         "decodedPixelStability": "identical",
         "captureStartupHealth": "healthy",
         "captureProfilesCleaned": true
-      }
+      },
+      "repairedAt": "SVG rounded-rectangle source order, 2026-10-08"
     },
     {
       "id": "research-mask-layer-round-leaf-transparent",

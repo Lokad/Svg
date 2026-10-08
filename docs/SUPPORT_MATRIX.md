@@ -51,7 +51,7 @@ destination-overlap controls are exact. Other solid-lowered routes retain their
 existing behavior and measured precision gaps.
 
 The [recorded-paint controls](../tests/Research/paint-recording/manifest.json)
-retain 82 exact results and seven valid-input
+retain 94 exact results and seven valid-input
 rejections. Translucent paint-stroke combinations newly admitted by deferred
 opacity have independent browser evidence; this does not establish all stroke,
 pattern, mask or override combinations.
@@ -59,8 +59,10 @@ Rounded rectangle fills and strokes retain shared native float source commands,
 with rational conic corners and native rectangle/oval simplification. Validated
 source shapes retain their known convexity through preparation and placement,
 including half-side radii with zero-length straight edges. Independent fractional,
-clamped, reflected and painted controls are exact; hairline color
-and oval-stroke residuals remain measured research cases.
+clamped, reflected and painted controls are exact. SVG source command order starts
+at the top tangent or an oval's top midpoint; the retained hairline-color and
+oval-stroke research cases are exact. Other curve/stroke/clip differences retain
+their separate measured gates.
 
 Painted integer paths with diagonal edges retain directed authored contours,
 including touching/coincident subpaths and even-odd crossings. Linear/radial

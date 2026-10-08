@@ -7730,3 +7730,54 @@ Evidence stays under ignored `artifacts/direct-paint-spill-20261008/` and
 the implementation; retained hashes describe SVG/PNG assets. Hairline color, oval
 strokes and other clip/paint/curve differences remain open. The original-scope
 support audit and online public-domain/CC0 sourcing follow those repairs.
+
+## SVG rounded-rectangle command order (2026-10-08)
+
+The rounded hairline had exact alpha coverage but three differing color pixels.
+Native browser recordings show SVG paths starting at the top tangent, followed
+by the top edge and clockwise corners. Simplified ovals start at the top midpoint.
+The earlier shared builder used general Skia `addRRect`'s default start index six,
+or its simplified oval index three. This preserved the same geometric contour
+but changed painting order at overlapping hairline segments and the starting
+phase of wider-stroke construction.
+
+`SvgRoundedRectPath` now preserves the recorded SVG command order for both filled
+and stroked rounded rectangles and their oval simplification. Float bounds,
+radius clamping, conic weights, convexity, command counts, owner copying and all
+coverage/material arithmetic stay unchanged. The zero-radius rectangle route is
+outside this repair. No coordinate predicate or tuned per-image correction is
+introduced.
+
+Only the rounded-rectangle hairline-color and oval-stroke research reports/PNGs
+change in the original bank; they become exact from three and one differing
+pixels respectively. Every other report and 1,537 PNG byte sequences stay
+unchanged. The bank retains **1,567 executions / 1,539 PNGs**, with **1,410 fixtures
+= 1,349 exact + 37 known + 24 rejections**, **65 research probes = 52 exact + nine
+known + four rejections** and 92 unchanged Default renders. Complete reports and
+PNG bytes agree on Windows/Linux. Corporate reports/PNGs remain unchanged on
+each platform, with **27/27 documents and 258/258 variants exact** against their
+own platform references.
+
+Twelve original CC0 controls were declared before production edits across rounded
+rectangles and ovals, half/three-quarter hairlines, wider/translucent strokes,
+linear fills and scaled-root strokes. All 36 captures are healthy, cleaned and
+byte-stable in triples. Two rounded hairlines become exact from four pixels each;
+ten exact controls are preserved. Two original inputs and their recorded browser
+commands are retained as core command-order vectors. Separate recordings of the
+original failures followed the hypothesis and remain diagnostics, not holdouts.
+The recorded-paint inventory retains **101 controls = 94 exact + seven valid-input
+rejections** through all six public outputs. Original SVGs and preceding browser
+reference PNGs remain unchanged.
+
+Windows/Linux nine-project Release builds, **4,171 tests = 3,843 core +
+322 visual + six FontProbe**, 25-scenario memory checks, runtime/symbol packages and installed
+consumers pass. Resource sweeps cover **186 admitted / 29 rejected** cases with
+zero failures. Public APIs and runtime dependencies stay unchanged. Seventy-two
+matched recipes in both process orders preserve parser/total work and accounted
+peak storage; the [cost record](BENCHMARKS.md#svg-rounded-rectangle-command-order-cost-2026-10-08)
+retains allocation/timing observations and their limits. Evidence
+stays under ignored `artifacts/hairline-color-20261008/` and
+`artifacts/linux-delivery-20261007/svg-order-final-20261008/`; Git identifies the
+implementation. Remaining curve/clip events, painted outlines and circle/ellipse
+dashes remain open. The original-scope support audit and online public-domain/CC0
+sourcing follow those repairs.

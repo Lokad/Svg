@@ -23,7 +23,9 @@ internal static class SvgRoundedRectPath
             rx *= scale;
             ry *= scale;
         }
-        // Native CW addRRect starts at index six; simplification selects rect/oval index three.
+        // SVG rounded rectangles begin at the top tangent; their simplified oval
+        // begins at the top midpoint. Preserve this order for stroke construction
+        // and hairline paints, where segment overlap can change stored color.
         if (rx <= 0 || ry <= 0)
         {
             commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(left, bottom), default, default));
@@ -35,23 +37,23 @@ internal static class SvgRoundedRectPath
         {
             float centerX = (float)(((double)left + right) * .5);
             float centerY = (float)(((double)top + bottom) * .5);
-            commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(left, centerY), default, default));
-            Conic(commands, new(left, top), new(centerX, top));
+            commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(centerX, top), default, default));
             Conic(commands, new(right, top), new(right, centerY));
             Conic(commands, new(right, bottom), new(centerX, bottom));
             Conic(commands, new(left, bottom), new(left, centerY));
+            Conic(commands, new(left, top), new(centerX, top));
         }
         else
         {
-            commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(left, bottom - ry), default, default));
-            commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(left, top + ry), default, default));
-            Conic(commands, new(left, top), new(left + rx, top));
+            commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(left + rx, top), default, default));
             commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right - rx, top), default, default));
             Conic(commands, new(right, top), new(right, top + ry));
             commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right, bottom - ry), default, default));
             Conic(commands, new(right, bottom), new(right - rx, bottom));
             commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(left + rx, bottom), default, default));
             Conic(commands, new(left, bottom), new(left, bottom - ry));
+            commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(left, top + ry), default, default));
+            Conic(commands, new(left, top), new(left + rx, top));
         }
         commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
 

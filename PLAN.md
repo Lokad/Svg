@@ -5,18 +5,18 @@ variants on Windows and Linux**, with zero known differences and zero rejections
 Marks are 13/13 exact; outlined wordmarks are 14/14. Membership, inputs, options
 and browser references stay frozen.
 
-The latest repair preserves direct fringe paints emitted outside accumulated
-path-row storage, within the existing bitmap/SVG clip. Three original ellipse
-comparisons and the retained scaled-mask control become exact. Fresh matching
-browser captures also confirm the changed Default STOP-sign rendering is exact.
-See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#direct-paint-outside-path-row-storage-2026-10-08).
+The latest repair preserves SVG rounded-rectangle command order, beginning at the
+top tangent or the simplified oval's top midpoint. The retained hairline-color
+and oval-stroke comparisons become exact against unchanged references. Every
+other original-bank report and 1,537 PNG byte sequences stay unchanged.
+See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#svg-rounded-rectangle-command-order-2026-10-08).
 
 The original bank retains **1,567 executions / 1,539 PNGs**, with identical
 Windows/Linux reports and output bytes. Every preceding exact result and rejection
 outcome is preserved; all 258 corporate reports/images stay unchanged. A further
-89 retained paint controls measure 82 exact and seven
+101 retained paint controls measure 94 exact and seven
 valid-input rejections through all six public outputs. Both platforms pass
-Release builds, **4,157 tests**, 25-scenario memory checks and installed-package
+Release builds, **4,171 tests**, 25-scenario memory checks and installed-package
 checks. Earlier checkpoints retain their dated evidence in the design record
 and inventory.
 
@@ -143,15 +143,15 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,157 passed on each platform**: 3,841 core, 310 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Scene-owned paint records, bounded copy maps and dynamic direct-paint links reserve storage before allocation. Work/memory denial and cancellation pass for 174 admitted cases and 29 retained rejections; all tested owners are released. Forty-four retained core cases and 89 six-output cases protect paint/bounds behavior. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API or runtime dependency changes; remote CI remains open. |
-| Executed fixture manifest | **1,410 entries = 1,349 exact + 37 known-difference renders + 24 rejections**; 799 base documents / 611 variants. All three wide-ellipse comparisons become exact against unchanged references. |
-| Executed research manifest | **65 probes = 50 exact + eleven known-difference renders + four rejections**. All three circle/ellipse alpha-mask comparisons become exact against unchanged references. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the later scope audit. |
-| Supplemental recorded-paint inventory | **89 controls = 82 exact + seven valid-input rejections**. The prior scaled-mask control becomes exact. Twelve independently declared original CC0 controls retain 36 healthy, cleaned, stable captures; a supplementary visible-pattern control declared after the prototype retains three more. All thirteen are exact. Unchanged MIT unit inputs and original MIT/CC0 controls retain all six output checks. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. Only `inv-050` changes at this checkpoint; three stable matching 2880×2880 browser captures confirm it becomes exact from one differing pixel. The earlier `inv-013` exact result and `inv-014` residual are preserved. These Default outputs do not establish corporate fidelity or a representative rate. |
+| Full tests, including corporate selection/measurement | **4,171 passed on each platform**: 3,843 core, 322 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Scene-owned paint records, bounded copy maps and dynamic direct-paint links reserve storage before allocation. Work/memory denial and cancellation pass for 186 admitted cases and 29 retained rejections; all tested owners are released. Forty-six retained core cases and 101 six-output cases protect paint/bounds/order behavior. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API or runtime dependency changes; remote CI remains open. |
+| Executed fixture manifest | **1,410 entries = 1,349 exact + 37 known-difference renders + 24 rejections**; 799 base documents / 611 variants. Every fixture report and PNG stays unchanged. |
+| Executed research manifest | **65 probes = 52 exact + nine known-difference renders + four rejections**. Rounded-rectangle hairline color and oval stroke become exact against unchanged references. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the later scope audit. |
+| Supplemental recorded-paint inventory | **101 controls = 94 exact + seven valid-input rejections**. Twelve independently declared original CC0 rounded-rectangle/oval controls retain 36 healthy, cleaned, stable captures. All twelve are exact; two hairlines improve from four differing pixels each. Two recorded browser command vectors protect the original starting point and segment order. Unchanged MIT unit inputs and original MIT/CC0 controls retain all six output checks. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. Every Default report and PNG stays unchanged, preserving the preceding matching-browser STOP-sign gain and earlier `inv-013` exact result / `inv-014` residual. These Default outputs do not establish corporate fidelity or a representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**. Seventy-two matched recipes in both process orders preserve parser/total work and accounted peak bytes; those recipes do not exercise direct-link growth. The new fringe controls separately exercise charged growth, denial and cancellation. See [the current cost record](docs/BENCHMARKS.md#direct-paint-fringe-storage-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**. Seventy-two matched recipes in both process orders preserve parser/total work and accounted peak bytes. Observed managed allocation deltas range from −160 to +82.5 bytes per conversion. See [the current cost record](docs/BENCHMARKS.md#svg-rounded-rectangle-command-order-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -860,21 +860,22 @@ replace the renderer work below.
 
 1. **Continue shared fidelity work under rows 3–7.** The shared paint/opacity
    repair is integrated and passes the unit, six-output, ownership and
-   Windows/Linux delivery gates. Continue the remaining 37 fixture and eleven
+   Windows/Linux delivery gates. Continue the remaining 37 fixture and nine
    research differences.
    The hard custom-region edge and content-layer dither repairs close three more
    research comparisons. Bitmap-local isolated curve construction closes all
    three circle/ellipse alpha-mask comparisons and both curved-opacity controls.
    Direct-paint fringe retention closes the scaled-mask control and three more
-   wide-ellipse comparisons. Prioritize hairline color, oval strokes
-   and remaining clip, paint and curve behavior with independent browser controls.
-   Preserve the earlier opacity/operation, scope and copy controls' remaining
-   differences; the repair does not close every drawing-state combination.
+   wide-ellipse comparisons. SVG rounded-rectangle source order closes the retained
+   hairline-color and oval-stroke comparisons. Prioritize remaining curve/clip
+   events, painted outlines and circle/ellipse dash construction with independent
+   browser controls. Keep other drawing-state combinations covered by the retained
+   opacity/operation, scope and copy controls.
    Keep the valid percentage-mask, symbol override, direct `fill="none"` line,
    translucent pattern-tile stroke, transformed custom-mask and nested-viewport
    rejections for the later admission audit. Broader object/visual bounds and override combinations still
    need their own evidence. The integrated repair, measured controls and rejected
-   models are in [the design record](docs/RASTERIZATION_DESIGN.md#direct-paint-outside-path-row-storage-2026-10-08).
+   models are in [the design record](docs/RASTERIZATION_DESIGN.md#svg-rounded-rectangle-command-order-2026-10-08).
 2. **Preserve the complete exact matrix.** Compare shared raster changes across
    every declared fixture, research and Default case and all 258 corporate
    variants on Windows/Linux. Keep categorized rejections and selection limits

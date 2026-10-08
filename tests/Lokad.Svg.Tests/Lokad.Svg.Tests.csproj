@@ -17,6 +17,7 @@
     <None Update="TestData/hairline-curves-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/hairline-native.csv.gz" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/hairline-native.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/rounded-rect-svg-order.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/stroke-miter-native.csv" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/stroke-miter-native.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/miter-join-acute-64x64.svg" Link="TestData/miter-join-acute-64x64.svg" CopyToOutputDirectory="PreserveNewest" />

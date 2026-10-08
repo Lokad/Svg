@@ -2342,3 +2342,25 @@ runs first and **116.106 → 84.616 ms** when the repair runs first. The loaded 
 and different process-order observations do not support a throughput claim.
 The earlier 258-recipe Windows ShortRun retains its historical scope. Recipes,
 batches and resource ledgers stay under ignored `artifacts/direct-paint-spill-20261008/`.
+
+## SVG rounded-rectangle command-order cost (2026-10-08)
+
+Seventy-two matching admitted Windows recipes compare `ab4f3ceb` with SVG
+rounded-rectangle source order. Original SVG bytes, backgrounds and owned-memory
+output match in both process orders. Each process warms up eight conversions and
+records three batches of twenty per recipe; allocation deltas compare medians
+across six batches per renderer.
+
+Parser work, total accounted conversion work and accounted peak live storage are
+unchanged. Geometry/command/paint-value sizes remain **272 / 72 / 68 bytes**.
+Observed managed allocation deltas range from **−160 to +82.5 bytes** per
+conversion; these measure allocation traffic rather than retained storage.
+The independent shape controls separately preserve bounded construction/copying,
+work/memory denial and caller-token cancellation.
+
+Summed per-recipe median timings read **73.070 → 84.082 ms** when the baseline
+runs first and **77.237 → 77.243 ms** when the repair runs first. Different
+process-order observations on this host do not establish representative
+throughput. The earlier 258-recipe Windows ShortRun retains its historical scope.
+Recipes, batches and resource ledgers stay under ignored
+`artifacts/hairline-color-20261008/`.

@@ -5,7 +5,38 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
-## Direct-paint fringe checkpoint (2026-10-08)
+## SVG rounded-rectangle command-order checkpoint (2026-10-08)
+
+The rounded-rectangle hairline-color and oval-stroke research comparisons become
+exact against unchanged references. Every other original-bank report and 1,537
+PNG byte sequences stay unchanged. The bank retains **1,567 executions / 1,539
+PNGs**: **1,410 fixtures = 1,349 exact + 37 known + 24 rejected**, **65 research
+probes = 52 exact + nine known + four rejected** and 92 Default renders.
+Windows/Linux original-bank reports and PNGs match. Each platform preserves all
+corporate reports/PNGs and **27/27 documents / 258/258 variants exact** against
+its retained references.
+
+Twelve original CC0 rounded-rectangle and oval controls were declared before
+production edits: half/three-quarter hairlines, wider strokes, translucent wider
+strokes, linear fills and scaled-root strokes. All 36 fresh captures are healthy,
+cleaned and byte-stable in triples. All twelve controls are exact; two rounded
+hairlines improve from four differing pixels each. Browser command records supply
+two independent command-order vectors. The
+[recorded-paint inventory](../tests/Research/paint-recording/manifest.json)
+retains **101 pairs = 94 exact + seven valid-input rejections** through all six
+public outputs. Existing SVGs and browser references remain unchanged.
+
+Separate recordings of the two original failing research cases followed the
+hypothesis and remain diagnostics, not independent holdouts. They show that SVG
+rounded-rectangle paths begin at the top tangent and simplified ovals at the top
+midpoint; the earlier general Skia-builder starting point changed segment order.
+Windows/Linux Release builds, **4,171 tests**, 25-scenario memory checks and
+installed-package checks pass. Resource sweeps cover **186 admitted / 29 rejected**
+cases with zero failures. See [the repair record](RASTERIZATION_DESIGN.md#svg-rounded-rectangle-command-order-2026-10-08)
+and [the cost record](BENCHMARKS.md#svg-rounded-rectangle-command-order-cost-2026-10-08).
+Online sourcing follows the remaining fidelity repairs and original-scope audit.
+
+## Direct-paint fringe checkpoint (2026-10-08, preceding)
 
 Three retained wide-ellipse comparisons become exact against unchanged references.
 Only these and the Default STOP-sign output change in the original bank; every
