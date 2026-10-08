@@ -11,9 +11,11 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgPaintOpacity SourceOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
     internal SvgPaintOpacity InheritedStrokeOpacity { get; init; } = SvgPaintOpacity.Opaque;
+    internal SvgInheritedStrokeStyle InheritedStroke { get; init; }
     internal bool HasPaintContextOverride { get; init; }
     internal bool HasFillOpacityOverride { get; init; }
     internal bool HasStrokeOpacityOverride { get; init; }
+    internal bool HasStrokeStyleOverride { get; init; }
     internal bool IsDisplayed { get; init; } = true;
     internal bool IsVisible { get; init; } = true;
 }
@@ -48,7 +50,24 @@ internal static class SvgReferenceResolver
     internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
+        if (definition.StrokeContent is {} strokeContent && (reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default))
+            return SvgSymbolContentRenderer.Apply(definition with { SymbolContent = strokeContent }, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
+        if (definition.LeafSource is SvgDefinitionLeafSource source)
+        {
+            if (source.RequiresConstruction(reference.InheritedStroke))
+            {
+                foreach (SvgGeometry geometry in definition.Geometries)
+                {
+                    workCounter.Consume(cancellationToken);
+                    if (geometry.LeafMask is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
+                }
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, state);
+                try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox }, reference with { StrokeOverride = null }, frame, state, workCounter, cancellationToken); }
+                finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
+            }
+            reference = reference with { StrokeOverride = null };
+        }
         if (definition.SymbolViewBox is SvgViewBox symbolBox) return ApplySymbol(definition, symbolBox, reference, frame, state, workCounter, cancellationToken);
         definition = definition with { SymbolFillBindings = definition.SymbolFillBindings ?? definition.SourceFillBindings };
         if (reference.StrokeOverride is not null && reference.PaintServerId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked paint-server use instances are not implemented.");
@@ -1422,6 +1441,7 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!state.GroupSnapshots.TryGetValue(pendingUse.Reference.Id, out _)) continue;
+            if (pendingUse.Reference.HasStrokeStyleOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke presentation overrides on rendered-group use instances are not implemented.");
             if (pendingUse.Reference.HasPaintContextOverride || pendingUse.Reference.HasStrokeOpacityOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color, fill-opacity and stroke-opacity overrides on rendered-group use instances are not implemented.");
             if (pendingUse.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
             state.GroupUseExpanded = true;
@@ -1523,6 +1543,7 @@ internal static class SvgReferenceResolver
                 }
                 if (owner is null) throw new InvalidOperationException("Group snapshot placeholder has no owning use.");
                 if (state.Definitions.TryGetValue(owner.Value.Reference.Id, out _)) throw new InvalidOperationException("Group snapshot placeholder owns a resolved leaf use.");
+                if (owner.Value.Reference.HasStrokeStyleOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke presentation overrides on rendered-group use instances are not implemented.");
                 if (owner.Value.Reference.HasPaintContextOverride || owner.Value.Reference.HasStrokeOpacityOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color, fill-opacity and stroke-opacity overrides on rendered-group use instances are not implemented.");
                 if (owner.Value.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
                 SvgGeometry[] nested = ExpandGroupUse(owner.Value.Reference.Id, visited, scene, state, workCounter, cancellationToken);

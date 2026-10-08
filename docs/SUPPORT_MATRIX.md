@@ -27,7 +27,7 @@ criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
 | Queue | Supported boundary / missing combination | Retained evidence |
 | --- | --- | --- |
 | G1 | Declaration validation landed: attributes and admitted inline/stylesheet paths share `new` / `accumulate` / `inherit` validation without backdrop allocation. Complete and numeric partial rectangles require finite numbers and nonnegative dimensions. | Eleven six-output contexts plus malformed/priority/resource/discovery controls; the unchanged `inv-105` now reaches G3. |
-| G2 | Ordered symbol leaves, nested groups/local uses and native-backed magnified instances render. Root and rendered-group locations, anonymous owners and descriptive metadata work. Solid use color/fill-opacity, numeric stroke-opacity inheritance and group display/visibility bind in clones; reference graphs validate and expand iteratively. Unstyled closed unpainted paths retain centerlines for use strokes. Wider stroke paint/width/mechanics, paint overrides, rendered-group style, other-location and viewport combinations remain open. | Both original families exact on three backgrounds; all 46 preceding controls now exact. All sixteen retained-content controls and three diagnostic twins are exact after the viewport-opacity repair. The preceding symbol bank remains 83 exact comparisons through six outputs. The use-paint bank has 31 cases: 26 exact and five explicit rejections; thirty rectangle-path stroke controls are exact. The new stroke-opacity bank is 64 exact and 17 explicit rejections through six outputs. |
+| G2 | Ordered symbol leaves, nested groups/local uses and native-backed magnified instances render. Root and rendered-group locations, anonymous owners and descriptive metadata work. Solid use color/fill-opacity, numeric stroke-opacity and admitted stroke paint/width/mechanics inheritance bind in clones; group display/visibility propagate; reference graphs validate and expand iteratively. Unstyled closed unpainted paths retain centerlines for use strokes. Wider paint overrides, rendered-group style, other-location and viewport combinations remain open. | Both original families exact on three backgrounds; all 46 preceding controls now exact. All sixteen retained-content controls and three diagnostic twins are exact after the viewport-opacity repair. The preceding symbol bank remains 83 exact comparisons through six outputs. The use-paint bank has 31 cases: 27 exact and four explicit rejections; thirty rectangle-path stroke controls are exact. The stroke-opacity bank stays 64 exact and 17 explicit rejections. The new stroke-style bank has 96 exact and three translucent shader-circle rejections, through six outputs. |
 | G3 | Some axis-aligned/similarity/path transforms exist; rotated rectangles, general matrix curve/shape combinations and non-uniform curve output remain gated. Pattern reflection and compound curved even-odd fill admission are also gated. | `inv-105`, `inv-106`, `original-logo-rotated-mark`, `original-number-general-map`, `original-curve-root-quad-none`, tiger and `group-clip-reflected-pattern`. |
 | G4 | Fractional rectangle strokes preserve ordered hull/frame/inverse-fringe coverage; the retained instance family is exact. Native solid strokes render; gradient/pattern mixed closed/open subpaths and gradient direct `fill="none"` lines still reject. Oval dash caps/paint/transform combinations remain narrower than solid paths. | `use-paint-properties/current-color-rectangle-stroke-*` and twelve new fractional/thin/collapsed/shader-fill frame controls are exact. Three new clip-crossing controls and the inline transformed twin reject separately. Nine `zero-area-stroke-*` paint-server controls, two `line-bounds-*-square-width6-fill-none` controls; shared stroke and paint admission. |
 | G5 | Fractional symbol viewport clipping around isolated translucent groups now renders exactly; native symbol stroke instances are exact after shared closed-rectangle path construction; broader viewport/use-opacity combinations need independent controls. Nested SVG style attributes, nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `symbol-content/group-alias-use` and its inline diagnostic are exact on unchanged references; eighteen fractional/integral, nested-scope and translucent-content controls are exact on three backgrounds. The three native symbol stroke backgrounds and their inline twin match unchanged references; thirty new rectangle-path stroke controls are exact. Earlier gates: `original-aa-clip-admitted-shader`, material pairs and `mask-region-half-translated`. |
@@ -55,7 +55,7 @@ or more supported self-closing geometry leaves, nested groups and local uses in 
 multiple children share one owned definition. Distinct child IDs are aliases,
 while duplicate authored IDs remain malformed. Tested aliases exclude the
 enclosing symbol's viewBox, fill and opacity; numeric stroke opacity binds independently
-for aliases, while wider inherited stroke mechanics remain open. Definition ancestors do not supply transforms, visibility
+for aliases, as do admitted inherited stroke paint/width/mechanics. Definition ancestors do not supply transforms, visibility
 or opacity to copies. Symbol IDs are optional; anonymous definitions retain
 child-ID owners through scene construction. Group/use ID aliases borrow typed
 source ranges and exclude referenced ancestors. Container display/visibility and
@@ -77,8 +77,9 @@ from use and its ancestors. Color and fill opacity inherit independently of fill
 aliases exclude the symbol's values. A leaf's own display/visibility cannot be
 reactivated by inherited fill. Geometry and recorded alpha share that resolution.
 Literal, rgba and currentColor solid stroke markers retain independently authored
-or inherited numeric stroke opacity and bind at instance time; wider inherited
-stroke paint/width/mechanics remain gated. Existing shader strokes retain their
+or inherited numeric stroke opacity and bind at instance time. Admitted stroke
+paint/width, caps, joins, miter limits and dashes inherit independently; authored
+source values win. Existing shader strokes retain their
 separate byte-alpha boundary. Child, symbol and use opacity
 compose in separate scopes. Nested group visibility/display now propagates in
 clones. Solid use color/fill-opacity attributes now follow the admitted cascade,
@@ -121,8 +122,13 @@ records 64 exact cases and 17 retained gates: nine fractional diagonal lines,
 two late stylesheet inputs, three shader rectangle definitions and three
 rendered-group styles. Unstyled closed unpainted paths preserve their authored
 commands for newly added solid use strokes. Numeric opacity syntax follows the
-existing parser; this slice does not broaden CSS keyword or stroke-mechanics admission.
-Broader instance and viewport combinations remain open under G2/G5.
+existing parser; the opacity slice did not broaden CSS keyword or stroke-mechanics admission.
+The [stroke-style follow-up](RASTERIZATION_DESIGN.md#instance-stroke-paint-width-and-mechanics-2026-10-08)
+records immutable source attributes/cascaded style, replay through shared lowerers,
+the 96 new exact cases and the old inherited-symbol-stroke graduation. The three
+translucent shader-circle cases retain the existing G4 gate. Plain rectangle
+non-miter joins, masked source reconstruction, rendered-group styles and wider
+instance/viewport combinations remain open under G2/G4/G5.
 
 ## Retained renderer foundations
 

@@ -71,7 +71,7 @@ internal static class SvgElementAttributePolicy
             if (IsAllowed(reader, kind))
             {
                 bool isInheritedStrokeStyle = reader.LocalName == "stroke-dasharray" || reader.LocalName == "stroke-dashoffset" || reader.LocalName == "stroke-linecap" || reader.LocalName == "stroke-linejoin";
-                bool isInheritedContainer = isInheritedStrokeStyle && kind is SvgElementKind.Group or SvgElementKind.Root;
+                bool isInheritedContainer = isInheritedStrokeStyle && kind is SvgElementKind.Group or SvgElementKind.Root or SvgElementKind.Use;
                 bool roundInstanceJoin = kind == SvgElementKind.Use && reader.LocalName == "stroke-linejoin";
                 if (reader.NamespaceURI.Length == 0) SvgStrokeStyleSyntax.ValidateAttribute(reader, reader.LocalName, reader.Value, kind is SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle or SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Line || isInheritedContainer, kind == SvgElementKind.Rectangle || isInheritedContainer, (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || roundInstanceJoin || isInheritedContainer, kind == SvgElementKind.Path || kind == SvgElementKind.Circle || (kind == SvgElementKind.PointList && elementName == "polyline") || (reader.LocalName == "stroke-linejoin" && kind == SvgElementKind.Rectangle && HasNonzeroRoundedCorners(reader)) || isInheritedContainer, workCounter, cancellationToken);
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "font-variant") SvgTextFontSyntax.ValidateFontVariant(reader.Value.AsSpan());

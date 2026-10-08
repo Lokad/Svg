@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Use-level solid paint controls and retained raster/support diagnostics: authored and inherited color/fill opacity, nested uses/aliases, currentColor strokes, shader boundaries and inline twins. Twenty-six cases are exact; five unsupported cases remain explicit. This development bank is separate from the original and corporate denominators.",
+  "purpose": "Use-level solid paint controls and retained raster/support diagnostics: authored and inherited color/fill opacity, nested uses/aliases, currentColor strokes, shader boundaries and inline twins. Twenty-seven cases are exact; four unsupported cases remain explicit. This development bank is separate from the original and corporate denominators.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -359,8 +359,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "support-diagnostic",
-      "expectedError": "UnsupportedFeature",
+      "role": "fidelity",
       "observedGate": "Stroked use instances of symbols are not implemented."
     },
     {

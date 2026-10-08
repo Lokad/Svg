@@ -74,8 +74,9 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
         if (_children.Count == 1 && Presentation.SourceOpacity.Value == 1)
         {
             SvgDefinition child = _children[0];
+            SvgSymbolContentRange strokeRange = RetainStrokeRange();
             _children.Clear();
-            return child with { SymbolViewBox = viewBox, BorrowedFromSymbol = false };
+            return child with { SymbolViewBox = viewBox, BorrowedFromSymbol = false, StrokeContent = strokeRange };
         }
         long total = 0;
         foreach (SvgDefinition child in _children.AsSpan())
@@ -87,8 +88,9 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
         int count = (int)total;
         if (count == 0)
         {
+            SvgSymbolContentRange strokeRange = RetainStrokeRange();
             _children.Clear();
-            return new([], false, null, viewBox) { SymbolFillBindings = [] };
+            return new([], false, null, viewBox) { SymbolFillBindings = [], StrokeContent = strokeRange };
         }
         RenderBudget.BudgetReservation? reservation = state.Budget.Reserve(
             128 + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(count) + ParserCollectionMemory.GetArrayByteCount<SvgSymbolFillBinding>(count), SvgMemoryCategory.Scene);
@@ -108,12 +110,26 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
                     AssemblyCheckpoint?.Invoke(offset);
                 }
             }
+            SvgSymbolContentRange strokeRange = RetainStrokeRange();
             state.DefinitionReservations.Add(reservation);
             reservation = null;
             _children.Clear();
-            return new(geometries, false, null, viewBox) { SymbolFillBindings = bindings };
+            return new(geometries, false, null, viewBox) { SymbolFillBindings = bindings, StrokeContent = strokeRange };
         }
         finally { reservation?.Dispose(); }
+
+        SvgSymbolContentRange RetainStrokeRange()
+        {
+            SvgSymbolContent content = SvgSymbolContent.Create(_budget, work, token, _presentation);
+            try
+            {
+                foreach (SvgDefinition child in _children.AsSpan()) content.AddLeaf(child, child.SourceDisplayed, child.SourceVisible);
+                SvgSymbolContentRange range = content.Seal(work, token, null);
+                state.RetainStrokeContent(content);
+                return range;
+            }
+            catch { content.Dispose(); throw; }
+        }
     }
 
     public void Dispose()

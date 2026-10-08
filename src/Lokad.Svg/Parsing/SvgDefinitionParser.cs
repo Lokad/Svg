@@ -32,7 +32,7 @@ internal static class SvgDefinitionParser
             }
             SvgViewBox? symbolViewBox = null;
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, symbolViewBox)
-                : reader.LocalName == "line" ? new SvgDefinition(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state), state, workCounter, cancellationToken), false, null, symbolViewBox)
+                : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
                 : ParseShapeDefinition(reader, context, state, symbolViewBox);
             bool retained = false;
             try
@@ -40,7 +40,7 @@ internal static class SvgDefinitionParser
                 SvgPaintRecording.FinishDefinition(definition.Geometries, state, workCounter, cancellationToken);
                 SvgDefinition source = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false);
                 SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
-                definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = SvgPresentationResolver.ParseDisplay(sourceStyle.Display), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true) };
+                definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = SvgPresentationResolver.ParseDisplay(sourceStyle.Display), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true), LeafSource = SvgDefinitionLeafSource.Capture(reader, context, state) };
                 if (symbolChild)
                 {
                     definition = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, true);
@@ -1051,6 +1051,40 @@ internal static class SvgDefinitionParser
         }
     }
 
+    private static SvgDefinition ParseLineDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
+    {
+        _ = SvgLineSyntax.Parse(reader);
+        SvgComputedStyle style = context.ResolveStyle(reader);
+        string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
+        if (stroke is null || stroke == "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) return new([], false, null, null);
+        return new(RetainParsedGeometries(SvgLeafParser.ParseLine(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null);
+    }
+
+    /// <summary>Lowers one immutable source leaf with its resolved instance stroke, reusing the ordinary shape routes.</summary>
+    /// <remarks>The caller owns returned geometries. Document reservations own array/binding storage; failure releases
+    /// native geometry and every lowerer observes the supplied work, cancellation and memory bounds.</remarks>
+    internal static SvgDefinition LowerInstanceSource(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
+    {
+        if (reader.LocalName == "rect")
+        {
+            SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(reader);
+            SvgResolvedPaintableElement shape = context.ResolveShape(reader, true);
+            if ((rectangle.CornerX ?? rectangle.CornerY ?? 0) == 0 && (rectangle.CornerY ?? rectangle.CornerX ?? 0) == 0
+                && shape.Presentation.StrokeColor is not null && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(shape.Style.Width)
+                && SvgStrokeStyleSyntax.ParseLinejoin(shape.Style.Linejoin, true) != SvgStrokeJoin.Miter)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-miter stroke joins on rectangle instances are not implemented.");
+        }
+        SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, null)
+            : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
+            : ParseShapeDefinition(reader, context, state, null);
+        try
+        {
+            SvgPaintRecording.FinishDefinition(definition.Geometries, state, context.WorkCounter, context.CancellationToken);
+            return BindSymbolFill(definition, reader, context, state, context.WorkCounter, context.CancellationToken, false);
+        }
+        catch { foreach (SvgGeometry geometry in definition.Geometries) geometry.Dispose(); throw; }
+    }
+
     private static SvgDefinition BindSymbolFill(SvgDefinition definition, XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, ParserWorkCounter work, CancellationToken token, bool includesSymbolPresentation)
     {
         if (definition.Geometries.Length == 0) return definition with { SymbolFillBindings = [] };
@@ -1066,7 +1100,7 @@ internal static class SvgDefinitionParser
         string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
         SvgPaint? authoredStroke = stroke is not null && !SvgPatternSyntax.IsPatternFill(stroke)
             ? SvgPaintResolver.Resolve(stroke, null, null, SvgPaint.Default, context.NamedColors) : null;
-        SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token);
+        SvgComputedStyle sourceStyle = context.AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token);
         string? strokeOpacity = sourceStyle.StrokeOpacity ?? (includesSymbolPresentation ? symbol.Stroke.StrokeOpacity : null);
         SvgPaintOpacity? authoredStrokeOpacity = strokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(strokeOpacity);
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(128 + ParserCollectionMemory.GetArrayByteCount<SvgSymbolFillBinding>(definition.Geometries.Length), SvgMemoryCategory.Scene);

@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='96' height='64'><rect width='96' height='64' fill='white'/><g transform='translate(16,16)'><defs><path id='p' d='M5.5 6.25Q27.5 2.25 25.5 24.75' fill='none'/></defs><use href='#p' stroke='#297fb3' stroke-width='2.5' stroke-dasharray='3 2' stroke-dashoffset='.75' stroke-linecap='round'/></g></svg>

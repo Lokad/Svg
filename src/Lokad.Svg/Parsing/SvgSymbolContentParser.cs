@@ -37,7 +37,7 @@ internal static class SvgSymbolContentParser
             SvgSymbolPresentation presentation = new(paint, inherited.Stroke.ResolveChild(style with { Linecap = stroke.Linecap, Linejoin = stroke.Linejoin, Dasharray = stroke.Dasharray, Dashoffset = stroke.Dashoffset, Width = stroke.Width, Miterlimit = stroke.Miterlimit, StrokeOpacity = stroke.StrokeOpacity, Stroke = stroke.Stroke }),
                 Copy(style.FillRule) ?? inherited.FillRule, style.Fill is not null || inherited.HasAuthoredFill, opacity ?? inherited.FillOpacity, color ?? inherited.CurrentColor, sourceOpacity);
             content.BeginGroup(reader.Depth, id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
-                { StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
+                { Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
             if (reader.IsEmptyElement) content.EndGroup(reader.Depth, state);
         }
@@ -49,7 +49,8 @@ internal static class SvgSymbolContentParser
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, width, height, state);
             SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
-            int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, displayed, visible);
+            SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset), Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
+            int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, stroke, displayed, visible);
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true });
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
         }

@@ -35,7 +35,6 @@ internal static class SvgLocalReferencePresentationResolver
             if (style.Stroke is null) return null;
             if (SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) return null;
             SvgStrokeStyleSyntax.RejectPaintServerStroke(style.Stroke, "use");
-            if (style.Dasharray is not null && !style.Dasharray.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed strokes on use elements are not implemented.");
             double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width, "use");
             if (width == 0) return null;
             SvgStrokeJoin join = style.Linejoin is null ? SvgStrokeJoin.Miter : SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true);

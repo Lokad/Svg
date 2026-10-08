@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/use-stroke-style/*.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/use-stroke-opacity/*.svg" Link="TestData/use-stroke-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/use-paint-properties/*.svg" Link="TestData/use-paint-properties/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/symbol-viewport-opacity/*.svg" Link="TestData/symbol-viewport-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

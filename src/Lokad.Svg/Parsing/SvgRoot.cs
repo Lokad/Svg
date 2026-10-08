@@ -1120,6 +1120,8 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
     internal SvgSymbolFillBinding[]? SourceFillBindings { get; init; }
     internal bool SourceDisplayed { get; init; } = true;
     internal bool? SourceVisible { get; init; }
+    internal SvgDefinitionLeafSource? LeafSource { get; init; }
+    internal SvgSymbolContentRange? StrokeContent { get; init; }
 }
 
 /// <summary>Retains a solid fill's independently inherited properties until a symbol or child alias is instanced.

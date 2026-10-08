@@ -20,6 +20,8 @@ internal sealed class SvgDocumentState : IDisposable
     private BudgetedParserList<SvgGeometry>? _temporaryGroupGeometries;
     private RenderBudget.BudgetReservation? _temporaryGroupOwner;
     private BudgetedParserList<SvgDefinition>? _anonymousSymbols;
+    private BudgetedParserList<SvgSymbolContentRange>? _strokeContents;
+    private RenderBudget.BudgetReservation? _strokeContentOwner;
     private RenderBudget.BudgetReservation? _anonymousSymbolOwner;
     private const int DefinitionStorageBytes = 256;
     private const int ClipStorageBytes = 128;
@@ -318,9 +320,23 @@ internal sealed class SvgDocumentState : IDisposable
             }
     }
 
+    internal void RetainStrokeContent(SvgSymbolContent content)
+    {
+        if (_strokeContents is null)
+        {
+            RenderBudget.BudgetReservation owner = Budget.Reserve(128, SvgMemoryCategory.Scene);
+            try { _strokeContents = new(Budget, SvgMemoryCategory.Scene); _strokeContentOwner = owner; }
+            catch { owner.Dispose(); throw; }
+        }
+        _strokeContents.Add(new(content, 0, 0));
+    }
+
     public void Dispose()
     {
         SymbolDefinition?.Dispose();
+        if (_strokeContents is not null) foreach (SvgSymbolContentRange content in _strokeContents.AsSpan()) content.Content.Dispose();
+        _strokeContents?.Dispose();
+        _strokeContentOwner?.Dispose();
         ReleaseDefinitions();
         _anonymousSymbols?.Dispose();
         _anonymousSymbolOwner?.Dispose();

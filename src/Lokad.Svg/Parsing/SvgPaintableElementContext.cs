@@ -9,6 +9,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     internal bool DeferPaintOpacity { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal bool RetainInstanceStrokePath { get; init; }
+    internal SvgComputedStyle? AuthoredStyle { get; init; }
     internal static SvgPaintableElementContext Create(XmlReader reader, bool directChild, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgInheritedPresentation inheritedPresentation = state.Groups.Count == 0 ? root.InheritedPresentation : state.Groups[^1].InheritedPresentation;
@@ -20,14 +21,16 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
 
     internal SvgComputedStyle ResolveStyle(XmlReader reader)
     {
-        SvgComputedStyle style = InheritedStroke.ApplyTo(SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken));
+        SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken));
+        if (AuthoredStyle is not null) style = style with { Stroke = style.Stroke ?? InheritedStroke.Stroke };
         if (DeferPaintOpacity) style = style with { Opacity = null };
         return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
     }
 
     internal SvgComputedStyle ResolveStyle(XmlReader reader, bool allowsDirectTextFontProperties)
     {
-        SvgComputedStyle style = InheritedStroke.ApplyTo(SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, allowsDirectTextFontProperties));
+        SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, allowsDirectTextFontProperties));
+        if (AuthoredStyle is not null) style = style with { Stroke = style.Stroke ?? InheritedStroke.Stroke };
         if (DeferPaintOpacity) style = style with { Opacity = null };
         return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
     }

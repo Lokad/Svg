@@ -222,12 +222,20 @@ public sealed class SvgAuthoredPathTests
 
     [Theory]
     [InlineData("<rect id='p' width='16' height='16'/>")]
-    [InlineData("<path id='p' stroke='blue' d='" + Retraced + "'/>")]
     public void Round_joined_instance_strokes_reject_definitions_without_an_admitted_centerline(string definition)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + definition + "</defs><use href='#p' fill='none' stroke='red' stroke-linejoin='round'/></svg>");
         SvgException denied = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, denied.ErrorCode);
+    }
+
+    [Fact]
+    public void Authored_stroke_paint_wins_when_the_instance_supplies_join_mechanics()
+    {
+        string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>";
+        byte[] direct = TextEncoding.UTF8.GetBytes(prefix + "<path d='" + Retraced + "' fill='none' stroke='blue' stroke-linejoin='round'/></svg>");
+        byte[] instance = TextEncoding.UTF8.GetBytes(prefix + "<defs><path id='p' d='" + Retraced + "' stroke='blue'/></defs><use href='#p' fill='none' stroke='red' stroke-linejoin='round'/></svg>");
+        Assert.Equal(SvgConverter.ConvertToPng(direct, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(instance, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Theory]

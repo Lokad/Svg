@@ -68,14 +68,12 @@ public sealed class SvgLocalReferencePresentationResolverTests
     }
 
     [Fact]
-    public void Rejects_dashed_use_strokes_with_an_honest_message()
+    public void Retains_solid_stroke_paint_when_use_dash_mechanics_are_supplied()
     {
         SvgComputedStyle style = new(null, null, null, "#ff0000", null, null, null, null) { Dasharray = "4 4" };
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000))));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-        Assert.Contains("Dashed strokes on use elements", exception.Message);
+        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000)));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Assert.IsType<SvgUseStrokeOverride>(resolved.StrokeOverride).Paint.FillColor);
     }
 
     [Fact]

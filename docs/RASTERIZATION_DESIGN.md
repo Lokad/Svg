@@ -8583,3 +8583,82 @@ evidence is under `artifacts/use-stroke-opacity-20261008/` and Linux
 Wider stroke paint/width/mechanics, shader overrides and rendered-group instance
 styles remain G2 work. Numeric opacity admission follows the existing parser;
 this slice does not add CSS opacity keywords or close G2–G9 or S17 remote CI.
+
+## Instance stroke paint, width and mechanics (2026-10-08)
+
+The [99-case stroke-style bank](../tests/Research/use-stroke-style/manifest.json)
+now has 96 exact cases and three explicit translucent shader-circle rejections.
+The preceding renderer had six exact results, eighteen incorrect renders and
+75 rejections. The three shader-circle cases previously rendered incorrect pixels
+with their inherited stroke absent; they now reach the explicit paint gate.
+Eighty-four controls were declared before production editing or
+capture; fifteen CSS, rgba, inherited-shader and magnification controls were
+declared after the first prototype and before their captures/comparisons. Each
+case retains three byte-identical, healthy fresh-process browser captures with
+cleaned profiles. The old `inherited-symbol-stroke` case also becomes exact
+against its frozen source and browser reference. These are development controls,
+separate from the original and corporate denominators.
+
+Definition lowering baked stroke construction before the use context existed.
+Changing paint bindings could resolve color/opacity, but could not add a stroke to
+an unpainted circle, change its width, or recover source precedence through a
+symbol/group alias. Use presentation also rejected admitted path caps, dashes
+and bevel joins before the target shape could apply its own stroke boundary.
+
+Each validated source leaf now retains immutable attribute values and its
+cascaded authored style. The bounded attribute adapter feeds the existing shape
+lowerers; it retains no child tree or serialized XML. Source values merge with the
+instance stroke context independently. A change to stroke paint or construction
+properties lowers the source again, then maps it through the existing instance
+and recorded-paint machinery. CurrentColor and opacity-only changes retain their
+existing paint-binding route. Explicit source paint, `none`, width zero, caps,
+joins, miter limits and dashes win over inherited values. Source stylesheet
+precedence survives reconstruction because replay uses the captured cascade,
+rather than recomputing it without the source's matched stylesheet.
+
+Retained group/use nodes carry their locally authored stroke properties.
+Previously flattened symbols keep a borrowed source sidecar so instance stroke
+changes still resolve each child separately; the usual geometry route remains
+available when construction is unchanged. Root symbol, nested group and use
+properties inherit through the same iterative contexts. Child/group/use aliases
+exclude referenced ancestors. Empty/unpainted leaves retain the source needed
+for later instance strokes. Unstroked line definitions validate coordinates and
+paint nothing until an instance supplies an admitted stroke.
+
+The ordinary native polygon stroker already supports bevel joins. Its redundant
+closed-polygon gate is removed; the three independently captured polygon controls
+are exact. The existing ordinary lowerers still enforce shape-specific paint and
+geometry restrictions. Plain rectangle non-miter instance joins remain rejected
+instead of silently becoming miter joins; masked source reconstruction and
+rendered-group stroke styling retain explicit gates. The three new translucent
+shader-circle cases expose the existing G4 paint admission. Wider stroke/paint
+and viewport combinations remain in the support queue.
+
+Attribute/style strings and arrays reserve storage before copying; text and
+attribute scans charge work and observe cancellation. Temporary reconstructed
+geometry is disposed after mapping or failure. Sidecars borrow the original
+geometry owners and have independent bounded node/frame storage. Cancelled
+assembly releases scratch and keeps children unchanged for retry: sidecar
+publication follows the successful geometry copy. Seven additional resource
+inputs cover rectangles, curves, mixed symbols, nested uses, round dashed paths,
+CSS precedence and magnification. Every parser work limit, sampled/peak-edge
+memory denial, raster work boundary and cancellation/retry releases owners.
+Round dashed replay needs more than one MiB in the existing native outline/replay
+scratch route; these tests measure with eight MiB and deny every sampled budget
+below the actual peak. Draw commands, geometry and recorded paint stay 72/272/68
+bytes; no new surface or quantitative performance claim is made.
+
+Windows and Linux Release builds have zero warnings/errors; 4,740 tests pass
+on each platform (4,021 core, 713 visual-project and six FontProbe), with no
+failures/skips. All 1,567 original reports and 1,545 PNG byte sequences remain
+unchanged from the preceding stroke-opacity checkpoint. Each platform preserves
+27/27 corporate documents and 258/258 exact comparisons against its own references,
+with unchanged reports and PNGs. All preceding symbol and rectangle/frame
+controls stay unchanged. The 81-case opacity bank stays 64 exact and 17 rejected,
+and the use-paint bank is now 27 exact and four rejected through six outputs.
+The 99 new style controls have matching outcomes across platforms. Ignored
+diagnostic evidence is under `artifacts/use-stroke-style-20261008/` and
+`artifacts/linux-delivery-20261007/use-stroke-style-final-20261008/`.
+
+Rendered-group styling and wider instance combinations remain G2 work. G3–G9 and
+S17 remote CI remain open; this slice does not establish general SVG coverage.

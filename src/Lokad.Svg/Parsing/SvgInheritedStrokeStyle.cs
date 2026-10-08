@@ -5,6 +5,11 @@ internal readonly record struct SvgInheritedStrokeStyle(string? Linecap, string?
 {
     internal static SvgInheritedStrokeStyle Default => new(null, null, null, null, null, null, null, null);
 
+    internal SvgInheritedStrokeStyle InheritFrom(SvgInheritedStrokeStyle parent)
+        => new(Linecap ?? parent.Linecap, Linejoin ?? parent.Linejoin, Dasharray ?? parent.Dasharray,
+            Dashoffset ?? parent.Dashoffset, Width ?? parent.Width, Miterlimit ?? parent.Miterlimit,
+            StrokeOpacity ?? parent.StrokeOpacity, Stroke ?? parent.Stroke);
+
     /// <summary>Resolves the child container stroke from its computed style falling back to the parent.</summary>
     internal SvgInheritedStrokeStyle ResolveChild(SvgComputedStyle child)
     {
