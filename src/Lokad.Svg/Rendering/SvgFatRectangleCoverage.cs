@@ -35,12 +35,7 @@ internal readonly struct SvgFatRectangleCoverage
     internal static SvgFatRectangleCoverage? TryCreate(ReadOnlySpan<SvgAuthoredPathCommand> commands, ReadOnlySpan<SvgDevicePoint> closedPoints, SvgAffineTransform map,
         SvgCpuBitmapOrigin origin, SvgAnalyticClipBounds clip, ref long work, long maximumWork, CancellationToken token)
     {
-        // Retain the native recognizer's direction/corner state. Zero-length lines and
-        // monotone collinear pieces are legal; curves and direction reversals are not.
-        int corners = 0, firstDirection = -1, secondDirection = -1, previousDirection = -1;
-        int pointCount = 0;
-        bool closedOrMoved = false, hasFirst = false, autoClose = false;
-        SvgDevicePoint first = default, last = default, current = default, firstCorner = default, thirdCorner = default;
+        SvgRectanglePathRecognizer recognizer = new();
         bool authored = !commands.IsEmpty;
         int count = authored ? commands.Length : closedPoints.Length + 1;
         for (int index = 0; index < count; index++)
@@ -51,67 +46,17 @@ internal readonly struct SvgFatRectangleCoverage
             token.ThrowIfCancellationRequested();
             if (3 > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Filled rectangle recognition exceeds the remaining work limit.");
             work += 3;
-            if (command.Verb == SvgAuthoredPathVerb.End) continue; // Parser seal, not a native verb.
-            if (command.Verb == SvgAuthoredPathVerb.Move)
-            {
-                current = MapPoint(command.First, map, origin, authored);
-                pointCount++;
-                if (corners == 0) { first = current; hasFirst = true; }
-                else if (first.X != last.X && first.Y != last.Y) return null;
-                closedOrMoved = true;
-                continue;
-            }
-            if (!hasFirst || command.Verb is not (SvgAuthoredPathVerb.Line or SvgAuthoredPathVerb.Close)) return null;
-            bool close = command.Verb == SvgAuthoredPathVerb.Close;
-            SvgDevicePoint end;
-            if (close) { end = first; autoClose = true; }
-            else
-            {
-                end = MapPoint(command.First, map, origin, authored);
-                last = end;
-                pointCount++;
-            }
-            float dx = (float)end.X - (float)current.X, dy = (float)end.Y - (float)current.Y;
-            if (!float.IsFinite(dx) || !float.IsFinite(dy) || dx != 0 && dy != 0) return null;
-            if (dx == 0 && dy == 0) continue;
-            int direction = (dx != 0 ? 1 : 0) | (dx > 0 || dy > 0 ? 2 : 0);
-            if (corners == 0)
-            {
-                firstDirection = previousDirection = direction;
-                corners = 1; closedOrMoved = false; current = end;
-                continue;
-            }
-            if (closedOrMoved) return null;
-            if (autoClose && direction == firstDirection) continue;
-            closedOrMoved = autoClose;
-            if (direction == previousDirection)
-            {
-                if (corners == 3 && !close) thirdCorner = end;
-                current = end;
-                continue;
-            }
-            previousDirection = direction;
-            switch (++corners)
-            {
-                case 2: firstCorner = current; secondDirection = direction; break;
-                case 3:
-                    if ((firstDirection ^ direction) != 2) return null;
-                    thirdCorner = end;
-                    break;
-                case 4:
-                    if ((secondDirection ^ direction) != 2) return null;
-                    break;
-                default: return null;
-            }
-            current = end;
+            SvgDevicePoint point = command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line
+                ? MapPoint(command.First, map, origin, authored) : default;
+            if (!recognizer.Add(command.Verb, point)) return null;
         }
-        if (pointCount < 4 || corners < 3 || corners > 4 || first.X != last.X && first.Y != last.Y) return null;
+        if (recognizer.Finish() is not SvgRecognizedRectangle rectangle) return null;
         if (8 > maximumWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Filled rectangle clipping exceeds the remaining work limit.");
         work += 8;
-        float left = MathF.Max(MathF.Min((float)firstCorner.X, (float)thirdCorner.X), clip.Left - origin.X);
-        float right = MathF.Min(MathF.Max((float)firstCorner.X, (float)thirdCorner.X), clip.Right - origin.X);
-        float top = MathF.Max(MathF.Min((float)firstCorner.Y, (float)thirdCorner.Y), clip.Top - origin.Y);
-        float bottom = MathF.Min(MathF.Max((float)firstCorner.Y, (float)thirdCorner.Y), clip.Bottom - origin.Y);
+        float left = MathF.Max(rectangle.Left, clip.Left - origin.X);
+        float right = MathF.Min(rectangle.Right, clip.Right - origin.X);
+        float top = MathF.Max(rectangle.Top, clip.Top - origin.Y);
+        float bottom = MathF.Min(rectangle.Bottom, clip.Bottom - origin.Y);
         if (right <= left || bottom <= top || MathF.Ceiling(right) - MathF.Floor(left) < 3) return null;
         return new(left, top, right, bottom, origin);
 

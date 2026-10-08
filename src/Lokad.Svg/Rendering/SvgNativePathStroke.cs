@@ -28,6 +28,17 @@ internal static class SvgNativePathStroke
     internal static void Build(ReadOnlySpan<SvgAuthoredPathCommand> commands, float radius, float miterLimit,
         SvgStrokeCap cap, SvgStrokeJoin join, float resolutionScale, SvgAffineTransform constructionMap,
         BudgetedParserList<SvgStrokeOutlineCommand> output, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        => BuildCore(commands, radius, miterLimit, cap, join, resolutionScale, constructionMap, true, output, budget, work, token);
+
+    /// <summary>Runs only the contour stroker, matching the direct-verb native numerical oracle.</summary>
+    internal static void BuildGeneric(ReadOnlySpan<SvgAuthoredPathCommand> commands, float radius, float miterLimit,
+        SvgStrokeCap cap, SvgStrokeJoin join, float resolutionScale, BudgetedParserList<SvgStrokeOutlineCommand> output,
+        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        => BuildCore(commands, radius, miterLimit, cap, join, resolutionScale, SvgAffineTransform.Identity, false, output, budget, work, token);
+
+    private static void BuildCore(ReadOnlySpan<SvgAuthoredPathCommand> commands, float radius, float miterLimit,
+        SvgStrokeCap cap, SvgStrokeJoin join, float resolutionScale, SvgAffineTransform constructionMap, bool recognizeRectangle,
+        BudgetedParserList<SvgStrokeOutlineCommand> output, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(output);
         ArgumentNullException.ThrowIfNull(budget);
@@ -39,6 +50,23 @@ internal static class SvgNativePathStroke
         if (!float.IsFinite(resolutionScale) || resolutionScale <= 0) throw new ArgumentOutOfRangeException(nameof(resolutionScale));
         if (cap is not SvgStrokeCap.Butt and not SvgStrokeCap.Round and not SvgStrokeCap.Square) throw new ArgumentOutOfRangeException(nameof(cap));
         if (join is not SvgStrokeJoin.Miter and not SvgStrokeJoin.Round and not SvgStrokeJoin.Bevel) throw new ArgumentOutOfRangeException(nameof(join));
+        if (recognizeRectangle)
+        {
+            SvgRectanglePathRecognizer recognizer = new();
+            bool recognized = true;
+            foreach (SvgAuthoredPathCommand command in commands)
+            {
+                for (int phase = 0; phase < 3; phase++) work.Consume(token);
+                SvgDevicePoint point = command.Verb is SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line
+                    ? MapPoint(constructionMap, command.First) : default;
+                if (!recognizer.Add(command.Verb, point)) { recognized = false; break; }
+            }
+            if (recognized && recognizer.Finish() is SvgRecognizedRectangle { Closed: true } rectangle)
+            {
+                BuildRectangle(rectangle, radius, miterLimit, join, output, work, token);
+                return;
+            }
+        }
         using RenderBudget.BudgetReservation owners = budget.Reserve(1024, SvgMemoryCategory.Geometry);
         using BudgetedParserList<SvgStrokeOutlineCommand> inner = new(budget, SvgMemoryCategory.Geometry, work, token);
         using BudgetedParserList<SvgStrokeOutlineCommand> cusps = new(budget, SvgMemoryCategory.Geometry, work, token);
@@ -97,6 +125,107 @@ internal static class SvgNativePathStroke
                 { SvgDevicePoint end = MapPoint(map, command.Third); if (current != end) return true; current = end; }
             }
             return false;
+        }
+
+        static void BuildRectangle(SvgRecognizedRectangle rectangle, float radius, float limit, SvgStrokeJoin join,
+            BudgetedParserList<SvgStrokeOutlineCommand> output, ParserWorkCounter work, CancellationToken token)
+        {
+            for (int phase = 0; phase < 16; phase++) work.Consume(token);
+            float left = rectangle.Left - radius, top = rectangle.Top - radius;
+            float right = rectangle.Right + radius, bottom = rectangle.Bottom + radius;
+            if (!float.IsFinite(left) || !float.IsFinite(top) || !float.IsFinite(right) || !float.IsFinite(bottom))
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle stroke construction exceeds the finite float range.");
+            if (join == SvgStrokeJoin.Miter && limit < 1.4142135623730951f) join = SvgStrokeJoin.Bevel;
+            if (join == SvgStrokeJoin.Miter) AddRectangle(left, top, right, bottom, rectangle.Clockwise, 0, output, work, token);
+            else
+            {
+                bool closed = false;
+                Span<Point> points = stackalloc Point[8];
+                if (join == SvgStrokeJoin.Bevel)
+                {
+                    points[0] = new(rectangle.Left, top); points[1] = new(rectangle.Right, top);
+                    points[2] = new(right, rectangle.Top); points[3] = new(right, rectangle.Bottom);
+                    points[4] = new(rectangle.Right, bottom); points[5] = new(rectangle.Left, bottom);
+                    points[6] = new(left, rectangle.Bottom); points[7] = new(left, rectangle.Top);
+                    for (int index = 0; index < 8; index++)
+                        Add(index == 0 ? SvgStrokeOutlineVerb.Move : SvgStrokeOutlineVerb.Line, default,
+                            points[rectangle.Clockwise ? index : 7 - index], 1, output, work, token);
+                }
+                else
+                {
+                    float outerWidth = right - left, outerHeight = bottom - top;
+                    if (!float.IsFinite(outerWidth) || !float.IsFinite(outerHeight))
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Rounded rectangle stroke dimensions exceed the finite float range.");
+                    float rx = radius, ry = radius;
+                    if (outerWidth < radius + radius || outerHeight < radius + radius)
+                    {
+                        float scale = MathF.Min(outerWidth / (radius + radius), outerHeight / (radius + radius));
+                        rx *= scale; ry *= scale;
+                    }
+                    if (rx <= 0 || ry <= 0)
+                        {
+                        AddRectangle(left, top, right, bottom, rectangle.Clockwise, rectangle.Clockwise ? 3 : 0, output, work, token);
+                        closed = true;
+                    }
+                    else if (rx >= outerWidth / 2 && ry >= outerHeight / 2)
+                    {
+                        float midX = (float)(.5 * ((double)left + right)), midY = (float)(.5 * ((double)top + bottom));
+                        points[0] = new(midX, top); points[1] = new(right, midY);
+                        points[2] = new(midX, bottom); points[3] = new(left, midY);
+                        Span<Point> corners = stackalloc Point[] { new(left, top), new(right, top), new(right, bottom), new(left, bottom) };
+                        int index = 3, controlIndex = rectangle.Clockwise ? 3 : 0, step = rectangle.Clockwise ? 1 : 3;
+                        Add(SvgStrokeOutlineVerb.Move, default, points[index], 1, output, work, token);
+                        for (int corner = 0; corner < 4; corner++)
+                        {
+                            index = (index + step) & 3; controlIndex = (controlIndex + step) & 3;
+                            Add(SvgStrokeOutlineVerb.Conic, corners[controlIndex], points[index], SvgRationalQuadratic.QuarterCircleWeight, output, work, token);
+                        }
+                    }
+                    else
+                    {
+                        points[0] = new(left + rx, top); points[1] = new(right - rx, top);
+                        points[2] = new(right, top + ry); points[3] = new(right, bottom - ry);
+                        points[4] = new(right - rx, bottom); points[5] = new(left + rx, bottom);
+                        points[6] = new(left, bottom - ry); points[7] = new(left, top + ry);
+                        Span<Point> corners = stackalloc Point[] { new(left, top), new(right, top), new(right, bottom), new(left, bottom) };
+                        int index = rectangle.Clockwise ? 6 : 7, step = rectangle.Clockwise ? 1 : 7;
+                        Add(SvgStrokeOutlineVerb.Move, default, points[index], 1, output, work, token);
+                        for (int corner = 0; corner < 4; corner++)
+                        {
+                            index = (index + step) & 7;
+                            Add(SvgStrokeOutlineVerb.Line, default, points[index], 1, output, work, token);
+                            int controlIndex = rectangle.Clockwise ? ((index + 1) & 7) / 2 : index / 2;
+                            index = (index + step) & 7;
+                            Add(SvgStrokeOutlineVerb.Conic, corners[controlIndex], points[index], SvgRationalQuadratic.QuarterCircleWeight, output, work, token);
+                        }
+                    }
+                }
+                if (!closed) Add(SvgStrokeOutlineVerb.Close, default, output[^1].End, 1, output, work, token);
+            }
+            if (radius * 2 < MathF.Min(rectangle.Right - rectangle.Left, rectangle.Bottom - rectangle.Top))
+                AddRectangle(rectangle.Left + radius, rectangle.Top + radius, rectangle.Right - radius, rectangle.Bottom - radius,
+                    !rectangle.Clockwise, 0, output, work, token);
+
+            static void AddRectangle(float left, float top, float right, float bottom, bool clockwise, int startIndex,
+                BudgetedParserList<SvgStrokeOutlineCommand> output, ParserWorkCounter work, CancellationToken token)
+            {
+                Span<Point> points = stackalloc Point[] { new(left, top), new(right, top), new(right, bottom), new(left, bottom) };
+                int index = startIndex;
+                for (int visit = 0; visit < 4; visit++)
+                {
+                    Add(visit == 0 ? SvgStrokeOutlineVerb.Move : SvgStrokeOutlineVerb.Line, default, points[index], 1, output, work, token);
+                    index = (index + (clockwise ? 1 : 3)) & 3;
+                }
+                Add(SvgStrokeOutlineVerb.Close, default, output[^1].End, 1, output, work, token);
+            }
+
+            static void Add(SvgStrokeOutlineVerb verb, Point control, Point end, float weight,
+                BudgetedParserList<SvgStrokeOutlineCommand> output, ParserWorkCounter work, CancellationToken token)
+            {
+                work.Consume(token);
+                _ = control.Device(); _ = end.Device();
+                output.Add(new(verb, control, end, weight));
+            }
         }
     }
 

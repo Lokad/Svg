@@ -29,7 +29,7 @@ public sealed class SvgNativePathStrokeTests
             RenderBudget budget = new(16_777_216);
             using (BudgetedParserList<SvgStrokeOutlineCommand> output = new(budget, SvgMemoryCategory.Geometry))
             {
-                SvgNativePathStroke.Build(source, Number(columns[1]), Number(columns[2]), (SvgStrokeCap)int.Parse(columns[4], CultureInfo.InvariantCulture),
+                SvgNativePathStroke.BuildGeneric(source, Number(columns[1]), Number(columns[2]), (SvgStrokeCap)int.Parse(columns[4], CultureInfo.InvariantCulture),
                     (SvgStrokeJoin)int.Parse(columns[5], CultureInfo.InvariantCulture), Number(columns[3]), output, budget, new(2_000_000), CancellationToken.None);
                 Assert.True(expected.Length == output.Count, columns[0] + ": outline command count");
                 for (int index = 0; index < output.Count; index++)

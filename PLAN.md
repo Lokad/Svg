@@ -34,7 +34,7 @@ and image-shader arithmetic; source ink bounds round before device mapping.
 definitions, symbols, nested uses and aliases retain independently authored paint;
 source fills win over use overrides. CurrentColor stroke markers and their separate
 opacity survive instance mapping. Eighteen new fill/color cases are exact.
-The use-paint bank is now **31 cases = 23 exact + three differences + five rejections**.
+The use-paint bank is now **31 cases = 26 exact + five rejections**.
 
 **The fractional rectangle-stroke repair is complete.** Its three retained
 backgrounds now match unchanged browser pixels. The shared frame route preserves
@@ -42,11 +42,16 @@ outer hulls, integer interiors and inverse inner fringes as ordered operations;
 twelve independent fractional, scaled-thin, collapsed-interior and shader-fill
 controls also become exact. Three clipping controls retain their admission gate.
 
-**Next, repair native symbol stroke routing** before further G2 additions.
-Those strokes still differ at two pixels on each background; their inline twin
-is exact. The transformed inline rectangle twin retains a separate gate.
+**The native symbol stroke repair is complete.** Its three retained backgrounds
+now match unchanged browser pixels. Closed rectangle paths share native recognition
+with filled paths and emit simple outer/inner contours before generic stroking.
+All joins, the miter cutoff and collapsed interiors retain native construction;
+thirty new controls are exact through six outputs. The inline twin stays exact.
+
+**Next, continue G2 with inherited stroke properties and instance styling.**
 Wider stroke/paint overrides, rendered-group styling, remaining locations and
-viewport mapping keep G2 open.
+viewport mapping keep G2 open. The transformed inline rectangle twin retains
+its separate gate; broader transforms and paint-server strokes remain G3/G4.
 
 Solid fill bindings now preserve a leaf's own display/visibility and resolve
 `currentColor` and fill opacity independently at instance time. Ten of sixteen
@@ -81,19 +86,19 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,503 passed on each platform**: 3,994 core, 503 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Forty-eight exhaustive parser-work/memory ownership inputs pass. Eighteen new graph, duplicate-ID, empty-target, deep-chain, expansion-denial, sealing-cancellation/retry and discovery checks pass. Partial forward insertion disposes unadopted native owners and reserves extra command storage before allocation. All 83 preceding six-output symbol comparisons stay exact; the 31-case use-paint bank preserves 23 exact, three differing and five unsupported outcomes through six outputs. Fifteen additional frame cases preserve twelve exact and three unsupported outcomes; frame work-denial checks release surface owners. Source fill/stroke roles and independent alphas have focused checks; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
+| Full tests, including corporate selection/measurement | **4,542 passed on each platform**: 4,003 core, 533 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Forty-eight exhaustive parser-work/memory ownership inputs pass. Eighteen new graph, duplicate-ID, empty-target, deep-chain, expansion-denial, sealing-cancellation/retry and discovery checks pass. Partial forward insertion disposes unadopted native owners and reserves extra command storage before allocation. All 83 preceding six-output symbol comparisons stay exact; the 31-case use-paint bank preserves 26 exact and five unsupported outcomes through six outputs. Fifteen additional frame cases preserve twelve exact and three unsupported outcomes; frame work-denial checks release surface owners. All thirty rectangle-path stroke controls are exact through six outputs; 480 compiled native outlines match float bits. Every admitted work/memory denial for the three join styles releases output owners; cancellation/retry and four construction-map controls pass. Source fill/stroke roles and independent alphas have focused checks; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,389 exact + zero known-difference renders + 21 rejections**; 799 base documents / 611 variants. Three magnified-instance cases graduate against their unchanged references; other fixture outcomes and PNGs stay unchanged. |
 | Executed research manifest | **65 probes = 64 exact + zero known-difference renders + one rejection**. Three multiple-child symbol cases graduate from the erroneous MalformedInput rejection; other research outcomes and PNGs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Every Default report and PNG stays unchanged, preserving the preceding matching-browser STOP-sign gain and earlier `inv-013` exact result / `inv-014` residual. These Default outputs do not establish corporate fidelity or a representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes. Binding arrays reserve their actual element size. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. No added surfaces or quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. No added surfaces or quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and 4,503 tests. All 1,567 original execution
+Both platforms pass Release builds and 4,542 tests. All 1,567 original execution
 reports and all 1,545 PNG byte sequences remain unchanged from the preceding
-use-paint checkpoint; Windows/Linux banks agree. Every corporate result
+rectangle-frame checkpoint; Windows/Linux banks agree. Every corporate result
 is unchanged and exact against its platform's own references. Four retained online failures
 remain; the heart and new I Ching library are G3, the two patterns are G6. WSL
 Ubuntu 24.04.3 uses isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6.
@@ -219,8 +224,8 @@ ignore use fill. Source currentColor strokes resolve independently of fill opaci
 Eighteen controls repair preceding valid-input rejections; the existing
 single-rectangle symbol shader control and the native inline twin stay exact.
 
-**G2 remains open.** Repair the three native stroke differences first.
-Then implement inherited stroke/width/style and wider paint-server overrides,
+**G2 remains open.** The three native stroke differences are now exact.
+Next implement inherited stroke/width/style and wider paint-server overrides,
 rendered-group use styling, other locations and viewBox percentage-base/affine
 combinations. Paint-server use fill opacity and inherited opacity on retained
 shader definitions retain explicit gates; the new controls make both visible.
@@ -278,13 +283,14 @@ restoration and selects image-shader arithmetic when the clip crosses the bitmap
 Eighteen independent fractional/integral, nested-scope and translucent-content
 controls are exact on three backgrounds. The earlier clip-placement-only trial
 remains rejected evidence. See [the repair](docs/RASTERIZATION_DESIGN.md#isolated-opacity-under-symbol-viewport-clips-2026-10-08).
-The new native symbol stroke controls differ at two pixels on each background,
-maximum channel error 10 on transparent output with no alpha error. Their inline
-twin is exact on unchanged browser pixels under both preceding and current code.
-Diagnose instance/viewport paint routing without an alias-specific rule. A trial
-classifying only contained path bounds as binary made these and other controls
-worse and is discarded. Broader local/nested viewport and use-opacity combinations
-still need their own controls; this repair does not close G5.
+The native symbol stroke controls now match unchanged browser pixels after
+recognizing closed rectangle paths before generic stroking. Their inline twin
+remains exact; thirty new controls cover all joins, both directions, collapsed
+interiors, collinear/zero lines and non-rectangle fallback cases. The browser's
+AA clip/RLE dispatch stays intact. The discarded contained-path binary-clip
+trial remains negative evidence. Broader local/nested viewport and use-opacity
+combinations still need their own controls; this repair does not close G5.
+See [the repair](docs/RASTERIZATION_DESIGN.md#native-closed-rectangle-path-strokes-2026-10-08).
 
 `original-aa-clip-admitted-shader` rejects a gradient defined inside a nested
 viewport as undefined. The material-pair family rejects patterns in scaled

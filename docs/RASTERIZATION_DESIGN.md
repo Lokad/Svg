@@ -8456,3 +8456,60 @@ use-paint checkpoint. Corporate reports and PNGs remain unchanged and exact at
 Ignored evidence is under `artifacts/rectangle-frame-stroke-20261008/` and Linux
 `rectangle-frame-stroke-final-20261008/`. Native stroke fidelity is next; wider
 support combinations and S17 remote CI remain open.
+
+## Native closed rectangle path strokes (2026-10-08)
+
+The three retained currentColor native symbol stroke backgrounds now match their
+unchanged browser references; their inline twin stays exact. The preceding two-pixel
+residual had no alpha error and maximum channel error 10 on transparent output.
+Paint binding was correct. The generic outline retained redundant inner join lines,
+which split the affected row into quarter/half/quarter strips. The forced AA/RLE
+route accumulated coverage 64, while the native rectangle ring yielded 63. Changing
+clip classification was the wrong model; the earlier containment trial remains
+discarded evidence and AA clip dispatch is unchanged.
+
+The pinned `SkStroke::strokePath` recognizes explicitly closed rectangular paths
+before entering `SkPathStroker`. `SvgRectanglePathRecognizer` now shares the existing
+`SkPathPriv::IsRectContour` adaptation between filled-path coverage and source stroke
+construction. It retains float bounds, direction and explicit closure, including
+zero lines and monotone collinear segments. Each caller maps and charges original
+verbs under its own cancellation/work contract. Open rectangle paths, curves and
+multiple contours continue through generic joins/caps. Non-scaling construction
+maps before recognition; ordinary final scene/instance placement stays separate.
+
+The rectangle route follows `SkStroke::strokeRect`: sorted/outset float bounds,
+miter below sqrt(2) becoming bevel, eight-point bevel corners, native round corners
+with quarter-circle conics and legacy starting points, and an opposite inner rectangle
+only when the stroke width fits both dimensions. Round radius normalization and
+oval/square degeneration preserve the pinned raw-shape conventions. The immutable
+result and mutable pass state own no storage; outline scratch is bounded on the stack
+and output growth uses the existing reserved parser list. No generic stroker private
+lists, extra surfaces, public API or dependency are added. Every admitted work/memory
+denial is swept for each join; cancellation/retry and four construction maps pass.
+
+A new native oracle retains 480 outlines from unchanged compiled `strokeRect`,
+`addBevel`, raw rectangle/rounded-rectangle constructors and `SkRRect` normalization,
+through a record sink. Both directions, every join, cutoff and very wide strokes
+match all float bits. The preceding 1,920 direct-verb generic stroker goldens remain
+unchanged and are exercised by the explicitly named `BuildGeneric` entry; their
+metadata already excludes rectangle specialization. Production uses full dispatch.
+
+[Thirty controls](../tests/Research/rectangle-path-strokes/manifest.json) were declared
+before production edits or capture/comparison. Ninety healthy, cleaned fresh-process
+captures form stable triples. Fifteen preceding differences become exact, and the
+other fifteen remain exact through six outputs. These cover both directions, all
+joins, miter cutoff, collapsed interiors, collinear/zero lines, open rectangle caps
+and multiple contours on three backgrounds. The 31-case use-paint bank is now
+26 exact and five explicit unsupported outcomes. All retained references stay frozen.
+
+Windows and isolated Linux Release builds pass with zero warnings/errors and 4,542
+tests each (4,003 core, 533 visual-project, six FontProbe). The first Windows full run
+hit the existing curve-bounds allocation assertion; an isolated retry and a complete
+repeat pass without production or test changes. All 83 preceding symbol comparisons,
+fifteen frame outcomes and 149 supplemental paint outcomes remain unchanged.
+All 1,567 original execution reports and 1,545 PNG bytes stay unchanged from the
+rectangle-frame checkpoint. Corporate results remain unchanged and exact at 27/27
+documents and 258/258 variants against each platform's own references. Command,
+geometry and paint layouts stay 72/272/68 bytes; no quantitative performance claim.
+Ignored evidence lives under `artifacts/native-stroke-routing-20261008/` and Linux
+`native-rectangle-stroke-final-20261008/`. Wider G2–G9 support and S17 remote CI remain open.
