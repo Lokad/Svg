@@ -942,7 +942,13 @@ public static class SvgConverter
                         if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                         workUnits += rowWork;
                     }
-                    for (int x = startX; x < endX; x++)
+                    SvgAnalyticScanWindow paintWindow = useAnalytic ? walker.GetPaintWindow(new(startX, endX)) : new(startX, endX);
+                    int rowStartX = useAnalytic ? Math.Max(paintWindow.Left, context.Interior.Left) : startX;
+                    int rowEndX = useAnalytic ? Math.Min(paintWindow.Right, context.Interior.Right) : endX;
+                    long extraPixels = (long)rowEndX - rowStartX - (endX - startX);
+                    if (extraPixels > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Direct fringe painting exceeds the configured work limit.");
+                    workUnits += extraPixels;
+                    for (int x = rowStartX; x < rowEndX; x++)
                     {
                         if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                         double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
@@ -1022,7 +1028,13 @@ public static class SvgConverter
                     workUnits += rowWork;
                 }
                 double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
-                for (int x = startX; x < endX; x++)
+                SvgAnalyticScanWindow paintWindow = useAnalytic ? walker.GetPaintWindow(new(startX, endX)) : new(startX, endX);
+                int rowStartX = useAnalytic ? Math.Max(paintWindow.Left, context.Interior.Left) : startX;
+                int rowEndX = useAnalytic ? Math.Min(paintWindow.Right, context.Interior.Right) : endX;
+                long extraPixels = (long)rowEndX - rowStartX - (endX - startX);
+                if (extraPixels > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Direct fringe painting exceeds the configured work limit.");
+                workUnits += extraPixels;
+                for (int x = rowStartX; x < rowEndX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
@@ -1131,7 +1143,13 @@ public static class SvgConverter
                     workUnits += rowWork;
                 }
                 double deviceY = (y + 0.5 - verticalOffset) / verticalScale;
-                for (int x = startX; x < endX; x++)
+                SvgAnalyticScanWindow paintWindow = useAnalytic ? walker.GetPaintWindow(new(startX, endX)) : new(startX, endX);
+                int rowStartX = useAnalytic ? Math.Max(paintWindow.Left, context.Interior.Left) : startX;
+                int rowEndX = useAnalytic ? Math.Min(paintWindow.Right, context.Interior.Right) : endX;
+                long extraPixels = (long)rowEndX - rowStartX - (endX - startX);
+                if (extraPixels > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Direct fringe painting exceeds the configured work limit.");
+                workUnits += extraPixels;
+                for (int x = rowStartX; x < rowEndX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
@@ -1295,7 +1313,13 @@ public static class SvgConverter
                     if (rowWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                     workUnits += rowWork;
                 }
-                for (int x = startX; x < endX; x++)
+                SvgAnalyticScanWindow paintWindow = useAnalytic ? walker.GetPaintWindow(new(startX, endX)) : new(startX, endX);
+                int rowStartX = useAnalytic ? Math.Max(paintWindow.Left, context.Interior.Left) : startX;
+                int rowEndX = useAnalytic ? Math.Min(paintWindow.Right, context.Interior.Right) : endX;
+                long extraPixels = (long)rowEndX - rowStartX - (endX - startX);
+                if (extraPixels > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Direct fringe painting exceeds the configured work limit.");
+                workUnits += extraPixels;
+                for (int x = rowStartX; x < rowEndX; x++)
                 {
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;

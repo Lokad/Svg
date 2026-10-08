@@ -8853,11 +8853,10 @@
       "height": 40,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-wide-ellipse-64-transparent.json",
-      "unsupportedReason": "Rendered known difference: 1 differing pixels, maximum channel error 204, maximum alpha error 5. Pixel-exact fidelity remains open."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-native-conic-wide-ellipse-64-transparent.json",
+      "referenceSha256": "a8b15c8b445548f8a04b571e2e3cee23d74154816d5655946db8d36e4fcafac2"
     },
     {
       "id": "original-native-conic-wide-ellipse-64-white",
@@ -8880,12 +8879,11 @@
       "height": 40,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-wide-ellipse-64-white.json",
-      "unsupportedReason": "Rendered known difference: 1 differing pixels, maximum channel error 6, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-native-conic-wide-ellipse-64-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-native-conic-wide-ellipse-64-transparent",
+      "oracleIdentity": "tests/References/original-native-conic-wide-ellipse-64-white.json",
+      "referenceSha256": "5d22c40c7da4053abc08c0f866d7dcac64236f3ad817cb6b2cb6b7773730bd94"
     },
     {
       "id": "original-native-conic-wide-ellipse-64-black",
@@ -8908,12 +8906,11 @@
       "height": 40,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-native-conic-wide-ellipse-64-black.json",
-      "unsupportedReason": "Rendered known difference: 1 differing pixels, maximum channel error 4, maximum alpha error 0. Pixel-exact fidelity remains open.",
-      "variantOf": "original-native-conic-wide-ellipse-64-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-native-conic-wide-ellipse-64-transparent",
+      "oracleIdentity": "tests/References/original-native-conic-wide-ellipse-64-black.json",
+      "referenceSha256": "0b377e97a9129497c53156e421b01ace5308681d5271a14f9b3de3c2d9e0164b"
     },
     {
       "id": "original-native-conic-large-circle-129-transparent",

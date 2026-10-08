@@ -187,8 +187,11 @@ internal ref partial struct SvgAnalyticCoverage
     private readonly bool _useRunBlitter;
     private readonly bool _usesHorizontalClip;
     private readonly bool _forceRle;
-    private readonly SvgDirectPaintLink[] _directLinks;
-    private readonly RenderBudget.BudgetReservation? _directLinkReservation;
+    private SvgDirectPaintLink[] _directLinks;
+    private RenderBudget.BudgetReservation? _directLinkReservation;
+    private int _directLinkStart;
+    private int _directPaintLeft;
+    private int _directPaintRight;
     private SvgDirectPaintOperation[] _directOperations;
     private RenderBudget.BudgetReservation? _directOperationReservation;
     private int _directOperationCount;
@@ -275,10 +278,11 @@ internal ref partial struct SvgAnalyticCoverage
             paint.Blend(destination, clipCoverage.Apply(rectangle.GetAlpha(x + _xStart, _rectangleRow)), SvgAnalyticPaintKind.Direct);
             return;
         }
-        if (_useRunBlitter)
+        if (_useRunBlitter && x >= _directLinkStart && x - _directLinkStart < _directLinks.Length)
         {
-            int next = _directLinks[x].First;
-            int spanIndex = _directLinks[x].Span;
+            SvgDirectPaintLink link = _directLinks[x - _directLinkStart];
+            int next = link.First;
+            int spanIndex = link.Span;
             if (spanIndex != 0)
             {
                 _rowCancellationToken.ThrowIfCancellationRequested();
@@ -304,6 +308,7 @@ internal ref partial struct SvgAnalyticCoverage
                 next = operation.Next;
             }
         }
+        if (x < 0 || x >= _width) return;
         byte pending = _row[x + 1];
         if (_useRunBlitter) pending = pending > 247 ? (byte)255 : pending < 8 ? (byte)0 : pending;
         pending = clipCoverage.Apply(pending);
@@ -312,9 +317,10 @@ internal ref partial struct SvgAnalyticCoverage
 
     private void RecordDirectPaint(int x, int alpha, SvgAnalyticPaintKind kind)
     {
-        if (x < 0 || x >= _width || alpha == 0) return;
+        if (x < (_leftClip >> 16) - _xStart || x >= (_rightClip >> 16) - _xStart || alpha == 0) return;
         _rowCancellationToken.ThrowIfCancellationRequested();
         ChargeOperationWork(2); // Record and later replay this event.
+        EnsureDirectLinks(x, x + 1);
         if (_directOperationCount == _directOperations.Length)
         {
             int capacity = _directOperations.Length == 0 ? 16 : _directOperations.Length > int.MaxValue / 2 ? checked(_directOperationCount + 1) : _directOperations.Length * 2;
@@ -341,21 +347,25 @@ internal ref partial struct SvgAnalyticCoverage
         }
         int index = _directOperationCount++;
         _directOperations[index] = new(0, _paintSequence++, (byte)alpha, kind);
-        SvgDirectPaintLink link = _directLinks[x];
+        int pixel = x - _directLinkStart;
+        SvgDirectPaintLink link = _directLinks[pixel];
         if (link.Last != 0) _directOperations[link.Last - 1] = _directOperations[link.Last - 1] with { Next = index + 1 };
-        _directLinks[x] = new(link.First == 0 ? index + 1 : link.First, index + 1, link.Span);
+        _directLinks[pixel] = new(link.First == 0 ? index + 1 : link.First, index + 1, link.Span);
+        _directPaintLeft = Math.Min(_directPaintLeft, x);
+        _directPaintRight = Math.Max(_directPaintRight, x + 1);
     }
 
     private void RecordDirectSpan(int x, int length)
     {
-        int start = Math.Max(x, 0);
-        int end = Math.Min(x + length, _width);
+        int start = Math.Max(x, (_leftClip >> 16) - _xStart);
+        int end = Math.Min(x + length, (_rightClip >> 16) - _xStart);
         if (end <= start) return;
         _rowCancellationToken.ThrowIfCancellationRequested();
         // Index the first full span directly in each pixel's link. Its material
         // paint is covered by the caller's per-pixel raster charge. Further
         // overlapping spans become ordinary events with separately charged replay.
         ChargeOperationWork((long)end - start + 1);
+        EnsureDirectLinks(start, end);
         if (_directSpanCount == _directSpans.Length)
         {
             int capacity = _directSpans.Length == 0 ? 16 : checked(_directSpans.Length * 2);
@@ -385,11 +395,57 @@ internal ref partial struct SvgAnalyticCoverage
         for (int index = start; index < end; index++)
         {
             if ((index & 1023) == 0) _rowCancellationToken.ThrowIfCancellationRequested();
-            SvgDirectPaintLink link = _directLinks[index];
-            if (link.Span == 0) _directLinks[index] = new(link.First, link.Last, spanIndex + 1);
+            int pixel = index - _directLinkStart;
+            SvgDirectPaintLink link = _directLinks[pixel];
+            if (link.Span == 0) _directLinks[pixel] = new(link.First, link.Last, spanIndex + 1);
             else RecordDirectPaint(index, 255, SvgAnalyticPaintKind.Direct);
         }
+        _directPaintLeft = Math.Min(_directPaintLeft, start);
+        _directPaintRight = Math.Max(_directPaintRight, end);
     }
+
+    /// <summary>Expands direct-paint indexing only when an emitted operation escapes path row storage.</summary>
+    /// <remarks>Accumulated coverage remains path-bounded. Direct operations retain the bitmap/SVG clip;
+    /// growth reserves old plus new storage, charges initialization/copying and observes cancellation.
+    /// Unused capacity is reused between rows and does not expand their paint traversal.</remarks>
+    private void EnsureDirectLinks(int start, int end)
+    {
+        if (start >= _directLinkStart && end <= _directLinkStart + _directLinks.Length) return;
+        int minimum = Math.Min(0, (_leftClip >> 16) - _xStart);
+        int maximum = Math.Max(_width, (_rightClip >> 16) - _xStart);
+        int requiredStart = Math.Min(start, _directLinkStart);
+        int requiredEnd = Math.Max(end, _directLinkStart + _directLinks.Length);
+        int capacity = (int)Math.Max(requiredEnd - requiredStart, Math.Min((long)_directLinks.Length * 2, (long)maximum - minimum));
+        int replacementStart = Math.Clamp(requiredStart, minimum, maximum - capacity);
+        ChargeOperationWork((long)capacity + _directLinks.Length);
+        SvgAnalyticPaintProbe.Observe(SvgAnalyticPaintPhase.BeforeLinkBufferGrowth, _directLinks.Length);
+        _rowCancellationToken.ThrowIfCancellationRequested();
+        RenderBudget budget = _budget ?? throw new InvalidOperationException("The analytic row has no storage owner.");
+        RenderBudget.BudgetReservation replacementReservation = budget.Reserve(64 + ParserCollectionMemory.GetArrayByteCount<SvgDirectPaintLink>(capacity), SvgMemoryCategory.Surface);
+        SvgDirectPaintLink[] replacement;
+        try
+        {
+            replacement = new SvgDirectPaintLink[capacity];
+            for (int offset = 0; offset < _directLinks.Length; offset += 1024)
+            {
+                _rowCancellationToken.ThrowIfCancellationRequested();
+                int count = Math.Min(1024, _directLinks.Length - offset);
+                _directLinks.AsSpan(offset, count).CopyTo(replacement.AsSpan(_directLinkStart - replacementStart + offset, count));
+            }
+        }
+        catch { replacementReservation.Dispose(); throw; }
+        _directLinkReservation?.Dispose();
+        _directLinkReservation = replacementReservation;
+        _directLinks = replacement;
+        _directLinkStart = replacementStart;
+    }
+
+    /// <summary>Extends an existing output interval only to direct paints emitted outside path storage.</summary>
+    /// <remarks>The caller intersects this interval with the exclusive CPU interior and charges extra
+    /// destination pixels. Mask/run accumulation, path dispatch and coordinate ownership stay separate.</remarks>
+    internal readonly SvgAnalyticScanWindow GetPaintWindow(SvgAnalyticScanWindow original)
+        => new(_directPaintLeft < 0 ? Math.Min(original.Left, _xStart + _directPaintLeft) : original.Left,
+            _directPaintRight > _width ? Math.Max(original.Right, _xStart + _directPaintRight) : original.Right);
 
     private void ChargeOperationWork(long units)
     {
@@ -2419,16 +2475,18 @@ internal ref partial struct SvgAnalyticCoverage
         _directOperationCount = 0;
         _directSpanCount = 0;
         _paintSequence = 0;
+        _directPaintLeft = 0;
+        _directPaintRight = _width;
         if (_useRunBlitter)
         {
-            for (int index = 0; index < _width; index++)
+            ChargeOperationWork(_directLinks.Length - _width);
+            for (int index = 0; index < _directLinks.Length; index++)
             {
                 if ((index & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
                 _directLinks[index] = default;
-                _row[index + 1] = 0;
             }
         }
-        else Array.Clear(_row, 0, _row.Length);
+        Array.Clear(_row, 0, _row.Length);
         _strips = 0;
         if (_edges.Length == 0) { rowWork = _width; return; }
         for (int index = 0; index < _edges.Length; index++)

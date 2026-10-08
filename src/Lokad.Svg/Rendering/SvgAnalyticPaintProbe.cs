@@ -1,6 +1,6 @@
 namespace Lokad.Svg.Rendering;
 
-internal enum SvgAnalyticPaintPhase { BeforeBufferGrowth, BeforeSpanBufferGrowth, BeforeReplay }
+internal enum SvgAnalyticPaintPhase { BeforeBufferGrowth, BeforeSpanBufferGrowth, BeforeReplay, BeforeLinkBufferGrowth }
 
 /// <summary>Provides an execution-context-local seam for operation storage and replay cancellation.</summary>
 internal static class SvgAnalyticPaintProbe

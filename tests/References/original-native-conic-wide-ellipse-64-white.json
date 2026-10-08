@@ -33,20 +33,21 @@
   ],
   "declaredBeforeProductionEdit": false,
   "declaredBeforeCaptureAndComparison": true,
-  "candidateSha256": "888c0ca3bdd973f59dfe41daccfcecd5c1cdd42e7027bf79090ce114d8d878dd",
+  "candidateSha256": "42c48c1e48a7aadb185deb028f5390b0818ef38a74fb6fb8542908a80f70fa3f",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 1,
-    "maximumChannelError": 6,
-    "meanAbsoluteError": 0.001171875,
-    "rootMeanSquareError": 0.0739509972887452,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 59,
-    "minimumMismatchY": 19,
-    "maximumMismatchX": 59,
-    "maximumMismatchY": 19,
-    "exact": false,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 40,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
     "alphaErrorMass": 0
-  }
+  },
+  "repairedAt": "Direct paint outside path row storage, 2026-10-08"
 }

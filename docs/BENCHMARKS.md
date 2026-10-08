@@ -2321,3 +2321,24 @@ first, and **78.307 → 77.747 ms** when the repair runs first. These explorator
 measurements do not establish representative throughput. The earlier 258-recipe
 Windows ShortRun retains its historical scope. Recipes, batches and resource
 ledgers remain under ignored `artifacts/layer-curve-construction-20261008/`.
+
+## Direct-paint fringe storage cost (2026-10-08)
+
+Seventy-two matching admitted Windows recipes compare `cac7d282` with direct-paint
+fringe retention. Original SVG bytes, backgrounds and owned-memory output match
+in both process orders. Each process warms up eight conversions and records
+three batches of twenty per recipe; allocation deltas compare medians across six
+batches per renderer.
+
+Parser work, total accounted conversion work and accounted peak live storage are
+unchanged for these recipes. They do not exercise direct-link growth. New fringe
+controls separately test charged initialization/copying, expanded destination
+traversal, old-plus-new live storage denial and caller-token cancellation.
+Geometry/command/paint-value sizes remain **272 / 72 / 68 bytes**. Observed managed
+allocation deltas range from **−80.5 to +158 bytes** per conversion.
+
+Summed per-recipe median timings read **66.181 → 66.745 ms** when the baseline
+runs first and **116.106 → 84.616 ms** when the repair runs first. The loaded host
+and different process-order observations do not support a throughput claim.
+The earlier 258-recipe Windows ShortRun retains its historical scope. Recipes,
+batches and resource ledgers stay under ignored `artifacts/direct-paint-spill-20261008/`.

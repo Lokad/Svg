@@ -7672,3 +7672,61 @@ and resource ledgers. Git identifies the implementation; asset fingerprints desc
 unchanged SVG/PNG bytes only. The scaled-mask control, hairline color, oval strokes
 and other retained clip/paint/curve differences remain open. The original-scope
 support audit and online public-domain/CC0 sourcing follow those repairs.
+
+## Direct paint outside path row storage (2026-10-08)
+
+The retained scaled masked circle exposed a direct paint emitted just outside its
+integer path row. In frozen Skia `SkScan_AAAPath.cpp`, run accumulation clamps to
+path storage, while direct real-blitter operations retain the destination clip.
+Fixed-edge conic advancement can emit a fringe beyond the original path interval.
+The managed event index and output traversal had discarded that direct paint.
+
+Direct events now retain the bitmap/SVG clip. Their links grow only when an actual
+emission escapes existing storage, with bounded geometric capacity growth and an
+offset for either side. Pending mask/run coverage keeps its original row width;
+classification and curve construction stay unchanged. All four polygon paint
+consumers extend each row's destination interval only to emitted fringe paints,
+intersect it with the exclusive CPU interior and charge the additional pixels.
+Unused link capacity does not expand output traversal.
+
+Growth charges initialization and copying before allocation, reserves old and new
+arrays together, checks cancellation during bounded copying and releases owners
+after success or failure. Reused extra link capacity is charged when cleared on
+later rows. Four core cases protect emitted paint beyond an unchanged pending
+row, cancellation at growth and replay, and denial while both arrays are live.
+No fixed pixel margin, per-image predicate or reference adjustment is introduced.
+
+Only three wide-ellipse reports/PNGs and the Default STOP-sign PNG change in the
+original **1,567-execution / 1,539-PNG** bank; 1,535 other PNG byte sequences and
+all other reports stay unchanged. The ellipse comparisons become exact from one
+pixel each. Three stable matching 2880×2880 browser captures confirm the STOP
+sign also becomes exact from one pixel; these post-hypothesis diagnostics are
+not independent holdouts. Fixtures now measure **1,349 exact + 37 known + 24
+rejections**; research remains **50 exact + eleven known + four rejections**.
+Both platforms' corporate reports/PNGs stay unchanged and retain **27/27 documents
+and 258/258 variants exact** against their own platform references.
+
+The prior scaled-mask control becomes exact. Twelve original CC0 controls were
+declared before production edits across solid, linear, radial and pattern paints,
+mask/run widths and masked layers. All 36 captures are healthy, cleaned and stable
+in triples; six one-pixel differences close and six exact controls are preserved.
+The first pattern tiles were transparent at the fringe. A supplementary visible
+pattern control declared after the prototype and before capture/comparison becomes
+exact from one pixel, with three stable captures and confirmed PatternPolygon
+dispatch. It is not an independent holdout. The recorded-paint inventory retains
+**89 controls = 82 exact + seven valid-input rejections** through six outputs.
+Original SVGs and preceding references remain unchanged.
+
+Windows/Linux nine-project Release builds, **4,157 tests = 3,841 core + 310 visual
++ six FontProbe**, 25-scenario memory checks, runtime/symbol packages and installed
+consumers pass. Resource sweeps cover **174 admitted / 29 rejected** cases with
+zero failures. Complete original-bank reports and PNGs agree between platforms.
+Public APIs and runtime dependencies stay unchanged. The
+[cost record](BENCHMARKS.md#direct-paint-fringe-storage-cost-2026-10-08) distinguishes
+the 72 unchanged-cost recipes from fringe controls that exercise growth.
+
+Evidence stays under ignored `artifacts/direct-paint-spill-20261008/` and
+`artifacts/linux-delivery-20261007/direct-paint-spill-final-20261008/`. Git identifies
+the implementation; retained hashes describe SVG/PNG assets. Hairline color, oval
+strokes and other clip/paint/curve differences remain open. The original-scope
+support audit and online public-domain/CC0 sourcing follow those repairs.

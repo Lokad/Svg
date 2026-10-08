@@ -5,7 +5,41 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
-## Isolated layer curve checkpoint (2026-10-08)
+## Direct-paint fringe checkpoint (2026-10-08)
+
+Three retained wide-ellipse comparisons become exact against unchanged references.
+Only these and the Default STOP-sign output change in the original bank; every
+other report and 1,535 PNG byte sequences remain unchanged. The bank retains
+**1,567 executions / 1,539 PNGs**: **1,410 fixtures = 1,349 exact + 37 known +
+24 rejected**, **65 research probes = 50 exact + eleven known + four rejected**
+and 92 Default renders. Original Windows/Linux bank reports and PNGs match.
+The corporate matrix remains **27/27 documents and 258/258 variants exact**
+against each platform's retained references, with unchanged reports and PNGs.
+
+The [recorded-paint inventory](../tests/Research/paint-recording/manifest.json)
+retains **89 pairs = 82 exact + seven valid-input rejections** through all six
+public output forms. The preceding scaled-mask control becomes exact. Twelve
+original CC0 circle controls were declared before production edits across four
+paints, the native mask/run width boundary and masked layers. Their 36 captures
+are healthy, cleaned and byte-stable in triples; all twelve are exact, six improved
+from one differing pixel. Their first pattern tiles were transparent at the fringe.
+One supplementary original CC0 pattern control, declared after the prototype and
+before capture/comparison, retains three more stable captures and becomes exact
+from one pixel. It exercises visible pattern material at the fringe and is not
+an independent holdout.
+
+Three fresh matching 2880×2880 captures of the unchanged original STOP sign are
+healthy, cleaned and byte-stable. They confirm the Default output becomes exact
+from one differing pixel. These diagnostics followed the hypothesis; they add
+neither original-bank membership nor a representative coverage claim.
+
+Windows/Linux Release builds, **4,157 tests**, 25-scenario memory checks and
+installed-package checks pass. Resource checks cover **174 admitted / 29 rejected**
+cases. See [the repair record](RASTERIZATION_DESIGN.md#direct-paint-outside-path-row-storage-2026-10-08)
+and [the cost record](BENCHMARKS.md#direct-paint-fringe-storage-cost-2026-10-08).
+Online sourcing follows the remaining fidelity repairs and original-scope audit.
+
+## Isolated layer curve checkpoint (2026-10-08, preceding)
 
 Four existing original-bank comparisons become exact against unchanged references:
 the bounded opacity-layer fixture and all three circle/ellipse alpha-mask
