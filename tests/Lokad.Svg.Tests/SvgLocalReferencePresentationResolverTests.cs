@@ -79,15 +79,24 @@ public sealed class SvgLocalReferencePresentationResolverTests
     }
 
     [Fact]
-    public void Rejects_paint_server_and_opacity_use_strokes()
+    public void Rejects_paint_server_use_strokes()
     {
         SvgComputedStyle painted = new(null, null, null, "url(#g)", null, null, null, null);
         SvgException server = Assert.Throws<SvgException>(() => SvgLocalReferencePresentationResolver.Resolve(painted, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000))));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, server.ErrorCode);
 
-        SvgComputedStyle translucent = new(null, null, null, "#ff0000", null, null, null, null) { StrokeOpacity = "0.5" };
-        SvgException opacity = Assert.Throws<SvgException>(() => SvgLocalReferencePresentationResolver.Resolve(translucent, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000))));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, opacity.ErrorCode);
-        Assert.Contains("Stroke opacity on use elements", opacity.Message);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("#ff0000")]
+    public void Resolves_use_stroke_opacity_without_requiring_a_stroke_color(string? strokeColor)
+    {
+        SvgComputedStyle translucent = new(null, null, ".625", strokeColor, null, null, null, null) { StrokeOpacity = ".375" };
+        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(translucent, new(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000)));
+        Assert.Equal(.375f, resolved.StrokeOpacity.Value);
+        Assert.Equal(.625f, resolved.Paint.FillOpacity.Value);
+        if (strokeColor is null) Assert.Null(resolved.StrokeOverride);
+        else Assert.Equal(.375f, Assert.IsType<SvgUseStrokeOverride>(resolved.StrokeOverride).Paint.FillOpacity.Value);
     }
 }

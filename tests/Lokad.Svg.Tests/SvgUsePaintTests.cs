@@ -30,6 +30,7 @@ public sealed class SvgUsePaintTests
     [Theory]
     [InlineData("color='rgb(NaN,0,0)'")]
     [InlineData("fill-opacity='NaN'")]
+    [InlineData("stroke-opacity='NaN'")]
     public void Invalid_use_paint_values_are_malformed_and_release_parser_owners(string attributes)
     {
         byte[] input = Input("<defs><rect id='p' width='12' height='10'/></defs><use href='#p' " + attributes + "/>");

@@ -8513,3 +8513,73 @@ documents and 258/258 variants against each platform's own references. Command,
 geometry and paint layouts stay 72/272/68 bytes; no quantitative performance claim.
 Ignored evidence lives under `artifacts/native-stroke-routing-20261008/` and Linux
 `native-rectangle-stroke-final-20261008/`. Wider G2–G9 support and S17 remote CI remain open.
+
+## Stroke opacity at instance time (2026-10-08)
+
+The new [stroke-opacity bank](../tests/Research/use-stroke-opacity/manifest.json)
+contains 81 frozen CC0 mechanism controls on transparent, white and black
+backgrounds. Fifty-four were declared before production editing or capture;
+twenty-seven additional cases were declared after the first prototype and before
+their captures/comparisons. The additional supported group twins are separate
+inputs; the original fractional diagonal-line failures remain untouched. Every
+case has three byte-identical captures from healthy fresh browser processes with
+cleaned profiles. These development cases do not alter the original or corporate
+denominators.
+
+The preceding renderer rejected 75 controls and rendered six incorrectly. Use
+presentation attributes rejected `stroke-opacity`; admitted inline/inherited
+opacity was dropped without an explicit stroke color. Explicit solid use strokes
+also rejected opacity. Definitions retained only currentColor stroke markers,
+and absent source opacity became an opaque paint before instance resolution.
+
+Use references now carry numeric stroke opacity independently of fill/color.
+Source bindings retain literal, rgba and currentColor stroke paint separately
+from authored opacity; explicit source values, including one, win over the use
+context. Retained group/use nodes store local authored opacity. Their iterative
+expansion propagates it through the instance context, while child/group/use aliases
+exclude referenced ancestors. Ordinary and forward definitions share the same
+resolution. Geometry color and recorded solid-paint alpha use the resolved paint;
+existing shader stroke channels retain native byte opacity divided by 255.
+Rendered-group style overrides retain an explicit admission gate, rather than
+silently discarding a newly accepted stroke-opacity attribute.
+
+Newly stroked unpainted paths exposed a separate defect: `fill="none"` discarded
+the source geometry or supplied no authored-command sink. Unstyled closed path
+definitions now retain the centerline and authored tape when instance stroking
+requires them. Their fill remains disabled. The added stroke has its own recorded
+stroke role and alpha. Normal unpainted rendered paths keep their existing route;
+the existing unstyled single-contour instance-stroke admission remains in force.
+Straight and quadratic unpainted sources now match the frozen browser references.
+
+All 64 admitted controls are exact through six public output APIs. Seventeen remain
+UnsupportedFeature: nine fractional diagonal-line cases (G3/G4), two late stylesheet
+cases (G7), three shader rectangle definitions (G2/G4), and three rendered-group
+style cases (G2). The repaired six renders cover inherited rendered-container
+opacity and inline use opacity. Source/reference bytes are unchanged. The
+31-case use-paint bank keeps 26 exact and five rejected outcomes; one rejection
+message now names stroke opacity along with color/fill opacity.
+
+Five focused resource inputs cover solid rectangle strokes, nested authored uses,
+shader strokes, shader fills with solid strokes, and newly stroked unpainted curves.
+Every parser work denial releases owners, as do sampled and peak-edge memory
+denials, raster work boundary checks and cancellation/retry. Authored opacity
+precedence, independent fill/stroke roles and malformed values have focused tests.
+Binding/node/frame arrays reserve their actual element sizes, including the new
+typed opacity fields. Extra source-style resolution consumes bounded parser work.
+Draw commands, geometry and recorded-paint values remain 72, 272 and 68 bytes;
+there is no added surface or quantitative performance claim.
+
+Windows and isolated Linux Release builds have zero warnings/errors and 4,634
+tests pass on each: 4,014 core, 614 visual-project and six FontProbe, with no
+failures/skips. All 1,567 original
+reports and 1,545 PNG bytes match the preceding native rectangle-stroke checkpoint;
+all earlier symbol, frame and rectangle-path outcomes remain unchanged. Corporate
+27/27 documents and 258/258 variants remain exact against each platform's own
+browser references. The new opacity reports and PNG bytes agree across platforms;
+the Linux checkout uses byte-identical source/test inputs. Ignored diagnostic
+evidence is under `artifacts/use-stroke-opacity-20261008/` and Linux
+`use-stroke-opacity-final-20261008/`.
+
+Wider stroke paint/width/mechanics, shader overrides and rendered-group instance
+styles remain G2 work. Numeric opacity admission follows the existing parser;
+this slice does not add CSS opacity keywords or close G2–G9 or S17 remote CI.

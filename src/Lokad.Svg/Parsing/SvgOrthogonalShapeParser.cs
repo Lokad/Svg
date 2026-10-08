@@ -32,7 +32,7 @@ internal static class SvgOrthogonalShapeParser
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
         shape = context.ResolveShape(fillStyle, reader, true);
-        if (!shape.Presentation.HasFill && !paintOutline && !paintRadialOutline && !paintPatternOutline && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
+        if (!shape.Presentation.HasFill && !context.RetainInstanceStrokePath && !paintOutline && !paintRadialOutline && !paintPatternOutline && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
         {
             // Unpainted fills contribute no area and feed no paint-server boxes, masks or clips here, so degenerate
             // subpaths skip fill validation while stroke lowering still outlines every subpath below.
@@ -45,7 +45,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<SvgPoint> noPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, "path", true, curveEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            SvgParsedGeometry curved = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, SvgPolygonMapping.FlattenedCurves, shape, frame, budget);
+            SvgParsedGeometry curved = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, SvgPolygonMapping.FlattenedCurves, shape, frame, context.RetainInstanceStrokePath, budget);
             filled = curved with { ElementCount = commandCount + 1 };
         }
         else if (hasFractional || context.RetainInstanceStrokePath)
@@ -54,7 +54,7 @@ internal static class SvgOrthogonalShapeParser
             using BudgetedParserList<SvgPoint> noFractionPoints = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noFractionEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering fractionalLowering = new(noFractionPoints, noFractionEnds, "path", true, fractionalEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-            SvgParsedGeometry fractional = fractionalLowering.LowerDeviceFill(d, commandCount, false, false, SvgPolygonMapping.FiniteEdges, shape, frame, budget);
+            SvgParsedGeometry fractional = fractionalLowering.LowerDeviceFill(d, commandCount, false, false, SvgPolygonMapping.FiniteEdges, shape, frame, context.RetainInstanceStrokePath, budget);
             filled = fractional with { ElementCount = commandCount + 1 };
         }
         else
@@ -75,7 +75,7 @@ internal static class SvgOrthogonalShapeParser
                 // Retain directed finite contours before contact normalization.
                 // Solid orthogonal paths keep their checked integer-band fast path.
                 filled = shape.Presentation.HasFill
-                    ? diagonalLowering.LowerDeviceFill(d, commandCount, false, false, SvgPolygonMapping.FiniteEdges, shape, frame, budget) with { ElementCount = commandCount + 1 }
+                    ? diagonalLowering.LowerDeviceFill(d, commandCount, false, false, SvgPolygonMapping.FiniteEdges, shape, frame, context.RetainInstanceStrokePath, budget) with { ElementCount = commandCount + 1 }
                     : diagonalLowering.LowerPolygonFill(shape.Presentation.Color, false, shape.Transform, frame, budget);
             }
             else

@@ -7,6 +7,7 @@ internal enum SvgSymbolContentKind { Leaf, Group, EndGroup, Use }
 /// <summary>Retains independently authored container paint; absent properties inherit from the instance context.</summary>
 internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? Color, SvgPaintOpacity Opacity, bool IsDisplayed, bool? IsVisible)
 {
+    internal SvgPaintOpacity? StrokeOpacity { get; init; }
     internal SvgPaint Resolve(SvgPaint inherited)
     {
         SvgPaint paint = HasAuthoredFill ? Paint : inherited;
@@ -52,7 +53,8 @@ internal sealed class SvgSymbolContent : IDisposable
         {
             content = new(budget, work, token, presentation, owner);
             content._building.Add(new(SvgSymbolContentKind.Group, default, default,
-                new(presentation.Paint, presentation.HasAuthoredFill, presentation.FillOpacity, presentation.CurrentColor, presentation.SourceOpacity, true, null), SvgAffineTransform.Identity, -1));
+                new(presentation.Paint, presentation.HasAuthoredFill, presentation.FillOpacity, presentation.CurrentColor, presentation.SourceOpacity, true, null)
+                { StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
             return content;
         }
         catch { if (content is null) owner.Dispose(); else content.Dispose(); throw; }
@@ -76,11 +78,12 @@ internal sealed class SvgSymbolContent : IDisposable
         catch { _groups.RemoveLast(); throw; }
     }
 
-    internal int AddUse(SvgUseReference reference, SvgPaintOpacity? fillOpacity, SvgColor? color, bool displayed, bool? visible)
+    internal int AddUse(SvgUseReference reference, SvgPaintOpacity? fillOpacity, SvgColor? color, SvgPaintOpacity? strokeOpacity, bool displayed, bool? visible)
     {
         int start = _building.Count;
         _building.Add(new(SvgSymbolContentKind.Use, default, reference,
-            new(reference.InheritedFill, reference.FillOverride is not null, fillOpacity, color, reference.SourceOpacity, displayed, visible), SvgAffineTransform.Identity, -1));
+            new(reference.InheritedFill, reference.FillOverride is not null, fillOpacity, color, reference.SourceOpacity, displayed, visible)
+            { StrokeOpacity = strokeOpacity }, SvgAffineTransform.Identity, -1));
         return start;
     }
 

@@ -1064,8 +1064,11 @@ internal static class SvgDefinitionParser
             : null;
         bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, true, true);
         string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
-        SvgPaint? authoredStroke = stroke is not null && stroke.Equals("currentColor", StringComparison.OrdinalIgnoreCase)
-            ? SvgPaintResolver.Resolve(stroke, style.StrokeOpacity, null, SvgPaint.Default, context.NamedColors) : null;
+        SvgPaint? authoredStroke = stroke is not null && !SvgPatternSyntax.IsPatternFill(stroke)
+            ? SvgPaintResolver.Resolve(stroke, null, null, SvgPaint.Default, context.NamedColors) : null;
+        SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token);
+        string? strokeOpacity = sourceStyle.StrokeOpacity ?? (includesSymbolPresentation ? symbol.Stroke.StrokeOpacity : null);
+        SvgPaintOpacity? authoredStrokeOpacity = strokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(strokeOpacity);
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(128 + ParserCollectionMemory.GetArrayByteCount<SvgSymbolFillBinding>(definition.Geometries.Length), SvgMemoryCategory.Scene);
         try
         {
@@ -1075,7 +1078,7 @@ internal static class SvgDefinitionParser
                 work.Consume(token);
                 bool strokeChannel = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint).IsStroke;
                 bool hasStroke = strokeChannel || definition.Geometries[index].RecordedStrokePaint.Identity != 0;
-                bindings[index] = new(inherited && !strokeChannel, opacity, color) { AuthoredFill = strokeChannel ? null : authoredFill, AuthoredStroke = hasStroke ? authoredStroke : null, IsStroke = strokeChannel, IsPainted = isPainted, IsPaintServer = !strokeChannel && style.Fill is not null && SvgLocalUrl.TryParseId(style.Fill, out _) };
+                bindings[index] = new(inherited && !strokeChannel, opacity, color) { AuthoredFill = strokeChannel ? null : authoredFill, AuthoredStroke = hasStroke ? authoredStroke : null, StrokeOpacity = authoredStrokeOpacity, IsStroke = strokeChannel, IsPainted = isPainted, IsPaintServer = !strokeChannel && style.Fill is not null && SvgLocalUrl.TryParseId(style.Fill, out _), IsStrokePaintServer = hasStroke && stroke is not null && SvgLocalUrl.TryParseId(stroke, out _) };
             }
             state.DefinitionReservations.Add(reservation);
             return definition with { SymbolFillBindings = bindings };

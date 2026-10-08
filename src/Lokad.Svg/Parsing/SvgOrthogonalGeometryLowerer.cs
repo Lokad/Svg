@@ -578,7 +578,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     /// <remarks>Painted paths preserve directed contacts for output-space replay under either fill rule.
     /// Scene arrays and the command owner are reserved before publication; copying observes caller work and cancellation.
     /// Unpainted geometry without replay retains the legacy contour-separation admission.</remarks>
-    internal SvgParsedGeometry LowerDeviceFill(string d, int commandCount, bool hasArc, bool hasCurve, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
+    internal SvgParsedGeometry LowerDeviceFill(string d, int commandCount, bool hasArc, bool hasCurve, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, bool retainInstanceCenterline, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured path-command limit.");
@@ -604,7 +604,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             builder.EnableCubicSpanRetention();
         }
         using BudgetedParserList<SvgAuthoredPathCommand> authored = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
-        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, null, element.Presentation.HasFill ? authored : null);
+        SvgPathDataParser.ParsePath(d, deviceMap, builder, flattenPolicy, _maximumGeometryElements, _workCounter, _cancellationToken, null, element.Presentation.HasFill || retainInstanceCenterline ? authored : null);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
         SvgQuadSpan[] recorded = builder.GetQuadSpans();
         List<SvgQuadSpan> keptSpans = new(recorded.Length);
@@ -666,7 +666,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (kept != ends.Length) Array.Resize(ref ends, kept);
 
         SvgParsedGeometry result;
-        if (element.Presentation.HasFill)
+        if (element.Presentation.HasFill || retainInstanceCenterline)
         {
             // These arrays retain scene bounds and paint coordinates. The
             // authored commands own raster winding, so no contour surgery or
@@ -689,12 +689,12 @@ internal ref struct SvgOrthogonalGeometryLowering
                         _workCounter.Consume(_cancellationToken);
                         signs[contour] = 1;
                     }
-                result = RetainPolygonFill(retained, ends, signs, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, true, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
+                result = RetainPolygonFill(retained, ends, signs, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, _isEvenOdd, mapping, frame is null ? (SvgClipBox?)null : frame.Value.Clip, reservation, budget);
             }
             catch { reservation?.Dispose(); throw; }
         }
         else result = FinishPolygonFill(mapped, ends, keptSpans.ToArray(), keptCubicSpans.ToArray(), element.Presentation.Color, false, mapping, frame, budget);
-        if (element.Presentation.HasFill && result.Geometries.Length == 1)
+        if ((element.Presentation.HasFill || retainInstanceCenterline) && result.Geometries.Length == 1)
         {
             try
             {

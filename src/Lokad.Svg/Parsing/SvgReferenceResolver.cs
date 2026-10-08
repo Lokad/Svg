@@ -10,8 +10,10 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgRecordingScope RecordingScope { get; init; }
     internal SvgPaintOpacity SourceOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
+    internal SvgPaintOpacity InheritedStrokeOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal bool HasPaintContextOverride { get; init; }
     internal bool HasFillOpacityOverride { get; init; }
+    internal bool HasStrokeOpacityOverride { get; init; }
     internal bool IsDisplayed { get; init; } = true;
     internal bool IsVisible { get; init; } = true;
 }
@@ -123,19 +125,19 @@ internal static class SvgReferenceResolver
                 {
                     SvgSymbolFillBinding fillBinding = symbolBindings[index];
                     SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
-                    paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill) : null };
+                    paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill, reference.InheritedStrokeOpacity) : null };
                 }
-                SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, PlainInstancePlacement(reference, frame));
+                SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, definition.SymbolFillBindings?[index] is { IsStroke: true, IsStrokePaintServer: true } shaderStroke ? shaderStroke.StrokeOpacity ?? reference.InheritedStrokeOpacity : null, PlainInstancePlacement(reference, frame));
                 SvgSymbolFillBinding? strokeBinding = definition.SymbolFillBindings is {} paintBindings ? paintBindings[index] : null;
-                SvgUseReference strokeReference = strokeBinding is { AuthoredStroke: not null } currentColorStroke ? reference with { FillOverride = currentColorStroke.ResolveStroke(reference.FillOverride ?? reference.InheritedFill) } : reference;
-                SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, strokeReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, strokeBinding?.AuthoredStroke is null, PlainInstancePlacement(reference, frame));
+                SvgUseReference strokeReference = strokeBinding is { AuthoredStroke: not null } solidStroke ? reference with { FillOverride = solidStroke.ResolveStroke(reference.FillOverride ?? reference.InheritedFill, reference.InheritedStrokeOpacity) } : reference;
+                SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, strokeReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, strokeBinding?.AuthoredStroke is null, strokeBinding is { IsStrokePaintServer: true } shaderBinding ? shaderBinding.StrokeOpacity ?? reference.InheritedStrokeOpacity : null, PlainInstancePlacement(reference, frame));
                 SvgRecordedPaint addedStroke = default;
                 if (reference.StrokeOverride is SvgUseStrokeOverride instanceStroke && applied.Count > firstApplied + 1)
                 {
                     SvgRecordedPaintValue original = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint);
                     float alpha = SvgPaintResolver.ResolveSolidPaint(instanceStroke.Paint).Alpha;
                     addedStroke = state.Scene.RegisterRecordedPaint(new(state.NewPaintOperationIdentity(), alpha, true,
-                        recordingMapper.Map(original.Scope), SvgPaintOpacity.Opaque, recordingMapper.Map(original.OpacityScope)));
+                        recordingMapper.Map(original.Scope), SvgPaintOpacity.Opaque, recordingMapper.Map(original.OpacityScope)) { IsStroke = true });
                 }
                 for (int mapped = firstApplied; mapped < applied.Count; mapped++)
                     applied[mapped] = applied[mapped] with { RecordedPaint = mapped > firstApplied && addedStroke.Identity != 0 ? addedStroke : fillPaint, RecordedStrokePaint = strokePaint };
@@ -825,9 +827,9 @@ internal static class SvgReferenceResolver
                     SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
                     if (bindings is not null)
                     {
-                        fill = bindings[index].Resolve(fill);
+                        fill = bindings[index].Resolve(fill, reference.InheritedStrokeOpacity);
                     }
-                    sources[index] = Recolor(source, fill, bindings is null ? null : bindings[index], reference.FillOverride ?? reference.InheritedFill, state);
+                    sources[index] = Recolor(source, fill, bindings is null ? null : bindings[index], reference.FillOverride ?? reference.InheritedFill, reference.InheritedStrokeOpacity, state);
                 }
                 retained++;
             }
@@ -841,12 +843,12 @@ internal static class SvgReferenceResolver
             throw;
         }
 
-        static SvgGeometry Recolor(SvgGeometry source, SvgPaint fill, SvgSymbolFillBinding? binding, SvgPaint instancePaint, SvgDocumentState document)
+        static SvgGeometry Recolor(SvgGeometry source, SvgPaint fill, SvgSymbolFillBinding? binding, SvgPaint instancePaint, SvgPaintOpacity inheritedStrokeOpacity, SvgDocumentState document)
         {
             SvgColor color = SvgPaintResolver.ResolveFillColor(fill, 255);
             SvgStroke? stroke = source.Kind == SvgGeometryKind.Rectangle ? source.Rectangle.Stroke : null;
-            if (stroke is {} original && binding is { AuthoredStroke: not null } currentColorStroke)
-                stroke = original with { Color = SvgPaintResolver.ResolveFillColor(currentColorStroke.ResolveStroke(instancePaint), 255) };
+            if (stroke is {} original && binding is { AuthoredStroke: not null } solidStroke)
+                stroke = original with { Color = SvgPaintResolver.ResolveFillColor(solidStroke.ResolveStroke(instancePaint, inheritedStrokeOpacity), 255) };
             return source.Kind switch
             {
                 SvgGeometryKind.Rectangle => SvgGeometry.FromRectangle(source.Rectangle with { Color = color, HasFill = fill.HasFill, Stroke = stroke }) with { SolidPaint = source.SolidPaint is null ? null : SvgPaintResolver.ResolveSolidPaint(fill) },
@@ -878,13 +880,14 @@ internal static class SvgReferenceResolver
         catch { reservation.Dispose(); throw; }
     }
 
-    private static SvgRecordedPaint MapRecordedPaint(SvgRecordedPaint source, SvgUseReference reference, SvgDocumentState state, BudgetedParserDictionary<SvgRecordedPaint, SvgRecordedPaint> cache, SvgRecordingMapper mapper, ParserWorkCounter work, CancellationToken token, bool stroke, SvgAffineTransform placement)
+    private static SvgRecordedPaint MapRecordedPaint(SvgRecordedPaint source, SvgUseReference reference, SvgDocumentState state, BudgetedParserDictionary<SvgRecordedPaint, SvgRecordedPaint> cache, SvgRecordingMapper mapper, ParserWorkCounter work, CancellationToken token, bool stroke, SvgPaintOpacity? shaderStrokeOpacity, SvgAffineTransform placement)
     {
         if (source.Identity == 0 || reference.PaintServerId is not null) return default;
         SvgRecordedPaintValue value = state.Scene.GetRecordedPaintValue(source);
         work.Consume(token);
         if (cache.TryGetValue(source, out SvgRecordedPaint previous)) return previous;
-        float alpha = !stroke && reference.FillOverride is SvgPaint fill ? SvgPaintResolver.ResolveSolidPaint(fill).Alpha : value.Alpha;
+        float alpha = shaderStrokeOpacity is SvgPaintOpacity shader ? shader.Alpha / 255f
+            : !stroke && reference.FillOverride is SvgPaint fill ? SvgPaintResolver.ResolveSolidPaint(fill).Alpha : value.Alpha;
         SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { IsStroke = value.IsStroke, VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
         cache.TryAdd(source, result);
         return result;
@@ -946,12 +949,12 @@ internal static class SvgReferenceResolver
                     {
                         SvgSymbolFillBinding fillBinding = symbolBindings[index];
                         SvgPaint fill = reference.FillOverride ?? reference.InheritedFill;
-                        paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill) : null };
+                        paintReference = reference with { FillOverride = fillBinding.ResolvesFill ? fillBinding.Resolve(fill, reference.InheritedStrokeOpacity) : null };
                     }
-                    SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, SymbolInstancePlacement(symbolBox, reference, frame));
+                    SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, paintReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, definition.SymbolFillBindings?[index] is { IsStroke: true, IsStrokePaintServer: true } shaderStroke ? shaderStroke.StrokeOpacity ?? reference.InheritedStrokeOpacity : null, SymbolInstancePlacement(symbolBox, reference, frame));
                     SvgSymbolFillBinding? strokeBinding = definition.SymbolFillBindings is {} paintBindings ? paintBindings[index] : null;
-                    SvgUseReference strokeReference = strokeBinding is { AuthoredStroke: not null } currentColorStroke ? reference with { FillOverride = currentColorStroke.ResolveStroke(reference.FillOverride ?? reference.InheritedFill) } : reference;
-                    SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, strokeReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, strokeBinding?.AuthoredStroke is null, SymbolInstancePlacement(symbolBox, reference, frame));
+                    SvgUseReference strokeReference = strokeBinding is { AuthoredStroke: not null } solidStroke ? reference with { FillOverride = solidStroke.ResolveStroke(reference.FillOverride ?? reference.InheritedFill, reference.InheritedStrokeOpacity) } : reference;
+                    SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, strokeReference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, strokeBinding?.AuthoredStroke is null, strokeBinding is { IsStrokePaintServer: true } shaderBinding ? shaderBinding.StrokeOpacity ?? reference.InheritedStrokeOpacity : null, SymbolInstancePlacement(symbolBox, reference, frame));
                     for (int mapped = firstApplied; mapped < applied.Count; mapped++)
                         applied[mapped] = applied[mapped] with { RecordedPaint = expandedStroke && mapped > firstApplied ? strokePaint : fillPaint };
                     if (definition.Geometries[index].LeafMask is SvgLeafMaskBinding binding)
@@ -1419,7 +1422,7 @@ internal static class SvgReferenceResolver
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
             if (!state.GroupSnapshots.TryGetValue(pendingUse.Reference.Id, out _)) continue;
-            if (pendingUse.Reference.HasPaintContextOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color and fill-opacity overrides on rendered-group use instances are not implemented.");
+            if (pendingUse.Reference.HasPaintContextOverride || pendingUse.Reference.HasStrokeOpacityOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color, fill-opacity and stroke-opacity overrides on rendered-group use instances are not implemented.");
             if (pendingUse.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
             state.GroupUseExpanded = true;
             SvgGeometry[] expanded = ExpandGroupUse(pendingUse.Reference.Id, new HashSet<string>(StringComparer.Ordinal), scene, state, workCounter, cancellationToken);
@@ -1520,7 +1523,7 @@ internal static class SvgReferenceResolver
                 }
                 if (owner is null) throw new InvalidOperationException("Group snapshot placeholder has no owning use.");
                 if (state.Definitions.TryGetValue(owner.Value.Reference.Id, out _)) throw new InvalidOperationException("Group snapshot placeholder owns a resolved leaf use.");
-                if (owner.Value.Reference.HasPaintContextOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color and fill-opacity overrides on rendered-group use instances are not implemented.");
+                if (owner.Value.Reference.HasPaintContextOverride || owner.Value.Reference.HasStrokeOpacityOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color, fill-opacity and stroke-opacity overrides on rendered-group use instances are not implemented.");
                 if (owner.Value.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
                 SvgGeometry[] nested = ExpandGroupUse(owner.Value.Reference.Id, visited, scene, state, workCounter, cancellationToken);
                 SvgGeometry[] mapped = ResolveUseGeometries(new SvgDefinition(nested, false, null, null), owner.Value, state, workCounter, cancellationToken);

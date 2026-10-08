@@ -20,6 +20,7 @@ internal static class SvgSymbolContentParser
         id = id is null ? null : state.Strings.Copy(id);
         InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, false, state, work, token);
         SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, sheet, work, token);
+        SvgPaintOpacity? strokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
         bool displayed = SvgPresentationResolver.ParseDisplay(style.Display);
         bool? visible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true);
         SvgSymbolPresentation inherited = builder.Presentation;
@@ -35,7 +36,8 @@ internal static class SvgSymbolContentParser
             SvgPaintOpacity sourceOpacity = SvgColorParser.ParsePaintOpacity(style.Opacity);
             SvgSymbolPresentation presentation = new(paint, inherited.Stroke.ResolveChild(style with { Linecap = stroke.Linecap, Linejoin = stroke.Linejoin, Dasharray = stroke.Dasharray, Dashoffset = stroke.Dashoffset, Width = stroke.Width, Miterlimit = stroke.Miterlimit, StrokeOpacity = stroke.StrokeOpacity, Stroke = stroke.Stroke }),
                 Copy(style.FillRule) ?? inherited.FillRule, style.Fill is not null || inherited.HasAuthoredFill, opacity ?? inherited.FillOpacity, color ?? inherited.CurrentColor, sourceOpacity);
-            content.BeginGroup(reader.Depth, id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible), SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
+            content.BeginGroup(reader.Depth, id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
+                { StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
             if (reader.IsEmptyElement) content.EndGroup(reader.Depth, state);
         }
@@ -47,7 +49,7 @@ internal static class SvgSymbolContentParser
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, width, height, state);
             SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
-            int start = content.AddUse(reference, fillOpacity, color, displayed, visible);
+            int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, displayed, visible);
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true });
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
         }
