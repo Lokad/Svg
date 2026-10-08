@@ -1,0 +1,283 @@
+using System.Xml;
+using Lokad.Svg.Rendering;
+
+namespace Lokad.Svg.Parsing;
+
+// Geometry retains two four-byte references; values belong to the scene arena.
+internal readonly record struct SvgRecordedPaint(int Identity)
+{
+    internal static SvgRecordedPaint SourceStroke => new(-1);
+    internal bool IsSourceStroke => Identity == -1;
+}
+internal readonly record struct SvgRecordingScope(int Value);
+internal readonly record struct SvgPaintOperationIdentity(int Value);
+internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
+{
+    // Source visual bounds survive lowering; they do not describe a shader coordinate box or a clip.
+    internal SvgPaintBounds? VisualBounds { get; init; }
+    internal SvgPaintBounds? ObjectBounds { get; init; }
+}
+
+internal readonly record struct SvgPaintBounds(float Left, float Top, float Right, float Bottom)
+{
+    internal SvgPaintBounds Map(SvgAffineTransform placement, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        SvgDevicePoint first = SvgAuthoredPath.MapPoint(placement, new(Left, Top), new(0, 0));
+        work.Consume(token);
+        SvgDevicePoint second = SvgAuthoredPath.MapPoint(placement, new(Right, Top), new(0, 0));
+        work.Consume(token);
+        SvgDevicePoint third = SvgAuthoredPath.MapPoint(placement, new(Left, Bottom), new(0, 0));
+        work.Consume(token);
+        SvgDevicePoint fourth = SvgAuthoredPath.MapPoint(placement, new(Right, Bottom), new(0, 0));
+        return new((float)Math.Min(Math.Min(first.X, second.X), Math.Min(third.X, fourth.X)),
+            (float)Math.Min(Math.Min(first.Y, second.Y), Math.Min(third.Y, fourth.Y)),
+            (float)Math.Max(Math.Max(first.X, second.X), Math.Max(third.X, fourth.X)),
+            (float)Math.Max(Math.Max(first.Y, second.Y), Math.Max(third.Y, fourth.Y)));
+    }
+}
+internal enum SvgPaintOrigin { Solid, PaintServer }
+internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpacity, float FillAlpha, float FillShaderAlpha, float StrokeAlpha, float StrokeShaderAlpha, SvgPaintOrigin FillOrigin, SvgPaintOrigin StrokeOrigin, bool HasFillOperation, bool HasLocalClip, SvgRecordingScope Scope, SvgRecordingScope OpacityScope)
+{
+    internal SvgPaintBounds? VisualBounds { get; init; }
+    internal SvgPaintBounds? ObjectBounds { get; init; }
+    internal float StrokeBoundsInflation { get; init; }
+}
+
+// Retains source paint and recording state until playback; parser budgets own staging and scene values.
+internal static class SvgPaintRecording
+{
+    internal static SvgRecordedPaintStyle Resolve(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewportFrame? frame)
+    {
+        SvgComputedStyle style = context.ResolveStyle(reader);
+        bool fillServer = style.Fill is not null && SvgLocalUrl.TryParseId(style.Fill, out _);
+        SvgPaint fill = SvgPaintResolver.Resolve(fillServer ? "white" : style.Fill, style.FillOpacity, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
+        SvgColor stroke = style.Stroke is null || style.Stroke == "none" || SvgLocalUrl.TryParseId(style.Stroke, out _) ? new(255, 255, 255, 255)
+            : SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
+        SvgPaintOpacity strokeOpacity = SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
+        SvgRecordingScope opacityScope = context.RecordingScope.Value == 0 ? new(1) : context.RecordingScope;
+        if (reader.GetAttribute("clip-path") is not null || context.ResolveTransform(reader) != context.InheritedPresentation.Transform)
+            opacityScope = state.NewRecordingScope();
+        SvgRecordingScope drawScope = reader.GetAttribute("mask") is null ? opacityScope : state.NewRecordingScope();
+        float strokeBoundsInflation = 0;
+        string? strokePaint = style.Stroke ?? context.InheritedStroke.Stroke;
+        if (reader.LocalName is "path" or "polygon" or "polyline" && strokePaint is not null && strokePaint != "none")
+        {
+            float half = (float)SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"), reader.LocalName) / 2f;
+            float expansion = SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) == SvgStrokeJoin.Miter
+                ? MathF.Max((float)SvgStrokeStyleSyntax.ParseMiterLimit(style.Miterlimit), 1) : 1;
+            if (SvgStrokeStyleSyntax.ParseLinecap(style.Linecap) == SvgStrokeCap.Square) expansion = MathF.Max(expansion, MathF.Sqrt(2));
+            strokeBoundsInflation = half * expansion;
+        }
+        return new(SvgColorParser.ParsePaintOpacity(style.Opacity), SvgPaintResolver.ResolveSolidPaint(fill).Alpha,
+            fill.FillOpacity.Alpha / 255f, (stroke.Alpha / 255f) * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
+            fillServer ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
+            style.Stroke is not null && SvgLocalUrl.TryParseId(style.Stroke, out _) ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
+            fill.HasFill, reader.GetAttribute("clip-path") is not null, drawScope, opacityScope) { ObjectBounds = PrimitiveBounds(reader, context, frame), StrokeBoundsInflation = strokeBoundsInflation };
+
+        static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport)
+        {
+            element.WorkCounter.Consume(element.CancellationToken);
+            SvgPaintBounds bounds;
+            switch (input.LocalName)
+            {
+                case "rect":
+                    SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(input);
+                    bounds = new((float)rectangle.X, (float)rectangle.Y, (float)(rectangle.X + rectangle.Width), (float)(rectangle.Y + rectangle.Height));
+                    break;
+                case "circle":
+                case "ellipse":
+                    SvgEllipseSyntax ellipse = input.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(input) : SvgEllipseSyntax.ParseEllipse(input);
+                    bounds = new((float)(ellipse.CenterX - ellipse.RadiusX), (float)(ellipse.CenterY - ellipse.RadiusY),
+                        (float)(ellipse.CenterX + ellipse.RadiusX), (float)(ellipse.CenterY + ellipse.RadiusY));
+                    break;
+                case "line":
+                    SvgLineSyntax line = SvgLineSyntax.Parse(input);
+                    bounds = new(Math.Min(line.X1, line.X2), Math.Min(line.Y1, line.Y2), Math.Max(line.X1, line.X2), Math.Max(line.Y1, line.Y2));
+                    break;
+                default:
+                    return null;
+            }
+            SvgAffineTransform placement = element.ResolveTransform(input);
+            if (viewport is {} parent)
+                placement = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(placement);
+            return bounds.Map(placement, element.WorkCounter, element.CancellationToken);
+        }
+    }
+
+    internal static SvgParsedGeometry Attach(SvgParsedGeometry parsed, SvgRecordedPaintStyle source, string element, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        try
+        {
+            SvgPaintOperationIdentity fillId = state.NewPaintOperationIdentity();
+            SvgPaintOperationIdentity strokeId = state.NewPaintOperationIdentity();
+            SvgRecordedPaint fillSolid = default, fillShader = default, strokeSolid = default, strokeShader = default;
+            Span<SvgGeometry> values = parsed.Storage.Items;
+            SvgPaintBounds? objectBounds = source.ObjectBounds;
+            SvgPaintBounds? visualBounds = source.VisualBounds;
+            if (parsed.SourceObjectBox is {} inputBox)
+            {
+                objectBounds = inputBox.Map(parsed.SourceObjectMap, work, token);
+                if (source.StrokeBoundsInflation > 0)
+                {
+                    float inflation = source.StrokeBoundsInflation;
+                    visualBounds = new SvgPaintBounds(MathF.Floor(inputBox.Left - inflation), MathF.Floor(inputBox.Top - inflation),
+                        MathF.Ceiling(inputBox.Right + inflation), MathF.Ceiling(inputBox.Bottom + inflation)).Map(parsed.SourceObjectMap, work, token);
+                }
+            }
+            if (objectBounds is null && values.Length != 0)
+            {
+                SvgGeometry first = values[0];
+                if (first.AuthoredPath is {} path)
+                {
+                    SvgRectangle box = SvgPathBounds.Compute(path.Commands, work, token);
+                    objectBounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height)).Map(path.SceneMap, work, token);
+                    if (source.StrokeBoundsInflation > 0)
+                    {
+                        float inflation = source.StrokeBoundsInflation;
+                        visualBounds = new SvgPaintBounds(MathF.Floor((float)box.X - inflation), MathF.Floor((float)box.Y - inflation),
+                            MathF.Ceiling((float)(box.X + box.Width) + inflation), MathF.Ceiling((float)(box.Y + box.Height) + inflation)).Map(path.SceneMap, work, token);
+                    }
+                }
+                else if (element is "polygon" or "polyline")
+                {
+                    float left = float.PositiveInfinity, top = float.PositiveInfinity;
+                    float right = float.NegativeInfinity, bottom = float.NegativeInfinity;
+                    foreach (SvgGeometry part in values)
+                    {
+                        work.Consume(token);
+                        if (part.RecordedPaint.IsSourceStroke) continue;
+                        SvgRectangle box = part.Kind == SvgGeometryKind.GradientFill ? part.Gradient.Box
+                            : part.Kind == SvgGeometryKind.RadialGradient ? part.Radial.Box : SvgMaskSyntax.BoundingBox(part);
+                        left = MathF.Min(left, (float)box.X); top = MathF.Min(top, (float)box.Y);
+                        right = MathF.Max(right, (float)(box.X + box.Width)); bottom = MathF.Max(bottom, (float)(box.Y + box.Height));
+                    }
+                    if (!float.IsPositiveInfinity(left)) objectBounds = new(left, top, right, bottom);
+                }
+            }
+            for (int index = 0; index < values.Length; index++)
+            {
+                work.Consume(token);
+                SvgGeometry geometry = values[index];
+                bool stroke = element == "line" || geometry.RecordedPaint.IsSourceStroke;
+                bool shader = geometry.Kind is SvgGeometryKind.GradientFill or SvgGeometryKind.RadialGradient or SvgGeometryKind.PatternFill or SvgGeometryKind.GradientPolygon or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon;
+                bool aggregate = geometry.Kind == SvgGeometryKind.GradientStroke;
+                bool rectangleStroke = geometry.Kind switch
+                {
+                    SvgGeometryKind.Rectangle => geometry.Rectangle.Stroke is not null,
+                    SvgGeometryKind.GradientFill => geometry.Gradient.Stroke is not null,
+                    SvgGeometryKind.RadialGradient => geometry.Radial.Stroke is not null,
+                    SvgGeometryKind.PatternFill => geometry.Pattern.Fill.Stroke is not null,
+                    _ => false,
+                };
+                float alpha = shader ? stroke ? source.StrokeShaderAlpha : source.FillShaderAlpha : stroke ? source.StrokeAlpha : source.FillAlpha;
+                if (!shader && (stroke ? source.StrokeOrigin : source.FillOrigin) == SvgPaintOrigin.PaintServer)
+                    alpha = geometry.Kind switch
+                    {
+                        SvgGeometryKind.Rectangle or SvgGeometryKind.OrthogonalBand => geometry.Rectangle.Color.Alpha / 255f,
+                        SvgGeometryKind.PolygonFill => geometry.Polygon.Color.Alpha / 255f,
+                        _ => alpha,
+                    };
+                bool foldable = !(element == "line" && source.HasFillOperation);
+                SvgRecordedPaint paint;
+                if (aggregate) paint = geometry.GradientStroke.Fill.HasFill
+                    ? GetPaint(ref fillSolid, fillId, source.FillAlpha, foldable)
+                    : GetPaint(ref strokeShader, strokeId, source.StrokeShaderAlpha, foldable);
+                else if (stroke && shader) paint = GetPaint(ref strokeShader, strokeId, alpha, foldable);
+                else if (stroke) paint = GetPaint(ref strokeSolid, strokeId, alpha, foldable);
+                else if (shader) paint = GetPaint(ref fillShader, fillId, alpha, foldable);
+                else paint = GetPaint(ref fillSolid, fillId, alpha, foldable);
+                values[index] = geometry with
+                {
+                    RecordedPaint = paint,
+                    RecordedStrokePaint = aggregate && geometry.GradientStroke.Fill.HasFill && geometry.GradientStroke.HasStroke
+                        ? GetPaint(ref strokeShader, strokeId, source.StrokeShaderAlpha, foldable)
+                        : rectangleStroke ? GetPaint(ref strokeSolid, strokeId, source.StrokeAlpha, true) : default,
+                };
+            }
+            return parsed;
+
+            SvgRecordedPaint GetPaint(ref SvgRecordedPaint cached, SvgPaintOperationIdentity identity, float alpha, bool foldable)
+            {
+                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { VisualBounds = visualBounds, ObjectBounds = objectBounds });
+                return cached;
+            }
+        }
+        catch { parsed.Discard(); throw; }
+    }
+
+    internal static void FinishScene(SvgDocumentState state, int first, ParserWorkCounter work, CancellationToken token)
+    {
+        if (first >= state.Scene.GeometryCount) return;
+        SvgRecordedPaintValue source = state.Scene.GetRecordedPaintValue(state.Scene.GeometryAt(first).RecordedPaint);
+        SvgPaintOpacity opacity = source.ElementOpacity;
+        if (opacity.Value == 1 || state.Scene.GeometryAt(first).RecordedPaint.Identity == 0) return;
+        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+        operation.Resolved = true; operation.Value = 255; operation.SourceOpacity = opacity; operation.RecordingScope = source.OpacityScope;
+        SvgLeafMaskBinding? lastInner = null;
+        SvgLeafMaskBinding? lastBinding = null;
+        for (int index = first; index < state.Scene.GeometryCount; index++)
+        {
+            work.Consume(token);
+            SvgGeometry geometry = state.Scene.GeometryAt(index);
+            if (lastBinding is null || !ReferenceEquals(lastInner, geometry.LeafMask))
+            {
+                lastInner = geometry.LeafMask;
+                lastBinding = SvgLeafMaskComposition.NewBinding(state, operation, lastInner);
+            }
+            state.Scene.AssignRecordedGeometry(index, geometry with { LeafMask = lastBinding });
+            ClearElementOpacity(geometry, state);
+        }
+    }
+
+    internal static void FinishDefinition(SvgGeometry[] geometries, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (geometries.Length == 0 || geometries[0].RecordedPaint.Identity == 0) return;
+        SvgRecordedPaintValue source = state.Scene.GetRecordedPaintValue(geometries[0].RecordedPaint);
+        if (source.ElementOpacity.Value == 1) return;
+        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+        operation.Resolved = true; operation.Value = 255; operation.SourceOpacity = source.ElementOpacity; operation.RecordingScope = source.OpacityScope;
+        SvgLeafMaskBinding? lastInner = null;
+        SvgLeafMaskBinding? binding = null;
+        for (int index = 0; index < geometries.Length; index++)
+        {
+            work.Consume(token);
+            SvgGeometry geometry = geometries[index];
+            if (binding is null || !ReferenceEquals(lastInner, geometry.LeafMask))
+            {
+                lastInner = geometry.LeafMask;
+                binding = SvgLeafMaskComposition.NewBinding(state, operation, lastInner);
+            }
+            geometries[index] = geometry with { LeafMask = binding };
+            ClearElementOpacity(geometry, state);
+        }
+    }
+    private static void ClearElementOpacity(SvgGeometry geometry, SvgDocumentState state)
+    {
+        if (geometry.RecordedPaint.Identity != 0)
+            state.Scene.ChangeRecordedPaint(geometry.RecordedPaint, state.Scene.GetRecordedPaintValue(geometry.RecordedPaint) with { ElementOpacity = SvgPaintOpacity.Opaque });
+        if (geometry.RecordedStrokePaint.Identity != 0)
+            state.Scene.ChangeRecordedPaint(geometry.RecordedStrokePaint, state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint) with { ElementOpacity = SvgPaintOpacity.Opaque });
+    }
+
+    internal static SvgGeometry[] WrapInstance(SvgGeometry[] geometries, SvgPaintOpacity opacity, SvgRecordingScope scope, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (opacity.Value == 1 || geometries.Length == 0) return geometries;
+        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+        operation.Resolved = true; operation.Value = 255; operation.SourceOpacity = opacity; operation.RecordingScope = scope;
+        SvgLeafMaskBinding? lastInner = null;
+        SvgLeafMaskBinding? binding = null;
+        for (int index = 0; index < geometries.Length; index++)
+        {
+            work.Consume(token);
+            SvgGeometry geometry = geometries[index];
+            if (binding is null || !ReferenceEquals(lastInner, geometry.LeafMask))
+            {
+                lastInner = geometry.LeafMask;
+                binding = SvgLeafMaskComposition.NewBinding(state, operation, lastInner);
+            }
+            geometries[index] = geometry with { LeafMask = binding };
+        }
+        return geometries;
+    }
+}

@@ -60,8 +60,8 @@ public sealed class SvgLeafMaskCompositionTests
         using SvgRoot scene = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' opacity='0.5'><defs><mask id='m'><rect width='8' height='8' fill='#404040'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
         Assert.Equal(new[]
         {
-            new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128, null, -1, 255),
-            new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, null, -1, 64),
+            new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, 0, new SvgPaintOpacity(128, 0.5f), null, -1, 255),
+            new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, new(-0.8, -0.8, 9.6, 9.6), -1, 64),
             new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255),
             new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255),
             new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255),

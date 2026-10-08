@@ -3825,6 +3825,8 @@ internal ref struct SvgOrthogonalGeometryLowering
 internal readonly record struct SvgParsedGeometry(OwnedParserArray<SvgGeometry> Storage, int ElementCount) : IDisposable
 {
     internal ReadOnlySpan<SvgGeometry> Geometries => Storage.Items;
+    internal SvgPaintBounds? SourceObjectBox { get; init; }
+    internal SvgAffineTransform SourceObjectMap { get; init; }
 
     /// <summary>Releases untransferred geometry owners and their container after a failed lowering/publication.</summary>
     internal void Discard()

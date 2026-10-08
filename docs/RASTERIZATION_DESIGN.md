@@ -7360,9 +7360,9 @@ the implementation without implementation fingerprints in tracked references.
 
 ### Paint recording integration investigation (2026-10-08)
 
-This is an isolated Windows investigation after the single-stop production
-checkpoint. Production remains at that checkpoint; the results below are not
-a claim that the larger integration has passed unit or platform delivery gates.
+This isolated Windows investigation followed the single-stop checkpoint and
+led to the production repair recorded in the following section. Its prototype
+measurements remain historical evidence.
 
 The material prototype now retains separate source-value handles and logical
 paint-operation identities when copying definitions and symbols. Caches key
@@ -7450,21 +7450,103 @@ production unit, six-output, memory-probe or Windows/Linux package gates.
 A separate integration checkout replaces experimental names with recorded-paint
 domains and gives logical paint-operation identities their own four-byte type.
 All nine Release projects build with zero warnings/errors. The first unchanged
-core suite passes 3,722/3,797 tests; its 75 failures require review of layer/paint
+core suite passed 3,722/3,797 tests; its 75 failures required review of layer/paint
 representation assertions, retained owner accounting, opacity admission and
 browser-derived pixel expectations before integration. In particular, the
 192-byte pattern-table failure measured the live scene arena before disposal;
 it was not a demonstrated leak. The degenerate-gradient failure came from the
 legacy internal rectangle projection, not public input rejection. The isolated
-opacity assertion and pattern-owner lifetime checks have been corrected; all five
-affected targeted tests pass. Valid inputs newly admitted by deferred element
-opacity still need independent browser checks. No production unit or platform
-gate is claimed for this integration yet.
+opacity assertion and pattern-owner lifetime checks were corrected first; all five
+affected targeted tests passed. The remaining assertion, admission, ownership and
+platform gates were completed in the production checkpoint below.
 
-Geometry, command and paint-value sizes remain **272 / 72 / 28 bytes**; packed
+The prototype geometry, command and paint-value sizes were **272 / 72 / 28 bytes**; packed
 constant samples are transient. Evidence and frozen prototype checkpoints remain
 under ignored `artifacts/opacity-folding-20261007/`, including the final material
 bank, corporate matrix, matching Default audit, capture receipts, denial results
 and integration build/test logs. Git will identify the eventual production
 implementation; no implementation fingerprints or candidate-based references
 are introduced.
+
+### Shared recorded paint and opacity checkpoint (2026-10-08)
+
+The typed integration is now production. Scene-owned paint values, logical draw
+identities and recording scopes remain separate; source-value caches do not merge
+distinct drawings during instance expansion. Element opacity retains its raw float
+factor through solid/shader quantization or isolated image-layer composition.
+CSS shader fill/stroke opacity retains its separate native byte boundary.
+
+Object bounds and conservative source visual bounds now have distinct recorded
+values. Default mask regions exclude strokes from their object box, survive group,
+leaf and instance resolution, and apply a hard region boundary. Layer dither origins
+also retain source visual bounds before dash/outline lowering. Square-cap source
+bounds round out in authored space before viewport mapping. Integer point lists
+retain their original object box before fill/stroke lowering; concave fill fragments
+use their complete union when no original box is available. Independent captures
+validate the line, rectangle, polygon and instance cases; wider affine/override
+and untested fractional point-list combinations remain open.
+
+The initial 75 core failures were reviewed against representation/ownership
+contracts and actual browser screenshots. Gradient fill-opacity and element
+opacity can round differently; their former equality assertions were invalid.
+A default mask on a horizontal line with zero-height object bounds makes it
+transparent. These expectations now follow the unchanged input's browser result.
+Pattern tile payloads retain resolved rectangle paint instead of losing deferred
+opacity handles; three supplemental alpha/fill-opacity tile controls are exact.
+Translucent painted tile strokes and gradient/rounded tile content remain rejected.
+
+Exhaustive denial sweeps found real partial-construction leaks beyond the passing
+unit suite. Curve fills remain owned through stroke/style/bounds resolution;
+repaint builders own newly created contours on insertion/detach failure. Authored
+point-list stroke paths transfer to repainted geometry instead of being dropped.
+Round-cap tips, concave linear/pattern band containers and rejected tile geometry
+release their owners on every tested failure path. Twenty-two new lifetime cases
+exercise every parser work boundary and sampled memory boundaries. Eighteen other
+core cases check separate object/visual bounds, mask boundaries and copied dashes.
+
+The original **1,567 executions / 1,539 PNGs** preserve all preceding exact results
+and render/rejection outcomes. Nineteen comparisons become exact: five fixtures
+and fourteen research configurations. Three custom-region mask cases improve
+from 78 to 21 differing pixels each. These 22 referenced images and two Default
+images are the only changed PNGs; every other bank PNG remains byte-identical to
+the single-stop checkpoint. The Default matching-option results remain `inv-013`
+exact and `inv-014` at 850 differing pixels. All **258 corporate reports and PNGs**
+stay unchanged. Windows/Linux bank reports and every PNG byte are identical;
+the Linux corporate comparison uses its own retained platform references.
+
+The separate public recorded-paint inventory retains **52 original input/reference
+pairs: 44 exact, two known differences and six valid-input rejections**. All six
+output methods preserve their result. Rounded-definition opacity retains one
+different pixel (maximum alpha error two); ellipse opacity retains three (maximum
+alpha error three). Direct `fill="none"` lines and four tile combinations remain
+valid-input rejections. Earlier material, phase, opacity/operation, scope and copy
+controls retain their recorded successes and remaining differences. This repair
+does not establish general SVG paint/state fidelity or close rows 3–7.
+
+Both platforms pass nine-project Release builds with zero warnings/errors,
+**4,116 tests = 3,837 core + 273 visual + six FontProbe**, zero failed/skipped,
+25 fresh-process memory scenarios, runtime/symbol packages and installed consumers.
+Parser work denial, sampled memory denial, raster work boundaries and cancellation
+pass for **138 admitted cases**; **28 retained rejections** receive separate parser
+work/memory/cancellation checks. Every tested owner releases after disposal and
+cancellation preserves the caller token. Public API and runtime dependencies are
+unchanged. The Skia constant constructor source is added to the existing pinned
+BSD notices; no native dependency is introduced.
+
+Geometry/command/paint-value sizes are **272 / 72 / 68 bytes**. Paint values now
+include separate optional object and visual bounds; geometry retains two four-byte
+handles. The scene arena reserves its 192-byte owner and capacity before allocating.
+Seventy-two matched recipes in both process orders add 12–4,263 total conversion
+work units, zero–568 accounted peak bytes and 760–20,711 managed allocation bytes
+per conversion. The [cost record](BENCHMARKS.md#recorded-paint-and-opacity-cost-2026-10-08)
+retains the timing observations and their limits; no representative throughput
+claim is made. Git identifies the implementation; no source, renderer or script
+fingerprints are retained. Original source/reference assets and the browser pin
+stay unchanged.
+
+Evidence remains under ignored `artifacts/opacity-folding-20261007/`, including
+`paint-production-windows`, the two-order `paint-cost-*` ledgers, full bank/control
+audits and capture receipts. Linux delivery, bank, resource and
+native corporate evidence is under
+`artifacts/linux-delivery-20261007/paint-integration-final-20261008/`. The public
+recorded-paint inventory and tests retain the portable regressions.

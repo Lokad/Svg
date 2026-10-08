@@ -7,6 +7,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Represents the bounded supported root attributes before child traversal starts.</summary>
 internal readonly record struct SvgRootAttributes(SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, SvgInheritedStrokeStyle InheritedStroke, string? Id, string? Class, byte Opacity, SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, string? FillRule)
 {
+    internal SvgPaintOpacity SourceOpacity { get; init; }
 
     internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -17,7 +18,7 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
         SvgTextWhitespaceMode rootWhitespace = ValidateXmlSpace(reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace"));
         ValidateEnableBackground(reader.GetAttribute("enable-background"));
         SvgRootSyntax syntax = SvgRootSyntax.Parse(reader, workCounter, cancellationToken);
-        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, SvgAffineTransform.Identity), SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default.WithWhitespaceMode(rootWhitespace), inline.TextFont, inline.WhiteSpace, inline.LetterSpacing), new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, ParseRootStyleLength(inline.GeometryWidth) ?? syntax.Width, ParseRootStyleLength(inline.GeometryHeight) ?? syntax.Height, syntax.ViewBox, style.FillRule);
+        return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, SvgAffineTransform.Identity), SvgTextInheritance.Resolve(reader, SvgInheritedTextStyle.Default.WithWhitespaceMode(rootWhitespace), inline.TextFont, inline.WhiteSpace, inline.LetterSpacing), new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, ParseRootStyleLength(inline.GeometryWidth) ?? syntax.Width, ParseRootStyleLength(inline.GeometryHeight) ?? syntax.Height, syntax.ViewBox, style.FillRule) { SourceOpacity = SvgColorParser.ParsePaintOpacity(style.Opacity) };
         // enable-background is a deprecated Illustrator-era hint for filter
         // backdrops; the renderer performs no backdrop compositing, so the value
         // is validated as spec-shaped and then discarded.

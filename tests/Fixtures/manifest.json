@@ -17028,11 +17028,10 @@
       "height": 35,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-integer-path-use-miter-parent-opacity.json",
-      "unsupportedReason": "Stroke admission is repaired, but single-paint parent opacity retains 220 changed pixels; maximum channel error 1, maximum alpha error 0. Preserve the original browser reference for the pending float-opacity work in PLAN.md."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-integer-path-use-miter-parent-opacity.json",
+      "referenceSha256": "341c136fd11bb55c497aa3a7f4e899930b7c6d5eb0d39ab061e2fa98f02c0361"
     },
     {
       "id": "original-integer-path-use-round-leaf-opacity",
@@ -17083,11 +17082,10 @@
       "height": 35,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-integer-path-use-round-parent-opacity.json",
-      "unsupportedReason": "Stroke admission is repaired, but single-paint parent opacity retains 220 changed pixels; maximum channel error 2, maximum alpha error 1. Preserve the original browser reference for the pending float-opacity work in PLAN.md."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-integer-path-use-round-parent-opacity.json",
+      "referenceSha256": "bef51ad25d20c999097f4be23efd7b0c87663fe9eb9776db7dc38f9592a2f6ba"
     },
     {
       "id": "original-one-stop-alpha-direct",
@@ -17136,11 +17134,10 @@
       "height": 47,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-one-stop-alpha-leaf.json",
-      "unsupportedReason": "Single-stop shader precision is repaired, but element/parent opacity retains 177 changed pixels (maximum channel error 6, alpha error 0). Preserve this original reference for the pending float-opacity work in PLAN.md."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-one-stop-alpha-leaf.json",
+      "referenceSha256": "4d46ae468003b81947d4e345f7fee0612974394c056de85cf155052f4464ae8c"
     },
     {
       "id": "original-one-stop-alpha-parent",
@@ -17163,11 +17160,10 @@
       "height": 47,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-one-stop-alpha-parent.json",
-      "unsupportedReason": "Single-stop shader precision is repaired, but element/parent opacity retains 252 changed pixels (maximum channel error 6, alpha error 0). Preserve this original reference for the pending float-opacity work in PLAN.md."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-one-stop-alpha-parent.json",
+      "referenceSha256": "4d46ae468003b81947d4e345f7fee0612974394c056de85cf155052f4464ae8c"
     },
     {
       "id": "original-override-one-stop-alpha-leaf",
@@ -17190,11 +17186,10 @@
       "height": 47,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "renders",
-      "knownDifferenceIdentity": "tests/References/original-override-one-stop-alpha-leaf.json",
-      "unsupportedReason": "Single-stop shader precision is repaired, but element/parent opacity retains 177 changed pixels (maximum channel error 6, alpha error 0). Preserve this original reference for the pending float-opacity work in PLAN.md."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-override-one-stop-alpha-leaf.json",
+      "referenceSha256": "4d46ae468003b81947d4e345f7fee0612974394c056de85cf155052f4464ae8c"
     },
     {
       "id": "original-radial-one-stop-alpha-direct",

@@ -6,33 +6,41 @@ The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
 The current 1,410 manifest entries contain
-1,340 exact decoded-pixel references, 46 known-difference renders and 24
+1,345 exact decoded-pixel references, 41 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
 Uniform group masks apply once to composed children through an isolated surface,
 independently of backward/forward definition order. Overlapping children, rounded
 fills/strokes, patterns and alpha/gray values have exact independent references
-on three backgrounds. Fully white uniform masks retain their passthrough route;
-nested opacity retains its rejection. Adjacent groups preserve distinct mask
+on three backgrounds. Fully white uniform masks retain their resolved default
+regions and source drawing state; nested group opacity retains its rejection. Adjacent groups preserve distinct mask
 values through command insertion and reference expansion; validated empty groups
 produce no scope. Leaf fill/stroke batches and masked use instances now compose
 before uniform mask application; copied masks retain sharing within one instance
 and distinct identity between instances. Backward masks with forward clips on
 direct leaves have exact independent controls. Gradient/custom-region masks,
-fill-opacity precision and circle/ellipse masks retain measured gaps. Default-region
-bounds, wider affine/custom-region combinations and copied forward clips are not
-established by these controls. Multiple-child symbols are valid SVG currently
+fill-opacity precision and circle/ellipse masks retain measured gaps. Selected
+default mask regions use object bounds without strokes and hard region clipping;
+source visual bounds survive lowering and tested use/viewport placement. Wider
+affine/custom-region combinations and copied forward clips remain unproved. Multiple-child symbols are valid SVG currently
 rejected as MalformedInput by duplicate-ID registration; that is a renderer gap.
 
-One-stop linear/radial gradients on rectangles and rectangle instances retain
-shader alpha and bitmap-local dithering. Independent direct controls are exact;
-element/parent opacity controls retain color differences with matching alpha.
-One-stop polygon, outline and other solid-lowered routes retain their existing
-behavior; this rectangle repair does not establish their fidelity. Multi-stop
-zero-vector/zero-radius gradients keep their existing solid fallback, including
-the measured fill-opacity precision gap.
+Source paint values and logical draw identities remain separate through lowering
+and instance copies. Element opacity retains its float factor until the selected
+solid, shader or isolated layer stage; CSS shader fill/stroke opacity retains its
+own byte quantization. One-stop rectangle shaders preserve raw stop alpha and
+bitmap-local dithering. The direct, parent/leaf and instance-override controls are
+exact. Degenerate multi-stop rectangle shaders retain their authored final stop
+through constant-color packing and skip dithering; six fractional coverage and
+destination-overlap controls are exact. Other solid-lowered routes retain their
+existing behavior and measured precision gaps.
 
+The [recorded-paint controls](../tests/Research/paint-recording/manifest.json)
+retain 44 exact results, two curved-opacity differences and six valid-input
+rejections. Translucent paint-stroke combinations newly admitted by deferred
+opacity have independent browser evidence; this does not establish all stroke,
+pattern, mask or override combinations.
 Rounded rectangle fills and strokes retain shared native float source commands,
 with rational conic corners and native rectangle/oval simplification. Validated
 source shapes retain their known convexity through preparation and placement,
@@ -50,8 +58,8 @@ Direct solid orthogonal paths keep checked integer bands. Closed definitions
 eligible for instance-supplied strokes preserve authored paths instead, so a
 `<use fill="none" stroke="...">` keeps its stroke with integer source coordinates.
 The existing unstyled-source and definition-transform stroke gates remain.
-Two independent leaf-opacity controls are exact; parent-opacity controls retain
-measured color/coverage differences. Authored straight replay uses
+All four independent integer-path leaf/parent-opacity controls are exact.
+Authored straight replay uses
 command-bounded scratch; rectangle mask and additive-run boundary bytes differ.
 Original independent controls remain exact; broader fidelity is still open. Native
 filled-path rectangles recognize original line verbs, including monotone collinear

@@ -223,6 +223,10 @@ public static class SvgConverter
                 if (horizontalScale != verticalScale && isCurveFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Curve fills under non-uniform viewBox or output scaling are not implemented.");
             }
         }
+        float foldedOpacity = 1;
+        SvgAnalyticClipBounds layerBounds = new(0, 0, outputWidth, outputHeight);
+        SvgRecordedPaintValue activePaint = default;
+        SvgRecordedPaintValue activeStrokePaint = default;
         RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
         try
         {
@@ -304,6 +308,7 @@ public static class SvgConverter
                 if (command.Kind != SvgDrawCommandKind.Geometry || (uint)command.GeometryIndex >= (uint)root.Geometries.Length) return false;
                 SvgGeometry geometry = root.Geometries[command.GeometryIndex];
                 if (geometry.Kind != SvgGeometryKind.Rectangle || geometry.SolidPaint is not SvgSolidPaint paint || geometry.Rectangle.Stroke is not null) return false;
+                if (geometry.RecordedPaint.Identity != 0) paint = paint with { Alpha = GetRecordedPaintValue(geometry.RecordedPaint).Alpha };
                 SvgRectangle rectangle = geometry.Rectangle;
                 if (!rectangle.HasFill || paint.Alpha == 0 || rectangle.Width == 0 || rectangle.Height == 0) continue;
                 if (++drawCount > maximumDraws) return false;
@@ -366,6 +371,196 @@ public static class SvgConverter
             }
         }
 
+        SvgRecordedPaintValue GetRecordedPaintValue(SvgRecordedPaint reference)
+        {
+            if (reference.Identity == 0) return default;
+            if (root.SceneStorage is null || (uint)(reference.Identity - 1) >= (uint)root.SceneStorage.RecordedPaintValues.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Paint reference is outside its owned scene arena.");
+            return root.SceneStorage.RecordedPaintValues[reference.Identity - 1];
+        }
+
+        SvgColor ResolveSolidColor(SvgColor color)
+        {
+            if (activePaint.Identity.Value == 0 && foldedOpacity == 1) return color;
+            float alpha = (activePaint.Identity.Value == 0 ? color.Alpha / 255f : activePaint.Alpha) * foldedOpacity;
+            return new(color.Red, color.Green, color.Blue, (byte)Math.Clamp((int)(alpha * 255f + 0.5f), 0, 255));
+        }
+        float ShaderAlpha(byte opacity) => (activePaint.Identity.Value == 0 ? opacity / 255f : activePaint.Alpha) * foldedOpacity;
+
+        int GradientDither(int x, int y)
+        {
+            SvgCpuBitmapOrigin tile = rasterGrid.GetBitmapOrigin(x, y);
+            int localX = x - Math.Max(tile.X, layerBounds.Left);
+            int localY = y - Math.Max(tile.Y, layerBounds.Top);
+            int mixedY = localY ^ localX;
+            return ((mixedY & 1) << 5) | ((localX & 1) << 4)
+                | ((mixedY & 2) << 2) | ((localX & 2) << 1)
+                | ((mixedY & 4) >> 1) | ((localX & 4) >> 2);
+        }
+
+        SvgAnalyticClipBounds LayerPaintBounds(int first, SvgAnalyticClipBounds parent, SvgClipBox? retainedRegion)
+        {
+            ParserWorkCounter boundsWork = new(options.Limits.MaximumWorkUnits - workUnits);
+            double left = double.PositiveInfinity, top = double.PositiveInfinity;
+            double right = double.NegativeInfinity, bottom = double.NegativeInfinity;
+            SvgAffineTransform outputMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            int depth = 0;
+            if (retainedRegion is SvgClipBox region) IncludeBox(new(region.X, region.Y, region.Width, region.Height, default, false, null), outputMap, 0);
+            for (int cursor = first; cursor < root.Commands.Length; cursor++)
+            {
+                boundsWork.Consume(cancellationToken);
+                SvgDrawCommand value = root.Commands[cursor];
+                if (value.Kind == SvgDrawCommandKind.BeginGroup) { depth++; continue; }
+                if (value.Kind == SvgDrawCommandKind.EndGroup)
+                {
+                    if (depth-- == 0) break;
+                    continue;
+                }
+                SvgGeometry geometry = root.Geometries[value.GeometryIndex];
+                SvgPaintBounds? visualBounds = GetRecordedPaintValue(geometry.RecordedPaint).VisualBounds;
+                if (visualBounds is {} visual)
+                {
+                    IncludeBox(new(visual.Left, visual.Top, visual.Right - visual.Left, visual.Bottom - visual.Top, default, false, null), outputMap, 0);
+                    continue;
+                }
+                if (retainedRegion is not null) continue;
+                SvgAuthoredPath? source = geometry.AuthoredPath?.StrokeOutline ?? geometry.AuthoredPath;
+                if (source is not null)
+                {
+                    SvgRectangle box = SvgPathBounds.Compute(source.Commands, boundsWork, cancellationToken);
+                    IncludeBox(box, outputMap.ComposeChecked(source.SceneMap), 0);
+                    continue;
+                }
+                switch (geometry.Kind)
+                {
+                    case SvgGeometryKind.Rectangle:
+                    case SvgGeometryKind.OrthogonalBand:
+                        SvgRectangle rect = geometry.Rectangle;
+                        if (rect.HasFill || rect.Stroke is not null) IncludeBox(rect, outputMap, rect.Stroke?.Width / 2d ?? 0);
+                        break;
+                    case SvgGeometryKind.GradientFill:
+                        if (geometry.Gradient.Fill.HasFill || geometry.Gradient.Stroke is not null)
+                        {
+                            IncludeBox(geometry.Gradient.Box, outputMap, geometry.Gradient.Stroke?.Width / 2d ?? 0);
+                            IncludeBox(geometry.Gradient.Fill, outputMap, geometry.Gradient.Stroke?.Width / 2d ?? 0);
+                        }
+                        break;
+                    case SvgGeometryKind.RadialGradient:
+                        if (geometry.Radial.Fill.HasFill || geometry.Radial.Stroke is not null)
+                        {
+                            IncludeBox(geometry.Radial.Box, outputMap, geometry.Radial.Stroke?.Width / 2d ?? 0);
+                            IncludeBox(geometry.Radial.Fill, outputMap, geometry.Radial.Stroke?.Width / 2d ?? 0);
+                        }
+                        break;
+                    case SvgGeometryKind.PatternFill:
+                        if (geometry.Pattern.Fill.HasFill || geometry.Pattern.Stroke is not null)
+                            IncludeBox(geometry.Pattern.Fill, outputMap, geometry.Pattern.Stroke?.Width / 2d ?? 0);
+                        break;
+                    case SvgGeometryKind.GradientStroke:
+                        IncludeBox(geometry.GradientStroke.OuterBox(), outputMap, 0);
+                        break;
+                    case SvgGeometryKind.AxisAlignedLine:
+                        SvgAxisAlignedLine line = geometry.AxisAlignedLine;
+                        if (line.IsPainted)
+                            IncludeBox(new(Math.Min(line.X1,line.X2), Math.Min(line.Y1,line.Y2), Math.Abs(line.X2-line.X1), Math.Abs(line.Y2-line.Y1), default, true, null), outputMap, line.StrokeWidth / 2d);
+                        break;
+                    case SvgGeometryKind.PolygonFill:
+                        IncludePoints(geometry.Polygon.Points);
+                        break;
+                    case SvgGeometryKind.GradientPolygon:
+                        IncludeBox(geometry.GradientPolygon.Box, outputMap, 0);
+                        break;
+                    case SvgGeometryKind.RadialPolygon:
+                        IncludeBox(geometry.RadialPolygon.Box, outputMap, 0);
+                        break;
+                    case SvgGeometryKind.PatternPolygon:
+                        IncludePoints(geometry.PatternPolygon.Points);
+                        break;
+                    case SvgGeometryKind.GlyphContours:
+                        foreach (SvgGlyphQuadraticContour contour in geometry.Glyph.Contours)
+                        foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
+                        {
+                            Include(new(segment.Start.X, segment.Start.Y), outputMap);
+                            Include(new(segment.Control.X, segment.Control.Y), outputMap);
+                            Include(new(segment.End.X, segment.End.Y), outputMap);
+                        }
+                        break;
+                    default:
+                        throw new SvgException(SvgErrorCode.MalformedInput, "Layer references invalid geometry.");
+                }
+            }
+            workUnits += boundsWork.Used;
+            if (double.IsPositiveInfinity(left)) return parent;
+            return new((int)Math.Clamp(Math.Floor(left), parent.Left, parent.Right),
+                (int)Math.Clamp(Math.Floor(top), parent.Top, parent.Bottom),
+                (int)Math.Clamp(Math.Ceiling(right), parent.Left, parent.Right),
+                (int)Math.Clamp(Math.Ceiling(bottom), parent.Top, parent.Bottom));
+
+            void IncludeBox(SvgRectangle box, SvgAffineTransform map, double inflation)
+            {
+                Include(new(box.X-inflation, box.Y-inflation), map);
+                Include(new(box.X+box.Width+inflation, box.Y-inflation), map);
+                Include(new(box.X-inflation, box.Y+box.Height+inflation), map);
+                Include(new(box.X+box.Width+inflation, box.Y+box.Height+inflation), map);
+            }
+            void IncludePoints(ReadOnlySpan<SvgDevicePoint> points)
+            {
+                foreach (SvgDevicePoint point in points) Include(point, outputMap);
+            }
+            void Include(SvgDevicePoint point, SvgAffineTransform map)
+            {
+                boundsWork.Consume(cancellationToken);
+                SvgDevicePoint mapped = SvgAuthoredPath.MapPoint(map, point, new(0,0));
+                if (!double.IsFinite(mapped.X) || !double.IsFinite(mapped.Y)) throw new SvgException(SvgErrorCode.LimitExceeded, "Layer bounds exceed the admitted numeric range.");
+                left = Math.Min(left,mapped.X); top = Math.Min(top,mapped.Y);
+                right = Math.Max(right,mapped.X); bottom = Math.Max(bottom,mapped.Y);
+            }
+        }
+
+        bool TrySinglePaint(int first, SvgRecordingScope scope, out int end)
+        {
+            SvgPaintOperationIdentity identity = default;
+            end = first;
+            for (; end < root.Commands.Length; end++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Paint-record inspection exceeds configured work.");
+                workUnits++;
+                SvgDrawCommand candidate = root.Commands[end];
+                if (candidate.Kind == SvgDrawCommandKind.EndGroup) return identity.Value != 0;
+                if (candidate.Kind != SvgDrawCommandKind.Geometry) return false;
+                SvgGeometry geometry = root.Geometries[candidate.GeometryIndex];
+                SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
+                if (geometry.Kind != SvgGeometryKind.Rectangle && geometry.RecordedStrokePaint.Identity != 0)
+                {
+                    bool fill = geometry.Kind switch
+                    {
+                        SvgGeometryKind.GradientFill => geometry.Gradient.Fill.HasFill,
+                        SvgGeometryKind.RadialGradient => geometry.Radial.Fill.HasFill,
+                        SvgGeometryKind.PatternFill => geometry.Pattern.Fill.HasFill,
+                        SvgGeometryKind.GradientStroke => geometry.GradientStroke.Fill.HasFill,
+                        _ => throw new SvgException(SvgErrorCode.MalformedInput, "Unexpected shader stroke recording."),
+                    };
+                    if (fill) return false;
+                    paint = GetRecordedPaintValue(geometry.RecordedStrokePaint);
+                }
+                if (geometry.Kind == SvgGeometryKind.Rectangle)
+                {
+                    if (!geometry.Rectangle.HasFill)
+                    {
+                        if (geometry.Rectangle.Stroke is null) continue;
+                        paint = GetRecordedPaintValue(geometry.RecordedStrokePaint);
+                    }
+                    else if (geometry.Rectangle.Stroke is not null) return false;
+                }
+                else if (geometry.Kind == SvgGeometryKind.PolygonFill && !geometry.Polygon.HasFill) continue;
+                else if (geometry.Kind == SvgGeometryKind.OrthogonalBand && !geometry.Rectangle.HasFill) continue;
+                if (paint.Identity.Value == 0 || !paint.Foldable || paint.Scope != scope) return false;
+                if (identity.Value != 0 && identity != paint.Identity) return false;
+                identity = paint.Identity;
+            }
+            return false;
+        }
+
         int RenderCommands(int startIndex, byte[] destination, bool stopsAtGroupEnd)
         {
             int index = startIndex;
@@ -379,9 +574,26 @@ public static class SvgConverter
                 }
                 if (command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
+                    if (command.MaskRegion is null && command.MaskContentIndex < 0 && command.MaskAlpha == 255
+                        && TrySinglePaint(index, command.RecordingScope, out int paintEnd))
+                    {
+                        float previousOpacity = foldedOpacity;
+                        foldedOpacity *= command.SourceOpacity.Value;
+                        try
+                        {
+                            for (; index < paintEnd; index++) RasterizeGeometry(root.Geometries[root.Commands[index].GeometryIndex], destination);
+                        }
+                        finally { foldedOpacity = previousOpacity; }
+                        index++;
+                        continue;
+                    }
+                    SvgAnalyticClipBounds previousLayer = layerBounds;
+                    SvgAnalyticClipBounds layer = LayerPaintBounds(index, previousLayer, command.MaskRegion);
                     using RenderBudget.BudgetReservation groupReservation = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
                     byte[] groupPixels = new byte[checked(pixelCount * 4)];
-                    index = RenderCommands(index, groupPixels, true);
+                    layerBounds = layer;
+                    try { index = RenderCommands(index, groupPixels, true); }
+                    finally { layerBounds = previousLayer; }
                     long compositionWork = pixelCount;
                     if (compositionWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Group opacity composition exceeds the configured limit.");
                     workUnits += compositionWork;
@@ -426,7 +638,8 @@ public static class SvgConverter
                         {
                             int x = pixel % outputWidth;
                             int y = pixel / outputWidth;
-                            maskAlpha = (byte)(maskAlpha * ClipBoxCoverage((regionLeft, regionTop, regionRight, regionBottom), x, y));
+                            if (x + 0.5 < regionLeft || x + 0.5 >= regionRight || y + 0.5 < regionTop || y + 0.5 >= regionBottom)
+                                maskAlpha = 0;
                         }
                         if (extra == 0 || maskAlpha == 0 || groupPixels[offset + 3] == 0) continue;
                         BlendLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha);
@@ -454,12 +667,22 @@ public static class SvgConverter
 
         void RasterizeGeometry(SvgGeometry geometry, byte[] destination)
         {
+            SvgRecordedPaintValue previousPaint = activePaint;
+            SvgRecordedPaintValue previousStroke = activeStrokePaint;
+            activePaint = GetRecordedPaintValue(geometry.RecordedPaint);
+            activeStrokePaint = GetRecordedPaintValue(geometry.RecordedStrokePaint);
+            try { RasterizeGeometryCore(geometry, destination); }
+            finally { activePaint = previousPaint; activeStrokePaint = previousStroke; }
+        }
+
+        void RasterizeGeometryCore(SvgGeometry geometry, byte[] destination)
+        {
             if (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.AuthoredPath is SvgAuthoredPath centerline && centerline.StrokeStyle is not null)
             {
                 ParserWorkCounter hairlineWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 SvgPolygonFill stroke = geometry.Polygon;
                 bool rendered = stroke.HasFill && SvgHairlineStroke.TryRasterize(centerline,
-                    SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), stroke.Color,
+                    SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset), ResolveSolidColor(stroke.Color),
                     stroke.Clip is SvgClipBox clip ? MapClipBounds(clip, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : null,
                     stroke.Clip?.Antialiasing ?? SvgClipAntialiasing.None, destination, outputWidth, outputHeight, hairlineWork, cancellationToken);
                 workUnits += hairlineWork.Used;
@@ -653,7 +876,7 @@ public static class SvgConverter
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
             using MappedPolygon raster = MapPolygon(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip, authoredPath);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
-            SvgAnalyticPaint analyticPaint = SvgAnalyticPaint.Solid(polygon.Color);
+            SvgAnalyticPaint analyticPaint = SvgAnalyticPaint.Solid(ResolveSolidColor(polygon.Color));
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
@@ -818,7 +1041,7 @@ public static class SvgConverter
                     }
                     position = local;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, outline.Opacity, rasterGrid.GetGradientDither(x, y));
+                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, ShaderAlpha(outline.Opacity), GradientDither(x, y));
                     if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), CoverageAlpha(255, pixelCoverage));
                 }
@@ -979,7 +1202,7 @@ public static class SvgConverter
                         if (position > 1) position = 1;
                     }
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, outline.Opacity, rasterGrid.GetGradientDither(x, y));
+                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, ShaderAlpha(outline.Opacity), GradientDither(x, y));
                     if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), CoverageAlpha(255, pixelCoverage));
                 }
@@ -1057,7 +1280,7 @@ public static class SvgConverter
                     int tileY = PositiveModulo(y - tile.OriginY, tile.TileHeight);
                     int tileOffset = (tileY * tile.TileWidth + tileX) * 4;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SvgShaderPaint.Pattern(blitted[tileOffset], blitted[tileOffset + 1], blitted[tileOffset + 2], blitted[tileOffset + 3], tile.Opacity);
+                    SvgShaderPaint sample = SvgShaderPaint.Pattern(blitted[tileOffset], blitted[tileOffset + 1], blitted[tileOffset + 2], blitted[tileOffset + 3], ShaderAlpha(tile.Opacity));
                     if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), raster.Clip is null ? SvgAnalyticClipCoverage.Full : SvgAnalyticRectangleClip.GetCoverage(raster.Clip.Value, raster.ClipAntialiasing, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), CoverageAlpha(255, pixelCoverage));
                 }
@@ -1161,18 +1384,14 @@ public static class SvgConverter
                 int tileY = PositiveModulo(y - pattern.OriginY, pattern.TileHeight);
                 int tileOffset = (tileY * pattern.TileWidth + tileX) * 4;
                 int offset = (y * outputWidth + x) * 4;
-                SvgShaderPaint.Pattern(tile[tileOffset], tile[tileOffset + 1], tile[tileOffset + 2], tile[tileOffset + 3], pattern.Opacity).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
+                SvgShaderPaint.Pattern(tile[tileOffset], tile[tileOffset + 1], tile[tileOffset + 2], tile[tileOffset + 3], ShaderAlpha(pattern.Opacity)).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
             }
             }
         }
 
         void RasterizePatternStroke(SvgPatternGeometry pattern, SvgStroke stroke, byte[] destination)
         {
-            double halfWidth = stroke.Width / 2d;
-            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y - halfWidth, pattern.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Fill.Clip }, destination);
-            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y + pattern.Fill.Height - halfWidth, pattern.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = pattern.Fill.Clip }, destination);
-            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X - halfWidth, pattern.Fill.Y + halfWidth, stroke.Width, pattern.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Fill.Clip }, destination);
-            RasterizeSolidRectangle(new SvgRectangle(pattern.Fill.X + pattern.Fill.Width - halfWidth, pattern.Fill.Y + halfWidth, stroke.Width, pattern.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = pattern.Fill.Clip }, destination);
+            RasterizeShaderRectangleStroke(pattern.Fill, stroke, destination);
         }
 
         static int PositiveModulo(int value, int modulus) => ((value % modulus) + modulus) % modulus;
@@ -1188,14 +1407,25 @@ public static class SvgConverter
         {
             if (stroke.Fill.HasFill) RasterizeSolidRectangle(stroke.Fill, destination);
             if (!stroke.HasStroke) return;
-            RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Top, stroke.Opacity, true, destination);
-            RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Bottom, stroke.Opacity, true, destination);
-            RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Left, stroke.Opacity, true, destination);
-            RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Right, stroke.Opacity, true, destination);
+            SvgRecordedPaintValue previous = activePaint;
+            if (activeStrokePaint.Identity.Value != 0) activePaint = activeStrokePaint;
+            try
+            {
+                RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Top, stroke.Opacity, true, destination);
+                RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Bottom, stroke.Opacity, true, destination);
+                RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Left, stroke.Opacity, true, destination);
+                RasterizeGradientArea(stroke.Gradient, stroke.Box, stroke.Right, stroke.Opacity, true, destination);
+            }
+            finally { activePaint = previous; }
         }
 
         void RasterizeGradientArea(SvgLinearGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
+            if (definition.Stops.Length > 1 && definition.X1 == definition.X2 && definition.Y1 == definition.Y2)
+            {
+                RasterizeConstantGradient(definition.Stops[^1], area, opacity, paint, destination);
+                return;
+            }
             SvgRectangleRaster raster = PrepareRectangle(area);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             double directionX = definition.X2 - definition.X1;
@@ -1246,7 +1476,7 @@ public static class SvgConverter
                 }
                 position = local;
                 int offset = (y * outputWidth + x) * 4;
-                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, opacity, rasterGrid.GetGradientDither(x, y)).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
+                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
             }
             }
 
@@ -1257,16 +1487,17 @@ public static class SvgConverter
             RasterizeRadialArea(radial.Gradient, radial.Box, radial.Fill, radial.Opacity, radial.Fill.HasFill, destination);
             if (radial.Stroke is SvgStroke stroke)
             {
-                double halfWidth = stroke.Width / 2d;
-                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y - halfWidth, radial.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = radial.Fill.Clip }, destination);
-                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y + radial.Fill.Height - halfWidth, radial.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = radial.Fill.Clip }, destination);
-                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X - halfWidth, radial.Fill.Y + halfWidth, stroke.Width, radial.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = radial.Fill.Clip }, destination);
-                RasterizeSolidRectangle(new SvgRectangle(radial.Fill.X + radial.Fill.Width - halfWidth, radial.Fill.Y + halfWidth, stroke.Width, radial.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = radial.Fill.Clip }, destination);
+                RasterizeShaderRectangleStroke(radial.Fill, stroke, destination);
             }
         }
 
         void RasterizeRadialArea(SvgRadialGradient definition, SvgRectangle box, SvgRectangle area, byte opacity, bool paint, byte[] destination)
         {
+            if (definition.Stops.Length > 1 && definition.Radius == 0)
+            {
+                RasterizeConstantGradient(definition.Stops[^1], area, opacity, paint, destination);
+                return;
+            }
             SvgRectangleRaster raster = PrepareRectangle(area);
             SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
@@ -1367,18 +1598,41 @@ public static class SvgConverter
                     if (position > 1) position = 1;
                 }
                 int offset = (y * outputWidth + x) * 4;
-                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, opacity, rasterGrid.GetGradientDither(x, y)).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
+                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), raster.GetAlpha(x, y));
             }
+            }
+        }
+
+        void RasterizeConstantGradient(SvgGradientStop stop, SvgRectangle area, byte opacity, bool paint, byte[] destination)
+        {
+            SvgRectangleRaster raster = PrepareRectangle(area);
+            if (!paint) return;
+            SvgConstantShaderPaint color = SvgShaderPaint.ConstantGradient(stop, ShaderAlpha(opacity));
+            for (int y = raster.Top; y < raster.Bottom; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                for (int x = raster.Left; x < raster.Right; x++)
+                    color.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), raster.GetAlpha(x, y));
             }
         }
 
         void RasterizeGradientStroke(SvgGradientGeometry gradient, SvgStroke stroke, byte[] destination)
         {
-            double halfWidth = stroke.Width / 2d;
-            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y - halfWidth, gradient.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = gradient.Fill.Clip }, destination);
-            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y + gradient.Fill.Height - halfWidth, gradient.Fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = gradient.Fill.Clip }, destination);
-            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X - halfWidth, gradient.Fill.Y + halfWidth, stroke.Width, gradient.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = gradient.Fill.Clip }, destination);
-            RasterizeSolidRectangle(new SvgRectangle(gradient.Fill.X + gradient.Fill.Width - halfWidth, gradient.Fill.Y + halfWidth, stroke.Width, gradient.Fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = gradient.Fill.Clip }, destination);
+            RasterizeShaderRectangleStroke(gradient.Fill, stroke, destination);
+        }
+        void RasterizeShaderRectangleStroke(SvgRectangle fill, SvgStroke stroke, byte[] destination)
+        {
+            SvgRecordedPaintValue previous = activePaint;
+            if (activeStrokePaint.Identity.Value != 0) activePaint = activeStrokePaint;
+            try
+            {
+                double halfWidth = stroke.Width / 2d;
+                RasterizeSolidRectangle(new SvgRectangle(fill.X - halfWidth, fill.Y - halfWidth, fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = fill.Clip }, destination);
+                RasterizeSolidRectangle(new SvgRectangle(fill.X - halfWidth, fill.Y + fill.Height - halfWidth, fill.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = fill.Clip }, destination);
+                RasterizeSolidRectangle(new SvgRectangle(fill.X - halfWidth, fill.Y + halfWidth, stroke.Width, fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = fill.Clip }, destination);
+                RasterizeSolidRectangle(new SvgRectangle(fill.X + fill.Width - halfWidth, fill.Y + halfWidth, stroke.Width, fill.Height - stroke.Width, stroke.Color, true, null) with { Clip = fill.Clip }, destination);
+            }
+            finally { activePaint = previous; }
         }
         void RasterizeGlyphContours(SvgGlyphGeometry glyph, byte[] destination)
         {
@@ -1457,11 +1711,17 @@ public static class SvgConverter
             if (rectangle.HasFill) RasterizeSolidRectangle(rectangle, destination);
             if (rectangle.Stroke is SvgStroke stroke)
             {
+                SvgRecordedPaintValue previous = activePaint;
+                activePaint = activeStrokePaint;
+                try
+                {
                 double halfWidth = stroke.Width / 2d;
                 RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
                 RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + rectangle.Height - halfWidth, rectangle.Width + stroke.Width, stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
                 RasterizeSolidRectangle(new SvgRectangle(rectangle.X - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
                 RasterizeSolidRectangle(new SvgRectangle(rectangle.X + rectangle.Width - halfWidth, rectangle.Y + halfWidth, stroke.Width, rectangle.Height - stroke.Width, stroke.Color, true, null) with { Clip = rectangle.Clip }, destination);
+                }
+                finally { activePaint = previous; }
             }
         }
 
@@ -1469,7 +1729,7 @@ public static class SvgConverter
         {
             SvgRectangleRaster raster = PrepareRectangle(rectangle);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
-            SvgAnalyticPaint rectanglePaint = SvgAnalyticPaint.Solid(rectangle.Color);
+            SvgAnalyticPaint rectanglePaint = SvgAnalyticPaint.Solid(ResolveSolidColor(rectangle.Color));
             for (int y = startY; y < endY; y++)
             {
             cancellationToken.ThrowIfCancellationRequested();

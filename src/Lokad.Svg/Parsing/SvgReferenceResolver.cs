@@ -7,6 +7,8 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
 {
     /// <summary>Records the absence of an instance opacity layer, using the validated source value rather than its rounded alpha byte.</summary>
     internal bool AllowsSolidPaintAnalysis { get; init; }
+    internal SvgRecordingScope RecordingScope { get; init; }
+    internal SvgPaintOpacity SourceOpacity { get; init; } = SvgPaintOpacity.Opaque;
 }
 
 /// <summary>Retains one clip-path reference whose box needs a forward definition or clip-path definition.</summary>
@@ -43,7 +45,16 @@ internal static class SvgReferenceResolver
         if (reference.StrokeOverride is not null && reference.PaintServerId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked paint-server use instances are not implemented.");
         if (reference.StrokeOverride is { Join: SvgStrokeJoin.Round } && (definition.InstanceStrokeMiterLimit is null || definition.Geometries.Length != 1 || definition.Geometries[0].Kind != SvgGeometryKind.PolygonFill))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round-joined use strokes require an unstyled path definition.");
-        if (reference.PaintServerId is not null) return [LowerDirectInstancePaintFill(definition, reference, frame, state)];
+        if (reference.PaintServerId is not null)
+        {
+            SvgGeometry lowered = LowerDirectInstancePaintFill(definition, reference, frame, state);
+            try
+            {
+                using SvgRecordingMapper mapper = SvgRecordingMapper.Create(state, reference.RecordingScope, workCounter, cancellationToken);
+                return [TryApplyShaderOverride(lowered, definition.Geometries[0].RecordedPaint, mapper, state, workCounter, cancellationToken)];
+            }
+            catch { lowered.Dispose(); throw; }
+        }
         RequireUniformOutlineScales(definition, reference);
         RequireAdmittedInstanceMagnification(definition, reference);
         SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
@@ -51,6 +62,8 @@ internal static class SvgReferenceResolver
         SvgLeafMaskMapper? maskMapper = null;
         try
         {
+            using BudgetedParserDictionary<SvgRecordedPaint, SvgRecordedPaint> mappedPaints = new(state.Budget, SvgMemoryCategory.Parser, 96);
+            using SvgRecordingMapper recordingMapper = SvgRecordingMapper.Create(state, reference.RecordingScope, workCounter, cancellationToken);
             for (int index = 0; index < sources.Length; index++)
             {
                 int firstApplied = applied.Count;
@@ -97,9 +110,21 @@ internal static class SvgReferenceResolver
                         break;
                     default: throw new SvgException(SvgErrorCode.UnsupportedFeature, "The referenced SVG geometry is not implemented.");
                 }
+                SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, PlainInstancePlacement(reference, frame));
+                SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, true, PlainInstancePlacement(reference, frame));
+                SvgRecordedPaint addedStroke = default;
+                if (reference.StrokeOverride is SvgUseStrokeOverride instanceStroke && applied.Count > firstApplied + 1)
+                {
+                    SvgRecordedPaintValue original = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint);
+                    float alpha = SvgPaintResolver.ResolveSolidPaint(instanceStroke.Paint).Alpha;
+                    addedStroke = state.Scene.RegisterRecordedPaint(new(state.NewPaintOperationIdentity(), alpha, true,
+                        recordingMapper.Map(original.Scope), SvgPaintOpacity.Opaque, recordingMapper.Map(original.OpacityScope)));
+                }
+                for (int mapped = firstApplied; mapped < applied.Count; mapped++)
+                    applied[mapped] = applied[mapped] with { RecordedPaint = mapped > firstApplied && addedStroke.Identity != 0 ? addedStroke : fillPaint, RecordedStrokePaint = strokePaint };
                 if (definition.Geometries[index].LeafMask is SvgLeafMaskBinding binding)
                 {
-                    maskMapper ??= SvgLeafMaskMapper.Create(state, PlainInstancePlacement(reference, frame), workCounter, cancellationToken);
+                    maskMapper ??= SvgLeafMaskMapper.Create(state, PlainInstancePlacement(reference, frame), workCounter, cancellationToken).WithRecordingMapper(recordingMapper);
                     SvgLeafMaskBinding? copied = maskMapper.Map(binding);
                     for (int mapped = firstApplied; mapped < applied.Count; mapped++)
                     {
@@ -278,6 +303,14 @@ internal static class SvgReferenceResolver
     private static SvgAffineTransform PlainInstancePlacement(SvgUseReference reference, SvgViewportFrame? frame)
     {
         SvgAffineTransform placement = reference.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(1, 1, reference.X, reference.Y));
+        return frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(placement) : placement;
+    }
+
+    private static SvgAffineTransform SymbolInstancePlacement(SvgViewBox box, SvgUseReference reference, SvgViewportFrame? frame)
+    {
+        if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
+        (double sx, double sy, double ox, double oy) = SvgGeometrySyntax.MapViewBox(box, reference.Width.Value, reference.Height.Value);
+        SvgAffineTransform placement = reference.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(sx, sy, ox + reference.X, oy + reference.Y));
         return frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(placement) : placement;
     }
 
@@ -644,18 +677,18 @@ internal static class SvgReferenceResolver
     /// <summary>Maps an instance, validates coverage, then retains its mask around the complete ordered paint batch.</summary>
     private static SvgGeometry[] ApplyInstanceMask(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, byte? mask, string? maskReference, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        SvgGeometry[] sources = Apply(definition, reference, frame, state, workCounter, cancellationToken);
+        SvgGeometry[] sources = Apply(definition, reference with { Opacity = 255 }, frame, state, workCounter, cancellationToken);
         try
         {
             foreach (SvgGeometry geometry in sources) SvgMaskSyntax.ValidateMaskScopes(state, geometry);
-            if (mask is null) return sources;
+            if (mask is null) return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
             double left = double.PositiveInfinity, top = double.PositiveInfinity;
             double right = double.NegativeInfinity, bottom = double.NegativeInfinity;
             foreach (SvgGeometry geometry in sources)
             {
                 workCounter.Consume(cancellationToken);
-                SvgRectangle box = SvgMaskSyntax.BoundingBox(geometry);
-                if (maskReference is not null) SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, box);
+                if (maskReference is not null) SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, SvgMaskSyntax.BoundingBox(geometry));
+                SvgRectangle box = SvgMaskSyntax.RecordedObjectBox(geometry, state);
                 left = Math.Min(left, box.X); top = Math.Min(top, box.Y);
                 right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
             }
@@ -664,7 +697,7 @@ internal static class SvgReferenceResolver
             SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
             operation.Value = mask.Value; operation.Resolved = true;
             string? maskId = maskReference is null ? null : SvgMaskSyntax.ParseMaskId(maskReference);
-            operation.Region = maskId is not null && (state.MaskRegions.TryGetValue(maskId, out _) || state.MaskFractionRegions.TryGetValue(maskId, out _)) ? region : null;
+            operation.Region = region;
             using BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> bindings = new(state.Budget, SvgMemoryCategory.Parser, 96);
             SvgLeafMaskBinding? noInner = null;
             SvgGeometry[] applied = sources;
@@ -680,7 +713,7 @@ internal static class SvgReferenceResolver
                 applied[index] = applied[index] with { LeafMask = outer };
             }
 
-            return applied;
+            return SvgPaintRecording.WrapInstance(applied, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
         }
         catch { foreach (SvgGeometry geometry in sources) geometry.Dispose(); throw; }
 
@@ -726,6 +759,35 @@ internal static class SvgReferenceResolver
         }
     }
 
+    private static SvgRecordedPaint MapRecordedPaint(SvgRecordedPaint source, SvgUseReference reference, SvgDocumentState state, BudgetedParserDictionary<SvgRecordedPaint, SvgRecordedPaint> cache, SvgRecordingMapper mapper, ParserWorkCounter work, CancellationToken token, bool stroke, SvgAffineTransform placement)
+    {
+        if (source.Identity == 0 || reference.PaintServerId is not null) return default;
+        SvgRecordedPaintValue value = state.Scene.GetRecordedPaintValue(source);
+        work.Consume(token);
+        if (cache.TryGetValue(source, out SvgRecordedPaint previous)) return previous;
+        float alpha = !stroke && reference.FillOverride is SvgPaint fill ? SvgPaintResolver.ResolveSolidPaint(fill).Alpha : value.Alpha;
+        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
+        cache.TryAdd(source, result);
+        return result;
+    }
+
+    private static SvgGeometry TryApplyShaderOverride(SvgGeometry geometry, SvgRecordedPaint source, SvgRecordingMapper mapper, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (source.Identity == 0) return geometry;
+        work.Consume(token);
+        SvgRecordedPaintValue original = state.Scene.GetRecordedPaintValue(source);
+        float alpha = geometry.Kind switch
+        {
+            SvgGeometryKind.Rectangle or SvgGeometryKind.OrthogonalBand => geometry.Rectangle.Color.Alpha / 255f,
+            SvgGeometryKind.GradientFill => geometry.Gradient.Opacity / 255f,
+            SvgGeometryKind.RadialGradient => geometry.Radial.Opacity / 255f,
+            SvgGeometryKind.PatternFill => geometry.Pattern.Opacity / 255f,
+            _ => throw new InvalidOperationException("Unexpected instance paint-server geometry."),
+        };
+        SvgRecordedPaint paint = state.Scene.RegisterRecordedPaint(new(state.NewPaintOperationIdentity(), alpha, original.Foldable, mapper.Map(original.Scope), SvgPaintOpacity.Opaque, mapper.Map(original.OpacityScope)));
+        return geometry with { RecordedPaint = paint };
+    }
+
     private static SvgGeometry[] ApplySymbol(SvgDefinition definition, SvgViewBox symbolBox, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of symbols are not implemented.");
@@ -734,17 +796,21 @@ internal static class SvgReferenceResolver
             RequireUniformOutlineScales(definition, reference);
             SvgGeometry[] sources = ApplyInstanceFill(definition, reference, state);
             List<SvgGeometry> applied = new(sources.Length);
+            SvgLeafMaskMapper? maskMapper = null;
             try
             {
+                using BudgetedParserDictionary<SvgRecordedPaint, SvgRecordedPaint> mappedPaints = new(state.Budget, SvgMemoryCategory.Parser, 96);
+                using SvgRecordingMapper recordingMapper = SvgRecordingMapper.Create(state, state.NewRecordingScope(), workCounter, cancellationToken);
                 for (int index = 0; index < sources.Length; index++)
                 {
+                    int firstApplied = applied.Count;
+                    bool expandedStroke = sources[index].Kind == SvgGeometryKind.Rectangle && sources[index].Rectangle.Stroke is not null;
                     SvgGeometry authoredSource = sources[index] with { AuthoredPath = definition.Geometries[index].AuthoredPath };
-                    if (sources[index].Kind == SvgGeometryKind.Rectangle && sources[index].Rectangle.Stroke is not null)
+                    if (expandedStroke)
                     {
                         foreach (SvgGeometry expanded in ApplySymbolStrokedRectangle(sources[index].Rectangle, symbolBox, reference, frame, state, workCounter, cancellationToken)) applied.Add(expanded);
-                        continue;
                     }
-                    applied.Add(sources[index].Kind switch
+                    else applied.Add(sources[index].Kind switch
                     {
                         SvgGeometryKind.GradientFill => ApplySymbolGradientFill(sources[index].Gradient, symbolBox, reference, frame, state, workCounter, cancellationToken),
                         SvgGeometryKind.PatternFill => ApplySymbolPatternFill(sources[index].Pattern, symbolBox, reference, frame, state, workCounter, cancellationToken),
@@ -755,12 +821,27 @@ internal static class SvgReferenceResolver
                         SvgGeometryKind.PatternPolygon => ApplySymbolPatternPolygon(authoredSource, symbolBox, reference, frame, state, workCounter, cancellationToken),
                         _ => ApplySymbolInstance(authoredSource, symbolBox, reference, frame, state, workCounter, cancellationToken),
                     });
+                    SvgRecordedPaint fillPaint = MapRecordedPaint(definition.Geometries[index].RecordedPaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, false, SymbolInstancePlacement(symbolBox, reference, frame));
+                    SvgRecordedPaint strokePaint = MapRecordedPaint(definition.Geometries[index].RecordedStrokePaint, reference, state, mappedPaints, recordingMapper, workCounter, cancellationToken, true, SymbolInstancePlacement(symbolBox, reference, frame));
+                    for (int mapped = firstApplied; mapped < applied.Count; mapped++)
+                        applied[mapped] = applied[mapped] with { RecordedPaint = expandedStroke && mapped > firstApplied ? strokePaint : fillPaint };
+                    if (definition.Geometries[index].LeafMask is SvgLeafMaskBinding binding)
+                    {
+                        maskMapper ??= SvgLeafMaskMapper.Create(state, SymbolInstancePlacement(symbolBox, reference, frame), workCounter, cancellationToken).WithRecordingMapper(recordingMapper);
+                        SvgLeafMaskBinding? copied = maskMapper.Map(binding);
+                        for (int mapped = firstApplied; mapped < applied.Count; mapped++)
+                        {
+                            workCounter.Consume(cancellationToken);
+                            applied[mapped] = applied[mapped] with { LeafMask = copied };
+                        }
+                    }
                 }
                 return applied.ToArray();
             }
             catch { foreach (SvgGeometry geometry in applied) geometry.Dispose(); throw; }
             finally
             {
+                maskMapper?.Dispose();
                 if (reference.FillOverride is not null)
                     foreach (SvgGeometry geometry in sources) geometry.Dispose();
             }
@@ -1037,7 +1118,13 @@ internal static class SvgReferenceResolver
         }
         }
 
-        return [ApplySymbolPaintServerFill(definition, symbolBox, reference, frame, state, workCounter, cancellationToken)];
+        SvgGeometry shader = ApplySymbolPaintServerFill(definition, symbolBox, reference, frame, state, workCounter, cancellationToken);
+        try
+        {
+            using SvgRecordingMapper mapper = SvgRecordingMapper.Create(state, state.NewRecordingScope(), workCounter, cancellationToken);
+            return [TryApplyShaderOverride(shader, definition.Geometries[0].RecordedPaint, mapper, state, workCounter, cancellationToken)];
+        }
+        catch { shader.Dispose(); throw; }
     }
 
     private static SvgGeometry LowerDirectInstancePaintFill(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
@@ -1114,7 +1201,6 @@ internal static class SvgReferenceResolver
     private static SvgGeometry FinishInstanceRadialFill(SvgRadialGradient circle, SvgRectangle box, SvgRectangle placement, byte opacity, bool painted, RenderBudget budget)
     {
         SvgRectangle fill = placement with { HasFill = painted && !circle.IsEmpty };
-        if (circle.Stops.Length > 1 && circle.Radius == 0 && !circle.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(circle.End, opacity) });
         return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, fill, opacity, null, budget));
     }
 
@@ -1123,8 +1209,7 @@ internal static class SvgReferenceResolver
         SvgRectangle fill = placement with { HasFill = painted && !gradient.IsEmpty };
         if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
-            if (gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
-            return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, opacity) });
+            if (gradient.Stops.Length > 1 && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
         }
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, opacity, null));
     }
@@ -1329,7 +1414,7 @@ internal static class SvgReferenceResolver
         {
             SvgLeafMaskBinding? binding = geometry.LeafMask is null ? null : (mapper ??= SvgLeafMaskMapper.Create(document, inverse, work, token)).Map(geometry.LeafMask);
             SvgGeometry unbaked = UnbakeGroupGeometry(geometry, ancestor, inverse, document, work, token);
-            return document.RetainTemporaryGroupGeometry(unbaked with { LeafMask = binding }, work, token);
+            return document.RetainTemporaryGroupGeometry(unbaked with { LeafMask = binding, RecordedPaint = geometry.RecordedPaint, RecordedStrokePaint = geometry.RecordedStrokePaint }, work, token);
         }
     }
 

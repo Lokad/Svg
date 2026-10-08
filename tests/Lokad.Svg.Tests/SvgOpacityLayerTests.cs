@@ -7,7 +7,7 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgOpacityLayerTests
 {
     [Theory]
-    [InlineData("group", "none", 126)]
+    [InlineData("group", "none", 127)]
     [InlineData("root", "none", 126)]
     [InlineData("group", "backward", 191)]
     [InlineData("group", "forward", 191)]

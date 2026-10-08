@@ -48,6 +48,8 @@ internal readonly struct SvgGeometry
 {
     /// <summary>Borrows a parser-owned element mask chain until final command emission clears it before scene transfer.</summary>
     internal SvgLeafMaskBinding? LeafMask { get; init; }
+    internal SvgRecordedPaint RecordedPaint { get; init; }
+    internal SvgRecordedPaint RecordedStrokePaint { get; init; }
     /// <summary>Gets source paint only for native solid rectangle draws without an opacity layer. Generated bands, images and paint-server fallbacks remain distinct.</summary>
     internal SvgSolidPaint? SolidPaint { get; init; }
 
@@ -1113,7 +1115,13 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
 /// <summary>References retained geometry or marks an isolated layer; mask alpha applies before the separate outer opacity.</summary>
-internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, byte Opacity, SvgClipBox? MaskRegion, int MaskContentIndex, byte MaskAlpha);
+internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, SvgPaintOpacity SourceOpacity, SvgClipBox? MaskRegion, int MaskContentIndex, byte MaskAlpha)
+{
+    internal SvgDrawCommand(SvgDrawCommandKind kind, int geometryIndex, byte opacity, SvgClipBox? maskRegion, int maskContentIndex, byte maskAlpha)
+        : this(kind, geometryIndex, new SvgPaintOpacity(opacity, opacity / 255f), maskRegion, maskContentIndex, maskAlpha) { }
+    internal byte Opacity => SourceOpacity.Alpha;
+    internal SvgRecordingScope RecordingScope => new(Kind == SvgDrawCommandKind.BeginGroup ? GeometryIndex : -1);
+}
 
 internal readonly record struct SvgPoint(int X, int Y);
 
@@ -1127,9 +1135,14 @@ internal sealed class SvgSceneStorage : IDisposable
     private readonly List<RenderBudget.BudgetReservation> _paintReservations;
     private readonly RenderBudget.BudgetReservation? _maskContentReservation;
     private readonly List<RenderBudget.BudgetReservation> _maskReservations;
+    private readonly OwnedSceneArray<SvgRecordedPaintValue> _recordedPaintValues;
+    private readonly RenderBudget.BudgetReservation _recordedPaintOwner;
+    internal SvgRecordedPaintValue[] RecordedPaintValues => _recordedPaintValues.Items;
 
-    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation, List<RenderBudget.BudgetReservation> paintReservations, SvgMaskContent[] maskContents, RenderBudget.BudgetReservation? maskContentReservation, List<RenderBudget.BudgetReservation> maskReservations)
+    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation, List<RenderBudget.BudgetReservation> paintReservations, SvgMaskContent[] maskContents, RenderBudget.BudgetReservation? maskContentReservation, List<RenderBudget.BudgetReservation> maskReservations, OwnedSceneArray<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner)
     {
+        _recordedPaintValues = recordedPaintValues;
+        _recordedPaintOwner = recordedPaintOwner;
         Geometries = geometries;
         Commands = commands;
         MaskContents = maskContents;
@@ -1149,7 +1162,7 @@ internal sealed class SvgSceneStorage : IDisposable
 
     internal SvgMaskContent[] MaskContents { get; }
 
-    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands, List<RenderBudget.BudgetReservation> paintReservations, BudgetedSceneList<SvgMaskContent> maskContents, List<RenderBudget.BudgetReservation> maskReservations)
+    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands, List<RenderBudget.BudgetReservation> paintReservations, BudgetedSceneList<SvgMaskContent> maskContents, List<RenderBudget.BudgetReservation> maskReservations, BudgetedSceneList<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner)
     {
         ArgumentNullException.ThrowIfNull(paintReservations);
         ArgumentNullException.ThrowIfNull(maskContents);
@@ -1161,7 +1174,21 @@ internal sealed class SvgSceneStorage : IDisposable
             try
             {
                 OwnedSceneArray<SvgMaskContent> ownedMasks = maskContents.Detach();
-                return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation, paintReservations, ownedMasks.Items, ownedMasks.Reservation, maskReservations);
+                try
+                {
+                    OwnedSceneArray<SvgRecordedPaintValue> ownedPaints = recordedPaintValues.Detach();
+                    try
+                    {
+                        return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation, paintReservations, ownedMasks.Items, ownedMasks.Reservation, maskReservations, ownedPaints, recordedPaintOwner);
+                    }
+                    catch { ownedPaints.Dispose(); throw; }
+                }
+                catch
+                {
+                    foreach (SvgMaskContent content in ownedMasks.Items) foreach (SvgGeometry geometry in content.Geometries) geometry.Dispose();
+                    ownedMasks.Dispose();
+                    throw;
+                }
             }
             catch
             {
@@ -1188,6 +1215,8 @@ internal sealed class SvgSceneStorage : IDisposable
         foreach (RenderBudget.BudgetReservation reservation in _paintReservations) reservation.Dispose();
         _maskContentReservation?.Dispose();
         foreach (RenderBudget.BudgetReservation reservation in _maskReservations) reservation.Dispose();
+        _recordedPaintValues.Dispose();
+        _recordedPaintOwner.Dispose();
     }
 }
 
@@ -1204,6 +1233,9 @@ internal sealed class SvgSceneBuilder : IDisposable
     private List<RenderBudget.BudgetReservation> _maskReservations = new();
     private readonly HashSet<SvgGradientStop[]> _reservedStopArrays = new();
     private bool _built;
+    private readonly BudgetedSceneList<SvgRecordedPaintValue> _recordedPaintValues;
+    internal const long RecordedPaintOwnerBytes = 192;
+    private RenderBudget.BudgetReservation? _recordedPaintOwner;
 
     internal SvgSceneBuilder(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -1215,6 +1247,9 @@ internal sealed class SvgSceneBuilder : IDisposable
         _geometries = new(budget, workCounter, cancellationToken);
         _commands = new(budget, workCounter, cancellationToken);
         _maskContents = new(budget, workCounter, cancellationToken);
+        _recordedPaintOwner = budget.Reserve(RecordedPaintOwnerBytes, SvgMemoryCategory.Scene);
+        try { _recordedPaintValues = new(budget, workCounter, cancellationToken); }
+        catch { _recordedPaintOwner.Dispose(); throw; }
     }
 
     internal void AddGeometry(SvgGeometry geometry)
@@ -1229,6 +1264,27 @@ internal sealed class SvgSceneBuilder : IDisposable
         catch { geometry.Dispose(); throw; }
     }
 
+    internal SvgRecordedPaint RegisterRecordedPaint(SvgRecordedPaintValue value)
+    {
+        _workCounter.Consume(_cancellationToken);
+        _recordedPaintValues.Add(value);
+        return new(_recordedPaintValues.Count);
+    }
+
+    internal SvgRecordedPaintValue GetRecordedPaintValue(SvgRecordedPaint reference)
+    {
+        if (reference.Identity == 0) return default;
+        if ((uint)(reference.Identity - 1) >= (uint)_recordedPaintValues.Count) throw new InvalidOperationException("Paint reference is outside the scene arena.");
+        return _recordedPaintValues[reference.Identity - 1];
+    }
+
+    internal void ChangeRecordedPaint(SvgRecordedPaint reference, SvgRecordedPaintValue value)
+    {
+        _workCounter.Consume(_cancellationToken);
+        if ((uint)(reference.Identity - 1) >= (uint)_recordedPaintValues.Count) throw new InvalidOperationException("Paint mutation is outside its owned arena.");
+        _recordedPaintValues[reference.Identity - 1] = value;
+    }
+
     internal int GeometryCount => _geometries.Count;
 
     internal SvgGeometry GeometryAt(int index) => _geometries[index];
@@ -1240,6 +1296,8 @@ internal sealed class SvgSceneBuilder : IDisposable
     internal void ReplaceCommand(int index, SvgDrawCommand command) => _commands[index] = command;
 
     /// <summary>Updates borrowed metadata without disposing or transferring the geometry's native owners.</summary>
+    internal void AssignRecordedGeometry(int index, SvgGeometry geometry) => _geometries[index] = geometry;
+    internal void BeginSourceOpacityScope(SvgPaintOpacity opacity, SvgRecordingScope scope) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, scope.Value, opacity, null, -1, 255));
     internal void AssignLeafMask(int index, SvgLeafMaskBinding? binding) => _geometries[index] = _geometries[index] with { LeafMask = binding };
 
     /// <summary>Adopts reserved replacement commands, releasing the former array; the caller must stop disposing the replacement.</summary>
@@ -1254,7 +1312,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     /// <summary>Replaces one retained scene geometry with its clipped successor, keeping commands and releasing replaced storage.</summary>
     internal void ReplaceGeometry(int index, SvgGeometry geometry)
     {
-        geometry = geometry with { LeafMask = _geometries[index].LeafMask };
+        geometry = geometry with { LeafMask = _geometries[index].LeafMask, RecordedPaint = _geometries[index].RecordedPaint, RecordedStrokePaint = _geometries[index].RecordedStrokePaint };
         ReserveGradientStops(geometry);
         _geometries[index].Dispose();
         _geometries[index] = geometry;
@@ -1376,7 +1434,8 @@ internal sealed class SvgSceneBuilder : IDisposable
     {
         if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
         _built = true;
-        SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations);
+        SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations, _recordedPaintValues, _recordedPaintOwner ?? throw new InvalidOperationException("Paint arena has already transferred."));
+        _recordedPaintOwner = null;
         _paintReservations = new();
         _maskReservations = new();
         return storage;
@@ -1387,6 +1446,8 @@ internal sealed class SvgSceneBuilder : IDisposable
         foreach (SvgGeometry geometry in _geometries.Items) geometry.Dispose();
         _geometries.Dispose();
         _commands.Dispose();
+        _recordedPaintValues.Dispose();
+        _recordedPaintOwner?.Dispose();
         foreach (RenderBudget.BudgetReservation reservation in _paintReservations) reservation.Dispose();
         _paintReservations.Clear();
         _maskContents.Dispose();

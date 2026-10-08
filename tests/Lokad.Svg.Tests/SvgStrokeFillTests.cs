@@ -1922,14 +1922,14 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void White_mask_on_line_matches_unmasked_rendering()
+    public void Default_mask_on_horizontal_line_has_zero_object_height()
     {
-        // S14: a white luminance mask is the identity on stroked lines, so
-        // both spellings render byte-identically.
+        // The default mask uses the unstroked object box. A horizontal line has zero height; browser captures paint nothing.
         byte[] masked = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><defs><mask id='m' mask-type='luminance'><rect x='0' y='0' width='16' height='8' fill='#ffffff'/></mask></defs><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' mask='url(#m)'/></svg>", out _, out _);
         byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2'/></svg>", out _, out _);
 
-        Assert.Equal(direct, masked);
+        Assert.All(masked, lane => Assert.Equal(0, lane));
+        Assert.Contains(direct, lane => lane != 0);
     }
 
     [Fact]

@@ -5,19 +5,21 @@ variants on Windows and Linux**, with zero known differences and zero rejections
 Marks are 13/13 exact; outlined wordmarks are 14/14. Membership, inputs, options
 and browser references stay frozen.
 
-The latest repair retains shader alpha and bitmap-local dithering for one-stop
-linear/radial rectangle gradients and rectangle instances. Two direct browser
-controls become exact from 540 differing pixels each. Five unchanged CC0 inputs
-retain fifteen stable browser captures; three opacity controls preserve measured
-differences for the pending float-opacity work. See
-[the repair and its limits](docs/RASTERIZATION_DESIGN.md#single-stop-rectangle-shaders-2026-10-08).
+The latest shared repair retains source paint values, logical draw identities,
+float element opacity and distinct object/visual bounds through lowering and use
+expansion. It preserves default mask regions and physical layer origins for
+gradient dithering. Nineteen original comparisons become exact; three custom
+mask-region comparisons improve from 78 to 21 differing pixels. See
+[the repair and its limits](docs/RASTERIZATION_DESIGN.md#shared-recorded-paint-and-opacity-checkpoint-2026-10-08).
 
-The current bank has **1,567 executions**, including 1,539 rendered PNGs, with
-identical Windows/Linux reports and output bytes. All 1,562 preceding bank results
-and all 258 corporate reports/images remain unchanged. Both platforms pass
-Release builds, **4,024 tests**, 25-scenario memory checks and installed-package
-checks. Earlier mask, stroke-source and ownership checkpoints retain their dated
-evidence in the design record and inventory.
+The original bank retains **1,567 executions / 1,539 PNGs**, with identical
+Windows/Linux reports and output bytes. Every preceding exact result and rejection
+outcome is preserved; all 258 corporate reports/images stay unchanged. A further
+52 retained paint controls measure 44 exact, two known differences and six
+valid-input rejections through all six public outputs. Both platforms pass
+Release builds, **4,116 tests**, 25-scenario memory checks and installed-package
+checks. Earlier checkpoints retain their dated evidence in the design record
+and inventory.
 
 **The full frozen-cohort fidelity target is achieved.** Preserve these exact
 results while improving shared renderer behavior beyond this cohort. S17's remote
@@ -142,14 +144,15 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,024 passed on each platform**: 3,797 core, 221 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Parser-owned mask operations/nodes use reserved, bounded iterative mapping and command emission; scenes retain values after borrowed links clear. Sixteen new core cases cover copy/region/sibling boundaries, root opacity, deep chains, memory/work denial and cleanup. Exhaustive work denial also repairs definition registration, instance-transfer and temporary group-clone leaks. Twenty-three visual cases cover 69 exact configurations × six outputs. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API or runtime dependency changes; remote CI remains open. |
-| Executed fixture manifest | **1,410 entries = 1,340 exact + 46 known-difference renders + 24 rejections**; 799 base documents / 611 variants. The leaf/instance checkpoint added 66 exact controls and three original research graduations. Integer-path instances add two exact and two known-opacity controls; the one-stop shader repair adds two exact and three known-opacity controls. All preceding outcomes/images stay unchanged. |
-| Executed research manifest | **65 probes = 30 exact + 31 known-difference renders + four rejections**. Three original leaf-mask probes become exact without recapture and retain their original evidence alongside fixture graduations. Nine new gradient/fill-opacity/circle/ellipse controls retain known differences. Three unchanged multiple-child symbol configurations retain an erroneous MalformedInput rejection of valid SVG for the later scope audit. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. All preceding rounded-source outputs remain unchanged. These Default outputs do not establish matching-options corporate fidelity. |
+| Full tests, including corporate selection/measurement | **4,116 passed on each platform**: 3,837 core, 273 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Scene-owned paint records and bounded copy maps reserve storage before allocation. Work/memory denial and cancellation pass for 138 admitted cases and 28 retained rejections; partial curve, polygon, band-repaint and tile owners are released. Forty new core cases and 52 new six-output cases protect the shared repair. Fresh Windows/Linux 25-scenario memory, runtime/symbol package and installed-consumer checks pass. No public API or runtime dependency changes; remote CI remains open. |
+| Executed fixture manifest | **1,410 entries = 1,345 exact + 41 known-difference renders + 24 rejections**; 799 base documents / 611 variants. Five existing parent/leaf/override opacity configurations become exact against their unchanged references. |
+| Executed research manifest | **65 probes = 44 exact + 17 known-difference renders + four rejections**. Fourteen existing layer/gradient/opacity/mask-copy comparisons become exact without recapture; three custom-region comparisons improve to 21 differing pixels each. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the later scope audit. |
+| Supplemental recorded-paint inventory | **52 controls = 44 exact + two known differences + six valid-input rejections**. Unchanged MIT unit inputs and original MIT/CC0 controls retain stable browser triples and all six output checks. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. Two images change: matching 300×150 browser checks make `inv-013` exact and reduce `inv-014` from 6,317 to 850 differing pixels. These Default outputs do not establish matching-options corporate fidelity. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
-| Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared mask, stroke and one-stop shader repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Seventy-two matched admitted mask recipes in both process orders change total work by -2,230 to +12,702 units, accounted peak by +0 to +7,868 bytes and owned-output allocation traffic by +224 to +62,046 bytes. Geometry values grow 256 → 264 bytes even without masks; command values remain 72 bytes. The preceding 258-recipe Windows ShortRun is historical; no new representative throughput claim. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
+| Performance and platform limits | Geometry/command/recorded-paint values are **272 / 72 / 68 bytes**; geometry stores two four-byte paint handles. The paint arena reserves a 192-byte owner and capacity before allocation. Seventy-two matched recipes in both process orders add 12–4,263 total work units, zero–568 accounted peak bytes and 760–20,711 managed allocation bytes per conversion. See [the cost record](docs/BENCHMARKS.md#recorded-paint-and-opacity-cost-2026-10-08). This repair establishes no representative throughput rate. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -856,38 +859,19 @@ GitHub repository is empty at the recorded checkpoint; obtaining runs requires
 publishing the reviewed branch. This release requirement does not close or
 replace the renderer work below.
 
-1. **Continue shared fidelity work under rows 3–7.** The production bank retains
-   46 known-difference fixture renders and 31 research renders; the exact corporate
-   cohort does not close those gaps. Next integrate the shared paint-recording and
-   float-opacity repair after its remaining gates pass. Preserve drawing/state
-   boundaries through lowering and use expansion, distinguish logical draw identity
-   from material values, retain float factors through solid/shader quantization,
-   and keep resolved mask regions and physical layer origins for shader dithering.
-   Local clips, transforms and invisible fills can retain a native layer; several
-   managed geometries can represent one draw. Use actual browser screenshots as
-   the pixel oracle, with independent controls for admission and fidelity.
-   The isolated Windows prototype gains **19 exact comparisons** in the complete
-   1,567-case bank, preserves every preceding exact result and rejection outcome,
-   and keeps all 258 corporate reports/PNG bytes unchanged. It reaches 27 exact
-   material controls / eight valid-input rejections, 10/12 exact numeric phase
-   controls including the 700×90 tile crossing, twenty exact linear/radial/pattern
-   stroke controls and six exact fractional constant-gradient controls. Earlier
-   opacity, scope, copy and state controls keep their measured results and
-   remaining differences. Preserve rejected percentage-mask, symbol paint-override
-   and nested-viewport inputs for the later admission audit.
-   Matching 300×150 Default checks make `inv-013` exact and reduce `inv-014` from
-   6,317 to 850 differing pixels; original inputs and root-only browser sizing
-   materializations produce identical candidate PNGs. Resource sweeps cover 92
-   admitted cases and separately exercise 22 rejected inputs with clean ownership
-   and cancellation. These remain prototype results; production counts above
-   stay unchanged. A typed integration builds all nine projects. Review the
-   affected unit assertions and newly admitted opacity combinations, finish
-   copy/definition ownership, then pass the six-output and Windows/Linux resource,
-   test, package and full-bank gates before landing it. Geometry/command/paint
-   values remain 272/72/28 bytes. Detailed controls, rejected models and current
-   limits are in [the integration investigation](docs/RASTERIZATION_DESIGN.md#paint-recording-integration-investigation-2026-10-08).
-   Continue gradient/custom-region and circle/ellipse masks, hairline color,
-   oval-stroke and remaining clip, paint and curve gaps with independent controls.
+1. **Continue shared fidelity work under rows 3–7.** The shared paint/opacity
+   repair is integrated and passes the unit, six-output, ownership and
+   Windows/Linux delivery gates. Continue the remaining 41 fixture and 17
+   research differences, plus the two newly retained curved-opacity controls.
+   Prioritize custom-region and circle/ellipse masks, hairline color, oval strokes
+   and remaining clip, paint and curve behavior with independent browser controls.
+   Preserve the earlier opacity/operation, scope and copy controls' remaining
+   differences; the repair does not close every drawing-state combination.
+   Keep the valid percentage-mask, symbol override, direct `fill="none"` line,
+   translucent pattern-tile stroke and nested-viewport rejections for the later
+   admission audit. Broader object/visual bounds and override combinations still
+   need their own evidence. The integrated repair, measured controls and rejected
+   models are in [the design record](docs/RASTERIZATION_DESIGN.md#shared-recorded-paint-and-opacity-checkpoint-2026-10-08).
 2. **Preserve the complete exact matrix.** Compare shared raster changes across
    every declared fixture, research and Default case and all 258 corporate
    variants on Windows/Linux. Keep categorized rejections and selection limits

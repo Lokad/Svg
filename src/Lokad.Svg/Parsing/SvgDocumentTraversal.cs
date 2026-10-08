@@ -54,7 +54,7 @@ internal static class SvgDocumentTraversal
         // The root element consumes one node, matching font-request discovery's uniform per-element count.
         state.NodeCount = 1;
         state.OutputMagnification = System.Math.Max(System.Math.Abs(outputScaleX), System.Math.Abs(outputScaleY));
-        if (root.Opacity != 255) state.Scene.BeginOpacityScope(root.Opacity);
+        if (root.SourceOpacity.Value != 1) state.Scene.BeginSourceOpacityScope(root.SourceOpacity, new(0));
         while (reader.Read())
         {
             workCounter.Consume(cancellationToken);
@@ -140,7 +140,7 @@ internal static class SvgDocumentTraversal
                         if (root.Opacity != 255 || state.HasOpacityScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested viewport opacity requires separate compositing calibration.");
                         if (!reader.IsEmptyElement)
                         {
-                            state.Scene.BeginOpacityScope(viewportOpacity);
+                            state.Scene.BeginSourceOpacityScope(SvgColorParser.ParsePaintOpacity(reader.GetAttribute("opacity")), new(-1));
                             state.HasOpacityScope = true;
                             state.ViewportOpacityDepth = reader.Depth;
                         }
@@ -204,7 +204,7 @@ internal static class SvgDocumentTraversal
                         }
                         if (parsedGroup.Scope.IsolatesOpacity)
                         {
-                            state.Scene.BeginOpacityScope(parsedGroup.Opacity);
+                            state.Scene.BeginSourceOpacityScope(parsedGroup.SourceOpacity, parsedGroup.RecordingScope);
                             state.HasOpacityScope = true;
                         }
                     }
@@ -347,7 +347,7 @@ internal static class SvgDocumentTraversal
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);
                     SvgMaskSyntax.ResolvePendingLeafMasks(state, workCounter, cancellationToken);
                     SvgMaskSyntax.ResolvePendingGroupMasks(state, workCounter, cancellationToken);
-                    if (root.Opacity != 255) state.Scene.EndOpacityScope();
+                    if (root.SourceOpacity.Value != 1) state.Scene.EndOpacityScope();
                     SvgLeafMaskComposition.Emit(state, workCounter, cancellationToken);
                     SvgSceneStorage sceneStorage = state.Scene.Build();
                     state.ReleaseDefinitions();

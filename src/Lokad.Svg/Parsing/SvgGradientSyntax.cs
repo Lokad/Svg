@@ -347,11 +347,9 @@ internal static class SvgGradientSyntax
             box = frame.Value.Shift(box);
         }
         SvgRectangle fill = placement with { HasFill = painted && !gradient.IsEmpty };
-        // A single stop retains shader alpha and bitmap-local dithering.
         if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
             if (gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
-            return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
         }
         return SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, fill, fillOpacity, painted ? stroke : null));
     }
@@ -380,7 +378,6 @@ internal static class SvgGradientSyntax
             box = frame.Value.Shift(box);
         }
         SvgRectangle fill = placement with { HasFill = painted && !gradient.IsEmpty };
-        if (gradient.Stops.Length > 1 && gradient.Radius == 0 && !gradient.IsEmpty) return SvgGeometry.FromRectangle(fill with { Color = SvgPaintResolver.ApplyOpacity(gradient.End, fillOpacity), Stroke = painted ? stroke : null });
         return SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(gradient, box, fill, fillOpacity, painted ? stroke : null, state.Budget));
     }
 
@@ -563,7 +560,7 @@ internal static class SvgGradientSyntax
             if (paintRadialStroke) return AppendPaintOutlineStroke(lowering.LowerGradientPolygonFill(gradient, box, painted && !gradient.IsEmpty, opacity, transform, frame, budget), reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineCircle, box);
             return AppendPaintOutlineStroke(lowering.LowerGradientPolygonFill(gradient, box, painted && !gradient.IsEmpty, opacity, transform, frame, budget), reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineGradient, box);
         }
-        if (gradient.Stops.Length == 1 || (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty))
+        if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
             if (gradient.Stops.Length > 1 && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
             if (!paintStroke && !paintRadialStroke && !paintPatternStroke) return AppendPaintFillStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
@@ -572,16 +569,20 @@ internal static class SvgGradientSyntax
             return AppendPaintOutlineStroke(lowering.Lower(SvgPaintResolver.ApplyOpacity(gradient.End, opacity), painted, transform, frame), reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineGradient, box);
         }
         SvgParsedGeometry solid = lowering.Lower(default, painted && !gradient.IsEmpty, transform, frame);
-        SvgGeometry[] bands = solid.Storage.Items;
-        for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
+        try
         {
-            context.WorkCounter.Consume(context.CancellationToken);
-            bands[bandIndex] = SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, bands[bandIndex].Rectangle, opacity, null));
+            SvgGeometry[] bands = solid.Storage.Items;
+            for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
+            {
+                context.WorkCounter.Consume(context.CancellationToken);
+                bands[bandIndex] = SvgGeometry.FromGradientFill(new SvgGradientGeometry(gradient, box, bands[bandIndex].Rectangle, opacity, null));
+            }
+            if (!paintStroke && !paintRadialStroke && !paintPatternStroke) return AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
+            if (paintPatternStroke) return AppendPaintOutlineStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineTile);
+            if (paintRadialStroke) return AppendPaintOutlineStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineCircle, box);
+            return AppendPaintOutlineStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineGradient, box);
         }
-        if (!paintStroke && !paintRadialStroke && !paintPatternStroke) return AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
-        if (paintPatternStroke) return AppendPaintOutlineStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineTile);
-        if (paintRadialStroke) return AppendPaintOutlineStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineCircle, box);
-        return AppendPaintOutlineStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape, outlineGradient, box);
+        catch { solid.Discard(); throw; }
     }
 
     /// <summary>Appends an admitted solid stroke outline to paint-filled bands and outlines, leaving unadmitted strokes to the shared stroke gates.</summary>
@@ -1008,9 +1009,6 @@ internal static class SvgGradientSyntax
         if (gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty)
         {
             if (gradient.Stops.Length > 1 && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient strokes are implemented.");
-            SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(gradient.End, SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.StrokeOpacity))), strokeWidth);
-            stroked.Add(SvgGeometry.FromRectangle(strokeFill with { Stroke = painted ? solidStroke : null }));
-            return new SvgParsedGeometry(stroked.Detach(), 0);
         }
         stroked.Add(SvgGeometry.FromGradientStroke(new SvgGradientStrokeGeometry(strokeFill, top, bottom, left, right, gradient, box, opacity, painted)));
         return new SvgParsedGeometry(stroked.Detach(), 0);
@@ -1097,26 +1095,21 @@ internal static class SvgGradientSyntax
         using BudgetedGeometryBuilder stroked = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         if (hasLinearFill) stroked.Add(LowerLinearFillGeometry(fillGradient, box, fill, fillHasFill, fillOpacity));
         else if (hasRadialFill) stroked.Add(LowerRadialFillGeometry(fillCircle, box, fill, fillHasFill, fillOpacity, state.Budget));
-        else if (circle.Radius != 0 || circle.IsEmpty) stroked.Add(SvgGeometry.FromRectangle(fill));
+        else stroked.Add(SvgGeometry.FromRectangle(fill));
         if (probe is null)
         {
-            // Zero width paints no stroke bands; the degenerate-radius solid fill needs its rectangle here.
-            if (!hasLinearFill && !hasRadialFill && circle.Radius == 0 && !circle.IsEmpty) stroked.Add(SvgGeometry.FromRectangle(fill));
+            // Zero width retains only the fill operation above.
             return new SvgParsedGeometry(stroked.Detach(), 0);
         }
-        SvgRectangle strokeFill = combined ? fill with { HasFill = false } : fill;
         if (circle.Radius == 0 && !circle.IsEmpty)
         {
             if (circle.Stops.Length > 1 && circle.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate radial gradient strokes are implemented.");
-            SvgStroke solidStroke = new(SvgPaintResolver.ApplyOpacity(circle.End, SvgReferenceResolver.MultiplyAlpha(opacity, SvgColorParser.ParseOpacity(style.StrokeOpacity))), strokeWidth);
-            stroked.Add(SvgGeometry.FromRectangle(strokeFill with { Stroke = painted ? solidStroke : null }));
-            return new SvgParsedGeometry(stroked.Detach(), 0);
         }
         bool paintBands = painted && !circle.IsEmpty;
-        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, top with { HasFill = paintBands }, opacity, null, state.Budget)));
-        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, bottom with { HasFill = paintBands }, opacity, null, state.Budget)));
-        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, left with { HasFill = paintBands }, opacity, null, state.Budget)));
-        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, right with { HasFill = paintBands }, opacity, null, state.Budget)));
+        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, top with { HasFill = paintBands }, opacity, null, state.Budget)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, bottom with { HasFill = paintBands }, opacity, null, state.Budget)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, left with { HasFill = paintBands }, opacity, null, state.Budget)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+        stroked.Add(SvgGeometry.FromRadialFill(SvgRadialGeometry.Create(circle, box, right with { HasFill = paintBands }, opacity, null, state.Budget)) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
         return new SvgParsedGeometry(stroked.Detach(), 0);
     }
 

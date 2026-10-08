@@ -7,9 +7,9 @@ public sealed class SvgSingleStopGradientReferenceTests
     [Theory]
     [InlineData("one-stop-alpha-direct", 0, 0)]
     [InlineData("radial-one-stop-alpha-direct", 0, 0)]
-    [InlineData("one-stop-alpha-leaf", 177, 6)]
-    [InlineData("one-stop-alpha-parent", 252, 6)]
-    [InlineData("override-one-stop-alpha-leaf", 177, 6)]
+    [InlineData("one-stop-alpha-leaf", 0, 0)]
+    [InlineData("one-stop-alpha-parent", 0, 0)]
+    [InlineData("override-one-stop-alpha-leaf", 0, 0)]
     public async Task Single_stop_gradients_preserve_browser_comparisons_through_all_six_outputs(string name, int pixels, int channel)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", name + ".svg"));

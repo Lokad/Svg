@@ -15,12 +15,15 @@ public sealed class RenderBudgetTests
         long tileValues = 7L * System.Runtime.CompilerServices.Unsafe.SizeOf<SvgPatternTile>();
         RenderBudget budget = new(tileValues - 1);
         using SvgDocumentState state = new(budget, new ParserWorkCounter(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None);
+        long retainedBytes = budget.Snapshot().CurrentBytes;
 
         SvgException denied = Assert.Throws<SvgException>(() => state.Patterns.TryAdd("tile", default));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, denied.ErrorCode);
         Assert.False(state.Patterns.TryGetValue("tile", out _));
         Assert.Equal(1, budget.Snapshot().DeniedReservationCount);
+        Assert.Equal(retainedBytes, budget.Snapshot().CurrentBytes);
+        state.Dispose();
         AssertBudgetReleased(budget);
     }
 
@@ -290,7 +293,7 @@ public sealed class RenderBudgetTests
         SvgGradientStop[] otherStops = [new SvgGradientStop(0, new SvgColor(0, 0, 0, 255)), new SvgGradientStop(0.5, new SvgColor(0, 255, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
         scene.AddGeometry(GradientFill(sharedStops, 0));
         long afterFirst = SceneBytes(budget);
-        Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), afterFirst);
+        Assert.Equal(SvgSceneBuilder.RecordedPaintOwnerBytes + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), afterFirst);
         scene.AddGeometry(GradientFill(sharedStops, 2));
         Assert.Equal(afterFirst, SceneBytes(budget));
         scene.AddGeometry(GradientFill(otherStops, 4));
@@ -301,7 +304,7 @@ public sealed class RenderBudgetTests
         SvgSceneStorage storage = scene.Build();
         try
         {
-            Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(3) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), SceneBytes(budget));
+            Assert.Equal(SvgSceneBuilder.RecordedPaintOwnerBytes + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(3) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), SceneBytes(budget));
         }
         finally
         {
@@ -319,7 +322,7 @@ public sealed class RenderBudgetTests
         using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
         Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
-        Assert.Equal(ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(1) + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(8), budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Scene]);
+        Assert.Equal(SvgSceneBuilder.RecordedPaintOwnerBytes + ParserCollectionMemory.GetArrayByteCount<SvgRecordedPaintValue>(1) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(1) + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(8), budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Scene]);
     }
 
     [Fact]
@@ -804,7 +807,7 @@ public sealed class RenderBudgetTests
         SvgGradientStop[] otherStops = [new SvgGradientStop(0, new SvgColor(0, 0, 0, 255)), new SvgGradientStop(0.5, new SvgColor(0, 255, 0, 255)), new SvgGradientStop(1, new SvgColor(0, 0, 255, 255))];
         scene.AddGeometry(RadialFill(sharedStops, budget));
         long afterFirst = SceneBytes(budget);
-        Assert.Equal(SvgRadialGradient.RetainedStorageBytes + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), afterFirst);
+        Assert.Equal(SvgSceneBuilder.RecordedPaintOwnerBytes + SvgRadialGradient.RetainedStorageBytes + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), afterFirst);
         scene.AddGeometry(RadialFill(sharedStops, budget));
         Assert.Equal(afterFirst + SvgRadialGradient.RetainedStorageBytes, SceneBytes(budget));
         scene.AddGeometry(RadialFill(otherStops, budget));
@@ -815,7 +818,7 @@ public sealed class RenderBudgetTests
         SvgSceneStorage storage = scene.Build();
         try
         {
-            Assert.Equal(4 * SvgRadialGradient.RetainedStorageBytes + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(3) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), SceneBytes(budget));
+            Assert.Equal(SvgSceneBuilder.RecordedPaintOwnerBytes + 4 * SvgRadialGradient.RetainedStorageBytes + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(2) + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(3) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4), SceneBytes(budget));
         }
         finally
         {

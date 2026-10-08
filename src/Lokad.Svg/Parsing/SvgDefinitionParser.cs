@@ -27,6 +27,7 @@ internal static class SvgDefinitionParser
             bool retained = false;
             try
             {
+                SvgPaintRecording.FinishDefinition(definition.Geometries, state, workCounter, cancellationToken);
                 if (id is not null)
                 {
                     workCounter.Consume(cancellationToken);
@@ -171,18 +172,23 @@ internal static class SvgDefinitionParser
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
                 SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 tileContext = tileContext with { InheritedPresentation = tileContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
-                using SvgParsedGeometry parsedContent = SvgLeafParser.ParseRectangle(reader, tileContext, null, state);
-                if (parsedContent.Geometries.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle pattern tiles are implemented.");
-                SvgGeometry content = parsedContent.Geometries[0];
-                SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern tile accumulation requires pattern dimensions.");
-                SvgGeometry validated = RequirePatternTileContent(content, tile);
-                SvgRectangle shifted = validated.Rectangle with { X = validated.Rectangle.X + tile.ShiftX, Y = validated.Rectangle.Y + tile.ShiftY };
-                if (shifted.X < tile.OriginX || shifted.Y < tile.OriginY || shifted.X + shifted.Width > tile.OriginX + tile.TileWidth || shifted.Y + shifted.Height > tile.OriginY + tile.TileHeight) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern tile content shifted outside its tile is not implemented.");
-                if (shifted.Stroke is SvgStroke contentStroke && (shifted.X - contentStroke.Width / 2d < tile.OriginX || shifted.Y - contentStroke.Width / 2d < tile.OriginY || shifted.X + shifted.Width + contentStroke.Width / 2d > tile.OriginX + tile.TileWidth || shifted.Y + shifted.Height + contentStroke.Width / 2d > tile.OriginY + tile.TileHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern tile content strokes overflowing their tile are not implemented.");
-                state.PatternTile = tile with { Content = SvgGeometry.FromRectangle(shifted) };
-                state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                state.SawStyleableNode = true;
-                return true;
+                // The tile payload retains a resolved rectangle, so its paint must be resolved before storing it.
+                using SvgParsedGeometry parsedContent = SvgLeafParser.ParseRectangleCore(reader, tileContext, null, state);
+                try
+                {
+                    if (parsedContent.Geometries.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle pattern tiles are implemented.");
+                    SvgGeometry content = parsedContent.Geometries[0];
+                    SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern tile accumulation requires pattern dimensions.");
+                    SvgGeometry validated = RequirePatternTileContent(content, tile);
+                    SvgRectangle shifted = validated.Rectangle with { X = validated.Rectangle.X + tile.ShiftX, Y = validated.Rectangle.Y + tile.ShiftY };
+                    if (shifted.X < tile.OriginX || shifted.Y < tile.OriginY || shifted.X + shifted.Width > tile.OriginX + tile.TileWidth || shifted.Y + shifted.Height > tile.OriginY + tile.TileHeight) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern tile content shifted outside its tile is not implemented.");
+                    if (shifted.Stroke is SvgStroke contentStroke && (shifted.X - contentStroke.Width / 2d < tile.OriginX || shifted.Y - contentStroke.Width / 2d < tile.OriginY || shifted.X + shifted.Width + contentStroke.Width / 2d > tile.OriginX + tile.TileWidth || shifted.Y + shifted.Height + contentStroke.Width / 2d > tile.OriginY + tile.TileHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern tile content strokes overflowing their tile are not implemented.");
+                    state.PatternTile = tile with { Content = SvgGeometry.FromRectangle(shifted) };
+                    state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                    state.SawStyleableNode = true;
+                    return true;
+                }
+                catch { parsedContent.Discard(); throw; }
             }
             state.HasUnsupportedContent = true;
             return true;
@@ -238,7 +244,7 @@ internal static class SvgDefinitionParser
             SvgViewportFrame? parentFrame = state.EffectiveFrame;
             double? baseWidth = parentFrame?.ViewportWidth ?? root.Width?.ToAbsoluteOrNull();
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height?.ToAbsoluteOrNull();
-            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight);
+            SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight, state);
             SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, reference, state);
             SvgViewportFrame? useFrame;
             if (deferredClip is null)
@@ -982,7 +988,7 @@ internal static class SvgDefinitionParser
         SvgComputedStyle style = context.ResolveStyle(reader);
         // Element-local lowering: the shape lowerers compose the inherited transform with the element attribute themselves, so the inherited
         // side stays identity here; carrying the parsed attribute would apply it twice. Use clones exclude definition ancestors.
-        SvgPaintableElementContext localContext = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
+        SvgPaintableElementContext localContext = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
         string? pathData = reader.LocalName == "path" ? reader.GetAttribute("d") : null;
         string? definitionTransform = reader.LocalName == "path" ? reader.GetAttribute("transform") : null;
         string? vectorEffect = reader.LocalName == "path" ? reader.GetAttribute("vector-effect") : null;
@@ -1077,10 +1083,23 @@ internal static class SvgDefinitionParser
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader);
         if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox);
+        context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
+        SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, null);
+        context = context with { DeferPaintOpacity = true };
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) return new SvgDefinition(RetainParsedGeometries(SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null)), false, null, symbolViewBox);
-        if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) return new SvgDefinition(RetainParsedGeometries(SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null)), false, null, symbolViewBox);
-        SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
-        return new SvgDefinition([parsed.Geometry], parsed.Geometry.Rectangle.HasFill && parsed.Style == default, null, symbolViewBox);
+        SvgParsedGeometry geometry;
+        bool allowsOverride = false;
+        if (SvgPatternSyntax.IsPatternStroke(style.Stroke, state)) geometry = SvgPatternSyntax.LowerPatternStrokeRect(reader, context, style, state, null);
+        else if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke)) geometry = SvgGradientSyntax.LowerGradientStrokeRect(reader, context, style, state, null);
+        else
+        {
+            SvgParsedRectangle parsed = SvgLeafParser.ParseRectangleWithStyle(reader, context);
+            allowsOverride = parsed.Geometry.Rectangle.HasFill && parsed.Style == default;
+            using BudgetedGeometryBuilder retained = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            retained.Add(parsed.Geometry);
+            geometry = new(retained.Detach(), 0);
+        }
+        SvgParsedGeometry attached = SvgPaintRecording.Attach(geometry, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+        return new SvgDefinition(RetainParsedGeometries(attached), allowsOverride, null, symbolViewBox);
     }
 }

@@ -121,8 +121,11 @@ internal static class SvgMaskSyntax
             if (pending.GeometryCount == 0) continue;
             SvgRectangle fallback = UnionBounds(state, pending, workCounter, cancellationToken);
             if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
-            SvgClipBox region = ResolveDeferredRegion(state, pending, fallback);
-            pending.Operation.Region = state.MaskRegions.TryGetValue(pending.MaskId, out _) || state.MaskFractionRegions.TryGetValue(pending.MaskId, out _) ? region : null;
+            SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
+            SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
+                ? RecordedObjectBox(first, state) : fallback;
+            SvgClipBox region = ResolveDeferredRegion(state, pending, objectBox);
+            pending.Operation.Region = region;
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
             {
                 workCounter.Consume(cancellationToken);
@@ -236,8 +239,9 @@ internal static class SvgMaskSyntax
             bool hasExplicitRegion = state.MaskRegions.TryGetValue(pending.MaskId, out SvgClipBox customRegion);
             SvgClipBox fractionRegion = default;
             bool hasFractionRegion = !hasExplicitRegion && state.MaskFractionRegions.TryGetValue(pending.MaskId, out fractionRegion);
-            SvgClipBox? maskRegion = null;
-            if (hasExplicitRegion || hasFractionRegion) maskRegion = ResolveGroupMaskRegion(state, pending, hasExplicitRegion, customRegion, fractionRegion, workCounter, cancellationToken);
+            SvgClipBox? maskRegion = hasExplicitRegion || hasFractionRegion
+                ? ResolveGroupMaskRegion(state, pending, hasExplicitRegion, customRegion, fractionRegion, workCounter, cancellationToken)
+                : MaskRegion(GroupChildrenUnion(state, pending, workCounter, cancellationToken));
             if (!state.Masks.TryGetValue(pending.MaskId, out byte value))
             {
                 if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent content)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
@@ -284,7 +288,7 @@ internal static class SvgMaskSyntax
         {
             SvgDrawCommand scope = state.Scene.CommandAt(pending.FirstCommandIndex);
             if (scope.Kind != SvgDrawCommandKind.BeginGroup) throw new InvalidOperationException("Deferred group mask resolution requires its isolation scope.");
-            state.Scene.ReplaceCommand(pending.FirstCommandIndex, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, maskRegion, maskContentIndex, maskAlpha));
+            state.Scene.ReplaceCommand(pending.FirstCommandIndex, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, scope.GeometryIndex, scope.SourceOpacity, maskRegion, maskContentIndex, maskAlpha));
         }
 
         static void InsertGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte opacity, byte maskAlpha, SvgClipBox? maskRegion, int maskContentIndex, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -344,13 +348,22 @@ internal static class SvgMaskSyntax
             if (command.Kind != SvgDrawCommandKind.Geometry) continue;
             SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
             if (geometry.Kind == SvgGeometryKind.GlyphContours) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
-            SvgRectangle box = CoverageBox(geometry);
+            SvgRectangle box = RecordedObjectBox(geometry, state);
             if (box.X < left) left = box.X;
             if (box.Y < top) top = box.Y;
             if (box.X + box.Width > right) right = box.X + box.Width;
             if (box.Y + box.Height > bottom) bottom = box.Y + box.Height;
         }
+        if (double.IsPositiveInfinity(left)) return new SvgRectangle(0, 0, 0, 0, default, false, null);
         return new SvgRectangle(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, false, null);
+    }
+
+    internal static SvgRectangle RecordedObjectBox(SvgGeometry geometry, SvgDocumentState state)
+    {
+        SvgPaintBounds? recorded = state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).ObjectBounds;
+        return recorded is {} box
+            ? new(box.Left, box.Top, box.Right - box.Left, box.Bottom - box.Top, default, false, null)
+            : BoundingBox(geometry);
     }
 
     internal static SvgRectangle BoundingBox(SvgGeometry geometry)

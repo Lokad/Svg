@@ -40,7 +40,12 @@ internal static class SvgGroupParser
         byte combined = mask is null ? resolved.Opacity : SvgReferenceResolver.MultiplyAlpha(resolved.Opacity, mask.Value);
         bool hasMaskScope = reader.IsEmptyElement ? false : PushMaskScope(reader, state);
         SvgGroupKind kind = reader.LocalName == "switch" ? SvgGroupKind.Switch : SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255, hasMaskScope, resolved.Stroke, resolved.FillRule), combined, deferredMask);
+        SvgPaintOpacity sourceOpacity = SvgColorParser.ParsePaintOpacity(style.Opacity);
+        SvgRecordingScope opacityScope = context.RecordingScope.Value == 0 ? new(1) : context.RecordingScope;
+        if (reader.GetAttribute("clip-path") is not null || resolved.Presentation.Transform != context.InheritedPresentation.Transform)
+            opacityScope = state.NewRecordingScope();
+        SvgRecordingScope contentScope = maskReference is null ? opacityScope : state.NewRecordingScope();
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { RecordingScope = contentScope }, combined, deferredMask) { SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
     }
 
     /// <summary>Pushes the referenced mask content box for child coverage checks, reporting whether a scope was pushed.</summary>
@@ -56,5 +61,9 @@ internal static class SvgGroupParser
 }
 
 /// <summary>Couples a stored child context with the opacity required to enter its isolated surface.</summary>
-internal readonly record struct SvgParsedGroup(SvgGroupScope Scope, byte Opacity, string? DeferredMask);
+internal readonly record struct SvgParsedGroup(SvgGroupScope Scope, byte Opacity, string? DeferredMask)
+{
+    internal SvgPaintOpacity SourceOpacity { get; init; }
+    internal SvgRecordingScope RecordingScope { get; init; }
+}
 

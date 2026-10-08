@@ -16,9 +16,9 @@ public sealed class SvgMaskCommandRangeTests
         using (SvgRoot scene = SvgRootParser.Parse(Input(forward, empty), SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
         {
             SvgDrawCommand[] expected = empty
-                ? [Begin(192), Geometry(0), End()]
-                : [Begin(64), Geometry(0), End(), Begin(192), Geometry(1), End()];
-            Assert.Equal(expected, scene.Commands);
+                ? [Begin(192, new(16.9, 8.7, 25.2, 27.6)), Geometry(0), End()]
+                : [Begin(64, new(0.5, 2.9, 30, 25.2)), Geometry(0), End(), Begin(192, new(16.9, 8.7, 25.2, 27.6)), Geometry(1), End()];
+            SvgLeafMaskAssertions.CommandSequence(expected, scene.Commands);
             Assert.Equal(empty ? 1 : 2, scene.Geometries.Length);
             Assert.All(scene.Geometries, geometry => Assert.Equal(255, geometry.Rectangle.Color.Alpha));
         }
@@ -37,7 +37,7 @@ public sealed class SvgMaskCommandRangeTests
         RenderBudget budget = new(1_000_000);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
         {
-            Assert.Equal(new[] { Begin(64), Geometry(0), Geometry(2), End(), Begin(192), Geometry(1), End() }, scene.Commands);
+            SvgLeafMaskAssertions.CommandSequence([Begin(64, new(-1, -1, 12, 12)), Geometry(0), Geometry(2), End(), Begin(192, new(16.9, 8.7, 25.2, 27.6)), Geometry(1), End()], scene.Commands);
             Assert.Equal(3, scene.Geometries.Length);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
@@ -66,7 +66,7 @@ public sealed class SvgMaskCommandRangeTests
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }
 
-    private static SvgDrawCommand Begin(byte maskAlpha) => new(SvgDrawCommandKind.BeginGroup, -1, 255, null, -1, maskAlpha);
+    private static SvgDrawCommand Begin(byte maskAlpha, SvgClipBox region) => new(SvgDrawCommandKind.BeginGroup, -1, 255, region, -1, maskAlpha);
     private static SvgDrawCommand Geometry(int index) => new(SvgDrawCommandKind.Geometry, index, 255, null, -1, 255);
     private static SvgDrawCommand End() => new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255);
 

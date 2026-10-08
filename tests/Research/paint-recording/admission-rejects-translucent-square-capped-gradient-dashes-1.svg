@@ -1,0 +1,1 @@
+<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='s' gradientUnits='userSpaceOnUse' x1='0' y1='4' x2='16' y2='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#s)' opacity='0.5' stroke-width='2' stroke-dasharray='8 4' stroke-linecap='square'/></svg>

@@ -8,6 +8,14 @@ internal static class SvgLeafParser
 {
     internal static SvgParsedGeometry ParseRectangle(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
+        SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        context = context with { DeferPaintOpacity = true };
+        SvgParsedGeometry parsed = ParseRectangleCore(reader, context, frame, state);
+        return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+    }
+
+    internal static SvgParsedGeometry ParseRectangleCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
+    {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         SvgComputedStyle patternStyle = context.ResolveStyle(reader);
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
@@ -135,34 +143,39 @@ internal static class SvgLeafParser
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "rect", false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
         SvgParsedGeometry parsed = lowering.LowerRoundedRectFill(syntax.X, syntax.Y, syntax.Width, syntax.Height, cornerX, cornerY, element, frame, state.Budget);
-        if (!paintGradient && !paintPattern)
-        {
-            if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern)
-            {
-                return LowerPaintedRoundedStroke(reader, context, syntax, cornerX, cornerY, element, parsed, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, frame, state);
-            }
-            SvgParsedGeometry stroked;
-            try
-            {
-                SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = ResolveRoundedStroke(reader, element, parsed.Geometries[0]);
-                if (stroke is null) return parsed;
-                stroked = LowerRoundedStroke(reader, context, syntax, cornerX, cornerY, element, stroke.Value, frame, state);
-            }
-            catch { parsed.Discard(); throw; }
-            return SvgOrthogonalShapeParser.ConcatParsedGeometries(parsed, stroked, state.Budget, context.WorkCounter, context.CancellationToken);
-        }
         try
         {
-            SvgGeometry repainted;
-            if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(parsed.Geometries[0].Polygon, tile, opacity, state.Budget);
-            else repainted = isLinear
-                ? SvgGradientPolygon.RepaintOutline(parsed.Geometries[0].Polygon, linear, box, opacity, state.Budget)
-                : SvgRadialPolygon.RepaintOutline(parsed.Geometries[0].Polygon, radial, box, opacity, state.Budget);
-            repainted = parsed.Geometries[0].TransferAuthoredPathTo(repainted);
-            parsed.Dispose();
-            return RetainSingleGeometry(repainted, state, context);
+            if (!paintGradient && !paintPattern)
+            {
+                if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern)
+                {
+                    return LowerPaintedRoundedStroke(reader, context, syntax, cornerX, cornerY, element, parsed, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, frame, state);
+                }
+                SvgParsedGeometry stroked;
+                try
+                {
+                    SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = ResolveRoundedStroke(reader, element, parsed.Geometries[0]);
+                    if (stroke is null) return parsed;
+                    stroked = LowerRoundedStroke(reader, context, syntax, cornerX, cornerY, element, stroke.Value, frame, state);
+                }
+                catch { parsed.Discard(); throw; }
+                return SvgOrthogonalShapeParser.ConcatParsedGeometries(parsed, stroked, state.Budget, context.WorkCounter, context.CancellationToken);
+            }
+            try
+            {
+                SvgGeometry repainted;
+                if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(parsed.Geometries[0].Polygon, tile, opacity, state.Budget);
+                else repainted = isLinear
+                    ? SvgGradientPolygon.RepaintOutline(parsed.Geometries[0].Polygon, linear, box, opacity, state.Budget)
+                    : SvgRadialPolygon.RepaintOutline(parsed.Geometries[0].Polygon, radial, box, opacity, state.Budget);
+                repainted = parsed.Geometries[0].TransferAuthoredPathTo(repainted);
+                parsed.Dispose();
+                return RetainSingleGeometry(repainted, state, context);
+            }
+            catch { parsed.Dispose(); throw; }
         }
-        catch { parsed.Dispose(); throw; }
+        catch { parsed.Discard(); throw; }
+
         static SvgParsedGeometry LowerPaintedRoundedStroke(XmlReader reader, SvgPaintableElementContext context, SvgRectangleSyntax syntax, double cornerX, double cornerY, SvgResolvedPaintableElement fillElement, SvgParsedGeometry filled, SvgLinearGradient outlineGradient, SvgRadialGradient outlineCircle, SvgPatternTile outlineTile, bool useLinear, bool useRadial, SvgViewportFrame? frame, SvgDocumentState state)
         {
             SvgComputedStyle whiteStyle = fillElement.Style with { Stroke = "#ffffff" };
@@ -201,7 +214,7 @@ internal static class SvgLeafParser
             bool whiteReleased = false;
             try
             {
-                using BudgetedParserList<SvgGeometry> repaintList = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                using BudgetedGeometryBuilder repaintList = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 foreach (SvgGeometry existing in white.Geometries)
                 {
                     if (useLinear) repaintList.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, mappedLinear, strokeBox, strokeOpacity, state.Budget)));
@@ -216,8 +229,8 @@ internal static class SvgLeafParser
             }
             catch
             {
-                if (!whiteReleased) white.Dispose();
-                filled.Dispose();
+                if (!whiteReleased) white.Discard();
+                filled.Discard();
                 throw;
             }
         }
@@ -244,6 +257,14 @@ internal static class SvgLeafParser
     /// <summary>Lowers one rounded-rectangle definition through the shared fill-plus-outline path with no viewport frame; use instances map the retained geometries.</summary>
     internal static SvgParsedGeometry ParseRoundedRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
     {
+        SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, null);
+        context = context with { DeferPaintOpacity = true };
+        SvgParsedGeometry parsed = ParseRoundedRectangleDefinitionCore(reader, context, state);
+        return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+    }
+
+    internal static SvgParsedGeometry ParseRoundedRectangleDefinitionCore(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
+    {
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
         double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
@@ -266,11 +287,27 @@ internal static class SvgLeafParser
 
     internal static SvgParsedGeometry ParseCircle(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
+        SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        context = context with { DeferPaintOpacity = true };
+        SvgParsedGeometry parsed = ParseCircleCore(reader, context, frame, state);
+        return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+    }
+
+    internal static SvgParsedGeometry ParseCircleCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
+    {
         SvgEllipseSyntax syntax = SvgEllipseSyntax.ParseCircle(reader);
         return LowerEllipseShape(reader, context, syntax, "circle", frame, state);
     }
 
     internal static SvgParsedGeometry ParseEllipse(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
+    {
+        SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        context = context with { DeferPaintOpacity = true };
+        SvgParsedGeometry parsed = ParseEllipseCore(reader, context, frame, state);
+        return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+    }
+
+    internal static SvgParsedGeometry ParseEllipseCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgEllipseSyntax syntax = SvgEllipseSyntax.ParseEllipse(reader);
         return LowerEllipseShape(reader, context, syntax, "ellipse", frame, state);
@@ -324,67 +361,71 @@ internal static class SvgLeafParser
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, elementName, false, element.Style.FillRule is not null && element.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
         SvgParsedGeometry filled = lowering.LowerEllipseFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, frame, state.Budget);
-        if (paintGradient || paintPattern)
+        try
         {
-            SvgGeometry repainted;
-            if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(filled.Geometries[0].Polygon, tile, opacity, state.Budget);
-            else repainted = isLinear
-                ? SvgGradientPolygon.RepaintOutline(filled.Geometries[0].Polygon, linear, box, opacity, state.Budget)
-                : SvgRadialPolygon.RepaintOutline(filled.Geometries[0].Polygon, radial, box, opacity, state.Budget);
-            repainted = filled.Geometries[0].TransferAuthoredPathTo(repainted);
-            filled.Dispose();
-            return RetainSingleGeometry(repainted, state, context);
-        }
-        bool nonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(reader.GetAttribute("vector-effect"));
-        if (elementName != "circle")
-        {
-            if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern)
-                return LowerPaintedCircleStroke(reader, context, syntax, elementName, false, element, filled, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, nonScalingStroke, frame, state);
-            SvgStroke? ellipseStroke = ParseCircleStroke(element, reader);
-            if (ellipseStroke is null || !element.Presentation.IsPainted) return filled;
-            string? ellipseDashes = element.Style.Dasharray;
-            if (ellipseDashes is not null && !ellipseDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (paintGradient || paintPattern)
             {
-                SvgStrokeCap ellipseDashCap = SvgStrokeStyleSyntax.ParseLinecap(element.Style.Linecap);
-                if (ellipseDashCap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed ellipse strokes are not implemented.");
-                if (ellipseDashCap == SvgStrokeCap.Square) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed ellipse strokes are not implemented.");
-                double[] ellipseDashPattern = SvgStrokeStyleSyntax.ParseDasharray(ellipseDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Ellipse dash arrays cannot be empty.");
-                double ellipseDashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
-                double? ellipseDashPathLength = SvgStrokeStyleSyntax.ParsePathLength(element.Style.PathLength ?? reader.GetAttribute("pathLength"));
-                double ellipseDashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
-                try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, ellipseStroke.Value, ellipseDashPattern, ellipseDashOffset, ellipseDashPathLength, ellipseDashMiterLimit, nonScalingStroke, "ellipse", frame, state); }
+                SvgGeometry repainted;
+                if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(filled.Geometries[0].Polygon, tile, opacity, state.Budget);
+                else repainted = isLinear
+                    ? SvgGradientPolygon.RepaintOutline(filled.Geometries[0].Polygon, linear, box, opacity, state.Budget)
+                    : SvgRadialPolygon.RepaintOutline(filled.Geometries[0].Polygon, radial, box, opacity, state.Budget);
+                repainted = filled.Geometries[0].TransferAuthoredPathTo(repainted);
+                filled.Dispose();
+                return RetainSingleGeometry(repainted, state, context);
+            }
+            bool nonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(reader.GetAttribute("vector-effect"));
+            if (elementName != "circle")
+            {
+                if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern)
+                    return LowerPaintedCircleStroke(reader, context, syntax, elementName, false, element, filled, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, nonScalingStroke, frame, state);
+                SvgStroke? ellipseStroke = ParseCircleStroke(element, reader);
+                if (ellipseStroke is null || !element.Presentation.IsPainted) return filled;
+                string? ellipseDashes = element.Style.Dasharray;
+                if (ellipseDashes is not null && !ellipseDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                {
+                    SvgStrokeCap ellipseDashCap = SvgStrokeStyleSyntax.ParseLinecap(element.Style.Linecap);
+                    if (ellipseDashCap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed ellipse strokes are not implemented.");
+                    if (ellipseDashCap == SvgStrokeCap.Square) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed ellipse strokes are not implemented.");
+                    double[] ellipseDashPattern = SvgStrokeStyleSyntax.ParseDasharray(ellipseDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Ellipse dash arrays cannot be empty.");
+                    double ellipseDashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
+                    double? ellipseDashPathLength = SvgStrokeStyleSyntax.ParsePathLength(element.Style.PathLength ?? reader.GetAttribute("pathLength"));
+                    double ellipseDashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
+                    try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, ellipseStroke.Value, ellipseDashPattern, ellipseDashOffset, ellipseDashPathLength, ellipseDashMiterLimit, nonScalingStroke, "ellipse", frame, state); }
+                    catch { filled.Dispose(); throw; }
+                }
+                try
+                {
+                    using SvgParsedGeometry ring = lowering.LowerEllipseStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, ellipseStroke.Value, nonScalingStroke, frame, state.Budget);
+                    return ConcatGeometries(filled, ring, state.Budget, context.WorkCounter, context.CancellationToken);
+                }
+                catch { filled.Dispose(); throw; }
+            }
+            if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern)
+                return LowerPaintedCircleStroke(reader, context, syntax, elementName, true, element, filled, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, nonScalingStroke, frame, state);
+            SvgStroke? stroke = ParseCircleStroke(element, reader);
+            if (stroke is null || !element.Presentation.IsPainted) return filled;
+            string? circleDashes = element.Style.Dasharray;
+            if (circleDashes is not null && !circleDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                SvgStrokeCap dashCap = SvgStrokeStyleSyntax.ParseLinecap(element.Style.Linecap);
+                if (dashCap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed circle strokes are not implemented.");
+                if (dashCap == SvgStrokeCap.Square) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed circle strokes are not implemented.");
+                double[] dashPattern = SvgStrokeStyleSyntax.ParseDasharray(circleDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Circle dash arrays cannot be empty.");
+                double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
+                double? dashPathLength = SvgStrokeStyleSyntax.ParsePathLength(element.Style.PathLength ?? reader.GetAttribute("pathLength"));
+                double dashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
+                try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, stroke.Value, dashPattern, dashOffset, dashPathLength, dashMiterLimit, nonScalingStroke, "circle", frame, state); }
                 catch { filled.Dispose(); throw; }
             }
             try
             {
-                using SvgParsedGeometry ring = lowering.LowerEllipseStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, element, ellipseStroke.Value, nonScalingStroke, frame, state.Budget);
+                using SvgParsedGeometry ring = lowering.LowerCircleStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, element, stroke.Value, nonScalingStroke, frame, state.Budget);
                 return ConcatGeometries(filled, ring, state.Budget, context.WorkCounter, context.CancellationToken);
             }
             catch { filled.Dispose(); throw; }
         }
-        if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern)
-            return LowerPaintedCircleStroke(reader, context, syntax, elementName, true, element, filled, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, nonScalingStroke, frame, state);
-        SvgStroke? stroke = ParseCircleStroke(element, reader);
-        if (stroke is null || !element.Presentation.IsPainted) return filled;
-        string? circleDashes = element.Style.Dasharray;
-        if (circleDashes is not null && !circleDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
-        {
-            SvgStrokeCap dashCap = SvgStrokeStyleSyntax.ParseLinecap(element.Style.Linecap);
-            if (dashCap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed circle strokes are not implemented.");
-            if (dashCap == SvgStrokeCap.Square) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Square caps with dashed circle strokes are not implemented.");
-            double[] dashPattern = SvgStrokeStyleSyntax.ParseDasharray(circleDashes) ?? throw new SvgException(SvgErrorCode.MalformedInput, "Circle dash arrays cannot be empty.");
-            double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
-            double? dashPathLength = SvgStrokeStyleSyntax.ParsePathLength(element.Style.PathLength ?? reader.GetAttribute("pathLength"));
-            double dashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
-            try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, stroke.Value, dashPattern, dashOffset, dashPathLength, dashMiterLimit, nonScalingStroke, "circle", frame, state); }
-            catch { filled.Dispose(); throw; }
-        }
-        try
-        {
-            using SvgParsedGeometry ring = lowering.LowerCircleStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, element, stroke.Value, nonScalingStroke, frame, state.Budget);
-            return ConcatGeometries(filled, ring, state.Budget, context.WorkCounter, context.CancellationToken);
-        }
-        catch { filled.Dispose(); throw; }
+        catch { filled.Discard(); throw; }
 
         static SvgParsedGeometry LowerDashedEllipseStroke(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, SvgResolvedPaintableElement shape, SvgParsedGeometry fill, SvgStroke ringStroke, double[] dashes, double dashOffset, double? pathLength, double miterLimit, bool nonScaling, string shapeName, SvgViewportFrame? frame, SvgDocumentState state)
         {
@@ -469,7 +510,7 @@ internal static class SvgLeafParser
             bool whiteReleased = false;
             try
             {
-                using BudgetedParserList<SvgGeometry> repaintList = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                using BudgetedGeometryBuilder repaintList = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 foreach (SvgGeometry existing in white.Geometries)
                 {
                     if (useLinear) repaintList.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, mappedLinear, strokeBox, strokeOpacity, state.Budget)));
@@ -484,8 +525,8 @@ internal static class SvgLeafParser
             }
             catch
             {
-                if (!whiteReleased) white.Dispose();
-                fill.Dispose();
+                if (!whiteReleased) white.Discard();
+                fill.Discard();
                 throw;
             }
         }
@@ -495,7 +536,7 @@ internal static class SvgLeafParser
             {
                 using BudgetedParserList<SvgGeometry> combined = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
                 combined.AddRange(first.Geometries);
-                combined.AddRange(second.Geometries);
+                foreach (SvgGeometry stroke in second.Geometries) combined.Add(stroke with { RecordedPaint = SvgRecordedPaint.SourceStroke });
                 SvgParsedGeometry result = new(combined.Detach(), first.ElementCount + second.ElementCount);
                 first.Dispose();
                 second.Dispose();
@@ -503,8 +544,8 @@ internal static class SvgLeafParser
             }
             catch
             {
-                first.Dispose();
-                second.Dispose();
+                first.Discard();
+                second.Discard();
                 throw;
             }
         }
@@ -525,6 +566,37 @@ internal static class SvgLeafParser
 
 
     internal static SvgParsedGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
+    {
+        SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        context = context with { DeferPaintOpacity = true };
+        SvgParsedGeometry parsed = ParseLineCore(reader, context, frame, state);
+        try
+        {
+            if (parsed.Geometries.Length != 0)
+                source = source with { VisualBounds = LineVisualBounds(reader, context, frame) };
+        }
+        catch { parsed.Discard(); throw; }
+        return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+
+        static SvgPaintBounds? LineVisualBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport)
+        {
+            SvgComputedStyle style = element.ResolveStyle(input);
+            if (SvgStrokeStyleSyntax.ParseLinecap(style.Linecap) != SvgStrokeCap.Square) return null;
+            element.WorkCounter.Consume(element.CancellationToken);
+            SvgLineSyntax line = SvgLineSyntax.Parse(input);
+            float halfWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? line.StrokeWidth ?? "1") / 2f;
+            // A square tip's diagonal bounds the source stroke before dash segmentation.
+            float inflation = halfWidth * MathF.Sqrt(2);
+            // Recording rounds the local visual bounds before the output viewport transform.
+            SvgPaintBounds bounds = new(MathF.Floor(Math.Min(line.X1, line.X2) - inflation), MathF.Floor(Math.Min(line.Y1, line.Y2) - inflation),
+                MathF.Ceiling(Math.Max(line.X1, line.X2) + inflation), MathF.Ceiling(Math.Max(line.Y1, line.Y2) + inflation));
+            return viewport is {} frame
+                ? bounds.Map(SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY), element.WorkCounter, element.CancellationToken)
+                : bounds;
+        }
+    }
+
+    internal static SvgParsedGeometry ParseLineCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgLineSyntax syntax = SvgLineSyntax.Parse(reader);
         SvgStrokeStyleSyntax.RequireLineCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
@@ -575,12 +647,20 @@ internal static class SvgLeafParser
             using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "line", false, false, int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
             using SvgParsedGeometry first = lowering.LowerEllipseFill(syntax.X1, syntax.Y1, radius, radius, discElement, frame, state.Budget);
-            using SvgParsedGeometry second = lowering.LowerEllipseFill(syntax.X2, syntax.Y2, radius, radius, discElement, frame, state.Budget);
-            using BudgetedParserList<SvgGeometry> all = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            all.Add(band);
-            all.AddRange(first.Geometries);
-            all.AddRange(second.Geometries);
-            return new(all.Detach(), first.ElementCount + second.ElementCount);
+            try
+            {
+                using SvgParsedGeometry second = lowering.LowerEllipseFill(syntax.X2, syntax.Y2, radius, radius, discElement, frame, state.Budget);
+                try
+                {
+                    using BudgetedParserList<SvgGeometry> all = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                    all.Add(band);
+                    all.AddRange(first.Geometries);
+                    all.AddRange(second.Geometries);
+                    return new(all.Detach(), first.ElementCount + second.ElementCount);
+                }
+                catch { second.Discard(); throw; }
+            }
+            catch { first.Discard(); throw; }
         }
 
         SvgParsedGeometry LowerDashedLine()
@@ -611,13 +691,22 @@ internal static class SvgLeafParser
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "line", false, false, int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
         using SvgParsedGeometry first = lowering.LowerEllipseFill(syntax.X1, syntax.Y1, radius, radius, discElement, frame, state.Budget);
-        using SvgParsedGeometry second = lowering.LowerEllipseFill(syntax.X2, syntax.Y2, radius, radius, discElement, frame, state.Budget);
-        using BudgetedParserList<SvgGeometry> all = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-        all.Add(SvgGeometry.FromOrthogonalBand(band with { Color = white, HasFill = fillHasPaint }));
-        all.AddRange(first.Geometries);
-        all.AddRange(second.Geometries);
-        return (new SvgParsedGeometry(all.Detach(), first.ElementCount + second.ElementCount), box);
+        try
+        {
+            using SvgParsedGeometry second = lowering.LowerEllipseFill(syntax.X2, syntax.Y2, radius, radius, discElement, frame, state.Budget);
+            try
+            {
+                using BudgetedParserList<SvgGeometry> all = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                all.Add(SvgGeometry.FromOrthogonalBand(band with { Color = white, HasFill = fillHasPaint }));
+                all.AddRange(first.Geometries);
+                all.AddRange(second.Geometries);
+                return (new SvgParsedGeometry(all.Detach(), first.ElementCount + second.ElementCount), box);
+            }
+            catch { second.Discard(); throw; }
+        }
+        catch { first.Discard(); throw; }
     }
+
     /// <summary>Appends one clipped rectangle per dash-pattern on-run along a horizontal or vertical line, reporting whether any run paints.</summary>
     /// <remarks><para>Callers paint over the returned rectangles and leave the single quiet rectangle unpainted, sharing the solid phase convention across paints.</para></remarks>
     internal static bool AppendLineDashRunRects(SvgLineSyntax syntax, int strokeWidth, bool squareCaps, double[] dashes, double dashOffset, double? pathLength, SvgViewportFrame? frame, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgRectangle> runs)

@@ -22,14 +22,14 @@
   },
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 252,
-    "maximumChannelError": 6,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 4,
-    "minimumMismatchY": 6,
-    "maximumMismatchX": 34,
-    "maximumMismatchY": 28,
-    "exact": false
+    "minimumMismatchX": 61,
+    "minimumMismatchY": 47,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
   }
 }

@@ -447,19 +447,23 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_translucent_square_capped_dashed_lines()
+    public void Retains_translucent_square_capped_dashed_lines()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' opacity='0.5' stroke-width='2' stroke-dasharray='8 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' opacity='0.5' stroke-width='2' stroke-dasharray='8 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
-    public void Rejects_translucent_square_capped_gradient_dashes()
+    public void Retains_translucent_square_capped_gradient_dashes()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='s' gradientUnits='userSpaceOnUse' x1='0' y1='4' x2='16' y2='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#s)' opacity='0.5' stroke-width='2' stroke-dasharray='8 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='s' gradientUnits='userSpaceOnUse' x1='0' y1='4' x2='16' y2='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#s)' opacity='0.5' stroke-width='2' stroke-dasharray='8 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -470,19 +474,23 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
     [Fact]
-    public void Rejects_translucent_square_capped_pattern_dashes()
+    public void Retains_translucent_square_capped_pattern_dashes()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#p)' opacity='0.5' stroke-width='2' stroke-dasharray='8 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#p)' opacity='0.5' stroke-width='2' stroke-dasharray='8 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
-    public void Rejects_translucent_square_capped_radial_dashes()
+    public void Retains_translucent_square_capped_radial_dashes()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='s' gradientUnits='userSpaceOnUse' cx='8' cy='4' r='8'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#s)' opacity='0.5' stroke-width='2' stroke-dasharray='8 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='s' gradientUnits='userSpaceOnUse' cx='8' cy='4' r='8'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><line x1='0' y1='4' x2='16' y2='4' stroke='url(#s)' opacity='0.5' stroke-width='2' stroke-dasharray='8 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
     [Fact]
     public void Rejects_zero_length_square_capped_dashes()
@@ -785,11 +793,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_translucent_paint_strokes_on_circles()
+    public void Retains_translucent_paint_strokes_on_circles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><circle cx=\"4\" cy=\"4\" r=\"4\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"2\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><circle cx=\"4\" cy=\"4\" r=\"4\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"2\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -837,11 +847,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_translucent_paint_strokes_on_ellipses()
+    public void Retains_translucent_paint_strokes_on_ellipses()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><ellipse cx=\"32\" cy=\"32\" rx=\"20\" ry=\"12\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"8\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><ellipse cx=\"32\" cy=\"32\" rx=\"20\" ry=\"12\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"8\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -955,11 +967,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_translucent_paint_strokes_on_rounded_rectangles()
+    public void Retains_translucent_paint_strokes_on_rounded_rectangles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"2\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" rx=\"2\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"2\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -1084,11 +1098,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_translucent_strokes_on_filled_rounded_rectangles()
+    public void Retains_translucent_strokes_on_filled_rounded_rectangles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='red' stroke='blue' stroke-width='2' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect x='0' y='0' width='8' height='8' rx='2' fill='red' stroke='blue' stroke-width='2' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -1482,7 +1498,8 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
-        Assert.Equal(new SvgAxisAlignedLine(1, 3, 3, 3, new SvgColor(255, 0, 0, 128), true, 2), geometry.AxisAlignedLine);
+        Assert.Equal(new SvgAxisAlignedLine(1, 3, 3, 3, new SvgColor(255, 0, 0, 255), true, 2), geometry.AxisAlignedLine);
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
     }
 
     [Fact]
@@ -1635,7 +1652,8 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='tile' width='1' height='1' fill='red'/></defs><use href='#tile' opacity='0.5'/><use href='#tile' display='none'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal((byte)128, root.Rectangles[0].Color.Alpha);
+        Assert.Equal((byte)255, root.Rectangles[0].Color.Alpha);
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
         Assert.True(root.Rectangles[0].HasFill);
         Assert.False(root.Rectangles[1].HasFill);
     }
@@ -1645,7 +1663,8 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#half { opacity: 0.5; } .hidden { display: none; }</style><defs><rect id='tile' width='1' height='1' fill='red'/></defs><use id='half' href='#tile'/><use class='hidden' href='#tile'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal((byte)128, root.Rectangles[0].Color.Alpha);
+        Assert.Equal((byte)255, root.Rectangles[0].Color.Alpha);
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
         Assert.True(root.Rectangles[0].HasFill);
         Assert.False(root.Rectangles[1].HasFill);
     }
@@ -1911,8 +1930,9 @@ public sealed class SvgRootParserTests
         Assert.Collection(root.Rectangles,
             rectangle => Assert.Equal(new SvgColor(0, 0, 255, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(0, 128, 128, 128), rectangle.Color),
-            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 64), rectangle.Color),
+            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color),
             rectangle => Assert.Equal(new SvgColor(255, 255, 0, 128), rectangle.Color));
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
     }
     [Fact]
     public void Later_stylesheets_win_at_equal_specificity()
@@ -1993,7 +2013,8 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#path { fill: red; opacity: 0.5; }</style><path id='path' d='M 0 0 H 1 V 1 H 0 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 128), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
     }
 
     [Fact]
@@ -2184,7 +2205,8 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='1' y1='3' x2='5' y2='3' stroke='red' stroke-width='2' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(1, 2, 4, 2, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(new SvgRectangle(1, 2, 4, 2, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
     }
 
     [Fact]
@@ -2468,12 +2490,13 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 4 4'><polygon points='0,0 4,0 4,2 2,2 2,4 0,4' fill='url(#g)'/></symbol></defs><use href='#s' width='8' height='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
         Assert.Equal(2, root.Geometries.Length);
         foreach (SvgGeometry geometry in root.Geometries)
         {
             Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
             Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.Gradient.Box);
-            Assert.Equal(128, geometry.Gradient.Opacity);
+            Assert.Equal(255, geometry.Gradient.Opacity);
         }
         Assert.Equal(new SvgRectangle(0, 0, 8, 4, default, true, null) { Clip = new(0, 0, 8, 8) }, root.Geometries[0].Gradient.Fill);
         Assert.Equal(new SvgRectangle(0, 4, 4, 4, default, true, null) { Clip = new(0, 0, 8, 8) }, root.Geometries[1].Gradient.Fill);
@@ -2485,10 +2508,11 @@ public sealed class SvgRootParserTests
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientStroke, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 128), true, null) { Clip = new(0, 0, 8, 8) }, geometry.GradientStroke.Fill);
+        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(0, 0, 8, 8) }, geometry.GradientStroke.Fill);
         Assert.Equal(new SvgRectangle(-2, -2, 12, 4, default, true, null) { Clip = new(0, 0, 8, 8) }, geometry.GradientStroke.Top);
         Assert.Equal(new SvgRectangle(0, 0, 8, 8, default, true, null), geometry.GradientStroke.Box);
-        Assert.Equal(128, geometry.GradientStroke.Opacity);
+        Assert.Equal(255, geometry.GradientStroke.Opacity);
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
     }
     [Fact]
     public void Lowers_gradient_stroke_rect_instances_through_placement()
@@ -2761,11 +2785,12 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='#ff0000'/></pattern></defs><defs><polygon id='q' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='url(#p)'/></defs><use href='#q' x='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
         Assert.Equal(2, root.Geometries.Length);
         foreach (SvgGeometry geometry in root.Geometries)
         {
             Assert.Equal(SvgGeometryKind.PatternFill, geometry.Kind);
-            Assert.Equal(128, geometry.Pattern.Opacity);
+            Assert.Equal(255, geometry.Pattern.Opacity);
         }
         Assert.Equal(new SvgRectangle(8, 0, 8, 4, default, true, null), root.Geometries[0].Pattern.Fill);
         Assert.Equal(new SvgRectangle(8, 4, 4, 4, default, true, null), root.Geometries[1].Pattern.Fill);
@@ -2789,7 +2814,7 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
     [Fact]
-    public void Renders_gradient_fill_opacity_identical_to_opacity()
+    public void Retains_gradient_fill_opacity_separately_from_element_opacity()
     {
         byte[] faded = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' fill-opacity='0.5'/></svg>");
         byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' opacity='0.5'/></svg>");
@@ -2797,11 +2822,18 @@ public sealed class SvgRootParserTests
         ReadOnlyMemory<byte> fadedPng = SvgConverter.ConvertToPng(faded, SvgRenderOptions.Default, CancellationToken.None);
         ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.True(fadedPng.Span.SequenceEqual(baselinePng.Span));
+        // Fresh browser captures differ for these unchanged inputs.
+        Assert.False(fadedPng.Span.SequenceEqual(baselinePng.Span));
+        using SvgRoot first = SvgRootParser.Parse(faded, SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot second = SvgRootParser.Parse(baseline, SvgRenderLimits.Default, CancellationToken.None);
+        SvgRecordedPaintAssertions.ShaderAlpha(first, 128 / 255f);
+        Assert.DoesNotContain(first.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgRecordedPaintAssertions.ShaderAlpha(second, 1);
+        SvgRecordedPaintAssertions.ElementOpacity(second, new(128, 0.5f));
     }
 
     [Fact]
-    public void Multiplies_element_opacity_with_gradient_fill_opacity()
+    public void Preserves_shader_byte_and_element_float_opacity_when_combined()
     {
         byte[] layered = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' opacity='0.5' fill-opacity='0.5'/></svg>");
         byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' opacity='0.25'/></svg>");
@@ -2809,11 +2841,18 @@ public sealed class SvgRootParserTests
         ReadOnlyMemory<byte> layeredPng = SvgConverter.ConvertToPng(layered, SvgRenderOptions.Default, CancellationToken.None);
         ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.True(layeredPng.Span.SequenceEqual(baselinePng.Span));
+        // Fresh browser captures differ for these unchanged inputs.
+        Assert.False(layeredPng.Span.SequenceEqual(baselinePng.Span));
+        using SvgRoot first = SvgRootParser.Parse(layered, SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot second = SvgRootParser.Parse(baseline, SvgRenderLimits.Default, CancellationToken.None);
+        SvgRecordedPaintAssertions.ShaderAlpha(first, 128 / 255f);
+        SvgRecordedPaintAssertions.ElementOpacity(first, new(128, 0.5f));
+        SvgRecordedPaintAssertions.ShaderAlpha(second, 1);
+        SvgRecordedPaintAssertions.ElementOpacity(second, new(64, 0.25f));
     }
 
     [Fact]
-    public void Renders_gradient_path_fill_opacity_identical_to_opacity()
+    public void Retains_gradient_path_fill_opacity_separately_from_element_opacity()
     {
         byte[] faded = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' fill-opacity='0.5'/></svg>");
         byte[] baseline = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M1,1 H7 V3 H3 V7 H1 Z' fill='url(#g)' opacity='0.5'/></svg>");
@@ -2821,7 +2860,14 @@ public sealed class SvgRootParserTests
         ReadOnlyMemory<byte> fadedPng = SvgConverter.ConvertToPng(faded, SvgRenderOptions.Default, CancellationToken.None);
         ReadOnlyMemory<byte> baselinePng = SvgConverter.ConvertToPng(baseline, SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.True(fadedPng.Span.SequenceEqual(baselinePng.Span));
+        // Fresh browser captures differ for these unchanged inputs.
+        Assert.False(fadedPng.Span.SequenceEqual(baselinePng.Span));
+        using SvgRoot first = SvgRootParser.Parse(faded, SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot second = SvgRootParser.Parse(baseline, SvgRenderLimits.Default, CancellationToken.None);
+        SvgRecordedPaintAssertions.ShaderAlpha(first, 128 / 255f);
+        Assert.DoesNotContain(first.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgRecordedPaintAssertions.ShaderAlpha(second, 1);
+        SvgRecordedPaintAssertions.ElementOpacity(second, new(128, 0.5f));
     }
 
     [Fact]
@@ -3535,13 +3581,15 @@ public sealed class SvgRootParserTests
     {
         string stylesheet = "/**/" + new string(' ', 512) + "rect { fill: red; }";
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><style>" + stylesheet + "</style><rect width='1'/></svg>");
-        SvgRenderLimits insufficientLimits = new(140_397, 1_024, 16, 16, 1_024, 16, 16, 10_000);
-        SvgRenderLimits sufficientLimits = new(140_398, 1_024, 16, 16, 1_024, 16, 16, 10_000);
-
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, insufficientLimits, new RenderBudget(140_397), CancellationToken.None));
-        using SvgRoot root = SvgRootParser.Parse(svg, sufficientLimits, new RenderBudget(140_398), CancellationToken.None);
-
+        SvgRenderLimits limits = new(1_000_000, 1_024, 16, 16, 1_024, 16, 16, 10_000);
+        RenderBudget measured = new(limits.MaximumAccountedBytes);
+        using (SvgRootParser.Parse(svg, limits, measured, CancellationToken.None)) { }
+        Assert.Equal(0, measured.Snapshot().CurrentBytes);
+        RenderBudget insufficient = new(measured.Snapshot().PeakBytes - 1);
+        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, insufficient, CancellationToken.None));
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
+        Assert.Equal(0, insufficient.Snapshot().CurrentBytes);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(measured.Snapshot().PeakBytes), CancellationToken.None);
         Assert.Single(root.Rectangles);
     }
 
@@ -3782,7 +3830,8 @@ public sealed class SvgRootParserTests
 
         Assert.Collection(root.Rectangles,
             rectangle => Assert.Equal(new SvgColor(0, 255, 0, 128), rectangle.Color),
-            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 128), rectangle.Color));
+            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color));
+        SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
     }
 
     [Fact]
@@ -3798,7 +3847,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128, null, -1, 255), command),
+            command => SvgRecordedPaintAssertions.OpacityScope(command, new(128, 0.5f)),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
         Assert.Equal(SvgGeometryKind.Rectangle, Assert.Single(root.Geometries).Kind);
@@ -3810,10 +3859,10 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g opacity='0.5'><rect width='1' height='1'/></g><g opacity='0.5'><rect width='1' height='1'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128, null, -1, 255), command),
+            command => SvgRecordedPaintAssertions.OpacityScope(command, new(128, 0.5f)),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128, null, -1, 255), command),
+            command => SvgRecordedPaintAssertions.OpacityScope(command, new(128, 0.5f)),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 1, 255, null, -1, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
     }
@@ -3824,7 +3873,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' opacity='0.5'><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128, null, -1, 255), command),
+            command => SvgRecordedPaintAssertions.OpacityScope(command, new(128, 0.5f)),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
     }
@@ -3869,7 +3918,7 @@ public sealed class SvgRootParserTests
         const long workspace = 256L * 512;
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, limits, new RenderBudget(workspace - 1), CancellationToken.None));
-        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(workspace), CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse(svg, limits, new RenderBudget(workspace + SvgSceneBuilder.RecordedPaintOwnerBytes), CancellationToken.None);
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Empty(root.Rectangles);
@@ -4177,7 +4226,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
-        Assert.DoesNotContain(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup);
+        SvgLeafMaskAssertions.UniformScope(root, 255, null);
     }
 
     [Fact]
@@ -5390,11 +5439,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_translucent_round_capped_paint_lines()
+    public void Retains_translucent_round_capped_paint_lines()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\" gradientUnits=\"userSpaceOnUse\" x1=\"0\" y1=\"0\" x2=\"16\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"url(#g)\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\" gradientUnits=\"userSpaceOnUse\" x1=\"0\" y1=\"0\" x2=\"16\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><line x1=\"0\" y1=\"4\" x2=\"16\" y2=\"4\" stroke=\"url(#g)\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\"0.5\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -5421,11 +5472,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_translucent_round_capped_lines()
+    public void Retains_translucent_round_capped_lines()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' opacity='0.5' stroke-width='2' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' opacity='0.5' stroke-width='2' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
+        Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
 
     [Fact]
@@ -5585,8 +5638,10 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='1' y1='1' x2='1' y2='1'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(0, 0, 255, 255), root.Rectangles[0].Color);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), geometry.Gradient.Gradient.End);
+        Assert.True(geometry.Gradient.Fill.HasFill);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -5595,8 +5650,10 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='0.5' y1='0.5' x2='0.5' y2='0.5'><stop offset='0.25' stop-color='#ff0000'/><stop offset='0.75' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
-        Assert.Equal(new SvgColor(0, 0, 255, 255), root.Rectangles[0].Color);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), geometry.Gradient.Gradient.End);
+        Assert.True(geometry.Gradient.Fill.HasFill);
         Assert.False(root.HasUnsupportedChild);
     }
 
@@ -5621,14 +5678,15 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Lowers_degenerate_gradient_strokes_as_end_stop_rings()
+    public void Retains_degenerate_gradient_strokes_as_constant_shader_rings()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' x1='1' y1='1' x2='1' y2='1'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='5' height='5' fill='red' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Rectangle.Color);
-        Assert.Equal(new SvgStroke(new SvgColor(0, 0, 255, 255), 2), geometry.Rectangle.Stroke);
+        Assert.Equal(SvgGeometryKind.GradientStroke, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.GradientStroke.Fill.Color);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), geometry.GradientStroke.Gradient.End);
+        Assert.Equal(2, geometry.GradientStroke.Top.Height);
     }
 
     [Fact]
@@ -6266,14 +6324,20 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Lowers_degenerate_radial_strokes_as_end_stop_rings()
+    public void Retains_degenerate_radial_strokes_as_constant_shader_bands()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><rect width='8' height='8' fill='red' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind);
-        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Rectangle.Color);
-        Assert.Equal(new SvgStroke(new SvgColor(0, 0, 255, 255), 2), geometry.Rectangle.Stroke);
+        Assert.Equal(5, root.Geometries.Length);
+        Assert.Equal(SvgGeometryKind.Rectangle, root.Geometries[0].Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Geometries[0].Rectangle.Color);
+        Assert.All(root.Geometries.Skip(1), geometry =>
+        {
+            Assert.Equal(SvgGeometryKind.RadialGradient, geometry.Kind);
+            Assert.Equal(0, geometry.Radial.Gradient.Radius);
+            Assert.Equal(new SvgColor(0, 0, 255, 255), geometry.Radial.Gradient.End);
+            Assert.True(geometry.Radial.Fill.HasFill);
+        });
     }
     [Fact]
     public void Lowers_user_space_radial_line_strokes_as_fill_bands()
@@ -6996,20 +7060,18 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Passes_white_masked_groups_through_without_isolation()
+    public void Retains_default_white_mask_regions_around_groups()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='48' height='48' fill='#ffffff'/></mask></defs><g mask='url(#fade)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command));
+        SvgLeafMaskAssertions.UniformScope(root, 255, null);
     }
     [Fact]
-    public void Passes_white_masked_polygon_groups_through_without_isolation()
+    public void Retains_default_white_mask_regions_around_polygon_groups()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs><g mask='url(#fade)'><polygon points='0,0 8,0 0,8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command));
+        SvgLeafMaskAssertions.UniformScope(root, 255, null);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
     }
@@ -7019,10 +7081,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='48' height='48' fill='#808080'/></mask></defs><g mask='url(#fade)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, null, -1, 128), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
+        SvgLeafMaskAssertions.UniformScope(root, 128, null);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind);
         Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Rectangle.Color);
@@ -7032,10 +7091,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#fade)'><polygon points='0,0 8,0 0,8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, null, -1, 128), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
+        SvgLeafMaskAssertions.UniformScope(root, 128, null);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
         Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
@@ -7047,7 +7103,15 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='48' height='48' fill='#808080'/></mask></defs><g opacity='0.5' mask='url(#fade)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 128, null, -1, 128), command),
+            command =>
+            {
+                Assert.Equal(SvgDrawCommandKind.BeginGroup, command.Kind);
+                Assert.True(command.RecordingScope.Value >= 0);
+                Assert.Equal(new SvgPaintOpacity(128, 0.5f), command.SourceOpacity);
+                Assert.Equal(128, command.MaskAlpha);
+                Assert.Equal(new SvgClipBox(-0.8, -0.8, 9.6, 9.6), command.MaskRegion);
+                Assert.Equal(-1, command.MaskContentIndex);
+            },
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
             command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
     }
@@ -7072,11 +7136,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><use href='#p'/></g><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Commands,
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, null, -1, 128), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 1, 255, null, -1, 255), command),
-            command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
+        SvgLeafMaskAssertions.UniformScope(root, 128, null);
         Assert.Equal(2, root.Geometries.Length);
         Assert.All(root.Geometries, geometry => Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind));
         Assert.All(root.Geometries, geometry => Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Rectangle.Color));

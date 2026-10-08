@@ -22,6 +22,8 @@ internal sealed class SvgLeafMaskOperation : IDisposable
     internal SvgAffineTransform Map { get; }
     internal bool Resolved { get; set; }
     internal byte Value { get; set; }
+    internal SvgPaintOpacity SourceOpacity { get; set; } = SvgPaintOpacity.Opaque;
+    internal SvgRecordingScope RecordingScope { get; set; } = new(-1);
     internal SvgClipBox? Region { get; set; }
     /// <summary>Releases this metadata reservation without disposing borrowed operations or observing cancellation.</summary>
     /// <remarks>Only the conversion owner disposes this single-threaded value; budget release is idempotent.</remarks>
@@ -56,6 +58,7 @@ internal sealed class SvgLeafMaskMapper : IDisposable
     private readonly RenderBudget.BudgetReservation _owner;
     private readonly SvgDocumentState _state;
     private readonly SvgAffineTransform _map;
+    private SvgRecordingMapper? _recordingMapper;
     private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private readonly BudgetedParserDictionary<SvgLeafMaskOperation, SvgLeafMaskOperationReference> _operations;
@@ -80,6 +83,12 @@ internal sealed class SvgLeafMaskMapper : IDisposable
         catch { owner.Dispose(); throw; }
     }
 
+    internal SvgLeafMaskMapper WithRecordingMapper(SvgRecordingMapper mapper)
+    {
+        _recordingMapper = mapper;
+        return this;
+    }
+
     /// <summary>Returns a borrowed mapped chain without recursion, charging visited nodes and cache growth before use.</summary>
     internal SvgLeafMaskBinding? Map(SvgLeafMaskBinding? source)
     {
@@ -99,6 +108,7 @@ internal sealed class SvgLeafMaskMapper : IDisposable
             if (!_operations.TryGetValue(original.Operation, out SvgLeafMaskOperationReference operation))
             {
                 operation = new(SvgLeafMaskComposition.NewOperation(_state, original.Operation, _map));
+                operation.Operation.RecordingScope = _recordingMapper is null ? original.Operation.RecordingScope : _recordingMapper.Map(original.Operation.RecordingScope);
                 _operations.TryAdd(original.Operation, operation);
             }
             inner = SvgLeafMaskComposition.NewBinding(_state, operation.Operation, inner);
@@ -219,10 +229,11 @@ internal static class SvgLeafMaskComposition
                             SvgLeafMaskOperation mapped = unresolved[pending].Operation;
                             SvgLeafMaskOperation source = mapped.Source ?? throw new InvalidOperationException("Leaf mask was not resolved.");
                             mapped.Value = source.Value;
+                            mapped.SourceOpacity = source.SourceOpacity;
                             mapped.Region = source.Region is SvgClipBox region ? mapped.Map.Apply(region) : null;
                             mapped.Resolved = true;
                         }
-                        if (operation.Value != 255 || operation.Region is not null) desired.Add(new(operation));
+                        if (operation.Value != 255 || operation.Region is not null || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
                     }
                 }
                 int common = 0;
@@ -235,7 +246,7 @@ internal static class SvgLeafMaskComposition
                 for (int begin = common; begin < desired.Count; begin++)
                 {
                     SvgLeafMaskOperation operation = desired[begin].Operation;
-                    commands.Add(new(SvgDrawCommandKind.BeginGroup, -1, 255, operation.Region, -1, operation.Value));
+                    commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, operation.RecordingScope.Value, operation.SourceOpacity, operation.Region, -1, operation.Value));
                 }
                 active.Clear();
                 active.AddRange(desired.AsSpan());

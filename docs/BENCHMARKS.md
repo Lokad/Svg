@@ -2,7 +2,7 @@
 
 The full frozen-cohort baseline predates the latest renderer repairs;
 see [the corporate baseline](#frozen-corporate-cohort-baseline-2026-10-07) and
-[the current resource comparison](#native-filled-path-rectangle-cost-2026-10-07).
+[the current resource comparison](#recorded-paint-and-opacity-cost-2026-10-08).
 The earlier calibration and implementation checkpoints below retain their dates.
 
 This is the initial local baseline for the current supported subset. It is a
@@ -2248,3 +2248,35 @@ stamping can reduce other allocations. This study does not measure a representat
 workload or establish throughput. The preceding 258-recipe Windows ShortRun
 retains its historical scope. Full recipes and both-order ledgers stay under
 ignored `artifacts/leaf-mask-scopes-20261007/`.
+
+## Recorded paint and opacity cost (2026-10-08)
+
+Seventy-two matching admitted Windows recipes compare the `234cd638` renderer
+with the shared recorded-paint repair. Original SVG bytes, background options
+and owned-memory output match in both process orders. Each process warms up eight
+conversions and records three batches of twenty conversions per recipe. The
+allocation delta below compares medians across six batches per renderer; surface
+work includes parsing and is counted once.
+
+| Measured quantity | Change per conversion |
+| --- | ---: |
+| Parser work | +5 to +76 units |
+| Total accounted conversion work | +12 to +4,263 units |
+| Accounted peak live storage | zero to +568 bytes |
+| Managed allocation traffic | +760 to +20,711 bytes |
+
+Geometry values grow 264 → 272 bytes; draw commands remain 72 bytes. The scene
+arena reserves a 192-byte owner and stores 68-byte paint values, including
+separate optional object and source visual bounds. Copy maps and layer-bound
+scans also consume accounted storage/work. The largest work/allocation increases
+belong to the white-mask copy controls; the largest peak increase belongs to the
+circle/ellipse alpha controls. Parse peak can dominate these small recipes even
+when raster storage increases.
+
+Summing each recipe's median time gives 67.973 → 74.474 ms when the baseline
+runs first, and 70.226 → 70.525 ms when the repair runs first. These exploratory
+timings on a loaded host do not establish representative throughput or a speed
+improvement. The earlier 258-recipe Windows ShortRun retains its historical
+scope. Full recipes, batches, resource ledgers and the production audit remain
+under ignored `artifacts/opacity-folding-20261007/paint-cost-*` and
+`paint-production-audit.json`; Git identifies the implementation.

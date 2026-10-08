@@ -1400,16 +1400,16 @@
       "width": 41,
       "height": 35,
       "admittedRendering": {
-        "changedPixelCount": 9,
-        "maximumChannelError": 8,
-        "maximumAlphaError": 1,
-        "alphaChangedPixelCount": 5,
-        "minimumMismatchX": 4,
-        "minimumMismatchY": 7,
-        "maximumMismatchX": 29,
-        "maximumMismatchY": 24
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 41,
+        "minimumMismatchY": 35,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "03a50c5acbf43a2f751376508dae91aba155d1a079605bc5db72f286b8d1e181",
+      "candidateSha256": "ba4096352244ad56e5c2e9263759ea145f53d09c07a70071806a50f687f876bc",
       "oracle": {
         "referencePng": "references/rounded-source-layer-transparent.png",
         "referenceSha256": "2e00464291ac1407af9611e7dd7e25e3ffba3fb7f7ed745bcfcd04ee7f9eb04c",
@@ -1443,16 +1443,16 @@
       "width": 41,
       "height": 35,
       "admittedRendering": {
-        "changedPixelCount": 488,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 4,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 29,
-        "maximumMismatchY": 25
+        "minimumMismatchX": 41,
+        "minimumMismatchY": 35,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "4da22a53757ac6e940fd12d31b5756a3d2563c4821d96a59ca7092ecb577d45b",
+      "candidateSha256": "2bc391f184f24566d8b529f4f5d284f55280ea56e3391fac0976cb32fd4d028d",
       "oracle": {
         "referencePng": "references/rounded-source-layer-white.png",
         "referenceSha256": "f94608f3591ac810d1da7d19fbab58ff9bf5d41da0e544a30874d9529adf2566",
@@ -1744,16 +1744,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 202,
-        "maximumChannelError": 6,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 4,
-        "maximumMismatchX": 35,
-        "maximumMismatchY": 27
+        "minimumMismatchX": 43,
+        "minimumMismatchY": 37,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "31e3edb00fd9cb7b00059738a8202cc407e5e82089447fe882bf91da3430343f",
+      "candidateSha256": "874c463639186c2ec861a0b98b70899ebc26ef4eeaaf6c0bad9c84d9d0596826",
       "oracle": {
         "referencePng": "references/mask-layer-round-gradient-transparent.png",
         "referenceSha256": "c9756f67228cc2d7466e5674c8925338dd5702cf0aeee63a6603e2abb10896d7",
@@ -1787,16 +1787,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 202,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 4,
-        "maximumMismatchX": 35,
-        "maximumMismatchY": 27
+        "minimumMismatchX": 43,
+        "minimumMismatchY": 37,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "8ea8fdd8e1797674a7df385851d77a43785f2710f952e650795f1425b5d772d8",
+      "candidateSha256": "ef2c2824d4d0144d59cd2e1b2504a04eca5314a699ac2adade6ed62ef837e5ad",
       "oracle": {
         "referencePng": "references/mask-layer-round-gradient-white.png",
         "referenceSha256": "ee0db7ba4d01a2ea4894fae55f1b77fcb165ce267f37127333668441613c6323",
@@ -1830,16 +1830,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 202,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 4,
-        "maximumMismatchX": 35,
-        "maximumMismatchY": 27
+        "minimumMismatchX": 43,
+        "minimumMismatchY": 37,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "99a46fa0f697e750cee07bd1e56dace28e4f9ccd1df5a7202d2d82bc97ad72bf",
+      "candidateSha256": "532ad7711b9d30e67d8e24b66e6db63000bc3e9d0c4d8203382de92f38bbe842",
       "oracle": {
         "referencePng": "references/mask-layer-round-gradient-black.png",
         "referenceSha256": "aa6bf848a2ce9ecd39316164babdba4ad3d5387ca091ace144ff276365738ebe",
@@ -1873,16 +1873,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 78,
-        "maximumChannelError": 191,
-        "maximumAlphaError": 64,
-        "alphaChangedPixelCount": 78,
+        "changedPixelCount": 21,
+        "maximumChannelError": 193,
+        "maximumAlphaError": 128,
+        "alphaChangedPixelCount": 21,
         "minimumMismatchX": 9,
         "minimumMismatchY": 6,
         "maximumMismatchX": 29,
-        "maximumMismatchY": 25
+        "maximumMismatchY": 6
       },
-      "candidateSha256": "f1607104286af7709cf1a364bd531465bbffd529a78f794b05445c4c65fe614e",
+      "candidateSha256": "d83093e3ffe19bdd6761500793aba9cca6981868cf6d1132eae9dde6b9a1864a",
       "oracle": {
         "referencePng": "references/mask-layer-round-region-transparent.png",
         "referenceSha256": "d4f86235eeaca9334e25e789d7789d6f130a2411c1a0faeb69d1bbcac4170350",
@@ -1916,16 +1916,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 78,
-        "maximumChannelError": 53,
+        "changedPixelCount": 21,
+        "maximumChannelError": 106,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
         "minimumMismatchX": 9,
         "minimumMismatchY": 6,
         "maximumMismatchX": 29,
-        "maximumMismatchY": 25
+        "maximumMismatchY": 6
       },
-      "candidateSha256": "6d6df3c51550929728a468ca2caf51019f9d471a9a18db88d08ecbdb7faf66ee",
+      "candidateSha256": "2604db8a6004c3130f7500e85687ae9ecd61dbf5d77875c70a8a3bb1bdced57f",
       "oracle": {
         "referencePng": "references/mask-layer-round-region-white.png",
         "referenceSha256": "5e195f1a07e0df83de87bc9e64dce53a66137c79997ce3cb26ec0a48e59ce66d",
@@ -1959,16 +1959,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 78,
-        "maximumChannelError": 48,
+        "changedPixelCount": 21,
+        "maximumChannelError": 97,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
         "minimumMismatchX": 9,
         "minimumMismatchY": 6,
         "maximumMismatchX": 29,
-        "maximumMismatchY": 25
+        "maximumMismatchY": 6
       },
-      "candidateSha256": "44136c585acac0271a2c0a1e1abb0c37289f64a82a65e8988ebff1a2cbb9f38c",
+      "candidateSha256": "7ff2aa4396342817db560f6112726d6c4b3d1f0aa26084e3b54fa5aaf93f968b",
       "oracle": {
         "referencePng": "references/mask-layer-round-region-black.png",
         "referenceSha256": "3efe36bb271083b9caacfb09de0166647583b52c098293a8b45bf2812b28f306",
@@ -2002,16 +2002,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 663,
-        "maximumChannelError": 128,
-        "maximumAlphaError": 1,
-        "alphaChangedPixelCount": 4,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 4,
-        "maximumMismatchX": 35,
-        "maximumMismatchY": 27
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 43,
+        "minimumMismatchY": 37,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "00863ef5b6f10daf48891dedb7ca69eedcfdf0d32850887b7a19768493eac7ca",
+      "candidateSha256": "5134895f8e0a9cd86d6a4dca9ad2ee8670b143a40b4f25c77fdb781b336e188b",
       "oracle": {
         "referencePng": "references/mask-layer-round-opacity-transparent.png",
         "referenceSha256": "bcfab4d844ac51800e9f741ffd0008236b8197f54cd0aa59dcdb19ccf04a6f52",
@@ -2045,16 +2045,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 665,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 4,
-        "maximumMismatchX": 35,
-        "maximumMismatchY": 27
+        "minimumMismatchX": 43,
+        "minimumMismatchY": 37,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "6f73951f8ffea7af04f40404ee0f66ec201c126d494fb80c52b0fdf88f8aae79",
+      "candidateSha256": "c9c7e4601ce90cf202af42d5d8ac5b260a9ff52bf283ad3d93e7d0c20df9c6bd",
       "oracle": {
         "referencePng": "references/mask-layer-round-opacity-white.png",
         "referenceSha256": "9bd7ac11ae830581b25a9b685849544148d84e7501b757f87abace98c19c3979",
@@ -2088,16 +2088,16 @@
       "width": 43,
       "height": 37,
       "admittedRendering": {
-        "changedPixelCount": 659,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 4,
-        "maximumMismatchX": 35,
-        "maximumMismatchY": 27
+        "minimumMismatchX": 43,
+        "minimumMismatchY": 37,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "804e7a2437cee9c1118955c633a572fd72405a1ed593b6a01e7c408b79b0c6b2",
+      "candidateSha256": "493f094a65933c9742e2e34e9716e94c7f0f6c5ea5aff03395ef33d6f7e93321",
       "oracle": {
         "referencePng": "references/mask-layer-round-opacity-black.png",
         "referenceSha256": "050aeeaca6e6819d2fa51510e76f49fa1dc2d27ac46d6a3a2dc786ec676a13e4",
@@ -2148,16 +2148,16 @@
         "selection": "Primary control declared before prototype edits and capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
       "admittedRendering": {
-        "changedPixelCount": 116,
-        "maximumChannelError": 6,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 7,
-        "maximumMismatchX": 36,
-        "maximumMismatchY": 29
+        "minimumMismatchX": 47,
+        "minimumMismatchY": 41,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "f39723dadbea6ca61cf873c01e42511ee8003c25166e366a782eb7bbda363f82"
+      "candidateSha256": "1541594dfe0090a455fdf65d1ba338d651570746bffc7ba10fdafd5197c8392b"
     },
     {
       "id": "research-mask-leaf-leaf-gradient-white",
@@ -2193,16 +2193,16 @@
         "selection": "Primary control declared before prototype edits and capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
       "admittedRendering": {
-        "changedPixelCount": 116,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 7,
-        "maximumMismatchX": 36,
-        "maximumMismatchY": 29
+        "minimumMismatchX": 47,
+        "minimumMismatchY": 41,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "a03a7ee93c74a7b9f6af418c56a7d02e8d44ea366adfaf977b31e9cb676ae6b8"
+      "candidateSha256": "fd1371d7c7b1a82b71416d009f3f3edadd8ccfde1273706cc2d54b27c6197d7c"
     },
     {
       "id": "research-mask-leaf-leaf-gradient-black",
@@ -2238,16 +2238,16 @@
         "selection": "Primary control declared before prototype edits and capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
       "admittedRendering": {
-        "changedPixelCount": 116,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 7,
-        "maximumMismatchX": 36,
-        "maximumMismatchY": 29
+        "minimumMismatchX": 47,
+        "minimumMismatchY": 41,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "72cfa8f1f317dd3c184e796ca32d8a22cde71f6873f02c5a153f0cb5ddff68b7"
+      "candidateSha256": "50427cce47faa4379dbb04a8142fd2c52a05861c6a1f58dfff3adee663f3a063"
     },
     {
       "id": "research-mask-leaf-multi-leaf-symbol-transparent",
@@ -2391,16 +2391,16 @@
         "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
       "admittedRendering": {
-        "changedPixelCount": 47,
-        "maximumChannelError": 1,
-        "maximumAlphaError": 1,
-        "alphaChangedPixelCount": 28,
-        "minimumMismatchX": 9,
-        "minimumMismatchY": 9,
-        "maximumMismatchX": 28,
-        "maximumMismatchY": 26
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 49,
+        "minimumMismatchY": 43,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "24f7c30b9e30110d9172437d6a684efbb43ef6428384b84e3020d1e05c90fe74"
+      "candidateSha256": "5509790dc1109a323d68cf97f37b7af46ff51fbd7744b6ed2ba94ebdc197d20c"
     },
     {
       "id": "research-mask-leaf-white-mask-copy-white",
@@ -2436,16 +2436,16 @@
         "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
       "admittedRendering": {
-        "changedPixelCount": 61,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 5,
-        "minimumMismatchY": 6,
-        "maximumMismatchX": 28,
-        "maximumMismatchY": 26
+        "minimumMismatchX": 49,
+        "minimumMismatchY": 43,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "f087b0d7359f39e5c2ce434ba0ce1d9d8d4ddccf450a53f29cbdbb7bfab46476"
+      "candidateSha256": "fc4aa2fa46e9223d63ee9bdb9f1a08ba8c368afeada0b424d43a499b73275c9c"
     },
     {
       "id": "research-mask-leaf-white-mask-copy-black",
@@ -2481,16 +2481,16 @@
         "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
       "admittedRendering": {
-        "changedPixelCount": 45,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 9,
-        "minimumMismatchY": 9,
-        "maximumMismatchX": 28,
-        "maximumMismatchY": 26
+        "minimumMismatchX": 49,
+        "minimumMismatchY": 43,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "4e0246de86336bc766560af9af6da626f86b767db0c181a62a2e0b39cd136cb8"
+      "candidateSha256": "b8d22314a842e4b16955babe59f039c9e94ac7a0ffa913f0fd3b01d4ffbe81f6"
     },
     {
       "id": "research-mask-leaf-circle-ellipse-alpha-transparent",

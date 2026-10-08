@@ -5,6 +5,18 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Owns the bounded mutable state for one SVG document while XML traversal remains streaming.</summary>
 internal sealed class SvgDocumentState : IDisposable
 {
+    private int _nextPaintOperationIdentity;
+    private int _nextRecordingScope = 1;
+    internal SvgPaintOperationIdentity NewPaintOperationIdentity()
+    {
+        if (_nextPaintOperationIdentity == int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Paint identity storage exceeds the supported range.");
+        return new(++_nextPaintOperationIdentity);
+    }
+    internal SvgRecordingScope NewRecordingScope()
+    {
+        if (_nextRecordingScope == int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Recording scope storage exceeds the supported range.");
+        return new(++_nextRecordingScope);
+    }
     private BudgetedParserList<SvgGeometry>? _temporaryGroupGeometries;
     private RenderBudget.BudgetReservation? _temporaryGroupOwner;
     private const int DefinitionStorageBytes = 256;
@@ -311,7 +323,10 @@ internal sealed class SvgDocumentState : IDisposable
 }
 
 /// <summary>Represents one inherited group or link context while streaming the document.</summary>
-internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity, bool HasMaskScope, SvgInheritedStrokeStyle InheritedStroke, string? FillRule);
+internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity, bool HasMaskScope, SvgInheritedStrokeStyle InheritedStroke, string? FillRule)
+{
+    internal SvgRecordingScope RecordingScope { get; init; }
+}
 
 internal enum SvgGroupKind { Group, Link, Switch }
 

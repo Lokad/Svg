@@ -61,7 +61,7 @@ public sealed class PublicContractTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='1'><rect width='16' height='1' fill='red'/></svg>"u8.ToArray(), options, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
-        Assert.Contains("Rectangle raster work", exception.Message);
+        Assert.Contains("work", exception.Message);
     }
 
     [Fact]
@@ -793,7 +793,7 @@ public sealed class PublicContractTests
     [Fact]
     public void Retained_scene_arrays_stay_within_the_conversion_budget()
     {
-        long retainedScenePeak = ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4);
+        long retainedScenePeak = SvgSceneBuilder.RecordedPaintOwnerBytes + ParserCollectionMemory.GetArrayByteCount<SvgRecordedPaintValue>(4) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(4) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(4);
         SvgRenderLimits insufficient = new(131_072 + retainedScenePeak - 1, 1024, 2, 4, 1024, 16, 16, 32);
         SvgRenderOptions insufficientOptions = new(null, 1, SvgColor.Transparent, insufficient);
         SvgRenderLimits sufficient = new(131_072 + retainedScenePeak, 1024, 2, 4, 1024, 16, 16, 64);

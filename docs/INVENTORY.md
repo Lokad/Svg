@@ -5,9 +5,40 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Shared paint and opacity checkpoint (2026-10-08)
+
+The original bank retains **1,410 fixtures** (1,345 exact, 41 known, 24 rejected),
+**65 research probes** (44 exact, 17 known, four rejected) and 92 Default renders:
+**1,567 executions / 1,539 PNGs**. Nineteen original comparisons become exact
+against unchanged references. Three custom-region mask comparisons improve from
+78 to 21 differing pixels. Every preceding exact result and rejection outcome is
+preserved; all 258 corporate reports and PNGs stay unchanged. Windows/Linux bank
+reports and PNG bytes match, and each platform's corporate references give
+**27/27 documents and 258/258 variants exact**.
+
+The separate [recorded-paint control inventory](../tests/Research/paint-recording/manifest.json)
+retains 52 unchanged SVG/reference pairs with source licenses and stable browser
+triples: **44 exact, two known differences and six valid-input rejections**.
+It includes unchanged MIT unit inputs and original MIT/CC0 controls; supplemental
+checks declared after their repairs remain identified. All six public outputs
+preserve every recorded result. The two curved-opacity differences and valid
+admission gaps remain development cases. Original source and reference bytes,
+rendering options and the oracle pin are unchanged.
+
+Both platforms pass nine-project Release builds, **4,116 tests**, 25 memory
+scenarios, runtime/symbol packages and installed-consumer checks. Resource sweeps
+cover 138 admitted cases and separately 28 rejected inputs with clean ownership,
+work/memory denial and caller-token cancellation. See
+[the design record](RASTERIZATION_DESIGN.md#shared-recorded-paint-and-opacity-checkpoint-2026-10-08).
+
+Finish the identified renderer shortcomings before online sourcing. Then audit
+the original static SVG scope and retain explicitly public-domain/CC0 originals
+that expose missing support or incorrect rendering, with creator/source links,
+retrieval dates, explicit license evidence and stable browser references.
+
 ## Single-stop rectangle shader checkpoint (2026-10-08)
 
-The current bank has **1,410 fixtures** (1,340 exact, 46 known, 24 rejected),
+At that checkpoint, the bank had **1,410 fixtures** (1,340 exact, 46 known, 24 rejected),
 **65 research probes** (30 exact, 31 known, four rejected) and 92 Default renders:
 **1,567 executions**, including 1,539 rendered PNGs. The five new local CC0 inputs
 retain their original bytes and fifteen stable, healthy, cleaned browser captures,

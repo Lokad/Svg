@@ -13,14 +13,14 @@ public sealed class SvgUniformGroupMaskTests
         RenderBudget budget = new(10_000_000);
         using (SvgRoot scene = SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
         {
-            Assert.Collection(scene.Commands,
-                command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, null, -1, 64), command),
-                command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255), command),
-                command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command),
-                command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 1, 255, null, -1, 255), command),
-                command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, null, -1, 192), command),
-                command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.Geometry, 2, 255, null, -1, 255), command),
-                command => Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), command));
+            SvgLeafMaskAssertions.CommandSequence([
+                new(SvgDrawCommandKind.BeginGroup, -1, 255, new(3.4625, 1.9, 34.95, 28.2), -1, 64),
+                new(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255),
+                new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255),
+                new(SvgDrawCommandKind.Geometry, 1, 255, null, -1, 255),
+                new(SvgDrawCommandKind.BeginGroup, -1, 255, new(10.7, 9.1, 27.6, 22.8), -1, 192),
+                new(SvgDrawCommandKind.Geometry, 2, 255, null, -1, 255),
+                new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255)], scene.Commands);
             Assert.True(Assert.IsType<SvgAuthoredPath>(scene.Geometries[0].AuthoredPath).IsKnownConvex);
             Assert.Equal(3, scene.Geometries.Length);
             Assert.All(scene.Geometries, geometry => Assert.Equal(255, geometry.Kind == SvgGeometryKind.PolygonFill ? geometry.Polygon.Color.Alpha : geometry.Rectangle.Color.Alpha));

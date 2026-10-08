@@ -6,9 +6,9 @@ public sealed class SvgUseStrokeSourceReferenceTests
 {
     [Theory]
     [InlineData("integer-path-use-miter-leaf-opacity", 0, 0, 0)]
-    [InlineData("integer-path-use-miter-parent-opacity", 220, 1, 0)]
+    [InlineData("integer-path-use-miter-parent-opacity", 0, 0, 0)]
     [InlineData("integer-path-use-round-leaf-opacity", 0, 0, 0)]
-    [InlineData("integer-path-use-round-parent-opacity", 220, 2, 1)]
+    [InlineData("integer-path-use-round-parent-opacity", 0, 0, 0)]
     public async Task Integer_path_instance_strokes_retain_browser_comparisons_through_all_six_outputs(string name, int pixels, int channel, int alpha)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", name + ".svg"));
