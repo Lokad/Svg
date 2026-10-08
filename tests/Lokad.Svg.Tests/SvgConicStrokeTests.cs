@@ -164,6 +164,10 @@ public sealed class SvgConicStrokeTests
             Assert.Equal(SvgPolygonMapping.NativeStrokeEdges, geometry.Polygon.Mapping);
             SvgQuadSpan[] original = geometry.Polygon.QuadSpans.ToArray();
             Assert.NotEmpty(original);
+            SvgAuthoredPath source = geometry.AuthoredPath ?? throw new InvalidOperationException("Missing oval source stroke.");
+            SvgAuthoredPathCommand[] originalCommands = source.Commands.ToArray();
+            SvgAuthoredPath outline = source.StrokeOutline ?? throw new InvalidOperationException("Missing oval source outline.");
+            SvgAuthoredPathCommand[] originalOutline = outline.Commands.ToArray();
             long owned = budget.Snapshot().CurrentBytes;
             SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
                 defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
@@ -182,6 +186,8 @@ public sealed class SvgConicStrokeTests
             OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() => { using var denied = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, cancelled.Token); });
             Assert.Equal(cancelled.Token, error.CancellationToken);
             Assert.Equal(original, geometry.Polygon.QuadSpans);
+            Assert.Equal(originalCommands, source.Commands.ToArray());
+            Assert.Equal(originalOutline, outline.Commands.ToArray());
             using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
                 Assert.Contains(retry.Pixels, value => value != 0);
             Assert.Equal(owned, budget.Snapshot().CurrentBytes);

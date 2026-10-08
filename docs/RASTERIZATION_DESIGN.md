@@ -9273,3 +9273,52 @@ symbol's three per-size Linux triples also match its frozen Windows references.
 Raw records: `artifacts/gradient-mask-20261009/` and its fresh Linux checkout under
 `artifacts/linux-delivery-20261007/gradient-mask-final-20261009/`. Source and renderer
 fingerprints remain absent. No representative success-rate or throughput claim.
+
+## Shared native oval source replay (2026-10-09)
+
+The radiation warning symbol's three large outputs each retained 24 RGB-only
+errors after copied mask spans were repaired. Four controls declared before
+correction isolate the defect: the 1200×1200 stroked ring reproduces the same
+24 pixels (maximum alpha error nine), its copied mask reproduces the RGB defect,
+and the blades alone and single masked blade are already exact. The residual
+ends at the owned interior of a software tile; clipping the already mapped oval
+outline loses the native source-to-bitmap float order.
+
+Circle/ellipse solid strokes now call the existing native oval/conic stroke
+constructor used for dashed and hairline ovals. It retains the original centerline
+and generated source outline with bounded owners. Shared authored-path replay
+maps those operands directly into each bitmap before clipping and live-edge
+construction. This removes the duplicate offset/flatten/map implementation;
+there is no document predicate or coverage/clipper correction. Existing positive
+uniform-placement and rotated-ellipse admission boundaries remain unchanged.
+
+All nine retained radiation declarations (300/600/1200 × transparent/white/black)
+are exact through all six outputs on Windows/Linux. Every old SVG, render option
+and frozen PNG is unchanged, as are the preceding six exact candidate images.
+The existing verified Linux capture triples already match these references and
+were not repeated. Four additional controls were declared after the first route
+prototype, before their captures: tiled/small translated ellipse, wide circle and
+non-scaling circle under a scaled root viewBox. Seven of the eight controls are
+exact; the non-scaling case exposes the existing wrong width map (251,540 differing
+pixels, maximum 255). It remains a measured G3 gap; neither the shared route nor
+this completed document closes the finite G3/G5 exits. All eight new references
+have three healthy, cleaned, byte-identical Windows captures.
+
+Two small inputs sweep every parser work denial and sampled/peak memory denial
+for directly owned ellipse and copied mask sources, then retry successfully.
+The sweep exposed unpainted fill storage discarded during legacy mask selection;
+that excluded owner now releases before its painted stroke is adopted.
+Existing oval raster work/memory/cancellation/retry protection now also checks
+that both centerline and source-outline commands survive failed replay unchanged.
+Prior shared native stroker/resource checks remain in force.
+
+Windows/Linux Release builds have zero warnings/errors; 5,525 tests pass on each
+(4,140 core, 1,379 visual-project, six FontProbe). Compared with the mask checkpoint,
+all 1,567 original-bank outcomes and 1,546/1,547 PNGs stay unchanged. Only legacy
+Default Malta changes: 1,116 → 981 pixels against its retained native-size reference,
+maximum six → five, alpha exact; it remains incomplete. All established exact
+results and corporate 27/27 documents / 258/258 variants remain unchanged. Six
+development deliverables are complete; the retained tiger's general matrix is
+selected next. Raw evidence is under `artifacts/radiation-contours-20261009/` and
+`artifacts/linux-delivery-20261007/oval-source-final-20261009/`. No source/renderer
+fingerprint fields or quantitative performance claims are introduced.

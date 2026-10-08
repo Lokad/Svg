@@ -493,7 +493,13 @@ internal static class SvgDefinitionParser
             {
                 workCounter.Consume(cancellationToken);
                 if (geometries[index].Kind != SvgGeometryKind.PolygonFill) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid mask content is implemented.");
-                if (!geometries[index].Polygon.HasFill) continue;
+                if (!geometries[index].Polygon.HasFill)
+                {
+                    // The mask adopts only painted owners; discarded fill storage
+                    // must release even when the source also contributes a stroke.
+                    geometries[index].Dispose();
+                    continue;
+                }
                 SvgColor color = geometries[index].Polygon.Color;
                 if (color.Red != color.Green || color.Red != color.Blue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only grayscale luminance mask content is implemented.");
                 if (!hasPaint) paint = color;

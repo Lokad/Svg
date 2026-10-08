@@ -9,10 +9,10 @@ The frozen selection and measured outcomes are recorded below.
 
 All five retained gap documents are exact on Windows/Linux, separate from the
 preserved corporate 27/27 documents and 258/258 variants. The existing radiation
-symbol joins the active document queue as its sixth deliverable: **5/6 complete**,
-with that document at **6/9 exact outputs**. Its large-size 24-pixel residual is
-the next deliverable; neither controls nor partial outputs count as completed
-documents. The I Ching nested affine-opacity control remains exact.
+symbol completes the sixth development deliverable: **6/6 complete**, with that
+document at **9/9 exact outputs through all six APIs on both platforms**. Selecting
+the retained tiger next makes the active queue **6/7 complete**. Controls do not
+count as completed documents. The I Ching nested affine-opacity control remains exact.
 
 ### inv-107 — SVG mask.svg
 
@@ -36,14 +36,23 @@ small/large materializations stay unchanged. The original Commons public-domain
 simple-geometry evidence was checked again on 2026-10-09. No new source or browser
 reference replaces any old input or pixels.
 
-Copied mask contours now preserve quadratic/cubic spans. The 300 and 600 outputs
-are exact on all backgrounds (6/9); 1200 retains 24 RGB-only differing pixels,
-maximum channel error eight, zero alpha difference. This document stays pending.
-Three fresh healthy/cleaned Linux captures per size match the old frozen PNGs;
-the authored opaque ground makes all three declared backgrounds byte-identical.
-Complete the remaining map/contour defect before counting this document.
-Raw records and platform comparisons stay under ignored
-`artifacts/gradient-mask-20261009/`; no source/DLL fingerprints are introduced.
+Copied mask contours retain quadratic/cubic spans, and oval strokes now use the
+shared native source constructor/replay. The original circle conics and generated
+outline map directly into each software bitmap, removing the three large-size
+24-pixel residuals. **All nine frozen outputs are exact through all six APIs on
+Windows/Linux.** The previous six exact outputs and every source/option/reference
+stay unchanged. Three previously verified healthy/cleaned Linux captures per size
+match the old frozen PNGs; these unchanged references were not recaptured.
+
+Eight [focused controls](../tests/Research/oval-source-replay/manifest.json) retain
+seven exact results and one discovered non-scaling root-viewBox width-map defect
+under G3. They do not count as documents. The shared correction also improves the
+legacy Default Malta image against its existing native-size reference: 1,116 → 981
+differing pixels, maximum six → five, zero alpha error. Malta remains incomplete;
+no document graduation follows that partial improvement.
+Raw records stay under ignored `artifacts/radiation-contours-20261009/` and the
+fresh Linux checkout under `artifacts/linux-delivery-20261007/oval-source-final-20261009/`.
+No source/DLL fingerprints are introduced.
 
 ## Original-scope support audit and online batch (2026-10-08)
 
