@@ -549,14 +549,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 77,
-        "maximumChannelError": 109,
-        "maximumAlphaError": 109,
-        "alphaChangedPixelCount": 77,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 13,
-        "maximumMismatchY": 13
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/dashed-circle-butt-16x16.png",
@@ -590,14 +590,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 77,
-        "maximumChannelError": 132,
-        "maximumAlphaError": 132,
-        "alphaChangedPixelCount": 77,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 2,
-        "maximumMismatchX": 13,
-        "maximumMismatchY": 13
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/dashed-circle-offset-16x16.png",
@@ -754,14 +754,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 32,
-        "maximumChannelError": 98,
-        "maximumAlphaError": 98,
-        "alphaChangedPixelCount": 32,
-        "minimumMismatchX": 2,
-        "minimumMismatchY": 8,
-        "maximumMismatchX": 13,
-        "maximumMismatchY": 13
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/dashed-circle-aperiodic-16x16.png",
@@ -795,14 +795,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 17,
-        "maximumChannelError": 52,
-        "maximumAlphaError": 52,
-        "alphaChangedPixelCount": 17,
-        "minimumMismatchX": 7,
-        "minimumMismatchY": 8,
-        "maximumMismatchX": 13,
-        "maximumMismatchY": 13
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/dashed-circle-single-16x16.png",
@@ -836,14 +836,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 20,
-        "maximumChannelError": 40,
-        "maximumAlphaError": 40,
-        "alphaChangedPixelCount": 20,
-        "minimumMismatchX": 7,
-        "minimumMismatchY": 8,
-        "maximumMismatchX": 14,
-        "maximumMismatchY": 12
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/dashed-ellipse-single-16x16.png",

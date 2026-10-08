@@ -7976,3 +7976,60 @@ wrong; that model is rejected and is not integrated. Five fixture and five
 research differences remain: this stroke-ring witness and circle/ellipse dashes.
 The original-scope support audit and online public-domain/CC0 sourcing follow
 these renderer repairs.
+
+## Source-conic ellipse dashes (2026-10-08)
+
+Dashed circles and ellipses sampled an entire oval before measuring and cutting
+its chords. Dashed authored paths already measured and cut original float curves.
+The shared shape stroke route now constructs the same native right-starting oval
+from float bounds and four quarter-circle conics, then uses the existing bounded
+native dash and stroke constructors. Filtered conics, closed seams and generated
+quadratic/rational outlines retain source coordinates through final mapping.
+Existing compiled measurement/cut vectors keep their earlier adapter scope; no
+full native dash/stroke/paint agreement is inferred from those vectors alone.
+
+Both shape callers keep their current positive-uniform placement and butt-cap
+admission. Non-scaling construction measures mapped source conics; ordinary
+construction measures source coordinates. pathLength and offset normalization use
+the shared dash policy. Commands, measurement buffers, cut paths and outlines
+reserve before allocation and observe bounded work/cancellation. Empty radii or
+native bounds paint nothing, fixing zero-radius inputs that previously threw an
+internal ArgumentOutOfRangeException. Public APIs and dependencies remain unchanged.
+
+All four retained circle/ellipse dash-mark fixtures and five research dash probes
+become exact against their unchanged browser PNGs. The full 1,567-execution bank
+changes only these nine reports and images; 1,530 other PNG byte sequences and
+all rejections stay unchanged. Windows/Linux reports and bytes agree. The fixture
+split is 1,385 exact / one known / 24 rejected; research is 61 exact / zero known /
+four rejected. Each platform preserves 27/27 corporate documents and 258/258
+variants exact against its own retained references.
+
+Twelve independent original CC0 controls were declared before the isolated model,
+captures and candidate comparison. All 36 Windows pinned-browser captures are
+healthy, cleaned and byte-stable in triples. All twelve controls are exact, with
+baseline differences of 23–237 pixels: periodic/aperiodic/single patterns, offsets,
+closed seams, half/three-quarter widths, root scaling, non-scaling strokes,
+pathLength, rectangle clipping and fill/stroke. They join the existing six-output
+inventory, now 137 pairs = 129 exact + eight valid-input rejections. Existing
+SVGs, reference PNGs and oracle capture metadata stay unchanged.
+
+Eleven focused tests fail on the preceding renderer and pass after the repair:
+eight cut-conic/outline ownership cases across both shapes, widths and scaling
+policies, through direct/scaled-group/translated-use placement; three zero-radius
+cases verify empty pixels and owner cleanup. Magnified use instances still hit a
+separate existing admission gate. A proposed equivalent-quarter-arc pixel check
+was removed because it assumed identical source construction; independent browser
+controls establish the shape pixels. No reference is derived from another renderer.
+
+Both platforms pass nine-project Release builds and **4,245 tests** (3,881 core,
+358 visual, six FontProbe), with no failures/skips. Twelve fresh resource sweeps
+pass tight work/memory limits, caller-token cancellation and owner cleanup.
+[Matching Windows costs](BENCHMARKS.md#source-conic-ellipse-dash-cost-2026-10-08)
+record the additional native curve storage. Earlier full memory/package evidence
+retains its dated scope; remote CI remains open. Reports stay ignored under
+`artifacts/native-ellipse-dashes-20261008/` and
+`artifacts/linux-delivery-20261007/oval-dash-final-20261008/`.
+
+The contained native stroke-ring fixture remains one differing pixel. Resolve it
+against the original reference before the original-scope support audit and online
+public-domain/CC0 sourcing; these are still separate later work.

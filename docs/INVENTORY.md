@@ -5,6 +5,25 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Source-conic ellipse dash checkpoint (2026-10-08)
+
+Four retained circle/ellipse dash marks and five research dash probes become
+exact against their original browser PNGs. The bank retains **1,567 executions /
+1,539 PNGs**: **1,410 fixtures = 1,385 exact + one known + 24 rejected**, **65
+research probes = 61 exact + zero known + four rejected**, and 92 Default renders.
+Every other report and 1,530 PNG byte sequences stay unchanged. Windows/Linux
+original-bank reports and bytes agree. Each platform preserves **27/27 corporate
+documents / 258/258 variants exact** against its own references.
+
+Twelve original CC0 controls were declared before the isolated implementation,
+captures and comparison. All 36 captures are healthy, cleaned and byte-stable;
+all twelve controls are exact. They cover offsets, periodic/aperiodic/single runs,
+closed seams, half/three-quarter widths, root scaling, non-scaling strokes,
+pathLength, clipping and fill/stroke. The separate recorded-paint inventory now
+retains **137 pairs = 129 exact + eight rejected** through all six outputs.
+Existing SVGs, browser PNGs and oracle capture metadata remain unchanged. See
+[the repair and scoped validation](RASTERIZATION_DESIGN.md#source-conic-ellipse-dashes-2026-10-08).
+
 ## Integer point-list source replay checkpoint (2026-10-08)
 
 The original 8×8 integer bowtie becomes exact against its retained browser PNG:

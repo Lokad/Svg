@@ -391,7 +391,7 @@ internal static class SvgLeafParser
                     double ellipseDashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
                     double? ellipseDashPathLength = SvgStrokeStyleSyntax.ParsePathLength(element.Style.PathLength ?? reader.GetAttribute("pathLength"));
                     double ellipseDashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
-                    try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, ellipseStroke.Value, ellipseDashPattern, ellipseDashOffset, ellipseDashPathLength, ellipseDashMiterLimit, nonScalingStroke, "ellipse", frame, state); }
+                    try { return LowerDashedEllipseStroke(context, syntax, element, filled, ellipseStroke.Value, ellipseDashPattern, ellipseDashOffset, ellipseDashPathLength, ellipseDashMiterLimit, nonScalingStroke, "ellipse", frame, state); }
                     catch { filled.Dispose(); throw; }
                 }
                 try
@@ -415,7 +415,7 @@ internal static class SvgLeafParser
                 double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(element.Style.Dashoffset);
                 double? dashPathLength = SvgStrokeStyleSyntax.ParsePathLength(element.Style.PathLength ?? reader.GetAttribute("pathLength"));
                 double dashMiterLimit = SvgStrokeStyleSyntax.ParseMiterLimit(element.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit"));
-                try { return LowerDashedEllipseStroke(reader, context, syntax, element, filled, stroke.Value, dashPattern, dashOffset, dashPathLength, dashMiterLimit, nonScalingStroke, "circle", frame, state); }
+                try { return LowerDashedEllipseStroke(context, syntax, element, filled, stroke.Value, dashPattern, dashOffset, dashPathLength, dashMiterLimit, nonScalingStroke, "circle", frame, state); }
                 catch { filled.Dispose(); throw; }
             }
             try
@@ -427,7 +427,7 @@ internal static class SvgLeafParser
         }
         catch { filled.Discard(); throw; }
 
-        static SvgParsedGeometry LowerDashedEllipseStroke(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, SvgResolvedPaintableElement shape, SvgParsedGeometry fill, SvgStroke ringStroke, double[] dashes, double dashOffset, double? pathLength, double miterLimit, bool nonScaling, string shapeName, SvgViewportFrame? frame, SvgDocumentState state)
+        static SvgParsedGeometry LowerDashedEllipseStroke(SvgPaintableElementContext context, SvgEllipseSyntax syntax, SvgResolvedPaintableElement shape, SvgParsedGeometry fill, SvgStroke ringStroke, double[] dashes, double dashOffset, double? pathLength, double miterLimit, bool nonScaling, string shapeName, SvgViewportFrame? frame, SvgDocumentState state)
         {
             double userScaleX;
             double userScaleY;
@@ -445,23 +445,11 @@ internal static class SvgLeafParser
             double composedScaleX = userScaleX * (frame?.ScaleX ?? 1);
             double composedScaleY = userScaleY * (frame?.ScaleY ?? 1);
             if (composedScaleX != composedScaleY || composedScaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, shapeName == "circle" ? "Circle strokes under non-uniform polygon transforms stay unsupported." : "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
-            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(SvgOrthogonalGeometryLowering.SampledOutlineCapacity(1, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand)) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(1));
-            using RenderBudget.BudgetReservation scratch = state.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(SvgOrthogonalGeometryLowering.SampledOutlineCapacity(1, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), 1);
-            builder.AddEllipse(new SvgDevicePoint(syntax.CenterX, syntax.CenterY), syntax.RadiusX, syntax.RadiusY, 0, new SvgFlattenPolicy(SvgOrthogonalGeometryLowering.ScaledFlatness(context.OutputMagnification), SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand), context.CancellationToken);
-            if (builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, shapeName == "circle" ? "Dashed circle stroke contours are not implemented." : "Dashed ellipse stroke contours are not implemented.");
-            using BudgetedParserList<SvgFractionalPoint> circlePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-            int vertexIndex = 0;
-            foreach (SvgDevicePoint vertex in builder.GetContour(0))
-            {
-                if ((vertexIndex++ & 4095) == 0) context.CancellationToken.ThrowIfCancellationRequested();
-                circlePoints.Add(new SvgFractionalPoint(vertex.X, vertex.Y));
-            }
             using BudgetedParserList<SvgPoint> noStrokePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, shapeName, false, shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
             SvgParsedGeometry dashed;
-            try { dashed = strokeLowering.LowerStrokePointList(circlePoints, true, true, shape, ringStroke.Color, shape.Presentation.IsPainted, ringStroke.Width, miterLimit, SvgStrokeCap.Butt, SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, frame, state.Budget); }
+            try { dashed = strokeLowering.LowerDashedEllipseStroke(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, shape, ringStroke, dashes, dashOffset, pathLength, miterLimit, nonScaling, frame, state.Budget); }
             catch { fill.Dispose(); throw; }
             return ConcatGeometries(fill, dashed, state.Budget, context.WorkCounter, context.CancellationToken);
         }

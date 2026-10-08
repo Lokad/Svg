@@ -370,6 +370,39 @@ internal ref struct SvgOrthogonalGeometryLowering
         return FinishPolygonFill(mapped, ends, conics, Array.Empty<SvgCubicSpan>(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
     }
 
+    /// <summary>Measures, cuts and strokes original oval conics through the shared native source route.</summary>
+    /// <remarks>Caller admission supplies positive uniform placement and butt caps. Commands, dash measurements, cuts and generated outlines share bounded work/cancellation and owned storage; empty native bounds paint nothing.</remarks>
+    internal SvgParsedGeometry LowerDashedEllipseStroke(double centerX, double centerY, double radiusX, double radiusY,
+        SvgResolvedPaintableElement element, SvgStroke stroke, double[] dashes, double dashOffset, double? pathLength,
+        double miterLimit, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
+        double deviceWidth = StrokeDeviceWidth(stroke.Width, element.Transform, frame, nonScaling);
+        float left = (float)centerX - (float)radiusX, right = (float)centerX + (float)radiusX;
+        float top = (float)centerY - (float)radiusY, bottom = (float)centerY + (float)radiusY;
+        if (!float.IsFinite(left) || !float.IsFinite(right) || !float.IsFinite(top) || !float.IsFinite(bottom))
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Oval dash coordinates exceed the finite float range.");
+        if (radiusX <= 0 || radiusY <= 0 || left == right || top == bottom)
+        {
+            using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+            return new(empty.Detach(), 0);
+        }
+        float midX = (float)(0.5 * ((double)left + right)), midY = (float)(0.5 * ((double)top + bottom));
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+        commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(right, midY), default, default));
+        Conic(commands, new(right, bottom), new(midX, bottom));
+        Conic(commands, new(left, bottom), new(left, midY));
+        Conic(commands, new(left, top), new(midX, top));
+        Conic(commands, new(right, top), new(right, midY));
+        commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+        return LowerNativeStrokeCommands(commands, deviceMap, deviceWidth, stroke.Width, miterLimit,
+            SvgStrokeCap.Butt, SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, stroke.Color,
+            element.Presentation.IsPainted, element.OutputMagnification, frame, budget);
+
+        static void Conic(BudgetedParserList<SvgAuthoredPathCommand> target, SvgDevicePoint control, SvgDevicePoint end)
+            => target.Add(new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, control, end, new(SvgRationalQuadratic.QuarterCircleWeight, 0)));
+    }
+
     /// <summary>Lowers a circle through the shared native oval stroke constructor.</summary>
     internal SvgParsedGeometry LowerCircleStrokeFill(double centerX, double centerY, double radius, SvgResolvedPaintableElement element, SvgStroke stroke, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
         => LowerEllipseStrokeFill(centerX, centerY, radius, radius, element, stroke, nonScaling, frame, budget);

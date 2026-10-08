@@ -51,6 +51,12 @@ The retained integer bowtie is exact against its original browser PNG. Native fl
 rectangle endpoints close IBM's three large variants, completing the frozen-cohort
 fidelity target on both platforms.
 
+Circle and ellipse dashes now cut original conics through the shared native
+path-dash constructor. All nine retained dash failures and twelve new independent
+controls are exact, including thin widths, offsets, seams, scaling, pathLength
+and clipping. Remaining admission restrictions are in the support matrix.
+See [the dash repair](docs/RASTERIZATION_DESIGN.md#source-conic-ellipse-dashes-2026-10-08).
+
 Rounded rectangles retain native conic corners and convex shape classification.
 Fills and strokes share source commands through final mapping, with independent
 browser regressions for fractional coordinates, clamped radii and reflected shapes.

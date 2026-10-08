@@ -2451,3 +2451,25 @@ Summed per-recipe median timings read **4.716 → 3.814 ms** with the baseline
 first and **5.133 → 4.488 ms** with the repair first. These selected small controls
 do not establish representative throughput or Linux timing. Batches and ledgers
 remain ignored under `artifacts/analytic-event-walk-20261008/`.
+
+## Source-conic ellipse dash cost (2026-10-08)
+
+Twelve matching Windows recipes compare sampled circle/ellipse dash centerlines
+with retained source conics: offsets, periodic/aperiodic/single runs, closed seams,
+thin widths, root scaling, non-scaling strokes, pathLength, clipping and fill/stroke.
+Inputs, options and output forms match in both process orders. Each process warms
+up eight conversions and records three batches of twenty per recipe; allocations
+compare medians across six batches per renderer.
+
+Parser work rises by **151–1,304 units**; total conversion work falls by
+**29–31,173 units**. Accounted peak deltas range from **0 to +706,788 bytes**;
+median managed allocation deltas range from **−12,544 to +30,656 bytes per
+conversion**. Retained centerlines/outlines and the existing conservative curve
+replay reservation add live storage; allocation traffic remains a separate
+measurement. Geometry/command/paint layouts stay **272 / 72 / 68 bytes**.
+Twelve separate resource sweeps verify work/memory denial, cancellation and cleanup.
+
+Summed per-recipe median timings read **16.253 → 14.538 ms** with the baseline
+first and **18.683 → 15.897 ms** with the repair first. These selected controls
+do not establish representative throughput or Linux timing. Recipes, batches and
+ledgers remain ignored under `artifacts/native-ellipse-dashes-20261008/`.
