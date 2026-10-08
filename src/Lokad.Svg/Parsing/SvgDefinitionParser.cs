@@ -8,7 +8,7 @@ internal static class SvgDefinitionParser
 {
     internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        bool inDefinitions = state.DefinitionsDepth >= 0 && (reader.Depth == state.DefinitionsDepth + 1 || reader.Depth == state.SymbolDepth + 1);
+        bool inDefinitions = (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1) || (state.SymbolDepth >= 0 && reader.Depth == state.SymbolDepth + 1);
         bool rootDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && directChild && reader.GetAttribute("id") is not null;
         bool groupNestedDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && state.PatternId is null && state.MaskId is null && state.ClipPathId is null && state.GroupDepth > 0 && reader.GetAttribute("id") is not null;
         if ((inDefinitions || rootDefinition || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
@@ -26,7 +26,7 @@ internal static class SvgDefinitionParser
             if (symbolChild)
             {
                 SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).Presentation;
-                context = context with { InheritedPresentation = context.InheritedPresentation with { Paint = symbol.Paint }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule };
+                context = context with { InheritedPresentation = new(symbol.Paint, true, true, SvgAffineTransform.Identity), InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule, RecordingScope = new(1) };
             }
             SvgViewBox? symbolViewBox = null;
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, symbolViewBox)
@@ -58,7 +58,8 @@ internal static class SvgDefinitionParser
             state.SawStyleableNode = true;
             return inDefinitions;
         }
-        if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol")
+        if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol"
+            && SvgStructuralVocabulary.IsSymbolDefinitionLocation(directChild, isEligible && state.GroupDepth > 0, state.DefinitionsDepth, state.SymbolDepth, reader.Depth))
         {
             SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
             InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken);
@@ -68,14 +69,20 @@ internal static class SvgDefinitionParser
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), style.Fill is not null,
                 style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), SvgColorParser.ParsePaintOpacity(style.Opacity));
-            string id = reader.GetAttribute("id") ?? throw new SvgException(SvgErrorCode.MalformedInput, "A symbol requires an id.");
-            if (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
-            state.SymbolId = state.Strings.Copy(id);
+            string? id = reader.GetAttribute("id");
+            if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            state.SymbolId = id is null ? null : state.Strings.Copy(id);
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
             state.SawStyleableNode = true;
             if (reader.IsEmptyElement) RegisterSymbol(state, workCounter, cancellationToken);
             else state.SymbolDepth = reader.Depth;
+            return true;
+        }
+        if (state.SymbolDepth >= 0 && reader.Depth == state.SymbolDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg"
+            && reader.LocalName is "title" or "desc" or "metadata")
+        {
+            if (!reader.IsEmptyElement) state.SymbolDescriptionDepth = reader.Depth;
             return true;
         }
         bool inClipDefinitions = state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1;
@@ -1021,8 +1028,11 @@ internal static class SvgDefinitionParser
         {
             SvgPaintRecording.WrapInstance(definition.Geometries, builder.Presentation.SourceOpacity, state.NewRecordingScope(), state, work, token);
             work.Consume(token);
-            string id = state.SymbolId ?? throw new InvalidOperationException("Symbol registration requires an identifier.");
-            if (!state.Definitions.TryAdd(id, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            if (state.SymbolId is string id)
+            {
+                if (!state.Definitions.TryAdd(id, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            }
+            else state.RetainAnonymousSymbol(definition, work, token);
             retained = true;
         }
         finally

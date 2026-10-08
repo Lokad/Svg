@@ -19,6 +19,8 @@ internal sealed class SvgDocumentState : IDisposable
     }
     private BudgetedParserList<SvgGeometry>? _temporaryGroupGeometries;
     private RenderBudget.BudgetReservation? _temporaryGroupOwner;
+    private BudgetedParserList<SvgDefinition>? _anonymousSymbols;
+    private RenderBudget.BudgetReservation? _anonymousSymbolOwner;
     private const int DefinitionStorageBytes = 256;
     private const int ClipStorageBytes = 128;
     // The tile embeds nullable scene geometry. Include its actual value size,
@@ -178,6 +180,8 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal int SymbolDepth { get; set; } = -1;
 
+    internal int SymbolDescriptionDepth { get; set; } = -1;
+
     internal int ClipPathDepth { get; set; } = -1;
 
     internal int MaskDepth { get; set; } = -1;
@@ -241,6 +245,23 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal SvgSymbolDefinitionBuilder? SymbolDefinition { get; set; }
 
+    /// <summary>Transfers an anonymous symbol's geometry only on success, keeping child-ID aliases alive through scene construction.
+    /// Lazy storage and growth are budgeted; on failure the caller retains every geometry owner.</summary>
+    internal void RetainAnonymousSymbol(SvgDefinition definition, ParserWorkCounter work, CancellationToken token)
+    {
+        if (_anonymousSymbols is null)
+        {
+            RenderBudget.BudgetReservation owner = Budget.Reserve(256, SvgMemoryCategory.Parser);
+            try
+            {
+                _anonymousSymbols = new(Budget, SvgMemoryCategory.Parser, work, token);
+                _anonymousSymbolOwner = owner;
+            }
+            catch { owner.Dispose(); throw; }
+        }
+        _anonymousSymbols.Add(definition);
+    }
+
     private bool _definitionsReleased;
 
     /// <summary>Owns a newly mapped/unbaked group value until parser teardown; final instances copy its native owners.</summary>
@@ -274,12 +295,17 @@ internal sealed class SvgDocumentState : IDisposable
         foreach (SvgDefinition value in Definitions.Values)
             if (!value.BorrowedFromSymbol)
                 foreach (SvgGeometry geometry in value.Geometries) geometry.Dispose();
+        if (_anonymousSymbols is not null)
+            foreach (SvgDefinition value in _anonymousSymbols.AsSpan())
+                foreach (SvgGeometry geometry in value.Geometries) geometry.Dispose();
     }
 
     public void Dispose()
     {
         SymbolDefinition?.Dispose();
         ReleaseDefinitions();
+        _anonymousSymbols?.Dispose();
+        _anonymousSymbolOwner?.Dispose();
         if (_temporaryGroupGeometries is not null)
         {
             foreach (SvgGeometry geometry in _temporaryGroupGeometries.AsSpan()) geometry.Dispose();

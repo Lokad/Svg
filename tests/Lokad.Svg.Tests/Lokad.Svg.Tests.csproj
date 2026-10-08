@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/symbol-locations/*.svg" Link="TestData/symbol-locations/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/symbol-instances/*.svg" Link="TestData/symbol-instances/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/native-stroke-source-ring-161.svg" Link="TestData/native-stroke-source-ring-161.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/native-stroke-source-clipped-cubic-161.svg" Link="TestData/native-stroke-source-clipped-cubic-161.svg" CopyToOutputDirectory="PreserveNewest" />

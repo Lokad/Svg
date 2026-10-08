@@ -8177,3 +8177,44 @@ Raw runs remain ignored under `artifacts/symbol-instances-20261008/` and Linux
 `symbol-instances-final-20261008/`. Root-level symbols, nested content, wider
 visibility/stroke/paint overrides and viewports remain G2/G3/G5; S17 remote CI
 remains open.
+
+## Non-rendering symbol locations, anonymous owners and descriptions (2026-10-08)
+
+The same symbol-definition pipeline now accepts direct root and rendered-group
+placement as well as admitted defs children. It never inserts definition geometry
+into the rendered scene. Lowering resets definition-ancestor transforms, paint,
+visibility and recording context; copies inherit through use rather than through
+the original symbol's ancestors. The location predicate is shared with font
+discovery, including empty symbols as styleable nodes. Later direct text keeps
+its admitted font request; symbol and metadata text remains ineligible.
+
+IDs are optional. Anonymous symbols hold their owned geometries in a lazy,
+budgeted document registry so separately referenced child IDs remain alive.
+Registration transfers ownership only after successful list insertion; parser
+failure releases builder/native owners and borrowed aliases never dispose their
+parent twice. Three fresh exhaustive work/memory inputs cover anonymous aliases,
+hidden definition ancestors and descriptions. Six new cross-location duplicate-ID
+controls and eighteen metadata/structure/discovery checks preserve categorized
+errors, cleanup and retry; five provider/lowering cases protect the font boundary.
+
+Descriptive title/desc/metadata subtrees cannot paint or register geometry IDs.
+Traversal still counts and validates structural limits at every element and
+charges work/checks cancellation; active SVG style/script/animation content
+remains rejected. Nested group/use symbol contents retain their measured gate.
+
+Fourteen independently declared controls have three stable healthy/cleaned
+128×96 browser captures each: eleven newly exact six-output results and three
+unchanged valid-input rejections. The preceding renderer rejects all fourteen.
+The separate CC0 I Ching library preserves its downloaded source and root-only
+280×720 test input; 79 symbols/uses still hit the shared compound-curved-path gate
+under G3. No source is substituted or browser reference replaced to claim a gain.
+
+Windows/Linux Release builds pass without warnings/errors and **4,359 tests**
+pass per platform. All preceding 1,567 original reports / 1,545 PNG byte sequences
+and all corporate results remain unchanged. **27/27 documents / 258/258 variants
+are exact** against each platform's own retained references. Raster layout,
+surfaces, public APIs and runtime dependencies are unchanged. No quantitative
+performance claim is made; earlier package/memory/timing records keep their dated
+scope. Raw results stay ignored under `artifacts/symbol-locations-20261008/` and
+isolated Linux `symbol-locations-final-20261008/`. G2 nested content/style/other
+locations/viewports, G3 geometry/maps and S17 remote CI remain open.

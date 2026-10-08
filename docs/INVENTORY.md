@@ -56,6 +56,36 @@ At its declared 500×500 transparent viewport it is pixel-exact; its three stabl
 captures and comparison remain ignored. No successful-source or failing-source
 denominator has been silently repurposed as a representative rate.
 
+## Symbol location controls and CC0 library follow-up (2026-10-08)
+
+[Fourteen original CC0 location/content controls](../tests/Research/symbol-locations/manifest.json)
+retain 128×96 transparent inputs declared before production, with three stable,
+healthy and cleaned captures each. Eleven are exact through all six outputs;
+three nested group/backward-use/forward-use cases retain valid-input rejections.
+They remain separate from original, corporate and online source denominators.
+Root/group placement, ancestor exclusion, anonymous child aliases, empty symbols
+and descriptive metadata now have independent exact browser evidence.
+
+### inv-106 — I Ching Symbols
+
+- Original: [untouched downloaded SVG](../tests/Fixtures/candidates/inv-106.svg); source [Openclipart page](https://openclipart.org/detail/252318/i-ching-symbols), uploaded 2016-06-16, retrieved 2026-10-08.
+- Creator: G. Adam Stanislav (AdamStanislav), identified on the source page and inside the original SVG. License: **CC0-1.0**, under [Openclipart's upload policy](https://openclipart.org/share). The source also permits free use.
+- Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-106.svg); only explicit 280×720 root pixel dimensions inserted, preserving the original viewBox, 79 symbols, 79 uses, all geometry and remaining bytes. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
+- Browser reference: [PNG](../tests/References/inventory/inv-106-transparent.png); Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3 / device scale 1, three stable healthy/cleaned captures. Both empty and painted areas are present.
+- Observed failure: **UnsupportedFeature**, `Only closed axis-aligned integer paths are implemented.` Queue **G3**: the compound curved even-odd Yin/Yang path hits shared geometry admission. The preceding renderer rejects with the same first message; the location repair claims no gain on this source. Later gates remain unproved.
+
+The follow-up brings the online development set to four retained failures, after
+five screened sources including the earlier exact checkerboard. It establishes
+no representative success rate. Asset identities and outcomes live in [the case
+manifest](../tests/References/inventory/svg-gap-cases.json); original page/license
+downloads and capture diagnostics remain ignored under `artifacts/symbol-locations-20261008/`.
+
+Windows/Linux Release builds and **4,359 tests each** pass (3,949 core, 404 visual,
+six FontProbe). All preceding 1,567 original reports and 1,545 PNG byte sequences
+stay unchanged, and platform banks agree. Each platform retains **27/27 / 258/258
+exact** against its own corporate references. Older resource/package/timing
+records keep their dated scope; remote CI and broader G2 work remain open.
+
 ## Direct-leaf symbol and native instance checkpoint (2026-10-08)
 
 The existing multi-child-symbol and magnified-number-instance families become

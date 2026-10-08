@@ -54,7 +54,7 @@ fidelity target on both platforms.
 All admitted original fixture and research comparisons are now exact. Native
 stroke coverage keeps zero-signed-area contours carrying local winding, closing
 the final contained-ring witness. [The support queue](PLAN.md#3-ordered-support-queue)
-now targets remaining static SVG combinations, with three newly sourced
+now targets remaining static SVG combinations, with four sourced
 public-domain/CC0 failures retained in the development inventory.
 
 Inert `enable-background` declarations now share validation across attributes and
@@ -65,8 +65,9 @@ Direct-leaf symbols now preserve multiple children in document order, inherited
 fill channels and separate child/symbol/use opacity. Magnified native-backed
 instances replay original curve commands. Both retained families are exact on
 three backgrounds, and sixteen independent controls match through all six
-outputs. Root-level symbols, nested symbol content and wider style/viewport
-combinations remain in G2; see [the supported boundary](docs/SUPPORT_MATRIX.md#direct-leaf-symbols-and-instances-2026-10-08).
+outputs. Symbols also work under the root and rendered groups, with optional IDs
+and non-rendering descriptions; eleven new controls are exact. Nested symbol
+groups/uses and wider style/viewport combinations remain in G2; see [the supported boundary](docs/SUPPORT_MATRIX.md#direct-leaf-symbols-and-instances-2026-10-08).
 
 Circle and ellipse dashes now cut original conics through the shared native
 path-dash constructor. All nine retained dash failures and twelve new independent

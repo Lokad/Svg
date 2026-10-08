@@ -17,12 +17,16 @@ The shared `enable-background` validator now admits `new`, `accumulate` and
 stylesheet paths. The Illustrator heart (`inv-105`) advances to the rotated-
 rectangle gate, **G3**, and remains rejected; no source or browser reference changes.
 
-**G2's direct-leaf symbol repair is implemented.** Both retained symbol/instance
-families now render exactly on three backgrounds, with unchanged inputs and
-references. Sixteen independent controls are exact through all six outputs.
-The next active item remains **G2's remaining symbol and instance combinations**:
-root-level symbols, nested group/use contents, inherited stroke/paint overrides
-and broader viewport mapping. G2 is not a general symbol-support claim.
+**G2's direct-leaf and symbol-location repairs are implemented.** Both retained
+symbol/instance families now render exactly on three backgrounds, with unchanged inputs and
+references. Symbols also work directly under the root or rendered groups, without
+copying definition-ancestor transforms or visibility. Thirty independent symbol
+controls retain 27 exact results and three nested-content rejections through all
+six outputs. Anonymous symbols and descriptive metadata have bounded ownership
+and shared font-discovery checks. The next active item remains **G2's remaining
+symbol and instance combinations**:
+nested group/use contents, inherited stroke/paint overrides, remaining definition
+locations and broader viewport mapping. G2 is not a general symbol-support claim.
 
 The next work is ordinary static SVG support within the original product scope:
 remove erroneous admission gates, then fill the missing geometry, reference,
@@ -33,7 +37,8 @@ The first new online sourcing batch screens four public-domain/CC0 SVGs and
 retains three distinct failures, with untouched downloads, root-only test inputs,
 license evidence and stable browser references. The exact checkerboard is excluded
 from this failure-selected development corpus. It establishes no representative
-success rate. The [inventory](docs/INVENTORY.md#original-scope-support-audit-and-online-batch-2026-10-08)
+success rate. A follow-up CC0 I Ching library adds a compound-curve rejection,
+bringing the retained online failures to four. The [inventory](docs/INVENTORY.md#original-scope-support-audit-and-online-batch-2026-10-08)
 and [case manifest](tests/References/inventory/svg-gap-cases.json) hold the details.
 
 This plan owns priorities and exit criteria. [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
@@ -49,8 +54,8 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,318 passed on each platform**: 3,923 core, 389 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Twenty-six exhaustive parser-work/memory ownership inputs pass, including four fresh symbol cases; seven duplicate-ID controls retain MalformedInput and zero live storage. During-assembly cancellation releases scratch, preserves child owners and allows retry. Sixteen fresh symbol controls pass all six outputs; the 149 recorded-paint controls retain their outcomes. Earlier broad resource, memory and installed-package evidence keeps its dated scope. No public API or runtime dependency changes; remote CI remains open. |
+| Full tests, including corporate selection/measurement | **4,359 passed on each platform**: 3,949 core, 404 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Twenty-nine exhaustive parser-work/memory ownership inputs pass, including three fresh location/anonymous cases. Thirteen duplicate-ID controls keep MalformedInput and zero live storage. During-assembly cancellation/retry remains covered. Eighteen new location/metadata/discovery checks and five font-provider paths pass. Thirty six-output symbol controls retain 27 exact results and three valid-input nested-content rejections; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,389 exact + zero known-difference renders + 21 rejections**; 799 base documents / 611 variants. Three magnified-instance cases graduate against their unchanged references; other fixture outcomes and PNGs stay unchanged. |
 | Executed research manifest | **65 probes = 64 exact + zero known-difference renders + one rejection**. Three multiple-child symbol cases graduate from the erroneous MalformedInput rejection; other research outcomes and PNGs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
@@ -59,14 +64,14 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; original curve commands replay through existing final mapping. No new raster fields or surfaces and no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and 4,318 tests, including the three offline
-sourcing checks and sixteen symbol-reference cases. The original bank retains
-1,567 executions and now produces 1,545 PNGs: six former rejections become exact,
-while the other 1,561 reports and all preceding 1,539 PNG byte sequences stay
-unchanged. Windows/Linux banks agree. The development corpus still has three
-rejected documents; the heart's first blocker remains G3. WSL Ubuntu 24.04.3 uses
-isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6. Earlier package,
-memory and timing evidence keeps its dated scope; remote CI remains open.
+Both platforms pass Release builds and 4,359 tests. All 1,567 original execution
+reports and all 1,545 PNG byte sequences remain unchanged from the preceding
+symbol repair; Windows/Linux banks agree. Every corporate result is unchanged
+and exact against its platform's own references. Four retained online failures
+remain; the heart and new I Ching library are G3, the two patterns are G6. WSL
+Ubuntu 24.04.3 uses isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6.
+Earlier package, memory and timing evidence keeps its dated scope; remote CI
+remains open.
 
 ## 2. Execution decisions
 
@@ -104,8 +109,8 @@ landed mechanisms remain regression requirements.
 | Priority | Work | Failure class | Dependencies / stages |
 | --- | --- | --- | --- |
 | G1 | **Declaration validation landed.** Inert exporter presentation values share one validator; G2 is next. | Original syntax-location inconsistency resolved; the heart now exposes G3 | Remaining nested style/root selector gates stay G5/G7; S9 |
-| G2 | **Direct-leaf accumulation and native curve replay implemented.** Complete remaining practical symbol/instance combinations. | First retained failures exact; root-level/nested/style/viewport combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
-| G3 | Complete static transforms across shapes, curves and instances | Missing combinations behind shape-specific and non-uniform gates | Source-curve replay and paint-coordinate maps; S10/S11 |
+| G2 | **Direct-leaf accumulation and native curve replay implemented.** Complete remaining practical symbol/instance combinations. | First retained failures exact; nested/style/other-location/viewport combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
+| G3 | Complete curved geometry and static transforms across shapes, curves and instances | Missing combinations behind shape-specific and non-uniform gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | Paint-server strokes on ordinary geometry | Missing combinations; no observed pixel residual after rejection | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | Nested viewport paints, general clips, masks and opacity composition | Missing reference/coordinate/composition combinations | G2/G3, bounded layers and reference scopes; S9/S14 |
 | G6 | Practical patterns: content, inheritance and coordinate systems | Missing static paint support | G2/G3/G5, bounded tile rendering; S13/S16 |
@@ -151,16 +156,35 @@ six original comparisons are exact without reference replacement. Four new
 exhaustive work/memory sweeps, duplicate-ID cleanup and during-assembly
 cancellation/retry protect ownership and bounded expansion.
 
-**G2 remains open.** Source and measure root-level symbols, nested group/use
-contents, visibility/display, inherited stroke and paint-server overrides,
-child aliases inheriting stroke, and viewBox percentage-base/affine combinations.
+The location repair admits direct root/rendered-group symbols through the same
+non-rendering definition route as `defs`. Definition ancestors do not transfer
+their transform, opacity, fill or visibility into clones. IDs are optional;
+anonymous definitions retain child-ID owners through scene construction. Title,
+description and metadata subtrees do not draw or register geometry; active
+content remains rejected and structural/node/work limits still apply. Font
+discovery shares symbol location and late-stylesheet rules, ignores symbol text
+and retains later direct-text requests. Eleven new controls are browser-exact;
+three unchanged nested group/backward-use/forward-use controls retain their G2
+rejections and provide the next measured work.
+
+**G2 remains open.** Implement the retained nested group/use cases, then measure
+container/leaf visibility and display, color/currentColor inheritance, stroke and
+paint-server overrides, child aliases inheriting stroke, other definition
+locations, and viewBox percentage-base/affine combinations.
 Select bounded slices from those failures and audit cycle categorization; broader
 transform maps stay G3 and deeper reference/composition scopes stay G5. Exit:
 the selected practical combinations are exact on unchanged references with no
 regression to current exact inputs or resource contracts.
 See [the repair](docs/RASTERIZATION_DESIGN.md#ordered-symbol-children-and-native-instance-replay-2026-10-08).
+The [location/ownership follow-up](docs/RASTERIZATION_DESIGN.md#non-rendering-symbol-locations-anonymous-owners-and-descriptions-2026-10-08) records the current repair.
 
-### G3 — transforms
+### G3 — curved geometry and transforms
+
+The new CC0 `inv-106` I Ching library rejects its compound curved even-odd
+Yin/Yang path through the shared path admission gate. Its 79 symbols and uses
+retain original geometry and a stable 280×720 browser reference. This geometry
+combination belongs to S10 alongside the maps below; removing the first gate
+must not hide later failures.
 
 `original-logo-rotated-mark` rejects a rotated rectangle, even though some path
 rotations are admitted. `original-number-general-map` and the retained tiger reject

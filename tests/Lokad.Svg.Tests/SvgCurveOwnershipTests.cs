@@ -7,6 +7,8 @@ public sealed class SvgCurveOwnershipTests
 {
     public static IEnumerable<object[]> Inputs()
     {
+        foreach (string name in new[] { "anonymous-child-alias", "group-definition-hidden", "symbol-descriptions" })
+            yield return new object[] { "symbol-location-" + name, File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "symbol-locations", name + ".svg")), false };
         foreach (string name in new[] { "mixed-leaves", "stroked-fill-override", "child-alias", "magnified-symbol-curves" })
             yield return new object[] { "symbol-" + name, File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "symbol-instances", name + ".svg")), false };
         yield return new object[] { "rejects-translucent-paint-strokes-on-circles-1", "<svg xmlns=\"http://www.w3.org/2000/svg\"><defs><linearGradient id=\"g\"><stop offset=\"0\" stop-color=\"#ff0000\"/><stop offset=\"1\" stop-color=\"#0000ff\"/></linearGradient></defs><circle cx=\"4\" cy=\"4\" r=\"4\" fill=\"red\" stroke=\"url(#g)\" stroke-width=\"2\" opacity=\"0.5\"/></svg>", false };

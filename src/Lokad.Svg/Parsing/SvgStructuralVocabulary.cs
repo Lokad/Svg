@@ -21,6 +21,11 @@ internal static class SvgStructuralVocabulary
     /// <summary>Identifies the definition container that admits local geometry references.</summary>
     internal static bool IsDefinitionsContainer(string localName) => localName == "defs";
 
+    /// <summary>Shares non-rendering symbol placement between lowering and font discovery.
+    /// An open symbol admits no nested symbol; otherwise direct defs children and eligible root/group children are definitions.</summary>
+    internal static bool IsSymbolDefinitionLocation(bool directChild, bool eligibleGroupChild, int definitionsDepth, int symbolDepth, int elementDepth)
+        => symbolDepth < 0 && (definitionsDepth >= 0 ? elementDepth == definitionsDepth + 1 : directChild || eligibleGroupChild);
+
 }
 
 /// <summary>Tracks one open switch container and whether its first element child was consumed.</summary>

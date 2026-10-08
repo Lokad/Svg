@@ -1,0 +1,964 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-1400 -1000 2800 7200" fill="#000" stroke="none" stroke-width="0">
+	<title>I Ching Symbols</title>
+	<desc>If you copy this file to the share/symbols directory of Inkscape, these symbols will become automatically available from the Object/Symbols menu.</desc>
+
+	<defs>
+
+		<!--
+			Symbols created in June 2016 by direct coding in SVG, by G. Adam Stanislav.
+			Use them freely.
+
+			Please note the dimensions, that is the width-to-height ratio of each symbol,
+			which you should keep. The Yin and Yang symbol has the same width as its height.
+			The eight trigrams ratios are width/height = 25/18. The sixty-four hexagrams are 5/8.
+			The four digrams are 75/32, and finally the two monograms are 15/2.
+		-->
+
+		<symbol id="YinYang" viewBox="-5 -5 810 810" fill-rule="evenodd">
+			<title>陰陽 Yin and Yang</title>
+
+			<path d="M400 0C179.086 0 0 179.086 0 400 0 620.914 179.086 800 400 800 620.914 800 800 620.914 800 400 800 179.086 620.914 0 400 0zM400 10C184.609 10 10 184.609 10 400 10 615.391 184.609 790 400 790 292.304 790 205 682.304 205 600 205 492.3 292.304 400 400 400 507.7 400 600 292.304 600 200 600 92.304 507.7 10 400 10zM400 665c35.895 0 65-29.105 65-65 0-35.895-29.105-65-65-65-35.895 0-65 29.105-65 65 0 35.895 29.105 65 65 65zM400 132c-37.555 0-68 30.445-68 68 0 37.555 30.445 68 68 68 37.555 0 68-30.445 68-68 0-37.555-30.445-68-68-68z"/>
+		</symbol>
+
+		<symbol id="Trigram_U2630" viewBox="0 0 750 540">
+			<title>乾 Qián ☰ U+2630</title>
+			<desc>Heaven, Sky</desc>
+
+			<path id="U2630" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Trigram_U2631" viewBox="0 0 750 540">
+			<title>兌 Duì ☱ U+2631</title>
+			<desc>Lake, Marsh, Valley</desc>
+
+			<path id="U2631" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Trigram_U2632" viewBox="0 0 750 540">
+			<title>離 Lí ☲ U+2632</title>
+			<desc>Fire</desc>
+
+			<path id="U2632" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Trigram_U2633" viewBox="0 0 750 540">
+			<title>震 Zhèn ☳ U+2633</title>
+			<desc>Thunder</desc>
+
+			<path id="U2633" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Trigram_U2634" viewBox="0 0 750 540">
+			<title>巽 Xùn ☴ U+2634</title>
+			<desc>Wind</desc>
+
+			<path id="U2634" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Trigram_U2635" viewBox="0 0 750 540">
+			<title>坎 Kǎn ☵ U+2635</title>
+			<desc>Water</desc>
+
+		<path id="U2635" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Trigram_U2636" viewBox="0 0 750 540">
+			<title>艮 Gèn ☶ U+2636</title>
+			<desc>Mountain</desc>
+
+			<path id="U2636" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Trigram_U2637" viewBox="0 0 750 540">
+			<title>坤 Kūn ☷ U+2637</title>
+			<desc>Earth</desc>
+
+			<path id="U2637" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DC0" viewBox="0 0 750 1200">
+			<title>乾 qián ䷀ U+4DC0</title>
+			<desc>Hexagram #1 in King Wen Order.</desc>
+
+			<path id="U4DC0" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DC1" viewBox="0 0 750 1200">
+			<title>坤 kūn ䷁ U+4DC1</title>
+			<desc>Hexagram #2 in King Wen Order.</desc>
+
+      <path id="U4DC1" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+    </symbol>
+
+		<symbol id="Hexagram_U4DC2" viewBox="0 0 750 1200">
+			<title>屯 zhūn ䷂ U+4DC2</title>
+      <desc>Hexagram #3 in King Wen Order.</desc>
+
+      <path id="U4DC2" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DC3" viewBox="0 0 750 1200">
+			<title>蒙 méng ䷃ U+4DC3</title>
+      <desc>Hexagram #4 in King Wen Order.</desc>
+
+			<path id="U4DC3" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DC4" viewBox="0 0 750 1200">
+			<title>需 xū ䷄ U+4DC4</title>
+      <desc>Hexagram #5 in King Wen Order.</desc>
+
+      <path id="U4DC4" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DC5" viewBox="0 0 750 1200">
+			<title>訟 sòng ䷅ U+4DC5</title>
+      <desc>Hexagram #6 in King Wen Order.</desc>
+
+      <path id="U4DC5" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DC6" viewBox="0 0 750 1200">
+			<title>師 shī ䷆ U+4DC6</title>
+      <desc>Hexagram #7 in King Wen Order.</desc>
+
+      <path id="U4DC6" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DC7" viewBox="0 0 750 1200">
+			<title>比 bǐ ䷇ U+4DC7</title>
+      <desc>Hexagram #8 in King Wen Order.</desc>
+
+      <path id="U4DC7" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DC8" viewBox="0 0 750 1200">
+			<title>小畜 xiǎo chù ䷈ U+4DC8</title>
+      <desc>Hexagram #9 in King Wen Order.</desc>
+      <desc></desc>
+
+      <path id="U4DC8" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DC9" viewBox="0 0 750 1200">
+			<title>履 (lǚ) ䷉ U+4DC9</title>
+      <desc>Hexagram #10 in King Wen Order.</desc>
+
+      <path id="U4DC9" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DCA" viewBox="0 0 750 1200">
+			<title>泰 tài ䷊ U+4DCA</title>
+      <desc>Hexagram #11 in King Wen Order.</desc>
+
+      <path id="U4DCA" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z0"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DCB" viewBox="0 0 750 1200">
+			<title>否 pǐ ䷋ U+4DCB</title>
+      <desc>Hexagram #12 in King Wen Order.</desc>
+
+      <path id="U4DCB" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DCC" viewBox="0 0 750 1200">
+			<title>同人 tóng rén ䷌ U+4DCC</title>
+      <desc>Hexagram #13 in King Wen Order.</desc>
+
+      <path id="U4DCC" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DCD" viewBox="0 0 750 1200">
+			<title>大有 dà yǒu ䷍ U+4DCD</title>
+      <desc>Hexagram #14 in King Wen Order.</desc>
+
+      <path id="U4DCD" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DCE" viewBox="0 0 750 1200">
+			<title>謙 qiān ䷎ U+4DCE</title>
+      <desc>Hexagram #15 in King Wen Order.</desc>
+
+      <path id="U4DCE" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zl0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DCF" viewBox="0 0 750 1200">
+			<title>豫 yù ䷏ U+4DCF</title>
+      <desc>Hexagram #16 in King Wen Order.</desc>
+
+      <path id="U4DCF" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD0" viewBox="0 0 750 1200">
+			<title>隨 suí ䷐ U+4DD0</title>
+      <desc>Hexagram #17 in King Wen Order.</desc>
+
+      <path id="U4DD0" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD1" viewBox="0 0 750 1200">
+			<title>蠱 gŭ ䷑ U+4DD1</title>
+      <desc>Hexagram #18 in King Wen Order.</desc>
+
+      <path id="U4DD1" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD2" viewBox="0 0 750 1200">
+			<title>臨 lín ䷒ U+4DD2</title>
+      <desc>Hexagram #19 in King Wen Order.</desc>
+
+      <path id="U4DD2" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD3" viewBox="0 0 750 1200">
+			<title>觀 guān ䷓ U+4DD3</title>
+      <desc>Hexagram #20 in King Wen Order.</desc>
+
+      <path id="U4DD3" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD4" viewBox="0 0 750 1200">
+			<title>噬嗑 shì kè ䷔ U+4DD4</title>
+      <desc>Hexagram #21 in King Wen Order.</desc>
+
+      <path id="U4DD4" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD5" viewBox="0 0 750 1200">
+			<title>賁 bì ䷕ U+4DD5</title>
+      <desc>Hexagram #22 in King Wen Order.</desc>
+
+      <path id="U4DD5" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD6" viewBox="0 0 750 1200">
+			<title>剝 bō ䷖ U+4DD6</title>
+      <desc>Hexagram #23 in King Wen Order.</desc>
+
+      <path id="U4DD6" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD7" viewBox="0 0 750 1200">
+			<title>復 fù ䷗ U+4DD7</title>
+      <desc>Hexagram #24 in King Wen Order.</desc>
+
+      <path id="U4DD7" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD8" viewBox="0 0 750 1200">
+			<title>無妄 wú wàng ䷘ U+4DD8</title>
+      <desc>Hexagram #25 in King Wen Order.</desc>
+
+      <path id="U4DD8" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DD9" viewBox="0 0 750 1200">
+			<title>大畜 dà chù ䷙ U+4DD9</title>
+      <desc>Hexagram #26 in King Wen Order.</desc>
+
+      <path id="U4DD9" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DDA" viewBox="0 0 750 1200">
+			<title>頤 yí ䷚ U+4DDA</title>
+      <desc>Hexagram #27 in King Wen Order.</desc>
+
+      <path id="U4DDA" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DDB" viewBox="0 0 750 1200">
+			<title>大過 dà guò ䷛ U+4DDB</title>
+      <desc>Hexagram #28 in King Wen Order.</desc>
+
+      <path id="U4DDB" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DDC" viewBox="0 0 750 1200">
+			<title>坎 kǎn ䷜ U+4DDC</title>
+      <desc>Hexagram #29 in King Wen Order.</desc>
+
+      <path id="U4DDC" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DDD" viewBox="0 0 750 1200">
+			<title>離 lí ䷝ U+4DDD</title>
+      <desc>Hexagram #30 in King Wen Order.</desc>
+
+      <path id="U4DDD" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DDE" viewBox="0 0 750 1200">
+			<title>咸 xián ䷞ U+4DDE</title>
+      <desc>Hexagram #31 in King Wen Order.</desc>
+
+      <path id="U4DDE" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DDF" viewBox="0 0 750 1200">
+			<title>恆 héng ䷟ U+4DDF</title>
+      <desc>Hexagram #32 in King Wen Order.</desc>
+
+      <path id="U4DDF" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE0" viewBox="0 0 750 1200">
+			<title>遯 dùn ䷠ U+4DE0</title>
+      <desc>Hexagram #33 in King Wen Order.</desc>
+
+      <path id="U4DE0" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE1" viewBox="0 0 750 1200">
+			<title>大壯 dà zhuàng ䷡ U+4DE1</title>
+      <desc>Hexagram #34 in King Wen Order.</desc>
+
+      <path id="U4DE1" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE2" viewBox="0 0 750 1200">
+			<title>晉 jìn ䷢ U+4DE2</title>
+      <desc>Hexagram #35 in King Wen Order.</desc>
+
+      <path id="U4DE2" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE3" viewBox="0 0 750 1200">
+			<title>明夷 míng yí ䷣ U+4DE3</title>
+      <desc>Hexagram #36 in King Wen Order.</desc>
+
+      <path id="U4DE3" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE4" viewBox="0 0 750 1200">
+			<title>家人 jiā rén ䷤ U+4DE4</title>
+      <desc>Hexagram #37 in King Wen Order.</desc>
+
+      <path id="U4DE4" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE5" viewBox="0 0 750 1200">
+			<title>睽 kuí ䷥ U+4DE5</title>
+      <desc>Hexagram #38 in King Wen Order.</desc>
+
+      <path id="U4DE5" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE6" viewBox="0 0 750 1200">
+			<title>蹇 jiǎn ䷦ U+4DE6</title>
+      <desc>Hexagram #39 in King Wen Order.</desc>
+
+      <path id="U4DE6" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE7" viewBox="0 0 750 1200">
+			<title>解 xiè ䷧ U+4DE7</title>
+      <desc>Hexagram #40 in King Wen Order.</desc>
+
+      <path id="U4DE7" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE8" viewBox="0 0 750 1200">
+			<title>損 sǔn ䷨ U+4DE8</title>
+      <desc>Hexagram #41 in King Wen Order.</desc>
+
+      <path id="U4DE8" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DE9" viewBox="0 0 750 1200">
+			<title>益 yì ䷩ U+4DE9</title>
+      <desc>Hexagram #42 in King Wen Order.</desc>
+
+      <path id="U4DE9" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DEA" viewBox="0 0 750 1200">
+			<title>夬 guài ䷪ U+4DEA</title>
+      <desc>Hexagram #43 in King Wen Order.</desc>
+
+      <path id="U4DEA" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DEB" viewBox="0 0 750 1200">
+			<title>姤 gòu ䷫ U+4DEB</title>
+      <desc>Hexagram #44 in King Wen Order.</desc>
+
+      <path id="U4DEB" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DEC" viewBox="0 0 750 1200">
+			<title>萃 cuì ䷬ U+4DEC</title>
+      <desc>Hexagram #45 in King Wen Order.</desc>
+
+      <path id="U4DEC" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DED" viewBox="0 0 750 1200">
+			<title>升 shēng ䷭ U+4DED</title>
+      <desc>Hexagram #46 in King Wen Order.</desc>
+
+      <path id="U4DED" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DEE" viewBox="0 0 750 1200">
+			<title>困 kùn ䷮ U+4DEE</title>
+      <desc>Hexagram #47 in King Wen Order.</desc>
+
+      <path id="U4DEE" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DEF" viewBox="0 0 750 1200">
+			<title>井 jǐng ䷯ U+4DEF</title>
+      <desc>Hexagram #48 in King Wen Order.</desc>
+
+      <path id="U4DEF" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF0" viewBox="0 0 750 1200">
+			<title>革 gé ䷰ U+4DF0</title>
+      <desc>Hexagram #49 in King Wen Order.</desc>
+
+      <path id="U4DF0" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF1" viewBox="0 0 750 1200">
+			<title>鼎 dǐng ䷱ U+4DF1</title>
+      <desc>Hexagram #50 in King Wen Order.</desc>
+
+      <path id="U4DF1" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF2" viewBox="0 0 750 1200">
+			<title>震 zhèn ䷲ U+4DF2</title>
+      <desc>Hexagram #51 in King Wen Order.</desc>
+
+      <path id="U4DF2" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF3" viewBox="0 0 750 1200">
+			<title>艮 gèn ䷳ U+4DF3</title>
+      <desc>Hexagram #52 in King Wen Order.</desc>
+
+      <path id="U4DF3" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF4" viewBox="0 0 750 1200">
+			<title>漸 jiàn ䷴ U+4DF4</title>
+      <desc>Hexagram #53 in King Wen Order.</desc>
+
+      <path id="U4DF4" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF5" viewBox="0 0 750 1200">
+			<title>歸妹 guī mèi ䷵ U+4DF5</title>
+      <desc>Hexagram #54 in King Wen Order.</desc>
+
+      <path id="U4DF5" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF6" viewBox="0 0 750 1200">
+			<title>豐 fēng ䷶ U+4DF6</title>
+      <desc>Hexagram #55 in King Wen Order.</desc>
+
+      <path id="U4DF6" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF7" viewBox="0 0 750 1200">
+			<title>旅 lǚ ䷷ U+4DF7</title>
+      <desc>Hexagram #56 in King Wen Order.</desc>
+
+      <path id="U4DF7" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF8" viewBox="0 0 750 1200">
+			<title>巽 xùn ䷸ U+4DF8</title>
+      <desc>Hexagram #57 in King Wen Order.</desc>
+
+      <path id="U4DF8" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DF9" viewBox="0 0 750 1200">
+			<title>兌 duì ䷹ U+4DF9</title>
+      <desc>Hexagram #58 in King Wen Order.</desc>
+
+      <path id="U4DF9" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DFA" viewBox="0 0 750 1200">
+			<title>渙 huàn ䷺ U+4DFA</title>
+      <desc>Hexagram #59 in King Wen Order.</desc>
+
+      <path id="U4DFA" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DFB" viewBox="0 0 750 1200">
+			<title>節 jié ䷻ U+4DFB</title>
+      <desc>Hexagram #60 in King Wen Order.</desc>
+
+      <path id="U4DFB" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DFC" viewBox="0 0 750 1200">
+			<title>中孚 zhōng fú ䷼ U+4DFC</title>
+      <desc>Hexagram #61 in King Wen Order.</desc>
+
+      <path id="U4DFC" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DFD" viewBox="0 0 750 1200">
+			<title>小過 xiǎo guò ䷽ U+4DFD</title>
+      <desc>Hexagram #62 in King Wen Order.</desc>
+
+      <path id="U4DFD" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DFE" viewBox="0 0 750 1200">
+			<title>既濟 jì jì ䷾ U+4DFE</title>
+      <desc>Hexagram #63 in King Wen Order.</desc>
+
+      <path id="U4DFE" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+		</symbol>
+
+		<symbol id="Hexagram_U4DFF" viewBox="0 0 750 1200">
+			<title>未濟 wèi jì ䷿ U+4DFF</title>
+      <desc>Hexagram #64 in King Wen Order.</desc>
+
+      <path id="U4DFF" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+		</symbol>
+
+    <symbol id="TaiYang" viewBox="0 0 750 320">
+      <title>太陽 taiyang</title>
+      <desc>Digram tai-yang, greater Yang, Sun</desc>
+
+      <path id="Tai_Yang" d="m0 0l0 100 750 0 0-100zm0 220l0 100 750 0 0-100zm0 220"/>
+    </symbol>
+
+    <symbol id="ShaoYin" viewBox="0 0 750 320">
+      <title>少陰 shaoyin</title>
+      <desc>Digram shao-yin, lesser Yin</desc>
+
+      <path id="Shao_Yin" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 750 0 0-100z"/>
+    </symbol>
+
+    <symbol id="ShaoYang" viewBox="0 0 750 320">
+      <title>少陽 shaoyang</title>
+      <desc>Digram shao-yang, lesser Yang</desc>
+
+      <path id="Shao_Yang" d="m0 0l0 100 750 0 0-100zm0 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+    </symbol>
+
+    <symbol id="TaiYin" viewBox="0 0 750 320">
+      <title>太陰 taiyin</title>
+      <desc>Digram tai-yin, greater Yin, Moon</desc>
+
+      <path id="Tai_Yin" d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100zm-450 220l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+    </symbol>
+
+    <symbol id="Yang" viewBox="0 0 750 100">
+      <title>陽 yang</title>
+
+      <path d="m0 0l0 100 750 0 0-100z"/>
+    </symbol>
+
+    <symbol id="Yin" viewBox="0 0 750 100">
+      <title>陰 yin</title>
+
+      <path d="m0 0l0 100 300 0 0-100zm450 0l0 100 300 0 0-100z"/>
+    </symbol>
+  </defs>
+
+	<g>
+		<title>陰陽 Yin and Yang</title>
+		<use xlink:href="#YinYang" x="-400" y="-400" width="800" height="800"/>
+	</g>
+
+	<g>
+		<title>乾 Qián ☰ U+2630</title>
+		<use xlink:href="#Trigram_U2630" x="-125" y="-825" width="250" height="180"/>
+	</g>
+
+	<g>
+		<title>兌 Duì ☱ U+2631</title>
+		<use xlink:href="#Trigram_U2631" x="-125" y="-825" width="250" height="180" transform="rotate(-45)"/>
+	</g>
+
+	<g>
+		<title>離 Lí ☲ U+2632</title>
+		<use xlink:href="#Trigram_U2632" x="-125" y="-825" width="250" height="180" transform="rotate(-90)"/>
+	</g>
+
+	<g>
+		<title>震 Zhèn ☳ U+2633</title>
+		<use xlink:href="#Trigram_U2633" x="-125" y="-825" width="250" height="180" transform="rotate(-135)"/>
+	</g>
+
+	<g>
+		<title>巽 Xùn ☴ U+2634</title>
+		<use xlink:href="#Trigram_U2634" x="-125" y="-825" width="250" height="180" transform="rotate(45)"/>
+	</g>
+
+	<g>
+		<title>坎 Kǎn ☵ U+2635</title>
+		<use xlink:href="#Trigram_U2635" x="-125" y="-825" width="250" height="180" transform="rotate(90)"/>
+	</g>
+
+	<g>
+		<title>艮 Gèn ☶ U+2636</title>
+		<use xlink:href="#Trigram_U2636" x="-125" y="-825" width="250" height="180" transform="rotate(135)"/>
+	</g>
+
+	<g>
+		<title>坤 Kūn ☷ U+2637</title>
+		<use xlink:href="#Trigram_U2637" x="-125" y="-825" width="250" height="180" transform="rotate(180)"/>
+	</g>
+
+	<g>
+    <title>乾 qián ䷀ U+4DC0</title>
+    <use xlink:href="#Hexagram_U4DC0" x="-1350" y="1000" width="250" height="400"/>
+	</g>
+
+  <g>
+    <title>坤 kūn ䷁ U+4DC1</title>
+    <use xlink:href="#Hexagram_U4DC1" x="-1000" y="1000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>屯 zhūn ䷂ U+4DC2</title>
+    <use xlink:href="#Hexagram_U4DC2" x="-650" y="1000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>蒙 méng ䷃ U+4DC3</title>
+    <use xlink:href="#Hexagram_U4DC3" x="-300" y="1000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>需 xū ䷄ U+4DC4</title>
+    <use xlink:href="#Hexagram_U4DC4" x="50" y="1000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>訟 sòng ䷅ U+4DC5</title>
+    <use xlink:href="#Hexagram_U4DC5" x="400" y="1000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>師 shī ䷆ U+4DC6</title>
+    <use xlink:href="#Hexagram_U4DC6" x="750" y="1000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>比 bǐ ䷇ U+4DC7</title>
+    <use xlink:href="#Hexagram_U4DC7" x="1100" y="1000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>小畜 xiǎo chù ䷈ U+4DC8</title>
+    <use xlink:href="#Hexagram_U4DC8" x="-1350" y="1600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>履 (lǚ) ䷉ U+4DC9</title>
+    <use xlink:href="#Hexagram_U4DC9" x="-1000" y="1600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>泰 tài ䷊ U+4DCA</title>
+    <use xlink:href="#Hexagram_U4DCA" x="-650" y="1600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>否 pǐ ䷋ U+4DCB</title>
+    <use xlink:href="#Hexagram_U4DCB" x="-300" y="1600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>同人 tóng rén ䷌ U+4DCC</title>
+    <use xlink:href="#Hexagram_U4DCC" x="50" y="1600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>大有 dà yǒu ䷍ U+4DCD</title>
+    <use xlink:href="#Hexagram_U4DCD" x="400" y="1600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>謙 qiān ䷎ U+4DCE</title>
+    <use xlink:href="#Hexagram_U4DCE" x="750" y="1600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>豫 yù ䷏ U+4DCF</title>
+    <use xlink:href="#Hexagram_U4DCF" x="1100" y="1600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>隨 suí ䷐ U+4DD0</title>
+    <use xlink:href="#Hexagram_U4DD0" x="-1350" y="2200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>蠱 gŭ ䷑ U+4DD1</title>
+    <use xlink:href="#Hexagram_U4DD1" x="-1000" y="2200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>臨 lín ䷒ U+4DD2</title>
+    <use xlink:href="#Hexagram_U4DD2" x="-650" y="2200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>觀 guān ䷓ U+4DD3</title>
+    <use xlink:href="#Hexagram_U4DD3" x="-300" y="2200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>噬嗑 shì kè ䷔ U+4DD4</title>
+    <use xlink:href="#Hexagram_U4DD4" x="50" y="2200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>賁 bì ䷕ U+4DD5</title>
+    <use xlink:href="#Hexagram_U4DD5" x="400" y="2200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>剝 bō ䷖ U+4DD6</title>
+    <use xlink:href="#Hexagram_U4DD6" x="750" y="2200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>復 fù ䷗ U+4DD7</title>
+    <use xlink:href="#Hexagram_U4DD7" x="1100" y="2200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>無妄 wú wàng ䷘ U+4DD8</title>
+    <use xlink:href="#Hexagram_U4DD8" x="-1350" y="2800" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>大畜 dà chù ䷙ U+4DD9</title>
+    <use xlink:href="#Hexagram_U4DD9" x="-1000" y="2800" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>頤 yí ䷚ U+4DDA</title>
+    <use xlink:href="#Hexagram_U4DDA" x="-650" y="2800" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>大過 dà guò ䷛ U+4DDB</title>
+    <use xlink:href="#Hexagram_U4DDB" x="-300" y="2800" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>坎 kǎn ䷜ U+4DDC</title>
+    <use xlink:href="#Hexagram_U4DDC" x="50" y="2800" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>離 lí ䷝ U+4DDD</title>
+    <use xlink:href="#Hexagram_U4DDD" x="400" y="2800" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>咸 xián ䷞ U+4DDE</title>
+    <use xlink:href="#Hexagram_U4DDE" x="750" y="2800" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>恆 héng ䷟ U+4DDF</title>
+    <use xlink:href="#Hexagram_U4DDF" x="1100" y="2800" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>遯 dùn ䷠ U+4DE0</title>
+    <use xlink:href="#Hexagram_U4DE0" x="-1350" y="3400" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>大壯 dà zhuàng ䷡ U+4DE1</title>
+    <use xlink:href="#Hexagram_U4DE1" x="-1000" y="3400" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>晉 jìn ䷢ U+4DE2</title>
+    <use xlink:href="#Hexagram_U4DE2" x="-650" y="3400" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>明夷 míng yí ䷣ U+4DE3</title>
+    <use xlink:href="#Hexagram_U4DE3" x="-300" y="3400" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>家人 jiā rén ䷤ U+4DE4</title>
+    <use xlink:href="#Hexagram_U4DE4" x="50" y="3400" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>睽 kuí ䷥ U+4DE5</title>
+    <use xlink:href="#Hexagram_U4DE5" x="400" y="3400" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>蹇 jiǎn ䷦ U+4DE6</title>
+    <use xlink:href="#Hexagram_U4DE6" x="750" y="3400" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>解 xiè ䷧ U+4DE7</title>
+    <use xlink:href="#Hexagram_U4DE7" x="1100" y="3400" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>損 sǔn ䷨ U+4DE8</title>
+    <use xlink:href="#Hexagram_U4DE8" x="-1350" y="4000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>益 yì ䷩ U+4DE9</title>
+    <use xlink:href="#Hexagram_U4DE9" x="-1000" y="4000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>夬 guài ䷪ U+4DEA</title>
+    <use xlink:href="#Hexagram_U4DEA" x="-650" y="4000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>姤 gòu ䷫ U+4DEB</title>
+    <use xlink:href="#Hexagram_U4DEB" x="-300" y="4000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>萃 cuì ䷬ U+4DEC</title>
+    <use xlink:href="#Hexagram_U4DEC" x="50" y="4000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>升 shēng ䷭ U+4DED</title>
+    <use xlink:href="#Hexagram_U4DED" x="400" y="4000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>困 kùn ䷮ U+4DEE</title>
+    <use xlink:href="#Hexagram_U4DEE" x="750" y="4000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>井 jǐng ䷯ U+4DEF</title>
+    <use xlink:href="#Hexagram_U4DEF" x="1100" y="4000" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>革 gé ䷰ U+4DF0</title>
+    <use xlink:href="#Hexagram_U4DF0" x="-1350" y="4600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>鼎 dǐng ䷱ U+4DF1</title>
+    <use xlink:href="#Hexagram_U4DF1" x="-1000" y="4600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>震 zhèn ䷲ U+4DF2</title>
+    <use xlink:href="#Hexagram_U4DF2" x="-650" y="4600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>艮 gèn ䷳ U+4DF3</title>
+    <use xlink:href="#Hexagram_U4DF3" x="-300" y="4600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>漸 jiàn ䷴ U+4DF4</title>
+    <use xlink:href="#Hexagram_U4DF4" x="50" y="4600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>歸妹 guī mèi ䷵ U+4DF5</title>
+    <use xlink:href="#Hexagram_U4DF5" x="400" y="4600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>豐 fēng ䷶ U+4DF6</title>
+    <use xlink:href="#Hexagram_U4DF6" x="750" y="4600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>旅 lǚ ䷷ U+4DF7</title>
+    <use xlink:href="#Hexagram_U4DF7" x="1100" y="4600" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>巽 xùn ䷸ U+4DF8</title>
+    <use xlink:href="#Hexagram_U4DF8" x="-1350" y="5200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>兌 duì ䷹ U+4DF9</title>
+    <use xlink:href="#Hexagram_U4DF9" x="-1000" y="5200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>渙 huàn ䷺ U+4DFA</title>
+    <use xlink:href="#Hexagram_U4DFA" x="-650" y="5200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>節 jié ䷻ U+4DFB</title>
+    <use xlink:href="#Hexagram_U4DFB" x="-300" y="5200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>中孚 zhōng fú ䷼ U+4DFC</title>
+    <use xlink:href="#Hexagram_U4DFC" x="50" y="5200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>小過 xiǎo guò ䷽ U+4DFD</title>
+    <use xlink:href="#Hexagram_U4DFD" x="400" y="5200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>既濟 jì jì ䷾ U+4DFE</title>
+    <use xlink:href="#Hexagram_U4DFE" x="750" y="5200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>未濟 wèi jì ䷿ U+4DFF</title>
+    <use xlink:href="#Hexagram_U4DFF" x="1100" y="5200" width="250" height="400"/>
+  </g>
+
+  <g>
+    <title>太陽 taiyang</title>
+    <use xlink:href="#TaiYang" x="-650" y="5800" width="250" height="106.333"/>
+  </g>
+
+  <g>
+    <title>少陰 shaoyin</title>
+    <use xlink:href="#ShaoYin" x="-300" y="5800" width="250" height="106.333"/>
+  </g>
+
+  <g>
+    <title>少陽 shaoyang</title>
+    <use xlink:href="#ShaoYang" x="50" y="5800" width="250" height="106.333"/>
+  </g>
+
+  <g>
+    <title>太陰 taiyin</title>
+    <use xlink:href="#TaiYin" x="400" y="5800" width="250" height="106.333"/>
+  </g>
+
+  <g>
+    <title>陽 yang</title>
+    <use xlink:href="#Yang" x="-300" y="6100" width="250" height="33.333"/>
+  </g>
+
+  <g>
+    <title>陰 yin</title>
+    <use xlink:href="#Yin" x="50" y="6100" width="250" height="33.333"/>
+  </g>
+</svg>
