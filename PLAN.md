@@ -1,4 +1,4 @@
-# Lokad.Svg — pixel-exact corporate-logo delivery plan
+# Lokad.Svg — renderer fidelity and SVG support plan
 
 Updated 2026-10-08. **Current corporate fidelity: 27/27 exact documents and 258/258 exact
 variants on Windows and Linux**, with zero known differences and zero rejections.
@@ -876,18 +876,30 @@ replace the renderer work below.
    rejections for the later admission audit. Broader object/visual bounds and override combinations still
    need their own evidence. The integrated repair, measured controls and rejected
    models are in [the design record](docs/RASTERIZATION_DESIGN.md#svg-rounded-rectangle-command-order-2026-10-08).
+   Finish this phase when the identified renderer differences are exact against
+   their retained references and the shared repairs preserve existing exact
+   results. Keep unresolved cases visible; moving them to a new list or changing
+   references does not resolve them. Valid-input admission gaps remain inputs to
+   the support audit below. Remote CI is a separate release gate and does not
+   prevent that audit once the renderer repairs are complete.
 2. **Preserve the complete exact matrix.** Compare shared raster changes across
    every declared fixture, research and Default case and all 258 corporate
    variants on Windows/Linux. Keep categorized rejections and selection limits
    explicit; select any future representative cohort before measurement.
 3. **Then revise the plan around remaining SVG gaps within the original scope.**
    After the identified renderer shortcomings are resolved, audit the support
-   matrix against the original static, self-contained SVG requirements and
-   replace the completed repair queue with the remaining feature work. Include
-   valid SVG currently rejected by admitted feature combinations, such as the
-   retained multiple-child symbol, alongside missing static features. Rank work
-   by ordinary export usage and shared mechanisms; give each item concrete
-   failing examples and an admission/fidelity exit criterion.
+   [matrix](docs/SUPPORT_MATRIX.md) against the original static, self-contained
+   SVG requirements in section 5 and replace the completed repair queue with the
+   remaining feature work. Include valid SVG currently rejected by admitted
+   feature combinations, such as the retained multiple-child symbol, alongside
+   missing static features. Rank work
+   by ordinary export usage and shared mechanisms. For each item, record the
+   missing feature or combination, its observed failure, a concrete example,
+   dependencies and an admission/fidelity exit criterion. Distinguish erroneous
+   rejection of supported syntax, missing in-scope support and rendering errors.
+   Reconcile the stage ledger and support matrix with this revised queue; keep
+   completed mechanisms as regression requirements rather than active tasks.
+4. **Build a development corpus for the revised support queue.**
    Find more explicitly public-domain or CC0 SVG images online. Retain original
    downloaded bytes, source/creator links, retrieval dates and explicit license
    evidence in the existing inventory. Keep examples with missing or ambiguous
@@ -897,10 +909,13 @@ replace the renderer work below.
    and stable browser references. Prefer new feature combinations over duplicate
    examples of an already represented failure. Use the existing comparison tools
    and reuse references while inputs, options and the oracle pin stay unchanged.
-   This failure-selected bank guides implementation; future representative cohorts
-   still need selection before measurement. Preserve the current frozen exact
-   cohort and the pure-managed, dependency-free contract; the original exclusions
-   in section 5 continue to govern scope.
+   Link each retained failure to the revised queue so that the next repair has a
+   reproducible input and expected result. Source in small batches guided by gaps;
+   successful renders need not enlarge this failure corpus. This failure-selected
+   bank guides implementation and does not measure a representative success rate;
+   future representative cohorts still need selection before measurement.
+   Preserve the current frozen exact cohort and the pure-managed, dependency-free
+   contract; the original exclusions in section 5 continue to govern scope.
 
 Reuse stable, validated browser references while inputs, options and the oracle
 pin remain unchanged. New independent controls need their own stable captures;
