@@ -7781,3 +7781,64 @@ stays under ignored `artifacts/hairline-color-20261008/` and
 implementation. Remaining curve/clip events, painted outlines and circle/ellipse
 dashes remain open. The original-scope support audit and online public-domain/CC0
 sourcing follow those repairs.
+
+## Live convex polynomial quadratics (2026-10-08)
+
+Convex polynomial quadratics now use the same live monotonic edge constructor
+as rational quadratics and the general interval walker. Pre-expanding them into
+independent lines inserted segment ends into the convex strip schedule and
+discarded recurrence state needed by native smoothing. The existing pinned
+quadratic setup/advancement and convex-walk mechanisms remain. The construction
+route now preserves that state during strip walking. Unclipped paths reserve
+two live edges per quadratic; clipped monotonic pieces reserve one each. Rational
+subdivision reserves that bound per converted quadratic. Obsolete pre-stepping,
+its slope constructor and the unused live/pre-stepped selector are removed.
+Flattened fallback capacity, classification, paint dispatch, clipping, work
+charging and cancellation remain bounded under the existing ownership contract.
+The earlier polynomial model was retained under the thin-stroke diagnosis on
+2026-10-06; it had been deferred while the corporate stroke blockers took priority.
+
+The original bank changes nineteen PNGs. Fifteen fixtures and three research
+probes become exact: the solid quadratic arch and its linear/radial painted
+outlines now agree without replacing references. Their former RGB residuals came
+from fill fringe underneath the partial stroke. The fractional clipped quadratic
+retains 165 differing pixels and maximum alpha error 64; alpha-error mass falls
+4,203 → 4,175. Every prior exact result and rejection is preserved; every other
+complete report and 1,520 PNG byte sequences stays unchanged. The bank retains
+**1,567 executions / 1,539 PNGs** with identical Windows/Linux results and bytes.
+Fixture totals are **1,364 exact + 22 known + 24 rejected**; research totals are
+**55 exact + six known + four rejected**. All 258 corporate reports and PNGs stay
+unchanged per platform; each platform remains **27/27 documents / 258/258 variants
+exact** against its own retained references.
+
+Twelve original CC0 controls were declared after reading the earlier prototype,
+before this production edit, captures or candidate comparison. Their integer,
+fractional, clipped and scaled solid/linear-outline/radial-outline placements have
+36 healthy, cleaned, stable captures. Four improve to exact (clipped solid four
+pixels, clipped outlines one each, scaled solid six); eight exact controls remain.
+All twelve enter the existing six-output recorded-paint inventory unchanged;
+that inventory retains **113 = 106 exact + seven valid-input rejections**.
+Two focused core cases exercise clipped/unclipped out-of-order row replay against
+unchanged browser alpha bytes, including the formerly overpainted tip fringe.
+
+The new resource sweeps exposed a pre-existing paint-fill stroke owner leak under
+tight parser work limits. Both the production baseline and initial live-edge
+repair reproduced it. Stroke-construction failures released the array container
+while leaving its filled geometry owned; repaint failures also needed to discard
+untransferred white outlines. These paths now discard complete geometry owners.
+Successful handoff still releases only the containers. Six full parser-work
+sweeps cover solid/linear/radial/pattern fill and stroke combinations; twelve fresh
+resource cases pass work/memory denial, caller-token cancellation and owner release.
+
+Windows/Linux nine-project Release builds and **4,191 tests = 3,851 core +
+334 visual + six FontProbe** pass, with zero failed/skipped tests. No public API
+or runtime dependency changes. Earlier 25-scenario memory and installed-package
+delivery evidence retains its dated scope; this checkpoint makes no new release
+claim. Fourteen matching Windows cost recipes in both process orders record
+work, peak and allocation changes in [the cost record](BENCHMARKS.md#live-convex-polynomial-quadratic-cost-2026-10-08).
+Detailed reports, triples, failed initial ownership sweeps and costs stay under
+ignored `artifacts/convex-polynomial-quads-20261008/` and
+`artifacts/linux-delivery-20261007/convex-polynomial-final-20261008/`.
+Fractional clip/control-bounds events, bowtie coverage and circle/ellipse dashes
+remain open. The original-scope support audit and online public-domain/CC0 sourcing
+follow the current renderer repairs; remote CI remains a separate S17 gate.

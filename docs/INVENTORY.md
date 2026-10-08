@@ -5,6 +5,37 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Live convex polynomial quadratic checkpoint (2026-10-08)
+
+Fifteen existing fixture comparisons and the quadratic solid/linear-outline/
+radial-outline research trio become exact against unchanged references. The
+fractional clipped quadratic retains 165 differences, with alpha-error mass
+4,203 → 4,175 and unchanged maxima. No mismatch count increases. Every preceding
+exact result, rejection and the other 1,520 original-bank PNG byte sequences are
+preserved. Windows/Linux reports and PNG bytes agree across **1,567 executions /
+1,539 PNGs**: **1,410 fixtures = 1,364 exact + 22 known + 24 rejected**, **65 research
+probes = 55 exact + six known + four rejected**, and 92 unchanged Default renders.
+Each platform preserves **27/27 documents / 258/258 variants exact** against its
+own retained corporate references, with unchanged reports/PNGs.
+
+Twelve original CC0 controls were declared before this production edit, captures
+or candidate comparison, after inspecting the earlier retained prototype. They
+cover solid fills and linear/radial painted outlines at integer/fractional,
+clipped and scaled placements. All 36 captures are healthy, cleaned and byte-stable
+in triples. All twelve controls are exact; clipped solid/linear/radial controls
+improve from four/one/one pixels and scaled solid from six pixels. The other eight
+exact controls are preserved. The [recorded-paint inventory](../tests/Research/paint-recording/manifest.json)
+now retains **113 pairs = 106 exact + seven valid-input rejections** through all
+six public outputs. Existing source and browser reference bytes stay unchanged.
+
+Windows/Linux Release builds and **4,191 tests** pass. Twelve fresh resource sweeps
+and six parser-work-denial regressions verify cleanup of fill and partial stroke
+owners. The earlier prototype and production baseline reproduce that parser leak;
+failure paths now discard geometry owners as well as their containers. Earlier
+memory/package delivery evidence retains its dated scope. See [the repair](RASTERIZATION_DESIGN.md#live-convex-polynomial-quadratics-2026-10-08)
+and [the cost record](BENCHMARKS.md#live-convex-polynomial-quadratic-cost-2026-10-08).
+Online sourcing follows the remaining fidelity repairs and original-scope audit.
+
 ## SVG rounded-rectangle command-order checkpoint (2026-10-08)
 
 The rounded-rectangle hairline-color and oval-stroke research comparisons become

@@ -603,7 +603,7 @@ internal static class SvgGradientSyntax
             SvgParsedGeometry stroked = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
             return SvgOrthogonalShapeParser.ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
         }
-        catch { filled.Dispose(); throw; }
+        catch { filled.Discard(); throw; }
     }
 
     /// <summary>Appends a linear-gradient stroke outline lowered from path data to paint-filled geometry by lowering a white outline and repainting it.</summary>
@@ -618,7 +618,7 @@ internal static class SvgGradientSyntax
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             white = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, strokeShape, stroke.Value.Color, strokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
         }
-        catch { filled.Dispose(); throw; }
+        catch { filled.Discard(); throw; }
         return RepaintAndConcatOutlines(filled, white, outline, strokeBox, strokeShape, context, budget);
     }
 
@@ -634,7 +634,7 @@ internal static class SvgGradientSyntax
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             white = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, strokeShape, stroke.Value.Color, strokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
         }
-        catch { filled.Dispose(); throw; }
+        catch { filled.Discard(); throw; }
         return RepaintAndConcatOutlines(filled, white, outlineTile, strokeShape, context, budget);
     }
 
@@ -650,7 +650,7 @@ internal static class SvgGradientSyntax
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, true, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             white = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, strokeShape, stroke.Value.Color, strokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
         }
-        catch { filled.Dispose(); throw; }
+        catch { filled.Discard(); throw; }
         return RepaintAndConcatOutlines(filled, white, outlineCircle, strokeBox, strokeShape, context, budget);
     }
 
@@ -671,8 +671,8 @@ internal static class SvgGradientSyntax
         }
         catch
         {
-            if (!whiteReleased) white.Dispose();
-            filled.Dispose();
+            if (!whiteReleased) white.Discard();
+            filled.Discard();
             throw;
         }
     }
@@ -693,8 +693,8 @@ internal static class SvgGradientSyntax
         }
         catch
         {
-            if (!whiteReleased) white.Dispose();
-            filled.Dispose();
+            if (!whiteReleased) white.Discard();
+            filled.Discard();
             throw;
         }
     }
@@ -716,8 +716,8 @@ internal static class SvgGradientSyntax
         }
         catch
         {
-            if (!whiteReleased) white.Dispose();
-            filled.Dispose();
+            if (!whiteReleased) white.Discard();
+            filled.Discard();
             throw;
         }
     }
@@ -734,7 +734,7 @@ internal static class SvgGradientSyntax
             SvgParsedGeometry stroked = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, strokeShape, stroke.Value.Color, strokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
             return SvgOrthogonalShapeParser.ConcatParsedGeometries(filled, stroked, budget, context.WorkCounter, context.CancellationToken);
         }
-        catch { filled.Dispose(); throw; }
+        catch { filled.Discard(); throw; }
     }
 
     /// <summary>Appends a linear-gradient stroke outline to paint-filled bands and outlines by lowering a white outline and repainting it, leaving other paints to the shared stroke gates.</summary>
@@ -755,7 +755,7 @@ internal static class SvgGradientSyntax
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             white = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
         }
-        catch { filled.Dispose(); throw; }
+        catch { filled.Discard(); throw; }
         return RepaintAndConcatOutlines(filled, white, outline, strokeBox, strokeShape, context, budget);
     }
 
@@ -777,7 +777,7 @@ internal static class SvgGradientSyntax
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             white = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
         }
-        catch { filled.Dispose(); throw; }
+        catch { filled.Discard(); throw; }
         return RepaintAndConcatOutlines(filled, white, outlineTile, strokeShape, context, budget);
     }
 
@@ -799,7 +799,7 @@ internal static class SvgGradientSyntax
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, elementName, false, false, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             white = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
         }
-        catch { filled.Dispose(); throw; }
+        catch { filled.Discard(); throw; }
         return RepaintAndConcatOutlines(filled, white, outlineCircle, strokeBox, strokeShape, context, budget);
     }
 

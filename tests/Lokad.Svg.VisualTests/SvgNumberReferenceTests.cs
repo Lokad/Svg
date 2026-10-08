@@ -69,8 +69,8 @@ public sealed class SvgNumberReferenceTests
             if (comparison.IsExact) exact++;
             else known++;
         }
-        Assert.Equal(15, exact);
-        Assert.Equal(9, known);
+        Assert.Equal(24, exact);
+        Assert.Equal(0, known);
         Assert.Equal(6, rejected);
 
         static string Hash(ReadOnlySpan<byte> bytes) => Convert.ToHexStringLower(SHA256.HashData(bytes));

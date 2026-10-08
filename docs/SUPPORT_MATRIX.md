@@ -6,9 +6,19 @@ The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
 The current 1,410 manifest entries contain
-1,349 exact decoded-pixel references, 37 known-difference renders and 24
+1,364 exact decoded-pixel references, 22 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
+
+Convex polynomial quadratics now retain live curve state in both unclipped
+and clipped construction. This preserves native strip-boundary advancement and
+smoothing through the shared solid, linear, radial and pattern paint boundary.
+The quadratic solid-fill and linear/radial painted-outline research comparisons
+are exact against their original references. The fractional quadratic clip still
+retains a known difference; exact examples do not establish general clip parity.
+Failed paint-filled stroke construction/repainting releases geometry owners and
+their containers. Six full parser-work-denial regressions cover solid, linear,
+radial and pattern combinations. See [the repair record](RASTERIZATION_DESIGN.md#live-convex-polynomial-quadratics-2026-10-08).
 
 Uniform group masks apply once to composed children through an isolated surface,
 independently of backward/forward definition order. Overlapping children, rounded

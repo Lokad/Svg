@@ -2364,3 +2364,30 @@ process-order observations on this host do not establish representative
 throughput. The earlier 258-recipe Windows ShortRun retains its historical scope.
 Recipes, batches and resource ledgers stay under ignored
 `artifacts/hairline-color-20261008/`.
+
+## Live convex polynomial quadratic cost (2026-10-08)
+
+Fourteen matching Windows recipes compare the preceding production baseline and
+the live convex-quadratic repair, including its paint-fill stroke cleanup. Twelve
+independent controls cover solid and linear/radial outlines under integer,
+fractional, clipped and scaled placement; two retained 16×16/64×64 solid arches
+exercise the original defects. Inputs, options, backgrounds and output forms match
+in both process orders. Each process warms up eight conversions and records three
+batches of twenty per recipe. Allocation deltas compare medians across six batches
+per renderer; timing sums add each recipe's batch median.
+
+Parser work stays unchanged. Total conversion work falls by
+**140–1,374 units**, with unchanged accounted peaks. Managed allocations
+fall by **1,091–2,589 bytes** per conversion. Live edge reservations replace
+the conservative pre-stepped expansion bound. The peak observations include
+parser workspace and rasterization; allocation traffic and live ownership remain
+different measurements. Geometry/command/paint-value sizes stay **272 / 72 / 68 bytes**.
+Twelve fresh resource cases and six parser-work-denial regressions separately
+verify reserve-before-allocation, owner release and cancellation behavior.
+
+Summed per-recipe median timings read **13.186 → 16.076 ms**
+when the baseline runs first and **20.295 → 14.932 ms**
+when the repair runs first. These small, selected controls do not establish
+representative throughput or Linux timing. The earlier corporate ShortRun retains
+its dated scope. Recipes, batches and ledgers remain ignored under
+`artifacts/convex-polynomial-quads-20261008/`.

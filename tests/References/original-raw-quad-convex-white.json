@@ -35,20 +35,20 @@
   "declaredBeforeProductionEdit": true,
   "declaredBeforeGenericConvexityPrototype": true,
   "candidateOutcome": "renders",
-  "candidateSha256": "4f08cde8dac0567ed303433435e4c6708897526f55ec1b2474ae6e495f7b9715",
+  "candidateSha256": "738bf4adf31dc406897ee3e8264560fd0720a807a94540dcda3d1171fb802eb0",
   "comparison": {
     "dimensionsMatch": true,
-    "changedPixelCount": 10,
-    "maximumChannelError": 35,
-    "meanAbsoluteError": 0.0252685546875,
-    "rootMeanSquareError": 0.7592206633285213,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
     "maximumAlphaError": 0,
     "alphaChangedPixelCount": 0,
-    "minimumMismatchX": 10,
-    "minimumMismatchY": 6,
-    "maximumMismatchX": 53,
-    "maximumMismatchY": 6,
-    "exact": false,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 64,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true,
     "alphaErrorMass": 0,
     "overCoveragePixelCount": 0,
     "underCoveragePixelCount": 0,
@@ -73,5 +73,6 @@
     "underCoveragePixelCount": 0,
     "opaqueLostPixelCount": 0,
     "opaqueAddedPixelCount": 0
-  }
+  },
+  "comparisonUpdatedAt": "2026-10-08"
 }

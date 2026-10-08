@@ -521,25 +521,6 @@ internal ref partial struct SvgAnalyticCoverage
         int inverseDY = (deltaX == 0 || slope == 0) ? int.MaxValue : absoluteSlope < 1024 ? QuickInverse(absoluteSlope) : SkAbs32(QuickDiv(deltaY, deltaX));
         return new AnalyticEdge { X = x0, DX = slope, UpperX = x0, Y = y0, UpperY = y0, LowerY = y1, DY = inverseDY, Winding = winding };
     }
-    /// <summary>Builds one walker edge from fixed endpoints with a caller-computed slope.</summary>
-    /// <remarks>Cubic stepping derives slopes by exact division from unsnapped starts, unlike the table lookup, so the slope arrives precomputed while winding still negates on downward swaps.</remarks>
-    private static AnalyticEdge? SetLineSloped(int x0, int y0, int x1, int y1, int winding, int slope)
-    {
-        if (winding != 1 && winding != -1) throw new ArgumentOutOfRangeException(nameof(winding));
-        if (y0 > y1)
-        {
-            (x0, x1) = (x1, x0);
-            (y0, y1) = (y1, y0);
-            winding = -winding;
-        }
-        int deltaY = (y1 - y0) >> 10;
-        if (deltaY == 0) return null;
-        int deltaX = (x1 - x0) >> 10;
-        int dot6Slope = SkAbs32(slope >> 10);
-        int inverseDY = (deltaX == 0 || slope == 0) ? int.MaxValue : dot6Slope < 1024 ? QuickInverse(dot6Slope) : SkAbs32(QuickDiv(deltaY, deltaX));
-        return new AnalyticEdge { X = x0, DX = slope, UpperX = x0, Y = y0, UpperY = y0, LowerY = y1, DY = inverseDY, Winding = winding };
-    }
-
     /// <summary>Divides two floats into a unit ratio, rejecting empty, overflowing and underflowing divisions.</summary>
     private static bool CubicUnitDivide(float numer, float denom, out float ratio)
     {
@@ -1089,7 +1070,7 @@ internal ref partial struct SvgAnalyticCoverage
     }
 
     /// <summary>Substitutes live quadratic edges for one retained span, returning the built edge count for flattened fallback when zero.</summary>
-    /// <remarks>Interval-walked quadratics and retained rational convex quadratics advance each monotonic piece live. Convex polynomial quadratics keep their separately gated pre-stepped construction.</remarks>
+    /// <remarks>Both walkers advance each monotonic quadratic piece live, preserving strip-boundary continuation and convex smoothing.</remarks>
     private static int AppendQuadLiveEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -1111,36 +1092,13 @@ internal ref partial struct SvgAnalyticCoverage
         return built;
     }
 
-    /// <summary>Appends analytic quadratic segments for one retained span, returning the emitted edge count for flattened fallback when zero.</summary>
-    /// <remarks>Ports the pinned Skia quad builder in float plus fixed point: Y-extrema chop into monotonics, resampled forward-difference steps with pinned slope-threaded line-edge construction. Cost charges setups plus stepping iterations like per-edge charging.</remarks>
-    private static int AppendQuadSpanEdges(List<AnalyticEdge> kept, double startX, double startY, double controlX, double controlY, double endX, double endY, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
-    {
-        float x0 = (float)startX;
-        float y0 = (float)startY;
-        float x1 = (float)controlX;
-        float y1 = (float)controlY;
-        float x2 = (float)endX;
-        float y2 = (float)endY;
-        Span<float> dst = stackalloc float[10];
-        int count = ChopQuadSpan(x0, y0, x1, y1, x2, y2, dst, out float fallbackY1);
-        if (count == 0)
-        {
-            return AppendQuadPiece(kept, x0, y0, x1, fallbackY1, x2, y2, ref contourEdges, ref setupCost, cancellationToken);
-        }
-        int emitted = AppendQuadPiece(kept, dst[0], dst[1], dst[2], dst[3], dst[4], dst[5], ref contourEdges, ref setupCost, cancellationToken);
-        emitted += AppendQuadPiece(kept, dst[4], dst[5], dst[6], dst[7], dst[8], dst[9], ref contourEdges, ref setupCost, cancellationToken);
-        return emitted;
-    }
-
     /// <summary>Converts retained rational verbs after output mapping and reuses the polynomial walker.</summary>
     private static int AppendRetainedQuadEdges(List<AnalyticEdge> kept, SvgAnalyticConstructionPoints points, SvgQuadSpan span,
-        bool live, ref int contourEdges, ref long setupWork, long maximumWork, CancellationToken token)
+        ref int contourEdges, ref long setupWork, long maximumWork, CancellationToken token)
     {
         SvgDevicePoint start = points.GetPoint(span.StartIndex, ref setupWork, maximumWork, token), end = points.GetPoint(span.EndIndex, ref setupWork, maximumWork, token);
         if (span.ConicWeight == 1f)
-            return live
-                ? AppendQuadLiveEdges(kept, start.X, start.Y, span.Control.X, span.Control.Y, end.X, end.Y, ref contourEdges, ref setupWork, token)
-                : AppendQuadSpanEdges(kept, start.X, start.Y, span.Control.X, span.Control.Y, end.X, end.Y, ref contourEdges, ref setupWork, token);
+            return AppendQuadLiveEdges(kept, start.X, start.Y, span.Control.X, span.Control.Y, end.X, end.Y, ref contourEdges, ref setupWork, token);
         Span<SvgDevicePoint> quads = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
         CheckClippedSetupWork(setupWork + SvgRationalQuadratic.MaximumConversionWork, maximumWork, token);
         int count = SvgRationalQuadratic.Convert(start, span.Control, end, span.ConicWeight, SvgRationalQuadratic.DeviceTolerance, quads, out int conversionWork, token);
@@ -1149,18 +1107,16 @@ internal ref partial struct SvgAnalyticCoverage
         for (int quad = 0; quad < count; quad++)
         {
             SvgDevicePoint first = quads[2 * quad], control = quads[2 * quad + 1], last = quads[2 * quad + 2];
-            built += live
-                ? AppendQuadLiveEdges(kept, first.X, first.Y, control.X, control.Y, last.X, last.Y, ref contourEdges, ref setupWork, token)
-                : AppendQuadSpanEdges(kept, first.X, first.Y, control.X, control.Y, last.X, last.Y, ref contourEdges, ref setupWork, token);
+            built += AppendQuadLiveEdges(kept, first.X, first.Y, control.X, control.Y, last.X, last.Y, ref contourEdges, ref setupWork, token);
         }
         return built;
     }
 
     /// <summary>Bounds expanded conic edges without retaining an intermediate tape.</summary>
-    private static long QuadraticEdgeBound(SvgAnalyticConstructionPoints points, SvgQuadSpan[] spans, int edgesPerQuad,
+    private static long QuadraticEdgeBound(SvgAnalyticConstructionPoints points, SvgQuadSpan[] spans,
         ref long setupWork, long maximumWork, CancellationToken token)
     {
-        long bound = (long)spans.Length * edgesPerQuad;
+        long bound = (long)spans.Length * 2;
         Span<SvgDevicePoint> quads = stackalloc SvgDevicePoint[SvgRationalQuadratic.MaximumPointCount];
         for (int index = 0; index < spans.Length; index++)
         {
@@ -1172,93 +1128,9 @@ internal ref partial struct SvgAnalyticCoverage
             int count = SvgRationalQuadratic.Convert(start, span.Control, end, span.ConicWeight,
                 SvgRationalQuadratic.DeviceTolerance, quads, out int work, token);
             setupWork += work;
-            bound += (long)count * 2 - edgesPerQuad;
+            bound += (long)(count - 1) * 2;
         }
         return bound;
-    }
-
-    /// <summary>Steps one Y-monotonic float quad into walker edges, returning the emitted count.</summary>
-    /// <remarks>Ports setQuadratic plus updateQuadratic with the truncation float-to-FDot6 path Chrome builds without even rounding. Zero-height pieces emit nothing so the caller falls back to flattened chords.</remarks>
-    private static int AppendQuadPiece(List<AnalyticEdge> kept, float x0, float y0, float x1, float y1, float x2, float y2, ref int contourEdges, ref long setupCost, CancellationToken cancellationToken)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-        QuadSetup setup = ComputeQuadSetup(x0, y0, x1, y1, x2, y2);
-        if (setup.IsEmpty) return 0;
-        setupCost += 4;
-        int emitted = StepQuadPiece(kept, setup.Qx, setup.Qy, setup.QDx, setup.QDy, setup.QDDx, setup.QDDy, setup.QLastX, setup.QLastY, setup.CurveShift, setup.Count, setup.Winding, ref contourEdges, ref setupCost);
-        return emitted;
-    }
-
-    /// <summary>Advances one quad forward-difference state into snapped walker edges, anchoring the snapped start across zero-height steps and threading the pinned slope exactly like updateQuadratic.</summary>
-    private static int StepQuadPiece(List<AnalyticEdge> kept, int qx, int qy, int qDx, int qDy, int qDDx, int qDDy, int qLastX, int qLastY, int curveShift, int count, int winding, ref int contourEdges, ref long setupCost)
-    {
-        int emitted = 0;
-        int oldx = qx;
-        int oldy = qy;
-        int dx = qDx;
-        int dy = qDy;
-        int sx = qx;
-        int sy = qy;
-        while (true)
-        {
-            int newx;
-            int newy;
-            int endx;
-            int endy;
-            int slope;
-            if (--count > 0)
-            {
-                unchecked
-                {
-                    newx = oldx + (dx >> curveShift);
-                    newy = oldy + (dy >> curveShift);
-                }
-                if (SkAbs32(dy >> curveShift) >= 2 * Fixed1 && ((long)SkAbs32(dy) << 6) > SkAbs32(dx))
-                {
-                    int diffY = (newy - sy) >> 10;
-                    slope = diffY != 0 ? QuickDiv((newx - sx) >> 10, diffY) : int.MaxValue;
-                    endy = Math.Min(qLastY, FixedRoundToFixed(newy));
-                    endx = unchecked(newx - FixedMul(slope, newy - endy));
-                }
-                else
-                {
-                    endy = Math.Min(qLastY, SnapY(newy));
-                    endx = newx;
-                    int diffY = (endy - sy) >> 10;
-                    slope = diffY != 0 ? QuickDiv((newx - sx) >> 10, diffY) : int.MaxValue;
-                }
-                unchecked
-                {
-                    dx += qDDx;
-                    dy += qDDy;
-                }
-            }
-            else
-            {
-                newx = qLastX;
-                newy = qLastY;
-                endx = newx;
-                endy = newy;
-                int diffY = (newy - sy) >> 10;
-                slope = diffY != 0 ? QuickDiv((newx - sx) >> 10, diffY) : int.MaxValue;
-            }
-            if (slope < int.MaxValue)
-            {
-                AnalyticEdge? edge = SetLineSloped(sx, sy, endx, endy, winding, slope);
-                if (edge is not null)
-                {
-                    if (!(edge.DX == 0 && contourEdges > 0 && CombineVertical(edge, kept))) { kept.Add(edge); contourEdges++; }
-                    emitted++;
-                    sx = endx;
-                    sy = endy;
-                }
-            }
-            oldx = newx;
-            oldy = newy;
-            setupCost += 2;
-            if (count <= 0) break;
-        }
-        return emitted;
     }
 
     /// <summary>Validates retained quadratic and cubic spans for walker substitution: one admitted contour with ordered non-overlapping ranges inside it.</summary>
@@ -1401,7 +1273,7 @@ internal ref partial struct SvgAnalyticCoverage
     }
 
     /// <summary>Returns scratch storage for flattened edges, a conservative retained-curve expansion and the coverage row.</summary>
-    /// <remarks>Curve expansion is reserved before any edge allocation: live monotonic pieces need at most two edges per quadratic and three per cubic; convex pre-stepped quadratics have at most 64 steps each. Flattened edge capacity remains reserved for every declined span.</remarks>
+    /// <remarks>Curve expansion is reserved before any edge allocation: live monotonic pieces need at most two edges per quadratic and three per cubic. Rational verbs reserve the same bound for every converted quadratic. Flattened edge capacity remains reserved for every declined span.</remarks>
     internal static long ScratchByteCount(int pointCount, int rowWidth, long maximumCurveEdges)
     {
         long bytes;
@@ -1630,7 +1502,7 @@ internal ref partial struct SvgAnalyticCoverage
             if (constructionClip is {} multiClip) return PrepareClipped(multiPointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useNativeSpans, false, false, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < multiClip.Bounds.Left || (float)preparation.RightWithControls > multiClip.Bounds.Right, xStart, xEnd, yStart, yEnd, multiClip.Bounds, multiClip.BitmapOrigin, preparation.Source, preparation.SourceMap, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
             int multiWidth = xEnd - xStart;
             bool multiSkipIntersect = multiPointCount > (long)(yEnd - yStart) * 2;
-            long multiCurveEdges = QuadraticEdgeBound(constructionPoints, quadSpans, 2, ref setupWork, maximumSetupWork, cancellationToken) + (long)cubicSpans.Length * 3;
+            long multiCurveEdges = QuadraticEdgeBound(constructionPoints, quadSpans, ref setupWork, maximumSetupWork, cancellationToken) + (long)cubicSpans.Length * 3;
             RenderBudget.BudgetReservation? multiScratch = budget.Reserve(ScratchByteCount(points.Length, multiWidth, multiCurveEdges), SvgMemoryCategory.Surface);
             try
             {
@@ -1677,7 +1549,7 @@ internal ref partial struct SvgAnalyticCoverage
                             SvgQuadSpan span = constructionPoints.GetQuad(quadSpans[quadAt], quadAt, ref setupWork, maximumSetupWork, cancellationToken);
                             quadAt++;
                             // Native verbs keep their controls even when flattening emits one chord.
-                            if ((mapping is (SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges) || span.EndIndex - index >= 2 || span.ConicWeight != 1f) && AppendRetainedQuadEdges(multiKept, constructionPoints, span, true, ref contourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0)
+                            if ((mapping is (SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges) || span.EndIndex - index >= 2 || span.ConicWeight != 1f) && AppendRetainedQuadEdges(multiKept, constructionPoints, span, ref contourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0)
                             {
                                 index = span.EndIndex - 1;
                                 continue;
@@ -1785,7 +1657,7 @@ internal ref partial struct SvgAnalyticCoverage
         if (constructionClip is {} singleClip) return PrepareClipped(singlePointCount, points, ends, votes, hasVotes, isEvenOdd, mapping, quadSpans, cubicSpans, useCurveSpans, convex, desnapBox, preparation.UsesRunBlitter || paintClip == SvgAnalyticPaintClip.Antialiased, paintClip, (float)preparation.LeftWithControls < singleClip.Bounds.Left || (float)preparation.RightWithControls > singleClip.Bounds.Right, xStart, xEnd, yStart, yEnd, singleClip.Bounds, singleClip.BitmapOrigin, preparation.Source, preparation.SourceMap, maximumSetupWork, budget, ref setupWork, out eligible, cancellationToken);
         int width = xEnd - xStart;
         bool skipIntersect = singlePointCount > (long)(yEnd - yStart) * 2;
-        long curveEdges = useCurveSpans ? QuadraticEdgeBound(constructionPoints, quadSpans, convex ? 128 : 2, ref setupWork, maximumSetupWork, cancellationToken) + (long)cubicSpans.Length * 3 : 0;
+        long curveEdges = useCurveSpans ? QuadraticEdgeBound(constructionPoints, quadSpans, ref setupWork, maximumSetupWork, cancellationToken) + (long)cubicSpans.Length * 3 : 0;
         RenderBudget.BudgetReservation? scratch = budget.Reserve(ScratchByteCount(points.Length, width, curveEdges), SvgMemoryCategory.Surface);
         try
         {
@@ -1804,8 +1676,7 @@ internal ref partial struct SvgAnalyticCoverage
                     // Fallback sample density does not change an authored quadratic into a line.
                     if (mapping is (SvgPolygonMapping.NativeStrokeEdges or SvgPolygonMapping.NativeFillEdges) || span.EndIndex - index >= 2 || span.ConicWeight != 1f)
                     {
-                        if ((!convex || span.ConicWeight != 1f) && AppendRetainedQuadEdges(kept, constructionPoints, span, true, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;
-                        else if (AppendRetainedQuadEdges(kept, constructionPoints, span, false, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;
+                        if (AppendRetainedQuadEdges(kept, constructionPoints, span, ref spanContourEdges, ref setupWork, maximumSetupWork, cancellationToken) > 0) quadSubstituted = true;
                     }
                     if (quadSubstituted)
                     {

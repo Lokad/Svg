@@ -424,14 +424,14 @@
       "height": 16,
       "candidateError": "UnsupportedFeature",
       "admittedRendering": {
-        "changedPixelCount": 8,
-        "maximumChannelError": 35,
-        "maximumAlphaError": 35,
-        "alphaChangedPixelCount": 8,
-        "minimumMismatchX": 3,
-        "minimumMismatchY": 8,
-        "maximumMismatchX": 12,
-        "maximumMismatchY": 9
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/quadratic-solid-16x16.png",
@@ -445,7 +445,9 @@
         "background": "transparent",
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
-      }
+      },
+      "candidateSha256": "e59af00cb269169946486884ef2228093680fac79013a17738cded3c637a1deb",
+      "repairedAt": "Live convex polynomial quadratics, 2026-10-08"
     },
     {
       "id": "research-elliptical-arc-solid-16x16",
@@ -1279,14 +1281,14 @@
       "width": 16,
       "height": 16,
       "admittedRendering": {
-        "changedPixelCount": 1,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 3,
-        "minimumMismatchY": 8,
-        "maximumMismatchX": 3,
-        "maximumMismatchY": 8
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/gradient-outline-quad-16x16.png",
@@ -1301,7 +1303,8 @@
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
       },
-      "candidateSha256": "538543a23c3aa567ffca63a51173bc5bf24265f3c7d6a55d9edab2d767a452c2"
+      "candidateSha256": "176ae49340b29a4e409438fe74d36479bbc63f4e551bbcc47c287c2219dd642d",
+      "repairedAt": "Live convex polynomial quadratics, 2026-10-08"
     },
     {
       "id": "research-radial-outline-quad-16x16",
@@ -1320,14 +1323,14 @@
       "width": 16,
       "height": 16,
       "admittedRendering": {
-        "changedPixelCount": 2,
-        "maximumChannelError": 1,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 3,
-        "minimumMismatchY": 8,
-        "maximumMismatchX": 12,
-        "maximumMismatchY": 8
+        "minimumMismatchX": 16,
+        "minimumMismatchY": 16,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
       "oracle": {
         "referencePng": "references/radial-outline-quad-16x16.png",
@@ -1341,7 +1344,9 @@
         "background": "transparent",
         "freshProcessCaptures": 3,
         "decodedPixelStability": "identical"
-      }
+      },
+      "candidateSha256": "56b070a058d28a8f955029b1424171c4ce6d2e660cef6e7c179bac059a625286",
+      "repairedAt": "Live convex polynomial quadratics, 2026-10-08"
     },
     {
       "id": "research-pattern-outline-quad-16x16",
