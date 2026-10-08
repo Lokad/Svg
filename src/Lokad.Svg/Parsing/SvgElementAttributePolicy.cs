@@ -84,7 +84,7 @@ internal static class SvgElementAttributePolicy
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "preserveAspectRatio" && kind == SvgElementKind.Image) _ = SvgImageSyntax.ParsePlacementAspectRatio(reader.Value);;
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "clip-rule") SvgClipPathSyntax.ValidateClipRule(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName is "marker" or "marker-start" or "marker-mid" or "marker-end") SvgInertPresentationSyntax.ValidateMarker(reader.Value.AsSpan());
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "enable-background" && kind != SvgElementKind.Root) SvgInertPresentationSyntax.ValidateBackgroundAccumulation(reader.Value.AsSpan());
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "enable-background") SvgInertPresentationSyntax.ValidateBackground(reader.Value.AsSpan(), workCounter, cancellationToken);
                 continue;
             }
             throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " attribute '" + reader.Name + "' is not implemented.");

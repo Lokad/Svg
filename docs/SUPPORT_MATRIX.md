@@ -26,13 +26,13 @@ criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
 
 | Queue | Supported boundary / missing combination | Retained evidence |
 | --- | --- | --- |
-| G1 | Root attribute `enable-background:new` is admitted, but the same inline CSS declaration rejects; reconcile static inert declarations. | `inv-105`, Illustrator CC0 heart; `SvgRootAttributes` versus `SvgInertPresentationSyntax`. |
+| G1 | Declaration validation landed: attributes and admitted inline/stylesheet paths share `new` / `accumulate` / `inherit` validation without backdrop allocation. Complete and numeric partial rectangles require finite numbers and nonnegative dimensions. | Eleven six-output contexts plus malformed/priority/resource/discovery controls; the unchanged `inv-105` now reaches G3. |
 | G2 | Single-leaf symbol definitions exist; multiple symbol children collide under one ID and valid input is misreported as malformed. Magnified flattened-curve use copies remain gated. | `research-mask-leaf-multi-leaf-symbol`, `original-number-transform-instance`; `SvgDefinitionParser`. |
-| G3 | Some axis-aligned/similarity/path transforms exist; rotated rectangles, general matrix curve/shape combinations and non-uniform curve output remain gated. Pattern reflection is also rejected. | `original-logo-rotated-mark`, `original-number-general-map`, `original-curve-root-quad-none`, tiger and `group-clip-reflected-pattern`. |
+| G3 | Some axis-aligned/similarity/path transforms exist; rotated rectangles, general matrix curve/shape combinations and non-uniform curve output remain gated. Pattern reflection is also rejected. | `inv-105`, `original-logo-rotated-mark`, `original-number-general-map`, `original-curve-root-quad-none`, tiger and `group-clip-reflected-pattern`. |
 | G4 | Native solid strokes render; gradient/pattern mixed closed/open subpaths and gradient direct `fill="none"` lines still reject. Oval dash caps/paint/transform combinations remain narrower than solid paths. | Nine `zero-area-stroke-*` paint-server controls, two `line-bounds-*-square-width6-fill-none` controls; shared stroke and paint admission. |
-| G5 | Nested viewport sizing/clips and limited masks exist; nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `original-aa-clip-admitted-shader`, material pairs, `mask-region-half-translated`; definition scopes, `SvgMaskSyntax` and `SvgNestedViewportSyntax`. |
+| G5 | Nested viewport sizing/clips and limited masks exist; nested SVG style attributes, nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `original-aa-clip-admitted-shader`, material pairs, `mask-region-half-translated`; definition scopes, `SvgMaskSyntax` and `SvgNestedViewportSyntax`. |
 | G6 | One rectangle tile with integer user-space coordinates exists; circle/path/multiple-child tiles, local pattern inheritance, fractional/general maps and bounding-box units are missing. | `inv-103`, `inv-104`, `original-cpu-raster-cubic-pattern`; `SvgDefinitionParser` and `SvgPatternSyntax`. |
-| G7 | Embedded PNG and static CSS have explicit narrow subsets; non-uniform image content/resampling and additional selector/export combinations need measured slices. | `SvgImageSyntax`, PNG decoder, `SvgStyleSheet`; source distinct export failures before expanding. |
+| G7 | Embedded PNG and static CSS have explicit narrow subsets; non-uniform image content/resampling, root-targeting stylesheet selectors and additional export combinations need measured slices. | `SvgImageSyntax`, PNG decoder, `SvgStyleSheet`; source distinct export failures before expanding. |
 | G8 | Active markers and filter effects reject. These are later static features with bounded surface/expansion requirements. | `original-logo-marker-mark`, `original-logo-filter-mark`. |
 | G9 | Direct text requires a prepared supplied-font snapshot; broader text/tspan/text-path layout is experimental. | `original-logo-live-text`, `original-logo-text-path`; PLAN section 6. |
 
@@ -42,6 +42,11 @@ They are failure-selected development cases, outside the 27-document corporate
 cohort and original fixture/research denominators. No new renderer behavior is
 claimed by recording a rejection. First-blocker removal may expose further
 admission or pixel failures; all remain visible until the unchanged reference is exact.
+
+Shared background declaration validation charges text work before span-only
+tokenization and retains no backdrop or token-array owners. Active filter effects
+remain categorized. The heart's new rotated-rectangle rejection is recorded in
+the case manifest; its original and reference remain frozen. See [the repair](RASTERIZATION_DESIGN.md#shared-exporter-background-validation-2026-10-08).
 
 ## Retained renderer foundations
 

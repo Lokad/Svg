@@ -57,6 +57,10 @@ the final contained-ring witness. [The support queue](PLAN.md#3-ordered-support-
 now targets remaining static SVG combinations, with three newly sourced
 public-domain/CC0 failures retained in the development inventory.
 
+Inert `enable-background` declarations now share validation across attributes and
+admitted styles, including Illustrator's `new` rectangle hint. The retained heart
+advances to its rotated-rectangle restriction; remaining transforms stay in G3.
+
 Circle and ellipse dashes now cut original conics through the shared native
 path-dash constructor. All nine retained dash failures and twelve new independent
 controls are exact, including thin widths, offsets, seams, scaling, pathLength

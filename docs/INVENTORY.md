@@ -49,7 +49,7 @@ Full API responses and capture diagnostics remain under ignored
 - Creator: [Jasmina El Bouamraoui and Karabo Poppy Moletsane](https://commons.wikimedia.org/wiki/File:WP20Symbols_heart.svg). License: **CC0-1.0**. The file is explicitly offered under the CC0 1.0 Universal Public Domain Dedication.
 - Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-105.svg); only root width/height replaced with 512×401 pixel dimensions. Authored geometry and all other source bytes retained. Scale 1, transparent, default limits, no explicit viewport/font snapshot.
 - Browser reference: [PNG](../tests/References/inventory/inv-105-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3, device scale 1; three stable healthy captures.
-- Observed failure: **UnsupportedFeature**, `Only accumulate enable-background presentation values are implemented.`. Queue **G1**. This first rejection does not exclude additional blockers.
+- Observed failure: **UnsupportedFeature**, `Only axis-aligned rectangle transforms are implemented.`. Queue **G3**. Shared background validation closes the initial G1 declaration blocker; the original, test input and browser reference remain unchanged. Further blockers may remain.
 
 The checkerboard sourcing control is [Indolences' public-domain geometric SVG](https://commons.wikimedia.org/wiki/File:Checkerboard_pattern.svg).
 At its declared 500×500 transparent viewport it is pixel-exact; its three stable

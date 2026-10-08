@@ -8076,3 +8076,51 @@ earlier broad memory/package checks retain their dated scope. Evidence is under
 ignored `artifacts/contained-stroke-ring-20261008/` and the Linux
 `zero-area-stroke-final-20261008/` delivery checkout. The identified fidelity
 repair phase is complete; original-scope support gaps and remote CI remain open.
+
+## Shared exporter background validation (2026-10-08)
+
+The retained CC0 Illustrator heart (`inv-105`) rejected its inline root
+`enable-background:new 0 0 682.34 534.35`, while the same presentation attribute
+already parsed. Root validation allocated a split string array; the shared style
+validator admitted only `accumulate`. These paths now share span-only validation
+in `SvgInertPresentationSyntax`, used by the attribute policy and inline/stylesheet
+parser. Root parsing no longer duplicates the validator or allocates token arrays.
+
+The admitted values are `new`, `accumulate` and `inherit`; `new` accepts up to four
+finite rectangle numbers. SVG 1.1 defines numeric partial rectangles as disabling
+backdrop access, so these inert forms are admitted alongside complete rectangles.
+Negative origins, scientific notation and zero dimensions are admitted; negative
+dimensions, non-finite/unit-bearing/nonnumeric/extra numbers are malformed. The
+[SVG 1.1 definition](https://www.w3.org/TR/SVG11/filters.html#EnableBackgroundProperty)
+ties this hint to backdrop inputs. The renderer creates no backdrop, and active
+filters remain rejected; inert declarations preserve static pixels. Text work is
+charged before validation, cancellation keeps the caller token, and the validator
+retains no storage. Invalid values are checked before duplicate/priority discard.
+
+The same sixty-three focused cases fail 25 times on the preceding renderer and all
+pass after repair. Eleven new six-output contexts cover
+root attributes/inline style, group attributes/inheritance, stylesheet declarations,
+leaf/use attributes, nested viewport attributes and three numeric partial-rectangle
+forms. Malformed values preserve categories and owner cleanup; three fresh resource checks cover tight parser work,
+memory denial, cancellation and retry. Font discovery agrees. Nested SVG `style`
+attributes retain their separate G5 admission rejection, explicitly tested;
+root-targeting stylesheet selectors remain G7. The first draft's nested-inline
+positive test exposed that existing gate and remains recorded in ignored evidence.
+
+The unchanged heart source advances to `Only axis-aligned rectangle transforms
+are implemented.` under G3. It is still rejected, with no fidelity claim and no
+source/reference recapture. The other two retained failures and the exact
+checkerboard report remain unchanged. The development manifest records the current
+first blocker, with all provenance and asset identities preserved.
+
+Windows/Linux Release solution builds pass with zero warnings/errors. **4,290
+tests** pass on each: 3,911 core, 373 visual-project and six FontProbe. All **1,567
+original reports / 1,539 PNG byte sequences** are unchanged and platform banks
+agree. Every corporate report/PNG stays unchanged, **27/27 documents / 258/258
+variants exact** against each platform's own retained references. The 149
+six-output recorded-paint controls retain their outcomes. No public API, raster
+layout, dependency or package contract changes. Earlier broad resource/package
+evidence retains its dated scope; no quantitative throughput claim is made.
+Raw runs stay under ignored `artifacts/exporter-background-20261008/` and the
+isolated Linux `exporter-background-final-20261008/` checkout. G2 is next; G3/G5/G7
+remain open and S17 still requires remote CI evidence.

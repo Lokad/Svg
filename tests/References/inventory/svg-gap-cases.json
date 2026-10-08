@@ -119,14 +119,14 @@
         "enable-background",
         "outlined-illustration"
       ],
-      "gap": "G1",
+      "gap": "G3",
       "width": 512,
       "height": 401,
       "outputScale": 1,
       "background": "transparent",
       "viewport": null,
       "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Only accumulate enable-background presentation values are implemented.",
+      "observedMessage": "Only axis-aligned rectangle transforms are implemented.",
       "reference": "tests/References/inventory/inv-105-transparent.png",
       "referenceSha256": "332c93e2025ecc7c34abaee414940afb7c4cb5237200e9cadc4bc186f2bf5d12",
       "oracle": {

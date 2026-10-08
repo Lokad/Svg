@@ -12,6 +12,12 @@ but nonzero local winding, including clipped construction. It changes one
 original PNG; the other 1,538 PNGs and every corporate report/image stay unchanged.
 See [the repair](docs/RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
 
+The shared `enable-background` validator now admits `new`, `accumulate` and
+`inherit` consistently through presentation attributes and the admitted inline/
+stylesheet paths. The Illustrator heart (`inv-105`) advances to the rotated-
+rectangle gate, **G3**, and remains rejected; no source or browser reference changes.
+The next active item is **G2, multi-child symbols and practical instances**.
+
 The next work is ordinary static SVG support within the original product scope:
 remove erroneous admission gates, then fill the missing geometry, reference,
 paint and composition combinations below. Passing the frozen cohort does not
@@ -37,21 +43,23 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,261 passed on each platform**: 3,885 core, 370 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Four focused tests fail on the preceding renderer and pass after the repair, covering single/multiple zero-area native stroke contours with and without clipping. Three fresh admitted resource sweeps and nine valid-input rejection sweeps preserve tight work/memory denial, caller-token cancellation and owner cleanup. All 149 six-output controls retain their measured outcomes. Earlier full resource, 25-scenario memory and installed runtime/symbol package checks retain their dated scope. No public API or runtime dependency changes; remote CI remains open. |
-| Executed fixture manifest | **1,410 entries = 1,386 exact + zero known-difference renders + 24 rejections**; 799 base documents / 611 variants. The contained native stroke-ring witness becomes exact. Every other fixture report and PNG stays unchanged. |
+| Full tests, including corporate selection/measurement | **4,290 passed on each platform**: 3,911 core, 373 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Sixty-three focused inert-declaration tests pass, including eleven new six-output placement contexts, malformed rectangles, duplicate/priority validation, discovery parity and three fresh tight work/memory/token/cleanup checks. Background tokenization retains no arrays or backdrop storage; text validation work is charged before scanning. The 149 six-output paint controls retain their outcomes. Earlier broad resource, 25-scenario memory and installed-package checks keep their dated scope. No public API or runtime dependency changes; remote CI remains open. |
+| Executed fixture manifest | **1,410 entries = 1,386 exact + zero known-difference renders + 24 rejections**; 799 base documents / 611 variants. Every fixture report and PNG stays unchanged. |
 | Executed research manifest | **65 probes = 61 exact + zero known-difference renders + four rejections**. Every research report and PNG stays unchanged. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the scope audit. |
-| Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**. Twelve new original CC0 controls were declared before the isolated model/captures/comparison; all 36 captures are healthy, cleaned and stable. Three solid controls are exact; nine linear/radial/pattern strokes on mixed closed/open subpaths retain an existing admission rejection. Previous controls and all six output checks remain. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
+| Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Every Default report and PNG stays unchanged, preserving the preceding matching-browser STOP-sign gain and earlier `inv-013` exact result / `inv-014` residual. These Default outputs do not establish corporate fidelity or a representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**. Three matching Windows recipes preserve parser work and accounted peak; retaining winding edges adds 397–1,135 conversion-work units and 1,120–1,168 median managed allocation bytes per conversion. See [the cost record](docs/BENCHMARKS.md#zero-area-native-stroke-winding-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | The support repair changes parser validation only; it removes the root token-array allocation and adds bounded text-work charges, without new raster fields or surfaces. No quantitative performance claim is made. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-The repair checkpoint passes 4,261 tests per platform. The new sourcing corpus
-adds three focused offline checks, validated separately; it does not enlarge the
-original bank or corporate denominator. WSL Ubuntu 24.04.3 uses isolated SDK
-10.0.401 / runtime 10.0.12 and PowerShell 7.6.6. Broader resource, memory and
-installed-package evidence keeps its dated scope; remote CI is still open.
+Both platforms pass Release builds and 4,290 tests, including the three offline
+sourcing checks. All 1,567 original reports and 1,539 PNG byte sequences remain
+unchanged; the banks agree across platforms. The development corpus still has
+three rejected documents; the heart's current first blocker is now G3. WSL Ubuntu
+24.04.3 uses isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6. Earlier
+resource, memory and installed-package evidence keeps its dated scope; remote CI
+remains open.
 
 ## 2. Execution decisions
 
@@ -78,7 +86,7 @@ installed-package evidence keeps its dated scope; remote CI is still open.
 
 The audit uses executed fixture/research/recorded-paint failures and actual parser
 gates. The order below prioritizes shared combinations used by ordinary exports;
-it is an engineering judgment, not a measured prevalence ranking. G1–G6 have
+it is an engineering judgment, not a measured prevalence ranking. G2–G6 have
 concrete retained failures. G7–G9 are bounded later work and need fresh development
 examples before their implementation slices are selected. Regression repairs may
 interrupt this order. The identified fidelity repairs under historical rows
@@ -87,7 +95,7 @@ landed mechanisms remain regression requirements.
 
 | Priority | Work | Failure class | Dependencies / stages |
 | --- | --- | --- | --- |
-| G1 | Consistent admission of inert exporter presentation declarations | Erroneous rejection of already admitted syntax in another declaration location | Shared styles and attribute validation; S9 |
+| G1 | **Declaration validation landed.** Inert exporter presentation values share one validator; G2 is next. | Original syntax-location inconsistency resolved; the heart now exposes G3 | Remaining nested style/root selector gates stay G5/G7; S9 |
 | G2 | Multi-child local symbols and practical instance semantics | Valid input misreported as malformed; missing instance combinations | Definition ownership, expansion and bounded reference graph; S9/S10 |
 | G3 | Complete static transforms across shapes, curves and instances | Missing combinations behind shape-specific and non-uniform gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | Paint-server strokes on ordinary geometry | Missing combinations; no observed pixel residual after rejection | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
@@ -97,15 +105,24 @@ landed mechanisms remain regression requirements.
 | G8 | Markers and a measured subset of filter/blending effects | Missing static features; lower priority than outlined logos | G3–G5, bounded intermediate surfaces; S16 |
 | G9 | Supplied-font text, then text paths if needed | Separate experimental feature work; no implicit host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
 
-### G1 — exporter declarations
+### G1 — exporter declarations: shared validation landed
 
-`inv-105`, the CC0 Wikipedia 20 heart exported by Illustrator, rejects its root
-CSS `enable-background:new 0 0 682.34 534.35`. Root presentation attributes already
-admit `new`; the inline/shared path admits only `accumulate`. Resolve this
-inconsistency for static documents without backdrop-dependent effects. Preserve
-validation of active unsupported features. Exit: attribute/inline/stylesheet and
-inherited location controls agree; the retained source advances honestly through
-any further blockers and all declared renders match unchanged references.
+Attributes and admitted inline/stylesheet declarations now share allocation-free
+validation of `new`, `accumulate` and `inherit`. `new` accepts up to four finite
+rectangle numbers with nonnegative dimensions; negative origins, scientific
+notation and zero dimensions are admitted. Numeric partial rectangles disable
+backdrop access under SVG 1.1 and are admitted too. Malformed values cannot hide behind
+duplicate declarations or `!important`; active filters still reject. Root, group,
+leaf, use, viewport-attribute and inherited locations have six-output controls;
+font discovery agrees and tight denial/cancellation releases owners.
+
+`inv-105` no longer rejects its Illustrator root CSS declaration. It now reaches
+`Only axis-aligned rectangle transforms are implemented.` under **G3**; the
+original, root-sized input and browser reference remain unchanged. Nested SVG
+`style` attributes and root-targeting stylesheet selectors retain separate
+admission gates under **G5/G7**. This closes the shared declaration-validation
+inconsistency, not the heart's complete rendering or those wider CSS gaps.
+See [the repair](docs/RASTERIZATION_DESIGN.md#shared-exporter-background-validation-2026-10-08).
 
 ### G2 — symbols and instances
 
@@ -145,8 +162,8 @@ semantics, declared clips and placements are exact, and ownership/budget checks 
 `original-aa-clip-admitted-shader` rejects a gradient defined inside a nested
 viewport as undefined. The material-pair family rejects patterns in scaled
 viewports. `mask-region-half-translated` rejects a transformed custom mask region;
-retained percentage-mask and nested-opacity examples need their own admission
-slices. Distinguish definition scope, object bounds, visual stroke bounds and
+nested SVG style attributes, retained percentage-mask and nested-opacity examples
+need their own admission slices. Distinguish definition scope, object bounds, visual stroke bounds and
 viewport percentage bases. Exit: each retained family and independent leaf/group/
 use controls are exact with source-order binding, bounded temporary surfaces and
 token-preserving cleanup. Full AA-mask/cache behavior remains a separate fidelity

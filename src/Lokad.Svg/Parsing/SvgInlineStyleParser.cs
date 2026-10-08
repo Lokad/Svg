@@ -138,7 +138,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("enable-background", StringComparison.OrdinalIgnoreCase))
             {
                 TryStripImportant(propertyValue, out ReadOnlySpan<char> stripped);
-                SvgInertPresentationSyntax.ValidateBackgroundAccumulation(stripped);
+                SvgInertPresentationSyntax.ValidateBackground(stripped, workCounter, cancellationToken);
             }
             else if (allowsDirectTextFontProperties && property.Equals("font-family", StringComparison.OrdinalIgnoreCase)) Set(ref family, InlineImportantProperties.Family, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("font-weight", StringComparison.OrdinalIgnoreCase)) Set(ref weight, InlineImportantProperties.Weight, property, propertyValue, strings, ref important, false);
