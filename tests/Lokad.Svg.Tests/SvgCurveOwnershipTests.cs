@@ -8,7 +8,7 @@ public sealed class SvgCurveOwnershipTests
     public static IEnumerable<object[]> Inputs()
     {
         foreach (string name in new[] { "direct-leaf-transparent", "nested-local-use-transparent", "current-color-native-stroke-transparent", "current-color-rectangle-stroke-transparent", "rendered-group-use-paint", "paint-server-definition-opacity" })
-            yield return new object[] { "use-paint-properties-" + name, File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "use-paint-properties", name + ".svg")), name is "rendered-group-use-paint" or "paint-server-definition-opacity" };
+            yield return new object[] { "use-paint-properties-" + name, File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "use-paint-properties", name + ".svg")), name is "paint-server-definition-opacity" };
         foreach (string name in new[] { "right-bottom-transparent", "nested-scopes-transparent", "translucent-content-transparent" })
             yield return new object[] { "symbol-viewport-opacity-" + name, File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "symbol-viewport-opacity", name + ".svg")), false };
         foreach (string name in new[] { "ordered-nested-groups", "group-hidden-visible-child", "nested-child-alias", "forward-symbol-graph", "group-alias-use", "unused-empty-groups" })

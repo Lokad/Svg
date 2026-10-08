@@ -44,7 +44,7 @@ internal sealed class SvgSymbolReferenceValidator : IDisposable
             SvgSymbolContentNode node = frame.Range.Content.Nodes[frame.Next];
             _stack[^1] = frame with { Next = frame.Next + 1 };
             if (node.Kind != SvgSymbolContentKind.Use) continue;
-            if (!_state.Definitions.TryGetValue(node.Reference.Id, out SvgDefinition target))
+            if (!_state.Definitions.TryGetValue(node.Reference.Id, out SvgDefinition target) && !_state.RenderedGroupDefinitions.TryGetValue(node.Reference.Id, out target))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local references in symbol content are implemented.");
             if (target.SymbolContent is {} child) Push(child);
         }
@@ -55,7 +55,11 @@ internal sealed class SvgSymbolReferenceValidator : IDisposable
         _work.Consume(_token);
         if (_visits.TryGetValue(range, out byte value))
         {
-            if (value == 1) throw new SvgException(SvgErrorCode.MalformedInput, "SVG use references cannot form a circular dependency.");
+            if (value == 1)
+            {
+                if (range.Content.IsRenderedGroup) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic group use references are not implemented.");
+                throw new SvgException(SvgErrorCode.MalformedInput, "SVG use references cannot form a circular dependency.");
+            }
             return;
         }
         _visits.TryAdd(range, 1);

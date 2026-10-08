@@ -8662,3 +8662,57 @@ diagnostic evidence is under `artifacts/use-stroke-style-20261008/` and
 
 Rendered-group styling and wider instance combinations remain G2 work. G3–G9 and
 S17 remote CI remain open; this slice does not establish general SVG coverage.
+
+## Rendered-group styles and native source replay (2026-10-08)
+
+Identifier-bearing rendered groups now retain typed leaf/group/use source nodes.
+Their immutable attributes and captured CSS cascade feed the existing shape
+lowerers when instantiated. Authored paint, stroke properties, fill rules and
+local transforms merge through the same iterative contexts as symbols. Aliases
+exclude referenced ancestors; nested and forward uses preserve order and ownership.
+This replaces the baked group geometry un-baker and its extra-index cache.
+Metadata-only group boundaries retain the existing opacity/clip/mask/viewport gates.
+
+The 123 new controls produce 111 exact comparisons and 12 UnsupportedFeature
+outcomes through all six outputs. The frozen baseline produced nine incorrect
+thin-oval renders and 114 rejections. Eighty-four controls preceded production
+editing/capture/comparison; thirty followed the first prototype's thin-oval and
+copied-mask findings, three are independently admitted canceled-ancestor rectangle
+twins, and six follow inspection of shader reconstruction. Each additional phase
+preceded its own captures/comparisons. All 369 fresh-process captures are healthy,
+profile-cleaned and byte-stable. The twelve gates cover group opacity, group clips,
+original transformed inline rectangles and inherited shader fill opacity, three
+backgrounds each. Supported twins retain separate identities and never replace
+the rejected originals.
+
+Raw source replay initially exposed two shared dependencies. Solid thin oval
+strokes need native centerlines for the existing hairline coverage dispatch;
+the shared native ellipse stroke builder now serves that route with no dash array.
+All nine thin-oval controls become exact while preceding exact PNGs stay unchanged.
+Copied masked leaves/uses need batch mask application before their respective
+opacity wrappers. The existing instance-mask implementation now supplies that
+shared route, preserving object bounds, mask regions and inner mask chains.
+All eighteen preceding masked-copy PNGs retain their bytes. Rectangle source
+replay also uses ordinary rectangle lowering, preserving the supported frame
+route rather than introducing a narrower definition-only construction gate.
+
+The old rendered-group paint case and three opacity backgrounds graduate against
+unchanged source/reference bytes. The use-paint bank is now 28 exact/three rejected;
+the opacity bank is 67 exact/14 rejected. The style bank remains 96 exact/three
+rejected. Eleven new inputs sweep parser work, sampled/peak-edge memory denial,
+raster work boundaries and cancellation/retry. The empty forward target found a
+shared work-limit defect: no draw commands meant no raster-loop budget check.
+Rasterization now checks accumulated parser work before allocating its surface.
+Owners release on every denied path. Layout remains 72/272/68 bytes for draw
+commands/geometry/paint; no new surface or quantitative performance claim is made.
+
+Windows/Linux Release builds have zero warnings/errors; each platform passes
+4,874 tests (4,032 core, 836 visual-project, six FontProbe), without failures/skips.
+All 1,567 original reports and 1,545 PNGs are unchanged from the stroke-style
+checkpoint. Each platform preserves 27/27 corporate documents and 258/258 exact
+variants against its own references, with unchanged reports and PNGs. All prior
+symbol, rectangle and frame controls retain their outcomes. Ignored evidence is
+under `artifacts/rendered-group-styles-20261008/` and
+`artifacts/linux-delivery-20261007/rendered-group-styles-final-20261008/`.
+Wider paint-server/viewport instance combinations remain G2; G3–G9 and S17 remote
+CI stay open. The four licensed online failure cases remain unchanged.

@@ -15,7 +15,7 @@ internal static class SvgSymbolContentParser
         if (reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips and masks within retained symbol containers are not implemented.");
         string? id = reader.GetAttribute("id");
-        if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _)))
+        if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
         id = id is null ? null : state.Strings.Copy(id);
         InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, false, state, work, token);
@@ -37,7 +37,7 @@ internal static class SvgSymbolContentParser
             SvgSymbolPresentation presentation = new(paint, inherited.Stroke.ResolveChild(style with { Linecap = stroke.Linecap, Linejoin = stroke.Linejoin, Dasharray = stroke.Dasharray, Dashoffset = stroke.Dashoffset, Width = stroke.Width, Miterlimit = stroke.Miterlimit, StrokeOpacity = stroke.StrokeOpacity, Stroke = stroke.Stroke }),
                 Copy(style.FillRule) ?? inherited.FillRule, style.Fill is not null || inherited.HasAuthoredFill, opacity ?? inherited.FillOpacity, color ?? inherited.CurrentColor, sourceOpacity);
             content.BeginGroup(reader.Depth, id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
-                { Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
+                { FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
             if (reader.IsEmptyElement) content.EndGroup(reader.Depth, state);
         }

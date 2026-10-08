@@ -2,13 +2,14 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgSymbolContentKind { Leaf, Group, EndGroup, Use }
+internal enum SvgSymbolContentKind { Leaf, Group, EndGroup, Use, Unsupported }
 
 /// <summary>Retains independently authored container paint; absent properties inherit from the instance context.</summary>
 internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? Color, SvgPaintOpacity Opacity, bool IsDisplayed, bool? IsVisible)
 {
     internal SvgPaintOpacity? StrokeOpacity { get; init; }
     internal SvgInheritedStrokeStyle Stroke { get; init; }
+    internal string? FillRule { get; init; }
     internal SvgPaint Resolve(SvgPaint inherited)
     {
         SvgPaint paint = HasAuthoredFill ? Paint : inherited;
@@ -55,12 +56,14 @@ internal sealed class SvgSymbolContent : IDisposable
             content = new(budget, work, token, presentation, owner);
             content._building.Add(new(SvgSymbolContentKind.Group, default, default,
                 new(presentation.Paint, presentation.HasAuthoredFill, presentation.FillOpacity, presentation.CurrentColor, presentation.SourceOpacity, true, null)
-                { Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
+                { FillRule = presentation.FillRule, Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
             return content;
         }
         catch { if (content is null) owner.Dispose(); else content.Dispose(); throw; }
     }
 
+    internal bool IsRenderedGroup { get; set; }
+    internal void AddUnsupported() => _building.Add(new(SvgSymbolContentKind.Unsupported, default, default, default, default, -1));
     internal void ClaimLeafOwnership() => _ownsLeaves = true;
     internal SvgSymbolPresentation Presentation => _groups.Count == 0 ? _rootPresentation : _groups[^1].Presentation;
     internal int ChildDepth(int symbolDepth) => (_groups.Count == 0 ? symbolDepth : _groups[^1].Depth) + 1;
@@ -88,14 +91,21 @@ internal sealed class SvgSymbolContent : IDisposable
         return start;
     }
 
-    internal bool EndGroup(int depth, SvgDocumentState state)
+    internal bool EndGroup(int depth, SvgDocumentState state) => EndGroup(depth, state, false);
+    internal bool EndRenderedGroup(int depth, SvgDocumentState state) => EndGroup(depth, state, true);
+
+    private bool EndGroup(int depth, SvgDocumentState state, bool renderedGroup)
     {
         if (_groups.Count == 0 || _groups[^1].Depth != depth) return false;
         SvgSymbolContentGroup group = _groups[^1];
         _building.Add(new(SvgSymbolContentKind.EndGroup, default, default, default, default, -1));
         _building[group.Start] = _building[group.Start] with { End = _building.Count - 1 };
         if (group.Id is string id)
-            state.Definitions.Replace(id, new([], false, null, null) { SymbolContent = new(this, group.Start, _building.Count - group.Start), BorrowedFromSymbol = true });
+        {
+            SvgDefinition definition = new([], false, null, null) { SymbolContent = new(this, group.Start, _building.Count - group.Start), BorrowedFromSymbol = true };
+            if (renderedGroup) state.RenderedGroupDefinitions.Replace(id, definition with { RenderedGroupId = id });
+            else state.Definitions.Replace(id, definition);
+        }
         _groups.RemoveLast();
         return true;
     }

@@ -372,8 +372,8 @@ internal ref struct SvgOrthogonalGeometryLowering
 
     /// <summary>Measures, cuts and strokes original oval conics through the shared native source route.</summary>
     /// <remarks>Caller admission supplies positive uniform placement and butt caps. Commands, dash measurements, cuts and generated outlines share bounded work/cancellation and owned storage; empty native bounds paint nothing.</remarks>
-    internal SvgParsedGeometry LowerDashedEllipseStroke(double centerX, double centerY, double radiusX, double radiusY,
-        SvgResolvedPaintableElement element, SvgStroke stroke, double[] dashes, double dashOffset, double? pathLength,
+    internal SvgParsedGeometry LowerNativeEllipseStroke(double centerX, double centerY, double radiusX, double radiusY,
+        SvgResolvedPaintableElement element, SvgStroke stroke, double[]? dashes, double dashOffset, double? pathLength,
         double miterLimit, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
@@ -426,6 +426,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             using BudgetedParserList<SvgDevicePoint> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
             return FinishPolygonFill(empty, [], stroke.Color, element.Presentation.IsPainted, SvgPolygonMapping.NativeStrokeEdges, frame, budget);
         }
+        if (StrokeDeviceWidth(stroke.Width, element.Transform, frame, nonScaling) * element.OutputMagnification <= 1)
+            return LowerNativeEllipseStroke(centerX, centerY, radiusX, radiusY, element, stroke, null, 0, null, 4, nonScaling, frame, budget);
         float midX = (float)(0.5 * ((double)left + right)), midY = (float)(0.5 * ((double)top + bottom));
         Span<SvgDevicePoint> oval = stackalloc SvgDevicePoint[]
         {

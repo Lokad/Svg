@@ -12,10 +12,9 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
     internal SvgPaintOpacity InheritedStrokeOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal SvgInheritedStrokeStyle InheritedStroke { get; init; }
-    internal bool HasPaintContextOverride { get; init; }
+    internal string? InheritedFillRule { get; init; }
+    internal string? SourceMaskReference { get; init; }
     internal bool HasFillOpacityOverride { get; init; }
-    internal bool HasStrokeOpacityOverride { get; init; }
-    internal bool HasStrokeStyleOverride { get; init; }
     internal bool IsDisplayed { get; init; } = true;
     internal bool IsVisible { get; init; } = true;
 }
@@ -55,14 +54,14 @@ internal static class SvgReferenceResolver
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
         if (definition.LeafSource is SvgDefinitionLeafSource source)
         {
-            if (source.RequiresConstruction(reference.InheritedStroke))
+            if (source.RequiresConstruction(reference.InheritedStroke, reference.InheritedFillRule))
             {
                 foreach (SvgGeometry geometry in definition.Geometries)
                 {
                     workCounter.Consume(cancellationToken);
                     if (geometry.LeafMask is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox }, reference with { StrokeOverride = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }
@@ -718,40 +717,57 @@ internal static class SvgReferenceResolver
         {
             foreach (SvgGeometry geometry in sources) SvgMaskSyntax.ValidateMaskScopes(state, geometry);
             if (mask is null) return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
-            double left = double.PositiveInfinity, top = double.PositiveInfinity;
-            double right = double.NegativeInfinity, bottom = double.NegativeInfinity;
-            foreach (SvgGeometry geometry in sources)
-            {
-                workCounter.Consume(cancellationToken);
-                if (maskReference is not null) SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, SvgMaskSyntax.BoundingBox(geometry));
-                SvgRectangle box = SvgMaskSyntax.RecordedObjectBox(geometry, state);
-                left = Math.Min(left, box.X); top = Math.Min(top, box.Y);
-                right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
-            }
-            SvgRectangle fallback = new(left, top, right - left, bottom - top, default, false, null);
-            SvgClipBox region = ResolveInstanceMaskRegion(maskReference, frame, state, fallback);
-            SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-            operation.Value = mask.Value; operation.Resolved = true;
-            string? maskId = maskReference is null ? null : SvgMaskSyntax.ParseMaskId(maskReference);
-            operation.Region = region;
-            using BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> bindings = new(state.Budget, SvgMemoryCategory.Parser, 96);
-            SvgLeafMaskBinding? noInner = null;
-            SvgGeometry[] applied = sources;
-            for (int index = 0; index < applied.Length; index++)
-            {
-                workCounter.Consume(cancellationToken);
-                SvgLeafMaskComposition.ValidateRegion(applied[index], region);
-                SvgLeafMaskBinding? inner = applied[index].LeafMask;
-                SvgLeafMaskBinding outer;
-                if (inner is null) outer = noInner ??= SvgLeafMaskComposition.NewBinding(state, operation, null);
-                else if (bindings.TryGetValue(inner, out SvgLeafMaskBindingReference cached)) outer = cached.Binding;
-                else { outer = SvgLeafMaskComposition.NewBinding(state, operation, inner); bindings.TryAdd(inner, new(outer)); }
-                applied[index] = applied[index] with { LeafMask = outer };
-            }
-
-            return SvgPaintRecording.WrapInstance(applied, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
+            ApplyMask(sources, frame, mask, maskReference, state, workCounter, cancellationToken);
+            return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
         }
         catch { foreach (SvgGeometry geometry in sources) geometry.Dispose(); throw; }
+    }
+
+    /// <summary>Retains a mask around a caller-owned batch without adopting or disposing its geometry.</summary>
+    /// <remarks>All metadata belongs to the document; cache growth and scans charge memory/work and observe cancellation.
+    /// The caller releases geometry on failure and applies element opacity after this outer mask is attached.</remarks>
+    internal static void ApplyMask(Span<SvgGeometry> geometries, SvgViewportFrame? frame, byte? mask, string? maskReference,
+        SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if ((maskReference is null && mask is null) || geometries.IsEmpty) return;
+        if (mask is null)
+        {
+            string id = SvgMaskSyntax.ParseMaskId(maskReference ?? throw new InvalidOperationException("An unresolved mask requires its source reference."));
+            if (!state.Masks.TryGetValue(id, out byte value))
+            {
+                if (state.MaskContents.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content on masked leaves is not implemented.");
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+            }
+            mask = value;
+        }
+        double left = double.PositiveInfinity, top = double.PositiveInfinity;
+        double right = double.NegativeInfinity, bottom = double.NegativeInfinity;
+        foreach (SvgGeometry geometry in geometries)
+        {
+            workCounter.Consume(cancellationToken);
+            if (maskReference is not null) SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, SvgMaskSyntax.BoundingBox(geometry));
+            SvgRectangle box = SvgMaskSyntax.RecordedObjectBox(geometry, state);
+            left = Math.Min(left, box.X); top = Math.Min(top, box.Y);
+            right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
+        }
+        SvgRectangle fallback = new(left, top, right - left, bottom - top, default, false, null);
+        SvgClipBox region = ResolveInstanceMaskRegion(maskReference, frame, state, fallback);
+        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+        operation.Value = mask.Value; operation.Resolved = true;
+        operation.Region = region;
+        using BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> bindings = new(state.Budget, SvgMemoryCategory.Parser, 96);
+        SvgLeafMaskBinding? noInner = null;
+        for (int index = 0; index < geometries.Length; index++)
+        {
+            workCounter.Consume(cancellationToken);
+            SvgLeafMaskComposition.ValidateRegion(geometries[index], region);
+            SvgLeafMaskBinding? inner = geometries[index].LeafMask;
+            SvgLeafMaskBinding outer;
+            if (inner is null) outer = noInner ??= SvgLeafMaskComposition.NewBinding(state, operation, null);
+            else if (bindings.TryGetValue(inner, out SvgLeafMaskBindingReference cached)) outer = cached.Binding;
+            else { outer = SvgLeafMaskComposition.NewBinding(state, operation, inner); bindings.TryAdd(inner, new(outer)); }
+            geometries[index] = geometries[index] with { LeafMask = outer };
+        }
 
         static SvgClipBox ResolveInstanceMaskRegion(string? maskReference, SvgViewportFrame? frame, SvgDocumentState document, SvgRectangle fallback)
         {
@@ -1429,24 +1445,11 @@ internal static class SvgReferenceResolver
         {
             workCounter.Consume(cancellationToken);
             PendingUse pendingUse = pendingUses[pendingUseIndex];
-            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition))
+            if (!definitions.TryGetValue(pendingUse.Reference.Id, out SvgDefinition definition) && !state.RenderedGroupDefinitions.TryGetValue(pendingUse.Reference.Id, out definition))
             {
-                if (state.GroupSnapshots.TryGetValue(pendingUse.Reference.Id, out _)) continue;
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
             }
             InsertResolvedUse(definition, pendingUse, scene, state, ref commandShift, workCounter, cancellationToken);
-        }
-        for (int pendingUseIndex = 0; pendingUseIndex < pendingUses.Count; pendingUseIndex++)
-        {
-            workCounter.Consume(cancellationToken);
-            PendingUse pendingUse = pendingUses[pendingUseIndex];
-            if (!state.GroupSnapshots.TryGetValue(pendingUse.Reference.Id, out _)) continue;
-            if (pendingUse.Reference.HasStrokeStyleOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke presentation overrides on rendered-group use instances are not implemented.");
-            if (pendingUse.Reference.HasPaintContextOverride || pendingUse.Reference.HasStrokeOpacityOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color, fill-opacity and stroke-opacity overrides on rendered-group use instances are not implemented.");
-            if (pendingUse.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
-            state.GroupUseExpanded = true;
-            SvgGeometry[] expanded = ExpandGroupUse(pendingUse.Reference.Id, new HashSet<string>(StringComparer.Ordinal), scene, state, workCounter, cancellationToken);
-            InsertResolvedUse(new SvgDefinition(expanded, false, null, null), pendingUse, scene, state, ref commandShift, workCounter, cancellationToken);
         }
     }
 
@@ -1479,137 +1482,7 @@ internal static class SvgReferenceResolver
         int insertedCommands = scene.ReplaceWithMany(pendingUse.Slot with { CommandIndex = adjustedCommand }, applied);
         commandShift += insertedCommands;
         ShiftPendingCommandRanges(state, adjustedCommand + 1, insertedCommands, true, workCounter, cancellationToken);
-        if (insertedCommands > 0)
-        {
-            System.Collections.Generic.List<int> extras = new(insertedCommands);
-            for (int extra = 0; extra < insertedCommands; extra++)
-            {
-                workCounter.Consume(cancellationToken);
-                extras.Add(scene.GeometryCount - insertedCommands + extra);
-            }
-            state.GroupUseExtras[pendingUse.Slot.GeometryIndex] = extras;
-        }
     }
-
-    /// <summary>Expands one group use reference into ordered raw geometries, resolving nested group uses inside-out with cycle rejection.</summary>
-    /// <remarks>
-    /// <para>Groups render in place, so snapshots read live scene ranges: leaf placeholders resolved by the first phase, while remaining placeholders own group pendings expanded here. Multi-geometry expansions append extras past every recorded range, so each insertion records its extra indices by placeholder slot and expansions splice them at placeholder positions in place order. Each nested use maps through its own reference before splicing, matching nested rendering order; the caller maps the whole expansion once more through the outer reference. Source groups with opacity, clip or mask scopes stay unsupported because scopes live in scene commands outside geometry ranges. Cycles report honestly instead of recurring: the visited set tracks the current expansion path and releases on exit so diamonds expand once per instance.</para>
-    /// <para>Charges one work unit per visited geometry, placeholder and group, plus the mapping charges of the nested resolutions it performs; observes cancellation.</para>
-    /// </remarks>
-    private static SvgGeometry[] ExpandGroupUse(string id, HashSet<string> visited, SvgSceneBuilder scene, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(id);
-        ArgumentNullException.ThrowIfNull(visited);
-        ArgumentNullException.ThrowIfNull(state);
-        ArgumentNullException.ThrowIfNull(workCounter);
-        if (!visited.Add(id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cyclic group use references are not implemented.");
-        SvgLeafMaskMapper? unmasker = null;
-        try
-        {
-            workCounter.Consume(cancellationToken);
-            if (!state.GroupSnapshots.TryGetValue(id, out SvgGroupSnapshot snapshot)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only supported local geometry use references are implemented.");
-            if (snapshot.IsolatesOpacity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group opacity are not implemented.");
-            if (snapshot.HasClip || snapshot.HasMask) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with group clip or mask scopes are not implemented.");
-            if (snapshot.HasViewport) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with viewport-scoped source groups are not implemented.");
-            SvgAffineTransform unbaker = SvgAffineTransform.Identity;
-            bool mustUnbake = !snapshot.AncestorTransform.Equals(SvgAffineTransform.Identity);
-            if (mustUnbake && !snapshot.AncestorTransform.TryInvert(out unbaker)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with singular source transforms are not implemented.");
-            // This list borrows scene values while collecting a group snapshot; it owns only its array storage.
-            using BudgetedParserList<SvgGeometry> collected = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
-            for (int index = snapshot.GeometryStart; index < snapshot.GeometryStart + snapshot.GeometryCount; index++)
-            {
-                workCounter.Consume(cancellationToken);
-                SvgGeometry current = scene.GeometryAt(index);
-                if (current.Kind != SvgGeometryKind.Invalid)
-                {
-                    collected.Add(mustUnbake ? UnbakeAndRetain(current, snapshot.AncestorTransform, unbaker, state, ref unmasker, workCounter, cancellationToken) : current);
-                    if (state.GroupUseExtras.TryGetValue(index, out System.Collections.Generic.List<int>? extras))
-                    {
-                        foreach (int extra in extras)
-                        {
-                            workCounter.Consume(cancellationToken);
-                            SvgGeometry extraGeometry = scene.GeometryAt(extra);
-                            collected.Add(mustUnbake ? UnbakeAndRetain(extraGeometry, snapshot.AncestorTransform, unbaker, state, ref unmasker, workCounter, cancellationToken) : extraGeometry);
-                        }
-                    }
-                    continue;
-                }
-                PendingUse? owner = null;
-                for (int pendingUseIndex = 0; pendingUseIndex < state.PendingUses.Count; pendingUseIndex++)
-                {
-                    workCounter.Consume(cancellationToken);
-                    PendingUse candidate = state.PendingUses[pendingUseIndex];
-                    if (candidate.Slot.GeometryIndex == index) { owner = candidate; break; }
-                }
-                if (owner is null) throw new InvalidOperationException("Group snapshot placeholder has no owning use.");
-                if (state.Definitions.TryGetValue(owner.Value.Reference.Id, out _)) throw new InvalidOperationException("Group snapshot placeholder owns a resolved leaf use.");
-                if (owner.Value.Reference.HasStrokeStyleOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke presentation overrides on rendered-group use instances are not implemented.");
-                if (owner.Value.Reference.HasPaintContextOverride || owner.Value.Reference.HasStrokeOpacityOverride) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Color, fill-opacity and stroke-opacity overrides on rendered-group use instances are not implemented.");
-                if (owner.Value.Reference.StrokeOverride is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked use instances of groups are not implemented.");
-                SvgGeometry[] nested = ExpandGroupUse(owner.Value.Reference.Id, visited, scene, state, workCounter, cancellationToken);
-                SvgGeometry[] mapped = ResolveUseGeometries(new SvgDefinition(nested, false, null, null), owner.Value, state, workCounter, cancellationToken);
-                try
-                {
-                    foreach (SvgGeometry geometry in mapped) state.RetainTemporaryGroupGeometry(geometry, workCounter, cancellationToken);
-                }
-                catch { foreach (SvgGeometry geometry in mapped) geometry.Dispose(); throw; }
-                foreach (SvgGeometry geometry in mapped)
-                {
-                    workCounter.Consume(cancellationToken);
-                    collected.Add(mustUnbake ? UnbakeAndRetain(geometry, snapshot.AncestorTransform, unbaker, state, ref unmasker, workCounter, cancellationToken) : geometry);
-                }
-            }
-            return collected.AsSpan().ToArray();
-        }
-        finally { unmasker?.Dispose(); visited.Remove(id); }
-
-        static SvgGeometry UnbakeAndRetain(SvgGeometry geometry, SvgAffineTransform ancestor, SvgAffineTransform inverse, SvgDocumentState document, ref SvgLeafMaskMapper? mapper, ParserWorkCounter work, CancellationToken token)
-        {
-            SvgLeafMaskBinding? binding = geometry.LeafMask is null ? null : (mapper ??= SvgLeafMaskMapper.Create(document, inverse, work, token)).Map(geometry.LeafMask);
-            SvgGeometry unbaked = UnbakeGroupGeometry(geometry, ancestor, inverse, document, work, token);
-            return document.RetainTemporaryGroupGeometry(unbaked with { LeafMask = binding, RecordedPaint = geometry.RecordedPaint, RecordedStrokePaint = geometry.RecordedStrokePaint }, work, token);
-        }
-    }
-
-    /// <summary>Maps one baked snapshot geometry back through the source-group ancestor inverse, gating kinds without an exact inverse image.</summary>
-    /// <remarks>Nested uses already map through their full composed reference before splicing, so every collected geometry shares the snapshot ancestor space; un-baking restores the group-local space the outer instance transform expects. Flattened curves survive only when the ancestor never minifies, rectangle strokes never survive because widths would scale, and rectangle, line and band content rides only axis-aligned inverses through the existing honest gates.</remarks>
-    private static SvgGeometry UnbakeGroupGeometry(SvgGeometry geometry, SvgAffineTransform ancestor, SvgAffineTransform inverse, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(state);
-        ArgumentNullException.ThrowIfNull(workCounter);
-        switch (geometry.Kind)
-        {
-            case SvgGeometryKind.PolygonFill:
-            {
-                SvgPolygonFill polygon = geometry.Polygon;
-                if (polygon.Mapping == SvgPolygonMapping.FlattenedCurves && (ColumnLength(ancestor.A, ancestor.B) < 1 || ColumnLength(ancestor.C, ancestor.D) < 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with minified flattened-curve content are not implemented.");
-                using RenderBudget.BudgetReservation? mappedReservation = polygon.Points.Length == 0 ? null : state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(polygon.Points.Length), SvgMemoryCategory.Geometry);
-                SvgDevicePoint[] mapped = new SvgDevicePoint[polygon.Points.Length];
-                for (int index = 0; index < mapped.Length; index++)
-                {
-                    workCounter.Consume(cancellationToken);
-                    mapped[index] = inverse.Apply(polygon.Points[index].X, polygon.Points[index].Y);
-                }
-                SvgClipBox? clip = polygon.Clip;
-                if (clip is not null) clip = inverse.Apply(clip.Value);
-                SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, polygon.Color, polygon.HasFill, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
-                return geometry.CopyAuthoredPathTo(result, inverse, state.Budget, workCounter, cancellationToken);
-            }
-            case SvgGeometryKind.Rectangle:
-                SvgRectangle rectangle = geometry.Rectangle;
-                if (rectangle.Stroke is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with rectangle-stroke source content are not implemented.");
-                return SvgGeometry.FromRectangle(inverse.Apply(rectangle)) with { SolidPaint = geometry.SolidPaint };
-            case SvgGeometryKind.OrthogonalBand:
-                return SvgGeometry.FromOrthogonalBand(inverse.Apply(geometry.Rectangle));
-            case SvgGeometryKind.AxisAlignedLine:
-                return SvgGeometry.FromAxisAlignedLine(inverse.Apply(geometry.AxisAlignedLine));
-            case SvgGeometryKind.GlyphContours:
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with glyph source content are not implemented.");
-            default:
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group use instances with paint-server source content are not implemented.");
-        }
-    }
-
 
     private static byte ResolveDeferredMaskValue(string maskReference, SvgDocumentState document)
     {

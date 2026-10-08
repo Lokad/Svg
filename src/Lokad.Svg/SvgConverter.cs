@@ -211,6 +211,7 @@ public static class SvgConverter
         int pixelCount = (int)pixelCountLong;
         int surfaceByteCount = pixelCount * 4;
         long workUnits = root.ParserWorkUnits;
+        if (workUnits > options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scene parser work exceeds the configured rendering limit.");
         if (options.BackgroundColor != SvgColor.Transparent)
         {
             if (pixelCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Background initialization exceeds the configured work limit.");

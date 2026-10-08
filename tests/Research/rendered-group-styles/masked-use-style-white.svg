@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'><rect width='128' height='96' fill='white'/><defs><mask id='m'><rect width='128' height='96' fill='#808080'/></mask></defs><g id='q'><rect x='5.5' y='6.25' width='21' height='17.5' rx='3.25'/></g><g id='p'><use href='#q' y='32' mask='url(#m)'/></g><use href='#p' x='40' color='#bc9334' fill='#297fb3' fill-opacity='.375'/></svg>

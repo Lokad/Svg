@@ -1288,38 +1288,32 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
-    public void Minified_group_curves_stay_unsupported()
+    public void Minified_source_ancestors_do_not_reduce_replayed_group_curves()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='scale(0.5)'><g id='a'><path d='M0,0 Q16,16 32,0 Z' fill='red'/></g></g><use href='#a'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("minified flattened-curve", rejected.Message);
+        Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='scale(0.5)'><path d='M0,0 Q16,16 32,0 Z' fill='red'/></g><path d='M0,0 Q16,16 32,0 Z' fill='red'/></svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
-    public void Translated_group_paint_content_stays_unsupported()
+    public void Translated_source_ancestors_do_not_enter_group_paint_servers()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g transform='translate(4,0)'><g id='a'><rect width='8' height='8' fill='url(#g)'/></g></g><use href='#a'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("paint-server source content", rejected.Message);
+        Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><g transform='translate(4,0)'><rect width='8' height='8' fill='url(#g)'/></g><rect width='8' height='8' fill='url(#g)'/></svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
-    public void Translated_group_rect_stroke_stays_unsupported()
+    public void Group_stroke_replay_preserves_local_transforms_without_source_ancestors()
     {
-        // Canceling ancestor transforms let a rectangle stroke bake under an identity
-        // element map; the instance still gates instead of scaling the width wrongly.
+        // The ancestor cancels only during original rendering. The clone retains
+        // its own local translation and leaves the stroke width unchanged.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='translate(5,0)'><g id='a' transform='translate(-5,0)'><rect width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></g></g><use href='#a'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("rectangle-stroke source content", rejected.Message);
+        Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='8' height='8' fill='red' stroke='blue' stroke-width='2'/><rect x='-5' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

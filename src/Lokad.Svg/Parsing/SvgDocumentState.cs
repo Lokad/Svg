@@ -17,8 +17,6 @@ internal sealed class SvgDocumentState : IDisposable
         if (_nextRecordingScope == int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Recording scope storage exceeds the supported range.");
         return new(++_nextRecordingScope);
     }
-    private BudgetedParserList<SvgGeometry>? _temporaryGroupGeometries;
-    private RenderBudget.BudgetReservation? _temporaryGroupOwner;
     private BudgetedParserList<SvgDefinition>? _anonymousSymbols;
     private BudgetedParserList<SvgSymbolContentRange>? _strokeContents;
     private RenderBudget.BudgetReservation? _strokeContentOwner;
@@ -59,6 +57,7 @@ internal sealed class SvgDocumentState : IDisposable
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         GroupSnapshots = new BudgetedParserDictionary<string, SvgGroupSnapshot>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
+        RenderedGroupDefinitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         GroupSnapshotStarts = new BudgetedParserList<SvgGroupSnapshotStart>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingLeafClips = new BudgetedParserList<PendingLeafClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingGroupClips = new BudgetedParserList<PendingGroupClip>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -69,7 +68,6 @@ internal sealed class SvgDocumentState : IDisposable
         PendingRadialGradientHrefs = new BudgetedParserList<PendingRadialGradientHref>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopes = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskScopeSnapshots = new BudgetedParserList<SvgClipBox>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        GroupUseExtras = new System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>>();
     }
 
     internal RenderBudget Budget { get; }
@@ -132,10 +130,13 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<PendingUse> PendingUses { get; }
 
-    /// <summary>Gets closed groups with identifiers by scene geometry range for use-instance expansion.</summary>
+    /// <summary>Gets closed source-group boundaries used to enforce instance composition gates.</summary>
     internal BudgetedParserDictionary<string, SvgGroupSnapshot> GroupSnapshots { get; }
+    internal BudgetedParserDictionary<string, SvgDefinition> RenderedGroupDefinitions { get; }
+    internal SvgSymbolContent? RenderedGroupContent { get; set; }
+    internal int RenderedGroupRootDepth { get; set; } = -1;
 
-    /// <summary>Gets the open group stack for snapshot ranges, aligned with the group scope stack.</summary>
+    /// <summary>Gets open source-group boundaries, aligned with the group scope stack.</summary>
     internal BudgetedParserList<SvgGroupSnapshotStart> GroupSnapshotStarts { get; }
 
     internal BudgetedParserList<PendingLeafClip> PendingLeafClips { get; }
@@ -210,9 +211,6 @@ internal sealed class SvgDocumentState : IDisposable
     /// <summary>Gets the append-only retained mask scope boxes snapshotted by deferred use references.</summary>
     internal BudgetedParserList<SvgClipBox> MaskScopeSnapshots { get; }
 
-    /// <summary>Maps expanded use placeholder slots to their appended extra scene geometry indices, so group snapshots read evacuated content in place order.</summary>
-    internal System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<int>> GroupUseExtras { get; }
-
     internal int GradientDepth { get; set; } = -1;
 
     internal int RadialGradientDepth { get; set; } = -1;
@@ -266,29 +264,6 @@ internal sealed class SvgDocumentState : IDisposable
 
     private bool _definitionsReleased;
 
-    /// <summary>Owns a newly mapped/unbaked group value until parser teardown; final instances copy its native owners.</summary>
-    /// <remarks>Lazy registry ownership is reserved before allocation. Growth charges work and memory;
-    /// failure disposes the incoming value, while registered values release without observing cancellation.</remarks>
-    internal SvgGeometry RetainTemporaryGroupGeometry(SvgGeometry geometry, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        try
-        {
-            if (_temporaryGroupGeometries is null)
-            {
-                RenderBudget.BudgetReservation owner = Budget.Reserve(256, SvgMemoryCategory.Parser);
-                try
-                {
-                    _temporaryGroupGeometries = new(Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
-                    _temporaryGroupOwner = owner;
-                }
-                catch { owner.Dispose(); throw; }
-            }
-            _temporaryGroupGeometries.Add(geometry);
-            return geometry;
-        }
-        catch { geometry.Dispose(); throw; }
-    }
-
     /// <summary>Enables graph validation only when the document retains group/use source content.</summary>
     internal bool HasRetainedSymbolContent { get; set; }
 
@@ -297,6 +272,7 @@ internal sealed class SvgDocumentState : IDisposable
         if (!HasRetainedSymbolContent) return;
         using SvgSymbolReferenceValidator validator = SvgSymbolReferenceValidator.Create(this, work, token);
         foreach (SvgDefinition value in Definitions.Values) { work.Consume(token); validator.Validate(value); }
+        foreach (SvgDefinition value in RenderedGroupDefinitions.Values) { work.Consume(token); validator.Validate(value); }
         if (_anonymousSymbols is not null)
             foreach (SvgDefinition value in _anonymousSymbols.AsSpan()) { work.Consume(token); validator.Validate(value); }
     }
@@ -340,14 +316,9 @@ internal sealed class SvgDocumentState : IDisposable
         ReleaseDefinitions();
         _anonymousSymbols?.Dispose();
         _anonymousSymbolOwner?.Dispose();
-        if (_temporaryGroupGeometries is not null)
-        {
-            foreach (SvgGeometry geometry in _temporaryGroupGeometries.AsSpan()) geometry.Dispose();
-            _temporaryGroupGeometries.Dispose();
-        }
-        _temporaryGroupOwner?.Dispose();
         PendingUses.Dispose();
         GroupSnapshots.Dispose();
+        RenderedGroupDefinitions.Dispose();
         GroupSnapshotStarts.Dispose();
         PendingLeafClips.Dispose();
         PendingGroupClips.Dispose();
@@ -393,9 +364,9 @@ internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgI
 
 internal enum SvgGroupKind { Group, Link, Switch }
 
-/// <summary>Records one closed identifier-bearing group as a scene geometry range for use-instance expansion.</summary>
-internal readonly record struct SvgGroupSnapshot(int GeometryStart, int GeometryCount, SvgGroupKind Kind, bool IsolatesOpacity, bool HasClip, bool HasMask, SvgAffineTransform AncestorTransform, bool HasViewport);
+/// <summary>Retains closed source-group boundaries whose instance replay remains gated.</summary>
+internal readonly record struct SvgGroupSnapshot(bool IsolatesOpacity, bool HasClip, bool HasMask, bool HasViewport);
 
-/// <summary>Tracks one open group for snapshot ranges, aligned with the group scope stack.</summary>
-internal readonly record struct SvgGroupSnapshotStart(string? Id, int GeometryStart, bool HasClip, bool HasMask, SvgAffineTransform AncestorTransform);
+/// <summary>Tracks one open group boundary, aligned with the group scope stack.</summary>
+internal readonly record struct SvgGroupSnapshotStart(string? Id, bool HasClip, bool HasMask);
 

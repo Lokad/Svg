@@ -1121,6 +1121,7 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
     internal bool SourceDisplayed { get; init; } = true;
     internal bool? SourceVisible { get; init; }
     internal SvgDefinitionLeafSource? LeafSource { get; init; }
+    internal string? RenderedGroupId { get; init; }
     internal SvgSymbolContentRange? StrokeContent { get; init; }
 }
 

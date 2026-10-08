@@ -17,7 +17,7 @@ internal static class SvgDefinitionParser
         {
             bool symbolChild = state.SymbolDepth >= 0;
             string? id = reader.GetAttribute("id");
-            if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _)))
+            if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
                 throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
             else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
@@ -75,7 +75,7 @@ internal static class SvgDefinitionParser
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), style.Fill is not null,
                 style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), SvgColorParser.ParsePaintOpacity(style.Opacity));
             string? id = reader.GetAttribute("id");
-            if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+            if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             state.SymbolId = id is null ? null : state.Strings.Copy(id);
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
@@ -284,6 +284,7 @@ internal static class SvgDefinitionParser
             double? baseWidth = parentFrame?.ViewportWidth ?? root.Width?.ToAbsoluteOrNull();
             double? baseHeight = parentFrame?.ViewportHeight ?? root.Height?.ToAbsoluteOrNull();
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, baseWidth, baseHeight, state);
+            SvgRenderedGroupSourceParser.CaptureUse(reader, context, reference, state);
             SvgDeferredClip? deferredClip = ResolveDeferredClip(reader, reference, state);
             SvgViewportFrame? useFrame;
             if (deferredClip is null)
@@ -1068,17 +1069,20 @@ internal static class SvgDefinitionParser
         if (reader.LocalName == "rect")
         {
             SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(reader);
-            SvgResolvedPaintableElement shape = context.ResolveShape(reader, true);
+            SvgComputedStyle style = context.ResolveStyle(reader);
+            string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
             if ((rectangle.CornerX ?? rectangle.CornerY ?? 0) == 0 && (rectangle.CornerY ?? rectangle.CornerX ?? 0) == 0
-                && shape.Presentation.StrokeColor is not null && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(shape.Style.Width)
-                && SvgStrokeStyleSyntax.ParseLinejoin(shape.Style.Linejoin, true) != SvgStrokeJoin.Miter)
+                && stroke is not null && !stroke.Equals("none", StringComparison.OrdinalIgnoreCase) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)
+                && SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) != SvgStrokeJoin.Miter)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-miter stroke joins on rectangle instances are not implemented.");
         }
-        SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, null)
+        SvgDefinition definition = reader.LocalName == "rect"
+            ? new(RetainParsedGeometries(SvgLeafParser.ParseRectangle(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null)
             : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
             : ParseShapeDefinition(reader, context, state, null);
         try
         {
+            SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, reader.GetAttribute("mask"), state, context.WorkCounter, context.CancellationToken);
             SvgPaintRecording.FinishDefinition(definition.Geometries, state, context.WorkCounter, context.CancellationToken);
             return BindSymbolFill(definition, reader, context, state, context.WorkCounter, context.CancellationToken, false);
         }

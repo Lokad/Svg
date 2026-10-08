@@ -99,6 +99,7 @@ internal static class SvgDocumentTraversal
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
                 else if ((directChild || inViewport) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "svg")
                 {
+                    state.RenderedGroupContent?.AddUnsupported();
                     SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
                     SvgViewportFrame? parentFrame = state.EffectiveFrame;
                     SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.Width?.ToAbsoluteOrNull() ?? ResolvePercentageRootBase(root.Width, root.ViewBox, true, explicitViewport?.Width, 300), parentFrame?.ViewportHeight ?? root.Height?.ToAbsoluteOrNull() ?? ResolvePercentageRootBase(root.Height, root.ViewBox, false, explicitViewport?.Height, 150));
@@ -167,11 +168,12 @@ internal static class SvgDocumentTraversal
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
                 {
                     SvgParsedGroup parsedGroup = SvgGroupParser.Parse(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+                    SvgRenderedGroupSourceParser.BeginGroup(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
                     if (!reader.IsEmptyElement)
                     {
                         state.Groups.Add(parsedGroup.Scope);
                         string? groupId = reader.GetAttribute("id");
-                        state.GroupSnapshotStarts.Add(new SvgGroupSnapshotStart(groupId is null ? null : state.Strings.Copy(groupId), state.Scene.GeometryCount, reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null, state.Groups.Count >= 2 ? state.Groups[^2].InheritedPresentation.Transform : SvgAffineTransform.Identity));
+                        state.GroupSnapshotStarts.Add(new SvgGroupSnapshotStart(groupId is null ? null : state.Strings.Copy(groupId), reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null));
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
                         string? clipReference = reader.GetAttribute("clip-path");
                         if (clipReference is not null)
@@ -289,6 +291,7 @@ internal static class SvgDocumentTraversal
                     state.ClipIsObjectBoundingBox = false;
                 }
                 state.SymbolDefinition?.EndGroup(reader.Depth, state);
+                SvgRenderedGroupSourceParser.EndGroup(reader.Depth, state, workCounter, cancellationToken);
                 if (reader.Depth == state.SymbolDepth) SvgDefinitionParser.RegisterSymbol(state, workCounter, cancellationToken);
                 if (state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth) state.Viewports.RemoveLast();
                 if (state.ViewportOpacityDepth == reader.Depth)
@@ -316,7 +319,7 @@ internal static class SvgDocumentTraversal
                             SvgViewportFrame viewportFrame = state.Viewports[viewportIndex];
                             if (viewportFrame.ScaleX != 1 || viewportFrame.ScaleY != 1 || viewportFrame.OffsetX != 0 || viewportFrame.OffsetY != 0) { hasViewport = true; break; }
                         }
-                        if (!state.GroupSnapshots.TryAdd(retainedId, new SvgGroupSnapshot(snapshotStart.GeometryStart, state.Scene.GeometryCount - snapshotStart.GeometryStart, group.Kind, group.IsolatesOpacity, snapshotStart.HasClip, snapshotStart.HasMask, snapshotStart.AncestorTransform, hasViewport))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                        if (!state.GroupSnapshots.TryAdd(retainedId, new SvgGroupSnapshot(group.IsolatesOpacity, snapshotStart.HasClip, snapshotStart.HasMask, hasViewport))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
                     }
                     if (group.HasMaskScope) state.MaskScopes.RemoveLast();
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;

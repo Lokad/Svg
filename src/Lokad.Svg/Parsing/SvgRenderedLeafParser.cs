@@ -39,6 +39,7 @@ internal static class SvgRenderedLeafParser
         }
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
 
+        SvgRenderedGroupSourceParser.CaptureLeaf(reader, context, state);
         switch (reader.LocalName)
         {
             case "rect":
