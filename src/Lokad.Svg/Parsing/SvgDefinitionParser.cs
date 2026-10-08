@@ -8,6 +8,8 @@ internal static class SvgDefinitionParser
 {
     internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        if (state.HasPatternTemplateReferences && state.PatternDepth < 0 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
+            SvgPatternReferenceResolver.Resolve(state, false, workCounter, cancellationToken);
         bool symbolLocation = state.SymbolDepth >= 0 && state.SymbolDefinition is {} activeSymbol && reader.Depth == activeSymbol.ChildDepth(state.SymbolDepth);
         if (symbolLocation && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgSymbolContentParser.TryParse(reader, root, state, namedColors, workCounter, cancellationToken)) return true;
         bool inDefinitions = (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1) || symbolLocation;
@@ -203,15 +205,24 @@ internal static class SvgDefinitionParser
         {
             SvgElementAttributePolicy.ValidatePattern(reader, workCounter, cancellationToken);
             state.PatternId = reader.GetAttribute("id");
-            state.PatternTile = SvgPatternSyntax.ParsePatternElement(reader);
+            state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state);
+            if (state.PatternTemplate.Href is null) state.PatternTemplate.ValidateUnits();
+            else state.HasPatternTemplateReferences = true;
+            state.PatternTile = state.PatternTemplate.Grid;
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
-            else if (state.PatternId is not null) RegisterPattern(state, workCounter, cancellationToken);
+            else
+            {
+                if (state.PatternId is not null) RegisterPattern(state, workCounter, cancellationToken);
+                state.PatternId = null;
+                state.PatternTile = null;
+                state.PatternTemplate = default;
+            }
             state.SawStyleableNode = true;
             return true;
         }
         if (state.PatternDepth >= 0 && reader.Depth == state.PatternDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
-            if (reader.LocalName == "rect" && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
+            if (reader.LocalName == "rect" && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
             {
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
@@ -1030,16 +1041,18 @@ internal static class SvgDefinitionParser
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.PatternId ?? throw new InvalidOperationException("Pattern registration requires an identifier."));
         SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Pattern registration requires pattern dimensions.");
-        if (state.Patterns.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
+        if (state.PatternDefinitions.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
         if (state.PatternContentBuilder is {} builder)
         {
             SvgLeafMaskComposition.Emit(state, builder, workCounter, cancellationToken);
-            SvgPatternContent content = SvgPatternContent.Create(builder.Build(), tile, state.Budget);
+            SvgPatternContent content = SvgPatternContent.Create(builder.Build(), state.Budget);
             try { state.Scene.AdoptPatternContent(content); }
             catch { content.Dispose(); throw; }
             tile = tile with { Content = null, VectorContent = content };
         }
-        if (!state.Patterns.TryAdd(retainedId, tile)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
+        SvgPatternDefinition definition = new(retainedId, state.PatternTemplate, tile, state.PatternRectangleSource, state.PatternRectangleContext, false);
+        if (!state.PatternDefinitions.TryAdd(retainedId, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
+        if (definition.Template.Href is null && !state.Patterns.TryAdd(retainedId, tile)) throw new InvalidOperationException("A pattern must register once.");
     }
 
     internal static void RegisterMaskContent(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

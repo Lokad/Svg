@@ -743,7 +743,7 @@ internal sealed class SvgPatternPolygon : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    private SvgPatternPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
+    private SvgPatternPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget.BudgetReservation? reservation)
     {
         Points = points;
         ContourEnds = contourEnds;
@@ -788,13 +788,13 @@ internal sealed class SvgPatternPolygon : IDisposable
     /// <summary>Preserves tile fill opacity before byte quantization; stroke paint retains its independent byte color.</summary>
     internal SvgSolidPaint? ContentPaint { get; }
 
-    internal int OriginX { get; }
+    internal double OriginX { get; }
 
-    internal int OriginY { get; }
+    internal double OriginY { get; }
 
-    internal int TileWidth { get; }
+    internal double TileWidth { get; }
 
-    internal int TileHeight { get; }
+    internal double TileHeight { get; }
 
     internal bool HasFill { get; }
 
@@ -807,17 +807,17 @@ internal sealed class SvgPatternPolygon : IDisposable
     internal SvgClipBox? Clip { get; }
 
     /// <summary>Creates one pattern outline without recorded curves; spans stay empty on this route.</summary>
-    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRectangle content, SvgSolidPaint? contentPaint, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
     {
         return Create(points, contourEnds, signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, budget);
     }
 
     /// <summary>Creates one pattern outline carrying retained spans with exact scene storage.</summary>
-    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
         => Create(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, null, SvgAffineTransform.Identity, budget);
 
     /// <summary>Creates an outline borrowing its vector tile from the parent scene; disposal releases only contour storage.</summary>
-    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, int originX, int originY, int tileWidth, int tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, SvgPatternContent? vectorContent, SvgAffineTransform shaderPlacement, RenderBudget budget)
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, SvgPatternContent? vectorContent, SvgAffineTransform shaderPlacement, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
@@ -944,7 +944,7 @@ internal sealed class SvgGlyphGeometry : IDisposable
 /// <summary>Owns retained pattern tile content with its integer grid and fill region.</summary>
 internal sealed class SvgPatternGeometry : IDisposable
 {
-    internal SvgPatternGeometry(SvgRectangle Content, int OriginX, int OriginY, int TileWidth, int TileHeight, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke)
+    internal SvgPatternGeometry(SvgRectangle Content, double OriginX, double OriginY, double TileWidth, double TileHeight, SvgRectangle Fill, byte Opacity, SvgStroke? Stroke)
     {
         this.Content = Content;
         this.OriginX = OriginX;
@@ -961,13 +961,19 @@ internal sealed class SvgPatternGeometry : IDisposable
     /// <summary>Borrowed vector tile owner; parent scene storage controls its lifetime.</summary>
     internal SvgPatternContent? VectorContent { get; init; }
 
-    internal int OriginX { get; }
+    internal double OriginX { get; }
 
-    internal int OriginY { get; }
+    internal double OriginY { get; }
 
-    internal int TileWidth { get; }
+    internal double TileWidth { get; }
 
-    internal int TileHeight { get; }
+    internal double TileHeight { get; }
+
+    internal int TextureWidth => checked((int)TileWidth);
+    internal int TextureHeight => checked((int)TileHeight);
+    /// <summary>Only device-mapped vector tiles retain source bounds and native image-shader coordinates.</summary>
+    internal SvgViewBox? RasterSourceBox { get; init; }
+    internal SvgShaderMatrix? NativeSampling { get; init; }
 
     internal SvgRectangle Fill { get; }
 

@@ -35,3 +35,8 @@ page and CC0 evidence separately from the materialized SPDX-commented bytes used
 for its reference. It is not an admitted fixture and must remain
 `UnsupportedFeature` until the general path pipeline has independent exact
 evidence.
+
+`pattern-inheritance/` retains seventeen focused CC0 controls for the complete
+Inkscape pattern: fifteen exact local-template/fractional-grid comparisons and two
+explicit unit/external-template boundaries through six outputs. Three fresh healthy,
+cleaned browser captures per case are byte-stable; existing assets stay frozen.

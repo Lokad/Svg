@@ -9117,3 +9117,59 @@ and fractional tile dimensions/translation remain actual dependencies. Retained
 path content now has shared scene machinery. Other G2 combinations remain on
 their finite checklist without blocking that document; G2–G9 and S17 remote CI
 remain open. Unchanged qualification is not repeated for documentation edits.
+
+## Local pattern templates and fractional tiles (2026-10-09)
+
+The complete retained Inkscape PatternA (`inv-104`) is exact against its unchanged
+178×135 transparent reference on Windows/Linux through all six outputs. Its first
+gate was forward `xlink:href`; the inherited tile also required fractional width,
+height and translation. Three fresh Linux browser captures match the same PNG.
+
+Authored pattern attributes stay separate from defaults until local template
+resolution. Explicit attributes override independently; local children replace
+inherited content. `href` wins over `xlink:href`. This follows the
+[SVG paint-server template rules](https://www.w3.org/TR/SVG2/pservers.html#PaintServerTemplates).
+The iterative resolver runs before dependent leaves and at definitions/document
+boundaries, using charged graph storage/work. Missing forward targets can remain
+pending until document end; missing/cyclic targets are UnsupportedFeature,
+duplicates/negative dimensions are MalformedInput. External templates and
+objectBoundingBox units retain explicit UnsupportedFeature outcomes.
+
+Alias paints borrow a scene owned once by the parent, with independent grid/phase
+metadata. A legacy rectangle source promotes through existing source replay when
+referenced by a template; multiple aliases borrow one promoted scene. Ordered
+vector leaves retain native commands and paint identity. Template content can be
+shared without sharing its effective dimensions. Failure/cancellation disposes
+partial scenes and mapping surfaces while preserving borrowed content for retry.
+
+The bounded picture tile follows pinned native
+[SkPictureShader rasterization](https://github.com/google/skia/blob/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/SkPictureShader.cpp):
+float source dimensions and positive-axis device scale determine a ceil-sized
+texture; source content maps into that integral texture, and the image shader
+maps it back to the declared fractional period. Pattern x/y places the tile; its
+content origin remains zero without a viewBox. Treating x/y as a source crop
+produced 1,338 differing pixels in the fractional-origin control. Native authored
+curves reuse existing anisotropic mapping inside tile surfaces; outer shape
+admission gates retain their scope. No shape-specific tile implementation is added.
+
+Four-tap repeat filtering preserves native row order: NX/NY, PX/NY, NX/PY, PX/PY,
+as in pinned [SkImageShader](https://github.com/google/skia/blob/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/SkImageShader.cpp).
+The prior column order caused thirty pixels with one-byte alpha error in the
+fractional override control. Native FMA accumulation, premultiplied tile lanes,
+independent opacity and the existing integral-phase route remain distinct.
+
+Seventeen new controls retain fifteen exact results and two explicit boundaries,
+with 51 healthy, cleaned, byte-stable Windows captures. Six inputs sweep every
+parser/discovery work denial, sampled/peak memory denial and raster work boundaries.
+A 1,024-link forward chain resolves without recursive traversal; independent-grid
+aliases share one scene; graph, duplicate/negative, full-document and oversized
+tile boundaries release owners. Font discovery also admits the template/grid case
+before a later requested face. The unchanged fractional-translate parser input
+moves from rejection to a positive characterization, preserving the test count.
+
+Windows/Linux Release builds have zero warnings/errors and all 5,464 tests pass
+per platform (4,124 core, 1,334 visual-project, six FontProbe). All 1,547 original
+bank PNGs, established rendering outcomes and frozen corporate results remain
+unchanged. The corporate matrix remains 27/27 documents and 258/258 variants exact
+against each platform's own references. All four online gap documents are complete.
+G6's remaining container/unit/affine combinations and G2–G9's finite exits stay open.

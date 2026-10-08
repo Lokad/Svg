@@ -98,7 +98,7 @@ internal static class SvgElementAttributePolicy
         if (reader.NamespaceURI.Length == 0 && (reader.LocalName is "role" or "tabindex" or "focusable" or "pointer-events" or "cursor" || reader.LocalName.StartsWith("aria-", StringComparison.Ordinal) || reader.LocalName.StartsWith("data-", StringComparison.Ordinal))) return true;
         if (reader.NamespaceURI.Length == 0 && reader.LocalName is "marker" or "marker-start" or "marker-mid" or "marker-end" or "enable-background") return true;
         if (reader.NamespaceURI.Length == 0 && reader.LocalName == "overflow" && kind is SvgElementKind.Group or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Line or SvgElementKind.Rectangle or SvgElementKind.Circle or SvgElementKind.Use or SvgElementKind.Text or SvgElementKind.TextSpan) return true;
-        if ((kind is SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Image or SvgElementKind.LinearGradient or SvgElementKind.RadialGradient) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
+        if ((kind is SvgElementKind.Group or SvgElementKind.Use or SvgElementKind.Image or SvgElementKind.LinearGradient or SvgElementKind.RadialGradient or SvgElementKind.Pattern) && reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") return true;
         if ((kind is SvgElementKind.Root or SvgElementKind.Group or SvgElementKind.Text or SvgElementKind.TextSpan) && reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") return true;
         if (reader.NamespaceURI.Length != 0 && (reader.NamespaceURI == "http://www.w3.org/1999/xlink" || reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace")) return false;
         if (reader.NamespaceURI.Length != 0) return true;
@@ -117,7 +117,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.Symbol => reader.LocalName is "id" or "class" or "viewBox" or "preserveAspectRatio" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-opacity" or "stroke-width" or "stroke-miterlimit" or "opacity" or "style",
             SvgElementKind.ClipPath => reader.LocalName is "id" or "clipPathUnits" or "clip-rule",
             SvgElementKind.Mask => reader.LocalName is "id" or "mask-type" or "x" or "y" or "width" or "height" or "maskUnits" or "maskContentUnits",
-            SvgElementKind.Pattern => reader.LocalName is "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits" or "patternTransform",
+            SvgElementKind.Pattern => reader.LocalName is "href" or "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits" or "patternTransform",
             SvgElementKind.LinearGradient => reader.LocalName is "id" or "href" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.RadialGradient => reader.LocalName is "id" or "href" or "cx" or "cy" or "r" or "fx" or "fy" or "fr" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.GradientStop => reader.LocalName is "offset" or "stop-color" or "stop-opacity" or "style",

@@ -24,6 +24,12 @@ render into a premultiplied tile surface under the same memory, pixel, dimension
 work and cancellation limits. Child raster work consumes the parent's remaining
 work allowance; failure/cancellation releases scratch while preserving the
 borrowed scene for retry. Repeat sampling retains its existing bounded filtering.
+Local pattern templates accept `href` and `xlink:href` (`href` wins), inherit
+omitted attributes and content, and retain explicit local overrides. Backward and
+forward chains resolve iteratively; aliases borrow a shared scene with independent
+grids. Fractional vector tile dimensions retain their original period after
+integral texture rasterization. Missing/cyclic local or external template targets
+remain `UnsupportedFeature`; duplicates and negative dimensions are `MalformedInput`.
 Recursive pattern paints and currently unsupported tile containers/coordinate
 systems produce categorized errors; the admitted subset is in the support matrix.
 

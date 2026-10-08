@@ -112,3 +112,8 @@ fixture against its unchanged PNG and capture provenance. The complete retained
 on Windows/Linux; three fresh Linux captures match that PNG byte-for-byte.
 Eighteen separate vector-tile controls retain seventeen exact results and one
 recursive-paint boundary. Existing exact asset bytes require no recapture.
+
+The retained Inkscape `inv-104` document now matches its unchanged 178×135
+transparent reference through six outputs on Windows/Linux, with three fresh
+matching Linux browser captures. All four failure-selected online documents are
+complete; original downloads, root-sized inputs, options and references remain frozen.

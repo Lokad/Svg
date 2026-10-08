@@ -6550,10 +6550,19 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
+    [Fact]
+    public void Retains_fractional_pattern_translation_on_vector_tile_paint()
+    {
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='translate(0.5)'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgPatternGeometry pattern = Assert.Single(root.Geometries).Pattern;
+        Assert.NotNull(pattern.VectorContent);
+        Assert.Equal(0.5, pattern.ShaderPlacement.E);
+        Assert.Equal(0, pattern.ShaderPlacement.F);
+    }
+
     [Theory]
     [InlineData("scale(2)", SvgErrorCode.UnsupportedFeature)]
     [InlineData("rotate(45)", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("translate(0.5)", SvgErrorCode.UnsupportedFeature)]
     [InlineData("translate()", SvgErrorCode.MalformedInput)]
     [InlineData("translate(1,2,3)", SvgErrorCode.MalformedInput)]
     [InlineData("matrix(1,0,0,1,0,0)", SvgErrorCode.UnsupportedFeature)]

@@ -92,8 +92,8 @@
       "outputScale": 1,
       "background": "transparent",
       "viewport": null,
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Pattern attribute 'xlink:href' is not implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Exact against the unchanged declared 178x135 transparent reference through all six outputs; local forward template inheritance and fractional native tile mapping.",
       "reference": "tests/References/inventory/inv-104-transparent.png",
       "referenceSha256": "99fa7405bb129447b74daa965b1f350edab5cd29c108af6cb0d449fff92bdf58",
       "oracle": {
@@ -107,6 +107,20 @@
         "captureStartupHealth": "healthy",
         "captureProfilesCleaned": true,
         "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+      },
+      "linuxOracle": {
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "linux64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true,
+        "reference": "tests/References/inventory/inv-104-transparent.png",
+        "referenceSha256": "99fa7405bb129447b74daa965b1f350edab5cd29c108af6cb0d449fff92bdf58",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
       }
     },
     {

@@ -60,13 +60,15 @@ public-domain/CC0 failures retained in the development inventory.
 Inert `enable-background` declarations now share validation across attributes and
 admitted styles, including Illustrator's `new` rectangle hint. The retained heart
 and complete 79-instance I Ching library match their frozen references on
-Windows/Linux through all six outputs. The 200×200 pattern example now joins
-them: three of four retained gap documents are complete. Bounded vector tile
-scenes share source lowering, native paint and premultiplied repeat sampling;
-seventeen new controls are exact, with one explicit recursive-paint rejection.
-The original two-child cubic-pattern fixture is also exact against its retained
-reference. The next deliverable is the Inkscape pattern's inheritance and
-fractional mapping; remaining combinations stay visible in [PLAN.md](PLAN.md#3-ordered-support-queue).
+Windows/Linux through all six outputs. Both retained patterns now join them: **all four gap documents are complete**
+against unchanged references. Bounded vector tile scenes share source lowering,
+native paint and premultiplied repeat sampling. Local forward pattern templates
+retain independent attributes/content; fractional tiles keep their declared
+period after integral texture rasterization. The two pattern banks retain 32
+exact controls and three explicit boundary rejections. The original two-child
+cubic-pattern fixture remains exact. The next retained correction is nested
+affine clipping/opacity; finite remaining combinations stay in
+[PLAN.md](PLAN.md#3-ordered-support-queue).
 
 Direct-leaf symbols now preserve multiple children in document order, inherited
 fill channels and separate child/symbol/use opacity. Magnified native-backed

@@ -3,8 +3,8 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Retains one admitted pattern tile with its integer grid while streaming.</summary>
-internal readonly record struct SvgPatternTile(SvgGeometry? Content, int OriginX, int OriginY, int TileWidth, int TileHeight, int ShiftX, int ShiftY)
+/// <summary>Retains one admitted pattern tile with its source-coordinate grid while streaming.</summary>
+internal readonly record struct SvgPatternTile(SvgGeometry? Content, double OriginX, double OriginY, double TileWidth, double TileHeight, double ShiftX, double ShiftY)
 {
     internal SvgPatternContent? VectorContent { get; init; }
     internal bool HasContent => Content is not null || VectorContent is not null;
@@ -15,47 +15,58 @@ internal readonly record struct SvgPatternTile(SvgGeometry? Content, int OriginX
 /// <summary>Parses the bounded pattern definition syntax and lowers pattern-filled rectangles.</summary>
 internal static class SvgPatternSyntax
 {
-    internal static SvgPatternTile ParsePatternElement(XmlReader reader)
+    /// <summary>Retains authored attributes separately from defaults so local templates can fill omissions.</summary>
+    internal static SvgPatternTemplate ParsePatternElement(XmlReader reader, SvgDocumentState state)
     {
-        string? units = reader.GetAttribute("patternUnits");
-        if (units is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern units default to objectBoundingBox, which is not implemented.");
-        if (!units.Equals("userSpaceOnUse", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse pattern units are implemented.");
-        string? contentUnits = reader.GetAttribute("patternContentUnits");
-        if (contentUnits is not null && !contentUnits.Equals("userSpaceOnUse", StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse pattern content units are implemented.");
-        int x = ParseGridCoordinate(reader.GetAttribute("x") ?? "0");
-        int y = ParseGridCoordinate(reader.GetAttribute("y") ?? "0");
-        int width = ParseGridExtent(reader.GetAttribute("width"));
-        int height = ParseGridExtent(reader.GetAttribute("height"));
-        (int shiftX, int shiftY) = ParsePatternTransform(reader.GetAttribute("patternTransform"));
-        return new SvgPatternTile(null, x, y, width, height, shiftX, shiftY);
+        string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
+        string? target = null;
+        if (href is not null)
+        {
+            if (!href.StartsWith('#') || href.Length == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local pattern templates are implemented.");
+            if (href.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern template identifiers exceed the syntax limit.");
+            target = state.Strings.Copy(href.AsSpan(1));
+        }
+        string? transform = reader.GetAttribute("patternTransform");
+        return new(ParseOptional("x"), ParseOptional("y"), ParseExtent("width"), ParseExtent("height"),
+            transform is null ? null : ParsePatternTransform(transform), ParseUnits("patternUnits"), ParseUnits("patternContentUnits"), target);
 
+        double? ParseOptional(string name) => reader.GetAttribute(name) is {} value ? SvgGeometrySyntax.ParseRectangleCoordinate(value) : null;
+        double? ParseExtent(string name)
+        {
+            double? value = ParseOptional(name);
+            if (value < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern dimensions cannot be negative.");
+            return value;
+        }
+        bool? ParseUnits(string name) => reader.GetAttribute(name) switch
+        {
+            null => null,
+            "userSpaceOnUse" => true,
+            "objectBoundingBox" => false,
+            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern units must be userSpaceOnUse or objectBoundingBox."),
+        };
     }
 
-    /// <summary>Parses the admitted integer translate-only pattern transform.</summary>
-    internal static (int X, int Y) ParsePatternTransform(string? value)
+    /// <summary>Parses the bounded translate-only pattern transform, retaining fractional phase.</summary>
+    internal static (double X, double Y) ParsePatternTransform(string value)
     {
         if (string.IsNullOrWhiteSpace(value)) return (0, 0);
         if (value.Length > SvgSyntaxLimits.MaximumTransformCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform values exceed the configured syntax limit.");
         ReadOnlySpan<char> input = value.AsSpan().Trim();
         int separator = input.IndexOf('(');
-        if (separator <= 0 || !input.EndsWith(")")) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() pattern transforms are implemented.");
-        if (!input[..separator].Trim().Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() pattern transforms are implemented.");
-        ReadOnlySpan<char> arguments = input[(separator + 1)..^1];
-        int first = 0;
-        int second = 0;
-        int valueCount = 0;
-        SvgGeometrySyntax.DelimitedTokenReader tokens = new(arguments);
+        if (separator <= 0 || !input.EndsWith(")") || !input[..separator].Trim().Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only translate() pattern transforms are implemented.");
+        double first = 0, second = 0;
+        int count = 0;
+        SvgGeometrySyntax.DelimitedTokenReader tokens = new(input[(separator + 1)..^1]);
         while (tokens.TryReadValue(out ReadOnlySpan<char> token))
         {
-            if (valueCount == 2) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern translate() requires one or two coordinates.");
+            if (count == 2) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern translate() requires one or two coordinates.");
             double parsed = SvgGeometrySyntax.ParseRectangleCoordinate(token.ToString());
-            if (parsed != Math.Truncate(parsed)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate() pattern transforms are implemented.");
-            if (valueCount == 0) first = (int)parsed;
-            else second = (int)parsed;
-            valueCount++;
+            if (count++ == 0) first = parsed;
+            else second = parsed;
         }
-        if (valueCount == 0) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern translate() requires one or two coordinates.");
-        return valueCount == 1 ? (first, 0) : (first, second);
+        if (count == 0) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern translate() requires one or two coordinates.");
+        return (first, second);
     }
 
     internal static string ParsePatternId(string? value)
@@ -251,22 +262,6 @@ internal static class SvgPatternSyntax
         SvgColor strokeColor = SvgPaintResolver.ResolveStrokeColor(style.Stroke, style.Color, context.InheritedPresentation.Paint, context.NamedColors);
         if (style.StrokeOpacity is not null) strokeColor = SvgPaintResolver.ApplyOpacity(strokeColor, SvgColorParser.ParseOpacity(style.StrokeOpacity));
         return SvgLeafParser.ParseRectangleStroke(strokeColor, style.Width ?? reader.GetAttribute("stroke-width"), transform, placement.X, placement.Y, placement.Width, placement.Height, opacity, painted);
-    }
-
-    private static int ParseGridCoordinate(string value)
-    {
-        double parsed = SvgGeometrySyntax.ParseRectangleCoordinate(value);
-        if (parsed != Math.Truncate(parsed)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer pattern grid coordinates are implemented.");
-        return (int)parsed;
-    }
-
-    private static int ParseGridExtent(string? value)
-    {
-        if (value is null) return 0;
-        double parsed = SvgGeometrySyntax.ParseRectangleCoordinate(value);
-        if (parsed < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern dimensions cannot be negative.");
-        if (parsed != Math.Truncate(parsed)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer pattern grid dimensions are implemented.");
-        return (int)parsed;
     }
 
     /// <summary>Reports whether a stroke references a locally defined pattern tile.</summary>

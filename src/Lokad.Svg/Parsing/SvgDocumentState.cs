@@ -52,6 +52,7 @@ internal sealed class SvgDocumentState : IDisposable
         MaskFractionRegions = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         MaskContentBoxes = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         Patterns = new BudgetedParserDictionary<string, SvgPatternTile>(budget, SvgMemoryCategory.Parser, PatternStorageBytes);
+        PatternDefinitions = new(budget, SvgMemoryCategory.Parser, checked(64 + (int)ParserCollectionMemory.GetArrayByteCount<SvgPatternDefinition>(1)));
         Gradients = new BudgetedParserDictionary<string, SvgLinearGradient>(budget, SvgMemoryCategory.Parser, GradientStorageBytes);
         RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, RadialGradientStorageBytes);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -121,6 +122,9 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, SvgClipBox> MaskContentBoxes { get; }
 
     internal BudgetedParserDictionary<string, SvgPatternTile> Patterns { get; }
+    internal BudgetedParserDictionary<string, SvgPatternDefinition> PatternDefinitions { get; }
+    internal SvgPatternTemplate PatternTemplate { get; set; }
+    internal bool HasPatternTemplateReferences { get; set; }
 
     internal BudgetedParserDictionary<string, SvgLinearGradient> Gradients { get; }
 
@@ -345,6 +349,7 @@ internal sealed class SvgDocumentState : IDisposable
         MaskContentBoxes.Dispose();
         PatternContentBuilder?.Dispose();
         Patterns.Dispose();
+        PatternDefinitions.Dispose();
         Gradients.Dispose();
         RadialGradients.Dispose();
         GradientStops.Dispose();

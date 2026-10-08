@@ -239,7 +239,11 @@ internal static class SvgDocumentTraversal
             {
                 if (reader.Depth == state.SkipDepth) state.SkipDepth = -1;
                 if (reader.Depth == state.DescriptionDepth) state.DescriptionDepth = -1;
-                if (reader.Depth == state.DefinitionsDepth) SvgDefinitionParser.DrainPendingGradientHrefs(state, workCounter, cancellationToken);
+                if (reader.Depth == state.DefinitionsDepth)
+                {
+                    SvgDefinitionParser.DrainPendingGradientHrefs(state, workCounter, cancellationToken);
+                    SvgPatternReferenceResolver.Resolve(state, false, workCounter, cancellationToken);
+                }
                 if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
                 if (reader.Depth == state.GradientDepth)
                 {
@@ -264,6 +268,7 @@ internal static class SvgDocumentTraversal
                     state.PatternContentBuilder = null;
                     state.PatternRectangleSource = null;
                     state.PatternRectangleContext = default;
+                    state.PatternTemplate = default;
                     state.PatternDepth = -1;
                     state.PatternId = null;
                     state.PatternTile = null;
@@ -358,6 +363,7 @@ internal static class SvgDocumentTraversal
                 if (reader.Depth == rootDepth)
                 {
                     SvgDefinitionParser.ResolvePendingGradientHrefs(state, workCounter, cancellationToken);
+                    SvgPatternReferenceResolver.Resolve(state, true, workCounter, cancellationToken);
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
