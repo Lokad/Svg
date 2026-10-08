@@ -2300,3 +2300,24 @@ first, and 75.120 → 80.522 ms when the repair runs first. Opposite directions
 and the loaded host do not support a representative throughput claim. The earlier
 258-recipe Windows ShortRun retains its historical scope. Full recipes, batches
 and resource ledgers remain under ignored `artifacts/mask-region-rounding-20261008/`.
+
+## Isolated layer curve construction cost (2026-10-08)
+
+Seventy-two matching admitted Windows recipes compare `d6da414f` with isolated
+bitmap curve construction and drawable shader-polygon layer bounds. Original SVG
+bytes, backgrounds and owned-memory output match in both process orders. Each
+process warms up eight conversions and records three batches of twenty per recipe;
+allocation deltas compare medians across six batches per renderer.
+
+Parser work and accounted peak live storage are unchanged. Total accounted
+conversion work adds **zero to 1,944 units** for bitmap-local operand mapping and
+drawable bounds traversal; surface work includes parsing and is counted once.
+Geometry/command/paint-value sizes remain **272 / 72 / 68 bytes**. Observed managed
+allocation deltas range from **−152 to +153.5 bytes** per conversion; this measures
+allocation traffic, not retained storage.
+
+Summed per-recipe median timings read **76.111 → 76.993 ms** when the baseline runs
+first, and **78.307 → 77.747 ms** when the repair runs first. These exploratory
+measurements do not establish representative throughput. The earlier 258-recipe
+Windows ShortRun retains its historical scope. Recipes, batches and resource
+ledgers remain under ignored `artifacts/layer-curve-construction-20261008/`.

@@ -5,10 +5,38 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Isolated layer curve checkpoint (2026-10-08)
+
+Four existing original-bank comparisons become exact against unchanged references:
+the bounded opacity-layer fixture and all three circle/ellipse alpha-mask
+backgrounds. The bank retains **1,567 executions / 1,539 PNGs**: **1,410 fixtures**
+(1,346 exact, 40 known, 24 rejected), **65 research probes** (50 exact, eleven
+known, four rejected) and 92 Default renders. Every other report and 1,535 PNG
+byte sequences stay unchanged. Original Windows/Linux bank reports and PNGs match;
+the frozen corporate matrix remains **27/27 documents and 258/258 variants exact**
+against each platform's retained references.
+
+Both prior curved-opacity controls become exact. The
+[recorded-paint inventory](../tests/Research/paint-recording/manifest.json)
+now retains **76 pairs: 68 exact, one known difference and seven valid-input
+rejections**. Twelve original CC0 circle/ellipse controls were declared before
+production edits and retain 36 healthy, cleaned, stable captures. Direct, white
+mask, alpha mask, parent opacity, copied-mask and scaled-root routes are represented.
+Eleven remain exact; the scaled masked circle keeps its original one-pixel
+difference. Separate materializations isolating the earlier mask probe followed
+the hypothesis and remain diagnostics, not independent holdouts. All six public
+outputs retain the measured results; no original SVG or reference is rewritten.
+
+Windows/Linux Release builds, **4,140 tests**, 25-scenario memory checks and
+installed-package checks pass. Resource checks cover **161 admitted / 29 rejected**
+cases. See [the repair record](RASTERIZATION_DESIGN.md#isolated-layer-curve-construction-2026-10-08)
+and [the cost record](BENCHMARKS.md#isolated-layer-curve-construction-cost-2026-10-08).
+Online sourcing follows the remaining fidelity repairs and original-scope audit.
+
 ## Hard mask-region and layer-bounds checkpoint (2026-10-08)
 
-Three existing custom-region mask comparisons become exact from 21 differing
-pixels each against their unchanged references. The original bank retains
+At this preceding checkpoint, three custom-region mask comparisons became exact
+from 21 differing pixels each against unchanged references. The original bank retained
 **1,567 executions / 1,539 PNGs**: **1,410 fixtures** (1,345 exact, 41 known,
 24 rejected), **65 research probes** (47 exact, 14 known, four rejected) and
 92 Default renders. Every other report and 1,536 PNG byte sequences stay unchanged.

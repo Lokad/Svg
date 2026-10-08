@@ -386,6 +386,15 @@ public static class SvgConverter
         }
         float ShaderAlpha(byte opacity) => (activePaint.Identity.Value == 0 ? opacity / 255f : activePaint.Alpha) * foldedOpacity;
 
+        SvgCpuRasterContext LayerRasterContext(SvgCpuRasterContext tile)
+        {
+            SvgAnalyticClipBounds bitmap = new(Math.Max(tile.BitmapClip.Left, layerBounds.Left), Math.Max(tile.BitmapClip.Top, layerBounds.Top),
+                Math.Min(tile.BitmapClip.Right, layerBounds.Right), Math.Min(tile.BitmapClip.Bottom, layerBounds.Bottom));
+            SvgAnalyticClipBounds interior = new(Math.Max(tile.Interior.Left, layerBounds.Left), Math.Max(tile.Interior.Top, layerBounds.Top),
+                Math.Min(tile.Interior.Right, layerBounds.Right), Math.Min(tile.Interior.Bottom, layerBounds.Bottom));
+            return new(bitmap, interior);
+        }
+
         int GradientDither(int x, int y)
         {
             SvgCpuBitmapOrigin tile = rasterGrid.GetBitmapOrigin(x, y);
@@ -468,10 +477,10 @@ public static class SvgConverter
                         IncludePoints(geometry.Polygon.Points);
                         break;
                     case SvgGeometryKind.GradientPolygon:
-                        IncludeBox(geometry.GradientPolygon.Box, outputMap, 0);
+                        IncludePoints(geometry.GradientPolygon.Points);
                         break;
                     case SvgGeometryKind.RadialPolygon:
-                        IncludeBox(geometry.RadialPolygon.Box, outputMap, 0);
+                        IncludePoints(geometry.RadialPolygon.Points);
                         break;
                     case SvgGeometryKind.PatternPolygon:
                         IncludePoints(geometry.PatternPolygon.Points);
@@ -886,9 +895,11 @@ public static class SvgConverter
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
-            foreach (SvgCpuRasterContext context in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
+            foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                SvgCpuRasterContext context = LayerRasterContext(cpuTile);
+                if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
                 if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "CPU raster context traversal exceeds the configured limit.");
                 workUnits++;
                 if (raster.Clip is not null)
@@ -963,9 +974,11 @@ public static class SvgConverter
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
-            foreach (SvgCpuRasterContext context in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
+            foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                SvgCpuRasterContext context = LayerRasterContext(cpuTile);
+                if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
                 if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "CPU raster context traversal exceeds the configured limit.");
                 workUnits++;
                 if (raster.Clip is not null)
@@ -1071,9 +1084,11 @@ public static class SvgConverter
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
-            foreach (SvgCpuRasterContext context in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
+            foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                SvgCpuRasterContext context = LayerRasterContext(cpuTile);
+                if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
                 if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "CPU raster context traversal exceeds the configured limit.");
                 workUnits++;
                 if (raster.Clip is not null)
@@ -1234,9 +1249,11 @@ public static class SvgConverter
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, new(raster.PathStartX, raster.PathStartY, raster.PathEndX, raster.PathEndY), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
-            foreach (SvgCpuRasterContext context in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
+            foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                SvgCpuRasterContext context = LayerRasterContext(cpuTile);
+                if (context.Interior.Right <= context.Interior.Left || context.Interior.Bottom <= context.Interior.Top) continue;
                 if (workUnits >= options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "CPU raster context traversal exceeds the configured limit.");
                 workUnits++;
                 if (raster.Clip is not null)

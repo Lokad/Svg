@@ -6,7 +6,7 @@ The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
 The current 1,410 manifest entries contain
-1,345 exact decoded-pixel references, 41 known-difference renders and 24
+1,346 exact decoded-pixel references, 40 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -19,11 +19,16 @@ values through command insertion and reference expansion; validated empty groups
 produce no scope. Leaf fill/stroke batches and masked use instances now compose
 before uniform mask application; copied masks retain sharing within one instance
 and distinct identity between instances. Backward masks with forward clips on
-direct leaves have exact independent controls. Circle/ellipse masks and curved
-opacity retain measured gaps. Hard mask-region edges round in output coordinates
+direct leaves have exact independent controls. The retained circle/ellipse alpha
+masks and both curved-opacity controls are exact after bitmap-local curve setup.
+A scaled masked circle retains a one-pixel difference. Hard mask-region edges round
+in output coordinates
 with half-pixel ties toward positive infinity. Content and mask bounds both
 contribute to the isolated layer's dither origin; the mask clip stays separate.
-Independent group/leaf/copy/scaled-root controls are exact. Transformed custom
+All four polygon paints construct curves in the owning isolated bitmap before
+conic subdivision and edge setup. Drawable polygon stroke bounds stay separate
+from gradient coordinate boxes.
+Independent hard mask-region group/leaf/copy/scaled-root controls are exact. Transformed custom
 group masks retain a valid-input rejection. Selected
 default mask regions use object bounds without strokes and hard region clipping;
 source visual bounds survive lowering and tested use/viewport placement. Wider
@@ -41,7 +46,7 @@ destination-overlap controls are exact. Other solid-lowered routes retain their
 existing behavior and measured precision gaps.
 
 The [recorded-paint controls](../tests/Research/paint-recording/manifest.json)
-retain 55 exact results, two curved-opacity differences and seven valid-input
+retain 68 exact results, one scaled-mask difference and seven valid-input
 rejections. Translucent paint-stroke combinations newly admitted by deferred
 opacity have independent browser evidence; this does not establish all stroke,
 pattern, mask or override combinations.
@@ -49,7 +54,7 @@ Rounded rectangle fills and strokes retain shared native float source commands,
 with rational conic corners and native rectangle/oval simplification. Validated
 source shapes retain their known convexity through preparation and placement,
 including half-side radii with zero-length straight edges. Independent fractional,
-clamped, reflected and painted controls are exact; layer/mask color, hairline color
+clamped, reflected and painted controls are exact; scaled-mask behavior, hairline color
 and oval-stroke residuals remain measured research cases.
 
 Painted integer paths with diagonal edges retain directed authored contours,

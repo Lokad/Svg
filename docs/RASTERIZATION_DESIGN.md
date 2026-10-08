@@ -7604,3 +7604,71 @@ audits, and Windows delivery/resource results. Linux evidence is under
 masks, curved opacity, hairline color, oval strokes and the other retained
 clip/paint/curve differences remain open before the original-scope support audit
 and online public-domain/CC0 sourcing.
+
+### Isolated layer curve construction (2026-10-08)
+
+The retained alpha-mask circle/ellipse probe differed in five pixels on each of
+three backgrounds. Diagnostic materializations isolate the same circle and
+ellipse without changing their coordinates: unmasked shapes were already exact,
+while the masked circle differed in four pixels and the masked ellipse in one.
+These materializations followed the hypothesis and are diagnostics, not holdouts.
+The browser drawing records retain an isolated bitmap with a nonzero origin.
+
+All four polygon paint consumers now intersect their bordered CPU context and
+exclusive interior with the owning isolated layer. Contained curve construction
+uses that bitmap origin before rational subdivision and edge setup, then
+translates fixed edge/curve state back to canvas coordinates. Retained source
+operands map directly into the bitmap as before. Primitive or legacy operands
+without retained source contours now shift in float before construction instead
+of leaving their conic arithmetic in canvas coordinates. Each mapped operand
+charges two work units before use; no coordinate tape is allocated. Clipped
+construction, classifications, paint-clip dispatch and disposal keep their shared
+owners and limits. Mask-region clipping remains a separate composition step.
+
+The first prototype bounded shader geometry with its gradient coordinate box.
+That clipped round caps and circle/ellipse strokes, regressing three recorded
+paint controls. Layer bounds now use the drawable polygon points for linear and
+radial polygon paints. Shader coordinates and object bounds retain their own
+boxes. Correcting only those bounds closes the three-pixel translucent ellipse
+control; bitmap-local construction also closes the rounded-definition control.
+The rejected prototype and its comparisons are retained in the ignored study.
+
+Only four reports and PNGs change in the original bank: the bounded opacity-layer
+fixture becomes exact from one pixel, and the three alpha-mask circle/ellipse
+comparisons become exact from five pixels each. Every other report and 1,535 PNG
+byte sequences stay unchanged. The original bank remains **1,567 executions /
+1,539 PNGs**, with **1,410 fixtures = 1,346 exact + 40 known + 24 rejections**
+and **65 research probes = 50 exact + eleven known + four rejections**. All 92
+Default reports and both platforms' 258 corporate reports/PNGs stay unchanged;
+platform-native corporate references retain **27/27 documents and 258/258 variants
+exact**.
+
+Twelve original CC0 circle/ellipse controls were declared before production edits:
+direct, white mask, alpha mask, multiple-paint parent opacity, copied mask and
+scaled-root mask. All 36 fresh-process captures are healthy, cleaned and stable
+in triples. Eleven controls remain exact; the scaled masked circle retains its
+original one-pixel difference. The unchanged inputs and references are added to
+the recorded-paint inventory, which now has **76 controls = 68 exact + one known
++ seven valid-input rejections** through all six public output forms. No reference
+is regenerated to accommodate the candidate.
+
+Windows/Linux nine-project Release builds, **4,140 tests = 3,837 core + 297 visual
++ six FontProbe**, 25-scenario memory checks, runtime/symbol packages and installed
+consumers pass. Work/memory denial and caller-token cancellation pass for 161
+admitted cases and 29 retained rejections, with all tested owners released.
+Original Windows/Linux bank reports and PNG bytes match. Public APIs and runtime
+dependencies stay unchanged.
+
+Seventy-two matching recipes in both process orders preserve parser work and
+accounted peak live storage; total work adds zero to 1,944 units. The
+[cost record](BENCHMARKS.md#isolated-layer-curve-construction-cost-2026-10-08)
+retains allocation/timing observations and their limits.
+
+Evidence stays under ignored `artifacts/layer-curve-construction-20261008/` and
+`artifacts/linux-delivery-20261007/layer-curve-final-20261008/`: pre-edit control
+declarations, 36 stable captures, separate diagnostic materializations, rejected
+context model, complete bank comparisons, two-order cost measurements and delivery
+and resource ledgers. Git identifies the implementation; asset fingerprints describe
+unchanged SVG/PNG bytes only. The scaled-mask control, hairline color, oval strokes
+and other retained clip/paint/curve differences remain open. The original-scope
+support audit and online public-domain/CC0 sourcing follow those repairs.

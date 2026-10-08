@@ -2526,16 +2526,16 @@
         "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
       "admittedRendering": {
-        "changedPixelCount": 5,
-        "maximumChannelError": 8,
-        "maximumAlphaError": 8,
-        "alphaChangedPixelCount": 5,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 16,
-        "maximumMismatchX": 25,
-        "maximumMismatchY": 23
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 49,
+        "minimumMismatchY": 43,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "6673768d69795b8e01b4f364142612a4f78188c41f817a3bc395da9b48988774"
+      "candidateSha256": "43c58c585aaee3763efc10fc5dd70d3046c37769a2472f1e01615b258bcbb098"
     },
     {
       "id": "research-mask-leaf-circle-ellipse-alpha-white",
@@ -2571,16 +2571,16 @@
         "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
       "admittedRendering": {
-        "changedPixelCount": 5,
-        "maximumChannelError": 7,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 16,
-        "maximumMismatchX": 25,
-        "maximumMismatchY": 23
+        "minimumMismatchX": 49,
+        "minimumMismatchY": 43,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "c19b09cf88b7536a899eb18f4a99a6481a0468acb0757543dd34bffb2e35c1fb"
+      "candidateSha256": "86aeb6bd24c22b9d05b5076ecf66a6017b78e4e9f987ce0032b0d45e8f14747f"
     },
     {
       "id": "research-mask-leaf-circle-ellipse-alpha-black",
@@ -2616,16 +2616,16 @@
         "selection": "Supplemental control declared after prototype, before its own capture/comparison; three stable, healthy, cleaned fresh-process captures."
       },
       "admittedRendering": {
-        "changedPixelCount": 5,
-        "maximumChannelError": 5,
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
         "maximumAlphaError": 0,
         "alphaChangedPixelCount": 0,
-        "minimumMismatchX": 6,
-        "minimumMismatchY": 16,
-        "maximumMismatchX": 25,
-        "maximumMismatchY": 23
+        "minimumMismatchX": 49,
+        "minimumMismatchY": 43,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       },
-      "candidateSha256": "ccc1394d0453ca24e528a506330adbf9c75f01fa3ad5bebe8dae06caeba1f138"
+      "candidateSha256": "926a0cdf9ccefab86f677c0d419b4f009427736e1739f8e6e071e9d359738ffb"
     }
   ]
 }
