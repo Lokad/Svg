@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Retains one admitted pattern tile with its source-coordinate grid while streaming.</summary>
 internal readonly record struct SvgPatternTile(SvgGeometry? Content, double OriginX, double OriginY, double TileWidth, double TileHeight, double ShiftX, double ShiftY)
 {
-    internal SvgPatternContent? VectorContent { get; init; }
+    internal SvgVectorContent? VectorContent { get; init; }
     internal bool HasContent => Content is not null || VectorContent is not null;
     /// <summary>Maps source vector tiles once; reconstructed instance tiles carry placement on the paint geometry.</summary>
     internal SvgAffineTransform VectorPlacement => VectorContent is null ? SvgAffineTransform.Identity : SvgAffineTransform.FromScaleOffset(1, 1, ShiftX, ShiftY);

@@ -7,23 +7,43 @@ The frozen selection and measured outcomes are recorded below.
 
 ## Current development documents (2026-10-09)
 
-The first four retained documents remain exact on Windows/Linux. A newly screened
-CC0 mask document is pending: **4/5 complete**, separate from the preserved
-corporate 27/27 documents and 258/258 variants. The complete I Ching library's
-nested affine-opacity mechanism defect is also repaired against its frozen PNG.
+All five retained gap documents are exact on Windows/Linux, separate from the
+preserved corporate 27/27 documents and 258/258 variants. The existing radiation
+symbol joins the active document queue as its sixth deliverable: **5/6 complete**,
+with that document at **6/9 exact outputs**. Its large-size 24-pixel residual is
+the next deliverable; neither controls nor partial outputs count as completed
+documents. The I Ching nested affine-opacity control remains exact.
 
 ### inv-107 — SVG mask.svg
 
 - Original: [untouched download](../tests/Fixtures/candidates/inv-107.svg), 634 bytes.
 - Source and license: [Commons revision](https://commons.wikimedia.org/wiki/File:SVG_mask.svg?oldid=451796771), retrieved 2026-10-09. Creator **Kelvinsong**, own work, explicitly **CC0-1.0**; simple-geometry public-domain evidence is also present.
 - Input: [root-sized SVG](../tests/References/inventory/gap-inputs/inv-107.svg), changing only fractional root dimensions 744.09/1052.4 to 744/1052 integer pixels. Geometry, gradient, mask, opacity and declaration-only DOCTYPE stay untouched. Scale 1, transparent, no explicit viewport or supplied fonts.
-- Frozen reference: [PNG](../tests/References/inventory/inv-107-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3; three fresh healthy, cleaned, byte-identical captures. This new document has no matching Linux browser qualification yet.
-- Current outcome: **UnsupportedFeature**, "Only defined local mask references are implemented." Root-local definitions and gradient mask-content replay feed the next finite G5 slice. Fixing that first blocker will not establish completion; every further gate and mismatch must resolve against the same reference.
+- Frozen reference: [PNG](../tests/References/inventory/inv-107-transparent.png), Chrome 153.0.8010.52 win64 / Chromium 1681091 / recipe 3; three fresh healthy, cleaned, byte-identical captures. Three fresh healthy, cleaned Linux captures match that same frozen PNG byte-for-byte.
+- Current outcome: **exact through all six outputs on both platforms**. Root-local definitions, shared shader-mask replay, default viewport regions and clipped-layer paint coordinates remove every observed gate and mismatch. The original input/options/reference stay frozen.
 
 The source page/license and capture diagnostics are retained under ignored
 `artifacts/nested-affine-opacity-20261009/`. This small sourcing follow-up retains
 one demonstrated failing document; it does not alter the corporate cohort or
 any original fixture/research denominator.
+
+### inv-094 — retained radiation warning symbol outputs
+
+The [radiation bank](../tests/Research/radiation-symbol/manifest.json) promotes the
+existing nine 2026-10-02 declarations and their frozen captures into regression
+protection: 300/600/1200 × transparent/white/black. Original bytes and root-only
+small/large materializations stay unchanged. The original Commons public-domain
+simple-geometry evidence was checked again on 2026-10-09. No new source or browser
+reference replaces any old input or pixels.
+
+Copied mask contours now preserve quadratic/cubic spans. The 300 and 600 outputs
+are exact on all backgrounds (6/9); 1200 retains 24 RGB-only differing pixels,
+maximum channel error eight, zero alpha difference. This document stays pending.
+Three fresh healthy/cleaned Linux captures per size match the old frozen PNGs;
+the authored opaque ground makes all three declared backgrounds byte-identical.
+Complete the remaining map/contour defect before counting this document.
+Raw records and platform comparisons stay under ignored
+`artifacts/gradient-mask-20261009/`; no source/DLL fingerprints are introduced.
 
 ## Original-scope support audit and online batch (2026-10-08)
 

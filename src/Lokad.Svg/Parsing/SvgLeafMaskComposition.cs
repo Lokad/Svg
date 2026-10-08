@@ -158,10 +158,10 @@ internal static class SvgLeafMaskComposition
         catch { reservation.Dispose(); throw; }
     }
     /// <summary>Tags a leaf's entire geometry batch with one operation; resolution keeps its original range for coverage/bounds.</summary>
-    internal static void Retain(SvgDocumentState state, int first, int count, string id, SvgViewportFrame? parent, ParserWorkCounter work, CancellationToken token)
+    internal static void Retain(SvgDocumentState state, int first, int count, string id, SvgViewportFrame? parent, SvgAffineTransform transform, ParserWorkCounter work, CancellationToken token)
     {
         SvgLeafMaskOperation operation = NewOperation(state, null, SvgAffineTransform.Identity);
-        state.PendingLeafMasks.Add(new(first, count, id, parent, operation));
+        state.PendingLeafMasks.Add(new(first, count, id, parent, transform, operation));
         SvgLeafMaskBinding binding = NewBinding(state, operation, null);
         for (int index = first; index < first + count; index++)
         {

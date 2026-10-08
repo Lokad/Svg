@@ -68,7 +68,7 @@ internal static class SvgRenderedLeafParser
                 }
                 finally { state.DeferringLeafClip = false; }
                 if (deferRectClip && deferredRectClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectClip, state.EffectiveFrame, true));
-                if (deferredRectMask is not null) SvgLeafMaskComposition.Retain(state, rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectMask, state.EffectiveFrame, workCounter, cancellationToken);
+                if (deferredRectMask is not null) SvgLeafMaskComposition.Retain(state, rectFirstGeometry, state.Scene.GeometryCount - rectFirstGeometry, deferredRectMask, state.EffectiveFrame, context.ResolveTransform(reader), workCounter, cancellationToken);
                 SvgPaintRecording.FinishScene(state, rectFirstGeometry, workCounter, cancellationToken);
                 return true;
             case "line":
@@ -97,7 +97,7 @@ internal static class SvgRenderedLeafParser
                 }
                 finally { state.DeferringLeafClip = false; }
                 if (deferLineClip && deferredLineClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineClip, state.EffectiveFrame, false));
-                if (deferredLineMask is not null) SvgLeafMaskComposition.Retain(state, lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineMask, state.EffectiveFrame, workCounter, cancellationToken);
+                if (deferredLineMask is not null) SvgLeafMaskComposition.Retain(state, lineFirstGeometry, state.Scene.GeometryCount - lineFirstGeometry, deferredLineMask, state.EffectiveFrame, context.ResolveTransform(reader), workCounter, cancellationToken);
                 SvgPaintRecording.FinishScene(state, lineFirstGeometry, workCounter, cancellationToken);
                 return true;
             case "circle":
@@ -126,7 +126,7 @@ internal static class SvgRenderedLeafParser
                 }
                 finally { state.DeferringLeafClip = false; }
                 if (deferCircleClip && deferredCircleClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleClip, state.EffectiveFrame, false));
-                if (deferredCircleMask is not null) SvgLeafMaskComposition.Retain(state, circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleMask, state.EffectiveFrame, workCounter, cancellationToken);
+                if (deferredCircleMask is not null) SvgLeafMaskComposition.Retain(state, circleFirstGeometry, state.Scene.GeometryCount - circleFirstGeometry, deferredCircleMask, state.EffectiveFrame, context.ResolveTransform(reader), workCounter, cancellationToken);
                 SvgPaintRecording.FinishScene(state, circleFirstGeometry, workCounter, cancellationToken);
                 return true;
             case "ellipse":
@@ -155,7 +155,7 @@ internal static class SvgRenderedLeafParser
                 }
                 finally { state.DeferringLeafClip = false; }
                 if (deferEllipseClip && deferredEllipseClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseClip, state.EffectiveFrame, false));
-                if (deferredEllipseMask is not null) SvgLeafMaskComposition.Retain(state, ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseMask, state.EffectiveFrame, workCounter, cancellationToken);
+                if (deferredEllipseMask is not null) SvgLeafMaskComposition.Retain(state, ellipseFirstGeometry, state.Scene.GeometryCount - ellipseFirstGeometry, deferredEllipseMask, state.EffectiveFrame, context.ResolveTransform(reader), workCounter, cancellationToken);
                 SvgPaintRecording.FinishScene(state, ellipseFirstGeometry, workCounter, cancellationToken);
                 return true;
             case "path":
@@ -176,7 +176,7 @@ internal static class SvgRenderedLeafParser
                 }
                 finally { state.DeferringLeafClip = false; }
                 if (deferPathClip && deferredPathClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathClip, state.EffectiveFrame, true));
-                if (deferredPathMask is not null) SvgLeafMaskComposition.Retain(state, pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathMask, state.EffectiveFrame, workCounter, cancellationToken);
+                if (deferredPathMask is not null) SvgLeafMaskComposition.Retain(state, pathFirstGeometry, state.Scene.GeometryCount - pathFirstGeometry, deferredPathMask, state.EffectiveFrame, context.ResolveTransform(reader), workCounter, cancellationToken);
                 SvgPaintRecording.FinishScene(state, pathFirstGeometry, workCounter, cancellationToken);
                 return true;
             case "polygon" or "polyline":
@@ -197,7 +197,7 @@ internal static class SvgRenderedLeafParser
                 }
                 finally { state.DeferringLeafClip = false; }
                 if (deferPointListClip && deferredPointListClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListClip, state.EffectiveFrame, true));
-                if (deferredPointListMask is not null) SvgLeafMaskComposition.Retain(state, pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListMask, state.EffectiveFrame, workCounter, cancellationToken);
+                if (deferredPointListMask is not null) SvgLeafMaskComposition.Retain(state, pointListFirstGeometry, state.Scene.GeometryCount - pointListFirstGeometry, deferredPointListMask, state.EffectiveFrame, context.ResolveTransform(reader), workCounter, cancellationToken);
                 SvgPaintRecording.FinishScene(state, pointListFirstGeometry, workCounter, cancellationToken);
                 return true;
             case "image":
@@ -217,7 +217,7 @@ internal static class SvgRenderedLeafParser
                 }
                 finally { state.DeferringLeafClip = false; }
                 if (deferImageClip && deferredImageClip is not null) state.PendingLeafClips.Add(new PendingLeafClip(imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageClip, state.EffectiveFrame, false));
-                if (deferredImageMask is not null) SvgLeafMaskComposition.Retain(state, imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageMask, state.EffectiveFrame, workCounter, cancellationToken);
+                if (deferredImageMask is not null) SvgLeafMaskComposition.Retain(state, imageFirstGeometry, state.Scene.GeometryCount - imageFirstGeometry, deferredImageMask, state.EffectiveFrame, context.ResolveTransform(reader), workCounter, cancellationToken);
                 SvgPaintRecording.FinishScene(state, imageFirstGeometry, workCounter, cancellationToken);
                 return true;
             }

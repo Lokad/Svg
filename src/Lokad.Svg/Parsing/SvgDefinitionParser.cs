@@ -148,18 +148,31 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
-        if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "mask")
+        if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "mask")
         {
             SvgElementAttributePolicy.ValidateMask(reader, workCounter, cancellationToken);
             state.MaskId = reader.GetAttribute("id");
             state.MaskIsAlpha = SvgMaskSyntax.ParseMaskType(reader.GetAttribute("mask-type"));
             state.MaskValue = null;
+            state.MaskContentBox = null;
             state.MaskFractionRegion = SvgMaskSyntax.ParseMaskFractionRegion(reader);
             state.MaskCustomRegion = state.MaskFractionRegion is null ? SvgMaskSyntax.ParseMaskRegion(reader) : null;
-            state.MaskFractionRegion = SvgMaskSyntax.ParseMaskFractionRegion(reader);
+            state.MaskDefaultUserSpaceRegion = reader.GetAttribute("maskUnits") == "userSpaceOnUse"
+                && reader.GetAttribute("x") is null && reader.GetAttribute("y") is null && reader.GetAttribute("width") is null && reader.GetAttribute("height") is null;
+            if (state.MaskDefaultUserSpaceRegion)
+            {
+                double? width = state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth;
+                double? height = state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight;
+                if (width is null || height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Default user-space mask regions require a known viewport.");
+                state.MaskCustomRegion = SvgMaskSyntax.MaskRegion(new(0, 0, width.Value, height.Value, default, false, null));
+            }
             if (reader.IsEmptyElement)
             {
                 if (state.MaskId is not null) RegisterMask(state, workCounter, cancellationToken);
+                state.MaskId = null;
+                state.MaskCustomRegion = null;
+                state.MaskFractionRegion = null;
+                state.MaskDefaultUserSpaceRegion = false;
             }
             else state.MaskDepth = reader.Depth;
             state.SawStyleableNode = true;
@@ -167,6 +180,28 @@ internal static class SvgDefinitionParser
         }
         if (state.MaskDepth >= 0 && reader.Depth == state.MaskDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
+            if (state.MaskContentBuilder is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
+            if (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
+            {
+                SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                if (SvgGradientSyntax.IsGradientFill(maskContext.ResolveStyle(reader).Fill))
+                {
+                    if (state.MaskValue is not null || state.MaskContentGeometries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
+                    if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
+                    if (reader.GetAttribute("clip-path") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on mask content are not implemented.");
+                    SvgDefinition lowered = LowerInstanceSource(reader, maskContext, state);
+                    try
+                    {
+                        state.MaskContentBox = UnionMaskContentBox(lowered.Geometries, workCounter, cancellationToken);
+                        SvgSceneBuilder builder = state.MaskContentBuilder = new(state.Budget, workCounter, cancellationToken);
+                        SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
+                    }
+                    catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
+                    state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                    state.SawStyleableNode = true;
+                    return true;
+                }
+            }
             if (reader.LocalName == "rect")
             {
                 if (state.MaskValue is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle masks are implemented.");
@@ -189,11 +224,15 @@ internal static class SvgDefinitionParser
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
                 SvgPaintableElementContext contentContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 using SvgParsedGeometry lowered = SvgLeafParser.ParseCircle(reader, contentContext, null, state);
-                (SvgGeometry[] contentGeometries, SvgColor contentPaint) = RetainPaintedMaskContent(lowered.Geometries, state, workCounter, cancellationToken);
-                state.MaskContentGeometries = contentGeometries;
-                state.MaskContentLuminance = contentPaint.Red;
-                state.MaskContentIsAlpha = state.MaskIsAlpha;
-                state.MaskContentBox = UnionMaskContentBox(state.MaskContentGeometries, workCounter, cancellationToken);
+                try
+                {
+                    (SvgGeometry[] contentGeometries, SvgColor contentPaint) = RetainPaintedMaskContent(lowered.Geometries, state, workCounter, cancellationToken);
+                    state.MaskContentGeometries = contentGeometries;
+                    state.MaskContentLuminance = contentPaint.Red;
+                    state.MaskContentIsAlpha = state.MaskIsAlpha;
+                    state.MaskContentBox = UnionMaskContentBox(state.MaskContentGeometries, workCounter, cancellationToken);
+                }
+                catch { lowered.Discard(); throw; }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 state.SawStyleableNode = true;
                 return true;
@@ -281,19 +320,7 @@ internal static class SvgDefinitionParser
                 state.SawStyleableNode = true;
                 return true;
 
-                void AdoptLeaf(SvgDefinition lowered)
-                {
-                    try
-                    {
-                        foreach (SvgGeometry geometry in lowered.Geometries)
-                        {
-                            SvgRecordedPaint fillPaint = geometry.RecordedPaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedPaint)) : geometry.RecordedPaint;
-                            SvgRecordedPaint strokePaint = geometry.RecordedStrokePaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint)) : geometry.RecordedStrokePaint;
-                            builder.AddGeometry(geometry with { RecordedPaint = fillPaint, RecordedStrokePaint = strokePaint });
-                        }
-                    }
-                    catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
-                }
+                void AdoptLeaf(SvgDefinition lowered) => SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
             }
             state.HasUnsupportedContent = true;
             return true;
@@ -1045,8 +1072,8 @@ internal static class SvgDefinitionParser
         if (state.PatternContentBuilder is {} builder)
         {
             SvgLeafMaskComposition.Emit(state, builder, workCounter, cancellationToken);
-            SvgPatternContent content = SvgPatternContent.Create(builder.Build(), state.Budget);
-            try { state.Scene.AdoptPatternContent(content); }
+            SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
+            try { state.Scene.AdoptVectorContent(content); }
             catch { content.Dispose(); throw; }
             tile = tile with { Content = null, VectorContent = content };
         }
@@ -1070,11 +1097,11 @@ internal static class SvgDefinitionParser
     {
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask registration requires an identifier."));
-        if (!state.Masks.TryAdd(retainedId, state.MaskValue ?? 0)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        if (state.MaskContents.TryGetValue(retainedId, out _) || !state.Masks.TryAdd(retainedId, state.MaskValue ?? 0)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
         if (state.MaskCustomRegion is SvgClipBox region && !state.MaskRegions.TryAdd(retainedId, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
         if (state.MaskFractionRegion is SvgClipBox fractions && !state.MaskFractionRegions.TryAdd(retainedId, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
         if (state.MaskContentBox is SvgClipBox content && !state.MaskContentBoxes.TryAdd(retainedId, content)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (state.MaskCustomRegion is SvgClipBox custom && state.MaskContentBox is SvgClipBox cover && !cover.Contains(custom.X, custom.Y, custom.X + custom.Width, custom.Y + custom.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
+        if (!state.MaskDefaultUserSpaceRegion && state.MaskCustomRegion is SvgClipBox custom && state.MaskContentBox is SvgClipBox cover && !cover.Contains(custom.X, custom.Y, custom.X + custom.Width, custom.Y + custom.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
     }
 
     internal static void RegisterClipPolygon(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

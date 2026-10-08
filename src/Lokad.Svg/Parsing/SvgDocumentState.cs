@@ -110,6 +110,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserDictionary<string, SvgMaskContent> MaskContents { get; }
 
     internal SvgGeometry[]? MaskContentGeometries { get; set; }
+    internal SvgSceneBuilder? MaskContentBuilder { get; set; }
 
     internal byte MaskContentLuminance { get; set; }
 
@@ -231,6 +232,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal byte? MaskValue { get; set; }
 
     internal SvgClipBox? MaskCustomRegion { get; set; }
+    internal bool MaskDefaultUserSpaceRegion { get; set; }
 
     internal SvgClipBox? MaskFractionRegion { get; set; }
 
@@ -342,11 +344,13 @@ internal sealed class SvgDocumentState : IDisposable
         ClipPolygons.Dispose();
         ObjectClips.Dispose();
         Masks.Dispose();
+        if (MaskContentGeometries is {} pendingMask) foreach (SvgGeometry geometry in pendingMask) geometry.Dispose();
         foreach (SvgMaskContent content in MaskContents.Values) foreach (SvgGeometry geometry in content.Geometries) geometry.Dispose();
         MaskContents.Dispose();
         MaskRegions.Dispose();
         MaskFractionRegions.Dispose();
         MaskContentBoxes.Dispose();
+        MaskContentBuilder?.Dispose();
         PatternContentBuilder?.Dispose();
         Patterns.Dispose();
         PatternDefinitions.Dispose();

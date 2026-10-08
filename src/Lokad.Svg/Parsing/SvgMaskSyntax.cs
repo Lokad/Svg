@@ -5,7 +5,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one direct leaf geometry range whose mask reference resolves at document end.</summary>
-internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int GeometryCount, string MaskId, SvgViewportFrame? Parent, SvgLeafMaskOperation Operation);
+internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int GeometryCount, string MaskId, SvgViewportFrame? Parent, SvgAffineTransform Transform, SvgLeafMaskOperation Operation);
 
 /// <summary>Retains one masked group command range whose mask reference resolves at document end.</summary>
 /// <remarks>Uniform and spatial group masks apply after child composition, independently of definition order.</remarks>
@@ -113,14 +113,17 @@ internal static class SvgMaskSyntax
             PendingLeafMask pending = state.PendingLeafMasks[pendingIndex];
             if (!state.Masks.TryGetValue(pending.MaskId, out byte value))
             {
-                if (state.MaskContents.TryGetValue(pending.MaskId, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content on masked leaves is not implemented.");
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+                if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent spatial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+                if (pending.Transform != SvgAffineTransform.Identity || pending.Parent is {} parent && !parent.IsTrivial)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content on transformed leaves is not implemented.");
+                pending.Operation.ContentIndex = state.Scene.AddMaskContent(spatial);
+                value = 255;
             }
             pending.Operation.Value = value;
             pending.Operation.Resolved = true;
             if (pending.GeometryCount == 0) continue;
             SvgRectangle fallback = UnionBounds(state, pending, workCounter, cancellationToken);
-            if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
+            if (pending.Operation.ContentIndex < 0 && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
             SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
             SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
                 ? RecordedObjectBox(first, state) : fallback;

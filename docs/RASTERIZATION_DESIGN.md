@@ -9217,3 +9217,59 @@ A newly retained CC0 complete mask example (`inv-107`) rejects its root-local
 mask reference, with untouched downloaded geometry and a three-capture frozen
 744×1052 transparent PNG. It supplies the next G5 document; 4/5 development
 documents are complete. G2–G9 and S17 remain open; finite promises are unchanged.
+
+## Shared gradient-mask replay and copied contours (2026-10-09)
+
+The complete retained CC0 `inv-107` (744×1052 transparent) now matches its unchanged
+reference through six outputs on Windows/Linux. Root-local masks register through
+the same definition machinery as defs-local masks. A single admitted shader-painted
+leaf lowers through the existing geometry/source routes and paint rebinding.
+Patterns and masks share one immutable `SvgVectorContent` owner, adopted once by
+the parent scene; mask descriptors borrow it. Rasterization temporarily borrows
+that scene in the ordinary command replay, preserving the same surfaces, work
+charges and cancellation path. No separate shape-specific mask rasterizer is added.
+
+Native command records show the default userSpaceOnUse mask region uses viewport
+percentage bases. That region contributes to isolation bounds outside element
+opacity. The mask's own BW region clips its inner saveLayer; shader dithering uses
+the bitmap origin of this clipped layer. The first trial used target object bounds
+for the default region and produced 14,000+ differing pixels. Reusing only the
+outer layer origin left 16 wrong pixels in the explicit-region control. Both models
+are rejected; the preserved layer/region distinctions resolve these comparisons.
+
+Luminance conversion reads premultiplied RGB with BT.709 coefficients and native
+float-to-byte rounding, before mask multiplication and separate opacity restore.
+Alpha masks read the mask surface alpha. This follows the pinned Skia raster
+pipeline's `bt709_luminance_or_luma_to_alpha` stage; gamma-encoded values remain
+distinct from linear-light conversion. Existing BSD notice/pin is preserved.
+Colored linear/radial gradients, fill/element opacity, curved content and shared
+mask references are measured controls; references are never recalibrated.
+
+The legacy contour copy also omitted quadratic and cubic spans. Its corrected copy
+reserves the actual span arrays before allocation, charges copy work and retains
+authored paths. A solid-gray circle control drops from 41 differing pixels to exact
+after span preservation and rounded mask multiplication. This shared defect repair
+also advances the original radiation warning symbol: its 300/600 outputs are
+exact on all three backgrounds (6/9), while 1200 retains 24 RGB-only differences
+(maximum eight, zero alpha error). Those nine previously declared inputs and
+references are promoted unchanged; the document remains pending and is next.
+
+Twenty independent controls retain 16 exact and four explicit unsupported outcomes
+through six outputs: transformed spatial target leaves, objectBoundingBox content,
+recursive mask content and multiple children. These boundaries stay within the
+finite G5 exit, without narrowing scope or requiring exhaustive G2 work first.
+Five inputs sweep parser/discovery work denial, sampled/peak memory denial and
+raster work boundaries; anonymous, unused, duplicate and rejected contents release
+partial owners. Borrowed-scene cancellation/retry and complete-document early/
+middle/late work and peak-memory denial also pass.
+
+Windows/Linux Release builds have zero warnings/errors; 5,515 tests pass per
+platform (4,138 core, 1,371 visual-project, six FontProbe). Original bank: 1,567
+reports / 1,547 PNGs, all outcomes and 1,546 images unchanged; only `inv-094`'s
+600×600 Default image changes, becoming exact against its old reference. Every
+preceding exact result and the corporate 27/27 / 258/258 remain unchanged. The
+five gap documents have matching stable Linux oracle triples; the radiation
+symbol's three per-size Linux triples also match its frozen Windows references.
+Raw records: `artifacts/gradient-mask-20261009/` and its fresh Linux checkout under
+`artifacts/linux-delivery-20261007/gradient-mask-final-20261009/`. Source and renderer
+fingerprints remain absent. No representative success-rate or throughput claim.

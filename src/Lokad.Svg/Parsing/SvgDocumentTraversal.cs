@@ -32,6 +32,8 @@ internal static class SvgDocumentTraversal
             return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputScaleX, outputScaleY, explicitViewport);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
+
+
     }
 
     private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport)
@@ -277,15 +279,21 @@ internal static class SvgDocumentTraversal
                 {
                     if (state.MaskId is not null)
                     {
-                        if (state.MaskContentGeometries is not null) SvgDefinitionParser.RegisterMaskContent(state, workCounter, cancellationToken);
+                        if (state.MaskContentBuilder is not null) RegisterMaskScene(state, workCounter, cancellationToken);
+                        else if (state.MaskContentGeometries is not null) SvgDefinitionParser.RegisterMaskContent(state, workCounter, cancellationToken);
                         else SvgDefinitionParser.RegisterMask(state, workCounter, cancellationToken);
                     }
+                    if (state.MaskContentGeometries is {} anonymousMask && state.MaskId is null)
+                        foreach (SvgGeometry geometry in anonymousMask) geometry.Dispose();
                     state.MaskDepth = -1;
                     state.MaskId = null;
                     state.MaskIsAlpha = false;
                     state.MaskValue = null;
                     state.MaskContentGeometries = null;
+                    state.MaskContentBuilder?.Dispose();
+                    state.MaskContentBuilder = null;
                     state.MaskCustomRegion = null;
+                    state.MaskDefaultUserSpaceRegion = false;
                     state.MaskFractionRegion = null;
                 }
                 if (reader.Depth == state.ClipPathDepth)
@@ -384,6 +392,21 @@ internal static class SvgDocumentTraversal
             }
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
+
+        // Seal shader-mask replay under one parent-owned vector scene; failure releases staging owners.
+        static void RegisterMaskScene(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            string id = state.Strings.Copy(state.MaskId ?? throw new InvalidOperationException("Mask scene registration requires an identifier."));
+            if (state.Masks.TryGetValue(id, out _) || state.MaskContents.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+            SvgSceneBuilder builder = state.MaskContentBuilder ?? throw new InvalidOperationException("Mask scene registration requires a builder.");
+            SvgLeafMaskComposition.Emit(state, builder, workCounter, cancellationToken);
+            SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
+            try { state.Scene.AdoptVectorContent(content); }
+            catch { content.Dispose(); throw; }
+            if (!state.MaskContents.TryAdd(id, new([], 255, state.MaskIsAlpha) { VectorContent = content })) throw new InvalidOperationException("A mask scene must register once.");
+            if (state.MaskCustomRegion is {} region && !state.MaskRegions.TryAdd(id, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+            if (state.MaskFractionRegion is {} fractions && !state.MaskFractionRegions.TryAdd(id, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        }
     }
 
     /// <summary>Consumes one non-empty foreign-namespace subtree when no descendant can render, reporting whether it was skipped.</summary>

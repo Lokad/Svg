@@ -209,6 +209,22 @@ internal static class SvgPaintRecording
         catch { parsed.Discard(); throw; }
     }
 
+    /// <summary>Adopts a lowered leaf batch into a replay scene, rebinding recorded paints from the document scene.</summary>
+    /// <remarks>The target owns adopted geometry. Failure disposes all source values idempotently; both builders retain their bounded work/cancellation contracts.</remarks>
+    internal static void AdoptLeafScene(SvgDefinition lowered, SvgSceneBuilder builder, SvgDocumentState state)
+    {
+        try
+        {
+            foreach (SvgGeometry geometry in lowered.Geometries)
+            {
+                SvgRecordedPaint fill = geometry.RecordedPaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedPaint)) : geometry.RecordedPaint;
+                SvgRecordedPaint stroke = geometry.RecordedStrokePaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint)) : geometry.RecordedStrokePaint;
+                builder.AddGeometry(geometry with { RecordedPaint = fill, RecordedStrokePaint = stroke });
+            }
+        }
+        catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
+    }
+
     internal static void FinishScene(SvgDocumentState state, int first, ParserWorkCounter work, CancellationToken token)
     {
         if (first >= state.Scene.GeometryCount) return;

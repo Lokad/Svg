@@ -6469,7 +6469,7 @@ public sealed class SvgRootParserTests
 
         Assert.False(root.HasUnsupportedChild);
         Assert.Single(root.Geometries);
-        SvgPatternContent content = Assert.IsType<SvgPatternContent>(root.Geometries[0].Pattern.VectorContent);
+        SvgVectorContent content = Assert.IsType<SvgVectorContent>(root.Geometries[0].Pattern.VectorContent);
         Assert.Equal(2, content.Scene.Geometries.Length);
     }
 

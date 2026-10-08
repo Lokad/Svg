@@ -448,7 +448,12 @@ public static class SvgConverter
             {
                 boundsWork.Consume(cancellationToken);
                 SvgDrawCommand value = root.Commands[cursor];
-                if (value.Kind == SvgDrawCommandKind.BeginGroup) { depth++; continue; }
+                if (value.Kind == SvgDrawCommandKind.BeginGroup)
+                {
+                    if (value.RegionKind == SvgLayerRegionKind.Mask && value.MaskContentIndex >= 0 && value.MaskRegion is {} spatialRegion)
+                        IncludeBox(new(spatialRegion.X, spatialRegion.Y, spatialRegion.Width, spatialRegion.Height, default, false, null), outputMap, 0);
+                    depth++; continue;
+                }
                 if (value.Kind == SvgDrawCommandKind.EndGroup)
                 {
                     if (depth-- == 0) break;
@@ -665,7 +670,7 @@ public static class SvgConverter
                         using RenderBudget.BudgetReservation clipReservation = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
                         byte[] clipPixels = new byte[surfaceByteCount];
                         byte[] previousClip = activeViewportClip;
-                        RasterizeMaskContent(root.SceneStorage.MaskContents[command.MaskContentIndex], clipPixels, true);
+                        RasterizeMaskContent(root.SceneStorage.MaskContents[command.MaskContentIndex], clipPixels, true, layer);
                         if (previousClip.Length != 0)
                         {
                             if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
@@ -703,6 +708,7 @@ public static class SvgConverter
                     byte[] maskSurface = [];
                     byte maskLuminance = 255;
                     bool maskIsAlpha = false;
+                    bool variableLuminance = false;
                     bool hasMaskContent = command.MaskContentIndex >= 0;
                     RenderBudget.BudgetReservation? maskReservation = null;
                     if (hasMaskContent)
@@ -711,11 +717,14 @@ public static class SvgConverter
                         SvgMaskContent maskContent = root.SceneStorage.MaskContents[command.MaskContentIndex];
                         maskLuminance = maskContent.Luminance;
                         maskIsAlpha = maskContent.IsAlpha;
+                        variableLuminance = maskContent.VectorContent is not null && !maskIsAlpha;
                         maskReservation = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
                         try
                         {
                             maskSurface = new byte[checked(pixelCount * 4)];
-                            RasterizeMaskContent(maskContent, maskSurface, affineViewportClip);
+                            SvgAnalyticClipBounds contentBounds = affineViewportClip ? layer
+                                : new(Math.Max(layer.Left, maskBounds.Left), Math.Max(layer.Top, maskBounds.Top), Math.Min(layer.Right, maskBounds.Right), Math.Min(layer.Bottom, maskBounds.Bottom));
+                            RasterizeMaskContent(maskContent, maskSurface, affineViewportClip, contentBounds);
                         }
                         catch
                         {
@@ -733,7 +742,10 @@ public static class SvgConverter
                         if (hasMaskContent)
                         {
                             byte contentAlpha = maskSurface[offset + 3];
-                            byte maskValue = maskIsAlpha ? contentAlpha : (byte)(contentAlpha * maskLuminance / 255);
+                            byte maskValue = maskIsAlpha ? contentAlpha
+                                : variableLuminance
+                                    ? (byte)Math.Clamp((int)MathF.Round(maskSurface[offset] * 0.2126f + maskSurface[offset + 1] * 0.7152f + maskSurface[offset + 2] * 0.0722f), 0, 255)
+                                    : MultiplyAlpha(contentAlpha, maskLuminance);
                             if (!affineViewportClip) maskAlpha = MultiplyAlpha(maskAlpha, maskValue);
                         }
                         byte clipAlpha = 255;
@@ -793,19 +805,32 @@ public static class SvgConverter
         // Borrow caller-reserved destination storage. Clip collection forces ordered AA runs;
         // mask/clip content is independent of the surrounding paint opacity and clip stack.
         // Geometry traversal retains the existing work, cancellation and temporary-owner contracts.
-        void RasterizeMaskContent(SvgMaskContent content, byte[] destination, bool viewport)
+        void RasterizeMaskContent(SvgMaskContent content, byte[] destination, bool viewport, SvgAnalyticClipBounds contentBounds)
         {
             byte[] previousClip = activeViewportClip;
             SvgAnalyticClipBounds? previousBounds = activeViewportBounds;
             float previousOpacity = foldedOpacity;
             bool previousCollector = collectingViewportClip;
+            SvgAnalyticClipBounds previousLayer = layerBounds;
             activeViewportClip = []; activeViewportBounds = null; foldedOpacity = 1;
             collectingViewportClip = viewport;
-            try { foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination); }
+            layerBounds = contentBounds;
+            SvgRoot previousRoot = root;
+            try
+            {
+                if (content.VectorContent is {} vector)
+                {
+                    SvgSceneStorage scene = vector.Scene;
+                    root = root with { Geometries = scene.Geometries, Commands = scene.Commands, SceneStorage = scene };
+                    RenderCommands(0, destination, false);
+                }
+                else foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination);
+            }
             finally
             {
                 activeViewportClip = previousClip; activeViewportBounds = previousBounds;
-                foldedOpacity = previousOpacity; collectingViewportClip = previousCollector;
+                foldedOpacity = previousOpacity; collectingViewportClip = previousCollector; root = previousRoot;
+                layerBounds = previousLayer;
             }
         }
 

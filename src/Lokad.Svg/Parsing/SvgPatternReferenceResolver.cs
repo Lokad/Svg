@@ -58,7 +58,7 @@ internal static class SvgPatternReferenceResolver
                         if (parent.VectorContent is null && source.Tile.VectorContent is not null) parent = source.Tile;
                         if (parent.VectorContent is null && source.RectangleSource is {} rectangle)
                         {
-                            SvgPatternContent content = PromoteRectangle(rectangle, source.RectangleContext);
+                            SvgVectorContent content = PromoteRectangle(rectangle, source.RectangleContext);
                             parent = parent with { Content = null, VectorContent = content };
                             state.PatternDefinitions.Replace(target, source with { Tile = parent });
                         }
@@ -73,25 +73,15 @@ internal static class SvgPatternReferenceResolver
             }
         }
 
-        SvgPatternContent PromoteRectangle(SvgDefinitionLeafSource source, SvgPaintableElementContext context)
+        SvgVectorContent PromoteRectangle(SvgDefinitionLeafSource source, SvgPaintableElementContext context)
         {
             using SvgSceneBuilder builder = new(state.Budget, work, token);
             SvgDefinition lowered = source.Lower(context.InheritedStroke, context.InheritedPresentation.Paint,
                 context.InheritedFillRule, context.InheritedPresentation.PaintServerFill, false, state);
-            try
-            {
-                foreach (SvgGeometry geometry in lowered.Geometries)
-                {
-                    work.Consume(token);
-                    SvgRecordedPaint fill = geometry.RecordedPaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedPaint)) : geometry.RecordedPaint;
-                    SvgRecordedPaint stroke = geometry.RecordedStrokePaint.Identity > 0 ? builder.RegisterRecordedPaint(state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint)) : geometry.RecordedStrokePaint;
-                    builder.AddGeometry(geometry with { RecordedPaint = fill, RecordedStrokePaint = stroke });
-                }
-            }
-            catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
+            SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
             SvgLeafMaskComposition.Emit(state, builder, work, token);
-            SvgPatternContent content = SvgPatternContent.Create(builder.Build(), state.Budget);
-            try { state.Scene.AdoptPatternContent(content); }
+            SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
+            try { state.Scene.AdoptVectorContent(content); }
             catch { content.Dispose(); throw; }
             return content;
         }
