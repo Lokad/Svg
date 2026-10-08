@@ -5,22 +5,20 @@ variants on Windows and Linux**, with zero known differences and zero rejections
 Marks are 13/13 exact; outlined wordmarks are 14/14. Membership, inputs, options
 and browser references stay frozen.
 
-The latest repair retains live polynomial quadratics through convex walking,
-including clipped construction, instead of expanding them into independent lines.
-Fifteen fixture and three research comparisons become exact against unchanged
-references. The remaining fractional clip control keeps 165 differing pixels;
-its alpha-error mass falls from 4,203 to 4,175. Every prior exact result and
-rejection is preserved; 1,520 original-bank PNG byte sequences stay unchanged.
-See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#live-convex-polynomial-quadratics-2026-10-08).
+The latest repair places rectangle clips in the referencing group's transformed
+space, for definitions before or after the group. The fractional cubic and
+quadratic clip comparisons become exact against unchanged references. Every
+other original-bank report and 1,537 PNG byte sequences stay unchanged.
+See [the repair and its limits](docs/RASTERIZATION_DESIGN.md#group-rectangle-clip-placement-2026-10-08).
 
 The original bank retains **1,567 executions / 1,539 PNGs**, with identical
 Windows/Linux reports and output bytes. All 258 corporate reports/images stay
-unchanged against each platform's own references. A further **113 retained paint
-controls = 106 exact + seven valid-input rejections** pass all six public outputs.
-Both platforms pass Release builds and **4,191 tests**. Twelve new resource cases
-and six complete parser-work-denial regressions verify owner cleanup; the earlier
-25-scenario memory and installed-package checks retain their preceding scope.
-Earlier checkpoints retain their dated evidence in the design record and inventory.
+unchanged against each platform's own references. A further **125 retained paint
+controls = 117 exact + eight valid-input rejections** pass all six public outputs.
+Both platforms pass Release builds and **4,209 tests**. Eleven new admitted
+resource cases and one retained rejection pass denial/cancellation and owner
+cleanup checks. Earlier memory and installed-package evidence retains its dated
+scope; earlier checkpoints remain in the design record and inventory.
 
 **The full frozen-cohort fidelity target is achieved.** Preserve these exact
 results while improving shared renderer behavior beyond this cohort. S17's remote
@@ -145,15 +143,15 @@ Detailed run records stay under ignored artifacts; Git identifies implementation
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **4,191 passed on each platform**: 3,851 core, 334 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Live curve pieces reserve bounded edge storage before allocation. Twelve fresh admitted cases pass work/memory denial and cancellation, with every tested owner released. Six parser-work sweeps cover solid, linear, radial and pattern fill/stroke combinations; failed stroke construction/repaint now discards complete fill and untransferred stroke owners. Row replay and 113 six-output cases protect fidelity. The preceding 186 admitted / 29 rejected resource sweeps, 25-scenario memory and installed runtime/symbol package checks retain their dated scope. No public API or runtime dependency changes; remote CI remains open. |
-| Executed fixture manifest | **1,410 entries = 1,364 exact + 22 known-difference renders + 24 rejections**; 799 base documents / 611 variants. Fifteen quadratic comparisons become exact; the fractional clipped quadratic retains 165 differences with lower alpha-error mass. Every other fixture report and PNG stays unchanged. |
-| Executed research manifest | **65 probes = 55 exact + six known-difference renders + four rejections**. The quadratic solid fill and linear/radial painted outlines become exact against unchanged references. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the later scope audit. |
-| Supplemental recorded-paint inventory | **113 controls = 106 exact + seven valid-input rejections**. Twelve independently declared original CC0 convex-quadratic controls retain 36 healthy, cleaned, stable captures. All twelve are exact: three clipped paints and a scaled solid fill improve; eight exact controls are preserved. Unchanged MIT unit inputs and original MIT/CC0 controls retain all six output checks. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
+| Full tests, including corporate selection/measurement | **4,209 passed on each platform**: 3,857 core, 346 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Group clip mapping charges four boundary visits before arithmetic; deferred references reserve their retained transform in the existing budgeted parser list. Eleven fresh admitted cases and one valid-input rejection pass work/memory denial, token cancellation and owner cleanup. Six core cases cover both definition orders, inherited/reflected maps, child transforms, parent intersections and viewport offsets; 125 six-output cases retain fidelity. Earlier full resource, 25-scenario memory and installed runtime/symbol package checks retain their dated scope. No public API or runtime dependency changes; remote CI remains open. |
+| Executed fixture manifest | **1,410 entries = 1,366 exact + 20 known-difference renders + 24 rejections**; 799 base documents / 611 variants. Both fractional group-clip comparisons become exact. Every other fixture report and PNG stays unchanged. |
+| Executed research manifest | **65 probes = 55 exact + six known-difference renders + four rejections**. Every research report and PNG stays unchanged. Valid multiple-child symbols still retain an erroneous MalformedInput rejection for the later scope audit. |
+| Supplemental recorded-paint inventory | **125 controls = 117 exact + eight valid-input rejections**. Twelve original CC0 group-clip controls retain 36 healthy, cleaned, stable captures. Eleven become exact across translated/scaled/reflected placement and solid/linear/radial/pattern paints; the reflected-pattern combination retains its valid-input rejection. These calibration controls were declared after integration. Unchanged MIT unit inputs and original MIT/CC0 controls retain all six output checks. This mechanism inventory is separate from the original bank and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. Every Default report and PNG stays unchanged, preserving the preceding matching-browser STOP-sign gain and earlier `inv-013` exact result / `inv-014` residual. These Default outputs do not establish corporate fidelity or a representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**. Fourteen matched Windows recipes in both process orders preserve parser work; total work falls by 140–1,374 units, with unchanged measured peaks. See [the current cost record](docs/BENCHMARKS.md#live-convex-polynomial-quadratic-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | Geometry/command/recorded-paint values remain **272 / 72 / 68 bytes**; a deferred group-clip record grows **152 → 200 bytes**. Eleven matching Windows recipes add four parser-work units; measured total-work deltas range from +4 to +291 units and accounted peaks from unchanged to +192 bytes. See [the cost record](docs/BENCHMARKS.md#group-rectangle-clip-placement-cost-2026-10-08). No representative throughput rate is established. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
 ### Bitmap-local radial matrix order (2026-10-07)
 
@@ -862,7 +860,7 @@ replace the renderer work below.
 
 1. **Continue shared fidelity work under rows 3–7.** The shared paint/opacity
    repair is integrated and passes the unit, six-output, ownership and
-   Windows/Linux delivery gates. Continue the remaining 22 fixture and six
+   Windows/Linux delivery gates. Continue the remaining 20 fixture and six
    research differences.
    The hard custom-region edge and content-layer dither repairs close three more
    research comparisons. Bitmap-local isolated curve construction closes all
@@ -871,14 +869,15 @@ replace the renderer work below.
    wide-ellipse comparisons. SVG rounded-rectangle source order closes the retained
    hairline-color and oval-stroke comparisons. Live convex quadratics close fifteen
    fixture comparisons and the solid/linear-outline/radial-outline research trio.
-   Prioritize fractional clip/control-bounds events, bowtie coverage and
-   circle/ellipse dash construction with independent browser controls. Keep other drawing-state combinations covered by the retained
-   opacity/operation, scope and copy controls.
+   Group clip placement closes both fractional cubic/quadratic clip controls.
+   Prioritize raw control-bounds dispatch, bowtie coverage and circle/ellipse dash
+   construction with independent browser controls. Keep other drawing-state
+   combinations covered by the retained opacity/operation, scope and copy controls.
    Keep the valid percentage-mask, symbol override, direct `fill="none"` line,
    translucent pattern-tile stroke, transformed custom-mask and nested-viewport
    rejections for the later admission audit. Broader object/visual bounds and override combinations still
    need their own evidence. The integrated repair, measured controls and rejected
-   models are in [the design record](docs/RASTERIZATION_DESIGN.md#live-convex-polynomial-quadratics-2026-10-08).
+   models are in [the design record](docs/RASTERIZATION_DESIGN.md#group-rectangle-clip-placement-2026-10-08).
    Finish this phase when the identified renderer differences are exact against
    their retained references and the shared repairs preserve existing exact
    results. Keep unresolved cases visible; moving them to a new list or changing

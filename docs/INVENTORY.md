@@ -5,6 +5,21 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
+## Group rectangle clip placement checkpoint (2026-10-08)
+
+Both retained fractional cubic/quadratic group-clip comparisons become exact
+against their original references. All other original-bank and corporate
+reports/PNGs remain unchanged on Windows/Linux. The current fixture split is
+**1,366 exact + 20 known + 24 rejected**; research stays **55 exact + six known +
+four rejected**. The exact corporate matrix remains **27/27 documents / 258/258
+variants** per platform.
+
+Twelve original CC0 calibration controls, declared after integration, retain 36
+healthy, cleaned, stable captures. Eleven become exact; reflected pattern paint
+retains its valid-input rejection. The recorded-paint inventory is **125 pairs =
+117 exact + eight rejected**, with all six public outputs checked. Original
+sources and browser references stay frozen. See [the repair and scoped validation](RASTERIZATION_DESIGN.md#group-rectangle-clip-placement-2026-10-08).
+
 ## Live convex polynomial quadratic checkpoint (2026-10-08)
 
 Fifteen existing fixture comparisons and the quadratic solid/linear-outline/

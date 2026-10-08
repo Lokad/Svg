@@ -7842,3 +7842,49 @@ ignored `artifacts/convex-polynomial-quads-20261008/` and
 Fractional clip/control-bounds events, bowtie coverage and circle/ellipse dashes
 remain open. The original-scope support audit and online public-domain/CC0 sourcing
 follow the current renderer repairs; remote CI remains a separate S17 gate.
+
+## Group rectangle clip placement (2026-10-08)
+
+A group's authored path followed its inherited transform while its user-space
+rectangle clip stayed in definition coordinates. Placing the same clip alongside
+the transformed path resolves both retained fractional cubic/quadratic controls:
+170/165 differing pixels and alpha-error masses 4,158/4,175 fall to zero against
+unchanged references. The full 1,567-execution bank changes only those two reports
+and PNGs; 1,537 other PNG byte sequences and all rejection outcomes remain.
+Windows/Linux original-bank reports and bytes agree. Each platform preserves
+27/27 corporate documents and 258/258 variants exact against its own references.
+
+Both immediate and deferred group references now map the rectangle through the
+complete inherited axis-aligned group transform, add the unscaled viewport offset
+and then intersect the parent clip. Deferred records retain the transform at
+group entry through command-range adjustment and use expansion. Child transforms
+do not move an outer group's clip. Mapping charges four boundary visits before
+arithmetic; the existing budgeted parser list accounts the retained transform.
+General affine group clips still require broader support; no curve stepping,
+paint arithmetic, public API or runtime dependency changes.
+
+Twelve original CC0 calibration controls were declared after production
+integration and before their captures. Initial drafts used an unsupported
+two-rectangle pattern definition; those drafts stay under ignored artifacts.
+The supported single-rectangle definition isolates clip placement. Translation,
+non-uniform scaling, nested reflection, both definition orders and four paints
+yield eleven exact controls plus the valid reflected-pattern rejection. All 36
+captures are healthy, cleaned and byte-stable in triples. All twelve enter the
+existing six-output inventory, now 125 pairs = 117 exact + eight rejected.
+
+Six core cases verify both reference orders, inherited/reflected maps, parent
+clip intersections, child transforms and unscaled viewport offsets. Windows/Linux
+Release builds and 4,209 tests pass. Eleven admitted resource sweeps and one
+rejection sweep pass tight work/memory limits, token cancellation and owner cleanup.
+Earlier full memory/package evidence retains its dated scope; remote CI remains
+open. Deferred group-clip records grow 152 → 200 bytes; selected costs are in
+[the benchmark record](BENCHMARKS.md#group-rectangle-clip-placement-cost-2026-10-08).
+Detailed evidence stays under ignored `artifacts/clip-state-20261008/` and
+`artifacts/linux-delivery-20261007/clip-placement-final-20261008/`.
+
+Twenty fixture and six research differences remain. The pinned native mask/run
+selector uses the complete rounded path bounds before clip intersection; the
+control-bounds witnesses warrant checking the current canvas-clamped dispatch
+dimensions next. Bowtie coverage and circle/ellipse dashes also remain open.
+The original-scope support audit and online public-domain/CC0 sourcing follow
+these renderer repairs.

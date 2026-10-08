@@ -7,8 +7,8 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Retains one direct leaf geometry range whose userSpace clip-path reference resolves at document end.</summary>
 internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, bool AdmitsBoundingBox);
 
-/// <summary>Retains one group command range whose userSpace clip-path reference resolves at document end, after use expansion.</summary>
-internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, int FirstCommandIndex, int EndCommandIndex, int Depth, int ScaledPushesAtOpen, int ScaledPushesAtClose);
+/// <summary>Retains a group command range and its referencing transform for document-end userSpace clip resolution after use expansion.</summary>
+internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, int FirstCommandIndex, int EndCommandIndex, int Depth, int ScaledPushesAtOpen, int ScaledPushesAtClose);
 
 /// <summary>Parses the bounded clip-path reference syntax shared by clipped containers and leaves.</summary>
 internal static class SvgClipPathSyntax
@@ -468,7 +468,7 @@ internal static class SvgClipPathSyntax
             SvgClipBox clip;
             if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
             {
-                clip = parent is null ? box : parent.Value.Clip.Intersect(box);
+                clip = MapGroupClip(box, pending.Transform, parent, workCounter, cancellationToken);
             }
             else if (state.ObjectClips.TryGetValue(pending.ClipId, out _))
             {
@@ -487,6 +487,17 @@ internal static class SvgClipPathSyntax
                 state.Scene.ReplaceGeometry(command.GeometryIndex, ApplyLeafClip(state.Scene.GeometryAt(command.GeometryIndex), clip));
             }
         }
+    }
+
+    /// <summary>Places a user-space group clip beside its transformed children before intersecting the parent clip.</summary>
+    /// <remarks>The group supplies its complete inherited axis-aligned map; the parent frame has unscaled viewport coordinates. Mapping charges four boundary visits before arithmetic and preserves AA provenance through reflection. This constant-size operation owns no storage and retains no state.</remarks>
+    internal static SvgClipBox MapGroupClip(SvgClipBox box, SvgAffineTransform transform, SvgViewportFrame? parent, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        for (int boundary = 0; boundary < 4; boundary++) workCounter.Consume(cancellationToken);
+        SvgClipBox placed = transform.Apply(box);
+        if (parent is not {} frame) return placed;
+        placed = placed with { X = placed.X + frame.OffsetX, Y = placed.Y + frame.OffsetY };
+        return frame.Clip.Intersect(placed);
     }
 
     private static SvgGeometry ApplyLeafClip(SvgGeometry geometry, SvgClipBox clip)

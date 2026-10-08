@@ -6,7 +6,7 @@ The renderer is a narrow prototype. It supports only the explicit subset listed
 below, and the accepted-input contract gaps recorded in [PLAN.md](../PLAN.md) remain
 open. Do not infer that every unlisted visible SVG construct is rejected correctly.
 The current 1,410 manifest entries contain
-1,364 exact decoded-pixel references, 22 known-difference renders and 24
+1,366 exact decoded-pixel references, 20 known-difference renders and 24
 categorized rejections. These are fixture entries, including variants, and do not
 establish corporate-document coverage.
 
@@ -14,11 +14,21 @@ Convex polynomial quadratics now retain live curve state in both unclipped
 and clipped construction. This preserves native strip-boundary advancement and
 smoothing through the shared solid, linear, radial and pattern paint boundary.
 The quadratic solid-fill and linear/radial painted-outline research comparisons
-are exact against their original references. The fractional quadratic clip still
-retains a known difference; exact examples do not establish general clip parity.
+are exact against their original references. The fractional quadratic clip is
+exact after the group clip placement repair below; these exact examples do not
+establish general clip parity.
 Failed paint-filled stroke construction/repainting releases geometry owners and
 their containers. Six full parser-work-denial regressions cover solid, linear,
 radial and pattern combinations. See [the repair record](RASTERIZATION_DESIGN.md#live-convex-polynomial-quadratics-2026-10-08).
+
+User-space rectangle clips on groups use the complete inherited axis-aligned
+group map, then the unscaled viewport offset, before intersecting the parent clip.
+Forward references retain that map at group entry. Later child transforms leave
+the group's clip in its own reference space. Both retained fractional cubic and
+quadratic clip comparisons are exact. Translated, scaled and reflected controls
+cover the shared solid/linear/radial/pattern boundary; reflected pattern paint
+still rejects. General affine group clips and leaf-specific clip composition
+remain inputs to the original-scope support audit. See [the repair](RASTERIZATION_DESIGN.md#group-rectangle-clip-placement-2026-10-08).
 
 Uniform group masks apply once to composed children through an isolated surface,
 independently of backward/forward definition order. Overlapping children, rounded

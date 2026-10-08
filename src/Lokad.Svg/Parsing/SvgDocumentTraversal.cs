@@ -175,8 +175,8 @@ internal static class SvgDocumentTraversal
                             if (state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox))
                             {
                                 SvgViewportFrame? clipParent = state.EffectiveFrame;
-                                SvgClipBox clip = clipParent is null ? clipBox : clipParent.Value.Clip.Intersect(clipBox);
                                 if (clipParent?.IsScaled ?? false) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
+                                SvgClipBox clip = SvgClipPathSyntax.MapGroupClip(clipBox, parsedGroup.Scope.InheritedPresentation.Transform, clipParent, workCounter, cancellationToken);
                                 state.Viewports.Add(new SvgViewportFrame(clipParent?.OffsetX ?? 0, clipParent?.OffsetY ?? 0, clipParent?.ScaleX ?? 1, clipParent?.ScaleY ?? 1, clipParent?.ViewportWidth, clipParent?.ViewportHeight, clip, reader.Depth));
                                 state.ClipDepths.Add(reader.Depth);
                             }
@@ -191,7 +191,7 @@ internal static class SvgDocumentTraversal
                             else
                             {
                                 SvgViewportFrame? groupParent = state.EffectiveFrame;
-                                state.PendingGroupClips.Add(new PendingGroupClip(state.Strings.Copy(groupClipId), groupParent, state.Scene.CommandCount, -1, reader.Depth, state.ScaledViewportPushes, -1));
+                                state.PendingGroupClips.Add(new PendingGroupClip(state.Strings.Copy(groupClipId), groupParent, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene.CommandCount, -1, reader.Depth, state.ScaledViewportPushes, -1));
                                 SvgClipBox passthrough = groupParent?.Clip ?? SvgClipBox.Unbounded;
                                 state.Viewports.Add(new SvgViewportFrame(groupParent?.OffsetX ?? 0, groupParent?.OffsetY ?? 0, groupParent?.ScaleX ?? 1, groupParent?.ScaleY ?? 1, groupParent?.ViewportWidth, groupParent?.ViewportHeight, passthrough, reader.Depth));
                                 state.ClipDepths.Add(reader.Depth);

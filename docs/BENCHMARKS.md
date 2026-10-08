@@ -2391,3 +2391,22 @@ when the repair runs first. These small, selected controls do not establish
 representative throughput or Linux timing. The earlier corporate ShortRun retains
 its dated scope. Recipes, batches and ledgers remain ignored under
 `artifacts/convex-polynomial-quads-20261008/`.
+
+## Group rectangle clip placement cost (2026-10-08)
+
+Eleven matching Windows recipes measure admitted translated/scaled/reflected
+group clips across solid, linear, radial and pattern paints, including forward
+references. Each process warms up eight conversions and records three batches of
+twenty per recipe in both process orders. Inputs, options and output forms match.
+Each recipe adds **four parser-work units**. Total-work deltas range from
+**+4 to +291 units**; accounted peak deltas range from **0 to +192 bytes**.
+Median managed-allocation deltas range from **0 to +1,360 bytes per conversion**.
+The deferred clip record grows **152 → 200 bytes**; its existing budgeted array
+accounts the additional transform storage. Geometry/command/paint layouts remain
+272 / 72 / 68 bytes. Resource sweeps separately verify denial and owner cleanup.
+
+Summed per-recipe median timings read **9.918 → 10.243 ms**
+with the baseline first and **9.546 → 9.906 ms** with the
+repair first. These selected controls measure the cost of corrected clipping;
+they do not establish representative throughput or Linux timing. Detailed
+batches and ledgers stay ignored under `artifacts/clip-state-20261008/`.
