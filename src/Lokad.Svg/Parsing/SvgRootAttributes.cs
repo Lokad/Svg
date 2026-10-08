@@ -8,6 +8,14 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
 {
     internal SvgPaintOpacity SourceOpacity { get; init; }
 
+    /// <summary>Supplies the explicit containing viewport for percentage root dimensions during lowering.</summary>
+    internal SvgViewport? ContainingViewport { get; init; }
+
+    /// <summary>Percentage lengths use the root viewBox extent when present, independently of output pixel dimensions.</summary>
+    internal double? UserViewportWidth => ViewBox?.Width ?? Width?.Resolve(ContainingViewport?.Width, 300) ?? ContainingViewport?.Width;
+
+    internal double? UserViewportHeight => ViewBox?.Height ?? Height?.Resolve(ContainingViewport?.Height, 150) ?? ContainingViewport?.Height;
+
     internal static SvgRootAttributes Parse(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgElementAttributePolicy.ValidateRoot(reader, workCounter, cancellationToken);

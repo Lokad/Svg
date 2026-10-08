@@ -47,8 +47,8 @@ internal static class SvgSymbolContentParser
         else
         {
             SvgPaintableElementContext context = new(new(inherited.Paint, true, true, SvgAffineTransform.Identity) { PaintServerFill = inherited.PaintServerFill }, root.InheritedTextStyle, inherited.Stroke, sheet, colors, work, token, state.OutputMagnification, null) { RecordingScope = new(1) };
-            double? width = state.SymbolViewBox?.Width ?? root.Width?.ToAbsoluteOrNull();
-            double? height = state.SymbolViewBox?.Height ?? root.Height?.ToAbsoluteOrNull();
+            double? width = state.SymbolViewBox?.Width ?? root.UserViewportWidth;
+            double? height = state.SymbolViewBox?.Height ?? root.UserViewportHeight;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, width, height, state);
             SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);

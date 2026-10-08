@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/viewport-percentage-bases/*.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/container-shader-inheritance/*.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/instance-shader-opacity/*.svg" Link="TestData/instance-shader-opacity/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/use-stroke-style/*.svg" Link="TestData/use-stroke-style/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

@@ -95,11 +95,25 @@ rejections, four incorrect renders and five exact renders. Pattern rectangles no
 retain direct group placement, and tile fills preserve opacity before byte
 quantization. Fifteen resource sweeps and two placement-gate checks pass.
 
-**Next, continue G2 with viewport and remaining instance combinations.** Other
-instance locations and percentage-base/affine mappings need independent controls.
-Rendered-group
-opacity, clip/mask and viewport boundaries remain G5; the inline transformed
-rectangle stays G3. Wider pattern content and coordinate systems remain G6.
+**G2 now resolves viewport percentages in user space.** Root and nested viewBox
+extents supply percentage positions, dimensions and omitted use sizes, independently
+of physical output dimensions. Ordinary uses and admitted images share those bases;
+font discovery uses the same root/nested extents. The 81-case bank has 78 exact
+controls and three explicit scaled-viewport use rejections through six outputs.
+Its baseline had 57 incorrect renders, fifteen rejections and nine exact cases.
+Eight resource sweeps, three semantic checks and a discovery boundary pass.
+
+**Next deliverable: finish the retained Illustrator heart (`inv-105`).** Its
+declared 512×401 transparent output must match its unchanged reference through
+all six outputs. The first blocker is G3's rotated rectangle gate. Follow every
+subsequent rejection and pixel mismatch until the complete document is exact;
+use small synthetic controls to diagnose and protect each shared correction.
+Scaled nested viewport uses and other G2 combinations remain on the checklist,
+and become dependencies only when they block the selected document.
+
+**Retained gap documents completed: 0/4**, alongside the preserved corporate
+**27/27 documents / 258/258 variants**. Control-bank totals measure mechanisms;
+they do not count as completed documents.
 
 Solid fill bindings now preserve a leaf's own display/visibility and resolve
 `currentColor` and fill opacity independently at instance time. Ten of sixteen
@@ -134,8 +148,8 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **5,245 passed on each platform**: 4,061 core, 1,178 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Forty-eight preceding exhaustive parser-work/memory ownership inputs pass. Five additional stroke-opacity inputs cover solid/shader channels, nested uses and newly stroked unpainted curves, including every parser work limit, memory denial, raster work boundaries and cancellation/retry. Eighteen graph, duplicate-ID, empty-target, deep-chain, expansion-denial, sealing-cancellation/retry and discovery checks pass. Partial forward insertion disposes unadopted native owners and reserves extra command storage before allocation. All 83 preceding six-output symbol comparisons stay exact; the 31-case use-paint bank preserves 30 exact and one unsupported outcome through six outputs. Fifteen frame cases preserve twelve exact and three unsupported outcomes; frame work-denial checks release surface owners. All thirty rectangle-path stroke controls are exact through six outputs; 480 compiled native outlines match float bits. Every admitted work/memory denial for the three join styles releases output owners; cancellation/retry and four construction-map controls pass. The 81 opacity cases preserve 70 exact and 11 unsupported outcomes through six outputs. Seven additional stroke-style inputs sweep every parser work denial, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry. All 99 new style cases preserve 96 exact and three unsupported outcomes through six outputs. Assembly cancellation releases source-sidecar scratch before retry. The 123 rendered-group controls preserve 114 exact and nine unsupported outcomes through six outputs; eleven further ownership/resource inputs pass, including copied masks, thin ellipses and empty forward targets. Empty scenes enforce the rendering work limit before surface allocation. All 150 new instance-shader/opacity controls are exact through six outputs; twelve further inputs sweep parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional pattern filtering. All 192 container-shader controls are exact through six outputs; fifteen additional inputs sweep discovery/parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional point-list fills, copied pattern groups and tile alpha. Two transformed fractional pattern-point gates release owners. Source fill/stroke roles, authored opacity precedence and independent alphas have focused checks; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
+| Full tests, including corporate selection/measurement | **5,338 passed on each platform**: 4,073 core, 1,259 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Forty-eight preceding exhaustive parser-work/memory ownership inputs pass. Five additional stroke-opacity inputs cover solid/shader channels, nested uses and newly stroked unpainted curves, including every parser work limit, memory denial, raster work boundaries and cancellation/retry. Eighteen graph, duplicate-ID, empty-target, deep-chain, expansion-denial, sealing-cancellation/retry and discovery checks pass. Partial forward insertion disposes unadopted native owners and reserves extra command storage before allocation. All 83 preceding six-output symbol comparisons stay exact; the 31-case use-paint bank preserves 30 exact and one unsupported outcome through six outputs. Fifteen frame cases preserve twelve exact and three unsupported outcomes; frame work-denial checks release surface owners. All thirty rectangle-path stroke controls are exact through six outputs; 480 compiled native outlines match float bits. Every admitted work/memory denial for the three join styles releases output owners; cancellation/retry and four construction-map controls pass. The 81 opacity cases preserve 70 exact and 11 unsupported outcomes through six outputs. Seven additional stroke-style inputs sweep every parser work denial, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry. All 99 new style cases preserve 96 exact and three unsupported outcomes through six outputs. Assembly cancellation releases source-sidecar scratch before retry. The 123 rendered-group controls preserve 114 exact and nine unsupported outcomes through six outputs; eleven further ownership/resource inputs pass, including copied masks, thin ellipses and empty forward targets. Empty scenes enforce the rendering work limit before surface allocation. All 150 new instance-shader/opacity controls are exact through six outputs; twelve further inputs sweep parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional pattern filtering. All 192 container-shader controls are exact through six outputs; fifteen additional inputs sweep discovery/parser work, sampled/peak-edge memory denial, raster work boundaries and cancellation/retry, including fractional point-list fills, copied pattern groups and tile alpha. Two transformed fractional pattern-point gates release owners. The 81 percentage-base controls preserve 78 exact and three scaled-use rejections through six outputs; eight further resource sweeps cover parser/discovery work, memory denial, raster work boundaries and cancellation/retry, with three semantic assertions and a later-font discovery boundary. Source fill/stroke roles, authored opacity precedence and independent alphas have focused checks; all 149 recorded-paint outcomes remain unchanged. Earlier broad resource, memory and installed-package evidence keeps its dated scope; remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,389 exact + zero known-difference renders + 21 rejections**; 799 base documents / 611 variants. Three magnified-instance cases graduate against their unchanged references; other fixture outcomes and PNGs stay unchanged. |
 | Executed research manifest | **65 probes = 64 exact + zero known-difference renders + one rejection**. Three multiple-child symbol cases graduate from the erroneous MalformedInput rejection; other research outcomes and PNGs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
@@ -144,9 +158,9 @@ evidence in [the review](docs/REVIEW_2026_09_28.md).
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. No added surfaces or quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and 5,245 tests. All 1,567 original execution
+Both platforms pass Release builds and 5,338 tests. All 1,567 original execution
 reports and all 1,545 PNG byte sequences remain unchanged from the preceding
-instance-shader checkpoint; Windows/Linux banks agree. Every corporate result
+container-shader checkpoint; Windows/Linux banks agree. Every corporate result
 is unchanged and exact against its platform's own references. Four retained online failures
 remain; the heart and new I Ching library are G3, the two patterns are G6. WSL
 Ubuntu 24.04.3 uses isolated SDK 10.0.401 / runtime 10.0.12 and PowerShell 7.6.6.
@@ -177,26 +191,56 @@ remains open.
 ## 3. Ordered support queue
 
 The audit uses executed fixture/research/recorded-paint failures and actual parser
-gates. The order below prioritizes shared combinations used by ordinary exports;
-it is an engineering judgment, not a measured prevalence ranking. G3–G6 have
-concrete retained failures; G2's first retained failures are now exact and its
-remaining combinations need independent cases before implementation. G7–G9 are
-bounded later work and need fresh development examples before their implementation slices are selected. Regression repairs may
-interrupt this order. The identified fidelity repairs under historical rows
+gates. Group numbers identify support responsibilities, not sequential prerequisites.
+Select the next shared implementation change by the retained document it
+advances. Finish the heart first, then select the I Ching library or a pattern
+document from their demonstrated dependencies. Exhaustive G2 completion does
+not block G3–G6. Keep other promised combinations visible in their group exits.
+Prioritize composed transforms, paint-coordinate mapping and bounded pattern
+content where they remove several gates. Extend the existing geometry and
+immutable source replay; preserve direct-shape, native contour, shader and layer
+distinctions needed for exact pixels. Separate implementations for each
+shape/paint/instance combination are not the plan. Regression repairs may
+interrupt document work. The identified fidelity repairs under historical rows
 1–7 are complete; remaining feature/admission work now maps to G1–G9. Their
 landed mechanisms remain regression requirements.
 
 | Priority | Work | Failure class | Dependencies / stages |
 | --- | --- | --- | --- |
-| G1 | **Declaration validation landed.** Inert exporter presentation values share one validator; G2 is next. | Original syntax-location inconsistency resolved; the heart now exposes G3 | Remaining nested style/root selector gates stay G5/G7; S9 |
-| G2 | **Solid/shader use and container paint, stroke inheritance and rendered-group styling implemented.** Complete remaining practical symbol/instance combinations. | Other-location and viewport combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
+| G1 | **Declaration validation landed.** Inert exporter presentation values share one validator; the heart continues under G3. | Original syntax-location inconsistency resolved; the heart now exposes G3 | Remaining nested style/root selector gates stay G5/G7; S9 |
+| G2 | **Solid/shader use and container paint, stroke inheritance and rendered-group styling implemented.** Complete remaining practical symbol/instance combinations. | User-space percentage bases repaired; scaled nested viewport uses, other locations and affine combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
 | G3 | Complete curved geometry and static transforms across shapes, curves and instances | Missing combinations behind shape-specific and non-uniform gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | **Fractional rectangle-stroke fidelity repaired.** Complete paint-server strokes on ordinary geometry | Three retained rectangle comparisons and twelve new frame controls are exact; broader paints retain admission gates | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
 | G6 | Practical patterns: content, inheritance and coordinate systems | Missing static paint support | G2/G3/G5, bounded tile rendering; S13/S16 |
-| G7 | Embedded raster images and remaining static CSS | Missing static features/subsets; capture an export before selecting a slice | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
-| G8 | Markers and a measured subset of filter/blending effects | Missing static features; lower priority than outlined logos | G3–G5, bounded intermediate surfaces; S16 |
-| G9 | Supplied-font text, then text paths if needed | Separate experimental feature work; no implicit host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
+| G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
+| G8 | Static markers and the enumerated filter/blending subset below | Missing static features; lower priority than outlined logos | G3–G5, bounded intermediate surfaces; S16 |
+| G9 | Supplied-font labels and the enumerated text-path subset below | Separate experimental feature work; no implicit host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
+
+### Document deliverables and accounting
+
+| Retained document | Frozen declared output | Current outcome / next dependency |
+| --- | --- | --- |
+| `inv-105` Illustrator heart — **next** | 512×401, transparent | Rejected: rotated rectangles (G3). Ordinary filled paths and stylesheet paints must retain exact pixels after admission. |
+| `inv-106` I Ching library | 280×720, transparent | Rejected: compound curved even-odd path (G3); keep all 79 symbol/use instances in the complete comparison. |
+| `inv-103` pattern example | 200×200, transparent | Rejected: circle tile content (G6). |
+| `inv-104` Inkscape pattern | 178×135, transparent | Rejected: local pattern inheritance (G6); path content and fractional placement remain part of the document. |
+
+Inputs, options and references are frozen in the [gap manifest](tests/References/inventory/svg-gap-cases.json).
+Count a document only after every declared output is exact. Record completed
+documents and outstanding blockers beside control results, separately by
+platform where oracle coverage differs. Do not add backgrounds or sizes to an
+existing document's denominator to make a partial success look complete.
+Further variants may be declared as separate development cases before comparison.
+Use the same retained reference throughout the correction; platform fidelity
+requires a matching pinned browser reference under section 5.
+
+For the heart, remove the rectangle gate through shared composed geometry,
+rerun the entire retained input, and diagnose the next actual outcome. A rotated
+rectangle control passing does not finish the heart. After completion, select
+the next complete retained document by the shared dependencies it exposes.
+Acquire more public-domain/CC0 failures when these documents no longer supply
+the next useful in-scope gap; keep already exact downloads out of the failure queue.
 
 ### G1 — exporter declarations: shared validation landed
 
@@ -327,12 +371,37 @@ source contours; direct pattern rectangles carry container placement, and tile
 fill alpha survives storage and replay. Fifteen resource inputs and two retained
 placement gates protect discovery, lowering, mapping and retry.
 
-Next investigate other locations and viewBox percentage-base/affine combinations.
-Declare viewport and authored-override twins before production edits and retain
-independent captures; keep their denominators separate. Select bounded slices from demonstrated failures; broader
-transform maps stay G3 and deeper reference/composition scopes stay G5. Exit:
-the selected practical combinations are exact on unchanged references with no
-regression to current exact inputs or resource contracts.
+The [81-case percentage-base bank](tests/Research/viewport-percentage-bases/manifest.json)
+has 78 exact controls and three retained scaled-viewport use rejections through six
+outputs on both platforms. Root and nested viewBox dimensions supply user-space
+percentage bases to local uses, nested viewports and admitted images. Percentage
+roots use their explicit containing viewport or existing intrinsic defaults when
+there is no viewBox. Sibling scopes restore the previous base. Discovery retains
+later font requests after known viewBox-based nested percentages. The old
+dimensionless-root/omitted-nested-size rejection now has a positive regression
+with unchanged geometry and three independent browser controls. All 243 retained
+full-image captures are healthy, cleaned and byte-stable. Nine cropped captures
+remain diagnostic oracle failures; they are excluded from references. Eight
+resource inputs and four focused checks preserve the existing resource contracts.
+
+Remaining G2 completion checklist, independent of the next document:
+
+- [ ] Admit local uses in scaled nested viewports; the three retained percentage
+  controls establish the gate. Preserve viewBox bases, clipping and source replay.
+- [ ] Share references and authored/inherited styles across root, `defs`,
+  rendered groups, symbols and nested SVG locations, including ordinary leaves,
+  group/symbol/use targets, backward/forward references and child aliases.
+- [ ] Compose static instance maps through G3 and viewport/opacity/clip/mask
+  boundaries through G5; preserve source precedence and ancestor exclusion.
+
+The heart has no `use` dependency visible in its source. Do not expand these
+combinations before the heart merely to close G2. For a document that needs them,
+declare focused viewport/authored-override twins before production editing and
+capture; keep mechanism denominators separate. G2 exits when this finite location,
+reference and composition checklist is supported with exact retained examples,
+categorized missing/cyclic-reference outcomes and unchanged resource contracts.
+An untested combination remains open, even after a document completes.
+See [the percentage-base repair](docs/RASTERIZATION_DESIGN.md#viewport-percentage-bases-2026-10-08).
 See [the container-shader slice](docs/RASTERIZATION_DESIGN.md#container-shader-inheritance-and-tile-paint-2026-10-08).
 See [the instance-shader slice](docs/RASTERIZATION_DESIGN.md#instance-shader-fills-opacity-and-pattern-placement-2026-10-08).
 See [the rendered-group slice](docs/RASTERIZATION_DESIGN.md#rendered-group-styles-and-native-source-replay-2026-10-08).
@@ -356,9 +425,17 @@ rotations are admitted. `original-number-general-map` and the retained tiger rej
 general matrix transforms. `original-curve-root-quad-none` rejects non-uniform
 viewBox/output curve mapping. Reflected pattern groups and magnified use add
 shape/paint/instance gates. Complete these through one composed affine map,
-preserving authored curves, stroke semantics and paint coordinates. Exit: retained
-rotation, skew, non-uniform and instance families become exact without normalized
-or flattened source substitution; no corporate or prior exact regression.
+preserving authored curves, stroke semantics and paint coordinates. The finite
+geometry exit covers rect/rounded rect, circle/ellipse, line, polygon/polyline and
+retained line/quadratic/cubic/arc paths; nonzero and even-odd compound fills;
+translation, rotation, skew, reflection and non-uniform affine scaling at root,
+group, leaf and admitted instance placement. Degenerate finite maps must have an
+explicit nonpainting or categorized outcome, without invalid owners. Perspective
+maps are outside this static SVG subset. The heart is the first complete-document
+acceptance case; the I Ching, retained general-map and non-uniform curve cases
+remain promised. Exit: these retained documents/families and focused map controls
+are exact without normalized or flattened source substitution; no corporate or
+prior exact regression.
 
 ### G4 — fractional stroke fidelity and paint-server combinations
 
@@ -377,8 +454,12 @@ contours. The two `line-bounds-*-square-width6-fill-none` controls reject ordina
 gradient lines. Solid native outlines already render their admitted controls
 exactly. Extend the shared stroke-to-paint route rather than adding paint-specific
 geometry kernels. Include circle/ellipse dash paint, caps and non-uniform placement
-as measured follow-ups. Exit: solid/linear/radial/pattern twins share source stroke
-semantics, declared clips and placements are exact, and ownership/budget checks pass.
+as measured follow-ups. The finite stroke exit covers the G3 geometry subset
+with solid/linear/radial/pattern paints, butt/round/square caps, miter/bevel/round
+joins, miter limits, finite dash arrays/offsets and independent fill/stroke opacity.
+Non-uniform maps preserve SVG stroke construction; no separate paint-specific
+stroker. Exit: the retained mixed-subpath, gradient-line and shader-oval cases and
+focused boundary twins are exact, with ownership/budget checks passing.
 
 ### G5 — viewports, clips, masks and composition
 
@@ -402,10 +483,15 @@ viewport as undefined. The material-pair family rejects patterns in scaled
 viewports. `mask-region-half-translated` rejects a transformed custom mask region;
 nested SVG style attributes, retained percentage-mask and nested-opacity examples
 need their own admission slices. Distinguish definition scope, object bounds, visual stroke bounds and
-viewport percentage bases. Exit: each retained family and independent leaf/group/
-use controls are exact with source-order binding, bounded temporary surfaces and
-token-preserving cleanup. Full AA-mask/cache behavior remains a separate fidelity
-requirement when a new example demonstrates it.
+viewport percentage bases. The finite exit covers nested SVG/symbol viewBox
+mapping and percentages; local paint definitions; local clipPath geometry using
+G3 shapes in userSpace/objectBoundingBox coordinates; alpha and luminance masks
+with both region/content unit systems; transformed finite regions; and nested
+leaf/group/use opacity, clips and masks. Forward local references and source-order
+binding must agree. Exit: the retained families and focused intersecting/nested
+scope controls are exact with bounded temporary surfaces and token-preserving
+cleanup. Discovered AA-mask/cache differences are defects inside this exit,
+not grounds for rebasing references or declaring the group complete.
 
 ### G6 — patterns
 
@@ -422,22 +508,111 @@ byte quantization. Transformed fractional point-list pattern fills, broader
 fractional tile sizes, reflected/general maps and nested viewport gates remain.
 Add bounded multi-element vector tiles, local inheritance with cycle checks,
 pattern transforms, viewBox/content units and objectBoundingBox units in measured
-slices. Exit: these originals render exactly; independent tile-border, phase,
-alpha, transformed fill/stroke and inheritance controls pass without tile-size
-or repeat-count-dependent unbounded work.
+slices. The finite tile-content subset is ordered G3 vector leaves, groups and
+local uses with solid/gradient paint and opacity, rendered through the existing
+source/scene machinery. Include fractional finite tile origins/sizes, both pattern
+unit systems, content units, viewBox/aspect mapping and composed affine transforms.
+Recursive pattern/paint dependencies must have categorized rejection. Embedded
+images and filtered/text tile content remain explicit dependencies on G7–G9,
+not silently dropped promises or a prerequisite for the two retained pattern
+documents. Exit: both originals and the retained multi-child case render exactly;
+focused tile-border, phase, alpha, transformed fill/stroke and inheritance controls
+pass without tile-size or repeat-count-dependent unbounded work.
 
-### G7–G9 — later original-scope work
+### G7 — embedded PNGs and static CSS
 
-Embedded raster support must address non-uniform PNG content, image mapping and
-resampling using explicitly supplied/data resources; arbitrary network/file
-discovery remains excluded. Broader static CSS should follow real exporter
-blockers and the existing cascade, not a browser DOM. The retained marker and
-drop-shadow fixtures establish missing static features; choose a bounded marker
-slice before measured filters/blending. Live text and text paths stay behind the
-outlined-logo work and require the caller-supplied font evidence in section 6.
-Exit criteria for each selected slice include unchanged reference equality,
-bounded decode/expansion/surface work, correct rejection of unsupported active
-features and preserved exact corporate results.
+These are planned boundaries, not claims of current admission. Before production
+work, retain a licensed complete export for each new image/CSS mechanism and
+declare its output/options; existing exact examples stay regression controls.
+
+- **PNG content:** non-interlaced 8-bit RGB/RGBA, grayscale/grayscale-alpha and
+  indexed palette PNGs, including supported tRNS transparency, supplied by base64
+  data URI. Preserve chunk/CRC/decompression validation; add multicolor and
+  translucent content. Map finite image positions/dimensions, viewBox percentage
+  bases, all meet/slice alignments, `none`, fractional/general affine placement,
+  clipping, masking and opacity through the shared mapping and sampling route.
+- **CSS matching:** existing ID/class/attribute and selector-list forms plus SVG
+  element selectors, element+ID/class, descendant and child combinators on the
+  supported SVG tree, including root, nested SVG, definitions and instance replay.
+  Apply static stylesheets in source order wherever admitted, including the two
+  retained late-stylesheet failures. Preserve specificity, `!important`, inline
+  precedence and inheritance for the presentation/font properties enumerated in
+  G2–G6/G9; include SVG geometry width/height declarations already parsed today.
+- **Acceptance:** retain the existing embedded-image and compound-selector
+  examples; add a multicolor alpha-edge image under fractional meet/slice and an
+  export whose root/nested cascade and late rules affect referenced content.
+  Include an authored override and missing/corrupt-image boundary control.
+- **Explicit unsupported outcomes:** interlaced/16-bit/color-managed PNGs,
+  JPEG/GIF/WebP and external image fetching; imported stylesheets, media/supports
+  rules, pseudo-classes/elements, sibling combinators, CSS layout, variables,
+  animation and web-font discovery. These are outside this group's intended
+  subset; no silent fallback. The data-only resource boundary remains section 5.
+
+Exit: complete acceptance documents match unchanged references, current exact
+results stay exact, and decode, style matching, resampling and cleanup are bounded.
+
+### G8 — markers and finite static effects
+
+- **Markers:** local marker-start/mid/end on G3 line/polyline/polygon/path
+  geometry and their instances; userSpaceOnUse/strokeWidth units; refX/refY,
+  finite marker sizes, viewBox/aspect mapping, fixed angle, `auto` and
+  `auto-start-reverse`; ordered G3 vector/group/use content with ordinary paints.
+  Define zero-length segments, closed paths and recursive references explicitly.
+- **Effects:** `feGaussianBlur`, `feOffset`, `feFlood`, `feComposite` (`over`/`in`),
+  `feMerge`, `feBlend` (`normal`/`multiply`/`screen`) and `feDropShadow`. Inputs are
+  SourceGraphic, SourceAlpha and earlier local results; filter/primitive regions,
+  both filter unit systems and sRGB/linearRGB arithmetic are part of acceptance.
+  Allocate bounded intermediate regions and charge blur/composition work before
+  execution. Reuse the existing layer and premultiplied-paint machinery.
+- **Acceptance:** finish `original-logo-marker-mark` and
+  `original-logo-filter-mark` against their frozen references. Add a complete
+  licensed arrow diagram and shadowed export, with focused tangent/closed-path,
+  stroke-width, clipped-halo, anisotropic-blur, alpha and blend witnesses.
+- **Explicit unsupported outcomes:** backdrop inputs, external filter images,
+  displacement, turbulence, lighting, morphology, convolution, arithmetic
+  composite, other blend modes and CSS backdrop/filter syntax. Recursive effect
+  references reject; forward/missing result names have categorized outcomes.
+
+This list resolves the previous "selected filters" boundary; it preserves the
+promised marker/drop-shadow work without claiming every SVG filter primitive.
+Exit requires complete-document equality and bounded expansion/surfaces/work,
+including cancellation and denied allocations, with every prior exact result kept.
+
+### G9 — supplied-font labels and text paths
+
+Section 6's first useful milestone remains the starting point, not the final G9
+exit. Preserve caller-supplied standalone static TrueType face-0 programs,
+catalog/style/coverage fallback and the existing bounded pair-positioning subset.
+
+- **Labels:** horizontal LTR ASCII/tested precomposed Latin and covered
+  supplementary scalars; text/CDATA/whitespace and styled/positioned nested tspan
+  order; inherited/per-span family, size, weight/style, paint and visibility;
+  scalar/list x/y/dx/dy/rotate, start/middle/end anchoring, letter/word spacing,
+  explicit line positions and `textLength` with spacing/spacingAndGlyphs.
+  Include alphabetic/middle/hanging baselines, affine glyph maps, ordinary fill/
+  stroke paints and solid underline/overline/line-through decorations.
+- **Text paths:** one local retained open/closed G3 path per run, supplied glyph
+  advances/kerning, length/percentage startOffset, anchors and tangent placement;
+  method `align`, spacing `exact`. Curved and transformed paths must use the
+  shared geometry, not substituted outlines. Out-of-range placement and zero
+  path length need explicit measured outcomes.
+- **Acceptance:** finish `original-logo-live-text` and
+  `original-logo-text-path` with an explicitly supplied, redistributable face
+  matching the browser embedding. Retain a complete label diagram and curved
+  label export. Add AV/space/accent/composite, mixed-span/fallback, list/anchor/
+  length/baseline and path-offset witnesses. Section 6 requires intended-font
+  proof, separate metrics and pixels, and matching platform references.
+- **Explicit unsupported outcomes:** automatic wrapping, bidi/joining/complex
+  shaping, general GSUB/GPOS or mark positioning, vertical text, text-path stretch/
+  auto spacing, variable/color/bitmap fonts, CFF/CFF2, WOFF/WOFF2 and host-font
+  discovery. Missing required programs/glyphs cannot disappear or silently fall
+  back to machine fonts. Private evidence alone cannot close public admission.
+
+Exit: the complete public documents and finite label/path subset are exact, with
+bounded preparation/layout/contours and all resource/output contracts preserved.
+Text paths are planned work, rather than an unspecified "if needed" deferral.
+Any later proposal to defer an enumerated G2–G9 item must identify it explicitly
+and leave it open; a supported document does not authorize shrinking group scope.
 
 ### Development sourcing and release work
 
@@ -449,8 +624,10 @@ alone does not close a case. The group clipping/opacity and native rectangle-str
 interruptions are resolved; numeric stroke opacity is now exact for the admitted
 instance controls. Rendered-group styling is now exact for the admitted slice;
 instance shader fills and independent opacity are now exact too. Container shader
-fill inheritance is exact for the admitted slice. Continue viewport and remaining
-instance combinations from retained failures.
+fill inheritance is exact for the admitted slice. Root/nested viewBox percentage
+bases are repaired. Finish the Illustrator heart next, followed by complete
+retained documents selected by shared dependencies. Keep the remaining instance
+combinations visible without making them a prerequisite for G3–G6.
 
 1. Audit actual parser/renderer gates and existing rejected examples against the
    product scope. Select the next shared feature combination from demonstrated
@@ -604,6 +781,8 @@ check cancellation within bounded chunks and release owners on every exit.
   landing it, and run full delivery checks when their contracts change or at release.
   Current exact references must remain exact. Changes to known mismatches require
   full before/after comparison and explanation, not merely refreshed maxima.
+  Run the required complete checks once on the finished correction; do not repeat
+  unchanged qualification solely to update PLAN or refresh documentation.
 - Preserve exact controls. Graduate useful original research cases into the exact fixture
   corpus with their oracle provenance. Keep semantic failures as well as AA probes.
   Extend the existing harness rather than creating another testing system.
@@ -834,10 +1013,13 @@ supplementary scalars, mixed faces/sizes/colors and fallback boundaries.
 Implement or reject features affecting output. Add styled/positioned `tspan`, spacing and
 explicit line positioning for labels.
 
-Position/rotate lists, `textLength`/`lengthAdjust`, more baselines, transformed/
-stroked text and decorations need later gates. Initially exclude automatic wrapping,
-bidi/joining/complex scripts, unadmitted mark positioning, general GSUB/GPOS, text
-paths/vertical text, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2.
+Position/rotate lists, `textLength`/`lengthAdjust`, the enumerated extra baselines,
+transformed/stroked text, decorations and text paths are later G9 gates, with
+finite intended admission and acceptance examples in section 3. Their initial
+exclusion does not remove them from the final queue. Automatic wrapping,
+bidi/joining/complex scripts, unadmitted mark positioning, general GSUB/GPOS,
+vertical text, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2 remain outside
+that intended text subset.
 
 ### Host/oracle/corpus acceptance
 

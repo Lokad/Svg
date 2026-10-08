@@ -211,7 +211,7 @@ internal static class SvgRenderedLeafParser
                 {
                     SvgViewportFrame? imageFrame = SvgClipPathSyntax.ResolveLeafClip(reader, state);
                     SvgViewportFrame? imageParent = state.EffectiveFrame;
-                    SvgGeometry image = SvgLeafParser.ParseImage(reader, context, imageFrame, imageParent?.ViewportWidth ?? root.Width?.ToAbsoluteOrNull(), imageParent?.ViewportHeight ?? root.Height?.ToAbsoluteOrNull(), limits, budget);
+                    SvgGeometry image = SvgLeafParser.ParseImage(reader, context, imageFrame, imageParent?.ViewportWidth ?? root.UserViewportWidth, imageParent?.ViewportHeight ?? root.UserViewportHeight, limits, budget);
                     SvgMaskSyntax.ValidateMaskScopes(state, image);
                     state.Scene.AddGeometry(image);
                 }

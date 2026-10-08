@@ -3107,12 +3107,11 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Omitted_nested_dimensions_with_dimensionless_root_stay_unsupported()
+    public void Omitted_nested_dimensions_use_the_root_viewBox_extent()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><svg><rect width='5' height='5' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'><svg><rect width='5' height='5' fill='red'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("unknown parent dimensions", rejected.Message);
+        Assert.Equal(new SvgRectangle(0, 0, 5, 5, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
     }
 
     [Fact]

@@ -8844,3 +8844,58 @@ artifacts/linux-delivery-20261007/container-shader-inheritance-final-20261008/.
 Viewport and remaining instance combinations keep G2 open; G3–G9 and S17 remote
 CI remain open. PLAN.md retains the failure-selected public-domain/CC0 sourcing
 workflow for wider static SVG gaps.
+
+## Viewport percentage bases (2026-10-08)
+
+The shared root context now exposes user-space percentage bases separately from
+physical output dimensions. A root viewBox supplies its width/height; without one,
+authored root dimensions resolve against an explicit containing viewport or the
+existing intrinsic percentage defaults. Otherwise an explicit viewport supplies
+the missing base; genuinely unknown dimensions keep their admission gate.
+Nested frames retain their own viewBox extents as percentage bases, while their
+physical clip dimensions and affine placement stay unchanged. Local references,
+omitted use dimensions, symbol fallback contexts and admitted image positions/
+sizes consume the same bases. Font discovery shares root/nested extents and still
+keeps later direct-text requests after a known percentage viewport.
+
+The semantics follow [SVG 2 percentage units](https://www.w3.org/TR/SVG2/coords.html#Units);
+independent pinned-browser pixels adjudicate the admitted result. Root/nested
+aspect modes, offset viewBoxes, deep nesting, sibling restoration, ordinary/native
+uses, omitted dimensions and supplied image sizes have dedicated controls.
+The old viewBox-only root with omitted nested dimensions now has a positive core
+regression using the unchanged XML geometry and three matching-aspect browser
+controls. Truly unknown-parent percentage inputs still reject.
+
+The 81 controls measure 78 exact and three retained scaled nested viewport use
+rejections through all six outputs on Windows/Linux. Frozen d34dd1b9 measured nine
+exact, 57 incorrect renders and fifteen rejections. The first 78 were declared
+before production editing and capture; explicit output options for the dimensionless
+root were clarified before its capture and comparison. The prototype exposed a
+capture contract error for three percentage-root/viewBox backgrounds: an auto img
+negotiated a 300x225 intrinsic image while the screenshot cropped it to 300x150.
+Those nine captures remain diagnostic oracle failures. Source geometry stays
+unchanged; a declared matching-aspect 300x225 viewport and nine new full-image
+captures provide the comparable evidence, following docs/ORACLE.md. Three controls
+preserving the obsolete core rejection were declared after that prototype, before
+their captures/comparisons. All 243 retained full-image captures are healthy,
+cleaned and byte-identical. No cropped reference is admitted or silently replaced.
+The failure-selected CC0 bank remains outside the original/corporate denominators.
+
+Eight inputs sweep discovery/parser work denials, sampled/peak-edge memory
+denial, raster work boundaries and cancellation/retry. Three coordinate checks
+and a later-font discovery boundary pass. Percentage resolution introduces no
+surface or retained array; existing instance/image owners and work contracts apply.
+Draw command, geometry and recorded paint remain 72/272/68 bytes. No quantitative
+performance claim is made.
+
+Release builds on both platforms have zero warnings/errors and each passes 5,338
+tests (4,073 core, 1,259 visual-project, six FontProbe), without failures/skips.
+All 1,567 original reports and 1,545 PNGs remain unchanged from the container-shader
+checkpoint. Each platform preserves 27/27 corporate documents and 258/258 exact
+variants against its own references, with unchanged reports/PNGs. Earlier control
+banks and the four online failure cases retain their outcomes. Evidence is under
+artifacts/viewport-percentage-bases-20261008/ and
+artifacts/linux-delivery-20261007/viewport-percentage-bases-final-20261008/.
+Scaled nested viewport uses, other locations and affine combinations keep G2
+open; G3–G9 and S17 remote CI remain open. PLAN.md retains the public-domain/CC0
+sourcing workflow for remaining original-scope SVG gaps.

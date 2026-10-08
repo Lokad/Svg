@@ -34,14 +34,6 @@ internal static class SvgDocumentTraversal
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
     }
 
-    /// <summary>Resolves a percentage root dimension in parent user units for nested percentage bases: the viewBox size when present (keeping scene content in root user space for the single output map), else against the explicit viewport or the default intrinsic side.</summary>
-    private static double? ResolvePercentageRootBase(SvgRootLength? length, SvgViewBox? viewBox, bool isWidth, double? viewportSide, double defaultSide)
-    {
-        if (length is not SvgRootLength rootLength || !rootLength.IsPercentage) return null;
-        if (viewBox is SvgViewBox box) return isWidth ? box.Width : box.Height;
-        return rootLength.Resolve(viewportSide, defaultSide);
-    }
-
     private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport)
     {
         if (reader.IsEmptyElement)
@@ -50,6 +42,7 @@ internal static class SvgDocumentTraversal
             return new SvgRoot(root.Width, root.Height, root.ViewBox, [], [], false, workCounter.Used, null);
         }
         int rootDepth = reader.Depth;
+        root = root with { ContainingViewport = explicitViewport };
         using SvgDocumentState state = new(budget, workCounter, cancellationToken);
         // The root element consumes one node, matching font-request discovery's uniform per-element count.
         state.NodeCount = 1;
@@ -107,7 +100,7 @@ internal static class SvgDocumentTraversal
                     state.RenderedGroupContent?.AddUnsupported();
                     SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
                     SvgViewportFrame? parentFrame = state.EffectiveFrame;
-                    SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.Width?.ToAbsoluteOrNull() ?? ResolvePercentageRootBase(root.Width, root.ViewBox, true, explicitViewport?.Width, 300), parentFrame?.ViewportHeight ?? root.Height?.ToAbsoluteOrNull() ?? ResolvePercentageRootBase(root.Height, root.ViewBox, false, explicitViewport?.Height, 150));
+                    SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.UserViewportWidth, parentFrame?.ViewportHeight ?? root.UserViewportHeight);
                     SvgViewBox? nestedViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
                     double localScaleX = 1;
                     double localScaleY = 1;
@@ -144,7 +137,7 @@ internal static class SvgDocumentTraversal
                     SvgClipBox box = new(clipOriginX, clipOriginY, viewport.Width * clipScaleX, viewport.Height * clipScaleY);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
                     if (!reader.IsEmptyElement && (composedScaleX != 1 || composedScaleY != 1)) state.ScaledViewportPushes++;
-                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, viewport.Width, viewport.Height, box, reader.Depth));
+                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth));
                     byte viewportOpacity = SvgColorParser.ParseOpacity(reader.GetAttribute("opacity"));
                     if (viewportOpacity != 255)
                     {

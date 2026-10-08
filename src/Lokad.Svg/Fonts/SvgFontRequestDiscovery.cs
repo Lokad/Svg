@@ -130,8 +130,8 @@ internal static class SvgFontRequestDiscovery
                     if (inheritedLevels.Count == 0)
                     {
                         SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
-                        rootWidth = root.Width?.ToAbsoluteOrNull();
-                        rootHeight = root.Height?.ToAbsoluteOrNull();
+                        rootWidth = root.UserViewportWidth;
+                        rootHeight = root.UserViewportHeight;
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.InheritedStroke.Stroke, root.Opacity != 255) { PaintServerFill = root.InheritedPresentation.PaintServerFill };
                     }
                     else style = inheritedLevels[inheritedLevels.Count - 1];
@@ -167,9 +167,10 @@ internal static class SvgFontRequestDiscovery
                         double? baseWidth = viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width;
                         double? baseHeight = viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height;
                         SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, baseWidth, baseHeight);
+                        SvgViewBox? viewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
                         plainViewport = true;
                         sawStyleableNode = true;
-                        if (!reader.IsEmptyElement) viewportSizes.Add(new SvgViewportSize(viewport.Width, viewport.Height, reader.Depth));
+                        if (!reader.IsEmptyElement) viewportSizes.Add(new SvgViewportSize(viewBox?.Width ?? viewport.Width, viewBox?.Height ?? viewport.Height, reader.Depth));
                     }
                     if (!sterile && isSvgElement && !rootElement && reader.LocalName == "clipPath") sawStyleableNode = true;
                     if (!sterile && isSvgElement && !rootElement && reader.LocalName == "mask") sawStyleableNode = true;
