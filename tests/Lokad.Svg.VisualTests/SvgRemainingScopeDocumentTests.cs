@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 using System.Text.Json;
 using Lokad.Svg.VisualDiff;
 
@@ -8,7 +10,7 @@ public sealed class SvgRemainingScopeDocumentTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "remaining-scope-documents", "remaining-gap-exports" })
+        foreach (string family in new[] { "remaining-scope-documents", "remaining-gap-exports", "finite-support-exports" })
         {
             string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -24,7 +26,7 @@ public sealed class SvgRemainingScopeDocumentTests
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(family == "remaining-scope-documents" ? 11 : 3, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family switch { "remaining-scope-documents" => 11, "remaining-gap-exports" => 3, "finite-support-exports" => 4, _ => throw new InvalidDataException("Unknown document family.") }, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("identical", Required(root, "decodedPixelStability"));
         Assert.Equal("healthy", Required(root, "captureStartupHealth"));
@@ -36,7 +38,7 @@ public sealed class SvgRemainingScopeDocumentTests
         Assert.NotEmpty(Required(item, "selection"));
         using JsonDocument sourceRecords = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "source-records.json")));
         JsonElement source = sourceRecords.RootElement.GetProperty("records").EnumerateArray().Single(c => Required(c, "identity") == document);
-        bool publicDomain = document is "inv-110" or "inv-112";
+        bool publicDomain = document is "inv-110" or "inv-112" or "inv-115" or "inv-117";
         Assert.Equal(publicDomain ? "Public domain" : "CC0-1.0", Required(item, "license"));
         Assert.Equal(publicDomain ? "Public domain" : "CC0", Required(source.GetProperty("extmetadata").GetProperty("LicenseShortName"), "value"));
         Assert.Equal(Required(source, "sourceUrl"), Required(item, "sourceUrl"));
@@ -52,14 +54,32 @@ public sealed class SvgRemainingScopeDocumentTests
         {
             byte[] captured = File.ReadAllBytes(Path.Combine(directory, captureInput.GetString() ?? throw new InvalidDataException()));
             Assert.Equal(Required(item, "captureInputSha256"), Convert.ToHexStringLower(SHA256.HashData(captured)));
-            string dimensions = "width=\"" + width + "\" height=\"" + height + "\"";
-            string expected = Required(item, "materialization") switch
+            if (Required(item, "materialization") == "root-dimensions-only")
             {
-                "replace-root-dimensions" => System.Text.Encoding.UTF8.GetString(input).Replace(Required(item, "nativeRootDimensions"), dimensions, StringComparison.Ordinal),
-                "insert-root-dimensions" => System.Text.Encoding.UTF8.GetString(input).Replace("<svg ", "<svg " + dimensions + " ", StringComparison.Ordinal),
-                _ => throw new InvalidDataException("Unknown browser viewport materialization.")
-            };
-            Assert.Equal(expected, System.Text.Encoding.UTF8.GetString(captured));
+                using MemoryStream originalStream = new(input, false);
+                using MemoryStream capturedStream = new(captured, false);
+                XDocument originalXml = XDocument.Load(originalStream, LoadOptions.PreserveWhitespace);
+                XDocument capturedXml = XDocument.Load(capturedStream, LoadOptions.PreserveWhitespace);
+                XElement originalRoot = Assert.IsType<XElement>(originalXml.Root);
+                XElement capturedRoot = Assert.IsType<XElement>(capturedXml.Root);
+                Assert.Equal(width.ToString(CultureInfo.InvariantCulture), capturedRoot.Attribute("width")?.Value);
+                Assert.Equal(height.ToString(CultureInfo.InvariantCulture), capturedRoot.Attribute("height")?.Value);
+                Assert.Equal(originalXml.Declaration?.ToString(), capturedXml.Declaration?.ToString());
+                originalRoot.Attribute("width")?.Remove(); originalRoot.Attribute("height")?.Remove();
+                capturedRoot.Attribute("width")?.Remove(); capturedRoot.Attribute("height")?.Remove();
+                Assert.True(XNode.DeepEquals(originalXml, capturedXml), "Browser sizing must preserve every other XML node and attribute.");
+            }
+            else
+            {
+                string dimensions = "width=\"" + width + "\" height=\"" + height + "\"";
+                string expected = Required(item, "materialization") switch
+                {
+                    "replace-root-dimensions" => System.Text.Encoding.UTF8.GetString(input).Replace(Required(item, "nativeRootDimensions"), dimensions, StringComparison.Ordinal),
+                    "insert-root-dimensions" => System.Text.Encoding.UTF8.GetString(input).Replace("<svg ", "<svg " + dimensions + " ", StringComparison.Ordinal),
+                    _ => throw new InvalidDataException("Unknown browser viewport materialization.")
+                };
+                Assert.Equal(expected, System.Text.Encoding.UTF8.GetString(captured));
+            }
         }
         byte[] referenceBytes = File.ReadAllBytes(Path.Combine(directory, Required(item, "reference")));
         Assert.Equal(Required(item, "referenceSha256"), Convert.ToHexStringLower(SHA256.HashData(referenceBytes)));
@@ -98,7 +118,8 @@ public sealed class SvgRemainingScopeDocumentTests
         }
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         PixelComparison comparison = PixelComparer.Compare(reference, PngRgbaDecoder.Decode(png, checked(width * height)));
-        Assert.True(comparison.IsExact, identity + ": " + comparison);
+        if (item.TryGetProperty("knownDifference", out JsonElement difference)) Assert.Equal(difference.Deserialize<PixelComparison>(), comparison);
+        else Assert.True(comparison.IsExact, identity + ": " + comparison);
         byte[] destination = new byte[png.Length];
         Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
         Assert.Equal(png, destination);

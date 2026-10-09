@@ -16,10 +16,39 @@ Bhutan the tenth, South Africa the eleventh, Wikifoods the twelfth and the strip
 pattern the thirteenth, the non-ionizing warning the fourteenth and geometric
 pattern the fifteenth, set-screw diagram the sixteenth and gradient-mask example
 the seventeenth and soccerball mask the eighteenth: **18 complete**. The retained
-development queue is **18/18 complete**; every preceding completed output remains
-exact. The next bounded sourcing batch will select another complete export for
-the remaining finite support gaps. Controls do not count as completed
+development queue is **18/22 complete**; every preceding completed output remains
+exact. Four further whole-document failures are retained from a five-export batch.
+The Fibonacci spiral (`inv-115`) is the next complete deliverable. Controls do not count as completed
 documents. The I Ching nested affine-opacity control remains exact.
+
+### inv-115–inv-118 — four retained failures; Fibonacci spiral next
+
+The [finite-support manifest](../tests/Research/finite-support-exports/manifest.json)
+and [source records](../tests/Research/finite-support-exports/source-records.json)
+retain unmodified downloads, author/rights evidence, upstream revisions and asset
+checksums. Five fontless, static, self-contained exports were downloaded and their
+outputs declared at `a27d734f` before capture or correction. Every output has three
+healthy, cleaned fresh captures on each platform, matching the frozen PNG exactly.
+Browser copies change only root dimensions; originals retain their encoding/BOM,
+viewBox, geometry and metadata.
+
+| Whole export / original source | Rights / bytes | Declared transparent output / first observed blocker |
+| --- | --- | --- |
+| [Fibonacci spiral 34.svg](https://commons.wikimedia.org/wiki/File:Fibonacci_spiral_34.svg), Dicklyon; `inv-115` | Public domain; 1,265 bytes | Explicit 915×579; rejects 2.5-pixel rectangle stroke widths. Coordinates already admit fractions. Next deliverable: follow all gates and mismatches through six APIs to the frozen reference. |
+| [SVG pattern striped transparent.svg](https://commons.wikimedia.org/wiki/File:SVG_pattern_striped_transparent.svg), Watchduck; `inv-116` | CC0; 2,661 bytes | Explicit 283×283; rejects inline `paint-order`. Contains a general affine pattern and partially transparent target. |
+| [BSicon tABZ4+lxf.svg](https://commons.wikimedia.org/wiki/File:BSicon_tABZ4%2Blxf.svg); `inv-117` | Simple geometry, public domain; 807 bytes | Explicit 500×500; nested masks render with 5,569 changed pixels and maximum channel error 255. |
+| [Soccerball mask test.svg](https://commons.wikimedia.org/wiki/File:Soccerball_mask_test.svg); `inv-118` | CC0; 3,020 bytes | Explicit 512×512; rejects mask `fill-opacity`, before painted masked content and shadows can be assessed. |
+
+The fifth export, [BSicon evSHI1l-STR3o.svg](https://commons.wikimedia.org/wiki/File:BSicon_evSHI1l-STR3o.svg),
+is already exact through all six APIs on both platforms and stays outside the
+failure corpus. None of the five downloads exercises the measured non-scaling
+root-viewBox width defect; G3 remains open. Failure selection supplies no
+representative success rate. New admissions change no production code or prior
+assets/options; the completed `a27d734f` bank/corporate qualification is reused.
+Both current Release builds pass with zero warnings/errors and 5,935 tests per
+platform (4,275 core / 1,654 visual / six FontProbe). Four document checks preserve
+three explicit gates and the complete nested-mask comparison through all six APIs;
+the earlier fourteen document rows remain exact. Controls are counted separately.
 
 ### inv-112–inv-114 — all three retained exports complete
 
@@ -57,9 +86,8 @@ pattern controls and the eighteen older placement controls remain exact. Both
 Release builds and 5,931 tests per platform pass (4,275 core / 1,650 visual / six
 FontProbe); complete corporate checks retain 27/27 / 258/258. All 2,845 preceding
 PNGs are byte-identical; one old rejection graduates to exact. All preceding
-assets and options stay unchanged. The selected queue is 18/18; finite G2–G9
-and S17 remain open. PLAN's next bounded batch targets complete public-domain/CC0
-exports exercising the width-map defect or remaining mask/pattern gaps.
+assets and options stay unchanged. That checkpoint completed 18/18; the subsequent batch above adds four retained
+failures, with 18/22 currently complete. Finite G2–G9 and S17 remain open.
 
 ### inv-109–inv-111 — all three retained documents complete
 
