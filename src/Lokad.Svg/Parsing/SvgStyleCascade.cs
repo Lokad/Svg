@@ -14,6 +14,7 @@ internal struct SvgStyleCascade
     private string? _opacity;
     private string? _fillRule;
     private string? _clipRule;
+    private string? _paintOrder;
     private string? _family;
     private string? _weight;
     private string? _fontStyle;
@@ -38,6 +39,7 @@ internal struct SvgStyleCascade
     private int _opacityRank;
     private int _fillRuleRank;
     private int _clipRuleRank;
+    private int _paintOrderRank;
     private int _familyRank;
     private int _weightRank;
     private int _fontStyleRank;
@@ -57,7 +59,7 @@ internal struct SvgStyleCascade
     {
         _colorRank = _fillRank = _fillOpacityRank = _strokeRank = -1;
         _displayRank = _visibilityRank = _opacityRank = _fillRuleRank = -1;
-        _clipRuleRank = -1;
+        _clipRuleRank = _paintOrderRank = -1;
         _familyRank = _weightRank = _fontStyleRank = _fontSizeRank = _whiteSpaceRank = _letterSpacingRank = -1;
         _linecapRank = _linejoinRank = _dasharrayRank = _dashoffsetRank = _widthRank = _miterlimitRank = _strokeOpacityRank = _pathLengthRank = -1;
     }
@@ -73,6 +75,7 @@ internal struct SvgStyleCascade
         Apply(ref _visibility, ref _visibilityRank, style.Visibility, (style.Important & InlineImportantProperties.Visibility) != 0, specificity);
         Apply(ref _opacity, ref _opacityRank, style.Opacity, (style.Important & InlineImportantProperties.Opacity) != 0, specificity);
         Apply(ref _fillRule, ref _fillRuleRank, style.FillRule, (style.Important & InlineImportantProperties.FillRule) != 0, specificity);
+        Apply(ref _paintOrder, ref _paintOrderRank, style.PaintOrder, (style.Important & InlineImportantProperties.PaintOrder) != 0, specificity);
         Apply(ref _clipRule, ref _clipRuleRank, style.ClipRule, (style.Important & InlineImportantProperties.ClipRule) != 0, specificity);
         Apply(ref _family, ref _familyRank, style.TextFont.Family, (style.Important & InlineImportantProperties.Family) != 0, specificity);
         Apply(ref _weight, ref _weightRank, style.TextFont.Weight, (style.Important & InlineImportantProperties.Weight) != 0, specificity);
@@ -101,6 +104,7 @@ internal struct SvgStyleCascade
         if (_visibilityRank >= ImportantBias) important |= InlineImportantProperties.Visibility;
         if (_opacityRank >= ImportantBias) important |= InlineImportantProperties.Opacity;
         if (_fillRuleRank >= ImportantBias) important |= InlineImportantProperties.FillRule;
+        if (_paintOrderRank >= ImportantBias) important |= InlineImportantProperties.PaintOrder;
         if (_clipRuleRank >= ImportantBias) important |= InlineImportantProperties.ClipRule;
         if (_familyRank >= ImportantBias) important |= InlineImportantProperties.Family;
         if (_weightRank >= ImportantBias) important |= InlineImportantProperties.Weight;
@@ -116,7 +120,7 @@ internal struct SvgStyleCascade
         if (_miterlimitRank >= ImportantBias) important |= InlineImportantProperties.Miterlimit;
         if (_strokeOpacityRank >= ImportantBias) important |= InlineImportantProperties.StrokeOpacity;
         if (_pathLengthRank >= ImportantBias) important |= InlineImportantProperties.PathLength;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, HasVisibleOverflow = _hasVisibleOverflow, Important = important };
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, PaintOrder = _paintOrder, HasVisibleOverflow = _hasVisibleOverflow, Important = important };
     }
 
     private static void Apply(ref string? value, ref int currentRank, string? candidate, bool candidateImportant, int specificity)

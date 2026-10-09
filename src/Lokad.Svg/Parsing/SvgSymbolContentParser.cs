@@ -38,22 +38,22 @@ internal static class SvgSymbolContentParser
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
             SvgPaintOpacity sourceOpacity = SvgColorParser.ParsePaintOpacity(style.Opacity);
             SvgSymbolPresentation presentation = new(paint, inherited.Stroke.ResolveChild(style with { Linecap = stroke.Linecap, Linejoin = stroke.Linejoin, Dasharray = stroke.Dasharray, Dashoffset = stroke.Dashoffset, Width = stroke.Width, Miterlimit = stroke.Miterlimit, StrokeOpacity = stroke.StrokeOpacity, Stroke = stroke.Stroke }),
-                Copy(style.FillRule) ?? inherited.FillRule, style.Fill is not null || inherited.HasAuthoredFill, opacity ?? inherited.FillOpacity, color ?? inherited.CurrentColor, sourceOpacity) { PaintServerFill = shaderFill, PaintServerId = shaderId };
+                Copy(style.FillRule) ?? inherited.FillRule, style.Fill is not null || inherited.HasAuthoredFill, opacity ?? inherited.FillOpacity, color ?? inherited.CurrentColor, sourceOpacity) { PaintOrder = style.PaintOrder ?? inherited.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             content.BeginGroup(reader.Depth, id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
-                { PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
+                { PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
             if (reader.IsEmptyElement) content.EndGroup(reader.Depth, state);
         }
         else
         {
-            SvgPaintableElementContext context = new(new(inherited.Paint, true, true, SvgAffineTransform.Identity) { PaintServerFill = inherited.PaintServerFill }, root.InheritedTextStyle, inherited.Stroke, sheet, colors, work, token, state.OutputMagnification, null) { RecordingScope = new(1) };
+            SvgPaintableElementContext context = new(new(inherited.Paint, true, true, SvgAffineTransform.Identity) { PaintOrder = inherited.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = inherited.PaintServerFill }, root.InheritedTextStyle, inherited.Stroke, sheet, colors, work, token, state.OutputMagnification, null) { RecordingScope = new(1) };
             double? width = state.SymbolViewBox?.Width ?? root.UserViewportWidth;
             double? height = state.SymbolViewBox?.Height ?? root.UserViewportHeight;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, width, height, state);
             SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
             SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset), Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
-            int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, stroke, style.Fill is not null, displayed, visible);
+            int start = content.AddUse(reference, fillOpacity, color, strokeOpacity, stroke, style.PaintOrder, style.Fill is not null, displayed, visible);
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true });
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
         }

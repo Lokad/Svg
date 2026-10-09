@@ -11,11 +11,11 @@ internal readonly record struct SvgRecordedPaint(int Identity)
 }
 internal readonly record struct SvgRecordingScope(int Value);
 internal readonly record struct SvgPaintOperationIdentity(int Value);
-internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, bool IsStroke, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
+internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, bool IsStroke, SvgPaintOrder PaintOrder, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
 {
     /// <summary>Retains the previous constructor contract; source recording assigns the stroke role explicitly.</summary>
     internal SvgRecordedPaintValue(SvgPaintOperationIdentity identity, float alpha, bool foldable, SvgRecordingScope scope, SvgPaintOpacity elementOpacity, SvgRecordingScope opacityScope)
-        : this(identity, alpha, foldable, false, scope, elementOpacity, opacityScope) { }
+        : this(identity, alpha, foldable, false, SvgPaintOrder.FillStrokeMarkers, scope, elementOpacity, opacityScope) { }
     // Source visual bounds survive lowering; they do not describe a shader coordinate box or a clip.
     internal SvgPaintBounds? VisualBounds { get; init; }
     internal SvgPaintBounds? ObjectBounds { get; init; }
@@ -45,6 +45,7 @@ internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpa
     internal SvgPaintBounds? VisualBounds { get; init; }
     internal SvgPaintBounds? ObjectBounds { get; init; }
     internal float StrokeBoundsInflation { get; init; }
+    internal SvgPaintOrder PaintOrder { get; init; }
 }
 
 // Retains source paint and recording state until playback; parser budgets own staging and scene values.
@@ -76,7 +77,7 @@ internal static class SvgPaintRecording
             fill.FillOpacity.Alpha / 255f, (stroke.Alpha / 255f) * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
             fillServer ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
             style.Stroke is not null && SvgLocalUrl.TryParseId(style.Stroke, out _) ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
-            fill.HasFill, reader.GetAttribute("clip-path") is not null, drawScope, opacityScope) { ObjectBounds = PrimitiveBounds(reader, context, frame), StrokeBoundsInflation = strokeBoundsInflation };
+            fill.HasFill, reader.GetAttribute("clip-path") is not null, drawScope, opacityScope) { PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = PrimitiveBounds(reader, context, frame), StrokeBoundsInflation = strokeBoundsInflation };
 
         static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport)
         {
@@ -198,11 +199,25 @@ internal static class SvgPaintRecording
                         : rectangleStroke ? GetPaint(ref strokeSolid, strokeId, source.StrokeAlpha, true) : default,
                 };
             }
+            if (source.PaintOrder.StrokeFirst() && values.Length > 1)
+            {
+                // Lowerers can emit several native pieces for either operation. A
+                // stable partition changes only operation order, preserving each
+                // native piece and its ordering within the fill or stroke.
+                using BudgetedParserList<SvgGeometry> ordered = new(state.Budget, SvgMemoryCategory.Parser, work, token);
+                for (int pass = 0; pass < 2; pass++)
+                    foreach (SvgGeometry geometry in values)
+                    {
+                        work.Consume(token);
+                        if (state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).IsStroke == (pass == 0)) ordered.Add(geometry);
+                    }
+                ordered.AsSpan().CopyTo(values);
+            }
             return parsed;
 
             SvgRecordedPaint GetPaint(ref SvgRecordedPaint cached, SvgPaintOperationIdentity identity, float alpha, bool foldable)
             {
-                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { IsStroke = identity == strokeId, VisualBounds = visualBounds, ObjectBounds = objectBounds });
+                if (cached.Identity == 0) cached = state.Scene.RegisterRecordedPaint(new(identity, alpha, foldable, source.Scope, source.ElementOpacity, source.OpacityScope) { PaintOrder = source.PaintOrder, IsStroke = identity == strokeId, VisualBounds = visualBounds, ObjectBounds = objectBounds });
                 return cached;
             }
         }

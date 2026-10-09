@@ -16,7 +16,7 @@ public sealed class SvgPaintableElementContextTests
 
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);
 
-        Assert.Equal(new SvgComputedStyle("blue", "currentColor", null, null, "none", null, null, null), element.Style);
+        Assert.Equal(new SvgComputedStyle("blue", "currentColor", null, null, "none", null, null, null) { PaintOrder = SvgPaintOrder.FillStrokeMarkers }, element.Style);
         Assert.Equal(SvgAffineTransform.FromScaleOffset(1, 1, 4, 5), element.Transform);
         Assert.Equal(1.0, element.OutputMagnification);
         Assert.Equal(new SvgColor(0, 0, 255, 255), element.Presentation.Color);

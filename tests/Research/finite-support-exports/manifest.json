@@ -17,7 +17,7 @@
     "profilesCleaned": true,
     "byteIdenticalToFrozenReferences": true
   },
-  "purpose": "Whole-document outputs declared before screening; inv-115, inv-117 and inv-118 are exact. The retained inv-116 paint-order/pattern export remains the next deliverable.",
+  "purpose": "Whole-document outputs declared before screening; all four retained exports inv-115 through inv-118 are exact against their unchanged references. Controls remain separate from completed documents.",
   "cases": [
     {
       "id": "inv-115-915x579-transparent",
@@ -63,9 +63,7 @@
       "selection": "Complete fontless static export at its nominal source-page frame, fixed at a27d734f before renderer screening or capture. Original converter bytes and authored geometry unchanged.",
       "materialization": "root-dimensions-only",
       "captureInput": "inv-116-capture-283x283.svg",
-      "captureInputSha256": "24b1556bef53fbd5c84dfdded497bd2afa96ce96ab7c1f6ead9060a9adb80996",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Inline style property 'paint-order' is not implemented."
+      "captureInputSha256": "24b1556bef53fbd5c84dfdded497bd2afa96ce96ab7c1f6ead9060a9adb80996"
     },
     {
       "id": "inv-117-500x500-transparent",

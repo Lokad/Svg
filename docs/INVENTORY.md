@@ -16,13 +16,15 @@ Bhutan the tenth, South Africa the eleventh, Wikifoods the twelfth and the strip
 pattern the thirteenth, the non-ionizing warning the fourteenth and geometric
 pattern the fifteenth, set-screw diagram the sixteenth and gradient-mask example
 the seventeenth, soccerball mask the eighteenth, Fibonacci spiral the nineteenth,
-railway tunnel junction the twentieth and shadowed soccerball the twenty-first:
-**21 complete**. The retained development queue is **21/22 complete**; every preceding completed output remains
-exact. Four further whole-document failures are retained from a five-export batch.
-Transparent striped pattern (`inv-116`) is the next complete deliverable. Controls do not count as completed
-documents. The I Ching nested affine-opacity control remains exact.
+railway tunnel junction the twentieth, shadowed soccerball the twenty-first and
+transparent striped pattern the twenty-second: **22 complete**. The retained
+development queue is **22/22 complete**; every preceding output remains exact.
+All four failures retained from the five-export batch are now complete. The next
+bounded sourcing batch targets remaining original-scope G2–G9 gaps, starting with
+the measured G3 non-scaling root-viewBox width defect. Controls do not count as
+completed documents. The I Ching nested affine-opacity control remains exact.
 
-### inv-115–inv-118 — spiral, tunnel and shadowed soccerball complete; striped pattern next
+### inv-115–inv-118 — all four retained exports complete
 
 The [finite-support manifest](../tests/Research/finite-support-exports/manifest.json)
 and [source records](../tests/Research/finite-support-exports/source-records.json)
@@ -36,7 +38,7 @@ viewBox, geometry and metadata.
 | Whole export / original source | Rights / bytes | Declared transparent output / first observed blocker |
 | --- | --- | --- |
 | [Fibonacci spiral 34.svg](https://commons.wikimedia.org/wiki/File:Fibonacci_spiral_34.svg), Dicklyon; `inv-115` | Public domain; 1,265 bytes | Explicit 915×579; admission rejected 2.5-pixel rectangle stroke widths. Now 1/1 exact through six APIs on Windows/Linux after shared finite-width parsing; native frames and all arcs need no raster change. |
-| [SVG pattern striped transparent.svg](https://commons.wikimedia.org/wiki/File:SVG_pattern_striped_transparent.svg), Watchduck; `inv-116` | CC0; 2,661 bytes | Explicit 283×283; rejects inline `paint-order`. Contains a general affine pattern and partially transparent target. |
+| [SVG pattern striped transparent.svg](https://commons.wikimedia.org/wiki/File:SVG_pattern_striped_transparent.svg), Watchduck; `inv-116` | CC0; 2,661 bytes | Explicit 283×283; paint-order, geometry-leaf stop presentation and pattern-container style rejected at admission. Now 1/1 exact through six APIs on Windows/Linux after shared typed order and ordinary resource presentation; affine mapping, clipping and opacity stay exact. |
 | [BSicon tABZ4+lxf.svg](https://commons.wikimedia.org/wiki/File:BSicon_tABZ4%2Blxf.svg); `inv-117` | Simple geometry, public domain; 807 bytes | Explicit 500×500; admission had 5,569 changed pixels and maximum channel error 255. Now 1/1 exact through six APIs on Windows/Linux after authored group boundaries preserve deferred nested/sibling mask ownership. |
 | [Soccerball mask test.svg](https://commons.wikimedia.org/wiki/File:Soccerball_mask_test.svg); `inv-118` | CC0; 3,020 bytes | Explicit 512×512; mask presentation rejected at admission, then rendered with 1,502 changed pixels. Now 1/1 exact through six APIs on Windows/Linux after shared presentation, oval fill/stroke and mask paint-clip corrections. |
 
@@ -84,9 +86,18 @@ independent strokes, and native enclosed mask clips preserve AA/BW paint
 consumers through isolation. Both Release builds and **6,023 tests/platform**
 pass (4,304 core / 1,713 visual / six FontProbe); all 2,908 prior reports and
 2,846 PNGs remain unchanged, including corporate 27/27 / 258/258 on platform
-references. The queue is **21/22 complete**. The complete `inv-116` striped
-pattern is next, through its `paint-order` gate and every subsequent native
-mismatch. Other finite G2–G9 exits, the width-map defect and S17 stay open.
+references. At this shadowed-soccerball checkpoint the queue was **21/22 complete**.
+
+The transparent striped pattern completes its unchanged 283×283 output through
+all six APIs on Windows/Linux. The [paint-order bank](../tests/Research/paint-order/manifest.json)
+has **29 exact controls**, with 174 healthy, cleaned matching captures. Typed
+operation order survives cascade and source replay; ordinary pattern resource
+scopes retain presentation. Existing general pattern mapping and opacity already
+match. Both Release builds and **6,072 tests/platform** pass (4,324 core / 1,742
+visual / six FontProbe); all 2,908 prior reports and 2,846 PNGs are unchanged,
+including corporate 27/27 / 258/258. The queue is **22/22 complete**. New whole
+exports must cover remaining finite G2–G9 gaps; the width-map defect and S17 stay
+open. No measured representative rate follows from these failure-selected inputs.
 
 ### inv-112–inv-114 — all three retained exports complete
 

@@ -25,6 +25,12 @@ public sealed class SvgPatternTemplateTests
     [InlineData("pattern-general-placement", "shear-single-rectangle")]
     [InlineData("pattern-general-placement", "inherited-rotated-grid")]
     [InlineData("pattern-general-placement", "hatch-tiled-curved-target")]
+    [InlineData("paint-order", "path-opacity")]
+    [InlineData("paint-order", "linear-stroked-rectangle")]
+    [InlineData("paint-order", "symbol-container-inheritance")]
+    [InlineData("paint-order", "symbol-nested-use")]
+    [InlineData("paint-order", "pattern-content-inheritance")]
+    [InlineData("paint-order", "pattern-presentation-alias")]
     public void Template_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string family, string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, identity + ".svg"));

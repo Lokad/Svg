@@ -120,6 +120,7 @@
     <None Include="../Fixtures/candidates/inv-114.svg" Link="TestData/soccerball-mask-document.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/mask-group-scopes/*.svg" Link="TestData/mask-group-scopes/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-117.svg" Link="TestData/railway-tunnel-document.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/paint-order/*.svg" Link="TestData/paint-order/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/mask-presentation/*.svg" Link="TestData/mask-presentation/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-118.svg" Link="TestData/shadowed-soccerball-document.svg" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />

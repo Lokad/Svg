@@ -24,6 +24,7 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
     internal string? StrokeOpacity { get; init; }
     internal string? PathLength { get; init; }
     internal string? ClipRule { get; init; }
+    internal string? PaintOrder { get; init; }
     /// <summary>Gets whether a declaration requires a target that does not establish a viewport.</summary>
     internal bool HasVisibleOverflow { get; init; }
 }
@@ -59,6 +60,7 @@ internal enum InlineImportantProperties
     GeometryWidth = 1 << 22,
     GeometryHeight = 1 << 23,
     ClipRule = 1 << 24,
+    PaintOrder = 1 << 25,
 }
 
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
@@ -90,7 +92,7 @@ internal static class SvgInlineStyleParser
 
     private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings, bool allowsDirectTextFontProperties)
     {
-        string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null;
+        string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null, paintOrder = null;
         string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null;
         string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, pathLength = null, geometryWidth = null, geometryHeight = null;
         InlineImportantProperties important = InlineImportantProperties.None;
@@ -112,6 +114,16 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("visibility", StringComparison.OrdinalIgnoreCase)) Set(ref visibility, InlineImportantProperties.Visibility, property, propertyValue, strings, ref important, true);
             else if (property.Equals("opacity", StringComparison.OrdinalIgnoreCase)) Set(ref opacity, InlineImportantProperties.Opacity, property, propertyValue, strings, ref important, true);
             else if (property.Equals("fill-rule", StringComparison.OrdinalIgnoreCase)) Set(ref fillRule, InlineImportantProperties.FillRule, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("paint-order", StringComparison.OrdinalIgnoreCase)) { TryStripImportant(propertyValue, out ReadOnlySpan<char> orderValue); _ = SvgPaintOrderSyntax.Parse(orderValue); Set(ref paintOrder, InlineImportantProperties.PaintOrder, property, propertyValue, strings, ref important, false); }
+            else if (!allowsDirectTextFontProperties && (property.Equals("stop-color", StringComparison.OrdinalIgnoreCase) || property.Equals("stop-opacity", StringComparison.OrdinalIgnoreCase)))
+            {
+                // A geometry leaf cannot contain gradient stops. Validate exporter stop
+                // presentation here without applying it to fill or stroke. Containers
+                // still reject it until inherited gradient-stop presentation is admitted.
+                TryStripImportant(propertyValue, out ReadOnlySpan<char> stopValue);
+                if (property.Equals("stop-opacity", StringComparison.OrdinalIgnoreCase)) _ = SvgColorParser.ParsePaintOpacity(stopValue.ToString());
+                else if (!stopValue.Equals("currentColor", StringComparison.OrdinalIgnoreCase)) _ = SvgColorParser.Parse(stopValue.ToString(), SvgRootParser.CssNamedColors);
+            }
             else if (property.Equals("stroke-linecap", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linecap", propertyValue); Set(ref linecap, InlineImportantProperties.Linecap, property, propertyValue, strings, ref important, false); }
             else if (property.Equals("stroke-linejoin", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linejoin", propertyValue); Set(ref linejoin, InlineImportantProperties.Linejoin, property, propertyValue, strings, ref important, false); }
             else if (property.Equals("stroke-dasharray", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-dasharray", propertyValue); Set(ref dasharray, InlineImportantProperties.Dasharray, property, propertyValue, strings, ref important, false); }
@@ -151,7 +163,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("pointer-events", StringComparison.OrdinalIgnoreCase) || property.Equals("cursor", StringComparison.OrdinalIgnoreCase)) { } // UI behavior never affects static pixels.
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, PathLength = pathLength, ClipRule = clipRule, HasVisibleOverflow = hasVisibleOverflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, PathLength = pathLength, ClipRule = clipRule, PaintOrder = paintOrder, HasVisibleOverflow = hasVisibleOverflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
 
         static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {

@@ -265,6 +265,9 @@ internal static class SvgDocumentTraversal
                 }
                 if (reader.Depth == state.PatternDepth)
                 {
+                    if (state.Groups.Count == 0 || state.Groups[^1].Kind != SvgGroupKind.Pattern || state.Groups[^1].Depth != reader.Depth)
+                        throw new InvalidOperationException("Pattern presentation scope is unbalanced.");
+                    state.Groups.RemoveLast();
                     if (state.PatternId is not null) SvgDefinitionParser.RegisterPattern(state, workCounter, cancellationToken);
                     state.PatternContentBuilder?.Dispose();
                     state.PatternContentBuilder = null;

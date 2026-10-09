@@ -27,6 +27,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     {
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken));
         if (AuthoredStyle is not null) style = style with { Stroke = style.Stroke ?? InheritedStroke.Stroke };
+        style = style with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         if (DeferPaintOpacity) style = style with { Opacity = null };
         if (style.Fill is null && InheritedPresentation.PaintServerFill is string fill) style = style with { Fill = fill };
         return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
@@ -36,6 +37,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     {
         SvgComputedStyle style = InheritedStroke.ApplyTo(AuthoredStyle ?? SvgComputedStyleResolver.Resolve(reader, StyleSheet, WorkCounter, CancellationToken, allowsDirectTextFontProperties));
         if (AuthoredStyle is not null) style = style with { Stroke = style.Stroke ?? InheritedStroke.Stroke };
+        style = style with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         if (DeferPaintOpacity) style = style with { Opacity = null };
         if (style.Fill is null && InheritedPresentation.PaintServerFill is string fill) style = style with { Fill = fill };
         return style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
@@ -71,6 +73,7 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
     {
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), WorkCounter, CancellationToken, true);
         SvgComputedStyle style = InheritedStroke.ApplyTo(SvgComputedStyle.Resolve(reader, inline, StyleSheet));
+        style = style with { PaintOrder = style.PaintOrder ?? InheritedPresentation.PaintOrder };
         SvgComputedStyle textStyle = style.FillRule is null && InheritedFillRule is not null ? style with { FillRule = InheritedFillRule } : style;
         if (textStyle.Fill is null && InheritedPresentation.PaintServerFill is string fill) textStyle = textStyle with { Fill = fill };
         return new SvgResolvedDirectTextElement(new SvgResolvedPaintableElement(textStyle, ResolveTransform(reader), ResolvePresentation(textStyle, false), OutputMagnification), SvgInlineStyleParser.MergeFont(inline.TextFont, inline.Important, StyleSheet.TextFont, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.WhiteSpace, inline.Important, InlineImportantProperties.WhiteSpace, StyleSheet.WhiteSpace, StyleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inline.LetterSpacing, inline.Important, InlineImportantProperties.LetterSpacing, StyleSheet.LetterSpacing, StyleSheet.Important));

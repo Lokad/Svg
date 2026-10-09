@@ -42,11 +42,11 @@ internal static class SvgRenderedGroupSourceParser
         SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
         SvgPaintOpacity opacity = SvgColorParser.ParsePaintOpacity(style.Opacity);
         string? fillRule = Copy(style.FillRule);
-        SvgSymbolPresentation presentation = new(paint, stroke, fillRule, style.Fill is not null, fillOpacity, color, opacity) { PaintServerFill = shaderFill, PaintServerId = shaderId };
+        SvgSymbolPresentation presentation = new(paint, stroke, fillRule, style.Fill is not null, fillOpacity, color, opacity) { PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
         content.BeginGroup(reader.Depth, id, presentation,
             new(paint, style.Fill is not null, fillOpacity, color, opacity, SvgPresentationResolver.ParseDisplay(style.Display),
                 style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true))
-            { PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
+            { PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
             SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
         if (id is not null) state.RenderedGroupDefinitions.TryAdd(id, new([], false, null, null)
             { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true, RenderedGroupId = id });
@@ -92,7 +92,7 @@ internal static class SvgRenderedGroupSourceParser
             InheritedTransform = SvgAffineTransform.Identity, InheritedFillRule = Copy(style.FillRule), SourceMaskReference = Copy(reader.GetAttribute("mask")) };
         content.AddUse(reference, style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity),
             style.Color is null ? null : SvgColorParser.Parse(style.Color, context.NamedColors),
-            style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity), stroke, style.Fill is not null,
+            style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity), stroke, style.PaintOrder, style.Fill is not null,
             SvgPresentationResolver.ParseDisplay(style.Display), style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true));
         if (reader.GetAttribute("clip-path") is not null) content.AddUnsupported();
 

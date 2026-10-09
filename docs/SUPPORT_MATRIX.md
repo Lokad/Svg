@@ -18,18 +18,28 @@ linear, radial or pattern paint still hit an existing admission restriction; nin
 retained browser controls make that support gap explicit. See [the repair](RASTERIZATION_DESIGN.md#zero-area-native-stroke-winding-2026-10-08).
 
 The subsequent [four whole-export failures](../tests/Research/finite-support-exports/manifest.json)
-keep the selected document queue at **21/22 complete**, separately from controls
+complete the selected document queue at **22/22**, separately from controls
 and the corporate **27/27 / 258/258** matrix. The spiral, tunnel junction and
 shadowed soccerball now match unchanged outputs through six APIs on Windows/Linux.
 The soccerball reuses mask container inheritance, shared oval shader fill/stroke
 lowering and enclosed mask paint-clip dispatch; its 33 separate controls are
 exact, with 198 healthy matching captures. Sixteen earlier mask-scope controls
-stay exact. The transparent striped pattern `inv-116` is next, beginning with
-its inline `paint-order` gate and following affine pattern/clip/transparency.
+stay exact. The transparent striped pattern `inv-116` is now exact through six
+APIs on both platforms. Twenty-nine focused controls protect typed paint order,
+instance inheritance and pattern-container presentation, with 174 healthy matching
+captures. Existing affine tile mapping, clipping and opacity stay exact.
 The fractional use-width gate and non-scaling root-viewBox width defect remain
-open under G2/G3/G4. Both Release builds and **6,023 tests/platform** pass, with
+open under G2/G3/G4. Both Release builds and **6,072 tests/platform** pass, with
 all 2,908 prior reports and 2,846 PNGs unchanged under complete qualification.
 Original sources, declared frames and frozen references remain unchanged.
+
+Static `paint-order` supports `normal`, distinct ordered fill/stroke/markers lists
+and inherited/initial/unset values through the admitted cascade and instances.
+Omitted operations append in default order; fill/stroke overlap uses that order
+without changing native primitive paths. Non-none markers still require G8.
+Pattern-container presentation inherits through ordinary resource scopes. Non-unit
+container opacity and inherited gradient-stop presentation remain explicit gates.
+Validated stop color/opacity on geometry leaves does not affect their fill/stroke.
 
 ## Original-scope support audit (2026-10-09)
 
@@ -70,7 +80,7 @@ are exact through six APIs on Windows/Linux. Root-local pattern registration,
 inert aspect declarations, composed positive-axis pattern maps and bounded tile
 replay share existing mechanisms. The [placement bank](../tests/Research/pattern-affine-placement/manifest.json)
 now retains eighteen exact controls; the reflected/rotated cases graduate against
-unchanged references. Development completion is 18/18 selected documents.
+unchanged references. Development completion is now 22/22 selected documents.
 
 The non-ionizing radiation warning (`inv-110`, G5) is complete: its frozen
 616×540 transparent output is exact through six APIs on Windows/Linux. Native
@@ -112,7 +122,9 @@ platforms. Healthy Linux triples match each frozen document/control reference.
 Both platforms pass 5,931 tests after the soccerball correction. Complete-bank
 qualification protects all preceding exact comparisons and the unchanged SVG/PNG
 assets/options. Corporate remains 27/27 / 258/258 exact on own-platform references.
-The selected queue is 18/18 complete; the next bounded sourcing batch selects another whole export within the remaining finite support groups.
+At this soccerball-mask checkpoint the selected queue was 18/18 complete. The
+following four retained exports now bring it to 22/22; new sourcing targets the
+remaining finite support groups.
 Controls remain separate.
 
 The [new export bank](../tests/Research/remaining-gap-exports/manifest.json) keeps

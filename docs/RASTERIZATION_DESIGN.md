@@ -10266,3 +10266,38 @@ pass; all **2,908 prior reports and 2,846 PNGs** remain unchanged, including
 corporate **27/27 / 258/258** against native platform references. Evidence stays
 ignored under `artifacts/shadowed-soccerball-20261009/`. The document queue is
 21/22 complete; `inv-116` is next, while the finite G2–G9 exits and S17 remain open.
+
+## Transparent striped pattern: typed order and resource presentation (2026-10-09)
+
+The original retained inv-116 is exact at its unchanged explicit 283×283 frame
+through all six APIs on Windows/Linux. Baseline admission rejects paint-order;
+an ignored diagnostic copy exposes the subsequent stop-color declaration on an
+unused clip leaf and pattern-container style. Removing only those declarations
+already yields exact pixels. This selects shared presentation semantics rather
+than a new affine-pattern raster model.
+
+All six fill/stroke/markers permutations remain typed, with omitted operations
+appended in default order. CSS/inline priority and inherited/initial/unset values
+resolve before recording. Stable operation partitioning preserves each native
+fill/stroke piece; aggregate primitives share ordered raster passes. Source replay
+reconstructs a leaf when inherited order changes. A symbol's own order must select
+its retained container replay: the first focused candidate lost that property and
+changed 384 overlap pixels; the corrected shared route changes zero.
+
+Pattern resources reuse ordinary bounded container presentation and balanced
+scopes, including empty/unused resources. A non-default paint order promotes the
+legacy rectangle tile to the existing ordered vector scene. Geometry-leaf stop
+color/opacity is validated without changing fill or stroke; gradient-stop
+inheritance on containers and non-unit pattern-container opacity still reject.
+The established general pattern map, clipped tile content and .4 output opacity
+already match the whole export once its admission gates are resolved.
+
+Twenty-nine new controls have unchanged, healthy, cleaned capture triples on both
+platforms: 174 captures. They cover overlap, shader/solid ordering, isolation,
+cascade, source overrides, symbols, nested uses and pattern presentation. Six
+controls sweep work/memory boundaries; native replay cancellation releases
+temporary storage and permits identical retry. Full Release builds and 6,072
+tests/platform pass, preserving 2,908 prior bank reports and 2,846 PNGs, corporate
+27/27 / 258/258, prior assets and the 72/272/68-byte scene layouts. No renderer,
+source-code, DLL, script or report hashes enter the tests. The selected document
+queue is 22/22 complete; finite G2–G9 exits and S17 remain open.

@@ -14,6 +14,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     private readonly string _element;
     private readonly SvgComputedStyle _authored;
     private readonly SvgInheritedStrokeStyle _constructedStroke;
+    private readonly SvgPaintOrder _constructedPaintOrder;
     private readonly string? _constructedFillRule;
     private readonly bool _unconstructed;
     private readonly SvgColor _constructedCurrentColor;
@@ -26,10 +27,10 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     private SvgDefinitionLeafSource(string element, Attribute[] attributes, SvgComputedStyle authored,
         SvgInheritedStrokeStyle constructedStroke, IReadOnlyDictionary<string, SvgColor> colors,
-        ParserWorkCounter work, CancellationToken token, string? constructedFillRule, bool unconstructed, SvgColor constructedCurrentColor, string? constructedPaintServerFill)
+        ParserWorkCounter work, CancellationToken token, string? constructedFillRule, bool unconstructed, SvgColor constructedCurrentColor, string? constructedPaintServerFill, SvgPaintOrder constructedPaintOrder)
     {
         _element = element; _attributes = attributes; _authored = authored;
-        _constructedStroke = constructedStroke; _colors = colors; _work = work; _token = token;
+        _constructedStroke = constructedStroke; _constructedPaintOrder = constructedPaintOrder; _colors = colors; _work = work; _token = token;
         _constructedFillRule = constructedFillRule; _unconstructed = unconstructed; _constructedCurrentColor = constructedCurrentColor; _constructedPaintServerFill = constructedPaintServerFill;
     }
 
@@ -47,7 +48,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         {
             Width = Copy(raw.Width), Linecap = Copy(raw.Linecap), Linejoin = Copy(raw.Linejoin),
             Miterlimit = Copy(raw.Miterlimit), Dasharray = Copy(raw.Dasharray), Dashoffset = Copy(raw.Dashoffset),
-            StrokeOpacity = Copy(raw.StrokeOpacity), PathLength = Copy(raw.PathLength), ClipRule = Copy(raw.ClipRule)
+            StrokeOpacity = Copy(raw.StrokeOpacity), PathLength = Copy(raw.PathLength), ClipRule = Copy(raw.ClipRule), PaintOrder = raw.PaintOrder
         };
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(512 + ParserCollectionMemory.GetArrayByteCount<Attribute>(reader.AttributeCount), SvgMemoryCategory.Scene);
         try
@@ -63,7 +64,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             }
             reader.MoveToElement();
             SvgInheritedStrokeStyle constructed = context.InheritedStroke.ResolveChild(authored);
-            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.WorkCounter, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed, context.InheritedPresentation.Paint.CurrentColor, context.InheritedPresentation.PaintServerFill);
+            SvgDefinitionLeafSource source = new(element, attributes, authored, constructed, context.NamedColors, context.WorkCounter, context.CancellationToken, Copy(context.InheritedFillRule), unconstructed, context.InheritedPresentation.Paint.CurrentColor, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder);
             state.DefinitionReservations.Add(reservation);
             return source;
         }
@@ -79,7 +80,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     internal SvgComputedStyle AuthoredStyle => _authored;
 
-    internal bool RequiresConstruction(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill)
+    internal bool RequiresConstruction(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder)
     {
         _work.Consume(_token);
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
@@ -88,11 +89,11 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         bool inheritedShader = _element != "line" && _authored.Fill is null && paintServerFill is not null;
         bool strokeColorChanged = _authored.Color is null && resolved.Stroke is not null
             && resolved.Stroke.Equals("currentColor", StringComparison.OrdinalIgnoreCase) && paint.CurrentColor != _constructedCurrentColor;
-        return _unconstructed || inheritedShader || (_element != "line" && _authored.Fill is null && _constructedPaintServerFill is not null && paintServerFill is null) || strokeColorChanged || (_authored.FillRule ?? fillRule) != (_authored.FillRule ?? _constructedFillRule)
+        return (_authored.PaintOrder ?? paintOrder) != (_authored.PaintOrder ?? _constructedPaintOrder) || _unconstructed || inheritedShader || (_element != "line" && _authored.Fill is null && _constructedPaintServerFill is not null && paintServerFill is null) || strokeColorChanged || (_authored.FillRule ?? fillRule) != (_authored.FillRule ?? _constructedFillRule)
             || resolved with { StrokeOpacity = null } != _constructedStroke with { StrokeOpacity = null };
     }
 
-    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, bool retainMappedContour, SvgDocumentState state)
+    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, bool retainMappedContour, SvgDocumentState state)
     {
         _attribute = -1;
         // A use supplies fill only where the source did not author one. The original
@@ -100,7 +101,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         SvgComputedStyle authored = _authored;
         if (_element != "line" && authored.Fill is null && paintServerFill is not null) authored = authored with { Fill = paintServerFill };
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
-        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default,
+        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { PaintOrder = paintOrder }, SvgInheritedTextStyle.Default,
             resolved, default, _colors, _work, _token, state.OutputMagnification, fillRule)
         {
             RecordingScope = new(1),

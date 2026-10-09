@@ -953,11 +953,28 @@ public static class SvgConverter
             SvgRecordedPaintValue previousStroke = activeStrokePaint;
             activePaint = GetRecordedPaintValue(geometry.RecordedPaint);
             activeStrokePaint = GetRecordedPaintValue(geometry.RecordedStrokePaint);
-            try { RasterizeGeometryCore(geometry, destination); }
+            try
+            {
+                bool combined = geometry.Kind switch
+                {
+                    SvgGeometryKind.Rectangle => geometry.Rectangle.HasFill && geometry.Rectangle.Stroke is not null,
+                    SvgGeometryKind.PatternFill => geometry.Pattern.Fill.HasFill && geometry.Pattern.Stroke is not null,
+                    SvgGeometryKind.GradientFill => geometry.Gradient.Fill.HasFill && geometry.Gradient.Stroke is not null,
+                    SvgGeometryKind.GradientStroke => geometry.GradientStroke.Fill.HasFill && geometry.GradientStroke.HasStroke,
+                    SvgGeometryKind.RadialGradient => geometry.Radial.Fill.HasFill && geometry.Radial.Stroke is not null,
+                    _ => false
+                };
+                if (combined && activePaint.PaintOrder.StrokeFirst())
+                {
+                    RasterizeGeometryCore(geometry, destination, SvgPaintPass.Stroke);
+                    RasterizeGeometryCore(geometry, destination, SvgPaintPass.Fill);
+                }
+                else RasterizeGeometryCore(geometry, destination, SvgPaintPass.All);
+            }
             finally { activePaint = previousPaint; activeStrokePaint = previousStroke; }
         }
 
-        void RasterizeGeometryCore(SvgGeometry geometry, byte[] destination)
+        void RasterizeGeometryCore(SvgGeometry geometry, byte[] destination, SvgPaintPass pass)
         {
             if (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.AuthoredPath is SvgAuthoredPath centerline && centerline.StrokeStyle is not null)
             {
@@ -973,7 +990,7 @@ public static class SvgConverter
             switch (geometry.Kind)
             {
                 case SvgGeometryKind.Rectangle:
-                    RasterizeRectangle(geometry.Rectangle, destination);
+                    RasterizeRectangle(geometry.Rectangle, destination, pass);
                     return;
                 case SvgGeometryKind.AxisAlignedLine:
                     RasterizeAxisAlignedLine(geometry.AxisAlignedLine, destination);
@@ -985,16 +1002,16 @@ public static class SvgConverter
                     RasterizeGlyphContours(geometry.Glyph, destination);
                     return;
                 case SvgGeometryKind.PatternFill:
-                    RasterizePatternFill(geometry.Pattern, destination);
+                    RasterizePatternFill(geometry.Pattern, destination, pass);
                     return;
                 case SvgGeometryKind.GradientFill:
-                    RasterizeGradientFill(geometry.Gradient, destination);
+                    RasterizeGradientFill(geometry.Gradient, destination, pass);
                     return;
                 case SvgGeometryKind.GradientStroke:
-                    RasterizeGradientStrokeFill(geometry.GradientStroke, destination);
+                    RasterizeGradientStrokeFill(geometry.GradientStroke, destination, pass);
                     return;
                 case SvgGeometryKind.RadialGradient:
-                    RasterizeRadialFill(geometry.Radial, destination);
+                    RasterizeRadialFill(geometry.Radial, destination, pass);
                     return;
                 case SvgGeometryKind.PolygonFill:
                     RasterizePolygonFill(geometry.Polygon, geometry.AuthoredPath, destination);
@@ -1760,16 +1777,18 @@ public static class SvgConverter
                 => double.IsFinite(value) && value == Math.Truncate(value) && value >= int.MinValue && value <= int.MaxValue;
         }
 
-        void RasterizePatternFill(SvgPatternGeometry pattern, byte[] destination)
+        void RasterizePatternFill(SvgPatternGeometry pattern, byte[] destination, SvgPaintPass pass)
         {
             if (!pattern.Fill.HasFill && pattern.Stroke is null) return;
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(pattern) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(pattern, out SvgPatternGeometry? mapped)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry source = mapped ?? pattern;
-            using RasterizedSurface texture = PreparePatternTile(source);
-            byte[] tile = texture.Pixels;
-            if (source.Fill.HasFill) StampPatternFill(source, tile, destination);
-            if (source.Stroke is SvgStroke stroke) RasterizePatternStroke(source, stroke, destination);
+            if (pass != SvgPaintPass.Stroke && source.Fill.HasFill)
+            {
+                using RasterizedSurface texture = PreparePatternTile(source);
+                StampPatternFill(source, texture.Pixels, destination);
+            }
+            if (pass != SvgPaintPass.Fill && source.Stroke is SvgStroke stroke) RasterizePatternStroke(source, stroke, destination);
         }
 
         // Tile scenes borrow their parent-owned storage and use the same native geometry/paint
@@ -1931,17 +1950,17 @@ public static class SvgConverter
             RasterizeShaderRectangleStroke(pattern.Fill, stroke, destination);
         }
 
-        void RasterizeGradientFill(SvgGradientGeometry gradient, byte[] destination)
+        void RasterizeGradientFill(SvgGradientGeometry gradient, byte[] destination, SvgPaintPass pass)
         {
             if (!gradient.Fill.HasFill && gradient.Stroke is null) return;
-            RasterizeGradientArea(gradient.Gradient, gradient.Box, gradient.Fill, gradient.Opacity, gradient.Fill.HasFill, destination);
-            if (gradient.Stroke is SvgStroke stroke) RasterizeGradientStroke(gradient, stroke, destination);
+            if (pass != SvgPaintPass.Stroke) RasterizeGradientArea(gradient.Gradient, gradient.Box, gradient.Fill, gradient.Opacity, gradient.Fill.HasFill, destination);
+            if (pass != SvgPaintPass.Fill && gradient.Stroke is SvgStroke stroke) RasterizeGradientStroke(gradient, stroke, destination);
         }
 
-        void RasterizeGradientStrokeFill(SvgGradientStrokeGeometry stroke, byte[] destination)
+        void RasterizeGradientStrokeFill(SvgGradientStrokeGeometry stroke, byte[] destination, SvgPaintPass pass)
         {
-            if (stroke.Fill.HasFill) RasterizeSolidRectangle(stroke.Fill, destination);
-            if (!stroke.HasStroke) return;
+            if (pass != SvgPaintPass.Stroke && stroke.Fill.HasFill) RasterizeSolidRectangle(stroke.Fill, destination);
+            if (pass == SvgPaintPass.Fill || !stroke.HasStroke) return;
             SvgRecordedPaintValue previous = activePaint;
             if (activeStrokePaint.Identity.Value != 0) activePaint = activeStrokePaint;
             try
@@ -2017,11 +2036,11 @@ public static class SvgConverter
             }
 
         }
-        void RasterizeRadialFill(SvgRadialGeometry radial, byte[] destination)
+        void RasterizeRadialFill(SvgRadialGeometry radial, byte[] destination, SvgPaintPass pass)
         {
             if (!radial.Fill.HasFill && radial.Stroke is null) return;
-            RasterizeRadialArea(radial.Gradient, radial.Box, radial.Fill, radial.Opacity, radial.Fill.HasFill, destination);
-            if (radial.Stroke is SvgStroke stroke)
+            if (pass != SvgPaintPass.Stroke) RasterizeRadialArea(radial.Gradient, radial.Box, radial.Fill, radial.Opacity, radial.Fill.HasFill, destination);
+            if (pass != SvgPaintPass.Fill && radial.Stroke is SvgStroke stroke)
             {
                 RasterizeShaderRectangleStroke(radial.Fill, stroke, destination);
             }
@@ -2238,10 +2257,10 @@ public static class SvgConverter
             }
         }
 
-        void RasterizeRectangle(SvgRectangle rectangle, byte[] destination)
+        void RasterizeRectangle(SvgRectangle rectangle, byte[] destination, SvgPaintPass pass)
         {
-            if (rectangle.HasFill) RasterizeSolidRectangle(rectangle, destination);
-            if (rectangle.Stroke is SvgStroke stroke)
+            if (pass != SvgPaintPass.Stroke && rectangle.HasFill) RasterizeSolidRectangle(rectangle, destination);
+            if (pass != SvgPaintPass.Fill && rectangle.Stroke is SvgStroke stroke)
             {
                 SvgRecordedPaintValue previous = activePaint;
                 activePaint = activeStrokePaint;

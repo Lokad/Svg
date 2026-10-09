@@ -30,7 +30,7 @@ internal static class SvgDefinitionParser
             if (symbolChild)
             {
                 SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).Presentation;
-                context = context with { InheritedPresentation = new(symbol.Paint, true, true, SvgAffineTransform.Identity) { PaintServerFill = symbol.PaintServerFill }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule, RecordingScope = new(1) };
+                context = context with { InheritedPresentation = new(symbol.Paint, true, true, SvgAffineTransform.Identity) { PaintOrder = symbol.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = symbol.PaintServerFill }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule, RecordingScope = new(1) };
             }
             SvgViewBox? symbolViewBox = null;
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, symbolViewBox)
@@ -83,7 +83,7 @@ internal static class SvgDefinitionParser
             }
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), style.Fill is not null,
-                style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), SvgColorParser.ParsePaintOpacity(style.Opacity)) { PaintServerFill = shaderFill, PaintServerId = shaderId };
+                style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), SvgColorParser.ParsePaintOpacity(style.Opacity)) { PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             string? id = reader.GetAttribute("id");
             if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             state.SymbolId = id is null ? null : state.Strings.Copy(id);
@@ -300,9 +300,25 @@ internal static class SvgDefinitionParser
             if (state.PatternTemplate.Href is null) state.PatternTemplate.ValidateUnits();
             else state.HasPatternTemplateReferences = true;
             state.PatternTile = state.PatternTemplate.Grid;
+            SvgPaintableElementContext patternContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+            SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, patternContext.StyleSheet);
+            if (SvgColorParser.ParsePaintOpacity(style.Opacity).Value != 1)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Opacity on pattern containers is not implemented.");
+            SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, patternContext.StyleSheet,
+                patternContext.InheritedPresentation, patternContext.InheritedFillRule, patternContext.InheritedTextStyle,
+                patternContext.InheritedStroke, false, namedColors, workCounter, cancellationToken);
+            if (style.Fill is not null && inherited.Presentation.PaintServerFill is string fill)
+            {
+                workCounter.ConsumeText(fill.Length, cancellationToken);
+                inherited = inherited with { Presentation = inherited.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
+            }
+            state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
+                { RecordingScope = patternContext.RecordingScope, ClipRule = style.ClipRule ?? patternContext.InheritedClipRule });
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
             else
             {
+                state.Groups.RemoveLast();
                 if (state.PatternId is not null) RegisterPattern(state, workCounter, cancellationToken);
                 state.PatternId = null;
                 state.PatternTile = null;
@@ -313,7 +329,7 @@ internal static class SvgDefinitionParser
         }
         if (state.PatternDepth >= 0 && reader.Depth == state.PatternDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
-            if (reader.LocalName == "rect" && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
+            if (reader.LocalName == "rect" && !SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader).PaintOrder.GetValueOrDefault().StrokeFirst() && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
             {
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
@@ -358,7 +374,7 @@ internal static class SvgDefinitionParser
                 {
                     SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
                     SvgPaintableElementContext previous = state.PatternRectangleContext;
-                    AdoptLeaf(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, false, state));
+                    AdoptLeaf(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, false, state));
                     state.PatternTile = tile with { Content = null };
                 }
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
