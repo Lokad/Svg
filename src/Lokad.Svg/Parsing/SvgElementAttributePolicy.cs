@@ -116,7 +116,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.TextSpan => reader.LocalName is "id" or "class" or "dx" or "dy" or "letter-spacing" or "style",
             SvgElementKind.Symbol => reader.LocalName is "id" or "class" or "viewBox" or "preserveAspectRatio" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-opacity" or "stroke-width" or "stroke-miterlimit" or "opacity" or "style",
             SvgElementKind.ClipPath => reader.LocalName is "id" or "clipPathUnits" or "clip-rule",
-            SvgElementKind.Mask => reader.LocalName is "id" or "mask-type" or "x" or "y" or "width" or "height" or "maskUnits" or "maskContentUnits",
+            SvgElementKind.Mask => reader.LocalName is "id" or "class" or "mask-type" or "x" or "y" or "width" or "height" or "maskUnits" or "maskContentUnits" or "color" or "fill" or "fill-opacity" or "fill-rule" or "style",
             SvgElementKind.Pattern => reader.LocalName is "href" or "id" or "x" or "y" or "width" or "height" or "patternUnits" or "patternContentUnits" or "patternTransform" or "preserveAspectRatio",
             SvgElementKind.LinearGradient => reader.LocalName is "id" or "href" or "x1" or "y1" or "x2" or "y2" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.RadialGradient => reader.LocalName is "id" or "href" or "cx" or "cy" or "r" or "fx" or "fy" or "fr" or "gradientUnits" or "spreadMethod" or "gradientTransform",

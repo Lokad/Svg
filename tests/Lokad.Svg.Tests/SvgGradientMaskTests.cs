@@ -29,6 +29,15 @@ public sealed class SvgGradientMaskTests
     [InlineData("triple-nested-siblings", "mask-group-scopes")]
     [InlineData("inner-opacity-outer-mask", "mask-group-scopes")]
     [InlineData("shared-group-clip-and-mask", "mask-group-scopes")]
+    [InlineData("uniform-inherited-fill-alpha", "mask-presentation")]
+    [InlineData("use-source-alpha-override", "mask-presentation")]
+    [InlineData("stylesheet-overrides-mask-presentation", "mask-presentation")]
+    [InlineData("gradient-mask-inherited-alpha", "mask-presentation")]
+    [InlineData("fractional-mask-shader-stroke", "mask-presentation")]
+    [InlineData("pattern-ellipse-solid-stroke", "mask-presentation")]
+    [InlineData("linear-ellipse-dashed-solid-stroke", "mask-presentation")]
+    [InlineData("fractional-explicit-mask-boundary", "mask-presentation")]
+    [InlineData("fractional-mask-nested-opacity-and-sibling", "mask-presentation")]
     public void Mask_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string identity, string family)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, identity + ".svg"));
@@ -95,6 +104,20 @@ public sealed class SvgGradientMaskTests
         }
     }
 
+    [Theory]
+    [InlineData("fill-opacity='NaN'", SvgErrorCode.MalformedInput)]
+    [InlineData("style='fill-opacity:2'", SvgErrorCode.MalformedInput)]
+    [InlineData("fill-rule='bogus'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("style='opacity:.5'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("style='bogus-property:1'", SvgErrorCode.UnsupportedFeature)]
+    public void Mask_presentation_rejects_invalid_or_unsupported_values_without_retaining_owners(string attributes, SvgErrorCode expected)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><mask id='m' " + attributes + "><rect width='8' height='8'/></mask><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>");
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Canceled_rasterization_preserves_the_borrowed_mask_scene_and_allows_retry()
     {
@@ -143,6 +166,7 @@ public sealed class SvgGradientMaskTests
     [InlineData("gradient-mask-export.svg", 512, 880)]
     [InlineData("soccerball-mask-document.svg", 195, 195)]
     [InlineData("railway-tunnel-document.svg", 500, 500)]
+    [InlineData("shadowed-soccerball-document.svg", 512, 512)]
     public void Complete_mask_document_releases_partial_owners_at_early_middle_and_late_denials(string inputName, int width, int height)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", inputName));

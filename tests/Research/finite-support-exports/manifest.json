@@ -17,7 +17,7 @@
     "profilesCleaned": true,
     "byteIdenticalToFrozenReferences": true
   },
-  "purpose": "Four complete fontless static exports at frozen declared outputs. inv-115 Fibonacci spiral and inv-117 railway tunnel junction are exact; inv-116 paint-order and inv-118 mask presentation remain explicit admission gates. Documents remain separate from controls.",
+  "purpose": "Whole-document outputs declared before screening; inv-115, inv-117 and inv-118 are exact. The retained inv-116 paint-order/pattern export remains the next deliverable.",
   "cases": [
     {
       "id": "inv-115-915x579-transparent",
@@ -111,9 +111,7 @@
       "selection": "Complete fontless static export at its nominal source-page frame, fixed at a27d734f before renderer screening or capture. Original converter bytes and authored geometry unchanged.",
       "materialization": "root-dimensions-only",
       "captureInput": "inv-118-capture-512x512.svg",
-      "captureInputSha256": "0861b87b3e61713a92d547eb49361b139885d940a9fd89cb4fa4d4c7a14bec0b",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Mask attribute 'fill-opacity' is not implemented."
+      "captureInputSha256": "0861b87b3e61713a92d547eb49361b139885d940a9fd89cb4fa4d4c7a14bec0b"
     }
   ]
 }

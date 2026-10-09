@@ -864,12 +864,24 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 
-    [Fact]
-    public void Rejects_strokes_on_gradient_filled_circles()
+    [Theory]
+    [InlineData("linearGradient")]
+    [InlineData("radialGradient")]
+    public void Shader_filled_circles_keep_their_independent_solid_stroke(string paint)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><circle cx='4' cy='4' r='4' fill='url(#g)' stroke='red' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12'><defs><" + paint + " id='g'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></" + paint + "></defs><circle cx='6' cy='6' r='4' fill='url(#g)' stroke='#00ff00' stroke-width='2'/></svg>");
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 0, 255, 0, 255 }, surface.Pixels.AsSpan((6 * 12 + 2) * 4, 4).ToArray());
+            ReadOnlySpan<byte> center = surface.Pixels.AsSpan((6 * 12 + 6) * 4, 4);
+            Assert.InRange(center[0], (byte)1, (byte)254);
+            Assert.Equal(0, center[1]);
+            Assert.InRange(center[2], (byte)1, (byte)254);
+            Assert.Equal(255, center[3]);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

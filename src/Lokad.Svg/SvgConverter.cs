@@ -246,6 +246,7 @@ public static class SvgConverter
         SvgCpuClipCoverage? layerClipCoverage = null;
         float foldedOpacity = 1;
         SvgAnalyticClipBounds layerBounds = new(0, 0, outputWidth, outputHeight);
+        bool maskClipAntialiased = false;
         bool collectingViewportClip = false;
         byte[] activeViewportClip = [];
         SvgCpuClipCoverage? collectingClipCoverage = null, activeViewportCoverage = null, activeConstructionCoverage = null;
@@ -654,6 +655,7 @@ public static class SvgConverter
                         continue;
                     }
                     SvgAnalyticClipBounds previousLayer = layerBounds;
+                    bool previousMaskClip = maskClipAntialiased;
                     bool viewportClip = command.RegionKind == SvgLayerRegionKind.Viewport && command.MaskRegion is not null;
                     bool affineViewportClip = command.RegionKind == SvgLayerRegionKind.AffineViewport && command.MaskContentIndex >= 0;
                     (double regionLeft, double regionTop, double regionRight, double regionBottom) = command.MaskRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
@@ -725,8 +727,27 @@ public static class SvgConverter
                     byte[] parentViewportClip = activeViewportClip;
                     activeViewportClip = [];
                     layerBounds = layer;
+                    // An inner isolated surface paints before its parent's clip;
+                    // folded single paints keep the existing consumer instead.
+                    maskClipAntialiased = false;
+                    if (command.RegionKind == SvgLayerRegionKind.Mask && command.MaskRegion is {} paintRegion)
+                    {
+                        const long maskClipSetupWork = 8;
+                        if (maskClipSetupWork > options.Limits.MaximumWorkUnits - workUnits)
+                            throw new SvgException(SvgErrorCode.LimitExceeded, "Mask paint-clip setup exceeds the configured limit.");
+                        workUnits += maskClipSetupWork;
+                        // Native mask contents use an enclosing source rectangle as
+                        // their paint clip. An AA consumer forces additive runs even
+                        // when the shape is wholly contained; the mask paints separately.
+                        SvgAffineTransform outputMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+                        SvgDevicePoint first = SvgAuthoredPath.MapPoint(outputMap,
+                            new(MathF.Floor((float)paintRegion.X), MathF.Floor((float)paintRegion.Y)), new(0, 0));
+                        SvgDevicePoint last = SvgAuthoredPath.MapPoint(outputMap,
+                            new(MathF.Ceiling((float)(paintRegion.X + paintRegion.Width)), MathF.Ceiling((float)(paintRegion.Y + paintRegion.Height))), new(0, 0));
+                        maskClipAntialiased = SvgAnalyticRectangleClip.Classify(first.X, first.Y, last.X, last.Y, previousLayer, SvgClipAntialiasing.All) == SvgAnalyticPaintClip.Antialiased;
+                    }
                     try { index = RenderCommands(index, groupPixels, true); }
-                    finally { layerBounds = previousLayer; activeViewportClip = parentViewportClip; }
+                    finally { layerBounds = previousLayer; activeViewportClip = parentViewportClip; maskClipAntialiased = previousMaskClip; }
                     long compositionWork = pixelCount;
                     if (compositionWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Group opacity composition exceeds the configured limit.");
                     workUnits += compositionWork;
@@ -845,6 +866,8 @@ public static class SvgConverter
             if (!viewport) layerClipCoverage = previousCoverage ?? layerClipCoverage;
             float previousOpacity = foldedOpacity;
             bool previousCollector = collectingViewportClip;
+            bool previousMaskClip = maskClipAntialiased;
+            maskClipAntialiased = false;
             SvgAnalyticClipBounds previousLayer = layerBounds;
             SvgRoot previousRoot = root;
             double previousScaleX = horizontalScale, previousScaleY = verticalScale, previousOffsetX = horizontalOffset, previousOffsetY = verticalOffset;
@@ -920,6 +943,7 @@ public static class SvgConverter
                 foldedOpacity = previousOpacity; collectingViewportClip = previousCollector; root = previousRoot;
                 horizontalScale = previousScaleX; verticalScale = previousScaleY; horizontalOffset = previousOffsetX; verticalOffset = previousOffsetY;
                 layerBounds = previousLayer;
+                maskClipAntialiased = previousMaskClip;
             }
         }
 
@@ -1177,7 +1201,7 @@ public static class SvgConverter
 
         SvgAnalyticPaintClip PolygonPaintClip(MappedPolygon raster, SvgCpuRasterContext context)
         {
-            if (collectingViewportClip) return SvgAnalyticPaintClip.Antialiased;
+            if (collectingViewportClip || maskClipAntialiased) return SvgAnalyticPaintClip.Antialiased;
             SvgAnalyticPaintClip paintClip = raster.GetPaintClip(context);
             if (activeViewportClip.Length == 0) return paintClip;
             SvgAnalyticClipBounds clip = context.BitmapClip;

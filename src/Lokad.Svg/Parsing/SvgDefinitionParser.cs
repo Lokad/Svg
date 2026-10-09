@@ -170,6 +170,25 @@ internal static class SvgDefinitionParser
         if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "mask")
         {
             SvgElementAttributePolicy.ValidateMask(reader, workCounter, cancellationToken);
+            SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+            SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, maskContext.StyleSheet);
+            if (SvgColorParser.ParsePaintOpacity(style.Opacity).Value != 1)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Opacity on mask containers is not implemented.");
+            SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, maskContext.StyleSheet,
+                maskContext.InheritedPresentation, maskContext.InheritedFillRule, maskContext.InheritedTextStyle,
+                maskContext.InheritedStroke, false, namedColors, workCounter, cancellationToken);
+            if (style.Fill is not null && inherited.Presentation.PaintServerFill is string fill)
+            {
+                workCounter.ConsumeText(fill.Length, cancellationToken);
+                inherited = inherited with { Presentation = inherited.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
+            }
+            SvgGroupScope scope = new(reader.Depth, SvgGroupKind.Mask, inherited.Presentation, inherited.TextStyle,
+                false, false, inherited.Stroke, inherited.FillRule)
+            {
+                RecordingScope = maskContext.RecordingScope,
+                ClipRule = style.ClipRule ?? maskContext.InheritedClipRule
+            };
             state.MaskId = reader.GetAttribute("id");
             state.MaskIsAlpha = SvgMaskSyntax.ParseMaskType(reader.GetAttribute("mask-type"));
             state.MaskValue = null;
@@ -193,7 +212,13 @@ internal static class SvgDefinitionParser
                 state.MaskFractionRegion = null;
                 state.MaskDefaultUserSpaceRegion = false;
             }
-            else state.MaskDepth = reader.Depth;
+            else
+            {
+                // Resource children inherit the same bounded presentation scope as
+                // ordinary containers, without creating a rendered group layer.
+                state.MaskDepth = reader.Depth;
+                state.Groups.Add(scope);
+            }
             state.SawStyleableNode = true;
             return true;
         }

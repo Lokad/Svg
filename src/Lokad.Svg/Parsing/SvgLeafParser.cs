@@ -359,9 +359,8 @@ internal static class SvgLeafParser
         bool paintGradient = SvgGradientSyntax.IsGradientFill(style.Fill) && !paintPattern;
         if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke) && !paintStrokeLinear && !paintStrokeRadial && !paintStrokePattern && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient strokes on " + elementName + " elements are not implemented.");
         // A zero width paints no stroke, so paint-filled ellipses and circles fall through to the fill-only path below.
-        if (paintGradient && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient-filled " + elementName + "s with strokes are not implemented.");
-        if (paintPattern && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern-filled " + elementName + "s with strokes are not implemented.");
-        SvgComputedStyle fillStyle = paintGradient || paintPattern ? style with { Fill = "#ffffff" } : (paintStrokeLinear || paintStrokeRadial || paintStrokePattern) ? style with { Stroke = "none" } : style;
+        SvgComputedStyle fillStyle = paintGradient || paintPattern ? style with { Fill = "#ffffff" } : style;
+        if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern) fillStyle = fillStyle with { Stroke = "none" };
         SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, elementName is "circle" or "ellipse");
         SvgAffineTransform transform = element.Transform;
         if (paintPattern)
@@ -415,7 +414,9 @@ internal static class SvgLeafParser
                     : SvgRadialPolygon.RepaintOutline(filled.Geometries[0].Polygon, radial, box, opacity, state.Budget);
                 repainted = filled.Geometries[0].TransferAuthoredPathTo(repainted);
                 filled.Dispose();
-                return RetainSingleGeometry(repainted, state, context);
+                // Repaint the fill, then retain the independently styled stroke
+                // through the ordinary solid/dashed/painted outline machinery.
+                filled = RetainSingleGeometry(repainted, state, context);
             }
             bool nonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(reader.GetAttribute("vector-effect"));
             if (elementName != "circle")

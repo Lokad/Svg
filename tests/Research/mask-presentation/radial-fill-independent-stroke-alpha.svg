@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" ><defs><radialGradient id="g" cx="18" cy="17" r="22" gradientUnits="userSpaceOnUse"><stop stop-color="white"/><stop offset="1" stop-color="#39c" stop-opacity=".2"/></radialGradient><mask id="m"><circle cx="24" cy="23" r="14" fill="white"/></mask></defs><g stroke="#c43" stroke-width="1.5" stroke-opacity=".6"><g mask="url(#m)"><circle cx="24" cy="23" r="14" fill="url(#g)" fill-opacity=".7"/></g><circle cx="24" cy="23" r="14" fill="none"/></g></svg>

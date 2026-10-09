@@ -10223,3 +10223,46 @@ layouts remain unchanged. The development queue is 20/22 complete; inherited
 mask presentation in `inv-118` selects the next whole document. G2–G9 and S17
 retain their finite exits. Evidence stays ignored under
 `artifacts/tunnel-mask-20261009/`.
+
+## Mask presentation and native paint consumers complete shadowed soccerball (2026-10-09)
+
+The CC0 `inv-118` keeps its original 3,020-byte source, explicit 512×512 viewport
+and frozen transparent PNG. Its mask `fill-opacity` gate concealed a 1,502-pixel
+rendering mismatch. Resource containers now push/pop the ordinary budgeted
+presentation scope, without introducing a rendered group. Fill/color/alpha/rule,
+CSS priority, local-use overrides and following siblings retain ordinary source
+semantics. Non-unit mask-container opacity remains an explicit boundary.
+
+Shader-filled circles/ellipses previously returned immediately after repainting
+the fill. Explicit strokes rejected; inherited strokes disappeared. Repainted
+fills now continue through the existing solid/dashed/painted outline machinery,
+retaining separate paint operation identities and alpha. The complete mismatch
+drops to 755 pixels. Linear/radial/pattern fills, ellipse dashes and element
+opacity reuse the existing native geometry and paint paths.
+
+The remaining error comes from the paint consumer, not mask alpha or stroke
+geometry. A fractional-scale single stroke is exact unmasked; even an all-white
+mask changes native additive coverage. Chromium's mask property clip encloses
+the source rectangle before transformation, and AA clips force additive runs.
+See [paint-property construction](https://chromium.googlesource.com/chromium/src/+/795d38e58b60873c39dac5799546363202df64dd/third_party/blink/renderer/core/paint/paint_property_tree_builder.cc)
+and the pinned `SkScan_AAAPath.cpp` distinction recorded in THIRD_PARTY_NOTICES.
+Changing layer allocation bounds or stroke fitting resolution does not repair
+the mismatch and is discarded. Output classification now uses shared source-float
+mapping and rectangle AA/BW logic, with eight charged setup visits. Each isolated
+surface starts with its own consumer; folded single paints retain their parent's
+consumer, and mask content paints independently. Scope restoration includes
+failure exits. Existing native source/coverage kernels and scene layouts stay
+unchanged; no shape/document-specific stroke implementation is added.
+
+The complete image is exact through all six APIs on Windows/Linux. Thirty-three
+separate controls cover inherited mask paint, CSS overrides, shader fill/stroke
+channels, fractional clipping, white masks and nested opacity/sibling state.
+All 198 browser captures are healthy, cleaned and stable against their frozen
+PNGs. Nine inputs sweep discovery/parser work, sampled/peak memory and raster
+work boundaries; the whole document checks early/middle/late parser-work and
+peak-memory cleanup. Invalid presentation values retain categorized rejection
+and release all staging owners. Both Release builds and **6,023 tests/platform**
+pass; all **2,908 prior reports and 2,846 PNGs** remain unchanged, including
+corporate **27/27 / 258/258** against native platform references. Evidence stays
+ignored under `artifacts/shadowed-soccerball-20261009/`. The document queue is
+21/22 complete; `inv-116` is next, while the finite G2–G9 exits and S17 remain open.

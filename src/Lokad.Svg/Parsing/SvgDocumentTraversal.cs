@@ -287,6 +287,9 @@ internal static class SvgDocumentTraversal
                     }
                     if (state.MaskContentGeometries is {} anonymousMask && state.MaskId is null)
                         foreach (SvgGeometry geometry in anonymousMask) geometry.Dispose();
+                    if (state.Groups.Count == 0 || state.Groups[^1].Kind != SvgGroupKind.Mask || state.Groups[^1].Depth != reader.Depth)
+                        throw new InvalidOperationException("Mask presentation scope is unbalanced.");
+                    state.Groups.RemoveLast();
                     state.MaskUse = null;
                     state.MaskReplayChildCount = 0;
                     state.MaskHasReplayContent = false;
