@@ -9713,3 +9713,57 @@ measurement remains `83de8a50`; required complete bank/corporate qualification
 follows the finished nine-output document correction. The next repairs stay with
 larger curved clip coverage, plate-ellipse edges and focal-paint rounding. No
 performance, release, representative success-rate or remote CI claim follows.
+
+
+## Complete Wikifoods through bitmap-owned clip borders and radial coordinates (2026-10-09)
+
+The retained Wikifoods logo now matches all nine frozen references through six APIs
+on Windows/Linux: 400×400 / 1200×1200 / 2400×2400, each transparent/white/black.
+Its original bytes, scales, root-only browser materializations and PNGs are unchanged.
+This completes the twelfth development document. Earlier 3/9 measurements above
+remain dated mechanism checkpoints. The current result is 9/9.
+
+Seven solid curve/mask twins were declared and captured before correction. The
+unclipped dome path, full ellipse, plate path and plate clip over a rectangle were
+already exact. The dome clip differed at 163 pixels, its rectangle target at 167,
+and the clipped plate ellipse at 51. Building the dome clip against the preceding
+enclosing rectangle removed 104 errors, leaving 59 in one bitmap. Using each
+bitmap's own border pixels for clip bounds removes those 59 and the plate's 51;
+all seven controls are exact. The old 1200 curved paint control also becomes exact.
+
+Native [raster clip operation order](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkRasterClip.cpp)
+constructs a path against the current clip bounds. Native
+[AA clip construction and trimming](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkAAClip.cpp)
+retain nonzero bounds within that bitmap. The global output tape owns only tile
+interiors, so its border samples may belong to a neighboring bitmap with different
+float placement and curve construction. Those samples cannot determine another
+bitmap's clip bounds.
+
+`SvgCpuClipCoverage` owns one bounded context array and a byte border array per
+active clip. Interior coverage remains in the existing RGBA tape. Source replay
+collects each bitmap's complete coverage, saves its border bytes and nonzero bounds,
+and writes only the owned interior to the global tape. Enclosing-rectangle alpha
+is applied independently; local bound collection observes its bitmap-owned border.
+Inherited clip intersections update border bytes and trim bounds. Geometry setup,
+paint dispatch, bitmap origins and final clip multiplication remain distinct.
+Arrays reserve before allocation; initialization, collection and intersections
+charge work and observe cancellation. Scope owners release on denial, cancellation
+or normal return. New tiled regressions verify late memory/work denial, partial
+replay cancellation and identical retry; existing parser and scene sweeps remain.
+
+The larger focal-circle rounding controls isolate paint-coordinate precision.
+Drawing-reference transforms now retain the existing double affine value through
+output-map composition, then convert to the native float CTM. Shader-local matrices
+retain their separate native float concatenation. This makes the earlier 1200/2400
+focal-circle and 2400 curved-paint controls exact. The same inside zero-radius
+focal-cone evaluator now serves axis-aligned paints; it removes the plate's final
+three 2400 RGB differences. Outside/near-degenerate cones and nonzero focal radii
+retain the established evaluator. Existing native matrix lane tests remain exact.
+
+The affine radial/clip bank is 21 exact controls plus two explicit boundaries,
+separate from the complete document. Rotated ellipse maps, oval shader strokes,
+non-scaling root-viewBox stroke widths and broader curved clips remain finite
+G2–G5 work. Windows/Linux Release builds have zero warnings/errors and all 5,708
+tests pass per platform. Complete original banks and corporate comparisons are
+re-emitted for this finished correction; unchanged capture triples are reused.
+No performance, representative success-rate, release or remote CI claim follows.

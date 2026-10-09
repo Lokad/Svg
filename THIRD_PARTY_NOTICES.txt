@@ -14,7 +14,8 @@ normalization and join construction, clipped image-shader layer restoration,
 rational round caps/joins, SVG endpoint-arc construction and conic subdivision,
 live convex curve advancement, curve measurement and dash cutting, tight source-curve paint bounds,
 rounded-rectangle conic source construction, bitmap-local transformed convexity classification,
-inside focal-cone coordinate construction, nonzero clip bounds, and retained convex shape classification,
+inside focal-cone coordinate construction, nonzero clip bounds, per-bitmap clip border coverage
+and clip construction order, and retained convex shape classification,
 and antialiased line/curve hairline coverage/dispatch.
 These adaptations do not depend on native Skia.
 

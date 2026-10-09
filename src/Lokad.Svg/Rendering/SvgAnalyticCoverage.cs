@@ -269,7 +269,7 @@ internal ref partial struct SvgAnalyticCoverage
 
     /// <summary>Replays this pixel's direct paints in order, then paints its pending coverage at row flush.</summary>
     /// <remarks>Indexed relative to the preparation x start. Paint samples belong to the caller; this method borrows one destination pixel, allocates nothing, and observes the row token between events. PrepareRow charges fringe/overlap event work and span indexing; the caller's per-pixel raster charge covers the first full-span paint. Clip coverage is applied to each paint operation, not to their combined alpha.</remarks>
-    internal void PaintPixel(int x, Span<byte> destination, SvgAnalyticPaint paint, SvgAnalyticClipCoverage clipCoverage)
+    internal void PaintPixel(int x, scoped Span<byte> destination, SvgAnalyticPaint paint, SvgAnalyticClipCoverage clipCoverage)
     {
         if (clipCoverage.IsEmpty) return;
         if (_fatRectangle is {} rectangle)

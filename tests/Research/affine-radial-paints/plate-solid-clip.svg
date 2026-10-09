@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 100 100">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><clipPath id="c"><path d="M5 75 A40 10 0 0 0 95 75"/></clipPath></defs>
+<ellipse cx="50%" cy="75%" rx="45%" ry="11.25%" fill="#EEE" clip-path="url(#c)"/>
+</svg>

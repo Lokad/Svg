@@ -36,6 +36,16 @@ internal readonly struct SvgCpuRasterGrid
         _tileHeight = tileHeight;
     }
 
+    internal int ContextCount => checked((1 + Math.Max(0, _width - 3) / (_tileWidth - 2))
+        * (1 + Math.Max(0, _height - 3) / (_tileHeight - 2)));
+
+    internal int MaximumBorderLength => 2 * (_tileWidth + _tileHeight) - 4;
+
+    internal long ClipInitializationWork => (long)ContextCount * (MaximumBorderLength + 1);
+
+    internal int GetContextIndex(SvgCpuBitmapOrigin origin)
+        => origin.Y / (_tileHeight - 2) * (1 + Math.Max(0, _width - 3) / (_tileWidth - 2)) + origin.X / (_tileWidth - 2);
+
     /// <summary>Returns the ordered gradient dither cell in the owning software bitmap's coordinates.</summary>
     /// <remarks>The last bitmap owns both remaining border pixels. The caller supplies an in-canvas pixel, charges paint work and checks cancellation between rows; this lookup allocates no storage.</remarks>
     internal int GetGradientDither(int x, int y)

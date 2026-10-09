@@ -5,7 +5,7 @@ on Windows and Linux**, against each platform's frozen browser references.
 Marks are 13/13; outlined wordmarks are 14/14. Membership, input bytes, options
 and references stay frozen. This complete matrix remains the regression gate.
 
-**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan and South Africa flags are complete**,
+**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa and Wikifoods are complete**,
 through all six outputs on both platforms. Earlier qualified references stay unchanged;
 the tiger uses the explicit viewport qualification explained below:
 
@@ -22,6 +22,7 @@ the tiger uses the explicit viewport qualification explained below:
 | Portugal flag (`inv-065`) | 300×200 / 600×400 / 1200×800 × transparent/white/black, original inputs at scales 0.5 / 1 / 2; all nine outputs | Authored path source concavity survives affine placement; placed convexity remains checked. |
 | Bhutan flag (`inv-064`) | 300×200 / 900×600 / 1800×1200 × transparent/white/black, original inputs at scales one third / 1 / 2; all nine outputs | Earlier shared repairs already qualify every declared output; no additional renderer change. |
 | South Africa flag (`inv-061`) | 300×200 / 900×600 / 1800×1200 × transparent/white/black, original inputs at scales one third / 1 / 2; all nine outputs | Shared native clip-content replay, independent paint coverage and bounded construction clips with preserved bitmap origins. |
+| Wikifoods logo (`inv-108`) | 400×400 / 1200×1200 / 2400×2400 × transparent/white/black, original inputs at scales one third / 1 / 2; all nine outputs | Percentage oval lengths, shared native clip replay with bitmap-owned borders and bounds, composed radial paint references and native focal coordinates. |
 
 Each document has a stable, healthy, cleaned Linux browser capture triple matching
 its frozen reference byte-for-byte. The [gap manifest](tests/References/inventory/svg-gap-cases.json)
@@ -31,8 +32,8 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 11**. The selected document queue is
-**11/12 complete**; Wikifoods is the next deliverable, with 3/9 exact outputs.
+references. **Completed development deliverables: 12**. The selected document queue is
+**12/12 complete**, including Wikifoods at 9/9 exact outputs.
 Controls remain separate.
 These failure-selected examples establish no representative success rate.
 
@@ -126,67 +127,55 @@ has **11 controls, all exact** through
 six APIs on both platforms. Rectangle targets and ordinary group clips are admitted; scaled/use,
 multi-contour, transformed-coordinate and clip-rule promises remain G5 work.
 
-**Next complete deliverable: the CC0 Wikifoods logo (`inv-108`).** The bounded
-three-export batch is screened: Wikifoods initially rejected on percentage circle coordinates;
-Bluemen clap is exact at an explicitly matching 339×325 viewport; AX5E1-2D
-contains animation outside the agreed static scope. Only Wikifoods enters the
-failure queue. This is development selection, with no representative success rate.
+**Wikifoods (`inv-108`) is complete: 9/9 exact outputs through all six APIs on
+Windows/Linux.** Its [document bank](tests/Research/wikifoods-logo/manifest.json)
+keeps the unchanged CC0 download, scales one third / 1 / 2, sizes 400×400 /
+1200×1200 / 2400×2400 and transparent/white/black backgrounds. All nine frozen
+references retain their original stable, healthy, cleaned capture triples on both
+platforms. Browser small/large inputs change only root dimensions; converter bytes,
+viewBox, options and references stay unchanged.
 
-The [Wikifoods bank](tests/Research/wikifoods-logo/manifest.json) freezes nine
-original-input outputs before correction: 400×400 / 1200×1200 / 2400×2400 at
-scales one third / 1 / 2, each on transparent/white/black. Every Windows and Linux
-reference has a stable, healthy, cleaned capture triple; Linux matches the frozen
-PNGs byte-for-byte. Browser small/large inputs change only root dimensions,
-preserving the viewBox and all other bytes. All six converter APIs now render
-every output: **3/9 exact; document incomplete**. The 400×400 transparent, white
-and black outputs are exact; six larger outputs retain measured differences
-against their unchanged PNGs.
+Shared percentage oval geometry, native curve clip replay and affine radial paint
+mapping remove the admission gates. The final correction constructs path clips
+against the preceding enclosing rectangle and retains each software bitmap's own
+border coverage and nonzero clip bounds. Neighboring output pixels cannot supply
+those bounds: they belong to another bitmap. Paint keeps its separate final clip
+intersection. Drawing-reference transforms compose with the output map before
+float conversion; shader-local matrices and focal-cone evaluation retain their
+native float stages. These shared repairs finish the dome and plate on every
+background, without shape/paint-specific implementations or flattened substitutes.
 
-Percentage oval geometry removed the first gate; native curve clip replay removed
-the next. Shared source-space radial paint mapping now removes the affine paint
-gate. The [percentage-oval bank](tests/Research/oval-percentage-lengths/manifest.json)
-has nine exact controls and three explicit unsupported boundaries. Root/nested
-user-space bases, normalized diagonal radii and native float resolution feed both
-geometry and recorded paint bounds. Percentage oval definitions remain gated
-until their host viewport follows instance replay; this promised G2/G3 combination
-stays open. Rotated ellipse maps and rectangle percentages retain their own gates.
-The complete Wikifoods document remains incomplete until all nine outputs are exact.
-The [curved-clip bank](tests/Research/curved-path-clips/manifest.json) has **nine exact
-controls and three explicit boundaries**, through six outputs on both platforms.
-Shared native clip content preserves authored quadratic/cubic/arc commands, the
-parent bitmap origin and the separately transformed enclosing rectangle. The
-older group clip control also becomes exact without changing its reference.
-Concave curves, bounding-box curve clips and nonuniform composed group curves
-remain unsupported. The last combination exposes a measured edge mismatch;
-keep it in G3 while finishing Wikifoods' larger clip outputs. This is a
-finite dependency boundary, with the remaining G3 promise unchanged.
-The affine paint slice passes Release solution builds with zero warnings/errors
-and **5,700 tests per platform** (4,176 core / 1,518 visual / six FontProbe).
-Every focused PNG has a stable, healthy, cleaned Linux triple matching its frozen
-reference. The original-bank/cohort qualification at `83de8a50` remains the last
-complete bank measurement; rerun the required complete checks when the document
-correction is finished, without recapturing unchanged references.
+The [affine radial/clip bank](tests/Research/affine-radial-paints/manifest.json)
+now has **23 controls: 21 exact and two explicit unsupported boundaries** through
+six APIs on both platforms. Seven new solid curve/mask twins isolate the document's
+remaining clip defects; their new Linux triples match the frozen PNGs byte-for-byte.
+The four earlier larger paint controls also become exact. Controls remain separate
+from completed documents. The percentage-oval bank keeps nine exact controls and
+three boundaries; the curved-clip bank keeps nine exact controls and three boundaries.
 
-The [affine radial paint bank](tests/Research/affine-radial-paints/manifest.json)
-has **16 controls: ten exact, four measured larger-output gaps and two explicit
-unsupported boundaries**, through six APIs on Windows/Linux. Source object bounds,
-referencing maps and shader-local matrices stay distinct. Native float focal paint,
-bitmap-local transformed convexity and nonzero clip bounds share existing replay.
-Rotated ellipse geometry and gradient-filled oval strokes retain their explicit
-boundaries and remain promised in G3/G4. Controls do not count as documents.
-All 96 healthy, cleaned control captures match their frozen PNGs.
+This correction passes Release solution builds with zero warnings/errors and
+**5,708 tests per platform** (4,177 core / 1,525 visual / six FontProbe).
+Finished-document qualification re-emits the complete original banks and corporate
+cohort against unchanged references. Unchanged browser references are reused.
+All twelve completed development documents and the corporate **27/27 / 258/258**
+remain regression requirements; these failure-selected documents establish no
+representative success rate.
 
-**Next correction stays with Wikifoods:** finish the remaining bitmap-local curved
-clip coverage and plate-ellipse edges, then the larger focal-paint rounding controls.
-At 1200×1200, transparent/white/black differ at 187/131/174 pixels; at 2400×2400
-they differ at 54/46/53. The new larger circle/dome controls isolate those numerical
-routes before further changes. Require 9/9 exact document outputs and preserve
-every old exact result before selecting another export. Use focused controls
-to confirm each dependency and protect shared repairs. Reuse geometry/source
-replay and bounded clip/paint machinery. Do not require exhaustive G2 completion
-or substitute flattened geometry. The discovered non-scaling root-viewBox stroke
-width defect remains open: the logo's vector-effect path has no stroke and does
-not exercise it. Preserve all eleven completed documents and the corporate freeze.
+**Next deliverable: retain one complete failing export for the remaining G3–G6
+scope.** Screen a bounded batch of at most five verified public-domain/CC0 static,
+self-contained SVGs, prioritizing nonuniform curved placement, curved clip/mask
+composition or bounded pattern content. Keep only in-scope rejections or incorrect
+renders; declare its complete output matrix and freeze matching references before
+implementation. Select the shared change by the gates it removes from that document,
+then finish every declared output before choosing another export. Exhaustive G2
+completion remains unnecessary; its other promised combinations stay visible.
+
+The non-scaling root-viewBox stroke-width defect, rotated ellipse maps, gradient-filled
+oval strokes, percentage oval definitions under instances, concave/objectBoundingBox
+curved clips and nonuniform composed curve clips remain open in G2–G5. Wikifoods'
+vector-effect path has no stroke and does not exercise the width defect. The finite
+G7–G9 boundaries below remain unchanged; any proposed deferral requires an explicit
+decision. S17 remote CI remains a separate release requirement.
 
 The original admitted fixture/research fidelity repairs are complete. The remaining
 queue covers static, self-contained SVG within the original product scope:
@@ -209,25 +198,27 @@ in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **5,679 passed on each platform**: 4,171 core, 1,502 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Existing parser/raster work, memory-denial, cancellation/retry, geometry/paint and six-output regressions pass. Six new template/grid inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. A 1,024-link forward chain resolves iteratively; aliases borrow one promoted tile scene with independent grids. Missing/cyclic/duplicate/negative templates and oversized tiles release owners; full-document early/middle/late work and peak-memory denials release partial owners before retry. Five mask inputs also sweep parser/discovery work, sampled/peak memory and raster work boundaries; anonymous, unused, duplicate and rejected masks release staging owners. Borrowed replay survives cancellation/retry, and the complete mask document releases early/middle/late work and peak-memory denials. Nested affine-opacity also sweeps parser/discovery work, sampled/peak memory denial, raster work boundaries and cancellation/retry; clip and opacity retain distinct bounded owners. Two new oval inputs sweep every parser work denial and sampled/peak memory denial; discarded unpainted mask fill owners release, and centerline/outline commands survive failed replay unchanged. Three new affine-arc inputs sweep every parser work denial and sampled/peak memory denial, then denied raster work/memory and cancellation/retry with immutable commands. Source point-count and zero-radius arc controls retain their boundary semantics. Three native-fill/hairline inputs sweep every parser work denial and sampled/peak memory denial, plus raster work/memory and cancellation/retry with immutable commands. The complete Malta input releases partial owners after early/middle/late parser work and peak-memory denials before retry. Native float-collapsed ovals enclose no area. Two new near-close straight/cubic fills sweep parser work, sampled/peak memory denial, raster work/memory and cancellation/retry with immutable source commands. The complete Portugal document also releases partial owners under early/middle/late parser work and peak-memory denial before retry. Prior mechanism details retain their dated scope in the design record. Remote CI remains open. |
+| Full tests, including corporate selection/measurement | **5,708 passed on each platform**: 4,177 core, 1,525 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Existing parser/raster work, memory-denial, cancellation/retry, geometry/paint and six-output regressions pass. Six new template/grid inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. A 1,024-link forward chain resolves iteratively; aliases borrow one promoted tile scene with independent grids. Missing/cyclic/duplicate/negative templates and oversized tiles release owners; full-document early/middle/late work and peak-memory denials release partial owners before retry. Five mask inputs also sweep parser/discovery work, sampled/peak memory and raster work boundaries; anonymous, unused, duplicate and rejected masks release staging owners. Borrowed replay survives cancellation/retry, and the complete mask document releases early/middle/late work and peak-memory denials. Nested affine-opacity also sweeps parser/discovery work, sampled/peak memory denial, raster work boundaries and cancellation/retry; clip and opacity retain distinct bounded owners. Two new oval inputs sweep every parser work denial and sampled/peak memory denial; discarded unpainted mask fill owners release, and centerline/outline commands survive failed replay unchanged. Three new affine-arc inputs sweep every parser work denial and sampled/peak memory denial, then denied raster work/memory and cancellation/retry with immutable commands. Source point-count and zero-radius arc controls retain their boundary semantics. Three native-fill/hairline inputs sweep every parser work denial and sampled/peak memory denial, plus raster work/memory and cancellation/retry with immutable commands. The complete Malta input releases partial owners after early/middle/late parser work and peak-memory denials before retry. Native float-collapsed ovals enclose no area. Two new near-close straight/cubic fills sweep parser work, sampled/peak memory denial, raster work/memory and cancellation/retry with immutable source commands. Tiled curved clips now exercise late work/memory denial, cancellation before and after partial clip replay, border-owner cleanup and identical retry. The complete Portugal document also releases partial owners under early/middle/late parser work and peak-memory denial before retry. Prior mechanism details retain their dated scope in the design record. Remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,394 exact + zero known-difference renders + 16 rejections**; 799 base documents / 611 variants. The original rotated mark graduates against a new independent browser reference; its source/options and all preceding exact assets remain unchanged. |
 | Executed research manifest | **65 probes = 65 exact + zero known-difference renders + zero rejections**. The tiger graduates at its explicitly qualified viewport; its historical auto-image PNG remains diagnostic. The other 64 research outputs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. The complete original-bank sweep is freshly checked on both platforms. Portugal, Bhutan and South Africa separately complete all nine declared outputs. Denmark retains its exact Default measurement; its historical matrix remains unqualified. South Africa's retained native comparison is now exact (273 → zero changed pixels). `inv-014`, Malta, radiation, STOP-sign and `inv-013` exact results stay preserved. These Default outputs establish no representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. Affine viewport clips register budget-owned native contours and charge a full-canvas RGBA scratch tape (four bytes per output pixel per active affine clip), plus bounded intersection/replay work. Isolated opacity retains separate existing surfaces; no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes; radial drawing references retain double precision until output composition, with their actual retained value size charged. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. Affine viewport clips register budget-owned native contours and charge a full-canvas RGBA scratch tape (four bytes per output pixel per active affine clip), plus bounded intersection/replay work. Isolated opacity retains separate existing surfaces; no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-At `83de8a50`, both platforms passed Release builds and **5,630 tests**. That complete qualification
-checks all 1,567 original reports and 1,551 PNGs; only South Africa's Default
-report/PNG changes, becoming exact. The other 1,550 PNGs and every preceding
-focused outcome stay unchanged. South Africa, Bhutan, Portugal, Malta and
-radiation are each 9/9 exact. Corporate remains 27/27 and 258/258 exact against
-each platform's own references, including the three established SDL small-output
-cross-platform distinctions. Eleven development documents are complete. The
-next support deliverable is the retained Wikifoods logo; G2–G9,
-the discovered non-scaling width-map defect and S17 remote CI stay open.
+The finished Wikifoods correction passes both Release builds and **5,708 tests
+per platform**. Its complete original-bank qualification re-emits **1,567 reports
+and 1,551 PNGs**, preserving every report and PNG from `83de8a50`. Earlier focused
+bank outcomes stay protected; the old group clip rejection had already graduated
+against its unchanged reference in the curved-clip slice. Corporate remains
+**27/27 documents and 258/258 exact variants** against each platform's own frozen
+references, including the three established SDL small-output cross-platform
+distinctions. Wikifoods is 9/9 exact through six APIs; the development queue is
+12/12 complete. The next deliverable comes from the bounded remaining-scope
+sourcing batch above. G2–G9, the non-scaling width-map defect and S17 remote CI
+stay open. No unchanged browser reference was recaptured for this qualification.
 
 ## 2. Execution decisions
 
@@ -256,7 +247,7 @@ The audit uses executed fixture/research/recorded-paint failures and actual pars
 gates. Group numbers identify support responsibilities, not sequential prerequisites.
 Select the next shared implementation change by the retained document it
 advances. The five online gap documents and the nested affine-opacity defect
-and the radiation symbol, tiger, Malta, Portugal, Bhutan and South Africa flags are complete;
+and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa and Wikifoods are complete;
 source the next complete export against the remaining finite exits. Exhaustive G2 completion
 does not block G3–G6. Keep other promised combinations visible in their group exits.
 Prioritize composed transforms, paint-coordinate mapping and bounded pattern
@@ -521,10 +512,10 @@ map within this exit. The `curved-path-clips/composed-group-cubic` control freez
 composed curve-clip boundary. Its prototype still differs at 58 pixels (maximum
 alpha error 46) after retaining both native clip coverages, so this combination
 continues to reject explicitly. Concave and objectBoundingBox curved clips remain
-in the G5 exit. Wikifoods now renders all nine outputs through shared affine radial
-paint mapping; three 400×400 outputs are exact. The next dependency is the remaining
-large bitmap-local clip/oval edge behavior and focal-paint rounding. The retained non-uniform curve, stroke
-and paint combinations remain promised; Malta, Portugal, Bhutan and South Africa are complete. Exit: these
+in the G5 exit. Wikifoods completes all nine outputs through shared affine radial
+paint mapping, bitmap-local clip bounds and native focal evaluation. The retained
+non-uniform curve, stroke and paint combinations remain promised; the completed
+documents do not close those combinations. Exit: these
 retained documents/families and focused map controls
 are exact without normalized or flattened source substitution; no corporate or
 prior exact regression.
@@ -770,7 +761,8 @@ bases are repaired. The Illustrator heart, I Ching library and both patterns are
 complete, as are the CC0 mask and all nine radiation outputs. The retained nested
 affine-opacity mismatch is repaired. The retained tiger is complete at its
 explicitly qualified viewport; all nine Malta, Portugal, Bhutan and South Africa outputs are exact.
-Finish the retained Wikifoods logo against its nine frozen references.
+The retained Wikifoods logo is complete against all nine frozen references.
+Select the next retained failing export using the bounded sourcing batch above.
 Choose shared support changes by the complete retained documents they advance.
 Keep the remaining instance combinations visible without making them a
 prerequisite for G3–G6.

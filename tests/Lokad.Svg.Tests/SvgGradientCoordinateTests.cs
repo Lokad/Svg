@@ -107,7 +107,7 @@ public sealed class SvgGradientCoordinateTests
             SvgGradientTransform forward = new(local.ScaleX, local.SkewY, local.SkewX, local.ScaleY, local.TranslateX, local.TranslateY);
             if (!forward.TryInvert(out SvgGradientTransform inverse)) throw new InvalidDataException("Singular fixture.");
             SvgRadialGradient gradient = new(stops[0].Color, stops[1].Color, values[0], values[1], values[2], values[0], values[1], 0, 0, 1, false, true, SvgGradientSpread.Pad, stops, 1, 1, true, inverse, true)
-            { NativePaintMatrices = new(local, ctm) };
+            { NativePaintMatrices = new(local, new(ctm.ScaleX, ctm.SkewY, ctm.SkewX, ctm.ScaleY, ctm.TranslateX, ctm.TranslateY)) };
             SvgGradientCoordinates coordinates = SvgGradientCoordinates.CreateRadial(gradient, box, 1, 1, 0, 0);
             int x = int.Parse(cells[15], CultureInfo.InvariantCulture), y = int.Parse(cells[16], CultureInfo.InvariantCulture);
             SvgCpuBitmapOrigin expectedOrigin = new(int.Parse(cells[17], CultureInfo.InvariantCulture), int.Parse(cells[18], CultureInfo.InvariantCulture));

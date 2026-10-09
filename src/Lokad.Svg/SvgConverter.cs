@@ -247,6 +247,9 @@ public static class SvgConverter
         SvgAnalyticClipBounds layerBounds = new(0, 0, outputWidth, outputHeight);
         bool collectingViewportClip = false;
         byte[] activeViewportClip = [];
+        SvgCpuClipCoverage? collectingClipCoverage = null, activeViewportCoverage = null, activeConstructionCoverage = null;
+        byte[] activeConstructionClip = [];
+        SvgAnalyticClipBounds? activeConstructionBounds = null;
         SvgAnalyticClipBounds? activeViewportBounds = null;
         SvgRecordedPaintValue activePaint = default;
         SvgRecordedPaintValue activeStrokePaint = default;
@@ -676,7 +679,7 @@ public static class SvgConverter
                         byte[] clipPixels = new byte[surfaceByteCount];
                         byte[] previousClip = activeViewportClip;
                         SvgMaskContent clipContent = root.SceneStorage.MaskContents[command.MaskContentIndex];
-                        RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind == SvgClipContentKind.ClipPath ? previousLayer : layer);
+                        using SvgCpuClipCoverage? clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind == SvgClipContentKind.ClipPath ? previousLayer : layer);
                         if (previousClip.Length != 0)
                         {
                             if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
@@ -688,30 +691,21 @@ public static class SvgConverter
                                 int offset = pixel * 4 + 3;
                                 clipPixels[offset] = (byte)((clipPixels[offset] * previousClip[offset] + 127) / 255);
                             }
-                        }
-                        long clipBoundsWork = (long)(layer.Right - layer.Left) * (layer.Bottom - layer.Top);
-                        if (clipBoundsWork > options.Limits.MaximumWorkUnits - workUnits)
-                            throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip bounds exceed the configured work limit.");
-                        workUnits += clipBoundsWork;
-                        int coverageLeft = layer.Right, coverageTop = layer.Bottom, coverageRight = layer.Left, coverageBottom = layer.Top;
-                        for (int y = layer.Top; y < layer.Bottom; y++)
-                        {
-                            cancellationToken.ThrowIfCancellationRequested();
-                            for (int x = layer.Left; x < layer.Right; x++)
+                            if (clipCoverage is not null)
                             {
-                                if ((x & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                                if (clipPixels[(y * outputWidth + x) * 4 + 3] == 0) continue;
-                                coverageLeft = Math.Min(coverageLeft, x); coverageTop = Math.Min(coverageTop, y);
-                                coverageRight = Math.Max(coverageRight, x + 1); coverageBottom = Math.Max(coverageBottom, y + 1);
+                                clipCoverage.IntersectAndTrim(activeViewportCoverage, previousClip, clipPixels, outputWidth,
+                                    options.Limits.MaximumWorkUnits - workUnits, out long intersectionWork, cancellationToken);
+                                workUnits += intersectionWork;
                             }
                         }
-                        layer = coverageLeft < coverageRight && coverageTop < coverageBottom
-                            ? new(coverageLeft, coverageTop, coverageRight, coverageBottom) : new(layer.Left, layer.Top, layer.Left, layer.Top);
+                        layer = CoverageBounds(clipPixels, layer);
                         SvgAnalyticClipBounds? previousBounds = activeViewportBounds;
+                        SvgCpuClipCoverage? previousCoverage = activeViewportCoverage;
+                        activeViewportCoverage = clipCoverage;
                         activeViewportClip = clipPixels;
                         activeViewportBounds = layer;
                         try { index = RenderCommands(index, destination, true); }
-                        finally { activeViewportClip = previousClip; activeViewportBounds = previousBounds; }
+                        finally { activeViewportClip = previousClip; activeViewportBounds = previousBounds; activeViewportCoverage = previousCoverage; }
                         continue;
                     }
                     using RenderBudget.BudgetReservation groupReservation = budget.Reserve(checked((long)pixelCount * 4), SvgMemoryCategory.Surface);
@@ -748,7 +742,7 @@ public static class SvgConverter
                             maskSurface = new byte[checked(pixelCount * 4)];
                             SvgAnalyticClipBounds contentBounds = affineViewportClip ? layer
                                 : new(Math.Max(layer.Left, maskBounds.Left), Math.Max(layer.Top, maskBounds.Top), Math.Min(layer.Right, maskBounds.Right), Math.Min(layer.Bottom, maskBounds.Bottom));
-                            RasterizeMaskContent(maskContent, maskSurface, affineViewportClip, contentBounds);
+                            using SvgCpuClipCoverage? maskCoverage = RasterizeMaskContent(maskContent, maskSurface, affineViewportClip, contentBounds);
                         }
                         catch
                         {
@@ -829,19 +823,49 @@ public static class SvgConverter
         // Borrow caller-reserved destination storage. Clip collection forces ordered AA runs;
         // mask/clip content is independent of the surrounding paint opacity and clip stack.
         // Geometry traversal retains the existing work, cancellation and temporary-owner contracts.
-        void RasterizeMaskContent(SvgMaskContent content, byte[] destination, bool viewport, SvgAnalyticClipBounds contentBounds)
+        SvgCpuClipCoverage? RasterizeMaskContent(SvgMaskContent content, byte[] destination, bool viewport, SvgAnalyticClipBounds contentBounds)
         {
-            byte[] previousClip = activeViewportClip;
-            SvgAnalyticClipBounds? previousBounds = activeViewportBounds;
+            byte[] previousClip = activeViewportClip, previousConstruction = activeConstructionClip;
+            SvgAnalyticClipBounds? previousBounds = activeViewportBounds, previousConstructionBounds = activeConstructionBounds;
+            SvgCpuClipCoverage? previousCollected = collectingClipCoverage, previousCoverage = activeViewportCoverage,
+                previousConstructionCoverage = activeConstructionCoverage;
             float previousOpacity = foldedOpacity;
             bool previousCollector = collectingViewportClip;
             SvgAnalyticClipBounds previousLayer = layerBounds;
-            activeViewportClip = []; activeViewportBounds = null; foldedOpacity = 1;
-            collectingViewportClip = viewport;
-            layerBounds = contentBounds;
             SvgRoot previousRoot = root;
+            activeViewportClip = []; activeViewportBounds = null; activeViewportCoverage = null; foldedOpacity = 1;
+            activeConstructionClip = []; activeConstructionBounds = null; activeConstructionCoverage = null;
+            collectingViewportClip = viewport; collectingClipCoverage = null;
+            layerBounds = contentBounds;
+            RenderBudget.BudgetReservation? boundsReservation = null;
+            SvgCpuClipCoverage? coverage = null, boundsCoverage = null;
+            bool transferred = false;
             try
             {
+                if (viewport)
+                {
+                    long initializationWork = rasterGrid.ClipInitializationWork;
+                    if (initializationWork > options.Limits.MaximumWorkUnits - workUnits)
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Bitmap clip storage exceeds the configured work limit.");
+                    workUnits += initializationWork;
+                    coverage = new(rasterGrid, budget);
+                    collectingClipCoverage = coverage;
+                }
+                byte[] boundsPixels = [];
+                if (content.BoundsClipContentIndex >= 0)
+                {
+                    SvgSceneStorage storage = root.SceneStorage ?? throw new SvgException(SvgErrorCode.MalformedInput, "Missing clip bounds content.");
+                    if ((uint)content.BoundsClipContentIndex >= (uint)storage.MaskContents.Length || storage.MaskContents[content.BoundsClipContentIndex].BoundsClipContentIndex >= 0)
+                        throw new SvgException(SvgErrorCode.MalformedInput, "Invalid clip bounds content.");
+                    boundsReservation = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
+                    boundsPixels = new byte[surfaceByteCount];
+                    // Native clipPath constructs against the already clipped enclosing rectangle.
+                    // Its bounds and border bytes belong to each bitmap; its alpha remains separate.
+                    boundsCoverage = RasterizeMaskContent(storage.MaskContents[content.BoundsClipContentIndex], boundsPixels, true, contentBounds);
+                    activeConstructionCoverage = boundsCoverage;
+                    activeConstructionClip = boundsPixels;
+                    activeConstructionBounds = CoverageBounds(boundsPixels, contentBounds);
+                }
                 if (content.VectorContent is {} vector)
                 {
                     SvgSceneStorage scene = vector.Scene;
@@ -849,14 +873,8 @@ public static class SvgConverter
                     RenderCommands(0, destination, false);
                 }
                 else foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination);
-                if (content.BoundsClipContentIndex >= 0)
+                if (boundsPixels.Length != 0)
                 {
-                    SvgSceneStorage storage = root.SceneStorage ?? throw new SvgException(SvgErrorCode.MalformedInput, "Missing clip bounds content.");
-                    if ((uint)content.BoundsClipContentIndex >= (uint)storage.MaskContents.Length || storage.MaskContents[content.BoundsClipContentIndex].BoundsClipContentIndex >= 0)
-                        throw new SvgException(SvgErrorCode.MalformedInput, "Invalid clip bounds content.");
-                    using RenderBudget.BudgetReservation boundsReservation = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
-                    byte[] boundsPixels = new byte[surfaceByteCount];
-                    RasterizeMaskContent(storage.MaskContents[content.BoundsClipContentIndex], boundsPixels, true, contentBounds);
                     if (pixelCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Clip bounds intersection exceeds the configured limit.");
                     workUnits += pixelCount;
                     for (int pixel = 0; pixel < pixelCount; pixel++)
@@ -866,10 +884,17 @@ public static class SvgConverter
                         destination[offset] = (byte)((destination[offset] * boundsPixels[offset] + 127) / 255);
                     }
                 }
+                transferred = true;
+                return coverage;
             }
             finally
             {
-                activeViewportClip = previousClip; activeViewportBounds = previousBounds;
+                boundsCoverage?.Dispose(); boundsReservation?.Dispose();
+                if (!transferred) coverage?.Dispose();
+                collectingClipCoverage = previousCollected;
+                activeConstructionClip = previousConstruction; activeConstructionBounds = previousConstructionBounds;
+                activeConstructionCoverage = previousConstructionCoverage;
+                activeViewportClip = previousClip; activeViewportBounds = previousBounds; activeViewportCoverage = previousCoverage;
                 foldedOpacity = previousOpacity; collectingViewportClip = previousCollector; root = previousRoot;
                 layerBounds = previousLayer;
             }
@@ -1094,28 +1119,37 @@ public static class SvgConverter
                 : SvgAnalyticClipCoverage.FromMask(coverage.Apply(activeViewportClip[(y * outputWidth + x) * 4 + 3]));
         }
 
-        SvgAnalyticClipBounds? ActiveClipBounds(SvgCpuRasterContext context)
+        SvgAnalyticClipBounds CoverageBounds(byte[] pixels, SvgAnalyticClipBounds area)
         {
-            if (activeViewportClip.Length == 0 || activeViewportBounds is not {} bounds) return activeViewportBounds;
-            int left = Math.Max(bounds.Left, context.BitmapClip.Left), top = Math.Max(bounds.Top, context.BitmapClip.Top);
-            int right = Math.Min(bounds.Right, context.BitmapClip.Right), bottom = Math.Min(bounds.Bottom, context.BitmapClip.Bottom);
-            long boundsWork = (long)Math.Max(0, right - left) * Math.Max(0, bottom - top);
+            long boundsWork = (long)Math.Max(0, area.Right - area.Left) * Math.Max(0, area.Bottom - area.Top);
             if (boundsWork > options.Limits.MaximumWorkUnits - workUnits)
-                throw new SvgException(SvgErrorCode.LimitExceeded, "Bitmap clip bounds exceed the configured work limit.");
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Clip coverage bounds exceed the configured work limit.");
             workUnits += boundsWork;
-            int keptLeft = right, keptTop = bottom, keptRight = left, keptBottom = top;
-            for (int y = top; y < bottom; y++)
+            int left = area.Right, top = area.Bottom, right = area.Left, bottom = area.Top;
+            for (int y = area.Top; y < area.Bottom; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                for (int x = left; x < right; x++)
+                for (int x = area.Left; x < area.Right; x++)
                 {
                     if ((x & 1023) == 0) cancellationToken.ThrowIfCancellationRequested();
-                    if (activeViewportClip[(y * outputWidth + x) * 4 + 3] == 0) continue;
-                    keptLeft = Math.Min(keptLeft, x); keptTop = Math.Min(keptTop, y);
-                    keptRight = Math.Max(keptRight, x + 1); keptBottom = Math.Max(keptBottom, y + 1);
+                    if (pixels[(y * outputWidth + x) * 4 + 3] == 0) continue;
+                    left = Math.Min(left, x); top = Math.Min(top, y);
+                    right = Math.Max(right, x + 1); bottom = Math.Max(bottom, y + 1);
                 }
             }
-            return keptLeft < keptRight && keptTop < keptBottom ? new(keptLeft, keptTop, keptRight, keptBottom) : new(left, top, left, top);
+            return left < right && top < bottom ? new(left, top, right, bottom) : new(area.Left, area.Top, area.Left, area.Top);
+        }
+
+        SvgAnalyticClipBounds? ActiveClipBounds(SvgCpuRasterContext context)
+        {
+            SvgCpuClipCoverage? coverage = activeConstructionClip.Length != 0 ? activeConstructionCoverage : activeViewportCoverage;
+            if (coverage is not null && coverage.TryGetBounds(context.BitmapClip, out SvgAnalyticClipBounds local)) return local;
+            byte[] tape = activeConstructionClip.Length != 0 ? activeConstructionClip : activeViewportClip;
+            SvgAnalyticClipBounds? current = activeConstructionClip.Length != 0 ? activeConstructionBounds : activeViewportBounds;
+            if (tape.Length == 0 || current is not {} bounds) return current;
+            int left = Math.Max(bounds.Left, context.BitmapClip.Left), top = Math.Max(bounds.Top, context.BitmapClip.Top);
+            int right = Math.Max(left, Math.Min(bounds.Right, context.BitmapClip.Right)), bottom = Math.Max(top, Math.Min(bounds.Bottom, context.BitmapClip.Bottom));
+            return CoverageBounds(tape, new(left, top, right, bottom));
         }
 
         SvgAnalyticPaintClip PolygonPaintClip(MappedPolygon raster, SvgCpuRasterContext context)
@@ -1151,6 +1185,7 @@ public static class SvgConverter
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
+            Span<byte> clipPixel = stackalloc byte[4];
             foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(raster.StartX, raster.StartY, raster.EndX, raster.EndY)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -1170,11 +1205,13 @@ public static class SvgConverter
                 if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += analyticSetup;
                 // Charge the taken traversal: analytic rows cost pixels while the fan evaluates every contour per pixel.
-                int startX = useAnalytic ? Math.Max(raster.StartX, context.Interior.Left) : raster.StartX;
-                int endX = useAnalytic ? Math.Min(raster.EndX, context.Interior.Right) : raster.EndX;
-                int startY = useAnalytic ? Math.Max(raster.StartY, context.Interior.Top) : raster.StartY;
-                int endY = useAnalytic ? Math.Min(raster.EndY, context.Interior.Bottom) : raster.EndY;
-                long coverage = useAnalytic ? (long)(endY - startY) * (endX - startX) : (long)(endY - startY) * (endX - startX) * raster.Points.Length;
+                SvgAnalyticClipBounds paintArea = collectingClipCoverage is null ? context.Interior : context.BitmapClip;
+                int startX = useAnalytic ? Math.Max(raster.StartX, paintArea.Left) : raster.StartX;
+                int endX = useAnalytic ? Math.Min(raster.EndX, paintArea.Right) : raster.EndX;
+                int startY = useAnalytic ? Math.Max(raster.StartY, paintArea.Top) : raster.StartY;
+                int endY = useAnalytic ? Math.Min(raster.EndY, paintArea.Bottom) : raster.EndY;
+                int clipLeft = context.BitmapClip.Right, clipTop = context.BitmapClip.Bottom, clipRight = context.BitmapClip.Left, clipBottom = context.BitmapClip.Top;
+                long coverage = useAnalytic ? (long)(endY - startY) * (endX - startX) * (collectingClipCoverage is null ? 1 : 2) : (long)(endY - startY) * (endX - startX) * raster.Points.Length;
                 if (coverage > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill raster work exceeds the configured limit.");
                 workUnits += coverage;
                 long scanSetup = 0;
@@ -1200,8 +1237,8 @@ public static class SvgConverter
                         workUnits += rowWork;
                     }
                     SvgAnalyticScanWindow paintWindow = useAnalytic ? walker.GetPaintWindow(new(startX, endX)) : new(startX, endX);
-                    int rowStartX = useAnalytic ? Math.Max(paintWindow.Left, context.Interior.Left) : startX;
-                    int rowEndX = useAnalytic ? Math.Min(paintWindow.Right, context.Interior.Right) : endX;
+                    int rowStartX = useAnalytic ? Math.Max(paintWindow.Left, paintArea.Left) : startX;
+                    int rowEndX = useAnalytic ? Math.Min(paintWindow.Right, paintArea.Right) : endX;
                     long extraPixels = (long)rowEndX - rowStartX - (endX - startX);
                     if (extraPixels > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Direct fringe painting exceeds the configured work limit.");
                     workUnits += extraPixels;
@@ -1210,10 +1247,35 @@ public static class SvgConverter
                         if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                         double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                         int offset = (y * outputWidth + x) * 4;
-                        if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), analyticPaint, PolygonClipCoverage(raster, x, y));
+                        if (useAnalytic && collectingClipCoverage is not null)
+                        {
+                            clipPixel.Clear();
+                            walker.PaintPixel(x - storageStartX, clipPixel, analyticPaint, PolygonClipCoverage(raster, x, y));
+                            byte boundedAlpha = clipPixel[3];
+                            if (activeConstructionClip.Length != 0)
+                            {
+                                byte enclosingAlpha = activeConstructionCoverage is null ? activeConstructionClip[offset + 3]
+                                    : activeConstructionCoverage.GetAlpha(context.BitmapClip, activeConstructionClip, outputWidth, x, y);
+                                boundedAlpha = (byte)((boundedAlpha * enclosingAlpha + 127) / 255);
+                            }
+                            collectingClipCoverage.SetBorderAlpha(context.BitmapClip, x, y, boundedAlpha);
+                            if (boundedAlpha != 0)
+                            {
+                                clipLeft = Math.Min(clipLeft, x); clipTop = Math.Min(clipTop, y);
+                                clipRight = Math.Max(clipRight, x + 1); clipBottom = Math.Max(clipBottom, y + 1);
+                            }
+                            if (x >= context.Interior.Left && x < context.Interior.Right && y >= context.Interior.Top && y < context.Interior.Bottom) clipPixel.CopyTo(destination.AsSpan(offset, 4));
+                        }
+                        else if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), analyticPaint, PolygonClipCoverage(raster, x, y));
                         else if (surfaceMode == RasterSurfaceMode.PremultipliedPattern) analyticPaint.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y), SvgAnalyticPaintKind.Direct);
                         else BlendSourceOver(destination.AsSpan(offset, 4), WithCoverage(polygon.Color, pixelCoverage * (activeViewportClip.Length == 0 ? 1 : activeViewportClip[offset + 3] / 255.0)));
                     }
+                }
+                if (collectingClipCoverage is not null && useAnalytic)
+                {
+                    SvgAnalyticClipBounds nonzero = clipLeft < clipRight && clipTop < clipBottom ? new(clipLeft, clipTop, clipRight, clipBottom)
+                        : new(context.BitmapClip.Left, context.BitmapClip.Top, context.BitmapClip.Left, context.BitmapClip.Top);
+                    collectingClipCoverage.SetBounds(context.BitmapClip, nonzero);
                 }
                 // Structural fallback belongs to the original fill and runs once.
                 if (!useAnalytic) break;

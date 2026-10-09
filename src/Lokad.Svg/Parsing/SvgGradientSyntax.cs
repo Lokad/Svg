@@ -874,7 +874,9 @@ internal static class SvgGradientSyntax
         if (native is {} matrices)
         {
             SvgShaderMatrix map = new((float)scaleX, 0, (float)offsetX, 0, (float)scaleY, (float)offsetY);
-            native = matrices with { Referencing = SvgShaderMatrix.Concat(map, matrices.Referencing) };
+            SvgAffineTransform source = matrices.Referencing;
+            SvgShaderMatrix combined = SvgShaderMatrix.Concat(map, new((float)source.A, (float)source.C, (float)source.E, (float)source.B, (float)source.D, (float)source.F));
+            native = matrices with { Referencing = new(combined.ScaleX, combined.SkewY, combined.SkewX, combined.ScaleY, combined.TranslateX, combined.TranslateY) };
         }
         return gradient with { Inverse = SvgGradientTransform.Compose(gradient.Inverse, inverseMap), NativePaintMatrices = native };
     }
@@ -917,7 +919,7 @@ internal static class SvgGradientSyntax
         SvgGradientTransform localInverse = gradient.HasGeneralTransform ? gradient.Inverse : SvgGradientTransform.Identity;
         SvgShaderMatrix local = gradient.NativePaintMatrices?.Local ?? new(1, 0, 0, 0, 1, 0);
         SvgShaderMatrix nativeObject = new((float)objectMap.A, 0, (float)objectMap.E, 0, (float)objectMap.D, (float)objectMap.F);
-        SvgShaderMatrix nativeReference = new((float)sceneMap.A, (float)sceneMap.C, (float)sceneMap.E, (float)sceneMap.B, (float)sceneMap.D, (float)sceneMap.F);
+        SvgAffineTransform nativeReference = sceneMap;
         return gradient with { IsUserSpace = true, HasGeneralTransform = true,
             Inverse = SvgGradientTransform.Compose(localInverse, inverse),
             NativePaintMatrices = new(SvgShaderMatrix.Concat(nativeObject, local), nativeReference) };
