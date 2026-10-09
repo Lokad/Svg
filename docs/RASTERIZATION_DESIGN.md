@@ -9831,3 +9831,61 @@ the fresh full core run passes. Existing browser references are reused. No
 performance, representative success-rate, release or remote CI claim follows.
 The warning sign's zero-signed-area native clip winding is the next document
 dependency; reflected/general pattern maps and other G2–G9 promises stay open.
+
+
+## Complete warning sign through native clip winding and independent rules (2026-10-09)
+
+The retained public-domain non-ionizing warning (`inv-110`) is complete through
+all six APIs on Windows/Linux at its frozen explicit 616×540 transparent output.
+Its original 546-byte SVG, root-only browser materialization, options and PNG stay
+unchanged. Existing matching healthy, cleaned platform capture triples are reused.
+This completes fourteen of fifteen selected development documents; geometric
+pattern forward-gradient lookup is the next dependency.
+
+The bowtie has zero net signed area and two nonempty lobes with opposite local
+winding. The old clip parser's area and turn checks rejected it before the shared
+single-contour native clip scene could replay it. Those checks now apply only to
+the older multi-contour geometric-intersection route. Single user-space contours
+retain concavity and proper self-intersections, and collinear contours produce
+empty native coverage. Raw source commands, bitmap-owned borders, enclosing clip
+rectangles and per-paint operation coverage remain unchanged. The old frozen
+concave-curve control also becomes exact; its source and PNG are unchanged.
+
+The [eighteen winding controls](../tests/Research/native-clip-winding/manifest.json)
+were declared and frozen before implementation. Sixteen are exact; multi-contour
+concavity and fewer-than-three-vertex paths retain explicit boundaries. They
+cover forward/backward definitions, reversed winding, ordered paints, oval strokes,
+scaled roots, empty coverage and independent clip/fill/target rules. All 108 new
+Windows/Linux captures are healthy and cleaned stable triples; Linux PNGs match
+the frozen Windows PNGs byte-for-byte. Controls remain separate from documents.
+
+Five star controls exposed a prior rule defect: attribute, clip-parent, inline
+priority, stylesheet priority and root-inherited even-odd rules each differed at
+126 pixels. The existing cascade now retains clip-rule alongside its !important
+flag; root/group scopes retain ancestor inheritance and clip definitions choose
+their own rule. The clipped target's rule and clip geometry fill-rule do not
+override that rule, as required by [SVG clip-rule](https://www.w3.org/TR/SVG11/masking.html#ClipRuleProperty).
+Native clip geometry carries parity through the existing authored preparation;
+each previously differing star is exact. Single parity contours reserve their
+one-entry vote array before allocation. Style/scope lists account their actual
+larger value sizes; the existing conservative clip-entry allowance covers its
+additional scalar. Runtime draw/geometry/paint sizes remain 72/272/68 bytes.
+No new native source adaptation or shape-specific rasterizer is introduced.
+
+Five small inputs sweep every discovery/parser work denial, sampled/peak parser
+memory, raster work and raster memory denial with complete cleanup. Both winding
+rules survive cancellation before and after partial operation replay, retain
+immutable borrowed commands and retry with identical pixels. The full original
+warning sign releases partial owners under early/middle/late parser work and
+peak-memory denial. Multi-contour parity rejects explicitly and releases staging
+owners; broader multi-contour, objectBoundingBox, nonuniform curve and group/use
+combinations remain finite G5 work.
+
+Both Release builds have zero warnings/errors; all 5,787 tests pass per platform
+(4,209 core / 1,572 visual / six FontProbe). Finished-correction complete
+qualification preserves all 2,908 preceding comparison reports and 2,845 PNGs,
+including 1,567 original-bank reports / 1,551 original-bank PNGs and corporate
+27/27 documents / 258/258 variants on each platform's frozen references. The
+three established SDL small-output platform distinctions remain. Existing browser
+references are reused. No performance, representative success-rate, release or
+remote CI claim follows. Every remaining G2–G9 and S17 commitment stays open.

@@ -23,6 +23,7 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
     internal string? Miterlimit { get; init; }
     internal string? StrokeOpacity { get; init; }
     internal string? PathLength { get; init; }
+    internal string? ClipRule { get; init; }
     /// <summary>Gets whether a declaration requires a target that does not establish a viewport.</summary>
     internal bool HasVisibleOverflow { get; init; }
 }
@@ -57,6 +58,7 @@ internal enum InlineImportantProperties
     PathLength = 1 << 21,
     GeometryWidth = 1 << 22,
     GeometryHeight = 1 << 23,
+    ClipRule = 1 << 24,
 }
 
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
@@ -88,7 +90,7 @@ internal static class SvgInlineStyleParser
 
     private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings, bool allowsDirectTextFontProperties)
     {
-        string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null;
+        string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null;
         string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null;
         string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, pathLength = null, geometryWidth = null, geometryHeight = null;
         InlineImportantProperties important = InlineImportantProperties.None;
@@ -120,7 +122,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("pathLength", StringComparison.OrdinalIgnoreCase)) Set(ref pathLength, InlineImportantProperties.PathLength, property, propertyValue, strings, ref important, false);
             else if (property.Equals("width", StringComparison.OrdinalIgnoreCase)) Set(ref geometryWidth, InlineImportantProperties.GeometryWidth, property, propertyValue, strings, ref important, false);
             else if (property.Equals("height", StringComparison.OrdinalIgnoreCase)) Set(ref geometryHeight, InlineImportantProperties.GeometryHeight, property, propertyValue, strings, ref important, false);
-            else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) ValidateClipDeclaration(propertyValue);
+            else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) { ValidateClipDeclaration(propertyValue); Set(ref clipRule, InlineImportantProperties.ClipRule, property, propertyValue, strings, ref important, false); }
             else if (property.Equals("overflow", StringComparison.OrdinalIgnoreCase))
             {
                 TryStripImportant(propertyValue, out ReadOnlySpan<char> stripped);
@@ -149,7 +151,7 @@ internal static class SvgInlineStyleParser
             else if (property.Equals("pointer-events", StringComparison.OrdinalIgnoreCase) || property.Equals("cursor", StringComparison.OrdinalIgnoreCase)) { } // UI behavior never affects static pixels.
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, PathLength = pathLength, HasVisibleOverflow = hasVisibleOverflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, PathLength = pathLength, ClipRule = clipRule, HasVisibleOverflow = hasVisibleOverflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
 
         static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {

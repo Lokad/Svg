@@ -13,11 +13,12 @@ symbol completes the sixth development deliverable, with that
 document at **9/9 exact outputs through all six APIs on both platforms**. The
 retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
 Bhutan the tenth, South Africa the eleventh, Wikifoods the twelfth and the striped
-pattern the thirteenth: **13 complete**. The retained development queue is
-**13/15 complete**; Wikifoods and the striped pattern are each 9/9 exact. The next
-selected document is `inv-110`. Controls do not count as completed documents. The I Ching nested affine-opacity control remains exact.
+pattern the thirteenth and the non-ionizing warning the fourteenth: **14
+complete**. The retained development queue is **14/15 complete**; Wikifoods and
+the striped pattern are each 9/9 exact, and the warning sign is 1/1 exact. The next
+selected document is `inv-111`. Controls do not count as completed documents. The I Ching nested affine-opacity control remains exact.
 
-### inv-109–inv-111 — striped pattern complete; warning sign next
+### inv-109–inv-111 — striped pattern and warning complete; geometric pattern next
 
 The [source records](../tests/Research/remaining-scope-documents/source-records.json)
 retain Commons imageinfo rights, upstream revision, size and asset checksums.
@@ -28,8 +29,8 @@ development documents, outside the original bank and corporate denominators.
 | Document / source | Rights and source bytes | Frozen outputs / admission baseline and current outcome |
 | --- | --- | --- |
 | [Striped pattern](https://commons.wikimedia.org/wiki/File:SVG_pattern_striped.svg), Watchduck; simplified by JoKalliauer; `inv-109` | CC0; 507 bytes; upstream 2024-09-23T07:53:32Z | Nine outputs, 187/374/748 square × transparent/white/black, original-input scales 0.5/1/2. At `fd89583f`, all nine rejected local paint lookup. Now complete: 9/9 exact through six APIs on Windows/Linux. |
-| [Non-ionizing radiation warning](https://commons.wikimedia.org/wiki/File:D-W012_Warnung_vor_nicht_ionisierender_elektromagnetischer_Strahlung_ty.svg), DrTorstenHenning; `inv-110` | Public-domain dedication; 546 bytes; upstream 2023-07-06T04:39:16Z | Selected next: explicit 616×540 transparent. Rejects “Degenerate clip paths are not implemented.” A self-intersecting bowtie has zero signed area despite nonempty local winding. |
-| [Geometric pattern](https://commons.wikimedia.org/wiki/File:Geometric_Pattern.svg), 991joseph; `inv-111` | CC0; 39,523 bytes; upstream 2021-08-23T16:21:34Z | Queued: explicit 284×284 transparent. Rejects local gradient lookup before the forward definitions; further placement/clip gates await diagnosis. |
+| [Non-ionizing radiation warning](https://commons.wikimedia.org/wiki/File:D-W012_Warnung_vor_nicht_ionisierender_elektromagnetischer_Strahlung_ty.svg), DrTorstenHenning; `inv-110` | Public-domain dedication; 546 bytes; upstream 2023-07-06T04:39:16Z | Explicit 616×540 transparent. At `fd89583f`, rejected “Degenerate clip paths are not implemented.” Now complete: 1/1 exact through six APIs on Windows/Linux; the bowtie retains its nonempty local winding. |
+| [Geometric pattern](https://commons.wikimedia.org/wiki/File:Geometric_Pattern.svg), 991joseph; `inv-111` | CC0; 39,523 bytes; upstream 2021-08-23T16:21:34Z | Selected next: explicit 284×284 transparent. Rejects local gradient lookup before the forward definitions; further placement/clip gates await diagnosis. |
 
 The [eleven declared cases](../tests/Research/remaining-scope-documents/manifest.json)
 have frozen stable, healthy, cleaned Chrome 153.0.8010.52 capture triples on each
@@ -37,20 +38,30 @@ platform. Every Linux capture matches its frozen Windows PNG byte-for-byte. The
 converter receives each unchanged original. Browser sizing changes only root
 dimensions, or inserts them for `inv-110`; viewBox and all geometry remain unchanged.
 Eleven focused tests protect every original, matching capture frame and frozen
-PNG through all six APIs on Windows/Linux: nine exact striped-pattern outputs and
-two queued rejections. Root-local pattern registration, composed positive-axis
+PNG through all six APIs on Windows/Linux: nine exact striped-pattern outputs,
+one exact warning-sign output and one queued geometric-pattern rejection. Root-local pattern registration, composed positive-axis
 paint maps and shared default-meet aspect parsing now finish the striped pattern
 without changing source bytes, options or references. The [placement controls](../tests/Research/pattern-affine-placement/manifest.json)
 are separate: sixteen exact and two explicit reflected/rotated boundaries. All
 eighteen have matching healthy, cleaned Linux browser triples.
 
-The finished correction passes both Release builds and 5,760 tests per platform
-(4,200 core / 1,554 visual / six FontProbe). Complete original banks and corporate
+The warning sign is exact against its unchanged explicit viewport and frozen
+reference. Shared native single-contour clip replay now retains concavity and
+nonempty local winding despite cancelling signed area. Clip rule flows through the
+existing cascade independently of fill-rule and the clipped target's rule. Eighteen
+[new winding controls](../tests/Research/native-clip-winding/manifest.json) retain
+sixteen exact results and two explicit boundaries; five ignored-rule
+measurements improve 126 → zero changed pixels. The frozen concave-curve control
+also becomes exact. Every new control has matching healthy, cleaned Linux triples.
+Controls remain separate from complete documents.
+
+The finished correction passes both Release builds and 5,787 tests per platform
+(4,209 core / 1,572 visual / six FontProbe). Complete original banks and corporate
 qualification preserve all 2,908 previous comparison reports and 2,845 PNGs from
-`fd89583f`; corporate stays 27/27 / 258/258 on each platform's frozen references.
-Existing document references are reused. The warning sign supplies the next shared
-clip-winding dependency; every further gate stays open until its whole output is
-exact. Geometric-pattern forward gradients remain queued.
+`d754d3ab`; corporate stays 27/27 / 258/258 on each platform's frozen references.
+Existing document references are reused. Geometric-pattern forward gradients
+supply the next shared dependency; every further gate stays open until its whole
+output is exact.
 
 Four actual exports were downloaded within the five-file limit. The three above
 are retained. [Herringbone pattern long.svg](https://commons.wikimedia.org/wiki/File:Herringbone_pattern_long.svg)

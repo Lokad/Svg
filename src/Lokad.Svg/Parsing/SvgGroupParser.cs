@@ -50,7 +50,7 @@ internal static class SvgGroupParser
         if (reader.GetAttribute("clip-path") is not null || resolved.Presentation.Transform != context.InheritedPresentation.Transform)
             opacityScope = state.NewRecordingScope();
         SvgRecordingScope contentScope = maskReference is null ? opacityScope : state.NewRecordingScope();
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { RecordingScope = contentScope }, combined, deferredMask) { SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { RecordingScope = contentScope, ClipRule = style.ClipRule ?? context.InheritedClipRule }, combined, deferredMask) { SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
     }
 
     /// <summary>Pushes the referenced mask content box for child coverage checks, reporting whether a scope was pushed.</summary>

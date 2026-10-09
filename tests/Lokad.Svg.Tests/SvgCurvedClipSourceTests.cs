@@ -1,5 +1,6 @@
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
+using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Tests;
 
@@ -9,9 +10,26 @@ public sealed class SvgCurvedClipSourceTests
     [InlineData("<defs><clipPath id='c'><path d='M3 24 Q16 0 29 24'/></clipPath></defs><g transform='rotate(12 16 16)' clip-path='url(#c)'><path d='M0 0H32V32H0Z'/></g>")]
     [InlineData("<defs><clipPath id='unused'><path d='M3 24 C3 0 29 0 29 24'/></clipPath></defs><rect width='32' height='32'/>")]
     [InlineData("<defs><clipPath><path d='M3 24 A13 13 0 0 1 29 24'/></clipPath></defs><rect width='32' height='32'/>")]
-    public void Curved_clip_owners_release_at_every_parser_work_denial_and_sampled_memory_denials(string content)
+    [InlineData("bowtie-leaf")]
+    [InlineData("bowtie-oval-strokes")]
+    [InlineData("star-evenodd")]
+    [InlineData("star-stylesheet-priority")]
+    [InlineData("concave-leaf")]
+    public void Native_clip_owners_release_at_every_parser_work_denial_and_sampled_memory_denials(string content)
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + content + "</svg>");
+        byte[] input = content.StartsWith('<')
+            ? System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + content + "</svg>")
+            : File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "native-clip-winding", content + ".svg"));
+        RenderBudget discovery = new(1_000_000);
+        ParserWorkCounter discoveryWork = new(1_000_000);
+        Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discoveryWork, discovery, CancellationToken.None));
+        Assert.Equal(0, discovery.Snapshot().CurrentBytes);
+        for (long limit = 0; limit < discoveryWork.Used; limit++)
+        {
+            RenderBudget denied = new(1_000_000);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(limit), denied, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
         RenderBudget measured = new(1_000_000);
         ParserWorkCounter work = new(1_000_000);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))

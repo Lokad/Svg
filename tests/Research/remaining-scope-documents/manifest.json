@@ -198,8 +198,6 @@
       "license": "Public domain",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:D-W012_Warnung_vor_nicht_ionisierender_elektromagnetischer_Strahlung_ty.svg",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Degenerate clip paths are not implemented.",
       "selection": "Complete striped pattern selected at fd89583f; two further retained rejections stay queued. Options fixed before capture or correction.",
       "materialization": "insert-root-dimensions",
       "captureInput": "inv-110-capture-616x540.svg",

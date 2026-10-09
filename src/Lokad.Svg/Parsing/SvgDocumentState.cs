@@ -245,6 +245,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgClipPolygon? ClipPolygon { get; set; }
 
     internal bool ClipIsObjectBoundingBox { get; set; }
+    internal bool ClipIsEvenOdd { get; set; }
 
     internal bool GroupUseExpanded { get; set; }
 
@@ -375,6 +376,7 @@ internal sealed class SvgDocumentState : IDisposable
 internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity, bool HasMaskScope, SvgInheritedStrokeStyle InheritedStroke, string? FillRule)
 {
     internal SvgRecordingScope RecordingScope { get; init; }
+    internal string? ClipRule { get; init; }
 }
 
 internal enum SvgGroupKind { Group, Link, Switch }

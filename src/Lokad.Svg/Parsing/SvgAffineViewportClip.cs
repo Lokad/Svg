@@ -13,7 +13,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
     {
         float left = (float)Box.X, top = (float)Box.Y, right = (float)(Box.X + Box.Width), bottom = (float)(Box.Y + Box.Height);
         ReadOnlySpan<SvgDevicePoint> points = stackalloc SvgDevicePoint[] { new(left, bottom), new(left, top), new(right, top), new(right, bottom) };
-        return RegisterContour(points, Map, SvgClipContentKind.AffineViewport, null, state, scene, work, token);
+        return RegisterContour(points, Map, SvgClipContentKind.AffineViewport, null, false, state, scene, work, token);
     }
 
     /// <summary>Registers one borrowed source contour with the shared native clip-content owner.</summary>
@@ -21,14 +21,14 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
     /// mapping/copying observes caller work and cancellation. The scene owns a distinct copy after
     /// success; failure releases all temporary storage. Generic path clips retain raw classification.</remarks>
     internal static (SvgClipBox Bounds, int ContentIndex) RegisterContour(ReadOnlySpan<SvgDevicePoint> source,
-        SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
+        SvgAffineTransform map, SvgClipContentKind kind, SvgAuthoredPath? sourcePath, bool isEvenOdd, SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
     {
         if (source.Length < 3) throw new ArgumentOutOfRangeException(nameof(source));
         if (sourcePath is not null && !map.IsAxisAligned && !map.IsUniformScale())
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Curved clip paths under nonuniform group transforms are not implemented.");
         RenderBudget budget = state.Budget;
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, work, token);
-        using RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Length) + ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Scene);
+        using RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Length) + (isEvenOdd ? 2 : 1) * ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Scene);
         SvgGeometry geometry = default;
         double x1 = double.PositiveInfinity, y1 = double.PositiveInfinity, x2 = double.NegativeInfinity, y2 = double.NegativeInfinity;
         try
@@ -82,7 +82,7 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             // rectangle coverage remain separate, including their common edge.
             SvgClipBox? paintClip = kind == SvgClipContentKind.ClipPath && map.IsAxisAligned
                 ? new(Math.Floor(x1), Math.Floor(y1), Math.Ceiling(x2) - Math.Floor(x1), Math.Ceiling(y2) - Math.Floor(y1)) : null;
-            geometry = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(points, [source.Length], null, new(255, 255, 255, 255), true, false, SvgPolygonMapping.FiniteEdges, paintClip, reservation, budget));
+            geometry = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(points, [source.Length], isEvenOdd ? [1] : null, new(255, 255, 255, 255), true, isEvenOdd, SvgPolygonMapping.FiniteEdges, paintClip, reservation, budget));
             if (sourcePath is not null) geometry = geometry with { AuthoredPath = sourcePath.Copy(map, budget, work, token) };
             else
             {

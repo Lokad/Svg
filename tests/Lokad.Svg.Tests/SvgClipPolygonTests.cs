@@ -86,9 +86,7 @@ public sealed class SvgClipPolygonTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
     }
     [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V8 H4 V4 H0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only convex clip paths are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d=''/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Degenerate clip paths are not implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 L8,0 L16,0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Degenerate clip paths are not implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c' clipPathUnits='objectBoundingBox'><path d='M0,0 H1 V1 H0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only userSpaceOnUse clip-path paths are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='1' y='1' width='2' height='2'/><path d='M0,0 H8 V8 H0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only single-rectangle clip paths are implemented.")]
 
@@ -102,6 +100,17 @@ public sealed class SvgClipPolygonTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
         Assert.Contains(message, rejected.Message);
+    }
+
+    [Theory]
+    [InlineData("M0 0H8V8H4V4H0Z", false)]
+    [InlineData("M0 0L8 0L16 0Z", true)]
+    public void Single_native_contours_preserve_concave_coverage_and_collinear_empty_coverage(string path, bool empty)
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='" + path + "'/></clipPath></defs><rect width='8' height='8' fill='red' clip-path='url(#c)'/></svg>", out _, out _);
+        Assert.Equal(empty ? SvgColor.Transparent : new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 1, 1));
+        Assert.Equal(SvgColor.Transparent, Pixel(pixels, 8, 1, 6));
+        if (empty) Assert.All(pixels, value => Assert.Equal((byte)0, value));
     }
 
     [Fact]

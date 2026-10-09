@@ -20,10 +20,15 @@ internal static class SvgClipPathSyntax
         return id;
     }
 
-    /// <summary>Validates the admitted no-op clip rule shared by attributes and style declarations.</summary>
+    /// <summary>Validates the clip rule shared by attributes and style declarations.</summary>
     internal static void ValidateClipRule(ReadOnlySpan<char> value)
+        => _ = ParseClipRule(value);
+
+    /// <summary>Retains the independent nonzero or parity rule for native clip-content replay.</summary>
+    internal static bool ParseClipRule(ReadOnlySpan<char> value)
     {
-        if (value.Trim().Equals("nonzero".AsSpan(), StringComparison.OrdinalIgnoreCase) || value.Trim().Equals("evenodd".AsSpan(), StringComparison.OrdinalIgnoreCase)) return;
+        if (value.Trim().Equals("nonzero".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
+        if (value.Trim().Equals("evenodd".AsSpan(), StringComparison.OrdinalIgnoreCase)) return true;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonzero and evenodd clip rules are implemented.");
     }
 
@@ -102,7 +107,7 @@ internal static class SvgClipPathSyntax
                     // Keep its source contours and shader coordinates intact instead of
                     // replacing them with a geometric intersection of flattened vertices.
                     (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clipPolygon.Points,
-                        SvgAffineTransform.Identity, SvgClipContentKind.ClipPath, clipPolygon.SourcePath, state, state.Scene, workCounter, cancellationToken);
+                        SvgAffineTransform.Identity, SvgClipContentKind.ClipPath, clipPolygon.SourcePath, clipPolygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;
                     operation.Value = 255;
@@ -505,7 +510,7 @@ internal static class SvgClipPathSyntax
                 if (parent is {} viewport)
                     map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
                 (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(polygon.Points,
-                    map, SvgClipContentKind.ClipPath, polygon.SourcePath, state, state.Scene, workCounter, cancellationToken);
+                    map, SvgClipContentKind.ClipPath, polygon.SourcePath, polygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
                 SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                 operation.Resolved = true;
                 operation.Value = 255;

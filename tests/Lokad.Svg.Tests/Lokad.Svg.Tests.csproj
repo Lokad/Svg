@@ -104,6 +104,8 @@
     <None Include="../Research/pattern-inheritance/*.svg" Link="TestData/pattern-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/pattern-affine-placement/*.svg" Link="TestData/pattern-affine-placement/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-109.svg" Link="TestData/striped-pattern.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/native-clip-winding/*.svg" Link="TestData/native-clip-winding/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/candidates/inv-110.svg" Link="TestData/non-ionizing-warning.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../References/inventory/gap-inputs/inv-104.svg" Link="TestData/inkscape-pattern.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/gradient-masks/*.svg" Link="TestData/gradient-masks/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../References/inventory/gap-inputs/inv-107.svg" Link="TestData/gradient-mask-document.svg" CopyToOutputDirectory="PreserveNewest" />

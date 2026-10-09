@@ -107,6 +107,9 @@ internal static class SvgDefinitionParser
             state.ClipBox = null;
             state.ClipPolygon = null;
             state.ClipIsObjectBoundingBox = SvgClipPathSyntax.ParseClipUnits(reader.GetAttribute("clipPathUnits"));
+            SvgPaintableElementContext clipParent = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            SvgComputedStyle clipParentStyle = SvgComputedStyleResolver.Resolve(reader, clipParent.StyleSheet, workCounter, cancellationToken);
+            state.ClipIsEvenOdd = SvgClipPathSyntax.ParseClipRule((clipParentStyle.ClipRule ?? clipParent.InheritedClipRule ?? "nonzero").AsSpan());
             if (reader.IsEmptyElement)
             {
                 if (state.ClipPathId is not null) RegisterClipBox(state, workCounter, cancellationToken);
@@ -138,7 +141,9 @@ internal static class SvgDefinitionParser
                 if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse clip-path paths are implemented.");
                 SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgAffineTransform clipTransform = clipContext.ResolveTransform(reader);
-                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, state, workCounter, cancellationToken);
+                SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, clipContext.StyleSheet, workCounter, cancellationToken);
+                bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
+                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, state, workCounter, cancellationToken);
                 // Publish the source owner before any cancellable classification.
                 state.ClipPolygon = clipContent;
                 if (clipContent.SourcePath is null && clipContent.ContourEnds.Length == 1 && TryGetAxisClipBox(clipContent.Points, workCounter, cancellationToken, out SvgClipBox clipRect))
@@ -523,7 +528,7 @@ internal static class SvgDefinitionParser
             return (retained, paint);
         }
 
-        static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(clipState);
             ArgumentNullException.ThrowIfNull(workCounter);
@@ -539,6 +544,7 @@ internal static class SvgDefinitionParser
             SvgPathDataParser.ParsePath(pathData, clipTransform, builder, flattenPolicy, letters, workCounter, cancellationToken, null, hasCurve ? authored : null);
             if (hasCurve && builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour curved clip paths are implemented.");
             if (builder.ContourCount < 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
+            if (builder.ContourCount > 1 && isEvenOdd) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Evenodd multi-contour clip paths are not implemented.");
             using BudgetedParserList<SvgDevicePoint> stripped = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             using BudgetedParserList<int> strippedEnds = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             for (int contour = 0; contour < builder.ContourCount; contour++)
@@ -561,8 +567,14 @@ internal static class SvgDefinitionParser
                     cleaned.Add(vertex);
                 }
                 if (cleaned.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
-                if (ClipRingArea(cleaned, workCounter, cancellationToken) == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
-                if (!IsConvexRing(cleaned, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only convex clip paths are implemented.");
+                if (builder.ContourCount > 1)
+                {
+                    // Geometric intersection still requires convex rings. Single
+                    // contours use native directed winding, whose nonempty lobes
+                    // can cancel in the signed-area sum.
+                    if (ClipRingArea(cleaned, workCounter, cancellationToken) == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
+                    if (!IsConvexRing(cleaned, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only convex clip paths are implemented.");
+                }
                 for (int index = 0; index < cleaned.Count; index++)
                 {
                     workCounter.Consume(cancellationToken);
@@ -590,7 +602,7 @@ internal static class SvgDefinitionParser
                 try { source = SvgAuthoredPath.Create(owned, clipTransform, clipState.Budget); }
                 catch { owned.Dispose(); throw; }
             }
-            return new SvgClipPolygon(retainedPoints, retainedEnds) { SourcePath = source };
+            return new SvgClipPolygon(retainedPoints, retainedEnds) { SourcePath = source, IsEvenOdd = isEvenOdd };
         }
 
         static (int Letters, bool HasCurve) ScanClipPathData(string pathData, ParserWorkCounter workCounter, CancellationToken cancellationToken)
