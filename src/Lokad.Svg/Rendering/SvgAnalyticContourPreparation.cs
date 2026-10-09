@@ -3,7 +3,7 @@ namespace Lokad.Svg.Rendering;
 using Lokad.Svg.Parsing;
 
 /// <summary>Borrows one immutable mapped fill and caches its clip-independent classifications.</summary>
-/// <remarks>The caller keeps the same points, contours, votes and retained verbs alive and unchanged throughout this single-threaded scope. No storage is allocated or owned here. Each classification is charged once by Prepare; each raster context still charges and owns its edge construction and row state. The preparation cannot escape into a returned walker.</remarks>
+/// <remarks>The caller keeps the same points, contours, votes and retained verbs alive and unchanged throughout this single-threaded scope. No storage is allocated or owned here. Source classifications are charged once by Prepare; unknown placed convexity is charged per bitmap origin. Each raster context charges and owns its edge construction and row state. The preparation cannot escape into a returned walker.</remarks>
 internal ref struct SvgAnalyticContourPreparation
 {
     internal readonly SvgPreparedPathContours? Source;
@@ -34,6 +34,8 @@ internal ref struct SvgAnalyticContourPreparation
     internal bool? TransversalUnion;
     internal bool? OrthogonalUnion;
     internal bool? Convex;
+    internal bool? SourceConvex;
+    internal SvgCpuBitmapOrigin? ConvexOrigin;
     internal bool DesnapBox;
     internal bool UseCurveSpans;
 

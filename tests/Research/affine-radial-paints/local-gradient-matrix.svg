@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 100 100">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><radialGradient id="p" fx="31%" fy="42%" gradientTransform="matrix(1 .12 .18 .9 .02 -.04)"><stop stop-color="#EEE"/><stop offset="1" stop-color="#AAA"/></radialGradient></defs>
+<g transform="rotate(23 50 50)" ><circle cx="45.375" cy="49.625" r="29.25" fill="url(#p)"/></g>
+</svg>

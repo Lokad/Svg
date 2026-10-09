@@ -39,7 +39,7 @@ internal sealed class SvgAuthoredPath : IDisposable
 
     internal ReadOnlySpan<SvgAuthoredPathCommand> Commands => _commands.Items;
     internal SvgAffineTransform SceneMap { get; }
-    /// <summary>Preserves native convex classification for one validated source shape under affine placement.</summary>
+    /// <summary>Identifies one native convex source shape; bitmap placement may require fresh classification.</summary>
     internal bool IsKnownConvex { get; }
     internal SvgAuthoredStrokeStyle? StrokeStyle { get; }
     /// <summary>Borrows the generated source outline until this centerline owner is disposed or transferred.</summary>
@@ -191,7 +191,7 @@ internal sealed class SvgAuthoredPath : IDisposable
 
     /// <summary>Adopts one validated convex source shape, preserving its native classification without changing its verbs.</summary>
     /// <remarks>The caller supplies one rectangle, rounded rectangle or oval generated in source float coordinates.
-    /// Command ownership transfers only on success; later affine copies retain this classification.</remarks>
+    /// Command ownership transfers only on success; copies retain source identity while consumers resolve placed convexity.</remarks>
     internal static SvgAuthoredPath CreateConvexShape(OwnedParserArray<SvgAuthoredPathCommand> commands, SvgAffineTransform sceneMap, RenderBudget budget)
         => Create(commands, sceneMap, null, null, true, budget);
 

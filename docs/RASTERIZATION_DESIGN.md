@@ -9661,3 +9661,55 @@ stay protected. The last complete bank measurement remains `83de8a50`; the finis
 Wikifoods correction will receive complete bank/corporate qualification. No existing
 SVG, PNG, option or corporate membership is replaced, and no performance/release
 claim follows from this dependency slice.
+
+## Shared affine radial paint dependency for Wikifoods (2026-10-09)
+
+All nine frozen original-input Wikifoods outputs now render through six APIs on
+Windows/Linux. The 400×400 transparent/white/black outputs are exact. The six
+larger outputs retain measured differences: 187/131/174 changed pixels at
+1200×1200, and 54/46/53 at 2400×2400. The document remains incomplete, and the
+selected queue stays eleven of twelve complete. Source, options and every
+existing reference remain unchanged.
+
+The [paint bank](../tests/Research/affine-radial-paints/manifest.json) declares twelve
+initial controls before implementation and four larger circle/dome outputs before
+bitmap-local corrections. Ten controls are exact, four preserve measured larger
+edge/rounding gaps, and two retain separate rotated-ellipse/stroked-gradient gates.
+All sixteen use six APIs; all 96 healthy, cleaned Windows/Linux browser captures
+match their frozen PNGs. Controls remain separate from complete documents.
+
+Circle and path paints share one source-space binding. Object bounds precede the
+referencing transform; path bounds reuse the existing tight authored-curve solver.
+The local shader matrix and referencing matrix stay separate for bitmap-local float
+concatenation. Immutable inverse mapping retains the existing conical fallback.
+The native float unit-matrix route now also evaluates strictly inside, zero-radius
+focal cones; percentage gradient lengths retain native float division. Other
+conical forms keep their existing evaluator. Geometry still replays native authored
+commands; no new shape-specific rasterizer or flattened source replacement is added.
+See pinned [conical construction](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/shaders/gradients/SkConicalGradient.cpp)
+and [float shader stages](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/opts/SkRasterPipeline_opts.h).
+
+Native ovals retain source convexity, but a non-axis matrix invalidates that cache.
+Software bitmap translation can change float control turns; resolving only global
+convexity caused hundreds of larger circle edge errors. Source concavity remains
+cached, while unknown placed convexity now uses the existing raw-control classifier
+in each bitmap. Classification maps borrowed controls without another point tape,
+charges its complete traversal before entry, checks cancellation and caches only
+under the same bitmap origin. See native [transform convexity](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathPriv.cpp).
+
+Native AA clips trim empty coverage borders. Global and per-bitmap clip bounds now
+follow the existing alpha tape's nonzero coverage, while the bitmap origin remains
+independent. Both scans allocate nothing and charge their bounded area before
+traversal. This removes the small curved-circle defect and larger clip construction
+errors without altering mask paint or source commands. See [AA clip construction](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkAAClip.cpp).
+
+Three small source cases sweep every parser work denial, sampled/peak parser memory,
+early/middle/late raster work, raster memory, cancellation and retry. Borrowed native
+commands remain immutable and successful retry pixels remain identical. Two empty/
+disjoint cases remain transparent and release every owner. Release solution builds
+have zero warnings/errors; all 5,700 tests pass per platform (4,176 core / 1,518 visual /
+six FontProbe), preserving established exact results. The complete emitted-bank
+measurement remains `83de8a50`; required complete bank/corporate qualification
+follows the finished nine-output document correction. The next repairs stay with
+larger curved clip coverage, plate-ellipse edges and focal-paint rounding. No
+performance, release, representative success-rate or remote CI claim follows.

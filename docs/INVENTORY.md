@@ -13,7 +13,7 @@ symbol completes the sixth development deliverable, with that
 document at **9/9 exact outputs through all six APIs on both platforms**. The
 retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
 Bhutan the tenth and South Africa the eleventh: **11 complete**. The selected
-document queue is **11/12 complete**; the CC0 Wikifoods logo is next, at 0/9 exact.
+document queue is **11/12 complete**; the CC0 Wikifoods logo is next, at 3/9 exact.
 Controls do not
 count as completed documents. The I Ching nested affine-opacity control remains exact.
 
@@ -23,14 +23,14 @@ count as completed documents. The I Ching nested affine-opacity control remains 
 - Rights: CC0 dedication verified on Commons and in the retained [imageinfo evidence](../tests/Research/wikifoods-logo/source-record.json). The actual downloaded original matches the recorded 5,615-byte size and SHA-1 `f2e8558dee8676cd10c2d67a668f44183bfe8335`.
 - Input: [inv-108.svg](../tests/Fixtures/candidates/inv-108.svg), unchanged original UTF-8/LF bytes; SHA-256 `89c96e9b68596969bc5bd648f51f5fa5df3b04cb294f93057c779c332ad7ad7b`. Fontless outlined logo; no source substitution or inserted license header.
 - Frozen outputs: [nine document cases](../tests/Research/wikifoods-logo/manifest.json), original-input scales one third / 1 / 2, 400×400 / 1200×1200 / 2400×2400, each transparent/white/black. Small/large browser materializations change only root dimensions. All nine stable, healthy, cleaned triples on each platform; Linux PNGs match the frozen Windows PNGs byte-for-byte.
-- Baseline at `83de8a50`: every output rejects `UnsupportedFeature`, first message “Only bare-number and px rectangle coordinates are implemented.” Percentage circle lengths trigger that gate. Curved group/leaf clips and radial paints are present in the source; subsequent gates await diagnosis. **0/9 exact; incomplete.** All six APIs protect the current rejection on Windows/Linux.
+- Baseline at `83de8a50`: every output rejects `UnsupportedFeature`, first message “Only bare-number and px rectangle coordinates are implemented.” Percentage circle lengths trigger that gate. Curved group/leaf clips and radial paints are present in the source; subsequent gates await diagnosis. **0/9 exact; incomplete.** This remains the source-selection baseline.
 
-Shared percentage-oval and native curved clip repairs advance all nine outputs to
-`Only axis-aligned rectangle transforms are implemented.`, after shared percentage
-lengths and native curved clip replay. The unchanged original and nine
-frozen PNGs stay in place; **0/9 exact, document incomplete**. Nine focused
-controls are exact; three preserve explicit unsupported boundaries. These controls
-remain separate from document completion.
+Shared percentage-oval, native curved clip and source-space radial paint repairs
+now render all nine outputs. Original bytes, options and nine frozen PNGs stay in
+place; **3/9 exact, document incomplete**. Every 400×400 background is exact through
+six APIs on Windows/Linux. Transparent/white/black mismatches are 187/131/174 pixels
+at 1200×1200 and 54/46/53 at 2400×2400. The document remains selected until 9/9 is
+exact; these smaller-output results do not count as a completed document.
 
 The bounded sourcing batch screened three actual CC0 exports. Only Wikifoods is
 retained as a failure-selected development document. [Bluemen clap.svg](https://commons.wikimedia.org/wiki/File:Bluemen_clap.svg)
@@ -57,8 +57,20 @@ triples. It preserves separate enclosing-rectangle and path coverage under the
 uniform rotation used by Wikifoods. The older group clip control becomes exact
 against its frozen reference. A nonuniform composed cubic clip still has an edge
 mismatch and remains explicitly unsupported in G3; it does not block this document.
-Current Release builds and all 5,679 tests pass per platform. No new document is
-completed by these controls; the queue remains 11/12 complete.
+At that dependency checkpoint, Release builds and all 5,679 tests passed per
+platform. No new document was completed by those controls.
+
+The [affine radial paint bank](../tests/Research/affine-radial-paints/manifest.json)
+adds sixteen controls: ten exact, four measured larger-output gaps and two explicit
+rotated-ellipse/stroked-gradient boundaries. Source paint bounds and native shader
+matrices feed circles and paths; unknown transformed convexity resolves per bitmap,
+and clip construction uses nonzero coverage bounds. All 96 healthy, cleaned control
+captures match frozen PNGs. Three resource sweeps protect parser/raster denial,
+immutable commands and retry; two empty/disjoint cases remain transparent. Current
+Release builds have zero warnings/errors and all 5,700 tests pass per platform
+(4,176 core / 1,518 visual / six FontProbe). Complete original-bank/corporate
+emission checks follow the finished Wikifoods correction; the preceding `83de8a50`
+qualification and every established exact result stay protected. Queue: 11/12 complete.
 
 ### inv-061 — complete retained South Africa qualification
 

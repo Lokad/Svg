@@ -1614,12 +1614,21 @@ internal ref partial struct SvgAnalyticCoverage
         SvgContourFlags structure = preparation.Structure.Value;
         bool rigidRing = !directedWinding && (structure != SvgContourFlags.ProperCrossing || (!isEvenOdd && mapping != SvgPolygonMapping.FlattenedCurves));
         if (rigidRing && (structure & (SvgContourFlags.ProperCrossing | SvgContourFlags.SelfTouch | SvgContourFlags.CoincidentOverlap)) != SvgContourFlags.None) return default;
+        // A software bitmap changes float translation before source controls are mapped.
+        // Native transforms resolve unknown convexity independently for each bitmap.
+        if (preparation.Source is {} placedSource && (!placedSource.IsKnownConvex || !preparation.SourceMap.IsAxisAligned)
+            && preparation.ConvexOrigin != bitmapOrigin)
+        {
+            preparation.Convex = null;
+            preparation.ConvexOrigin = bitmapOrigin;
+        }
         if (preparation.Convex is null)
         {
             CheckClippedSetupWork(setupWork + points.Length, maximumSetupWork, cancellationToken);
             // Equal turn signs do not prove convexity for an intersecting ring.
-            // Native shape builders retain convexity even when full-side radii produce zero-length lines.
-            bool knownConvex = preparation.Source?.IsKnownConvex == true;
+            // Native shape builders cache convexity for source ovals and rounded rectangles.
+            // Non-axis placement invalidates that cache: float controls must be classified again.
+            bool knownConvex = preparation.Source?.IsKnownConvex == true && preparation.SourceMap.IsAxisAligned;
             bool convexRing = knownConvex || IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
             bool retained = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure, cancellationToken);
             setupWork += points.Length;
@@ -1628,18 +1637,31 @@ internal ref partial struct SvgAnalyticCoverage
                 // Native transforms retain cached source concavity even when float
                 // placement collapses the turn that established it. Convex sources
                 // still require classification after their final placement.
-                long sourceWork = source.Points.Length + (long)source.QuadSpans.Length + 2L * source.CubicSpans.Length + 2;
-                CheckClippedSetupWork(setupWork + sourceWork, maximumSetupWork, cancellationToken);
-                convexRing = SvgRawContourConvexity.IsConvex(source.Points, source.QuadSpans, source.CubicSpans, cancellationToken);
-                setupWork += sourceWork;
+                if (preparation.SourceConvex is null)
+                {
+                    long sourceWork = source.Points.Length + (long)source.QuadSpans.Length + 2L * source.CubicSpans.Length + 2;
+                    CheckClippedSetupWork(setupWork + sourceWork, maximumSetupWork, cancellationToken);
+                    preparation.SourceConvex = SvgRawContourConvexity.IsConvex(source.Points, source.QuadSpans, source.CubicSpans, cancellationToken);
+                    setupWork += sourceWork;
+                }
+                convexRing = preparation.SourceConvex.Value;
             }
             if (convexRing && retained && !knownConvex)
             {
                 // Raw controls can reverse a turn that flattened samples omit. Reserve the
-                // complete traversal before classifying; later contexts reuse the decision.
+                // complete traversal before classifying; contexts in the same bitmap reuse the decision.
                 long rawWork = points.Length + (long)quadSpans.Length + 2L * cubicSpans.Length + 2;
-                CheckClippedSetupWork(setupWork + rawWork, maximumSetupWork, cancellationToken);
-                convexRing = SvgRawContourConvexity.IsConvex(points, quadSpans, cubicSpans, cancellationToken);
+                if (preparation.Source is {} localSource)
+                {
+                    rawWork *= 3;
+                    CheckClippedSetupWork(setupWork + rawWork, maximumSetupWork, cancellationToken);
+                    convexRing = SvgRawContourConvexity.IsConvexAfterPlacement(localSource, preparation.SourceMap, bitmapOrigin, cancellationToken);
+                }
+                else
+                {
+                    CheckClippedSetupWork(setupWork + rawWork, maximumSetupWork, cancellationToken);
+                    convexRing = SvgRawContourConvexity.IsConvex(points, quadSpans, cubicSpans, cancellationToken);
+                }
                 setupWork += rawWork;
             }
             bool box = convexRing;

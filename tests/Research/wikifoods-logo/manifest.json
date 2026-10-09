@@ -30,7 +30,6 @@
       "materialization": "Converter uses unchanged original bytes at declared scale; browser small/large change only root dimensions, preserving viewBox 0 0 100 100 and every other byte.",
       "selection": "Next complete document selected at 83de8a50 after a three-export sourcing batch. All nine outputs declared before capture/correction. First measured gate: percentage oval lengths. Curved clips and radial paints are present in the unchanged source; later gates await diagnosis.",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
       "captureInput": "capture-400.svg",
       "captureInputSha256": "314a329e1c4fa3edd8a24a03780f4a7b9342bd611de69178895581253672ffb3",
       "referenceSha256": "a9969b52a300f8bb702a6657312b0cf9648112295936417d005af45f1b545c9c"
@@ -54,7 +53,6 @@
       "materialization": "Converter uses unchanged original bytes at declared scale; browser small/large change only root dimensions, preserving viewBox 0 0 100 100 and every other byte.",
       "selection": "Next complete document selected at 83de8a50 after a three-export sourcing batch. All nine outputs declared before capture/correction. First measured gate: percentage oval lengths. Curved clips and radial paints are present in the unchanged source; later gates await diagnosis.",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
       "captureInput": "capture-400.svg",
       "captureInputSha256": "314a329e1c4fa3edd8a24a03780f4a7b9342bd611de69178895581253672ffb3",
       "referenceSha256": "b5cdb8ae7278e880aa223f79a1d76335f47fda311c274acbb2398c9d0eb2db94"
@@ -78,7 +76,6 @@
       "materialization": "Converter uses unchanged original bytes at declared scale; browser small/large change only root dimensions, preserving viewBox 0 0 100 100 and every other byte.",
       "selection": "Next complete document selected at 83de8a50 after a three-export sourcing batch. All nine outputs declared before capture/correction. First measured gate: percentage oval lengths. Curved clips and radial paints are present in the unchanged source; later gates await diagnosis.",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
       "captureInput": "capture-400.svg",
       "captureInputSha256": "314a329e1c4fa3edd8a24a03780f4a7b9342bd611de69178895581253672ffb3",
       "referenceSha256": "a4cec9dd2445a7aefd4a980000624696272c868d4c534ecd2b26acf0c266035a"
@@ -102,8 +99,21 @@
       "materialization": "Converter uses unchanged original bytes at declared scale; browser small/large change only root dimensions, preserving viewBox 0 0 100 100 and every other byte.",
       "selection": "Next complete document selected at 83de8a50 after a three-export sourcing batch. All nine outputs declared before capture/correction. First measured gate: percentage oval lengths. Curved clips and radial paints are present in the unchanged source; later gates await diagnosis.",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
-      "referenceSha256": "b1776ce755e76612cf6b2c3cce8405f25dcd0f11c51ae2043fba1f2532aa358e"
+      "referenceSha256": "b1776ce755e76612cf6b2c3cce8405f25dcd0f11c51ae2043fba1f2532aa358e",
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 187,
+        "MaximumChannelError": 255,
+        "MeanAbsoluteError": 0.0008605902777777778,
+        "RootMeanSquareError": 0.33874948749448724,
+        "MaximumAlphaError": 25,
+        "AlphaChangedPixelCount": 166,
+        "MinimumMismatchX": 178,
+        "MinimumMismatchY": 550,
+        "MaximumMismatchX": 1057,
+        "MaximumMismatchY": 1032,
+        "IsExact": false
+      }
     },
     {
       "id": "inv-108-1200x1200-white",
@@ -124,8 +134,21 @@
       "materialization": "Converter uses unchanged original bytes at declared scale; browser small/large change only root dimensions, preserving viewBox 0 0 100 100 and every other byte.",
       "selection": "Next complete document selected at 83de8a50 after a three-export sourcing batch. All nine outputs declared before capture/correction. First measured gate: percentage oval lengths. Curved clips and radial paints are present in the unchanged source; later gates await diagnosis.",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
-      "referenceSha256": "a9a6c388f70a18a1f0fbccbfbb5bc0e26eb8f7b4f548ef83cc568708b07c31fc"
+      "referenceSha256": "a9a6c388f70a18a1f0fbccbfbb5bc0e26eb8f7b4f548ef83cc568708b07c31fc",
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 131,
+        "MaximumChannelError": 12,
+        "MeanAbsoluteError": 0.00013333333333333334,
+        "RootMeanSquareError": 0.022110831935702666,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 178,
+        "MinimumMismatchY": 550,
+        "MaximumMismatchX": 1057,
+        "MaximumMismatchY": 1032,
+        "IsExact": false
+      }
     },
     {
       "id": "inv-108-1200x1200-black",
@@ -146,8 +169,21 @@
       "materialization": "Converter uses unchanged original bytes at declared scale; browser small/large change only root dimensions, preserving viewBox 0 0 100 100 and every other byte.",
       "selection": "Next complete document selected at 83de8a50 after a three-export sourcing batch. All nine outputs declared before capture/correction. First measured gate: percentage oval lengths. Curved clips and radial paints are present in the unchanged source; later gates await diagnosis.",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
-      "referenceSha256": "3169eaa08869fe066132a3db661b29a0ca9a0f21bef2e4bfa532cd069cfdf81f"
+      "referenceSha256": "3169eaa08869fe066132a3db661b29a0ca9a0f21bef2e4bfa532cd069cfdf81f",
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 174,
+        "MaximumChannelError": 17,
+        "MeanAbsoluteError": 0.0002861111111111111,
+        "RootMeanSquareError": 0.03904680240144867,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 178,
+        "MinimumMismatchY": 550,
+        "MaximumMismatchX": 1057,
+        "MaximumMismatchY": 1032,
+        "IsExact": false
+      }
     },
     {
       "id": "inv-108-2400x2400-transparent",
@@ -168,10 +204,23 @@
       "materialization": "Converter uses unchanged original bytes at declared scale; browser small/large change only root dimensions, preserving viewBox 0 0 100 100 and every other byte.",
       "selection": "Next complete document selected at 83de8a50 after a three-export sourcing batch. All nine outputs declared before capture/correction. First measured gate: percentage oval lengths. Curved clips and radial paints are present in the unchanged source; later gates await diagnosis.",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
       "captureInput": "capture-2400.svg",
       "captureInputSha256": "6afb43d9506a76950c2625387762915d9e221504cf0540a134c4dddfa89d536d",
-      "referenceSha256": "771aecccdbbe5679176b1a1ff3233a8a13a7d4b9d6002daad9df19b9a9e8bd28"
+      "referenceSha256": "771aecccdbbe5679176b1a1ff3233a8a13a7d4b9d6002daad9df19b9a9e8bd28",
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 54,
+        "MaximumChannelError": 127,
+        "MeanAbsoluteError": 4.7265625e-05,
+        "RootMeanSquareError": 0.04889801248517162,
+        "MaximumAlphaError": 15,
+        "AlphaChangedPixelCount": 51,
+        "MinimumMismatchX": 655,
+        "MinimumMismatchY": 1869,
+        "MaximumMismatchX": 2160,
+        "MaximumMismatchY": 2037,
+        "IsExact": false
+      }
     },
     {
       "id": "inv-108-2400x2400-white",
@@ -192,10 +241,23 @@
       "materialization": "Converter uses unchanged original bytes at declared scale; browser small/large change only root dimensions, preserving viewBox 0 0 100 100 and every other byte.",
       "selection": "Next complete document selected at 83de8a50 after a three-export sourcing batch. All nine outputs declared before capture/correction. First measured gate: percentage oval lengths. Curved clips and radial paints are present in the unchanged source; later gates await diagnosis.",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
       "captureInput": "capture-2400.svg",
       "captureInputSha256": "6afb43d9506a76950c2625387762915d9e221504cf0540a134c4dddfa89d536d",
-      "referenceSha256": "20f7894c5068b859364fae98cae43f7aa0a16653d20b1534d66e3d29cd305983"
+      "referenceSha256": "20f7894c5068b859364fae98cae43f7aa0a16653d20b1534d66e3d29cd305983",
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 46,
+        "MaximumChannelError": 5,
+        "MeanAbsoluteError": 1.3541666666666666e-05,
+        "RootMeanSquareError": 0.006353312784157044,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 655,
+        "MinimumMismatchY": 1869,
+        "MaximumMismatchX": 2160,
+        "MaximumMismatchY": 2037,
+        "IsExact": false
+      }
     },
     {
       "id": "inv-108-2400x2400-black",
@@ -216,10 +278,23 @@
       "materialization": "Converter uses unchanged original bytes at declared scale; browser small/large change only root dimensions, preserving viewBox 0 0 100 100 and every other byte.",
       "selection": "Next complete document selected at 83de8a50 after a three-export sourcing batch. All nine outputs declared before capture/correction. First measured gate: percentage oval lengths. Curved clips and radial paints are present in the unchanged source; later gates await diagnosis.",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
       "captureInput": "capture-2400.svg",
       "captureInputSha256": "6afb43d9506a76950c2625387762915d9e221504cf0540a134c4dddfa89d536d",
-      "referenceSha256": "dbbed3baf9770e0f8f4b5130adb38955dc096106c9dd8cde10d9d16fc65e8081"
+      "referenceSha256": "dbbed3baf9770e0f8f4b5130adb38955dc096106c9dd8cde10d9d16fc65e8081",
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 53,
+        "MaximumChannelError": 10,
+        "MeanAbsoluteError": 2.5911458333333332e-05,
+        "RootMeanSquareError": 0.011864030020753208,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 655,
+        "MinimumMismatchY": 1869,
+        "MaximumMismatchX": 2160,
+        "MaximumMismatchY": 2037,
+        "IsExact": false
+      }
     }
   ],
   "linuxReferenceQualification": {

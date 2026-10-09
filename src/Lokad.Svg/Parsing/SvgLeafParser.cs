@@ -384,10 +384,21 @@ internal static class SvgLeafParser
                 isLinear = true;
             }
             else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
-            else radial = SvgGradientSyntax.MapUserSpaceRadial(transform, radial, frame);
             opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
-            SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, true, null));
-            box = frame is null ? placement : frame.Value.Shift(placement);
+            if (!isLinear && !transform.IsAxisAligned)
+            {
+                float left = (float)syntax.CenterX - (float)syntax.RadiusX, top = (float)syntax.CenterY - (float)syntax.RadiusY;
+                float right = (float)syntax.CenterX + (float)syntax.RadiusX, bottom = (float)syntax.CenterY + (float)syntax.RadiusY;
+                box = new(left, top, right - left, bottom - top, default, true, null);
+                SvgAffineTransform sceneMap = frame is {} parent ? SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(transform) : transform;
+                radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, sceneMap, context.WorkCounter, context.CancellationToken);
+            }
+            else
+            {
+                if (!isLinear) radial = SvgGradientSyntax.MapUserSpaceRadial(transform, radial, frame);
+                SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, true, null));
+                box = frame is null ? placement : frame.Value.Shift(placement);
+            }
         }
         using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
         using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);

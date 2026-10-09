@@ -282,7 +282,7 @@ internal static class SvgGradientSyntax
         bool percentage = token.EndsWith("%");
         if (percentage) token = token[..^1].TrimEnd();
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, "Gradient stop offsets must be finite numbers.");
-        return percentage ? result / 100 : result;
+        return percentage ? (float)result / 100f : result;
     }
 
     internal static SvgGradientStop ParseStop(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -393,7 +393,8 @@ internal static class SvgGradientSyntax
             bandStroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, bandStrokeShape, elementName, elementName == "polyline");
         }
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        gradient = MapUserSpaceRadial(transform, gradient, frame);
+        bool bindSourceMap = !transform.IsAxisAligned;
+        if (!bindSourceMap) gradient = MapUserSpaceRadial(transform, gradient, frame);
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
         SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
@@ -415,7 +416,14 @@ internal static class SvgGradientSyntax
             using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             try
             {
-                SvgRectangle paintBox = gradient.IsUserSpace ? default : SvgOrthogonalShapeParser.BoxFromFilledGeometryBounds(filled, context.WorkCounter, context.CancellationToken);
+                SvgRectangle paintBox;
+                if (bindSourceMap)
+                {
+                    SvgAuthoredPath sourcePath = filled.Geometries[0].AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine radial path paints require retained source commands.");
+                    paintBox = gradient.IsUserSpace ? default : SvgPathBounds.Compute(sourcePath.Commands, context.WorkCounter, context.CancellationToken);
+                    gradient = BindRadialSourceMap(gradient, paintBox, sourcePath.SceneMap, context.WorkCounter, context.CancellationToken);
+                }
+                else paintBox = gradient.IsUserSpace ? default : SvgOrthogonalShapeParser.BoxFromFilledGeometryBounds(filled, context.WorkCounter, context.CancellationToken);
                 foreach (SvgGeometry existing in filled.Geometries)
                 {
                     SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity, budget));
@@ -892,6 +900,29 @@ internal static class SvgGradientSyntax
         return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2, ReferenceScaleX = gradient.ReferenceScaleX * referenceScaleX, ReferenceScaleY = gradient.ReferenceScaleY * referenceScaleY };
     }
 
+    /// <summary>Binds one radial definition to its source object box and composed drawing map.</summary>
+    /// <remarks>Immutable and allocation-free. Source bounds precede affine placement; shader-local and
+    /// reference matrices stay distinct for native float concatenation. The inverse supports the existing
+    /// focal evaluator. The caller charges this bounded setup; singular maps reject without owned storage.</remarks>
+    internal static SvgRadialGradient BindRadialSourceMap(SvgRadialGradient gradient, SvgRectangle sourceBox, SvgAffineTransform sceneMap, ParserWorkCounter work, CancellationToken token)
+    {
+        const int setupWork = 8;
+        for (int phase = 0; phase < setupWork; phase++) work.Consume(token);
+        if (!gradient.IsUserSpace && (sourceBox.Width <= 0 || sourceBox.Height <= 0)) return gradient with { IsEmpty = true };
+        SvgGradientTransform objectMap = gradient.IsUserSpace ? SvgGradientTransform.Identity
+            : new(sourceBox.Width, 0, 0, sourceBox.Height, sourceBox.X, sourceBox.Y);
+        SvgGradientTransform reference = new(sceneMap.A, sceneMap.B, sceneMap.C, sceneMap.D, sceneMap.E, sceneMap.F);
+        if (!SvgGradientTransform.Compose(reference, objectMap).TryInvert(out SvgGradientTransform inverse))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular radial paint referencing maps are not implemented.");
+        SvgGradientTransform localInverse = gradient.HasGeneralTransform ? gradient.Inverse : SvgGradientTransform.Identity;
+        SvgShaderMatrix local = gradient.NativePaintMatrices?.Local ?? new(1, 0, 0, 0, 1, 0);
+        SvgShaderMatrix nativeObject = new((float)objectMap.A, 0, (float)objectMap.E, 0, (float)objectMap.D, (float)objectMap.F);
+        SvgShaderMatrix nativeReference = new((float)sceneMap.A, (float)sceneMap.C, (float)sceneMap.E, (float)sceneMap.B, (float)sceneMap.D, (float)sceneMap.F);
+        return gradient with { IsUserSpace = true, HasGeneralTransform = true,
+            Inverse = SvgGradientTransform.Compose(localInverse, inverse),
+            NativePaintMatrices = new(SvgShaderMatrix.Concat(nativeObject, local), nativeReference) };
+    }
+
     /// <summary>Maps one userSpaceOnUse radial circle and its focal point through the referencing transform, recording scales for inverse evaluation.</summary>
     internal static SvgRadialGradient MapUserSpaceRadial(SvgAffineTransform transform, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
@@ -1362,6 +1393,6 @@ internal static class SvgGradientSyntax
         bool percentage = token.EndsWith("%");
         if (percentage) token = token[..^1].TrimEnd();
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result) || result < int.MinValue || result > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gradient coordinates must be finite bounded numbers.");
-        return percentage ? result / 100 : result;
+        return percentage ? (float)result / 100f : result;
     }
 }

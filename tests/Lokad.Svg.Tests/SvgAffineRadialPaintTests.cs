@@ -1,0 +1,97 @@
+using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
+
+namespace Lokad.Svg.Tests;
+
+public sealed class SvgAffineRadialPaintTests
+{
+    [Theory]
+    [InlineData("<radialGradient id='p' fx='31%' fy='42%'><stop stop-color='#eee'/><stop offset='1' stop-color='#aaa'/></radialGradient>", "<circle cx='16' cy='16' r='11' fill='url(#p)' transform='rotate(23 16 16)'/>")]
+    [InlineData("<radialGradient id='p' gradientTransform='matrix(1 .12 .18 .9 .02 -.04)'><stop stop-color='#eee'/><stop offset='1' stop-color='#aaa'/></radialGradient>", "<path d='M4 24 C4 4 28 4 28 24Z' fill='url(#p)' transform='matrix(.8 .2 -.1 .9 4 2)'/>")]
+    [InlineData("<radialGradient id='p' fx='31%' fy='42%'><stop stop-color='#eee'/><stop offset='1' stop-color='#aaa'/></radialGradient><clipPath id='c'><path d='M5 24 A11 11 0 0 1 27 24'/></clipPath>", "<g transform='rotate(12 16 16)' clip-path='url(#c)'><circle cx='16' cy='24' r='11' fill='url(#p)'/></g>")]
+    public void Affine_paint_and_clip_replay_releases_owners_on_denial_and_preserves_source_for_retry(string definitions, string shape)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + definitions + "</defs>" + shape + "</svg>");
+        RenderBudget measured = new(1_000_000);
+        ParserWorkCounter work = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+            Assert.NotEmpty(root.Geometries.ToArray());
+        Assert.Equal(0, measured.Snapshot().CurrentBytes);
+        for (long limit = 0; limit < work.Used; limit++)
+        {
+            RenderBudget denied = new(1_000_000);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        long peak = measured.Snapshot().PeakBytes;
+        for (long limit = 1; limit < peak; limit += 256) DenyMemory(limit);
+        DenyMemory(peak - 1);
+        RenderBudget retry = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, retry, null, new(work.Used), CancellationToken.None))
+        {
+            SvgAuthoredPath[] paths = root.Geometries.ToArray().Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>().ToArray();
+            SvgAuthoredPathCommand[][] original = paths.Select(path => path.Commands.ToArray()).ToArray();
+            long owned = retry.Snapshot().CurrentBytes;
+            byte[] expected;
+            long rasterWork;
+            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, CancellationToken.None))
+            {
+                expected = surface.Pixels.ToArray();
+                Assert.Contains(expected, value => value != 0);
+                rasterWork = surface.WorkUnits;
+            }
+            SvgRenderLimits defaults = SvgRenderLimits.Default;
+            foreach (long limit in new[] { root.ParserWorkUnits + 1, (root.ParserWorkUnits + rasterWork) / 2, rasterWork - 1 })
+            {
+                SvgRenderLimits tight = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
+                    defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
+                    checked((int)limit), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                {
+                    using var denied = SvgConverter.Rasterize(root, new(null, 1, SvgColor.Transparent, tight), retry, CancellationToken.None);
+                }).ErrorCode);
+                Assert.Equal(owned, retry.Snapshot().CurrentBytes);
+            }
+            using (retry.Reserve(1_000_000 - owned - 1024, SvgMemoryCategory.Surface))
+            {
+                long padded = retry.Snapshot().CurrentBytes;
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                {
+                    using var denied = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, CancellationToken.None);
+                }).ErrorCode);
+                Assert.Equal(padded, retry.Snapshot().CurrentBytes);
+            }
+            using CancellationTokenSource cancellation = new();
+            cancellation.Cancel();
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
+            {
+                using var denied = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, cancellation.Token);
+            }).CancellationToken);
+            for (int index = 0; index < paths.Length; index++) Assert.Equal(original[index], paths[index].Commands.ToArray());
+            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, CancellationToken.None))
+                Assert.Equal(expected, surface.Pixels);
+            Assert.Equal(owned, retry.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, retry.Snapshot().CurrentBytes);
+
+        void DenyMemory(long limit)
+        {
+            RenderBudget denied = new(limit);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(1_000_000), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+    }
+
+    [Theory]
+    [InlineData("<circle cx='16' cy='16' r='0' fill='url(#p)' transform='rotate(23 16 16)'/>")]
+    [InlineData("<g clip-path='url(#c)' transform='rotate(12 16 16)'><circle cx='100' cy='100' r='11' fill='url(#p)'/></g>")]
+    public void Empty_affine_paint_and_disjoint_curved_clip_remain_transparent(string shape)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><radialGradient id='p' fx='31%' fy='42%'><stop stop-color='#eee'/><stop offset='1' stop-color='#aaa'/></radialGradient><clipPath id='c'><path d='M5 24 A11 11 0 0 1 27 24'/></clipPath></defs>" + shape + "</svg>");
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+            Assert.All(surface.Pixels, value => Assert.Equal(0, value));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+}

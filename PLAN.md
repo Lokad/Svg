@@ -32,7 +32,7 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
 references. **Completed development deliverables: 11**. The selected document queue is
-**11/12 complete**; Wikifoods is the next deliverable, with 0/9 exact outputs.
+**11/12 complete**; Wikifoods is the next deliverable, with 3/9 exact outputs.
 Controls remain separate.
 These failure-selected examples establish no representative success rate.
 
@@ -127,7 +127,7 @@ six APIs on both platforms. Rectangle targets and ordinary group clips are admit
 multi-contour, transformed-coordinate and clip-rule promises remain G5 work.
 
 **Next complete deliverable: the CC0 Wikifoods logo (`inv-108`).** The bounded
-three-export batch is screened: Wikifoods rejects on percentage circle coordinates;
+three-export batch is screened: Wikifoods initially rejected on percentage circle coordinates;
 Bluemen clap is exact at an explicitly matching 339×325 viewport; AX5E1-2D
 contains animation outside the agreed static scope. Only Wikifoods enters the
 failure queue. This is development selection, with no representative success rate.
@@ -137,18 +137,20 @@ original-input outputs before correction: 400×400 / 1200×1200 / 2400×2400 at
 scales one third / 1 / 2, each on transparent/white/black. Every Windows and Linux
 reference has a stable, healthy, cleaned capture triple; Linux matches the frozen
 PNGs byte-for-byte. Browser small/large inputs change only root dimensions,
-preserving the viewBox and all other bytes. All six converter APIs currently
-reject every output with `UnsupportedFeature`: **0/9 exact; document incomplete**.
+preserving the viewBox and all other bytes. All six converter APIs now render
+every output: **3/9 exact; document incomplete**. The 400×400 transparent, white
+and black outputs are exact; six larger outputs retain measured differences
+against their unchanged PNGs.
 
-Percentage oval geometry now advances all nine outputs to the next measured gate:
-`Only straight clip paths are implemented.` Native curve clip replay now advances
-all nine to `Only axis-aligned rectangle transforms are implemented.` The [percentage-oval bank](tests/Research/oval-percentage-lengths/manifest.json)
+Percentage oval geometry removed the first gate; native curve clip replay removed
+the next. Shared source-space radial paint mapping now removes the affine paint
+gate. The [percentage-oval bank](tests/Research/oval-percentage-lengths/manifest.json)
 has nine exact controls and three explicit unsupported boundaries. Root/nested
 user-space bases, normalized diagonal radii and native float resolution feed both
 geometry and recorded paint bounds. Percentage oval definitions remain gated
 until their host viewport follows instance replay; this promised G2/G3 combination
 stays open. Rotated ellipse maps and rectangle percentages retain their own gates.
-The complete Wikifoods document is still **0/9 exact**, not completed by these controls.
+The complete Wikifoods document remains incomplete until all nine outputs are exact.
 The [curved-clip bank](tests/Research/curved-path-clips/manifest.json) has **nine exact
 controls and three explicit boundaries**, through six outputs on both platforms.
 Shared native clip content preserves authored quadratic/cubic/arc commands, the
@@ -156,19 +158,31 @@ parent bitmap origin and the separately transformed enclosing rectangle. The
 older group clip control also becomes exact without changing its reference.
 Concave curves, bounding-box curve clips and nonuniform composed group curves
 remain unsupported. The last combination exposes a measured edge mismatch;
-keep it in G3 while advancing Wikifoods' uniform rotated paint map. This is a
+keep it in G3 while finishing Wikifoods' larger clip outputs. This is a
 finite dependency boundary, with the remaining G3 promise unchanged.
-Both current Release solution builds pass with zero warnings/errors, and all
-**5,679 tests pass per platform** (4,171 core / 1,502 visual / six FontProbe).
+The affine paint slice passes Release solution builds with zero warnings/errors
+and **5,700 tests per platform** (4,176 core / 1,518 visual / six FontProbe).
 Every focused PNG has a stable, healthy, cleaned Linux triple matching its frozen
 reference. The original-bank/cohort qualification at `83de8a50` remains the last
 complete bank measurement; rerun the required complete checks when the document
 correction is finished, without recapturing unchanged references.
 
-Advance it through curved group/leaf clips and the radial paint mappings present
-in its original source. Use focused controls
-to confirm each dependency and protect shared repairs; a listed source feature is
-not a claim that its later gate has already been measured. Reuse geometry/source
+The [affine radial paint bank](tests/Research/affine-radial-paints/manifest.json)
+has **16 controls: ten exact, four measured larger-output gaps and two explicit
+unsupported boundaries**, through six APIs on Windows/Linux. Source object bounds,
+referencing maps and shader-local matrices stay distinct. Native float focal paint,
+bitmap-local transformed convexity and nonzero clip bounds share existing replay.
+Rotated ellipse geometry and gradient-filled oval strokes retain their explicit
+boundaries and remain promised in G3/G4. Controls do not count as documents.
+All 96 healthy, cleaned control captures match their frozen PNGs.
+
+**Next correction stays with Wikifoods:** finish the remaining bitmap-local curved
+clip coverage and plate-ellipse edges, then the larger focal-paint rounding controls.
+At 1200×1200, transparent/white/black differ at 187/131/174 pixels; at 2400×2400
+they differ at 54/46/53. The new larger circle/dome controls isolate those numerical
+routes before further changes. Require 9/9 exact document outputs and preserve
+every old exact result before selecting another export. Use focused controls
+to confirm each dependency and protect shared repairs. Reuse geometry/source
 replay and bounded clip/paint machinery. Do not require exhaustive G2 completion
 or substitute flattened geometry. The discovered non-scaling root-viewBox stroke
 width defect remains open: the logo's vector-effect path has no stroke and does
@@ -507,8 +521,9 @@ map within this exit. The `curved-path-clips/composed-group-cubic` control freez
 composed curve-clip boundary. Its prototype still differs at 58 pixels (maximum
 alpha error 46) after retaining both native clip coverages, so this combination
 continues to reject explicitly. Concave and objectBoundingBox curved clips remain
-in the G5 exit. Wikifoods' uniform rotated group clip is exact; its affine radial
-paint map is the next measured dependency. The retained non-uniform curve, stroke
+in the G5 exit. Wikifoods now renders all nine outputs through shared affine radial
+paint mapping; three 400×400 outputs are exact. The next dependency is the remaining
+large bitmap-local clip/oval edge behavior and focal-paint rounding. The retained non-uniform curve, stroke
 and paint combinations remain promised; Malta, Portugal, Bhutan and South Africa are complete. Exit: these
 retained documents/families and focused map controls
 are exact without normalized or flattened source substitution; no corporate or

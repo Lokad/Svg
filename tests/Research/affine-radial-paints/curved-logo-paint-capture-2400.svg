@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="2400" viewBox="0 0 100 100">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><radialGradient id="p" fx="11.548617076652%" fy="32.069825676192%"><stop stop-color="#EEE"/><stop offset="1" stop-color="#AAA"/></radialGradient><clipPath id="c"><path d="M10 75 A40 40 0 0 1 90 75"/></clipPath></defs>
+<g transform="rotate(20 90 75)" clip-path="url(#c)"><circle cx="50%" cy="75%" r="40%" fill="url(#p)"/></g>
+</svg>
