@@ -1,0 +1,146 @@
+{
+  "retrieved": "2026-10-09",
+  "selectedAt": "3987efb9",
+  "records": [
+    {
+      "title": "File:Flag of 高校野球事典 (in emblem).svg",
+      "retrieved": "2026-10-09",
+      "timestamp": "2024-03-30T01:09:48Z",
+      "size": 51524,
+      "sha1": "f77508f12b8674f49f24216673af61253a19c6e5",
+      "sha256": "395b43dcd35bf193fa8d2e330269aa38ad9ef563289ef8698da7375855e3dedf",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_%E9%AB%98%E6%A0%A1%E9%87%8E%E7%90%83%E4%BA%8B%E5%85%B8_(in_emblem).svg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/4/46/Flag_of_%E9%AB%98%E6%A0%A1%E9%87%8E%E7%90%83%E4%BA%8B%E5%85%B8_%28in_emblem%29.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "identity": "inv-119",
+      "original": "tests/Fixtures/candidates/inv-119.svg",
+      "extmetadata": {
+        "Credit": {
+          "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a href=\"//commons.wikimedia.org/wiki/User:%E6%B9%AF%E5%B4%A9%E6%AD%A3%E6%B5%B7\" title=\"User:湯崩正海\">湯崩正海</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Zero, Public Domain Dedication",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "false",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "source": "commons-desc-page"
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "featureTags": [
+        "compound-curved-clip-paths",
+        "nested-clips",
+        "radial-gradient-clipped-rectangles",
+        "percentage-rectangle-dimensions",
+        "composed-affine-transforms"
+      ],
+      "admissionOutcome": {
+        "Id": "baseball-emblem",
+        "Outcome": "UnsupportedFeature",
+        "Message": "Only bare-number and px rectangle coordinates are implemented.",
+        "InputSha256": "395b43dcd35bf193fa8d2e330269aa38ad9ef563289ef8698da7375855e3dedf"
+      }
+    },
+    {
+      "title": "File:Logo of 高校野球事典 mainpage picture.svg",
+      "retrieved": "2026-10-09",
+      "timestamp": "2024-02-23T04:02:42Z",
+      "size": 51183,
+      "sha1": "5efccb4284c7856690e2e320d72088cc858c6dab",
+      "sha256": "6326505afc1c964551827c8493c441de4f64a515e3477b3f6fdf468c20411705",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Logo_of_%E9%AB%98%E6%A0%A1%E9%87%8E%E7%90%83%E4%BA%8B%E5%85%B8_mainpage_picture.svg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/5/56/Logo_of_%E9%AB%98%E6%A0%A1%E9%87%8E%E7%90%83%E4%BA%8B%E5%85%B8_mainpage_picture.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "identity": "inv-120",
+      "original": "tests/Fixtures/candidates/inv-120.svg",
+      "extmetadata": {
+        "Credit": {
+          "value": "<p><span class=\"int-own-work\" lang=\"en\">Own work</span>\n（<a class=\"external free\" href=\"https://upload.wikimedia.org/wikipedia/commons/8/85/Logo_of_%E9%AB%98%E6%A0%A1%E9%87%8E%E7%90%83%E4%BA%8B%E5%85%B8.svg\">https://upload.wikimedia.org/wikipedia/commons/8/85/Logo_of_高校野球事典.svg</a>\n</p>\n<a class=\"external free\" href=\"https://upload.wikimedia.org/wikipedia/commons/8/85/Text_Logo_of_%E9%AB%98%E6%A0%A1%E9%87%8E%E7%90%83%E4%BA%8B%E5%85%B8.svg%EF%BC%89\">https://upload.wikimedia.org/wikipedia/commons/8/85/Text_Logo_of_高校野球事典.svg）</a>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a href=\"//commons.wikimedia.org/wiki/User:%E6%B9%AF%E5%B4%A9%E6%AD%A3%E6%B5%B7\" title=\"User:湯崩正海\">湯崩正海</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Zero, Public Domain Dedication",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "false",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "source": "commons-desc-page"
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "featureTags": [
+        "compound-curved-clip-paths",
+        "nested-clips",
+        "radial-gradient-clipped-rectangles",
+        "percentage-rectangle-dimensions",
+        "composed-affine-transforms"
+      ],
+      "admissionOutcome": {
+        "Id": "baseball-mainpage",
+        "Outcome": "UnsupportedFeature",
+        "Message": "Only single-contour curved clip paths are implemented.",
+        "InputSha256": "6326505afc1c964551827c8493c441de4f64a515e3477b3f6fdf468c20411705"
+      }
+    }
+  ],
+  "screening": {
+    "maximumDownloads": 3,
+    "actualDownloads": 3,
+    "retainedDocuments": 2,
+    "representativeRate": false,
+    "excluded": [
+      {
+        "title": "File:SVGvector-effect01.svg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVGvector-effect01.svg",
+        "sha256": "20f9fe9ab7d0a150dedcae60efd4eca75dd69a27160420be7370566c5c650ee0",
+        "reason": "Pinned browser could not decode the original ISO-8859-1 SVG image. No healthy reference; excluded before renderer screening. Original file not rewritten to obtain admission."
+      }
+    ]
+  }
+}

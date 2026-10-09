@@ -17,3 +17,6 @@ tests/Fixtures/candidates/inv-117.svg -text whitespace=cr-at-eol
 tests/Research/finite-support-exports/inv-117-capture-500x500.svg -text whitespace=cr-at-eol
 tests/Fixtures/candidates/inv-118.svg -text whitespace=cr-at-eol
 tests/Research/finite-support-exports/inv-118-capture-512x512.svg -text whitespace=cr-at-eol
+# Preserve the original compound-clip exports and their root-only browser inputs.
+tests/Fixtures/candidates/inv-119.svg -text whitespace=cr-at-eol
+tests/Research/compound-clip-documents/inv-119-capture-1200x800.svg -text whitespace=cr-at-eol

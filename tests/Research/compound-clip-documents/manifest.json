@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-09",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "purpose": "Two complete static CC0 baseball exports retained from three public-domain/CC0 downloads. Original bytes and outputs were declared before screening; inv-120 at 130x130 is the next complete-document deliverable. Controls remain separate from completed documents.",
+  "cases": [
+    {
+      "id": "inv-119-1200x800-transparent",
+      "document": "inv-119",
+      "input": "../../Fixtures/candidates/inv-119.svg",
+      "width": 1200,
+      "height": 800,
+      "viewport": {
+        "width": 1200,
+        "height": 800
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/inv-119-1200x800-transparent.png",
+      "sourceSha256": "395b43dcd35bf193fa8d2e330269aa38ad9ef563289ef8698da7375855e3dedf",
+      "referenceSha256": "ed53e7a71aff6404bff04edf09fe2d777f677e2073b05bebda1ddfcfd4c05dea",
+      "license": "CC0-1.0",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flag_of_%E9%AB%98%E6%A0%A1%E9%87%8E%E7%90%83%E4%BA%8B%E5%85%B8_(in_emblem).svg",
+      "role": "document-output",
+      "selection": "Complete fontless static export at its nominal source-page frame, fixed at 3987efb9 before renderer screening or capture. Original converter bytes and authored geometry unchanged.",
+      "materialization": "root-dimensions-only",
+      "captureInput": "inv-119-capture-1200x800.svg",
+      "captureInputSha256": "fd21a3e6f7d86c7727e21d2a3e17b19fafd37594928a7809be645f2f27695a76",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only bare-number and px rectangle coordinates are implemented."
+    },
+    {
+      "id": "inv-120-130x130-transparent",
+      "document": "inv-120",
+      "input": "../../Fixtures/candidates/inv-120.svg",
+      "width": 130,
+      "height": 130,
+      "viewport": {
+        "width": 130,
+        "height": 130
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/inv-120-130x130-transparent.png",
+      "sourceSha256": "6326505afc1c964551827c8493c441de4f64a515e3477b3f6fdf468c20411705",
+      "referenceSha256": "c80547b6f8235be1fb86859c0e44afbc8cf019aa152e9bd4528d72beed4a2e3a",
+      "license": "CC0-1.0",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Logo_of_%E9%AB%98%E6%A0%A1%E9%87%8E%E7%90%83%E4%BA%8B%E5%85%B8_mainpage_picture.svg",
+      "role": "document-output",
+      "selection": "Complete fontless static export at its nominal source-page frame, fixed at 3987efb9 before renderer screening or capture. Original converter bytes and authored geometry unchanged.",
+      "materialization": "root-dimensions-only",
+      "captureInput": "inv-120-capture-130x130.svg",
+      "captureInputSha256": "6326505afc1c964551827c8493c441de4f64a515e3477b3f6fdf468c20411705",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only single-contour curved clip paths are implemented."
+    }
+  ]
+}

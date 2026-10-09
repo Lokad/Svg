@@ -10,7 +10,7 @@ public sealed class SvgRemainingScopeDocumentTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "remaining-scope-documents", "remaining-gap-exports", "finite-support-exports" })
+        foreach (string family in new[] { "remaining-scope-documents", "remaining-gap-exports", "finite-support-exports", "compound-clip-documents" })
         {
             string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -26,7 +26,7 @@ public sealed class SvgRemainingScopeDocumentTests
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(family switch { "remaining-scope-documents" => 11, "remaining-gap-exports" => 3, "finite-support-exports" => 4, _ => throw new InvalidDataException("Unknown document family.") }, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family switch { "remaining-scope-documents" => 11, "remaining-gap-exports" => 3, "finite-support-exports" => 4, "compound-clip-documents" => 2, _ => throw new InvalidDataException("Unknown document family.") }, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("identical", Required(root, "decodedPixelStability"));
         Assert.Equal("healthy", Required(root, "captureStartupHealth"));
