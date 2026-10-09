@@ -20,7 +20,7 @@ internal readonly record struct SvgPatternTemplate(double? X, double? Y, double?
     }
 
     internal bool KeepsLegacyRectangle => Href is null && UserSpaceUnits == true
-        && Grid.Transform.A == 1 && Grid.Transform.D == 1
+        && Grid.Transform.IsAxisAligned && Grid.Transform.A == 1 && Grid.Transform.D == 1
         && Grid.OriginX == Math.Truncate(Grid.OriginX) && Grid.OriginY == Math.Truncate(Grid.OriginY)
         && Grid.TileWidth == Math.Truncate(Grid.TileWidth) && Grid.TileHeight == Math.Truncate(Grid.TileHeight)
         && Grid.ShiftX == Math.Truncate(Grid.ShiftX) && Grid.ShiftY == Math.Truncate(Grid.ShiftY);

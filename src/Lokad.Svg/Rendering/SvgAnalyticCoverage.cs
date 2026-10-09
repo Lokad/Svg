@@ -1413,7 +1413,7 @@ internal ref partial struct SvgAnalyticCoverage
         }
         if (ends.Length < 1 || points.Length < 3 || xEnd <= xStart || !preparation.PointValuesEligible || (constructionClip is null && !preparation.PointsFitCanvas)) return default;
         cancellationToken.ThrowIfCancellationRequested();
-        if (ends.Length == 1 && mapping == SvgPolygonMapping.NativeFillEdges && !preparation.UsesRunBlitter && paintClip == SvgAnalyticPaintClip.Binary)
+        if (ends.Length == 1 && mapping is (SvgPolygonMapping.NativeFillEdges or SvgPolygonMapping.NativeStrokeEdges) && !preparation.UsesRunBlitter && paintClip == SvgAnalyticPaintClip.Binary)
         {
             ReadOnlySpan<SvgAuthoredPathCommand> commands = preparation.Source is {} source ? source.Commands : ReadOnlySpan<SvgAuthoredPathCommand>.Empty;
             SvgAnalyticClipBounds rectangleClip = constructionClip is {} clippedRectangle ? clippedRectangle.Bounds : new(window.Left, 0, window.Right, outputHeight);

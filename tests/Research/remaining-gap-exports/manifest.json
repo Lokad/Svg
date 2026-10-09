@@ -17,7 +17,7 @@
     "profilesCleaned": true,
     "byteIdenticalToFrozenReferences": true
   },
-  "purpose": "Three complete fontless static exports targeting remaining G5/G6 gates; next deliverable is inv-112 set screw at its frozen 512x538 transparent output. Document outputs and controls remain separate.",
+  "purpose": "Three complete fontless static exports targeting remaining G5/G6 gates; inv-112 set screw is complete at its frozen 512x538 transparent output. The next deliverable is inv-113 gradient mask. Document outputs and controls remain separate.",
   "cases": [
     {
       "id": "inv-112-512x538-transparent",
@@ -39,8 +39,6 @@
       "role": "document-output",
       "selection": "Whole fontless static export at the nominal source-page frame, fixed at 5531c080 before renderer screening or capture; no geometry or original source replacement.",
       "materialization": "insert-root-dimensions",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only positive-axis pattern transforms are implemented.",
       "captureInput": "inv-112-capture-512x538.svg",
       "captureInputSha256": "6c95951122e64412c29c46ad889c9524d42c745746ab208c5e61e458a2c0ef72"
     },

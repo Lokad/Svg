@@ -8,13 +8,13 @@ namespace Lokad.Svg.Rendering;
 /// <summary>Retains the shader-local matrix and the drawing-reference matrix without concatenating their translations.</summary>
 internal readonly record struct SvgGradientPaintMatrices(SvgShaderMatrix Local, SvgAffineTransform Referencing);
 
-/// <summary>Prepares native float gradient coordinates for one raster draw.</summary>
+/// <summary>Prepares native float gradient or image coordinates for one raster draw.</summary>
 /// <remarks>Draw-local mutable state caches the owning bitmap's matrix without
 /// allocating storage. Callers retain raster work accounting and cancellation.
 /// Native centered radial and strictly inside zero-radius focal cones use float unit matrices.
 /// Other conical maps and non-finite float maps keep the existing evaluator.
 /// Instances must not be shared between concurrent raster draws.</remarks>
-internal struct SvgGradientCoordinates
+internal struct SvgShaderCoordinates
 {
     private readonly SvgShaderMatrix _unit;
     private readonly SvgShaderMatrix _paintMap;
@@ -26,12 +26,12 @@ internal struct SvgGradientCoordinates
     private bool _hasPrepared;
     private bool _canSample;
 
-    private SvgGradientCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap) : this(unit, paintMap, null) { }
+    private SvgShaderCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap) : this(unit, paintMap, null) { }
 
-    private SvgGradientCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap, SvgShaderMatrix? localMatrix)
+    private SvgShaderCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap, SvgShaderMatrix? localMatrix)
         : this(unit, paintMap, localMatrix, 0) { }
 
-    private SvgGradientCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap, SvgShaderMatrix? localMatrix, float focalRadiusRatioInverse)
+    private SvgShaderCoordinates(SvgShaderMatrix unit, SvgShaderMatrix paintMap, SvgShaderMatrix? localMatrix, float focalRadiusRatioInverse)
     {
         _unit = unit;
         _paintMap = paintMap;
@@ -40,7 +40,10 @@ internal struct SvgGradientCoordinates
         _enabled = unit.IsFinite && paintMap.IsFinite && paintMap.TryInvert(out _) && (localMatrix is null || localMatrix.Value.IsFinite);
     }
 
-    internal static SvgGradientCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset)
+    internal static SvgShaderCoordinates CreateImage(SvgShaderMatrix paintMap, SvgShaderMatrix imageLocal)
+        => new(new(1, 0, 0, 0, 1, 0), paintMap, imageLocal);
+
+    internal static SvgShaderCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset)
     {
         if (gradient.SourcePaint?.Data is { IsMapped: true } source)
         {
@@ -59,7 +62,7 @@ internal struct SvgGradientCoordinates
         float y2 = (float)(gradient.IsUserSpace ? gradient.Y2 / gradient.ReferenceScaleY : gradient.Y2);
         return Linear(x1, y1, x2, y2, new(sx, 0, tx, 0, sy, ty), null);
 
-        static SvgGradientCoordinates Linear(float x1, float y1, float x2, float y2, SvgShaderMatrix paint, SvgShaderMatrix? local)
+        static SvgShaderCoordinates Linear(float x1, float y1, float x2, float y2, SvgShaderMatrix paint, SvgShaderMatrix? local)
         {
             float dx = x2 - x1, dy = y2 - y1;
             float square = dx * dx + dy * dy;
@@ -74,7 +77,7 @@ internal struct SvgGradientCoordinates
         }
     }
 
-    internal static SvgGradientCoordinates CreateRadial(SvgRadialGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset)
+    internal static SvgShaderCoordinates CreateRadial(SvgRadialGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset)
     {
         if (gradient.FocalRadius != 0) return default;
         if (gradient.HasGeneralTransform && gradient.NativePaintMatrices is {} matrices)
@@ -110,7 +113,7 @@ internal struct SvgGradientCoordinates
         float focalY = (float)(gradient.IsUserSpace ? gradient.FocalY / gradient.ReferenceScaleY : gradient.FocalY);
         return Circle(cx, cy, radius, focalX, focalY, new(scaleX, 0, translateX, 0, scaleY, translateY), null);
 
-        static SvgGradientCoordinates Circle(float x, float y, float radius, float fx, float fy, SvgShaderMatrix paint, SvgShaderMatrix? local)
+        static SvgShaderCoordinates Circle(float x, float y, float radius, float fx, float fy, SvgShaderMatrix paint, SvgShaderMatrix? local)
         {
             if (radius <= 0 || !float.IsFinite(radius)) return default;
             if (fx != x || fy != y)
@@ -150,7 +153,7 @@ internal struct SvgGradientCoordinates
         return double.IsFinite(position);
     }
 
-    private bool TryMap(int x, int y, SvgCpuRasterGrid grid, out (float X, float Y) point)
+    internal bool TryMap(int x, int y, SvgCpuRasterGrid grid, out (float X, float Y) point)
     {
         point = default;
         if (!_enabled) return false;

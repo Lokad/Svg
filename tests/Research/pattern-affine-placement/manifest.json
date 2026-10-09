@@ -263,8 +263,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared before implementation and capture; isolates a root-local pattern, positive-axis map, source grid, inheritance or geometry dependency of complete inv-109.",
-      "role": "unsupported-boundary",
-      "expectedError": "UnsupportedFeature",
+      "role": "fidelity",
       "referenceSha256": "573b300d5572fd170ec9ca44036708b69cbc7cf522861569d2a035810b71a45b"
     },
     {
@@ -279,8 +278,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared before implementation and capture; isolates a root-local pattern, positive-axis map, source grid, inheritance or geometry dependency of complete inv-109.",
-      "role": "unsupported-boundary",
-      "expectedError": "UnsupportedFeature",
+      "role": "fidelity",
       "referenceSha256": "b8e4aa13bcd9ed5de3ea46befe33416e93b7f1a963f3b12d688205cad83eafe2"
     }
   ],

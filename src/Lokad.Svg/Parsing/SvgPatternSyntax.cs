@@ -35,8 +35,8 @@ internal static class SvgPatternSyntax
         SvgAffineTransform ParsePatternTransform(string value)
         {
             SvgAffineTransform map = SvgGeometrySyntax.ParseTransform(value, workCounter, cancellationToken);
-            if (!map.IsAxisAligned || map.A <= 0 || map.D <= 0)
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-axis pattern transforms are implemented.");
+            if (map.Determinant == 0)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Singular pattern transforms are not implemented.");
             return map;
         }
 
@@ -69,6 +69,7 @@ internal static class SvgPatternSyntax
     /// <summary>Lowers one pattern-filled orthogonal path or point-list shape into pattern-evaluated rectangle bands.</summary>
     internal static SvgParsedGeometry LowerPatternBands(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, string elementName, bool isPath, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame)
     {
+        style = style with { Stroke = style.Stroke ?? context.InheritedStroke.Stroke };
         SvgStrokeStyleSyntax.SvgAdmittedStroke? bandStroke = null;
         SvgResolvedPaintableElement bandStrokeShape = default;
         if (style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase))
@@ -156,6 +157,7 @@ internal static class SvgPatternSyntax
 
     internal static SvgParsedGeometry LowerPatternRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
     {
+        style = style with { Stroke = style.Stroke ?? context.InheritedStroke.Stroke };
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Fill), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);

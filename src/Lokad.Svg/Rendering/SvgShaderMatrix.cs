@@ -1,4 +1,4 @@
-// Managed adaptation of Skia affine concatenation and inversion.
+// Managed adaptation of Skia affine concatenation, inversion and picture raster scale.
 // Copyright 2006 The Android Open Source Project; 2018 Google LLC.
 // See THIRD_PARTY_NOTICES.txt.
 namespace Lokad.Svg.Rendering;
@@ -22,6 +22,22 @@ internal readonly record struct SvgShaderMatrix(float ScaleX, float SkewX, float
             (float)((double)outer.SkewY * inner.ScaleX + (double)outer.ScaleY * inner.SkewY),
             (float)((double)outer.SkewY * inner.SkewX + (double)outer.ScaleY * inner.ScaleY),
             (float)((double)outer.SkewY * inner.TranslateX + (double)outer.ScaleY * inner.TranslateY) + outer.TranslateY);
+    }
+
+    /// <summary>Returns native rotation-invariant picture raster scales with the affine fallback for ill-conditioned columns.</summary>
+    internal (float X, float Y) GetPictureScale()
+    {
+        float x = Length(ScaleX, SkewY), y = Length(SkewX, ScaleY);
+        if (float.IsFinite(x) && float.IsFinite(y) && x > 1f / 4096f && y > 1f / 4096f) return (x, y);
+        float area = MathF.Abs((float)((double)ScaleX * ScaleY - (double)SkewX * SkewY));
+        float fallback = float.IsFinite(area) && area > 1f / 4096f ? MathF.Sqrt(area) : 1;
+        return (fallback, fallback);
+
+        static float Length(float a, float b)
+        {
+            float squared = a * a + b * b;
+            return float.IsFinite(squared) ? MathF.Sqrt(squared) : (float)Math.Sqrt((double)a * a + (double)b * b);
+        }
     }
 
     internal bool TryInvert(out SvgShaderMatrix inverse)

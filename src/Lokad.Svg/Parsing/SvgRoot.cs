@@ -973,7 +973,8 @@ internal sealed class SvgPatternGeometry : IDisposable
     internal int TextureHeight => checked((int)TileHeight);
     /// <summary>Only device-mapped vector tiles retain source bounds and native image-shader coordinates.</summary>
     internal SvgViewBox? RasterSourceBox { get; init; }
-    internal SvgShaderMatrix? NativeSampling { get; init; }
+    internal SvgShaderMatrix? NativeImageMap { get; init; }
+    internal SvgShaderMatrix? NativeImageLocal { get; init; }
 
     internal SvgRectangle Fill { get; }
 

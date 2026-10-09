@@ -1294,7 +1294,7 @@ public static class SvgConverter
             double directionY = definition.Y2 - definition.Y1;
             double denominator = directionX * directionX + directionY * directionY;
             double offsetSpan = definition.Offset2 - definition.Offset1;
-            SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
 
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
@@ -1412,7 +1412,7 @@ public static class SvgConverter
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
-            SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (definition.Radius <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
 
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
@@ -1586,6 +1586,7 @@ public static class SvgConverter
             SvgPatternGeometry tile = mappedTile ?? source;
             using RasterizedSurface texture = PreparePatternTile(tile);
             byte[] blitted = texture.Pixels;
+            SvgShaderCoordinates imageCoordinates = tile.NativeImageMap is {} imageMap ? SvgShaderCoordinates.CreateImage(imageMap, tile.NativeImageLocal ?? throw new InvalidOperationException("Image sampling requires its local matrix.")) : default;
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
             SvgAnalyticContourPreparation preparation = new(raster.Points, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, raster.Mapping, raster.QuadSpans, raster.CubicSpans, raster.CompleteBounds.RoundOutForDispatch(), outputWidth, outputHeight, raster.Authored, raster.AuthoredMap);
@@ -1647,7 +1648,7 @@ public static class SvgConverter
                     if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                     double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SamplePattern(tile, blitted, x, y);
+                    SvgShaderPaint sample = SamplePattern(tile, blitted, x, y, ref imageCoordinates);
                     if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), PolygonClipCoverage(raster, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y));
                 }
@@ -1665,7 +1666,8 @@ public static class SvgConverter
             mapped = null;
             SvgAffineTransform shader = pattern.ShaderPlacement;
             if (horizontalScale == 1 && verticalScale == 1 && horizontalOffset == 0 && verticalOffset == 0 && shader == SvgAffineTransform.Identity && pattern.VectorContent is null) return true;
-            if (!shader.IsAxisAligned || shader.A <= 0 || shader.D <= 0) return false;
+            bool positiveAxis = shader.IsAxisAligned && shader.A > 0 && shader.D > 0;
+            if (pattern.VectorContent is null && !positiveAxis) return false;
             double scaleX = shader.A * horizontalScale, scaleY = shader.D * verticalScale;
             if (pattern.Content.Stroke is not null && (scaleX != 1 || scaleY != 1)) return false;
             double originX = (pattern.OriginX * shader.A + shader.E) * horizontalScale + horizontalOffset;
@@ -1674,20 +1676,27 @@ public static class SvgConverter
             if (pattern.VectorContent is not null)
             {
                 float width = (float)pattern.TileWidth, height = (float)pattern.TileHeight;
-                SvgShaderMatrix map = SvgShaderMatrix.Concat(new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset),
-                    new((float)shader.A, 0, (float)shader.E, 0, (float)shader.D, (float)shader.F));
-                double pixelsX = MathF.Ceiling(width * map.ScaleX), pixelsY = MathF.Ceiling(height * map.ScaleY);
+                SvgShaderMatrix outputMap = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
+                SvgShaderMatrix localMap = new((float)shader.A, (float)shader.C, (float)shader.E, (float)shader.B, (float)shader.D, (float)shader.F);
+                SvgShaderMatrix map = SvgShaderMatrix.Concat(outputMap, localMap);
+                // Picture tiles retain their source axes. Rotation/reflection change the
+                // sampling matrix, while column lengths choose the bounded texture scale.
+                (float rasterScaleX, float rasterScaleY) = positiveAxis
+                    ? (map.ScaleX, map.ScaleY) : map.GetPictureScale();
+                double pixelsX = MathF.Ceiling(width * rasterScaleX), pixelsY = MathF.Ceiling(height * rasterScaleY);
                 if (pixelsX <= 0 || pixelsY <= 0 || pixelsX > options.Limits.MaximumDimension || pixelsY > options.Limits.MaximumDimension)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern tile dimensions exceed the configured limit.");
                 float tileScaleX = (float)pixelsX / width, tileScaleY = (float)pixelsY / height;
-                SvgShaderMatrix imageMap = SvgShaderMatrix.Concat(map, new(1f / tileScaleX, 0, (float)pattern.OriginX, 0, 1f / tileScaleY, (float)pattern.OriginY));
-                if (!imageMap.TryInvert(out SvgShaderMatrix inverse)) return false;
+                SvgShaderMatrix imageLocal = SvgShaderMatrix.Concat(localMap, new(1f / tileScaleX, 0, (float)pattern.OriginX, 0, 1f / tileScaleY, (float)pattern.OriginY));
+                SvgShaderMatrix imageMap = SvgShaderMatrix.Concat(outputMap, imageLocal);
+                if (!imageMap.TryInvert(out _)) return false;
                 mapped = new(default, 0, 0, pixelsX, pixelsY, pattern.Fill, pattern.Opacity, pattern.Stroke)
                 {
                     VectorContent = pattern.VectorContent,
                     ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY),
                     RasterSourceBox = new(0, 0, width, height, SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None),
-                    NativeSampling = IsDeviceInteger(tileWidth) && IsDeviceInteger(tileHeight) ? null : inverse,
+                    NativeImageMap = positiveAxis && IsDeviceInteger(tileWidth) && IsDeviceInteger(tileHeight) ? null : outputMap,
+                    NativeImageLocal = positiveAxis && IsDeviceInteger(tileWidth) && IsDeviceInteger(tileHeight) ? null : imageLocal,
                 };
                 return true;
             }
@@ -1801,6 +1810,7 @@ public static class SvgConverter
 
         void StampPatternFill(SvgPatternGeometry pattern, byte[] tile, byte[] destination)
         {
+            SvgShaderCoordinates imageCoordinates = pattern.NativeImageMap is {} imageMap ? SvgShaderCoordinates.CreateImage(imageMap, pattern.NativeImageLocal ?? throw new InvalidOperationException("Image sampling requires its local matrix.")) : default;
             SvgRectangleRaster raster = PrepareRectangle(pattern.Fill);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             for (int y = startY; y < endY; y++)
@@ -1810,7 +1820,7 @@ public static class SvgConverter
             {
                 int offset = (y * outputWidth + x) * 4;
                 if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                SamplePattern(pattern, tile, x, y).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
+                SamplePattern(pattern, tile, x, y, ref imageCoordinates).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
             }
             }
         }
@@ -1821,20 +1831,26 @@ public static class SvgConverter
         // the existing single-tap route; fractional phase uses four bounded native
         // bilinear contributions before the independent shader alpha is applied.
         // Contributions keep the native row order (NX/NY, PX/NY, NX/PY, PX/PY).
-        SvgShaderPaint SamplePattern(SvgPatternGeometry pattern, byte[] tile, int x, int y)
+        SvgShaderPaint SamplePattern(SvgPatternGeometry pattern, byte[] tile, int x, int y, ref SvgShaderCoordinates imageCoordinates)
         {
             float sampleX = x - (float)(pattern.OriginX + pattern.ShaderPlacement.E);
             float sampleY = y - (float)(pattern.OriginY + pattern.ShaderPlacement.F);
-            if (pattern.NativeSampling is {} native)
+            float nativeFractionX = 0, nativeFractionY = 0;
+            if (pattern.NativeImageMap is not null)
             {
-                (sampleX, sampleY) = native.Map(x + .5f, y + .5f);
+                if (!imageCoordinates.TryMap(x, y, rasterGrid, out (float X, float Y) point))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern image coordinates are not finite and invertible.");
+                (sampleX, sampleY) = point;
+                float weightX = sampleX + .5f, weightY = sampleY + .5f;
+                nativeFractionX = weightX - MathF.Floor(weightX);
+                nativeFractionY = weightY - MathF.Floor(weightY);
                 sampleX -= .5f;
                 sampleY -= .5f;
             }
             float floorX = MathF.Floor(sampleX), floorY = MathF.Floor(sampleY);
             int tileX = (int)((floorX % pattern.TextureWidth + pattern.TextureWidth) % pattern.TextureWidth);
             int tileY = (int)((floorY % pattern.TextureHeight + pattern.TextureHeight) % pattern.TextureHeight);
-            float fx = sampleX - floorX, fy = sampleY - floorY;
+            float fx = pattern.NativeImageMap is null ? sampleX - floorX : nativeFractionX, fy = pattern.NativeImageMap is null ? sampleY - floorY : nativeFractionY;
             float opacity = ShaderAlpha(pattern.Opacity);
             if (fx == 0 && fy == 0)
             {
@@ -1904,7 +1920,7 @@ public static class SvgConverter
             double directionY = definition.Y2 - definition.Y1;
             double denominator = directionX * directionX + directionY * directionY;
             double offsetSpan = definition.Offset2 - definition.Offset1;
-            SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (paint && offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
 
             if (paint && (denominator != 0 || definition.Stops.Length == 1))
@@ -1972,7 +1988,7 @@ public static class SvgConverter
                 return;
             }
             SvgRectangleRaster raster = PrepareRectangle(area);
-            SvgGradientCoordinates nativeCoordinates = SvgGradientCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             if (paint && (definition.Radius <= 0 && definition.Stops.Length != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
 

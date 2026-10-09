@@ -9991,3 +9991,49 @@ and all 5,839 tests pass per platform (4,229 core / 1,604 visual / six FontProbe
 Production, previous references and options are unchanged, so complete banks and
 corporate qualification are reused from `5531c080`. Completed documents remain
 fifteen; the selected queue is now 15/18. All finite G2–G9 and S17 promises remain.
+
+## Complete set-screw: general pattern grids and shared image coordinates (2026-10-09)
+
+The unchanged 1,003-byte public-domain `inv-112` now matches its frozen explicit
+512×538 transparent reference through six APIs on Windows/Linux. Its original
+root, rotated vector hatch, ordinary strokes/dashes and reflected uses are retained.
+The complete selected-document queue advances to 16/18; gradient-mask `inv-113`
+is next, and soccerball `inv-114` remains queued. No other G2–G9 exit closes.
+
+Pattern parsing preserves finite nonsingular general local maps. Rectangle tiles
+use source replay when their map requires it; the legacy rectangle shortcut now
+requires actual axis alignment. Existing bounded tile rasterization uses native
+rotation-invariant column lengths, validates dimensions/pixels before allocation
+and keeps borrowed scene ownership and remaining-work accounting. Target pattern
+fills resolve inherited solid strokes before the shared outline lowerer.
+
+The hatch revealed that a generated single rectangular stroke outline can use
+the native filled-path float rectangle shortcut after stroke conversion. The
+same recognizer, binary-clip/run dispatch and finite coverage now apply to this
+outline. This refines the earlier blanket exclusion of NativeStrokeEdges;
+nonrectangular contours, hairlines and run/clip distinctions keep their routes.
+The scaled border controls become exact without changing their references.
+
+Five final one-alpha differences in the complete document exposed shader stages
+across CPU bitmap origins. The existing gradient coordinate cache is extended and
+renamed `SvgShaderCoordinates`; pattern image sampling reuses it. Output and local
+image matrices remain separate until the owning bitmap subtracts its origin,
+concatenates and inverts. Bilinear weights use native fractions from sample
+center plus one half independently of the lower neighbor. Cached state is draw
+local, allocation-free and never mutates borrowed commands or tile owners.
+No source coordinates, document IDs, pixel values or image-specific adjustment
+enter the implementation. Pinned SkPictureShader/SkShaderBase sources join the
+existing notice; licenses and cached source evidence remain explicit.
+
+Fifteen focused controls are exact, including three tiled frame/curve/reflection
+cases. All new healthy, cleaned platform triples match frozen PNGs byte-for-byte.
+The older rotation/reflection boundaries graduate against unchanged references;
+that placement bank is now 18/18. Six new controls sweep discovery/parser work,
+sampled/peak memory and raster work denial; rotated replay cancellation,
+oversized rotated/reflected tile denial/retry and singular-map cleanup pass.
+The original whole set-screw releases partial owners under early/middle/late work
+and peak-memory denial before retry. Both Release builds and 5,866 tests per
+platform pass (4,241 core / 1,619 visual / six FontProbe). Complete original and
+corporate qualification preserve preceding exact results and all prior assets;
+corporate remains 27/27 / 258/258 on each platform's frozen references. Detailed
+diagnosis, captures and audits stay ignored under `artifacts/set-screw-pattern-20261009/`.

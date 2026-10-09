@@ -103,7 +103,9 @@
     <None Include="../Research/pattern-vector-content/*.svg" Link="TestData/pattern-vector-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/pattern-inheritance/*.svg" Link="TestData/pattern-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/pattern-affine-placement/*.svg" Link="TestData/pattern-affine-placement/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/pattern-general-placement/*.svg" Link="TestData/pattern-general-placement/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-109.svg" Link="TestData/striped-pattern.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/candidates/inv-112.svg" Link="TestData/set-screw.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/native-clip-winding/*.svg" Link="TestData/native-clip-winding/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-110.svg" Link="TestData/non-ionizing-warning.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/deferred-paint-leaves/*.svg" Link="TestData/deferred-paint-leaves/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

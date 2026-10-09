@@ -83,6 +83,7 @@ public sealed class SvgPatternContentTests
     [Theory]
     [InlineData("", false)]
     [InlineData("scale(1.5 2)", true)]
+    [InlineData("rotate(-45)", true)]
     public void Cancellation_during_tile_replay_preserves_borrowed_scene_and_allows_retry(string transform, bool rootLocal)
     {
         string definition = "<pattern id='p' width='256' height='256' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><circle cx='128' cy='128' r='100' fill='#025bc7'/></pattern>";

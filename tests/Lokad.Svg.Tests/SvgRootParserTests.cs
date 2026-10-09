@@ -6588,10 +6588,10 @@ public sealed class SvgRootParserTests
     }
 
     [Theory]
-    [InlineData("rotate(45)", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("matrix(1 1 1 1 0 0)", SvgErrorCode.UnsupportedFeature)]
     [InlineData("translate()", SvgErrorCode.MalformedInput)]
     [InlineData("translate(1,2,3)", SvgErrorCode.MalformedInput)]
-    public void Rejects_unsupported_pattern_transforms(string transform, SvgErrorCode code)
+    public void Rejects_invalid_or_singular_pattern_transforms(string transform, SvgErrorCode code)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
 
