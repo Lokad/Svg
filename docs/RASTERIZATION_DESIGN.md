@@ -9511,3 +9511,56 @@ Its nine output options are fixed in PLAN before capture or correction. G2–G9,
 the non-scaling root-viewBox width-map defect and S17 remote CI stay open. Ignored
 evidence is under artifacts/bhutan-document-20261009/ and
 artifacts/linux-delivery-20261007/bhutan-document-final-20261009/.
+
+## Native path-clip replay completes South Africa (2026-10-09)
+
+All nine original-input South Africa outputs are exact through six APIs on Windows/
+Linux against frozen references. Output selection precedes capture and correction
+at `0db47f05`; the old native transparent PNG remains unchanged. Small/large browser
+materializations change root dimensions only. Healthy, cleaned Linux triples match
+every PNG byte-for-byte. Native/small/large defects improve 273/216/18 → zero on
+each background. Eleven development documents are complete.
+
+Isolated stroked-band diagnostics prove unclipped construction already exact.
+Geometric intersections of flattened paints lose the original contour and fail
+independent AA multiplication. One convex straight user-space path clip now registers
+a borrowed authored contour through the existing native mask-content owner and
+binds one shared operation around its original paints. Rectangle targets are admitted.
+Existing multi-contour lowering remains unchanged; group/use, general coordinates,
+holes and clip rules retain their finite G5 promises and explicit boundaries.
+
+The pinned [Blink clip builder](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/paint/paint_property_tree_builder.cc)
+retains an enclosing logical integer rectangle beside a generic path. It differs
+from a native viewport rectangle/rrect. The contour registration preserves that
+separate AA rectangle and generic source classification. Omitting it overstates
+fractional boundary coverage. Clip masks use the full clip region; cropping their
+construction to painted bounds perturbs curves. Painted contours intersect the
+clip's integer bounds while keeping their actual bordered bitmap origin. Changing
+rectangular viewport layer bounds instead regresses existing isolated-opacity
+controls; their established paint-bound behavior stays intact.
+
+The pinned [SkRasterClip cache](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkRasterClip.h)
+collapses opaque rectangular AA intersections to BW. Detecting an opaque bitmap
+intersection preserves ordinary material routing instead of forcing AA runs.
+This removes the last 18 one-channel errors in the large document. Classification
+borrows the active tape, allocates no storage, charges each visited pixel and
+checks cancellation per row; mixed coverage keeps independent byte multiplication.
+The existing full-canvas RGBA clip owner reserves before allocation and releases
+on denial/cancellation. Authored geometry/source owners are copied and released
+through the existing scene contract. Draw/geometry/paint layouts remain 72/272/68.
+
+Eleven frozen CC0 controls are ten exact plus one explicit polygon-group boundary.
+They cover matching/crossing fills, open and fill/stroke paths, curves, alpha,
+gradient/rectangle targets and native/large opaque-tile strokes. Two new source
+inputs sweep parser work and sampled/peak memory denial, raster work/memory and
+cancellation/retry with immutable borrowed commands; unpainted fill placeholders
+own no source. The complete document protects partial-owner cleanup and retry.
+
+Windows/Linux pass Release builds and 5,630 tests. Complete qualification preserves
+all previous exact outcomes and corporate 27/27 / 258/258 on own-platform references.
+Only South Africa's Default report/PNG changes among 1,567 original reports and
+1,551 PNGs; the other 1,550 PNGs and all preceding focused outcomes are unchanged.
+No quantitative performance or package/API delivery claim is added. Remaining
+G2–G9, the non-scaling root width-map defect and S17 remote CI stay open. Ignored
+evidence is under artifacts/south-africa-strokes-20261009/ and
+artifacts/linux-delivery-20261007/south-africa-strokes-final-20261009/.

@@ -16,13 +16,13 @@ public static class SvgConverter
         public void Dispose() { Reservation?.Dispose(); Authored?.Dispose(); }
 
         /// <summary>Gets bordered construction when complete mapped path/control bounds escape this bitmap or the SVG clip.</summary>
-        internal SvgAnalyticClipContext? GetConstructionClip(SvgCpuRasterContext context)
-            => ClipContainsPath && CompleteBounds.IsContainedBy(context.BitmapClip) ? null : new(GetBitmapClip(context), new(context.BitmapClip.Left, context.BitmapClip.Top));
+        internal SvgAnalyticClipContext? GetConstructionClip(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip)
+            => ClipContainsPath && CompleteBounds.IsContainedBy(GetBitmapClip(context, contentClip)) ? null : new(GetBitmapClip(context, contentClip), new(context.BitmapClip.Left, context.BitmapClip.Top));
 
         /// <summary>Keeps bitmap walking distinct from whole-path storage and exclusively owned painting.</summary>
-        internal SvgAnalyticScanWindow GetScanWindow(SvgCpuRasterContext context)
+        internal SvgAnalyticScanWindow GetScanWindow(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip)
         {
-            SvgAnalyticClipBounds clip = GetBitmapClip(context);
+            SvgAnalyticClipBounds clip = GetBitmapClip(context, contentClip);
             return new(clip.Left, clip.Right);
         }
 
@@ -30,9 +30,14 @@ public static class SvgConverter
         internal SvgAnalyticPaintClip GetPaintClip(SvgCpuRasterContext context)
             => Clip is {} bounds ? SvgAnalyticRectangleClip.Classify(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom, context.BitmapClip, ClipAntialiasing) : SvgAnalyticPaintClip.Binary;
 
-        private SvgAnalyticClipBounds GetBitmapClip(SvgCpuRasterContext context)
+        private SvgAnalyticClipBounds GetBitmapClip(SvgCpuRasterContext context, SvgAnalyticClipBounds? contentClip)
         {
             SvgAnalyticClipBounds bitmap = context.BitmapClip;
+            if (contentClip is {} content)
+            {
+                int left = Math.Max(bitmap.Left, content.Left), top = Math.Max(bitmap.Top, content.Top);
+                bitmap = new(left, top, Math.Max(left, Math.Min(bitmap.Right, content.Right)), Math.Max(top, Math.Min(bitmap.Bottom, content.Bottom)));
+            }
             return Clip is {} bounds
                 ? new((int)Math.Clamp(Math.Floor(bounds.Left), bitmap.Left, bitmap.Right), (int)Math.Clamp(Math.Floor(bounds.Top), bitmap.Top, bitmap.Bottom), (int)Math.Clamp(Math.Ceiling(bounds.Right), bitmap.Left, bitmap.Right), (int)Math.Clamp(Math.Ceiling(bounds.Bottom), bitmap.Top, bitmap.Bottom))
                 : bitmap;
@@ -637,7 +642,7 @@ public static class SvgConverter
                     bool viewportClip = command.RegionKind == SvgLayerRegionKind.Viewport && command.MaskRegion is not null;
                     bool affineViewportClip = command.RegionKind == SvgLayerRegionKind.AffineViewport && command.MaskContentIndex >= 0;
                     (double regionLeft, double regionTop, double regionRight, double regionBottom) = command.MaskRegion is SvgClipBox maskRegion ? MapClipBounds(maskRegion, horizontalScale, horizontalOffset, verticalScale, verticalOffset) : (0, 0, outputWidth, outputHeight);
-                    SvgAnalyticClipBounds layer = LayerPaintBounds(index, previousLayer, viewportClip || affineViewportClip ? null : command.MaskRegion);
+                    SvgAnalyticClipBounds layer = affineViewportClip ? previousLayer : LayerPaintBounds(index, previousLayer, viewportClip ? null : command.MaskRegion);
                     if (activeViewportBounds is {} inheritedBounds)
                     {
                         int left = Math.Max(layer.Left, inheritedBounds.Left), top = Math.Max(layer.Top, inheritedBounds.Top);
@@ -1053,6 +1058,30 @@ public static class SvgConverter
                 : SvgAnalyticClipCoverage.FromMask(coverage.Apply(activeViewportClip[(y * outputWidth + x) * 4 + 3]));
         }
 
+        SvgAnalyticPaintClip PolygonPaintClip(MappedPolygon raster, SvgCpuRasterContext context)
+        {
+            if (collectingViewportClip) return SvgAnalyticPaintClip.Antialiased;
+            SvgAnalyticPaintClip paintClip = raster.GetPaintClip(context);
+            if (activeViewportClip.Length == 0) return paintClip;
+            SvgAnalyticClipBounds clip = context.BitmapClip;
+            if (activeViewportBounds is {} bounds)
+                clip = new(Math.Max(clip.Left, bounds.Left), Math.Max(clip.Top, bounds.Top), Math.Min(clip.Right, bounds.Right), Math.Min(clip.Bottom, bounds.Bottom));
+            // Native raster clips collapse a wholly opaque rectangular bitmap
+            // intersection to BW. Preserve its ordinary mask/run material routing.
+            for (int y = clip.Top; y < clip.Bottom; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                for (int x = clip.Left; x < clip.Right; x++)
+                {
+                    if (workUnits >= options.Limits.MaximumWorkUnits)
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Raster clip classification exceeds the configured limit.");
+                    workUnits++;
+                    if (activeViewportClip[(y * outputWidth + x) * 4 + 3] != 255) return SvgAnalyticPaintClip.Antialiased;
+                }
+            }
+            return paintClip;
+        }
+
         void RasterizePolygonFill(SvgPolygonFill polygon, SvgAuthoredPath? authoredPath, byte[] destination)
         {
             if (!polygon.HasFill || polygon.Points.Length < 3) return;
@@ -1076,7 +1105,7 @@ public static class SvgConverter
                 }
                 int storageStartX = Math.Max(raster.PathStartX, context.BitmapClip.Left);
                 int storageEndX = Math.Min(raster.PathEndX, context.BitmapClip.Right);
-                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, storageStartX, storageEndX, raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context), new SvgCpuBitmapOrigin(context.BitmapClip.Left, context.BitmapClip.Top), raster.GetConstructionClip(context), collectingViewportClip || activeViewportClip.Length != 0 ? SvgAnalyticPaintClip.Antialiased : raster.GetPaintClip(context), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, storageStartX, storageEndX, raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context, activeViewportBounds), new SvgCpuBitmapOrigin(context.BitmapClip.Left, context.BitmapClip.Top), raster.GetConstructionClip(context, activeViewportBounds), PolygonPaintClip(raster, context), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
                 if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += analyticSetup;
                 // Charge the taken traversal: analytic rows cost pixels while the fan evaluates every contour per pixel.
@@ -1162,7 +1191,7 @@ public static class SvgConverter
                 }
                 int storageStartX = Math.Max(raster.PathStartX, context.BitmapClip.Left);
                 int storageEndX = Math.Min(raster.PathEndX, context.BitmapClip.Right);
-                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, storageStartX, storageEndX, raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context), new SvgCpuBitmapOrigin(context.BitmapClip.Left, context.BitmapClip.Top), raster.GetConstructionClip(context), collectingViewportClip || activeViewportClip.Length != 0 ? SvgAnalyticPaintClip.Antialiased : raster.GetPaintClip(context), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, storageStartX, storageEndX, raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context, activeViewportBounds), new SvgCpuBitmapOrigin(context.BitmapClip.Left, context.BitmapClip.Top), raster.GetConstructionClip(context, activeViewportBounds), PolygonPaintClip(raster, context), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
                 if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += analyticSetup;
                 int startX = useAnalytic ? Math.Max(raster.StartX, context.Interior.Left) : raster.StartX;
@@ -1278,7 +1307,7 @@ public static class SvgConverter
                 }
                 int storageStartX = Math.Max(raster.PathStartX, context.BitmapClip.Left);
                 int storageEndX = Math.Min(raster.PathEndX, context.BitmapClip.Right);
-                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, storageStartX, storageEndX, raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context), new SvgCpuBitmapOrigin(context.BitmapClip.Left, context.BitmapClip.Top), raster.GetConstructionClip(context), collectingViewportClip || activeViewportClip.Length != 0 ? SvgAnalyticPaintClip.Antialiased : raster.GetPaintClip(context), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, storageStartX, storageEndX, raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context, activeViewportBounds), new SvgCpuBitmapOrigin(context.BitmapClip.Left, context.BitmapClip.Top), raster.GetConstructionClip(context, activeViewportBounds), PolygonPaintClip(raster, context), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
                 if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += analyticSetup;
                 int startX = useAnalytic ? Math.Max(raster.StartX, context.Interior.Left) : raster.StartX;
@@ -1448,7 +1477,7 @@ public static class SvgConverter
                 }
                 int storageStartX = Math.Max(raster.PathStartX, context.BitmapClip.Left);
                 int storageEndX = Math.Min(raster.PathEndX, context.BitmapClip.Right);
-                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, storageStartX, storageEndX, raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context), new SvgCpuBitmapOrigin(context.BitmapClip.Left, context.BitmapClip.Top), raster.GetConstructionClip(context), collectingViewportClip || activeViewportClip.Length != 0 ? SvgAnalyticPaintClip.Antialiased : raster.GetPaintClip(context), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
+                using SvgAnalyticCoverage walker = SvgAnalyticCoverage.Prepare(ref preparation, storageStartX, storageEndX, raster.PathStartY, raster.PathEndY, raster.GetScanWindow(context, activeViewportBounds), new SvgCpuBitmapOrigin(context.BitmapClip.Left, context.BitmapClip.Top), raster.GetConstructionClip(context, activeViewportBounds), PolygonPaintClip(raster, context), options.Limits.MaximumWorkUnits - workUnits, budget, out long analyticSetup, out bool useAnalytic, cancellationToken);
                 if (analyticSetup > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Scanline coverage setup exceeds the configured limit.");
                 workUnits += analyticSetup;
                 int startX = useAnalytic ? Math.Max(raster.StartX, context.Interior.Left) : raster.StartX;

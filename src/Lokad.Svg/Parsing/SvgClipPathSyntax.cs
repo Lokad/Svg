@@ -95,10 +95,34 @@ internal static class SvgClipPathSyntax
             {
                 if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths in transformed viewports are not implemented.");
                 if (state.GroupUseExpanded) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths with use instances are not implemented.");
-                for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
+                if (pending.GeometryCount == 0) continue;
+                if (clipPolygon.ContourEnds.Length == 1)
                 {
-                    workCounter.Consume(cancellationToken);
-                    state.Scene.ReplaceGeometry(geometryIndex, ApplyPolygonClip(state.Scene.GeometryAt(geometryIndex), clipPolygon, state.Budget, workCounter, cancellationToken));
+                    // Native clip coverage multiplies each paint operation independently.
+                    // Keep its source contours and shader coordinates intact instead of
+                    // replacing them with a geometric intersection of flattened vertices.
+                    (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clipPolygon.Points,
+                        SvgAffineTransform.Identity, SvgClipContentKind.ClipPath, state, state.Scene, workCounter, cancellationToken);
+                    SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+                    operation.Resolved = true;
+                    operation.Value = 255;
+                    operation.Region = bounds;
+                    operation.ContentIndex = contentIndex;
+                    operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+                    for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, operation, state.Scene.GeometryAt(geometryIndex).LeafMask);
+                        state.Scene.AssignLeafMask(geometryIndex, binding);
+                    }
+                }
+                else
+                {
+                    for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        state.Scene.ReplaceGeometry(geometryIndex, ApplyPolygonClip(state.Scene.GeometryAt(geometryIndex), clipPolygon, state.Budget, workCounter, cancellationToken));
+                    }
                 }
                 continue;
             }

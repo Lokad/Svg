@@ -5,7 +5,7 @@ on Windows and Linux**, against each platform's frozen browser references.
 Marks are 13/13; outlined wordmarks are 14/14. Membership, input bytes, options
 and references stay frozen. This complete matrix remains the regression gate.
 
-**The five online gap documents, radiation symbol, tiger, Malta, Portugal and Bhutan flags are complete**,
+**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan and South Africa flags are complete**,
 through all six outputs on both platforms. Earlier qualified references stay unchanged;
 the tiger uses the explicit viewport qualification explained below:
 
@@ -21,6 +21,7 @@ the tiger uses the explicit viewport qualification explained below:
 | Malta flag (`inv-057`) | 300×200 / 900×600 / 1800×1200 × transparent/white/black; all nine outputs | Authored orthogonal fills, shared source ovals and bitmap-local thin-stroke clipping/paint dispatch. |
 | Portugal flag (`inv-065`) | 300×200 / 600×400 / 1200×800 × transparent/white/black, original inputs at scales 0.5 / 1 / 2; all nine outputs | Authored path source concavity survives affine placement; placed convexity remains checked. |
 | Bhutan flag (`inv-064`) | 300×200 / 900×600 / 1800×1200 × transparent/white/black, original inputs at scales one third / 1 / 2; all nine outputs | Earlier shared repairs already qualify every declared output; no additional renderer change. |
+| South Africa flag (`inv-061`) | 300×200 / 900×600 / 1800×1200 × transparent/white/black, original inputs at scales one third / 1 / 2; all nine outputs | Shared native clip-content replay, independent paint coverage and bounded construction clips with preserved bitmap origins. |
 
 Each document has a stable, healthy, cleaned Linux browser capture triple matching
 its frozen reference byte-for-byte. The [gap manifest](tests/References/inventory/svg-gap-cases.json)
@@ -30,8 +31,8 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 10/10**. Selecting the retained
-South Africa flag next makes the active document queue **10/11 complete**; South Africa remains pending.
+references. **Completed development deliverables: 11/11**. The selected document queue is
+**11/11 complete**. Controls remain separate.
 These failure-selected examples establish no representative success rate.
 
 The new [pattern inheritance bank](tests/Research/pattern-inheritance/manifest.json)
@@ -107,20 +108,32 @@ deliverable adds nine document regressions and no production change or synthetic
 controls. The preceding complete corporate/original-bank qualification is reused
 with unchanged production, assets and options; both current full test suites pass.
 
-**Next complete document: the retained South Africa flag (`inv-061`).** Its existing
-900×600 transparent reference stays unchanged. The native Default output differs
-at 273 pixels, maximum channel error 24, alpha exact. Its clipped stroked bands
-supply a complete G3/G5 acceptance document. Fix all nine sizes/options before
-capture or correction: native 900×600 at scale one, small 300×200 at scale one
-third, large 1800×1200 at scale two, each on transparent/white/black. Convert the
-unchanged original bytes at those scales. The source already has
-`viewBox="0 0 90 60"`; browser small/large inputs may change only root width/height.
-Retain and verify those materializations separately. Preserve the native transparent
-PNG and capture the other eight references before correction. South Africa is
-**0/9 qualified exact outputs**; its other variants remain unmeasured. Diagnose
-the first stroke/clip mismatch before choosing a shared correction. Exhaustive
-G2 completion is not a prerequisite; every other G2–G9 combination and the
-non-scaling root width-map defect stays visible.
+The [South Africa bank](tests/Research/south-africa-flag/manifest.json) is
+**9/9 exact through all six APIs on Windows/Linux**. It preserves original
+converter bytes and the old native transparent PNG. All nine outputs were fixed
+before capture or correction: scales one third / 1 / 2, sizes 300×200 / 900×600 /
+1800×1200, each on transparent/white/black. Browser small/large sources change
+only root width/height; the original viewBox stays unchanged. Fresh healthy,
+cleaned Linux triples match every frozen PNG byte-for-byte.
+
+Its native/small/large mismatches improve **273/216/18 → 0/0/0**, on every
+background. Single convex straight path clips now reuse native source-content
+replay instead of intersecting flattened painted contours. Clip construction
+bounds stay distinct from bitmap origins; opaque rectangular tile intersections
+retain binary clip paint routing. The [clip bank](tests/Research/convex-path-clips/manifest.json)
+has **11 controls: ten exact and one explicit unsupported group boundary** through
+six APIs on both platforms. Rectangle targets are admitted; broader group/use,
+multi-contour, transformed-coordinate and clip-rule promises remain G5 work.
+
+**Next deliverable selection:** source a bounded batch of three public-domain/CC0
+complete exports that exercise the remaining finite G2–G6 exits, prioritizing
+the discovered non-scaling root-viewBox width defect and group/paint clipping.
+Verify the actual downloaded SVG and its rights evidence; retain documents with
+an observed in-scope rejection or mismatch. Declare each retained document's
+finite output set before capture or correction, then choose the first complete
+document and implement only its shared dependencies. Capture-frame differences
+need an explicit contract decision; they do not establish a renderer defect.
+Do not begin a combinatorial sweep while this document selection is pending.
 
 The original admitted fixture/research fidelity repairs are complete. The remaining
 queue covers static, self-contained SVG within the original product scope:
@@ -143,24 +156,25 @@ in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **5,608 passed on each platform**: 4,153 core, 1,449 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **5,630 passed on each platform**: 4,155 core, 1,469 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | Existing parser/raster work, memory-denial, cancellation/retry, geometry/paint and six-output regressions pass. Six new template/grid inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. A 1,024-link forward chain resolves iteratively; aliases borrow one promoted tile scene with independent grids. Missing/cyclic/duplicate/negative templates and oversized tiles release owners; full-document early/middle/late work and peak-memory denials release partial owners before retry. Five mask inputs also sweep parser/discovery work, sampled/peak memory and raster work boundaries; anonymous, unused, duplicate and rejected masks release staging owners. Borrowed replay survives cancellation/retry, and the complete mask document releases early/middle/late work and peak-memory denials. Nested affine-opacity also sweeps parser/discovery work, sampled/peak memory denial, raster work boundaries and cancellation/retry; clip and opacity retain distinct bounded owners. Two new oval inputs sweep every parser work denial and sampled/peak memory denial; discarded unpainted mask fill owners release, and centerline/outline commands survive failed replay unchanged. Three new affine-arc inputs sweep every parser work denial and sampled/peak memory denial, then denied raster work/memory and cancellation/retry with immutable commands. Source point-count and zero-radius arc controls retain their boundary semantics. Three native-fill/hairline inputs sweep every parser work denial and sampled/peak memory denial, plus raster work/memory and cancellation/retry with immutable commands. The complete Malta input releases partial owners after early/middle/late parser work and peak-memory denials before retry. Native float-collapsed ovals enclose no area. Two new near-close straight/cubic fills sweep parser work, sampled/peak memory denial, raster work/memory and cancellation/retry with immutable source commands. The complete Portugal document also releases partial owners under early/middle/late parser work and peak-memory denial before retry. Prior mechanism details retain their dated scope in the design record. Remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,394 exact + zero known-difference renders + 16 rejections**; 799 base documents / 611 variants. The original rotated mark graduates against a new independent browser reference; its source/options and all preceding exact assets remain unchanged. |
 | Executed research manifest | **65 probes = 65 exact + zero known-difference renders + zero rejections**. The tiger graduates at its explicitly qualified viewport; its historical auto-image PNG remains diagnostic. The other 64 research outputs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. The complete sweep qualified at the Portugal checkpoint is reused with unchanged production/options/assets. Portugal and Bhutan separately complete all nine declared outputs. Denmark retains its exact Default measurement; its historical matrix remains unqualified. South Africa's retained native comparison differs at 273 pixels, maximum 24, alpha exact. `inv-014`, Malta, radiation, STOP-sign and `inv-013` exact results stay preserved. These Default outputs establish no representative rate. |
+| Legacy independent-file Default sweep | **92 files = 92 render**. The complete original-bank sweep is freshly checked on both platforms. Portugal, Bhutan and South Africa separately complete all nine declared outputs. Denmark retains its exact Default measurement; its historical matrix remains unqualified. South Africa's retained native comparison is now exact (273 → zero changed pixels). `inv-014`, Malta, radiation, STOP-sign and `inv-013` exact results stay preserved. These Default outputs establish no representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. Affine viewport clips register budget-owned native contours and charge a full-canvas RGBA scratch tape (four bytes per output pixel per active affine clip), plus bounded intersection/replay work. Isolated opacity retains separate existing surfaces; no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and 5,608 tests. Bhutan completes nine
-document regressions without a production correction; the previous 1,567-report /
-1,551-PNG original-bank and corporate qualification is reused. Production, all
-preceding inputs/options/references and every established exact result stay
-unchanged. Bhutan, Portugal, Malta and radiation are each 9/9 exact. Corporate
-remains 27/27 and 258/258 exact against each platform's own references, including
-the three established SDL small-output cross-platform distinctions. Ten development
-documents are complete; South Africa is next. G2–G9 and S17 remote CI stay open.
+Both platforms pass Release builds and **5,630 tests**. Complete qualification
+checks all 1,567 original reports and 1,551 PNGs; only South Africa's Default
+report/PNG changes, becoming exact. The other 1,550 PNGs and every preceding
+focused outcome stay unchanged. South Africa, Bhutan, Portugal, Malta and
+radiation are each 9/9 exact. Corporate remains 27/27 and 258/258 exact against
+each platform's own references, including the three established SDL small-output
+cross-platform distinctions. Eleven development documents are complete. The
+next support deliverable comes from verified in-scope document sourcing; G2–G9,
+the discovered non-scaling width-map defect and S17 remote CI stay open.
 
 ## 2. Execution decisions
 
@@ -189,8 +203,8 @@ The audit uses executed fixture/research/recorded-paint failures and actual pars
 gates. Group numbers identify support responsibilities, not sequential prerequisites.
 Select the next shared implementation change by the retained document it
 advances. The five online gap documents and the nested affine-opacity defect
-and the radiation symbol, tiger, Malta, Portugal and Bhutan flags are complete;
-finish the retained South Africa flag next. Exhaustive G2 completion
+and the radiation symbol, tiger, Malta, Portugal, Bhutan and South Africa flags are complete;
+source the next complete export against the remaining finite exits. Exhaustive G2 completion
 does not block G3–G6. Keep other promised combinations visible in their group exits.
 Prioritize composed transforms, paint-coordinate mapping and bounded pattern
 content where they remove several gates. Extend the existing geometry and
@@ -205,7 +219,7 @@ landed mechanisms remain regression requirements.
 | --- | --- | --- | --- |
 | G1 | **Declaration validation landed.** Inert exporter presentation values share one validator. | Original syntax-location inconsistency resolved; the heart is now complete | Remaining nested style/root selector gates stay G5/G7; S9 |
 | G2 | **Solid/shader use and container paint, stroke inheritance and rendered-group styling implemented.** Complete remaining practical symbol/instance combinations. | User-space percentage bases repaired; scaled nested viewport uses, other locations and affine combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
-| G3 | **Heart, I Ching, radiation, tiger, Malta, Portugal and Bhutan documents complete.** Complete remaining curved geometry and static maps | Non-uniform curve maps, transformed strokes/paints and remaining affine gates | Source-curve replay and paint-coordinate maps; S10/S11 |
+| G3 | **Heart, I Ching, radiation, tiger, Malta, Portugal and Bhutan and South Africa documents complete.** Complete remaining curved geometry and static maps | Non-uniform curve maps, transformed strokes/paints and remaining affine gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | **Fractional rectangle-stroke fidelity repaired.** Complete paint-server strokes on ordinary geometry | Three retained rectangle comparisons and twelve new frame controls are exact; broader paints retain admission gates | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
 | G6 | **Both retained patterns complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
@@ -391,8 +405,8 @@ Remaining G2 completion checklist, independent of the next document:
 The completed heart needed no `use` dependency. The complete I Ching library
 needed composed affine symbol viewport clips and source-contour replay across
 its 79 instances; those dependencies are implemented. The two patterns and
-radiation symbol, tiger, Malta, Portugal and Bhutan flags are complete too. The next
-retained South Africa flag does not require exhaustive G2 completion. For a document that needs new uses,
+radiation symbol, tiger, Malta, Portugal, Bhutan and South Africa flags are complete too. The next
+support document does not require exhaustive G2 completion. For a document that needs new uses,
 declare focused viewport/authored-override twins before production editing and
 capture; keep mechanism denominators separate. G2 exits when this finite location,
 reference and composition checklist is supported with exact retained examples,
@@ -451,7 +465,7 @@ complete; the radiation symbol is now 9/9 exact after routing oval strokes throu
 shared native source replay. Seven new oval controls are exact; the eighth retains
 the discovered non-scaling root-viewBox width defect. Correct that shared width
 map within this exit. The retained non-uniform curve, stroke and paint combinations remain
-promised; Malta, Portugal and Bhutan are complete and South Africa is selected next. Exit: these
+promised; Malta, Portugal, Bhutan and South Africa are complete. Exit: these
 retained documents/families and focused map controls
 are exact without normalized or flattened source substitution; no corporate or
 prior exact regression.
@@ -507,9 +521,14 @@ the viewport clip instead of combining both into one restoration. Seven focused
 twins are exact; the I Ching bank is 23 exact plus two explicit rejections.
 See [the correction](docs/RASTERIZATION_DESIGN.md#nested-affine-viewport-and-instance-opacity-order-2026-10-09).
 General clip intersections and nested composition remain within the finite G5 exit.
-The retained South Africa flag is the next complete G3/G5 acceptance document;
-its clipped stroked bands still differ in the native comparison. Qualify its nine
-outputs through shared stroke/clip replay, preserving the original reference.
+The retained South Africa flag is complete at nine frozen outputs through all six
+APIs on both platforms. One convex straight user-space path clip replays shared
+native coverage for each original paint, including rectangle targets. Its enclosing
+logical rectangle remains a separate AA clip; construction bounds preserve the
+physical bitmap origin. Fully opaque rectangular bitmap intersections retain BW
+paint routing. Ten focused controls are exact; polygon clips on groups remain an
+explicit boundary. Existing multi-contour behavior stays admitted, without claiming
+the finite clip-rule, hole, group/use or transformed-coordinate exits complete.
 
 `inv-107` is complete at 744×1052 against its unchanged Windows/Linux reference.
 Root/defs local masks share bounded source lowering and the existing immutable
@@ -691,8 +710,8 @@ fill inheritance is exact for the admitted slice. Root/nested viewBox percentage
 bases are repaired. The Illustrator heart, I Ching library and both patterns are
 complete, as are the CC0 mask and all nine radiation outputs. The retained nested
 affine-opacity mismatch is repaired. The retained tiger is complete at its
-explicitly qualified viewport; all nine Malta, Portugal and Bhutan outputs are exact.
-South Africa is the next complete document deliverable.
+explicitly qualified viewport; all nine Malta, Portugal, Bhutan and South Africa outputs are exact.
+Select the next support document from verified public-domain/CC0 exports.
 Choose shared support changes by the complete retained documents they advance.
 Keep the remaining instance combinations visible without making them a
 prerequisite for G3–G6.

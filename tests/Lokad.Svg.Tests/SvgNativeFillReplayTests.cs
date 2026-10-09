@@ -8,6 +8,7 @@ public sealed class SvgNativeFillReplayTests
     [Theory]
     [InlineData("malta-flag.svg")]
     [InlineData("portugal-flag.svg")]
+    [InlineData("south-africa-flag.svg")]
     public void Complete_document_releases_partial_source_owners_before_retry(string fileName)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", fileName));
@@ -38,6 +39,8 @@ public sealed class SvgNativeFillReplayTests
     [InlineData("<path fill='none' stroke='red' stroke-width='.78125' stroke-linecap='round' d='M245.5 232.5 C210.2 266.7 265.3 223.4 260.2 259.8'/>")]
     [InlineData("<path transform='matrix(.6 -.8 .8 .6 225 275)' d='M20 20V26H16V20.000002L19.999998 20.000002'/>")]
     [InlineData("<path transform='matrix(.6 -.8 .8 .6 50 65)' d='M20 20V126H-16V20.000002C-3 20.000002 8.6 20.000002 19.999998 20.000002'/>")]
+    [InlineData("<defs><clipPath id='c'><path d='M8 8L56 40L8 72Z'/></clipPath></defs><path fill='none' stroke='red' stroke-width='20' d='M8 8L56 40L8 72' clip-path='url(#c)'/>")]
+    [InlineData("<defs><clipPath id='c'><path d='M8 8L56 40L8 72Z'/></clipPath></defs><path d='M0 40C0 0 80 0 80 40C80 80 0 80 0 40Z' clip-path='url(#c)'/>")]
     public void Native_fill_and_tiled_hairline_owners_release_on_denial_and_survive_retry(string content)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'>" + content + "</svg>");
@@ -45,7 +48,7 @@ public sealed class SvgNativeFillReplayTests
         RenderBudget measured = new(defaults.MaximumAccountedBytes);
         ParserWorkCounter work = new(defaults.MaximumWorkUnits);
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, measured, null, work, CancellationToken.None))
-            Assert.NotNull(Assert.Single(root.Geometries).AuthoredPath);
+            Assert.Contains(root.Geometries, geometry => geometry.AuthoredPath is not null);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         for (long limit = 0; limit < work.Used; limit++)
         {
@@ -59,8 +62,8 @@ public sealed class SvgNativeFillReplayTests
         RenderBudget retry = new(defaults.MaximumAccountedBytes);
         using (SvgRoot root = SvgRootParser.Parse(input, defaults, retry, null, new(work.Used), CancellationToken.None))
         {
-            SvgAuthoredPath source = Assert.Single(root.Geometries).AuthoredPath ?? throw new InvalidOperationException();
-            SvgAuthoredPathCommand[] commands = source.Commands.ToArray();
+            SvgAuthoredPath[] sources = root.Geometries.Select(geometry => geometry.AuthoredPath).OfType<SvgAuthoredPath>().ToArray();
+            SvgAuthoredPathCommand[][] commands = sources.Select(source => source.Commands.ToArray()).ToArray();
             long owned = retry.Snapshot().CurrentBytes;
             byte[] expected;
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, CancellationToken.None))
@@ -95,7 +98,7 @@ public sealed class SvgNativeFillReplayTests
             {
                 using var denied = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, cancellation.Token);
             });
-            Assert.Equal(commands, source.Commands.ToArray());
+            for (int index = 0; index < sources.Length; index++) Assert.Equal(commands[index], sources[index].Commands.ToArray());
             using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, retry, CancellationToken.None))
                 Assert.Equal(expected, surface.Pixels.ToArray());
             Assert.Equal(owned, retry.Snapshot().CurrentBytes);

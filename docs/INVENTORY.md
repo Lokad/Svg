@@ -12,9 +12,38 @@ preserved corporate 27/27 documents and 258/258 variants. The existing radiation
 symbol completes the sixth development deliverable, with that
 document at **9/9 exact outputs through all six APIs on both platforms**. The
 retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
-Bhutan the tenth: **10/10 complete**. Selecting South Africa next makes the active
-queue **10/11 complete**. Controls do not
+Bhutan the tenth and South Africa the eleventh: **11/11 complete**. The selected
+document queue is **11/11 complete**. Controls do not
 count as completed documents. The I Ching nested affine-opacity control remains exact.
+
+### inv-061 — complete retained South Africa qualification
+
+The [South Africa bank](../tests/Research/south-africa-flag/manifest.json) preserves
+the original 630-byte public-domain SVG and the old native transparent PNG. All
+nine original-input outputs were declared at `0db47f05` before capture or correction:
+300×200 / 900×600 / 1800×1200 at scales one third / 1 / 2, each on transparent/
+white/black. Browser small/large materializations change only root dimensions,
+preserving the original viewBox and every remaining byte. Eight healthy, cleaned
+Windows triples freeze the additional outputs; fresh Linux triples match all nine
+references byte-for-byte. Native/small/large defects improve 273/216/18 → zero
+on each background; **9/9 exact through all six APIs on both platforms**.
+
+Single convex path clips share native source-content replay and independent paint
+coverage. Construction clips retain the physical bitmap origin, and wholly opaque
+rectangular tile intersections retain binary clip material arithmetic. Eleven
+CC0 controls protect these semantics: ten exact, one explicit group rejection.
+Controls do not count as complete exports. Sampled/peak memory, parser/raster work,
+cancellation and retry checks protect borrowed source owners.
+
+Both platforms pass Release builds and 5,630 tests (4,155 core / 1,469 visual /
+six FontProbe). Complete original-bank/cohort qualification preserves all earlier
+exact outcomes. Only South Africa's Default report/PNG changes among 1,567 original
+reports and 1,551 PNGs; the other 1,550 PNGs stay unchanged. Corporate remains
+27/27 / 258/258 exact against own-platform references. Eleven development documents
+are complete; the next finite support deliverable requires a verified public-domain/
+CC0 complete export with an observed in-scope failure. G2–G9 and remote CI remain open.
+Ignored evidence: artifacts/south-africa-strokes-20261009/ and
+artifacts/linux-delivery-20261007/south-africa-strokes-final-20261009/.
 
 ### inv-107 — SVG mask.svg
 
@@ -2368,8 +2397,9 @@ Public-domain state-symbol SVG from Wikimedia Commons (LicenseShortName=Public d
 - retrievalDate: 2026-09-27.
 - archetypes: stroked diagonal bands, group clip path, nested clip path, fill-plus-stroke combo, viewBox-mapped viewport.
 - content: 2 ground paths, 1 clipped group with 3 stroked band paths over 2 clip paths.
-- variants: intended/small/large x transparent/white/black (declared, unmeasured).
-- status: known-difference (renders; re-probe history: re-probe 2026-09-27 (batch 95) advanced past the closed-path gate to the simplicity gate (single-contour touch via LowerPolygonFill), and re-probe 2026-09-29 (batch 120) advances past the simplicity gate back to the closed-path gate (touch resolution admits the contour set; the open stroke-only band paths reject next); re-probe 2026-09-29 advances past unpainted-fill validation (degenerate stroke-only subpaths skip fill lowering) to triangle clip-path content, which stays gated. Graduation 2026-09-30 (batch 145): renders with single-convex-path clip retention plus resolve-time intersection (rect-like group path lowers to a box), 16613-byte candidate via Release SvgRenderOptions.Default; VisualDiff vs the retained 900x600 oracle triple (SHA-256 32EDDA9B36E5F02168516F25B809D8A7675F6788C1BC8EED14957EFEC92EB363, re-verified 2026-09-30 3/3 byte-identical with matching hash): changedPixelCount 4159, maximumChannelError 29, meanAbsoluteError 0.019306018518518517, rootMeanSquareError 0.3931997183601719, maximumAlphaError 0, alphaChangedPixelCount 0, left-region bbox x0-480 y0-599; candidate identity SHA-256 407CA004DE36EC4CAB3FF038BB2DA2A865BEC860B370248C18ECD33BE417B020 with deterministic re-render byte-identical and composition viewed; known-difference with residuals in the admitted diagonal-stroke fringe family (at most 20 of 4159 pixels within 3 px of the triangle boundary). Layered behind the residual: diagonal stroke lowering.
+- variants: 300×200 / 900×600 / 1800×1200 × transparent/white/black, original bytes at scales one third / 1 / 2; all nine exact through six APIs on Windows/Linux (2026-10-09).
+- status: complete, 9/9 exact frozen outputs; native/small/large defects 273/216/18 → zero on each background through shared native clip replay. See the current qualification above and tests/Research/south-africa-flag/manifest.json.
+- previous status (2026-09-30): known-difference (renders; re-probe history: re-probe 2026-09-27 (batch 95) advanced past the closed-path gate to the simplicity gate (single-contour touch via LowerPolygonFill), and re-probe 2026-09-29 (batch 120) advances past the simplicity gate back to the closed-path gate (touch resolution admits the contour set; the open stroke-only band paths reject next); re-probe 2026-09-29 advances past unpainted-fill validation (degenerate stroke-only subpaths skip fill lowering) to triangle clip-path content, which stays gated. Graduation 2026-09-30 (batch 145): renders with single-convex-path clip retention plus resolve-time intersection (rect-like group path lowers to a box), 16613-byte candidate via Release SvgRenderOptions.Default; VisualDiff vs the retained 900x600 oracle triple (SHA-256 32EDDA9B36E5F02168516F25B809D8A7675F6788C1BC8EED14957EFEC92EB363, re-verified 2026-09-30 3/3 byte-identical with matching hash): changedPixelCount 4159, maximumChannelError 29, meanAbsoluteError 0.019306018518518517, rootMeanSquareError 0.3931997183601719, maximumAlphaError 0, alphaChangedPixelCount 0, left-region bbox x0-480 y0-599; candidate identity SHA-256 407CA004DE36EC4CAB3FF038BB2DA2A865BEC860B370248C18ECD33BE417B020 with deterministic re-render byte-identical and composition viewed; known-difference with residuals in the admitted diagonal-stroke fringe family (at most 20 of 4159 pixels within 3 px of the triangle boundary). Layered behind the residual: diagonal stroke lowering.
 - reference: exploratory oracle triple 2026-09-27, native 900x600 transparent, 3/3 byte-identical SHA-256 32EDDA9B36E5F02168516F25B809D8A7675F6788C1BC8EED14957EFEC92EB363, pinned oracle Chrome for Testing 153.0.8010.52 (Chromium 1681091, capture recipe 3, win64); staged under ignored artifacts/inventory/ (not admitted, third-party files never enter manifest.json).
 
 ## Selected documents (batch 43, 2026-09-27)

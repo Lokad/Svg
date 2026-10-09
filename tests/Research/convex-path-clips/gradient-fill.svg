@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 80 80">
+<defs><clipPath id="c"><path d="M8 8L56 40L8 72Z"/></clipPath><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="80" y2="80"><stop stop-color="#123456"/><stop offset="1" stop-color="#abc789"/></linearGradient></defs><path d="M0 0H80V80H0Z" fill="url(#g)" clip-path="url(#c)"/>
+</svg>
