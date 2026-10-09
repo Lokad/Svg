@@ -9485,3 +9485,29 @@ cross-platform distinctions. Nine development documents are complete; Bhutan is
 next. Remaining G2–G9 combinations and S17 remote CI stay open. Ignored evidence
 is under artifacts/portugal-source-strokes-20261009/ and
 artifacts/linux-delivery-20261007/portugal-source-final-20261009/.
+
+## Complete retained Bhutan qualification (2026-10-09)
+
+The retained public-domain Bhutan flag is exact through all six APIs on both
+platforms at all nine declared outputs: unchanged original converter bytes,
+scales one third / 1 / 2, sizes 300×200 / 900×600 / 1800×1200, each on transparent/
+white/black. The old native transparent PNG stays unchanged. Eight new healthy,
+cleaned Windows triples freeze the remaining frames; browser small/large sources
+change only root width/height and add the declared 0 0 900 600 viewBox. Fresh
+healthy, cleaned Linux triples match all nine frozen references byte-for-byte.
+
+Earlier shared source/path replay repairs already qualify the full document.
+There is no production correction or new synthetic control. Nine new regression
+cases protect the declared document outputs. Windows/Linux pass Release builds
+and 5,608 tests each (4,153 core / 1,449 visual / six FontProbe). Production,
+existing assets/options and resource/API contracts remain unchanged, so the
+preceding complete original-bank and corporate qualification is reused. Corporate
+remains 27/27 / 258/258 exact on own-platform references. No new performance or
+release claim is made.
+
+Ten development documents are complete. South Africa is next because its retained
+native clipped-band output still differs at 273 pixels, maximum 24, alpha exact.
+Its nine output options are fixed in PLAN before capture or correction. G2–G9,
+the non-scaling root-viewBox width-map defect and S17 remote CI stay open. Ignored
+evidence is under artifacts/bhutan-document-20261009/ and
+artifacts/linux-delivery-20261007/bhutan-document-final-20261009/.

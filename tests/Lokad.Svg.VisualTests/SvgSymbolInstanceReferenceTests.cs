@@ -8,7 +8,7 @@ public sealed class SvgSymbolInstanceReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "symbol-instances", "symbol-presentation", "symbol-content", "symbol-content-diagnostics", "symbol-viewport-opacity", "use-paint-properties", "rectangle-frames", "rectangle-path-strokes", "use-stroke-opacity", "use-stroke-style", "rendered-group-styles", "instance-shader-opacity", "container-shader-inheritance", "viewport-percentage-bases", "transformed-rectangle-fills", "iching-library", "pattern-vector-content", "pattern-inheritance", "nested-affine-opacity", "gradient-masks", "oval-source-replay", "radiation-symbol", "affine-arcs", "malta-flag", "native-path-replay", "portugal-flag", "source-convexity" })
+        foreach (string family in new[] { "symbol-instances", "symbol-presentation", "symbol-content", "symbol-content-diagnostics", "symbol-viewport-opacity", "use-paint-properties", "rectangle-frames", "rectangle-path-strokes", "use-stroke-opacity", "use-stroke-style", "rendered-group-styles", "instance-shader-opacity", "container-shader-inheritance", "viewport-percentage-bases", "transformed-rectangle-fills", "iching-library", "pattern-vector-content", "pattern-inheritance", "nested-affine-opacity", "gradient-masks", "oval-source-replay", "radiation-symbol", "affine-arcs", "malta-flag", "native-path-replay", "portugal-flag", "source-convexity", "bhutan-flag" })
         {
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", family, "manifest.json")));
             foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
@@ -23,13 +23,13 @@ public sealed class SvgSymbolInstanceReferenceTests
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(family switch { "symbol-content-diagnostics" => 3, "symbol-viewport-opacity" => 18, "use-paint-properties" => 31, "rectangle-frames" => 15, "rectangle-path-strokes" => 30, "use-stroke-opacity" => 81, "use-stroke-style" => 99, "rendered-group-styles" => 123, "instance-shader-opacity" => 150, "container-shader-inheritance" => 192, "viewport-percentage-bases" => 81, "transformed-rectangle-fills" => 15, "iching-library" => 25, "pattern-vector-content" => 18, "pattern-inheritance" => 17, "nested-affine-opacity" => 7, "gradient-masks" => 20, "oval-source-replay" => 8, "radiation-symbol" => 9, "affine-arcs" => 16, "malta-flag" => 9, "native-path-replay" => 15, "portugal-flag" => 9, "source-convexity" => 12, _ => 16 }, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family switch { "symbol-content-diagnostics" => 3, "symbol-viewport-opacity" => 18, "use-paint-properties" => 31, "rectangle-frames" => 15, "rectangle-path-strokes" => 30, "use-stroke-opacity" => 81, "use-stroke-style" => 99, "rendered-group-styles" => 123, "instance-shader-opacity" => 150, "container-shader-inheritance" => 192, "viewport-percentage-bases" => 81, "transformed-rectangle-fills" => 15, "iching-library" => 25, "pattern-vector-content" => 18, "pattern-inheritance" => 17, "nested-affine-opacity" => 7, "gradient-masks" => 20, "oval-source-replay" => 8, "radiation-symbol" => 9, "affine-arcs" => 16, "malta-flag" => 9, "native-path-replay" => 15, "portugal-flag" => 9, "source-convexity" => 12, "bhutan-flag" => 9, _ => 16 }, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("identical", RequiredString(root, "decodedPixelStability"));
         Assert.Equal("healthy", RequiredString(root, "captureStartupHealth"));
         Assert.True(root.GetProperty("captureProfilesCleaned").GetBoolean());
         JsonElement item = root.GetProperty("cases").EnumerateArray().Single(value => RequiredString(value, "id") == identity);
-        bool publicDomainDocument = family is "radiation-symbol" or "malta-flag" or "portugal-flag";
+        bool publicDomainDocument = family is "radiation-symbol" or "malta-flag" or "portugal-flag" or "bhutan-flag";
         Assert.Equal(publicDomainDocument ? "Public domain" : "CC0-1.0", RequiredString(item, "license"));
         Assert.NotEmpty(RequiredString(item, "licenseEvidence"));
         Assert.NotEmpty(RequiredString(item, "selection"));
@@ -40,9 +40,9 @@ public sealed class SvgSymbolInstanceReferenceTests
         byte[] referenceBytes = File.ReadAllBytes(Path.Combine(directory, RequiredString(item, "reference")));
         if (publicDomainDocument)
         {
-            byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", family switch { "malta-flag" => "inv-057.svg", "portugal-flag" => "inv-065.svg", _ => "inv-094.svg" }));
+            byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", family switch { "malta-flag" => "inv-057.svg", "portugal-flag" => "inv-065.svg", "bhutan-flag" => "inv-064.svg", _ => "inv-094.svg" }));
             Assert.Equal(RequiredString(item, "originalSha256"), Convert.ToHexStringLower(SHA256.HashData(original)));
-            if (family == "portugal-flag") Assert.Equal(original, input);
+            if (family is "portugal-flag" or "bhutan-flag") Assert.Equal(original, input);
             else
             {
                 string nativeSize = family == "malta-flag" ? "width=\"900\" height=\"600\"" : "width=\"600\" height=\"600\"";
@@ -59,11 +59,13 @@ public sealed class SvgSymbolInstanceReferenceTests
             Assert.Equal(RequiredString(item, "captureInputSha256"), Convert.ToHexStringLower(SHA256.HashData(capturedSource)));
             string inputText = System.Text.Encoding.UTF8.GetString(input);
             string expectedCapture;
-            if (family == "portugal-flag")
+            if (family is "portugal-flag" or "bhutan-flag")
             {
                 int rootEnd = inputText.IndexOf('>');
                 Assert.True(rootEnd > 0);
-                expectedCapture = inputText[..rootEnd].Replace("width=\"600\" height=\"400\"", "width=\"" + width + "\" height=\"" + height + "\" viewBox=\"0 0 600 400\"", StringComparison.Ordinal) + inputText[rootEnd..];
+                string nativeSize = family == "bhutan-flag" ? "width=\"900\" height=\"600\"" : "width=\"600\" height=\"400\"";
+                string nativeViewBox = family == "bhutan-flag" ? "0 0 900 600" : "0 0 600 400";
+                expectedCapture = inputText[..rootEnd].Replace(nativeSize, "width=\"" + width + "\" height=\"" + height + "\" viewBox=\"" + nativeViewBox + "\"", StringComparison.Ordinal) + inputText[rootEnd..];
             }
             else
             {

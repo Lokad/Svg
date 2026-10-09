@@ -11,8 +11,9 @@ All five retained gap documents are exact on Windows/Linux, separate from the
 preserved corporate 27/27 documents and 258/258 variants. The existing radiation
 symbol completes the sixth development deliverable, with that
 document at **9/9 exact outputs through all six APIs on both platforms**. The
-retained tiger completes the seventh, Malta the eighth and Portugal the ninth:
-**9/9 complete**. Selecting Bhutan next makes the active queue **9/10 complete**. Controls do not
+retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
+Bhutan the tenth: **10/10 complete**. Selecting South Africa next makes the active
+queue **10/11 complete**. Controls do not
 count as completed documents. The I Ching nested affine-opacity control remains exact.
 
 ### inv-107 — SVG mask.svg
@@ -144,16 +145,45 @@ are preserved; only Portugal's Default PNG/report changes in the 1,567-report /
 Corporate remains 27/27 / 258/258 exact against own-platform references. Source,
 license evidence, original references and cohort membership stay frozen.
 
-Bhutan is selected next. Its old native 900×600 Default reference is already exact,
-without completing its declared variants. PLAN fixes native/small/large 900×600 /
-300×200 / 1800×1200 at scales 1 / one third / 2 and all three backgrounds before
-capture or correction. Converter bytes stay original; browser small/large roots
-may add the matching 0 0 900 600 viewBox. Preserve the old native transparent PNG;
-other variants remain unmeasured. G2–G9 and S17 remote CI remain open.
+At that Portugal checkpoint, Bhutan was selected next. PLAN fixed native/small/
+large 900×600 / 300×200 / 1800×1200 at scales 1 / one third / 2 and all three
+backgrounds before capture. Its subsequent complete qualification is recorded
+below. G2–G9 and S17 remote CI remain open.
 
 Ignored evidence is under `artifacts/portugal-source-strokes-20261009/` and
 `artifacts/linux-delivery-20261007/portugal-source-final-20261009/`. No new download,
 production source/DLL fingerprint or replacement of an existing reference is involved.
+
+### inv-064 — complete retained Bhutan flag
+
+The [Bhutan bank](../tests/Research/bhutan-flag/manifest.json) keeps the original
+public-domain bytes and nine outputs fixed in PLAN at `d25b9349`: native 900×600 /
+small 300×200 / large 1800×1200 at scales 1 / one third / 2, each on transparent/
+white/black. Its original native transparent PNG remains unchanged. Eight new
+healthy, cleaned Windows triples freeze the remaining outputs. Browser small/
+large materializations change only root dimensions and add the declared
+0 0 900 600 viewBox; converter bytes remain original. Fresh healthy, cleaned
+Linux triples match every frozen reference byte-for-byte.
+
+**All nine outputs are exact through all six APIs on Windows/Linux.** Earlier
+shared corrections already qualify the complete matrix. This deliverable adds
+nine document regressions, with no production change or new synthetic controls.
+Both platforms pass Release builds and 5,608 tests each. The preceding complete
+original-bank and corporate qualification is reused with unchanged production,
+options and assets; corporate remains 27/27 / 258/258 exact on own-platform
+references. Ten development documents are complete; controls count separately.
+
+South Africa (`inv-061`) is selected next by its retained native defect: 273
+differing pixels, maximum 24, alpha exact. PLAN fixes original converter bytes
+at scales 1 / one third / 2, outputs 900×600 / 300×200 / 1800×1200 and all three
+backgrounds before capture or correction. Its existing viewBox remains unchanged;
+browser small/large roots may change only width/height. Keep the old native
+transparent PNG and capture the other eight outputs before correction. G2–G9
+and S17 remote CI remain open.
+
+Ignored evidence is under `artifacts/bhutan-document-20261009/` and
+`artifacts/linux-delivery-20261007/bhutan-document-final-20261009/`. No new source
+download or replacement of an existing reference is involved.
 
 ## Original-scope support audit and online batch (2026-10-08)
 
