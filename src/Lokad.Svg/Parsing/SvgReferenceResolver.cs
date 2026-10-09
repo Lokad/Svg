@@ -1612,7 +1612,7 @@ internal static class SvgReferenceResolver
     }
 
     /// <summary>Copies the open masked-group scope boxes into the retained snapshot store, returning the snapshot start.</summary>
-    private static int SnapshotMaskScopes(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static int SnapshotMaskScopes(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         int start = state.MaskScopeSnapshots.Count;
         foreach (SvgClipBox scope in state.MaskScopes.AsSpan())

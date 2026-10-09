@@ -56,7 +56,7 @@ are exact through six APIs on Windows/Linux. Root-local pattern registration,
 inert aspect declarations, composed positive-axis pattern maps and bounded tile
 replay share existing mechanisms. The [placement bank](../tests/Research/pattern-affine-placement/manifest.json)
 retains sixteen exact controls and two explicit reflected/rotated boundaries.
-Development completion is 14/15 documents.
+Development completion is 15/15 documents.
 
 The non-ionizing radiation warning (`inv-110`, G5) is complete: its frozen
 616×540 transparent output is exact through six APIs on Windows/Linux. Native
@@ -64,9 +64,15 @@ directed winding and bounded clip/content replay retain the bowtie's two lobes.
 The [winding bank](../tests/Research/native-clip-winding/manifest.json) protects
 sixteen exact controls plus two explicit boundaries; clip-rule precedence repairs
 five measured 126-pixel errors, and the old concave-curve control becomes exact.
-The geometric pattern (`inv-111`, G3/G5) is next at forward gradient lookup.
-Extend shared deferred paint binding and source replay; every later gate remains
-open until its whole 284×284 transparent output is exact.
+The geometric pattern (`inv-111`, G3/G5) is complete: its unchanged 284×284
+transparent output is exact through six APIs on Windows/Linux. Deferred ordinary
+leaves retain source command order, inherited attributes/scopes and pending ranges
+until local paints resolve. Non-axis linear path fills retain source endpoints,
+pre-placement object bounds and separate native local/reference matrices. Genuine
+rotation/skew controls are exact, alongside reflected placements. The
+[29 controls](../tests/Research/deferred-paint-leaves/manifest.json) retain 26 exact
+results and three explicit missing/cyclic/partial-mask boundaries. The partial-mask
+gate and other finite group promises stay open; no broader text admission is claimed.
 Every declared input, option, matching browser frame and reference stays unchanged;
 healthy platform capture triples are reused.
 
@@ -81,17 +87,17 @@ document are exact on Windows/Linux through six outputs (**5/5 complete**), with
 source/options/reference unchanged. Each has a matching fresh Linux browser
 triple. The retained 64×64 nested affine-opacity control is exact too. The radiation
 symbol is complete through all six APIs: 9/9 frozen outputs exact on Windows/Linux,
-with every old input, option and reference unchanged. Fourteen development
+with every old input, option and reference unchanged. Fifteen development
 deliverables are complete, including the explicitly qualified tiger, all nine
 Malta/Portugal/Bhutan/South Africa/Wikifoods/striped-pattern outputs each and the
-warning sign's complete 616×540 output. The
+warning sign's complete 616×540 output and geometric pattern's 284×284 output. The
 tiger's historical auto-image PNG remains diagnostic. All eleven straight-clip
 controls, including the group boundary, are exact through six APIs on both
 platforms. Healthy Linux triples match each frozen document/control reference.
-Both platforms pass 5,787 tests. The finished correction preserves every one of
+Both platforms pass 5,836 tests. The finished correction preserves every one of
 2,908 preceding comparison reports and 2,845 PNGs. Corporate remains 27/27 /
-258/258 exact on own-platform references. The selected queue is 14/15 complete;
-geometric-pattern forward gradient lookup is next. Controls remain separate.
+258/258 exact on own-platform references. The selected queue is 15/15 complete;
+remaining in-scope gaps guide the next bounded sourcing batch. Controls remain separate.
 Remaining G2 combinations are dependencies only when the
 selected document needs them. Finite planned G2–G9 exits live in PLAN; they do
 not change the currently admitted subsets recorded here.

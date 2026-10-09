@@ -221,8 +221,6 @@
       "license": "CC0-1.0",
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Geometric_Pattern.svg",
       "role": "document-output",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only defined local gradient references are implemented.",
       "selection": "Complete striped pattern selected at fd89583f; two further retained rejections stay queued. Options fixed before capture or correction.",
       "materialization": "replace-root-dimensions",
       "nativeRootDimensions": "width=\"100%\" height=\"100%\"",

@@ -373,6 +373,8 @@ internal static class SvgDocumentTraversal
                 {
                     SvgDefinitionParser.ResolvePendingGradientHrefs(state, workCounter, cancellationToken);
                     SvgPatternReferenceResolver.Resolve(state, true, workCounter, cancellationToken);
+                    SvgDeferredPaintLeaves.Resolve(root, state, limits, workCounter, cancellationToken);
+                    if (state.DeferredTextFailure is {} textFailure) throw textFailure;
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);

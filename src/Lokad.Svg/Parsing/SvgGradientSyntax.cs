@@ -6,7 +6,10 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one admitted one-to-eight-stop linear gradient with its vector and referencing scale record.</summary>
 /// <remarks>ReferenceScaleX and ReferenceScaleY multiply every scale map applied to the stored endpoints after the local vector definition, so raster evaluation inverts the exact paint map.</remarks>
-internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation);
+internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation)
+{
+    internal SvgLinearPaintMap? SourcePaint { get; init; }
+}
 
 /// <summary>Identifies the admitted stop-range extension rule.</summary>
 internal enum SvgGradientSpread { Pad, Repeat, Reflect }
@@ -502,8 +505,12 @@ internal static class SvgGradientSyntax
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         }
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        gradient = MapUserSpaceVector(transform, gradient, frame);
-        gradient = MirrorBoundingBoxVector(transform, gradient);
+        bool bindSourceMap = isPath && !transform.IsAxisAligned;
+        if (!bindSourceMap)
+        {
+            gradient = MapUserSpaceVector(transform, gradient, frame);
+            gradient = MirrorBoundingBoxVector(transform, gradient);
+        }
         if (paintStroke)
         {
             outlineGradient = MapUserSpaceVector(transform, outlineGradient, frame);
@@ -535,6 +542,13 @@ internal static class SvgGradientSyntax
             {
                 if (gradient.Stops.Length > 1 && gradient.X1 == gradient.X2 && gradient.Y1 == gradient.Y2 && !gradient.IsEmpty && gradient.Spread != SvgGradientSpread.Pad) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only pad-spread degenerate linear gradient fills are implemented.");
                 SvgRectangle paintBox = gradient.IsUserSpace ? default : SvgOrthogonalShapeParser.BoxFromFilledGeometryBounds(filled, context.WorkCounter, context.CancellationToken);
+                if (bindSourceMap && filled.Geometries.Length > 0)
+                {
+                    SvgAuthoredPath sourcePath = filled.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Mapped linear fills require source commands.");
+                    if (!gradient.IsUserSpace) paintBox = SvgPathBounds.Compute(sourcePath.Commands, context.WorkCounter, context.CancellationToken);
+                    gradient = BindLinearSourceMap(gradient, paintBox, sourcePath.SceneMap, state, context.WorkCounter, context.CancellationToken);
+                    paintBox = default;
+                }
                 foreach (SvgGeometry existing in filled.Geometries)
                 {
                     SvgGeometry repaint = existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, gradient, paintBox, opacity, budget));
@@ -900,6 +914,24 @@ internal static class SvgGradientSyntax
         }
         if (!double.IsFinite(mappedX1) || !double.IsFinite(mappedY1) || !double.IsFinite(mappedX2) || !double.IsFinite(mappedY2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported viewport map exceeds the gradient coordinate range.");
         return gradient with { X1 = mappedX1, Y1 = mappedY1, X2 = mappedX2, Y2 = mappedY2, ReferenceScaleX = gradient.ReferenceScaleX * referenceScaleX, ReferenceScaleY = gradient.ReferenceScaleY * referenceScaleY };
+    }
+
+    /// <summary>Binds one linear definition to its source object box and composed drawing map.</summary>
+    /// <remarks>The parent scene owns the immutable map. Authored endpoints and local matrices remain
+    /// separate from placement for native float preparation; singular maps reject before publication.</remarks>
+    internal static SvgLinearGradient BindLinearSourceMap(SvgLinearGradient gradient, SvgRectangle sourceBox,
+        SvgAffineTransform sceneMap, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        SvgLinearPaintMapData source = gradient.SourcePaint?.Data ?? throw new InvalidOperationException("A linear source map requires definition coordinates.");
+        if (!gradient.IsUserSpace)
+        {
+            if (sourceBox.Width <= 0 || sourceBox.Height <= 0) return gradient with { IsEmpty = true };
+            SvgGradientTransform boxMap = new(sourceBox.Width, 0, 0, sourceBox.Height, sourceBox.X, sourceBox.Y);
+            source = source with { Local = SvgGradientTransform.Compose(boxMap, source.Local) };
+        }
+        source = source with { Referencing = sceneMap, IsMapped = true };
+        return gradient with { IsUserSpace = true, SourcePaint = state.Scene.RetainLinearPaintMap(source) };
     }
 
     /// <summary>Binds one radial definition to its source object box and composed drawing map.</summary>

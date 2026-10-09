@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="40"><clipPath id="c"><rect x="9.5" y="8.25" width="27.25" height="23.5"/></clipPath><g clip-path="url(#c)"><path d="M4.25 6.5L37.625 8.75L22.875 33.25Z" fill="url(#p)"/><rect x="16.25" y="4.5" width="20" height="22" fill="#fc7800"/><rect x="4.25" y="5.5" width="34" height="27" fill="url(#p)"/></g><defs><linearGradient id="p" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#0056ff"/><stop offset="1" stop-color="#00dcff"/></linearGradient></defs></svg>

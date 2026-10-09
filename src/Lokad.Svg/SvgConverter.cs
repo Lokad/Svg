@@ -1363,7 +1363,8 @@ public static class SvgConverter
                     double position;
                     if (!nativeCoordinates.TryLinear(x, y, rasterGrid, out position))
                     {
-                        if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                        if (definition.SourcePaint is { Data.IsMapped: true } sourcePaint) position = sourcePaint.Position(deviceX, deviceY);
+                        else if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
                         {
                             double relativeX = (deviceX - definition.X1) / definition.ReferenceScaleX;
                             double relativeY = (deviceY - definition.Y1) / definition.ReferenceScaleY;
@@ -1917,7 +1918,8 @@ public static class SvgConverter
                 double position;
                 if (!nativeCoordinates.TryLinear(x, y, rasterGrid, out position))
                 {
-                    if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
+                    if (definition.SourcePaint is { Data.IsMapped: true } sourcePaint) position = sourcePaint.Position(deviceX, deviceY);
+                    else if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
                     {
                         double relativeX = (deviceX - definition.X1) / definition.ReferenceScaleX;
                         double relativeY = (deviceY - definition.Y1) / definition.ReferenceScaleY;

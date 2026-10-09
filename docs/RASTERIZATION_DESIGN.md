@@ -9889,3 +9889,67 @@ including 1,567 original-bank reports / 1,551 original-bank PNGs and corporate
 three established SDL small-output platform distinctions remain. Existing browser
 references are reused. No performance, representative success-rate, release or
 remote CI claim follows. Every remaining G2–G9 and S17 commitment stays open.
+
+
+## Complete geometric pattern with deferred paints and native linear maps (2026-10-09)
+
+The retained CC0 geometric pattern (`inv-111`) is complete through all six APIs on
+Windows/Linux at its frozen explicit 284×284 transparent output. Its original
+39,523-byte SVG, root-only browser materialization, options and PNG remain
+unchanged. Existing healthy, cleaned matching platform triples are reused. This
+completes all fifteen selected development documents; finite G2–G9 and S17 exits
+remain open. The document contains gradient-painted rectangles and paths, rather
+than an SVG pattern element.
+
+The first gate was paint lookup before local definitions. A bounded deferred leaf
+record now borrows scene-owned immutable attributes, retaining inherited style,
+viewport/mask context and its original command position. Document-end resolution
+uses the same ordinary geometry lowerers after gradient/pattern templates resolve.
+Descending placeholder replacement preserves earlier pending positions; expanded
+fill/stroke command tails move under bounded scratch reservations and checkpointed
+copies. Pending use and group clip/mask ranges shift consistently. Geometry and
+paint owners stay in the same scene, including partial failure and cancellation.
+Empty leaves retain an explicit nonpainting command.
+
+The next gate was non-axis linear paint placement, including reflections with tiny
+nonzero off-axis terms. An immutable scene-owned source map retains raw endpoints,
+the local gradient matrix and the referencing map separately. Object bounds come
+from authored geometry before placement. Drawing/output references compose in
+double precision before native float conversion; local matrices remain separate
+until the existing bitmap-origin and shader-unit stages. The cached double inverse
+supplies the finite fallback. Singular mapped placement rejects before publication.
+Legacy admitted axis routes retain their arithmetic and exact pixels. No new
+shape-specific rasterizer or native source adaptation is introduced; runtime draw,
+geometry and paint value sizes remain 72/272/68 bytes.
+
+The [29 focused controls](../tests/Research/deferred-paint-leaves/manifest.json)
+were declared and frozen before their corrections. Twenty-six are exact through
+six APIs; missing paint, cyclic templates and partial mask coverage remain explicit
+boundaries. Genuine rotation and skew/objectBoundingBox pairs protect general
+coordinates. Expanded fill/stroke, interleaved use, forward group clip and covering
+mask controls protect command/range insertion. The original partial-mask case
+remains unchanged and promised G5 work. All 87 healthy, cleaned Linux captures
+form stable triples matching the frozen PNGs; Windows qualification likewise uses
+healthy, cleaned triples. One failed Windows launch remains ignored diagnostic
+evidence, with a healthy retry supplying that reference.
+
+Seven small inputs sweep every discovery/parser work denial, sampled/peak parser
+memory, raster work/memory denial, cancellation and identical retry. The full
+document protects early/middle/late parser work and peak-memory failure cleanup.
+Expanded clipped replay protects cancellation before and after partial drawing,
+immutable borrowed commands and identical retry. Missing/cyclic paints, duplicate
+IDs, empty paths and singular placement retain categorized resource boundaries.
+Scene storage accounting includes the actual immutable linear-map value and its
+cached inverse. A bounded retained font failure lets earlier unresolved paints
+resolve first: invalid paint keeps its established category, while valid paint
+propagates the original font diagnostic. Four focused cases protect this priority
+and owner release; no new text gate is added.
+
+Both Release builds have zero warnings/errors; all 5,836 tests pass per platform
+(4,229 core / 1,601 visual / six FontProbe). Finished-correction complete
+qualification preserves all 2,908 preceding comparison reports and 2,845 PNGs,
+including 1,567 original-bank reports / 1,551 original-bank PNGs and corporate
+27/27 documents / 258/258 variants on each platform's frozen references. The three
+established SDL small-output platform distinctions remain. Existing references are
+reused. No performance, representative success-rate, release or remote CI claim
+follows. A bounded online batch will supply the next complete in-scope failure.

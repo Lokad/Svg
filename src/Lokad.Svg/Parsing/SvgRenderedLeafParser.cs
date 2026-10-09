@@ -40,6 +40,15 @@ internal static class SvgRenderedLeafParser
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
 
         SvgRenderedGroupSourceParser.CaptureLeaf(reader, context, state);
+        if (SvgDeferredPaintLeaves.TryRetain(reader, context, state)) return true;
+        return ParseResolved(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
+    }
+
+    /// <summary>Lowers one validated live or retained leaf with its original inherited context.</summary>
+    internal static bool ParseResolved(XmlReader reader, SvgPaintableElementContext context, SvgRootAttributes root,
+        SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, SvgFontSnapshot? fontSnapshot,
+        ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
         switch (reader.LocalName)
         {
             case "rect":
@@ -239,14 +248,25 @@ internal static class SvgRenderedLeafParser
                 if (text.Value.Length == 0) return true;
                 if (!textElement.Presentation.IsPainted || !textElement.Presentation.HasFill) return true;
                 if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
-                using SvgTextRun run = SvgTextRunBuilder.Create(textStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, fontSnapshot, budget, workCounter, cancellationToken);
-                if (textElement.Presentation.HasFill)
+                SvgTextRun run;
+                try { run = SvgTextRunBuilder.Create(textStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, fontSnapshot, budget, workCounter, cancellationToken); }
+                catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)
                 {
-                    foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, budget, workCounter, cancellationToken))
+                    // Content has been consumed and its layout will be disposed. Resolve earlier paint
+                    // failures first, then propagate this same font failure if those paints are valid.
+                    state.DeferredTextFailure ??= exception;
+                    return true;
+                }
+                using (run)
+                {
+                    if (textElement.Presentation.HasFill)
                     {
-                        SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, textElement.Presentation.Color);
-                        try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(glyph)); }
-                        catch { glyph.Dispose(); throw; }
+                        foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, budget, workCounter, cancellationToken))
+                        {
+                            SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, textElement.Presentation.Color);
+                            try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(glyph)); }
+                            catch { glyph.Dispose(); throw; }
+                        }
                     }
                 }
                 return true;

@@ -1377,6 +1377,19 @@ internal sealed class SvgSceneBuilder : IDisposable
         return _recordedPaintValues[reference.Identity - 1];
     }
 
+    /// <summary>Reserves and retains one immutable linear source or referencing map under this scene.</summary>
+    internal SvgLinearPaintMap RetainLinearPaintMap(SvgLinearPaintMapData data)
+    {
+        RenderBudget.BudgetReservation reservation = _budget.Reserve(SvgLinearPaintMap.RetainedStorageBytes, SvgMemoryCategory.Scene);
+        try
+        {
+            SvgLinearPaintMap map = new(data);
+            _paintReservations.Add(reservation);
+            return map;
+        }
+        catch { reservation.Dispose(); throw; }
+    }
+
     internal void ChangeRecordedPaint(SvgRecordedPaint reference, SvgRecordedPaintValue value)
     {
         _workCounter.Consume(_cancellationToken);
@@ -1441,6 +1454,25 @@ internal sealed class SvgSceneBuilder : IDisposable
             for (int index = 0; index < geometries.Length; index++) _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, firstGeometryIndex + index, 255, null, -1, 255));
         }
         catch { foreach (SvgGeometry geometry in geometries) geometry.Dispose(); throw; }
+    }
+
+    /// <summary>Reserves drawing order for a leaf whose local paint is defined later.</summary>
+    internal int AddPaintPlaceholder()
+    {
+        int position = _commands.Count;
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.Geometry, -1, 255, null, -1, 255));
+        return position;
+    }
+
+    /// <summary>Moves one appended leaf's commands into its reserved drawing position.</summary>
+    /// <remarks>Geometry and paint owners remain in this scene. Empty leaves retain one explicit nonpainting
+    /// command. Command scratch reserves before allocation; copy work observes cancellation and teardown
+    /// releases every retained owner after partial failure.</remarks>
+    internal int ResolvePaintPlaceholder(int position, int tailStart)
+    {
+        if (_commands.Count == tailStart)
+            AddGeometry(SvgGeometry.FromRectangle(new(0, 0, 0, 0, SvgColor.Transparent, false, null)));
+        return _commands.ReplacePlaceholderWithTail(position, tailStart);
     }
 
     internal SvgSceneSlot AddReferencePlaceholder()
@@ -1659,6 +1691,29 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         }
         CopyWithCheckpoints(items, _items.AsSpan(index, items.Length));
         _count += items.Length;
+    }
+
+    /// <summary>Moves the appended tail over one earlier placeholder while preserving intervening order.</summary>
+    /// <remarks>Items borrow their resource owners. This list owns only array storage; scratch is reserved
+    /// before allocation, and every copy block observes caller work and cancellation.</remarks>
+    internal int ReplacePlaceholderWithTail(int index, int tailStart)
+    {
+        if (index < 0 || index >= tailStart || tailStart >= _count) throw new ArgumentOutOfRangeException(nameof(index));
+        int length = _count - tailStart;
+        using RenderBudget.BudgetReservation scratch = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<T>(length), SvgMemoryCategory.Parser);
+        T[] tail = new T[length];
+        CopyWithCheckpoints(_items.AsSpan(tailStart, length), tail);
+        int inserted = length - 1;
+        for (int remaining = tailStart - index - 1; remaining > 0; remaining -= CopyCheckpointItems)
+        {
+            _workCounter.Consume(_cancellationToken);
+            int count = Math.Min(CopyCheckpointItems, remaining);
+            int source = index + 1 + remaining - count;
+            _items.AsSpan(source, count).CopyTo(_items.AsSpan(source + inserted, count));
+        }
+        CopyWithCheckpoints(tail, _items.AsSpan(index, length));
+        _items[--_count] = default;
+        return inserted;
     }
 
     internal OwnedSceneArray<T> Detach()

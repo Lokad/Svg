@@ -42,6 +42,13 @@ internal struct SvgGradientCoordinates
 
     internal static SvgGradientCoordinates CreateLinear(SvgLinearGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset)
     {
+        if (gradient.SourcePaint?.Data is { IsMapped: true } source)
+        {
+            SvgAffineTransform reference = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset).ComposeChecked(source.Referencing);
+            SvgShaderMatrix paint = new((float)reference.A, (float)reference.C, (float)reference.E, (float)reference.B, (float)reference.D, (float)reference.F);
+            SvgShaderMatrix local = new((float)source.Local.A, (float)source.Local.C, (float)source.Local.E, (float)source.Local.B, (float)source.Local.D, (float)source.Local.F);
+            return Linear((float)source.X1, (float)source.Y1, (float)source.X2, (float)source.Y2, paint, local);
+        }
         float sx = (float)(gradient.IsUserSpace ? gradient.ReferenceScaleX : box.Width) * (float)horizontalScale;
         float sy = (float)(gradient.IsUserSpace ? gradient.ReferenceScaleY : box.Height) * (float)verticalScale;
         float tx = gradient.IsUserSpace ? (float)horizontalOffset : (float)box.X * (float)horizontalScale + (float)horizontalOffset;
@@ -50,16 +57,21 @@ internal struct SvgGradientCoordinates
         float y1 = (float)(gradient.IsUserSpace ? gradient.Y1 / gradient.ReferenceScaleY : gradient.Y1);
         float x2 = (float)(gradient.IsUserSpace ? gradient.X2 / gradient.ReferenceScaleX : gradient.X2);
         float y2 = (float)(gradient.IsUserSpace ? gradient.Y2 / gradient.ReferenceScaleY : gradient.Y2);
-        float dx = x2 - x1, dy = y2 - y1;
-        float square = dx * dx + dy * dy;
-        float length = float.IsFinite(square) ? MathF.Sqrt(square) : (float)Math.Sqrt((double)dx * dx + (double)dy * dy);
-        if (length == 0) return default;
-        float inverse = 1f / length;
-        float cosine = dx * inverse, sine = -dy * inverse;
-        float oneMinusCosine = 1 - cosine;
-        float biasX = (sine * y1 + oneMinusCosine * x1 - x1) * inverse;
-        float biasY = (-sine * x1 + oneMinusCosine * y1 - y1) * inverse;
-        return new(new(cosine * inverse, -sine * inverse, biasX, sine * inverse, cosine * inverse, biasY), new(sx, 0, tx, 0, sy, ty));
+        return Linear(x1, y1, x2, y2, new(sx, 0, tx, 0, sy, ty), null);
+
+        static SvgGradientCoordinates Linear(float x1, float y1, float x2, float y2, SvgShaderMatrix paint, SvgShaderMatrix? local)
+        {
+            float dx = x2 - x1, dy = y2 - y1;
+            float square = dx * dx + dy * dy;
+            float length = float.IsFinite(square) ? MathF.Sqrt(square) : (float)Math.Sqrt((double)dx * dx + (double)dy * dy);
+            if (length == 0) return default;
+            float inverse = 1f / length;
+            float cosine = dx * inverse, sine = -dy * inverse;
+            float oneMinusCosine = 1 - cosine;
+            float biasX = (sine * y1 + oneMinusCosine * x1 - x1) * inverse;
+            float biasY = (-sine * x1 + oneMinusCosine * y1 - y1) * inverse;
+            return new(new(cosine * inverse, -sine * inverse, biasX, sine * inverse, cosine * inverse, biasY), paint, local);
+        }
     }
 
     internal static SvgGradientCoordinates CreateRadial(SvgRadialGradient gradient, SvgRectangle box, double horizontalScale, double verticalScale, double horizontalOffset, double verticalOffset)

@@ -704,10 +704,26 @@ internal static class SvgDefinitionParser
         }
         (SvgColor start, SvgColor end, double offset1, double offset2, bool isEmpty, SvgGradientStop[] stops) = ResolveGradientStops(state, template);
         (double x1, double y1, double x2, double y2, bool isUserSpace, SvgGradientSpread spread, double referenceScaleX, double referenceScaleY, bool hasLinearRotation) = ResolveGradientVector(template, state);
-        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasLinearRotation);
+        SvgLinearGradient gradient = new(start, end, x1, y1, x2, y2, offset1, offset2, isEmpty, isUserSpace, spread, stops, referenceScaleX, referenceScaleY, hasLinearRotation)
+        { SourcePaint = RetainSourcePaint(template, state, workCounter, cancellationToken) };
         string retainedId = state.Strings.Copy(state.GradientId ?? throw new InvalidOperationException("Gradient registration requires an identifier."));
         if (!state.Gradients.TryAdd(retainedId, gradient)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG gradient ids must be unique.");
         DrainPendingGradientHrefs(state, workCounter, cancellationToken);
+
+        static SvgLinearPaintMap RetainSourcePaint(SvgGradientTemplate source, SvgDocumentState document, ParserWorkCounter work, CancellationToken token)
+        {
+            work.Consume(token);
+            SvgLinearPaintMapData? inherited = null;
+            if (source.Href is not null && source.VectorCount < 4 && document.Gradients.TryGetValue(SvgGradientSyntax.ParseGradientHrefId(source.Href), out SvgLinearGradient parent))
+                inherited = parent.SourcePaint?.Data;
+            SvgGradientTransform local = source.HasTransform ? source.Transform : inherited?.Local ?? SvgGradientTransform.Identity;
+            return document.Scene.RetainLinearPaintMap(new(
+                source.HasX1 ? source.X1 : inherited?.X1 ?? source.X1,
+                source.HasY1 ? source.Y1 : inherited?.Y1 ?? source.Y1,
+                source.HasX2 ? source.X2 : inherited?.X2 ?? source.X2,
+                source.HasY2 ? source.Y2 : inherited?.Y2 ?? source.Y2,
+                local, SvgAffineTransform.Identity, false));
+        }
     }
 
     /// <summary>Retains one linear-gradient href inheritance whose target is not registered yet for document-end resolution.</summary>

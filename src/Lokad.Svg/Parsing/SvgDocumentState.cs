@@ -27,7 +27,7 @@ internal sealed class SvgDocumentState : IDisposable
     // plus conservative bucket/key/entry overhead, before dictionary growth.
     private static readonly int PatternStorageBytes = checked(64 + (int)ParserCollectionMemory.GetArrayByteCount<SvgPatternTile>(1));
     // Covers one gradient entry plus one retained clamped stop array sized from its actual element type.
-    private static readonly int GradientStorageBytes = checked(128 + (int)ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(SvgGradientSyntax.MaximumGradientStops));
+    private static readonly int GradientStorageBytes = checked(64 + (int)System.Runtime.CompilerServices.Unsafe.SizeOf<SvgLinearGradient>() + (int)ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(SvgGradientSyntax.MaximumGradientStops));
 
     // Radial entries retain their actual paint value, including the separate shader matrices.
     private static readonly int RadialGradientStorageBytes = checked(64 + (int)System.Runtime.CompilerServices.Unsafe.SizeOf<SvgRadialGradient>() + (int)ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(SvgGradientSyntax.MaximumGradientStops));
@@ -57,6 +57,7 @@ internal sealed class SvgDocumentState : IDisposable
         RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, RadialGradientStorageBytes);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        DeferredPaintLeaves = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         GroupSnapshots = new BudgetedParserDictionary<string, SvgGroupSnapshot>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         RenderedGroupDefinitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         GroupSnapshotStarts = new BudgetedParserList<SvgGroupSnapshotStart>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -74,6 +75,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal RenderBudget Budget { get; }
 
     internal SvgSceneBuilder Scene { get; }
+
+    internal BudgetedParserList<SvgDeferredPaintLeaf> DeferredPaintLeaves { get; }
 
     internal BudgetedParserStringStore Strings { get; }
 
@@ -181,6 +184,10 @@ internal sealed class SvgDocumentState : IDisposable
     internal bool HasOpacityScope { get; set; }
 
     internal bool HasUnsupportedContent { get; set; }
+
+    // Retain at most one already-created failure until earlier paint references resolve.
+    // No text or glyph owners survive this failed run; document teardown releases prior scene owners.
+    internal SvgException? DeferredTextFailure { get; set; }
 
     internal bool SawStyleableNode { get; set; }
 
@@ -327,6 +334,7 @@ internal sealed class SvgDocumentState : IDisposable
         _anonymousSymbols?.Dispose();
         _anonymousSymbolOwner?.Dispose();
         PendingUses.Dispose();
+        DeferredPaintLeaves.Dispose();
         GroupSnapshots.Dispose();
         RenderedGroupDefinitions.Dispose();
         GroupSnapshotStarts.Dispose();

@@ -322,7 +322,7 @@ public sealed class RenderBudgetTests
         using SvgRoot root = SvgRootParser.Parse(svg, limits, budget, CancellationToken.None);
         Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.GradientFill, root.Geometries[0].Kind);
-        Assert.Equal(SvgSceneBuilder.RecordedPaintOwnerBytes + ParserCollectionMemory.GetArrayByteCount<SvgRecordedPaintValue>(1) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(1) + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(8), budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Scene]);
+        Assert.Equal(SvgSceneBuilder.RecordedPaintOwnerBytes + SvgLinearPaintMap.RetainedStorageBytes + ParserCollectionMemory.GetArrayByteCount<SvgRecordedPaintValue>(1) + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1) + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(1) + ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(8), budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Scene]);
     }
 
     [Fact]

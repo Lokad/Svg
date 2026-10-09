@@ -47,7 +47,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         {
             Width = Copy(raw.Width), Linecap = Copy(raw.Linecap), Linejoin = Copy(raw.Linejoin),
             Miterlimit = Copy(raw.Miterlimit), Dasharray = Copy(raw.Dasharray), Dashoffset = Copy(raw.Dashoffset),
-            StrokeOpacity = Copy(raw.StrokeOpacity), PathLength = Copy(raw.PathLength)
+            StrokeOpacity = Copy(raw.StrokeOpacity), PathLength = Copy(raw.PathLength), ClipRule = Copy(raw.ClipRule)
         };
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(512 + ParserCollectionMemory.GetArrayByteCount<Attribute>(reader.AttributeCount), SvgMemoryCategory.Scene);
         try
@@ -76,6 +76,8 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             return state.Strings.Copy(value);
         }
     }
+
+    internal SvgComputedStyle AuthoredStyle => _authored;
 
     internal bool RequiresConstruction(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill)
     {
