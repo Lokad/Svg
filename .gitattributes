@@ -6,3 +6,8 @@
 # This downloaded original and its root-sized copy retain the upstream CRLF bytes.
 tests/Fixtures/candidates/inv-110.svg -text whitespace=cr-at-eol
 tests/Research/remaining-scope-documents/inv-110-capture-616x540.svg -text whitespace=cr-at-eol
+# Preserve the downloaded remaining-gap originals and root-only browser inputs.
+tests/Fixtures/candidates/inv-112.svg -text whitespace=cr-at-eol
+tests/Research/remaining-gap-exports/inv-112-capture-512x538.svg -text whitespace=cr-at-eol
+# Preserve the upstream trailing blank line without flagging it as an edit.
+tests/Fixtures/candidates/inv-114.svg whitespace=-blank-at-eof

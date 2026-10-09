@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="195" height="195" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+ <path id="circle" d="M 190.37,94.64 C 190.37,146.01 148.73,187.66 97.36,187.66 C 45.99,187.66 4.35,146.01 4.35,94.64 C 4.35,43.28 45.99,1.63 97.36,1.63 C 148.73,1.63 190.37,43.28 190.37,94.64 z" />
+ <mask id="m1">
+   <use xlink:href="#circle" style="opacity:1;fill:white;stroke:none;" />
+ </mask>
+ <mask id="m2">
+   <rect width="195" height="195" style="opacity:1;fill:white;stroke:none;"/>
+   <use xlink:href="#circle" style="opacity:1;fill:black;stroke:none;" />
+ </mask>
+ <linearGradient id="gr1" x1="156" y1="571" x2="156" y2="190" gradientUnits="userSpaceOnUse">
+  <stop offset="0" style="stop-color:#2dae00;stop-opacity:1;" />
+  <stop offset="1" style="stop-color:#2dae00;stop-opacity:0;" />
+ </linearGradient>
+ <radialGradient id="gr3" cx="105" cy="101" fx="105" fy="101" r="110" gradientUnits="userSpaceOnUse">
+  <stop style="stop-color:#002;stop-opacity:0;" offset="0" />
+  <stop style="stop-color:#002;stop-opacity:0.39;" offset="1" />
+ </radialGradient>
+ <radialGradient id="gr2" cx="105" cy="101" fx="105" fy="101" r="149" gradientUnits="userSpaceOnUse">
+  <stop offset="0" style="stop-color:white;stop-opacity:0.23;" />
+  <stop offset="1" style="stop-color:white;stop-opacity:0" />
+ </radialGradient>
+</defs>
+<g id="white" style="opacity:1;stroke:none;">
+ <rect mask="url(#m1)" style="fill:url(#gr1);" width="195" height="195" />
+ <rect mask="url(#m1)" style="fill:url(#gr2);" width="195" height="195" />
+ <rect mask="url(#m1)" style="fill:url(#gr3);" width="195" height="195" />
+ <rect id="corners" mask="url(#m2)" style="fill:white;" width="195" height="195" />
+</g>
+<g mask="url(#m1)" id="black">
+ <g style="fill:none;stroke:black;stroke-width:2;" id="lines">
+  <use xlink:href="#circle" />
+  <path d="M 370.64,277.48 C 366.41,270.89 362.33,267.85 354.27,265.82" />
+  <path d="M 30.65,25.04 L 39.11,33.65" />
+  <path d="M 29.4,54.24 C 10.2,68 5.52,95.9 6.23,95.74" />
+  <path d="M 53.83,56.28 C 51.85,70.9 57.12,86.92 68.08,104.04" />
+  <path d="M 17.58,126.2 C 26.61,135.23 38.62,133.84 49.91,134.1" />
+  <path d="M 77.4,162.51 C 75.44,167.68 75.95,174.84 77.06,182.5" />
+  <path d="M 63.89,14.42 C 71.08,7.22 86.5,2.58 106.63,0.47" />
+  <path d="M 147.98,27.98 C 142.98,18.67 134.17,11.35 124.84,4.29" />
+  <path d="M 79.5,30.48 C 90.55,31.72 110.5,33.36 126.34,42.32" />
+  <path d="M 138.7,74.29 C 129.23,87.35 117.79,99.54 104.56,110.93" />
+  <path d="M 110.51,145.85 C 122.64,152.61 135.92,155.52 152.01,152.89" />
+  <path d="M 167.51,82.12 C 173.7,93.74 174.61,110.23 175.5,126.74" />
+  <path d="M 173.3,57.22 C 178.4,57.39 183.34,60.08 188.02,66.93" />
+ </g>
+ <g id="pentagons">
+  <path d="M 24.55,58 C 37.48,60.27 42.81,59.36 53.51,60.35 C 59.85,52.04 70.59,41.53 81.86,30.76 C 77.21,23.5 72.82,16.07 67.29,11.5 C 53.27,16.25 43.28,22.11 33.78,28.09 C 27.82,38.48 24.66,48.46 24.55,58 z" />
+  <path d="M 123.35,40.93 C 127.61,52.63 131.27,63.13 136.66,77.11 C 147.76,80.04 159.6,83.56 168.76,84.94 C 171.71,79.02 173.65,67.63 175.81,57.38 C 168.49,46.03 158.06,36.24 147.47,26.53 C 139.68,29.34 131.56,34.81 123.35,40.93 z" />
+  <path d="M 66.2,101.22 C 80.48,103.57 94.25,105.92 107.69,108.27 C 111.85,121.32 112.39,134.36 113.8,147.41 C 103.52,155.95 89.35,158.65 76.85,163.85 C 62.3,154.45 56.38,143.97 48.03,133.79 C 52.82,122.78 58.11,111.82 66.2,101.22 z" />
+  <path d="M 0,89.82 C 0.02,90.48 5.04,91.22 6.86,90.49 C 8.96,103.9 11.71,116.89 19.04,126.81 C 17.61,133.83 18.96,139.47 21.04,144.74 C 8.31,148.31 9.42,150.24 4.43,152.49" />
+  <path d="M 46.73,174.75 C 58.82,177.95 67.63,184.17 76.95,180.95 C 79.69,184.83 87.28,187.64 107.07,188.48 L 53.26,193.24" />
+  <path d="M 187,129.8 C 183.47,127.2 179.82,124.72 175.26,123.14 C 166.18,135.24 157.1,149.02 148.01,153.36 C 147.85,160.82 146.68,167.49 143.4,172.45 C 150.25,172.91 157.42,172.89 165.32,171.68" />
+ </g>
+</g>
+</svg>
+

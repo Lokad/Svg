@@ -8,20 +8,23 @@ public sealed class SvgRemainingScopeDocumentTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-scope-documents");
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
-        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
-            yield return new object[] { Required(item, "id") };
+        foreach (string family in new[] { "remaining-scope-documents", "remaining-gap-exports" })
+        {
+            string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
+            using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+            foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
+                yield return new object[] { family, Required(item, "id") };
+        }
     }
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Retained_documents_preserve_frozen_outputs_and_admission_gates_through_six_apis(string identity)
+    public async Task Retained_documents_preserve_frozen_outputs_and_admission_gates_through_six_apis(string family, string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-scope-documents");
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(11, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family == "remaining-scope-documents" ? 11 : 3, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("identical", Required(root, "decodedPixelStability"));
         Assert.Equal("healthy", Required(root, "captureStartupHealth"));
@@ -33,8 +36,9 @@ public sealed class SvgRemainingScopeDocumentTests
         Assert.NotEmpty(Required(item, "selection"));
         using JsonDocument sourceRecords = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "source-records.json")));
         JsonElement source = sourceRecords.RootElement.GetProperty("records").EnumerateArray().Single(c => Required(c, "identity") == document);
-        Assert.Equal(document == "inv-110" ? "Public domain" : "CC0-1.0", Required(item, "license"));
-        Assert.Equal(document == "inv-110" ? "Public domain" : "CC0", Required(source.GetProperty("extmetadata").GetProperty("LicenseShortName"), "value"));
+        bool publicDomain = document is "inv-110" or "inv-112";
+        Assert.Equal(publicDomain ? "Public domain" : "CC0-1.0", Required(item, "license"));
+        Assert.Equal(publicDomain ? "Public domain" : "CC0", Required(source.GetProperty("extmetadata").GetProperty("LicenseShortName"), "value"));
         Assert.Equal(Required(source, "sourceUrl"), Required(item, "sourceUrl"));
         byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(item, "input")));
         byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", document + ".svg"));

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg width="512" height="880" version="1.1" viewBox="0 0 32 55" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<path id="a" d="M.7 2l30-2 1.6 25-29.8 2.2z"/>
+<!-- Bug: clone gradient with gradientTransform are also inconsistent -->
+<linearGradient id="c" x1=".7" x2="30" y1="2" gradientUnits="userSpaceOnUse">
+ <stop offset="0"/>
+ <stop offset=".3"/>
+ <stop stop-color="#3c3c3c" offset=".39"/>
+ <stop stop-color="#d2d2d2" offset=".59"/>
+ <stop stop-color="#fff"    offset=".65"/>
+ <stop stop-color="#c3c3c3" offset=".74"/>
+ <stop stop-color="#2d2d2d" offset=".94"/>
+ <stop offset="1"/>
+</linearGradient>
+<!-- Bug: maskUnits are misinterpreted!? (not displayed)  -->
+<mask id="f">
+ <use fill="url(#c)" xlink:href="#a"/>
+</mask>
+<clipPath id="g">
+ <path d="m449.6 71v6l-7.3 16.7h28.4l-16.4-23.3-2 2.7z"/>
+</clipPath>
+<mask id="h">
+ <clipPath id="d">
+  <use width="32" height="55" xlink:href="#b"/>
+ </clipPath>
+ <linearGradient id="e" x1="-3.42" x2="-2.42" y1="859" y2="859" gradientTransform="matrix(28.22 -1.974 -1.366 -19.49 1712 16815)" gradientUnits="userSpaceOnUse">
+  <stop offset="0"/>
+  <stop offset=".3"/>
+  <stop stop-color="#3c3c3c" offset=".39"/>
+  <stop stop-color="#d2d2d2" offset=".59"/>
+  <stop stop-color="#fff"    offset=".65"/>
+  <stop stop-color="#c3c3c3" offset=".74"/>
+  <stop stop-color="#2d2d2d" offset=".94"/>
+  <stop offset="1"/>
+ </linearGradient>
+ <use width="744.09" height="1052.36" clip-path="url(#d)" fill="url(#e)" xlink:href="#b"/>
+</mask>
+<path id="b" d="m442.5 95.7-1.8-25.2 30-2 1.6 25z"/>
+</defs>
+<use width="32" height="55" fill="#b0b" mask="url(#f)" xlink:href="#a"/>
+<path d="M0 27h32v28H0z" fill="#0bb"/>
+<path transform="translate(-440 -42.65)" d="m470.6 68.5 1.7 25-29.8 2.2-1.8-25.2" clip-path="url(#g)" fill="#eee" mask="url(#h)" opacity=".6"/>
+</svg>

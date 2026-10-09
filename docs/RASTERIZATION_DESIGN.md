@@ -9953,3 +9953,41 @@ including 1,567 original-bank reports / 1,551 original-bank PNGs and corporate
 established SDL small-output platform distinctions remain. Existing references are
 reused. No performance, representative success-rate, release or remote CI claim
 follows. A bounded online batch will supply the next complete in-scope failure.
+
+
+## Retained rotated-pattern and mask exports for remaining scope (2026-10-09)
+
+The next bounded batch preserves three whole static fontless exports, original
+bytes and one declared transparent output each: public-domain `inv-112` set screw
+at 512×538, CC0 `inv-113` gradient-mask example at 512×880 and CC0 `inv-114`
+soccerball mask at 195×195. Matching browser materializations insert root dimensions
+only when absent. Nine fresh healthy, cleaned captures per platform form stable
+triples; Linux bytes match the frozen Windows PNGs. The
+[manifest](../tests/Research/remaining-gap-exports/manifest.json) and
+[source records](../tests/Research/remaining-gap-exports/source-records.json)
+retain rights, revisions, asset checksums and the declared frames.
+
+All three originals reject at `5531c080`. The next complete deliverable is `inv-112`:
+its rotated hatch reaches “Only positive-axis pattern transforms are implemented.”
+The proposed repair extends bounded native tile/source replay and paint-coordinate
+mapping, with small border/phase/output/stroke controls. Ordinary authored strokes,
+dashes and reflected local uses remain part of the complete image acceptance.
+The two masks keep local-use/multiple-child content, nested definition and
+paint/clip/mask composition promises visible in G5. Their first observed message is
+“This SVG child element is not implemented yet”; further gates await diagnosis.
+No renderer implementation or supported-subset expansion is claimed by admission.
+
+One additional public-domain vector-effect lead failed pinned Chrome image decode
+on its original ISO-8859-1 bytes after root-only sizing. Its healthy, cleaned launch
+diagnostic and unchanged download remain ignored artifacts. It has no qualified
+reference for this batch; the underlying width-map/static vector-effect work is
+not deferred. The four-file failure-selected batch establishes no representative
+success rate and does not change corporate membership or any preceding asset.
+
+The existing document harness protects all fourteen old/new outputs in these two
+families through six APIs, including exact rejection categories/messages and
+original/capture/reference bindings. Both Release builds have zero warnings/errors
+and all 5,839 tests pass per platform (4,229 core / 1,604 visual / six FontProbe).
+Production, previous references and options are unchanged, so complete banks and
+corporate qualification are reused from `5531c080`. Completed documents remain
+fifteen; the selected queue is now 15/18. All finite G2–G9 and S17 promises remain.

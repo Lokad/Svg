@@ -56,7 +56,7 @@ are exact through six APIs on Windows/Linux. Root-local pattern registration,
 inert aspect declarations, composed positive-axis pattern maps and bounded tile
 replay share existing mechanisms. The [placement bank](../tests/Research/pattern-affine-placement/manifest.json)
 retains sixteen exact controls and two explicit reflected/rotated boundaries.
-Development completion is 15/15 documents.
+Development completion is 15/18 selected documents; the three new export failures are described below.
 
 The non-ionizing radiation warning (`inv-110`, G5) is complete: its frozen
 616×540 transparent output is exact through six APIs on Windows/Linux. Native
@@ -94,10 +94,22 @@ warning sign's complete 616×540 output and geometric pattern's 284×284 output.
 tiger's historical auto-image PNG remains diagnostic. All eleven straight-clip
 controls, including the group boundary, are exact through six APIs on both
 platforms. Healthy Linux triples match each frozen document/control reference.
-Both platforms pass 5,836 tests. The finished correction preserves every one of
-2,908 preceding comparison reports and 2,845 PNGs. Corporate remains 27/27 /
-258/258 exact on own-platform references. The selected queue is 15/15 complete;
-remaining in-scope gaps guide the next bounded sourcing batch. Controls remain separate.
+Both platforms pass 5,839 tests after three new document admissions. The finished
+`5531c080` production qualification preserves every one of 2,908 preceding
+comparison reports and 2,845 PNGs; production, prior assets and options stay
+unchanged, so that bank qualification is reused. Corporate remains 27/27 /
+258/258 exact on own-platform references. The selected queue is 15/18 complete;
+the next document is the set-screw diagram. Controls remain separate.
+
+The [new export bank](../tests/Research/remaining-gap-exports/manifest.json) keeps
+three complete fontless static failures and matching healthy, cleaned platform
+triples. `inv-112` is selected for its rotated vector hatch and positive-axis
+pattern-map rejection, at an unchanged explicit 512×538 transparent output.
+`inv-113` retains local-use masks, nested clip/paint definitions and transformed
+composition at 512×880; `inv-114` retains local-use/multiple-child masks, shader
+targets and masked groups at 195×195. Both masks reject the structural-content
+gate; subsequent blockers remain to be diagnosed. These admissions expand no
+currently supported subset and do not close any finite G2–G9 exit.
 Remaining G2 combinations are dependencies only when the
 selected document needs them. Finite planned G2–G9 exits live in PLAN; they do
 not change the currently admitted subsets recorded here.

@@ -15,9 +15,41 @@ retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
 Bhutan the tenth, South Africa the eleventh, Wikifoods the twelfth and the striped
 pattern the thirteenth, the non-ionizing warning the fourteenth and geometric
 pattern the fifteenth: **15 complete**. The retained development queue is
-**15/15 complete**; Wikifoods and the striped pattern are each 9/9 exact, and the
-warning sign and geometric pattern are each 1/1 exact. The next bounded batch
-targets remaining in-scope gaps, as defined in PLAN. Controls do not count as completed documents. The I Ching nested affine-opacity control remains exact.
+**15/18 complete** after the latest bounded sourcing batch; every preceding
+completed output remains exact. The selected next document is `inv-112`, the
+set-screw diagram; two new CC0 mask exports remain queued. Controls do not count as completed documents. The I Ching nested affine-opacity control remains exact.
+
+### inv-112–inv-114 — new complete export failures; set-screw diagram next
+
+The [three declared outputs](../tests/Research/remaining-gap-exports/manifest.json)
+and [source records](../tests/Research/remaining-gap-exports/source-records.json)
+retain untouched downloads, authors, rights evidence, upstream revisions and asset
+checksums. Each output was declared at `5531c080` before rendering/capture; browser
+inputs change only root dimensions where absent. No geometry or license header is
+substituted. All three healthy, cleaned Windows capture triples are stable; three
+Linux captures per output match their frozen PNG byte-for-byte.
+
+| Complete export / source | Rights and original bytes | Frozen output / current admission |
+| --- | --- | --- |
+| [Set screw.svg](https://commons.wikimedia.org/wiki/File:Set_screw.svg), Yuri Raysper; later code reduction by Andrew Pertsev; `inv-112` | Author's public-domain release; 1,003 bytes; upstream 2024-07-31T03:41:40Z | Explicit 512×538 transparent; rejects “Only positive-axis pattern transforms are implemented.” Selected next for G6 rotated vector hatch coordinates, preserving ordinary strokes/dashes and reflected local uses. |
+| [SVG mask gradient bug.svg](https://commons.wikimedia.org/wiki/File:SVG_mask_gradient_bug.svg), Perhelion; later correction by JoKalliauer; `inv-113` | CC0; 1,949 bytes; upstream revision in source record | Explicit 512×880 transparent; rejects “This SVG child element is not implemented yet.” Local-use masks, nested clip/paint definitions and transformed composition remain queued G5 work. |
+| [Soccerball mask2.svg](https://commons.wikimedia.org/wiki/File:Soccerball_mask2.svg), Ed g2s, Thumperward; later simplification by AoV2; `inv-114` | CC0 / public-domain Open Clip Art source; 4,025 bytes; upstream revision in source record | Explicit 195×195 transparent; same structural rejection. Local-use/multiple-child masks, shader targets and masked groups remain queued G5 work. |
+
+The bounded batch downloaded four fontless static exports. The fourth,
+[SVGvector-effect01.svg](https://commons.wikimedia.org/wiki/File:SVGvector-effect01.svg),
+has verified public-domain rights but no qualified browser reference: pinned
+Chrome image decode failed on the original ISO-8859-1 bytes after root-only sizing.
+The healthy, cleaned launch report and unchanged download stay ignored diagnostic
+artifacts. It is outside this retained batch; the underlying static vector-effect
+and measured width-map work remain in PLAN. No representative success rate follows
+from four failure-selected leads.
+
+Three new six-API rejection checks pass on Windows/Linux. Both Release builds and
+5,839 tests per platform pass (4,229 core / 1,604 visual / six FontProbe). Production
+and all preceding SVG/PNG assets/options are unchanged; complete-bank corporate
+and established-result qualification is reused from `5531c080`. The completed
+document count stays fifteen; the enlarged selected queue is 15/18. Further gates
+remain visible until every declared output of each document is exact.
 
 ### inv-109–inv-111 — all three retained documents complete
 
@@ -68,7 +100,7 @@ The finished correction passes both Release builds and 5,836 tests per platform
 (4,229 core / 1,601 visual / six FontProbe). Complete original banks and corporate
 qualification preserve all 2,908 previous comparison reports and 2,845 PNGs from
 `fb5db27c`; corporate stays 27/27 / 258/258 on each platform's frozen references.
-Existing document references are reused. The selected queue is 15/15 complete;
+Existing document references are reused. At that `5531c080` checkpoint, the selected queue was 15/15 complete;
 remaining G2–G9 gaps govern the next bounded sourcing batch.
 
 Four actual exports were downloaded within the five-file limit. The three above

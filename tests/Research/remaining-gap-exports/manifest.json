@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-09",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "purpose": "Three complete fontless static exports targeting remaining G5/G6 gates; next deliverable is inv-112 set screw at its frozen 512x538 transparent output. Document outputs and controls remain separate.",
+  "cases": [
+    {
+      "id": "inv-112-512x538-transparent",
+      "document": "inv-112",
+      "input": "../../Fixtures/candidates/inv-112.svg",
+      "width": 512,
+      "height": 538,
+      "viewport": {
+        "width": 512,
+        "height": 538
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/inv-112-512x538-transparent.png",
+      "sourceSha256": "3d0c47aab349c13b8b5e47fbc719870230e5e13b2ac8f13be47e274acabc3f7d",
+      "referenceSha256": "1eb8324b097ebb1a846a0592b7847bc96329872ab4390639749be57b768157dd",
+      "license": "Public domain",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Set_screw.svg",
+      "role": "document-output",
+      "selection": "Whole fontless static export at the nominal source-page frame, fixed at 5531c080 before renderer screening or capture; no geometry or original source replacement.",
+      "materialization": "insert-root-dimensions",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only positive-axis pattern transforms are implemented.",
+      "captureInput": "inv-112-capture-512x538.svg",
+      "captureInputSha256": "6c95951122e64412c29c46ad889c9524d42c745746ab208c5e61e458a2c0ef72"
+    },
+    {
+      "id": "inv-113-512x880-transparent",
+      "document": "inv-113",
+      "input": "../../Fixtures/candidates/inv-113.svg",
+      "width": 512,
+      "height": 880,
+      "viewport": {
+        "width": 512,
+        "height": 880
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/inv-113-512x880-transparent.png",
+      "sourceSha256": "cfb8581cd306bd5037ecf072a085e1e7bb005ded44afcb3bca8baba42a966fdc",
+      "referenceSha256": "2a0478392d5c8cd26236c9e28a41ac445158d16f5794a60ae1e0442b1c85a046",
+      "license": "CC0-1.0",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVG_mask_gradient_bug.svg",
+      "role": "document-output",
+      "selection": "Whole fontless static export at the nominal source-page frame, fixed at 5531c080 before renderer screening or capture; no geometry or original source replacement.",
+      "materialization": "insert-root-dimensions",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "This SVG child element is not implemented yet.",
+      "captureInput": "inv-113-capture-512x880.svg",
+      "captureInputSha256": "9f565a680de71e128b9c4357eeefdbd4626075558f61b6f13eb54f632f6526af"
+    },
+    {
+      "id": "inv-114-195x195-transparent",
+      "document": "inv-114",
+      "input": "../../Fixtures/candidates/inv-114.svg",
+      "width": 195,
+      "height": 195,
+      "viewport": {
+        "width": 195,
+        "height": 195
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/inv-114-195x195-transparent.png",
+      "sourceSha256": "0cc8d39491fb72415777320fd38dd9da8b32aeb00962cb4b18f8cf05cd0b6f5e",
+      "referenceSha256": "d4fab8fc7a133047996ce1f1dde8d479c076b2cc1ec88089bf77a222a2a35fc3",
+      "license": "CC0-1.0",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Soccerball_mask2.svg",
+      "role": "document-output",
+      "selection": "Whole fontless static export at the nominal source-page frame, fixed at 5531c080 before renderer screening or capture; no geometry or original source replacement.",
+      "materialization": "unchanged",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "This SVG child element is not implemented yet."
+    }
+  ]
+}
