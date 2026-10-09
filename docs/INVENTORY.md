@@ -12,9 +12,33 @@ preserved corporate 27/27 documents and 258/258 variants. The existing radiation
 symbol completes the sixth development deliverable, with that
 document at **9/9 exact outputs through all six APIs on both platforms**. The
 retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
-Bhutan the tenth and South Africa the eleventh: **11/11 complete**. The selected
-document queue is **11/11 complete**. Controls do not
+Bhutan the tenth and South Africa the eleventh: **11 complete**. The selected
+document queue is **11/12 complete**; the CC0 Wikifoods logo is next, at 0/9 exact.
+Controls do not
 count as completed documents. The I Ching nested affine-opacity control remains exact.
+
+### inv-108 — retained CC0 Wikifoods logo; next complete deliverable
+
+- Source: [Logo of Wikifoods.svg](https://commons.wikimedia.org/wiki/File:Logo_of_Wikifoods.svg), creator 湯崩正海, upstream revision 2024-02-04T07:50:16Z, retrieved 2026-10-09.
+- Rights: CC0 dedication verified on Commons and in the retained [imageinfo evidence](../tests/Research/wikifoods-logo/source-record.json). The actual downloaded original matches the recorded 5,615-byte size and SHA-1 `f2e8558dee8676cd10c2d67a668f44183bfe8335`.
+- Input: [inv-108.svg](../tests/Fixtures/candidates/inv-108.svg), unchanged original UTF-8/LF bytes; SHA-256 `89c96e9b68596969bc5bd648f51f5fa5df3b04cb294f93057c779c332ad7ad7b`. Fontless outlined logo; no source substitution or inserted license header.
+- Frozen outputs: [nine document cases](../tests/Research/wikifoods-logo/manifest.json), original-input scales one third / 1 / 2, 400×400 / 1200×1200 / 2400×2400, each transparent/white/black. Small/large browser materializations change only root dimensions. All nine stable, healthy, cleaned triples on each platform; Linux PNGs match the frozen Windows PNGs byte-for-byte.
+- Baseline at `83de8a50`: every output rejects `UnsupportedFeature`, first message “Only bare-number and px rectangle coordinates are implemented.” Percentage circle lengths trigger that gate. Curved group/leaf clips and radial paints are present in the source; subsequent gates await diagnosis. **0/9 exact; incomplete.** All six APIs protect the current rejection on Windows/Linux.
+
+The bounded sourcing batch screened three actual CC0 exports. Only Wikifoods is
+retained as a failure-selected development document. [Bluemen clap.svg](https://commons.wikimedia.org/wiki/File:Bluemen_clap.svg)
+(34,256 bytes, SHA-256 `ef6d28573b5a46cc579e8f85f6166cdd3d11369436fa2e8bb8caa29f8f605fee`)
+is exact at a declared matching 339×325 viewport and stays outside the failure
+queue. [AX5E1-2D.svg](https://commons.wikimedia.org/wiki/File:AX5E1-2D.svg)
+(1,850 bytes, SHA-256 `6b8cfc3c435683123d8971c65e3e8e16a07930994c7bb67ce1a4083d9bcc6cc9`)
+contains an infinite blinking animation and is excluded by the agreed static
+scope. Original downloads, rights metadata and screening captures for those two
+remain ignored research artifacts. No population success rate follows from this
+batch. The eleven completed documents and corporate 27/27 / 258/258 stay frozen.
+
+This source-selection change adds nine focused six-API rejection checks on each
+platform. Production is unchanged; the complete `83de8a50` qualification
+is reused without another unchanged full-bank run.
 
 ### inv-061 — complete retained South Africa qualification
 

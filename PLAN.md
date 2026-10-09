@@ -31,8 +31,9 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 11/11**. The selected document queue is
-**11/11 complete**. Controls remain separate.
+references. **Completed development deliverables: 11**. The selected document queue is
+**11/12 complete**; Wikifoods is the next deliverable, with 0/9 exact outputs.
+Controls remain separate.
 These failure-selected examples establish no representative success rate.
 
 The new [pattern inheritance bank](tests/Research/pattern-inheritance/manifest.json)
@@ -125,15 +126,28 @@ has **11 controls: ten exact and one explicit unsupported group boundary** throu
 six APIs on both platforms. Rectangle targets are admitted; broader group/use,
 multi-contour, transformed-coordinate and clip-rule promises remain G5 work.
 
-**Next deliverable selection:** source a bounded batch of three public-domain/CC0
-complete exports that exercise the remaining finite G2–G6 exits, prioritizing
-the discovered non-scaling root-viewBox width defect and group/paint clipping.
-Verify the actual downloaded SVG and its rights evidence; retain documents with
-an observed in-scope rejection or mismatch. Declare each retained document's
-finite output set before capture or correction, then choose the first complete
-document and implement only its shared dependencies. Capture-frame differences
-need an explicit contract decision; they do not establish a renderer defect.
-Do not begin a combinatorial sweep while this document selection is pending.
+**Next complete deliverable: the CC0 Wikifoods logo (`inv-108`).** The bounded
+three-export batch is screened: Wikifoods rejects on percentage circle coordinates;
+Bluemen clap is exact at an explicitly matching 339×325 viewport; AX5E1-2D
+contains animation outside the agreed static scope. Only Wikifoods enters the
+failure queue. This is development selection, with no representative success rate.
+
+The [Wikifoods bank](tests/Research/wikifoods-logo/manifest.json) freezes nine
+original-input outputs before correction: 400×400 / 1200×1200 / 2400×2400 at
+scales one third / 1 / 2, each on transparent/white/black. Every Windows and Linux
+reference has a stable, healthy, cleaned capture triple; Linux matches the frozen
+PNGs byte-for-byte. Browser small/large inputs change only root dimensions,
+preserving the viewBox and all other bytes. All six converter APIs currently
+reject every output with `UnsupportedFeature`: **0/9 exact; document incomplete**.
+
+Advance this document through percentage oval geometry, curved group/leaf clips
+and the radial paint mappings present in its original source. Use focused controls
+to confirm each dependency and protect shared repairs; a listed source feature is
+not a claim that its later gate has already been measured. Reuse geometry/source
+replay and bounded clip/paint machinery. Do not require exhaustive G2 completion
+or substitute flattened geometry. The discovered non-scaling root-viewBox stroke
+width defect remains open: the logo's vector-effect path has no stroke and does
+not exercise it. Preserve all eleven completed documents and the corporate freeze.
 
 The original admitted fixture/research fidelity repairs are complete. The remaining
 queue covers static, self-contained SVG within the original product scope:
@@ -173,7 +187,7 @@ focused outcome stay unchanged. South Africa, Bhutan, Portugal, Malta and
 radiation are each 9/9 exact. Corporate remains 27/27 and 258/258 exact against
 each platform's own references, including the three established SDL small-output
 cross-platform distinctions. Eleven development documents are complete. The
-next support deliverable comes from verified in-scope document sourcing; G2–G9,
+next support deliverable is the retained Wikifoods logo; G2–G9,
 the discovered non-scaling width-map defect and S17 remote CI stay open.
 
 ## 2. Execution decisions
@@ -711,7 +725,7 @@ bases are repaired. The Illustrator heart, I Ching library and both patterns are
 complete, as are the CC0 mask and all nine radiation outputs. The retained nested
 affine-opacity mismatch is repaired. The retained tiger is complete at its
 explicitly qualified viewport; all nine Malta, Portugal, Bhutan and South Africa outputs are exact.
-Select the next support document from verified public-domain/CC0 exports.
+Finish the retained Wikifoods logo against its nine frozen references.
 Choose shared support changes by the complete retained documents they advance.
 Keep the remaining instance combinations visible without making them a
 prerequisite for G3–G6.

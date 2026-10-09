@@ -1,0 +1,85 @@
+{
+  "retrieved": "2026-10-09",
+  "pageId": 143628427,
+  "title": "File:Logo of Wikifoods.svg",
+  "timestamp": "2024-02-04T07:50:16Z",
+  "size": 5615,
+  "sha1": "f2e8558dee8676cd10c2d67a668f44183bfe8335",
+  "sourceUrl": "https://commons.wikimedia.org/wiki/File:Logo_of_Wikifoods.svg",
+  "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/3/37/Logo_of_Wikifoods.svg",
+  "extmetadata": {
+    "DateTime": {
+      "value": "2024-02-04 07:50:16",
+      "source": "mediawiki-metadata",
+      "hidden": ""
+    },
+    "ObjectName": {
+      "value": "Logo of Wikifoods",
+      "source": "mediawiki-metadata"
+    },
+    "CommonsMetadataExtension": {
+      "value": 1.2,
+      "source": "extension",
+      "hidden": ""
+    },
+    "Categories": {
+      "value": "CC-Zero|Self-published work|Wiki logos|Valid SVG created with Text Editor:Logos",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "Assessments": {
+      "value": "",
+      "source": "commons-categories",
+      "hidden": ""
+    },
+    "ImageDescription": {
+      "value": "新しく開設予定の<a href=\"https://ja.wikipedia.org/wiki/Wiki%E3%82%B5%E3%82%A4%E3%83%88\" class=\"extiw\" title=\"ja:Wikiサイト\">Wikiサイト</a>、<a href=\"https://ja.wikipedia.org/wiki/Wikifoods\" class=\"extiw\" title=\"ja:Wikifoods\">Wikifoods</a>のロゴマーク。",
+      "source": "commons-desc-page"
+    },
+    "DateTimeOriginal": {
+      "value": "2024-01-07",
+      "source": "commons-desc-page"
+    },
+    "Credit": {
+      "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+      "source": "commons-desc-page"
+    },
+    "Artist": {
+      "value": "湯崩正海",
+      "source": "commons-desc-page"
+    },
+    "LicenseShortName": {
+      "value": "CC0",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "UsageTerms": {
+      "value": "Creative Commons Zero, Public Domain Dedication",
+      "source": "commons-desc-page"
+    },
+    "AttributionRequired": {
+      "value": "false",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "LicenseUrl": {
+      "value": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+      "source": "commons-desc-page"
+    },
+    "Copyrighted": {
+      "value": "True",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "Restrictions": {
+      "value": "",
+      "source": "commons-desc-page",
+      "hidden": ""
+    },
+    "License": {
+      "value": "cc0",
+      "source": "commons-templates",
+      "hidden": ""
+    }
+  }
+}
