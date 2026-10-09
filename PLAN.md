@@ -1,11 +1,12 @@
 # Lokad.Svg — renderer fidelity and remaining SVG support
 
-Updated 2026-10-09. **27/27 corporate documents and 258/258 variants remain exact
-on Windows and Linux**, against each platform's frozen browser references.
-Marks are 13/13; outlined wordmarks are 14/14. Membership, input bytes, options
-and references stay frozen. This complete matrix remains the regression gate.
+Updated 2026-10-10. Complete Windows/Linux qualification preserves
+**27/27 corporate documents and 258/258 variants exact**, against each platform's
+frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
+Membership, input bytes, options and references stay frozen. This complete
+matrix remains the regression gate.
 
-**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifoods, striped pattern, non-ionizing warning, geometric pattern, set-screw diagram, gradient-mask example, soccerball mask, Fibonacci spiral, railway tunnel junction, soccerball with shadow and transparent striped pattern are complete**,
+**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifoods, striped pattern, non-ionizing warning, geometric pattern, set-screw diagram, gradient-mask example, soccerball mask, Fibonacci spiral, railway tunnel junction, soccerball with shadow and transparent striped pattern and both baseball illustrations are complete**,
 through all six outputs on both platforms. Earlier qualified references stay unchanged;
 the tiger uses the explicit viewport qualification explained below:
 
@@ -33,6 +34,8 @@ the tiger uses the explicit viewport qualification explained below:
 | Railway tunnel junction (`inv-117`) | Explicit 500×500, transparent; 1/1 output | Authored mask-group boundaries retain nested/sibling ownership through deferred resolution; shared native mask/layer replay stays exact. |
 | Soccerball with shadow (`inv-118`) | Explicit 512×512, transparent; 1/1 output | Mask presentation reuses container inheritance; oval shader fills retain independent strokes; enclosed mask clips preserve native paint dispatch. |
 | Transparent striped pattern (`inv-116`) | Explicit 283×283, transparent; 1/1 output | Typed paint order, ordinary pattern presentation inheritance and existing bounded affine tile replay. |
+| Baseball illustration (`inv-120`) | Explicit 130×130, transparent; 1/1 output | Shared compound clip replay, percentage rectangles, source paint maps, native child-union traversal and local transform-list precision. |
+| Baseball emblem flag (`inv-119`) | Explicit 1200×800, transparent; 1/1 output | The same shared mechanisms complete the related document against its unchanged reference. |
 
 Each document has a stable, healthy, cleaned Linux browser capture triple matching
 its frozen reference byte-for-byte. The [gap manifest](tests/References/inventory/svg-gap-cases.json)
@@ -42,13 +45,14 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 22; selected queue: 22/24 complete.**
-Every preceding completed output remains exact. The next bounded three-download
-public-domain/CC0 batch retains two complete CC0 baseball illustrations, with
-unchanged original bytes and frozen matching platform references. The smaller
-illustration (`inv-120`, 130×130 transparent) is the next complete-document
-deliverable; its first gate is compound curved clipping. The emblem flag
-(`inv-119`, 1200×800 transparent) first rejects percentage rectangle coordinates.
+references. **Completed development deliverables: 24; selected queue: 24/24 complete.**
+Every preceding completed output remains exact. Both complete CC0 baseball
+illustrations (`inv-120`, 130×130 transparent; `inv-119`, 1200×800 transparent)
+now match unchanged references through all six APIs on Windows/Linux. Shared
+compound clipping, oval clip identity, percentage rectangles and affine
+linear/radial rectangle paints remove their admission gates. Native child-union
+traversal and local transform-list precision repair the final stitch/outlined-label
+edges. Controls remain separate from completed documents.
 The public-domain vector-effect lead has no healthy browser reference and stays
 outside the corpus. The measured G3 non-scaling width-map defect remains promised.
 Select shared corrections by these retained documents. Controls remain separate
@@ -366,30 +370,63 @@ Invalid/duplicate tokens and non-unit pattern-container opacity remain explicit
 outcomes. Marker painting still requires G8; inherited gradient-stop presentation
 on containers remains unadmitted. No broader G2–G9 exit is claimed.
 
-**Next complete document: `inv-120`, the CC0 baseball illustration at its unchanged
-130×130 transparent output.** The [compound-clip document bank](tests/Research/compound-clip-documents/manifest.json)
-retains this and the related 1200×800 emblem flag (`inv-119`). Outputs were declared
-before screening at `3987efb9`; three healthy, cleaned captures per platform match
-each frozen PNG byte-for-byte. Rights and untouched downloads are recorded in
-the [source records](tests/Research/compound-clip-documents/source-records.json).
-Both currently reject through all six APIs on Windows/Linux: `inv-120` at the
-single-contour curved-clip restriction, `inv-119` at percentage rectangle coordinates.
+**Both retained baseball documents are complete.** The
+[compound-clip document bank](tests/Research/compound-clip-documents/manifest.json)
+keeps `inv-120` at 130×130 transparent and `inv-119` at 1200×800 transparent.
+Outputs were declared before screening at `3987efb9`; healthy, cleaned platform
+capture triples match frozen PNGs byte-for-byte. Rights and untouched downloads
+remain in the [source records](tests/Research/compound-clip-documents/source-records.json).
+Both outputs are exact through all six APIs on Windows/Linux; neither SVG,
+render options nor browser references changed to reach equality.
 
-Start with shared native compound clip-content replay for `inv-120`, preserving
-authored curves and independent clip winding. Use focused contour, hole/parity,
-transform and nested-clip controls to diagnose and protect each measured extension.
-Advance through subsequent gates and pixel mismatches in the **whole 130×130
-document**; admitting its first clip is not completion. Exit: its one declared
-output is exact through all six APIs on both platforms, with the corporate matrix
-and every prior exact result preserved. Keep `inv-119` queued for the shared work
-it needs, and keep every promised G2–G9 combination and S17 visible.
+Shared native clip-content replay retains compound curves, holes and parity;
+bounded disjoint convex straight children share one union path. Ordinary
+percentage rectangles and affine linear/radial rectangle paints reuse source
+geometry and paint mapping. Clip definitions retain child-local coordinates,
+native oval identity and layout bounds; nested scopes preserve authored order
+and construct within the preceding clip before applying coverage once.
+
+The last six/four document pixels selected two further shared corrections.
+Native union winding reversal begins at the last stored endpoint; final
+simplification retains contour bounds order, cyclic start and closing-line point
+count. Implicit closes and explicit closing lines retain their native distinction.
+Local scale/translate lists compose in native float axis storage until a matrix,
+rotation or skew promotes that list to double precision. Enclosing groups compose
+completed local maps in double. Actual healthy browser path/matrix traces establish
+both distinctions; the numeric parser and scan-conversion kernels remain unchanged.
+
+The [compound clip controls](tests/Research/compound-clip-content/manifest.json)
+keep **18 controls: 17 exact and one explicit overlapping-child rejection**,
+separate from documents, with 108 healthy, cleaned matching platform captures.
+Two new controls protect implicit closure and child-order independence; four
+numeric contracts protect local-list versus enclosing-group precision. Existing
+work/memory sweeps protect adopted source ownership, cancellation and retry.
+Focused boundaries retain unknown/invalid percentages, unpainted shader targets,
+overlaps and the native 42/43-child limit. Three earlier viewport-height controls
+remain passing. Overlapping/curved sibling unions, object-box ovals and nonuniform
+curve placement remain promised G5 combinations; this delivery does not close G5.
+
+Complete Release checks pass **6,118 tests per platform**: 4,350 core, 1,762 visual
+and six FontProbe, with zero failures/skips/warnings. The complete bank preserves
+all **2,846 prior PNGs byte-for-byte** and all 2,752 prior exact comparisons across
+2,908 reports. Corporate **27/27 / 258/258** and original oracle 1,567 reports /
+1,551 PNGs stay unchanged; command/geometry/paint layouts remain 72/272/68 bytes.
+The percentage rectangle and rotated gradient rectangle controls now assert
+exactness against their original references. Reuse this finished qualification
+until a renderer change warrants another complete run.
+
+The completed 24-document queue now calls for a new bounded sourcing batch.
+Qualify complete public-domain/CC0 marker exports within the enumerated G8 subset,
+retain only observed failures and choose the next shared correction from those
+documents. The G3 non-scaling width-map defect still lacks a qualified whole-document
+witness. Keep that defect, every finite G2–G9 promise and S17 visible.
 
 The bounded batch downloaded three public-domain/CC0 originals and retains two
 in-scope failures. The vector-effect original still fails pinned-browser image
 decode; it was excluded before renderer screening instead of rewriting its bytes.
 Neither retained baseball document supplies the measured non-scaling root-viewBox
-width witness. That G3 defect stays open; the measured G5 document now selects
-the next correction. This failure-selected batch establishes no success rate.
+width witness. That G3 defect stays open; the completed G5 documents
+select further sourcing within the finite support groups. This failure-selected batch establishes no success rate.
 
 | Newly retained document | Frozen transparent output / admission baseline | Shared work it selects |
 | --- | --- | --- |
@@ -404,7 +441,7 @@ batch supplies a qualified whole-document witness for the non-scaling root-viewB
 width defect; that G3 promise stays open. Four retained failures do not establish
 a representative success rate.
 With the two qualified baseball exports, the selected development queue is
-**22/24 complete**. Other G2–G9 exits and S17 remain unchanged; no support
+**24/24 complete**. Other G2–G9 exits and S17 remain unchanged; no support
 combination is silently deferred.
 
 The [new export bank](tests/Research/remaining-gap-exports/manifest.json) also keeps
@@ -581,7 +618,7 @@ document and 29 controls are exact through six APIs; prior SVG/PNG assets and
 new control captures supply their independent oracle evidence. The selected queue
 is **22/22 complete**; finite G2–G9 exits, the width-map defect and S17 remain open.
 
-The compound-clip document admission adds two whole-document regressions;
+At the 2026-10-09 admission checkpoint, the compound-clip bank added two whole-document regressions;
 **6,074 tests pass per platform** (4,324 core, 1,744 visual, six font-probe), with
 zero build warnings/errors and no failed/skipped tests. Twelve fresh captures
 qualify only these new outputs. Production code, existing SVG/PNG assets, options
@@ -622,12 +659,12 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected queue is **22/24 complete**. The qualified CC0 baseball illustration
-`inv-120` is next: implement its compound curved clip dependency, then finish every
-gate and mismatch against its frozen 130×130 output. The related emblem flag
-`inv-119` stays queued at 1200×800. The separate fractional use-width control stays
-visible in G2/G4. The measured G3 width-map defect remains open without a qualifying
-document; it is not deferred by this measured G5 deliverable.
+The selected queue is **24/24 complete**, including both CC0 baseball exports.
+The next document must come from qualified public-domain/CC0 failures within the
+finite support groups below; a small marker-export batch is the next sourcing
+slice. Select its shared implementation dependencies before expanding combinations.
+The fractional use-width control stays visible in G2/G4, and the measured G3
+width-map defect stays open without a qualified whole-document witness.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
 Prioritize composed transforms, paint-coordinate mapping and bounded pattern
 content where they remove several gates. Extend the existing geometry and
@@ -1216,10 +1253,11 @@ outputs; the non-ionizing warning, geometric pattern and set-screw diagram are
 complete at one frozen output each, as are the gradient-mask example and
 soccerball mask. The spiral, tunnel junction, shadowed soccerball and transparent
 striped pattern completed the preceding 22-document queue. A subsequent bounded
-three-download batch now retains two CC0 baseball exports: **22/24 complete**,
-with `inv-120` selected next for its compound curved clip and any further measured
-dependencies. The related `inv-119` is queued. The G3 width-map defect remains
-open without a qualified whole-document witness.
+three-download batch retained two CC0 baseball exports; both are now complete:
+**24/24 documents**, through six APIs on Windows/Linux against frozen outputs.
+The G3 width-map defect remains open without a qualified whole-document witness.
+A bounded marker-export sourcing batch selects the next practical G8 deliverable;
+retain only qualified failures, with outputs declared before comparison.
 Choose shared support changes by the complete retained documents they advance.
 Keep the remaining instance combinations visible without making them a
 prerequisite for G3–G6.
@@ -1560,7 +1598,7 @@ Execute S7 through the following concrete steps:
 3. Generate small synthetic label inputs covering curves, counters, composites,
    AV pairs, spaces, real styles and fractional origins/sizes. Feed identical
    verified font bytes to Svg and an SVG-image-local browser font embedding.
-   Browser captures remain network-blocked; use missing/corrupt/substitution
+   Use missing/corrupt/substitution
    controls to prove intended-font use. Retain three fresh-process captures,
    independent layout metrics and exact RGBA comparisons in private artifacts.
 4. Record sanitized failure categories, feature gaps and measured outcomes here.

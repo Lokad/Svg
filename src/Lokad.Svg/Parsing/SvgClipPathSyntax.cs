@@ -102,13 +102,13 @@ internal static class SvgClipPathSyntax
                 if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths in transformed viewports are not implemented.");
                 if (state.GroupUseExpanded) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths with use instances are not implemented.");
                 if (pending.GeometryCount == 0) continue;
-                if (clipPolygon.ContourEnds.Length == 1)
+                if (clipPolygon.ContourEnds.Length == 1 || clipPolygon.UsesNativeReplay)
                 {
                     // Native clip coverage multiplies each paint operation independently.
                     // Keep its source contours and shader coordinates intact instead of
                     // replacing them with a geometric intersection of flattened vertices.
-                    (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clipPolygon.Points,
-                        pending.Transform, SvgClipContentKind.ClipPath, clipPolygon.SourcePath, clipPolygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
+                    (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clipPolygon.Points, clipPolygon.ContourEnds,
+                        pending.Transform, clipPolygon.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath, clipPolygon.UsesNativeReplay ? clipPolygon.SourcePath : null, clipPolygon.ResourceBounds, clipPolygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;
                     operation.Value = 255;
@@ -489,7 +489,9 @@ internal static class SvgClipPathSyntax
     {
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
-        for (int pendingIndex = 0; pendingIndex < state.PendingGroupClips.Count; pendingIndex++)
+        // References were recorded at group entry. Prepend inner scopes first
+        // so the emitted native clip stack follows outer-to-inner document order.
+        for (int pendingIndex = state.PendingGroupClips.Count - 1; pendingIndex >= 0; pendingIndex--)
         {
             workCounter.Consume(cancellationToken);
             PendingGroupClip pending = state.PendingGroupClips[pendingIndex];
@@ -507,12 +509,12 @@ internal static class SvgClipPathSyntax
             }
             else if (state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon polygon))
             {
-                if (polygon.ContourEnds.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour polygon clip-paths on groups are implemented.");
+                if (polygon.ContourEnds.Length != 1 && !polygon.UsesNativeReplay) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour polygon clip-paths on groups are implemented.");
                 SvgAffineTransform map = pending.Transform;
                 if (parent is {} viewport)
                     map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
-                (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(polygon.Points,
-                    map, SvgClipContentKind.ClipPath, polygon.SourcePath, polygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
+                (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(polygon.Points, polygon.ContourEnds,
+                    map, polygon.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath, polygon.UsesNativeReplay ? polygon.SourcePath : null, polygon.ResourceBounds, polygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
                 SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                 operation.Resolved = true;
                 operation.Value = 255;

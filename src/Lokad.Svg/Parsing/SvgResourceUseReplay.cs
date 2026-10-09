@@ -138,8 +138,8 @@ internal static class SvgResourceUseReplay
         if (use.ClipId is {} id)
         {
             if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only contour clips on referenced mask content are implemented.");
-            (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clip.Points,
-                SvgReferenceResolver.PlainInstancePlacement(reference, null), SvgClipContentKind.ClipPath, clip.SourcePath, clip.IsEvenOdd, state, builder, work, token);
+            (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clip.Points, clip.ContourEnds,
+                SvgReferenceResolver.PlainInstancePlacement(reference, null), clip.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath, clip.UsesNativeReplay ? clip.SourcePath : null, clip.ResourceBounds, clip.IsEvenOdd, state, builder, work, token);
             SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
             operation.Resolved = true; operation.Value = 255; operation.Region = bounds;
             operation.ContentIndex = contentIndex; operation.RegionKind = SvgLayerRegionKind.AffineViewport;

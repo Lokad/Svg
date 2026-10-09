@@ -333,7 +333,7 @@ internal static class SvgGradientSyntax
             if (state.RadialGradients.TryGetValue(ParseGradientId(style.Fill), out SvgRadialGradient radial)) return LowerRadialRect(reader, context, style, state, radial, frame);
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         }
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
         if (gradient.RequiresSourceMap)
         {
@@ -373,7 +373,7 @@ internal static class SvgGradientSyntax
     /// <summary>Lowers one radial-gradient-filled rectangle with an optional solid stroke.</summary>
     internal static SvgGeometry LowerRadialRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgRadialGradient gradient, SvgViewportFrame? frame)
     {
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceRadial(transform, gradient, frame);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
@@ -1018,7 +1018,7 @@ internal static class SvgGradientSyntax
         if (state.Patterns.TryGetValue(ParseGradientId(style.Stroke), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern strokes are not implemented.");
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Stroke), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
         gradient = MapUserSpaceVector(transform, gradient, frame);
         SvgLinearGradient fillGradient = default;
@@ -1114,7 +1114,7 @@ internal static class SvgGradientSyntax
         if (state.Patterns.TryGetValue(ParseGradientId(style.Stroke), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern strokes are not implemented.");
         if (!state.RadialGradients.TryGetValue(ParseGradientId(style.Stroke), out SvgRadialGradient circle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
         circle = MapUserSpaceRadial(transform, circle, frame);
         SvgLinearGradient fillGradient = default;

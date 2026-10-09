@@ -10301,3 +10301,77 @@ tests/platform pass, preserving 2,908 prior bank reports and 2,846 PNGs, corpora
 27/27 / 258/258, prior assets and the 72/272/68-byte scene layouts. No renderer,
 source-code, DLL, script or report hashes enter the tests. The selected document
 queue is 22/22 complete; finite G2–G9 exits and S17 remain open.
+
+
+### Compound clip document delivery (2026-10-10)
+
+Both original CC0 baseball documents are complete in
+[their frozen bank](../tests/Research/compound-clip-documents/manifest.json):
+`inv-120`, 130×130 transparent, and `inv-119`, 1200×800 transparent, are exact
+through six APIs on Windows/Linux. Original SVG bytes, options and browser PNGs
+stay unchanged. The shared admission work removes compound curved clips, child
+unions, oval clips, percentage rectangles and affine shader rectangle gates.
+
+`SvgAffineViewportClip.RegisterContour` copies every admitted contour and native
+source command into the existing bounded clip-content owner. Compound curves
+retain independent winding rules; legacy straight geometric intersection stays
+distinct. Disjoint convex straight children bake child maps before shared replay,
+retain union parity and mapped child layout boxes, and cap native path admission
+at 42 children. Overlap/curved-child unions and larger multi-shape mask fallback
+remain explicit unsupported outcomes. Staging/scene teardown releases budgeted,
+cancellable temporary and adopted source owners.
+
+Clip definitions use child-local transforms. Oval clips preserve native shape
+identity and bypass the arbitrary path's additional enclosing rectangle. Path
+clips retain native tight layout bounds separately from conservative construction
+bounds. Deferred group references resolve inside out to preserve authored clip
+order. The enclosing rectangle intersects the preceding clip before construction;
+its bitmap-owned nonzero bounds govern path construction, preserving bitmap
+origins and applying combined coverage once.
+
+Rectangle percentages reuse the shared viewport length resolver. Affine
+linear/radial rectangle fills use the existing native rectangle source path and
+source paint matrices. Invisible and collapsed shader rectangles remain empty.
+No separate geometry or paint implementation is introduced per combination.
+
+Healthy fresh browser SKP traces match both frozen document PNGs exactly and
+isolate the final stitch/label defects. All 68 distinct stitch vertices and native
+label conics already agree; native replay reproduces our old coverage. The defect
+is in the source command traversal and local placement stages.
+
+The disjoint child-union adaptation follows the native builder's winding repair
+and final simplification. Winding reversal begins at the last stored endpoint,
+including a repeated endpoint from an explicit closing line. Implicit closure
+therefore retains a different cyclic start. Final simplification sorts contour
+bounds by top/left, walks the first CCW segment from its end and emits a closing
+line before Close. This native traversal changes adjacent clipped vertical-edge
+combination, repairing stitch alpha 167/221/15/92/44 to frozen
+168/219/16/91/43. Seventeen quadrilaterals retain 85 native points; their point
+count also preserves bitmap-local density dispatch. Final normalization occurs
+once, after all children are combined, with bounded sorting and source ownership.
+
+Local SVG transform lists retain native axis-transform precision: scale/translate
+operations multiply and add in float until an explicit matrix, rotation or skew
+promotes the list to double. Parent groups compose the completed local maps in
+double. For the label's local `scale(0.1686295142120) translate(0 251.198)`, native
+translation is 42.35939407348633 rather than 42.35939587395478. That placement
+stage repairs the remaining label pixel in both documents. The number parser is
+unchanged; the earlier global fused-digit model was rejected because it worsened
+the emblem. No tuned coefficient or raster-kernel change is retained.
+
+The [18 clip controls](../tests/Research/compound-clip-content/manifest.json) have
+17 exact results and one overlap rejection, with matching healthy Windows/Linux
+capture triples. Two new controls protect implicit closure and source-order
+independence. Four numeric cases separate axis lists, promoted matrices and group
+composition. Existing work/memory denial, cancellation/retry, percentage,
+42/43-child and viewport-height controls protect bounded replay and ownership.
+
+Finished complete qualification passes 6,118 tests per platform: 4,350 core,
+1,762 visual and six FontProbe, with zero failures/skips/warnings. All 2,908 prior
+reports retain their established outcomes except the original rotated-gradient
+rectangle admission control becoming exact. All 2,846 previous PNGs and 2,752
+prior exact results remain unchanged; corporate 27/27 / 258/258 and original
+oracle 1,567 reports / 1,551 PNGs are preserved. Command/geometry/paint layouts
+remain 72/272/68 bytes. The document queue is 24/24 complete; finite G2–G9 exits,
+the measured non-scaling width-map defect and S17 remain open. No renderer/source/
+DLL/script/report fingerprint enters the regression contract.

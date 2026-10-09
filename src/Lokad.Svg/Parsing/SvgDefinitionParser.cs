@@ -134,8 +134,9 @@ internal static class SvgDefinitionParser
                 if (state.ClipBox is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle clip paths are implemented.");
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
-                SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
-                SvgAffineTransform clipTransform = context.ResolveTransform(reader);
+                SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
+                // A resource uses its own child map; ancestors place the referencing element.
+                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 if (state.ClipIsObjectBoundingBox && clipTransform != SvgAffineTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transformed objectBoundingBox clip content is not implemented.");
                 SvgRectangle rect = clipTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
                 state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
@@ -145,20 +146,64 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName == "path")
             {
-                if (state.ClipBox is not null || state.ClipPolygon is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle clip paths are implemented.");
+                if (state.ClipBox is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle clip paths are implemented.");
                 SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
                 if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse clip-path paths are implemented.");
                 SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
-                SvgAffineTransform clipTransform = clipContext.ResolveTransform(reader);
+                // A resource uses its own child map; ancestors place the referencing element.
+                SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 SvgComputedStyle clipStyle = SvgComputedStyleResolver.Resolve(reader, clipContext.StyleSheet, workCounter, cancellationToken);
                 bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
                 SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, state, workCounter, cancellationToken);
+                if (state.ClipPolygon is {} first)
+                {
+                    SvgClipPolygon combined;
+                    try { combined = CombineClipChildren(first, clipContent, state, workCounter, cancellationToken); }
+                    finally { clipContent.SourcePath?.Dispose(); }
+                    state.ClipPolygon = combined;
+                    first.SourcePath?.Dispose();
+                    clipContent = combined;
+                }
+                else state.ClipPolygon = clipContent;
                 // Publish the source owner before any cancellable classification.
-                state.ClipPolygon = clipContent;
-                if (clipContent.SourcePath is null && clipContent.ContourEnds.Length == 1 && TryGetAxisClipBox(clipContent.Points, workCounter, cancellationToken, out SvgClipBox clipRect))
+                if (!clipContent.UsesNativeReplay && clipContent.ContourEnds.Length == 1 && TryGetAxisClipBox(clipContent.Points, workCounter, cancellationToken, out SvgClipBox clipRect))
                 {
                     state.ClipBox = clipRect;
+                    clipContent.SourcePath?.Dispose();
                     state.ClipPolygon = null;
+                }
+                state.HasUnsupportedContent |= !reader.IsEmptyElement;
+                state.SawStyleableNode = true;
+                return true;
+            }
+            if (reader.LocalName is "circle" or "ellipse")
+            {
+                if (state.ClipBox is not null || state.ClipPolygon is not null)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element curved clip content is implemented.");
+                if (state.ClipIsObjectBoundingBox)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse oval clip content is implemented.");
+                SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, context.LengthBases) : SvgEllipseSyntax.ParseEllipse(reader, context.LengthBases);
+                SvgAffineTransform childMap = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
+                if (!SvgOrthogonalGeometryLowering.AppendNativeEllipseCommands(commands, oval.CenterX, oval.CenterY, oval.RadiusX, oval.RadiusY))
+                    state.ClipBox = new(0, 0, 0, 0);
+                else
+                {
+                    OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
+                    SvgAuthoredPath source;
+                    try { source = SvgAuthoredPath.CreateConvexShape(owned, childMap, state.Budget); }
+                    catch { owned.Dispose(); throw; }
+                    state.ClipPolygon = new([], []) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned };
+                    using SvgPreparedPathContours prepared = source.Prepare(SvgAffineTransform.Identity, false, state.Budget, workCounter, cancellationToken);
+                    state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
+                        + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length), SvgMemoryCategory.Scene));
+                    SvgDevicePoint[] points = new SvgDevicePoint[prepared.Points.Length];
+                    int[] ends = new int[prepared.ContourEnds.Length];
+                    for (int index = 0; index < points.Length; index++) { workCounter.Consume(cancellationToken); points[index] = prepared.Points[index]; }
+                    for (int index = 0; index < ends.Length; index++) { workCounter.Consume(cancellationToken); ends[index] = prepared.ContourEnds[index]; }
+                    state.ClipPolygon = new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned };
                 }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 state.SawStyleableNode = true;
@@ -258,8 +303,8 @@ internal static class SvgDefinitionParser
             {
                 if (state.MaskValue is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle masks are implemented.");
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-                SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
                 SvgResolvedPaintableElement element = context.ResolveShape(reader, false);
                 if (!element.Presentation.IsPainted) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Invisible mask content is not implemented.");
                 state.MaskValue = SvgMaskSyntax.InterpretValue(element.Presentation.Color, state.MaskIsAlpha);
@@ -585,6 +630,132 @@ internal static class SvgDefinitionParser
             return (retained, paint);
         }
 
+        // Borrow both input owners, bake each native child map once, then retain a
+        // disjoint straight union with an identity source map. Every copy and
+        // separating-axis/convexity visit is budgeted and cancellable; temporary
+        // commands release on failure and only success transfers the new owner.
+        static SvgClipPolygon CombineClipChildren(SvgClipPolygon first, SvgClipPolygon next, SvgDocumentState state,
+            ParserWorkCounter work, CancellationToken token)
+        {
+            if ((first.UsesNativeReplay && first.ChildCount == 1) || next.UsesNativeReplay
+                || (first.IsEvenOdd && first.ChildCount == 1) || next.IsEvenOdd || next.ContourEnds.Length != 1
+                || (first.ChildCount == 1 && first.ContourEnds.Length != 1))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint straight single-contour clip children are implemented.");
+            if (first.ChildCount >= 42)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip content requiring the browser's multi-shape mask fallback is not implemented.");
+            SvgAuthoredPath firstPath = first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
+            SvgAuthoredPath nextPath = next.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
+            using SvgPreparedPathContours left = firstPath.Prepare(SvgAffineTransform.Identity, false, state.Budget, work, token);
+            using SvgPreparedPathContours right = nextPath.Prepare(SvgAffineTransform.Identity, false, state.Budget, work, token);
+            RequireConvex(right);
+            if (first.ChildCount == 1) RequireConvex(left);
+            for (int contour = 0; contour < left.ContourEnds.Length; contour++)
+            {
+                int start = contour == 0 ? 0 : left.ContourEnds[contour - 1];
+                ReadOnlySpan<SvgDevicePoint> ring = left.Points.AsSpan(start, left.ContourEnds[contour] - start);
+                if (!Separated(ring, right.Points) && !Separated(right.Points, ring))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Overlapping clip children require native path union, which is not implemented.");
+            }
+            int pointCount = checked(left.Points.Length + right.Points.Length);
+            int contourCount = checked(left.ContourEnds.Length + right.ContourEnds.Length);
+            RenderBudget.BudgetReservation retained = state.Budget.Reserve(
+                ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCount)
+                + ParserCollectionMemory.GetArrayByteCount<int>(contourCount), SvgMemoryCategory.Scene);
+            state.DefinitionReservations.Add(retained);
+            SvgDevicePoint[] points = new SvgDevicePoint[pointCount];
+            int[] ends = new int[contourCount];
+            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, work, token);
+            Append(left, 0, 0);
+            Append(right, left.Points.Length, left.ContourEnds.Length);
+            SvgPaintBounds firstBounds = ChildBounds(first, firstPath), nextBounds = ChildBounds(next, nextPath);
+            SvgPaintBounds resourceBounds = new(MathF.Min(firstBounds.Left, nextBounds.Left), MathF.Min(firstBounds.Top, nextBounds.Top),
+                MathF.Max(firstBounds.Right, nextBounds.Right), MathF.Max(firstBounds.Bottom, nextBounds.Bottom));
+            OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
+            SvgAuthoredPath combined;
+            try { combined = SvgAuthoredPath.Create(owned, SvgAffineTransform.Identity, state.Budget); }
+            catch { owned.Dispose(); throw; }
+            return new(points, ends) { SourcePath = combined, UsesNativeReplay = true, ChildCount = first.ChildCount + 1, ResourceBounds = resourceBounds, IsEvenOdd = true };
+
+            SvgPaintBounds ChildBounds(SvgClipPolygon polygon, SvgAuthoredPath path)
+            {
+                if (polygon.ResourceBounds is {} bounds) return bounds;
+                SvgRectangle tight = SvgPathBounds.Compute(path.Commands, work, token);
+                return new SvgPaintBounds((float)tight.X, (float)tight.Y, (float)(tight.X + tight.Width), (float)(tight.Y + tight.Height)).Map(path.SceneMap, work, token);
+            }
+
+            void RequireConvex(SvgPreparedPathContours path)
+            {
+                if (path.ContourEnds.Length != 1 || path.Points.Length < 3)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nondegenerate straight clip children are implemented.");
+                long pairs = checked((long)path.Points.Length * path.Points.Length);
+                for (long visit = 0; visit < pairs; visit++) work.Consume(token);
+                if (!SvgRawContourConvexity.IsConvex(path.Points, [], [], token))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only convex sibling clip children are implemented.");
+            }
+
+            bool Separated(ReadOnlySpan<SvgDevicePoint> axisRing, ReadOnlySpan<SvgDevicePoint> other)
+            {
+                double area = 0;
+                for (int index = 0; index < axisRing.Length; index++)
+                {
+                    work.Consume(token);
+                    SvgDevicePoint a = axisRing[index], b = axisRing[(index + 1) % axisRing.Length];
+                    area += a.X * b.Y - b.X * a.Y;
+                }
+                if (area == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip children are not implemented.");
+                for (int edge = 0; edge < axisRing.Length; edge++)
+                {
+                    SvgDevicePoint a = axisRing[edge], b = axisRing[(edge + 1) % axisRing.Length];
+                    if (a == b) continue;
+                    bool outside = true;
+                    foreach (SvgDevicePoint p in other)
+                    {
+                        work.Consume(token);
+                        double cross = (b.X - a.X) * (p.Y - a.Y) - (b.Y - a.Y) * (p.X - a.X);
+                        if ((area > 0 && cross > 0) || (area < 0 && cross < 0)) { outside = false; break; }
+                    }
+                    if (outside) return true;
+                }
+                return false;
+            }
+
+            void Append(SvgPreparedPathContours path, int pointOffset, int contourOffset)
+            {
+                int start = 0;
+                for (int contour = 0; contour < path.ContourEnds.Length; contour++)
+                {
+                    int end = path.ContourEnds[contour];
+                    double area = 0;
+                    for (int index = start; index < end; index++)
+                    {
+                        work.Consume(token);
+                        SvgDevicePoint a = path.Points[index], b = path.Points[index + 1 < end ? index + 1 : start];
+                        area += a.X * b.Y - b.X * a.Y;
+                    }
+                    // The native union builder fixes each simplified child to CCW
+                    // by reversing from its last stored endpoint. An explicit
+                    // closing line and an implicit close have different starts.
+                    for (int index = start; index < end; index++)
+                    {
+                        work.Consume(token);
+                        SvgDevicePoint point = path.Points[area > 0 ? end - 1 - (index - start) : index];
+                        points[pointOffset + index] = point;
+                        if (index == start || (point != points[pointOffset + index - 1]
+                            && (index + 1 < end || point != points[pointOffset + start])))
+                            commands.Add(new(index == start ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line,
+                                SvgAuthoredArcFlags.None, point, default, default));
+                    }
+                    // Native union writes the closing endpoint before Close.
+                    // Its point count controls scanline density dispatch, even
+                    // though the implicit closing edge has the same geometry.
+                    commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, points[pointOffset + start], default, default));
+                    commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+                    ends[contourOffset + contour] = pointOffset + end;
+                    start = end;
+                }
+            }
+        }
+
         static SvgClipPolygon ParseClipPathPolygon(string? pathData, SvgAffineTransform clipTransform, bool isEvenOdd, SvgDocumentState clipState, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             ArgumentNullException.ThrowIfNull(clipState);
@@ -598,10 +769,9 @@ internal static class SvgDefinitionParser
             SvgContourBuilder builder = hasCurve ? SvgContourBuilder.CreateGrowing(pointCapacity, contourCapacity) : new(pointCapacity, contourCapacity);
             SvgFlattenPolicy flattenPolicy = new(SvgOrthogonalGeometryLowering.FlattenFlatness, SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand);
             using BudgetedParserList<SvgAuthoredPathCommand> authored = new(clipState.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
-            SvgPathDataParser.ParsePath(pathData, clipTransform, builder, flattenPolicy, letters, workCounter, cancellationToken, null, hasCurve ? authored : null);
-            if (hasCurve && builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour curved clip paths are implemented.");
+            SvgPathDataParser.ParsePath(pathData, clipTransform, builder, flattenPolicy, letters, workCounter, cancellationToken, null, authored);
             if (builder.ContourCount < 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
-            if (builder.ContourCount > 1 && isEvenOdd) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Evenodd multi-contour clip paths are not implemented.");
+            if (!hasCurve && builder.ContourCount > 1 && isEvenOdd) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Evenodd multi-contour clip paths are not implemented.");
             using BudgetedParserList<SvgDevicePoint> stripped = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             using BudgetedParserList<int> strippedEnds = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             for (int contour = 0; contour < builder.ContourCount; contour++)
@@ -624,7 +794,7 @@ internal static class SvgDefinitionParser
                     cleaned.Add(vertex);
                 }
                 if (cleaned.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
-                if (builder.ContourCount > 1)
+                if (!hasCurve && builder.ContourCount > 1)
                 {
                     // Geometric intersection still requires convex rings. Single
                     // contours use native directed winding, whose nonempty lobes
@@ -652,14 +822,11 @@ internal static class SvgDefinitionParser
                 workCounter.Consume(cancellationToken);
                 retainedEnds[index] = strippedEnds[index];
             }
-            SvgAuthoredPath? source = null;
-            if (hasCurve)
-            {
-                OwnedParserArray<SvgAuthoredPathCommand> owned = authored.Detach();
-                try { source = SvgAuthoredPath.Create(owned, clipTransform, clipState.Budget); }
-                catch { owned.Dispose(); throw; }
-            }
-            return new SvgClipPolygon(retainedPoints, retainedEnds) { SourcePath = source, IsEvenOdd = isEvenOdd };
+            OwnedParserArray<SvgAuthoredPathCommand> owned = authored.Detach();
+            SvgAuthoredPath source;
+            try { source = SvgAuthoredPath.Create(owned, clipTransform, clipState.Budget); }
+            catch { owned.Dispose(); throw; }
+            return new SvgClipPolygon(retainedPoints, retainedEnds) { SourcePath = source, IsEvenOdd = isEvenOdd, UsesNativeReplay = hasCurve };
         }
 
         static (int Letters, bool HasCurve) ScanClipPathData(string pathData, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -1218,7 +1385,79 @@ internal static class SvgDefinitionParser
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip polygon registration requires an identifier."));
         SvgClipPolygon polygon = state.ClipPolygon ?? throw new InvalidOperationException("Clip polygon registration requires retained points.");
+        if (polygon.ChildCount > 1)
+        {
+            SvgAuthoredPath previous = polygon.SourcePath ?? throw new InvalidOperationException("A child union requires source commands.");
+            SvgAuthoredPath normalized = NormalizeUnion(polygon, state.Budget, workCounter, cancellationToken);
+            polygon = polygon with { SourcePath = normalized };
+            // Publish ownership before releasing the old path or registering the
+            // id, so duplicate ids and cancellation retain one cleanup owner.
+            state.ClipPolygon = polygon;
+            previous.Dispose();
+        }
         if (state.Clips.TryGetValue(retainedId, out _) || state.ObjectClips.TryGetValue(retainedId, out _) || !state.ClipPolygons.TryAdd(retainedId, polygon)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+
+        // The bounded disjoint convex subset needs no intersections. Adapt the
+        // native final Simplify pass: sort contour bounds, then traverse the first
+        // CCW segment from its end back to its start and retain the closing line.
+        // That cyclic start determines adjacent clipped-edge combination.
+        static SvgAuthoredPath NormalizeUnion(SvgClipPolygon polygon, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        {
+            int count = polygon.ContourEnds.Length;
+            if (count > 42) throw new InvalidOperationException("A retained union exceeded its admitted child limit.");
+            Span<int> order = stackalloc int[42];
+            Span<SvgPaintBounds> bounds = stackalloc SvgPaintBounds[42];
+            int start = 0;
+            for (int contour = 0; contour < count; contour++)
+            {
+                float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
+                int end = polygon.ContourEnds[contour];
+                for (int index = start; index < end; index++)
+                {
+                    work.Consume(token);
+                    SvgDevicePoint point = polygon.Points[index];
+                    left = MathF.Min(left, (float)point.X); top = MathF.Min(top, (float)point.Y);
+                    right = MathF.Max(right, (float)point.X); bottom = MathF.Max(bottom, (float)point.Y);
+                }
+                bounds[contour] = new(left, top, right, bottom);
+                int position = contour;
+                while (position > 0)
+                {
+                    work.Consume(token);
+                    SvgPaintBounds preceding = bounds[order[position - 1]];
+                    if (preceding.Top < top || (preceding.Top == top && preceding.Left <= left)) break;
+                    order[position] = order[position - 1]; position--;
+                }
+                order[position] = contour;
+                start = end;
+            }
+            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, work, token);
+            for (int position = 0; position < count; position++)
+            {
+                work.Consume(token);
+                int contour = order[position];
+                start = contour == 0 ? 0 : polygon.ContourEnds[contour - 1];
+                int end = polygon.ContourEnds[contour];
+                while (end > start && polygon.Points[end - 1] == polygon.Points[start]) { work.Consume(token); end--; }
+                int next = start + 1;
+                while (next < end && polygon.Points[next] == polygon.Points[start]) { work.Consume(token); next++; }
+                if (next >= end) throw new InvalidOperationException("A retained union contour became degenerate.");
+                SvgDevicePoint first = polygon.Points[next];
+                commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, first, default, default));
+                commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, polygon.Points[start], default, default));
+                for (int index = end - 1; index > next; index--)
+                {
+                    work.Consume(token);
+                    if (polygon.Points[index] != polygon.Points[index + 1 < end ? index + 1 : start])
+                        commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, polygon.Points[index], default, default));
+                }
+                commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, first, default, default));
+                commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+            }
+            OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
+            try { return SvgAuthoredPath.Create(owned, SvgAffineTransform.Identity, budget); }
+            catch { owned.Dispose(); throw; }
+        }
     }
 
     internal static void RegisterClipBox(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -1282,7 +1521,7 @@ internal static class SvgDefinitionParser
     {
         if (reader.LocalName == "rect")
         {
-            SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(reader);
+            SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(reader, context.LengthBases);
             SvgComputedStyle style = context.ResolveStyle(reader);
             string? stroke = style.Stroke ?? context.InheritedStroke.Stroke;
             if ((rectangle.CornerX ?? rectangle.CornerY ?? 0) == 0 && (rectangle.CornerY ?? rectangle.CornerX ?? 0) == 0
@@ -1484,7 +1723,7 @@ internal static class SvgDefinitionParser
     private static SvgDefinition ParseRectangleDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
-        SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox);
         context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, null);

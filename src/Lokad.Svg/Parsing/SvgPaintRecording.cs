@@ -86,7 +86,7 @@ internal static class SvgPaintRecording
             switch (input.LocalName)
             {
                 case "rect":
-                    SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(input);
+                    SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(input, element.LengthBases);
                     bounds = new((float)rectangle.X, (float)rectangle.Y, (float)(rectangle.X + rectangle.Width), (float)(rectangle.Y + rectangle.Height));
                     break;
                 case "circle":

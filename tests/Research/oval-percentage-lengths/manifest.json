@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Focused percentage-oval lengths for the complete Wikifoods deliverable. Controls are separate from documents.",
+  "purpose": "Existing frozen oval-percentage-lengths controls; rectangle-percentage-boundary now matches its unchanged reference through all six APIs after shared rectangle coordinate/source-paint support. Other established outcomes remain protected.",
   "cases": [
     {
       "id": "wikifoods-circles",
@@ -189,10 +189,8 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Repository-authored focused control dedicated to CC0-1.0 in its source header.",
       "selection": "Declared before the Wikifoods percentage-oval correction; independently captured complete input. Diagnoses axis/diagonal bases, native length precision, geometry/paint agreement and retained boundaries.",
-      "role": "mechanism-control",
-      "referenceSha256": "35189e2f524b3ae095a8fbf3e879c4965f7615ebb22ee305f8c259bb94e67a5d",
-      "expectedError": "UnsupportedFeature",
-      "boundary": "Only bare-number and px rectangle coordinates are implemented."
+      "role": "fidelity",
+      "referenceSha256": "35189e2f524b3ae095a8fbf3e879c4965f7615ebb22ee305f8c259bb94e67a5d"
     }
   ],
   "linuxReferenceQualification": {

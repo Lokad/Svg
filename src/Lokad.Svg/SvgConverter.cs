@@ -252,6 +252,8 @@ public static class SvgConverter
         SvgCpuClipCoverage? collectingClipCoverage = null, activeViewportCoverage = null, activeConstructionCoverage = null;
         byte[] activeConstructionClip = [];
         SvgAnalyticClipBounds? activeConstructionBounds = null;
+        SvgCpuClipCoverage? clipWindowCoverage = null;
+        SvgAnalyticClipBounds? clipWindowBounds = null;
         SvgAnalyticClipBounds? activeViewportBounds = null;
         SvgRecordedPaintValue activePaint = default;
         SvgRecordedPaintValue activeStrokePaint = default;
@@ -693,8 +695,8 @@ public static class SvgConverter
                         byte[] clipPixels = new byte[surfaceByteCount];
                         byte[] previousClip = activeViewportClip;
                         SvgMaskContent clipContent = root.SceneStorage.MaskContents[command.MaskContentIndex];
-                        using SvgCpuClipCoverage? clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind == SvgClipContentKind.ClipPath ? previousLayer : layer);
-                        if (previousClip.Length != 0)
+                        using SvgCpuClipCoverage? clipCoverage = RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind != SvgClipContentKind.AffineViewport ? previousLayer : layer);
+                        if (previousClip.Length != 0 && clipContent.BoundsClipContentIndex < 0)
                         {
                             if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
                                 throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport clip intersection exceeds the configured limit.");
@@ -862,6 +864,12 @@ public static class SvgConverter
             SvgAnalyticClipBounds? previousBounds = activeViewportBounds, previousConstructionBounds = activeConstructionBounds;
             SvgCpuClipCoverage? previousCollected = collectingClipCoverage, previousCoverage = activeViewportCoverage,
                 previousConstructionCoverage = activeConstructionCoverage;
+            SvgCpuClipCoverage? previousWindowCoverage = clipWindowCoverage;
+            SvgAnalyticClipBounds? previousWindowBounds = clipWindowBounds;
+            // A native clip builds within the parent bitmap's nonzero bounds.
+            // Coverage intersects afterward; the bitmap origin stays unchanged.
+            clipWindowCoverage = viewport ? previousCoverage ?? clipWindowCoverage : null;
+            clipWindowBounds = viewport ? previousBounds ?? clipWindowBounds : null;
             SvgCpuClipCoverage? previousLayerClipCoverage = layerClipCoverage;
             if (!viewport) layerClipCoverage = previousCoverage ?? layerClipCoverage;
             float previousOpacity = foldedOpacity;
@@ -906,6 +914,27 @@ public static class SvgConverter
                     // Native clipPath constructs against the already clipped enclosing rectangle.
                     // Its bounds and border bytes belong to each bitmap; its alpha remains separate.
                     boundsCoverage = RasterizeMaskContent(storage.MaskContents[content.BoundsClipContentIndex], boundsPixels, true, contentBounds);
+                    if (viewport && previousClip.Length != 0)
+                    {
+                        // The enclosing rectangle intersects the existing native clip
+                        // before the path is constructed. Its trimmed bitmap bounds
+                        // control curve clipping; coverage applies only once.
+                        if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
+                            throw new SvgException(SvgErrorCode.LimitExceeded, "Clip construction intersection exceeds the configured limit.");
+                        workUnits += pixelCount;
+                        for (int pixel = 0; pixel < pixelCount; pixel++)
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+                            int offset = pixel * 4 + 3;
+                            boundsPixels[offset] = (byte)((boundsPixels[offset] * previousClip[offset] + 127) / 255);
+                        }
+                        if (boundsCoverage is not null)
+                        {
+                            boundsCoverage.IntersectAndTrim(previousCoverage, previousClip, boundsPixels, outputWidth,
+                                options.Limits.MaximumWorkUnits - workUnits, out long intersectionWork, cancellationToken);
+                            workUnits += intersectionWork;
+                        }
+                    }
                     activeConstructionCoverage = boundsCoverage;
                     activeConstructionClip = boundsPixels;
                     activeConstructionBounds = CoverageBounds(boundsPixels, contentBounds);
@@ -936,6 +965,7 @@ public static class SvgConverter
                 boundsCoverage?.Dispose(); boundsReservation?.Dispose();
                 if (!transferred) coverage?.Dispose();
                 layerClipCoverage = previousLayerClipCoverage;
+                clipWindowCoverage = previousWindowCoverage; clipWindowBounds = previousWindowBounds;
                 collectingClipCoverage = previousCollected;
                 activeConstructionClip = previousConstruction; activeConstructionBounds = previousConstructionBounds;
                 activeConstructionCoverage = previousConstructionCoverage;
@@ -1207,13 +1237,24 @@ public static class SvgConverter
         SvgAnalyticClipBounds? ActiveClipBounds(SvgCpuRasterContext context)
         {
             SvgCpuClipCoverage? coverage = activeConstructionClip.Length != 0 ? activeConstructionCoverage : activeViewportCoverage;
-            if (coverage is not null && coverage.TryGetBounds(context.BitmapClip, out SvgAnalyticClipBounds local)) return local;
-            byte[] tape = activeConstructionClip.Length != 0 ? activeConstructionClip : activeViewportClip;
             SvgAnalyticClipBounds? current = activeConstructionClip.Length != 0 ? activeConstructionBounds : activeViewportBounds;
-            if (tape.Length == 0 || current is not {} bounds) return current;
-            int left = Math.Max(bounds.Left, context.BitmapClip.Left), top = Math.Max(bounds.Top, context.BitmapClip.Top);
-            int right = Math.Max(left, Math.Min(bounds.Right, context.BitmapClip.Right)), bottom = Math.Max(top, Math.Min(bounds.Bottom, context.BitmapClip.Bottom));
-            return CoverageBounds(tape, new(left, top, right, bottom));
+            if (coverage is not null && coverage.TryGetBounds(context.BitmapClip, out SvgAnalyticClipBounds local)) current = local;
+            else
+            {
+                byte[] tape = activeConstructionClip.Length != 0 ? activeConstructionClip : activeViewportClip;
+                if (tape.Length != 0 && current is {} bounds)
+                {
+                    int left = Math.Max(bounds.Left, context.BitmapClip.Left), top = Math.Max(bounds.Top, context.BitmapClip.Top);
+                    int right = Math.Max(left, Math.Min(bounds.Right, context.BitmapClip.Right)), bottom = Math.Max(top, Math.Min(bounds.Bottom, context.BitmapClip.Bottom));
+                    current = CoverageBounds(tape, new(left, top, right, bottom));
+                }
+            }
+            SvgAnalyticClipBounds? window = clipWindowCoverage is {} inherited && inherited.TryGetBounds(context.BitmapClip, out SvgAnalyticClipBounds bitmapWindow)
+                ? bitmapWindow : clipWindowBounds;
+            if (window is not {} clipWindow) return current;
+            SvgAnalyticClipBounds area = current ?? context.BitmapClip;
+            int x1 = Math.Max(area.Left, clipWindow.Left), y1 = Math.Max(area.Top, clipWindow.Top);
+            return new(x1, y1, Math.Max(x1, Math.Min(area.Right, clipWindow.Right)), Math.Max(y1, Math.Min(area.Bottom, clipWindow.Bottom)));
         }
 
         SvgAnalyticPaintClip PolygonPaintClip(MappedPolygon raster, SvgCpuRasterContext context)

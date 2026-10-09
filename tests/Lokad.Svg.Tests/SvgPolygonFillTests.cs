@@ -1417,13 +1417,15 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Rotated_gradient_stays_unsupported()
+    public void Rotated_rectangle_gradient_paints_in_source_coordinates()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)' transform='rotate(30)'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out _);
+        SvgColor interior = Pixel(pixels, width, 1, 2);
+        Assert.Equal(255, interior.Alpha);
+        Assert.True(interior.Red > 0 && interior.Blue > 0);
+        Assert.Equal(SvgColor.Transparent, Pixel(pixels, width, 7, 0));
     }
 
     [Fact]

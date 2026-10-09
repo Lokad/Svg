@@ -17,7 +17,7 @@
     "profilesCleaned": true,
     "byteIdenticalToFrozenReferences": true
   },
-  "purpose": "Two complete static CC0 baseball exports retained from three public-domain/CC0 downloads. Original bytes and outputs were declared before screening; inv-120 at 130x130 is the next complete-document deliverable. Controls remain separate from completed documents.",
+  "purpose": "Two complete CC0 baseball illustrations against unchanged references. Every declared output must be exact through all six APIs on both platforms.",
   "cases": [
     {
       "id": "inv-119-1200x800-transparent",
@@ -40,9 +40,7 @@
       "selection": "Complete fontless static export at its nominal source-page frame, fixed at 3987efb9 before renderer screening or capture. Original converter bytes and authored geometry unchanged.",
       "materialization": "root-dimensions-only",
       "captureInput": "inv-119-capture-1200x800.svg",
-      "captureInputSha256": "fd21a3e6f7d86c7727e21d2a3e17b19fafd37594928a7809be645f2f27695a76",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only bare-number and px rectangle coordinates are implemented."
+      "captureInputSha256": "fd21a3e6f7d86c7727e21d2a3e17b19fafd37594928a7809be645f2f27695a76"
     },
     {
       "id": "inv-120-130x130-transparent",
@@ -65,9 +63,7 @@
       "selection": "Complete fontless static export at its nominal source-page frame, fixed at 3987efb9 before renderer screening or capture. Original converter bytes and authored geometry unchanged.",
       "materialization": "root-dimensions-only",
       "captureInput": "inv-120-capture-130x130.svg",
-      "captureInputSha256": "6326505afc1c964551827c8493c441de4f64a515e3477b3f6fdf468c20411705",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only single-contour curved clip paths are implemented."
+      "captureInputSha256": "6326505afc1c964551827c8493c441de4f64a515e3477b3f6fdf468c20411705"
     }
   ]
 }

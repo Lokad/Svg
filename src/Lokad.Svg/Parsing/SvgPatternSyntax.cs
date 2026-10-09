@@ -160,7 +160,7 @@ internal static class SvgPatternSyntax
         style = style with { Stroke = style.Stroke ?? context.InheritedStroke.Stroke };
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Fill), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
@@ -266,7 +266,7 @@ internal static class SvgPatternSyntax
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         if (!state.Patterns.TryGetValue(ParsePatternId(style.Stroke), out SvgPatternTile tile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local pattern references are implemented.");
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgAffineTransform transform = context.ResolveTransform(reader);
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgLinearGradient fillGradient = default;

@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Xml;
 
 namespace Lokad.Svg.Parsing;
@@ -31,17 +30,5 @@ internal readonly record struct SvgEllipseSyntax(double CenterX, double CenterY,
         return radius;
     }
     private static double ParseCoordinate(string value, double? basis)
-    {
-        ReadOnlySpan<char> token = value.AsSpan().Trim();
-        if (!token.EndsWith("%", StringComparison.Ordinal)) return SvgGeometrySyntax.ParseRectangleCoordinate(value);
-        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Oval coordinate values exceed the configured syntax limit.");
-        if (basis is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage oval coordinates require a known user-space viewport.");
-        if (!double.TryParse(token[..^1].TrimEnd(), NumberStyles.Float, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent))
-            throw new SvgException(SvgErrorCode.MalformedInput, "Percentage oval coordinates must be finite numbers.");
-        // Native SVG lengths narrow the percentage and viewport before resolving in user space.
-        float resolved = (float)percent * (float)basis.Value / 100f;
-        if (!float.IsFinite(resolved) || resolved < (double)int.MinValue || resolved > (double)int.MaxValue)
-            throw new SvgException(SvgErrorCode.LimitExceeded, "Percentage oval coordinates exceed the admitted numeric range.");
-        return resolved;
-    }
+        => SvgGeometrySyntax.ParseViewportCoordinate(value, basis, SvgViewportCoordinateKind.Oval);
 }

@@ -407,7 +407,7 @@ internal ref struct SvgOrthogonalGeometryLowering
 
     /// <summary>Appends one source-float oval for fill replay and native stroke construction.</summary>
     /// <remarks>The caller owns the command list and its budget, work and cancellation checkpoints. Finite collapsed bounds append nothing; every retained verb is charged before publication.</remarks>
-    private static bool AppendNativeEllipseCommands(BudgetedParserList<SvgAuthoredPathCommand> commands, double centerX, double centerY, double radiusX, double radiusY)
+    internal static bool AppendNativeEllipseCommands(BudgetedParserList<SvgAuthoredPathCommand> commands, double centerX, double centerY, double radiusX, double radiusY)
     {
         float left = (float)centerX - (float)radiusX, right = (float)centerX + (float)radiusX;
         float top = (float)centerY - (float)radiusY, bottom = (float)centerY + (float)radiusY;

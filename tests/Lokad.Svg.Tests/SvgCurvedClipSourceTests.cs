@@ -15,11 +15,21 @@ public sealed class SvgCurvedClipSourceTests
     [InlineData("star-evenodd")]
     [InlineData("star-stylesheet-priority")]
     [InlineData("concave-leaf")]
+    [InlineData("<defs><clipPath id='c'><path d='M3 24 Q16 0 29 24 M3 30Q16 27 29 30'/></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/>")]
+    [InlineData("<defs><clipPath id='c'><path d='M3 24Q16 0 29 24 M3 24Q16 0 29 24 M3 24Q16 0 29 24 M3 24Q16 0 29 24 M3 24Q16 0 29 24'/></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/>")]
+    [InlineData("compound:cubic-hole-evenodd")]
+    [InlineData("compound:arc-ring-implicit-close")]
+    [InlineData("compound:mixed-line-curve-nested")]
+    [InlineData("compound:disjoint-rotated-children")]
+    [InlineData("compound:nested-local-clip-definitions")]
+    [InlineData("compound:percentage-affine-radial")]
     public void Native_clip_owners_release_at_every_parser_work_denial_and_sampled_memory_denials(string content)
     {
         byte[] input = content.StartsWith('<')
             ? System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + content + "</svg>")
-            : File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "native-clip-winding", content + ".svg"));
+            : content.StartsWith("compound:", StringComparison.Ordinal)
+                ? File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "compound-clip-content", content[9..] + ".svg"))
+                : File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "native-clip-winding", content + ".svg"));
         RenderBudget discovery = new(1_000_000);
         ParserWorkCounter discoveryWork = new(1_000_000);
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discoveryWork, discovery, CancellationToken.None));
@@ -102,8 +112,6 @@ public sealed class SvgCurvedClipSourceTests
     [InlineData("<clipPath id='c'><path d='M3 24 Q16 0 29 24'/></clipPath><clipPath id='c'><rect width='32' height='32'/></clipPath>", SvgErrorCode.MalformedInput)]
     [InlineData("<clipPath id='c'><rect width='32' height='32'/></clipPath><clipPath id='c'><path d='M3 24 Q16 0 29 24'/></clipPath>", SvgErrorCode.MalformedInput)]
     [InlineData("<clipPath id='c'><path d='M3 24 Q16 0 29 24'/><path d='M0 0H32V32Z'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<clipPath id='c'><path d='M3 24 Q16 0 29 24 M3 30Q16 27 29 30'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<clipPath id='c'><path d='M3 24Q16 0 29 24 M3 24Q16 0 29 24 M3 24Q16 0 29 24 M3 24Q16 0 29 24 M3 24Q16 0 29 24'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
     public void Rejected_clip_definitions_release_pending_and_registered_commands(string content, SvgErrorCode error)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + content + "</defs><rect width='32' height='32'/></svg>");

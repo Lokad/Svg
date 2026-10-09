@@ -34,6 +34,24 @@ public sealed class SvgFloatNumberTests
         }
     }
 
+    [Theory]
+    [InlineData("scale(0.1686295142120) translate(0 251.198)", 42.35939407348633)]
+    [InlineData("matrix(0.1686295142120 0 0 0.1686295142120 0 0) translate(0 251.198)", 42.35939587395478)]
+    [InlineData("scale(0.1686295142120) rotate(0) translate(0 251.198)", 42.35939587395478)]
+    public void Local_transform_lists_preserve_native_axis_and_full_matrix_precision(string value, double expectedTranslation)
+    {
+        SvgAffineTransform transform = SvgGeometrySyntax.ParseTransform(value, new(1000), CancellationToken.None);
+        Assert.Equal(expectedTranslation, transform.F);
+    }
+
+    [Fact]
+    public void Enclosing_groups_compose_finished_local_maps_at_double_precision()
+    {
+        SvgAffineTransform scale = SvgGeometrySyntax.ParseTransform("scale(0.1686295142120)", new(1000), CancellationToken.None);
+        SvgAffineTransform translation = SvgGeometrySyntax.ParseTransform("translate(0 251.198)", new(1000), CancellationToken.None);
+        Assert.Equal(42.35939587395478, scale.ComposeChecked(translation).F);
+    }
+
     [Fact]
     public void Numeric_reading_denial_and_cancellation_preserve_their_contracts()
     {

@@ -16,14 +16,15 @@ internal static class SvgLeafParser
 
     internal static SvgParsedGeometry ParseRectangleCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgComputedStyle patternStyle = context.ResolveStyle(reader);
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         SvgAffineTransform earlyTransform = context.ResolveTransform(reader);
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
         double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
         bool rounded = cornerX != 0 || cornerY != 0;
-        if ((!earlyTransform.IsAxisAligned || context.RetainInstanceStrokePath) && !rounded && !SvgGradientSyntax.IsGradientFill(patternStyle.Fill)
+        if ((!earlyTransform.IsAxisAligned || context.RetainInstanceStrokePath) && !rounded
+            && (!SvgGradientSyntax.IsGradientFill(patternStyle.Fill) || !earlyTransform.IsAxisAligned)
             && (patternStyle.Stroke is null or "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth)))
             return LowerTransformedFill(reader, context, syntax, frame, state);
         SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
@@ -50,10 +51,12 @@ internal static class SvgLeafParser
 
         static SvgParsedGeometry LowerTransformedFill(XmlReader input, SvgPaintableElementContext elementContext, SvgRectangleSyntax rectangle, SvgViewportFrame? clip, SvgDocumentState document)
         {
-            SvgResolvedPaintableElement element = elementContext.ResolveShape(input, true);
-            // A leaf's clip uses the same transformed user space; an axis-aligned
-            // scene clip cannot stand in for its rotated geometry.
-            if (input.GetAttribute("clip-path") is not null)
+            SvgComputedStyle style = elementContext.ResolveStyle(input);
+            bool shader = SvgGradientSyntax.IsGradientFill(style.Fill);
+            SvgResolvedPaintableElement element = elementContext.ResolveShape(shader ? style with { Fill = "#ffffff", Stroke = "none" } : style, input, true);
+            // Contour references use the existing deferred native clip binding.
+            // Rectangle/object-box clips still need their own affine admission.
+            if (input.GetAttribute("clip-path") is not null && !document.DeferringLeafClip)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on transformed rectangle fills are not implemented.");
             if (rectangle.Width == 0 || rectangle.Height == 0 || element.Transform.A * element.Transform.D == element.Transform.B * element.Transform.C)
             {
@@ -71,7 +74,33 @@ internal static class SvgLeafParser
             using BudgetedParserList<SvgPoint> noPoints = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
             using BudgetedParserList<int> noEnds = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
             using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "rect", false, false, int.MaxValue, document.Budget, elementContext.WorkCounter, elementContext.CancellationToken);
-            return lowering.LowerFractionalPointList(points, SvgPolygonMapping.FiniteEdges, element, clip, document.Budget) with { ElementCount = 0 };
+            SvgParsedGeometry filled = lowering.LowerFractionalPointList(points, SvgPolygonMapping.FiniteEdges, element, clip, document.Budget) with { ElementCount = 0 };
+            if (!shader || !element.Presentation.HasFill || filled.Geometries.Length == 0) return filled;
+            using BudgetedGeometryBuilder repainted = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
+            try
+            {
+                string paintId = SvgGradientSyntax.ParsePaintId(style.Fill);
+                bool linear = document.Gradients.TryGetValue(paintId, out SvgLinearGradient gradient);
+                SvgRadialGradient radial = default;
+                if (!linear && !document.RadialGradients.TryGetValue(paintId, out radial))
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined linear and radial paints on affine rectangle fills are implemented.");
+                SvgAuthoredPath source = filled.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Affine rectangles require retained source commands.");
+                SvgRectangle box = new(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, default, false, null);
+                if (linear) gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, box, source.SceneMap, document, elementContext.WorkCounter, elementContext.CancellationToken);
+                else radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, source.SceneMap, elementContext.WorkCounter, elementContext.CancellationToken);
+                byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
+                foreach (SvgGeometry geometry in filled.Geometries)
+                {
+                    SvgGeometry painted = geometry.TransferAuthoredPathTo(linear
+                        ? SvgGradientPolygon.RepaintOutline(geometry.Polygon, gradient, box, opacity, document.Budget)
+                        : SvgRadialPolygon.RepaintOutline(geometry.Polygon, radial, box, opacity, document.Budget));
+                    try { repainted.Add(painted); }
+                    catch { painted.Dispose(); throw; }
+                }
+                filled.Dispose();
+                return new(repainted.Detach(), 0);
+            }
+            catch { foreach (SvgGeometry geometry in repainted.AsSpan()) geometry.Dispose(); filled.Discard(); throw; }
         }
     }
 
@@ -297,7 +326,7 @@ internal static class SvgLeafParser
 
     internal static SvgParsedGeometry ParseRoundedRectangleDefinitionCore(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
     {
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         double cornerX = syntax.CornerX ?? syntax.CornerY ?? 0;
         double cornerY = syntax.CornerY ?? syntax.CornerX ?? 0;
         return LowerRoundedRect(reader, context, syntax, cornerX, cornerY, null, state);
@@ -305,7 +334,7 @@ internal static class SvgLeafParser
 
     internal static SvgParsedRectangle ParseRectangleWithStyle(XmlReader reader, SvgPaintableElementContext context)
     {
-        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
+        SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         if ((syntax.CornerX ?? syntax.CornerY ?? 0) != 0 || (syntax.CornerY ?? syntax.CornerX ?? 0) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rounded rectangles in definitions stay unsupported.");
         SvgResolvedPaintableElement element = context.ResolveShape(reader, true);

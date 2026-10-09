@@ -1470,13 +1470,13 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Circle_content_in_clip_path_stays_unsupported()
+    public void Circle_content_in_clip_path_preserves_disc_coverage()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><circle cx='4' cy='4' r='2'/></clipPath></defs><rect width='8' height='8' fill='red' clip-path='url(#c)'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out _);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 4, 4));
+        Assert.Equal(SvgColor.Transparent, Pixel(pixels, width, 0, 0));
     }
 
 

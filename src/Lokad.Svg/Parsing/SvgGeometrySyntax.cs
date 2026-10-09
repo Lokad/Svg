@@ -3,6 +3,8 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
+internal enum SvgViewportCoordinateKind { Oval, Rectangle }
+
 /// <summary>Parses the bounded numeric, transform, viewport, and viewBox syntax shared by supported geometry.</summary>
 internal static class SvgGeometrySyntax
 {
@@ -15,6 +17,7 @@ internal static class SvgGeometrySyntax
         SvgAffineTransform transform = SvgAffineTransform.Identity;
         int position = 0;
         bool hasFunction = false;
+        bool fullMatrix = false;
         while (true)
         {
             while (position < input.Length && char.IsWhiteSpace(input[position])) position++;
@@ -34,9 +37,23 @@ internal static class SvgGeometrySyntax
             int argumentsStart = position;
             while (position < input.Length && input[position] != ')') position++;
             if (position == input.Length) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer translate(), nonzero scale(), and nonzero axis-aligned matrix() transforms are implemented.");
-            transform = transform.ComposeChecked(ParseTransformFunction(name, input[argumentsStart..position], workCounter, cancellationToken));
+            SvgAffineTransform function = ParseTransformFunction(name, input[argumentsStart..position], workCounter, cancellationToken);
+            // Local scale/translate lists use native float axis storage until a
+            // matrix, rotation or skew promotes the list to double precision.
+            // Enclosing groups still compose their finished local maps in double.
+            fullMatrix |= !(name.Equals("translate", StringComparison.OrdinalIgnoreCase) || name.Equals("scale", StringComparison.OrdinalIgnoreCase));
+            transform = fullMatrix ? transform.ComposeChecked(function) : ComposeAxis(transform, function);
             position++;
             hasFunction = true;
+        }
+
+        static SvgAffineTransform ComposeAxis(SvgAffineTransform outer, SvgAffineTransform inner)
+        {
+            // Preserve the range gate before narrowing, then validate the rounded
+            // result too. Each native multiply and add rounds separately.
+            outer.ComposeChecked(inner);
+            return SvgAffineTransform.FromScaleOffset((float)outer.A * (float)inner.A, (float)outer.D * (float)inner.D,
+                (float)outer.A * (float)inner.E + (float)outer.E, (float)outer.D * (float)inner.F + (float)outer.F).ComposeChecked(SvgAffineTransform.Identity);
         }
     }
 
@@ -310,5 +327,22 @@ internal static class SvgGeometrySyntax
         }
 
         private static bool IsSeparator(char value) => value is ',' or ' ' or '\t' or '\r' or '\n';
+    }
+
+    internal static double ParseViewportCoordinate(string value, double? basis, SvgViewportCoordinateKind kind)
+    {
+        string noun = kind == SvgViewportCoordinateKind.Oval ? "oval" : "rectangle";
+        string label = kind == SvgViewportCoordinateKind.Oval ? "Oval" : "Rectangle";
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (!token.EndsWith("%", StringComparison.Ordinal)) return ParseRectangleCoordinate(value);
+        if (token.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, $"{label} coordinate values exceed the configured syntax limit.");
+        if (basis is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, $"Percentage {noun} coordinates require a known user-space viewport.");
+        if (!double.TryParse(token[..^1].TrimEnd(), NumberStyles.Float, CultureInfo.InvariantCulture, out double percent) || !double.IsFinite(percent))
+            throw new SvgException(SvgErrorCode.MalformedInput, $"Percentage {noun} coordinates must be finite numbers.");
+        // Native SVG lengths narrow the percentage and viewport before resolving in user space.
+        float resolved = (float)percent * (float)basis.Value / 100f;
+        if (!float.IsFinite(resolved) || resolved < (double)int.MinValue || resolved > (double)int.MaxValue)
+            throw new SvgException(SvgErrorCode.LimitExceeded, $"Percentage {noun} coordinates exceed the admitted numeric range.");
+        return resolved;
     }
 }
