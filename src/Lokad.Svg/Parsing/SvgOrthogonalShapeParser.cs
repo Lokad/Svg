@@ -83,19 +83,20 @@ internal static class SvgOrthogonalShapeParser
             else
             {
                 SvgOrthogonalGeometryLowering.ValidateContours(points, contourEnds, "path", context.WorkCounter, context.CancellationToken);
+                foreach (SvgPoint point in points.AsSpan())
+                {
+                    context.WorkCounter.Consume(context.CancellationToken);
+                    SvgDevicePoint mapped = shape.Transform.Apply(point);
+                    if (mapped.X < int.MinValue || mapped.X > int.MaxValue || mapped.Y < int.MinValue || mapped.Y > int.MaxValue)
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "The supported transform exceeds the coordinate range.");
+                }
                 bool isEvenOdd = shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase);
-                // AA clips belong to the paint operation. Clipping orthogonal
-                // bands here discards their native boundary bytes and paint route.
-                if (!shape.Transform.IsAxisAligned || frame is { Clip.Antialiasing: not SvgClipAntialiasing.None })
-                {
-                    using SvgOrthogonalGeometryLowering polygonLowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                    filled = polygonLowering.LowerPolygonFill(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame, budget);
-                }
-                else
-                {
-                    using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
-                    filled = lowering.Lower(shape.Presentation.Color, shape.Presentation.HasFill, shape.Transform, frame);
-                }
+                // Authored paths keep native float placement and path coverage.
+                // Rectangle bands lose both source mapping and the native path/rect distinction.
+                using SvgOrthogonalGeometryLowering lowering = new(points, contourEnds, "path", true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
+                filled = shape.Presentation.HasFill
+                    ? lowering.LowerDeviceFill(d, commandCount, false, SvgPolygonMapping.FiniteEdges, shape, frame, context.RetainInstanceStrokePath, budget)
+                    : lowering.Lower(shape.Presentation.Color, false, shape.Transform, frame);
             }
         }
 

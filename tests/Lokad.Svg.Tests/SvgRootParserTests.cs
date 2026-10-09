@@ -1989,30 +1989,32 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Applies_id_stylesheet_rules_to_supported_paths_and_polygons()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#path { fill: red; } #polygon { fill: blue; }</style><path id='path' d='M 0 0 H 1 V 1 H 0 Z'/><polygon id='polygon' points='1,0 2,0 2,1 1,1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#path { fill: red; } #polygon { fill: blue; }</style><path id='path' d='M 0 0 H 1 V 1 H 0 Z'/><polygon id='polygon' points='1,0 2,0 2,1 1,1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color),
-            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new(0, 0, 1, 1, new(255, 0, 0, 255), true, null),
+            new(1, 0, 1, 1, new(0, 0, 255, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Applies_class_stylesheet_rules_to_supported_paths_and_point_lists()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>.path { fill: red; } .polygon { fill: blue; } .polyline { fill: lime; }</style><path class='path' d='M 0 0 H 1 V 1 H 0 Z'/><polygon class='polygon' points='1,0 2,0 2,1 1,1'/><polyline class='polyline' points='2,0 3,0 3,1 2,1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>.path { fill: red; } .polygon { fill: blue; } .polyline { fill: lime; }</style><path class='path' d='M 0 0 H 1 V 1 H 0 Z'/><polygon class='polygon' points='1,0 2,0 2,1 1,1'/><polyline class='polyline' points='2,0 3,0 3,1 2,1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            rectangle => Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color),
-            rectangle => Assert.Equal(new SvgColor(0, 0, 255, 255), rectangle.Color),
-            rectangle => Assert.Equal(new SvgColor(0, 255, 0, 255), rectangle.Color));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new(0, 0, 1, 1, new(255, 0, 0, 255), true, null),
+            new(1, 0, 1, 1, new(0, 0, 255, 255), true, null),
+            new(2, 0, 1, 1, new(0, 255, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Applies_stylesheet_opacity_to_supported_paths()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#path { fill: red; opacity: 0.5; }</style><path id='path' d='M 0 0 H 1 V 1 H 0 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><style>#path { fill: red; opacity: 0.5; }</style><path id='path' d='M 0 0 H 1 V 1 H 0 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgColor(255, 0, 0, 255), root.Rectangles[0].Color);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Assert.Single(root.Geometries).Polygon.Color);
         SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
     }
 
@@ -2322,10 +2324,12 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Preserves_the_full_extent_of_extreme_orthogonal_path_coordinates()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M -2147483648,0 H 2147483647 V 1 H -2147483648 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M -2147483648,0 H 2147483647 V 1 H -2147483648 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(-2_147_483_648, root.Rectangles[0].X);
-        Assert.Equal(4_294_967_295d, root.Rectangles[0].Width);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(-2_147_483_648d, geometry.Polygon.Points.ToArray().Min(point => point.X));
+        Assert.Equal(2_147_483_648d, geometry.Polygon.Points.ToArray().Max(point => point.X));
+        Assert.NotNull(geometry.AuthoredPath);
     }
 
     [Fact]
@@ -2972,12 +2976,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rect_subject_with_multi_contour_clip_stays_unsupported()
+    public void Authored_rectangular_path_accepts_a_multi_contour_clip()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><clipPath id='c'><path d='M0,0 H4 V4 H0 Z M5,5 H8 V8 H5 Z'/></clipPath><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Polygon clip-paths on this geometry are not implemented.", rejected.Message);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><clipPath id='c'><path d='M0,0 H4 V4 H0 Z M5,5 H8 V8 H5 Z'/></clipPath><path d='M0,0 H8 V8 H0 Z' fill='red' clip-path='url(#c)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new(0, 0, 4, 4, new(255, 0, 0, 255), true, null),
+            new(5, 5, 3, 3, new(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
@@ -3130,181 +3135,196 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Lowers_intersecting_contours_with_nonzero_winding()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M1,1 H6 V6 H1 Z M3,0 H5 V8 H3 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M1,1 H6 V6 H1 Z M3,0 H5 V8 H3 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(3, 0, 2, 1, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(1, 1, 2, 5, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(3, 1, 2, 5, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(5, 1, 1, 5, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(3, 6, 2, 2, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(3, 0, 2, 1, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(1, 1, 2, 5, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(3, 1, 2, 5, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(5, 1, 1, 5, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(3, 6, 2, 2, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_intersecting_contours_with_evenodd_pairing()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M1,1 H6 V6 H1 Z M3,0 H5 V8 H3 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M1,1 H6 V6 H1 Z M3,0 H5 V8 H3 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(3, 0, 2, 1, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(1, 1, 2, 5, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(5, 1, 1, 5, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(3, 6, 2, 2, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(3, 0, 2, 1, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(1, 1, 2, 5, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(5, 1, 1, 5, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(3, 6, 2, 2, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_corner_touching_contours_independently()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M4,4 H8 V8 H4 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M4,4 H8 V8 H4 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(4, 4, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(4, 4, 4, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_self_crossing_contours()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,4 H8 V5 H5 V8 H3 V0 H2 V5 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,4 H8 V5 H5 V8 H3 V0 H2 V5 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(2, 0, 1, 4, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(0, 4, 2, 1, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(3, 4, 5, 1, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(3, 5, 2, 3, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(2, 0, 1, 4, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(0, 4, 2, 1, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(3, 4, 5, 1, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(3, 5, 2, 3, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_abutting_rect_contours_to_adjacent_bands()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M4,0 H8 V4 H4 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M4,0 H8 V4 H4 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_abutting_rect_contours_with_evenodd_pairing()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M4,0 H8 V4 H4 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M4,0 H8 V4 H4 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_opposite_orientation_abut_to_adjacent_bands()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M8,0 H4 V4 H8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M8,0 H4 V4 H8 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(4, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_retraced_edge_contour_to_a_single_band()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 V0 H4 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 V0 H4 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 4, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_vertical_spike_contour_by_cancellation()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V4 V0 H4 V4 H0 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V4 V0 H4 V4 H0 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(2, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(2, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_vertical_spike_contour_with_nonzero_sweep()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V4 V0 H4 V4 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V4 V0 H4 V4 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(2, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(2, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_nested_touching_hole_with_evenodd_pairing()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H10 V10 H0 Z M6,4 H10 V6 H6 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H10 V10 H0 Z M6,4 H10 V6 H6 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 10, 4, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(0, 4, 6, 2, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(0, 6, 10, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 10, 4, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(0, 4, 6, 2, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(0, 6, 10, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_stacked_identical_contours_to_empty_with_evenodd()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M0,0 H4 V4 H0 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M0,0 H4 V4 H0 Z' fill='red' fill-rule='evenodd'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Empty(root.Rectangles);
+        SvgPathFillAssertions.MatchesIntegerBands(root, []);
     }
 
     [Fact]
     public void Lowers_triple_covered_bands_with_nonzero_sweep()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V4 H0 Z M0,0 H2 V4 H0 Z M0,0 H2 V4 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V4 H0 Z M0,0 H2 V4 H0 Z M0,0 H2 V4 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 2, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_closed_axis_aligned_rectangle_paths()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 1,2 H 4 V 6 H 1 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 1,2 H 4 V 6 H 1 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
     public void Lowers_paths_with_adjacent_commands_without_materializing_tokens()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0H3V1H1V3H0Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0H3V1H1V3H0Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(0, 1, 1, 2, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(0, 1, 1, 2, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_closed_axis_aligned_line_rectangle_paths()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 1,2 L 4,2 L 4,6 L 1,6 z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 1,2 L 4,2 L 4,6 L 1,6 z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true, null), root.Rectangles[0]);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
     public void Lowers_closed_axis_aligned_line_paths_to_non_overlapping_rectangle_bands()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 3 V 1 H 1 V 3 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 3 V 1 H 1 V 3 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(0, 1, 1, 2, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(0, 1, 1, 2, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
-    public void Retains_lowered_orthogonal_path_bands_as_typed_scene_geometry()
+    public void Retains_orthogonal_path_commands_as_one_native_fill()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 2 V 1 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 2 V 1 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.OrthogonalBand, geometry.Kind);
-        Assert.Equal(new SvgRectangle(0, 0, 2, 1, new SvgColor(255, 0, 0, 255), true, null), geometry.Rectangle);
+        Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
+        Assert.NotNull(geometry.AuthoredPath);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(0, 0, 2, 1, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
@@ -3340,8 +3360,8 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Lowers_self_intersecting_orthogonal_contours()
     {
-        SvgRoot polygon = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 3,0 3,3 1,3 1,1 4,1 4,4 0,4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgRoot path = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 3 V 3 H 1 V 1 H 4 V 4 H 0 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot polygon = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><polygon points='0,0 3,0 3,3 1,3 1,1 4,1 4,4 0,4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot path = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 3 V 3 H 1 V 1 H 4 V 4 H 0 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgRectangle[] expected =
         [
@@ -3352,72 +3372,75 @@ public sealed class SvgRootParserTests
             new SvgRectangle(0, 3, 4, 1, new SvgColor(0, 0, 0, 255), true, null),
         ];
         Assert.Equal(expected, polygon.Rectangles);
-        Assert.Equal(expected, path.Rectangles);
+        SvgPathFillAssertions.MatchesIntegerBands(path, expected);
     }
 
     [Fact]
     public void Lowers_evenodd_counter_path_to_bands_with_hole()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M8,8 H56 V56 H8 Z M20,20 V44 H44 V20 Z' fill-rule='evenodd' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M8,8 H56 V56 H8 Z M20,20 V44 H44 V20 Z' fill-rule='evenodd' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(8, 8, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(8, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(44, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(8, 44, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(8, 8, 48, 12, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(8, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(44, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(8, 44, 48, 12, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_same_winding_nonzero_counter_path_to_solid_bands()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M8,8 H56 V56 H8 Z M20,20 H44 V44 H20 Z' fill-rule='nonzero' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M8,8 H56 V56 H8 Z M20,20 H44 V44 H20 Z' fill-rule='nonzero' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(8, 8, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(8, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(20, 20, 24, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(44, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(8, 44, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(8, 8, 48, 12, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(8, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(20, 20, 24, 24, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(44, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(8, 44, 48, 12, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_overlapping_contours_with_nonzero_winding()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M2,2 H6 V6 H2 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H4 V4 H0 Z M2,2 H6 V6 H2 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            band => Assert.Equal(new SvgRectangle(0, 0, 4, 2, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(0, 2, 2, 2, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(2, 2, 2, 2, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(4, 2, 2, 2, new SvgColor(255, 0, 0, 255), true, null), band),
-            band => Assert.Equal(new SvgRectangle(2, 4, 4, 2, new SvgColor(255, 0, 0, 255), true, null), band));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(0, 0, 4, 2, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(0, 2, 2, 2, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(2, 2, 2, 2, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(4, 2, 2, 2, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(2, 4, 4, 2, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Admits_trailing_unclosed_path_subpath()
     {
-        SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgRoot open = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot open = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(closed.Rectangles, open.Rectangles);
+        SvgPathFillAssertions.Equivalent(closed, open);
     }
 
     [Fact]
     public void Admits_nonfinal_unclosed_path_subpath()
     {
-        SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgRoot open = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot open = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(closed.Rectangles, open.Rectangles);
+        SvgPathFillAssertions.Equivalent(closed, open);
     }
 
     [Fact]
     public void Admits_explicit_return_to_start_path_subpath()
     {
-        SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgRoot returned = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 V0 M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 Z M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot returned = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H2 V2 H0 V0 M4,4 H6 V6 H4 Z'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(closed.Rectangles, returned.Rectangles);
+        SvgPathFillAssertions.Equivalent(closed, returned);
     }
 
     [Fact]
@@ -3442,43 +3465,47 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Lowers_relative_rectangle_path_to_same_bands_as_absolute()
     {
-        SvgRoot relative = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='m 1,2 h 3 v 4 h -3 z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgRoot absolute = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 1,2 H 4 V 6 H 1 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot relative = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='m 1,2 h 3 v 4 h -3 z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot absolute = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 1,2 H 4 V 6 H 1 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(absolute.Rectangles, relative.Rectangles);
-        Assert.Collection(relative.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgPathFillAssertions.Equivalent(absolute, relative);
+        SvgPathFillAssertions.MatchesIntegerBands(relative, [
+            new SvgRectangle(1, 2, 3, 4, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_implicit_lineto_path_to_same_bands_as_explicit()
     {
-        SvgRoot implicitPath = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 3,0 3,1 1,1 1,3 0,3Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot implicitPath = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 3,0 3,1 1,1 1,3 0,3Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(implicitPath.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(0, 1, 1, 2, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgPathFillAssertions.MatchesIntegerBands(implicitPath, [
+            new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(0, 1, 1, 2, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_compact_repeated_commands_to_same_bands()
     {
-        SvgRoot compact = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0H2 3V1H0Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot compact = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0H2 3V1H0Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(compact.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgPathFillAssertions.MatchesIntegerBands(compact, [
+            new SvgRectangle(0, 0, 3, 1, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
     public void Lowers_relative_counter_subpath_to_the_same_hole()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M8,8H56V56H8Z m12,12 v24 h24 v-24 Z' fill-rule='evenodd' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M8,8H56V56H8Z m12,12 v24 h24 v-24 Z' fill-rule='evenodd' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Collection(root.Rectangles,
-            rectangle => Assert.Equal(new SvgRectangle(8, 8, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(8, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(44, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null), rectangle),
-            rectangle => Assert.Equal(new SvgRectangle(8, 44, 48, 12, new SvgColor(255, 0, 0, 255), true, null), rectangle));
+        SvgPathFillAssertions.MatchesIntegerBands(root, [
+            new SvgRectangle(8, 8, 48, 12, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(8, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(44, 20, 12, 24, new SvgColor(255, 0, 0, 255), true, null),
+            new SvgRectangle(8, 44, 48, 12, new SvgColor(255, 0, 0, 255), true, null),
+        ]);
     }
 
     [Fact]
@@ -4045,7 +4072,7 @@ public sealed class SvgRootParserTests
 
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0 0 H 2 V 2 H 0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None);
 
-        Assert.Single(root.Rectangles);
+        Assert.NotNull(Assert.Single(root.Geometries).AuthoredPath);
         Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Geometry]);
     }
 
@@ -4749,9 +4776,10 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_forward_clip_path_definitions_on_direct_paths()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 8 V 8 H 0 Z' fill='red' clip-path='url(#later)'/><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 8 V 8 H 0 Z' fill='red' clip-path='url(#later)'/><defs><clipPath id='later'><rect x='2' y='2' width='4' height='4'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(2, 2, 4, 4) }, Assert.Single(root.Geometries).Rectangle);
+        Assert.Equal(new SvgClipBox(2, 2, 4, 4), Assert.Single(root.Geometries).Polygon.Clip);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(2, 2, 4, 4, new(255, 0, 0, 255), true, null)]);
     }
 
     [Fact]
@@ -4773,9 +4801,10 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Clips_forward_bounding_box_clips_on_direct_paths()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 8 V 8 H 0 Z' fill='red' clip-path='url(#later)'/><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 8 V 8 H 0 Z' fill='red' clip-path='url(#later)'/><defs><clipPath id='later' clipPathUnits='objectBoundingBox'><rect x='0.25' y='0.25' width='0.5' height='0.5'/></clipPath></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null) { Clip = new(2, 2, 4, 4) }, Assert.Single(root.Geometries).Rectangle);
+        Assert.Equal(new SvgClipBox(2, 2, 4, 4), Assert.Single(root.Geometries).Polygon.Clip);
+        SvgPathFillAssertions.MatchesIntegerBands(root, [new(2, 2, 4, 4, new(255, 0, 0, 255), true, null)]);
     }
     [Fact]
     public void Rejects_forward_bounding_box_clips_on_direct_lines()
@@ -4855,7 +4884,7 @@ public sealed class SvgRootParserTests
         using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M 0,0 H 8 V 8 H 0 Z' fill='red' mask='url(#later)'/><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.NotEmpty(root.Geometries);
-        foreach (SvgGeometry geometry in root.Geometries) Assert.Equal(255, geometry.Rectangle.Color.Alpha);
+        foreach (SvgGeometry geometry in root.Geometries) Assert.Equal(255, geometry.Polygon.Color.Alpha);
         SvgLeafMaskAssertions.UniformScope(root, 128, null);
     }
 

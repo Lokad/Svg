@@ -9377,3 +9377,65 @@ document or replace any earlier reference. Malta is unchanged at 981 pixels /
 maximum five / exact alpha and is the next complete document. G2–G9 and S17
 remote CI remain open. Ignored evidence is under artifacts/tiger-affine-arcs-20261009/
 and artifacts/linux-delivery-20261007/tiger-affine-final-20261009/.
+
+## Authored fills and bitmap-local thin-stroke clipping (2026-10-09)
+
+The retained Malta flag is complete at all nine outputs declared before capture
+and correction: 300×200 / 900×600 / 1800×1200 × transparent/white/black.
+Every frozen reference is exact through six APIs on Windows/Linux. Original
+native transparent pixels stay unchanged; the eight added Windows references
+precede correction. Fresh healthy, cleaned Linux triples match all nine PNGs.
+Fifteen [focused controls](../tests/Research/native-path-replay/manifest.json)
+are exact and remain separate from document accounting.
+
+Orthogonal filled paths now use the existing authored device-fill route rather
+than decomposed rectangle-band painting. This preserves native float placement,
+directed contour contacts and path coverage. Native rectangles keep their own
+draw distinction. Checked integer source transforms retain their coordinate
+range; native float endpoints can round the largest integer to 2^31. Existing
+topology/style tests now compare actual filled pixels instead of requiring
+rectangle-band scene storage. An authored rectangular path also reaches the
+existing multi-contour clip route; this does not close the broader G5 exit.
+
+Filled circles/ellipses and their stroke constructor share native source oval
+bounds, midpoints and clockwise conics. Bounds that collapse in native float
+produce no commands/area. Budget-owned immutable commands retain scene paint
+bounds while final source replay maps directly into each software bitmap.
+This fixes the tiny rose circle without a separate circle-only rasterizer.
+
+Thin strokes now use the existing bordered CPU grid. Curve subdivision and
+fixed-point coverage operate in bitmap-local coordinates, while paint writes
+only each context's exclusively owned interior. Native region clipping first
+intersects a segment's expanded integer bounds with its bitmap clip. If the
+rectangular clip wrapper remains necessary after minor-axis checks, adjacent
+pixels use scalar span material arithmetic rather than the unclipped pair
+blitter. That distinction affects rounding even for pixels inside the clip.
+The earlier compiled line vectors retain their explicitly limited kernel/adapter
+contract; the new browser controls protect region-wrapper material dispatch.
+
+Rejected partial models: global thin-curve subdivision leaves large detail
+errors; bitmap-local subdivision alone leaves sixteen pixels (maximum two);
+using the whole bitmap instead of the region iterator's intersected rectangle
+leaves ten pixels (maximum one). Source replay plus the correct clip/material
+dispatch resolves all nine document outputs and all fifteen controls, preserving
+every preceding exact result. No document IDs or failure coordinates select paths.
+
+Three new inputs sweep every parser work denial and sampled/peak memory denial;
+raster work/memory and cancellation/retry preserve source commands and release
+temporary owners. The full Malta input releases partial construction after
+early/middle/late work and peak-memory denials. Replay owns no new heap scratch;
+bounded stack scratch is shared across contexts, and bounds/context/command/pixel
+work is charged and cancellable. Command/geometry/paint sizes remain 72/272/68.
+
+Both platforms pass Release builds and 5,575 tests. All 1,567 original reports,
+1,551 PNGs and preceding exact results remain present. Four legacy Default PNGs
+change; the other 1,547 and all older focused outcomes stay unchanged. Malta
+becomes exact; Bhutan improves 96 → zero against its unchanged native reference;
+Portugal improves 481 → 30, maximum five, alpha exact. Denmark improves 150 → zero
+against a new matching 300×150 root-only diagnostic triple. Default results do
+not complete those other documents' promised variants. Corporate remains
+27/27 / 258/258 exact against own-platform references, with the three prior SDL
+small-output cross-platform distinctions unchanged. Eight development documents
+are complete. Portugal is next; G2–G9 and S17 remote CI remain open.
+Ignored evidence is under artifacts/malta-native-strokes-20261009/ and
+artifacts/linux-delivery-20261007/malta-native-final-20261009/.

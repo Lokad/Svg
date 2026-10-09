@@ -11,8 +11,8 @@ All five retained gap documents are exact on Windows/Linux, separate from the
 preserved corporate 27/27 documents and 258/258 variants. The existing radiation
 symbol completes the sixth development deliverable, with that
 document at **9/9 exact outputs through all six APIs on both platforms**. The
-retained tiger completes the seventh: **7/7 complete**. Selecting Malta
-next makes the active queue **7/8 complete**. Controls do not
+retained tiger completes the seventh and Malta the eighth: **8/8 complete**.
+Selecting Portugal next makes the active queue **8/9 complete**. Controls do not
 count as completed documents. The I Ching nested affine-opacity control remains exact.
 
 ### inv-107 — SVG mask.svg
@@ -47,10 +47,10 @@ match the old frozen PNGs; these unchanged references were not recaptured.
 
 Eight [focused controls](../tests/Research/oval-source-replay/manifest.json) retain
 seven exact results and one discovered non-scaling root-viewBox width-map defect
-under G3. They do not count as documents. The shared correction also improves the
+under G3. They do not count as documents. At that preceding checkpoint, the shared correction improved the
 legacy Default Malta image against its existing native-size reference: 1,116 → 981
-differing pixels, maximum six → five, zero alpha error. Malta remains incomplete;
-no document graduation follows that partial improvement.
+differing pixels, maximum six → five, zero alpha error. The completed Malta
+qualification is recorded below.
 Raw records stay under ignored `artifacts/radiation-contours-20261009/` and the
 fresh Linux checkout under `artifacts/linux-delivery-20261007/oval-source-final-20261009/`.
 No source/DLL fingerprints are introduced.
@@ -76,13 +76,46 @@ and byte-identical. This is an explicit capture-contract correction, not a claim
 of equality to the historical PNG. The bank stores the new platform provenance;
 the original source, old PNG and corporate denominator remain frozen.
 
-Evidence is under ignored `artifacts/tiger-affine-arcs-20261009/` and
-`artifacts/linux-delivery-20261007/tiger-affine-final-20261009/`. The next complete
-Malta deliverable retains its original nine size/background variants: intended
-900×600, small 300×200, large 1800×1200, scale one. These previously unspecified
-development sizes are fixed before new captures or correction. Keep its existing
-native transparent reference; the other eight outputs remain unmeasured. Its
-native residual remains 981 pixels / maximum five / exact alpha.
+Evidence for the tiger is under ignored `artifacts/tiger-affine-arcs-20261009/`
+and `artifacts/linux-delivery-20261007/tiger-affine-final-20261009/`.
+
+### inv-057 — complete retained Malta flag
+
+The [Malta bank](../tests/Research/malta-flag/manifest.json) retains the untouched
+public-domain download and nine declared outputs: 300×200 / 900×600 / 1800×1200
+× transparent/white/black, scale one. The sizes were fixed in PLAN at `4fc47123`
+before comparison or correction. Small/large inputs change only root width/height.
+The original 900×600 transparent PNG stays byte-identical; eight new stable,
+healthy, cleaned Windows triples were captured before correction. Three fresh
+healthy, cleaned Linux captures per output match those same frozen PNGs.
+
+**All nine outputs are exact through all six APIs on both platforms.** Before
+correction, small/native/large each differed at 130/981/1,822 pixels, maximum
+18/5/58, alpha exact. Authored orthogonal fills preserve native path coverage;
+ovals retain source conics; thin strokes construct curves and clip/paint in
+bordered bitmap coordinates. Fifteen independent CC0 controls are exact,
+counted separately. Source bytes, license evidence and references stay frozen.
+
+The full original bank preserves all earlier exact results. Four legacy Default
+PNGs change: Malta, Denmark, Bhutan and Portugal. Bhutan's unchanged native
+900×600 reference improves 96 → zero pixels; Portugal's unchanged 600×400
+reference improves 481 → 30, maximum five, alpha exact. Existing healthy/cleaned
+triples remain byte-stable. Denmark's Default output improves 150 → zero against
+a new matching 300×150 root-only triple. These measurements do not qualify their
+historical size/background matrices. The other 1,547 original-bank PNGs are
+unchanged; corporate remains 27/27 / 258/258 exact against platform references.
+Windows/Linux pass Release builds and 5,575 tests each.
+
+Portugal is next. PLAN fixes native/small/large 600×400 / 300×200 / 1200×800,
+scales 1 / 0.5 / 2 and transparent/white/black before new capture or correction.
+Converter inputs remain original; browser small/large capture inputs may alter
+only root dimensions and add a 0 0 600 400 viewBox to express the same scaling.
+Preserve its old native transparent reference. Other outputs remain unmeasured;
+Portugal is not complete. G2–G9 and S17 remote CI remain open.
+
+Ignored Malta evidence is under `artifacts/malta-native-strokes-20261009/` and
+`artifacts/linux-delivery-20261007/malta-native-final-20261009/`. No new download,
+source/DLL fingerprint or replacement of an existing reference is involved.
 
 ## Original-scope support audit and online batch (2026-10-08)
 

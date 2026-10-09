@@ -367,7 +367,22 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
         else ends = [];
 
-        return FinishPolygonFill(mapped, ends, conics, Array.Empty<SvgCubicSpan>(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
+        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, conics, Array.Empty<SvgCubicSpan>(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
+        OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
+        try
+        {
+            if (element.Presentation.HasFill && result.Geometries.Length == 1)
+            {
+                using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                AppendNativeEllipseCommands(commands, centerX, centerY, radiusX, radiusY);
+                owned = commands.Detach();
+                result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateConvexShape(owned, deviceMap, budget) };
+                owned = new([], null);
+            }
+            return result;
+        }
+        catch { result.Discard(); throw; }
+        finally { owned.Dispose(); }
     }
 
     /// <summary>Measures, cuts and strokes original oval conics through the shared native source route.</summary>
@@ -378,26 +393,35 @@ internal ref struct SvgOrthogonalGeometryLowering
     {
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
         double deviceWidth = StrokeDeviceWidth(stroke.Width, element.Transform, frame, nonScaling);
-        float left = (float)centerX - (float)radiusX, right = (float)centerX + (float)radiusX;
-        float top = (float)centerY - (float)radiusY, bottom = (float)centerY + (float)radiusY;
-        if (!float.IsFinite(left) || !float.IsFinite(right) || !float.IsFinite(top) || !float.IsFinite(bottom))
-            throw new SvgException(SvgErrorCode.LimitExceeded, "Oval dash coordinates exceed the finite float range.");
-        if (radiusX <= 0 || radiusY <= 0 || left == right || top == bottom)
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+        if (!AppendNativeEllipseCommands(commands, centerX, centerY, radiusX, radiusY))
         {
             using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
             return new(empty.Detach(), 0);
         }
+        return LowerNativeStrokeCommands(commands, deviceMap, deviceWidth, stroke.Width, miterLimit,
+            SvgStrokeCap.Butt, SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, stroke.Color,
+            element.Presentation.IsPainted, element.OutputMagnification, frame, budget);
+
+    }
+
+    /// <summary>Appends one source-float oval for fill replay and native stroke construction.</summary>
+    /// <remarks>The caller owns the command list and its budget, work and cancellation checkpoints. Finite collapsed bounds append nothing; every retained verb is charged before publication.</remarks>
+    private static bool AppendNativeEllipseCommands(BudgetedParserList<SvgAuthoredPathCommand> commands, double centerX, double centerY, double radiusX, double radiusY)
+    {
+        float left = (float)centerX - (float)radiusX, right = (float)centerX + (float)radiusX;
+        float top = (float)centerY - (float)radiusY, bottom = (float)centerY + (float)radiusY;
+        if (!float.IsFinite(left) || !float.IsFinite(right) || !float.IsFinite(top) || !float.IsFinite(bottom))
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Native oval coordinates exceed the finite float range.");
+        if (radiusX <= 0 || radiusY <= 0 || left == right || top == bottom) return false;
         float midX = (float)(0.5 * ((double)left + right)), midY = (float)(0.5 * ((double)top + bottom));
-        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
         commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(right, midY), default, default));
         Conic(commands, new(right, bottom), new(midX, bottom));
         Conic(commands, new(left, bottom), new(left, midY));
         Conic(commands, new(left, top), new(midX, top));
         Conic(commands, new(right, top), new(right, midY));
         commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
-        return LowerNativeStrokeCommands(commands, deviceMap, deviceWidth, stroke.Width, miterLimit,
-            SvgStrokeCap.Butt, SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, stroke.Color,
-            element.Presentation.IsPainted, element.OutputMagnification, frame, budget);
+        return true;
 
         static void Conic(BudgetedParserList<SvgAuthoredPathCommand> target, SvgDevicePoint control, SvgDevicePoint end)
             => target.Add(new(SvgAuthoredPathVerb.Conic, SvgAuthoredArcFlags.None, control, end, new(SvgRationalQuadratic.QuarterCircleWeight, 0)));
@@ -588,7 +612,10 @@ internal ref struct SvgOrthogonalGeometryLowering
                 {
                     _workCounter.Consume(_cancellationToken);
                     SvgDevicePoint vertex = mapped[index];
-                    if (!double.IsFinite(vertex.X) || !double.IsFinite(vertex.Y) || Math.Abs(vertex.X) > int.MaxValue || Math.Abs(vertex.Y) > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill coordinates exceed the admitted numeric range.");
+                    // The largest admitted integer rounds to 2^31 in native float commands.
+                    // Checked integer source placement retains its original range before replay.
+                    double coordinateLimit = !hasCurve && _points.Count != 0 ? (double)(float)int.MaxValue : int.MaxValue;
+                    if (!double.IsFinite(vertex.X) || !double.IsFinite(vertex.Y) || Math.Abs(vertex.X) > coordinateLimit || Math.Abs(vertex.Y) > coordinateLimit) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill coordinates exceed the admitted numeric range.");
                     retained[index] = vertex;
                 }
                 int[]? signs = _isEvenOdd ? new int[ends.Length] : null;

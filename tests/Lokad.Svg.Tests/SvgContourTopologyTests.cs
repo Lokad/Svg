@@ -50,7 +50,7 @@ public sealed class SvgContourTopologyTests
     [Fact]
     public void Open_segment_plus_square_parses_single_fill()
     {
-        SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 M16,16 H24 V24 H16 Z' fill='red'/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 M16,16 H24 V24 H16 Z' fill='red'/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Single(root.Geometries);
         Assert.False(root.HasUnsupportedChild);
@@ -59,7 +59,7 @@ public sealed class SvgContourTopologyTests
     [Fact]
     public void Closed_two_point_fill_parses_empty()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L0,0 L8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L0,0 L8,0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Empty(root.Geometries);
         Assert.False(root.HasUnsupportedChild);
@@ -67,7 +67,7 @@ public sealed class SvgContourTopologyTests
     [Fact]
     public void Diagonal_open_fill_parses_to_empty_geometries()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L8,8' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 L8,8' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Empty(root.Geometries);
         Assert.False(root.HasUnsupportedChild);
@@ -77,9 +77,9 @@ public sealed class SvgContourTopologyTests
     [Fact]
     public void Final_subpath_may_omit_Z_for_fill_closure()
     {
-        SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgRoot open = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8 H0' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot closed = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8 H0 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot open = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><path d='M0,0 H8 V8 H0' fill='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(closed.Rectangles, open.Rectangles);
+        SvgPathFillAssertions.Equivalent(closed, open);
     }
 }

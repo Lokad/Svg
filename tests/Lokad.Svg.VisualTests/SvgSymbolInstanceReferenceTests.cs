@@ -8,7 +8,7 @@ public sealed class SvgSymbolInstanceReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "symbol-instances", "symbol-presentation", "symbol-content", "symbol-content-diagnostics", "symbol-viewport-opacity", "use-paint-properties", "rectangle-frames", "rectangle-path-strokes", "use-stroke-opacity", "use-stroke-style", "rendered-group-styles", "instance-shader-opacity", "container-shader-inheritance", "viewport-percentage-bases", "transformed-rectangle-fills", "iching-library", "pattern-vector-content", "pattern-inheritance", "nested-affine-opacity", "gradient-masks", "oval-source-replay", "radiation-symbol", "affine-arcs" })
+        foreach (string family in new[] { "symbol-instances", "symbol-presentation", "symbol-content", "symbol-content-diagnostics", "symbol-viewport-opacity", "use-paint-properties", "rectangle-frames", "rectangle-path-strokes", "use-stroke-opacity", "use-stroke-style", "rendered-group-styles", "instance-shader-opacity", "container-shader-inheritance", "viewport-percentage-bases", "transformed-rectangle-fills", "iching-library", "pattern-vector-content", "pattern-inheritance", "nested-affine-opacity", "gradient-masks", "oval-source-replay", "radiation-symbol", "affine-arcs", "malta-flag", "native-path-replay" })
         {
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", family, "manifest.json")));
             foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
@@ -23,25 +23,27 @@ public sealed class SvgSymbolInstanceReferenceTests
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(family switch { "symbol-content-diagnostics" => 3, "symbol-viewport-opacity" => 18, "use-paint-properties" => 31, "rectangle-frames" => 15, "rectangle-path-strokes" => 30, "use-stroke-opacity" => 81, "use-stroke-style" => 99, "rendered-group-styles" => 123, "instance-shader-opacity" => 150, "container-shader-inheritance" => 192, "viewport-percentage-bases" => 81, "transformed-rectangle-fills" => 15, "iching-library" => 25, "pattern-vector-content" => 18, "pattern-inheritance" => 17, "nested-affine-opacity" => 7, "gradient-masks" => 20, "oval-source-replay" => 8, "radiation-symbol" => 9, "affine-arcs" => 16, _ => 16 }, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family switch { "symbol-content-diagnostics" => 3, "symbol-viewport-opacity" => 18, "use-paint-properties" => 31, "rectangle-frames" => 15, "rectangle-path-strokes" => 30, "use-stroke-opacity" => 81, "use-stroke-style" => 99, "rendered-group-styles" => 123, "instance-shader-opacity" => 150, "container-shader-inheritance" => 192, "viewport-percentage-bases" => 81, "transformed-rectangle-fills" => 15, "iching-library" => 25, "pattern-vector-content" => 18, "pattern-inheritance" => 17, "nested-affine-opacity" => 7, "gradient-masks" => 20, "oval-source-replay" => 8, "radiation-symbol" => 9, "affine-arcs" => 16, "malta-flag" => 9, "native-path-replay" => 15, _ => 16 }, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("identical", RequiredString(root, "decodedPixelStability"));
         Assert.Equal("healthy", RequiredString(root, "captureStartupHealth"));
         Assert.True(root.GetProperty("captureProfilesCleaned").GetBoolean());
         JsonElement item = root.GetProperty("cases").EnumerateArray().Single(value => RequiredString(value, "id") == identity);
-        Assert.Equal(family == "radiation-symbol" ? "Public domain" : "CC0-1.0", RequiredString(item, "license"));
+        bool publicDomainDocument = family is "radiation-symbol" or "malta-flag";
+        Assert.Equal(publicDomainDocument ? "Public domain" : "CC0-1.0", RequiredString(item, "license"));
         Assert.NotEmpty(RequiredString(item, "licenseEvidence"));
         Assert.NotEmpty(RequiredString(item, "selection"));
         string background = RequiredString(item, "background");
-        if (family == "radiation-symbol") Assert.Contains(background, new[] { "transparent", "white", "black" });
+        if (publicDomainDocument) Assert.Contains(background, new[] { "transparent", "white", "black" });
         else Assert.Equal("transparent", background);
         byte[] input = File.ReadAllBytes(Path.Combine(directory, RequiredString(item, "input")));
         byte[] referenceBytes = File.ReadAllBytes(Path.Combine(directory, RequiredString(item, "reference")));
-        if (family == "radiation-symbol")
+        if (publicDomainDocument)
         {
-            byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", "inv-094.svg"));
+            byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", family == "malta-flag" ? "inv-057.svg" : "inv-094.svg"));
             Assert.Equal(RequiredString(item, "originalSha256"), Convert.ToHexStringLower(SHA256.HashData(original)));
-            Assert.Equal(System.Text.Encoding.UTF8.GetString(original).Replace("width=\"600\" height=\"600\"", "width=\"" + item.GetProperty("width").GetInt32() + "\" height=\"" + item.GetProperty("height").GetInt32() + "\"", StringComparison.Ordinal), System.Text.Encoding.UTF8.GetString(input));
+            string nativeSize = family == "malta-flag" ? "width=\"900\" height=\"600\"" : "width=\"600\" height=\"600\"";
+            Assert.Equal(System.Text.Encoding.UTF8.GetString(original).Replace(nativeSize, "width=\"" + item.GetProperty("width").GetInt32() + "\" height=\"" + item.GetProperty("height").GetInt32() + "\"", StringComparison.Ordinal), System.Text.Encoding.UTF8.GetString(input));
         }
         else Assert.True(input.AsSpan().IndexOf("SPDX-License-Identifier: CC0-1.0"u8) >= 0);
         Assert.Equal(RequiredString(item, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
