@@ -17,7 +17,7 @@
     "profilesCleaned": true,
     "byteIdenticalToFrozenReferences": true
   },
-  "purpose": "Three complete fontless static exports targeting remaining G5/G6 gates; inv-112 set screw and inv-113 gradient mask are complete at their frozen outputs. The next deliverable is inv-114 soccerball mask. Document outputs and controls remain separate.",
+  "purpose": "Three complete fontless static exports at their frozen outputs; inv-112 set screw, inv-113 gradient mask and inv-114 soccerball mask are exact. Document outputs and controls remain separate; wider G2-G9 exits remain open.",
   "cases": [
     {
       "id": "inv-112-512x538-transparent",
@@ -84,9 +84,7 @@
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Soccerball_mask2.svg",
       "role": "document-output",
       "selection": "Whole fontless static export at the nominal source-page frame, fixed at 5531c080 before renderer screening or capture; no geometry or original source replacement.",
-      "materialization": "unchanged",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only single-element mask content is implemented."
+      "materialization": "unchanged"
     }
   ]
 }

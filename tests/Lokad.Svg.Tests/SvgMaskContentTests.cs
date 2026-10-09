@@ -26,8 +26,15 @@ public sealed class SvgMaskContentTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 16, 2, 2));
     }
 
+    [Fact]
+    public void White_mask_children_preserve_opaque_target_pixels()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect width='8' height='8' fill='white'/><circle cx='4' cy='4' r='2' fill='none' stroke='white'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>", out int width, out int height);
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++) Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, x, y));
+    }
+
     [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect width='8' height='8' fill='white'/><circle cx='4' cy='4' r='2' fill='none' stroke='white'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only single-element mask content is implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='red'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only grayscale luminance mask content is implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='#888888' stroke='white'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only single-paint mask content is implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='white'/></mask></defs><defs><rect id='r' width='2' height='2' fill='red'/></defs><use href='#r' mask='url(#m)'/></svg>", "Only mask content covering the masked geometry is implemented.")]

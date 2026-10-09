@@ -207,8 +207,7 @@
       "width": 40,
       "height": 36,
       "background": "transparent",
-      "role": "boundary",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "legacy-circle-on-leaf",

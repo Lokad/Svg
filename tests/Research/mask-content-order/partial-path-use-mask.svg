@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><defs><path id="s" d="M43.25 23.5C43.25 34.3 34.7 43.25 23.75 43.25C12.9 43.25 4.25 34.3 4.25 23.5C4.25 12.7 12.9 3.75 23.75 3.75C34.7 3.75 43.25 12.7 43.25 23.5Z"/><mask id="m"><use href="#s" fill="white"/></mask></defs><path d="M0 0H48V48H0Z" fill="#b73" mask="url(#m)"/></svg>

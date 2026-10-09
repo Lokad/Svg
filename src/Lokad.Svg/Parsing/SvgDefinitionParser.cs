@@ -199,6 +199,7 @@ internal static class SvgDefinitionParser
         }
         if (state.MaskDepth >= 0 && reader.Depth == state.MaskDepth + 1 && !resourceDefinition && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
+            if (SvgMaskContentReplay.Retain(reader, root, state, namedColors, workCounter, cancellationToken)) return true;
             if (state.MaskUse is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
             if (reader.LocalName == "use")
             {

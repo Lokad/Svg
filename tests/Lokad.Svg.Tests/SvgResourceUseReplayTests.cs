@@ -11,7 +11,7 @@ public sealed class SvgResourceUseReplayTests
     [InlineData("<mask id='m'><use href='#s'/></mask><mask id='m'/>", SvgErrorCode.MalformedInput)]
     [InlineData("<clipPath id='c'><use href='#s'/></clipPath><clipPath id='c'/>", SvgErrorCode.MalformedInput)]
     [InlineData("<mask id='m'><use href='#s' mask='url(#m)'/></mask>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<mask id='m'><use href='#s'/><use href='#s'/></mask>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<mask id='m'><use href='#s'/><use href='#missing'/></mask>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<clipPath id='c' clipPathUnits='objectBoundingBox'><use href='#s'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
     public void Rejected_resource_references_release_partial_owners(string resource, SvgErrorCode code)
     {

@@ -18,6 +18,12 @@ public sealed class SvgGradientMaskTests
     [InlineData("gradient-general-map", "mask-local-references")]
     [InlineData("clip-target-translation", "mask-local-references")]
     [InlineData("mask-use-target-reflection", "mask-local-references")]
+    [InlineData("inverse-use-mask", "mask-content-order")]
+    [InlineData("reversed-use-mask", "mask-content-order")]
+    [InlineData("two-reference-mask-leaves", "mask-content-order")]
+    [InlineData("alpha-mask-content-order", "mask-content-order")]
+    [InlineData("gradient-mask-content-order", "mask-content-order")]
+    [InlineData("masked-curved-reference-stroke", "mask-content-order")]
     public void Mask_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string identity, string family)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, identity + ".svg"));
@@ -130,6 +136,7 @@ public sealed class SvgGradientMaskTests
     [Theory]
     [InlineData("gradient-mask-document.svg", 744, 1052)]
     [InlineData("gradient-mask-export.svg", 512, 880)]
+    [InlineData("soccerball-mask-document.svg", 195, 195)]
     public void Complete_mask_document_releases_partial_owners_at_early_middle_and_late_denials(string inputName, int width, int height)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", inputName));

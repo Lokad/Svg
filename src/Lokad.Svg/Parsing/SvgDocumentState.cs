@@ -59,6 +59,8 @@ internal sealed class SvgDocumentState : IDisposable
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         DeferredPaintLeaves = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         DeferredResourceUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        MaskReplayChildren = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        DeferredMaskContents = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         GroupSnapshots = new BudgetedParserDictionary<string, SvgGroupSnapshot>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         RenderedGroupDefinitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         GroupSnapshotStarts = new BudgetedParserList<SvgGroupSnapshotStart>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -79,6 +81,11 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<SvgDeferredPaintLeaf> DeferredPaintLeaves { get; }
     internal BudgetedParserList<SvgDeferredResourceUse> DeferredResourceUses { get; }
+    internal BudgetedParserList<SvgMaskReplayChild> MaskReplayChildren { get; }
+    internal BudgetedParserList<SvgDeferredMaskContent> DeferredMaskContents { get; }
+    internal int MaskReplayChildStart { get; set; }
+    internal int MaskReplayChildCount { get; set; }
+    internal bool MaskHasReplayContent { get; set; }
     internal SvgResourceUse? MaskUse { get; set; }
     internal SvgResourceUse? ClipUse { get; set; }
 
@@ -340,6 +347,8 @@ internal sealed class SvgDocumentState : IDisposable
         PendingUses.Dispose();
         DeferredPaintLeaves.Dispose();
         DeferredResourceUses.Dispose();
+        MaskReplayChildren.Dispose();
+        DeferredMaskContents.Dispose();
         GroupSnapshots.Dispose();
         RenderedGroupDefinitions.Dispose();
         GroupSnapshotStarts.Dispose();

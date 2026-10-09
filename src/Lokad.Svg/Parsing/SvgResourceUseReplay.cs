@@ -16,9 +16,16 @@ internal static class SvgResourceUseReplay
     internal static SvgResourceUse Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
     {
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token);
+        return Retain(reader, context, root, state);
+    }
+
+    internal static SvgResourceUse Retain(XmlReader reader, SvgPaintableElementContext context, SvgRootAttributes root, SvgDocumentState state)
+    {
+        ParserWorkCounter work = context.WorkCounter;
+        CancellationToken token = context.CancellationToken;
         SvgElementAttributePolicy.ValidateUse(reader, work, token);
         if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
-        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token);
         SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, root.UserViewportWidth, root.UserViewportHeight, state);
         string? clip = reader.GetAttribute("clip-path");
         string? clipId = clip is null ? null : state.Strings.Copy(SvgClipPathSyntax.ParseClipId(clip));
@@ -101,22 +108,7 @@ internal static class SvgResourceUseReplay
                 else
                 {
                     using SvgSceneBuilder builder = new(state.Budget, work, token);
-                    if (pending.Use.ClipId is {} id)
-                    {
-                        if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only contour clips on referenced mask content are implemented.");
-                        (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clip.Points,
-                            SvgReferenceResolver.PlainInstancePlacement(reference, null), SvgClipContentKind.ClipPath, clip.SourcePath, clip.IsEvenOdd, state, builder, work, token);
-                        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
-                        operation.Resolved = true; operation.Value = 255; operation.Region = bounds;
-                        operation.ContentIndex = contentIndex; operation.RegionKind = SvgLayerRegionKind.AffineViewport;
-                        for (int geometryIndex = 0; geometryIndex < mapped.Length; geometryIndex++)
-                        {
-                            work.Consume(token);
-                            mapped[geometryIndex] = mapped[geometryIndex] with { LeafMask = SvgLeafMaskComposition.NewBinding(state, operation, mapped[geometryIndex].LeafMask) };
-                        }
-                    }
-                    SvgPaintRecording.WrapInstance(mapped, reference.SourceOpacity, reference.RecordingScope, state, work, token);
-                    SvgPaintRecording.AdoptLeafScene(new(mapped, false, null, null), builder, state);
+                    AppendMaskUse(pending.Use, reference, mapped, builder, state, work, token);
                     adopted = true;
                     SvgLeafMaskComposition.Emit(state, builder, work, token);
                     SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
@@ -127,5 +119,37 @@ internal static class SvgResourceUseReplay
             }
             finally { if (!adopted) foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }
         }
+    }
+
+    internal static void AppendMaskUse(SvgResourceUse use, SvgSceneBuilder builder, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        if (!state.Definitions.TryGetValue(use.Reference.Id, out SvgDefinition source))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
+        SvgGeometry[] mapped = SvgReferenceResolver.Apply(source, use.Reference with { Opacity = 255 }, null, state, work, token);
+        bool adopted = false;
+        try { AppendMaskUse(use, use.Reference, mapped, builder, state, work, token); adopted = true; }
+        finally { if (!adopted) foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }
+    }
+
+    private static void AppendMaskUse(SvgResourceUse use, SvgUseReference reference, SvgGeometry[] mapped,
+        SvgSceneBuilder builder, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (use.ClipId is {} id)
+        {
+            if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only contour clips on referenced mask content are implemented.");
+            (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clip.Points,
+                SvgReferenceResolver.PlainInstancePlacement(reference, null), SvgClipContentKind.ClipPath, clip.SourcePath, clip.IsEvenOdd, state, builder, work, token);
+            SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+            operation.Resolved = true; operation.Value = 255; operation.Region = bounds;
+            operation.ContentIndex = contentIndex; operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+            for (int geometryIndex = 0; geometryIndex < mapped.Length; geometryIndex++)
+            {
+                work.Consume(token);
+                mapped[geometryIndex] = mapped[geometryIndex] with { LeafMask = SvgLeafMaskComposition.NewBinding(state, operation, mapped[geometryIndex].LeafMask) };
+            }
+        }
+        SvgPaintRecording.WrapInstance(mapped, reference.SourceOpacity, reference.RecordingScope, state, work, token);
+        SvgPaintRecording.AdoptLeafScene(new(mapped, false, null, null), builder, state);
     }
 }

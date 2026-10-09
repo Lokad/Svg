@@ -10106,3 +10106,49 @@ production correction. General placed geometry references carrying the new paint
 painted strokes/point lists, transformed compound clips, placed custom mask
 regions, wider content and composition remain promised G2–G9 work. Diagnostics
 and final audits stay ignored under `artifacts/gradient-mask-exports-20261009/`.
+
+## Complete soccerball export: ordered mask-child source replay (2026-10-09)
+
+The unchanged 4,025-byte CC0/public-domain `inv-114` is exact at its declared
+195×195 transparent output through six APIs on Windows/Linux. The selected
+development queue completes 18/18. All three gradient layers, white inverse-mask
+corners and black curved masked group match the frozen reference. Existing
+document capture triples are reused; no original, option or reference changed.
+
+The only required shared change is ordered mask-child replay. Validated source
+attributes and inherited context charge existing bounded parser/string owners.
+A second direct child promotes the mask from its legacy single-child route to
+the existing immutable vector-scene owner. Ordinary non-legacy solid leaves use
+that scene route too. Children lower after definitions resolve, in source order,
+through ordinary leaf and local-reference replay; neither geometry nor paint
+receives a separate mask-specific implementation. The complete premultiplied
+mask scene composites before luminance conversion. Existing target/group layers,
+native contour commands, paint coordinates and single-child distinctions remain.
+No raster code or surface allocation changed.
+
+Twelve new controls are exact, separately from the whole export. They cover
+inverse/reversed child order, forward local uses, two direct solids/references,
+alpha/gradient contents, group overlap/opacity, radial targets, partial paths and
+curved referenced strokes. Healthy, cleaned browser triples on each platform
+match every frozen PNG. The older gradient-mask multiple-child rejection also
+graduates against its unchanged reference; that bank is now 17 exact / three
+explicit boundaries. Five new controls already rendered exactly before this
+change and protect the existing target/group semantics the document needs.
+
+Six inputs sweep every discovery/parser work denial, sampled/peak memory denial
+and raster-work boundaries. The whole export releases early/middle/late parser
+work and peak-memory failure owners. Early/late native replay cancellation keeps
+the caller token, both borrowed source curves and identical retry. Anonymous or
+unused retained children, duplicate ids, a missing second use and forbidden leaf
+clips/masks release partial owners. Nested mask groups retain the public
+UnsupportedFeature outcome and release retained child storage. Grouped content,
+other unit systems, first-child legacy color/visibility restrictions and wider
+region/composition promises stay open under G5.
+
+Both Release solution builds have zero warnings/errors; 5,931 tests pass per
+platform (4,275 core / 1,650 visual / six FontProbe). All 2,845 preceding PNGs
+are identical and 2,907 of 2,908 reports are unchanged; the remaining old rejection
+becomes exact and adds one bank PNG. Original-bank reports remain 1,567 / 1,551
+PNGs; corporate remains 27/27 documents / 258/258 variants on each platform's
+frozen references. Source and tests match the Linux checkout byte-for-byte.
+Diagnostics and final audits stay ignored under `artifacts/soccerball-mask-20261009/`.
