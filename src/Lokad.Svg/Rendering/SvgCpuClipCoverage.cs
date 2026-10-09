@@ -42,6 +42,14 @@ internal sealed class SvgCpuClipCoverage : IDisposable
         return context.Prepared && context.Bitmap == bitmap;
     }
 
+    /// <summary>Reads one prepared bitmap's nonzero bounds for an isolated layer origin.</summary>
+    internal bool TryGetBounds(SvgCpuBitmapOrigin origin, out SvgAnalyticClipBounds bounds)
+    {
+        BitmapCoverage context = _contexts[_grid.GetContextIndex(origin)];
+        bounds = context.Bounds;
+        return context.Prepared && context.Bitmap.Left == origin.X && context.Bitmap.Top == origin.Y;
+    }
+
     internal void SetBounds(SvgAnalyticClipBounds bitmap, SvgAnalyticClipBounds bounds)
         => _contexts[_grid.GetContextIndex(new(bitmap.Left, bitmap.Top))] = new(bitmap, bounds, true);
 

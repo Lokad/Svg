@@ -1,0 +1,46 @@
+{
+  "tokens": [
+    "0",
+    ".3",
+    ".39",
+    ".59",
+    ".65",
+    ".74",
+    ".94",
+    "1",
+    "65%",
+    ".65e0",
+    "6.5e-1"
+  ],
+  "values": [
+    0,
+    0.30000001192092896,
+    0.39000001549720764,
+    0.5900000333786011,
+    0.6500000357627869,
+    0.7400000095367432,
+    0.940000057220459,
+    1,
+    0.6499999761581421,
+    0.6500000357627869,
+    0.6500000357627869
+  ],
+  "bits": [
+    0,
+    1050253722,
+    1053273621,
+    1058474558,
+    1059481191,
+    1060991140,
+    1064346584,
+    1065353216,
+    1059481190,
+    1059481191,
+    1059481191
+  ],
+  "freshProcessCaptures": 3,
+  "startupHealth": "healthy",
+  "profilesCleaned": true,
+  "chromeVersion": "153.0.8010.52",
+  "scope": "SVGStopElement.offset.baseVal float lanes, captured before the native stop-offset correction. Decimal, percentage and exponent spellings stay distinct."
+}

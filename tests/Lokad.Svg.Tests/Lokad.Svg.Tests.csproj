@@ -55,6 +55,7 @@
     <None Include="../Fixtures/original/raw-cubic-tangent-shader.svg" Link="TestData/raw-cubic-tangent-shader.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/aa-clip-root-shader.svg" Link="TestData/aa-clip-root-shader.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/gradient-transform-browser.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="TestData/gradient-stop-browser.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/shader-coordinate-linear.svg" Link="TestData/shader-coordinate-linear.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/original/shader-coordinate-affine.svg" Link="TestData/shader-coordinate-affine.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestData/cpu-dither-native.csv" CopyToOutputDirectory="PreserveNewest" />
@@ -113,6 +114,8 @@
     <None Include="../References/inventory/gap-inputs/inv-104.svg" Link="TestData/inkscape-pattern.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/gradient-masks/*.svg" Link="TestData/gradient-masks/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../References/inventory/gap-inputs/inv-107.svg" Link="TestData/gradient-mask-document.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/mask-local-references/*.svg" Link="TestData/mask-local-references/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/candidates/inv-113.svg" Link="TestData/gradient-mask-export.svg" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />

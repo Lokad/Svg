@@ -10037,3 +10037,72 @@ platform pass (4,241 core / 1,619 visual / six FontProbe). Complete original and
 corporate qualification preserve preceding exact results and all prior assets;
 corporate remains 27/27 / 258/258 on each platform's frozen references. Detailed
 diagnosis, captures and audits stay ignored under `artifacts/set-screw-pattern-20261009/`.
+
+## Complete gradient-mask export: resource replay and bitmap-local paint (2026-10-09)
+
+The unchanged 1,949-byte CC0 `inv-113` is exact at its declared 512×880 transparent
+output through six APIs on Windows/Linux. Both upper and lower masked paths match
+the frozen browser reference; neither geometry nor output options changed. The
+selected development queue advances to 17/18, with soccerball `inv-114` next.
+Nineteen new controls are exact separately from the completed document. Every
+control has three healthy, cleaned captures per platform matching its frozen PNG
+byte-for-byte. Existing document captures are reused.
+
+Single local uses in masks and user-space clips now resolve at document end.
+Typed retained attributes use the existing reference resolver and ordinary
+geometry lowerers. Clips resolve before masks so clipped mask content can borrow
+the same native contours. Mask-local clip and gradient definitions register in
+document scope; forward/backward references share one path. The existing bounded
+vector-scene builder owns mask commands and resources. Clip content remains
+single-contour; nested mask recursion, unsupported unit systems and multiple
+children retain explicit outcomes. No document identifier or observed pixel
+enters admission or rendering predicates.
+
+Mask content retains its axis placement, composed with output scale and offset
+before borrowed scene replay and restored afterward. Source-bound general linear
+fill maps keep authored endpoints, object bounds and separate local/reference
+matrices. A placed path clip's enclosing rectangle rounds its source envelope
+before affine placement, preserving the native construction sequence. Rounding
+the already placed envelope produced five doubled edge-alpha pixels in the small
+translation control and was discarded.
+
+The lower triangle exposed clipped layer origins across software bitmap borders.
+One aggregate nonzero clip rectangle is insufficient: each bitmap has a different
+nonzero intersection. Existing clip coverage supplies those bounds without another
+allocation. Mask replay borrows the target's per-bitmap coverage for shader origin
+selection while preserving its own content clip. Native matrix preparation and
+dithering use the same resulting bitmap origin. The former aggregate-layer model
+left 1,460 differences; retaining local bounds and coordinate order removed the
+lower triangle's remaining mismatch. Legacy routing and fully opaque clip
+distinctions remain intact.
+
+The upper ramp's final six one-channel differences were numerical semantics.
+Arbitrary-stop interpolation now evaluates native float reciprocal-gap factors,
+biases and absolute shader coordinates, preserving unpremultiplied stop alpha,
+premultiplication, opacity and dither order. The final decimal offsets must also
+follow SVG float place-value parsing: `.65` and `65%` have different native float
+lanes. Reusing `SvgFloatNumber` with shared work/cancellation reproduces eleven
+frozen browser DOM values, including exponent forms. Double parsing followed by
+a float cast and segment-local double interpolation were rejected. The bounded
+SkGradientBaseShader adaptation joins the existing pinned BSD notice.
+
+Six new mask/reference/map inputs sweep every discovery/parser work denial,
+sampled/peak memory denial and raster-work boundaries. The complete export also
+releases partial owners under early/middle/late work and peak-memory denial before
+retry. Missing/duplicate/recursive references, anonymous unused resources and
+unqualified general paint combinations release staging owners. Existing borrowed
+replay cancellation/retry checks remain green. No new surface owner or unaccounted
+per-bitmap collection is introduced.
+
+Both Release builds have zero warnings/errors; 5,904 tests pass per platform
+(4,260 core / 1,638 visual / six FontProbe). All 2,845 preceding PNGs are identical;
+2,907 of 2,908 reports are unchanged and one rejected case now identifies its
+custom-region gate. Corporate stays 27/27 documents / 258/258 variants on each
+platform's frozen references. A final numeric boundary regression exposed
+float place-value overflow on long valid offset tokens. The finite-double fallback
+preserves existing clamping, including percentage and leading-zero forms, without
+NaN/Infinity reaching stops. Both platforms run the complete suite after this
+production correction. General placed geometry references carrying the new paint maps, general
+painted strokes/point lists, transformed compound clips, placed custom mask
+regions, wider content and composition remain promised G2–G9 work. Diagnostics
+and final audits stay ignored under `artifacts/gradient-mask-exports-20261009/`.

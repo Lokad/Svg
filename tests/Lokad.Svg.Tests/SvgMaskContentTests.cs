@@ -30,7 +30,7 @@ public sealed class SvgMaskContentTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect width='8' height='8' fill='white'/><circle cx='4' cy='4' r='2' fill='none' stroke='white'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only single-element mask content is implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='red'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only grayscale luminance mask content is implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='#888888' stroke='white'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only single-paint mask content is implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='white'/></mask></defs><defs><rect id='r' width='2' height='2' fill='red'/></defs><use href='#r' mask='url(#m)'/></svg>", "Spatial mask content on use instances is not implemented.")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='white'/></mask></defs><defs><rect id='r' width='2' height='2' fill='red'/></defs><use href='#r' mask='url(#m)'/></svg>", "Only mask content covering the masked geometry is implemented.")]
     public void Spatial_mask_gates_reject_honestly(string svg, string message)
     {
         SvgException rejected = Assert.Throws<SvgException>(() => RenderPixels(svg, out _, out _));

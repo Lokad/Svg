@@ -279,12 +279,14 @@ internal static class SvgDocumentTraversal
                 {
                     if (state.MaskId is not null)
                     {
-                        if (state.MaskContentBuilder is not null) RegisterMaskScene(state, workCounter, cancellationToken);
+                        if (state.MaskUse is not null) SvgResourceUseReplay.Register(state, SvgResourceUseKind.Mask, workCounter, cancellationToken);
+                        else if (state.MaskContentBuilder is not null) RegisterMaskScene(state, workCounter, cancellationToken);
                         else if (state.MaskContentGeometries is not null) SvgDefinitionParser.RegisterMaskContent(state, workCounter, cancellationToken);
                         else SvgDefinitionParser.RegisterMask(state, workCounter, cancellationToken);
                     }
                     if (state.MaskContentGeometries is {} anonymousMask && state.MaskId is null)
                         foreach (SvgGeometry geometry in anonymousMask) geometry.Dispose();
+                    state.MaskUse = null;
                     state.MaskDepth = -1;
                     state.MaskId = null;
                     state.MaskIsAlpha = false;
@@ -300,10 +302,12 @@ internal static class SvgDocumentTraversal
                 {
                     if (state.ClipPathId is not null)
                     {
-                        if (state.ClipPolygon is not null) SvgDefinitionParser.RegisterClipPolygon(state, workCounter, cancellationToken);
+                        if (state.ClipUse is not null) SvgResourceUseReplay.Register(state, SvgResourceUseKind.Clip, workCounter, cancellationToken);
+                        else if (state.ClipPolygon is not null) SvgDefinitionParser.RegisterClipPolygon(state, workCounter, cancellationToken);
                         else SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
                     }
                     if (state.ClipPathId is null) state.ClipPolygon?.SourcePath?.Dispose();
+                    state.ClipUse = null;
                     state.ClipPathDepth = -1;
                     state.ClipPathId = null;
                     state.ClipBox = null;
@@ -376,6 +380,7 @@ internal static class SvgDocumentTraversal
                     SvgDeferredPaintLeaves.Resolve(root, state, limits, workCounter, cancellationToken);
                     if (state.DeferredTextFailure is {} textFailure) throw textFailure;
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
+                    SvgResourceUseReplay.Resolve(state, workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingLeafClips(state, workCounter, cancellationToken);
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);

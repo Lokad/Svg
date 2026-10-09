@@ -32,8 +32,26 @@ public sealed class SvgGradientStopPrecisionTests
     {
         using SvgRoot root = Parse("<linearGradient id='p'><stop offset='-.125' stop-opacity='.27'/><stop offset='.6' stop-opacity='.81'/><stop offset='.4' stop-opacity='.46'/><stop offset='1.25' stop-opacity='.999'/></linearGradient>");
         SvgGradientStop[] stops = Assert.Single(root.Geometries).Gradient.Gradient.Stops;
-        Assert.Equal(new[] { 0, .6, .6, 1 }, stops.Select(stop => stop.Offset));
+        Assert.Equal(new[] { 0d, (double).6f, .6f, 1 }, stops.Select(stop => stop.Offset));
         Assert.Equal(new[] { .27f, .81f, .46f, .999f }, stops.Select(stop => stop.Alpha));
+    }
+
+    [Fact]
+    public void Finite_offsets_keep_clamping_when_native_place_values_overflow()
+    {
+        foreach ((string token, double expected) in new (string, double)[]
+        {
+            ("1e40", 1),
+            ("1e40%", 1),
+            ("0000000000000000000000000000000000000000000000.5", .5),
+            ("0000000000000000000000000000000000000000000050%", .5),
+        })
+        {
+            using SvgRoot root = Parse("<linearGradient id='p'><stop offset='0'/><stop offset='" + token + "'/><stop offset='1'/></linearGradient>");
+            SvgGradientStop[] stops = Assert.Single(root.Geometries).Gradient.Gradient.Stops;
+            Assert.All(stops, stop => Assert.True(double.IsFinite(stop.Offset)));
+            Assert.Equal(new[] { 0d, expected, 1 }, stops.Select(stop => stop.Offset));
+        }
     }
 
     [Fact]

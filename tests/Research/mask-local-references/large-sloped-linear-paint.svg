@@ -1,0 +1,11 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="880" viewBox="0 0 32 55"><defs><path id="s" d="M.7 2l30-2 1.6 25-29.8 2.2z"/><linearGradient id="c" x1=".7" x2="30" y1="2" gradientUnits="userSpaceOnUse">
+ <stop offset="0"/>
+ <stop offset=".3"/>
+ <stop stop-color="#3c3c3c" offset=".39"/>
+ <stop stop-color="#d2d2d2" offset=".59"/>
+ <stop stop-color="#fff"    offset=".65"/>
+ <stop stop-color="#c3c3c3" offset=".74"/>
+ <stop stop-color="#2d2d2d" offset=".94"/>
+ <stop offset="1"/>
+</linearGradient></defs><use href="#s" fill="url(#c)"/></svg>

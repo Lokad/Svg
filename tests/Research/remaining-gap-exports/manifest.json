@@ -17,7 +17,7 @@
     "profilesCleaned": true,
     "byteIdenticalToFrozenReferences": true
   },
-  "purpose": "Three complete fontless static exports targeting remaining G5/G6 gates; inv-112 set screw is complete at its frozen 512x538 transparent output. The next deliverable is inv-113 gradient mask. Document outputs and controls remain separate.",
+  "purpose": "Three complete fontless static exports targeting remaining G5/G6 gates; inv-112 set screw and inv-113 gradient mask are complete at their frozen outputs. The next deliverable is inv-114 soccerball mask. Document outputs and controls remain separate.",
   "cases": [
     {
       "id": "inv-112-512x538-transparent",
@@ -62,8 +62,6 @@
       "role": "document-output",
       "selection": "Whole fontless static export at the nominal source-page frame, fixed at 5531c080 before renderer screening or capture; no geometry or original source replacement.",
       "materialization": "insert-root-dimensions",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "This SVG child element is not implemented yet.",
       "captureInput": "inv-113-capture-512x880.svg",
       "captureInputSha256": "9f565a680de71e128b9c4357eeefdbd4626075558f61b6f13eb54f632f6526af"
     },
@@ -88,7 +86,7 @@
       "selection": "Whole fontless static export at the nominal source-page frame, fixed at 5531c080 before renderer screening or capture; no geometry or original source replacement.",
       "materialization": "unchanged",
       "expectedError": "UnsupportedFeature",
-      "expectedMessage": "This SVG child element is not implemented yet."
+      "expectedMessage": "Only single-element mask content is implemented."
     }
   ]
 }

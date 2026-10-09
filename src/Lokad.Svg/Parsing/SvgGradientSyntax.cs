@@ -9,6 +9,7 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgLinearGradient(SvgColor Start, SvgColor End, double X1, double Y1, double X2, double Y2, double Offset1, double Offset2, bool IsEmpty, bool IsUserSpace, SvgGradientSpread Spread, SvgGradientStop[] Stops, double ReferenceScaleX, double ReferenceScaleY, bool HasRotation)
 {
     internal SvgLinearPaintMap? SourcePaint { get; init; }
+    internal bool RequiresSourceMap => SourcePaint?.Data.Local is {} local && (local.B != 0 || local.C != 0) && !local.IsSimilarity();
 }
 
 /// <summary>Identifies the admitted stop-range extension rule.</summary>
@@ -277,7 +278,7 @@ internal static class SvgGradientSyntax
     internal static bool IsGradientFill(string? fill)
         => fill is not null && fill.StartsWith("url(", StringComparison.Ordinal);
 
-    internal static double ParseStopOffset(string? value)
+    internal static double ParseStopOffset(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (value is null) return 0;
         ReadOnlySpan<char> token = value.AsSpan().Trim();
@@ -285,12 +286,16 @@ internal static class SvgGradientSyntax
         bool percentage = token.EndsWith("%");
         if (percentage) token = token[..^1].TrimEnd();
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result) || !double.IsFinite(result)) throw new SvgException(SvgErrorCode.MalformedInput, "Gradient stop offsets must be finite numbers.");
-        return percentage ? (float)result / 100f : result;
+        float native = SvgFloatNumber.ReadValidated(token, workCounter, cancellationToken);
+        // Finite legacy tokens can overflow intermediate float place values,
+        // including long leading-zero forms. Keep clamping free of NaN/Infinity.
+        if (!float.IsFinite(native)) return percentage ? result / 100d : result;
+        return percentage ? native / 100f : native;
     }
 
     internal static SvgGradientStop ParseStop(XmlReader reader, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        double offset = ParseStopOffset(reader.GetAttribute("offset"));
+        double offset = ParseStopOffset(reader.GetAttribute("offset"), workCounter, cancellationToken);
         string? styleColor = null;
         string? styleOpacity = null;
         string? styleValue = reader.GetAttribute("style");
@@ -330,8 +335,16 @@ internal static class SvgGradientSyntax
         }
         SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader);
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        gradient = MapUserSpaceVector(transform, gradient, frame);
-        gradient = MirrorBoundingBoxVector(transform, gradient);
+        if (gradient.RequiresSourceMap)
+        {
+            SvgAffineTransform map = frame is {} parent ? SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(transform) : transform;
+            gradient = BindLinearSourceMap(gradient, new(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null), map, state, context.WorkCounter, context.CancellationToken);
+        }
+        else
+        {
+            gradient = MapUserSpaceVector(transform, gradient, frame);
+            gradient = MirrorBoundingBoxVector(transform, gradient);
+        }
         SvgRectangle placement = transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         bool painted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible);
         byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
@@ -505,7 +518,8 @@ internal static class SvgGradientSyntax
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         }
         SvgAffineTransform transform = context.ResolveTransform(reader);
-        bool bindSourceMap = isPath && !transform.IsAxisAligned;
+        bool bindSourceMap = isPath && (!transform.IsAxisAligned || gradient.RequiresSourceMap);
+        if (gradient.RequiresSourceMap && !isPath) throw new SvgException(SvgErrorCode.UnsupportedFeature, "General linear paint maps on point-list geometry are not implemented.");
         if (!bindSourceMap)
         {
             gradient = MapUserSpaceVector(transform, gradient, frame);
@@ -897,6 +911,7 @@ internal static class SvgGradientSyntax
 
     internal static SvgLinearGradient MapUserSpaceVector(SvgAffineTransform transform, SvgLinearGradient gradient, SvgViewportFrame? frame)
     {
+        if (gradient.RequiresSourceMap && gradient.SourcePaint?.Data.IsMapped != true) throw new SvgException(SvgErrorCode.UnsupportedFeature, "General linear paint maps require source-bound fill geometry.");
         if (!gradient.IsUserSpace) return gradient;
         if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned gradient transforms are implemented.");
         (double mappedX1, double mappedY1) = transform.ApplyToUserPoint(gradient.X1, gradient.Y1);

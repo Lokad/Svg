@@ -7,14 +7,20 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgGradientMaskTests
 {
     [Theory]
-    [InlineData("root-partial-gradient-mask")]
-    [InlineData("shared-mask-twice")]
-    [InlineData("explicit-region")]
-    [InlineData("legacy-circle-on-leaf")]
-    [InlineData("gradient-circle-mask")]
-    public void Mask_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string identity)
+    [InlineData("root-partial-gradient-mask", "gradient-masks")]
+    [InlineData("shared-mask-twice", "gradient-masks")]
+    [InlineData("explicit-region", "gradient-masks")]
+    [InlineData("legacy-circle-on-leaf", "gradient-masks")]
+    [InlineData("gradient-circle-mask", "gradient-masks")]
+    [InlineData("mask-use-gradient-forward", "mask-local-references")]
+    [InlineData("mask-clipped-use-forward", "mask-local-references")]
+    [InlineData("mask-target-translation", "mask-local-references")]
+    [InlineData("gradient-general-map", "mask-local-references")]
+    [InlineData("clip-target-translation", "mask-local-references")]
+    [InlineData("mask-use-target-reflection", "mask-local-references")]
+    public void Mask_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string identity, string family)
     {
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "gradient-masks", identity + ".svg"));
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, identity + ".svg"));
         RenderBudget discovery = new(8_000_000);
         ParserWorkCounter discoveryWork = new(1_000_000);
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discoveryWork, discovery, CancellationToken.None));
@@ -121,15 +127,18 @@ public sealed class SvgGradientMaskTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Fact]
-    public void Complete_mask_document_releases_partial_owners_at_early_middle_and_late_denials()
+    [Theory]
+    [InlineData("gradient-mask-document.svg", 744, 1052)]
+    [InlineData("gradient-mask-export.svg", 512, 880)]
+    public void Complete_mask_document_releases_partial_owners_at_early_middle_and_late_denials(string inputName, int width, int height)
     {
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "gradient-mask-document.svg"));
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", inputName));
+        SvgRenderOptions options = new(new(width, height), 1, SvgColor.Transparent, SvgRenderLimits.Default);
         RenderBudget measured = new(64_000_000);
         ParserWorkCounter work = new(1_000_000);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
-        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
-            Assert.Equal(744, surface.Width);
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, measured, CancellationToken.None))
+            Assert.Equal(width, surface.Width);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         foreach (long limit in new[] { 0L, work.Used / 2, work.Used - 1 })
         {
@@ -141,7 +150,7 @@ public sealed class SvgGradientMaskTests
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, peakDenied, CancellationToken.None);
-            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, peakDenied, CancellationToken.None);
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, options, peakDenied, CancellationToken.None);
         }).ErrorCode);
         Assert.Equal(0, peakDenied.Snapshot().CurrentBytes);
     }

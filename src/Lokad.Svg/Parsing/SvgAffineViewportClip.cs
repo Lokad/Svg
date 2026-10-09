@@ -56,7 +56,8 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
                 foreach (SvgCubicSpan span in prepared.CubicSpans) { Include(span.FirstControl); Include(span.SecondControl); }
             }
             int boundsClipContentIndex = -1;
-            if (kind == SvgClipContentKind.ClipPath && !map.IsAxisAligned)
+            SvgClipBox? paintClip = null;
+            if (kind == SvgClipContentKind.ClipPath)
             {
                 double sourceLeft = double.PositiveInfinity, sourceTop = double.PositiveInfinity, sourceRight = double.NegativeInfinity, sourceBottom = double.NegativeInfinity;
                 if (sourcePath is not null)
@@ -68,7 +69,8 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
                 }
                 else foreach (SvgDevicePoint point in source) IncludeSource(point);
                 SvgClipBox enclosing = new(Math.Floor(sourceLeft), Math.Floor(sourceTop), Math.Ceiling(sourceRight) - Math.Floor(sourceLeft), Math.Ceiling(sourceBottom) - Math.Floor(sourceTop));
-                boundsClipContentIndex = new SvgAffineViewportClip(enclosing, map).Register(state, scene, work, token).ContentIndex;
+                if (map.IsAxisAligned) paintClip = map.Apply(enclosing);
+                else boundsClipContentIndex = new SvgAffineViewportClip(enclosing, map).Register(state, scene, work, token).ContentIndex;
 
                 void IncludeSource(SvgDevicePoint point)
                 {
@@ -80,8 +82,6 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
             // Blink path clips retain an enclosing integer rectangle alongside the
             // path. Its source rectangle rotates with the reference map; path and
             // rectangle coverage remain separate, including their common edge.
-            SvgClipBox? paintClip = kind == SvgClipContentKind.ClipPath && map.IsAxisAligned
-                ? new(Math.Floor(x1), Math.Floor(y1), Math.Ceiling(x2) - Math.Floor(x1), Math.Ceiling(y2) - Math.Floor(y1)) : null;
             geometry = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(points, [source.Length], isEvenOdd ? [1] : null, new(255, 255, 255, 255), true, isEvenOdd, SvgPolygonMapping.FiniteEdges, paintClip, reservation, budget));
             if (sourcePath is not null) geometry = geometry with { AuthoredPath = sourcePath.Copy(map, budget, work, token) };
             else

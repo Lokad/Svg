@@ -1,5 +1,6 @@
-// Managed adaptation of Skia's constant shader construction, high-precision premul,
-// scale, dither, source-over and RGBA8 store stages. Copyright 2016 Google Inc.; 2018 Google LLC.
+// Managed adaptation of Skia's constant shader construction, arbitrary-stop ramps,
+// high-precision premul, scale, dither, source-over and RGBA8 store stages.
+// Copyright 2016 Google Inc.; 2018, 2022 Google LLC.
 // Legacy sRGB normalization adapts Chromium. Copyright 2012 The Chromium Authors.
 // See THIRD_PARTY_NOTICES.txt for the BSD license and pinned source revision.
 using Lokad.Svg.Parsing;
@@ -62,14 +63,29 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
         if (stops.Length > 2)
         {
             // Parsing bounds the ramp to eight stops, keeping pixel work bounded.
-            double absolute = offset1 + position * (offset2 - offset1);
+            float absolute = (float)(offset1 + position * (offset2 - offset1));
             int segment = 0;
-            while (segment < stops.Length - 2 && absolute >= stops[segment + 1].Offset) segment++;
-            firstAlpha = stops[segment].Alpha;
-            secondAlpha = stops[segment + 1].Alpha;
-            start = stops[segment].Color;
-            end = stops[segment + 1].Color;
-            position = stops[segment + 1].Offset <= stops[segment].Offset ? 1 : (absolute - stops[segment].Offset) / (stops[segment + 1].Offset - stops[segment].Offset);
+            while (segment < stops.Length - 2 && absolute >= (float)stops[segment + 1].Offset) segment++;
+            SvgGradientStop left = stops[segment], right = stops[segment + 1];
+            float leftPosition = (float)left.Offset, gap = (float)right.Offset - leftPosition;
+            if (gap <= 0) return GradientAlpha(right.Color, right.Color, right.Alpha, right.Alpha, 0, opacityScale, matrix);
+            float inverseGap = 1f / gap;
+            // Native arbitrary stops precompute float factors and biases, then use
+            // the absolute shader coordinate in one fused interpolation stage.
+            float stopAlpha = Interpolate(left.Alpha, right.Alpha);
+            float alpha = stopAlpha * opacityScale;
+            return new SvgShaderPaint(
+                Interpolate(left.Color.Red / 255f, right.Color.Red / 255f) * stopAlpha * opacityScale,
+                Interpolate(left.Color.Green / 255f, right.Color.Green / 255f) * stopAlpha * opacityScale,
+                Interpolate(left.Color.Blue / 255f, right.Color.Blue / 255f) * stopAlpha * opacityScale,
+                alpha).Dither(matrix);
+
+            float Interpolate(float first, float second)
+            {
+                float factor = (second - first) * inverseGap;
+                float bias = first - factor * leftPosition;
+                return MathF.FusedMultiplyAdd(absolute, factor, bias);
+            }
         }
         return GradientAlpha(start, end, firstAlpha, secondAlpha, position, opacityScale, matrix);
     }

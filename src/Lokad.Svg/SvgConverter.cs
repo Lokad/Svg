@@ -243,6 +243,7 @@ public static class SvgConverter
                 if (horizontalScale != verticalScale && isCurveFill && (surfaceMode != RasterSurfaceMode.PremultipliedPattern || geometry.AuthoredPath is null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Curve fills under non-uniform viewBox or output scaling are not implemented.");
             }
         }
+        SvgCpuClipCoverage? layerClipCoverage = null;
         float foldedOpacity = 1;
         SvgAnalyticClipBounds layerBounds = new(0, 0, outputWidth, outputHeight);
         bool collectingViewportClip = false;
@@ -431,11 +432,22 @@ public static class SvgConverter
             return new(bitmap, interior);
         }
 
-        int GradientDither(int x, int y)
+        SvgCpuBitmapOrigin ShaderBitmapOrigin(int x, int y)
         {
             SvgCpuBitmapOrigin tile = rasterGrid.GetBitmapOrigin(x, y);
-            int localX = x - Math.Max(tile.X, layerBounds.Left);
-            int localY = y - Math.Max(tile.Y, layerBounds.Top);
+            int left = Math.Max(tile.X, layerBounds.Left), top = Math.Max(tile.Y, layerBounds.Top);
+            if (layerClipCoverage is {} coverage && coverage.TryGetBounds(tile, out SvgAnalyticClipBounds bitmapBounds))
+            {
+                left = Math.Max(left, bitmapBounds.Left);
+                top = Math.Max(top, bitmapBounds.Top);
+            }
+            return new(left, top);
+        }
+
+        int GradientDither(int x, int y)
+        {
+            SvgCpuBitmapOrigin origin = ShaderBitmapOrigin(x, y);
+            int localX = x - origin.X, localY = y - origin.Y;
             int mixedY = localY ^ localX;
             return ((mixedY & 1) << 5) | ((localX & 1) << 4)
                 | ((mixedY & 2) << 2) | ((localX & 2) << 1)
@@ -829,10 +841,19 @@ public static class SvgConverter
             SvgAnalyticClipBounds? previousBounds = activeViewportBounds, previousConstructionBounds = activeConstructionBounds;
             SvgCpuClipCoverage? previousCollected = collectingClipCoverage, previousCoverage = activeViewportCoverage,
                 previousConstructionCoverage = activeConstructionCoverage;
+            SvgCpuClipCoverage? previousLayerClipCoverage = layerClipCoverage;
+            if (!viewport) layerClipCoverage = previousCoverage ?? layerClipCoverage;
             float previousOpacity = foldedOpacity;
             bool previousCollector = collectingViewportClip;
             SvgAnalyticClipBounds previousLayer = layerBounds;
             SvgRoot previousRoot = root;
+            double previousScaleX = horizontalScale, previousScaleY = verticalScale, previousOffsetX = horizontalOffset, previousOffsetY = verticalOffset;
+            SvgAffineTransform maskMap = content.CoordinateMap;
+            if (!maskMap.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned mask replay maps are implemented.");
+            horizontalOffset += maskMap.E * horizontalScale;
+            verticalOffset += maskMap.F * verticalScale;
+            horizontalScale *= maskMap.A;
+            verticalScale *= maskMap.D;
             activeViewportClip = []; activeViewportBounds = null; activeViewportCoverage = null; foldedOpacity = 1;
             activeConstructionClip = []; activeConstructionBounds = null; activeConstructionCoverage = null;
             collectingViewportClip = viewport; collectingClipCoverage = null;
@@ -891,11 +912,13 @@ public static class SvgConverter
             {
                 boundsCoverage?.Dispose(); boundsReservation?.Dispose();
                 if (!transferred) coverage?.Dispose();
+                layerClipCoverage = previousLayerClipCoverage;
                 collectingClipCoverage = previousCollected;
                 activeConstructionClip = previousConstruction; activeConstructionBounds = previousConstructionBounds;
                 activeConstructionCoverage = previousConstructionCoverage;
                 activeViewportClip = previousClip; activeViewportBounds = previousBounds; activeViewportCoverage = previousCoverage;
                 foldedOpacity = previousOpacity; collectingViewportClip = previousCollector; root = previousRoot;
+                horizontalScale = previousScaleX; verticalScale = previousScaleY; horizontalOffset = previousOffsetX; verticalOffset = previousOffsetY;
                 layerBounds = previousLayer;
             }
         }
@@ -1361,7 +1384,7 @@ public static class SvgConverter
                     double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, outline.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                     double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                     double position;
-                    if (!nativeCoordinates.TryLinear(x, y, rasterGrid, out position))
+                    if (!nativeCoordinates.TryLinear(x, y, ShaderBitmapOrigin(x, y), out position))
                     {
                         if (definition.SourcePaint is { Data.IsMapped: true } sourcePaint) position = sourcePaint.Position(deviceX, deviceY);
                         else if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
@@ -1523,7 +1546,7 @@ public static class SvgConverter
                     double position;
                     if (definition.Stops.Length == 1) position = 0;
                     else
-                    if (nativeCoordinates.TryRadial(x, y, rasterGrid, out position)) { }
+                    if (nativeCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out position)) { }
                     else if (offsetX == 0 && offsetY == 0)
                     {
                         position = (Math.Sqrt(rayX * rayX + rayY * rayY) - focalRadius) / (radius - focalRadius);
@@ -1838,7 +1861,7 @@ public static class SvgConverter
             float nativeFractionX = 0, nativeFractionY = 0;
             if (pattern.NativeImageMap is not null)
             {
-                if (!imageCoordinates.TryMap(x, y, rasterGrid, out (float X, float Y) point))
+                if (!imageCoordinates.TryMap(x, y, ShaderBitmapOrigin(x, y), out (float X, float Y) point))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern image coordinates are not finite and invertible.");
                 (sampleX, sampleY) = point;
                 float weightX = sampleX + .5f, weightY = sampleY + .5f;
@@ -1932,7 +1955,7 @@ public static class SvgConverter
             {
                 double deviceX = (x + 0.5 - horizontalOffset) / horizontalScale;
                 double position;
-                if (!nativeCoordinates.TryLinear(x, y, rasterGrid, out position))
+                if (!nativeCoordinates.TryLinear(x, y, ShaderBitmapOrigin(x, y), out position))
                 {
                     if (definition.SourcePaint is { Data.IsMapped: true } sourcePaint) position = sourcePaint.Position(deviceX, deviceY);
                     else if (definition.IsUserSpace && Math.Abs(definition.ReferenceScaleX) != Math.Abs(definition.ReferenceScaleY))
@@ -2048,7 +2071,7 @@ public static class SvgConverter
                 else
                 if (offsetX == 0 && offsetY == 0)
                 {
-                    if (!nativeCoordinates.TryRadial(x, y, rasterGrid, out position))
+                    if (!nativeCoordinates.TryRadial(x, y, ShaderBitmapOrigin(x, y), out position))
                         position = (Math.Sqrt(rayX * rayX + rayY * rayY) - focalRadius) / (radius - focalRadius);
                 }
                 else if (rayX == 0 && rayY == 0)

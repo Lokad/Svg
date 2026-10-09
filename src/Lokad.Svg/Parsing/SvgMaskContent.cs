@@ -1,3 +1,5 @@
+using Lokad.Svg.Rendering;
+
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one spatial mask evaluation for ordinary leaves, groups or affine viewport clips.</summary>
@@ -14,4 +16,7 @@ internal readonly record struct SvgMaskContent(SvgGeometry[] Geometries, byte Lu
 
     /// <summary>Borrows a replay scene adopted once by the containing scene; legacy contours remain separately owned.</summary>
     internal SvgVectorContent? VectorContent { get; init; }
+
+    /// <summary>Retains the masked target coordinate map independently of borrowed source content.</summary>
+    internal SvgAffineTransform CoordinateMap { get; init; } = SvgAffineTransform.Identity;
 }

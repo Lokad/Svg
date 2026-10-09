@@ -136,28 +136,27 @@ internal struct SvgShaderCoordinates
         }
     }
 
-    internal bool TryLinear(int x, int y, SvgCpuRasterGrid grid, out double position)
+    internal bool TryLinear(int x, int y, SvgCpuBitmapOrigin origin, out double position)
     {
         position = 0;
-        if (!TryMap(x, y, grid, out var point)) return false;
+        if (!TryMap(x, y, origin, out var point)) return false;
         position = point.X;
         return double.IsFinite(position);
     }
 
-    internal bool TryRadial(int x, int y, SvgCpuRasterGrid grid, out double position)
+    internal bool TryRadial(int x, int y, SvgCpuBitmapOrigin origin, out double position)
     {
         position = 0;
-        if (!TryMap(x, y, grid, out var point)) return false;
+        if (!TryMap(x, y, origin, out var point)) return false;
         // Keep separate float squares before the native radius stage.
         position = MathF.Sqrt(point.X * point.X + point.Y * point.Y) - point.X * _focalRadiusRatioInverse;
         return double.IsFinite(position);
     }
 
-    internal bool TryMap(int x, int y, SvgCpuRasterGrid grid, out (float X, float Y) point)
+    internal bool TryMap(int x, int y, SvgCpuBitmapOrigin origin, out (float X, float Y) point)
     {
         point = default;
         if (!_enabled) return false;
-        SvgCpuBitmapOrigin origin = grid.GetBitmapOrigin(x, y);
         if (!_hasPrepared || origin != _origin)
         {
             _origin = origin;

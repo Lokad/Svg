@@ -5,7 +5,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one direct leaf geometry range whose userSpace clip-path reference resolves at document end.</summary>
-internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, bool AdmitsBoundingBox);
+internal readonly record struct PendingLeafClip(int FirstGeometryIndex, int GeometryCount, string ClipId, SvgViewportFrame? Parent, bool AdmitsBoundingBox, SvgAffineTransform Transform);
 
 /// <summary>Retains a group command range and its referencing transform for document-end userSpace clip resolution after use expansion.</summary>
 internal readonly record struct PendingGroupClip(string ClipId, SvgViewportFrame? Parent, SvgAffineTransform Transform, int FirstCommandIndex, int EndCommandIndex, int Depth, int ScaledPushesAtOpen, int ScaledPushesAtClose);
@@ -88,6 +88,7 @@ internal static class SvgClipPathSyntax
             SvgClipBox clip;
             if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
             {
+                box = pending.Transform.Apply(box);
                 clip = parent is null ? box : parent.Value.Clip.Intersect(box);
             }
             else if (state.ObjectClips.TryGetValue(pending.ClipId, out SvgClipBox fractions))
@@ -107,7 +108,7 @@ internal static class SvgClipPathSyntax
                     // Keep its source contours and shader coordinates intact instead of
                     // replacing them with a geometric intersection of flattened vertices.
                     (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clipPolygon.Points,
-                        SvgAffineTransform.Identity, SvgClipContentKind.ClipPath, clipPolygon.SourcePath, clipPolygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
+                        pending.Transform, SvgClipContentKind.ClipPath, clipPolygon.SourcePath, clipPolygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;
                     operation.Value = 255;
@@ -123,6 +124,7 @@ internal static class SvgClipPathSyntax
                 }
                 else
                 {
+                    if (pending.Transform != SvgAffineTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Placed compound clip paths are not implemented.");
                     for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
                     {
                         workCounter.Consume(cancellationToken);

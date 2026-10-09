@@ -114,9 +114,10 @@ internal static class SvgMaskSyntax
             if (!state.Masks.TryGetValue(pending.MaskId, out byte value))
             {
                 if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent spatial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-                if (pending.Transform != SvgAffineTransform.Identity || pending.Parent is {} parent && !parent.IsTrivial)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content on transformed leaves is not implemented.");
-                pending.Operation.ContentIndex = state.Scene.AddMaskContent(spatial);
+                SvgAffineTransform map = pending.Transform;
+                if (pending.Parent is {} parent) map = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(map);
+                if (!map.IsAxisAligned || map.A == 0 || map.D == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonsingular axis-aligned spatial mask target maps are implemented.");
+                pending.Operation.ContentIndex = state.Scene.AddMaskContent(spatial with { CoordinateMap = map.ComposeChecked(spatial.CoordinateMap) });
                 value = 255;
             }
             pending.Operation.Value = value;
@@ -127,6 +128,9 @@ internal static class SvgMaskSyntax
             SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
             SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
                 ? RecordedObjectBox(first, state) : fallback;
+            if (pending.Operation.ContentIndex >= 0 && pending.Transform != SvgAffineTransform.Identity
+                && (state.MaskRegions.TryGetValue(pending.MaskId, out _) || state.MaskFractionRegions.TryGetValue(pending.MaskId, out _)))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom regions on placed spatial mask targets are not implemented.");
             SvgClipBox region = ResolveDeferredRegion(state, pending, objectBox);
             pending.Operation.Region = region;
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)

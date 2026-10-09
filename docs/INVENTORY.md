@@ -14,12 +14,13 @@ document at **9/9 exact outputs through all six APIs on both platforms**. The
 retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
 Bhutan the tenth, South Africa the eleventh, Wikifoods the twelfth and the striped
 pattern the thirteenth, the non-ionizing warning the fourteenth and geometric
-pattern the fifteenth and set-screw diagram the sixteenth: **16 complete**.
-The retained development queue is **16/18 complete**; every preceding completed
-output remains exact. The selected next document is `inv-113`, the gradient-mask
-example; the soccerball mask remains queued. Controls do not count as completed documents. The I Ching nested affine-opacity control remains exact.
+pattern the fifteenth, set-screw diagram the sixteenth and gradient-mask example
+the seventeenth: **17 complete**. The retained development queue is **17/18
+complete**; every preceding completed output remains exact. The selected next
+document is `inv-114`, the soccerball mask. Controls do not count as completed
+documents. The I Ching nested affine-opacity control remains exact.
 
-### inv-112 complete; gradient-mask inv-113 next; soccerball inv-114 queued
+### inv-112 and inv-113 complete; soccerball inv-114 next
 
 The [three declared outputs](../tests/Research/remaining-gap-exports/manifest.json)
 and [source records](../tests/Research/remaining-gap-exports/source-records.json)
@@ -32,8 +33,8 @@ Linux captures per output match their frozen PNG byte-for-byte.
 | Complete export / source | Rights and original bytes | Frozen output / current admission |
 | --- | --- | --- |
 | [Set screw.svg](https://commons.wikimedia.org/wiki/File:Set_screw.svg), Yuri Raysper; later code reduction by Andrew Pertsev; `inv-112` | Author's public-domain release; 1,003 bytes; upstream 2024-07-31T03:41:40Z | Explicit 512×538 transparent; 1/1 exact through six APIs on Windows/Linux. Shared general grid/tile mapping, native stroke-border coverage, inherited target strokes and bitmap-local image sampling preserve ordinary strokes/dashes and reflected local uses. |
-| [SVG mask gradient bug.svg](https://commons.wikimedia.org/wiki/File:SVG_mask_gradient_bug.svg), Perhelion; later correction by JoKalliauer; `inv-113` | CC0; 1,949 bytes; upstream revision in source record | Explicit 512×880 transparent; rejects “This SVG child element is not implemented yet.” Local-use masks, nested clip/paint definitions and transformed composition remain queued G5 work. |
-| [Soccerball mask2.svg](https://commons.wikimedia.org/wiki/File:Soccerball_mask2.svg), Ed g2s, Thumperward; later simplification by AoV2; `inv-114` | CC0 / public-domain Open Clip Art source; 4,025 bytes; upstream revision in source record | Explicit 195×195 transparent; same structural rejection. Local-use/multiple-child masks, shader targets and masked groups remain queued G5 work. |
+| [SVG mask gradient bug.svg](https://commons.wikimedia.org/wiki/File:SVG_mask_gradient_bug.svg), Perhelion; later correction by JoKalliauer; `inv-113` | CC0; 1,949 bytes; upstream revision in source record | Explicit 512×880 transparent; 1/1 exact through six APIs on Windows/Linux. Shared local resource-use replay, nested clip/paint registration, composed mask placement and native bitmap-local gradient matrices, stop parsing and interpolation resolve the whole export. |
+| [Soccerball mask2.svg](https://commons.wikimedia.org/wiki/File:Soccerball_mask2.svg), Ed g2s, Thumperward; later simplification by AoV2; `inv-114` | CC0 / public-domain Open Clip Art source; 4,025 bytes; upstream revision in source record | Explicit 195×195 transparent; rejects “Only single-element mask content is implemented.” Multiple-child masks, shader targets and masked groups remain queued G5 work. |
 
 The bounded batch downloaded four fontless static exports. The fourth,
 [SVGvector-effect01.svg](https://commons.wikimedia.org/wiki/File:SVGvector-effect01.svg),
@@ -44,12 +45,16 @@ artifacts. It is outside this retained batch; the underlying static vector-effec
 and measured width-map work remain in PLAN. No representative success rate follows
 from four failure-selected leads.
 
-The set-screw now completes its whole declared output; both masks retain their
-six-API categorized rejection checks. Fifteen new controls and the eighteen older
-placement controls are exact against unchanged references on Windows/Linux. Both
-Release builds and 5,866 tests per platform pass (4,241 core / 1,619 visual / six
-FontProbe); complete corporate checks retain 27/27 / 258/258. All preceding assets
-and options stay unchanged. The queue is 16/18; local-use mask composition is next.
+The set-screw and gradient-mask examples now complete their whole declared outputs;
+the soccerball retains its six-API categorized rejection check. Nineteen new
+[mask/reference controls](../tests/Research/mask-local-references/manifest.json)
+are exact against matching healthy, cleaned platform browser triples. Fifteen
+pattern controls and the eighteen older placement controls remain exact. Both
+Release builds and 5,904 tests per platform pass (4,260 core / 1,638 visual / six
+FontProbe); complete corporate checks retain 27/27 / 258/258. All 2,845 preceding
+PNGs are byte-identical; one rejection report now identifies the narrower custom
+region boundary. All preceding assets and options stay unchanged. The queue is
+17/18; multiple-child mask and masked-group composition for the soccerball is next.
 Further gates remain visible until every declared output of each document is exact.
 
 ### inv-109–inv-111 — all three retained documents complete

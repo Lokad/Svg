@@ -1,0 +1,131 @@
+using System.Xml;
+using Lokad.Svg.Rendering;
+
+namespace Lokad.Svg.Parsing;
+
+internal enum SvgResourceUseKind { Mask, Clip }
+internal readonly record struct SvgResourceUse(SvgUseReference Reference, string? ClipId, bool IsEvenOdd);
+internal readonly record struct SvgDeferredResourceUse(string Id, SvgResourceUseKind Kind, bool IsAlpha, SvgResourceUse Use);
+
+/// <summary>Replays local resource references after forward geometry and paint definitions have registered.</summary>
+/// <remarks>Attribute strings and pending entries belong to the document. Mapped geometry, clip arrays
+/// and sealed vector scenes transfer to the existing registries; failure releases partial owners.
+/// All scans and replay charge parser work and observe cancellation. Cleanup is single-threaded.</remarks>
+internal static class SvgResourceUseReplay
+{
+    internal static SvgResourceUse Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
+        IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgElementAttributePolicy.ValidateUse(reader, work, token);
+        if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on mask content are not implemented.");
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, colors, work, token);
+        SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, root.UserViewportWidth, root.UserViewportHeight, state);
+        string? clip = reader.GetAttribute("clip-path");
+        string? clipId = clip is null ? null : state.Strings.Copy(SvgClipPathSyntax.ParseClipId(clip));
+        SvgComputedStyle style = context.ResolveStyle(reader);
+        bool evenOdd = style.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(style.ClipRule.AsSpan());
+        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+        state.SawStyleableNode = true;
+        return new(reference, clipId, evenOdd);
+    }
+
+    internal static void Register(SvgDocumentState state, SvgResourceUseKind kind, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        bool clip = kind == SvgResourceUseKind.Clip;
+        string id = state.Strings.Copy((clip ? state.ClipPathId : state.MaskId) ?? throw new InvalidOperationException("Resource registration requires an identifier."));
+        SvgResourceUse use = (clip ? state.ClipUse : state.MaskUse) ?? throw new InvalidOperationException("Resource registration requires a retained use.");
+        if (clip)
+        {
+            if (state.Clips.TryGetValue(id, out _) || state.ObjectClips.TryGetValue(id, out _) || !state.ClipPolygons.TryAdd(id, new([], [])))
+                throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+        }
+        else
+        {
+            if (state.Masks.TryGetValue(id, out _) || !state.MaskContents.TryAdd(id, new([], 255, state.MaskIsAlpha)))
+                throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+            if (state.MaskCustomRegion is {} region && !state.MaskRegions.TryAdd(id, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+            if (state.MaskFractionRegion is {} fractions && !state.MaskFractionRegions.TryAdd(id, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
+        }
+        state.DeferredResourceUses.Add(new(id, kind, state.MaskIsAlpha, use));
+    }
+
+    internal static void Resolve(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        // Clip references resolve first; mask references can then borrow their native contours.
+        for (int pass = 0; pass < 2; pass++)
+        for (int index = 0; index < state.DeferredResourceUses.Count; index++)
+        {
+            SvgResourceUseKind kind = pass == 0 ? SvgResourceUseKind.Clip : SvgResourceUseKind.Mask;
+            work.Consume(token);
+            SvgDeferredResourceUse pending = state.DeferredResourceUses[index];
+            if (pending.Kind != kind) continue;
+            if (!state.Definitions.TryGetValue(pending.Use.Reference.Id, out SvgDefinition source))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
+            SvgUseReference reference = pending.Use.Reference;
+            if (kind == SvgResourceUseKind.Clip)
+                reference = reference with { FillOverride = new(new(255, 255, 255, 255), true, SvgPaintOpacity.Opaque, new(255, 255, 255, 255), false), PaintServerId = null, PaintServerFill = null, Opacity = 255 };
+            SvgGeometry[] mapped = SvgReferenceResolver.Apply(source, reference with { Opacity = 255 }, null, state, work, token);
+            bool adopted = false;
+            try
+            {
+                if (kind == SvgResourceUseKind.Clip)
+                {
+                    if (pending.Use.ClipId is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips on referenced clip content are not implemented.");
+                    SvgDevicePoint[]? points = null;
+                    SvgAuthoredPath? path = null;
+                    foreach (SvgGeometry geometry in mapped)
+                    {
+                        work.Consume(token);
+                        if (state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).IsStroke) continue;
+                        (SvgDevicePoint[] Points, int[] Ends) fill = geometry.Kind switch
+                        {
+                            SvgGeometryKind.PolygonFill => (geometry.Polygon.Points, geometry.Polygon.ContourEnds),
+                            SvgGeometryKind.GradientPolygon => (geometry.GradientPolygon.Points, geometry.GradientPolygon.ContourEnds),
+                            SvgGeometryKind.RadialPolygon => (geometry.RadialPolygon.Points, geometry.RadialPolygon.ContourEnds),
+                            SvgGeometryKind.PatternPolygon => (geometry.PatternPolygon.Points, geometry.PatternPolygon.ContourEnds),
+                            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only contour geometry in referenced clip content is implemented."),
+                        };
+                        if (points is not null || fill.Ends.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour referenced clip content is implemented.");
+                        points = fill.Points; path = geometry.AuthoredPath;
+                    }
+                    if (points is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Empty referenced clip content is not implemented.");
+                    state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(1), SvgMemoryCategory.Geometry));
+                    SvgDevicePoint[] copy = new SvgDevicePoint[points.Length];
+                    for (int point = 0; point < points.Length; point++) { work.Consume(token); copy[point] = points[point]; }
+                    SvgClipPolygon polygon = new(copy, [copy.Length]) { IsEvenOdd = pending.Use.IsEvenOdd };
+                    SvgAuthoredPath? copied = path?.Copy(SvgAffineTransform.Identity, state.Budget, work, token);
+                    try { state.ClipPolygons.Replace(pending.Id, polygon with { SourcePath = copied }); }
+                    catch { copied?.Dispose(); throw; }
+                }
+                else
+                {
+                    using SvgSceneBuilder builder = new(state.Budget, work, token);
+                    if (pending.Use.ClipId is {} id)
+                    {
+                        if (!state.ClipPolygons.TryGetValue(id, out SvgClipPolygon clip)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only contour clips on referenced mask content are implemented.");
+                        (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clip.Points,
+                            SvgReferenceResolver.PlainInstancePlacement(reference, null), SvgClipContentKind.ClipPath, clip.SourcePath, clip.IsEvenOdd, state, builder, work, token);
+                        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+                        operation.Resolved = true; operation.Value = 255; operation.Region = bounds;
+                        operation.ContentIndex = contentIndex; operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+                        for (int geometryIndex = 0; geometryIndex < mapped.Length; geometryIndex++)
+                        {
+                            work.Consume(token);
+                            mapped[geometryIndex] = mapped[geometryIndex] with { LeafMask = SvgLeafMaskComposition.NewBinding(state, operation, mapped[geometryIndex].LeafMask) };
+                        }
+                    }
+                    SvgPaintRecording.WrapInstance(mapped, reference.SourceOpacity, reference.RecordingScope, state, work, token);
+                    SvgPaintRecording.AdoptLeafScene(new(mapped, false, null, null), builder, state);
+                    adopted = true;
+                    SvgLeafMaskComposition.Emit(state, builder, work, token);
+                    SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
+                    try { state.Scene.AdoptVectorContent(content); }
+                    catch { content.Dispose(); throw; }
+                    state.MaskContents.Replace(pending.Id, new([], 255, pending.IsAlpha) { VectorContent = content });
+                }
+            }
+            finally { if (!adopted) foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }
+        }
+    }
+}

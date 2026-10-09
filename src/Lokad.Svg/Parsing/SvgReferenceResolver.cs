@@ -94,6 +94,16 @@ internal static class SvgReferenceResolver
             }
             catch { lowered.Dispose(); throw; }
         }
+        if (PlainInstancePlacement(reference, frame) != SvgAffineTransform.Identity)
+        {
+            foreach (SvgGeometry geometry in definition.Geometries)
+            {
+                workCounter.Consume(cancellationToken);
+                bool generalLinear = geometry.Kind == SvgGeometryKind.GradientFill && geometry.Gradient.Gradient.RequiresSourceMap
+                    || geometry.Kind == SvgGeometryKind.GradientPolygon && geometry.GradientPolygon.Gradient.RequiresSourceMap;
+                if (generalLinear) throw new SvgException(SvgErrorCode.UnsupportedFeature, "General linear paint maps on placed geometry references are not implemented.");
+            }
+        }
         RequireUniformOutlineScales(definition, reference);
         RequireAdmittedInstanceMagnification(definition, reference);
         using InstanceFillGeometries instanceFill = ApplyInstanceFill(definition, reference, state, workCounter, cancellationToken);
@@ -728,8 +738,8 @@ internal static class SvgReferenceResolver
         try
         {
             foreach (SvgGeometry geometry in sources) SvgMaskSyntax.ValidateMaskScopes(state, geometry);
-            if (mask is null) return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
-            ApplyMask(sources, frame, mask, maskReference, state, workCounter, cancellationToken);
+            if (mask is null && maskReference is null) return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
+            ApplyMask(sources, frame, mask, maskReference, PlainInstancePlacement(reference, frame), state, workCounter, cancellationToken);
             return SvgPaintRecording.WrapInstance(sources, reference.SourceOpacity, reference.RecordingScope, state, workCounter, cancellationToken);
         }
         catch { foreach (SvgGeometry geometry in sources) geometry.Dispose(); throw; }
@@ -740,15 +750,22 @@ internal static class SvgReferenceResolver
     /// The caller releases geometry on failure and applies element opacity after this outer mask is attached.</remarks>
     internal static void ApplyMask(Span<SvgGeometry> geometries, SvgViewportFrame? frame, byte? mask, string? maskReference,
         SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => ApplyMask(geometries, frame, mask, maskReference, SvgAffineTransform.Identity, state, workCounter, cancellationToken);
+
+    internal static void ApplyMask(Span<SvgGeometry> geometries, SvgViewportFrame? frame, byte? mask, string? maskReference,
+        SvgAffineTransform placement, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if ((maskReference is null && mask is null) || geometries.IsEmpty) return;
+        int contentIndex = -1;
         if (mask is null)
         {
             string id = SvgMaskSyntax.ParseMaskId(maskReference ?? throw new InvalidOperationException("An unresolved mask requires its source reference."));
             if (!state.Masks.TryGetValue(id, out byte value))
             {
-                if (state.MaskContents.TryGetValue(id, out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content on masked leaves is not implemented.");
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+                if (!state.MaskContents.TryGetValue(id, out SvgMaskContent spatial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
+                if (!placement.IsAxisAligned || placement.A == 0 || placement.D == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nonsingular axis-aligned spatial mask target maps are implemented.");
+                contentIndex = state.Scene.AddMaskContent(spatial with { CoordinateMap = placement.ComposeChecked(spatial.CoordinateMap) });
+                value = 255;
             }
             mask = value;
         }
@@ -766,7 +783,8 @@ internal static class SvgReferenceResolver
         SvgClipBox region = ResolveInstanceMaskRegion(maskReference, frame, state, fallback);
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Value = mask.Value; operation.Resolved = true;
-        operation.Region = region;
+        operation.ContentIndex = contentIndex;
+        operation.Region = contentIndex >= 0 && maskReference is not null && state.MaskRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out _) ? placement.Apply(region) : region;
         using BudgetedParserDictionary<SvgLeafMaskBinding, SvgLeafMaskBindingReference> bindings = new(state.Budget, SvgMemoryCategory.Parser, 96);
         SvgLeafMaskBinding? noInner = null;
         for (int index = 0; index < geometries.Length; index++)
@@ -1485,7 +1503,7 @@ internal static class SvgReferenceResolver
         if (pendingUse.DeferredClip is SvgDeferredClip deferred) frame = ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state);
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
         byte? mask = pendingUse.Mask;
-        if (pendingUse.MaskReference is not null && mask is null) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
+        if (pendingUse.MaskReference is not null && mask is null && !state.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(pendingUse.MaskReference), out _)) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
         SvgGeometry[] applied = ApplyInstanceMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference, state, workCounter, cancellationToken);
         try
         {

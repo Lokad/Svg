@@ -58,6 +58,7 @@ internal sealed class SvgDocumentState : IDisposable
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         DeferredPaintLeaves = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        DeferredResourceUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         GroupSnapshots = new BudgetedParserDictionary<string, SvgGroupSnapshot>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         RenderedGroupDefinitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         GroupSnapshotStarts = new BudgetedParserList<SvgGroupSnapshotStart>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -77,6 +78,9 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgSceneBuilder Scene { get; }
 
     internal BudgetedParserList<SvgDeferredPaintLeaf> DeferredPaintLeaves { get; }
+    internal BudgetedParserList<SvgDeferredResourceUse> DeferredResourceUses { get; }
+    internal SvgResourceUse? MaskUse { get; set; }
+    internal SvgResourceUse? ClipUse { get; set; }
 
     internal BudgetedParserStringStore Strings { get; }
 
@@ -335,6 +339,7 @@ internal sealed class SvgDocumentState : IDisposable
         _anonymousSymbolOwner?.Dispose();
         PendingUses.Dispose();
         DeferredPaintLeaves.Dispose();
+        DeferredResourceUses.Dispose();
         GroupSnapshots.Dispose();
         RenderedGroupDefinitions.Dispose();
         GroupSnapshotStarts.Dispose();

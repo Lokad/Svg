@@ -5143,7 +5143,6 @@ public sealed class SvgRootParserTests
 
     [Theory]
     [InlineData("scale(0)")]
-    [InlineData("matrix(1, 1, 0, 1, 0, 0)")]
     [InlineData("skewX(30)")]
     [InlineData("skewY(15)")]
     public void Rejects_unsupported_gradient_transform_forms(string transform)
@@ -5151,6 +5150,20 @@ public sealed class SvgRootParserTests
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='" + transform + "'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Fact]
+    public void Admits_general_linear_gradient_maps_on_source_bound_rectangles()
+    {
+        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientTransform='matrix(1, 1, 0, 1, 0, 0)'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.GradientFill, geometry.Kind);
+        Assert.True(geometry.Gradient.Gradient.RequiresSourceMap);
+        SvgLinearPaintMap paint = Assert.IsType<SvgLinearPaintMap>(geometry.Gradient.Gradient.SourcePaint);
+        Assert.True(paint.Data.IsMapped);
+        Assert.Equal(new SvgGradientTransform(8, 8, 0, 8, 0, 0), paint.Data.Local);
+        Assert.Equal((0d, 0d, 1d, 0d), (paint.Data.X1, paint.Data.Y1, paint.Data.X2, paint.Data.Y2));
     }
 
     [Fact]
@@ -5761,7 +5774,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.8' stop-color='#ff0000'/><stop offset='0.3' stop-color='#0000ff'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new(0.8, new SvgColor(255, 0, 0, 255)), new(0.8, new SvgColor(0, 0, 255, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1, false), geometry.Gradient.Gradient);
+        AssertEqualGradient(new SvgLinearGradient(new SvgColor(255, 0, 0, 255), new SvgColor(0, 0, 255, 255), 0, 0, 1, 0, 0, 1, false, false, SvgGradientSpread.Pad, new SvgGradientStop[] { new(0, new SvgColor(255, 0, 0, 255)), new((double)0.8f, new SvgColor(255, 0, 0, 255)), new((double)0.8f, new SvgColor(0, 0, 255, 255)), new(1, new SvgColor(0, 0, 255, 255)) }, 1, 1, false), geometry.Gradient.Gradient);
     }
 
     [Fact]

@@ -99,8 +99,9 @@ internal static class SvgDefinitionParser
             else state.SymbolDepth = reader.Depth;
             return true;
         }
+        bool resourceDefinition = state.MaskDepth >= 0 && reader.Depth == state.MaskDepth + 1 && reader.LocalName is ("clipPath" or "linearGradient" or "radialGradient");
         bool inClipDefinitions = state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1;
-        if ((inClipDefinitions || rootDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "clipPath")
+        if ((inClipDefinitions || rootDefinition || resourceDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "clipPath")
         {
             SvgElementAttributePolicy.ValidateClipPath(reader, workCounter, cancellationToken);
             state.ClipPathId = reader.GetAttribute("id");
@@ -120,6 +121,14 @@ internal static class SvgDefinitionParser
         }
         if (state.ClipPathDepth >= 0 && reader.Depth == state.ClipPathDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
+            if (state.ClipUse is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element clip content is implemented.");
+            if (reader.LocalName == "use")
+            {
+                if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse referenced clip content is implemented.");
+                if (state.ClipBox is not null || state.ClipPolygon is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element clip content is implemented.");
+                state.ClipUse = SvgResourceUseReplay.Retain(reader, root, state, namedColors, workCounter, cancellationToken);
+                return true;
+            }
             if (reader.LocalName == "rect")
             {
                 if (state.ClipBox is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle clip paths are implemented.");
@@ -188,8 +197,15 @@ internal static class SvgDefinitionParser
             state.SawStyleableNode = true;
             return true;
         }
-        if (state.MaskDepth >= 0 && reader.Depth == state.MaskDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
+        if (state.MaskDepth >= 0 && reader.Depth == state.MaskDepth + 1 && !resourceDefinition && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
+            if (state.MaskUse is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
+            if (reader.LocalName == "use")
+            {
+                if (state.MaskContentBuilder is not null || state.MaskValue is not null || state.MaskContentGeometries is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
+                state.MaskUse = SvgResourceUseReplay.Retain(reader, root, state, namedColors, workCounter, cancellationToken);
+                return true;
+            }
             if (state.MaskContentBuilder is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element mask content is implemented.");
             if (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
             {
@@ -335,7 +351,7 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
-        if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "radialGradient")
+        if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild || resourceDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "radialGradient")
         {
             SvgElementAttributePolicy.ValidateRadialGradient(reader, workCounter, cancellationToken);
             state.RadialGradientId = reader.GetAttribute("id");
@@ -347,7 +363,7 @@ internal static class SvgDefinitionParser
             state.SawStyleableNode = true;
             return true;
         }
-        if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "linearGradient")
+        if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild || resourceDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "linearGradient")
         {
             SvgElementAttributePolicy.ValidateLinearGradient(reader, workCounter, cancellationToken);
             state.GradientId = reader.GetAttribute("id");
@@ -424,7 +440,6 @@ internal static class SvgDefinitionParser
             string? maskAttribute = useReader.GetAttribute("mask");
             if (maskAttribute is null) return null;
             if (document.Masks.TryGetValue(SvgMaskSyntax.ParseMaskId(maskAttribute), out byte value)) return value;
-            if (document.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(maskAttribute), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content on use instances is not implemented.");
             return null;
         }
 
@@ -1098,7 +1113,9 @@ internal static class SvgDefinitionParser
         }
         if (template.HasTransform)
         {
-            if ((template.Transform.B != 0 || template.Transform.C != 0) && (!template.Transform.IsSimilarity() || Math.Abs(referenceScaleX) != Math.Abs(referenceScaleY))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar linear gradient transforms are implemented.");
+            if ((template.Transform.B != 0 || template.Transform.C != 0) && !template.Transform.IsSimilarity())
+                return (x1, y1, x2, y2, isUserSpace, spread, referenceScaleX, referenceScaleY, hasRotation);
+            if ((template.Transform.B != 0 || template.Transform.C != 0) && Math.Abs(referenceScaleX) != Math.Abs(referenceScaleY)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar linear gradient transforms are implemented.");
             if (template.Transform.B == 0 && template.Transform.C == 0 && hasRotation && template.Transform.A != template.Transform.D) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned or similar linear gradient transforms are implemented.");
             hasRotation = hasRotation || template.Transform.B != 0 || template.Transform.C != 0;
             (x1, y1) = template.Transform.Apply(x1, y1);
