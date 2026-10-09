@@ -135,8 +135,7 @@
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared and triple-captured at 0db47f05 before correction; independent native clip-coverage, curve, paint and alpha controls.",
       "sourceSha256": "bacd551f0654cef4c8371968616702884a7477828d27b32519fe0eaff0061a34",
-      "referenceSha256": "6baee7040c270b5cd37a9753b036f3e6815f5fd7e5dd9872057e1bcbad54150b",
-      "expectedError": "UnsupportedFeature"
+      "referenceSha256": "6baee7040c270b5cd37a9753b036f3e6815f5fd7e5dd9872057e1bcbad54150b"
     },
     {
       "id": "opaque-tile-stroke-900",

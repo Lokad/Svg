@@ -675,7 +675,8 @@ public static class SvgConverter
                         using RenderBudget.BudgetReservation clipReservation = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
                         byte[] clipPixels = new byte[surfaceByteCount];
                         byte[] previousClip = activeViewportClip;
-                        RasterizeMaskContent(root.SceneStorage.MaskContents[command.MaskContentIndex], clipPixels, true, layer);
+                        SvgMaskContent clipContent = root.SceneStorage.MaskContents[command.MaskContentIndex];
+                        RasterizeMaskContent(clipContent, clipPixels, true, clipContent.ClipKind == SvgClipContentKind.ClipPath ? previousLayer : layer);
                         if (previousClip.Length != 0)
                         {
                             if (pixelCount > options.Limits.MaximumWorkUnits - workUnits)
@@ -830,6 +831,23 @@ public static class SvgConverter
                     RenderCommands(0, destination, false);
                 }
                 else foreach (SvgGeometry geometry in content.Geometries) RasterizeGeometry(geometry, destination);
+                if (content.BoundsClipContentIndex >= 0)
+                {
+                    SvgSceneStorage storage = root.SceneStorage ?? throw new SvgException(SvgErrorCode.MalformedInput, "Missing clip bounds content.");
+                    if ((uint)content.BoundsClipContentIndex >= (uint)storage.MaskContents.Length || storage.MaskContents[content.BoundsClipContentIndex].BoundsClipContentIndex >= 0)
+                        throw new SvgException(SvgErrorCode.MalformedInput, "Invalid clip bounds content.");
+                    using RenderBudget.BudgetReservation boundsReservation = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
+                    byte[] boundsPixels = new byte[surfaceByteCount];
+                    RasterizeMaskContent(storage.MaskContents[content.BoundsClipContentIndex], boundsPixels, true, contentBounds);
+                    if (pixelCount > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Clip bounds intersection exceeds the configured limit.");
+                    workUnits += pixelCount;
+                    for (int pixel = 0; pixel < pixelCount; pixel++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        int offset = pixel * 4 + 3;
+                        destination[offset] = (byte)((destination[offset] * boundsPixels[offset] + 127) / 255);
+                    }
+                }
             }
             finally
             {

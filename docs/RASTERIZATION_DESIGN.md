@@ -9610,3 +9610,54 @@ healthy, cleaned control captures across both platforms match frozen PNGs.
 The existing `83de8a50` complete original-bank/cohort measurement is preserved;
 the whole Wikifoods correction will receive the required complete qualification.
 No package, release, performance or remote CI claim follows from this dependency slice.
+
+## Native curved clip dependency for Wikifoods (2026-10-09)
+
+The nine frozen original-input Wikifoods outputs now pass percentage lengths and
+curved clip parsing, reaching the affine radial paint gate. The document remains
+0/9 exact; eleven of twelve selected documents are complete. The new twelve-control
+[clip bank](../tests/Research/curved-path-clips/manifest.json) freezes native source
+arcs, radius correction, quadratic/cubic clips, independent alpha paints, rotated
+groups, radial paint bounds and root scales before implementation. Nine controls
+are exact through six APIs on Windows/Linux. All 72 healthy, cleaned control
+captures across both platforms match frozen references byte-for-byte. The older
+`convex-path-clips/group-boundary` also graduates against its unchanged PNG.
+
+Curve definitions retain budgeted authored commands under the existing document
+registry; registered scenes own separate copies. Streaming staging adopts each
+source before cancellable classification and releases anonymous, unused, duplicate
+and rejected definitions. All copied clip curves use existing source replay and
+analytic rasterization. No shape/paint-specific clip implementation is introduced.
+The existing scene-content array allowance charges the enlarged typed clip record.
+
+Native generic clip rasterization keeps the parent bitmap origin. Narrowing it to
+the clip bounds introduced one wrong edge pixel shared by three controls; keeping
+the origin distinct from bounded scan/paint storage resolves it. Native clip setup
+also retains an enclosing source rectangle beside the path. Under a non-axis map
+that rectangle contributes its own AA coverage, including the common closing edge.
+Reusing affine viewport rectangle replay and multiplying the bounded alpha tapes
+resolves all 96 changed pixels of the uniform rotated dome. The rectangle content
+borrows an earlier scene entry, has no further bounds entry, and costs one additional
+budgeted RGBA surface with charged replay/intersection and cancellation. Viewport
+clips retain their established origin/classification route. See pinned Blink
+[clip property setup](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/paint/paint_property_tree_builder.cc)
+and [resource bounds](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_resource_clipper.cc).
+
+Three controls retain explicit unsupported outcomes: concave curves,
+objectBoundingBox curve clips and nonuniform composed group curves. The last
+prototype still differs at 58 edge pixels, maximum alpha error 46, after both clip
+coverages are retained. The tight-bounds prototype also remains inexact; this numerical route still
+needs repair. This finite dependency slice admits the uniform rotation
+required by Wikifoods; the nonuniform combination remains promised in G3.
+
+Three source inputs sweep every parser work denial, sampled/peak memory denial,
+early/middle/late raster work denial, raster memory denial, cancellation and retry.
+Copied native commands stay immutable. Five duplicate/multiple-child/multicontour
+rejections release pending and registered owners; a discovered path-to-rectangle
+ID collision now rejects as malformed, matching the reverse definition order.
+Current Release solution builds have zero warnings/errors and 5,679 tests pass on
+each platform (4,171 core / 1,502 visual / six FontProbe). Existing exact results
+stay protected. The last complete bank measurement remains `83de8a50`; the finished
+Wikifoods correction will receive complete bank/corporate qualification. No existing
+SVG, PNG, option or corporate membership is replaced, and no performance/release
+claim follows from this dependency slice.

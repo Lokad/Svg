@@ -8,7 +8,7 @@ public sealed class SvgSymbolInstanceReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "symbol-instances", "symbol-presentation", "symbol-content", "symbol-content-diagnostics", "symbol-viewport-opacity", "use-paint-properties", "rectangle-frames", "rectangle-path-strokes", "use-stroke-opacity", "use-stroke-style", "rendered-group-styles", "instance-shader-opacity", "container-shader-inheritance", "viewport-percentage-bases", "transformed-rectangle-fills", "iching-library", "pattern-vector-content", "pattern-inheritance", "nested-affine-opacity", "gradient-masks", "oval-source-replay", "radiation-symbol", "affine-arcs", "malta-flag", "native-path-replay", "portugal-flag", "source-convexity", "bhutan-flag", "south-africa-flag", "convex-path-clips", "wikifoods-logo", "oval-percentage-lengths" })
+        foreach (string family in new[] { "symbol-instances", "symbol-presentation", "symbol-content", "symbol-content-diagnostics", "symbol-viewport-opacity", "use-paint-properties", "rectangle-frames", "rectangle-path-strokes", "use-stroke-opacity", "use-stroke-style", "rendered-group-styles", "instance-shader-opacity", "container-shader-inheritance", "viewport-percentage-bases", "transformed-rectangle-fills", "iching-library", "pattern-vector-content", "pattern-inheritance", "nested-affine-opacity", "gradient-masks", "oval-source-replay", "radiation-symbol", "affine-arcs", "malta-flag", "native-path-replay", "portugal-flag", "source-convexity", "bhutan-flag", "south-africa-flag", "convex-path-clips", "wikifoods-logo", "oval-percentage-lengths", "curved-path-clips" })
         {
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", family, "manifest.json")));
             foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
@@ -23,7 +23,7 @@ public sealed class SvgSymbolInstanceReferenceTests
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(family switch { "symbol-content-diagnostics" => 3, "symbol-viewport-opacity" => 18, "use-paint-properties" => 31, "rectangle-frames" => 15, "rectangle-path-strokes" => 30, "use-stroke-opacity" => 81, "use-stroke-style" => 99, "rendered-group-styles" => 123, "instance-shader-opacity" => 150, "container-shader-inheritance" => 192, "viewport-percentage-bases" => 81, "transformed-rectangle-fills" => 15, "iching-library" => 25, "pattern-vector-content" => 18, "pattern-inheritance" => 17, "nested-affine-opacity" => 7, "gradient-masks" => 20, "oval-source-replay" => 8, "radiation-symbol" => 9, "affine-arcs" => 16, "malta-flag" => 9, "native-path-replay" => 15, "portugal-flag" => 9, "source-convexity" => 12, "bhutan-flag" => 9, "south-africa-flag" => 9, "convex-path-clips" => 11, "wikifoods-logo" => 9, "oval-percentage-lengths" => 12, _ => 16 }, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family switch { "symbol-content-diagnostics" => 3, "symbol-viewport-opacity" => 18, "use-paint-properties" => 31, "rectangle-frames" => 15, "rectangle-path-strokes" => 30, "use-stroke-opacity" => 81, "use-stroke-style" => 99, "rendered-group-styles" => 123, "instance-shader-opacity" => 150, "container-shader-inheritance" => 192, "viewport-percentage-bases" => 81, "transformed-rectangle-fills" => 15, "iching-library" => 25, "pattern-vector-content" => 18, "pattern-inheritance" => 17, "nested-affine-opacity" => 7, "gradient-masks" => 20, "oval-source-replay" => 8, "radiation-symbol" => 9, "affine-arcs" => 16, "malta-flag" => 9, "native-path-replay" => 15, "portugal-flag" => 9, "source-convexity" => 12, "bhutan-flag" => 9, "south-africa-flag" => 9, "convex-path-clips" => 11, "wikifoods-logo" => 9, "oval-percentage-lengths" => 12, "curved-path-clips" => 12, _ => 16 }, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("identical", RequiredString(root, "decodedPixelStability"));
         Assert.Equal("healthy", RequiredString(root, "captureStartupHealth"));
@@ -60,9 +60,9 @@ public sealed class SvgSymbolInstanceReferenceTests
             Assert.Equal(RequiredString(item, "captureInputSha256"), Convert.ToHexStringLower(SHA256.HashData(capturedSource)));
             string inputText = System.Text.Encoding.UTF8.GetString(input);
             string expectedCapture;
-            if (family is "south-africa-flag" or "wikifoods-logo")
+            if (family is "south-africa-flag" or "wikifoods-logo" or "curved-path-clips")
             {
-                string nativeSize = family == "wikifoods-logo" ? "width=\"1200\" height=\"1200\"" : "width=\"900\" height=\"600\"";
+                string nativeSize = family switch { "wikifoods-logo" => "width=\"1200\" height=\"1200\"", "curved-path-clips" => "width=\"144\" height=\"144\"", _ => "width=\"900\" height=\"600\"" };
                 expectedCapture = inputText.Replace(nativeSize, "width=\"" + width + "\" height=\"" + height + "\"", StringComparison.Ordinal);
             }
             else if (family is "portugal-flag" or "bhutan-flag")

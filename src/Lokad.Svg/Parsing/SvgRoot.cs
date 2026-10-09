@@ -1556,7 +1556,7 @@ internal sealed class SvgSceneBuilder : IDisposable
                 copied[index] = content.Geometries[index].CopyAuthoredPathTo(copied[index], SvgAffineTransform.Identity, _budget, _workCounter, _cancellationToken);
             }
             int contentIndex = _maskContents.Count;
-            _maskContents.Add(new SvgMaskContent(copied, content.Luminance, content.IsAlpha));
+            _maskContents.Add(new SvgMaskContent(copied, content.Luminance, content.IsAlpha) { ClipKind = content.ClipKind, BoundsClipContentIndex = content.BoundsClipContentIndex });
             _maskReservations.Add(arrayReservation);
             return contentIndex;
         }

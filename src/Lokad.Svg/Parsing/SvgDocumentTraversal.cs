@@ -303,6 +303,7 @@ internal static class SvgDocumentTraversal
                         if (state.ClipPolygon is not null) SvgDefinitionParser.RegisterClipPolygon(state, workCounter, cancellationToken);
                         else SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
                     }
+                    if (state.ClipPathId is null) state.ClipPolygon?.SourcePath?.Dispose();
                     state.ClipPathDepth = -1;
                     state.ClipPathId = null;
                     state.ClipBox = null;

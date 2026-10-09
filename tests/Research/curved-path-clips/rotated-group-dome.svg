@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 100 100">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><clipPath id="clip" clipPathUnits="userSpaceOnUse"><path d="M10 75 A40 40 0 0 1 90 75"/></clipPath></defs>
+<g clip-path="url(#clip)" transform="rotate(20 90 75)"><path d="M0 0H100V100H0Z" fill="#347bad"/></g>
+</svg>

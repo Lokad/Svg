@@ -86,13 +86,11 @@ public sealed class SvgClipPolygonTests
         Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 8, 4, 4));
     }
     [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 Q4,4 8,0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only straight clip paths are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V8 H4 V4 H0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only convex clip paths are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d=''/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Degenerate clip paths are not implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 L8,0 L16,0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Degenerate clip paths are not implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c' clipPathUnits='objectBoundingBox'><path d='M0,0 H1 V1 H0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only userSpaceOnUse clip-path paths are implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><rect x='1' y='1' width='2' height='2'/><path d='M0,0 H8 V8 H0 Z'/></clipPath></defs><rect width='8' height='8' fill='red'/></svg>", "Only single-rectangle clip paths are implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='t'><path d='M0,0 L8,4 L0,8 Z'/></clipPath></defs><g clip-path='url(#t)'><polygon points='0,0 8,0 0,8' fill='red'/></g></svg>", "Polygon clip-paths on groups are not implemented.")]
 
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='t'><path d='M0,0 L8,4 L0,8 Z'/></clipPath></defs><g id='g'><rect width='2' height='2' fill='red'/></g><use href='#g'/><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#t)'/></svg>", "Polygon clip-paths with use instances are not implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'><path d='M0,0 H8 V4 H0 Z M0,0 H8 V8 H4 V4 H0 Z'/></clipPath></defs><polygon points='0,0 8,0 0,8' fill='red' clip-path='url(#c)'/></svg>", "Only convex clip paths are implemented.")]

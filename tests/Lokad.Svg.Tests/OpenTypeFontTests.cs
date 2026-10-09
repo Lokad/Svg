@@ -1722,6 +1722,7 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><symbol id='s'><title>Shape</title><metadata><note xmlns='urn:sample'>ignored</note></metadata><rect width='1' height='1' fill='red'/></symbol><use href='#s'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><title>t</title><text font-family='Example' font-size='100' y='3'>A</text></g></svg>", "Example", 1, 1, true, false)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><a><desc>d</desc><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", "Example", 1, 1, true, false)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><clipPath id='c'><path d='M0,0 Q1,1 2,0 Z'/></clipPath><rect width='5' height='5' fill='red' clip-path='url(#c)'/></svg>", "", 0, 0, false, false)]
     public async Task Discovery_and_lowering_agree_on_supported_text(string svg, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls, bool painted, bool spaceFont)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
@@ -1885,7 +1886,6 @@ public sealed class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><symbol id='s'><text font-family='Unused'>x</text></symbol><use href='#s'/></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><mask id='m'><rect width='1' height='1' fill='white'/></mask><rect width='5' height='5' fill='red' mask='url(#m)'/></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><mask id='m'><text font-family='Unused'>x</text></mask><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><clipPath id='c'><path d='M0,0 Q1,1 2,0 Z'/></clipPath><rect width='5' height='5' fill='red' clip-path='url(#c)'/></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example'><tspan rotate='5'>A</tspan></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example'>A<tspan x='1'>A</tspan></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan transform='translate(1)'>A</tspan></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]

@@ -102,7 +102,7 @@ internal static class SvgClipPathSyntax
                     // Keep its source contours and shader coordinates intact instead of
                     // replacing them with a geometric intersection of flattened vertices.
                     (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(clipPolygon.Points,
-                        SvgAffineTransform.Identity, SvgClipContentKind.ClipPath, state, state.Scene, workCounter, cancellationToken);
+                        SvgAffineTransform.Identity, SvgClipContentKind.ClipPath, clipPolygon.SourcePath, state, state.Scene, workCounter, cancellationToken);
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;
                     operation.Value = 255;
@@ -498,9 +498,29 @@ internal static class SvgClipPathSyntax
             {
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Forward bounding-box clip-path definitions on groups are not implemented.");
             }
-            else if (state.ClipPolygons.TryGetValue(pending.ClipId, out _))
+            else if (state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon polygon))
             {
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths on groups are not implemented.");
+                if (polygon.ContourEnds.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour polygon clip-paths on groups are implemented.");
+                SvgAffineTransform map = pending.Transform;
+                if (parent is {} viewport)
+                    map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
+                (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(polygon.Points,
+                    map, SvgClipContentKind.ClipPath, polygon.SourcePath, state, state.Scene, workCounter, cancellationToken);
+                SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+                operation.Resolved = true;
+                operation.Value = 255;
+                operation.Region = bounds;
+                operation.ContentIndex = contentIndex;
+                operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+                for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+                {
+                    workCounter.Consume(cancellationToken);
+                    SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
+                    if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                    SvgLeafMaskBinding binding = SvgLeafMaskComposition.NewBinding(state, operation, state.Scene.GeometryAt(command.GeometryIndex).LeafMask);
+                    state.Scene.AssignLeafMask(command.GeometryIndex, binding);
+                }
+                continue;
             }
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
             for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)

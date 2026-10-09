@@ -139,8 +139,13 @@ internal static class SvgDefinitionParser
                 SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgAffineTransform clipTransform = clipContext.ResolveTransform(reader);
                 SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, state, workCounter, cancellationToken);
-                if (clipContent.ContourEnds.Length == 1 && TryGetAxisClipBox(clipContent.Points, workCounter, cancellationToken, out SvgClipBox clipRect)) state.ClipBox = clipRect;
-                else state.ClipPolygon = clipContent;
+                // Publish the source owner before any cancellable classification.
+                state.ClipPolygon = clipContent;
+                if (clipContent.SourcePath is null && clipContent.ContourEnds.Length == 1 && TryGetAxisClipBox(clipContent.Points, workCounter, cancellationToken, out SvgClipBox clipRect))
+                {
+                    state.ClipBox = clipRect;
+                    state.ClipPolygon = null;
+                }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 state.SawStyleableNode = true;
                 return true;
@@ -523,14 +528,16 @@ internal static class SvgDefinitionParser
             ArgumentNullException.ThrowIfNull(clipState);
             ArgumentNullException.ThrowIfNull(workCounter);
             if (string.IsNullOrEmpty(pathData)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
-            int letters = ScanClipPathData(pathData, workCounter, cancellationToken);
-            int pointCapacity = Math.Min(pathData.Length / 2 + 2, SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints);
+            (int letters, bool hasCurve) = ScanClipPathData(pathData, workCounter, cancellationToken);
+            int pointCapacity = (int)Math.Min(hasCurve ? (long)letters * (SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand + 1) : pathData.Length / 2L + 2, SvgOrthogonalGeometryLowering.MaximumFlattenedContourPoints);
             int contourCapacity = Math.Min(letters + 1, pointCapacity);
-            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) + (2 * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)));
+            long scratchBytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(pointCapacity) * (hasCurve ? 2 : 1) + ((hasCurve ? 4 : 2) * ParserCollectionMemory.GetArrayByteCount<int>(contourCapacity)));
             using RenderBudget.BudgetReservation scratch = clipState.Budget.Reserve(scratchBytes, SvgMemoryCategory.Geometry);
-            SvgContourBuilder builder = new(pointCapacity, contourCapacity);
+            SvgContourBuilder builder = hasCurve ? SvgContourBuilder.CreateGrowing(pointCapacity, contourCapacity) : new(pointCapacity, contourCapacity);
             SvgFlattenPolicy flattenPolicy = new(SvgOrthogonalGeometryLowering.FlattenFlatness, SvgOrthogonalGeometryLowering.FlattenMaxDepth, SvgOrthogonalGeometryLowering.CurveSegmentsPerCommand);
-            SvgPathDataParser.ParsePath(pathData, clipTransform, builder, flattenPolicy, letters, workCounter, cancellationToken, null);
+            using BudgetedParserList<SvgAuthoredPathCommand> authored = new(clipState.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
+            SvgPathDataParser.ParsePath(pathData, clipTransform, builder, flattenPolicy, letters, workCounter, cancellationToken, null, hasCurve ? authored : null);
+            if (hasCurve && builder.ContourCount != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour curved clip paths are implemented.");
             if (builder.ContourCount < 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
             using BudgetedParserList<SvgDevicePoint> stripped = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
             using BudgetedParserList<int> strippedEnds = new(clipState.Budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
@@ -576,12 +583,20 @@ internal static class SvgDefinitionParser
                 workCounter.Consume(cancellationToken);
                 retainedEnds[index] = strippedEnds[index];
             }
-            return new SvgClipPolygon(retainedPoints, retainedEnds);
+            SvgAuthoredPath? source = null;
+            if (hasCurve)
+            {
+                OwnedParserArray<SvgAuthoredPathCommand> owned = authored.Detach();
+                try { source = SvgAuthoredPath.Create(owned, clipTransform, clipState.Budget); }
+                catch { owned.Dispose(); throw; }
+            }
+            return new SvgClipPolygon(retainedPoints, retainedEnds) { SourcePath = source };
         }
 
-        static int ScanClipPathData(string pathData, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static (int Letters, bool HasCurve) ScanClipPathData(string pathData, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             int letters = 0;
+            bool hasCurve = false;
             for (int index = 0; index < pathData.Length; index++)
             {
                 if ((index & 4095) == 0) workCounter.Consume(cancellationToken);
@@ -592,12 +607,13 @@ internal static class SvgDefinitionParser
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only straight clip paths are implemented.");
                 }
                 if ((current < 'A' || current > 'Z') && (current < 'a' || current > 'z')) continue;
-                if (current is not ('M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only straight clip paths are implemented.");
+                if (current is not ('M' or 'm' or 'L' or 'l' or 'H' or 'h' or 'V' or 'v' or 'Z' or 'z' or 'Q' or 'q' or 'T' or 't' or 'C' or 'c' or 'S' or 's' or 'A' or 'a')) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Unsupported clip-path command.");
+                hasCurve |= current is 'Q' or 'q' or 'T' or 't' or 'C' or 'c' or 'S' or 's' or 'A' or 'a';
                 letters++;
             }
             workCounter.Consume(cancellationToken);
             if (letters == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Degenerate clip paths are not implemented.");
-            return letters;
+            return (letters, hasCurve);
         }
 
         static double ClipRingArea(BudgetedParserList<SvgDevicePoint> ring, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -1122,6 +1138,7 @@ internal static class SvgDefinitionParser
     {
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip-path registration requires an identifier."));
+        if (state.ClipPolygons.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
         if (state.ClipIsObjectBoundingBox) { if (state.Clips.TryGetValue(retainedId, out _) || !state.ObjectClips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique."); } else if (state.ObjectClips.TryGetValue(retainedId, out _) || !state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
     }
 

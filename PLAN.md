@@ -122,8 +122,8 @@ background. Single convex straight path clips now reuse native source-content
 replay instead of intersecting flattened painted contours. Clip construction
 bounds stay distinct from bitmap origins; opaque rectangular tile intersections
 retain binary clip paint routing. The [clip bank](tests/Research/convex-path-clips/manifest.json)
-has **11 controls: ten exact and one explicit unsupported group boundary** through
-six APIs on both platforms. Rectangle targets are admitted; broader group/use,
+has **11 controls, all exact** through
+six APIs on both platforms. Rectangle targets and ordinary group clips are admitted; scaled/use,
 multi-contour, transformed-coordinate and clip-rule promises remain G5 work.
 
 **Next complete deliverable: the CC0 Wikifoods logo (`inv-108`).** The bounded
@@ -141,15 +141,25 @@ preserving the viewBox and all other bytes. All six converter APIs currently
 reject every output with `UnsupportedFeature`: **0/9 exact; document incomplete**.
 
 Percentage oval geometry now advances all nine outputs to the next measured gate:
-`Only straight clip paths are implemented.` The [percentage-oval bank](tests/Research/oval-percentage-lengths/manifest.json)
+`Only straight clip paths are implemented.` Native curve clip replay now advances
+all nine to `Only axis-aligned rectangle transforms are implemented.` The [percentage-oval bank](tests/Research/oval-percentage-lengths/manifest.json)
 has nine exact controls and three explicit unsupported boundaries. Root/nested
 user-space bases, normalized diagonal radii and native float resolution feed both
 geometry and recorded paint bounds. Percentage oval definitions remain gated
 until their host viewport follows instance replay; this promised G2/G3 combination
 stays open. Rotated ellipse maps and rectangle percentages retain their own gates.
 The complete Wikifoods document is still **0/9 exact**, not completed by these controls.
+The [curved-clip bank](tests/Research/curved-path-clips/manifest.json) has **nine exact
+controls and three explicit boundaries**, through six outputs on both platforms.
+Shared native clip content preserves authored quadratic/cubic/arc commands, the
+parent bitmap origin and the separately transformed enclosing rectangle. The
+older group clip control also becomes exact without changing its reference.
+Concave curves, bounding-box curve clips and nonuniform composed group curves
+remain unsupported. The last combination exposes a measured edge mismatch;
+keep it in G3 while advancing Wikifoods' uniform rotated paint map. This is a
+finite dependency boundary, with the remaining G3 promise unchanged.
 Both current Release solution builds pass with zero warnings/errors, and all
-**5,661 tests pass per platform** (4,165 core / 1,490 visual / six FontProbe).
+**5,679 tests pass per platform** (4,171 core / 1,502 visual / six FontProbe).
 Every focused PNG has a stable, healthy, cleaned Linux triple matching its frozen
 reference. The original-bank/cohort qualification at `83de8a50` remains the last
 complete bank measurement; rerun the required complete checks when the document
@@ -185,7 +195,7 @@ in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **5,661 passed on each platform**: 4,165 core, 1,490 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **5,679 passed on each platform**: 4,171 core, 1,502 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | Existing parser/raster work, memory-denial, cancellation/retry, geometry/paint and six-output regressions pass. Six new template/grid inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. A 1,024-link forward chain resolves iteratively; aliases borrow one promoted tile scene with independent grids. Missing/cyclic/duplicate/negative templates and oversized tiles release owners; full-document early/middle/late work and peak-memory denials release partial owners before retry. Five mask inputs also sweep parser/discovery work, sampled/peak memory and raster work boundaries; anonymous, unused, duplicate and rejected masks release staging owners. Borrowed replay survives cancellation/retry, and the complete mask document releases early/middle/late work and peak-memory denials. Nested affine-opacity also sweeps parser/discovery work, sampled/peak memory denial, raster work boundaries and cancellation/retry; clip and opacity retain distinct bounded owners. Two new oval inputs sweep every parser work denial and sampled/peak memory denial; discarded unpainted mask fill owners release, and centerline/outline commands survive failed replay unchanged. Three new affine-arc inputs sweep every parser work denial and sampled/peak memory denial, then denied raster work/memory and cancellation/retry with immutable commands. Source point-count and zero-radius arc controls retain their boundary semantics. Three native-fill/hairline inputs sweep every parser work denial and sampled/peak memory denial, plus raster work/memory and cancellation/retry with immutable commands. The complete Malta input releases partial owners after early/middle/late parser work and peak-memory denials before retry. Native float-collapsed ovals enclose no area. Two new near-close straight/cubic fills sweep parser work, sampled/peak memory denial, raster work/memory and cancellation/retry with immutable source commands. The complete Portugal document also releases partial owners under early/middle/late parser work and peak-memory denial before retry. Prior mechanism details retain their dated scope in the design record. Remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,394 exact + zero known-difference renders + 16 rejections**; 799 base documents / 611 variants. The original rotated mark graduates against a new independent browser reference; its source/options and all preceding exact assets remain unchanged. |
 | Executed research manifest | **65 probes = 65 exact + zero known-difference renders + zero rejections**. The tiger graduates at its explicitly qualified viewport; its historical auto-image PNG remains diagnostic. The other 64 research outputs stay unchanged. |
@@ -493,8 +503,13 @@ maps are outside this static SVG subset. The heart and I Ching documents are
 complete; the radiation symbol is now 9/9 exact after routing oval strokes through
 shared native source replay. Seven new oval controls are exact; the eighth retains
 the discovered non-scaling root-viewBox width defect. Correct that shared width
-map within this exit. The retained non-uniform curve, stroke and paint combinations remain
-promised; Malta, Portugal, Bhutan and South Africa are complete. Exit: these
+map within this exit. The `curved-path-clips/composed-group-cubic` control freezes a new nonuniform
+composed curve-clip boundary. Its prototype still differs at 58 pixels (maximum
+alpha error 46) after retaining both native clip coverages, so this combination
+continues to reject explicitly. Concave and objectBoundingBox curved clips remain
+in the G5 exit. Wikifoods' uniform rotated group clip is exact; its affine radial
+paint map is the next measured dependency. The retained non-uniform curve, stroke
+and paint combinations remain promised; Malta, Portugal, Bhutan and South Africa are complete. Exit: these
 retained documents/families and focused map controls
 are exact without normalized or flattened source substitution; no corporate or
 prior exact regression.

@@ -341,6 +341,8 @@ internal sealed class SvgDocumentState : IDisposable
         foreach (RenderBudget.BudgetReservation reservation in DefinitionReservations) reservation.Dispose();
         DefinitionReservations.Clear();
         Clips.Dispose();
+        ClipPolygon?.SourcePath?.Dispose();
+        foreach (SvgClipPolygon clip in ClipPolygons.Values) clip.SourcePath?.Dispose();
         ClipPolygons.Dispose();
         ObjectClips.Dispose();
         Masks.Dispose();

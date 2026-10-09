@@ -25,8 +25,9 @@ count as completed documents. The I Ching nested affine-opacity control remains 
 - Frozen outputs: [nine document cases](../tests/Research/wikifoods-logo/manifest.json), original-input scales one third / 1 / 2, 400×400 / 1200×1200 / 2400×2400, each transparent/white/black. Small/large browser materializations change only root dimensions. All nine stable, healthy, cleaned triples on each platform; Linux PNGs match the frozen Windows PNGs byte-for-byte.
 - Baseline at `83de8a50`: every output rejects `UnsupportedFeature`, first message “Only bare-number and px rectangle coordinates are implemented.” Percentage circle lengths trigger that gate. Curved group/leaf clips and radial paints are present in the source; subsequent gates await diagnosis. **0/9 exact; incomplete.** All six APIs protect the current rejection on Windows/Linux.
 
-The first shared percentage-oval repair advances all nine outputs to
-`Only straight clip paths are implemented.` The unchanged original and nine
+Shared percentage-oval and native curved clip repairs advance all nine outputs to
+`Only axis-aligned rectangle transforms are implemented.`, after shared percentage
+lengths and native curved clip replay. The unchanged original and nine
 frozen PNGs stay in place; **0/9 exact, document incomplete**. Nine focused
 controls are exact; three preserve explicit unsupported boundaries. These controls
 remain separate from document completion.
@@ -43,12 +44,21 @@ remain ignored research artifacts. No population success rate follows from this
 batch. The eleven completed documents and corporate 27/27 / 258/258 stay frozen.
 
 Source selection at `ea1126ad` added nine focused six-API rejection checks per
-platform, with unchanged production. The subsequent percentage-oval slice passes
-current Release solution builds and all 5,661 tests per platform; its twelve
+platform, with unchanged production. The percentage-oval slice at `4797ffc6` passed
+Release solution builds and all 5,661 tests per platform; its twelve
 controls retain nine exact and three unsupported outcomes through six APIs. Each
 control has a fresh healthy, cleaned Linux triple matching the frozen PNG. The
 last complete original-bank/cohort measurement remains `83de8a50`; complete bank
 qualification follows the finished document correction.
+
+The curved clip dependency has nine exact controls and three explicit boundaries
+through six outputs on Windows/Linux, with unchanged healthy, cleaned capture
+triples. It preserves separate enclosing-rectangle and path coverage under the
+uniform rotation used by Wikifoods. The older group clip control becomes exact
+against its frozen reference. A nonuniform composed cubic clip still has an edge
+mismatch and remains explicitly unsupported in G3; it does not block this document.
+Current Release builds and all 5,679 tests pass per platform. No new document is
+completed by these controls; the queue remains 11/12 complete.
 
 ### inv-061 — complete retained South Africa qualification
 
