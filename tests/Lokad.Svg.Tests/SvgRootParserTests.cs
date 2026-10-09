@@ -2390,9 +2390,7 @@ public sealed class SvgRootParserTests
     [InlineData("scale(0,1)")]
     [InlineData("scale(1,0)")]
     [InlineData("matrix(0,0,0,1,0,0)")]
-    [InlineData("matrix(1,1,0,1,0,0)")]
-    [InlineData("matrix(1,0,1,1,0,0)")]
-    public void Rejects_zero_and_skewed_geometry_transforms(string transform)
+    public void Rejects_zero_geometry_transforms(string transform)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><rect width='8' height='8' transform='" + transform + "'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
 

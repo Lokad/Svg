@@ -113,7 +113,7 @@ internal static class SvgPatternSyntax
             using BudgetedParserList<int> noEnds = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering curveLowering = new(noPoints, noEnds, elementName, true, isEvenOdd, maximumGeometryElements, budget, context.WorkCounter, context.CancellationToken);
             SvgPolygonMapping mapping = hasCurve ? SvgPolygonMapping.FlattenedCurves : SvgPolygonMapping.FiniteEdges;
-            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasArc, hasCurve, mapping, curveShape, frame, false, budget);
+            SvgParsedGeometry filled = curveLowering.LowerDeviceFill(d, commandCount, hasCurve, mapping, curveShape, frame, false, budget);
             using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             try
             {

@@ -46,13 +46,15 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
-    public void Arc_under_anisotropic_transform_stays_unsupported()
+    public void Arc_under_anisotropic_transform_retains_the_source_ellipse()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><g transform='scale(2,1)'><path d='M0,4 A4,4 0 1 1 8,4 A4,4 0 1 1 0,4 Z' fill='red'/></g></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = DecodeRgba(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None), out int width, out int height);
+        Assert.Equal(16, width);
+        Assert.Equal(8, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 8, 4));
+        Assert.Equal(SvgColor.Transparent, Pixel(pixels, width, 0, 0));
     }
 
     [Fact]

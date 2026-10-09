@@ -50,11 +50,34 @@
       "originalSha256": "a010007a1654f0ccfd3eb49ddce9ea9be030ebef0f3261907791097faf6cc0ac",
       "materialization": "A CC0 SPDX comment is inserted after the XML declaration; all remaining bytes are the downloaded original.",
       "sourceSha256": "f41062f8380d82b11d3bae162b30fe11b1a59ace12dd015488c0d9dabb0ddc12",
-      "featureTags": ["illustration", "path-heavy", "groups", "curves", "calibration"],
+      "featureTags": [
+        "illustration",
+        "path-heavy",
+        "groups",
+        "curves",
+        "calibration"
+      ],
       "width": 362,
       "height": 296,
-      "candidateError": "UnsupportedFeature",
       "oracle": {
+        "referencePng": "affine-arcs/references/tiger-viewport.png",
+        "referenceSha256": "539e7ad083d16ad3d8c3970bd5a92f17f7c93b399c5c9b7091c69433f08bd7f2",
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "background": "transparent",
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true,
+        "captureInput": "affine-arcs/tiger-viewport.svg",
+        "captureInputSha256": "1eb9224dacd3f072f0ac11648aa8a038437af2e5a224856b29376a92d94756fc",
+        "selection": "Complete retained online document. Explicit viewport acceptance declared after detecting the historical auto-image sizing mismatch, before qualification; original source geometry is unchanged."
+      },
+      "diagnosticOracle": {
         "referencePng": "references/tiger-16551.png",
         "referenceSha256": "ece98927d48c0a140f7875b4e1c1935a0e973272c1704f26ef10997fa9f7aa5c",
         "chromeVersion": "153.0.8010.52",
@@ -65,7 +88,22 @@
         "deviceScaleFactor": 1,
         "background": "transparent",
         "freshProcessCaptures": 3,
-        "decodedPixelStability": "identical"
+        "decodedPixelStability": "identical",
+        "qualification": "Retained unchanged historical auto-image capture. The browser negotiated 361.984375x295.796875 CSS pixels, so this is not the explicit 362x296 conversion viewport. It remains outside the admitted fidelity comparison."
+      },
+      "viewport": {
+        "width": 362,
+        "height": 296
+      },
+      "admittedRendering": {
+        "changedPixelCount": 0,
+        "maximumChannelError": 0,
+        "maximumAlphaError": 0,
+        "alphaChangedPixelCount": 0,
+        "minimumMismatchX": 362,
+        "minimumMismatchY": 296,
+        "maximumMismatchX": -1,
+        "maximumMismatchY": -1
       }
     },
 

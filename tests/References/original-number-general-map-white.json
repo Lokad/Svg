@@ -36,7 +36,12 @@
   "declaredBeforeProductionEdit": true,
   "declaredBeforeGenericPrototype": true,
   "declaredAfterNumericPrototype": false,
-  "candidateOutcome": "UnsupportedFeature",
-  "candidateSha256": null,
-  "comparison": null
+  "candidateOutcome": "renders",
+  "candidateSha256": "1825fbd083998615c66d9ccc5f6f43bf584803367f561f2b1419ba1496f1c227",
+  "comparison": {
+    "exact": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "maximumAlphaError": 0
+  }
 }

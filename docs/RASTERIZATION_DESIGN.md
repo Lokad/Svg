@@ -9322,3 +9322,58 @@ development deliverables are complete; the retained tiger's general matrix is
 selected next. Raw evidence is under `artifacts/radiation-contours-20261009/` and
 `artifacts/linux-delivery-20261007/oval-source-final-20261009/`. No source/renderer
 fingerprint fields or quantitative performance claims are introduced.
+
+## Retained tiger: affine arcs and native command density (2026-10-09)
+
+The complete retained Telemachos tiger is exact through all six outputs on
+Windows/Linux at its explicit 362×296 transparent viewport. General finite
+nonsingular matrix fills use the existing device/source map. Endpoint arcs
+normalize in authored float coordinates into at most three rational conics,
+then map their controls/endpoints through the composed affine transform. The
+translation-only route stays stable. General stroke widths still require a
+similarity; equal column lengths alone cannot validate a sheared width map.
+The remaining curved/stroked/paint/instance combinations stay in G3–G6.
+
+Two genuine tiger mismatches remained after the viewport was made comparable.
+An isolated stripe split fill from stroke; its fill was exact, while the stroke
+and a small translated twin differed. The generated outline matched the existing
+compiled native stroker numerically apart from discarded empty lines; its
+ordinary filled-path twin was exact. Native point density includes those line
+verbs. Removing them changed intersection dispatch even though they draw no area.
+Retained source outlines now preserve every command. Replay independently removes
+duplicate line vertices for contour classification and records the original
+native point count, including normalized arc conics, under its already charged
+verb walk. The scanner uses that count; legacy unretained geometry keeps its
+existing reconstruction. No coordinate-specific predicate or second stroker is
+introduced. Round-cap dots remain exact. The existing prepared-owner allowance
+covers the scalar count; no new array or surface is introduced, and draw/
+geometry/paint layouts remain 72/272/68 bytes.
+
+The historical tiger PNG is not a comparable viewport reference: an auto image
+negotiates 361.984375×295.796875 CSS pixels before the 362×296 screenshot. Its
+source, PNG and recipe-2 metadata stay unchanged as diagnostic evidence. A new,
+explicitly declared root-only 362×296 capture materialization changes no geometry;
+converter options apply that viewport to the original bytes. Three fresh healthy,
+cleaned captures per platform are stable and byte-identical to the separately
+banked acceptance PNG. The historical target still differs at 3,244 pixels and
+is not claimed exact. No product viewport-sizing behavior changes.
+
+The affine bank has fifteen controls (twelve exact, three explicit rejections)
+and the complete tiger, measured separately. Three original general-map
+backgrounds and the older general-matrix rectangle become exact against their
+unchanged PNGs. Three affine arc inputs sweep every parser work denial and
+sampled/peak memory denial; raster work/memory denial and cancellation leave
+source commands unchanged before successful retry. Empty-line native count,
+zero-radius arc fallback and sheared-column width boundaries are protected.
+
+Both platforms pass Release builds and 5,545 tests. All prior exact original,
+corporate and focused outputs stay exact; only the preceding general-matrix
+rectangle rejection advances in the old focused banks. Legacy Default inv-014
+changes under corrected source point density. An independently declared,
+matching 300×150 root-only diagnostic capture is stable/healthy/cleaned in three
+runs: the preceding output differs at 850 pixels (maximum RGB 85 / alpha five),
+and the corrected output is exact. This does not qualify the complete Venn
+document or replace any earlier reference. Malta is unchanged at 981 pixels /
+maximum five / exact alpha and is the next complete document. G2–G9 and S17
+remote CI remain open. Ignored evidence is under artifacts/tiger-affine-arcs-20261009/
+and artifacts/linux-delivery-20261007/tiger-affine-final-20261009/.

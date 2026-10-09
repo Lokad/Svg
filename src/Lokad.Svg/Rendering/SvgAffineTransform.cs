@@ -120,17 +120,17 @@ internal readonly record struct SvgAffineTransform(double A, double B, double C,
         return composed;
     }
 
-    /// <summary>Reports the uniform scale factor when both columns share a length, for width-preserving rotation and uniform scales.</summary>
+    /// <summary>Reports the uniform scale factor when both columns are perpendicular and share a nonzero length.</summary>
     internal bool TryGetUniformScale(out double scale)
     {
         double first = Math.Sqrt(A * A + B * B);
         double second = Math.Sqrt(C * C + D * D);
         scale = first;
         if (!double.IsFinite(first) || !double.IsFinite(second)) return false;
-        if (first == second) return true;
         double magnitude = Math.Max(first, second);
         if (magnitude == 0) return false;
-        return Math.Abs(first - second) <= 1e-9 * magnitude;
+        if (Math.Abs(first - second) > 1e-9 * magnitude) return false;
+        return Math.Abs(A * C + B * D) <= 1e-9 * magnitude * magnitude;
     }
 
     /// <summary>Applies this axis-aligned transform to the current rectangle geometry fast path, normalizing reflected extents.</summary>

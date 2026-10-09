@@ -1743,6 +1743,11 @@ internal ref partial struct SvgAnalyticCoverage
     private static long GetNativePointCount(scoped ref SvgAnalyticContourPreparation preparation, bool useSpans, long maximumWork, scoped ref long setupWork, CancellationToken token)
     {
         if (preparation.NativePointCount is long cached) return cached;
+        if (preparation.Source is SvgPreparedPathContours source)
+        {
+            preparation.NativePointCount = source.NativePointCount;
+            return source.NativePointCount;
+        }
         long count = preparation.Points.Length;
         if (useSpans && (preparation.QuadSpans.Length > 0 || preparation.CubicSpans.Length > 0))
         {

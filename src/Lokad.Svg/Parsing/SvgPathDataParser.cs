@@ -17,9 +17,9 @@ namespace Lokad.Svg.Parsing;
 /// <para>Error taxonomy: grammar and shape violations (missing moveto, truncated parameters, stray values,
 /// unexpected letters, non-numeric coordinates) fail as <see cref="SvgErrorCode.MalformedInput"/>.
 /// A null or whitespace-only value draws nothing with zero contours, matching the SVG rule that a
-/// missing path draws nothing. Arc radii and rotation pass through in the post-transform frame:
-/// exact when the caller transform is a similarity (translation, uniform scale, rotation), which covers
-/// viewBox and output scaling; general-affine arcs need user-space sampling owned by a later slice.</para>
+/// missing path draws nothing. Mapped arcs normalize their source-space endpoint operands into
+/// bounded rational conics before applying the affine map. Translation-only arcs keep the established
+/// endpoint route; retained source replay preserves native float geometry at raster time.</para>
 /// <para>Open trailing contours seal implicitly for fill; a repeated closepath without an open contour is
 /// a no-op. Command letters are bounded by the caller limit, points by the builder capacity, and scanning
 /// work by the shared counter checkpoints.</para>
@@ -363,7 +363,9 @@ internal static class SvgPathDataParser
                         double endX = absolute ? x : RequireFinite(currentX + x);
                         double endY = absolute ? y : RequireFinite(currentY + y);
                         authored?.Add(new(SvgAuthoredPathVerb.Arc, (largeArc ? SvgAuthoredArcFlags.Large : SvgAuthoredArcFlags.None) | (sweep ? SvgAuthoredArcFlags.Sweep : SvgAuthoredArcFlags.None), new(radiusX, radiusY), new(rotation, 0), new(endX, endY)));
-                        builder.AddArc(radiusX, radiusY, rotation, largeArc, sweep, MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
+                        if (transform.IsAxisAligned && transform.A == 1 && transform.D == 1)
+                            builder.AddArc(radiusX, radiusY, rotation, largeArc, sweep, MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
+                        else AppendMappedArc(new(currentX, currentY), radiusX, radiusY, rotation, largeArc, sweep, new(endX, endY));
                         hasPreviousCubic = false;
                         hasPreviousQuadratic = false;
                         currentX = endX;
@@ -417,6 +419,18 @@ internal static class SvgPathDataParser
         {
             authored?.Add(new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, new(controlX, controlY), new(endX, endY), default));
             builder.AddQuadratic(MapPathPoint(transform, controlX, controlY), MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
+        }
+
+        void AppendMappedArc(SvgDevicePoint start, double radiusX, double radiusY, double rotation, bool largeArc, bool sweep, SvgDevicePoint end)
+        {
+            // Normalize in source space, then map each retained conic. Radii and
+            // sweep cannot be transformed independently under a general affine map.
+            for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) workCounter.Consume(cancellationToken);
+            Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
+            int count = SvgEndpointArc.Convert(start, radiusX, radiusY, rotation, largeArc, sweep, end, arcs, cancellationToken);
+            if (count == 0) builder.AddLine(MapPathPoint(transform, end.X, end.Y));
+            else for (int index = 0; index < count; index++)
+                builder.AddConic(MapPathPoint(transform, arcs[index].Control.X, arcs[index].Control.Y), MapPathPoint(transform, arcs[index].End.X, arcs[index].End.Y), arcs[index].Weight, 8, cancellationToken);
         }
 
         void SealContour(bool explicitlyClosed)

@@ -183,6 +183,16 @@ proof shows Chrome negotiates height from the intrinsic ratio and screenshots th
 meets the viewBox into its viewport. Compare at explicit integer-scale viewports with matching aspect
 ratio instead, as in batches 84-89 and 101-103.
 
+- Fractional viewBox ratios can negotiate fractional CSS image dimensions even
+  when the requested screenshot dimensions are rounded to a nearby aspect ratio.
+  The retained tiger's auto image occupies 361.984375×295.796875 CSS pixels inside
+  its 362×296 capture. That historical PNG stays diagnostic. For an explicitly
+  declared 362×296 conversion viewport, a separately recorded root-only width/
+  height materialization gives the browser the same frame; convert the unchanged
+  original with explicit viewport options. Keep the old source/PNG/provenance,
+  distinguish the new acceptance reference, and qualify it before admission.
+  Do not change product fitting to reproduce page layout negotiation or cropping.
+
 - Hard capture limits: SVG input at most 8 MiB, each side at most 16,384 pixels,
   and capture area at most 8,388,608 pixels. Screenshot replies alone admit
   64 MiB of assembled UTF-8 JSON, including PNG base64; commands, other replies

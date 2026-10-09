@@ -489,13 +489,11 @@ internal ref struct SvgOrthogonalGeometryLowering
     /// <remarks>Painted paths preserve directed contacts for output-space replay under either fill rule.
     /// Scene arrays and the command owner are reserved before publication; copying observes caller work and cancellation.
     /// Unpainted geometry without replay retains the legacy contour-separation admission.</remarks>
-    internal SvgParsedGeometry LowerDeviceFill(string d, int commandCount, bool hasArc, bool hasCurve, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, bool retainInstanceCenterline, RenderBudget budget)
+    internal SvgParsedGeometry LowerDeviceFill(string d, int commandCount, bool hasCurve, SvgPolygonMapping mapping, SvgResolvedPaintableElement element, SvgViewportFrame? frame, bool retainInstanceCenterline, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path command count exceeds the configured path-command limit.");
-        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, hasArc);
-        if (hasArc && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under rotated polygon transforms stay unsupported.");
-        if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
         long wantedPoints = hasCurve
             ? (long)commandCount * (CurveSegmentsPerCommand + 1)
@@ -1385,14 +1383,11 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (result.Geometries.Length == 1)
             {
                 using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
-                SvgDevicePoint previous = default;
                 foreach (SvgStrokeOutlineCommand command in outline.AsSpan())
                 {
                     _workCounter.Consume(_cancellationToken);
-                    SvgDevicePoint endpoint = command.End.Device();
-                    // Match Traverse: duplicate line endpoints must not change
-                    // native curve classification when the source outline is replayed.
-                    if (command.Verb == SvgStrokeOutlineVerb.Line && endpoint == previous) continue;
+                    // Native point density includes zero-length outline verbs. Retain
+                    // their source commands; edge construction discards their empty edges.
                     SvgAuthoredPathCommand verb = command.Verb switch
                     {
                         SvgStrokeOutlineVerb.Move => new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, command.End.Device(), default, default),
@@ -1403,7 +1398,6 @@ internal ref struct SvgOrthogonalGeometryLowering
                         _ => throw new InvalidOperationException("Invalid native stroke outline verb."),
                     };
                     source.Add(verb);
-                    previous = endpoint;
                 }
                 OwnedParserArray<SvgAuthoredPathCommand> owned = source.Detach();
                 try { result.Storage.Items[0] = result.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.Create(owned, outlineMap, budget) }; }

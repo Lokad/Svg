@@ -219,13 +219,17 @@ public sealed class SvgPathDataParserTests
     }
 
     [Fact]
-    public void Arc_radii_apply_in_device_frame()
+    public void Arc_radii_scale_from_the_source_frame()
     {
         SvgContourBuilder scaled = new(256, 4);
+        scaled.EnableQuadSpanRetention();
         SvgPathDataParser.ParsePath("M8 0A8 8 0 0 1 0 8Z", SvgAffineTransform.FromScale(2, 2), scaled, new SvgFlattenPolicy(0.5, 64, 256), 64, new ParserWorkCounter(1_000_000), CancellationToken.None, null);
-        SvgContourBuilder direct = ParseCurve("M16 0A8 8 0 0 1 0 16Z", 0.5);
-
-        Assert.Equal(direct.GetContour(0).ToArray(), scaled.GetContour(0).ToArray());
+        SvgQuadSpan quarter = Assert.Single(scaled.GetQuadSpans());
+        Assert.Equal(16, quarter.Control.X, 5);
+        Assert.Equal(16, quarter.Control.Y, 5);
+        Assert.Equal(SvgRationalQuadratic.QuarterCircleWeight, quarter.ConicWeight);
+        foreach (SvgDevicePoint point in scaled.GetContour(0))
+            Assert.InRange(Math.Abs(point.X * point.X + point.Y * point.Y - 256), 0, .0001);
     }
 
     [Fact]

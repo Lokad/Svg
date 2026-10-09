@@ -96,17 +96,18 @@ internal sealed class SvgAuthoredPath : IDisposable
         builder.EnableQuadSpanRetention();
         builder.EnableCubicSpanRetention();
         SvgDevicePoint current = default;
+        long nativePointCount = 0;
         foreach (SvgAuthoredPathCommand command in Commands)
         {
             workCounter.Consume(cancellationToken);
             switch (command.Verb)
             {
-                case SvgAuthoredPathVerb.Move: builder.BeginContour(command.First); current = command.First; break;
-                case SvgAuthoredPathVerb.Line: builder.AddLine(command.First); current = command.First; break;
-                case SvgAuthoredPathVerb.Quadratic: builder.AddQuadratic(command.First, command.Second, policy, cancellationToken); current = command.Second; break;
-                case SvgAuthoredPathVerb.Conic: builder.AddConic(command.First, command.Second, (float)command.Third.X, 8, cancellationToken); current = command.Second; break;
-                case SvgAuthoredPathVerb.Cubic: builder.AddCubic(command.First, command.Second, command.Third, policy, cancellationToken); current = command.Third; break;
-                case SvgAuthoredPathVerb.Arc: AppendEndpointArc(builder, current, command, workCounter, cancellationToken); current = command.Third; break;
+                case SvgAuthoredPathVerb.Move: builder.BeginContour(command.First); current = command.First; nativePointCount++; break;
+                case SvgAuthoredPathVerb.Line: if (command.First != current) builder.AddLine(command.First); current = command.First; nativePointCount++; break;
+                case SvgAuthoredPathVerb.Quadratic: builder.AddQuadratic(command.First, command.Second, policy, cancellationToken); current = command.Second; nativePointCount += 2; break;
+                case SvgAuthoredPathVerb.Conic: builder.AddConic(command.First, command.Second, (float)command.Third.X, 8, cancellationToken); current = command.Second; nativePointCount += 2; break;
+                case SvgAuthoredPathVerb.Cubic: builder.AddCubic(command.First, command.Second, command.Third, policy, cancellationToken); current = command.Third; nativePointCount += 3; break;
+                case SvgAuthoredPathVerb.Arc: nativePointCount += AppendEndpointArc(builder, current, command, workCounter, cancellationToken); current = command.Third; break;
                 case SvgAuthoredPathVerb.End:
                 case SvgAuthoredPathVerb.Close: builder.EndContour(); break;
                 default: throw new InvalidOperationException("Invalid retained path verb.");
@@ -132,9 +133,9 @@ internal sealed class SvgAuthoredPath : IDisposable
             if (offsets[span.Contour] >= 0) quads.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], Control = mapCoordinates ? MapPoint(map, span.Control, new(0, 0)) : span.Control });
         foreach (SvgCubicSpan span in builder.GetCubicSpans())
             if (offsets[span.Contour] >= 0) cubics.Add(span with { Contour = contours[span.Contour], StartIndex = span.StartIndex + offsets[span.Contour], EndIndex = span.EndIndex + offsets[span.Contour], FirstControl = mapCoordinates ? MapPoint(map, span.FirstControl, new(0, 0)) : span.FirstControl, SecondControl = mapCoordinates ? MapPoint(map, span.SecondControl, new(0, 0)) : span.SecondControl });
-        return CreateContours(points, ends, quads, cubics, _commands.Items, isEvenOdd, IsKnownConvex, budget, workCounter, cancellationToken);
+        return CreateContours(points, ends, quads, cubics, _commands.Items, nativePointCount, isEvenOdd, IsKnownConvex, budget, workCounter, cancellationToken);
 
-        static void AppendEndpointArc(SvgContourBuilder builder, SvgDevicePoint start, SvgAuthoredPathCommand command, ParserWorkCounter workCounter, CancellationToken token)
+        static int AppendEndpointArc(SvgContourBuilder builder, SvgDevicePoint start, SvgAuthoredPathCommand command, ParserWorkCounter workCounter, CancellationToken token)
         {
             // One normalization phase and at most three conic verbs, charged before numerical work.
             for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) workCounter.Consume(token);
@@ -145,9 +146,10 @@ internal sealed class SvgAuthoredPath : IDisposable
             else for (int index = 0; index < count; index++)
                 // Samples support fallback classification; the scanner consumes the retained conic.
                 builder.AddConic(arcs[index].Control, arcs[index].End, arcs[index].Weight, 8, token);
+            return count == 0 ? 1 : 2 * count;
         }
 
-        static SvgPreparedPathContours CreateContours(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, SvgAuthoredPathCommand[] commands, bool isEvenOdd, bool isKnownConvex, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        static SvgPreparedPathContours CreateContours(BudgetedParserList<SvgDevicePoint> pointBuilder, BudgetedParserList<int> endBuilder, BudgetedParserList<SvgQuadSpan> quadBuilder, BudgetedParserList<SvgCubicSpan> cubicBuilder, SvgAuthoredPathCommand[] commands, long nativePointCount, bool isEvenOdd, bool isKnownConvex, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
             RenderBudget.BudgetReservation owner = budget.Reserve(128, SvgMemoryCategory.Surface);
             OwnedParserArray<SvgDevicePoint> points = new([], null);
@@ -165,7 +167,7 @@ internal sealed class SvgAuthoredPath : IDisposable
                     for (int contour = 0; contour < ends.Items.Length; contour++) signBuilder.Add(1);
                     signs = signBuilder.Detach();
                 }
-                return new(points, ends, quads, cubics, signs, commands, isKnownConvex, owner);
+                return new(points, ends, quads, cubics, signs, commands, nativePointCount, isKnownConvex, owner);
             }
             catch { points.Dispose(); ends.Dispose(); quads.Dispose(); cubics.Dispose(); signs.Dispose(); owner.Dispose(); throw; }
         }
@@ -254,13 +256,16 @@ internal sealed class SvgPreparedPathContours : IDisposable
     private RenderBudget.BudgetReservation? _owner;
     private ReadOnlyMemory<SvgAuthoredPathCommand> _commands;
 
-    internal SvgPreparedPathContours(OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<SvgQuadSpan> quads, OwnedParserArray<SvgCubicSpan> cubics, OwnedParserArray<int> signs, SvgAuthoredPathCommand[] commands, bool isKnownConvex, RenderBudget.BudgetReservation owner)
+    internal SvgPreparedPathContours(OwnedParserArray<SvgDevicePoint> points, OwnedParserArray<int> ends, OwnedParserArray<SvgQuadSpan> quads, OwnedParserArray<SvgCubicSpan> cubics, OwnedParserArray<int> signs, SvgAuthoredPathCommand[] commands, long nativePointCount, bool isKnownConvex, RenderBudget.BudgetReservation owner)
     {
         _points = points; _ends = ends; _quads = quads; _cubics = cubics; _signs = signs; _owner = owner;
         _commands = commands;
+        NativePointCount = nativePointCount;
         IsKnownConvex = isKnownConvex;
     }
 
+    /// <summary>Counts original native points, including empty lines, before edge classification removes duplicate vertices.</summary>
+    internal long NativePointCount { get; }
     internal bool IsKnownConvex { get; }
     internal SvgDevicePoint[] Points => _points.Items;
     internal int[] ContourEnds => _ends.Items;

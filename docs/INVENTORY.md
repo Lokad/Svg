@@ -9,9 +9,10 @@ The frozen selection and measured outcomes are recorded below.
 
 All five retained gap documents are exact on Windows/Linux, separate from the
 preserved corporate 27/27 documents and 258/258 variants. The existing radiation
-symbol completes the sixth development deliverable: **6/6 complete**, with that
-document at **9/9 exact outputs through all six APIs on both platforms**. Selecting
-the retained tiger next makes the active queue **6/7 complete**. Controls do not
+symbol completes the sixth development deliverable, with that
+document at **9/9 exact outputs through all six APIs on both platforms**. The
+retained tiger completes the seventh: **7/7 complete**. Selecting Malta
+next makes the active queue **7/8 complete**. Controls do not
 count as completed documents. The I Ching nested affine-opacity control remains exact.
 
 ### inv-107 — SVG mask.svg
@@ -53,6 +54,35 @@ no document graduation follows that partial improvement.
 Raw records stay under ignored `artifacts/radiation-contours-20261009/` and the
 fresh Linux checkout under `artifacts/linux-delivery-20261007/oval-source-final-20261009/`.
 No source/DLL fingerprints are introduced.
+
+### research-tiger-16551 — retained Tiger
+
+The [original CC0 SVG](../tests/Research/tiger-16551.svg), Telemachos/Openclipart,
+is unchanged. All six output APIs are exact on Windows/Linux at the explicit
+362×296 transparent viewport. Shared source-space endpoint-arc conversion admits
+the general matrix, and native point-count retention repairs the final two
+stroke pixels. Fifteen focused controls have 12 exact results and three explicit
+unsupported boundaries; they are separate from the complete document.
+
+The historical [auto-image PNG](../tests/Research/references/tiger-16551.png)
+and all its capture metadata remain in `diagnosticOracle` within the
+[research manifest](../tests/Research/manifest.json). Fresh layout inspection
+found a 361.984375×295.796875 image in that 362×296 screenshot. It is not the
+explicit converter viewport. The separate acceptance [PNG](../tests/Research/affine-arcs/references/tiger-viewport.png)
+comes from a [root-only size materialization](../tests/Research/affine-arcs/tiger-viewport.svg),
+with original geometry unchanged; converter options supply that viewport to the
+original source. Three fresh healthy, cleaned captures per platform are stable
+and byte-identical. This is an explicit capture-contract correction, not a claim
+of equality to the historical PNG. The bank stores the new platform provenance;
+the original source, old PNG and corporate denominator remain frozen.
+
+Evidence is under ignored `artifacts/tiger-affine-arcs-20261009/` and
+`artifacts/linux-delivery-20261007/tiger-affine-final-20261009/`. The next complete
+Malta deliverable retains its original nine size/background variants: intended
+900×600, small 300×200, large 1800×1200, scale one. These previously unspecified
+development sizes are fixed before new captures or correction. Keep its existing
+native transparent reference; the other eight outputs remain unmeasured. Its
+native residual remains 981 pixels / maximum five / exact alpha.
 
 ## Original-scope support audit and online batch (2026-10-08)
 

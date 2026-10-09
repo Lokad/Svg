@@ -49,7 +49,9 @@ public sealed class ResearchProbeTests
             {
                 string background = RequiredString(oracle, "background");
                 SvgColor optionBackground = background switch { "white" => new SvgColor(255, 255, 255, 255), "black" => new SvgColor(0, 0, 0, 255), _ => SvgColor.Transparent };
-                ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, new SvgRenderOptions(null, 1, optionBackground, SvgRenderLimits.Default, null), CancellationToken.None);
+                SvgViewport? viewport = probe.TryGetProperty("viewport", out JsonElement declaredViewport)
+                    ? new SvgViewport(declaredViewport.GetProperty("width").GetInt32(), declaredViewport.GetProperty("height").GetInt32()) : null;
+                ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, new SvgRenderOptions(viewport, 1, optionBackground, SvgRenderLimits.Default, null), CancellationToken.None);
                 RgbaImage rendered = PngRgbaDecoder.Decode(png.ToArray(), checked(width * height));
                 PixelComparison comparison = PixelComparer.Compare(referenceImage, rendered);
                 Assert.True(comparison.DimensionsMatch);

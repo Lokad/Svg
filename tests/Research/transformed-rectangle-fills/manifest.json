@@ -37,9 +37,7 @@
       "width": 64,
       "height": 48,
       "background": "transparent",
-      "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only nonzero axis-aligned or similar finite matrix() transforms are implemented."
+      "role": "fidelity"
     },
     {
       "id": "composed-group",
