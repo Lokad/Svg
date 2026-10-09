@@ -5,10 +5,12 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgNativeFillReplayTests
 {
-    [Fact]
-    public void Complete_Malta_document_releases_partial_source_owners_before_retry()
+    [Theory]
+    [InlineData("malta-flag.svg")]
+    [InlineData("portugal-flag.svg")]
+    public void Complete_document_releases_partial_source_owners_before_retry(string fileName)
     {
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData/malta-flag.svg"));
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", fileName));
         SvgRenderLimits limits = SvgRenderLimits.Default;
         RenderBudget measured = new(limits.MaximumAccountedBytes);
         ParserWorkCounter work = new(limits.MaximumWorkUnits);
@@ -34,6 +36,8 @@ public sealed class SvgNativeFillReplayTests
     [InlineData("<path d='M0 0 H512 V512 H0 Z M128 128 V384 H384 V128 Z' fill-rule='evenodd'/>")]
     [InlineData("<circle cx='255.5' cy='255.25' r='12.5'/>")]
     [InlineData("<path fill='none' stroke='red' stroke-width='.78125' stroke-linecap='round' d='M245.5 232.5 C210.2 266.7 265.3 223.4 260.2 259.8'/>")]
+    [InlineData("<path transform='matrix(.6 -.8 .8 .6 225 275)' d='M20 20V26H16V20.000002L19.999998 20.000002'/>")]
+    [InlineData("<path transform='matrix(.6 -.8 .8 .6 50 65)' d='M20 20V126H-16V20.000002C-3 20.000002 8.6 20.000002 19.999998 20.000002'/>")]
     public void Native_fill_and_tiled_hairline_owners_release_on_denial_and_survive_retry(string content)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'>" + content + "</svg>");

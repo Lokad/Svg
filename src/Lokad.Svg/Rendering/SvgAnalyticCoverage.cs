@@ -1623,6 +1623,16 @@ internal ref partial struct SvgAnalyticCoverage
             bool convexRing = knownConvex || IsConvexRing(points, cancellationToken) && structure == SvgContourFlags.None;
             bool retained = CurveSpansEligible(ends, quadSpans, cubicSpans, isEvenOdd, mapping, structure, cancellationToken);
             setupWork += points.Length;
+            if (convexRing && !knownConvex && preparation.Source is {} source)
+            {
+                // Native transforms retain cached source concavity even when float
+                // placement collapses the turn that established it. Convex sources
+                // still require classification after their final placement.
+                long sourceWork = source.Points.Length + (long)source.QuadSpans.Length + 2L * source.CubicSpans.Length + 2;
+                CheckClippedSetupWork(setupWork + sourceWork, maximumSetupWork, cancellationToken);
+                convexRing = SvgRawContourConvexity.IsConvex(source.Points, source.QuadSpans, source.CubicSpans, cancellationToken);
+                setupWork += sourceWork;
+            }
             if (convexRing && retained && !knownConvex)
             {
                 // Raw controls can reverse a turn that flattened samples omit. Reserve the

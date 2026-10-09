@@ -9439,3 +9439,49 @@ small-output cross-platform distinctions unchanged. Eight development documents
 are complete. Portugal is next; G2–G9 and S17 remote CI remain open.
 Ignored evidence is under artifacts/malta-native-strokes-20261009/ and
 artifacts/linux-delivery-20261007/malta-native-final-20261009/.
+
+## Source concavity across affine fill replay (2026-10-09)
+
+The retained Portugal flag completes all nine outputs declared before capture
+and correction: original converter bytes at scales 0.5 / 1 / 2, outputs 300×200 /
+600×400 / 1200×800, on transparent/white/black. All are exact through six APIs
+on Windows/Linux. The old native transparent reference stays unchanged; eight
+new Windows triples precede correction. Fresh healthy, cleaned Linux triples
+match those same frozen PNGs. Twelve independent CC0 controls are exact and
+remain separate from the nine completed development documents.
+
+The small/native/large residuals were 9/30/46 pixels, maximum 5/5/2, alpha exact.
+Isolated castle strokes are exact; the fill-only detail isolates a nearly closed
+five-point ring. Its source raw classifier is concave, but mapped float operands
+classify as convex. Reclassifying only the placed points loses native cache state
+and selects the wrong coverage walker. The same defect makes two independent
+tiled/reflected near-close controls lose opaque pixels (18/13 differing pixels,
+maximum 255). All twelve controls now match unchanged references.
+
+Chromium's [draw-path record analysis](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/paint/paint_op.cc)
+queries source convexity while [accumulating record metadata](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/cc/paint/paint_op_buffer.h).
+Skia's [TransformConvexity](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkPathPriv.cpp)
+retains cached concavity after placement; positive convexity can become unknown
+and requires classification again. Shared fill preparation now checks borrowed
+source points/controls before accepting a placed convex ring. Native shape
+builders retain their existing classification contract. Curve/control checks,
+source mapping, winding, clipping and material routes remain shared.
+
+The source traversal allocates no storage, charges its complete bounded work
+before classification and checks cancellation through the existing raw classifier.
+The final decision caches across bitmap contexts. Two new straight/cubic inputs
+sweep parser work and sampled/peak memory denial, raster work/memory, cancellation
+and retry with immutable commands. The complete Portugal document releases partial
+owners after early/middle/late parser work and peak-memory denial before retry.
+Draw/geometry/paint sizes remain 72/272/68. Existing cost records retain their dates;
+no quantitative performance claim or API/package delivery claim is added.
+
+Both platforms pass Release builds and 5,599 tests. All 1,567 original reports,
+1,551 PNGs and preceding exact results remain present. Only Portugal's legacy
+Default report/PNG changes, becoming exact; the other 1,550 PNGs and every older
+focused outcome stay unchanged. Corporate stays 27/27 / 258/258 exact against
+own-platform references, including the established three SDL small-output
+cross-platform distinctions. Nine development documents are complete; Bhutan is
+next. Remaining G2–G9 combinations and S17 remote CI stay open. Ignored evidence
+is under artifacts/portugal-source-strokes-20261009/ and
+artifacts/linux-delivery-20261007/portugal-source-final-20261009/.

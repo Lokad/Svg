@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Fixtures/candidates/inv-065.svg" Link="TestData/portugal-flag.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-057.svg" Link="TestData/malta-flag.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/viewport-percentage-bases/*.svg" Link="TestData/viewport-percentage-bases/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/container-shader-inheritance/*.svg" Link="TestData/container-shader-inheritance/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />

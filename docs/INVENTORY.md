@@ -11,8 +11,8 @@ All five retained gap documents are exact on Windows/Linux, separate from the
 preserved corporate 27/27 documents and 258/258 variants. The existing radiation
 symbol completes the sixth development deliverable, with that
 document at **9/9 exact outputs through all six APIs on both platforms**. The
-retained tiger completes the seventh and Malta the eighth: **8/8 complete**.
-Selecting Portugal next makes the active queue **8/9 complete**. Controls do not
+retained tiger completes the seventh, Malta the eighth and Portugal the ninth:
+**9/9 complete**. Selecting Bhutan next makes the active queue **9/10 complete**. Controls do not
 count as completed documents. The I Ching nested affine-opacity control remains exact.
 
 ### inv-107 — SVG mask.svg
@@ -106,16 +106,54 @@ historical size/background matrices. The other 1,547 original-bank PNGs are
 unchanged; corporate remains 27/27 / 258/258 exact against platform references.
 Windows/Linux pass Release builds and 5,575 tests each.
 
-Portugal is next. PLAN fixes native/small/large 600×400 / 300×200 / 1200×800,
-scales 1 / 0.5 / 2 and transparent/white/black before new capture or correction.
-Converter inputs remain original; browser small/large capture inputs may alter
-only root dimensions and add a 0 0 600 400 viewBox to express the same scaling.
-Preserve its old native transparent reference. Other outputs remain unmeasured;
-Portugal is not complete. G2–G9 and S17 remote CI remain open.
+At that Malta checkpoint, Portugal was selected next. PLAN fixed native/small/
+large 600×400 / 300×200 / 1200×800, scales 1 / 0.5 / 2 and all three backgrounds
+before capture or correction. Converter inputs were to remain original; browser
+small/large roots could add the matching 0 0 600 400 viewBox. Its old native
+transparent reference was preserved; other outputs were then unmeasured. The
+subsequent complete Portugal qualification is recorded below. G2–G9 and S17
+remote CI remain open.
 
 Ignored Malta evidence is under `artifacts/malta-native-strokes-20261009/` and
 `artifacts/linux-delivery-20261007/malta-native-final-20261009/`. No new download,
 source/DLL fingerprint or replacement of an existing reference is involved.
+
+### inv-065 — complete retained Portugal flag
+
+The [Portugal bank](../tests/Research/portugal-flag/manifest.json) keeps the original
+public-domain bytes and all nine outputs declared in PLAN at `676fe9e9`: native
+600×400 / small 300×200 / large 1200×800, scales 1 / 0.5 / 2, each on transparent/
+white/black. The original native transparent PNG stays byte-identical. Eight new
+healthy, cleaned Windows triples precede correction. Browser small/large inputs
+change only root dimensions and add a 0 0 600 400 viewBox; the converter retains
+the original bytes. Root-only capture materializations preserve the remaining
+source bytes exactly.
+Fresh healthy, cleaned Linux triples match every frozen PNG byte-for-byte.
+
+**All nine outputs are exact through all six APIs on both platforms.** The preceding
+small/native/large residuals were 9/30/46 pixels, maximum 5/5/2, alpha exact.
+One nearly closed castle ring was concave in source float coordinates but convex
+after mapping. Shared fill preparation now preserves source concavity while
+still classifying positive convexity after placement. Twelve independent CC0
+controls are exact, including tiled/reflected near-closure failures that previously
+lost opaque pixels; they do not count as complete documents.
+
+Windows/Linux pass Release builds and 5,599 tests each. All older exact results
+are preserved; only Portugal's Default PNG/report changes in the 1,567-report /
+1,551-PNG original bank. Other 1,550 PNGs and older focused outcomes stay unchanged.
+Corporate remains 27/27 / 258/258 exact against own-platform references. Source,
+license evidence, original references and cohort membership stay frozen.
+
+Bhutan is selected next. Its old native 900×600 Default reference is already exact,
+without completing its declared variants. PLAN fixes native/small/large 900×600 /
+300×200 / 1800×1200 at scales 1 / one third / 2 and all three backgrounds before
+capture or correction. Converter bytes stay original; browser small/large roots
+may add the matching 0 0 900 600 viewBox. Preserve the old native transparent PNG;
+other variants remain unmeasured. G2–G9 and S17 remote CI remain open.
+
+Ignored evidence is under `artifacts/portugal-source-strokes-20261009/` and
+`artifacts/linux-delivery-20261007/portugal-source-final-20261009/`. No new download,
+production source/DLL fingerprint or replacement of an existing reference is involved.
 
 ## Original-scope support audit and online batch (2026-10-08)
 
