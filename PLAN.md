@@ -5,7 +5,7 @@ on Windows and Linux**, against each platform's frozen browser references.
 Marks are 13/13; outlined wordmarks are 14/14. Membership, input bytes, options
 and references stay frozen. This complete matrix remains the regression gate.
 
-**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa and Wikifoods are complete**,
+**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifoods and striped pattern are complete**,
 through all six outputs on both platforms. Earlier qualified references stay unchanged;
 the tiger uses the explicit viewport qualification explained below:
 
@@ -23,6 +23,7 @@ the tiger uses the explicit viewport qualification explained below:
 | Bhutan flag (`inv-064`) | 300×200 / 900×600 / 1800×1200 × transparent/white/black, original inputs at scales one third / 1 / 2; all nine outputs | Earlier shared repairs already qualify every declared output; no additional renderer change. |
 | South Africa flag (`inv-061`) | 300×200 / 900×600 / 1800×1200 × transparent/white/black, original inputs at scales one third / 1 / 2; all nine outputs | Shared native clip-content replay, independent paint coverage and bounded construction clips with preserved bitmap origins. |
 | Wikifoods logo (`inv-108`) | 400×400 / 1200×1200 / 2400×2400 × transparent/white/black, original inputs at scales one third / 1 / 2; all nine outputs | Percentage oval lengths, shared native clip replay with bitmap-owned borders and bounds, composed radial paint references and native focal coordinates. |
+| Striped pattern (`inv-109`) | 187×187 / 374×374 / 748×748 × transparent/white/black, original inputs at scales 0.5 / 1 / 2; all nine outputs | Root-local pattern definitions, shared positive-axis pattern maps, bounded fractional tile replay and default meet aspect parsing. |
 
 Each document has a stable, healthy, cleaned Linux browser capture triple matching
 its frozen reference byte-for-byte. The [gap manifest](tests/References/inventory/svg-gap-cases.json)
@@ -32,10 +33,10 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 12**. The selected document queue is
-**12/15 complete** after retaining three further failures; Wikifoods remains
-9/9 exact. The next deliverable is the striped pattern (`inv-109`), currently
-0/9; two other retained documents each have one frozen admission output.
+references. **Completed development deliverables: 13**. The selected document queue is
+**13/15 complete**; Wikifoods and the striped pattern are each 9/9 exact.
+The next deliverable is the non-ionizing radiation warning (`inv-110`), with its
+unchanged 616×540 transparent output. The geometric pattern remains queued.
 Controls remain separate.
 These failure-selected examples establish no representative success rate.
 
@@ -155,35 +156,47 @@ The four earlier larger paint controls also become exact. Controls remain separa
 from completed documents. The percentage-oval bank keeps nine exact controls and
 three boundaries; the curved-clip bank keeps nine exact controls and three boundaries.
 
-This correction passes Release solution builds with zero warnings/errors and
-**5,708 tests per platform** (4,177 core / 1,525 visual / six FontProbe).
-Finished-document qualification re-emits the complete original banks and corporate
-cohort against unchanged references. Unchanged browser references are reused.
-All twelve completed development documents and the corporate **27/27 / 258/258**
-remain regression requirements; these failure-selected documents establish no
-representative success rate.
+The finished Wikifoods checkpoint passed Release solution builds with zero
+warnings/errors and **5,708 tests per platform** (4,177 core / 1,525 visual / six
+FontProbe). Its complete original-bank/corporate qualification reused unchanged
+browser references. The next finished-document checkpoint below adds the striped
+pattern; every preceding exact result remains a regression requirement. These
+failure-selected documents establish no representative success rate.
 
-**Next deliverable: complete the retained striped pattern (`inv-109`), all nine
-frozen outputs.** The [remaining-scope document bank](tests/Research/remaining-scope-documents/manifest.json)
-declares unchanged original-input scales 0.5 / 1 / 2, sizes 187×187 / 374×374 /
-748×748, each transparent/white/black. Every reference has three stable, healthy,
-cleaned captures per platform; Linux matches the frozen Windows PNGs byte-for-byte.
-At `fd89583f`, all nine outputs reject `UnsupportedFeature` at local paint lookup.
-The pattern is authored outside `defs`. Diagnostic copies sequentially expose
-“Pattern attribute 'preserveAspectRatio' is not implemented” and “Only translate()
-pattern transforms are implemented.” With those declarations removed, the copied
-input renders. The unchanged original requires both the inert aspect declaration
-(without a pattern viewBox) and `patternTransform="scale(2)"`. Reuse the bounded vector tile scene and shared
-affine paint mapping, retaining native texture bounds, fractional periods and
-filtering. Diagnose each gate and mismatch with small controls; finish all nine
-outputs through all six APIs before selecting the next export. Other affine,
-instance and unit combinations remain on the finite G6 checklist; exhaustive G2
-completion remains unnecessary.
+**Striped pattern (`inv-109`) is complete: all nine frozen outputs are exact
+through all six APIs on Windows/Linux.** The [remaining-scope document bank](tests/Research/remaining-scope-documents/manifest.json)
+keeps original-input scales 0.5 / 1 / 2, sizes 187×187 / 374×374 / 748×748, each
+transparent/white/black. Original bytes, options, root-only browser inputs and
+references stay unchanged. Existing healthy, cleaned browser triples are reused.
+The admission baseline at `fd89583f` remains nine local-paint lookup rejections.
 
-| Newly retained document | Declared outputs / baseline | Finite next dependencies |
+Root-local patterns now share the `defs` registration path. The existing bounded
+transform parser retains a composed positive-axis pattern map separately from the
+source grid; templates inherit omitted maps or replace them with an authored map.
+Scaled rectangle content joins the existing ordered vector tile scene. Integral
+texture bounds, fractional-period repeat filtering and native float stages remain
+shared; the legacy unit-scale rectangle route keeps its established pixels.
+A valid pattern aspect declaration is inert without a pattern viewBox, and the
+shared root/nested/image aspect parser defaults omitted fit to `meet`.
+The [placement bank](tests/Research/pattern-affine-placement/manifest.json) has
+**18 controls: 16 exact and two explicit reflected/rotated boundaries**, separate
+from completed documents. Resource denials, replay cancellation and retry protect
+the shared map and retained owners. Other promised affine, content, unit and
+instance combinations remain on the finite G6 checklist.
+
+**Next deliverable: complete the retained non-ionizing radiation warning
+(`inv-110`), its unchanged explicit 616×540 transparent output.** Its first blocker
+is a self-intersecting clip with zero signed area but nonempty local winding.
+Extend bounded native clip/source replay with focused winding and clip/content
+order controls, then diagnose every further rejection and mismatch until this
+whole output matches its frozen reference through six APIs on both platforms.
+Implement only the instance dependencies that this document needs; exhaustive
+G2 completion remains unnecessary. Keep other promised G5 combinations visible.
+
+| Retained document | Declared outputs / current outcome | Finite next dependencies |
 | --- | --- | --- |
-| Striped pattern (`inv-109`), selected next | Nine outputs; 0/9 exact, nine rejections | Root-local pattern registration, inert aspect declaration, composed positive-axis pattern map and bounded fractional tile replay. |
-| Non-ionizing radiation warning (`inv-110`), queued | Explicit 616×540 transparent; rejection | Native winding for a self-intersecting clip with zero signed area; preserve the clip/content operation order. Further blockers stay visible until this output is exact. |
+| Striped pattern (`inv-109`), complete | Nine outputs; 9/9 exact through six APIs on Windows/Linux | Root-local definitions, inert aspect declaration, composed positive-axis map and bounded fractional tile replay are implemented. Other G6 promises stay open. |
+| Non-ionizing radiation warning (`inv-110`), selected next | Explicit 616×540 transparent; rejection | Native winding for a self-intersecting clip with zero signed area; preserve the clip/content operation order. Further blockers stay visible until this output is exact. |
 | Geometric pattern (`inv-111`), queued | Explicit 284×284 transparent; rejection | Forward local gradient definitions; then measure its nonuniform gradient placements and clipped groups. Further blockers stay visible until this output is exact. |
 
 The bounded batch downloaded four actual exports and retained these three verified
@@ -191,9 +204,10 @@ public-domain/CC0 static, self-contained failures. Herringbone was excluded beca
 its credited source PNG carries CC BY-SA despite the SVG's CC0 declaration. The
 fifth lead returned HTTP 429 and was not downloaded or screened. This batch supplies
 development examples, not a population success rate. Three document admissions add
-eleven focused six-API checks per platform, with production unchanged; the finished
-Wikifoods qualification is reused. All corporate and established exact references
-remain frozen. [Source and screening evidence](tests/Research/remaining-scope-documents/source-records.json)
+eleven focused six-API checks per platform. At admission, production was unchanged
+and the finished Wikifoods qualification was reused. The finished striped-pattern
+correction now passes complete bank/corporate qualification on both platforms.
+All corporate and established exact references remain frozen. [Source and screening evidence](tests/Research/remaining-scope-documents/source-records.json)
 records the original asset bytes, rights and exclusions.
 
 The non-scaling root-viewBox stroke-width defect, rotated ellipse maps, gradient-filled
@@ -224,8 +238,8 @@ in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **5,708 passed on each platform**: 4,177 core, 1,525 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
-| Memory and delivery checks | Existing parser/raster work, memory-denial, cancellation/retry, geometry/paint and six-output regressions pass. Six new template/grid inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. A 1,024-link forward chain resolves iteratively; aliases borrow one promoted tile scene with independent grids. Missing/cyclic/duplicate/negative templates and oversized tiles release owners; full-document early/middle/late work and peak-memory denials release partial owners before retry. Five mask inputs also sweep parser/discovery work, sampled/peak memory and raster work boundaries; anonymous, unused, duplicate and rejected masks release staging owners. Borrowed replay survives cancellation/retry, and the complete mask document releases early/middle/late work and peak-memory denials. Nested affine-opacity also sweeps parser/discovery work, sampled/peak memory denial, raster work boundaries and cancellation/retry; clip and opacity retain distinct bounded owners. Two new oval inputs sweep every parser work denial and sampled/peak memory denial; discarded unpainted mask fill owners release, and centerline/outline commands survive failed replay unchanged. Three new affine-arc inputs sweep every parser work denial and sampled/peak memory denial, then denied raster work/memory and cancellation/retry with immutable commands. Source point-count and zero-radius arc controls retain their boundary semantics. Three native-fill/hairline inputs sweep every parser work denial and sampled/peak memory denial, plus raster work/memory and cancellation/retry with immutable commands. The complete Malta input releases partial owners after early/middle/late parser work and peak-memory denials before retry. Native float-collapsed ovals enclose no area. Two new near-close straight/cubic fills sweep parser work, sampled/peak memory denial, raster work/memory and cancellation/retry with immutable source commands. Tiled curved clips now exercise late work/memory denial, cancellation before and after partial clip replay, border-owner cleanup and identical retry. The complete Portugal document also releases partial owners under early/middle/late parser work and peak-memory denial before retry. Prior mechanism details retain their dated scope in the design record. Remote CI remains open. |
+| Full tests, including corporate selection/measurement | **5,760 passed on each platform**: 4,200 core, 1,554 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Memory and delivery checks | Existing parser/raster work, memory-denial, cancellation/retry, geometry/paint and six-output regressions pass. Six new template/grid inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. A 1,024-link forward chain resolves iteratively; aliases borrow one promoted tile scene with independent grids. Missing/cyclic/duplicate/negative templates and oversized tiles release owners; full-document early/middle/late work and peak-memory denials release partial owners before retry. Five mask inputs also sweep parser/discovery work, sampled/peak memory and raster work boundaries; anonymous, unused, duplicate and rejected masks release staging owners. Borrowed replay survives cancellation/retry, and the complete mask document releases early/middle/late work and peak-memory denials. Nested affine-opacity also sweeps parser/discovery work, sampled/peak memory denial, raster work boundaries and cancellation/retry; clip and opacity retain distinct bounded owners. Two new oval inputs sweep every parser work denial and sampled/peak memory denial; discarded unpainted mask fill owners release, and centerline/outline commands survive failed replay unchanged. Three new affine-arc inputs sweep every parser work denial and sampled/peak memory denial, then denied raster work/memory and cancellation/retry with immutable commands. Source point-count and zero-radius arc controls retain their boundary semantics. Three native-fill/hairline inputs sweep every parser work denial and sampled/peak memory denial, plus raster work/memory and cancellation/retry with immutable commands. The complete Malta input releases partial owners after early/middle/late parser work and peak-memory denials before retry. Native float-collapsed ovals enclose no area. Two new near-close straight/cubic fills sweep parser work, sampled/peak memory denial, raster work/memory and cancellation/retry with immutable source commands. Tiled curved clips now exercise late work/memory denial, cancellation before and after partial clip replay, border-owner cleanup and identical retry. The complete Portugal document also releases partial owners under early/middle/late parser work and peak-memory denial before retry. Five new pattern-placement inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. The full striped document releases partial owners under early/middle/late parser work and peak-memory denial. Oversized mapped tiles deny cleanly and the same borrowed scene retries at a smaller output; cancellation during scaled tile replay also releases temporary owners and permits identical retry. Prior mechanism details retain their dated scope in the design record. Remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,394 exact + zero known-difference renders + 16 rejections**; 799 base documents / 611 variants. The original rotated mark graduates against a new independent browser reference; its source/options and all preceding exact assets remain unchanged. |
 | Executed research manifest | **65 probes = 65 exact + zero known-difference renders + zero rejections**. The tiger graduates at its explicitly qualified viewport; its historical auto-image PNG remains diagnostic. The other 64 research outputs stay unchanged. |
 | Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
@@ -234,17 +248,18 @@ in [the review](docs/REVIEW_2026_09_28.md).
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes; radial drawing references retain double precision until output composition, with their actual retained value size charged. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. Affine viewport clips register budget-owned native contours and charge a full-canvas RGBA scratch tape (four bytes per output pixel per active affine clip), plus bounded intersection/replay work. Isolated opacity retains separate existing surfaces; no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-The finished Wikifoods correction passes both Release builds and **5,708 tests
-per platform**. Its complete original-bank qualification re-emits **1,567 reports
-and 1,551 PNGs**, preserving every report and PNG from `83de8a50`. Earlier focused
-bank outcomes stay protected; the old group clip rejection had already graduated
-against its unchanged reference in the curved-clip slice. Corporate remains
-**27/27 documents and 258/258 exact variants** against each platform's own frozen
-references, including the three established SDL small-output cross-platform
-distinctions. Wikifoods is 9/9 exact through six APIs; the development queue is
-12/15 complete after three new document admissions. The next deliverable is the
-striped pattern above; its nine frozen outputs still reject. G2–G9, the non-scaling width-map defect and S17 remote CI
-stay open. No unchanged browser reference was recaptured for this qualification.
+The finished striped-pattern correction passes both Release builds and **5,760
+tests per platform**. Complete qualification preserves every one of **2,908 prior
+comparison reports and 2,845 emitted PNGs** from the finished Wikifoods checkpoint
+`fd89583f`, including **1,567 original-bank reports and 1,551 original-bank PNGs**.
+Corporate remains **27/27 documents and 258/258 exact variants** against each
+platform's own frozen references, including the three established SDL small-output
+cross-platform distinctions. Wikifoods and the striped pattern are each 9/9 exact
+through six APIs; the development queue is 13/15 complete. The warning sign above
+is next; its admission output still rejects. G2–G9, the non-scaling width-map defect
+and S17 remote CI stay open. No unchanged browser reference was recaptured for
+this qualification. Windows' already-green visual/FontProbe run is reused after
+replacing two obsolete core rejection expectations; the fresh core suite passes.
 
 ## 2. Execution decisions
 
@@ -273,8 +288,10 @@ The audit uses executed fixture/research/recorded-paint failures and actual pars
 gates. Group numbers identify support responsibilities, not sequential prerequisites.
 Select the next shared implementation change by the retained document it
 advances. The five online gap documents and the nested affine-opacity defect
-and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa and Wikifoods are complete;
-source the next complete export against the remaining finite exits. Exhaustive G2 completion
+and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifoods
+and striped pattern are complete. The warning sign is next; the geometric pattern
+remains queued. Source another complete export when this queue no longer supplies
+the next useful gap. Exhaustive G2 completion
 does not block G3–G6. Keep other promised combinations visible in their group exits.
 Prioritize composed transforms, paint-coordinate mapping and bounded pattern
 content where they remove several gates. Extend the existing geometry and
@@ -292,7 +309,7 @@ landed mechanisms remain regression requirements.
 | G3 | **Heart, I Ching, radiation, tiger, Malta, Portugal and Bhutan and South Africa documents complete.** Complete remaining curved geometry and static maps | Non-uniform curve maps, transformed strokes/paints and remaining affine gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | **Fractional rectangle-stroke fidelity repaired.** Complete paint-server strokes on ordinary geometry | Three retained rectangle comparisons and twelve new frame controls are exact; broader paints retain admission gates | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
-| G6 | **Both retained patterns complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
+| G6 | **Three retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Static markers and the enumerated filter/blending subset below | Missing static features; lower priority than outlined logos | G3–G5, bounded intermediate surfaces; S16 |
 | G9 | Supplied-font labels and the enumerated text-path subset below | Separate experimental feature work; no implicit host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
@@ -315,8 +332,9 @@ G2/G3/G5. The library required valid path-prefix recovery, composed viewport
 clips, inert descriptions and preservation of native contour identity through
 source replay. Its compound Yin/Yang control was already exact before the repair.
 Keep the rotated-symbol gradient rejection (G3) visible; the nested-affine-opacity
-defect (G5) is repaired on its unchanged reference. Both complete patterns are exact after shared vector content,
-local template inheritance and fractional mapping. These completed documents
+defect (G5) is repaired on its unchanged reference. The three completed pattern documents
+are exact after shared vector content, local template inheritance, fractional
+mapping and composed positive-axis pattern transforms. These completed documents
 close neither the remaining G6 checklist nor any other finite group exit.
 Acquire more public-domain/CC0 failures when these documents no longer supply
 the next useful in-scope gap; keep already exact downloads out of the failure queue.
@@ -646,8 +664,10 @@ machinery, with solid/gradient paint, admitted strokes and independent opacity.
 Tile surfaces remain premultiplied; native constant-paint rounding and opaque Src
 coverage interpolation remain distinct from ordinary solid rendering. The
 eighteen controls retain seventeen exact results and one recursive-paint rejection.
-Source vector grids retain finite fractional origins/sizes and translate-only
-pattern transforms. Positive-axis referencing/output maps rasterize a bounded
+Source vector grids retain finite fractional origins/sizes and composed
+positive-axis pattern transforms. Pattern definitions register at the root or in
+`defs`; authored maps override rather than concatenate inherited maps. Positive-axis
+pattern/reference/output maps rasterize a bounded
 integral texture, then sample its original fractional period with native float
 coordinates and ordered repeat filtering. Retained native curves admit the
 non-uniform mapping required inside these tile surfaces; outer shape gates remain.
@@ -661,13 +681,17 @@ local templates have an explicit UnsupportedFeature outcome; duplicates and
 negative dimensions remain MalformedInput. Three fresh Linux browser captures
 match the full original reference byte-for-byte.
 
+`inv-109` is complete: nine unchanged outputs through six APIs on both platforms.
+Its root-local pattern, positive-axis map and omitted aspect fit share existing
+registration, geometry and bounded tile replay. Eighteen independent controls
+retain sixteen exact outcomes and two reflected/rotated map rejections. Valid
+pattern aspect declarations remain inert without a viewBox; viewBox support
+remains promised below. The legacy unit-scale rectangle route stays pixel-stable.
+
 Groups/local uses inside tile content, reflected/general maps, content/viewBox/
 bounding-box units and nested viewport gates remain open. Broader source-grid,
 instance and stroke combinations still need measured controls; completion of the
-two documents closes neither this checklist nor the finite exit below. The next
-complete document, `inv-109`, supplies nine frozen outputs for root-local pattern
-definitions and a composed positive-axis pattern map over a fractional grid; the
-other promised combinations remain visible without blocking that deliverable.
+three documents closes neither this checklist nor the finite exit below.
 Extend the bounded vector tile scene with composed pattern transforms,
 viewBox/content units and objectBoundingBox units in measured
 slices. The finite tile-content subset is ordered G3 vector leaves, groups and
@@ -676,8 +700,8 @@ source/scene machinery. Include fractional finite tile origins/sizes, both patte
 unit systems, content units, viewBox/aspect mapping and composed affine transforms.
 Recursive pattern/paint dependencies must have categorized rejection. Embedded
 images and filtered/text tile content remain explicit dependencies on G7–G9,
-not silently dropped promises or a prerequisite for the two retained pattern
-documents. Exit: both originals and the retained multi-child case render exactly;
+not silently dropped promises or a prerequisite for the three retained pattern
+documents. Exit: all three originals and the retained multi-child case render exactly;
 focused tile-border, phase, alpha, transformed fill/stroke and inheritance controls
 pass without tile-size or repeat-count-dependent unbounded work.
 

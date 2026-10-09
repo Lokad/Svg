@@ -1,24 +1,26 @@
+using Lokad.Svg.Rendering;
+
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains authored pattern attributes until local href inheritance supplies omissions.</summary>
 internal readonly record struct SvgPatternTemplate(double? X, double? Y, double? Width, double? Height,
-    (double X, double Y)? Translation, bool? UserSpaceUnits, bool? UserSpaceContentUnits, string? Href)
+    SvgAffineTransform? Transform, bool? UserSpaceUnits, bool? UserSpaceContentUnits, string? Href)
 {
     internal SvgPatternTemplate Inherit(SvgPatternTemplate parent)
         => new(X ?? parent.X, Y ?? parent.Y, Width ?? parent.Width, Height ?? parent.Height,
-            Translation ?? parent.Translation, UserSpaceUnits ?? parent.UserSpaceUnits,
+            Transform ?? parent.Transform, UserSpaceUnits ?? parent.UserSpaceUnits,
             UserSpaceContentUnits ?? parent.UserSpaceContentUnits, null);
 
     internal SvgPatternTile Grid
     {
         get
         {
-            (double x, double y) = Translation ?? (0, 0);
-            return new(null, X ?? 0, Y ?? 0, Width ?? 0, Height ?? 0, x, y);
+            return new(null, X ?? 0, Y ?? 0, Width ?? 0, Height ?? 0, Transform ?? SvgAffineTransform.Identity);
         }
     }
 
     internal bool KeepsLegacyRectangle => Href is null && UserSpaceUnits == true
+        && Grid.Transform.A == 1 && Grid.Transform.D == 1
         && Grid.OriginX == Math.Truncate(Grid.OriginX) && Grid.OriginY == Math.Truncate(Grid.OriginY)
         && Grid.TileWidth == Math.Truncate(Grid.TileWidth) && Grid.TileHeight == Math.Truncate(Grid.TileHeight)
         && Grid.ShiftX == Math.Truncate(Grid.ShiftX) && Grid.ShiftY == Math.Truncate(Grid.ShiftY);

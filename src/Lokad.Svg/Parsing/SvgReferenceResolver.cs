@@ -280,7 +280,7 @@ internal static class SvgReferenceResolver
 
         static SvgGeometry LowerEmbeddedInstancePatternFill(SvgPatternGeometry band, SvgUseReference instance, SvgViewportFrame? viewportFrame)
         {
-            SvgPatternTile tile = new(SvgGeometry.FromRectangle(band.Content) with { SolidPaint = band.ContentPaint }, band.OriginX, band.OriginY, band.TileWidth, band.TileHeight, 0, 0) { VectorContent = band.VectorContent };
+            SvgPatternTile tile = new(SvgGeometry.FromRectangle(band.Content) with { SolidPaint = band.ContentPaint }, band.OriginX, band.OriginY, band.TileWidth, band.TileHeight, SvgAffineTransform.Identity) { VectorContent = band.VectorContent };
             SvgRectangle placement = InstancePlacement(band.Fill, instance);
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
             return LowerInstancePatternFill(tile, placement, composed, viewportFrame, MapInstanceSolidStroke(band.Fill, band.Stroke, instance, viewportFrame), band.ShaderPlacement);
@@ -1132,7 +1132,7 @@ internal static class SvgReferenceResolver
             double contentHeight = band.Content.Height * scaleY;
             if (!IsIntegerGrid(originX) || !IsIntegerGrid(originY) || !IsIntegerGrid(tileWidth) || !IsIntegerGrid(tileHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped symbol-held pattern tiles are implemented.");
             SvgRectangle content = new(contentX, contentY, contentWidth, contentHeight, band.Content.Color, band.Content.HasFill, band.Content.Stroke);
-            SvgPatternTile tile = new(SvgGeometry.FromRectangle(content) with { SolidPaint = band.ContentPaint }, band.VectorContent is null ? (int)originX : band.OriginX, band.VectorContent is null ? (int)originY : band.OriginY, band.VectorContent is null ? (int)tileWidth : band.TileWidth, band.VectorContent is null ? (int)tileHeight : band.TileHeight, 0, 0) { VectorContent = band.VectorContent };
+            SvgPatternTile tile = new(SvgGeometry.FromRectangle(content) with { SolidPaint = band.ContentPaint }, band.VectorContent is null ? (int)originX : band.OriginX, band.VectorContent is null ? (int)originY : band.OriginY, band.VectorContent is null ? (int)tileWidth : band.TileWidth, band.VectorContent is null ? (int)tileHeight : band.TileHeight, SvgAffineTransform.Identity) { VectorContent = band.VectorContent };
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
             return LowerInstancePatternFill(tile, fill, composed, viewportFrame, fill.Stroke, band.VectorContent is null ? band.ShaderPlacement : SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY).ComposeChecked(band.ShaderPlacement));
 

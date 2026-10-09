@@ -31,7 +31,7 @@ criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
 | G3 | Plain transformed rectangle fills now use shared straight-contour lowering with native convex source identity; rotation/reflection and composed non-uniform placement are admitted, including inherited group clips and rendered-group aliases. Nonsingular general matrix fills and mapped endpoint arcs now use shared source-space conics. Scalar stroke maps require perpendicular equal-length columns; singular syntax, transformed leaf clips, rounded/stroked/shader rectangles and non-uniform curve output retain separate gates. Pattern reflection and non-uniform curve maps remain gated; the I Ching compound even-odd witness was already exact. Drawable paths retain their complete prefix before malformed syntax, and instance replay preserves native single/compound contour identity. | `inv-105` and `original-logo-rotated-mark` are exact; fifteen focused controls now retain ten exact and five rejected outcomes. `inv-106` is now complete through six outputs on both platforms. The three `original-number-general-map` backgrounds and complete explicitly qualified tiger are exact. Remaining cases: `original-curve-root-quad-none`, `group-clip-reflected-pattern`, `iching-library/rotated-symbol-gradient` and the discovered `oval-source-replay/non-scaling-circle-tiled` width-map defect. The retained Malta, Portugal, Bhutan and South Africa flags are complete at nine frozen outputs each. South Africa uses shared native clip-content replay; its native/small/large defects improve 273/216/18 → zero on all backgrounds. Native fills retain cached source concavity across affine placement; twelve source-convexity controls are exact. Fifteen native fill/replay controls are exact. Integer orthogonal fills retain authored commands, source ovals share the native constructor, and thin strokes replay in bordered bitmap coordinates with native region-clip material routing. Fifteen new affine/density controls are 12 exact plus three explicit boundaries; native command count stays independent of duplicate-free classification geometry. `curved-path-clips/composed-group-cubic` remains explicitly unsupported after a measured nonuniform edge mismatch; Wikifoods is complete: nine exact outputs through six APIs on Windows/Linux. Clip construction retains the preceding enclosing rectangle, bitmap-owned border coverage and nonzero bounds. Radial drawing references compose before float conversion; both affine and axis-aligned inside focal paints use the shared native evaluator. The affine radial/clip bank has 23 controls: 21 exact and two explicit boundaries. Other nonuniform curve/clip and non-scaling width-map promises stay open. |
 | G4 | Fractional rectangle strokes preserve ordered hull/frame/inverse-fringe coverage; the retained instance family is exact. Native solid strokes render; gradient/pattern mixed closed/open subpaths and gradient direct `fill="none"` lines still reject. Oval dash caps/paint/transform combinations remain narrower than solid paths. | `use-paint-properties/current-color-rectangle-stroke-*` and twelve new fractional/thin/collapsed/shader-fill frame controls are exact. Three new clip-crossing controls and the inline transformed twin reject separately. Nine `zero-area-stroke-*` paint-server controls, two `line-bounds-*-square-width6-fill-none` controls; shared stroke and paint admission. |
 | G5 | Single convex straight user-space path clips retain original paints and native source replay, including rectangle targets. Clip content retains a separate enclosing logical rectangle; bounded construction preserves bitmap origin and fully opaque bitmap intersections retain BW paint routing. Ordinary unscaled group clips are admitted; broader group/use combinations and coordinates/rules remain incomplete. Fractional symbol viewport clipping around isolated translucent groups renders exactly; composed affine symbol viewport rectangles now use native convex clip tapes and per-operation byte coverage, including admitted native contours and hairline strokes. Native symbol stroke instances remain exact. The retained nested affine-opacity defect is repaired by keeping instance opacity outside the instantiated viewport clip; broader viewport/use-opacity combinations need independent controls. Nested SVG style attributes, nested paint definitions, scaled pattern viewports, percentage/custom transformed mask regions and deeper isolated opacity remain incomplete. | `symbol-content/group-alias-use` and its inline diagnostic are exact on unchanged references; eighteen fractional/integral, nested-scope and translucent-content controls are exact on three backgrounds. The three native symbol stroke backgrounds and their inline twin match unchanged references; thirty new rectangle-path stroke controls are exact. The I Ching bank has 23 exact and two rejected; seven new nested-affine-opacity twins are exact. The complete `inv-107` mask document is exact through six outputs on Windows/Linux. Root/defs single-leaf shader masks reuse bounded scene replay; default user-space regions and clipped-layer shader coordinates are measured. Twenty controls are 16 exact + four explicit rejections. Copied legacy mask curves retain their spans; shared native oval source replay completes `inv-094` at 9/9 exact frozen outputs. Eight oval controls retain seven exact and one measured non-scaling root-viewBox width-map defect under G3. Transformed spatial target leaves, objectBoundingBox content, recursion and multiple children stay explicit boundaries in the finite exit. Earlier gates: `original-aa-clip-admitted-shader`, material pairs and `mask-region-half-translated`. Single convex userSpaceOnUse quadratic/cubic/arc clips now replay native commands on ordinary leaves and unscaled groups, including uniform non-axis group maps. Nine curved controls and the older group clip control are exact; concave, objectBoundingBox and nonuniform composed curve clips retain explicit boundaries. |
-| G6 | Bounded ordered direct vector tile scenes share native geometry, solid/gradient paint, strokes and opacity. Backward/forward local href templates inherit omitted attributes/content; aliases borrow one scene with independent grids. Fractional finite vector tile origins/sizes and translate-only pattern transforms map through integral texture rasterization and native fractional-period repeat sampling under positive-axis reference/output maps. Legacy one-rectangle pixels remain frozen. Groups/local uses in tile content, reflected/general maps, content/viewBox/objectBoundingBox units and nested viewport gates remain open. Missing/cyclic/external templates and unsupported units retain explicit outcomes. | Both retained pattern documents are complete through six outputs on Windows/Linux. Vector content: 17 exact + one rejection; inheritance/grid controls: 15 exact + two rejections. The original two-child cubic-pattern fixture remains exact. |
+| G6 | Bounded ordered direct vector tile scenes share native geometry, solid/gradient paint, strokes and opacity. Backward/forward local href templates inherit omitted attributes/content; aliases borrow one scene with independent grids. Root-local and defs patterns share registration. Fractional finite vector tile origins/sizes and composed positive-axis pattern transforms map through integral texture rasterization and native fractional-period repeat sampling under positive-axis reference/output maps. Authored template maps replace inherited maps; omitted maps inherit. Valid preserveAspectRatio declarations are inert without a pattern viewBox; omitted fit defaults to meet in the shared root/nested/image parser. Legacy one-rectangle pixels remain frozen. Groups/local uses in tile content, reflected/general maps, content/viewBox/objectBoundingBox units and nested viewport gates remain open. Missing/cyclic/external templates and unsupported units retain explicit outcomes. | The vector-pattern example, PatternA and striped pattern are complete through six outputs on Windows/Linux; striped pattern is 9/9 exact. Vector content: 17 exact + one rejection; inheritance/grid: 15 exact + two rejections; new map/registration controls: 16 exact + two reflected/rotated boundaries. The original two-child cubic-pattern fixture remains exact. |
 | G7 | Embedded PNG and static CSS have explicit narrow subsets; non-uniform image content/resampling, root-targeting stylesheet selectors and additional export combinations need measured slices. | `SvgImageSyntax`, PNG decoder, `SvgStyleSheet`; source distinct export failures before expanding. |
 | G8 | Active markers and filter effects reject. These are later static features with bounded surface/expansion requirements. | `original-logo-marker-mark`, `original-logo-filter-mark`. |
 | G9 | Direct text requires a prepared supplied-font snapshot; broader text/tspan/text-path layout is experimental. | `original-logo-live-text`, `original-logo-text-path`; PLAN section 6. |
@@ -50,15 +50,21 @@ Wikifoods output is exact. The [affine paint/clip bank](../tests/Research/affine
 has 21 exact controls and two explicit geometry/stroke boundaries. Shared paint
 coordinates, bitmap-owned clip bounds and native source replay complete the logo.
 
-The next deliverable is the CC0 striped pattern (`inv-109`), with nine frozen
-outputs in [the remaining-scope bank](../tests/Research/remaining-scope-documents/manifest.json).
-All nine currently reject local paint lookup. Its root-local pattern, inert aspect
-declaration and positive-axis `patternTransform` identify a bounded G6 dependency
-slice. Two further queued documents reject a zero-signed-area self-intersecting
-clip (`inv-110`, G5) and forward gradient lookup (`inv-111`, G3/G5). All eleven new
-admission outputs retain original inputs, matching browser frames and healthy
-capture triples per platform. Recording these failures changes no renderer
-admission or existing exact outcome; development completion is 12/15 documents.
+The CC0 striped pattern (`inv-109`) is complete: nine frozen outputs in
+[the remaining-scope bank](../tests/Research/remaining-scope-documents/manifest.json)
+are exact through six APIs on Windows/Linux. Root-local pattern registration,
+inert aspect declarations, composed positive-axis pattern maps and bounded tile
+replay share existing mechanisms. The [placement bank](../tests/Research/pattern-affine-placement/manifest.json)
+retains sixteen exact controls and two explicit reflected/rotated boundaries.
+Development completion is 13/15 documents.
+
+The non-ionizing radiation warning (`inv-110`, G5) is next: its frozen explicit
+616×540 transparent output rejects a zero-signed-area self-intersecting clip with
+nonempty local winding. Shared native winding and bounded clip/content replay
+are its first dependencies; further gates remain until the whole output is exact.
+The geometric pattern (`inv-111`, G3/G5) remains queued at forward gradient lookup.
+Every declared input, option, matching browser frame and reference stays unchanged;
+healthy platform capture triples are reused.
 
 The five retained online failures have original bytes, separate root-sized render inputs
 and stable browser references in [the inventory manifest](../tests/References/inventory/svg-gap-cases.json).
@@ -71,18 +77,16 @@ document are exact on Windows/Linux through six outputs (**5/5 complete**), with
 source/options/reference unchanged. Each has a matching fresh Linux browser
 triple. The retained 64×64 nested affine-opacity control is exact too. The radiation
 symbol is complete through all six APIs: 9/9 frozen outputs exact on Windows/Linux,
-with every old input, option and reference unchanged. Eleven development
+with every old input, option and reference unchanged. Thirteen development
 deliverables are complete, including the explicitly qualified tiger and all nine
-Malta/Portugal/Bhutan/South Africa outputs each. The tiger's historical auto-image
-PNG remains diagnostic. South Africa preserves every original byte and reference;
-ten clip controls are exact and the group boundary rejects through six APIs on
-both platforms. Fresh Linux triples match the new document/control references.
-Both platforms pass 5,630 tests. Complete original-bank/cohort checks preserve
-all previous exact outcomes; only South Africa's Default output changes.
-Corporate remains 27/27 / 258/258 exact on own-platform references. The selected
-queue is 11/11 complete. Source the next public-domain/CC0 complete export against
-the remaining finite exits before choosing more implementation combinations.
-Controls remain separate.
+Malta/Portugal/Bhutan/South Africa/Wikifoods/striped-pattern outputs each. The
+tiger's historical auto-image PNG remains diagnostic. All eleven straight-clip
+controls, including the group boundary, are exact through six APIs on both
+platforms. Healthy Linux triples match each frozen document/control reference.
+Both platforms pass 5,760 tests. The finished correction preserves every one of
+2,908 preceding comparison reports and 2,845 PNGs. Corporate remains 27/27 /
+258/258 exact on own-platform references. The selected queue is 13/15 complete;
+warning-sign clip winding is next. Controls remain separate.
 Remaining G2 combinations are dependencies only when the
 selected document needs them. Finite planned G2–G9 exits live in PLAN; they do
 not change the currently admitted subsets recorded here.

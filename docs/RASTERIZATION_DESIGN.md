@@ -9767,3 +9767,67 @@ G2–G5 work. Windows/Linux Release builds have zero warnings/errors and all 5,7
 tests pass per platform. Complete original banks and corporate comparisons are
 re-emitted for this finished correction; unchanged capture triples are reused.
 No performance, representative success-rate, release or remote CI claim follows.
+
+
+## Complete striped pattern with shared positive-axis paint mapping (2026-10-09)
+
+The retained CC0 striped pattern (`inv-109`) now matches every unchanged frozen
+reference through all six APIs on Windows/Linux: 187/374/748 square, each on
+transparent/white/black, original-input scales 0.5/1/2. Its original 507 bytes,
+root-only browser materializations, options and nine PNGs stay unchanged. This
+completes the thirteenth of fifteen selected development documents. Its nine
+local-paint lookup rejections at `fd89583f` remain the admission baseline.
+
+Root-local patterns use the same definition parser and registration as `defs`
+patterns. `SvgPatternTile` retains the existing affine value separately from
+its source-grid origin and period. The shared bounded transform parser admits
+composed positive-axis maps; rotated/reflected maps remain explicit boundaries.
+Template omission inherits a map, while an authored map replaces it. Alias and
+instance reconstruction retains placement on paint geometry and uses an identity
+tile map to avoid applying it twice. Existing dictionaries reserve their actual
+element size, including the larger affine value; no uncharged side array is added.
+
+Unit-scale integer single-rectangle patterns retain their legacy pixel path.
+Scaled rectangle payloads promote through the existing bounded ordered vector
+scene. Tile rasterization keeps integral texture bounds and its original finite
+fractional period. Repetition, filtering, source command replay and native float
+paint-coordinate stages are unchanged. No new shape-specific rasterizer or
+native source adaptation is introduced; runtime draw/geometry/paint sizes remain
+72/272/68 bytes.
+
+The original root `preserveAspectRatio="xMidYMid"` exposed a second shared syntax
+gate: optional fit now defaults to `meet` for root/nested viewports and image
+placement, with XML whitespace separating alignment and fit. Valid pattern
+aspect declarations are accepted as inert without a pattern viewBox, as specified
+by [SVG aspect mapping](https://www.w3.org/TR/SVG11/coords.html#PreserveAspectRatioAttribute)
+and [pattern attributes](https://www.w3.org/TR/SVG11/pservers.html#PatternElement).
+Pattern viewBox/content/objectBoundingBox units remain finite G6 promises.
+
+Eighteen [independent controls](../tests/Research/pattern-affine-placement/manifest.json)
+were declared and frozen before implementation: sixteen exact and two explicit
+reflected/rotated boundaries. They isolate root/defs twins, inert aspect values,
+transform order, inherited/overridden maps, fractional/tiny grids, curved content
+and referenced/outer placement. Every control has three healthy, cleaned stable
+captures per platform; Linux matches the frozen Windows PNGs byte-for-byte.
+Controls remain separate from whole documents.
+
+Five small controls sweep every discovery/parser work denial, sampled/peak memory
+denial and raster work boundaries. The complete original document exercises
+early/middle/late parser work and peak-memory denial with owner cleanup. An
+oversized mapped tile denies without disturbing its borrowed scene and retries
+at a smaller output. Scaled tile replay cancellation also permits identical
+retry and releases temporary owners. Two obsolete core rejection expectations
+for scale(2)/identity matrix become admitted edge/gap pixel checks; malformed
+translation and rotation boundaries stay protected.
+
+Both Release solution builds have zero warnings/errors; all 5,760 tests pass per
+platform (4,200 core / 1,554 visual / six FontProbe). Finished-correction complete
+qualification preserves all 2,908 preceding comparison reports and 2,845 PNGs,
+including 1,567 original-bank reports / 1,551 original-bank PNGs and the corporate
+27/27 documents / 258/258 variants on each platform's frozen references. Only the
+three established SDL small-output platform distinctions remain. Windows' green
+visual/FontProbe results precede the two core expectation updates and are reused;
+the fresh full core run passes. Existing browser references are reused. No
+performance, representative success-rate, release or remote CI claim follows.
+The warning sign's zero-signed-area native clip winding is the next document
+dependency; reflected/general pattern maps and other G2–G9 promises stay open.

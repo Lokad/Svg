@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="40"><pattern id="p" width="5" height="4" patternUnits="userSpaceOnUse" patternTransform="translate(-.375 .625) scale(1.5 2)"><path d="M1 1h2v2H1z" fill="#025bc7"/></pattern><rect x="0" y="0" width="48" height="40" fill="url(#p)"/></svg>

@@ -8,15 +8,20 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgPatternTemplateTests
 {
     [Theory]
-    [InlineData("forward-circle-chain")]
-    [InlineData("legacy-rectangle-alias")]
-    [InlineData("overridden-dimensions")]
-    [InlineData("fractional-grid-origin")]
-    [InlineData("scaled-fractional-grid")]
-    [InlineData("alias-paint-in-retained-leaf")]
-    public void Template_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string identity)
+    [InlineData("pattern-inheritance", "forward-circle-chain")]
+    [InlineData("pattern-inheritance", "legacy-rectangle-alias")]
+    [InlineData("pattern-inheritance", "overridden-dimensions")]
+    [InlineData("pattern-inheritance", "fractional-grid-origin")]
+    [InlineData("pattern-inheritance", "scaled-fractional-grid")]
+    [InlineData("pattern-inheritance", "alias-paint-in-retained-leaf")]
+    [InlineData("pattern-affine-placement", "root-path-tile")]
+    [InlineData("pattern-affine-placement", "scale-nonuniform")]
+    [InlineData("pattern-affine-placement", "curved-content-scale")]
+    [InlineData("pattern-affine-placement", "inherited-scale")]
+    [InlineData("pattern-affine-placement", "tiny-fractional-grid")]
+    public void Template_scenes_release_owners_at_parser_memory_and_raster_work_boundaries(string family, string identity)
     {
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "pattern-inheritance", identity + ".svg"));
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", family, identity + ".svg"));
         RenderBudget discovery = new(8_000_000);
         ParserWorkCounter discoveryWork = new(1_000_000);
         Assert.Empty(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, discoveryWork, discovery, CancellationToken.None));
@@ -131,15 +136,17 @@ public sealed class SvgPatternTemplateTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Fact]
-    public void Full_inkscape_document_releases_partial_owners_at_work_and_memory_boundaries()
+    [Theory]
+    [InlineData("inkscape-pattern", 178)]
+    [InlineData("striped-pattern", 374)]
+    public void Full_pattern_document_releases_partial_owners_at_work_and_memory_boundaries(string identity, int width)
     {
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "inkscape-pattern.svg"));
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", identity + ".svg"));
         RenderBudget measured = new(8_000_000);
         ParserWorkCounter work = new(1_000_000);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
-            Assert.Equal(178, surface.Width);
+            Assert.Equal(width, surface.Width);
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         foreach (long limit in new[] { 0, work.Used / 2, work.Used - 1 })
         {
@@ -167,6 +174,27 @@ public sealed class SvgPatternTemplateTests
             long retained = budget.Snapshot().CurrentBytes;
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None)).ErrorCode);
             Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Oversized_pattern_transform_denies_and_allows_retry_with_the_same_borrowed_scene()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse' patternTransform='scale(10000 1)'><circle cx='2' cy='2' r='1' fill='red'/></pattern><rect width='8' height='8' fill='url(#p)'/></svg>"u8.ToArray();
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            long retained = budget.Snapshot().CurrentBytes;
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None)).ErrorCode);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            SvgRenderOptions smaller = new(null, 0.125, SvgColor.Transparent, SvgRenderLimits.Default);
+            byte[] first;
+            using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, smaller, budget, CancellationToken.None))
+                first = retry.Pixels.ToArray();
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, smaller, budget, CancellationToken.None))
+                Assert.Equal(first, retry.Pixels);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

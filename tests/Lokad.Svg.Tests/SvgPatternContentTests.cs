@@ -80,10 +80,13 @@ public sealed class SvgPatternContentTests
         }
     }
 
-    [Fact]
-    public void Cancellation_during_tile_replay_preserves_borrowed_scene_and_allows_retry()
+    [Theory]
+    [InlineData("", false)]
+    [InlineData("scale(1.5 2)", true)]
+    public void Cancellation_during_tile_replay_preserves_borrowed_scene_and_allows_retry(string transform, bool rootLocal)
     {
-        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><defs><pattern id='p' width='256' height='256' patternUnits='userSpaceOnUse'><circle cx='128' cy='128' r='100' fill='#025bc7'/></pattern></defs><rect width='256' height='256' fill='url(#p)'/></svg>"u8.ToArray();
+        string definition = "<pattern id='p' width='256' height='256' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><circle cx='128' cy='128' r='100' fill='#025bc7'/></pattern>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'>" + (rootLocal ? definition : "<defs>" + definition + "</defs>") + "<rect width='256' height='256' fill='url(#p)'/></svg>");
         RenderBudget budget = new(8_000_000);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {

@@ -245,11 +245,11 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
-        if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "pattern")
+        if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "pattern")
         {
             SvgElementAttributePolicy.ValidatePattern(reader, workCounter, cancellationToken);
             state.PatternId = reader.GetAttribute("id");
-            state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state);
+            state.PatternTemplate = SvgPatternSyntax.ParsePatternElement(reader, state, workCounter, cancellationToken);
             if (state.PatternTemplate.Href is null) state.PatternTemplate.ValidateUnits();
             else state.HasPatternTemplateReferences = true;
             state.PatternTile = state.PatternTemplate.Grid;

@@ -4,19 +4,21 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one admitted pattern tile with its source-coordinate grid while streaming.</summary>
-internal readonly record struct SvgPatternTile(SvgGeometry? Content, double OriginX, double OriginY, double TileWidth, double TileHeight, double ShiftX, double ShiftY)
+internal readonly record struct SvgPatternTile(SvgGeometry? Content, double OriginX, double OriginY, double TileWidth, double TileHeight, SvgAffineTransform Transform)
 {
     internal SvgVectorContent? VectorContent { get; init; }
     internal bool HasContent => Content is not null || VectorContent is not null;
+    internal double ShiftX => Transform.E;
+    internal double ShiftY => Transform.F;
     /// <summary>Maps source vector tiles once; reconstructed instance tiles carry placement on the paint geometry.</summary>
-    internal SvgAffineTransform VectorPlacement => VectorContent is null ? SvgAffineTransform.Identity : SvgAffineTransform.FromScaleOffset(1, 1, ShiftX, ShiftY);
+    internal SvgAffineTransform VectorPlacement => VectorContent is null ? SvgAffineTransform.Identity : Transform;
 }
 
 /// <summary>Parses the bounded pattern definition syntax and lowers pattern-filled rectangles.</summary>
 internal static class SvgPatternSyntax
 {
     /// <summary>Retains authored attributes separately from defaults so local templates can fill omissions.</summary>
-    internal static SvgPatternTemplate ParsePatternElement(XmlReader reader, SvgDocumentState state)
+    internal static SvgPatternTemplate ParsePatternElement(XmlReader reader, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         string? href = reader.GetAttribute("href") ?? reader.GetAttribute("href", "http://www.w3.org/1999/xlink");
         string? target = null;
@@ -29,6 +31,14 @@ internal static class SvgPatternSyntax
         string? transform = reader.GetAttribute("patternTransform");
         return new(ParseOptional("x"), ParseOptional("y"), ParseExtent("width"), ParseExtent("height"),
             transform is null ? null : ParsePatternTransform(transform), ParseUnits("patternUnits"), ParseUnits("patternContentUnits"), target);
+
+        SvgAffineTransform ParsePatternTransform(string value)
+        {
+            SvgAffineTransform map = SvgGeometrySyntax.ParseTransform(value, workCounter, cancellationToken);
+            if (!map.IsAxisAligned || map.A <= 0 || map.D <= 0)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-axis pattern transforms are implemented.");
+            return map;
+        }
 
         double? ParseOptional(string name) => reader.GetAttribute(name) is {} value ? SvgGeometrySyntax.ParseRectangleCoordinate(value) : null;
         double? ParseExtent(string name)
@@ -44,29 +54,6 @@ internal static class SvgPatternSyntax
             "objectBoundingBox" => false,
             _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern units must be userSpaceOnUse or objectBoundingBox."),
         };
-    }
-
-    /// <summary>Parses the bounded translate-only pattern transform, retaining fractional phase.</summary>
-    internal static (double X, double Y) ParsePatternTransform(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value)) return (0, 0);
-        if (value.Length > SvgSyntaxLimits.MaximumTransformCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Transform values exceed the configured syntax limit.");
-        ReadOnlySpan<char> input = value.AsSpan().Trim();
-        int separator = input.IndexOf('(');
-        if (separator <= 0 || !input.EndsWith(")") || !input[..separator].Trim().Equals("translate".AsSpan(), StringComparison.OrdinalIgnoreCase))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only translate() pattern transforms are implemented.");
-        double first = 0, second = 0;
-        int count = 0;
-        SvgGeometrySyntax.DelimitedTokenReader tokens = new(input[(separator + 1)..^1]);
-        while (tokens.TryReadValue(out ReadOnlySpan<char> token))
-        {
-            if (count == 2) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern translate() requires one or two coordinates.");
-            double parsed = SvgGeometrySyntax.ParseRectangleCoordinate(token.ToString());
-            if (count++ == 0) first = parsed;
-            else second = parsed;
-        }
-        if (count == 0) throw new SvgException(SvgErrorCode.MalformedInput, "Pattern translate() requires one or two coordinates.");
-        return (first, second);
     }
 
     internal static string ParsePatternId(string? value)

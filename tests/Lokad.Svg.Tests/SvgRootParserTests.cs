@@ -6588,16 +6588,32 @@ public sealed class SvgRootParserTests
     }
 
     [Theory]
-    [InlineData("scale(2)", SvgErrorCode.UnsupportedFeature)]
     [InlineData("rotate(45)", SvgErrorCode.UnsupportedFeature)]
     [InlineData("translate()", SvgErrorCode.MalformedInput)]
     [InlineData("translate(1,2,3)", SvgErrorCode.MalformedInput)]
-    [InlineData("matrix(1,0,0,1,0,0)", SvgErrorCode.UnsupportedFeature)]
     public void Rejects_unsupported_pattern_transforms(string transform, SvgErrorCode code)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
 
         Assert.Equal(code, exception.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("scale(2)", 2)]
+    [InlineData("matrix(1,0,0,1,0,0)", 1)]
+    public void Positive_axis_pattern_maps_preserve_the_content_edge_and_transparent_gap(string transform, int scale)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><rect width='8' height='8' fill='red'/></pattern></defs><rect width='32' height='32' fill='url(#tiles)'/></svg>");
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            SvgPatternGeometry pattern = Assert.Single(root.Geometries).Pattern;
+            Assert.Equal(scale, pattern.ShaderPlacement.A);
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((8 * scale - 1) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan(8 * scale * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
