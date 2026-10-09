@@ -3,3 +3,6 @@
 *.svg text eol=lf
 # Compiled-native vector hashes also require stable bytes across platforms.
 *.csv text eol=lf
+# This downloaded original and its root-sized copy retain the upstream CRLF bytes.
+tests/Fixtures/candidates/inv-110.svg -text whitespace=cr-at-eol
+tests/Research/remaining-scope-documents/inv-110-capture-616x540.svg -text whitespace=cr-at-eol

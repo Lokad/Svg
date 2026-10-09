@@ -13,9 +13,41 @@ symbol completes the sixth development deliverable, with that
 document at **9/9 exact outputs through all six APIs on both platforms**. The
 retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
 Bhutan the tenth, South Africa the eleventh and Wikifoods the twelfth: **12 complete**.
-The selected document queue is **12/12 complete**; Wikifoods has 9/9 exact outputs.
+The retained development queue is **12/15 complete** after the three admissions
+below; Wikifoods remains 9/9 exact. The next selected document is `inv-109`.
 Controls do not
 count as completed documents. The I Ching nested affine-opacity control remains exact.
+
+### inv-109–inv-111 — remaining-scope documents; incomplete
+
+The [source records](../tests/Research/remaining-scope-documents/source-records.json)
+retain Commons imageinfo rights, upstream revision, size and asset checksums.
+All three original downloads remain byte-identical in `tests/Fixtures/candidates/`;
+no license header or geometry substitution is inserted. These are failure-selected
+development documents, outside the original bank and corporate denominators.
+
+| Document / source | Rights and source bytes | Frozen outputs and baseline at `fd89583f` |
+| --- | --- | --- |
+| [Striped pattern](https://commons.wikimedia.org/wiki/File:SVG_pattern_striped.svg), Watchduck; simplified by JoKalliauer; `inv-109` | CC0; 507 bytes; upstream 2024-09-23T07:53:32Z | Selected next: nine outputs, 187/374/748 square × transparent/white/black, original-input scales 0.5/1/2. All nine reject local paint lookup; 0/9 complete. |
+| [Non-ionizing radiation warning](https://commons.wikimedia.org/wiki/File:D-W012_Warnung_vor_nicht_ionisierender_elektromagnetischer_Strahlung_ty.svg), DrTorstenHenning; `inv-110` | Public-domain dedication; 546 bytes; upstream 2023-07-06T04:39:16Z | Queued: explicit 616×540 transparent. Rejects “Degenerate clip paths are not implemented.” A self-intersecting bowtie has zero signed area despite nonempty local winding. |
+| [Geometric pattern](https://commons.wikimedia.org/wiki/File:Geometric_Pattern.svg), 991joseph; `inv-111` | CC0; 39,523 bytes; upstream 2021-08-23T16:21:34Z | Queued: explicit 284×284 transparent. Rejects local gradient lookup before the forward definitions; further placement/clip gates await diagnosis. |
+
+The [eleven declared cases](../tests/Research/remaining-scope-documents/manifest.json)
+have frozen stable, healthy, cleaned Chrome 153.0.8010.52 capture triples on each
+platform. Every Linux capture matches its frozen Windows PNG byte-for-byte. The
+converter receives each unchanged original. Browser sizing changes only root
+dimensions, or inserts them for `inv-110`; viewBox and all geometry remain unchanged.
+Eleven focused tests protect every original, matching capture frame, frozen PNG
+and rejection through all six APIs on Windows/Linux. No production change or new
+completed document is claimed by this admission. The finished Wikifoods renderer
+qualification remains applicable; unchanged banks are not rerun for documentation.
+
+Four actual exports were downloaded within the five-file limit. The three above
+are retained. [Herringbone pattern long.svg](https://commons.wikimedia.org/wiki/File:Herringbone_pattern_long.svg)
+was excluded: its SVG page declares CC0 but credits a [source PNG under CC BY-SA](https://commons.wikimedia.org/wiki/File:Herringbone_pattern_long.png).
+It stays in ignored artifacts. CRT Nursing's original download returned HTTP 429;
+it was not downloaded, screened or retained. No population success rate follows
+from this batch. Remaining reflected-use combinations stay promised in G2/G3.
 
 ### inv-108 — retained CC0 Wikifoods logo; complete
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="374" height="374" viewBox="0 0 749.25 749.25" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <pattern id="a" width="2.5" height="1" patternTransform="scale(2)" patternUnits="userSpaceOnUse" preserveAspectRatio="xMidYMid">
+  <path d="M0-.5h1v2H0z"/>
+ </pattern>
+ <path d="m0 0v749.25h749.25v-749.25z" fill="url(#a)"/>
+</svg>

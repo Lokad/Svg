@@ -33,7 +33,9 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
 references. **Completed development deliverables: 12**. The selected document queue is
-**12/12 complete**, including Wikifoods at 9/9 exact outputs.
+**12/15 complete** after retaining three further failures; Wikifoods remains
+9/9 exact. The next deliverable is the striped pattern (`inv-109`), currently
+0/9; two other retained documents each have one frozen admission output.
 Controls remain separate.
 These failure-selected examples establish no representative success rate.
 
@@ -161,14 +163,38 @@ All twelve completed development documents and the corporate **27/27 / 258/258**
 remain regression requirements; these failure-selected documents establish no
 representative success rate.
 
-**Next deliverable: retain one complete failing export for the remaining G3–G6
-scope.** Screen a bounded batch of at most five verified public-domain/CC0 static,
-self-contained SVGs, prioritizing nonuniform curved placement, curved clip/mask
-composition or bounded pattern content. Keep only in-scope rejections or incorrect
-renders; declare its complete output matrix and freeze matching references before
-implementation. Select the shared change by the gates it removes from that document,
-then finish every declared output before choosing another export. Exhaustive G2
-completion remains unnecessary; its other promised combinations stay visible.
+**Next deliverable: complete the retained striped pattern (`inv-109`), all nine
+frozen outputs.** The [remaining-scope document bank](tests/Research/remaining-scope-documents/manifest.json)
+declares unchanged original-input scales 0.5 / 1 / 2, sizes 187×187 / 374×374 /
+748×748, each transparent/white/black. Every reference has three stable, healthy,
+cleaned captures per platform; Linux matches the frozen Windows PNGs byte-for-byte.
+At `fd89583f`, all nine outputs reject `UnsupportedFeature` at local paint lookup.
+The pattern is authored outside `defs`. Diagnostic copies sequentially expose
+“Pattern attribute 'preserveAspectRatio' is not implemented” and “Only translate()
+pattern transforms are implemented.” With those declarations removed, the copied
+input renders. The unchanged original requires both the inert aspect declaration
+(without a pattern viewBox) and `patternTransform="scale(2)"`. Reuse the bounded vector tile scene and shared
+affine paint mapping, retaining native texture bounds, fractional periods and
+filtering. Diagnose each gate and mismatch with small controls; finish all nine
+outputs through all six APIs before selecting the next export. Other affine,
+instance and unit combinations remain on the finite G6 checklist; exhaustive G2
+completion remains unnecessary.
+
+| Newly retained document | Declared outputs / baseline | Finite next dependencies |
+| --- | --- | --- |
+| Striped pattern (`inv-109`), selected next | Nine outputs; 0/9 exact, nine rejections | Root-local pattern registration, inert aspect declaration, composed positive-axis pattern map and bounded fractional tile replay. |
+| Non-ionizing radiation warning (`inv-110`), queued | Explicit 616×540 transparent; rejection | Native winding for a self-intersecting clip with zero signed area; preserve the clip/content operation order. Further blockers stay visible until this output is exact. |
+| Geometric pattern (`inv-111`), queued | Explicit 284×284 transparent; rejection | Forward local gradient definitions; then measure its nonuniform gradient placements and clipped groups. Further blockers stay visible until this output is exact. |
+
+The bounded batch downloaded four actual exports and retained these three verified
+public-domain/CC0 static, self-contained failures. Herringbone was excluded because
+its credited source PNG carries CC BY-SA despite the SVG's CC0 declaration. The
+fifth lead returned HTTP 429 and was not downloaded or screened. This batch supplies
+development examples, not a population success rate. Three document admissions add
+eleven focused six-API checks per platform, with production unchanged; the finished
+Wikifoods qualification is reused. All corporate and established exact references
+remain frozen. [Source and screening evidence](tests/Research/remaining-scope-documents/source-records.json)
+records the original asset bytes, rights and exclusions.
 
 The non-scaling root-viewBox stroke-width defect, rotated ellipse maps, gradient-filled
 oval strokes, percentage oval definitions under instances, concave/objectBoundingBox
@@ -216,8 +242,8 @@ against its unchanged reference in the curved-clip slice. Corporate remains
 **27/27 documents and 258/258 exact variants** against each platform's own frozen
 references, including the three established SDL small-output cross-platform
 distinctions. Wikifoods is 9/9 exact through six APIs; the development queue is
-12/12 complete. The next deliverable comes from the bounded remaining-scope
-sourcing batch above. G2–G9, the non-scaling width-map defect and S17 remote CI
+12/15 complete after three new document admissions. The next deliverable is the
+striped pattern above; its nine frozen outputs still reject. G2–G9, the non-scaling width-map defect and S17 remote CI
 stay open. No unchanged browser reference was recaptured for this qualification.
 
 ## 2. Execution decisions
@@ -576,8 +602,9 @@ APIs on both platforms. One convex straight user-space path clip replays shared
 native coverage for each original paint, including rectangle targets. Its enclosing
 logical rectangle remains a separate AA clip; construction bounds preserve the
 physical bitmap origin. Fully opaque rectangular bitmap intersections retain BW
-paint routing. Ten focused controls are exact; polygon clips on groups remain an
-explicit boundary. Existing multi-contour behavior stays admitted, without claiming
+paint routing. All eleven focused controls are exact, including the ordinary
+group clip after the Wikifoods correction. Broader group/use combinations remain
+open. Existing multi-contour behavior stays admitted, without claiming
 the finite clip-rule, hole, group/use or transformed-coordinate exits complete.
 
 `inv-107` is complete at 744×1052 against its unchanged Windows/Linux reference.
@@ -637,7 +664,10 @@ match the full original reference byte-for-byte.
 Groups/local uses inside tile content, reflected/general maps, content/viewBox/
 bounding-box units and nested viewport gates remain open. Broader source-grid,
 instance and stroke combinations still need measured controls; completion of the
-two documents closes neither this checklist nor the finite exit below.
+two documents closes neither this checklist nor the finite exit below. The next
+complete document, `inv-109`, supplies nine frozen outputs for root-local pattern
+definitions and a composed positive-axis pattern map over a fractional grid; the
+other promised combinations remain visible without blocking that deliverable.
 Extend the bounded vector tile scene with composed pattern transforms,
 viewBox/content units and objectBoundingBox units in measured
 slices. The finite tile-content subset is ordered G3 vector leaves, groups and
