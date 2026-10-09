@@ -36,6 +36,17 @@ criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
 | G8 | Active markers and filter effects reject. These are later static features with bounded surface/expansion requirements. | `original-logo-marker-mark`, `original-logo-filter-mark`. |
 | G9 | Direct text requires a prepared supplied-font snapshot; broader text/tspan/text-path layout is experimental. | `original-logo-live-text`, `original-logo-text-path`; PLAN section 6. |
 
+The retained CC0 Wikifoods logo is the next complete deliverable, with nine
+frozen original-input outputs in [its bank](../tests/Research/wikifoods-logo/manifest.json).
+Percentage circle/ellipse attributes now resolve against known user-space viewport
+extents; circle radii use the normalized diagonal, ellipse radii their respective
+axes. Native float length resolution is shared by geometry and paint bounds.
+The [focused bank](../tests/Research/oval-percentage-lengths/manifest.json) has
+nine exact controls and three explicit unsupported boundaries. Percentage oval
+definitions remain gated pending host viewport retention in instance replay;
+rotated ellipse maps and rectangle percentages keep their separate gates. Every
+Wikifoods output now reaches the curved clip-path gate: **0/9 exact; incomplete**.
+
 The five retained online failures have original bytes, separate root-sized render inputs
 and stable browser references in [the inventory manifest](../tests/References/inventory/svg-gap-cases.json).
 They are failure-selected development cases, outside the 27-document corporate

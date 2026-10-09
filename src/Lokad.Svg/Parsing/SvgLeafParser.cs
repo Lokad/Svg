@@ -327,7 +327,7 @@ internal static class SvgLeafParser
 
     internal static SvgParsedGeometry ParseCircleCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
-        SvgEllipseSyntax syntax = SvgEllipseSyntax.ParseCircle(reader);
+        SvgEllipseSyntax syntax = SvgEllipseSyntax.ParseCircle(reader, context.LengthBases);
         return LowerEllipseShape(reader, context, syntax, "circle", frame, state);
     }
 
@@ -341,7 +341,7 @@ internal static class SvgLeafParser
 
     internal static SvgParsedGeometry ParseEllipseCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
-        SvgEllipseSyntax syntax = SvgEllipseSyntax.ParseEllipse(reader);
+        SvgEllipseSyntax syntax = SvgEllipseSyntax.ParseEllipse(reader, context.LengthBases);
         return LowerEllipseShape(reader, context, syntax, "ellipse", frame, state);
     }
 

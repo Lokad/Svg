@@ -140,8 +140,23 @@ PNGs byte-for-byte. Browser small/large inputs change only root dimensions,
 preserving the viewBox and all other bytes. All six converter APIs currently
 reject every output with `UnsupportedFeature`: **0/9 exact; document incomplete**.
 
-Advance this document through percentage oval geometry, curved group/leaf clips
-and the radial paint mappings present in its original source. Use focused controls
+Percentage oval geometry now advances all nine outputs to the next measured gate:
+`Only straight clip paths are implemented.` The [percentage-oval bank](tests/Research/oval-percentage-lengths/manifest.json)
+has nine exact controls and three explicit unsupported boundaries. Root/nested
+user-space bases, normalized diagonal radii and native float resolution feed both
+geometry and recorded paint bounds. Percentage oval definitions remain gated
+until their host viewport follows instance replay; this promised G2/G3 combination
+stays open. Rotated ellipse maps and rectangle percentages retain their own gates.
+The complete Wikifoods document is still **0/9 exact**, not completed by these controls.
+Both current Release solution builds pass with zero warnings/errors, and all
+**5,661 tests pass per platform** (4,165 core / 1,490 visual / six FontProbe).
+Every focused PNG has a stable, healthy, cleaned Linux triple matching its frozen
+reference. The original-bank/cohort qualification at `83de8a50` remains the last
+complete bank measurement; rerun the required complete checks when the document
+correction is finished, without recapturing unchanged references.
+
+Advance it through curved group/leaf clips and the radial paint mappings present
+in its original source. Use focused controls
 to confirm each dependency and protect shared repairs; a listed source feature is
 not a claim that its later gate has already been measured. Reuse geometry/source
 replay and bounded clip/paint machinery. Do not require exhaustive G2 completion
@@ -170,7 +185,7 @@ in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **5,630 passed on each platform**: 4,155 core, 1,469 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **5,661 passed on each platform**: 4,165 core, 1,490 visual-project, six FontProbe; zero failed/skipped. Test counts are not image counts. |
 | Memory and delivery checks | Existing parser/raster work, memory-denial, cancellation/retry, geometry/paint and six-output regressions pass. Six new template/grid inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. A 1,024-link forward chain resolves iteratively; aliases borrow one promoted tile scene with independent grids. Missing/cyclic/duplicate/negative templates and oversized tiles release owners; full-document early/middle/late work and peak-memory denials release partial owners before retry. Five mask inputs also sweep parser/discovery work, sampled/peak memory and raster work boundaries; anonymous, unused, duplicate and rejected masks release staging owners. Borrowed replay survives cancellation/retry, and the complete mask document releases early/middle/late work and peak-memory denials. Nested affine-opacity also sweeps parser/discovery work, sampled/peak memory denial, raster work boundaries and cancellation/retry; clip and opacity retain distinct bounded owners. Two new oval inputs sweep every parser work denial and sampled/peak memory denial; discarded unpainted mask fill owners release, and centerline/outline commands survive failed replay unchanged. Three new affine-arc inputs sweep every parser work denial and sampled/peak memory denial, then denied raster work/memory and cancellation/retry with immutable commands. Source point-count and zero-radius arc controls retain their boundary semantics. Three native-fill/hairline inputs sweep every parser work denial and sampled/peak memory denial, plus raster work/memory and cancellation/retry with immutable commands. The complete Malta input releases partial owners after early/middle/late parser work and peak-memory denials before retry. Native float-collapsed ovals enclose no area. Two new near-close straight/cubic fills sweep parser work, sampled/peak memory denial, raster work/memory and cancellation/retry with immutable source commands. The complete Portugal document also releases partial owners under early/middle/late parser work and peak-memory denial before retry. Prior mechanism details retain their dated scope in the design record. Remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,394 exact + zero known-difference renders + 16 rejections**; 799 base documents / 611 variants. The original rotated mark graduates against a new independent browser reference; its source/options and all preceding exact assets remain unchanged. |
 | Executed research manifest | **65 probes = 65 exact + zero known-difference renders + zero rejections**. The tiger graduates at its explicitly qualified viewport; its historical auto-image PNG remains diagnostic. The other 64 research outputs stay unchanged. |
@@ -180,7 +195,7 @@ in [the review](docs/REVIEW_2026_09_28.md).
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
 | Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. Affine viewport clips register budget-owned native contours and charge a full-canvas RGBA scratch tape (four bytes per output pixel per active affine clip), plus bounded intersection/replay work. Isolated opacity retains separate existing surfaces; no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
 
-Both platforms pass Release builds and **5,630 tests**. Complete qualification
+At `83de8a50`, both platforms passed Release builds and **5,630 tests**. That complete qualification
 checks all 1,567 original reports and 1,551 PNGs; only South Africa's Default
 report/PNG changes, becoming exact. The other 1,550 PNGs and every preceding
 focused outcome stay unchanged. South Africa, Bhutan, Portugal, Malta and

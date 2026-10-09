@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><circle id="p" cx="50%" cy="50%" r="20%" fill="#347bad"/></defs><use href="#p"/>
+</svg>

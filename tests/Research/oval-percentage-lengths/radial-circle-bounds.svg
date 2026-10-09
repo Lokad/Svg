@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 60 60">
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><radialGradient id="p" fx="28%" fy="39%"><stop stop-color="#eee"/><stop offset="1" stop-color="#aaa"/></radialGradient></defs><circle cx="50%" cy="50%" r="40%" fill="url(#p)"/>
+</svg>

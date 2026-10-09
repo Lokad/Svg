@@ -9564,3 +9564,49 @@ No quantitative performance or package/API delivery claim is added. Remaining
 G2–G9, the non-scaling root width-map defect and S17 remote CI stay open. Ignored
 evidence is under artifacts/south-africa-strokes-20261009/ and
 artifacts/linux-delivery-20261007/south-africa-strokes-final-20261009/.
+
+## Percentage oval lengths for the Wikifoods document (2026-10-09)
+
+The retained CC0 Wikifoods logo begins with percentage circles, followed by curved
+clips and mapped radial paints. Its nine original-input outputs were frozen at
+`83de8a50` before correction, with healthy, cleaned stable triples on both platforms.
+The first shared repair advances every output from percentage-coordinate rejection
+to the curved clip-path gate. The document remains 0/9 exact; controls do not complete it.
+
+Known root/nested viewBox extents enter a typed viewport-length context, independent
+of output pixels and group/leaf maps. Oval centers and ellipse radii use their axes;
+circle radii use the normalized diagonal. Geometry and recorded primitive paint
+bounds consume the same resolved values. Native percentage and viewport narrowing,
+float multiplication/division and the float diagonal preserve reference pixels.
+Bare-number/px syntax retains its preceding behavior and existing geometry owners.
+See [SVG units](https://www.w3.org/TR/SVG/coords.html#Units), pinned Blink
+[length functions](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/svg/svg_length_functions.cc)
+and [length context](https://chromium.googlesource.com/chromium/src/+/refs/tags/153.0.8010.52/third_party/blink/renderer/core/svg/svg_length_context.cc).
+
+The [twelve focused inputs](../tests/Research/oval-percentage-lengths/manifest.json)
+were declared and captured before production edits. Nine are exact: source-logo
+circles, nonsquare diagonal radii, nonzero viewBox origins, independent ellipse
+axes, fractional percentages, nested user-space bases, radial object bounds, zero
+radii and scaled nested ovals. Three retain explicit gates: rotated ellipse maps,
+rectangle percentages and percentage geometry in retained definitions. Instance
+replay currently lacks the host viewport required for relative oval coordinates;
+rejecting those definitions prevents incorrectly reusing definition-site lengths.
+That promised G2/G3 combination remains open. Prototype root uses were exact at
+one identical viewport; that single case did not justify broader instance admission.
+
+No new retained contour, paint or raster storage is introduced by length resolution.
+Existing attribute scanning charges parser work and cancellation. Two oval inputs
+sweep every parser work denial, sampled/peak memory denial and retry; eight invalid
+length/range cases release partial owners before a valid percentage-circle retry.
+Negative radii, nonfinite percentages, float/numeric-range overflow and unsupported
+units retain explicit categorized outcomes. The first correction changes no frozen
+source, options, PNG or corporate membership. Complete document qualification
+will follow its remaining shared clip/paint repairs.
+
+Current Windows/Linux Release solution builds pass with zero warnings/errors;
+all 5,661 tests pass per platform (4,165 core / 1,490 visual / six FontProbe).
+All twelve controls retain their measured outcomes through six APIs; seventy-two
+healthy, cleaned control captures across both platforms match frozen PNGs.
+The existing `83de8a50` complete original-bank/cohort measurement is preserved;
+the whole Wikifoods correction will receive the required complete qualification.
+No package, release, performance or remote CI claim follows from this dependency slice.

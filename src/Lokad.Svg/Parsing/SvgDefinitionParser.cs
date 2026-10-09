@@ -1239,6 +1239,10 @@ internal static class SvgDefinitionParser
 
     private static SvgDefinition ParseShapeDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
     {
+        // Instance replay must retain the host viewport before relative oval lengths can be admitted here.
+        if (reader.LocalName is "circle" or "ellipse"
+            && (IsPercentage(reader, "cx") || IsPercentage(reader, "cy") || IsPercentage(reader, "r") || IsPercentage(reader, "rx") || IsPercentage(reader, "ry")))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage oval definitions require retained instance viewport bases.");
         SvgComputedStyle style = context.ResolveStyle(reader);
         // Element-local lowering: the shape lowerers compose the inherited transform with the element attribute themselves, so the inherited
         // side stays identity here; carrying the parsed attribute would apply it twice. Use clones exclude definition ancestors.
@@ -1273,7 +1277,7 @@ internal static class SvgDefinitionParser
         {
             if ((reader.LocalName is "circle" or "ellipse") && geometries.Length > 0 && geometries[0].AuthoredPath is null)
             {
-                SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader) : SvgEllipseSyntax.ParseEllipse(reader);
+                SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, context.LengthBases) : SvgEllipseSyntax.ParseEllipse(reader, context.LengthBases);
                 if (oval.RadiusX > 0 && oval.RadiusY > 0)
                 {
                     float left = (float)oval.CenterX - (float)oval.RadiusX, right = (float)oval.CenterX + (float)oval.RadiusX;
@@ -1299,6 +1303,9 @@ internal static class SvgDefinitionParser
             foreach (SvgGeometry geometry in geometries) geometry.Dispose();
             throw;
         }
+
+        static bool IsPercentage(XmlReader input, string attribute)
+            => input.GetAttribute(attribute) is {} value && value.AsSpan().Trim().EndsWith("%", StringComparison.Ordinal);
 
         static double? ResolveInstanceStrokeMiterLimit(SvgComputedStyle computed, SvgGeometry[] lowered, string? pathData, string? transformAttribute, string? vectorEffect, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
