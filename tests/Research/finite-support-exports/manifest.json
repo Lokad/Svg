@@ -17,7 +17,7 @@
     "profilesCleaned": true,
     "byteIdenticalToFrozenReferences": true
   },
-  "purpose": "Four complete fontless static exports retained from a five-document public-domain/CC0 batch: three admission gates and one nested-mask mismatch. Next deliverable is inv-115 Fibonacci spiral. Complete documents and synthetic controls remain separate.",
+  "purpose": "Four complete fontless static exports at frozen declared outputs. inv-115 Fibonacci spiral is exact; inv-116 paint-order and inv-118 mask presentation reject, and inv-117 retains its measured nested-mask mismatch. Documents remain separate from controls.",
   "cases": [
     {
       "id": "inv-115-915x579-transparent",
@@ -40,9 +40,7 @@
       "selection": "Complete fontless static export at its nominal source-page frame, fixed at a27d734f before renderer screening or capture. Original converter bytes and authored geometry unchanged.",
       "materialization": "root-dimensions-only",
       "captureInput": "inv-115-capture-915x579.svg",
-      "captureInputSha256": "921c101a2f86cc59bf641efbac9905f5f7ff9c6c143a1f0817da49952ca8c013",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only integer rectangle coordinates are implemented."
+      "captureInputSha256": "921c101a2f86cc59bf641efbac9905f5f7ff9c6c143a1f0817da49952ca8c013"
     },
     {
       "id": "inv-116-283x283-transparent",

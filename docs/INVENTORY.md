@@ -15,13 +15,14 @@ retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
 Bhutan the tenth, South Africa the eleventh, Wikifoods the twelfth and the striped
 pattern the thirteenth, the non-ionizing warning the fourteenth and geometric
 pattern the fifteenth, set-screw diagram the sixteenth and gradient-mask example
-the seventeenth and soccerball mask the eighteenth: **18 complete**. The retained
-development queue is **18/22 complete**; every preceding completed output remains
+the seventeenth, soccerball mask the eighteenth and Fibonacci spiral the nineteenth:
+**19 complete**. The retained
+development queue is **19/22 complete**; every preceding completed output remains
 exact. Four further whole-document failures are retained from a five-export batch.
-The Fibonacci spiral (`inv-115`) is the next complete deliverable. Controls do not count as completed
+The railway tunnel junction (`inv-117`) is the next complete deliverable. Controls do not count as completed
 documents. The I Ching nested affine-opacity control remains exact.
 
-### inv-115–inv-118 — four retained failures; Fibonacci spiral next
+### inv-115–inv-118 — Fibonacci spiral complete; tunnel junction next
 
 The [finite-support manifest](../tests/Research/finite-support-exports/manifest.json)
 and [source records](../tests/Research/finite-support-exports/source-records.json)
@@ -34,9 +35,9 @@ viewBox, geometry and metadata.
 
 | Whole export / original source | Rights / bytes | Declared transparent output / first observed blocker |
 | --- | --- | --- |
-| [Fibonacci spiral 34.svg](https://commons.wikimedia.org/wiki/File:Fibonacci_spiral_34.svg), Dicklyon; `inv-115` | Public domain; 1,265 bytes | Explicit 915×579; rejects 2.5-pixel rectangle stroke widths. Coordinates already admit fractions. Next deliverable: follow all gates and mismatches through six APIs to the frozen reference. |
+| [Fibonacci spiral 34.svg](https://commons.wikimedia.org/wiki/File:Fibonacci_spiral_34.svg), Dicklyon; `inv-115` | Public domain; 1,265 bytes | Explicit 915×579; admission rejected 2.5-pixel rectangle stroke widths. Now 1/1 exact through six APIs on Windows/Linux after shared finite-width parsing; native frames and all arcs need no raster change. |
 | [SVG pattern striped transparent.svg](https://commons.wikimedia.org/wiki/File:SVG_pattern_striped_transparent.svg), Watchduck; `inv-116` | CC0; 2,661 bytes | Explicit 283×283; rejects inline `paint-order`. Contains a general affine pattern and partially transparent target. |
-| [BSicon tABZ4+lxf.svg](https://commons.wikimedia.org/wiki/File:BSicon_tABZ4%2Blxf.svg); `inv-117` | Simple geometry, public domain; 807 bytes | Explicit 500×500; nested masks render with 5,569 changed pixels and maximum channel error 255. |
+| [BSicon tABZ4+lxf.svg](https://commons.wikimedia.org/wiki/File:BSicon_tABZ4%2Blxf.svg); `inv-117` | Simple geometry, public domain; 807 bytes | Explicit 500×500; nested masks render with 5,569 changed pixels and maximum channel error 255. Next complete deliverable. |
 | [Soccerball mask test.svg](https://commons.wikimedia.org/wiki/File:Soccerball_mask_test.svg); `inv-118` | CC0; 3,020 bytes | Explicit 512×512; rejects mask `fill-opacity`, before painted masked content and shadows can be assessed. |
 
 The fifth export, [BSicon evSHI1l-STR3o.svg](https://commons.wikimedia.org/wiki/File:BSicon_evSHI1l-STR3o.svg),
@@ -45,10 +46,21 @@ failure corpus. None of the five downloads exercises the measured non-scaling
 root-viewBox width defect; G3 remains open. Failure selection supplies no
 representative success rate. New admissions change no production code or prior
 assets/options; the completed `a27d734f` bank/corporate qualification is reused.
-Both current Release builds pass with zero warnings/errors and 5,935 tests per
+At admission, both Release builds passed with zero warnings/errors and 5,935 tests per
 platform (4,275 core / 1,654 visual / six FontProbe). Four document checks preserve
 three explicit gates and the complete nested-mask comparison through all six APIs;
 the earlier fourteen document rows remain exact. Controls are counted separately.
+
+The spiral now completes its unchanged output after shared fractional width
+admission. Ten [width controls](../tests/Research/fractional-rectangle-widths/manifest.json)
+have matching healthy, cleaned platform triples: nine are exact and one preserves
+the separate fractional use-instance effective-width rejection. That promised
+G2/G4 combination stays visible without blocking the document. Both Release
+builds and **5,952 tests per platform** pass (4,282 core / 1,664 visual / six
+FontProbe). Complete qualification preserves all 2,908 prior reports and 2,846
+PNGs; corporate stays 27/27 / 258/258 on each platform's frozen references.
+The queue is 19/22 complete; `inv-117` is next. Source bytes, sizing, options and
+references remain unchanged; no source-code fingerprints are retained.
 
 ### inv-112–inv-114 — all three retained exports complete
 
@@ -87,7 +99,7 @@ Release builds and 5,931 tests per platform pass (4,275 core / 1,650 visual / si
 FontProbe); complete corporate checks retain 27/27 / 258/258. All 2,845 preceding
 PNGs are byte-identical; one old rejection graduates to exact. All preceding
 assets and options stay unchanged. That checkpoint completed 18/18; the subsequent batch above adds four retained
-failures, with 18/22 currently complete. Finite G2–G9 and S17 remain open.
+failures, with 18/22 complete at admission. Finite G2–G9 and S17 remain open.
 
 ### inv-109–inv-111 — all three retained documents complete
 

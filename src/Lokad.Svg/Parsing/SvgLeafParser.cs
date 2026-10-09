@@ -837,7 +837,7 @@ internal static class SvgLeafParser
     {
         if (color is null) { return null; }
         if (transform != SvgAffineTransform.Identity || (hasFill && opacity != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed rectangle strokes, with opacity only when fill-less, are implemented.");
-        int strokeWidth = SvgGeometrySyntax.ParseInteger(widthValue ?? "1");
+        double strokeWidth = SvgStrokeStyleSyntax.ParseStrokeWidth(widthValue, "rectangle");
         if (strokeWidth < 0 || strokeWidth > width || strokeWidth > height) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only rectangle strokes no larger than the rectangle dimensions are implemented.");
         if (strokeWidth == 0) return null;
         return new SvgStroke(SvgPaintResolver.ApplyOpacity(color.Value, opacity), strokeWidth);

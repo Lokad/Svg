@@ -10152,3 +10152,27 @@ becomes exact and adds one bank PNG. Original-bank reports remain 1,567 / 1,551
 PNGs; corporate remains 27/27 documents / 258/258 variants on each platform's
 frozen references. Source and tests match the Linux checkout byte-for-byte.
 Diagnostics and final audits stay ignored under `artifacts/soccerball-mask-20261009/`.
+
+## Fractional rectangle widths complete Fibonacci spiral (2026-10-09)
+
+The retained public-domain `inv-115` freezes its original 1,265-byte source,
+explicit 915×579 transparent viewport and healthy, cleaned matching browser
+triples before correction. The misleading integer-coordinate rejection came from
+the rectangle stroke-width parser: coordinates and retained `SvgStroke.Width`
+already support finite doubles. Rectangle admission now reuses the existing
+bare-number/px stroke-width parser; dimensions, placement and opacity boundaries
+remain on their existing routes. No new geometry kernel or raster adjustment is
+required. The complete output, including every translated authored arc, is exact
+through six APIs on Windows/Linux against the unchanged PNG.
+
+Ten [focused width controls](../tests/Research/fractional-rectangle-widths/manifest.json)
+protect thin and decimal-px frames, collapsed interiors, solid/shader fills and
+stroke opacity. Nine are exact; the frozen local-use twin rejects the separate
+integer effective-width restriction during instance mapping. This control stays
+an explicit G2/G4 boundary; completing the whole document does not close it.
+Invalid width parsing after an already retained rectangle releases partial owners
+and permits identical-budget retry. Fractional frame work denials release surface
+owners. Existing native frame coverage and draw/geometry/paint layouts remain
+unchanged. Both Release builds and 5,952 tests/platform pass; complete
+qualification preserves all 2,908 earlier reports and 2,846 PNGs, including
+corporate 27/27 documents and 258/258 variants against platform references.

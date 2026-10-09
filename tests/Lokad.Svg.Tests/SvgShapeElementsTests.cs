@@ -975,10 +975,21 @@ public sealed class SvgShapeElementsTests
         Assert.Equal(circle, ellipse);
     }
 
+    [Fact]
+    public void Fractional_rectangle_width_preserves_fill_and_viewport_edge_pixels()
+    {
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2.5'/></svg>", out int width, out int height);
+        Assert.Equal(8, width);
+        Assert.Equal(8, height);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 0, 0));
+        Assert.Equal(new SvgColor(191, 0, 64, 255), Pixel(pixels, width, 1, 4));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 4, 4));
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Pixel(pixels, width, 7, 7));
+    }
+
     [Theory]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2.5'/></svg>")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2.5'/></svg>")]
-    public void Fractional_band_strokes_stay_unsupported(string svg)
+    public void Fractional_line_band_strokes_stay_unsupported(string svg)
     {
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
 
