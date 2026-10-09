@@ -10372,6 +10372,6 @@ reports retain their established outcomes except the original rotated-gradient
 rectangle admission control becoming exact. All 2,846 previous PNGs and 2,752
 prior exact results remain unchanged; corporate 27/27 / 258/258 and original
 oracle 1,567 reports / 1,551 PNGs are preserved. Command/geometry/paint layouts
-remain 72/272/68 bytes. The document queue is 24/24 complete; finite G2–G9 exits,
+remain 72/272/68 bytes. This delivery completes the preceding 24/24 document queue; finite G2–G9 exits,
 the measured non-scaling width-map defect and S17 remain open. No renderer/source/
 DLL/script/report fingerprint enters the regression contract.

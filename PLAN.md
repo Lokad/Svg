@@ -45,7 +45,7 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 24; selected queue: 24/24 complete.**
+references. **Completed development deliverables: 24; selected queue: 24/26 complete.**
 Every preceding completed output remains exact. Both complete CC0 baseball
 illustrations (`inv-120`, 130×130 transparent; `inv-119`, 1200×800 transparent)
 now match unchanged references through all six APIs on Windows/Linux. Shared
@@ -415,11 +415,31 @@ The percentage rectangle and rotated gradient rectangle controls now assert
 exactness against their original references. Reuse this finished qualification
 until a renderer change warrants another complete run.
 
-The completed 24-document queue now calls for a new bounded sourcing batch.
-Qualify complete public-domain/CC0 marker exports within the enumerated G8 subset,
-retain only observed failures and choose the next shared correction from those
-documents. The G3 non-scaling width-map defect still lacks a qualified whole-document
-witness. Keep that defect, every finite G2–G9 promise and S17 visible.
+**Next complete document: `inv-121`, the CC0 double-arrow export at its original
+2000×500 transparent output.** The [marker document bank](tests/Research/marker-documents/manifest.json)
+retains it and `inv-122`, an 800×400 diagonal arrow using `auto-start-reverse`.
+This bounded two-download batch has verified CC0 evidence from the original
+copyright holder, untouched SVGs and healthy matching Windows/Linux reference
+triples. Outputs were declared before screening; both documents currently reject
+active marker values consistently through all six APIs on both platforms.
+
+Finish `inv-121` through each subsequent gate and pixel mismatch against its
+frozen output. Its local start/end definitions, default strokeWidth units,
+viewBox/ref-point/size mapping, automatic tangent orientation and ordinary cubic
+fill select shared marker replay. Audit its five-unit line stroke as the next
+geometry dependency; reuse source-line/stroke machinery if that gate is reached.
+Advance `inv-122` through the shared work, retaining its diagonal-line and start
+reversal dependencies. Synthetic controls protect only these needed semantics,
+resource boundaries and discovered defects; they do not replace whole documents.
+Keep marker-mid, further geometry/instance/content/unit combinations and finite
+filter effects visible in G8. The G3 width-map witness, every other finite group
+promise and S17 remain open. No exhaustive G2 completion is required.
+
+The selected queue is **24/26 complete**, separate from corporate **27/27 /
+258/258**. The added two offline cases pass through six APIs on Windows/Linux as
+categorized rejections. The finished renderer's complete 6,118-test qualification
+and prior bank evidence are reused; source-only retention does not refresh
+unchanged renderer qualification or claim a new complete test count.
 
 The bounded batch downloaded three public-domain/CC0 originals and retains two
 in-scope failures. The vector-effect original still fails pinned-browser image
@@ -440,8 +460,8 @@ on both platforms and is excluded from the failure corpus. None of that five-fil
 batch supplies a qualified whole-document witness for the non-scaling root-viewBox
 width defect; that G3 promise stays open. Four retained failures do not establish
 a representative success rate.
-With the two qualified baseball exports, the selected development queue is
-**24/24 complete**. Other G2–G9 exits and S17 remain unchanged; no support
+The two qualified baseball exports completed the preceding development queue at
+**24/24**. Other G2–G9 exits and S17 remain unchanged; no support
 combination is silently deferred.
 
 The [new export bank](tests/Research/remaining-gap-exports/manifest.json) also keeps
@@ -659,12 +679,12 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected queue is **24/24 complete**, including both CC0 baseball exports.
-The next document must come from qualified public-domain/CC0 failures within the
-finite support groups below; a small marker-export batch is the next sourcing
-slice. Select its shared implementation dependencies before expanding combinations.
-The fractional use-width control stays visible in G2/G4, and the measured G3
-width-map defect stays open without a qualified whole-document witness.
+The selected queue is **24/26 complete**; both CC0 baseball exports are complete.
+`inv-121`, the 2000×500 CC0 arrow export, is next. Its related `inv-122` remains
+queued at 800×400. Implement the shared G8 marker and G3 source-line dependencies
+that actually block these documents, then finish their frozen outputs through six
+APIs on Windows/Linux. The fractional use-width control stays visible in G2/G4,
+and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
 Prioritize composed transforms, paint-coordinate mapping and bounded pattern
 content where they remove several gates. Extend the existing geometry and
@@ -684,7 +704,7 @@ landed mechanisms remain regression requirements.
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
 | G6 | **Four retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
-| G8 | Static markers and the enumerated filter/blending subset below | Missing static features; lower priority than outlined logos | G3–G5, bounded intermediate surfaces; S16 |
+| G8 | Static markers and the enumerated filter/blending subset below | Two retained CC0 marker documents select the next shared work; finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
 | G9 | Supplied-font labels and the enumerated text-path subset below | Separate experimental feature work; no implicit host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
 
 ### Document deliverables and accounting
@@ -1254,10 +1274,12 @@ complete at one frozen output each, as are the gradient-mask example and
 soccerball mask. The spiral, tunnel junction, shadowed soccerball and transparent
 striped pattern completed the preceding 22-document queue. A subsequent bounded
 three-download batch retained two CC0 baseball exports; both are now complete:
-**24/24 documents**, through six APIs on Windows/Linux against frozen outputs.
+**24/24 documents in that preceding queue**, through six APIs on Windows/Linux against frozen outputs.
 The G3 width-map defect remains open without a qualified whole-document witness.
-A bounded marker-export sourcing batch selects the next practical G8 deliverable;
-retain only qualified failures, with outputs declared before comparison.
+A bounded two-download marker batch now retains two qualified CC0 failures:
+**24/26 complete**, with `inv-121` selected next and `inv-122` queued. Original
+SVGs, nominal transparent options and frozen matching platform references remain
+unchanged. Finite G8 promises select their shared marker/source-line dependencies.
 Choose shared support changes by the complete retained documents they advance.
 Keep the remaining instance combinations visible without making them a
 prerequisite for G3–G6.

@@ -1,0 +1,201 @@
+{
+  "retrieved": "2026-10-10",
+  "selectedAt": "9a04f4d443725e00f2e7dc5e0d1f324fff8b8a99",
+  "boundedBatchSize": 2,
+  "records": [
+    {
+      "identity": "inv-121",
+      "title": "SVG double arrow with marker-start and marker-end.svg",
+      "retrieved": "2026-10-10",
+      "size": 777,
+      "sha1": "9a725beff20ca7950c513383d15d48d7591bb97a",
+      "sha256": "e28500f1e37692efe12437f8e5b23eca7451a5946f9092cc650cc620e96b28f5",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVG_double_arrow_with_marker-start_and_marker-end.svg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/5/59/SVG_double_arrow_with_marker-start_and_marker-end.svg",
+      "author": "Watchduck",
+      "original": "tests/Fixtures/candidates/inv-121.svg",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2017-04-23 21:12:40",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "SVG double arrow with marker-start and marker-end",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "CC-Zero|Self-published work|Valid SVG created with Text Editor|Examples representing SVG|Problems with SVG arrow heads",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "<p>SVG path with two <a rel=\"nofollow\" class=\"external text\" href=\"https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker\">markers</a> using the attributes marker-start and marker-end\n</p>\nIn the former version the left arrow head was rendered in the PNG, but not shown in the browser. Problem solved here: <a rel=\"nofollow\" class=\"external free\" href=\"http://stackoverflow.com/questions/43575809\">http://stackoverflow.com/questions/43575809</a>",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a href=\"//commons.wikimedia.org/wiki/User:Watchduck\" title=\"User:Watchduck\">Watchduck</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Zero, Public Domain Dedication",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "false",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "licenseEvidence": "File description Licensing section identifies the uploader as copyright holder and dedicates the work under CC0 1.0 Universal.",
+      "featureTags": [
+        "local-markers",
+        "marker-viewBox",
+        "strokeWidth-units",
+        "auto-orientation",
+        "separate-start-end-definitions"
+      ],
+      "admissionOutcome": {
+        "Id": "inv-121",
+        "Outcome": "UnsupportedFeature",
+        "Message": "Only none marker values are implemented.",
+        "InputSha256": "e28500f1e37692efe12437f8e5b23eca7451a5946f9092cc650cc620e96b28f5"
+      }
+    },
+    {
+      "identity": "inv-122",
+      "title": "SVG double arrow with auto-start-reverse.svg",
+      "retrieved": "2026-10-10",
+      "size": 555,
+      "sha1": "2e5d1b7b636f3258e84078260b480c3ab4ad62e3",
+      "sha256": "c433f4837f460dad5e88072107577ffd8d9835c3bcd9d8c1e3805dbac9a70839",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVG_double_arrow_with_auto-start-reverse.svg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/4/47/SVG_double_arrow_with_auto-start-reverse.svg",
+      "author": "Watchduck",
+      "original": "tests/Fixtures/candidates/inv-122.svg",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2017-04-24 18:27:47",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "SVG double arrow with auto-start-reverse",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "CC-Zero|Self-published work|Valid SVG created with Text Editor|Problems with SVG arrow heads",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "<p>SVG path with the same <a rel=\"nofollow\" class=\"external text\" href=\"https://developer.mozilla.org/en-US/docs/Web/SVG/Element/marker\">marker</a> at both ends\n</p><p>The marker itself has <code>orient=\"auto-start-reverse\"</code> and is added to the path with <code>marker-start</code> and <code>marker-end</code>.\n</p><p>The generation of the correct PNG is unreliable. The SVG itself looks correct in Firefox and Chrome.\n</p>\nBased on a proposal at <a rel=\"nofollow\" class=\"external free\" href=\"http://stackoverflow.com/questions/43575809\">http://stackoverflow.com/questions/43575809</a>",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a href=\"//commons.wikimedia.org/wiki/User:Watchduck\" title=\"User:Watchduck\">Watchduck</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Zero, Public Domain Dedication",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "false",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "licenseEvidence": "File description Licensing section identifies the uploader as copyright holder and dedicates the work under CC0 1.0 Universal.",
+      "featureTags": [
+        "local-markers",
+        "marker-viewBox",
+        "strokeWidth-units",
+        "auto-orientation",
+        "auto-start-reverse"
+      ],
+      "admissionOutcome": {
+        "Id": "inv-122",
+        "Outcome": "UnsupportedFeature",
+        "Message": "Only none marker values are implemented.",
+        "InputSha256": "c433f4837f460dad5e88072107577ffd8d9835c3bcd9d8c1e3805dbac9a70839"
+      }
+    }
+  ]
+}
