@@ -397,6 +397,8 @@ internal sealed class SvgDocumentState : IDisposable
 /// <summary>Represents one inherited group or link context while streaming the document.</summary>
 internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgInheritedPresentation InheritedPresentation, SvgInheritedTextStyle InheritedTextStyle, bool IsolatesOpacity, bool HasMaskScope, SvgInheritedStrokeStyle InheritedStroke, string? FillRule)
 {
+    /// <summary>Retains an authored mask group's layer boundary before its deferred resource resolves; opacity inheritance stays independent.</summary>
+    internal bool HasDeferredMask { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal string? ClipRule { get; init; }
 }

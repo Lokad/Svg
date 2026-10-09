@@ -118,6 +118,8 @@
     <None Include="../Fixtures/candidates/inv-113.svg" Link="TestData/gradient-mask-export.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/mask-content-order/*.svg" Link="TestData/mask-content-order/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-114.svg" Link="TestData/soccerball-mask-document.svg" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/mask-group-scopes/*.svg" Link="TestData/mask-group-scopes/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Fixtures/candidates/inv-117.svg" Link="TestData/railway-tunnel-document.svg" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />

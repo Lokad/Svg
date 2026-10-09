@@ -15,14 +15,14 @@ retained tiger completes the seventh, Malta the eighth, Portugal the ninth and
 Bhutan the tenth, South Africa the eleventh, Wikifoods the twelfth and the striped
 pattern the thirteenth, the non-ionizing warning the fourteenth and geometric
 pattern the fifteenth, set-screw diagram the sixteenth and gradient-mask example
-the seventeenth, soccerball mask the eighteenth and Fibonacci spiral the nineteenth:
-**19 complete**. The retained
-development queue is **19/22 complete**; every preceding completed output remains
+the seventeenth, soccerball mask the eighteenth, Fibonacci spiral the nineteenth
+and railway tunnel junction the twentieth: **20 complete**. The retained
+development queue is **20/22 complete**; every preceding completed output remains
 exact. Four further whole-document failures are retained from a five-export batch.
-The railway tunnel junction (`inv-117`) is the next complete deliverable. Controls do not count as completed
+Soccerball with shadow (`inv-118`) is the next complete deliverable. Controls do not count as completed
 documents. The I Ching nested affine-opacity control remains exact.
 
-### inv-115–inv-118 — Fibonacci spiral complete; tunnel junction next
+### inv-115–inv-118 — spiral and tunnel complete; shadowed soccerball next
 
 The [finite-support manifest](../tests/Research/finite-support-exports/manifest.json)
 and [source records](../tests/Research/finite-support-exports/source-records.json)
@@ -37,8 +37,8 @@ viewBox, geometry and metadata.
 | --- | --- | --- |
 | [Fibonacci spiral 34.svg](https://commons.wikimedia.org/wiki/File:Fibonacci_spiral_34.svg), Dicklyon; `inv-115` | Public domain; 1,265 bytes | Explicit 915×579; admission rejected 2.5-pixel rectangle stroke widths. Now 1/1 exact through six APIs on Windows/Linux after shared finite-width parsing; native frames and all arcs need no raster change. |
 | [SVG pattern striped transparent.svg](https://commons.wikimedia.org/wiki/File:SVG_pattern_striped_transparent.svg), Watchduck; `inv-116` | CC0; 2,661 bytes | Explicit 283×283; rejects inline `paint-order`. Contains a general affine pattern and partially transparent target. |
-| [BSicon tABZ4+lxf.svg](https://commons.wikimedia.org/wiki/File:BSicon_tABZ4%2Blxf.svg); `inv-117` | Simple geometry, public domain; 807 bytes | Explicit 500×500; nested masks render with 5,569 changed pixels and maximum channel error 255. Next complete deliverable. |
-| [Soccerball mask test.svg](https://commons.wikimedia.org/wiki/File:Soccerball_mask_test.svg); `inv-118` | CC0; 3,020 bytes | Explicit 512×512; rejects mask `fill-opacity`, before painted masked content and shadows can be assessed. |
+| [BSicon tABZ4+lxf.svg](https://commons.wikimedia.org/wiki/File:BSicon_tABZ4%2Blxf.svg); `inv-117` | Simple geometry, public domain; 807 bytes | Explicit 500×500; admission had 5,569 changed pixels and maximum channel error 255. Now 1/1 exact through six APIs on Windows/Linux after authored group boundaries preserve deferred nested/sibling mask ownership. |
+| [Soccerball mask test.svg](https://commons.wikimedia.org/wiki/File:Soccerball_mask_test.svg); `inv-118` | CC0; 3,020 bytes | Explicit 512×512; rejects mask `fill-opacity`, before painted masked content and shadows can be assessed. Next complete deliverable; follow every later gate and mismatch. |
 
 The fifth export, [BSicon evSHI1l-STR3o.svg](https://commons.wikimedia.org/wiki/File:BSicon_evSHI1l-STR3o.svg),
 is already exact through all six APIs on both platforms and stays outside the
@@ -59,8 +59,21 @@ G2/G4 combination stays visible without blocking the document. Both Release
 builds and **5,952 tests per platform** pass (4,282 core / 1,664 visual / six
 FontProbe). Complete qualification preserves all 2,908 prior reports and 2,846
 PNGs; corporate stays 27/27 / 258/258 on each platform's frozen references.
-The queue is 19/22 complete; `inv-117` is next. Source bytes, sizing, options and
-references remain unchanged; no source-code fingerprints are retained.
+At that Fibonacci checkpoint the queue was 19/22 complete. Source bytes, sizing,
+options and references remain unchanged; no source-code fingerprints are retained.
+
+The tunnel junction now completes its frozen output after authored mask-group
+boundaries retain each resource's nested and sibling ownership. Sixteen
+[mask-scope controls](../tests/Research/mask-group-scopes/manifest.json) are exact
+through six APIs; eight repair defects and eight protect already exact behavior.
+All 96 captures are healthy, cleaned and matching. Empty balanced groups compact
+after binding, and ordinary native mask/layer replay remains the renderer.
+Both Release builds and **5,974 tests/platform** pass (4,288 core / 1,680 visual /
+six FontProbe). The full qualification preserves all 2,908 prior reports and
+2,846 PNGs, including corporate 27/27 / 258/258 on platform references. The
+queue is **20/22 complete**; `inv-118` is next. Its inherited mask presentation
+and full shadow/painted/grouped output remain required; `inv-116` and every other
+finite G2–G9 exit, width-map defect and S17 remain open.
 
 ### inv-112–inv-114 — all three retained exports complete
 

@@ -1325,6 +1325,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     private List<RenderBudget.BudgetReservation> _maskReservations = new();
     private readonly HashSet<SvgGradientStop[]> _reservedStopArrays = new();
     private bool _built;
+    private bool _hasAuthoredGroupScopes;
     private readonly BudgetedSceneList<SvgRecordedPaintValue> _recordedPaintValues;
     internal const long RecordedPaintOwnerBytes = 192;
     private RenderBudget.BudgetReservation? _recordedPaintOwner;
@@ -1410,7 +1411,11 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     /// <summary>Updates borrowed metadata without disposing or transferring the geometry's native owners.</summary>
     internal void AssignRecordedGeometry(int index, SvgGeometry geometry) => _geometries[index] = geometry;
-    internal void BeginSourceOpacityScope(SvgPaintOpacity opacity, SvgRecordingScope scope) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, scope.Value, opacity, null, -1, 255));
+    internal void BeginSourceOpacityScope(SvgPaintOpacity opacity, SvgRecordingScope scope)
+    {
+        _hasAuthoredGroupScopes = true;
+        _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, scope.Value, opacity, null, -1, 255));
+    }
     internal void AssignLeafMask(int index, SvgLeafMaskBinding? binding) => _geometries[index] = _geometries[index] with { LeafMask = binding };
 
     /// <summary>Adopts reserved replacement commands, releasing the former array; the caller must stop disposing the replacement.</summary>
@@ -1604,12 +1609,31 @@ internal sealed class SvgSceneBuilder : IDisposable
     internal SvgSceneStorage Build()
     {
         if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
+        if (_hasAuthoredGroupScopes) RemoveEmptyGroups();
         _built = true;
         SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations, _recordedPaintValues, _recordedPaintOwner ?? throw new InvalidOperationException("Paint arena has already transferred."), _vectorContents);
         _recordedPaintOwner = null;
         _paintReservations = new();
         _maskReservations = new();
         return storage;
+
+        void RemoveEmptyGroups()
+        {
+            // Deferred resource bindings need authored boundaries until resolution
+            // finishes. An empty balanced scope then has no paint to isolate, and
+            // removing it must also remove any now-empty enclosing scopes.
+            int retained = 0;
+            for (int index = 0; index < _commands.Count; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                SvgDrawCommand command = _commands[index];
+                if (command.Kind == SvgDrawCommandKind.EndGroup && retained > 0
+                    && _commands[retained - 1].Kind == SvgDrawCommandKind.BeginGroup)
+                    retained--;
+                else _commands[retained++] = command;
+            }
+            _commands.Truncate(retained);
+        }
     }
 
     public void Dispose()
@@ -1715,6 +1739,18 @@ internal sealed class BudgetedSceneList<T> : IDisposable where T : struct
         CopyWithCheckpoints(tail, _items.AsSpan(index, length));
         _items[--_count] = default;
         return inserted;
+    }
+
+    /// <summary>Drops a compacted tail without releasing borrowed resource owners; array storage remains reserved until detach or disposal.</summary>
+    internal void Truncate(int count)
+    {
+        if ((uint)count > (uint)_count) throw new ArgumentOutOfRangeException(nameof(count));
+        for (int offset = count; offset < _count; offset += CopyCheckpointItems)
+        {
+            _workCounter.Consume(_cancellationToken);
+            _items.AsSpan(offset, Math.Min(CopyCheckpointItems, _count - offset)).Clear();
+        }
+        _count = count;
     }
 
     internal OwnedSceneArray<T> Detach()

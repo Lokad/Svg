@@ -10176,3 +10176,50 @@ owners. Existing native frame coverage and draw/geometry/paint layouts remain
 unchanged. Both Release builds and 5,952 tests/platform pass; complete
 qualification preserves all 2,908 earlier reports and 2,846 PNGs, including
 corporate 27/27 documents and 258/258 variants against platform references.
+
+## Authored mask-group ownership completes railway tunnel junction (2026-10-09)
+
+The public-domain `inv-117` retains its original 807-byte UTF-8/BOM source and
+500×500 transparent output. The complete image differed at 5,569 pixels, with
+maximum channel/alpha error 255. Both mask resources and native curve coverage
+were correct; late layer insertion assigned their scopes to the wrong groups.
+The pending list follows opening order, and nested opaque groups can share raw
+command starts or ends. Inserting an outer layer changes a child's start into
+the parent's marker; subsequent insertion wraps that marker and swaps ownership.
+An empty nested range can absorb a following sibling too. Reversing resolution
+order alone leaves adjacent start/end ties ambiguous.
+
+Streaming traversal now retains the authored group's begin/end markers when
+its mask is deferred, including opaque groups. Use expansion shifts existing
+pending indices as before; each mask binds its own retained marker in place.
+Source opacity, recording scope and content recording identity stay independent;
+mask-only scopes do not become inherited opacity contexts. Existing clip,
+native contour, bounded vector-mask and paint routes provide the pixels.
+
+After all resource/leaf bindings finish, scenes with authored group scopes
+compact empty balanced scopes in place. A single work-charged pass removes
+adjacent begin/end pairs, including newly empty enclosing groups. The borrowed
+command owners remain reserved, discarded tail slots clear under work/token
+checks, and the compact scene detaches normally. Empty groups allocate no
+raster layer. Ordinary scenes without authored groups keep their work path.
+
+All sixteen [scope controls](../tests/Research/mask-group-scopes/manifest.json)
+are exact through six APIs on Windows/Linux; eight repair mismatches and eight
+retain previously exact pixels. Their 96 healthy, cleaned capture PNGs match
+the frozen references byte-for-byte. Controls distinguish shared starts/ends,
+independent siblings, empty nesting, triple nesting, forward definitions,
+clips, source opacity `.6`/`.999` and mask-path fill inheritance. The older
+uniform gray-mask/nested-opacity rejection graduates to a pixel regression;
+leaf masks retain their distinct recording route. Five controls sweep
+discovery/parser work, sampled/peak memory and raster-work denial/retry;
+the whole document checks early/middle/late parser work and peak memory.
+
+The full tunnel output is now exact against the unchanged reference on both
+platforms through every API. Both Release builds and **5,974 tests/platform**
+pass; complete qualification preserves all 2,908 prior reports and 2,846 PNGs,
+including corporate 27/27 documents and 258/258 variants against native platform
+references. Native raster kernels and 72/272/68-byte command/geometry/paint
+layouts remain unchanged. The development queue is 20/22 complete; inherited
+mask presentation in `inv-118` selects the next whole document. G2–G9 and S17
+retain their finite exits. Evidence stays ignored under
+`artifacts/tunnel-mask-20261009/`.

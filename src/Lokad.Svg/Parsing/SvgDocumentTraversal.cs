@@ -211,12 +211,12 @@ internal static class SvgDocumentTraversal
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
                         if (parsedGroup.DeferredMask is not null)
                         {
-                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, parsedGroup.Opacity, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame));
+                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame));
                         }
-                        if (parsedGroup.Scope.IsolatesOpacity)
+                        if (parsedGroup.Scope.IsolatesOpacity || parsedGroup.Scope.HasDeferredMask)
                         {
                             state.Scene.BeginSourceOpacityScope(parsedGroup.SourceOpacity, parsedGroup.RecordingScope);
-                            state.HasOpacityScope = true;
+                            if (parsedGroup.Scope.IsolatesOpacity) state.HasOpacityScope = true;
                         }
                     }
                 }
@@ -370,10 +370,10 @@ internal static class SvgDocumentTraversal
                             break;
                         }
                     }
-                    if (group.IsolatesOpacity)
+                    if (group.IsolatesOpacity || group.HasDeferredMask)
                     {
                         state.Scene.EndOpacityScope();
-                        state.HasOpacityScope = false;
+                        if (group.IsolatesOpacity) state.HasOpacityScope = false;
                     }
                 }
                 if (reader.Depth == rootDepth)

@@ -46,7 +46,7 @@ public sealed class SvgMaskCommandRangeTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Partially_inserted_mask_scopes_release_storage_on_memory_work_or_token_denial(bool forward)
+    public void Deferred_mask_scopes_release_storage_on_memory_work_or_token_denial(bool forward)
     {
         byte[] input = Input(forward, false);
         RenderBudget measured = new(1_000_000);
@@ -66,7 +66,7 @@ public sealed class SvgMaskCommandRangeTests
         Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }
 
-    private static SvgDrawCommand Begin(byte maskAlpha, SvgClipBox region) => new(SvgDrawCommandKind.BeginGroup, -1, 255, region, -1, maskAlpha);
+    private static SvgDrawCommand Begin(byte maskAlpha, SvgClipBox region) => new(SvgDrawCommandKind.BeginGroup, 1, 255, region, -1, maskAlpha);
     private static SvgDrawCommand Geometry(int index) => new(SvgDrawCommandKind.Geometry, index, 255, null, -1, 255);
     private static SvgDrawCommand End() => new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255);
 

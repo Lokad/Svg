@@ -17,7 +17,7 @@
     "profilesCleaned": true,
     "byteIdenticalToFrozenReferences": true
   },
-  "purpose": "Four complete fontless static exports at frozen declared outputs. inv-115 Fibonacci spiral is exact; inv-116 paint-order and inv-118 mask presentation reject, and inv-117 retains its measured nested-mask mismatch. Documents remain separate from controls.",
+  "purpose": "Four complete fontless static exports at frozen declared outputs. inv-115 Fibonacci spiral and inv-117 railway tunnel junction are exact; inv-116 paint-order and inv-118 mask presentation remain explicit admission gates. Documents remain separate from controls.",
   "cases": [
     {
       "id": "inv-115-915x579-transparent",
@@ -88,21 +88,7 @@
       "selection": "Complete fontless static export at its nominal source-page frame, fixed at a27d734f before renderer screening or capture. Original converter bytes and authored geometry unchanged.",
       "materialization": "root-dimensions-only",
       "captureInput": "inv-117-capture-500x500.svg",
-      "captureInputSha256": "58c69f31d39f1de52797e53a39e89f1a68df393dc83f1db571ee03ee656eae1c",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 5569,
-        "MaximumChannelError": 255,
-        "MeanAbsoluteError": 2.643567,
-        "RootMeanSquareError": 22.636972169439975,
-        "MaximumAlphaError": 255,
-        "AlphaChangedPixelCount": 5569,
-        "MinimumMismatchX": 31,
-        "MinimumMismatchY": 31,
-        "MaximumMismatchX": 499,
-        "MaximumMismatchY": 259,
-        "IsExact": false
-      }
+      "captureInputSha256": "58c69f31d39f1de52797e53a39e89f1a68df393dc83f1db571ee03ee656eae1c"
     },
     {
       "id": "inv-118-512x512-transparent",

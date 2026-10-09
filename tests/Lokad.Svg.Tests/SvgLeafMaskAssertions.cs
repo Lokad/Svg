@@ -23,6 +23,12 @@ internal static class SvgLeafMaskAssertions
     }
 
     internal static void UniformScope(SvgRoot root, byte value, SvgClipBox? region)
+        => UniformScope(root, value, region, new(-1));
+
+    internal static void UniformGroupScope(SvgRoot root, byte value, SvgClipBox? region)
+        => UniformScope(root, value, region, new(1));
+
+    private static void UniformScope(SvgRoot root, byte value, SvgClipBox? region, SvgRecordingScope recordingScope)
     {
         // An omitted expected region means a default region, which still owns a mask layer.
         bool isolates = root.Geometries.Length != 0;
@@ -30,7 +36,7 @@ internal static class SvgLeafMaskAssertions
         if (isolates)
         {
             SvgDrawCommand begin = root.Commands[0];
-            Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, begin.MaskRegion, -1, value), begin);
+            Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, recordingScope.Value, 255, begin.MaskRegion, -1, value), begin);
             if (region is {} explicitRegion) Assert.Equal(explicitRegion, begin.MaskRegion);
             else Assert.IsType<SvgClipBox>(begin.MaskRegion);
             Assert.Equal(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255), root.Commands[^1]);

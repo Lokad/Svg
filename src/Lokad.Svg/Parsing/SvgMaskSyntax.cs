@@ -9,7 +9,7 @@ internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int Geom
 
 /// <summary>Retains one masked group command range whose mask reference resolves at document end.</summary>
 /// <remarks>Uniform and spatial group masks apply after child composition, independently of definition order.</remarks>
-internal readonly record struct PendingGroupMask(string MaskId, byte Opacity, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgViewportFrame? Parent);
+internal readonly record struct PendingGroupMask(string MaskId, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgViewportFrame? Parent);
 
 /// <summary>Parses bounded mask definitions and retains leaf values or isolated group operations.</summary>
 internal static class SvgMaskSyntax
@@ -234,7 +234,7 @@ internal static class SvgMaskSyntax
         return reference is not null && (state.MaskRegions.TryGetValue(ParseMaskId(reference), out _) || state.MaskFractionRegions.TryGetValue(ParseMaskId(reference), out _));
     }
 
-    /// <summary>Resolves deferred group masks at document end, rewriting or inserting isolation scopes after use expansion.</summary>
+    /// <summary>Resolves deferred group masks at document end, binding each authored isolation scope after use expansion.</summary>
     internal static void ResolvePendingGroupMasks(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(state);
@@ -255,16 +255,14 @@ internal static class SvgMaskSyntax
                 if (pending.Parent is not null && !pending.Parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
                 ValidateNoGlyphText(state, pending, workCounter, cancellationToken);
                 int contentIndex = state.Scene.AddMaskContent(content);
-                if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, pending.Opacity, 255, maskRegion, contentIndex);
-                else InsertGroupMaskScope(state, pending, pending.Opacity, 255, maskRegion, contentIndex, workCounter, cancellationToken);
+                RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
                 continue;
             }
             if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox contentBox)) ValidateGroupMaskCoverage(state, pending, contentBox, workCounter, cancellationToken);
-            if (pending.Opacity != 255) RewriteGroupMaskScope(state, pending, pending.Opacity, value, maskRegion, -1);
-            // Mask the composed children. Baking this value into every paint changes
-            // overlap alpha and coverage/color rounding, even for one opaque child.
-            else if (value != 255 || maskRegion is not null) InsertGroupMaskScope(state, pending, pending.Opacity, value, maskRegion, -1, workCounter, cancellationToken);
-            }
+            // Bind the authored group's own layer. Equal child/parent boundaries and
+            // adjacent empty/sibling ranges must never decide which mask owns a scope.
+            RewriteGroupMaskScope(state, pending, value, maskRegion, -1);
+        }
 
         static void ValidateNoGlyphText(SvgDocumentState state, PendingGroupMask pending, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {
@@ -291,29 +289,12 @@ internal static class SvgMaskSyntax
             }
         }
 
-        static void RewriteGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte opacity, byte maskAlpha, SvgClipBox? maskRegion, int maskContentIndex)
+        static void RewriteGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte maskAlpha, SvgClipBox? maskRegion, int maskContentIndex)
         {
             SvgDrawCommand scope = state.Scene.CommandAt(pending.FirstCommandIndex);
             if (scope.Kind != SvgDrawCommandKind.BeginGroup) throw new InvalidOperationException("Deferred group mask resolution requires its isolation scope.");
             state.Scene.ReplaceCommand(pending.FirstCommandIndex, new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, scope.GeometryIndex, scope.SourceOpacity, maskRegion, maskContentIndex, maskAlpha));
         }
-
-        static void InsertGroupMaskScope(SvgDocumentState state, PendingGroupMask pending, byte opacity, byte maskAlpha, SvgClipBox? maskRegion, int maskContentIndex, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        {
-            // A validated empty range has no pixels to isolate and shares its boundary
-            // with following siblings. It must not acquire their commands.
-            if (pending.FirstCommandIndex == pending.EndCommandIndex) return;
-            for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
-            {
-                workCounter.Consume(cancellationToken);
-                if ((opacity != 255 || maskAlpha != 255) && state.Scene.CommandAt(commandIndex).Kind == SvgDrawCommandKind.BeginGroup) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested group opacity requires separate compositing calibration.");
-            }
-            state.Scene.InsertCommands(pending.EndCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255)]);
-            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.EndCommandIndex, 1, true, workCounter, cancellationToken);
-            state.Scene.InsertCommands(pending.FirstCommandIndex, [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, maskRegion, maskContentIndex, maskAlpha)]);
-            SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.FirstCommandIndex, 1, false, workCounter, cancellationToken);
-        }
-
     }
     /// <summary>Resolves a custom group-mask region into root-user space for scope compositing.</summary>
     /// <remarks>Explicit boxes map through the captured ancestor frame (axis scales and offsets); bounding-box fractions resolve against the masked children union like direct leaves. Glyph rules stay separate; empty groups resolve degenerate regions that composite nothing.</remarks>

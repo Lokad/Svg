@@ -14,11 +14,11 @@ public sealed class SvgUniformGroupMaskTests
         using (SvgRoot scene = SvgRootParser.Parse(Input(forward), SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
         {
             SvgLeafMaskAssertions.CommandSequence([
-                new(SvgDrawCommandKind.BeginGroup, -1, 255, new(3.4625, 1.9, 34.95, 28.2), -1, 64),
+                new(SvgDrawCommandKind.BeginGroup, 1, 255, new(3.4625, 1.9, 34.95, 28.2), -1, 64),
                 new(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255),
                 new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255),
                 new(SvgDrawCommandKind.Geometry, 1, 255, null, -1, 255),
-                new(SvgDrawCommandKind.BeginGroup, -1, 255, new(10.7, 9.1, 27.6, 22.8), -1, 192),
+                new(SvgDrawCommandKind.BeginGroup, 1, 255, new(10.7, 9.1, 27.6, 22.8), -1, 192),
                 new(SvgDrawCommandKind.Geometry, 2, 255, null, -1, 255),
                 new(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255)], scene.Commands);
             Assert.True(Assert.IsType<SvgAuthoredPath>(scene.Geometries[0].AuthoredPath).IsKnownConvex);

@@ -4264,7 +4264,7 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
-        SvgLeafMaskAssertions.UniformScope(root, 255, null);
+        SvgLeafMaskAssertions.UniformGroupScope(root, 255, null);
     }
 
     [Fact]
@@ -4288,11 +4288,22 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_forward_masks_on_groups_with_nested_opacity()
+    public void Forward_group_masks_compose_after_nested_opacity()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><g opacity='0.5'><rect x='0' y='0' width='8' height='8' fill='red'/></g></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><g opacity='0.5'><rect x='0' y='0' width='8' height='8' fill='red'/></g></g><defs><mask id='later'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(5, root.Commands.Length);
+            Assert.Equal(255, root.Commands[0].Opacity);
+            Assert.Equal(128, root.Commands[0].MaskAlpha);
+            Assert.Equal(128, root.Commands[1].Opacity);
+            Assert.Equal(255, root.Commands[1].MaskAlpha);
+            Assert.NotEqual(root.Commands[0].RecordingScope, root.Commands[1].RecordingScope);
+            for (int pixel = 0; pixel < 64; pixel++)
+                Assert.Equal(new byte[] { 255, 0, 0, 64 }, surface.Pixels.AsSpan(pixel * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -7145,14 +7156,14 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='48' height='48' fill='#ffffff'/></mask></defs><g mask='url(#fade)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgLeafMaskAssertions.UniformScope(root, 255, null);
+        SvgLeafMaskAssertions.UniformGroupScope(root, 255, null);
     }
     [Fact]
     public void Retains_default_white_mask_regions_around_polygon_groups()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs><g mask='url(#fade)'><polygon points='0,0 8,0 0,8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgLeafMaskAssertions.UniformScope(root, 255, null);
+        SvgLeafMaskAssertions.UniformGroupScope(root, 255, null);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
     }
@@ -7162,7 +7173,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='48' height='48' fill='#808080'/></mask></defs><g mask='url(#fade)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgLeafMaskAssertions.UniformScope(root, 128, null);
+        SvgLeafMaskAssertions.UniformGroupScope(root, 128, null);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind);
         Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Rectangle.Color);
@@ -7172,7 +7183,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#fade)'><polygon points='0,0 8,0 0,8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgLeafMaskAssertions.UniformScope(root, 128, null);
+        SvgLeafMaskAssertions.UniformGroupScope(root, 128, null);
         SvgGeometry geometry = Assert.Single(root.Geometries);
         Assert.Equal(SvgGeometryKind.PolygonFill, geometry.Kind);
         Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Polygon.Color);
@@ -7217,7 +7228,7 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><use href='#p'/></g><defs><polygon id='p' points='0,0 8,0 8,4 4,4 4,8 0,8' fill='red'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgLeafMaskAssertions.UniformScope(root, 128, null);
+        SvgLeafMaskAssertions.UniformGroupScope(root, 128, null);
         Assert.Equal(2, root.Geometries.Length);
         Assert.All(root.Geometries, geometry => Assert.Equal(SvgGeometryKind.Rectangle, geometry.Kind));
         Assert.All(root.Geometries, geometry => Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.Rectangle.Color));

@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none"><defs><mask id="a" maskUnits="userSpaceOnUse"><rect width="48" height="48" fill="white"/><path d="M4 4C9 19 29 24 44 24" fill="none" stroke="black" stroke-width="4"/></mask></defs><g mask="url(#a)"><rect x="15" y="11" width="30" height="32" fill="#c43"/></g></svg>
