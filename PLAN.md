@@ -25,14 +25,13 @@ Neither this checkpoint nor an exact document closes the finite G2–G9 exits.
 
 **Next complete deliverable: `original-logo-live-text`, 64×64 transparent**, with
 an explicitly supplied public static Noto Sans Regular face under the existing
-`Example` family alias. Keep the original SVG bytes. Pin the upstream face and
-retain its [OFL notice](https://github.com/notofonts/noto-fonts/blob/main/LICENSE)
-before browser embedding and caller-owned snapshot preparation. Declare the
-font/alias/options, then freeze healthy matching platform reference triples
-before renderer correction. Finish the complete output through all six supplied-font
-APIs; use small glyph/position controls for any shared defect. This is the first
-finite G9 acceptance step; the text-path document and the full label/path subset
-remain promised. Existing snapshot-less rejection stays explicit. Broader G2
+`Example` family alias. The upstream face, OFL notice, alias/options and healthy
+matching platform reference triples are already qualified in the public-font
+bank. Keep those assets and the original SVG bytes. Finish the complete output
+through all six supplied-font APIs; use small glyph/position controls for any
+shared defect. This is the first finite G9 acceptance step; the text-path document
+and the full label/path subset remain promised. Existing snapshot-less rejection
+stays explicit. Broader G2
 combinations are dependencies only when this document needs them.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) now pins that
@@ -46,10 +45,22 @@ The first shared admission blocker is corrected: bounded ordered GPOS pair
 lists/class pairs, coverage/class definitions 1/2 and mark-free IgnoreMarks.
 Covered contextual glyphs and actual marks remain explicit unsupported outcomes.
 **This bank has 0/1 completed documents and 0/7 exact controls.** The label now
-renders but still differs from its reference; ordinary-path replay alone does
-not reproduce native text masks. Next, correct native glyph coverage/hinting and
-device layout rounding for the original single `A`, protecting curves, counters
-and fractional placement. Composite accents also expose component-flag admission.
+renders but still differs from its reference. The
+[native raster diagnosis](tests/Research/supplied-font-labels/diagnostics/native-rasterization.json)
+identifies both pipelines for the selected `A`: Windows uses hinted symmetric
+LCD coverage averaged to alpha and font preblend; Linux uses Fontations Latin
+light autohinting, ordinary native contour coverage and font preblend. Replaying
+those independently obtained intermediate inputs matches both frozen images
+exactly; these are diagnostic results, not renderer acceptance.
+
+Start the shared correction with bounded managed Latin light autohinting and
+font preblend through the existing contour machinery. Complete the corresponding
+managed TrueType grid fitting and LCD coverage for Windows before counting the
+document complete. Charge extra metric-glyph discovery, hint execution and mask
+storage; preserve caller-owned bytes, directed curves and native paint distinctions.
+Use the existing size/curve/fractional controls as each mechanism advances.
+Advance rounding does not affect the first single glyph's ink; resolve that
+separate layout defect and composite component flags through the queued controls.
 Do not replace the font, document bytes or either platform reference. Keep this
 same document selected through these remaining gates; G9's text paths and all
 finite label/path promises remain open.
@@ -766,6 +777,26 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
   label export. Add AV/space/accent/composite, mixed-span/fallback, list/anchor/
   length/baseline and path-offset witnesses. Section 6 requires intended-font
   proof, separate metrics and pixels, and matching platform references.
+- **First document's raster dependencies:** the unchanged public-font bank
+  supplies the finite acceptance inputs; its seven controls remain separate.
+  - [x] Identify the native pipelines for the single `A` against both unchanged
+    references. The retained diagnostic Windows mask and Linux hinted outline
+    reproduce those references after font preblend. They never become product
+    inputs or completed-font results.
+  - [ ] Managed Latin light autohinting and device-coordinate contour replay on
+    Linux, followed by font preblend. Reuse existing native analytic coverage;
+    system FreeType grayscale rasterization is not this browser's backend.
+  - [ ] Managed TrueType grid fitting and symmetric LCD coverage averaged to
+    alpha on Windows, followed by the qualified font preblend. Ordinary path or
+    grayscale coverage cannot substitute for the measured LCD route.
+  - [ ] Complete the original single `A` through all six raw and six independently
+    prepared supplied-font outputs on both platforms. Keep bounded stack/point/
+    storage/function execution, cancellation and partial-owner cleanup explicit;
+    unimplemented hint semantics must have categorized outcomes.
+  - [ ] Complete the seven existing controls, including independent advance
+    rounding, curves/counters, composite flags, small/large sizes, fractional
+    origins and inherited color. Expand combinations only for a demonstrated
+    dependency; keep the full label/path exit below open.
 - **Explicit unsupported outcomes:** automatic wrapping, bidi/joining/complex
   shaping, general GSUB/GPOS or mark positioning, vertical text, text-path stretch/
   auto spacing, variable/color/bitmap fonts, CFF/CFF2, WOFF/WOFF2 and host-font

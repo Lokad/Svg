@@ -10652,3 +10652,62 @@ acceptance fixtures. The new pending font bank remains separate. Scene layouts
 stay 72/272/68 bytes. Prior exact-document browser captures are reused; only the
 new declared font evaluation uses new captures. Implementation fingerprints are
 not regression requirements. Remaining finite G2–G9 and S17 promises stay open.
+
+## Native supplied-font raster diagnosis (2026-10-10)
+
+The same original single `A`, public Noto face, alias, 64×64 transparent output
+and Windows/Linux reference triples remain selected. The
+[diagnostic intermediate data](../tests/Research/supplied-font-labels/diagnostics/native-rasterization.json)
+separate grid fitting, coverage and font preblend. Neither native probes nor
+recorded glyph masks become renderer dependencies or product inputs. The font
+bank remains **0/1 completed documents and 0/7 exact controls**.
+
+Windows's private DirectWrite probe reads the exact named public font file and
+face 0 without installed-font lookup. NATURAL_SYMMETRIC rendering, NATURAL
+measuring, enabled grid fitting and a CLEARTYPE_3x1 texture reproduce the native
+coverage shape. Integer RGB averaging followed by the
+[pinned Skia font-preblend formula](https://github.com/google/skia/blob/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkMaskGamma.cpp)
+with sRGB and contrast one matches every decoded reference pixel. Averaging alone
+differs at 205 pixels with maximum alpha error ten. This is a measured setting
+match for the frozen Windows witness, not a universal Windows configuration
+claim. The [DirectWrite mask route](https://github.com/google/skia/blob/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/ports/SkScalerContext_win_dw.cpp)
+preserves the distinction between LCD averaging and grayscale coverage; the
+grayscale modes and ordinary path replay are insufficient for this witness.
+Managed TrueType grid fitting and corresponding LCD coverage remain to implement.
+
+Linux's system FreeType 2.13.2 is only a diagnostic approximation. The exact
+Chrome 153.0.8010.52
+[font manager](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/skia/ext/font_utils.cc)
+uses Fontations. Its DEPS pins Skia
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c`; that revision pins Skrifa 0.43.2,
+read-fonts 0.40.1 and font-types 0.12.0. The
+[Fontations scaler](https://github.com/google/skia/blob/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/ports/SkTypeface_fontations.cpp)
+forces Latin autohinting for the slight mode, obtains a hinted path and uses
+ordinary native path coverage for its A8 mask. The private pinned-Skrifa probe
+exports the selected glyph under Auto/Light, symmetric rendering and disabled
+linear-metric preservation. These hinted device coordinates include the native
+implied-point rounding; they differ from scaling the original font-unit curves.
+
+All six raw and six independently prepared APIs agree when rendering that
+diagnostic outline through the existing managed ordinary-path route. Its raw
+coverage differs from the Linux font reference at 113 pixels, maximum alpha error
+six. The
+[Chrome Linux build settings](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/skia/BUILD.gn)
+specify gamma 1.2 and contrast 0.2. Skia's 2.6 gamma representation truncates this
+to 76/64; contrast is 51/255. Applying that independently specified preblend to
+the managed outline coverage matches every decoded frozen Linux reference pixel.
+This resolves the single-glyph coverage hypothesis: reuse native contour replay
+after managed light autohinting, then apply font preblend. A separate FreeType
+grayscale rasterizer would reproduce the wrong backend.
+
+These exact diagnostic replays isolate the next implementation but do not qualify
+live-text conversion. Curves/counters, other sizes, colors, fractional origins,
+composites and device advance rounding retain their original controls. In
+particular, advancing the single glyph does not change its ink; advance rounding
+is a separate layout dependency. Additional metric-glyph inspection and hint
+execution must borrow caller-owned programs, obey work/memory limits, observe
+cancellation and release temporary owners. Native coverage/preblend cannot be
+used to justify glyph-specific lookup tables, reference-mask replay or source
+coordinate predicates. The prior complete qualification is reused: production
+code, original sources, font programs, options and acceptance references did not
+change, so unchanged full tests and bank qualification are not repeated.

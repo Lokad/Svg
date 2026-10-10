@@ -40,6 +40,15 @@ ordinary path pixels. Passing these layout/API checks does not count as an exact
 document or control. The original single `A` must be corrected against its
 frozen image; composites have an additional component-flag admission gate.
 
+[The native raster diagnosis](diagnostics/native-rasterization.json) retains
+intermediate data for that single `A`: a Windows hinted LCD coverage mask and a
+Linux Fontations light-hint outline. The former matches its frozen image after
+measured font preblend; existing managed ordinary-path rendering of the latter,
+followed by Chrome's documented Linux font preblend, matches its frozen image.
+These isolate the remaining managed hinting/mask work. They are diagnostic
+inputs, never product substitutes, acceptance references or exact-font controls.
+Neither document/control counts nor the original font/reference assets change.
+
 The bounded shared kerning reader admits ordered pair-list and class-pair
 X-advance adjustments, coverage/class-definition formats 1/2, up to 32 selected
 lookups and 32 subtables per lookup. The first matching subtable wins, including

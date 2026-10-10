@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "role": "diagnostic-only; neither a completed document nor an exact font control",
+  "document": "original-logo-live-text-64x64-transparent",
+  "fontProvenance": "../font-provenance.json",
+  "dimensions": {
+    "width": 64,
+    "height": 64
+  },
+  "glyphIndex": 36,
+  "fontSize": 48,
+  "origin": {
+    "x": 8,
+    "y": 48
+  },
+  "sourcePin": {
+    "chromiumRelease": "153.0.8010.52",
+    "skiaRevision": "f8b66b7597c4cc859d3ed190e9c6872241e6721c",
+    "skrifaVersion": "0.43.2",
+    "readFontsVersion": "0.40.1",
+    "fontTypesVersion": "0.12.0"
+  },
+  "windows": {
+    "coverage": "windows-hinted-lcd-coverage.png",
+    "extraction": "Private DirectWrite probe; exact caller-named font file, face 0, no installed-font lookup.",
+    "mode": "NATURAL_SYMMETRIC, NATURAL measuring, enabled grid fitting, CLEARTYPE_3x1 texture; integer mean of RGB coverages.",
+    "preblend": {
+      "gamma": "sRGB",
+      "contrast": 1,
+      "status": "Measured match on this Windows reference; not a universal system-setting assertion."
+    },
+    "reference": "../references/original-logo-live-text-64x64-transparent.png",
+    "replayedChangedPixels": 0,
+    "replayedMaximumChannelError": 0,
+    "implementationRemaining": "Managed TrueType grid fitting and corresponding LCD coverage; the retained native mask is diagnostic test data only."
+  },
+  "linux": {
+    "outline": "linux-light-hint-outline.svg",
+    "extraction": "Pinned Skrifa, Engine::Auto, SmoothMode::Light, symmetric rendering, preserve_linear_metrics=false; unchanged supplied face.",
+    "coverage": "Existing managed ordinary-path rendering of the retained outline; all six raw and six prepared output forms agree.",
+    "beforePreblendChangedPixels": 113,
+    "beforePreblendMaximumAlphaError": 6,
+    "preblend": {
+      "configuredGamma": 1.2,
+      "quantizedGamma": 1.1875,
+      "contrast": 0.2
+    },
+    "reference": "../references/linux64/original-logo-live-text-64x64-transparent.png",
+    "replayedChangedPixels": 0,
+    "replayedMaximumChannelError": 0,
+    "implementationRemaining": "Managed Latin light autohinting, hinted device-coordinate contours and font-specific preblend after existing native contour coverage."
+  },
+  "limits": "Only the selected single A is diagnosed here. Curves, counters, composites, other sizes, colors and fractional origins still need their unchanged controls. No native probe, service or runtime dependency belongs in the product."
+}
