@@ -44,7 +44,7 @@ remain passing. Finished complete qualification passes **6,118 tests/platform**
 (4,350 core / 1,762 visual / six FontProbe), preserving all 2,846 prior PNGs
 byte-for-byte, all 2,752 prior exact results and corporate **27/27 / 258/258**.
 The [two CC0 arrow documents](../tests/Research/marker-documents/manifest.json)
-now complete the selected queue at **26/26**, exact through six APIs on both
+complete the preceding queue at **26/26**, exact through six APIs on both
 platforms at unchanged 2000×500 and 800×400 transparent outputs. Bounded marker
 content reuses symbol/group/use and native line-stroke replay. Fifteen exact
 controls and five explicit boundaries protect units, orientation, source paint,
@@ -54,7 +54,16 @@ cancellation and retry. Two inert line-fill controls graduate against existing
 references. Complete Release qualification passes **6,143 tests/platform**
 (4,353 core / 1,784 visual / six FontProbe), with zero failures/skips/warnings,
 all 2,847 prior PNGs unchanged and all 2,753 prior exact results preserved.
-Corporate **27/27 / 258/258** remains frozen. G2–G9 and S17 remain open.
+Corporate **27/27 / 258/258** remains frozen. The subsequently retained
+[two original CC0 path-marker exports](../tests/Research/path-marker-documents/manifest.json)
+bring the selected queue to **26/28**: `inv-123` is next, with `inv-124` queued.
+Both reject through six APIs on Windows/Linux at their declared transparent
+viewports. Original bytes and frozen references remain untouched; twelve healthy
+matching captures qualify them. Their two offline cases receive focused checks;
+the complete renderer qualification above is reused. Path vertices, inherited
+marker-mid, automatic tangents and visible overflow are measured G8 dependencies;
+the retained instance acceptance gate and every other finite promise remain open.
+G2–G9 and S17 remain open.
 
 Static `paint-order` supports `normal`, distinct ordered fill/stroke/markers lists
 and inherited/initial/unset values through the admitted cascade and instances.

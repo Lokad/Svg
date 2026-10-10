@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "Two original CC0 path-marker exports retained for measured finite G8 gaps. Outputs were declared before screening and capture. Original bytes and options stay frozen; browser sizing only inserts the declared root dimensions.",
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "inv-123-512x352-transparent",
+      "document": "inv-123",
+      "input": "../../Fixtures/candidates/inv-123.svg",
+      "captureInput": "capture-inputs/inv-123.svg",
+      "materialization": "insert-root-dimensions",
+      "captureInputSha256": "f079a26a51afa4a28524d0d5b49bf6b96cb4d05a7e38472a8874c3e1a92d8097",
+      "viewport": {
+        "width": 512,
+        "height": 352
+      },
+      "width": 512,
+      "height": 352,
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/inv-123-512x352-transparent.png",
+      "sourceSha256": "e295e7f95b2b6fa401c2726e37051170b22c1168a68d810150c6d3752d09e07a",
+      "referenceSha256": "5f30dcd353ffd9e65a290636ff1ee22be29a8ee40e7c18d1e98883f4c485f654",
+      "license": "CC0-1.0",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:(1%2B2)_Dimensional_SC_lattice.svg",
+      "role": "document-output",
+      "selection": "Declared before renderer screening and reference capture; whole CC0 lattice selects shared intermediate path vertices, subpaths and inherited marker content.",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Markers on shapes other than lines are not implemented.",
+      "captures": [
+        {
+          "pngSha256": "5f30dcd353ffd9e65a290636ff1ee22be29a8ee40e7c18d1e98883f4c485f654",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5f30dcd353ffd9e65a290636ff1ee22be29a8ee40e7c18d1e98883f4c485f654",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5f30dcd353ffd9e65a290636ff1ee22be29a8ee40e7c18d1e98883f4c485f654",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "inv-124-512x512-transparent",
+      "document": "inv-124",
+      "input": "../../Fixtures/candidates/inv-124.svg",
+      "captureInput": "capture-inputs/inv-124.svg",
+      "materialization": "insert-root-dimensions",
+      "captureInputSha256": "b8191905a73a9d2fa73ab9cfd841dfcde0023a58ebe001aa96f10caf996ec049",
+      "viewport": {
+        "width": 512,
+        "height": 512
+      },
+      "width": 512,
+      "height": 512,
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/inv-124-512x512-transparent.png",
+      "sourceSha256": "e9e9fb5818bdcdc8f5915c627acd3c6ee1a51694ac50afe66d82218a4e868e7a",
+      "referenceSha256": "0483f17690880ab663f95eb9abd5516a06866d607faf01496bd3ba2c03a9e924",
+      "license": "CC0-1.0",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Screw_Head_-_7-Node_Security.svg",
+      "role": "document-output",
+      "selection": "Declared before renderer screening and reference capture; whole CC0 security screw head selects shared intermediate path vertices, automatic tangents and visible marker overflow.",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only hidden viewport overflow is implemented.",
+      "captures": [
+        {
+          "pngSha256": "0483f17690880ab663f95eb9abd5516a06866d607faf01496bd3ba2c03a9e924",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0483f17690880ab663f95eb9abd5516a06866d607faf01496bd3ba2c03a9e924",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0483f17690880ab663f95eb9abd5516a06866d607faf01496bd3ba2c03a9e924",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

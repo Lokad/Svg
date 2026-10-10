@@ -20,3 +20,8 @@ tests/Research/finite-support-exports/inv-118-capture-512x512.svg -text whitespa
 # Preserve the original compound-clip exports and their root-only browser inputs.
 tests/Fixtures/candidates/inv-119.svg -text whitespace=cr-at-eol
 tests/Research/compound-clip-documents/inv-119-capture-1200x800.svg -text whitespace=cr-at-eol
+# Preserve original path-marker exports and their root-only browser inputs.
+tests/Fixtures/candidates/inv-123.svg -text whitespace=cr-at-eol
+tests/Research/path-marker-documents/capture-inputs/inv-123.svg -text whitespace=cr-at-eol
+tests/Fixtures/candidates/inv-124.svg -text whitespace=cr-at-eol
+tests/Research/path-marker-documents/capture-inputs/inv-124.svg -text whitespace=cr-at-eol

@@ -47,7 +47,7 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 26; selected queue: 26/26 complete.**
+references. **Completed development deliverables: 26; selected queue: 26/28 complete.**
 Every preceding completed output remains exact. Both complete CC0 baseball
 illustrations (`inv-120`, 130×130 transparent; `inv-119`, 1200×800 transparent)
 now match unchanged references through all six APIs on Windows/Linux. Shared
@@ -417,7 +417,7 @@ The percentage rectangle and rotated gradient rectangle controls now assert
 exactness against their original references. Reuse this finished qualification
 until a renderer change warrants another complete run.
 
-**The two CC0 arrow documents are complete: selected queue 26/26.**
+**The two CC0 arrow documents complete the preceding 26-document queue.**
 The [marker document bank](tests/Research/marker-documents/manifest.json) retains
 `inv-121` at 2000×500 and `inv-122` at 800×400, both transparent and exact through
 all six APIs on Windows/Linux. Original bytes, declared options and frozen
@@ -439,13 +439,31 @@ previous PNGs** remain byte-for-byte unchanged and all **2,753 prior exact resul
 stay exact; corporate **27/27 / 258/258** and the original oracle remain frozen.
 Use this qualification until another renderer change warrants a complete run.
 
-The next G8 acceptance case is the retained `original-logo-marker-mark`; qualify
-a bounded CC0 path-marker sourcing batch to select a complete practical export
-alongside it. Implement only that document's vertex/tangent, content and viewport
-dependencies. Intermediate vertices, path/polyline/polygon and instance coverage,
-visible overflow, remaining marker presentation and finite filters stay open in G8.
-The G3 width-map witness, other finite group exits and S17 remain open.
-No exhaustive G2 completion is required.
+**Next complete document: `inv-123`, the original CC0 lattice diagram at
+512×352 transparent with an explicit viewport.** The
+[path-marker document bank](tests/Research/path-marker-documents/manifest.json)
+also retains `inv-124`, a 512×512 security screw-head drawing. Both outputs were
+declared before screening/capture. Their original SVG bytes remain untouched;
+browser inputs only insert those root dimensions. Verified copyright-holder CC0
+records and twelve healthy matching Windows/Linux captures qualify the references.
+Both documents currently reject consistently through all six APIs on both platforms.
+
+Finish `inv-123` through every gate and mismatch against its frozen output. Its
+inherited marker-mid, straight path vertices, multiple subpaths, dashes and
+viewBox-free marker content select shared vertex placement and existing stroke/
+source replay. Advance `inv-124` through that work; its automatic tangents and
+visible marker overflow remain subsequent measured dependencies. Keep
+`original-logo-marker-mark` visible as the retained instance acceptance gate;
+path marker delivery does not close it. Add focused controls for these shared
+dependencies, discovered defects and boundaries, separately from whole documents.
+
+The selected queue is **26/28 complete**, separate from corporate **27/27 /
+258/258**. The two added offline cases pass focused verification through six APIs
+on Windows/Linux as categorized rejections. Reuse the finished 6,143-test renderer
+qualification and prior bank evidence; source-only retention does not claim a new
+complete test count. Remaining G8 geometry/instance/angle/length/presentation
+combinations and finite filters remain promised. The G3 width-map witness, every
+other finite group exit and S17 remain open. No exhaustive G2 completion is required.
 
 The bounded batch downloaded three public-domain/CC0 originals and retains two
 in-scope failures. The vector-effect original still fails pinned-browser image
@@ -685,11 +703,13 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected queue is **26/26 complete**, including both baseball and both arrow
-exports. The arrows complete the admitted line-marker slice of G8; further
-path/vertex/instance combinations and finite effects remain open. Qualify the
-next complete CC0 path-marker document and advance its shared dependencies beside
-`original-logo-marker-mark`. The fractional use-width control stays visible in
+The selected queue is **26/28 complete**, including both baseball and both arrow
+exports. The arrows complete the admitted line-marker slice of G8. `inv-123` is
+the next whole document; `inv-124` follows through shared path vertices, source
+paint and marker replay, with automatic tangents and visible overflow as measured
+dependencies. Keep `original-logo-marker-mark` as the instance acceptance gate.
+Further promised combinations and finite effects remain open.
+The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
 Prioritize composed transforms, paint-coordinate mapping and bounded pattern
@@ -1292,9 +1312,10 @@ three-download batch retained two CC0 baseball exports; both are now complete:
 **24/24 documents in that preceding queue**, through six APIs on Windows/Linux against frozen outputs.
 The G3 width-map defect remains open without a qualified whole-document witness.
 Both CC0 arrow documents are complete at their frozen transparent outputs:
-**26/26 selected documents complete**. Shared marker and line-source mechanisms
-remove their observed gates and pixel mismatches. Qualify a bounded path-marker
-batch for the next whole G8 deliverable; preserve every remaining finite promise.
+**26/28 selected documents complete**. Shared marker and line-source mechanisms
+complete both arrow exports. The bounded CC0 path-marker batch selects `inv-123`
+next and queues `inv-124`; finish their whole outputs against unchanged references
+while preserving every remaining finite promise.
 Choose shared support changes by the complete retained documents they advance.
 Keep the remaining instance combinations visible without making them a
 prerequisite for G3–G6.

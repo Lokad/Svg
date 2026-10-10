@@ -1,0 +1,226 @@
+{
+  "retrieved": "2026-10-10",
+  "selectedAt": "d5132b26044056bbe959af39c71118322027ea97",
+  "boundedBatchSize": 2,
+  "declaredBeforeScreening": true,
+  "records": [
+    {
+      "identity": "inv-123",
+      "title": "(1+2) Dimensional SC lattice.svg",
+      "retrieved": "2026-10-10",
+      "size": 496,
+      "width": 512,
+      "height": 352,
+      "sha1": "e50b61dbab8e00bc4e58ee790362a60452de7339",
+      "sha256": "e295e7f95b2b6fa401c2726e37051170b22c1168a68d810150c6d3752d09e07a",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:(1%2B2)_Dimensional_SC_lattice.svg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/3/35/%281%2B2%29_Dimensional_SC_lattice.svg",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2024-05-01 18:43:02",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "(1+2) Dimensional SC lattice",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "CC-Zero|Kagome structures|Self-published work|Valid SVG created with Text Editor",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "(1+2) Dimensional SC lattice",
+          "source": "commons-desc-page"
+        },
+        "DateTimeOriginal": {
+          "value": "2024-05-01",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a href=\"//commons.wikimedia.org/wiki/User:Andrew_Pertsev\" title=\"User:Andrew Pertsev\">Andrew Pertsev</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Zero, Public Domain Dedication",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "false",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "author": "Andrew Pertsev",
+      "original": "tests/Fixtures/candidates/inv-123.svg",
+      "licenseEvidence": {
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:(1%2B2)_Dimensional_SC_lattice.svg",
+        "license": "CC0",
+        "evidence": "Commons description identifies the upload as Own work and CC0 from the original copyright holder.",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "featureTags": [
+        "local-markers",
+        "path-vertices",
+        "marker-mid",
+        "source-paint",
+        "subpaths",
+        "dashed-paths"
+      ],
+      "admissionOutcome": {
+        "Id": "inv-123",
+        "Outcome": "UnsupportedFeature",
+        "Message": "Markers on shapes other than lines are not implemented.",
+        "InputSha256": "e295e7f95b2b6fa401c2726e37051170b22c1168a68d810150c6d3752d09e07a"
+      }
+    },
+    {
+      "identity": "inv-124",
+      "title": "Screw Head - 7-Node Security.svg",
+      "retrieved": "2026-10-10",
+      "size": 347,
+      "width": 512,
+      "height": 512,
+      "sha1": "b1a9a97a11582ba2aa6d42ed0423ed61a979a6df",
+      "sha256": "e9e9fb5818bdcdc8f5915c627acd3c6ee1a51694ac50afe66d82218a4e868e7a",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Screw_Head_-_7-Node_Security.svg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/1/13/Screw_Head_-_7-Node_Security.svg",
+      "extmetadata": {
+        "DateTime": {
+          "value": "2024-02-17 14:21:10",
+          "source": "mediawiki-metadata",
+          "hidden": ""
+        },
+        "ObjectName": {
+          "value": "Screw Head - 7-Node Security",
+          "source": "mediawiki-metadata"
+        },
+        "CommonsMetadataExtension": {
+          "value": 1.2,
+          "source": "extension",
+          "hidden": ""
+        },
+        "Categories": {
+          "value": "CC-Zero|Drawings of screw heads|Self-published work|Valid SVG created with Text Editor",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "Assessments": {
+          "value": "",
+          "source": "commons-categories",
+          "hidden": ""
+        },
+        "ImageDescription": {
+          "value": "Screw Head. 7-Node Security",
+          "source": "commons-desc-page"
+        },
+        "DateTimeOriginal": {
+          "value": "2024-02-17",
+          "source": "commons-desc-page"
+        },
+        "Credit": {
+          "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a href=\"//commons.wikimedia.org/wiki/User:Andrew_Pertsev\" title=\"User:Andrew Pertsev\">Andrew Pertsev</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "CC0",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Creative Commons Zero, Public Domain Dedication",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "false",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "LicenseUrl": {
+          "value": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+          "source": "commons-desc-page"
+        },
+        "Copyrighted": {
+          "value": "True",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "cc0",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      },
+      "author": "Andrew Pertsev",
+      "original": "tests/Fixtures/candidates/inv-124.svg",
+      "licenseEvidence": {
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Screw_Head_-_7-Node_Security.svg",
+        "license": "CC0",
+        "evidence": "Commons description identifies the upload as Own work and CC0 from the original copyright holder.",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      "featureTags": [
+        "local-markers",
+        "path-vertices",
+        "marker-mid",
+        "source-paint",
+        "auto-orientation",
+        "visible-overflow"
+      ],
+      "admissionOutcome": {
+        "Id": "inv-124",
+        "Outcome": "UnsupportedFeature",
+        "Message": "Only hidden viewport overflow is implemented.",
+        "InputSha256": "e9e9fb5818bdcdc8f5915c627acd3c6ee1a51694ac50afe66d82218a4e868e7a"
+      }
+    }
+  ]
+}
