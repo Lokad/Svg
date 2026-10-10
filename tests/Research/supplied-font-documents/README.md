@@ -30,10 +30,14 @@ scalar absolute `tspan x/y`, starts separate anchored text chunks, preserves nes
 per-axis precedence and relative offsets, and continues current positions into
 later text. Shared bounded structural validation admits element-free rendered and
 retained path bodies; nested elements still invalidate rendering. These corrections
-remove the original first two rejections. The next gate is the closing parenthesis:
-its mirrored composite uses `ROUND_XY_TO_GRID` and a composite instruction program.
-Extend shared placement/fitting for that demonstrated dependency, then follow all
-remaining mismatches until the whole declared output matches unchanged references
+remove the original first two rejections. Shared bounded point assembly now admits
+the mirrored closing parenthesis, `ROUND_XY_TO_GRID` placement and parent program.
+TrueType fits the child before the parent; Linux light fitting uses the assembled
+outline. [Eighteen independent native contours](diagnostics/composite-contours.json)
+protect both stages. Font header bit 3 now controls integer internal hinting sizes,
+while linear advances retain authored sizes. The whole document renders through
+all 12 APIs: **2,026 Windows / 764 Linux changed pixels** remain (maximum channel
+errors 84 / 255). Follow every mismatch until it matches unchanged references
 through six raw and six independently prepared APIs on both platforms.
 
 The seven controls are separate from document completion. All render through the
@@ -50,9 +54,9 @@ Windows still has **0/7 controls exact**:
 | Continued current position | Keep reset y and advance x into the next span. | 6 / 6 |
 | Empty path body | Retain an explicitly closed local baseline. | 2 / 6 |
 | Integer strikes | Two sizes and curved glyphs from the document. | 8 / 12 |
-| Scaled strikes | Preserve the original root map and fractional strikes. | 128 / 255 |
+| Scaled strikes | Preserve the original root map and fractional strikes. | 4 / 8 |
 
-Complete Windows/Linux qualification passes 6,572 tests per platform and preserves
+Complete Windows/Linux qualification passes 6,608 tests per platform and preserves
 all 27/27 corporate documents / 258/258 variants, 2,849 prior PNGs and 2,755 prior
 exact comparisons. Keep wider finite
 G9 list/rotate/font/paint/baseline/curve promises and the older live-text defects

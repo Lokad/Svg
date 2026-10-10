@@ -15,7 +15,7 @@ internal static partial class OpenTypeFont
     private const int MaximumCompositeGlyphComponents = 64;
     private const int MaximumCompositeGlyphDepth = 8;
     private const int MaximumExpandedGlyphSegments = 65_536;
-    private const ushort SupportedCompositeFlags = 1 | 2 | 8 | 32 | 64 | 128 | 256;
+    private const ushort SupportedCompositeFlags = 1 | 2 | 4 | 8 | 32 | 64 | 128 | 256;
     private const uint TrueTypeScalerType = 0x00010000;
     private const uint TrueTypeCollectionTag = 0x74746366;
     private const uint HeadTag = 0x68656164;
@@ -85,7 +85,7 @@ internal static partial class OpenTypeFont
         if (tables.TryGetValue(Os2Tag, out OpenTypeTableRange os2)) ValidateOs2Table(data, os2, workCounter, cancellationToken);
         OpenTypeKernTable? kern = tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, workCounter, cancellationToken) : null;
         OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, workCounter, cancellationToken) : null;
-        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null);
+        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null, (ReadUInt16(bytes.Span, head.Offset + 16) & 8) != 0);
     }
 
     /// <summary>Maps one Unicode scalar through a validated Unicode format-4 or format-12 character map.</summary>
@@ -313,13 +313,22 @@ internal static partial class OpenTypeFont
 
     /// <summary>Reads simple-glyph structure and owns its endpoint array until point decoding completes.</summary>
     private static OpenTypeSimpleGlyphStructureStorage GetSimpleGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => GetGlyphStructure(bytes, glyphIndex, metrics, budget, workCounter, cancellationToken, false);
+
+    /// <summary>Reads one glyph header and simple metadata, optionally leaving composite decoding to the point assembler.</summary>
+    private static OpenTypeSimpleGlyphStructureStorage GetGlyphStructure(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget? budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken, bool allowComposite)
     {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         if (glyph.Length == 0) return new(new OpenTypeSimpleGlyphStructure([], 0, glyph), null);
         OpenTypeGlyphHeader? header = ParseGlyphHeader(bytes, glyph);
         if (header is not OpenTypeGlyphHeader value) throw new InvalidOperationException("A nonempty glyph did not return a header.");
-        if (value.IsComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph decoding is not implemented yet.");
+        if (value.IsComposite)
+        {
+            if (!allowComposite) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph decoding is not implemented yet.");
+            return new(new([], 0, glyph), null, value);
+        }
         if (value.ContourCount > MaximumSimpleGlyphContours) throw new SvgException(SvgErrorCode.LimitExceeded, "The simple glyph contour count exceeds the supported limit.");
+        if (value.ContourCount == 0 && glyph.Length == 10) return new(new([], 10, glyph), null);
         ReadOnlySpan<byte> data = bytes.Span;
         int endpointBytes = checked(value.ContourCount * 2);
         int instructionLengthOffset = checked(glyph.Offset + 10 + endpointBytes);
@@ -327,7 +336,7 @@ internal static partial class OpenTypeFont
         ushort instructionLength = ReadUInt16(data, instructionLengthOffset);
         int pointDataOffset = checked(instructionLengthOffset + 2 + instructionLength);
         if (pointDataOffset > glyph.Offset + glyph.Length) throw InvalidFont("The simple glyf instructions are truncated.");
-        RenderBudget.BudgetReservation? reservation = budget?.Reserve(ParserCollectionMemory.GetArrayByteCount<ushort>(value.ContourCount), SvgMemoryCategory.Geometry);
+        RenderBudget.BudgetReservation? reservation = value.ContourCount == 0 ? null : budget?.Reserve(ParserCollectionMemory.GetArrayByteCount<ushort>(value.ContourCount), SvgMemoryCategory.Geometry);
         ushort[] endpoints;
         try { endpoints = new ushort[value.ContourCount]; }
         catch { reservation?.Dispose(); throw; }
@@ -575,12 +584,12 @@ internal static partial class OpenTypeFont
     private static OpenTypeCompositeGlyphComponentStorage GetBudgetedCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         using var components = new OpenTypeCompositeComponentAccumulator(budget, workCounter, cancellationToken);
-        ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, workCounter, cancellationToken);
-        return components.Detach();
+        OpenTypeTableRange instructions = ReadCompositeGlyphComponents(bytes, glyphIndex, metrics, components, workCounter, cancellationToken);
+        return components.Detach(instructions);
     }
 
     /// <summary>Validates and appends the component records of one composite glyph.</summary>
-    private static void ReadCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeCompositeComponentAccumulator components, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static OpenTypeTableRange ReadCompositeGlyphComponents(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, OpenTypeCompositeComponentAccumulator components, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeTableRange glyph = GetGlyphDataRange(bytes, glyphIndex, metrics, workCounter, cancellationToken);
         OpenTypeGlyphHeader? header = ParseGlyphHeader(bytes, glyph);
@@ -611,7 +620,7 @@ internal static partial class OpenTypeFont
             int verticalOffset = words ? ReadInt16(data, cursor + (words ? 2 : 1)) : unchecked((sbyte)data[cursor + 1]);
             cursor += argumentBytes;
             OpenTypeAffineTransform transform = ReadCompositeTransform(data, ref cursor, end, flags);
-            components.Add(new OpenTypeCompositeGlyphComponent(componentGlyph, horizontalOffset, verticalOffset, transform));
+            components.Add(new OpenTypeCompositeGlyphComponent(componentGlyph, horizontalOffset, verticalOffset, transform, flags));
         } while ((flags & 32) != 0);
         if (hasInstructions)
         {
@@ -619,8 +628,9 @@ internal static partial class OpenTypeFont
             ushort instructionLength = ReadUInt16(data, cursor);
             cursor += 2;
             if (cursor > end - instructionLength) throw InvalidFont("The composite glyf instructions are truncated.");
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Composite TrueType glyph instructions are not implemented.");
+            return new(cursor, instructionLength);
         }
+        return default;
     }
 
     /// <summary>Expands bounded simple and composite glyphs into transformed quadratic segments.</summary>
@@ -981,7 +991,7 @@ internal static partial class OpenTypeFont
 }
 
 /// <summary>Represents validated core metrics from borrowed standalone-TrueType data.</summary>
-internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeKernTable? Kern, OpenTypeGposPairTable? Gpos, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf);
+internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeKernTable? Kern, OpenTypeGposPairTable? Gpos, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf, bool ForceIntegerHintingSize);
 
 internal readonly record struct OpenTypeTableRange(int Offset, int Length);
 
@@ -1015,12 +1025,18 @@ internal sealed class OpenTypeSimpleGlyphStructureStorage : IDisposable
     private RenderBudget.BudgetReservation? _reservation;
 
     internal OpenTypeSimpleGlyphStructureStorage(OpenTypeSimpleGlyphStructure value, RenderBudget.BudgetReservation? reservation)
+        : this(value, reservation, null) { }
+
+    internal OpenTypeSimpleGlyphStructureStorage(OpenTypeSimpleGlyphStructure value, RenderBudget.BudgetReservation? reservation, OpenTypeGlyphHeader? compositeHeader)
     {
         Value = value;
         _reservation = reservation;
+        CompositeHeader = compositeHeader;
     }
 
     internal OpenTypeSimpleGlyphStructure Value { get; }
+
+    internal OpenTypeGlyphHeader? CompositeHeader { get; }
 
     public void Dispose()
     {
@@ -1091,13 +1107,16 @@ internal sealed class OpenTypeCompositeGlyphComponentStorage : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    internal OpenTypeCompositeGlyphComponentStorage(OpenTypeCompositeGlyphComponent[] components, RenderBudget.BudgetReservation? reservation)
+    internal OpenTypeCompositeGlyphComponentStorage(OpenTypeCompositeGlyphComponent[] components, RenderBudget.BudgetReservation? reservation, OpenTypeTableRange instructions)
     {
         Components = components;
         _reservation = reservation;
+        Instructions = instructions;
     }
 
     internal OpenTypeCompositeGlyphComponent[] Components { get; }
+
+    internal OpenTypeTableRange Instructions { get; }
 
     public void Dispose()
     {
@@ -1322,14 +1341,14 @@ internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
     }
 
     /// <summary>Materializes exact component storage while preserving the temporary capacity reservation through the copy.</summary>
-    internal OpenTypeCompositeGlyphComponentStorage Detach()
+    internal OpenTypeCompositeGlyphComponentStorage Detach(OpenTypeTableRange instructions)
     {
         if (_count == 0)
         {
             Dispose();
-            return new([], null);
+            return new([], null, instructions);
         }
-        if (_budget is null) return new(ToArray(), null);
+        if (_budget is null) return new(ToArray(), null, instructions);
         RenderBudget.BudgetReservation reservation = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<OpenTypeCompositeGlyphComponent>(_count), SvgMemoryCategory.Geometry);
         OpenTypeCompositeGlyphComponent[] exact;
         try { exact = new OpenTypeCompositeGlyphComponent[_count]; }
@@ -1338,7 +1357,7 @@ internal sealed class OpenTypeCompositeComponentAccumulator : IDisposable
         try { CopyComponents(exact); }
         catch { reservation.Dispose(); throw; }
         Dispose();
-        return new(exact, reservation);
+        return new(exact, reservation, instructions);
     }
 
     public void Dispose()
@@ -1454,4 +1473,4 @@ internal readonly record struct OpenTypeOutlineTransform(double XX, double XY, d
 }
 
 /// <summary>Represents one validated, non-expanded component in a composite TrueType glyph.</summary>
-internal readonly record struct OpenTypeCompositeGlyphComponent(ushort GlyphIndex, int HorizontalOffset, int VerticalOffset, OpenTypeAffineTransform Transform);
+internal readonly record struct OpenTypeCompositeGlyphComponent(ushort GlyphIndex, int HorizontalOffset, int VerticalOffset, OpenTypeAffineTransform Transform, ushort Flags);

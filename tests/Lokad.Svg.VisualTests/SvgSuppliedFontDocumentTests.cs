@@ -121,23 +121,30 @@ public sealed class SvgSuppliedFontDocumentTests
     }
 
     [Fact]
-    public async Task The_complete_document_reaches_its_composite_dependency_and_releases_partial_owners()
+    public async Task The_complete_document_renders_and_releases_scene_owners_while_pixel_acceptance_remains_separate()
     {
         byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, "svg-translate-textpath.svg"));
         using SvgFontSnapshot snapshot = await Prepare(input);
         Assert.Single(snapshot.Fonts);
         RenderBudget budget = new(long.MaxValue);
-        SvgException failure = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, failure.ErrorCode);
-        Assert.Contains("composite glyf component", failure.Message);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+        {
+            Assert.False(scene.HasUnsupportedChild);
+            Assert.True(budget.Snapshot().CurrentBytes > 0);
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         SvgRenderOptions options = new(new SvgViewport(512, 256), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         byte[] target = Enumerable.Repeat((byte)0xCC, 64).ToArray();
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, target, options, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgErrorCode.InsufficientDestination, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, target, options, CancellationToken.None)).ErrorCode);
         Assert.All(target, value => Assert.Equal(0xCC, value));
         using MemoryStream stream = new();
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, options, CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, stream.Length);
+        int written = SvgConverter.ConvertToPng(input, stream, options, CancellationToken.None);
+        Assert.Equal(written, stream.Length);
+        byte[] png = stream.ToArray();
+        Assert.Equal(png, SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+        RgbaImage image = PngRgbaDecoder.Decode(png, 16_777_216);
+        Assert.Equal(512, image.Width);
+        Assert.Equal(256, image.Height);
     }
 
     [Fact]

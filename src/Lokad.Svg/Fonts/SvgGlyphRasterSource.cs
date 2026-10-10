@@ -25,6 +25,14 @@ internal sealed class SvgGlyphRasterSource : IDisposable
         return header is OpenTypeGlyphHeader value && !value.IsComposite;
     }
 
+    /// <summary>Admits simple fitting and newly supported composite dependencies, preserving the established route for earlier composites.</summary>
+    internal bool UsesDeviceFitting(RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        if (HasSimpleOutline(work, token)) return true;
+        SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
+        return OpenTypeFont.NeedsCompositeDeviceFitting(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token);
+    }
+
     internal bool HasTrueTypePrograms(RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");

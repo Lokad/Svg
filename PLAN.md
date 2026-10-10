@@ -52,10 +52,14 @@ platforms. Seven separate positioning/leaf/strike controls were frozen first.
 Shared scalar `tspan x/y` layout and bounded element-free path bodies remove the
 first two rejections. Absolute axes start separately anchored text chunks; nested
 relative adjustments and continued current positions reuse existing glyph replay.
-**The document remains 0/1 complete.** Its next rejection is the transformed
-closing-parenthesis composite's `ROUND_XY_TO_GRID` component flag. Extend shared
-composite placement/fitting for that demonstrated dependency, then follow every
-remaining mismatch through all 12 APIs against unchanged references. The new
+**The document remains 0/1 complete.** Shared bounded point assembly now handles
+its mirrored closing parenthesis, rounded component placement and parent program.
+TrueType fitting runs children before the parent; Linux light fitting uses the
+assembled outline. Eighteen independent native contour witnesses protect these
+stages. The supplied font's integer hinting-size flag now applies to scaler math.
+The whole document renders through all 12 APIs, with **2,026 Windows / 764 Linux
+changed pixels** against unchanged references. Follow those remaining layout and
+raster mismatches to exact completion. The new
 controls are a separate ledger: **7/7 exact on Linux, 0/7 on Windows**, through
 all 12 APIs. Admission and API equivalence do not close Windows pixels.
 Other instance/font combinations are prerequisites only when this document needs
@@ -148,7 +152,7 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,572 tests/platform**: 4,592 core, 1,974 visual, six FontProbe. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,608 tests/platform**: 4,596 core, 2,006 visual, six FontProbe. Test counts are not document counts. |
 | Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The snapshot-less text-path rejection retains its category/input and now explicitly explains the required prepared font snapshot. Two separate public-font banks preserve their completed original documents through 12 APIs. The new Mono Bold document remains pending; seven controls are exact on Linux and zero on Windows. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
@@ -870,9 +874,11 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
       precedence and continued current positions; retain list/rotate/style gates.
     - [x] Admit element-free rendered/retained path bodies through shared bounded
       structural validation; child elements keep explicit unsupported outcomes.
-    - [ ] Extend shared composite placement/fitting for the original closing
-      parenthesis's mirrored component and `ROUND_XY_TO_GRID` flag. Other promised
-      flags remain visible without becoming exhaustive prerequisites.
+    - [x] Extend shared composite placement/fitting for the original closing
+      parenthesis's mirrored component and `ROUND_XY_TO_GRID` flag. Preserve child/
+      parent fitting order, prepared interpreter state and integer internal scaler
+      sizes; 18 independent native contours protect the shared stages. Other
+      promised flags remain visible without becoming exhaustive prerequisites.
     - [ ] Finish the original output and focused pixel controls through all 12 APIs
       on both platforms, preserving every established exact result.
 - **Explicit unsupported outcomes:** automatic wrapping, bidi/joining/complex

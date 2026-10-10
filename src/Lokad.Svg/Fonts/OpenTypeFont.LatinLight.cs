@@ -12,7 +12,17 @@ internal static partial class OpenTypeFont
     {
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted font size exceeds the native coordinate range.");
         work.Consume(cancellationToken);
-        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, work, cancellationToken);
+        using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, work, cancellationToken, true);
+        if (structure.CompositeHeader is not null)
+        {
+            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, budget, work, cancellationToken);
+            Span<LatinAlignmentZone> compositeZones = stackalloc LatinAlignmentZone[6];
+            int compositeZoneCount = GetLatinAlignmentZones(bytes, metrics, compositeZones, budget, work, cancellationToken);
+            LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, budget, work, cancellationToken);
+            using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, cancellationToken);
+            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, true, work, cancellationToken);
+            return compositeSegments.Detach();
+        }
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
         using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, cancellationToken);
         Span<LatinAlignmentZone> zones = stackalloc LatinAlignmentZone[6];

@@ -682,7 +682,6 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
-    [InlineData((ushort)4)]
     [InlineData((ushort)512)]
     [InlineData((ushort)1024)]
     [InlineData((ushort)2048)]
@@ -778,7 +777,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public void Validates_and_rejects_composite_glyph_instructions()
+    public void Validates_empty_composite_programs_and_preserves_unhinted_outline_inspection()
     {
         byte[] font = CreateFont(1024, 3, 2, 1);
         OpenTypeTableRange glyph = OpenTypeFont.GetGlyphDataRange(font, 2, CancellationToken.None);
@@ -791,9 +790,11 @@ public sealed partial class OpenTypeFontTests
 
         OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(font, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetCompositeGlyphComponents(font, 2, metrics, CancellationToken.None)).ErrorCode);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, CancellationToken.None)).ErrorCode);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => OpenTypeFont.GetGlyphContours(font, 2, metrics, new RenderBudget(1_000_000), new ParserWorkCounter(long.MaxValue), CancellationToken.None)).ErrorCode);
+        Assert.Equal((ushort)(3 | 256), Assert.Single(OpenTypeFont.GetCompositeGlyphComponents(font, 2, metrics, CancellationToken.None)).Flags);
+        Assert.Empty(OpenTypeFont.GetGlyphContours(font, 2, metrics, CancellationToken.None));
+        RenderBudget budget = new(1_000_000);
+        using (OpenTypeGlyphContourStorage contours = OpenTypeFont.GetGlyphContours(font, 2, metrics, budget, new ParserWorkCounter(long.MaxValue), CancellationToken.None)) Assert.Empty(contours.Segments);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

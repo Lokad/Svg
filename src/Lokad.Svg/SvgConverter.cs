@@ -2411,7 +2411,7 @@ public static class SvgConverter
             if (glyph.Source is SvgGlyphRasterSource source && (OperatingSystem.IsLinux() || OperatingSystem.IsWindows()))
             {
                 ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
-                if (source.HasSimpleOutline(preparationWork, cancellationToken))
+                if (source.UsesDeviceFitting(budget, preparationWork, cancellationToken))
                 {
                     if (OperatingSystem.IsWindows() && source.HasTrueTypePrograms(budget, preparationWork, cancellationToken))
                     {

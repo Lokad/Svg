@@ -11043,3 +11043,50 @@ PNGs and 2,755 established exact comparisons. The packages and isolated installe
 Windows consumer preserve the existing font documents and new position semantics.
 No implementation source/DLL/script/build/report
 fingerprints are introduced, and no group promise is removed or deferred.
+
+### SVG Translate composite fitting and internal hinting sizes (2026-10-10)
+
+The retained original now renders through all 12 APIs on Windows/Linux. Its
+closing parenthesis references the opening parenthesis with a mirrored transform,
+rounded component placement and a parent program. Shared point assembly preserves
+contour order and renumbers component endpoints under the existing depth/component
+bounds, a 32,768-point bound, charged copies, cancellation and exclusive owners.
+Instruction-free composites admitted earlier keep their established replay route.
+
+The TrueType route fits each child before transformation and placement, then runs
+the parent over accumulated points, following the [composite glyph rules](https://learn.microsoft.com/en-us/typography/opentype/spec/glyf).
+One prepared interpreter preserves component CVT, storage and function changes;
+glyph graphics state and point borrows are restored on every exit. Parent original
+coordinates are already in device units. Original-distance measurements and
+font-unit control writes must not apply the design scale a second time. Child
+touch flags are cleared before parent fitting; vertical phantom metrics and the
+other unadmitted component flags retain explicit outcomes. Empty child arrays
+require no zero-byte reservations. Linux light fitting instead assembles the
+unhinted outline first and reuses the existing topology/alignment stage.
+
+The supplied Mono Bold face sets [font header bit 3](https://learn.microsoft.com/en-us/typography/opentype/spec/head),
+requiring integer internal hinting sizes. Metrics retain that declaration, and
+TrueType scaler/preparation math uses the rounded size without changing authored
+linear advances or Linux light sizes. The earlier Noto Sans Regular face clears
+the flag and retains its previous fitting. An integer-size collapse returns an
+empty glyph. Independent native geometry protects both flag states and fitting
+order: 12 FreeType 2.13.2 interpreter-35/40 child/parent outlines and six pinned
+Skrifa 0.43.2 light outlines, including the document's fractional strike.
+These are intermediate witnesses, not Windows pixel acceptance or implementation
+fingerprints.
+
+The whole document remains pending: 2,026 Windows / 764 Linux pixels differ from
+unchanged references. The Windows scaled-strike control improves from 128 pixels /
+maximum error 255 to four / eight. All seven Linux controls stay exact. Native
+Windows composite RGB masks still expose fitting/coverage differences, so the
+finite G9 exit remains open alongside component flags, advance placement and
+the wider label/path promises.
+
+Complete Release qualification passes 6,608 tests on each platform (4,596 core /
+2,006 visual / six FontProbe), all 42 retained bank modes and ten focused families.
+All 2,908 prior outcomes, 2,849 prior PNGs and 2,755 established exact comparisons
+are preserved, including 27/27 corporate documents / 258/258 variants and both
+completed original supplied-font documents through 12 APIs. Fresh packages retain
+current notices and licenses without font/native/runtime dependency assets. The
+isolated installed Windows consumer also renders the unchanged SVG Translate
+document with its mirrored component and parent program. G2–G9 and S17 remain open.

@@ -16,7 +16,8 @@ internal static partial class OpenTypeFont
             int entry = 12 + i * 16;
             if (ReadUInt32(data, entry) is 0x6670676D or 0x70726570 && ReadUInt32(data, entry + 12) != 0) return true;
         }
-        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, work, token);
+        using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, work, token, true);
+        if (structure.CompositeHeader is not null) return true;
         if (structure.Value.ContourEndpoints.Length == 0) return false;
         return ReadUInt16(data, structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2) != 0;
     }
@@ -30,10 +31,24 @@ internal static partial class OpenTypeFont
     {
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767) throw new SvgException(SvgErrorCode.LimitExceeded, "The TrueType device size exceeds its coordinate bound.");
         TrueTypeHinting.ValidateTarget(target);
+        if (metrics.ForceIntegerHintingSize)
+        {
+            deviceSize = Math.Floor(deviceSize + .5);
+            if (deviceSize == 0) return new([], [], null, null);
+        }
         double requestedScale = Math.Floor(deviceSize * 64 * 65536 / metrics.UnitsPerEm + .5);
         if (requestedScale > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "The TrueType device scale exceeds its fixed-point bound.");
         int scale = checked((int)requestedScale);
-        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, work, token);
+        using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, work, token, true);
+        if (structure.CompositeHeader is not null)
+        {
+            (TrueTypeHintProfile compositeProfile, OpenTypeTableRange compositeCvt, OpenTypeTableRange compositeFont, OpenTypeTableRange compositePrep) = ReadHintTables();
+            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), scale, target, budget, work, token);
+            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, budget, work, token);
+            using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
+            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, true, work, token);
+            return compositeSegments.Detach();
+        }
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
         using OpenTypeGlyphPointStorage decoded = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, token);
         (TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation) = ReadHintTables();

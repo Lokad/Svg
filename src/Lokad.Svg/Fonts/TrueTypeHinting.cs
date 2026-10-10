@@ -59,8 +59,10 @@ internal sealed class TrueTypeHinting : IDisposable
     private RenderBudget.BudgetReservation? _reservation;
     private readonly int[] _stack, _storage, _cvt, _initialCvt;
     private readonly TrueTypeHintFunction[] _functions;
-    private readonly TrueTypeHintPoint[] _twilight, _glyph;
-    private readonly ushort[] _ends;
+    private readonly TrueTypeHintPoint[] _twilight;
+    private TrueTypeHintPoint[] _glyph;
+    private ushort[] _ends;
+    private bool _compositeGlyph;
     private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private TrueTypeHintTarget _target;
@@ -106,6 +108,37 @@ internal sealed class TrueTypeHinting : IDisposable
     internal ReadOnlySpan<int> ControlValues => _reservation is not null ? _cvt : throw new InvalidOperationException("The TrueType interpreter is disposed.");
     internal ReadOnlySpan<int> Storage => _reservation is not null ? _storage : throw new InvalidOperationException("The TrueType interpreter is disposed.");
     internal int DefinedFunctions { get; private set; }
+
+    /// <summary>Fits a borrowed child or assembled composite, retaining font/preparation CVT, storage and functions between components.</summary>
+    /// <remarks>Glyph graphics state is restored after each call. Points/endpoints remain caller-owned and are unbound on every exit. Composite originals are already device coordinates and must not be scaled again. This operation shares the machine's single-threaded work, cancellation and bounded storage contract.</remarks>
+    internal void HintGlyph(ReadOnlyMemory<byte> program, TrueTypeHintPoint[] points, ushort[] ends, bool composite)
+    {
+        if (_reservation is null) throw new InvalidOperationException("The TrueType interpreter is disposed.");
+        _work.Consume(_token);
+        if (points.Length < 4) throw Invalid("TrueType glyph points omit their phantom slots.");
+        if (points.Length > 32772) throw new SvgException(SvgErrorCode.LimitExceeded, "TrueType glyph points exceed the supported bound.");
+        int previous = -1;
+        foreach (ushort end in ends)
+        {
+            _work.Consume(_token);
+            if (end <= previous || end >= points.Length - 4) throw Invalid("TrueType contour ends are outside their ordered outline point range.");
+            previous = end;
+        }
+        if (previous + 1 != points.Length - 4) throw Invalid("TrueType contour ends do not cover the outline points.");
+        TrueTypeHintPoint[] savedPoints = _glyph;
+        ushort[] savedEnds = _ends;
+        bool savedComposite = _compositeGlyph;
+        int savedCutIn = _cutIn, savedDeltaBase = _deltaBase, savedDeltaShift = _deltaShift, savedControl = _instructionControl;
+        TrueTypeHintRound savedRound = _round;
+        _glyph = points; _ends = ends; _compositeGlyph = composite;
+        try { Run(program, TrueTypeHintProgramKind.Glyph); }
+        finally
+        {
+            _glyph = savedPoints; _ends = savedEnds; _compositeGlyph = savedComposite;
+            _cutIn = savedCutIn; _deltaBase = savedDeltaBase; _deltaShift = savedDeltaShift;
+            _instructionControl = savedControl; _round = savedRound;
+        }
+    }
 
     /// <summary>Restores initial CVT values while retaining declared storage and functions for an explicit query-mode transition.</summary>
     /// <remarks>The creation scale and preparation policy remain fixed; only rasterizer queries can change.</remarks>
@@ -235,7 +268,7 @@ internal sealed class TrueTypeHinting : IDisposable
                     int a = Pop(), b = Pop(); TrueTypeHintPoint p = Point(_zp0, b), q = Point(_zp1, a);
                     // MD[0] (0x4A) measures the original distance; MD[1]
                     // (0x49) the fitted distance. Scale the font-unit difference once.
-                    int distance = opcode == 0x4A && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph
+                    int distance = opcode == 0x4A && !_compositeGlyph && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph
                         ? Divide(checked((_axis == TrueTypeHintAxis.X ? p.UnscaledX - q.UnscaledX : p.UnscaledY - q.UnscaledY)), 65536, _scale)
                         : checked(Coordinate(p, opcode == 0x4A) - Coordinate(q, opcode == 0x4A));
                     Push(distance); break;
@@ -292,7 +325,7 @@ internal sealed class TrueTypeHinting : IDisposable
                     if (kind != TrueTypeHintProgramKind.Glyph || selector == 3) _instructionControl = (_instructionControl & ~(1 << (selector - 1))) | value;
                     break;
                 }
-                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = Divide(value, 65536, _scale); break; }
+                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = _compositeGlyph ? value : Divide(value, 65536, _scale); break; }
                 default: throw new SvgException(SvgErrorCode.UnsupportedFeature, $"TrueType hint opcode 0x{opcode:X2} is not implemented.");
             }
 

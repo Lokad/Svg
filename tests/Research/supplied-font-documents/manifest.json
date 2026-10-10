@@ -70,7 +70,7 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "currentDependency": "Closing-parenthesis transformed composite with ROUND_XY_TO_GRID; absolute span positions and element-free path bodies now admitted."
+      "currentDependency": "Whole document renders through 12 APIs after shared scalar positions, element-free path bodies, mirrored composite point assembly and integer hinting-size repair. Frozen-reference pixel gaps remain: Windows 2026 (maximum channel error 84), Linux 764 (maximum channel error 255)."
     },
     {
       "id": "scalar-x-reset",

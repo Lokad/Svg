@@ -5,6 +5,42 @@ namespace Lokad.Svg.Tests;
 
 public sealed partial class OpenTypeFontTests
 {
+    [Fact]
+    public void Rounded_composite_offsets_are_metadata_for_device_fitting_and_preserve_unhinted_expansion()
+    {
+        byte[] bytes = CreateTriangleFont();
+        OpenTypeTableRange range = OpenTypeFont.GetGlyphDataRange(bytes, 2, CancellationToken.None);
+        WriteInt16(bytes, range.Offset, -1);
+        WriteUInt16(bytes, range.Offset + 10, 7);
+        WriteUInt16(bytes, range.Offset + 12, 1);
+        WriteInt16(bytes, range.Offset + 14, 3);
+        WriteInt16(bytes, range.Offset + 16, -4);
+        OpenTypeCompositeGlyphComponent component = Assert.Single(OpenTypeFont.GetCompositeGlyphComponents(bytes, 2, CancellationToken.None));
+        Assert.Equal((ushort)7, component.Flags);
+        OpenTypeQuadraticSegment first = OpenTypeFont.GetGlyphContours(bytes, 2, CancellationToken.None)[0];
+        OpenTypeQuadraticSegment source = OpenTypeFont.GetGlyphContours(bytes, 1, CancellationToken.None)[0];
+        Assert.Equal(source.Start.X + 3, first.Start.X);
+        Assert.Equal(source.Start.Y - 4, first.Start.Y);
+        RenderBudget budget = new(long.MaxValue);
+        Assert.True(OpenTypeFont.NeedsCompositeDeviceFitting(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), budget, new(long.MaxValue), CancellationToken.None));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Composite_point_assembly_rejects_cycles_and_releases_child_owners()
+    {
+        byte[] bytes = CreateTriangleFont();
+        OpenTypeTableRange range = OpenTypeFont.GetGlyphDataRange(bytes, 2, CancellationToken.None);
+        WriteInt16(bytes, range.Offset, -1);
+        WriteUInt16(bytes, range.Offset + 10, 7);
+        WriteUInt16(bytes, range.Offset + 12, 2);
+        WriteInt16(bytes, range.Offset + 14, 0);
+        WriteInt16(bytes, range.Offset + 16, 0);
+        RenderBudget budget = new(long.MaxValue);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => OpenTypeFont.GetLatinLightContours(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), 32, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData("0.001")]
     [InlineData("0.01")]
