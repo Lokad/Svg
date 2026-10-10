@@ -10711,3 +10711,54 @@ used to justify glyph-specific lookup tables, reference-mask replay or source
 coordinate predicates. The prior complete qualification is reused: production
 code, original sources, font programs, options and acceptance references did not
 change, so unchanged full tests and bank qualification are not repeated.
+
+## Bounded managed Latin light contour stage (2026-10-10)
+
+The internal contour stage now borrows the unchanged supplied face and returns
+owned 26.6 device-coordinate quadratics. It samples the six native Latin
+alignment groups through the existing charged cmap/glyf decoder, adjusts the
+vertical scale, constructs bounded horizontal segments and edges, fits blue
+zones and stems, and interpolates strong and weak points. Native implied
+quadratic midpoints round down in device units; the existing font-unit contour
+contract keeps its prior midpoint arithmetic. No native service, font discovery,
+font-specific predicate or recorded outline is used by the implementation.
+
+Eleven [native geometry witnesses](../tests/Research/supplied-font-labels/diagnostics/latin-light-contours.json)
+cover the glyphs and sizes used by the current bank: `A` at 16/24/32/32.5/48/96,
+`V` at 24/32.5, `O` at 32/32.5 and `a` at 32. Each independently extracted pinned
+Skrifa outline matches every managed line/quadratic operand. The small `A`
+protects native half-width division; the large `A` protects the first unaligned
+stem's anchor rule; both contour windings and implied-point rounding are covered.
+These are intermediate geometry checks, separately from the seven frozen final
+pixel controls. They establish no broader script, font or combination coverage.
+
+The stage retains the existing simple-glyph decoder limits, admits signed
+16-bit font-unit points, and bounds horizontal hint segments to 1,000 and device
+sizes to the native finite coordinate range. Point, segment and edge scratch is
+reserved before allocation;
+discovery, linking, sorting, fitting and interpolation consume the caller's work
+and observe cancellation. Work expiry or memory denial releases temporary and
+decoded owners. Returned segments retain their own reservations until disposal;
+the borrowed font program is preserved. Synthetic checks protect opposite
+winding, absent Latin samples, zero-scaled subpixel outlines, range rejection,
+memory denial, cancellation and retry. Seventeen new core checks and nineteen
+visual/resource checks include all eleven native geometry witnesses.
+
+Public glyph rendering still uses its previous contour coverage. The next
+correction must obtain hints at mapped output size, preserve positioned device
+origins, reuse native contour replay and apply font preblend. Windows's managed
+TrueType grid fitting/LCD route remains a separate required dependency. The
+same original document stays selected, with **0/1 completed font documents and
+0/7 exact font pixel controls**; no SVG, font, options or frozen reference is
+changed. The finite G2–G9 and S17 exits stay open.
+
+Complete Release qualification of this contour stage passes **6,331 tests per
+platform** (4,442 core / 1,883 visual / six FontProbe), with zero compiler
+warnings, errors, failures or skips. All 2,908 prior reports, 2,849 prior PNGs and
+2,755 established exact comparisons remain unchanged on Windows and native
+Linux, including corporate **27/27 documents / 258/258 variants**, 30/30 selected
+development documents and 2/2 completed original acceptance fixtures. Scene
+layouts remain 72/272/68 bytes. Original SVGs, font programs, options and both
+platforms' frozen references retain their evaluation-data integrity. Existing
+healthy native captures are reused; no browser qualification or implementation
+fingerprints are refreshed for this stage.

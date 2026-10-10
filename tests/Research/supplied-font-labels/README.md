@@ -49,6 +49,22 @@ These isolate the remaining managed hinting/mask work. They are diagnostic
 inputs, never product substitutes, acceptance references or exact-font controls.
 Neither document/control counts nor the original font/reference assets change.
 
+[The Latin light contour witnesses](diagnostics/latin-light-contours.json)
+retain eleven independently extracted native glyph outlines covering the current
+`A`, `V`, `O` and `a` controls and their declared device sizes. The bounded managed
+contour stage matches every witness, including small-stem rounding, the first
+unaligned stem, curved counters and implied-point rounding. Synthetic controls
+protect opposite winding, missing alignment samples, subpixel sizes, cancellation,
+work expiry, memory denial and retry. The internal stage is not connected to
+public glyph rasterization yet. These are geometry controls; the font bank stays
+**0/1 completed documents and 0/7 exact pixel controls**. Connecting output-size
+hinting, native contour coverage and font preblend is the next Linux step;
+Windows grid fitting/LCD coverage and the remaining finite G9 subset stay open.
+Complete qualification of the contour stage passes 6,331 tests on each platform
+(4,442 core / 1,883 visual / six FontProbe). All 2,849 prior PNGs and 2,755
+established exact results remain unchanged, including corporate 27/27 documents
+and 258/258 variants. Frozen browser captures and evaluation assets are reused.
+
 The bounded shared kerning reader admits ordered pair-list and class-pair
 X-advance adjustments, coverage/class-definition formats 1/2, up to 32 selected
 lookups and 32 subtables per lookup. The first matching subtable wins, including

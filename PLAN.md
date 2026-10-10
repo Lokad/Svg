@@ -53,8 +53,18 @@ light autohinting, ordinary native contour coverage and font preblend. Replaying
 those independently obtained intermediate inputs matches both frozen images
 exactly; these are diagnostic results, not renderer acceptance.
 
-Start the shared correction with bounded managed Latin light autohinting and
-font preblend through the existing contour machinery. Complete the corresponding
+The bounded managed Latin light contour stage now matches all **11/11 native
+geometry witnesses** used by the current controls: `A`, `V`, `O` and `a` at their
+declared small, fractional, ordinary and large device sizes. These intermediate
+contours are checked separately from final font pixels. Sampling and fitting
+borrow the supplied face, charge work and temporary storage, and preserve the
+existing unhinted contour contract. The stage is not connected to public text
+rasterization yet; counts remain **0/1 completed font documents and 0/7 exact
+font controls**.
+
+Next, connect device-size hinting and font preblend through the existing contour
+machinery, preserving positioned glyph origins and native paint distinctions.
+Complete the corresponding
 managed TrueType grid fitting and LCD coverage for Windows before counting the
 document complete. Charge extra metric-glyph discovery, hint execution and mask
 storage; preserve caller-owned bytes, directed curves and native paint distinctions.
@@ -110,13 +120,13 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,295 tests/platform**: 4,425 core, 1,864 visual, six FontProbe. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,331 tests/platform**: 4,442 core, 1,883 visual, six FontProbe. Test counts are not document counts. |
 | Complete retained banks | All **2,908 prior reports**, **2,849 prior PNGs** and **2,755 established exact comparisons** are preserved. Established document/reference captures are reused. The separate pending public-font bank has its declared native captures and diagnostics. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
 | Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
-| Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning and per-glyph admission guards preserve borrowed font bytes and release positioned-glyph reservations on rejection. Inert typography values still do not request or retain fonts. |
+| Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission and the internal Latin hint stage preserve borrowed font bytes and release owned scratch on rejection. Inert typography values still do not request or retain fonts. |
 | Scene layouts | Draw command / geometry / paint remain **72/272/68 bytes**. No new throughput claim follows from this correction. |
 | Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
@@ -783,8 +793,12 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
     references. The retained diagnostic Windows mask and Linux hinted outline
     reproduce those references after font preblend. They never become product
     inputs or completed-font results.
-  - [ ] Managed Latin light autohinting and device-coordinate contour replay on
-    Linux, followed by font preblend. Reuse existing native analytic coverage;
+  - [x] Establish the bounded managed simple-Latin contour stage against the
+    eleven native glyph/size witnesses used by the current bank. These geometry
+    checks do not close font pixel acceptance or broader font/script coverage.
+  - [ ] Connect output-size Latin light hints and device-coordinate contour
+    replay on Linux, followed by font preblend. Reuse existing native analytic
+    coverage;
     system FreeType grayscale rasterization is not this browser's backend.
   - [ ] Managed TrueType grid fitting and symmetric LCD coverage averaged to
     alpha on Windows, followed by the qualified font preblend. Ordinary path or
