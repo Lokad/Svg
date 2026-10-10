@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One unchanged public-domain curved label document and five separate mechanism controls. Complete every declared output against frozen matching-platform references; finite G9/G3 promises stay open.",
+  "selectedAt": "58c63d70",
+  "fontPack": "font-pack.json",
+  "fontProvenance": "font-provenance.json",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "inv-127-512x369-transparent",
+      "input": "../../Fixtures/candidates/inv-127.svg",
+      "width": 512,
+      "height": 369,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "Public domain",
+      "sourceSha256": "649eabc32537e69339f48e52d2750477ef2b55637f250c802af687fae8ed9ed5",
+      "reference": "references/inv-127-512x369-transparent.png",
+      "linuxReference": "references/linux64/inv-127-512x369-transparent.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared source, output and supplied face before native capture and candidate screening; whole documents and mechanism controls stay separate.",
+      "oracleInputSha256": "2425428af9cefc2c7e3d49e7f3cd5ed17015d9a1d2aa93718a4c3bc20e90d916",
+      "referenceSha256": "ad24fd933e00465e09d23bef538a8cc610f59b743f2b0cf82289c0fee953a738",
+      "captures": [
+        {
+          "pngSha256": "ad24fd933e00465e09d23bef538a8cc610f59b743f2b0cf82289c0fee953a738",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ad24fd933e00465e09d23bef538a8cc610f59b743f2b0cf82289c0fee953a738",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ad24fd933e00465e09d23bef538a8cc610f59b743f2b0cf82289c0fee953a738",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "0412f2f13ce4eb4f463e3f8f2ece0ce889fe60a721ed28213a361a4d142bbcc7",
+      "linuxCaptures": [
+        {
+          "pngSha256": "0412f2f13ce4eb4f463e3f8f2ece0ce889fe60a721ed28213a361a4d142bbcc7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0412f2f13ce4eb4f463e3f8f2ece0ce889fe60a721ed28213a361a4d142bbcc7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0412f2f13ce4eb4f463e3f8f2ece0ce889fe60a721ed28213a361a4d142bbcc7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "rendererOutcome": "UnsupportedFeature",
+      "remainingOrCompletedMechanism": "Curved path baselines and tangent glyph placement remain open; composite accents follow."
+    },
+    {
+      "id": "two-path-runs",
+      "input": "two-path-runs.svg",
+      "width": 128,
+      "height": 96,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d6f195205de1933794ce5bd8d8b12769ac585611dfb5a540a83582d8bbb762a4",
+      "reference": "references/two-path-runs.png",
+      "linuxReference": "references/linux64/two-path-runs.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared source, output and supplied face before native capture and candidate screening; whole documents and mechanism controls stay separate.",
+      "oracleInputSha256": "e95bf98320d23fc97b8528c949f8059f055a5a64eabf73a01867b6dd19debafb",
+      "referenceSha256": "ea91f0471af2b6474b0e0602a9d6d92e463035dcd82fd0a0c05e1f2091c1bb30",
+      "captures": [
+        {
+          "pngSha256": "ea91f0471af2b6474b0e0602a9d6d92e463035dcd82fd0a0c05e1f2091c1bb30",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ea91f0471af2b6474b0e0602a9d6d92e463035dcd82fd0a0c05e1f2091c1bb30",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ea91f0471af2b6474b0e0602a9d6d92e463035dcd82fd0a0c05e1f2091c1bb30",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "179029f762ec1ac8dbf6358edf9ec047f1a2a7716bf0084de6f6049dece67c24",
+      "linuxCaptures": [
+        {
+          "pngSha256": "179029f762ec1ac8dbf6358edf9ec047f1a2a7716bf0084de6f6049dece67c24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "179029f762ec1ac8dbf6358edf9ec047f1a2a7716bf0084de6f6049dece67c24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "179029f762ec1ac8dbf6358edf9ec047f1a2a7716bf0084de6f6049dece67c24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "rendererOutcome": "exact",
+      "remainingOrCompletedMechanism": "Independent sibling path runs preserve paint order."
+    },
+    {
+      "id": "per-path-anchor",
+      "input": "per-path-anchor.svg",
+      "width": 128,
+      "height": 96,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d4003ef219dfd800e6ecf61f90d1790bf5d38f36b476c9d88612f117148a00ed",
+      "reference": "references/per-path-anchor.png",
+      "linuxReference": "references/linux64/per-path-anchor.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared source, output and supplied face before native capture and candidate screening; whole documents and mechanism controls stay separate.",
+      "oracleInputSha256": "b9efa9bbda7c0ea4af08041099f0455a8c5c80c17c29f47c79778b0726e7067d",
+      "referenceSha256": "d707d95ed11b7d3220e6b586ad9b54e3993d2e73b2ca7a579c49d34ff8f6c721",
+      "captures": [
+        {
+          "pngSha256": "d707d95ed11b7d3220e6b586ad9b54e3993d2e73b2ca7a579c49d34ff8f6c721",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d707d95ed11b7d3220e6b586ad9b54e3993d2e73b2ca7a579c49d34ff8f6c721",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d707d95ed11b7d3220e6b586ad9b54e3993d2e73b2ca7a579c49d34ff8f6c721",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "37da1569977084e766717c39c36abaf0ee1b1c0d88d54e44f227ac786924386c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "37da1569977084e766717c39c36abaf0ee1b1c0d88d54e44f227ac786924386c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37da1569977084e766717c39c36abaf0ee1b1c0d88d54e44f227ac786924386c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37da1569977084e766717c39c36abaf0ee1b1c0d88d54e44f227ac786924386c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "rendererOutcome": "exact",
+      "remainingOrCompletedMechanism": "Explicit child anchor overrides the parent anchor."
+    },
+    {
+      "id": "curved-midpoint",
+      "input": "curved-midpoint.svg",
+      "width": 128,
+      "height": 96,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d05a438a5faeeafc73cdce1a37131a5adbe60c6f31cb55e4a3cd2c320b3ae06c",
+      "reference": "references/curved-midpoint.png",
+      "linuxReference": "references/linux64/curved-midpoint.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared source, output and supplied face before native capture and candidate screening; whole documents and mechanism controls stay separate.",
+      "oracleInputSha256": "483e3b3a872b77bf233a3879d62ee7dff9e08d73ea8f50034c006c23506a203d",
+      "referenceSha256": "c668ed10461d59f2aaa74e102f712fd0e0fd9c5b35d10e3949b953666c281303",
+      "captures": [
+        {
+          "pngSha256": "c668ed10461d59f2aaa74e102f712fd0e0fd9c5b35d10e3949b953666c281303",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c668ed10461d59f2aaa74e102f712fd0e0fd9c5b35d10e3949b953666c281303",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c668ed10461d59f2aaa74e102f712fd0e0fd9c5b35d10e3949b953666c281303",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "19493330f26b169b9c93c08dbe2dbb5fe36ee3e69f488197c4bc568416ba5cb5",
+      "linuxCaptures": [
+        {
+          "pngSha256": "19493330f26b169b9c93c08dbe2dbb5fe36ee3e69f488197c4bc568416ba5cb5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "19493330f26b169b9c93c08dbe2dbb5fe36ee3e69f488197c4bc568416ba5cb5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "19493330f26b169b9c93c08dbe2dbb5fe36ee3e69f488197c4bc568416ba5cb5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "rendererOutcome": "UnsupportedFeature",
+      "remainingOrCompletedMechanism": "Curved path baseline and tangent glyph placement remain open."
+    },
+    {
+      "id": "calibrated-path-length",
+      "input": "calibrated-path-length.svg",
+      "width": 128,
+      "height": 96,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "215028c4dfb24d1a48aa9940aa6d12adb81683c21a3ca9ba8682e2a0bb21a4f7",
+      "reference": "references/calibrated-path-length.png",
+      "linuxReference": "references/linux64/calibrated-path-length.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared source, output and supplied face before native capture and candidate screening; whole documents and mechanism controls stay separate.",
+      "oracleInputSha256": "e2b099d2e631e4d832d3449a59d5e08e9a5de936be8133cb4353fbd117ae6014",
+      "referenceSha256": "fd4e62295a15d6da252ac07d31890232a865bca74fae15b12f93999e752cfce5",
+      "captures": [
+        {
+          "pngSha256": "fd4e62295a15d6da252ac07d31890232a865bca74fae15b12f93999e752cfce5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fd4e62295a15d6da252ac07d31890232a865bca74fae15b12f93999e752cfce5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fd4e62295a15d6da252ac07d31890232a865bca74fae15b12f93999e752cfce5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "eebe56f5c59fd1eda2bbdfc51beed203816f52ccb1cff3947a37766466c9f3e9",
+      "linuxCaptures": [
+        {
+          "pngSha256": "eebe56f5c59fd1eda2bbdfc51beed203816f52ccb1cff3947a37766466c9f3e9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "eebe56f5c59fd1eda2bbdfc51beed203816f52ccb1cff3947a37766466c9f3e9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "eebe56f5c59fd1eda2bbdfc51beed203816f52ccb1cff3947a37766466c9f3e9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "rendererOutcome": "exact",
+      "remainingOrCompletedMechanism": "Numeric offsets use the positive pathLength calibration; glyph advances remain independent."
+    },
+    {
+      "id": "composite-on-path",
+      "input": "composite-on-path.svg",
+      "width": 128,
+      "height": 96,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "ededfa9c3a1fc1b3a4799416e060bd901d0679ba123569dbc814ef0699bb6feb",
+      "reference": "references/composite-on-path.png",
+      "linuxReference": "references/linux64/composite-on-path.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared source, output and supplied face before native capture and candidate screening; whole documents and mechanism controls stay separate.",
+      "oracleInputSha256": "54557e4b75c54beafe6a718d1501010b4d89cea5b4a67847cc2519a1466fb4e7",
+      "referenceSha256": "58bca0701ac99c0e27088db12ba25d3c06dca8b1a2230fb05db5315cf3ccb590",
+      "captures": [
+        {
+          "pngSha256": "58bca0701ac99c0e27088db12ba25d3c06dca8b1a2230fb05db5315cf3ccb590",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "58bca0701ac99c0e27088db12ba25d3c06dca8b1a2230fb05db5315cf3ccb590",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "58bca0701ac99c0e27088db12ba25d3c06dca8b1a2230fb05db5315cf3ccb590",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "70ae4a8c31b982e024f785ad3ba7a26631c472db8391f75ab27d605b7722d221",
+      "linuxCaptures": [
+        {
+          "pngSha256": "70ae4a8c31b982e024f785ad3ba7a26631c472db8391f75ab27d605b7722d221",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "70ae4a8c31b982e024f785ad3ba7a26631c472db8391f75ab27d605b7722d221",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "70ae4a8c31b982e024f785ad3ba7a26631c472db8391f75ab27d605b7722d221",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "rendererOutcome": "UnsupportedFeature",
+      "remainingOrCompletedMechanism": "The supplied face uses composite component flags outside the admitted subset."
+    }
+  ],
+  "browserEncodingRecipe": "The image-data capture path rejects non-ASCII Latin-1 bytes. Browser-only inputs transcode declared Latin-1 to UTF-8, insert root dimensions and map fantasy to the embedded caller-supplied face. Removing only the injected style/dimensions proves an identical parsed XML tree; original product bytes remain unchanged.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-11",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToWindowsReferences": false,
+    "matchesFrozenPlatformReferences": true
+  }
+}

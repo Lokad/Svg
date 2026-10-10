@@ -11568,3 +11568,70 @@ control measures 2.05 and 2.15 ms, with unchanged 123,384 allocated bytes and
 LimitExceeded and releases all owned storage; successful conversions also
 release all owners. This small local batch establishes no general throughput
 claim and records the cost of the shared fidelity correction.
+
+### Retained curved-label document: sibling runs and anchors (2026-10-11)
+
+The next selected complete document is the public-domain Commons
+`SVGtext-anchor04.svg` (`inv-127`). The source, explicit 512×369 transparent
+viewport and supplied existing Noto Sans Regular face 0 under the original
+`fantasy` alias were declared at `58c63d70` before capture or renderer screening.
+The [bank](../tests/Research/curved-font-documents/README.md) retains all 3,351
+upstream Latin-1 bytes, provenance, five separate original CC0 controls and
+healthy matching-platform native reference triples. Intended-font negative
+triples prove actual face use inside the image on both platforms. Browser-only
+UTF-8 transcoding preserves the parsed source tree after removing the injected
+face style and explicit root dimensions; product input bytes stay unchanged.
+
+The baseline rejects the document's language metadata before layout. Its controls
+separately expose sibling-run, child-anchor, curve, calibration and composite
+gates. Shared bounded language admission and presentation-anchor inheritance
+remove the first two document gates. An explicit path-child anchor overrides
+the parent; absent/`inherit` uses its resolved container/text anchor. Font
+discovery and layout share anchor validation, so an invalid declaration cannot
+turn into an unrelated font failure. CSS anchor declarations retain their gate.
+
+The existing text reader now detaches a bounded normalized layout per direct
+path run, retaining each independent whitespace boundary and anchor. One owned
+parser list holds those layouts until glyph construction; all detached layouts
+are released on success or a later sibling's failure. Existing queued runs and
+paint placeholders preserve source order, forward references and document
+teardown. Source character/node/depth limits remain aggregate across runs.
+The normal span reader and glyph pipeline continue to handle ordinary text;
+painted direct text siblings and absolute path-span positions remain explicit
+current gates.
+
+Positive path calibration reuses the existing path-length syntax and authored
+horizontal baseline. Numeric `startOffset` scales by geometric length divided
+by declared `pathLength`; percentages use geometric length, and glyph advances
+remain independent. The retained native guide/text control distinguishes these
+coordinates. Zero calibration remains an explicit unsupported outcome. This
+implementation advances the unchanged whole document to its curved-baseline
+gate, without pretending its cubic paths have been rendered.
+
+The three corresponding controls are exact on both platforms through all six raw
+and six independently prepared APIs.
+Whole-document completion stays **0/1**; curved baseline/tangent placement,
+composite accents and final unchanged-reference pixels remain the next finite
+dependencies. No feature-group exit closes here.
+
+Complete Windows/Linux Release qualification passes **6,716 tests/platform**
+(4,664 core / 2,046 visual / six FontProbe), with zero warnings, errors, failures
+or skips. All 2,908 prior outcomes, 2,849 prior PNGs and 2,755 established exact
+comparisons are preserved, including corporate **27/27 documents / 258/258
+variants**. All 23 preceding exact font outputs per platform remain byte-identical.
+New inputs have matching-platform frozen references; existing source, output and
+font/reference assets are unchanged. The original supplied-font documents and
+SVG Translate remain complete. The new whole-document ledger stays 0/1.
+
+The new transient layout list adds **1,952 allocated bytes** to unchanged SVG
+Translate and **480 bytes** to the scalar-x control. Accounted peak memory stays
+at 692,258 and 163,840 bytes respectively; successful conversion and denial one
+byte below each peak release all owned storage. A short three-warmup/seven-sample
+batch showed substantial timing variation, so a longer comparison uses 20 warmups
+and 21 samples per process, alternating preceding/current/current/preceding builds.
+Across 42 samples per build, whole-document medians are 116.3 and 124.0 ms, and
+scalar medians are 1.99 and 2.18 ms. Whole-document batch medians span 111.7–121.9
+ms before and 116.2–125.3 ms after. The local measurements record the feature cost
+and variability; they establish no general throughput claim. Every measured
+output matches its unchanged qualified PNG. Package/public/native/notice contracts
+reuse the preceding delivery qualification; this is not a release claim.

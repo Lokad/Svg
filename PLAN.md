@@ -106,10 +106,21 @@ magnitude determines fixed-point precision; exact subdivision changes that
 magnitude while preserving continuous geometry. No fitted tolerance or diagnostic
 bitmap enters rendering. Preserve these finite exits and every established exact
 output. The small edge details and closing-parenthesis strike are now exact.
-Select the next retained whole document from a demonstrated remaining G9 or G3
-gap, preferably one that also exercises the older composite-accent
-defect. Freeze its declared outputs before implementation; advance shared
-dependencies by that document. This completion does not close the finite groups.
+The next retained whole document is the public-domain **SVGtext-anchor04.svg
+(`inv-127`)**, with unchanged 3,351-byte Latin-1 source, an explicit **512×369
+transparent** viewport and the existing public static Noto Sans Regular face 0
+under its original `fantasy` alias. Source, output and face were declared before
+capture or candidate screening. The [curved-label bank](tests/Research/curved-font-documents/README.md)
+freezes separate healthy Windows/Linux reference triples and intended-font proof.
+Its eight cubic path runs, child/inherited anchors, calibrated lengths, dashed
+guides and precomposed accents provide shared G9/G3 dependencies.
+**Document completion remains 0/1.** Language metadata, presentation-anchor
+inheritance, independent sibling runs and positive numeric offset calibration now
+advance the unchanged document to its curved-baseline rejection. Three of five
+separate controls are exact on both platforms through all 12 APIs. Curved tangent
+placement, composite accents and final pixel fidelity remain open. Finish this
+document against frozen references before
+expanding combinations; all finite G2–G9 exits stay visible.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
 original output, seven controls, upstream face and OFL notice, explicit alias/
@@ -199,8 +210,8 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,680 tests/platform**: 4,651 core, 2,023 visual, six FontProbe. Test counts are not document counts. |
-| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The snapshot-less text-path rejection retains its category/input and explicitly explains the required prepared font snapshot. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. Existing inputs/options/references and healthy native captures remain unchanged. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,716 tests/platform**: 4,664 core, 2,046 visual, six FontProbe. Test counts are not document counts. |
+| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 23 preceding exact font outputs on each platform. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. The selected curved-label document remains 0/1, with three of five separate controls exact through 12 APIs on both platforms. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
@@ -253,8 +264,9 @@ exports. The original marker-instance and drop-shadow acceptance fixtures are
 also complete, counted separately (**2/2**). Both original supplied-font acceptance
 documents are complete (**2/2** under their explicit contracts). The retained CC0
 SVG Translate document is also complete (**1/1**, with seven separate exact controls).
-Select the next whole document from the remaining G9 or G3 gaps. Other promised combinations and
-finite effects remain open.
+Finish the selected public-domain curved-label document `inv-127` at 512×369
+under its frozen supplied-font contract. Other promised combinations and finite
+effects remain open.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -909,9 +921,10 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
     are exact, separately from the document. Reuse authored path commands,
     composed source maps, supplied advances and native glyph replay. Zero-length
     paths/out-of-range midpoints paint nothing; missing/non-path local references
-    are unresolved resources. Curved/reversing/closed/multiple contours, calibrated
+    are unresolved resources. Curved/reversing/closed/multiple contours, zero calibrated
     lengths, child styles and general tangent glyph maps stay explicit current
-    gates without removing any finite text-path promise.
+    gates. Positive offset calibration, presentation anchors and sibling runs
+    advance the selected next document without closing the finite text-path exit.
   - [x] Finish the retained CC0 SVG Translate document at its declared 512×256
     transparent viewport, under the public Mono Bold contract. Do not require
     unrelated instance/font grids first. The separate seven-control bank diagnoses
@@ -929,6 +942,21 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
       promised flags remain visible without becoming exhaustive prerequisites.
     - [x] Finish the original output and focused pixel controls through all 12 APIs
       on both platforms, preserving every established exact result.
+  - [ ] Finish public-domain `inv-127` at unchanged explicit 512×369 transparent,
+    under the declared public Noto Sans Regular face 0 and `fantasy` alias. Track
+    **0/1 document** separately from its five mechanism controls.
+    - [x] Freeze healthy matching-platform triples and missing/corrupt/substituted
+      font proof before renderer screening; preserve original Latin-1 product bytes.
+    - [x] Admit bounded language metadata, inherited/child presentation anchors,
+      independent sibling path runs and positive numeric offset calibration.
+    - [x] Qualify the three completed controls on Linux as well as Windows, through
+      all six raw and six independently prepared outputs.
+    - [ ] Reuse authored cubic paths for bounded length/tangent glyph placement;
+      preserve native font preparation and source replay distinctions.
+    - [ ] Extend shared composite support for the original precomposed accents;
+      protect the older composite-accent control against its unchanged reference.
+    - [ ] Resolve every remaining guide/text mismatch and complete all 12 APIs on
+      both platforms against the frozen document output.
 - **Explicit unsupported outcomes:** automatic wrapping, bidi/joining/complex
   shaping, general GSUB/GPOS or mark positioning, vertical text, text-path stretch/
   auto spacing, variable/color/bitmap fonts, CFF/CFF2, WOFF/WOFF2 and host-font
@@ -953,10 +981,10 @@ stays open. Choose shared changes by the complete documents they advance.
 
 The original live-text acceptance fixture is complete under its unchanged public-
 font contract. Both original supplied-font documents and the CC0 SVG Translate
-document are complete under their declared font/output contracts. Select the next
-whole document from a demonstrated remaining G9 or G3 gap, preferably exercising
-an older live-text defect too. Freeze matching native references before changing
-shared machinery; complete every declared output within the finite subset. Online sourcing
+document are complete under their declared font/output contracts. The retained
+public-domain curved-label export `inv-127` is the next complete-document target,
+with matching native references already frozen. Finish its shared dependencies and
+every declared output within the finite subset. Online sourcing
 continues in bounded public-domain/CC0 batches for remaining in-scope gaps;
 animated exports and effects beyond the enumerated subset remain excluded.
 Keep other instance combinations visible without making them prerequisites

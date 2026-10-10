@@ -51,6 +51,9 @@ internal readonly record struct SvgTextSpanStyle
 /// <summary>Identifies one contiguous UTF-16 interval emitted with a non-default scalar letter spacing.</summary>
 internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, double LetterSpacing);
 
+/// <summary>Owns one extracted layout until its consumer disposes it; sibling path runs have independent whitespace and anchoring boundaries.</summary>
+internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path);
+
 /// <summary>Represents explicit scalar coordinates and offsets before the first retained character in a text span.</summary>
 internal readonly record struct SvgTextPositionOffset
 {
@@ -293,7 +296,7 @@ internal static class SvgTextSyntax
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
         double parsedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
-        SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor") ?? "start");
+        SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor);
         return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), parsedLetterSpacing, anchor, reader.GetAttribute("id") ?? string.Empty);
     }
 
@@ -422,9 +425,13 @@ internal static class SvgTextSyntax
         return parsed;
     }
 
-    private static SvgTextAnchor ParseAnchor(string value)
+    /// <summary>Resolves one bounded presentation anchor over its inherited value; CSS anchor declarations remain outside this parser.</summary>
+    internal static SvgTextAnchor ParseAnchor(string? value, SvgTextAnchor inherited)
     {
+        if (value is null) return inherited;
+        if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text anchor exceeds the configured syntax limit.");
         string token = value.Trim();
+        if (token.Equals("inherit", StringComparison.OrdinalIgnoreCase)) return inherited;
         if (token.Equals("start", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.Start;
         if (token.Equals("middle", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.Middle;
         if (token.Equals("end", StringComparison.OrdinalIgnoreCase)) return SvgTextAnchor.End;

@@ -41,8 +41,10 @@ public sealed class SvgInventoryGapReferenceTests
         Assert.Equal("healthy", Required(oracle, "captureStartupHealth"));
         Assert.True(oracle.GetProperty("captureProfilesCleaned").GetBoolean());
         Assert.Equal("transparent", Required(item, "background"));
-        Assert.Equal(JsonValueKind.Null, item.GetProperty("viewport").ValueKind);
-        SvgRenderOptions options = new(null, item.GetProperty("outputScale").GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default);
+        JsonElement declaredViewport = item.GetProperty("viewport");
+        SvgViewport? viewport = declaredViewport.ValueKind == JsonValueKind.Null ? null
+            : new SvgViewport(declaredViewport.GetProperty("width").GetInt32(), declaredViewport.GetProperty("height").GetInt32());
+        SvgRenderOptions options = new(viewport, item.GetProperty("outputScale").GetDouble(), SvgColor.Transparent, SvgRenderLimits.Default);
         if (Required(item, "renderOutcome") == "UnsupportedFeature")
         {
             SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None));
@@ -68,7 +70,11 @@ public sealed class SvgInventoryGapReferenceTests
     }
 
     private static JsonDocument ReadManifest() => JsonDocument.Parse(File.ReadAllBytes(Resolve("tests/References/inventory/svg-gap-cases.json")));
-    private static string Resolve(string path) => Path.Combine(AppContext.BaseDirectory, path.Replace('/', Path.DirectorySeparatorChar));
+    private static string Resolve(string path)
+    {
+        if (path.StartsWith("tests/Fixtures/", StringComparison.Ordinal) || path.StartsWith("tests/Research/", StringComparison.Ordinal)) path = path[6..];
+        return Path.Combine(AppContext.BaseDirectory, path.Replace('/', Path.DirectorySeparatorChar));
+    }
     private static string Required(JsonElement item, string property) => item.GetProperty(property).GetString() ?? throw new InvalidDataException(property + " is missing.");
     private static string Hash(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
 }

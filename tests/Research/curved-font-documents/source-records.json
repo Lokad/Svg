@@ -1,0 +1,55 @@
+{
+  "records": [
+    {
+      "identity": "inv-127",
+      "title": "File:SVGtext-anchor04.svg",
+      "pageId": 155614804,
+      "retrieved": "2026-10-11",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVGtext-anchor04.svg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c6/SVGtext-anchor04.svg",
+      "creator": "Dr. Olaf Hoffmann",
+      "creatorUrl": "https://en.wikibooks.org/wiki/de:User:Doktorchen",
+      "license": "Public domain",
+      "licenseEvidence": "The author dedicates this original work to the public domain worldwide (PD-self).",
+      "timestamp": "2009-11-26T14:46:54Z",
+      "original": "tests/Fixtures/candidates/inv-127.svg",
+      "byteSize": 3351,
+      "sha1": "da4c41c189680e5f3e664d6c9435bbdc9e7fddd1",
+      "sha256": "649eabc32537e69339f48e52d2750477ef2b55637f250c802af687fae8ed9ed5",
+      "extmetadata": {
+        "Credit": {
+          "value": "Selbst erstellt.",
+          "source": "commons-desc-page"
+        },
+        "Artist": {
+          "value": "<a href=\"https://en.wikibooks.org/wiki/de:User:Doktorchen\" class=\"extiw\" title=\"b:de:User:Doktorchen\">Dr. Olaf Hoffmann</a>",
+          "source": "commons-desc-page"
+        },
+        "LicenseShortName": {
+          "value": "Public domain",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "UsageTerms": {
+          "value": "Public domain",
+          "source": "commons-desc-page"
+        },
+        "AttributionRequired": {
+          "value": "false",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "Restrictions": {
+          "value": "",
+          "source": "commons-desc-page",
+          "hidden": ""
+        },
+        "License": {
+          "value": "pd",
+          "source": "commons-templates",
+          "hidden": ""
+        }
+      }
+    }
+  ]
+}

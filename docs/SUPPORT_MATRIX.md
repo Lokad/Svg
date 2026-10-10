@@ -6,6 +6,20 @@ The renderer supports the explicit subsets listed below. The original retained
 rendering differences are resolved; the original-scope admission and feature
 gaps in [PLAN.md](../PLAN.md#3-ordered-support-queue) remain open. Do not infer
 that every unlisted visible SVG construct is rejected correctly.
+
+The next retained G9/G3 document is the public-domain curved-label export
+[`inv-127`](../tests/Research/curved-font-documents/README.md), at unchanged
+512×369 transparent under explicitly supplied Noto Sans Regular. It remains
+**0/1 complete**. Bounded `xml:lang` metadata, presentation `text-anchor`
+inheritance through `svg`/`g`/`a` and child overrides, independent direct sibling
+`textPath` runs and positive `pathLength` offset calibration now advance it to
+the curved-baseline gate. Three separate controls are exact on both platforms through
+12 APIs. Percentage offsets resolve
+against geometric length; numeric offsets use its calibrated scale. Glyph
+advances remain independent. Zero calibration, curved/reversing/closed/multiple
+contours, general tangent maps, painted direct text siblings and child style
+expansion retain explicit outcomes. CSS anchor declarations remain unsupported.
+This checkpoint preserves the finite G9 exit and every previously exact document.
 The original fixture manifest's 1,410 entries contain
 1,396 exact decoded-pixel references, zero known-difference renders and 14
 categorized rejections. These are fixture entries, including variants, and do not
@@ -106,31 +120,19 @@ results. The old snapshot-less path rejection keeps its category and now explain
 the required prepared font snapshot. Corporate **27/27 / 258/258** stays exact.
 The two supplied-font acceptance documents are **2/2 complete**, separately from
 30 development documents and two non-font original acceptance fixtures.
-The live-text bank has three exact Windows controls and six exact Linux controls;
-the [retained CC0 SVG Translate document](../tests/Research/supplied-font-documents/README.md)
-remains the next whole deliverable (0/1), with its supplied Mono Bold contract and
-healthy frozen native references. Missing/corrupt/substituted embeddings prove
-font use on both platforms. Scalar absolute tspan positions and element-free path
-bodies now pass shared layout/structural admission. Bounded child/parent point
-assembly admits the mirrored closing parenthesis and rounded component placement;
-18 independent native contours protect TrueType and Latin light fitting. Integer
-internal hinting sizes follow the font header flag. The whole document now renders
-through all 12 APIs. Shared device advances and SVG fragment positions make the
-Linux document exact; Windows retains 62 differing pixels (maximum error 11).
-Shared near-point directions and contour-wrap segments make all 44 measured
-document outlines exact against native Latin light geometry; ten newly retained
-contour witnesses protect the corrected combinations.
-Seven separate positioning/leaf/strike controls render through all 12 APIs;
-all seven are exact on Linux, six on Windows. Enabled smart dropout coverage
-preserves thin strokes on both sampling axes, with complete native A16 texture,
-scan-control and cancellation-cleanup checks. Directed center ownership, stable
-cell-grid quadratic evaluation and shared row/column crossings correct another
-148 document pixels. Exact vertices compare both directed limits to preserve
-corners. Seven complete CC0 boundary textures and two complete supplied-face RGB
-masks protect the correction, with three fresh native processes per case.
-The integer-strike control retains
-four Windows differences. The complete document and wider
-finite label/path promises remain open.
+The older live-text bank has **6/7 controls exact on both platforms**; its
+composite-accent control remains explicitly rejected. The
+[retained CC0 SVG Translate document](../tests/Research/supplied-font-documents/README.md)
+is **1/1 complete at unchanged 512×256 transparent**, through all 12 APIs on
+both platforms, with **7/7 separate controls exact**. Healthy frozen native
+references and missing/corrupt/substituted embeddings prove its Mono Bold face
+use. Shared scalar span positioning, bounded composite point assembly/fitting,
+platform advances, directed quadratic coverage and enabled smart dropouts finish
+that output. All 53 retained glyph/strike/phase native RGB diagnostics are exact.
+The completed documents preserve their separate ledgers: 30 development documents,
+two non-font original acceptance fixtures, two original supplied-font documents
+and the CC0 SVG Translate document. The wider finite G9 label/path promises stay
+open; `inv-127` is the selected next complete-document deliverable.
 
 Static `paint-order` supports `normal`, distinct ordered fill/stroke/markers lists
 and inherited/initial/unset values through the admitted cascade and instances.
@@ -159,7 +161,7 @@ criteria live in [PLAN](../PLAN.md#3-ordered-support-queue).
 | G6 | Ordered direct vector tile leaves, local templates, fractional grids and root-local definitions use bounded source replay. General local pattern maps admit rotation/reflection/shear; inherited solid target strokes and native rectangular stroke borders remain independent. Pattern image sampling reuses gradient bitmap-local coordinates with separate output/local matrices. Legacy unit-scale rectangles retain their route. General referencing-shape/instance maps, groups/uses inside content, content/viewBox/objectBoundingBox units and nested viewports remain open. Missing/cyclic/external templates and unsupported units retain explicit outcomes. | Vector-pattern example, PatternA, striped pattern and set-screw diagram are complete through six APIs on Windows/Linux; striped pattern is 9/9, set screw 1/1. Vector content: 17 exact + one rejection; inheritance/grid: 15 exact + two rejections; prior map/registration controls: 18/18 exact; general placement: 15/15 exact, including three CPU bitmap-origin witnesses. The original two-child cubic-pattern fixture remains exact. |
 | G7 | Bounded inline/presentation typography on geometric leaves is validated and discarded without requesting fonts. Thirteen inline properties and nine SVG attributes share finite keyword/scalar syntax; text, containers, images and stylesheet typography retain separate functional rules. Embedded PNG and static CSS have explicit narrow subsets; non-uniform image content/resampling, root-targeting stylesheet selectors and additional export combinations need measured slices. | `SvgImageSyntax`, PNG decoder, `SvgStyleSheet`; source distinct export failures before expanding. |
 | G8 | Local start/end line markers and start/mid/end straight/quadratic/cubic path markers support authored vertices, subpath roles, tangent bisectors, repeated/closed vertices, strokeWidth/userSpaceOnUse, numeric fixed/auto/start-reversed orientation, ref points, finite dimensions and viewBox/aspect mapping. Ordered vector/group/use content reuses bounded source replay. Definition paint stays independent of the target; element opacity surrounds fill/stroke/markers in typed paint order. Allocation bounds retain a separate layer role from masks. Hidden marker viewports preserve native binary clipping; visible overflow attributes render through existing source replay. XML shorthand is inert; admitted CSS shorthand and longhand declarations follow ordinary cascade. Local line/path instances propagate inherited/authored marker channels through retained leaves, symbols/groups and aliases, preserving resource paint, placed clips and isolated opacity. Arc-path directions, polyline/polygon vertices and their instances, units, CSS visible overflow, remaining presentation and remaining finite filters stay open. Local filter urls on live geometry retain ordered, bounded resource graphs and native SourceGraphic/SourceAlpha capture. Gaussian blur admits identity axes and device deviations 2 ≤ sigma < 135; integer offsets and black drop shadows reuse premultiplied source-over and authored filter regions. Colored sRGB blur is qualified; colored linearRGB arithmetic, fractional offsets, general affine filter maps, containers/instances, local clip/mask/marker combinations, primitive subregions and remaining finite graph nodes keep explicit current gates. Missing targets, recursive retained content and ordinary use of marker definitions reject explicitly; negative sizes are malformed. | Complete CC0 inv-121/inv-122/inv-123/inv-124 match frozen outputs through six APIs on Windows/Linux. The earlier 20 controls are 16 exact / four boundaries; 23 path controls are 20 exact / three boundaries. Both sets have healthy matching platform capture triples. `original-logo-marker-mark` is complete with 12 exact / three boundary controls and matching healthy platform triples; `original-logo-filter-mark` and `inv-125` are complete at frozen 64×64 / 128×128 transparent outputs through six APIs on Windows/Linux. Six frozen full-playback blur controls and 15 ownership/presentation/boundary checks protect this correction; `inv-126` is complete at frozen 185×180 transparent. Six exact inert-typography controls and 23 core checks protect its shared admission correction. |
-| G9 | Direct text requires a prepared supplied-font snapshot. Both frozen original live-text/text-path outputs are complete through six raw/six prepared APIs on Windows/Linux. Local positive horizontal text paths reuse authored commands, composed source maps and ordinary glyph replay; seven controls are exact. Scalar absolute span positions and element-free geometric leaf bodies are admitted. The older live-text bank retains three exact Windows controls and six exact Linux controls; its remaining controls and broader label/tangent/path promises stay open. Bounded managed hinting, coverage and preblend compute from supplied font bytes; independent geometry/RGB witnesses remain protected. | Both original supplied-font documents complete. The retained CC0 SVG Translate document has healthy frozen references and verified Mono Bold font use; its seven controls are exact on Linux and six on Windows. The whole document renders through all 12 APIs, is exact on Linux, and remains 0/1 complete across both platforms pending 210 Windows differing pixels (maximum error 31); PLAN section 6. |
+| G9 | Direct text requires a prepared supplied-font snapshot. Both original font documents and CC0 SVG Translate are exact through six raw/six prepared APIs on both platforms. Positive horizontal text paths reuse authored commands, composed source maps and native glyph replay. Scalar span positioning, bounded language metadata, inherited/child presentation anchors, independent sibling path runs and positive numeric offset calibration are admitted. Curved/tangent glyph maps, composite accents and the wider finite label/path subset remain open. Bounded hinting, coverage and preblend compute from supplied font bytes. | The older live-text bank has 6/7 exact controls on both platforms; straight text-path and Mono banks have 7/7 each. The retained public-domain `inv-127` stays 0/1 complete at frozen 512×369 transparent; three new controls are exact on both platforms through 12 APIs. Its first remaining gate is the curved baseline; intended-font native references and negative embedding proof are frozen on both platforms. |
 
 The retained CC0 Wikifoods logo is complete: all nine frozen original-input
 outputs in [its bank](../tests/Research/wikifoods-logo/manifest.json) are exact through

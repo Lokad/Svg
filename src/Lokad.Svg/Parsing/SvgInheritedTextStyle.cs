@@ -1,33 +1,36 @@
 using System.Xml;
 
 using Lokad.Svg;
+using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Represents the admitted single-font text properties inherited by a rendered text descendant.</summary>
 internal sealed class SvgInheritedTextStyle
 {
-    internal static SvgInheritedTextStyle Default { get; } = new(null, 400, false, 16, SvgTextWhitespaceMode.Default, 0);
+    internal static SvgInheritedTextStyle Default { get; } = new(null, 400, false, 16, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start);
 
-    internal SvgInheritedTextStyle(string? family, int weight, bool italic, double fontSize, SvgTextWhitespaceMode whitespaceMode, double letterSpacing)
+    internal SvgInheritedTextStyle(string? family, int weight, bool italic, double fontSize, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, SvgTextAnchor anchor)
     {
         if (weight <= 0) throw new ArgumentOutOfRangeException(nameof(weight));
         if (!double.IsFinite(fontSize) || fontSize <= 0) throw new ArgumentOutOfRangeException(nameof(fontSize));
         if (whitespaceMode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(whitespaceMode));
         if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
+        if (anchor is not (SvgTextAnchor.Start or SvgTextAnchor.Middle or SvgTextAnchor.End)) throw new ArgumentOutOfRangeException(nameof(anchor));
         Family = family;
         Weight = weight;
         Italic = italic;
         FontSize = fontSize;
         WhitespaceMode = whitespaceMode;
         LetterSpacing = letterSpacing;
+        Anchor = anchor;
     }
 
     /// <summary>Returns this style with only the whitespace mode replaced.</summary>
     internal SvgInheritedTextStyle WithWhitespaceMode(SvgTextWhitespaceMode whitespaceMode)
     {
         if (whitespaceMode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(whitespaceMode));
-        return new SvgInheritedTextStyle(Family, Weight, Italic, FontSize, whitespaceMode, LetterSpacing);
+        return new SvgInheritedTextStyle(Family, Weight, Italic, FontSize, whitespaceMode, LetterSpacing, Anchor);
     }
 
     internal string? Family { get; }
@@ -36,6 +39,7 @@ internal sealed class SvgInheritedTextStyle
     internal double FontSize { get; }
     internal SvgTextWhitespaceMode WhitespaceMode { get; }
     internal double LetterSpacing { get; }
+    internal SvgTextAnchor Anchor { get; }
 }
 
 /// <summary>Combines inline, presentation, and ancestor text properties using the direct-text precedence subset.</summary>
@@ -66,6 +70,6 @@ internal static class SvgTextInheritance
         SvgTextWhitespaceMode whitespaceMode = whiteSpace is null ? xmlMode : SvgTextSyntax.ParseCssWhitespaceMode(whiteSpace);
         string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
         double resolvedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
-        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing);
+        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor));
     }
 }

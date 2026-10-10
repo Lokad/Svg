@@ -305,6 +305,60 @@
         "referenceSha256": "6846de1b286a8d445b326ab34a7a20553f7d5bfac6816b602f22e3839056f8a9",
         "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
       }
+    },
+    {
+      "id": "inv-127",
+      "title": "SVGtext-anchor04.svg",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVGtext-anchor04.svg",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c6/SVGtext-anchor04.svg",
+      "creator": "Dr. Olaf Hoffmann",
+      "creatorUrl": "https://en.wikibooks.org/wiki/de:User:Doktorchen",
+      "retrievalDate": "2026-10-11",
+      "license": "Public domain",
+      "licenseEvidence": "The author dedicates this original work to the public domain worldwide (PD-self).",
+      "licenseEvidenceUrl": "https://commons.wikimedia.org/wiki/File:SVGtext-anchor04.svg",
+      "commonsApiLicense": "Public domain",
+      "original": "Fixtures/candidates/inv-127.svg",
+      "originalSha256": "649eabc32537e69339f48e52d2750477ef2b55637f250c802af687fae8ed9ed5",
+      "input": "tests/Fixtures/candidates/inv-127.svg",
+      "inputSha256": "649eabc32537e69339f48e52d2750477ef2b55637f250c802af687fae8ed9ed5",
+      "materialization": "The image-data capture path rejects non-ASCII Latin-1 bytes. Browser-only inputs transcode declared Latin-1 to UTF-8, insert root dimensions and map fantasy to the embedded caller-supplied face. Removing only the injected style/dimensions proves an identical parsed XML tree; original product bytes remain unchanged.",
+      "featureTags": [
+        "text-path",
+        "cubic-path",
+        "multiple-text-path-runs",
+        "per-path-anchor",
+        "calibrated-path-length",
+        "dashed-use-guides",
+        "composite-latin",
+        "inherited-anchor"
+      ],
+      "gap": "G9/G3",
+      "width": 512,
+      "height": 369,
+      "outputScale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 512,
+        "height": 369
+      },
+      "fontPack": "tests/Research/curved-font-documents/font-pack.json",
+      "renderOutcome": "UnsupportedFeature",
+      "reference": "tests/Research/curved-font-documents/references/inv-127-512x369-transparent.png",
+      "selection": "Complete document, dimensions and unchanged supplied face declared at 58c63d70 before capture or candidate screening.",
+      "renderMessage": "SVG text requires a prepared font snapshot.",
+      "suppliedFontOutcome": "UnsupportedFeature",
+      "suppliedFontRemaining": "Curved path baselines and tangent placement, then composite accents.",
+      "referenceSha256": "ad24fd933e00465e09d23bef538a8cc610f59b743f2b0cf82289c0fee953a738",
+      "oracle": {
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true,
+        "reference": "tests/Research/curved-font-documents/references/inv-127-512x369-transparent.png",
+        "referenceSha256": "ad24fd933e00465e09d23bef538a8cc610f59b743f2b0cf82289c0fee953a738",
+        "fontUseProof": "tests/Research/curved-font-documents/font-use-proof/qualification.json"
+      }
     }
   ]
 }

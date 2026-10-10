@@ -1,0 +1,9 @@
+{
+  "sourceEncoding": "iso-8859-1",
+  "browserEncoding": "UTF-8",
+  "originalBytesUnchanged": true,
+  "parsedXmlIdenticalAfterRemovingDeclaredBrowserAdditions": true,
+  "sourceSha256": "649eabc32537e69339f48e52d2750477ef2b55637f250c802af687fae8ed9ed5",
+  "oracleInputSha256": "2425428af9cefc2c7e3d49e7f3cd5ed17015d9a1d2aa93718a4c3bc20e90d916",
+  "role": "Capture preparation only; not an implementation or renderer reference fingerprint."
+}

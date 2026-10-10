@@ -268,50 +268,63 @@ internal static class SvgRenderedLeafParser
                 if (textElement.Style.FillRule is not null && !textElement.Style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
-                using BudgetedTextLayout text = ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, out int sourceCharacterCount, out int childNodeCount, out SvgTextPathReference? textPath);
-                state.TextCharacterCount += sourceCharacterCount;
-                state.NodeCount += childNodeCount;
-                if (text.Value.Length == 0) return true;
-                if (!textElement.Presentation.IsPainted || !textElement.Presentation.HasFill) return true;
-                if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
-                if (textPath is not null) textStyle = textStyle with { Y = 0 };
-                RenderBudget.BudgetReservation? pendingTextOwner = textPath is null ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
-                SvgTextRun run;
-                SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(state.OutputTextScale, SvgGlyphMetricTarget.Windows, textPath is not null)
-                    : OperatingSystem.IsLinux() ? new(state.OutputTextScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
-                try { run = SvgTextRunBuilder.Create(textStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
-                catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)
+                using BudgetedParserList<SvgExtractedTextRun> textRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+                try
                 {
-                    pendingTextOwner?.Dispose();
-                    // Content has been consumed and its layout will be disposed. Resolve earlier paint
-                    // failures first, then propagate this same font failure if those paints are valid.
-                    state.DeferredTextFailure ??= exception;
-                    return true;
-                }
-                catch { pendingTextOwner?.Dispose(); throw; }
-                if (textPath is {} pathReference)
-                {
-                    try { state.PendingTextPaths.Add(new(run, pathReference, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."))); }
-                    catch { pendingTextOwner?.Dispose(); run.Dispose(); throw; }
-                    return true;
-                }
-                using (run)
-                {
-                    if (textElement.Presentation.HasFill)
+                    ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, textRuns, out int sourceCharacterCount, out int childNodeCount);
+                    state.TextCharacterCount += sourceCharacterCount;
+                    state.NodeCount += childNodeCount;
+                    foreach (SvgExtractedTextRun extracted in textRuns.AsSpan())
                     {
-                        int glyphIndex = 0;
-                        foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, budget, workCounter, cancellationToken))
+                        BudgetedTextLayout text = extracted.Layout;
+                        SvgTextPathReference? textPath = extracted.Path;
+                        if (text.Value.Length == 0) continue;
+                        if (!textElement.Presentation.IsPainted || !textElement.Presentation.HasFill) return true;
+                        if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
+                        SvgTextStyle runStyle = textPath is {} anchoredPath ? textStyle with { Y = 0, Anchor = anchoredPath.Anchor ?? textStyle.Anchor } : textStyle;
+                        RenderBudget.BudgetReservation? pendingTextOwner = textPath is null ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
+                        SvgTextRun run;
+                        SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(state.OutputTextScale, SvgGlyphMetricTarget.Windows, textPath is not null)
+                            : OperatingSystem.IsLinux() ? new(state.OutputTextScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
+                        try { run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
+                        catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)
                         {
-                            using (contours)
+                            pendingTextOwner?.Dispose();
+                            // Content has been consumed and its layout will be disposed. Resolve earlier paint
+                            // failures first, then propagate this same font failure if those paints are valid.
+                            state.DeferredTextFailure ??= exception;
+                            return true;
+                        }
+                        catch { pendingTextOwner?.Dispose(); throw; }
+                        if (textPath is {} pathReference)
+                        {
+                            try { state.PendingTextPaths.Add(new(run, pathReference, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."))); }
+                            catch { pendingTextOwner?.Dispose(); run.Dispose(); throw; }
+                            continue;
+                        }
+                        using (run)
+                        {
+                            if (textElement.Presentation.HasFill)
                             {
-                                SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, textElement.Presentation.Color, run.Font, run.Glyphs[glyphIndex++], run.Style.FontSize, budget);
-                                try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(glyph)); }
-                                catch { glyph.Dispose(); throw; }
+                                int glyphIndex = 0;
+                                foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, budget, workCounter, cancellationToken))
+                                {
+                                    using (contours)
+                                    {
+                                        SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, textElement.Presentation.Color, run.Font, run.Glyphs[glyphIndex++], run.Style.FontSize, budget);
+                                        try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(glyph)); }
+                                        catch { glyph.Dispose(); throw; }
+                                    }
+                                }
                             }
                         }
                     }
+                    return true;
                 }
-                return true;
+                finally
+                {
+                    foreach (SvgExtractedTextRun extracted in textRuns.AsSpan()) extracted.Layout.Dispose();
+                }
             }
         }
         return false;
@@ -439,16 +452,17 @@ internal static class SvgRenderedLeafParser
             }
         }
 
-        static BudgetedTextLayout ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount, out SvgTextPathReference? textPath)
+        static void ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgExtractedTextRun> runs, out int sourceCharacterCount, out int childNodeCount)
         {
-            textPath = null;
+            SvgTextPathReference? textPath = null;
+            bool hasTextPaths = false;
             using var text = new SvgTextLayoutBuffer(budget, letterSpacing, workCounter, cancellationToken);
             var normalizer = new SvgTextWhitespaceNormalizer(whitespaceMode, letterSpacing, 0, false);
             if (element.IsEmptyElement)
             {
                 sourceCharacterCount = normalizer.SourceCharacterCount;
                 childNodeCount = 0;
-                return text.Detach();
+                return;
             }
             childNodeCount = 0;
             sourceCharacterCount = 0;
@@ -472,7 +486,7 @@ internal static class SvgRenderedLeafParser
                             sourceCharacterCount += read;
                             int currentScope = whitespaceNormalizers.Count - 1;
                             SvgTextWhitespaceNormalizer current = whitespaceNormalizers[currentScope];
-                            if (textPath is not null && currentScope == 0 && (current.Mode == SvgTextWhitespaceMode.Preserve || SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken)))
+                            if (hasTextPaths && currentScope == 0 && (current.Mode == SvgTextWhitespaceMode.Preserve || SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken)))
                                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "A text-path run cannot contain painted siblings in this subset.");
                             bool introducesOutput = !current.HasOutput && (current.Mode == SvgTextWhitespaceMode.Preserve ? SvgTextWhitespaceNormalizer.HasText(chunk.AsSpan(0, read), workCounter, cancellationToken) : SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken));
                             if (introducesOutput)
@@ -502,16 +516,17 @@ internal static class SvgRenderedLeafParser
                     SvgTextSpanStyle childStyle;
                     if (subtree.LocalName == "textPath")
                     {
-                        if (subtree.Depth != 1 || textPath is not null || whitespaceNormalizers[0].HasOutput) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one text-path run without painted siblings is implemented.");
+                        if (subtree.Depth != 1 || textPath is not null || !hasTextPaths && whitespaceNormalizers[0].HasOutput) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only direct text-path runs without painted text siblings are implemented.");
                         SvgTextPathReference parsed = SvgTextPathSyntax.Parse(subtree, workCounter, cancellationToken);
                         textPath = parsed with { PathId = state.Strings.Copy(parsed.PathId) };
+                        hasTextPaths = true;
                         InlineStyle pathStyle = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
                         if (!pathStyle.Equals(default(InlineStyle))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Styles on text-path children are not implemented.");
                         childStyle = new(SvgTextSyntax.ParseWhitespaceMode(subtree, null, inheritedStyle.WhitespaceMode), inheritedStyle.LetterSpacing);
                     }
                     else
                     {
-                        if (subtree.LocalName != "tspan" || textPath is not null && subtree.Depth == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded text span children are implemented.");
+                        if (subtree.LocalName != "tspan" || hasTextPaths && subtree.Depth == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded text span children are implemented.");
                         SvgElementAttributePolicy.ValidateTextSpan(subtree, workCounter, cancellationToken);
                         InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
                         if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, workCounter, cancellationToken, out childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace, letter-spacing, and scalar positioning tspan text children are implemented.");
@@ -525,6 +540,7 @@ internal static class SvgRenderedLeafParser
                         if (positionOffset is SvgTextPositionOffset offset) text.EnterPositioningSpan(offset, childScopeDepth, workCounter, cancellationToken);
                         whitespaceNormalizers.Add(new SvgTextWhitespaceNormalizer(childStyle.WhitespaceMode, childStyle.LetterSpacing, childScopeDepth, ownsPositioningSpan));
                     }
+                    else if (subtree.LocalName == "textPath") textPath = null;
                     continue;
                 }
                 if (subtree.NodeType == XmlNodeType.EndElement && subtree.Depth != 0)
@@ -533,9 +549,22 @@ internal static class SvgRenderedLeafParser
                     current.CompleteElement();
                     if (current.OwnsPositioningSpan) text.ExitPositioningSpan(current.ScopeDepth);
                     whitespaceNormalizers.RemoveLast();
+                    if (subtree.Depth == 1 && subtree.LocalName == "textPath")
+                    {
+                        RetainLayout(text, textPath, runs);
+                        textPath = null;
+                        whitespaceNormalizers[0] = normalizer;
+                    }
                 }
             }
-            return text.Detach();
+            if (!hasTextPaths) RetainLayout(text, null, runs);
+
+            static void RetainLayout(SvgTextLayoutBuffer text, SvgTextPathReference? path, BudgetedParserList<SvgExtractedTextRun> runs)
+            {
+                BudgetedTextLayout layout = text.Detach();
+                try { runs.Add(new(layout, path)); }
+                catch { layout.Dispose(); throw; }
+            }
         }
     }
 }

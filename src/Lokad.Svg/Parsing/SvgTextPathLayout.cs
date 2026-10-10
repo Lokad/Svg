@@ -8,7 +8,11 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgPendingTextPath(SvgTextRun Run, SvgTextPathReference Reference, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner);
 
 /// <summary>Describes the positive horizontal baseline admitted before general tangent glyph maps.</summary>
-internal readonly record struct SvgTextPathBaseline(double X, double Y, double Length);
+internal readonly record struct SvgTextPathBaseline(double X, double Y, double Length)
+{
+    /// <summary>Scales authored numeric start offsets; percentages and glyph advances retain their separate coordinates.</summary>
+    internal double OffsetScale { get; init; } = 1;
+}
 
 internal static class SvgTextPathLayout
 {
@@ -18,7 +22,8 @@ internal static class SvgTextPathLayout
     {
         work.Consume(token);
         if (source.LocalName != "path") throw new SvgException(SvgErrorCode.UnresolvedResource, "The text-path reference must identify a path.");
-        if (source.GetAttribute("pathLength") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Calibrated text-path lengths are not implemented.");
+        double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(source.GetAttribute("pathLength"));
+        if (pathLength == 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero calibrated text-path lengths are not implemented.");
         SvgAffineTransform map = source.InheritedTransform.ComposeChecked(SvgGeometrySyntax.ParseTransform(source.GetAttribute("transform"), work, token));
         string data = source.GetAttribute("d") ?? string.Empty;
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Parser, work, token);
@@ -45,7 +50,9 @@ internal static class SvgTextPathLayout
         }
         double length = hasStart ? previous.X - start.X : 0;
         if (!double.IsFinite(length)) throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path length exceeds the supported range.");
-        return new(start.X, start.Y, length);
+        double offsetScale = pathLength is double calibrated ? length / calibrated : 1;
+        if (!double.IsFinite(offsetScale)) throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path calibration exceeds the supported range.");
+        return new(start.X, start.Y, length) { OffsetScale = offsetScale };
     }
 
     /// <summary>Resolves local paths, places glyphs and moves their ordinary scene commands into reserved paint slots.</summary>
@@ -60,7 +67,7 @@ internal static class SvgTextPathLayout
             if (!state.Definitions.TryGetValue(pending.Reference.PathId, out SvgDefinition definition) || definition.LeafSource is not {} source)
                 throw new SvgException(SvgErrorCode.UnresolvedResource, "The local text-path reference was not found.");
             SvgTextPathBaseline baseline = ReadBaseline(source, limits.MaximumPathCommands, state.Budget, work, token);
-            double offset = pending.Reference.IsPercentage ? baseline.Length * (pending.Reference.StartOffset / 100) : pending.Reference.StartOffset;
+            double offset = pending.Reference.IsPercentage ? baseline.Length * (pending.Reference.StartOffset / 100) : pending.Reference.StartOffset * baseline.OffsetScale;
             if (!double.IsFinite(offset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The resolved text-path offset is not finite.");
             int tail = state.Scene.CommandCount;
             foreach (SvgPositionedGlyph glyph in pending.Run.Glyphs)

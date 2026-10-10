@@ -1,9 +1,10 @@
 using System.Xml;
+using Lokad.Svg.Fonts;
 
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Names one local path and its finite distance or percentage offset.</summary>
-internal readonly record struct SvgTextPathReference(string PathId, double StartOffset, bool IsPercentage);
+internal readonly record struct SvgTextPathReference(string PathId, double StartOffset, bool IsPercentage, SvgTextAnchor? Anchor);
 
 /// <summary>Validates the first text-path subset before either font discovery or layout.</summary>
 internal static class SvgTextPathSyntax
@@ -16,7 +17,7 @@ internal static class SvgTextPathSyntax
             if (reader.Name == "xmlns" || reader.Prefix == "xmlns") continue;
             if (reader.NamespaceURI == "http://www.w3.org/1999/xlink" && reader.LocalName == "href") continue;
             if (reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") continue;
-            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "href" or "startOffset" or "method" or "spacing" or "id")
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "href" or "startOffset" or "method" or "spacing" or "id" or "text-anchor")
             {
                 if (reader.Value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path attributes exceed the configured syntax limit.");
                 continue;
@@ -38,6 +39,10 @@ internal static class SvgTextPathSyntax
         if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path offset exceeds the configured syntax limit.");
         bool percentage = value.EndsWith("%", StringComparison.Ordinal);
         double distance = SvgGeometrySyntax.ParseTextCoordinate(percentage ? value[..^1].ToString() : offset);
-        return new(href[1..], distance, percentage);
+        string? anchor = reader.GetAttribute("text-anchor");
+        if (anchor is not null) work.ConsumeText(anchor.Length, token);
+        SvgTextAnchor? resolvedAnchor = anchor is null || anchor.Trim().Equals("inherit", StringComparison.OrdinalIgnoreCase)
+            ? null : SvgTextSyntax.ParseAnchor(anchor, SvgTextAnchor.Start);
+        return new(href[1..], distance, percentage, resolvedAnchor);
     }
 }

@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
@@ -25,6 +26,20 @@ public sealed class SvgTextPathTests
     }
 
     [Theory]
+    [InlineData("", null)]
+    [InlineData("text-anchor='inherit'", null)]
+    [InlineData("text-anchor='start'", (int)SvgTextAnchor.Start)]
+    [InlineData("text-anchor='middle'", (int)SvgTextAnchor.Middle)]
+    [InlineData("text-anchor='end'", (int)SvgTextAnchor.End)]
+    public void Child_path_anchor_retains_explicit_overrides_and_inheritance(string attributes, int? expected)
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<textPath href='#p' " + attributes + "/>"));
+        reader.Read();
+        SvgTextAnchor? actual = SvgTextPathSyntax.Parse(reader, new(long.MaxValue), CancellationToken.None).Anchor;
+        Assert.Equal(expected, actual is {} anchor ? (int)anchor : null);
+    }
+
+    [Theory]
     [InlineData("", SvgErrorCode.MalformedInput)]
     [InlineData("href='#'", SvgErrorCode.MalformedInput)]
     [InlineData("href='#one two'", SvgErrorCode.MalformedInput)]
@@ -33,6 +48,7 @@ public sealed class SvgTextPathTests
     [InlineData("href='#p' spacing='auto'", SvgErrorCode.UnsupportedFeature)]
     [InlineData("href='#p' startOffset='NaN'", SvgErrorCode.UnsupportedFeature)]
     [InlineData("href='#p' transform='scale(2)'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("href='#p' text-anchor='center'", SvgErrorCode.UnsupportedFeature)]
     public void Reports_explicit_reference_and_subset_boundaries(string attributes, SvgErrorCode category)
     {
         using XmlReader reader = XmlReader.Create(new StringReader("<textPath " + attributes + "/>"));
@@ -67,7 +83,7 @@ public sealed class SvgTextPathTests
     [InlineData("M8 48 Q24 16 56 48", "")]
     [InlineData("M8 48 H56 Z", "")]
     [InlineData("M8 48 H16 M24 48 H56", "")]
-    [InlineData("M8 48 H56", "pathLength='1'")]
+    [InlineData("M8 48 H56", "pathLength='0'")]
     public void Unimplemented_tangents_and_calibration_release_temporary_commands(string data, string attributes)
     {
         RenderBudget budget = new(long.MaxValue);
@@ -92,6 +108,23 @@ public sealed class SvgTextPathTests
         Assert.Equal(cancelled.Token, Assert.Throws<OperationCanceledException>(() => SvgTextPathLayout.ReadBaseline(source, 100, budget, new(long.MaxValue), cancelled.Token)).CancellationToken);
         Assert.Equal(retained, budget.Snapshot().CurrentBytes);
         Assert.Equal(48, SvgTextPathLayout.ReadBaseline(source, 100, budget, new(long.MaxValue), CancellationToken.None).Length);
+    }
+
+    [Theory]
+    [InlineData("pathLength='96'", 0.5)]
+    [InlineData("pathLength='24'", 2)]
+    [InlineData("transform='translate(8 0) scale(2)' pathLength='96'", 1)]
+    public void Positive_path_calibration_scales_offsets_in_composed_coordinates(string attributes, double scale)
+    {
+        RenderBudget budget = new(long.MaxValue);
+        using (SvgDocumentState state = new(budget, new(long.MaxValue), CancellationToken.None))
+        {
+            SvgDefinitionLeafSource source = Capture("M8 48 H56", attributes, state);
+            long retained = budget.Snapshot().CurrentBytes;
+            Assert.Equal(scale, SvgTextPathLayout.ReadBaseline(source, 100, budget, new(long.MaxValue), CancellationToken.None).OffsetScale);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     private static SvgDefinitionLeafSource Capture(string data, string attributes, SvgDocumentState state)

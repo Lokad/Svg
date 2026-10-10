@@ -8,10 +8,11 @@ public sealed class SvgTextSyntaxTests
     [Fact]
     public void Inherited_text_style_requires_a_positive_weight_and_font_size()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 0, false, 16, SvgTextWhitespaceMode.Default, 0));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 0, SvgTextWhitespaceMode.Default, 0));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 16, (SvgTextWhitespaceMode)2, 0));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 16, SvgTextWhitespaceMode.Default, double.NaN));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 0, false, 16, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 0, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 16, (SvgTextWhitespaceMode)2, 0, SvgTextAnchor.Start));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 16, SvgTextWhitespaceMode.Default, double.NaN, SvgTextAnchor.Start));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new SvgInheritedTextStyle(null, 400, false, 16, SvgTextWhitespaceMode.Default, 0, (SvgTextAnchor)99));
     }
 
     [Fact]
@@ -187,6 +188,22 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal(400, resolved.Weight);
         Assert.True(resolved.Italic);
         Assert.Equal(14, resolved.FontSize);
+    }
+
+    [Theory]
+    [InlineData("", (int)SvgTextAnchor.Middle)]
+    [InlineData("text-anchor='inherit'", (int)SvgTextAnchor.Middle)]
+    [InlineData("text-anchor='start'", (int)SvgTextAnchor.Start)]
+    [InlineData("text-anchor='end'", (int)SvgTextAnchor.End)]
+    public void Presentation_anchors_follow_container_and_direct_text_inheritance(string attribute, int expected)
+    {
+        using XmlReader ancestorReader = XmlReader.Create(new StringReader("<g text-anchor='middle'/>"));
+        ancestorReader.Read();
+        SvgInheritedTextStyle ancestor = SvgTextInheritance.Resolve(ancestorReader, SvgInheritedTextStyle.Default, default, null, null);
+        Assert.Equal(SvgTextAnchor.Middle, ancestor.WithWhitespaceMode(SvgTextWhitespaceMode.Preserve).Anchor);
+        using XmlReader textReader = XmlReader.Create(new StringReader("<text font-family='Example' " + attribute + "/>"));
+        textReader.Read();
+        Assert.Equal((SvgTextAnchor)expected, SvgTextSyntax.Parse(textReader, default(SvgTextInlineFontProperties), ancestor).Anchor);
     }
 
     [Fact]
