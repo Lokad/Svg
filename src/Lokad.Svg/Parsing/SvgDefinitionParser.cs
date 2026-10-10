@@ -30,15 +30,22 @@ internal static class SvgDefinitionParser
             if (symbolChild)
             {
                 SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).Presentation;
-                context = context with { InheritedPresentation = new(symbol.Paint, true, true, SvgAffineTransform.Identity) { PaintOrder = symbol.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = symbol.PaintServerFill }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule, RecordingScope = new(1) };
+                context = context with { InheritedPresentation = new(symbol.Paint, true, true, SvgAffineTransform.Identity) { Markers = symbol.Markers, PaintOrder = symbol.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = symbol.PaintServerFill }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule, RecordingScope = new(1) };
             }
             SvgComputedStyle retainedStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
-            if (SvgMarkerStyle.Resolve(retainedStyle, context.InheritedPresentation.Markers).HasMarkers)
+            if (state.MarkerDefinition is not null && SvgMarkerStyle.Resolve(retainedStyle, context.InheritedPresentation.Markers).HasMarkers)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on retained definition leaves are not implemented.");
+            // Definition bodies are dormant. Replay source markers only after the
+            // complete registry is available, with each instance's presentation.
+            SvgPaintableElementContext dormant = !SvgMarkerStyle.Resolve(retainedStyle, context.InheritedPresentation.Markers).HasMarkers ? context : context with
+            {
+                AuthoredStyle = retainedStyle with { MarkerStart = "none", MarkerMid = "none", MarkerEnd = "none" },
+                InheritedPresentation = context.InheritedPresentation with { Markers = default }
+            };
             SvgViewBox? symbolViewBox = null;
-            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, symbolViewBox)
-                : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
-                : ParseShapeDefinition(reader, context, state, symbolViewBox);
+            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, dormant, state, symbolViewBox)
+                : reader.LocalName == "line" ? ParseLineDefinition(reader, dormant, state)
+                : ParseShapeDefinition(reader, dormant, state, symbolViewBox);
             bool retained = false;
             try
             {
@@ -90,13 +97,13 @@ internal static class SvgDefinitionParser
             }
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
             SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), marker || style.Fill is not null,
-                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), SvgColorParser.ParsePaintOpacity(style.Opacity)) { PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), SvgColorParser.ParsePaintOpacity(style.Opacity)) { Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, workCounter, cancellationToken), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             string? id = reader.GetAttribute("id");
             if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             state.SymbolId = id is null ? null : state.Strings.Copy(id);
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
-            if (shaderFill is not null || marker)
+            if (shaderFill is not null || marker || presentation.Markers.HasMarkers)
             {
                 state.SymbolDefinition.EnableContent();
                 state.HasRetainedSymbolContent = true;
@@ -426,7 +433,7 @@ internal static class SvgDefinitionParser
                 {
                     SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
                     SvgPaintableElementContext previous = state.PatternRectangleContext;
-                    AdoptLeaf(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, false, state));
+                    AdoptLeaf(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, false, state));
                     state.PatternTile = tile with { Content = null };
                 }
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
@@ -1527,6 +1534,8 @@ internal static class SvgDefinitionParser
     /// native geometry and every lowerer observes the supplied work, cancellation and memory bounds.</remarks>
     internal static SvgDefinition LowerInstanceSource(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
     {
+        if (reader.LocalName is not ("line" or "path") && SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers).HasMarkers)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on shapes other than lines and paths are not implemented.");
         if (reader.LocalName == "rect")
         {
             SvgRectangleSyntax rectangle = SvgRectangleSyntax.Parse(reader, context.LengthBases);
@@ -1578,7 +1587,13 @@ internal static class SvgDefinitionParser
             for (int index = 0; index < bindings.Length; index++)
             {
                 work.Consume(token);
-                bool strokeChannel = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint).IsStroke;
+                SvgRecordedPaintValue recorded = state.Scene.GetRecordedPaintValue(definition.Geometries[index].RecordedPaint);
+                bool strokeChannel = recorded.IsStroke;
+                if (recorded.IsMarkerContent)
+                {
+                    bindings[index] = new(false, null, null) { IsStroke = strokeChannel };
+                    continue;
+                }
                 bool hasStroke = strokeChannel || definition.Geometries[index].RecordedStrokePaint.Identity != 0;
                 bindings[index] = new(inherited && !strokeChannel, opacity, color) { AuthoredFill = strokeChannel ? null : authoredFill, AuthoredStroke = hasStroke ? authoredStroke : null, StrokeOpacity = authoredStrokeOpacity, IsStroke = strokeChannel, IsPainted = isPainted, IsPaintServer = !strokeChannel && (SvgPatternSyntax.IsPatternFill(style.Fill) || style.Fill is null && context.InheritedPresentation.PaintServerFill is not null), IsStrokePaintServer = hasStroke && stroke is not null && SvgLocalUrl.TryParseId(stroke, out _) };
             }

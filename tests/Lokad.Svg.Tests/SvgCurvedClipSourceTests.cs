@@ -29,11 +29,16 @@ public sealed class SvgCurvedClipSourceTests
     [InlineData("path-marker:path-forward-mid")]
     [InlineData("path-marker:path-css-closed-auto")]
     [InlineData("path-marker:path-css-opacity")]
+    [InlineData("marker-instance:instance-forward-alias")]
+    [InlineData("marker-instance:instance-affine-leaf")]
+    [InlineData("marker-instance:instance-marker-source-paint")]
     public void Native_clip_owners_release_at_every_parser_work_denial_and_sampled_memory_denials(string content)
     {
         byte[] input = content.StartsWith('<')
             ? System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + content + "</svg>")
-            : content.StartsWith("path-marker:", StringComparison.Ordinal)
+            : content.StartsWith("marker-instance:", StringComparison.Ordinal)
+                ? File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "marker-instance-content", content[16..] + ".svg"))
+                : content.StartsWith("path-marker:", StringComparison.Ordinal)
                 ? File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "path-marker-content", content[12..] + ".svg"))
                 : content.StartsWith("marker:", StringComparison.Ordinal)
                 ? File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "marker-content", content[7..] + ".svg"))

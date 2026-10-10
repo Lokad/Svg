@@ -20,8 +20,11 @@ internal readonly record struct SvgMarkerStyle(string? Start, string? Mid, strin
     internal static bool Active(string? value) => value is not null && !value.Equals("none", StringComparison.OrdinalIgnoreCase);
 
     internal static SvgMarkerStyle Resolve(SvgComputedStyle style, SvgMarkerStyle inherited)
+        => new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).InheritFrom(inherited);
+
+    internal SvgMarkerStyle InheritFrom(SvgMarkerStyle inherited)
     {
-        return new(Select(style.MarkerStart, inherited.Start), Select(style.MarkerMid, inherited.Mid), Select(style.MarkerEnd, inherited.End));
+        return new(Select(Start, inherited.Start), Select(Mid, inherited.Mid), Select(End, inherited.End));
         static string? Select(string? value, string? parent)
         {
             string? input = value?.Trim();
@@ -237,7 +240,19 @@ internal static class SvgMarkerRenderer
                     InheritedFill = SvgPaint.Default, RecordingScope = state.NewRecordingScope(), AllowsSolidPaintAnalysis = true };
                 SvgGeometry[] mapped = SvgReferenceResolver.Apply(source, reference, frame, state, work, token);
                 int transferred = 0;
-                try { for (; transferred < mapped.Length; transferred++) output.Add(mapped[transferred]); }
+                try
+                {
+                    for (; transferred < mapped.Length; transferred++)
+                    {
+                        work.Consume(token);
+                        SvgGeometry geometry = mapped[transferred];
+                        if (geometry.RecordedPaint.Identity > 0)
+                            state.Scene.ChangeRecordedPaint(geometry.RecordedPaint, state.Scene.GetRecordedPaintValue(geometry.RecordedPaint) with { IsMarkerContent = true });
+                        if (geometry.RecordedStrokePaint.Identity > 0)
+                            state.Scene.ChangeRecordedPaint(geometry.RecordedStrokePaint, state.Scene.GetRecordedPaintValue(geometry.RecordedStrokePaint) with { IsMarkerContent = true });
+                        output.Add(geometry);
+                    }
+                }
                 catch { for (int index = transferred; index < mapped.Length; index++) mapped[index].Dispose(); throw; }
             }
         }

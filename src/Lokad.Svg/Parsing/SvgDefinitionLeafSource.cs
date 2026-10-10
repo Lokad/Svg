@@ -81,7 +81,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     internal SvgComputedStyle AuthoredStyle => _authored;
 
-    internal bool RequiresConstruction(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder)
+    internal bool RequiresConstruction(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers)
     {
         _work.Consume(_token);
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
@@ -90,11 +90,11 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         bool inheritedShader = _element != "line" && _authored.Fill is null && paintServerFill is not null;
         bool strokeColorChanged = _authored.Color is null && resolved.Stroke is not null
             && resolved.Stroke.Equals("currentColor", StringComparison.OrdinalIgnoreCase) && paint.CurrentColor != _constructedCurrentColor;
-        return (_authored.PaintOrder ?? paintOrder) != (_authored.PaintOrder ?? _constructedPaintOrder) || _unconstructed || inheritedShader || (_element != "line" && _authored.Fill is null && _constructedPaintServerFill is not null && paintServerFill is null) || strokeColorChanged || (_authored.FillRule ?? fillRule) != (_authored.FillRule ?? _constructedFillRule)
+        return SvgMarkerStyle.Resolve(_authored, markers).HasMarkers || (_authored.PaintOrder ?? paintOrder) != (_authored.PaintOrder ?? _constructedPaintOrder) || _unconstructed || inheritedShader || (_element != "line" && _authored.Fill is null && _constructedPaintServerFill is not null && paintServerFill is null) || strokeColorChanged || (_authored.FillRule ?? fillRule) != (_authored.FillRule ?? _constructedFillRule)
             || resolved with { StrokeOpacity = null } != _constructedStroke with { StrokeOpacity = null };
     }
 
-    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, bool retainMappedContour, SvgDocumentState state)
+    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers, bool retainMappedContour, SvgDocumentState state)
     {
         _attribute = -1;
         // A use supplies fill only where the source did not author one. The original
@@ -102,7 +102,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         SvgComputedStyle authored = _authored;
         if (_element != "line" && authored.Fill is null && paintServerFill is not null) authored = authored with { Fill = paintServerFill };
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
-        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { PaintOrder = paintOrder }, SvgInheritedTextStyle.Default,
+        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { PaintOrder = paintOrder, Markers = markers }, SvgInheritedTextStyle.Default,
             resolved, default, _colors, _work, _token, state.OutputMagnification, fillRule)
         {
             RecordingScope = new(1),

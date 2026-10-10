@@ -126,6 +126,7 @@
     <None Include="../Research/compound-clip-content/*.svg" Link="TestData/compound-clip-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/marker-content/*.svg" Link="TestData/marker-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/path-marker-content/*.svg" Link="TestData/path-marker-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/marker-instance-content/*.svg" Link="TestData/marker-instance-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />

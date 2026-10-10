@@ -13,5 +13,6 @@
     <None Include="../Fixtures/**" Link="Fixtures/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../References/**" Link="tests/References/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/**" Link="Research/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/marker-instance-content/references/original-logo-marker-mark-64-transparent.png" Link="tests/Research/marker-instance-content/references/original-logo-marker-mark-64-transparent.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

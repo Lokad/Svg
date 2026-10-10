@@ -8,7 +8,7 @@ public sealed class SvgMarkerReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "marker-content", "path-marker-content" })
+        foreach (string family in new[] { "marker-content", "path-marker-content", "marker-instance-content" })
         {
             string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -19,12 +19,12 @@ public sealed class SvgMarkerReferenceTests
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Marker_controls_preserve_frozen_pixels_and_explicit_boundaries_through_six_apis(string family, string identity)
+    public async Task Marker_cases_preserve_frozen_pixels_and_explicit_boundaries_through_six_apis(string family, string identity)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(family switch { "marker-content" => 20, "path-marker-content" => 23, _ => throw new InvalidDataException("Unknown marker family.") }, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family switch { "marker-content" => 20, "path-marker-content" => 23, "marker-instance-content" => 16, _ => throw new InvalidDataException("Unknown marker family.") }, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("healthy", Required(root, "captureStartupHealth"));
         Assert.True(root.GetProperty("captureProfilesCleaned").GetBoolean());
@@ -66,7 +66,7 @@ public sealed class SvgMarkerReferenceTests
                 Assert.Equal(Required(item, "expectedMessage"), error.Message);
             }
         }
-        Assert.Equal("fidelity", Required(item, "role"));
+        Assert.Equal(item.TryGetProperty("document", out _) ? "document-output" : "fidelity", Required(item, "role"));
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 130 * 130), PngRgbaDecoder.Decode(png, 130 * 130));
         Assert.True(comparison.IsExact, identity + ": " + comparison);

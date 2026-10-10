@@ -11,11 +11,16 @@ internal readonly record struct SvgRecordedPaint(int Identity)
 }
 internal readonly record struct SvgRecordingScope(int Value);
 internal readonly record struct SvgPaintOperationIdentity(int Value);
-internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, bool IsStroke, SvgPaintOrder PaintOrder, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
+[Flags]
+internal enum SvgRecordedPaintRole : byte { Fill = 0, Stroke = 1, MarkerContent = 2 }
+internal readonly record struct SvgRecordedPaintValue(SvgPaintOperationIdentity Identity, float Alpha, bool Foldable, SvgRecordedPaintRole Role, SvgPaintOrder PaintOrder, SvgRecordingScope Scope, SvgPaintOpacity ElementOpacity, SvgRecordingScope OpacityScope)
 {
+    // Resource paint stays independent when its host instance binds fill and stroke.
+    internal bool IsStroke { get => (Role & SvgRecordedPaintRole.Stroke) != 0; init => Role = value ? Role | SvgRecordedPaintRole.Stroke : Role & ~SvgRecordedPaintRole.Stroke; }
+    internal bool IsMarkerContent { get => (Role & SvgRecordedPaintRole.MarkerContent) != 0; init => Role = value ? Role | SvgRecordedPaintRole.MarkerContent : Role & ~SvgRecordedPaintRole.MarkerContent; }
     /// <summary>Retains the previous constructor contract; source recording assigns the stroke role explicitly.</summary>
     internal SvgRecordedPaintValue(SvgPaintOperationIdentity identity, float alpha, bool foldable, SvgRecordingScope scope, SvgPaintOpacity elementOpacity, SvgRecordingScope opacityScope)
-        : this(identity, alpha, foldable, false, SvgPaintOrder.FillStrokeMarkers, scope, elementOpacity, opacityScope) { }
+        : this(identity, alpha, foldable, SvgRecordedPaintRole.Fill, SvgPaintOrder.FillStrokeMarkers, scope, elementOpacity, opacityScope) { }
     // Source visual bounds survive lowering; they do not describe a shader coordinate box or a clip.
     internal SvgPaintBounds? VisualBounds { get; init; }
     internal SvgPaintBounds? ObjectBounds { get; init; }

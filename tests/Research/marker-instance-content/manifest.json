@@ -1,0 +1,527 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One complete original acceptance document and twelve focused fidelity controls for shared use-instance marker inheritance, definition paint and source replay; three finite unsupported boundaries remain explicit.",
+  "cases": [
+    {
+      "id": "original-logo-marker-mark-64-transparent",
+      "document": "original-logo-marker-mark",
+      "input": "../../Fixtures/original/logo-marker-mark.svg",
+      "reference": "references/original-logo-marker-mark-64-transparent.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "sourceSha256": "dd5d0095e1d0b25a1d91c1b1f61795020b562bd48b122dbd757a14c58976afd0",
+      "license": "CC0-1.0",
+      "creator": "Lokad.Svg contributors",
+      "selection": "Existing complete CC0 acceptance fixture, original bytes and existing declared 64x64 transparent output; frozen before removing its measured use-instance marker gate.",
+      "referenceSha256": "0ed4896a08c011102bd3eddd5e695a0711d7ed104b8e0eb7551c34e9848fc087",
+      "captures": [
+        {
+          "pngSha256": "0ed4896a08c011102bd3eddd5e695a0711d7ed104b8e0eb7551c34e9848fc087",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0ed4896a08c011102bd3eddd5e695a0711d7ed104b8e0eb7551c34e9848fc087",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0ed4896a08c011102bd3eddd5e695a0711d7ed104b8e0eb7551c34e9848fc087",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-source-width",
+      "input": "instance-source-width.svg",
+      "reference": "references/instance-source-width.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "4c0b5da92c36adbb659786c319f8ab7da8531903b2fd00b1c1db450afa23c4f9",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "d692a468851970df511aa89c3a341c867336e9247ad04c89f6d9a024934ed8c9",
+      "captures": [
+        {
+          "pngSha256": "d692a468851970df511aa89c3a341c867336e9247ad04c89f6d9a024934ed8c9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d692a468851970df511aa89c3a341c867336e9247ad04c89f6d9a024934ed8c9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d692a468851970df511aa89c3a341c867336e9247ad04c89f6d9a024934ed8c9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-leaf-none",
+      "input": "instance-leaf-none.svg",
+      "reference": "references/instance-leaf-none.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "20eac0f1026fd913cde1ccd575d104f308eef92dcaeb9de2005d353221b0ec47",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "44f2e45d5b1de1eda8c76d80d1d2bd833ca86de713bc809eba129cccdca73e3c",
+      "captures": [
+        {
+          "pngSha256": "44f2e45d5b1de1eda8c76d80d1d2bd833ca86de713bc809eba129cccdca73e3c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "44f2e45d5b1de1eda8c76d80d1d2bd833ca86de713bc809eba129cccdca73e3c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "44f2e45d5b1de1eda8c76d80d1d2bd833ca86de713bc809eba129cccdca73e3c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-authored-marker",
+      "input": "instance-authored-marker.svg",
+      "reference": "references/instance-authored-marker.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "12c1a038816dbda708c15032a1b9e524a93567573647a750440389af7ec40222",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "750d90a13f394494542fafa5c49110c5035bfba3846efa3614b8b37a149d55f0",
+      "captures": [
+        {
+          "pngSha256": "750d90a13f394494542fafa5c49110c5035bfba3846efa3614b8b37a149d55f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "750d90a13f394494542fafa5c49110c5035bfba3846efa3614b8b37a149d55f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "750d90a13f394494542fafa5c49110c5035bfba3846efa3614b8b37a149d55f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-multiple-aliases",
+      "input": "instance-multiple-aliases.svg",
+      "reference": "references/instance-multiple-aliases.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "c2acdeb2d7618194232febb76c2296056078f8d6bb8177cc75bf0bb17d3d1a3f",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "16ed3b7382928fa5b3df3875f32ea2002a502099080905eb9cffc1c208a50e58",
+      "captures": [
+        {
+          "pngSha256": "16ed3b7382928fa5b3df3875f32ea2002a502099080905eb9cffc1c208a50e58",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "16ed3b7382928fa5b3df3875f32ea2002a502099080905eb9cffc1c208a50e58",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "16ed3b7382928fa5b3df3875f32ea2002a502099080905eb9cffc1c208a50e58",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-path-mid-dashes",
+      "input": "instance-path-mid-dashes.svg",
+      "reference": "references/instance-path-mid-dashes.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "40b1395e582a6676c6f885f15f7960f8105ec0657efb322c95a4703ad2920d60",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "540b1c1e8547145505005ab50804375a099f470017e51e2eb0818ddcfa39f073",
+      "captures": [
+        {
+          "pngSha256": "540b1c1e8547145505005ab50804375a099f470017e51e2eb0818ddcfa39f073",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "540b1c1e8547145505005ab50804375a099f470017e51e2eb0818ddcfa39f073",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "540b1c1e8547145505005ab50804375a099f470017e51e2eb0818ddcfa39f073",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-curve-auto",
+      "input": "instance-curve-auto.svg",
+      "reference": "references/instance-curve-auto.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "2e07c57a89edef16b81c1af0d8bed1ad678ab81e27c86bb6c317078adeff8ef9",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "1ab2e5bce2cc1ec0cfa361d7693ba009ca3d72316811c624a2cd72e1e436612b",
+      "captures": [
+        {
+          "pngSha256": "1ab2e5bce2cc1ec0cfa361d7693ba009ca3d72316811c624a2cd72e1e436612b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1ab2e5bce2cc1ec0cfa361d7693ba009ca3d72316811c624a2cd72e1e436612b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1ab2e5bce2cc1ec0cfa361d7693ba009ca3d72316811c624a2cd72e1e436612b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-symbol-group",
+      "input": "instance-symbol-group.svg",
+      "reference": "references/instance-symbol-group.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "ca4e254f8902dc522879b33717f73fe0fdc6b5293a70cb4c728894154db04e0d",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "4c0e018d4f861f218173960ec00ef0ed6a9823ea108b08c3f0c41b5056214829",
+      "captures": [
+        {
+          "pngSha256": "4c0e018d4f861f218173960ec00ef0ed6a9823ea108b08c3f0c41b5056214829",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4c0e018d4f861f218173960ec00ef0ed6a9823ea108b08c3f0c41b5056214829",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4c0e018d4f861f218173960ec00ef0ed6a9823ea108b08c3f0c41b5056214829",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-forward-alias",
+      "input": "instance-forward-alias.svg",
+      "reference": "references/instance-forward-alias.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "800479d519d65b7b56f534fe244edaeb8a028620b23fa149ee774c2808b4a08d",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "37f424367f138beb41ee0397fe2d6220a5d45f27bfb766184c5c625e342bbeb7",
+      "captures": [
+        {
+          "pngSha256": "37f424367f138beb41ee0397fe2d6220a5d45f27bfb766184c5c625e342bbeb7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37f424367f138beb41ee0397fe2d6220a5d45f27bfb766184c5c625e342bbeb7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37f424367f138beb41ee0397fe2d6220a5d45f27bfb766184c5c625e342bbeb7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-css-priority",
+      "input": "instance-css-priority.svg",
+      "reference": "references/instance-css-priority.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "1e682fd3bca6cd668d4a2104fb4cabedf61cd6c6e583ab0abb19f17783a07455",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "c0b583adbc6c7f052cf1f98c0352d6d8df7727c84cc6b929da2e5a324e4ca259",
+      "captures": [
+        {
+          "pngSha256": "c0b583adbc6c7f052cf1f98c0352d6d8df7727c84cc6b929da2e5a324e4ca259",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c0b583adbc6c7f052cf1f98c0352d6d8df7727c84cc6b929da2e5a324e4ca259",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c0b583adbc6c7f052cf1f98c0352d6d8df7727c84cc6b929da2e5a324e4ca259",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-affine-leaf",
+      "input": "instance-affine-leaf.svg",
+      "reference": "references/instance-affine-leaf.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "3278cb6fac9c2c5b8101c03ffa3b58c63a7aace617ff86f889f4e54feb182fa7",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "fd9d6e4f13d494f72c06913906e4f7acef3aa5c778f91fd6b14c13b7a9cb8e39",
+      "captures": [
+        {
+          "pngSha256": "fd9d6e4f13d494f72c06913906e4f7acef3aa5c778f91fd6b14c13b7a9cb8e39",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fd9d6e4f13d494f72c06913906e4f7acef3aa5c778f91fd6b14c13b7a9cb8e39",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fd9d6e4f13d494f72c06913906e4f7acef3aa5c778f91fd6b14c13b7a9cb8e39",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-isolated-opacity",
+      "input": "instance-isolated-opacity.svg",
+      "reference": "references/instance-isolated-opacity.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "efeeda57ed4a94e90123906fe40233fae7ba73aeb0d970cef1f303d21e8c265d",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "fb86bc5a1bc0eaf9ac3db90f5b43134cdc3dc1b9396e4a3a23772a324cfec918",
+      "captures": [
+        {
+          "pngSha256": "fb86bc5a1bc0eaf9ac3db90f5b43134cdc3dc1b9396e4a3a23772a324cfec918",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fb86bc5a1bc0eaf9ac3db90f5b43134cdc3dc1b9396e4a3a23772a324cfec918",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fb86bc5a1bc0eaf9ac3db90f5b43134cdc3dc1b9396e4a3a23772a324cfec918",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-marker-source-paint",
+      "input": "instance-marker-source-paint.svg",
+      "reference": "references/instance-marker-source-paint.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "sourceSha256": "3b9e6652c71bd8b508619ac7ac1f12904bd6d20666c4c5f175fe0d37c9a2a44b",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "referenceSha256": "466db548f80482b1f456471165a8ed70f756604d4fd7d1e1e239a3e1296b7fc3",
+      "captures": [
+        {
+          "pngSha256": "466db548f80482b1f456471165a8ed70f756604d4fd7d1e1e239a3e1296b7fc3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "466db548f80482b1f456471165a8ed70f756604d4fd7d1e1e239a3e1296b7fc3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "466db548f80482b1f456471165a8ed70f756604d4fd7d1e1e239a3e1296b7fc3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-arc-boundary",
+      "input": "instance-arc-boundary.svg",
+      "reference": "references/instance-arc-boundary.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "sourceSha256": "c96fedacaf353d6f1779d5a36a2e10a635111c689c793d13d04d2d88ccd57ded",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Markers on arc paths are not implemented.",
+      "referenceSha256": "cd5719eac2c45b353d9dd50c657e1b17e30da1cb167e18eef074eac927fd56a4",
+      "captures": [
+        {
+          "pngSha256": "cd5719eac2c45b353d9dd50c657e1b17e30da1cb167e18eef074eac927fd56a4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cd5719eac2c45b353d9dd50c657e1b17e30da1cb167e18eef074eac927fd56a4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cd5719eac2c45b353d9dd50c657e1b17e30da1cb167e18eef074eac927fd56a4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-point-list-boundary",
+      "input": "instance-point-list-boundary.svg",
+      "reference": "references/instance-point-list-boundary.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "sourceSha256": "a52cfeb32ca29435a24a1778d6f4d57d6623ff74f50be5e01c04b78896a82285",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Markers on shapes other than lines and paths are not implemented.",
+      "referenceSha256": "3646885ea0c03c060ad0b5ded3084879b700f7566338d611ea1ad161d081405d",
+      "captures": [
+        {
+          "pngSha256": "3646885ea0c03c060ad0b5ded3084879b700f7566338d611ea1ad161d081405d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3646885ea0c03c060ad0b5ded3084879b700f7566338d611ea1ad161d081405d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3646885ea0c03c060ad0b5ded3084879b700f7566338d611ea1ad161d081405d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "instance-recursive-marker-boundary",
+      "input": "instance-recursive-marker-boundary.svg",
+      "reference": "references/instance-recursive-marker-boundary.png",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "sourceSha256": "5913ec6d11da148611bc053fcb895b26bb84d0f52039e21c850f9777133d270c",
+      "license": "CC0-1.0",
+      "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Markers on use instances inside marker content are not implemented.",
+      "referenceSha256": "83a051568a4ab59bc033bb25c22dcadcd8d9607db13872611913b04a440dc4ae",
+      "captures": [
+        {
+          "pngSha256": "83a051568a4ab59bc033bb25c22dcadcd8d9607db13872611913b04a440dc4ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "83a051568a4ab59bc033bb25c22dcadcd8d9607db13872611913b04a440dc4ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "83a051568a4ab59bc033bb25c22dcadcd8d9607db13872611913b04a440dc4ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  }
+}

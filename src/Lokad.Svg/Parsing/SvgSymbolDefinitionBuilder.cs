@@ -6,6 +6,7 @@ internal readonly record struct SvgSymbolPresentation(SvgPaint Paint, SvgInherit
 {
     internal string? PaintServerFill { get; init; }
     internal SvgPaintOrder? PaintOrder { get; init; }
+    internal SvgMarkerStyle Markers { get; init; }
     internal string? PaintServerId { get; init; }
 }
 

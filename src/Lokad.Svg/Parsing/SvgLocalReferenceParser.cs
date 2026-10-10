@@ -9,8 +9,9 @@ internal static class SvgLocalReferenceParser
     {
         SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, baseWidth, baseHeight);
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on use instances are not implemented.");
+        SvgMarkerStyle markers = SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers);
+        if (state.MarkerDefinition is not null && markers.HasMarkers)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on use instances inside marker content are not implemented.");
         SvgComputedStyle authored = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, context.WorkCounter, context.CancellationToken);
         SvgInheritedStrokeStyle inheritedStroke = context.InheritedStroke.ResolveChild(authored);
         inheritedStroke = new(Copy(inheritedStroke.Linecap), Copy(inheritedStroke.Linejoin), Copy(inheritedStroke.Dasharray), Copy(inheritedStroke.Dashoffset), Copy(inheritedStroke.Width), Copy(inheritedStroke.Miterlimit), Copy(inheritedStroke.StrokeOpacity), Copy(inheritedStroke.Stroke));
@@ -18,7 +19,7 @@ internal static class SvgLocalReferenceParser
         SvgRecordingScope scope = context.RecordingScope.Value == 0 ? new(1) : context.RecordingScope;
         if (syntax.X != 0 || syntax.Y != 0 || reader.GetAttribute("clip-path") is not null || context.ResolveTransform(reader) != context.InheritedPresentation.Transform)
             scope = state.NewRecordingScope();
-        return new SvgUseReference(syntax.Id, syntax.X, syntax.Y, syntax.Width ?? baseWidth, syntax.Height ?? baseHeight, context.ResolveTransform(reader), context.InheritedPresentation.Transform, presentation.Opacity, presentation.IsPainted, presentation.FillOverride, presentation.PaintServerId, presentation.StrokeOverride) { InheritedPaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, AllowsSolidPaintAnalysis = presentation.AllowsSolidPaintAnalysis, RecordingScope = scope, SourceOpacity = SvgColorParser.ParsePaintOpacity(style.Opacity), InheritedFill = presentation.Paint, InheritedStrokeOpacity = presentation.StrokeOpacity, InheritedStroke = inheritedStroke, InheritedFillRule = Copy(style.FillRule ?? context.InheritedFillRule), PaintServerFill = presentation.PaintServerId is null ? null : Copy(style.Fill), IsDisplayed = context.InheritedPresentation.IsDisplayed && SvgPresentationResolver.ParseDisplay(style.Display), IsVisible = SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible) };
+        return new SvgUseReference(syntax.Id, syntax.X, syntax.Y, syntax.Width ?? baseWidth, syntax.Height ?? baseHeight, context.ResolveTransform(reader), context.InheritedPresentation.Transform, presentation.Opacity, presentation.IsPainted, presentation.FillOverride, presentation.PaintServerId, presentation.StrokeOverride) { InheritedMarkers = markers.Retain(state, context.WorkCounter, context.CancellationToken), InheritedPaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, AllowsSolidPaintAnalysis = presentation.AllowsSolidPaintAnalysis, RecordingScope = scope, SourceOpacity = SvgColorParser.ParsePaintOpacity(style.Opacity), InheritedFill = presentation.Paint, InheritedStrokeOpacity = presentation.StrokeOpacity, InheritedStroke = inheritedStroke, InheritedFillRule = Copy(style.FillRule ?? context.InheritedFillRule), PaintServerFill = presentation.PaintServerId is null ? null : Copy(style.Fill), IsDisplayed = context.InheritedPresentation.IsDisplayed && SvgPresentationResolver.ParseDisplay(style.Display), IsVisible = SvgPresentationResolver.ParseVisibility(style.Visibility, context.InheritedPresentation.IsVisible) };
 
         string? Copy(string? value)
         {

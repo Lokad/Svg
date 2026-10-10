@@ -15,6 +15,7 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgInheritedStrokeStyle InheritedStroke { get; init; }
     internal string? InheritedFillRule { get; init; }
     internal SvgPaintOrder InheritedPaintOrder { get; init; }
+    internal SvgMarkerStyle InheritedMarkers { get; init; }
     internal string? SourceMaskReference { get; init; }
     internal string? PaintServerFill { get; init; }
     internal bool IsDisplayed { get; init; } = true;
@@ -53,7 +54,7 @@ internal static class SvgReferenceResolver
         ArgumentNullException.ThrowIfNull(workCounter);
         if (definition.Marker is not null && !reference.IsMarker)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Marker definitions cannot be ordinary use targets.");
-        if (definition.StrokeContent is {} strokeContent && (reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default || strokeContent.Content.Nodes[0].Style.PaintOrder is not null || reference.InheritedPaintOrder != SvgPaintOrder.FillStrokeMarkers || reference.PaintServerId is not null || !reference.Transform.IsAxisAligned))
+        if (definition.StrokeContent is {} strokeContent && (reference.InheritedMarkers.HasMarkers || strokeContent.Content.Nodes[0].Style.Markers.HasMarkers || reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default || strokeContent.Content.Nodes[0].Style.PaintOrder is not null || reference.InheritedPaintOrder != SvgPaintOrder.FillStrokeMarkers || reference.PaintServerId is not null || !reference.Transform.IsAxisAligned))
             return SvgSymbolContentRenderer.Apply(definition with { SymbolContent = strokeContent }, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
         if (definition.LeafSource is SvgDefinitionLeafSource source)
@@ -70,14 +71,17 @@ internal static class SvgReferenceResolver
                 && (definition.Geometries[0].Kind is SvgGeometryKind.OrthogonalBand or SvgGeometryKind.Rectangle
                     || definition.Geometries[0].AuthoredPath is { StrokeStyle: null })
                 || !reference.Transform.IsAxisAligned && source.LocalName is "path" or "rect" or "polygon" or "polyline";
-            if (retainMappedContour || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder))
+            if (retainMappedContour || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers))
             {
                 foreach (SvgGeometry geometry in definition.Geometries)
                 {
                     workCounter.Consume(cancellationToken);
-                    if (geometry.LeafMask is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
+                    // Source replay reconstructs its opacity and marker viewport scopes.
+                    // Authored masks still need the existing resource-binding boundary.
+                    if (geometry.LeafMask is not null && source.GetAttribute("mask") is not null)
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, retainMappedContour, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, retainMappedContour, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }
@@ -396,13 +400,35 @@ internal static class SvgReferenceResolver
             }
             mapped[index] = placed;
         }
+        SvgAffineTransform placement = PlainInstancePlacement(reference, frame);
         SvgClipBox? clip = polygon.Clip;
+        SvgAffineViewportClip? affineClip = null;
+        if (clip is {} sourceClip)
+        {
+            if (placement.IsAxisAligned) clip = placement.Apply(sourceClip) with { Antialiasing = sourceClip.Antialiasing };
+            else
+            {
+                affineClip = new(sourceClip, placement) { IsBinary = sourceClip.Antialiasing == SvgClipAntialiasing.Binary };
+                clip = null;
+            }
+        }
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         SvgColor color = new(polygon.Color.Red, polygon.Color.Green, polygon.Color.Blue, MultiplyAlpha(polygon.Color.Alpha, reference.Opacity));
         SvgQuadSpan[] quadSpans = MapUseQuadSpans(polygon.QuadSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
         SvgCubicSpan[] cubicSpans = MapUseCubicSpans(polygon.CubicSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
         SvgGeometry result = SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(mapped, polygon.ContourEnds, polygon.Signs, quadSpans, cubicSpans, color, polygon.HasFill && reference.IsPainted, polygon.IsEvenOdd, polygon.Mapping, clip, null, state.Budget));
-        return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
+        result = source.CopyAuthoredPathTo(result, placement, state.Budget, workCounter, cancellationToken);
+        try
+        {
+            if (affineClip is not null)
+            {
+                Span<SvgGeometry> single = [result];
+                SvgPaintRecording.WrapInstance(single, SvgPaintOpacity.Opaque, state.NewRecordingScope(), null, affineClip, state, workCounter, cancellationToken);
+                result = single[0];
+            }
+            return result;
+        }
+        catch { result.Dispose(); throw; }
     }
 
     /// <summary>Maps retained quad-span controls through one plain use-instance placement, preserving span ranges so the analytic walker consumes instance curves like direct geometry.</summary>
@@ -954,9 +980,9 @@ internal static class SvgReferenceResolver
         SvgRecordedPaintValue value = state.Scene.GetRecordedPaintValue(source);
         work.Consume(token);
         if (cache.TryGetValue(source, out SvgRecordedPaint previous)) return previous;
-        float alpha = shaderOpacity is SvgPaintOpacity shader ? shader.Alpha / 255f
+        float alpha = value.IsMarkerContent ? value.Alpha : shaderOpacity is SvgPaintOpacity shader ? shader.Alpha / 255f
             : !stroke && reference.FillOverride is SvgPaint fill ? SvgPaintResolver.ResolveSolidPaint(fill).Alpha : value.Alpha;
-        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { PaintOrder = value.PaintOrder, IsStroke = value.IsStroke, VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
+        SvgRecordedPaint result = state.Scene.RegisterRecordedPaint(new(mapper.MapPaintIdentity(value.Identity), alpha, value.Foldable, mapper.Map(value.Scope), value.ElementOpacity, mapper.Map(value.OpacityScope)) { PaintOrder = value.PaintOrder, Role = value.Role, VisualBounds = value.VisualBounds?.Map(placement, work, token), ObjectBounds = value.ObjectBounds?.Map(placement, work, token) });
         cache.TryAdd(source, result);
         return result;
     }

@@ -821,7 +821,9 @@ public static class SvgConverter
                         if (parentViewportClip.Length != 0)
                             clipAlpha = (byte)((clipAlpha * parentViewportClip[offset + 3] + 127) / 255);
                         if (extra == 0 || maskAlpha == 0 || clipAlpha == 0 || groupPixels[offset + 3] == 0) continue;
-                        if (shaderRestore || parentViewportClip.Length != 0) BlendClippedLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha, clipAlpha);
+                        // A binary viewport permits the native sprite restore;
+                        // fractional clip coverage requires the separate shader path.
+                        if (shaderRestore || parentViewportClip.Length != 0 && !activeViewportIsBinary) BlendClippedLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha, clipAlpha);
                         else BlendLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha);
                     }
                     continue;

@@ -1,0 +1,4 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='130' height='130' viewBox='0 0 100 100'>
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><marker id='a' viewBox='0 0 10 10' markerUnits='userSpaceOnUse' markerWidth='10' markerHeight='10' refX='2' refY='5' orient='auto-start-reverse'><path d='M1 1L9 5L1 9Z' fill='red'/></marker><path id='s' d='M10 40A30 20 0 0 1 80 40' fill='none' stroke='blue'/></defs><use href='#s' marker-end='url(#a)'/>
+</svg>

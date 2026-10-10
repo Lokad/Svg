@@ -10452,3 +10452,39 @@ Complete Release qualification passes 6,171 tests per platform (4,356 core /
 1,809 visual / six FontProbe), preserving all 2,847 prior PNGs, all 2,753 exact
 comparisons and corporate 27/27 / 258/258. G8's remaining promises stay open;
 the retained use-instance marker document selects the next implementation change.
+
+### Complete marker-instance acceptance delivery (2026-10-10)
+
+The original CC0 `original-logo-marker-mark` now matches its unchanged 64×64
+transparent output through all six APIs on Windows/Linux. Its reference was
+frozen before correction with three healthy cleaned captures on each platform.
+This is one complete original acceptance fixture, separate from 28 completed
+development documents and corporate 27/27 / 258/258.
+
+Typed marker presentation travels through the existing local reference,
+symbol/group context and immutable leaf-source replay. Authored source channels
+resolve against instance inheritance, including explicit `none` and CSS priority.
+Dormant definitions retain authored markers without expanding resources before
+the registry is complete. Lowering reuses ordinary line/path attachment; arc and
+point-list instances retain their explicit boundaries. Recursive marker uses
+inside marker content reject before expansion.
+
+Recorded paint carries a byte-sized resource role beside its stroke role, within
+the unchanged 68-byte value. Marker content retains its own authored paint and
+alpha when the host instance binds fill/stroke. Instance geometry and existing
+viewport clips share placement; non-axis clips use the bounded affine viewport
+owner. Source replay reconstructs opacity/marker-viewport scopes while preserving
+the authored-mask boundary. Binary viewport coverage permits native sprite layer
+restoration; fractional coverage retains the separate shader arithmetic. No new
+shape-specific or marker-specific rasterizer is added.
+
+The bank separates one document output from 15 controls: 12 exact and three
+unsupported boundaries. Ninety-six healthy matching captures keep inputs, options
+and references stable. Three ownership cases sweep discovery/parser work, sampled
+memory denial, raster limits, cancellation and identical retry. Complete Release
+qualification passes 6,190 tests per platform (4,359 core / 1,825 visual / six
+FontProbe), with zero failures/skips/warnings. All 2,847 previous PNGs and 2,753
+established exact comparisons remain unchanged; one original fixture is promoted,
+adding one exact PNG. Command/geometry/paint layouts remain 72/272/68 bytes.
+Remaining finite G8 effects, marker combinations, other group exits and S17 stay
+open. Source/renderer/DLL/script fingerprints are not regression requirements.
