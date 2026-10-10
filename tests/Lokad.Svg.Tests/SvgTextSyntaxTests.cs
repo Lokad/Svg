@@ -204,7 +204,7 @@ public sealed class SvgTextSyntaxTests
     [Fact]
     public void Admits_only_whitespace_letter_spacing_and_scalar_position_tspan_styles()
     {
-        using XmlReader accepted = XmlReader.Create(new StringReader("<tspan xml:space='preserve' dx='2' dy='-4' letter-spacing='2' style='white-space: normal; letter-spacing: 3'/>"));
+        using XmlReader accepted = XmlReader.Create(new StringReader("<tspan xml:space='preserve' x='0' y='12px' dx='2' dy='-4' letter-spacing='2' style='white-space: normal; letter-spacing: 3'/>"));
         accepted.Read();
         using XmlReader rejected = XmlReader.Create(new StringReader("<tspan style='font-size: 12'/>"));
         rejected.Read();
@@ -214,7 +214,7 @@ public sealed class SvgTextSyntaxTests
         Assert.True(SvgTextSyntax.TryParseTspanStyle(accepted, new SvgTextSpanStyle(SvgTextWhitespaceMode.Preserve, 1), default, new ParserWorkCounter(100), CancellationToken.None, out SvgTextSpanStyle style));
         Assert.Equal(SvgTextWhitespaceMode.Default, style.WhitespaceMode);
         Assert.Equal(3, style.LetterSpacing);
-        Assert.Equal(new SvgTextPositionOffset(2, -4), style.PositionOffset);
+        Assert.Equal(new SvgTextPositionOffset(0, 12, 2, -4), style.PositionOffset);
         Assert.False(SvgTextSyntax.TryParseTspanWhitespaceMode(rejected, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
         Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
     }
@@ -229,5 +229,22 @@ public sealed class SvgTextSyntaxTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgTextSyntax.Parse(missing)).ErrorCode);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgTextSyntax.Parse(list)).ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("x", "1 2")]
+    [InlineData("y", "0,0")]
+    [InlineData("x", "20%")]
+    [InlineData("y", "1em")]
+    [InlineData("x", "NaN")]
+    [InlineData("y", "1e309")]
+    public void Rejects_unqualified_absolute_span_lists_units_and_nonfinite_values(string axis, string value)
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader($"<tspan {axis}='{value}'/>"));
+        reader.Read();
+
+        SvgException exception = Assert.Throws<SvgException>(() => SvgTextSyntax.TryParseTspanStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default, new ParserWorkCounter(100), CancellationToken.None, out _));
+
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
 }

@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Routes bounded definitions, symbols and local instances while preserving streaming order.</summary>
 internal static class SvgDefinitionParser
 {
-    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (state.FilterDefinition is {} activeFilter && reader.Depth > state.FilterDepth)
         {
@@ -85,7 +85,12 @@ internal static class SvgDefinitionParser
                 }
             }
             finally { if (!retained) foreach (SvgGeometry geometry in definition.Geometries) geometry.Dispose(); }
-            state.HasUnsupportedContent |= !reader.IsEmptyElement;
+            if (inDefinitions && !reader.IsEmptyElement)
+            {
+                SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, workCounter, cancellationToken);
+                state.NodeCount = subtree.NodeCount;
+                state.HasUnsupportedContent |= subtree.HasElements;
+            }
             state.SawStyleableNode = true;
             return inDefinitions;
         }

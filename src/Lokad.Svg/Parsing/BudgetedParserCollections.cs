@@ -204,7 +204,7 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction work context.");
         int start = _text.Length;
         _text.Append(value, maximumLength, workCounter, cancellationToken);
-        if (value.Length != 0 && ResolvePositionAdjustment(scopeDepth, start) is SvgTextPositionAdjustment adjustment && (adjustment.Dx != 0 || adjustment.Dy != 0)) (_positionAdjustments ??= new BudgetedParserList<SvgTextPositionAdjustment>(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken)).Add(adjustment);
+        if (value.Length != 0 && ResolvePositionAdjustment(scopeDepth, start) is SvgTextPositionAdjustment adjustment && (adjustment.HasAbsolutePosition || adjustment.Dx != 0 || adjustment.Dy != 0)) (_positionAdjustments ??= new BudgetedParserList<SvgTextPositionAdjustment>(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken)).Add(adjustment);
         if (value.Length == 0 || _letterSpacingSpans is null && letterSpacing.Equals(_defaultLetterSpacing)) return;
         BudgetedParserList<SvgTextLetterSpacingSpan> spans = _letterSpacingSpans ??= CreateLetterSpacingSpans(start);
         int end = checked(start + value.Length);
@@ -289,22 +289,26 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     private SvgTextPositionAdjustment? ResolvePositionAdjustment(int scopeDepth, int start)
     {
         if (_positioningScopes is null) return null;
+        double? x = null;
+        double? y = null;
         double? dx = null;
         double? dy = null;
         for (int index = _positioningScopes.Count - 1; index >= 0; index--)
         {
             SvgTextPositionScope scope = _positioningScopes[index];
             if (scope.ScopeDepth > scopeDepth || scope.HasApplied) continue;
+            if (x is null) x = scope.Offset.X;
+            if (y is null) y = scope.Offset.Y;
             if (dx is null) dx = scope.Offset.Dx;
             if (dy is null) dy = scope.Offset.Dy;
-            if (dx is not null && dy is not null) break;
+            if (x is not null && y is not null && dx is not null && dy is not null) break;
         }
         for (int index = 0; index < _positioningScopes.Count; index++)
         {
             SvgTextPositionScope scope = _positioningScopes[index];
             if (scope.ScopeDepth <= scopeDepth && !scope.HasApplied) _positioningScopes[index] = scope with { HasApplied = true };
         }
-        return dx is null && dy is null ? null : new SvgTextPositionAdjustment(start, dx ?? 0, dy ?? 0);
+        return x is null && y is null && dx is null && dy is null ? null : new SvgTextPositionAdjustment(start, x, y, dx ?? 0, dy ?? 0);
     }
 }
 

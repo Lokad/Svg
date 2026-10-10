@@ -99,46 +99,78 @@ internal static class SvgGlyphLayout
             }
             double x = originX;
             int spacingSpanIndex = 0;
+            int positionBoundaryIndex = 0;
             int sourceOffset = 0;
             var positionedScalars = text.EnumerateRunes();
             for (int index = 0; index < glyphs.Length; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgPositionedGlyph glyph = glyphs[index];
-                double kerning = index + 1 == glyphs.Length ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken) * scale;
                 if (!positionedScalars.MoveNext()) throw new InvalidOperationException("The normalized text glyph count is invalid.");
                 Rune scalar = positionedScalars.Current;
                 double currentLetterSpacing = GetLetterSpacing(sourceOffset, letterSpacing, letterSpacingSpans, ref spacingSpanIndex);
                 sourceOffset += scalar.Utf16SequenceLength;
-                double nextX = index + 1 == glyphs.Length ? x + glyph.Advance : x + glyph.Advance + kerning + currentLetterSpacing;
+                while (positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start < sourceOffset) positionBoundaryIndex++;
+                bool chunkEnds = index + 1 == glyphs.Length || positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start == sourceOffset && positionAdjustments[positionBoundaryIndex].HasAbsolutePosition;
+                double kerning = chunkEnds ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken) * scale;
+                double nextX = chunkEnds ? x + glyph.Advance : x + glyph.Advance + kerning + currentLetterSpacing;
                 if (!double.IsFinite(kerning) || !double.IsFinite(nextX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
                 glyphs[index] = glyph with { X = x };
                 x = nextX;
             }
-            double anchorOffset = anchor switch
-            {
-                SvgTextAnchor.Start => 0,
-                SvgTextAnchor.Middle => (originX - x) / 2,
-                SvgTextAnchor.End => originX - x,
-                _ => throw new ArgumentOutOfRangeException(nameof(anchor))
-            };
-            if (!double.IsFinite(anchorOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
             double relativeX = 0;
             double relativeY = 0;
             int positionAdjustmentIndex = 0;
             sourceOffset = 0;
-            var adjustedScalars = text.EnumerateRunes();
-            for (int index = 0; index < glyphs.Length; index++)
+            int chunkStart = 0;
+            while (chunkStart < glyphs.Length)
             {
-                workCounter?.Consume(cancellationToken);
-                if (!adjustedScalars.MoveNext()) throw new InvalidOperationException("The normalized text glyph count is invalid.");
-                Rune scalar = adjustedScalars.Current;
-                ApplyPositionAdjustment(ref relativeX, ref relativeY, sourceOffset, positionAdjustments, ref positionAdjustmentIndex);
-                sourceOffset += scalar.Utf16SequenceLength;
-                double anchoredX = glyphs[index].X + anchorOffset + relativeX;
-                double adjustedY = glyphs[index].Y + relativeY;
-                if (!double.IsFinite(anchoredX) || !double.IsFinite(adjustedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
-                glyphs[index] = glyphs[index] with { X = anchoredX, Y = adjustedY };
+                int chunkEndSourceOffset = text.Length;
+                for (int adjustmentIndex = positionAdjustmentIndex; adjustmentIndex < positionAdjustments.Length; adjustmentIndex++)
+                {
+                    SvgTextPositionAdjustment adjustment = positionAdjustments[adjustmentIndex];
+                    if (adjustment.Start > sourceOffset && adjustment.HasAbsolutePosition)
+                    {
+                        chunkEndSourceOffset = adjustment.Start;
+                        break;
+                    }
+                }
+                ReadOnlySpan<char> chunk = text.AsSpan(sourceOffset, chunkEndSourceOffset - sourceOffset);
+                int chunkEnd = glyphs.Length;
+                if (chunkEndSourceOffset != text.Length)
+                {
+                    chunkEnd = chunkStart;
+                    foreach (Rune scalar in chunk.EnumerateRunes())
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        workCounter?.Consume(cancellationToken);
+                        chunkEnd++;
+                    }
+                }
+                double nominalOrigin = glyphs[chunkStart].X;
+                double nominalEnd = chunkEnd == glyphs.Length ? x : glyphs[chunkEnd].X;
+                double anchorOffset = anchor switch
+                {
+                    SvgTextAnchor.Start => 0,
+                    SvgTextAnchor.Middle => (nominalOrigin - nominalEnd) / 2,
+                    SvgTextAnchor.End => nominalOrigin - nominalEnd,
+                    _ => throw new ArgumentOutOfRangeException(nameof(anchor))
+                };
+                if (!double.IsFinite(anchorOffset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+                int index = chunkStart;
+                foreach (Rune scalar in chunk.EnumerateRunes())
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    workCounter?.Consume(cancellationToken);
+                    ApplyPositionAdjustment(ref relativeX, ref relativeY, glyphs[index].X, originY, sourceOffset, positionAdjustments, ref positionAdjustmentIndex);
+                    sourceOffset += scalar.Utf16SequenceLength;
+                    double anchoredX = glyphs[index].X + anchorOffset + relativeX;
+                    double adjustedY = glyphs[index].Y + relativeY;
+                    if (!double.IsFinite(anchoredX) || !double.IsFinite(adjustedY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text anchor exceeds the admitted numeric range.");
+                    glyphs[index] = glyphs[index] with { X = anchoredX, Y = adjustedY };
+                    index++;
+                }
+                chunkStart = chunkEnd;
             }
             return new SvgPositionedGlyphStorage(glyphs, reservation);
         }
@@ -155,10 +187,12 @@ internal static class SvgGlyphLayout
             return letterSpacingSpans[spanIndex].LetterSpacing;
         }
 
-        static void ApplyPositionAdjustment(ref double x, ref double y, int sourceOffset, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ref int adjustmentIndex)
+        static void ApplyPositionAdjustment(ref double x, ref double y, double nominalX, double originY, int sourceOffset, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ref int adjustmentIndex)
         {
             if (adjustmentIndex == positionAdjustments.Length || positionAdjustments[adjustmentIndex].Start != sourceOffset) return;
             SvgTextPositionAdjustment adjustment = positionAdjustments[adjustmentIndex++];
+            if (adjustment.X is double absoluteX) x = absoluteX - nominalX;
+            if (adjustment.Y is double absoluteY) y = absoluteY - originY;
             x += adjustment.Dx;
             y += adjustment.Dy;
         }
@@ -182,7 +216,7 @@ internal static class SvgGlyphLayout
             for (int index = 0; index < positionAdjustments.Length; index++)
             {
                 SvgTextPositionAdjustment adjustment = positionAdjustments[index];
-                if (!double.IsFinite(adjustment.Dx) || !double.IsFinite(adjustment.Dy) || adjustment.Start <= previousStart || adjustment.Start < 0 || adjustment.Start >= text.Length || char.IsLowSurrogate(text[adjustment.Start])) throw new ArgumentException("The text position adjustments are invalid.", nameof(positionAdjustments));
+                if (adjustment.X is double absoluteX && !double.IsFinite(absoluteX) || adjustment.Y is double absoluteY && !double.IsFinite(absoluteY) || !double.IsFinite(adjustment.Dx) || !double.IsFinite(adjustment.Dy) || adjustment.Start <= previousStart || adjustment.Start < 0 || adjustment.Start >= text.Length || char.IsLowSurrogate(text[adjustment.Start])) throw new ArgumentException("The text position adjustments are invalid.", nameof(positionAdjustments));
                 previousStart = adjustment.Start;
             }
         }

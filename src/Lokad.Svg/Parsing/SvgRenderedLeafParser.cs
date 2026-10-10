@@ -512,7 +512,8 @@ internal static class SvgRenderedLeafParser
                         if (subtree.LocalName != "tspan" || textPath is not null && subtree.Depth == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded text span children are implemented.");
                         SvgElementAttributePolicy.ValidateTextSpan(subtree, workCounter, cancellationToken);
                         InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
-                        if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, workCounter, cancellationToken, out childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace, letter-spacing, and scalar dx/dy tspan text children are implemented.");
+                        if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, workCounter, cancellationToken, out childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace, letter-spacing, and scalar positioning tspan text children are implemented.");
+                        if (textPath is not null && childStyle.PositionOffset is SvgTextPositionOffset pathOffset && (pathOffset.X is not null || pathOffset.Y is not null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Absolute span coordinates on text paths are not implemented.");
                     }
                     if (!subtree.IsEmptyElement)
                     {

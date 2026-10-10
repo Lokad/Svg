@@ -99,7 +99,7 @@ internal static class SvgDocumentTraversal
                 {
                     if (!reader.IsEmptyElement) state.DescriptionDepth = reader.Depth;
                 }
-                else if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, namedColors, workCounter, cancellationToken)) { }
+                else if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, limits, namedColors, workCounter, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
                 else if ((directChild || inViewport) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "svg")
                 {
@@ -166,7 +166,12 @@ internal static class SvgDocumentTraversal
                     // subtree renders exactly like the self-closing form, while any child element keeps the
                     // unsupported flag (animation, unknown and nested content stay rejected). Text consumes
                     // its own subtree and keeps its path.
-                    if (!textElement && !reader.IsEmptyElement && ConsumeLeafSubtreeWithElements(reader, state, limits, workCounter, cancellationToken)) state.HasUnsupportedContent = true;
+                    if (!textElement && !reader.IsEmptyElement)
+                    {
+                        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, workCounter, cancellationToken);
+                        state.NodeCount = subtree.NodeCount;
+                        state.HasUnsupportedContent |= subtree.HasElements;
+                    }
                     state.SawStyleableNode = true;
                 }
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
@@ -462,28 +467,6 @@ internal static class SvgDocumentTraversal
 
     /// <summary>Consumes one non-empty rendered-leaf subtree, reporting whether it holds any child elements.</summary>
     /// <remarks>Element-free subtrees (whitespace or text only, which the leaf lowerers and the main loop both ignore) render exactly like the self-closing form. Mirrors the main-loop per-element accounting while consuming, and leaves the reader on the leaf end element so end-element bookkeeping runs normally.</remarks>
-    private static bool ConsumeLeafSubtreeWithElements(System.Xml.XmlReader reader, SvgDocumentState state, SvgRenderLimits limits, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(reader);
-        ArgumentNullException.ThrowIfNull(state);
-        ArgumentNullException.ThrowIfNull(workCounter);
-        int leafDepth = reader.Depth;
-        bool hasElements = false;
-        while (reader.Read())
-        {
-            workCounter.Consume(cancellationToken);
-            if (reader.NodeType == System.Xml.XmlNodeType.Element)
-            {
-                SvgStructuralAdmission.ValidateElementStructure(reader, limits);
-                if (state.NodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
-                state.NodeCount++;
-                hasElements = true;
-            }
-            else if (reader.NodeType == System.Xml.XmlNodeType.EndElement && reader.Depth == leafDepth) return hasElements;
-        }
-        return hasElements;
-    }
-
     private static void ValidateDocumentEnd(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         while (reader.Read())

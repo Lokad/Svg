@@ -70,6 +70,7 @@ internal static class SvgFontRequestDiscovery
             int groupDepth = 0;
             int skipDepth = -1;
             int activeCandidateLevel = -1;
+            int textPathDepth = -1;
             double? rootWidth = null;
             double? rootHeight = null;
             while (reader.Read())
@@ -96,7 +97,12 @@ internal static class SvgFontRequestDiscovery
                     SvgTextWhitespaceMode inheritedWhitespaceMode = whitespaceLevels.Count == 0 ? SvgTextWhitespaceMode.Default : whitespaceLevels[whitespaceLevels.Count - 1];
                     SvgTextWhitespaceMode childWhitespaceMode = inheritedWhitespaceMode;
                     InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
-                    bool admittedTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanWhitespaceMode(reader, inheritedWhitespaceMode, tspanStyleSheet, workCounter, cancellationToken, out childWhitespaceMode);
+                    bool admittedTextSpan = false;
+                    if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new(inheritedWhitespaceMode, 0), tspanStyleSheet, workCounter, cancellationToken, out SvgTextSpanStyle spanStyle))
+                    {
+                        childWhitespaceMode = spanStyle.WhitespaceMode;
+                        admittedTextSpan = textPathDepth < 0 || spanStyle.PositionOffset is not SvgTextPositionOffset offset || offset.X is null && offset.Y is null;
+                    }
                     if (insideDirectText && isSvgElement && reader.LocalName == "textPath" && reader.Depth == rootDepth + activeCandidateLevel + 1)
                     {
                         try
@@ -104,6 +110,7 @@ internal static class SvgFontRequestDiscovery
                             _ = SvgTextPathSyntax.Parse(reader, workCounter, cancellationToken);
                             childWhitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, null, inheritedWhitespaceMode);
                             admittedTextSpan = true;
+                            if (!reader.IsEmptyElement) textPathDepth = reader.Depth;
                         }
                         catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnsupportedFeature) { admittedTextSpan = false; }
                     }
@@ -200,8 +207,9 @@ internal static class SvgFontRequestDiscovery
                     bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "switch" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "marker" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop");
                     bool isInertForeignElement = !isSvgElement && reader.IsEmptyElement;
                     bool unsupportedContainer = (!rootElement && (reader.LocalName == "style" || (reader.LocalName == "symbol" && !symbolDefinition))) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && !hasGroupAncestor && reader.LocalName == "defs");
-                    bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "image");
-                    bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyRenderedLeaf);
+                    bool nonemptyUnsupportedLeaf = !reader.IsEmptyElement && reader.LocalName is ("use" or "image");
+                    bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyUnsupportedLeaf);
+                    bool consumeGeometryBody = !sterile && !insideDirectText && isSvgElement && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) && !reader.IsEmptyElement && (parentAllowsText || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1);
                     // Retain requests admitted before this point: lowering still paints them before conversion rejects the unsupported sibling, so clearing here would omit a font lowering requires.
                     if (!sterile && !hasUnsupportedContent && inertDepth < 0 && !insideDirectText && parentAllowsText && ((!isKnownContent && !isInertForeignElement) || rendererRejectsKnownContent))
                     {
@@ -243,7 +251,13 @@ internal static class SvgFontRequestDiscovery
                         candidateState = new DiscoveryCandidate(false, null, 400, false, SvgTextWhitespaceMode.Default, false, false);
                     }
                     if (candidateState.HasRequest) childWhitespaceMode = candidateState.WhitespaceMode;
-                    if (reader.IsEmptyElement)
+                    if (consumeGeometryBody)
+                    {
+                        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, nodeCount, workCounter, cancellationToken);
+                        nodeCount = subtree.NodeCount;
+                        hasUnsupportedContent |= subtree.HasElements;
+                    }
+                    else if (reader.IsEmptyElement)
                     {
                         if (candidateState.HasRequest) AddCandidate(candidateState, requestKeys, workCounter, cancellationToken);
                     }
@@ -262,6 +276,7 @@ internal static class SvgFontRequestDiscovery
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
+                    if (reader.Depth == textPathDepth) textPathDepth = -1;
                     if (reader.Depth == skipDepth) skipDepth = -1;
                     if (switchScopes.Count > 0 && switchScopes[switchScopes.Count - 1].Depth == reader.Depth) switchScopes.RemoveLast();
                     if (reader.Depth == inertDepth) inertDepth = -1;

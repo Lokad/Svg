@@ -44,24 +44,37 @@ internal readonly record struct SvgTextSpanStyle
 
     internal double LetterSpacing { get; }
 
-    /// <summary>Gets the scalar relative adjustment explicitly declared by this span, if any; it is not inherited as a style value.</summary>
+    /// <summary>Gets the scalar position adjustment explicitly declared by this span, if any; it is not inherited as a style value.</summary>
     internal SvgTextPositionOffset? PositionOffset { get; }
 }
 
 /// <summary>Identifies one contiguous UTF-16 interval emitted with a non-default scalar letter spacing.</summary>
 internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, double LetterSpacing);
 
-/// <summary>Represents one explicit scalar relative offset before the first retained character in a text span.</summary>
+/// <summary>Represents explicit scalar coordinates and offsets before the first retained character in a text span.</summary>
 internal readonly record struct SvgTextPositionOffset
 {
     internal SvgTextPositionOffset(double? dx, double? dy)
+        : this(null, null, dx, dy) { }
+
+    internal SvgTextPositionOffset(double? x, double? y, double? dx, double? dy)
     {
-        if (dx is null && dy is null) throw new ArgumentException("A text position offset requires at least one axis.", nameof(dx));
+        if (x is null && y is null && dx is null && dy is null) throw new ArgumentException("A text position offset requires at least one axis.", nameof(x));
+        if (x is double resolvedX && !double.IsFinite(resolvedX)) throw new ArgumentOutOfRangeException(nameof(x));
+        if (y is double resolvedY && !double.IsFinite(resolvedY)) throw new ArgumentOutOfRangeException(nameof(y));
         if (dx is double resolvedDx && !double.IsFinite(resolvedDx)) throw new ArgumentOutOfRangeException(nameof(dx));
         if (dy is double resolvedDy && !double.IsFinite(resolvedDy)) throw new ArgumentOutOfRangeException(nameof(dy));
+        X = x;
+        Y = y;
         Dx = dx;
         Dy = dy;
     }
+
+    /// <summary>Gets the explicitly specified horizontal absolute coordinate, if present.</summary>
+    internal double? X { get; }
+
+    /// <summary>Gets the explicitly specified vertical absolute coordinate, if present.</summary>
+    internal double? Y { get; }
 
     /// <summary>Gets the explicitly specified horizontal relative offset, if present.</summary>
     internal double? Dx { get; }
@@ -69,11 +82,16 @@ internal readonly record struct SvgTextPositionOffset
     /// <summary>Gets the explicitly specified vertical relative offset, if present.</summary>
     internal double? Dy { get; }
 
-    internal bool IsZero => Dx is null or 0 && Dy is null or 0;
+    internal bool IsZero => X is null && Y is null && Dx is null or 0 && Dy is null or 0;
 }
 
-/// <summary>Identifies the normalized UTF-16 boundary and relative offset applied before one positioned glyph.</summary>
-internal readonly record struct SvgTextPositionAdjustment(int Start, double Dx, double Dy);
+/// <summary>Identifies a normalized UTF-16 boundary, optional absolute coordinates, and offsets applied before one positioned glyph.</summary>
+internal readonly record struct SvgTextPositionAdjustment(int Start, double? X, double? Y, double Dx, double Dy)
+{
+    internal SvgTextPositionAdjustment(int start, double dx, double dy) : this(start, null, null, dx, dy) { }
+
+    internal bool HasAbsolutePosition => X is not null || Y is not null;
+}
 
 /// <summary>Normalizes direct-text whitespace while preserving the source character limit across reader chunks.</summary>
 internal struct SvgTextWhitespaceNormalizer
@@ -309,7 +327,7 @@ internal static class SvgTextSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default and preserve xml:space values are supported for direct text.");
     }
 
-    /// <summary>Recognizes nested whitespace, spacing, and scalar relative-position tspan declarations and resolves them over the parent values.</summary>
+    /// <summary>Recognizes nested whitespace, spacing, and scalar positioning tspan declarations and resolves them over the parent values.</summary>
     internal static bool TryParseTspanStyle(XmlReader reader, SvgTextSpanStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextSpanStyle style)
     {
         ArgumentNullException.ThrowIfNull(reader);
@@ -321,6 +339,8 @@ internal static class SvgTextSyntax
         InlineImportantProperties inlineImportant = InlineImportantProperties.None;
         string? inlineLetterSpacing = null;
         string? presentationLetterSpacing = null;
+        string? x = null;
+        string? y = null;
         string? dx = null;
         string? dy = null;
         if (!reader.HasAttributes)
@@ -353,6 +373,18 @@ internal static class SvgTextSyntax
                 presentationLetterSpacing = reader.Value;
                 continue;
             }
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "x")
+            {
+                if (x is not null) { reader.MoveToElement(); style = inherited; return false; }
+                x = reader.Value;
+                continue;
+            }
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "y")
+            {
+                if (y is not null) { reader.MoveToElement(); style = inherited; return false; }
+                y = reader.Value;
+                continue;
+            }
             if (reader.NamespaceURI.Length == 0 && reader.LocalName == "dx")
             {
                 if (dx is not null) { reader.MoveToElement(); style = inherited; return false; }
@@ -374,7 +406,7 @@ internal static class SvgTextSyntax
         SvgTextWhitespaceMode mode = xmlSpace is null ? inherited.WhitespaceMode : ParseXmlWhitespaceMode(xmlSpace);
         if (SvgInlineStyleParser.MergeWithImportance(whiteSpace, inlineImportant, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
         string? letterSpacing = SvgInlineStyleParser.MergeWithImportance(inlineLetterSpacing, inlineImportant, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important) ?? presentationLetterSpacing;
-        SvgTextPositionOffset? positionOffset = dx is null && dy is null ? null : new SvgTextPositionOffset(dx is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dx), dy is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dy));
+        SvgTextPositionOffset? positionOffset = x is null && y is null && dx is null && dy is null ? null : new SvgTextPositionOffset(x is null ? null : SvgGeometrySyntax.ParseTextCoordinate(x), y is null ? null : SvgGeometrySyntax.ParseTextCoordinate(y), dx is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dx), dy is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dy));
         style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset);
         return true;
 

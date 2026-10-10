@@ -11003,3 +11003,43 @@ native/font/runtime dependency assets; an isolated installed Windows consumer
 matches both original font documents through all 12 APIs and passes ordinary
 conversion, catalog, overlap and dimension-limit scenarios. Remote S17 evidence
 remains separate.
+
+### SVG Translate positioning and retained leaf bodies (2026-10-10)
+
+The unchanged CC0 document remains the selected complete deliverable at its
+explicit 512×256 transparent viewport with supplied public Mono Bold. Healthy
+matching-platform reference triples and missing/corrupt/substituted-face witnesses
+were frozen before implementation. The browser embeds a private family and maps
+the generic root alias explicitly; product source bytes remain original. One
+document and seven diagnostic controls have separate acceptance ledgers.
+
+Normalized span records now carry optional absolute coordinates independently of
+relative offsets. Each axis resolves from its nearest unapplied span at the first
+retained character, including an explicit zero; empty spans consume no position.
+The existing glyph layout recognizes absolute chunk boundaries, breaks pair
+adjustment across them, and anchors each chunk separately without an extra retained
+array. A y-only reset retains the unanchored current x. Independent browser positions
+for 60-unit advances at size 100 distinguish middle/end continuation; synthetic
+font controls protect these boundaries and legacy relative-only work accounting.
+Chunk semantics follow the [SVG text layout rules](https://www.w3.org/TR/SVG11/text.html#TextLayout).
+List/rotate declarations, per-span paint/font styling, and absolute span coordinates
+inside text paths retain explicit gates under the unchanged finite G9 promises.
+
+Geometric leaf bodies now use one borrowed-reader structural validator in rendered
+traversal, retained definitions and font discovery. It allocates no retained storage,
+counts each descendant element, checks depth/attribute/node/work limits and
+cancellation, and leaves the reader on the leaf's closing element. Element-free
+bodies render like self-closing forms. Any child element remains unsupported and
+cannot introduce font requests or definition side effects. Root id-bearing paths
+no longer set the unsupported flag before this shared validation.
+
+These two corrections advance the whole document to its closing-parenthesis
+composite: mirrored placement, ROUND_XY_TO_GRID and its composite program are the
+next demonstrated dependency. Glyph fitting, coverage and preblend are unchanged;
+all seven new controls are exact on Linux, while Windows pixels remain open.
+Complete qualification passes 6,572 tests/platform (4,592 core / 1,974 visual / six
+FontProbe), preserving 27/27 corporate documents / 258/258 variants, 2,849 prior
+PNGs and 2,755 established exact comparisons. The packages and isolated installed
+Windows consumer preserve the existing font documents and new position semantics.
+No implementation source/DLL/script/build/report
+fingerprints are introduced, and no group promise is removed or deferred.

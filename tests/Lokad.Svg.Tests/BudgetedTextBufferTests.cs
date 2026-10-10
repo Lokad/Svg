@@ -140,4 +140,44 @@ public sealed class BudgetedTextBufferTests
         Assert.Equal("A", text.Value);
         Assert.Equal([new SvgTextPositionAdjustment(0, 5, -2)], text.PositionAdjustments);
     }
+
+    [Fact]
+    public void Retains_absolute_zero_and_resolves_coordinates_separately_from_relative_offsets()
+    {
+        RenderBudget budget = new(2_000);
+        var workCounter = new ParserWorkCounter(100);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        var descendant = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 2, true);
+
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(12, 40, 5, null), 1, workCounter, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(0, null, 0, -2), 2, workCounter, CancellationToken.None);
+        descendant.Append(" AA", buffer, 10, workCounter, CancellationToken.None);
+        buffer.ExitPositioningSpan(2);
+        buffer.ExitPositioningSpan(1);
+        using BudgetedTextLayout text = buffer.Detach();
+
+        Assert.Equal("AA", text.Value);
+        Assert.Equal([new SvgTextPositionAdjustment(0, 0, 40, 0, -2)], text.PositionAdjustments);
+        text.Dispose();
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Empty_absolute_position_scopes_do_not_reposition_later_parent_text()
+    {
+        RenderBudget budget = new(2_000);
+        var workCounter = new ParserWorkCounter(100);
+        using var buffer = new SvgTextLayoutBuffer(budget, 0, workCounter, CancellationToken.None);
+        var empty = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0, 1, true);
+        var parent = new SvgTextWhitespaceNormalizer(SvgTextWhitespaceMode.Default, 0);
+
+        buffer.EnterPositioningSpan(new SvgTextPositionOffset(0, 0, null, null), 1, workCounter, CancellationToken.None);
+        empty.Append(" \t", buffer, 10, workCounter, CancellationToken.None);
+        buffer.ExitPositioningSpan(1);
+        parent.Append("A", buffer, 10, workCounter, CancellationToken.None);
+        using BudgetedTextLayout text = buffer.Detach();
+
+        Assert.Equal("A", text.Value);
+        Assert.Empty(text.PositionAdjustments);
+    }
 }

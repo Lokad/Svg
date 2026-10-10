@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Next whole original-scope label/text-path deliverable. Source/options/font contract retained before native reference capture and implementation. Pending documents stay separate from completed document/control ledgers.",
+  "purpose": "One retained CC0 SVG Translate document and seven separate layout/leaf/strike controls. Frozen intended-font references precede implementation; full finite G9 promises remain open.",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
   "cases": [
@@ -21,7 +21,7 @@
       "license": "CC0-1.0",
       "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
       "fontPack": "font-pack.json",
-      "qualification": "pending-native-capture",
+      "qualification": "healthy-native-references-and-font-use-qualified; renderer-pending",
       "selection": "Declared before reference capture or screening. Keep original 704 bytes, all four text runs, two positioned tspan lines, painted local path and original aliases/typography. Nominal public preview is 512x256; qualify an explicit matching viewport, not an auto-image screenshot.",
       "reference": "references/commons-svg-translate-textpath-512x256-transparent.png",
       "linuxReference": "references/linux64/commons-svg-translate-textpath-512x256-transparent.png",
@@ -30,9 +30,445 @@
         "outcome": "UnsupportedFeature",
         "firstGate": "Text span attribute 'x' is not implemented.",
         "declaredViewportAndFont": true,
-        "qualification": "First rejection only; native font-use references still pending."
-      }
+        "qualification": "Baseline first rejection before implementation; source, output and font contract were declared first."
+      },
+      "oracleInputSha256": "14f3bcad35ece459f4d125e5e53b5d32eb217ede2b93e2df3ef3f16642e07300",
+      "referenceSha256": "07e2ce49fb57607bc95b0215bbca3e9c71ec3d39c749e28263c5c18d44989284",
+      "captures": [
+        {
+          "pngSha256": "07e2ce49fb57607bc95b0215bbca3e9c71ec3d39c749e28263c5c18d44989284",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "07e2ce49fb57607bc95b0215bbca3e9c71ec3d39c749e28263c5c18d44989284",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "07e2ce49fb57607bc95b0215bbca3e9c71ec3d39c749e28263c5c18d44989284",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "8c0a726fe42451e23c6f391e85e08e0ca389926522ebd5d99e54b4e004eb3521",
+      "linuxCaptures": [
+        {
+          "pngSha256": "8c0a726fe42451e23c6f391e85e08e0ca389926522ebd5d99e54b4e004eb3521",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8c0a726fe42451e23c6f391e85e08e0ca389926522ebd5d99e54b4e004eb3521",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8c0a726fe42451e23c6f391e85e08e0ca389926522ebd5d99e54b4e004eb3521",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "currentDependency": "Closing-parenthesis transformed composite with ROUND_XY_TO_GRID; absolute span positions and element-free path bodies now admitted."
+    },
+    {
+      "id": "scalar-x-reset",
+      "input": "scalar-x-reset.svg",
+      "width": 64,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "e0777c2acb95b2ec563876f72d2a27de2c359106f038c3ae83dfa5f51155305e",
+      "reference": "references/scalar-x-reset.png",
+      "linuxReference": "references/linux64/scalar-x-reset.png",
+      "fontPack": "font-pack.json",
+      "selection": "Focused absolute/relative layout, empty-body leaf and integer/scaled strike witness declared before capture or implementation; original public Mono Bold program and explicit viewport.",
+      "oracleInputSha256": "f9cf825a74105554878e98cecc4bb081f16e80cef38d9c7cb690c822c2d525d0",
+      "referenceSha256": "9d3216d970631c508796b538a4019d62f497645d320899fa2772673470dbd211",
+      "captures": [
+        {
+          "pngSha256": "9d3216d970631c508796b538a4019d62f497645d320899fa2772673470dbd211",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9d3216d970631c508796b538a4019d62f497645d320899fa2772673470dbd211",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9d3216d970631c508796b538a4019d62f497645d320899fa2772673470dbd211",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "2bbd73654b2482123a02053ac324913aa997d2aaa9865dbf34e513fbd0003915",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2bbd73654b2482123a02053ac324913aa997d2aaa9865dbf34e513fbd0003915",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2bbd73654b2482123a02053ac324913aa997d2aaa9865dbf34e513fbd0003915",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2bbd73654b2482123a02053ac324913aa997d2aaa9865dbf34e513fbd0003915",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "scalar-y-reset",
+      "input": "scalar-y-reset.svg",
+      "width": 64,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "6ddb7a7ecb7895bf2cba029ebeaaaa90b0679533a554195357aa1f75b2ba394e",
+      "reference": "references/scalar-y-reset.png",
+      "linuxReference": "references/linux64/scalar-y-reset.png",
+      "fontPack": "font-pack.json",
+      "selection": "Focused absolute/relative layout, empty-body leaf and integer/scaled strike witness declared before capture or implementation; original public Mono Bold program and explicit viewport.",
+      "oracleInputSha256": "b4dce2aa9fea974bf1dcb8e41be0272251d8f1d5f8a471ddf85ce429898bc8dc",
+      "referenceSha256": "b8585154047eda310d3b7be7d92cdd8a450d57ae5afc32e800946aaa7a42ab66",
+      "captures": [
+        {
+          "pngSha256": "b8585154047eda310d3b7be7d92cdd8a450d57ae5afc32e800946aaa7a42ab66",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b8585154047eda310d3b7be7d92cdd8a450d57ae5afc32e800946aaa7a42ab66",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b8585154047eda310d3b7be7d92cdd8a450d57ae5afc32e800946aaa7a42ab66",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "9ec5284a495952e84f268823433fe7ea61506e0a0596e38c589979047fc582a5",
+      "linuxCaptures": [
+        {
+          "pngSha256": "9ec5284a495952e84f268823433fe7ea61506e0a0596e38c589979047fc582a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ec5284a495952e84f268823433fe7ea61506e0a0596e38c589979047fc582a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ec5284a495952e84f268823433fe7ea61506e0a0596e38c589979047fc582a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "nested-absolute-relative",
+      "input": "nested-absolute-relative.svg",
+      "width": 64,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "b8187379ae4c60f8e544ca70bbee5c8d000456b43cc118a8ff34474411f44666",
+      "reference": "references/nested-absolute-relative.png",
+      "linuxReference": "references/linux64/nested-absolute-relative.png",
+      "fontPack": "font-pack.json",
+      "selection": "Focused absolute/relative layout, empty-body leaf and integer/scaled strike witness declared before capture or implementation; original public Mono Bold program and explicit viewport.",
+      "oracleInputSha256": "f43c51b30e0a28c274f285d73e9d6f02860270dac9829e178dad80a298fb5069",
+      "referenceSha256": "0b711fef38ad615181746dea81e8eda40396c2ad152f85acb2d29307613833c1",
+      "captures": [
+        {
+          "pngSha256": "0b711fef38ad615181746dea81e8eda40396c2ad152f85acb2d29307613833c1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0b711fef38ad615181746dea81e8eda40396c2ad152f85acb2d29307613833c1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0b711fef38ad615181746dea81e8eda40396c2ad152f85acb2d29307613833c1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "a899cb3b13048033898443a6241389593965355b20a60b28415116332b5177ed",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a899cb3b13048033898443a6241389593965355b20a60b28415116332b5177ed",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a899cb3b13048033898443a6241389593965355b20a60b28415116332b5177ed",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a899cb3b13048033898443a6241389593965355b20a60b28415116332b5177ed",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "continued-current-position",
+      "input": "continued-current-position.svg",
+      "width": 64,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "14606e4becb151a8800579d387b4a793d8a069200d58fe5bb8711076cb3af25d",
+      "reference": "references/continued-current-position.png",
+      "linuxReference": "references/linux64/continued-current-position.png",
+      "fontPack": "font-pack.json",
+      "selection": "Focused absolute/relative layout, empty-body leaf and integer/scaled strike witness declared before capture or implementation; original public Mono Bold program and explicit viewport.",
+      "oracleInputSha256": "1b8056b5298eeb360eb074e1d7cbeed5e4f80c992cfa40feebd071497b60bf4f",
+      "referenceSha256": "d50e99be3d1675fceee62c242db4db3389a8c3749c5204d30b4f80cf14f0ca8e",
+      "captures": [
+        {
+          "pngSha256": "d50e99be3d1675fceee62c242db4db3389a8c3749c5204d30b4f80cf14f0ca8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d50e99be3d1675fceee62c242db4db3389a8c3749c5204d30b4f80cf14f0ca8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d50e99be3d1675fceee62c242db4db3389a8c3749c5204d30b4f80cf14f0ca8e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "952db50e0a436319531a12d56e0c29d18edfb7a0ce485ca3ba3b03469411f70c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "952db50e0a436319531a12d56e0c29d18edfb7a0ce485ca3ba3b03469411f70c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "952db50e0a436319531a12d56e0c29d18edfb7a0ce485ca3ba3b03469411f70c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "952db50e0a436319531a12d56e0c29d18edfb7a0ce485ca3ba3b03469411f70c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "empty-path-body",
+      "input": "empty-path-body.svg",
+      "width": 64,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "9283c7b061ddbef70197813e45264f4296d66deb83ea08ee65c21d8083418608",
+      "reference": "references/empty-path-body.png",
+      "linuxReference": "references/linux64/empty-path-body.png",
+      "fontPack": "font-pack.json",
+      "selection": "Focused absolute/relative layout, empty-body leaf and integer/scaled strike witness declared before capture or implementation; original public Mono Bold program and explicit viewport.",
+      "oracleInputSha256": "2069e40be94d3d41b97b2d68bee219ca9b75940ceb8e4dd279c300fc101e4112",
+      "referenceSha256": "b8585154047eda310d3b7be7d92cdd8a450d57ae5afc32e800946aaa7a42ab66",
+      "captures": [
+        {
+          "pngSha256": "b8585154047eda310d3b7be7d92cdd8a450d57ae5afc32e800946aaa7a42ab66",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b8585154047eda310d3b7be7d92cdd8a450d57ae5afc32e800946aaa7a42ab66",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b8585154047eda310d3b7be7d92cdd8a450d57ae5afc32e800946aaa7a42ab66",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "9ec5284a495952e84f268823433fe7ea61506e0a0596e38c589979047fc582a5",
+      "linuxCaptures": [
+        {
+          "pngSha256": "9ec5284a495952e84f268823433fe7ea61506e0a0596e38c589979047fc582a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ec5284a495952e84f268823433fe7ea61506e0a0596e38c589979047fc582a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ec5284a495952e84f268823433fe7ea61506e0a0596e38c589979047fc582a5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "integer-strikes",
+      "input": "integer-strikes.svg",
+      "width": 64,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "658dfb64b88d4247bf7d28463f5fff655face02ce8851c64fed18ba14b2c89ff",
+      "reference": "references/integer-strikes.png",
+      "linuxReference": "references/linux64/integer-strikes.png",
+      "fontPack": "font-pack.json",
+      "selection": "Focused absolute/relative layout, empty-body leaf and integer/scaled strike witness declared before capture or implementation; original public Mono Bold program and explicit viewport.",
+      "oracleInputSha256": "15128103e51205af9faad30b14cfb389006479e2d0440b669e912cd1e87d74d8",
+      "referenceSha256": "74d8136c4ed8503ddb5015fe7ffe0e7b03f618b952fe4f743c5c652cb253b33b",
+      "captures": [
+        {
+          "pngSha256": "74d8136c4ed8503ddb5015fe7ffe0e7b03f618b952fe4f743c5c652cb253b33b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "74d8136c4ed8503ddb5015fe7ffe0e7b03f618b952fe4f743c5c652cb253b33b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "74d8136c4ed8503ddb5015fe7ffe0e7b03f618b952fe4f743c5c652cb253b33b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "c28f99389611792cecc41c3ed2d17312e6cb3be3df0b64003c45db8c6b2521d7",
+      "linuxCaptures": [
+        {
+          "pngSha256": "c28f99389611792cecc41c3ed2d17312e6cb3be3df0b64003c45db8c6b2521d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c28f99389611792cecc41c3ed2d17312e6cb3be3df0b64003c45db8c6b2521d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c28f99389611792cecc41c3ed2d17312e6cb3be3df0b64003c45db8c6b2521d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "scaled-strikes",
+      "input": "scaled-strikes.svg",
+      "width": 512,
+      "height": 256,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "4b1977f12377d87e5b5b8ef15410979a9965931cf770d6e09a739385213cbbcb",
+      "reference": "references/scaled-strikes.png",
+      "linuxReference": "references/linux64/scaled-strikes.png",
+      "fontPack": "font-pack.json",
+      "selection": "Focused absolute/relative layout, empty-body leaf and integer/scaled strike witness declared before capture or implementation; original public Mono Bold program and explicit viewport.",
+      "oracleInputSha256": "a27fd945a2f44073f0557b95a025d03b131c67961c50d3a19a3dc029dc4ceacf",
+      "referenceSha256": "6b41d36de053768b413e3c1aa9c29b6db4c01ee82d57f4085659c3c44a3a2480",
+      "captures": [
+        {
+          "pngSha256": "6b41d36de053768b413e3c1aa9c29b6db4c01ee82d57f4085659c3c44a3a2480",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6b41d36de053768b413e3c1aa9c29b6db4c01ee82d57f4085659c3c44a3a2480",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6b41d36de053768b413e3c1aa9c29b6db4c01ee82d57f4085659c3c44a3a2480",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "679cde65ceb28f48347769910f86bd8766efe23df2970eee2a52d4ff56527b22",
+      "linuxCaptures": [
+        {
+          "pngSha256": "679cde65ceb28f48347769910f86bd8766efe23df2970eee2a52d4ff56527b22",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "679cde65ceb28f48347769910f86bd8766efe23df2970eee2a52d4ff56527b22",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "679cde65ceb28f48347769910f86bd8766efe23df2970eee2a52d4ff56527b22",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
     }
   ],
-  "browserFontEmbedding": "Browser-only private @font-face family LokadSuppliedMonospace with font-weight 700; root svg CSS maps its original generic monospace alias to that embedded family. Keep product SVG bytes unchanged. Missing/corrupt/substituted-face witnesses must prove actual use inside the SVG image before implementation."
+  "browserFontEmbedding": "Browser-only private @font-face family LokadSuppliedMonospace with font-weight 700; root svg CSS maps its original generic monospace alias to that embedded family. Keep product SVG bytes unchanged. Missing/corrupt/substituted-face witnesses must prove actual use inside the SVG image before implementation.",
+  "fontProgramSha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": false
+  },
+  "fontUseQualification": "font-use-proof/qualification.json"
 }

@@ -1,0 +1,164 @@
+{
+  "platforms": [
+    {
+      "platform": "windows",
+      "cases": [
+        {
+          "id": "missing-font",
+          "oracleInputSha256": "36e667f7a67f32a8f8d2fa4e8719aec04c1f4008ae94b2fb66876ee98ddfd1cc",
+          "changedPixelsFromIntendedFont": 9374,
+          "captures": [
+            {
+              "pngSha256": "32041ce52fd79b37dc1842883af819bc856ecddf323789ad4d22547c03129f47",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "32041ce52fd79b37dc1842883af819bc856ecddf323789ad4d22547c03129f47",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "32041ce52fd79b37dc1842883af819bc856ecddf323789ad4d22547c03129f47",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "windows-missing-font.png"
+        },
+        {
+          "id": "corrupt-font",
+          "oracleInputSha256": "f0e3c353766d70f374728d9e8598275897f28b20d08dff9b1570c25f8f7029e9",
+          "changedPixelsFromIntendedFont": 9374,
+          "captures": [
+            {
+              "pngSha256": "32041ce52fd79b37dc1842883af819bc856ecddf323789ad4d22547c03129f47",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "32041ce52fd79b37dc1842883af819bc856ecddf323789ad4d22547c03129f47",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "32041ce52fd79b37dc1842883af819bc856ecddf323789ad4d22547c03129f47",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "windows-corrupt-font.png"
+        },
+        {
+          "id": "substituted-font",
+          "oracleInputSha256": "1e214e814037d0eb8f021a4ad8a3249465ec02045822faf3ef3a96a3bb762b78",
+          "changedPixelsFromIntendedFont": 9941,
+          "captures": [
+            {
+              "pngSha256": "3c6be34c95cf983c02825d22545a3f98b020f8163b1b8d867039c3db77e39d89",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3c6be34c95cf983c02825d22545a3f98b020f8163b1b8d867039c3db77e39d89",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "3c6be34c95cf983c02825d22545a3f98b020f8163b1b8d867039c3db77e39d89",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "windows-substituted-font.png"
+        }
+      ],
+      "substitution": {
+        "url": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/hinted/ttf/NotoSerif/NotoSerif-Regular.ttf",
+        "license": "OFL-1.1",
+        "sha256": "c8f669ceb2c9c60ccf55198b305e08a997ffca79a38cc7eeb551e643cbe66505",
+        "byteSize": 616196
+      }
+    },
+    {
+      "platform": "linux",
+      "cases": [
+        {
+          "id": "missing-font",
+          "oracleInputSha256": "36e667f7a67f32a8f8d2fa4e8719aec04c1f4008ae94b2fb66876ee98ddfd1cc",
+          "changedPixelsFromIntendedFont": 9205,
+          "captures": [
+            {
+              "pngSha256": "935b95380d8886e943e13c2471a74472df607046c061748c7d0b2ad533143f13",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "935b95380d8886e943e13c2471a74472df607046c061748c7d0b2ad533143f13",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "935b95380d8886e943e13c2471a74472df607046c061748c7d0b2ad533143f13",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "linux-missing-font.png"
+        },
+        {
+          "id": "corrupt-font",
+          "oracleInputSha256": "f0e3c353766d70f374728d9e8598275897f28b20d08dff9b1570c25f8f7029e9",
+          "changedPixelsFromIntendedFont": 9205,
+          "captures": [
+            {
+              "pngSha256": "935b95380d8886e943e13c2471a74472df607046c061748c7d0b2ad533143f13",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "935b95380d8886e943e13c2471a74472df607046c061748c7d0b2ad533143f13",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "935b95380d8886e943e13c2471a74472df607046c061748c7d0b2ad533143f13",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "linux-corrupt-font.png"
+        },
+        {
+          "id": "substituted-font",
+          "oracleInputSha256": "1e214e814037d0eb8f021a4ad8a3249465ec02045822faf3ef3a96a3bb762b78",
+          "changedPixelsFromIntendedFont": 9465,
+          "captures": [
+            {
+              "pngSha256": "44f2fed0d3ec2d1fc9a1b4508d6fae35b208236a9d5c65fa7e17a52317124456",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44f2fed0d3ec2d1fc9a1b4508d6fae35b208236a9d5c65fa7e17a52317124456",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "44f2fed0d3ec2d1fc9a1b4508d6fae35b208236a9d5c65fa7e17a52317124456",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "linux-substituted-font.png"
+        }
+      ],
+      "substitution": {
+        "url": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/hinted/ttf/NotoSerif/NotoSerif-Regular.ttf",
+        "license": "OFL-1.1",
+        "sha256": "c8f669ceb2c9c60ccf55198b305e08a997ffca79a38cc7eeb551e643cbe66505",
+        "byteSize": 616196
+      }
+    }
+  ]
+}

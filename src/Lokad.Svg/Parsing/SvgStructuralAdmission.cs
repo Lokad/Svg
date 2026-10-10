@@ -14,6 +14,29 @@ internal static class SvgStructuralAdmission
         if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
     }
 
+    /// <summary>Consumes a geometric leaf body without admitting child elements, counting every nested element and charging reader work with cancellation checks. Borrows the reader and allocates no retained storage.</summary>
+    internal static SvgLeafSubtree ConsumeLeafSubtree(XmlReader reader, SvgRenderLimits limits, int nodeCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(limits);
+        ArgumentNullException.ThrowIfNull(workCounter);
+        int leafDepth = reader.Depth;
+        bool hasElements = false;
+        while (reader.Read())
+        {
+            workCounter.Consume(cancellationToken);
+            if (reader.NodeType == XmlNodeType.Element)
+            {
+                ValidateElementStructure(reader, limits);
+                if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+                nodeCount++;
+                hasElements = true;
+            }
+            else if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == leafDepth) return new(hasElements, nodeCount);
+        }
+        return new(hasElements, nodeCount);
+    }
+
     /// <summary>Rejects a document whose root is not an SVG element in the SVG namespace.</summary>
     internal static void ThrowIfNotSvgRoot(XmlReader reader)
     {
@@ -21,3 +44,6 @@ internal static class SvgStructuralAdmission
         if (reader.LocalName != "svg" || reader.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.MalformedInput, "The document root must be an SVG element in the SVG namespace.");
     }
 }
+
+/// <summary>Reports whether a consumed leaf body contains elements and the resulting document node count.</summary>
+internal readonly record struct SvgLeafSubtree(bool HasElements, int NodeCount);
