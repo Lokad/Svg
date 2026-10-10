@@ -80,8 +80,8 @@ complete. The unchanged original text-path document is now complete in its
 on both platforms. Broader labels, composite hinting, curve/strike fidelity and
 curved/transformed text paths remain finite planned work in `PLAN.md`.
 
-Complete Windows/Linux qualification passes **6,671 tests/platform** (4,645 core /
-2,020 visual / six FontProbe), preserving the **27/27 corporate documents and
+Complete Windows/Linux qualification passes **6,678 tests/platform** (4,651 core /
+2,021 visual / six FontProbe), preserving the **27/27 corporate documents and
 258/258 variants**, 2,849 prior PNGs and 2,755 established exact comparisons.
 Healthy frozen browser captures, SVG/font bytes, references and declared options
 are reused. Source, DLL, script and report fingerprints are not required.

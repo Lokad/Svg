@@ -9,33 +9,73 @@ internal readonly record struct SvgGlyphRgbCoverage(byte Red, byte Green, byte B
 }
 
 /// <summary>Samples positioned quadratic outlines with the measured symmetric LCD filter.</summary>
-/// <remarks>Borrows closed device contours and optional exclusive caller-owned crossing scratch;
-/// retains no storage. Six horizontal samples and five vertically weighted samples feed each
-/// displaced color channel. Enabled smart dropout control preserves strokes between sample
-/// centers on both axes, including stubs. Every segment, crossing and sort comparison consumes
-/// work and observes cancellation. Callers own positioning, bounds, clipping, preblend and
-/// scratch reservations; independent calls with separate scratch may run concurrently.</remarks>
+/// <remarks>Borrows closed device contours and exclusive caller-owned crossing scratch;
+/// retains no storage. Crossings are shared across sample rows and columns in the
+/// six by five cell grid, with separate directed limits at exact vertices. Contours own center boundaries according
+/// to the independently measured Windows convention; quadratic evaluation preserves
+/// constant coordinates. Enabled smart dropout control includes stubs on both axes.
+/// Every segment, crossing, comparison and cell consumes work and observes cancellation.
+/// Callers own positioning, bounds, clipping, preblend and scratch reservations;
+/// independent calls with separate scratch may run concurrently.</remarks>
 internal static class SvgGlyphLcdCoverage
 {
-    /// <summary>One directed scan crossing in caller-owned scratch; never retained by coverage.</summary>
+    /// <summary>One directed scan crossing in borrowed scratch; never retained.</summary>
     internal readonly record struct Crossing(double Position, int Direction);
-    internal static SvgGlyphRgbCoverage GetCoverage(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelX, int pixelY, ParserWorkCounter work, CancellationToken token)
-        => GetCoverage(segments, pixelX, pixelY, [], work, token);
 
-    internal static SvgGlyphRgbCoverage GetCoverage(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelX, int pixelY, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token)
+    [Flags]
+    private enum CellCoverage : byte { None = 0, Interior = 1, Boundary = 2, Dropout = 4, Closed = 8 }
+
+    internal static SvgGlyphRgbCoverage GetCoverage(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelX, int pixelY, Span<Crossing> scratch, bool dropouts, ParserWorkCounter work, CancellationToken token)
     {
         GlyphCoverageProbe.Started();
         work.Consume(token);
-        if (!scratch.IsEmpty && scratch.Length < (long)segments.Length * 2) throw new ArgumentException("Dropout scratch must hold two crossings per segment.", nameof(scratch));
+        if (scratch.Length < (long)segments.Length * 2) throw new ArgumentException("Coverage scratch must hold two crossings per segment.", nameof(scratch));
+        Span<CellCoverage> cells = stackalloc CellCoverage[50]; cells.Clear();
+        for (int row = 0; row < 5; row++)
+        {
+            double sample = pixelY * 5d + row + .5;
+            int count = Gather(segments, sample, false, false, scratch, work, token, out bool endpoint);
+            for (int column = -2; column < 8; column++)
+                cells[row * 10 + column + 2] = Classify(scratch[..count], pixelX * 6d + column + .5, false, dropouts, work, token);
+            if (endpoint)
+            {
+                // Compare the two directed limits only when the scan meets a
+                // vertex. This owns horizontal borders and their corners without
+                // counting a shared monotonic vertex twice in a single scan.
+                count = Gather(segments, sample, false, true, scratch, work, token, out _);
+                for (int column = -2; column < 8; column++)
+                {
+                    int index = row * 10 + column + 2;
+                    CellCoverage lower = cells[index], upper = Classify(scratch[..count], pixelX * 6d + column + .5, false, dropouts, work, token);
+                    if ((lower & CellCoverage.Interior) != (upper & CellCoverage.Interior))
+                    {
+                        CellCoverage normal = ((lower | upper) & CellCoverage.Closed) != 0 ? CellCoverage.Interior : CellCoverage.None;
+                        cells[index] = ((lower | upper) & CellCoverage.Dropout) | CellCoverage.Boundary | normal;
+                    }
+                }
+            }
+        }
+        for (int column = -2; column < 8; column++)
+        {
+            int count = Gather(segments, pixelX * 6d + column + .5, true, false, scratch, work, token, out _);
+            for (int row = 0; row < 5; row++)
+            {
+                CellCoverage value = Classify(scratch[..count], pixelY * 5d + row + .5, true, dropouts, work, token);
+                int index = row * 10 + column + 2;
+                // Exact boundary ownership is checked on either axis. Dropouts
+                // are applied after normal ownership on both axes.
+                if ((value & CellCoverage.Boundary) != 0) cells[index] = (cells[index] & CellCoverage.Dropout) | (value & CellCoverage.Interior);
+                cells[index] |= value & CellCoverage.Dropout;
+            }
+        }
         int red = 0, green = 0, blue = 0;
         for (int row = 0; row < 5; row++)
         {
             int weight = row switch { 0 or 4 => 4, 1 or 3 => 9, _ => 10 };
-            double y = pixelY + (row + .5) / 5;
             for (int column = -2; column < 8; column++)
             {
-                double x = pixelX + (column + .5) / 6;
-                if (!Contains(segments, x, y, work, token) && (scratch.IsEmpty || !Dropout(segments, x, y, false, scratch, work, token) && !Dropout(segments, x, y, true, scratch, work, token))) continue;
+                work.Consume(token);
+                if ((cells[row * 10 + column + 2] & (CellCoverage.Interior | CellCoverage.Dropout)) == 0) continue;
                 if (column < 4) red += weight;
                 if (column is >= 0 and < 6) green += weight;
                 if (column >= 2) blue += weight;
@@ -43,115 +83,90 @@ internal static class SvgGlyphLcdCoverage
         }
         return new((byte)((red * 255 + 108) / 216), (byte)((green * 255 + 108) / 216), (byte)((blue * 255 + 108) / 216));
 
-        static bool Dropout(ReadOnlySpan<OpenTypeQuadraticSegment> segments, double x, double y, bool horizontal, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token)
+        static CellCoverage Classify(ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool dropouts, ParserWorkCounter work, CancellationToken token)
         {
-            int count = Gather(segments, horizontal ? x : y, horizontal, scratch, work, token);
-            Span<Crossing> crossings = scratch[..count];
-            // An explicit bounded sort preserves categorized budget/cancellation
-            // exceptions; framework comparison sorts wrap comparer exceptions.
-            for (int i = 1; i < crossings.Length; i++)
+            int winding = 0; double left = 0; CellCoverage value = CellCoverage.None;
+            for (int i = 0; i < crossings.Length;)
             {
-                work.Consume(token);
-                Crossing item = crossings[i]; int j = i;
-                while (j > 0)
-                {
-                    work.Consume(token);
-                    if (crossings[j - 1].Position <= item.Position) break;
-                    crossings[j] = crossings[j - 1]; j--;
-                }
-                crossings[j] = item;
-            }
-            int winding = 0; double left = 0; double scale = horizontal ? 5 : 6, sample = horizontal ? y : x;
-            foreach (Crossing crossing in crossings)
-            {
-                work.Consume(token);
-                int previous = winding; winding += crossing.Direction;
-                if (previous == 0 && winding != 0) left = crossing.Position;
+                double position = crossings[i].Position; int previous = winding;
+                // Coalesce coincident transitions before deciding ownership;
+                // opposite contours must also cancel at exact centers.
+                do { work.Consume(token); winding += crossings[i++].Direction; } while (i < crossings.Length && crossings[i].Position == position);
+                if (previous == 0 && winding != 0) left = position;
                 else if (previous != 0 && winding == 0)
                 {
-                    double right = crossing.Position;
-                    if (!(right > left)) continue;
-                    double first = Math.Ceiling(left * scale - .5), last = Math.Floor(right * scale - .5);
-                    if (first != last + 1) continue;
-                    double midpoint = (left + right) * .5 * scale;
-                    double selected = horizontal ? Math.Floor(midpoint) : Math.Ceiling(midpoint) - 1;
-                    if (selected != Math.Floor(sample * scale)) continue;
-                    double other = (selected == first ? last : first) + .5;
-                    other /= scale;
-                    if (!Contains(segments, horizontal ? x : other, horizontal ? other : y, work, token)) return true;
-                }
-            }
-            return false;
-
-            static int Gather(ReadOnlySpan<OpenTypeQuadraticSegment> segments, double sample, bool horizontal, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token)
-            {
-                int count = 0;
-                foreach (OpenTypeQuadraticSegment original in segments)
-                {
-                    work.Consume(token);
-                    OpenTypeOutlinePoint start = Map(original.Start), control = Map(original.Control), end = Map(original.End);
-                    if (original.Control == original.End)
+                    double right = position; if (!(right > left)) continue;
+                    bool boundary = sample == left || sample == right;
+                    // Native clockwise font contours include exact center
+                    // borders; their reverse excludes them. Device Y points
+                    // downward, and exchanging axes reverses the winding.
+                    bool closed = horizontal ? previous > 0 : previous < 0;
+                    if (sample > left && sample < right || boundary && closed) value |= CellCoverage.Interior;
+                    if (closed && sample >= left && sample <= right) value |= CellCoverage.Closed;
+                    if (boundary) value |= CellCoverage.Boundary;
+                    if (dropouts)
                     {
-                        if (start.Y <= sample && sample < end.Y || end.Y <= sample && sample < start.Y)
-                            scratch[count++] = new(start.X + (end.X - start.X) * (sample - start.Y) / (end.Y - start.Y), end.Y > start.Y ? 1 : -1);
-                        continue;
+                        double first = Math.Ceiling(left - .5), last = Math.Floor(right - .5);
+                        if (first == last + 1)
+                        {
+                            double midpoint = (left + right) * .5;
+                            double selected = horizontal ? Math.Floor(midpoint) : Math.Ceiling(midpoint) - 1;
+                            if (selected == Math.Floor(sample))
+                            {
+                                double other = (selected == first ? last : first) + .5;
+                                // The neighbor query disables dropouts, bounding
+                                // this call to one extra normal-coverage scan.
+                                if ((Classify(crossings, other, horizontal, false, work, token) & CellCoverage.Interior) == 0)
+                                    value |= CellCoverage.Dropout;
+                            }
+                        }
                     }
-                    double a = start.Y - 2 * control.Y + end.Y, b = 2 * (control.Y - start.Y), c = start.Y - sample;
-                    if (a == 0) { if (b != 0) Include(-c / b, start, control, end, a, b, scratch, ref count); continue; }
-                    double discriminant = b * b - 4 * a * c;
-                    if (discriminant <= 0) continue;
-                    double root = Math.Sqrt(discriminant);
-                    Include((-b + root) / (2 * a), start, control, end, a, b, scratch, ref count);
-                    Include((-b - root) / (2 * a), start, control, end, a, b, scratch, ref count);
-                }
-                return count;
-                OpenTypeOutlinePoint Map(OpenTypeOutlinePoint point) => horizontal ? new(point.Y, point.X) : point;
-
-                static void Include(double t, OpenTypeOutlinePoint start, OpenTypeOutlinePoint control, OpenTypeOutlinePoint end, double a, double b, Span<Crossing> scratch, ref int count)
-                {
-                    if (t is < 0 or > 1) return;
-                    double derivative = b + 2 * a * t;
-                    if (derivative == 0 || t == 0 && derivative < 0 || t == 1 && derivative > 0) return;
-                    double inverse = 1 - t;
-                    double crossing = inverse * inverse * start.X + 2 * inverse * t * control.X + t * t * end.X;
-                    scratch[count++] = new(crossing, derivative > 0 ? 1 : -1);
                 }
             }
+            return value;
         }
-    }
 
-    private static bool Contains(ReadOnlySpan<OpenTypeQuadraticSegment> segments, double x, double y, ParserWorkCounter work, CancellationToken token)
-    {
-        int winding = 0;
-        foreach (OpenTypeQuadraticSegment segment in segments)
+        static int Gather(ReadOnlySpan<OpenTypeQuadraticSegment> segments, double sample, bool horizontal, bool upper, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, out bool endpoint)
         {
-            work.Consume(token);
-            OpenTypeOutlinePoint start = segment.Start, control = segment.Control, end = segment.End;
-            if (control == end)
+            int count = 0; endpoint = false;
+            foreach (OpenTypeQuadraticSegment segment in segments)
             {
-                if (start.Y <= y && y < end.Y || end.Y <= y && y < start.Y)
+                work.Consume(token);
+                OpenTypeOutlinePoint a = Map(segment.Start), b = Map(segment.Control), c = Map(segment.End);
+                endpoint |= a.Y == sample || c.Y == sample;
+                if (segment.Control == segment.End)
                 {
-                    double crossing = start.X + (end.X - start.X) * (y - start.Y) / (end.Y - start.Y);
-                    if (crossing <= x) winding += end.Y > start.Y ? 1 : -1;
+                    if (upper ? a.Y < sample && sample <= c.Y || c.Y < sample && sample <= a.Y : a.Y <= sample && sample < c.Y || c.Y <= sample && sample < a.Y)
+                        scratch[count++] = new(a.X + (c.X - a.X) * (sample - a.Y) / (c.Y - a.Y), c.Y > a.Y ? 1 : -1);
+                    continue;
                 }
-                continue;
+                double A = a.Y - 2 * b.Y + c.Y, B = 2 * (b.Y - a.Y), C = a.Y - sample;
+                if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, upper, scratch, ref count); continue; }
+                double discriminant = B * B - 4 * A * C; if (discriminant <= 0) continue;
+                double root = Math.Sqrt(discriminant);
+                Include((-B + root) / (2 * A), a, b, c, A, B, upper, scratch, ref count);
+                Include((-B - root) / (2 * A), a, b, c, A, B, upper, scratch, ref count);
             }
-            double a = start.Y - 2 * control.Y + end.Y, b = 2 * (control.Y - start.Y), c = start.Y - y;
-            if (a == 0) { if (b != 0) IncludeRoot(-c / b); continue; }
-            double discriminant = b * b - 4 * a * c;
-            if (discriminant <= 0) continue;
-            double root = Math.Sqrt(discriminant);
-            IncludeRoot((-b + root) / (2 * a)); IncludeRoot((-b - root) / (2 * a));
-            void IncludeRoot(double t)
+            for (int i = 1; i < count; i++)
+            {
+                work.Consume(token); Crossing item = scratch[i]; int j = i;
+                // Framework comparer sorts wrap budget/cancellation failures;
+                // every comparison and shift here keeps their original category.
+                while (j > 0) { work.Consume(token); if (scratch[j - 1].Position <= item.Position) break; scratch[j] = scratch[j - 1]; j--; }
+                scratch[j] = item;
+            }
+            return count;
+            OpenTypeOutlinePoint Map(OpenTypeOutlinePoint p) => horizontal ? new(p.Y * 5, p.X * 6) : new(p.X * 6, p.Y * 5);
+            static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, bool upper, Span<Crossing> scratch, ref int count)
             {
                 if (t is < 0 or > 1) return;
-                double derivative = b + 2 * a * t;
-                if (t == 0 && derivative < 0 || t == 1 && derivative > 0) return;
-                double inverse = 1 - t;
-                double crossing = inverse * inverse * start.X + 2 * inverse * t * control.X + t * t * end.X;
-                if (crossing <= x) winding += derivative > 0 ? 1 : -1;
+                double derivative = B + 2 * A * t;
+                if (derivative == 0 || (upper ? t == 0 && derivative > 0 || t == 1 && derivative < 0 : t == 0 && derivative < 0 || t == 1 && derivative > 0)) return;
+                // Horner evaluation leaves a constant coordinate exact. A
+                // Bernstein sum can drift across a center on a straight stem.
+                double crossing = a.X + t * (2 * (b.X - a.X) + t * (a.X - 2 * b.X + c.X));
+                scratch[count++] = new(crossing, derivative > 0 ? 1 : -1);
             }
         }
-        return winding != 0;
     }
 }

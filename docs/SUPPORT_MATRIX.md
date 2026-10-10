@@ -116,14 +116,19 @@ assembly admits the mirrored closing parenthesis and rounded component placement
 18 independent native contours protect TrueType and Latin light fitting. Integer
 internal hinting sizes follow the font header flag. The whole document now renders
 through all 12 APIs. Shared device advances and SVG fragment positions make the
-Linux document exact; Windows retains 210 differing pixels (maximum error 31).
+Linux document exact; Windows retains 62 differing pixels (maximum error 11).
 Shared near-point directions and contour-wrap segments make all 44 measured
 document outlines exact against native Latin light geometry; ten newly retained
 contour witnesses protect the corrected combinations.
 Seven separate positioning/leaf/strike controls render through all 12 APIs;
 all seven are exact on Linux, six on Windows. Enabled smart dropout coverage
 preserves thin strokes on both sampling axes, with complete native A16 texture,
-scan-control and cancellation-cleanup checks. The integer-strike control retains
+scan-control and cancellation-cleanup checks. Directed center ownership, stable
+cell-grid quadratic evaluation and shared row/column crossings correct another
+148 document pixels. Exact vertices compare both directed limits to preserve
+corners. Seven complete CC0 boundary textures and two complete supplied-face RGB
+masks protect the correction, with three fresh native processes per case.
+The integer-strike control retains
 four Windows differences. The complete document and wider
 finite label/path promises remain open.
 

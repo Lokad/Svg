@@ -46,10 +46,12 @@ public sealed class SvgWindowsGlyphTests
             }
             RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(DirectoryPath, "diagnostics", "windows-A48-rgb-coverage.png")), 1_088);
             Assert.Equal(32, reference.Width); Assert.Equal(34, reference.Height);
+            using RenderBudget.BudgetReservation scratchReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(contours.Segments.Length * 2), SvgMemoryCategory.Temporary);
+            SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[contours.Segments.Length * 2];
             for (int y = 0; y < reference.Height; y++)
             for (int x = 0; x < reference.Width; x++)
             {
-                SvgGlyphRgbCoverage coverage = SvgGlyphLcdCoverage.GetCoverage(contours.Segments, 7 + x, 14 + y, new(long.MaxValue), CancellationToken.None);
+                SvgGlyphRgbCoverage coverage = SvgGlyphLcdCoverage.GetCoverage(contours.Segments, 7 + x, 14 + y, scratch, contours.SmartDropouts, new(long.MaxValue), CancellationToken.None);
                 int offset = (y * reference.Width + x) * 4;
                 Assert.Equal(reference.Pixels[offset], coverage.Red);
                 Assert.Equal(reference.Pixels[offset + 1], coverage.Green);
@@ -65,7 +67,9 @@ public sealed class SvgWindowsGlyphTests
         using SvgFontSnapshot snapshot = await PrepareMono();
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics");
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "windows-glyph-coverage.json")));
-        foreach (JsonElement item in native.RootElement.GetProperty("coverageCases").EnumerateArray().Concat(native.RootElement.GetProperty("smartDropoutCases").EnumerateArray()))
+        foreach (JsonElement item in native.RootElement.GetProperty("coverageCases").EnumerateArray()
+            .Concat(native.RootElement.GetProperty("smartDropoutCases").EnumerateArray())
+            .Concat(native.RootElement.GetProperty("directedBoundaryCases").EnumerateArray()))
         {
             var budget = new RenderBudget(long.MaxValue);
             JsonElement origin = item.GetProperty("origin"), bounds = item.GetProperty("coverageBounds");
@@ -88,10 +92,58 @@ public sealed class SvgWindowsGlyphTests
                         int offset = ((y - top) * reference.Width + x - left) * 4;
                         expected = new(reference.Pixels[offset], reference.Pixels[offset + 1], reference.Pixels[offset + 2]);
                     }
-                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, scratch, new(long.MaxValue), CancellationToken.None));
+                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, scratch, contours.SmartDropouts, new(long.MaxValue), CancellationToken.None));
                 }
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+    }
+
+    [Fact]
+    public void Directed_contours_match_complete_independent_native_boundary_textures()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics");
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "windows-contour-boundaries.json")));
+        foreach (JsonElement item in native.RootElement.GetProperty("cases").EnumerateArray())
+        {
+            JsonElement origin = item.GetProperty("origin"), bounds = item.GetProperty("coverageBounds");
+            OpenTypeOutlinePoint[] points = item.GetProperty("pointsF26").EnumerateArray()
+                .Select(p => new OpenTypeOutlinePoint(origin[0].GetDouble() + p[0].GetDouble() / 64, origin[1].GetDouble() - p[1].GetDouble() / 64)).ToArray();
+            int[] flags = item.GetProperty("onCurve").EnumerateArray().Select(p => p.GetInt32()).ToArray();
+            List<OpenTypeQuadraticSegment> segments = []; int first = 0;
+            foreach (JsonElement endpoint in item.GetProperty("contourEnds").EnumerateArray())
+            {
+                int end = endpoint.GetInt32(); Assert.Equal(1, flags[first]);
+                OpenTypeOutlinePoint start = points[first], current = start;
+                for (int index = first + 1; index <= end; index++)
+                {
+                    OpenTypeOutlinePoint next = points[index];
+                    if (flags[index] != 0) { segments.Add(new(current, next, next)); current = next; }
+                    else
+                    {
+                        int destination = index == end ? first : index + 1; Assert.Equal(1, flags[destination]);
+                        segments.Add(new(current, next, points[destination])); current = points[destination]; index++;
+                    }
+                }
+                if (current != start) segments.Add(new(current, start, start));
+                first = end + 1;
+            }
+            byte[] expectedBytes = Convert.FromBase64String(item.GetProperty("rgbTextureBase64").GetString() ?? throw new InvalidDataException("Missing native texture."));
+            int left = bounds[0].GetInt32(), top = bounds[1].GetInt32(), right = bounds[2].GetInt32(), bottom = bounds[3].GetInt32();
+            Assert.Equal((right - left) * (bottom - top) * 3, expectedBytes.Length);
+            OpenTypeQuadraticSegment[] outline = segments.ToArray();
+            SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[outline.Length * 2];
+            for (int y = top - 1; y <= bottom; y++)
+            for (int x = left - 1; x <= right; x++)
+            {
+                SvgGlyphRgbCoverage expected = default;
+                if (x >= left && x < right && y >= top && y < bottom)
+                {
+                    int offset = ((y - top) * (right - left) + x - left) * 3;
+                    expected = new(expectedBytes[offset], expectedBytes[offset + 1], expectedBytes[offset + 2]);
+                }
+                Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(outline, x, y, scratch, true, new(long.MaxValue), CancellationToken.None));
+            }
         }
     }
 

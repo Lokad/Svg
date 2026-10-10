@@ -11260,3 +11260,66 @@ Windows checks after the full suite and is included in the finished Linux suite;
 unchanged complete checks are reused. Package/public/native/notice contracts
 reuse their preceding qualification. This correction adds no release claim;
 finite G2–G9 completion and S17 remain open.
+
+### SVG Translate: directed center boundaries and shared cell scans
+
+Independent original CC0 rectangle fonts expose a direction-sensitive boundary
+rule in Windows symmetric LCD coverage. Reversing an otherwise identical contour
+changes exact center ownership on both axes: clockwise font contours include
+those centers, while their reverse excludes them. Split lines, collinear
+quadratics, contour rotation and same-winding duplication preserve the complete
+texture. Equivalent physical outlines at UPEM 1024/em 16 and UPEM 4096/em 64
+also agree byte-for-byte. Seven complete textures and their reconstructible
+geometry are retained in [the directed boundary controls](../tests/Research/supplied-font-documents/diagnostics/windows-contour-boundaries.json).
+Two complete original-face masks for fractional `h` and `n` join the
+[Windows glyph controls](../tests/Research/supplied-font-documents/diagnostics/windows-glyph-coverage.json).
+Every retained texture and bound agrees through three fresh native processes.
+The [OpenType scan conversion rules](https://learn.microsoft.com/en-us/typography/opentype/spec/ttch01#the-scan-converter)
+remain the basis for nonzero winding and smart dropout selection; the exact
+symmetric boundary convention is independently measured for this backend.
+
+Coverage now evaluates intersections in the six by five cell grid and preserves
+constant quadratic coordinates with Horner evaluation. The previous Bernstein
+sum could drift across an exact stem center. Directed crossings are shared by
+all cells on a sample row or column, with equal transitions coalesced before
+winding decisions. Exact vertices compare lower and upper directed scan limits;
+this preserves horizontal borders and corners while avoiding duplicate monotonic
+vertex crossings. A first full-texture control exposed the missing corner in a
+single-limit implementation, so that model was corrected before qualification.
+Normal coverage and executed smart dropout policy remain separate. Neighbor
+queries disable dropouts and are bounded to one extra normal scan. Every segment,
+sort comparison, crossing and output cell consumes work and observes cancellation.
+Caller-owned crossing scratch is reserved before allocation and released with
+the fitted contours, including cancellation and tight memory denial.
+
+The complete unchanged Windows document improves from 210 differing pixels /
+maximum error 31 to **62 / 11**, through all 12 APIs. All 148 corrected pixels
+previously differed; no previously matching document pixel changes. Linux stays
+exact. The document remains **0/1 complete across platforms**, with Mono controls
+Windows 6/7 and Linux 7/7. Four integer-strike pixels, maximum error 12, remain
+in the `S32` bottom row. The older font bank retains Windows 3/7 and Linux 6/7
+controls, with unchanged curve/fractional/large-outline gaps. A diagnostic check
+of all 53 retained Mono glyph/strike/phase pairs preserves every earlier native
+exact case; 34 now match their complete raw native texture. Remaining curve
+scan conversion determines the next shared correction.
+
+The final local resource comparison runs the same harness against isolated
+preceding and current assemblies after qualification and artifact audits finish.
+Both use the unchanged document, explicit font/options, three warmups and seven
+synchronous samples. The preceding candidate PNG agrees byte-for-byte with its
+qualified 210-pixel output; the current output agrees with the qualified 62-pixel
+output. Whole-document median time falls from **286.8 ms to 96.7 ms**; median
+managed allocations are 4,358,432 and 4,358,504 bytes. Peak accounted memory stays
+at **692,258 bytes**. The scalar-x control falls from 5.86 ms to 1.84 ms, with
+unchanged 123,384 allocated bytes and 163,840-byte accounted peak. Denial one byte
+below either peak returns LimitExceeded and releases all owned storage. These
+small local batches establish no general throughput claim.
+
+Complete Windows/Linux Release qualification passes **6,678 tests/platform**
+(4,651 core / 2,021 visual / six FontProbe). Each platform preserves all 2,908
+prior outcomes, 2,849 PNGs and 2,755 established exact comparisons, including
+**27/27 corporate documents and 258/258 variants**. Every prior exact font output
+remains byte-identical: 18 on Windows and 23 on Linux. Both original supplied-font
+acceptance documents stay complete. Package/public/native/notice contracts reuse
+their preceding qualification; the revised scan and memory behavior has fresh
+measurements. Finite G2–G9 exits and the S17 release gate stay open.

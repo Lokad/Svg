@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 1,
+  "role": "Independent directed contour boundary controls. Complete native textures, including zero bytes; no glyph identity or texture is an implementation input.",
+  "license": "CC0-1.0. Original synthetic geometry and native measurements dedicated to the public domain.",
+  "nativeLibrary": "Microsoft DirectWrite 10.0.19041.1 (WinBuild.160101.0800)",
+  "mode": "NATURAL_SYMMETRIC; NATURAL measuring; grid fitting enabled; CLEARTYPE_3x1.",
+  "recipe": "Private two-glyph original TrueType fonts: UPEM 1024, em 16, hmtx left bearing xMin, no glyph instructions, fpgm or CVT; prep SCANCTRL 511 and SCANTYPE 4. Physical coordinates also captured byte-identically at UPEM 4096/em 64. Straight lines, collinear quadratics, contour rotation and same-winding duplication preserve masks; reversal changes exact center ownership. No installed fonts or native product dependency.",
+  "qualification": "Every retained complete texture and bound agrees through three fresh native processes.",
+  "cases": [
+    {
+      "id": "lines-em16",
+      "pointsF26": [
+        [
+          48,
+          0
+        ],
+        [
+          432,
+          0
+        ],
+        [
+          432,
+          384
+        ],
+        [
+          48,
+          384
+        ]
+      ],
+      "onCurve": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        3
+      ],
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        250,
+        16,
+        256
+      ],
+      "rgbTextureBase64": "ACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAA"
+    },
+    {
+      "id": "reverse-em16",
+      "pointsF26": [
+        [
+          48,
+          384
+        ],
+        [
+          432,
+          384
+        ],
+        [
+          432,
+          0
+        ],
+        [
+          48,
+          0
+        ]
+      ],
+      "onCurve": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        3
+      ],
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        250,
+        16,
+        256
+      ],
+      "rgbTextureBase64": "AFWq/////////////////////9WAKwAAAFWq/////////////////////9WAKwAAAFWq/////////////////////9WAKwAAAFWq/////////////////////9WAKwAAAFWq/////////////////////9WAKwAAAFWq/////////////////////9WAKwAA"
+    },
+    {
+      "id": "quadratic-em16",
+      "pointsF26": [
+        [
+          48,
+          0
+        ],
+        [
+          240,
+          0
+        ],
+        [
+          432,
+          0
+        ],
+        [
+          432,
+          192
+        ],
+        [
+          432,
+          384
+        ],
+        [
+          240,
+          384
+        ],
+        [
+          48,
+          384
+        ],
+        [
+          48,
+          192
+        ]
+      ],
+      "onCurve": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "contourEnds": [
+        7
+      ],
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        250,
+        16,
+        256
+      ],
+      "rgbTextureBase64": "ACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAA"
+    },
+    {
+      "id": "horizontal-em16",
+      "pointsF26": [
+        [
+          0,
+          0
+        ],
+        [
+          384,
+          0
+        ],
+        [
+          384,
+          32
+        ],
+        [
+          0,
+          32
+        ]
+      ],
+      "onCurve": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        3
+      ],
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        7,
+        255,
+        15,
+        256
+      ],
+      "rgbTextureBase64": "AAAfPVxcXFxcXFxcXFxcXFxcXFw9HwAA"
+    },
+    {
+      "id": "horizontal-reverse-em16",
+      "pointsF26": [
+        [
+          0,
+          32
+        ],
+        [
+          384,
+          32
+        ],
+        [
+          384,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "onCurve": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        3
+      ],
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        7,
+        255,
+        15,
+        256
+      ],
+      "rgbTextureBase64": "AAA2baOjo6Ojo6Ojo6Ojo6Ojo6NtNgAA"
+    },
+    {
+      "id": "both-reverse-em16",
+      "pointsF26": [
+        [
+          48,
+          384
+        ],
+        [
+          432,
+          384
+        ],
+        [
+          432,
+          32
+        ],
+        [
+          48,
+          32
+        ]
+      ],
+      "onCurve": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        3
+      ],
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        250,
+        16,
+        256
+      ],
+      "rgbTextureBase64": "AFWq/////////////////////9WAKwAAAFWq/////////////////////9WAKwAAAFWq/////////////////////9WAKwAAAFWq/////////////////////9WAKwAAAFWq/////////////////////9WAKwAAADZto6Ojo6Ojo6Ojo6Ojo6Ojo4hRGwAA"
+    },
+    {
+      "id": "double-em16",
+      "pointsF26": [
+        [
+          48,
+          0
+        ],
+        [
+          432,
+          0
+        ],
+        [
+          432,
+          384
+        ],
+        [
+          48,
+          384
+        ],
+        [
+          48,
+          0
+        ],
+        [
+          432,
+          0
+        ],
+        [
+          432,
+          384
+        ],
+        [
+          48,
+          384
+        ]
+      ],
+      "onCurve": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        3,
+        7
+      ],
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        250,
+        16,
+        256
+      ],
+      "rgbTextureBase64": "ACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAAACuA1f///////////////////6pVAAAA"
+    }
+  ]
+}

@@ -133,5 +133,41 @@
       ]
     }
   ],
-  "smartDropoutQualification": "The unchanged supplied face enables SCANCTRL 511 / SCANTYPE 4. Private independent fitted-geometry fonts preserve native RGB bytes. SCANTYPE 2 and 4 captures isolate thin-feature coverage; the complete original A16 mask is retained here. The managed renderer computes every cell from supplied geometry and executed program policy."
+  "smartDropoutQualification": "The unchanged supplied face enables SCANCTRL 511 / SCANTYPE 4. Private independent fitted-geometry fonts preserve native RGB bytes. SCANTYPE 2 and 4 captures isolate thin-feature coverage; the complete original A16 mask is retained here. The managed renderer computes every cell from supplied geometry and executed program policy.",
+  "directedBoundaryCases": [
+    {
+      "id": "g75-s15.36-p0",
+      "glyph": 75,
+      "scalar": "h",
+      "deviceSize": 15.36,
+      "origin": [
+        8.0,
+        256
+      ],
+      "coverage": "windows-g75-s15.36-p0-directed-centers-rgb.png",
+      "coverageBounds": [
+        8,
+        245,
+        17,
+        256
+      ]
+    },
+    {
+      "id": "g81-s15.36-p2",
+      "glyph": 81,
+      "scalar": "n",
+      "deviceSize": 15.36,
+      "origin": [
+        8.5,
+        256
+      ],
+      "coverage": "windows-g81-s15.36-p2-directed-centers-rgb.png",
+      "coverageBounds": [
+        9,
+        248,
+        18,
+        256
+      ]
+    }
+  ]
 }

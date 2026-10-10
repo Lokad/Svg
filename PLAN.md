@@ -64,8 +64,8 @@ geometry; ten previously differing contours are retained as focused regressions.
 Shared platform font advances and 1/64-pixel SVG fragment positions now preserve
 authored origins, separately rounded text-path widths and positioned text chunks.
 The whole document renders through all 12 APIs and is **exact on Linux**;
-**210 Windows changed pixels** remain against unchanged references (maximum
-channel error 31). Shared symmetric LCD strike positioning now maps quarters onto
+**62 Windows changed pixels** remain against unchanged references (maximum
+channel error 11). Shared symmetric LCD strike positioning now maps quarters onto
 the six-column sampling grid. Windows retains fractional implied curve midpoints,
 and quadratic winding owns the same lower endpoints as line winding. Four
 independent native quarter-strike RGB masks and two measured midpoint pairs
@@ -73,17 +73,24 @@ protect these corrections. Executed font scan-control policy now enables bounded
 smart dropout coverage on both axes, preserving thin strokes between sample
 centers. A complete independent native A16 texture and two synthetic scan-control
 comparisons protect this shared correction. It makes five further positioning
-controls exact and corrects 27 document pixels. Finish the remaining Windows edge/coverage mismatch before
+controls exact and corrects 27 document pixels. Directed center-boundary ownership,
+stable quadratic evaluation in the six by five sample grid and shared row/column
+crossings now correct another 148 pixels. Exact vertices compare both directed
+scan limits, preserving corners without duplicate transitions. Seven complete
+original CC0 boundary textures and two complete supplied-face RGB masks protect
+the correction; all nine are stable through three fresh native processes.
+Finish the remaining Windows curve/coverage mismatch before
 counting the document complete across both platforms. The new
 controls are a separate ledger: **7/7 exact on Linux, 6/7 on Windows**, through
 all 12 APIs. Admission and API equivalence do not close Windows pixels.
 Other instance/font combinations are prerequisites only when this document needs
 them; all finite G9 promises and the seven older font controls remain visible.
 The integer-strike control retains four Windows differences, maximum error 12.
-The added scan work has a measured cost: a small seven-sample warm Windows batch
-for this document rises from a median 108 ms to 189 ms; peak accounted memory
-stays at 692,258 bytes. Retain this local measurement as a tradeoff, with further
-coverage work also reducing repeated scan preparation where practical.
+Shared crossing preparation reduces the added scan cost; keep the current small
+warm-batch measurement in the design record. Peak accounted memory stays at
+692,258 bytes, with denial one byte below the peak releasing all owned storage.
+The remaining native curve controls and the integer-strike bottom row determine
+the next shared correction; preserve every established exact output.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
 original output, seven controls, upstream face and OFL notice, explicit alias/
@@ -172,7 +179,7 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,671 tests/platform**: 4,645 core, 2,020 visual, six FontProbe. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,678 tests/platform**: 4,651 core, 2,021 visual, six FontProbe. Test counts are not document counts. |
 | Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The snapshot-less text-path rejection retains its category/input and now explicitly explains the required prepared font snapshot. Two separate public-font banks preserve their completed original documents through 12 APIs. The new Mono Bold document remains pending; seven controls are exact on Linux and six on Windows. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
