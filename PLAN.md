@@ -1,6 +1,6 @@
 # Lokad.Svg — renderer fidelity and remaining SVG support
 
-Updated 2026-10-10. Complete Windows/Linux qualification preserves
+Updated 2026-10-11. Complete Windows/Linux qualification preserves
 **27/27 corporate documents and 258/258 variants exact**, against each platform's
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
@@ -41,7 +41,7 @@ existing glyph replay remove the rejection; no raster correction was needed.
 Together the two original supplied-font acceptance documents are **2/2 complete**.
 The finite curved/transformed text-path and full label subset remain promised.
 
-**Next complete deliverable: `commons-svg-translate-textpath`, 512×256 transparent**,
+**`commons-svg-translate-textpath` is complete at unchanged 512×256 transparent**,
 with an explicit viewport. Its [retained CC0 original](tests/Research/supplied-font-documents/README.md)
 keeps all 704 upstream bytes, four text runs, positioned tspan lines and painted
 local path. The original monospace/bold declarations resolve to the declared
@@ -52,7 +52,7 @@ platforms. Seven separate positioning/leaf/strike controls were frozen first.
 Shared scalar `tspan x/y` layout and bounded element-free path bodies remove the
 first two rejections. Absolute axes start separately anchored text chunks; nested
 relative adjustments and continued current positions reuse existing glyph replay.
-**The document remains 0/1 complete.** Shared bounded point assembly now handles
+**The document is 1/1 complete across both platforms.** Shared bounded point assembly handles
 its mirrored closing parenthesis, rounded component placement and parent program.
 TrueType fitting runs children before the parent; Linux light fitting uses the
 assembled outline. Eighteen independent native contour witnesses protect these
@@ -63,9 +63,8 @@ from the document's characters and two device sizes match independent native
 geometry; ten previously differing contours are retained as focused regressions.
 Shared platform font advances and 1/64-pixel SVG fragment positions now preserve
 authored origins, separately rounded text-path widths and positioned text chunks.
-The whole document renders through all 12 APIs and is **exact on Linux**;
-**36 Windows changed pixels** remain against unchanged references (maximum
-channel error 11). Shared symmetric LCD strike positioning now maps quarters onto
+The whole document is **exact on Windows and Linux through all 12 APIs**.
+Shared symmetric LCD strike positioning maps quarters onto
 the six-column sampling grid. Windows retains fractional implied curve midpoints,
 and quadratic winding owns the same lower endpoints as line winding. Four
 independent native quarter-strike RGB masks and two measured midpoint pairs
@@ -79,16 +78,23 @@ crossings now correct another 148 pixels. Exact vertices compare both directed
 scan limits, preserving corners without duplicate transitions. Seven complete
 original CC0 boundary textures and two complete supplied-face RGB masks protect
 the correction; all nine are stable through three fresh native processes.
-Finish the remaining Windows curve/coverage mismatch before
-counting the document complete across both platforms. The new
+Collapsed scan spans and quadratic tangencies now remain eligible for enabled
+smart dropouts. Both directed horizontal limits preserve vertex tips; exact
+endpoints bypass coefficient approximation, and dropout selection stays inside
+mapped glyph bounds. These shared rules correct the final 36 Windows pixels,
+without changing a previously matching document pixel. Six complete original
+CC0 textures and six complete supplied-face textures in the
+[smart-tip controls](tests/Research/supplied-font-documents/diagnostics/windows-smart-stubs.json)
+protect the correction, including disabled policy and outside margins. All twelve
+textures are stable through three fresh native processes. The new
 controls are a separate ledger: **7/7 exact on Linux and Windows**, through
-all 12 APIs. Admission and API equivalence do not close Windows pixels.
+all 12 APIs. Across the retained 53 glyph/strike/phase diagnostics, every complete
+native RGB texture now matches.
 Other instance/font combinations are prerequisites only when this document needs
 them; all finite G9 promises and the seven older font controls remain visible.
-The integer-strike control is now exact against its unchanged Windows reference.
-Shared crossing preparation bounds scan cost. The current small local warm batch
-measures 106.1 ms before and 114.0 ms after the conic correction; retain its
-limits in the design record. Peak accounted memory stays at
+The integer-strike control is exact against its unchanged Windows reference.
+Shared crossing preparation bounds scan cost. Local resource measurements and
+their limits are recorded in the design record. Peak accounted memory stays at
 692,258 bytes, with denial one byte below the peak releasing all owned storage.
 Bounded implicit conic coefficients and sampling-grid rounding of implied points
 correct another 26 document pixels and all four integer-strike differences,
@@ -99,10 +105,11 @@ split/unsplit pairs, through all 30 cell translations per outline. Coefficient
 magnitude determines fixed-point precision; exact subdivision changes that
 magnitude while preserving continuous geometry. No fitted tolerance or diagnostic
 bitmap enters rendering. Preserve these finite exits and every established exact
-output while resolving the remaining 36 Windows document pixels. The next shared
-correction must address the retained small edge details and closing-parenthesis
-strike, then finish this unchanged whole document. Larger and nonmonotonic curve
-extensions are dependencies only where that document needs them.
+output. The small edge details and closing-parenthesis strike are now exact.
+Select the next retained whole document from a demonstrated remaining G9 or G3
+gap, preferably one that also exercises the older composite-accent
+defect. Freeze its declared outputs before implementation; advance shared
+dependencies by that document. This completion does not close the finite groups.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
 original output, seven controls, upstream face and OFL notice, explicit alias/
@@ -122,8 +129,8 @@ always computes from caller-owned font bytes; diagnostic masks are never inputs.
 Instruction-free Windows outlines and previously admitted composites retain their
 existing coverage route until their shared extensions are qualified.
 
-**Live-text bank document completion is 1/1; cross-platform controls are 5/7 exact.**
-Linux has **6/7 controls exact**, Windows **5/7**. Keep the whole document complete
+**Live-text bank document completion is 1/1; cross-platform controls are 6/7 exact.**
+Linux and Windows have **6/7 controls exact**. Keep the whole document complete
 while resolving these separate controls; do not expand combinations just to close
 an interpreter grid. Current Windows measurements against unchanged references:
 
@@ -134,7 +141,7 @@ an interpreter grid. Current Windows measurements against unchanged references:
 | Composite accents | Explicit component-flag rejection; shared composite hinting remains open. |
 | Fractional position/size | Exact on both platforms through all 12 APIs. |
 | Small fractional origin | Exact on both platforms through all 12 APIs. |
-| Large outline | Two changed pixels; maximum error three. |
+| Large outline | Exact on both platforms through all 12 APIs. |
 | Inherited alias/paint | Exact on both platforms through all 12 APIs. |
 
 Independent advance rounding, curve scan conversion, fractional strike placement,
@@ -186,13 +193,14 @@ Mechanisms, control counts and dated qualifications live in
 | Question-mark export (`inv-126`) | 185×180, transparent | Shared bounded validation of inert outlined-path typography; existing native blur and geometry playback are already exact. |
 | Original live-text acceptance fixture | 64×64, transparent; explicit supplied Noto Sans / `Example` contract | Shared bounded platform hinting, directed contours, symmetric LCD/analytic coverage and font preblend. Separate from the 30 development documents. |
 | Original text-path acceptance fixture | 64×64, transparent; the same supplied Noto Sans / `Example` contract | Local authored path/reference layout, composed source maps and original paint positions reuse existing glyph raster replay. Seven separate controls are exact on both platforms. |
+| CC0 SVG Translate textpath | 512×256, transparent; supplied Noto Sans Mono Bold face 0 | Shared span positioning, composite fitting, platform advances and native quadratic/dropout coverage. All 12 APIs are exact on both platforms; seven separate controls are exact. |
 
 ## 1. Validated checkpoint and limits
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,678 tests/platform**: 4,651 core, 2,021 visual, six FontProbe. Test counts are not document counts. |
-| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The snapshot-less text-path rejection retains its category/input and now explicitly explains the required prepared font snapshot. Two separate public-font banks preserve their completed original documents through 12 APIs. The new Mono Bold document remains pending; seven controls are exact on Linux and six on Windows. Existing inputs/options/references and healthy native captures remain unchanged. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,680 tests/platform**: 4,651 core, 2,023 visual, six FontProbe. Test counts are not document counts. |
+| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The snapshot-less text-path rejection retains its category/input and explicitly explains the required prepared font snapshot. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
@@ -243,8 +251,9 @@ The selected development queue is **30/30 complete**, including both baseball,
 both arrow exports, both path-marker documents and the two public-domain filter
 exports. The original marker-instance and drop-shadow acceptance fixtures are
 also complete, counted separately (**2/2**). Both original supplied-font acceptance
-documents are complete (**2/2** under their explicit contracts). The next whole
-deliverable is the retained CC0 SVG Translate document declared above. Other promised combinations and
+documents are complete (**2/2** under their explicit contracts). The retained CC0
+SVG Translate document is also complete (**1/1**, with seven separate exact controls).
+Select the next whole document from the remaining G9 or G3 gaps. Other promised combinations and
 finite effects remain open.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
@@ -268,7 +277,7 @@ landed mechanisms remain regression requirements.
 | G6 | **Four retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Static markers and the enumerated filter/blending subset below | Four CC0 exports and the original marker-instance acceptance fixture complete their declared outputs; remaining marker combinations and finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
-| G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents complete; seven text-path controls exact. SVG Translate is next; four remaining live-text controls and wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
+| G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents and CC0 SVG Translate complete; seven controls in each text-path/Mono bank exact. The older composite-accent control and wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
 
 ### Document deliverables and accounting
 
@@ -903,7 +912,7 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
     are unresolved resources. Curved/reversing/closed/multiple contours, calibrated
     lengths, child styles and general tangent glyph maps stay explicit current
     gates without removing any finite text-path promise.
-  - [ ] Finish the retained CC0 SVG Translate document at its declared 512×256
+  - [x] Finish the retained CC0 SVG Translate document at its declared 512×256
     transparent viewport, under the public Mono Bold contract. Do not require
     unrelated instance/font grids first. The separate seven-control bank diagnoses
     shared mechanisms without counting as document completion.
@@ -918,7 +927,7 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
       parent fitting order, prepared interpreter state and integer internal scaler
       sizes; 18 independent native contours protect the shared stages. Other
       promised flags remain visible without becoming exhaustive prerequisites.
-    - [ ] Finish the original output and focused pixel controls through all 12 APIs
+    - [x] Finish the original output and focused pixel controls through all 12 APIs
       on both platforms, preserving every established exact result.
 - **Explicit unsupported outcomes:** automatic wrapping, bidi/joining/complex
   shaping, general GSUB/GPOS or mark positioning, vertical text, text-path stretch/
@@ -943,11 +952,11 @@ The measured G3 width-map defect lacks a qualified whole-document witness and
 stays open. Choose shared changes by the complete documents they advance.
 
 The original live-text acceptance fixture is complete under its unchanged public-
-font contract. Both original supplied-font documents are now complete. The next
-retained deliverable is the CC0 SVG Translate document,
-with explicit preparation and intended-font browser embedding qualification. Freeze its
-matching native references before changing the shared path/layout machinery;
-complete its declared output within the unchanged finite G9 subset. Online sourcing
+font contract. Both original supplied-font documents and the CC0 SVG Translate
+document are complete under their declared font/output contracts. Select the next
+whole document from a demonstrated remaining G9 or G3 gap, preferably exercising
+an older live-text defect too. Freeze matching native references before changing
+shared machinery; complete every declared output within the finite subset. Online sourcing
 continues in bounded public-domain/CC0 batches for remaining in-scope gaps;
 animated exports and effects beyond the enumerated subset remain excluded.
 Keep other instance combinations visible without making them prerequisites

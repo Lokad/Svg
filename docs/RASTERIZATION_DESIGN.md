@@ -11482,3 +11482,89 @@ The scalar-x control measures 3.96 and 2.19 ms, with unchanged 123,384 allocated
 bytes and 163,840-byte accounted peak. Denial one byte below either peak returns
 LimitExceeded and releases all owned storage; successful conversions also release
 all owners. These small local batches establish no general throughput claim.
+
+### SVG Translate: collapsed tips and bounded smart dropouts
+
+The retained CC0 SVG Translate document now matches its unchanged 512×256
+transparent Windows and Linux references through six raw and six independently
+prepared APIs. Its final 36 Windows pixel differences are corrected without
+changing a previously matching document pixel. Document completion is **1/1**;
+the separate Mono controls stay **7/7** on both platforms. The original font,
+all 704 SVG bytes, options and browser references remain unchanged.
+
+Independent native policy comparisons append only SCANCTRL/SCANTYPE to private
+copies of the original glyph programs. Forced smart policy preserves every
+original RGB byte; disabling dropouts removes exactly the previously missing
+fine-grid cells. Replaying fitted outlines through instruction-free private
+faces also preserves the complete original textures. Direct native aliased
+rendering under a six by five map reconstructs every LCD byte, including zero
+bytes and an outside margin. This isolates dropout selection from point fitting,
+curve coefficients, the filter and preblend.
+
+The missing cells lie at contour tips where a scan span collapses to a point.
+Coalescing coincident opposite crossings had discarded those spans; quadratic
+tangencies had been discarded before classification. A horizontal scan at a
+maximum vertex also requires the second directed limit. The closing parenthesis
+adds a separate boundary rule: a tip at an exclusive glyph bound selects the
+other adjacent cell, retaining the interior cell rather than painting outside
+the outline's bounds. Endpoint crossings use the exact mapped vertex instead of
+the approximate coefficient equation, preventing a spurious tiny interval.
+
+The shared sampler retains zero-direction tangency markers without changing
+normal winding. Enabled smart policy considers collapsed spans and both
+horizontal vertex limits. A charged pass computes mapped contour bounds without
+owned storage; selection falls back to the adjacent in-bounds cell. The normal
+neighbor query disables dropouts, preserving bounded recursion. Every segment,
+crossing, comparison and sampled cell still consumes work and observes
+cancellation; the caller's two-crossings-per-segment scratch remains sufficient.
+
+[The permanent smart-tip controls](../tests/Research/supplied-font-documents/diagnostics/windows-smart-stubs.json)
+retain six complete original CC0 textures (both lens directions and cancelled
+thin contours, each with disabled/enabled policy) and six complete original
+supplied-face textures. All twelve agree through three fresh native processes;
+the regression checks every byte and an outside margin on both platforms. The
+document bank now asserts exact Windows pixels through all 12 APIs. All 53
+retained glyph/strike/phase textures are exact, preserving all 43 preceding exact
+results and removing the remaining 33 raw RGB differences, including the
+closing-parenthesis cell outside the exclusive bottom bound.
+
+Complete native captures also correct an older synthetic expectation that smart
+policy cancels opposite thin contours. Ordinary winding does cancel; enabled
+smart dropouts still retain the thin cells. The existing resource regression now
+checks both policies against the measured (0,0,0) and (28,28,28) values, with the
+new complete textures protecting their full extent. Scratch, work denial and
+cancellation assertions remain intact.
+
+Private duplicate curved-contour and coincident straight-edge experiments remain
+diagnostic gaps. Extending their semantics is unnecessary for this document and
+does not close any wider label or text-path promise. The existing seven directed
+boundary textures and all 150 translated quadratic textures remain exact. The
+finite G2–G9 exits and remote S17 release evidence remain open; select the next
+whole document from a demonstrated remaining G9 or G3 gap.
+
+The same shared correction removes the older Noto Sans Regular large-outline
+control's two Windows pixel differences without changing a previously matching
+pixel. All 12 APIs are now exact on both platforms. Its live-text bank reaches
+**6/7 controls on both platforms**; composite accents retain their explicit
+component-flag rejection. Both original supplied-font documents stay complete.
+
+Complete Windows/Linux Release qualification passes **6,680 tests/platform**
+(4,651 core / 2,023 visual / six FontProbe), with zero warnings, errors, failures
+or skips. Eight further focused cases per platform pass the strengthened exact
+assertions, including the newly exact large-outline control through all 12 APIs.
+All 2,908 prior corpus outcomes, 2,849 PNGs and 2,755 established exact comparisons
+are preserved, including **27/27 corporate documents and 258/258 variants**.
+Every preceding exact font output remains byte-identical: 21 on Windows and 23
+on Linux. Package/public/native/notice contracts reuse their preceding delivery
+qualification; this correction makes no release claim.
+
+The final isolated preceding/current assembly comparison uses unchanged inputs,
+font and options, three warmups and seven synchronous samples. Both candidate
+PNGs agree with their qualified outputs. Whole-document median time changes
+from **102.5 ms to 108.5 ms**, with median managed allocations of 4,358,464 and
+4,358,600 bytes. Peak accounted memory remains **692,258 bytes**. The scalar-x
+control measures 2.05 and 2.15 ms, with unchanged 123,384 allocated bytes and
+163,840-byte accounted peak. Denial one byte below either peak returns
+LimitExceeded and releases all owned storage; successful conversions also
+release all owners. This small local batch establishes no general throughput
+claim and records the cost of the shared fidelity correction.

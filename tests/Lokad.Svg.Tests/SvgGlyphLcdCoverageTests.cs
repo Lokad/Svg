@@ -103,14 +103,18 @@ public sealed class SvgGlyphLcdCoverageTests
     [Fact]
     public void Smart_dropout_scratch_and_crossing_work_remain_bounded()
     {
-        OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 1d / 64);
+        OpenTypeQuadraticSegment[] segments = Rectangle(0, -1d / 64, 6, 0);
         Assert.Throws<ArgumentException>(() => SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, new SvgGlyphLcdCoverage.Crossing[7], true, new(long.MaxValue), CancellationToken.None));
         SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[8];
         Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, scratch, true, new(15), CancellationToken.None)).ErrorCode);
         using var cancelled = new CancellationTokenSource(); cancelled.Cancel();
         Assert.ThrowsAny<OperationCanceledException>(() => SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, scratch, true, new(long.MaxValue), cancelled.Token));
         OpenTypeQuadraticSegment[] reversed = segments.Reverse().Select(s => new OpenTypeQuadraticSegment(s.End, s.Start, s.Start)).ToArray();
-        Assert.Equal(default(SvgGlyphRgbCoverage), SvgGlyphLcdCoverage.GetCoverage([.. segments, .. reversed], 2, 0, new SvgGlyphLcdCoverage.Crossing[16], true, new(long.MaxValue), CancellationToken.None));
+        // Independent complete native textures in windows-smart-stubs.json:
+        // opposite thin contours cancel normal winding, but smart dropouts
+        // still retain their cells. SCANTYPE 2 disables that coverage.
+        Assert.Equal(default(SvgGlyphRgbCoverage), SvgGlyphLcdCoverage.GetCoverage([.. segments, .. reversed], 2, -1, new SvgGlyphLcdCoverage.Crossing[16], false, new(long.MaxValue), CancellationToken.None));
+        Assert.Equal(new SvgGlyphRgbCoverage(28, 28, 28), SvgGlyphLcdCoverage.GetCoverage([.. segments, .. reversed], 2, -1, new SvgGlyphLcdCoverage.Crossing[16], true, new(long.MaxValue), CancellationToken.None));
     }
 
     [Theory]

@@ -5,7 +5,7 @@ explicit supplied-font contract. **1/1 document matches the frozen Windows/Linux
 references through all six raw and six independently prepared APIs.** Seven
 separate CC0 controls cover curves/counters, AV/space pairs, composites,
 fractional placement/size, small/large sizes and inherited alias/paint. Linux has
-**6/7 controls exact**, Windows **5/7**; cross-platform controls are **5/7 exact**.
+**6/7 controls exact**, Windows **6/7**; cross-platform controls are **6/7 exact**.
 The document's completion does not close the full finite G9 label/path subset.
 
 `font-pack.json` selects the unchanged standalone static Noto Sans Regular 2.008
@@ -73,18 +73,19 @@ policy, rather than claiming all queried features are implemented.
 The bounded implicit conic correction and sampling-grid rounding of implied
 points make curves/counters and fractional position/size exact on Windows, fixing
 their 13 and 15 remaining pixels against unchanged references. Both controls now
-have exact assertions through all 12 APIs on both platforms. Large outlines retain
-two Windows differences. Pairs, small fractional origins and inherited alias/paint
+have exact assertions through all 12 APIs on both platforms. Collapsed-span and
+bounded smart-dropout coverage now also corrects the large-outline control's two
+Windows pixels, making it exact through all 12 APIs. Pairs, small fractional origins and inherited alias/paint
 stay exact after shared LCD strike, curve and smart dropout coverage corrections.
 Composite accents still hit
-the component-flag gate. These remain visible while the original document is
+the component-flag gate. This remaining control stays visible while the original document is
 complete. The unchanged original text-path document is now complete in its
 [separate bank](../supplied-font-text-paths/README.md), with seven exact controls
 on both platforms. Broader labels, composite hinting, curve/strike fidelity and
 curved/transformed text paths remain finite planned work in `PLAN.md`.
 
-Complete Windows/Linux qualification passes **6,679 tests/platform** (4,651 core /
-2,022 visual / six FontProbe), preserving the **27/27 corporate documents and
+Complete Windows/Linux qualification passes **6,680 tests/platform** (4,651 core /
+2,023 visual / six FontProbe), preserving the **27/27 corporate documents and
 258/258 variants**, 2,849 prior PNGs and 2,755 established exact comparisons.
 Healthy frozen browser captures, SVG/font bytes, references and declared options
 are reused. Source, DLL, script and report fingerprints are not required.

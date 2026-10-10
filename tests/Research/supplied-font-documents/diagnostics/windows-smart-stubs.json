@@ -1,0 +1,540 @@
+{
+  "description": "Complete independent native RGB textures for original CC0 collapsed-tip controls and unchanged supplied Mono Bold glyphs. SCANTYPE 2 disables dropouts; 4 enables smart dropouts including stubs. Each texture is stable through three fresh native processes. No diagnostic texture is a renderer input.",
+  "originalShapeLicense": "CC0-1.0",
+  "suppliedFont": "fonts/NotoSansMono-Bold.ttf",
+  "suppliedFontLicense": "SIL-OFL-1.1",
+  "originalCases": [
+    {
+      "id": "lens-type-2",
+      "pointsF26": [
+        [
+          16,
+          7
+        ],
+        [
+          144,
+          7
+        ],
+        [
+          144,
+          135
+        ],
+        [
+          144,
+          263
+        ],
+        [
+          16,
+          263
+        ],
+        [
+          -112,
+          263
+        ],
+        [
+          -112,
+          135
+        ],
+        [
+          -112,
+          7
+        ]
+      ],
+      "onCurve": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "contourEnds": [
+        7
+      ],
+      "scanType": 2,
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        5,
+        251,
+        11,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAAAAJDg4FAAAAAAAAAAAAFFWl5vr/////9st2KwAAAAAAVar////////////VgCsAAAAAUKX6///////////QeyYAAAAABS9wt9jj4+PjzZZKFAAA",
+      "freshNativeTextureSha256": [
+        "b35e40861c8a936290d346c5a0d671b15b82a4bc6f968600c969e99c7c739475",
+        "b35e40861c8a936290d346c5a0d671b15b82a4bc6f968600c969e99c7c739475",
+        "b35e40861c8a936290d346c5a0d671b15b82a4bc6f968600c969e99c7c739475"
+      ]
+    },
+    {
+      "id": "lens-type-4",
+      "pointsF26": [
+        [
+          16,
+          7
+        ],
+        [
+          144,
+          7
+        ],
+        [
+          144,
+          135
+        ],
+        [
+          144,
+          263
+        ],
+        [
+          16,
+          263
+        ],
+        [
+          -112,
+          263
+        ],
+        [
+          -112,
+          135
+        ],
+        [
+          -112,
+          7
+        ]
+      ],
+      "onCurve": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0
+      ],
+      "contourEnds": [
+        7
+      ],
+      "scanType": 4,
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        5,
+        251,
+        11,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAAAAJDg4FAAAAAAAAAAAAFFWl5vr/////9st2KwAAAAAFWq/////////////ZhC8AAAAAUKX6///////////QeyYAAAAABS9wt9jj4+PjzZZKFAAA",
+      "freshNativeTextureSha256": [
+        "4bbe815c3980237c6091fee6c0b5950b55bbbf0da6315cfce714ddfd2e2cc9c2",
+        "4bbe815c3980237c6091fee6c0b5950b55bbbf0da6315cfce714ddfd2e2cc9c2",
+        "4bbe815c3980237c6091fee6c0b5950b55bbbf0da6315cfce714ddfd2e2cc9c2"
+      ]
+    },
+    {
+      "id": "reverse-lens-type-2",
+      "pointsF26": [
+        [
+          -112,
+          7
+        ],
+        [
+          -112,
+          135
+        ],
+        [
+          -112,
+          263
+        ],
+        [
+          16,
+          263
+        ],
+        [
+          144,
+          263
+        ],
+        [
+          144,
+          135
+        ],
+        [
+          144,
+          7
+        ],
+        [
+          16,
+          7
+        ]
+      ],
+      "onCurve": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "contourEnds": [
+        7
+      ],
+      "scanType": 2,
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        5,
+        251,
+        11,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAAAAJDg4FAAAAAAAAAAAAD1Ch5vr/////9st7LwUAAAAAVar////////////VgCsAAAAAUKX6///////////QeyYAAAAABS9wt9jj4+PjzZZKFAAA",
+      "freshNativeTextureSha256": [
+        "4ad6398d5af5022d68c327c7713017402cc7f4a5543600835e586738f32efed5",
+        "4ad6398d5af5022d68c327c7713017402cc7f4a5543600835e586738f32efed5",
+        "4ad6398d5af5022d68c327c7713017402cc7f4a5543600835e586738f32efed5"
+      ]
+    },
+    {
+      "id": "reverse-lens-type-4",
+      "pointsF26": [
+        [
+          -112,
+          7
+        ],
+        [
+          -112,
+          135
+        ],
+        [
+          -112,
+          263
+        ],
+        [
+          16,
+          263
+        ],
+        [
+          144,
+          263
+        ],
+        [
+          144,
+          135
+        ],
+        [
+          144,
+          7
+        ],
+        [
+          16,
+          7
+        ]
+      ],
+      "onCurve": [
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        1
+      ],
+      "contourEnds": [
+        7
+      ],
+      "scanType": 4,
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        5,
+        251,
+        11,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAAAAJDg4FAAAAAAAAAAAAD1Ch5vr/////9st7LwUAAAAFWq/////////////ZhC8AAAAAUKX6///////////QeyYAAAAABS9wt9jj4+PjzZZKFAAA",
+      "freshNativeTextureSha256": [
+        "a4b7c71449b8de46986f15ee75b82ee24d2d2a245aa5e2f6d3346aaed42f781f",
+        "a4b7c71449b8de46986f15ee75b82ee24d2d2a245aa5e2f6d3346aaed42f781f",
+        "a4b7c71449b8de46986f15ee75b82ee24d2d2a245aa5e2f6d3346aaed42f781f"
+      ]
+    },
+    {
+      "id": "cancelled-thin-stroke-type-2",
+      "pointsF26": [
+        [
+          0,
+          0
+        ],
+        [
+          384,
+          0
+        ],
+        [
+          384,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          384,
+          1
+        ],
+        [
+          384,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "onCurve": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        3,
+        7
+      ],
+      "scanType": 2,
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        7,
+        255,
+        15,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "freshNativeTextureSha256": [
+        "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+        "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0",
+        "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0"
+      ]
+    },
+    {
+      "id": "cancelled-thin-stroke-type-4",
+      "pointsF26": [
+        [
+          0,
+          0
+        ],
+        [
+          384,
+          0
+        ],
+        [
+          384,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          384,
+          1
+        ],
+        [
+          384,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "onCurve": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        3,
+        7
+      ],
+      "scanType": 4,
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        7,
+        255,
+        15,
+        256
+      ],
+      "rgbTextureBase64": "AAAJExwcHBwcHBwcHBwcHBwcHBwTCQAA",
+      "freshNativeTextureSha256": [
+        "16f7de5f8f29af7ce3e374ae0f61846c3e3c366bcc792990c21d5d97659dd6bb",
+        "16f7de5f8f29af7ce3e374ae0f61846c3e3c366bcc792990c21d5d97659dd6bb",
+        "16f7de5f8f29af7ce3e374ae0f61846c3e3c366bcc792990c21d5d97659dd6bb"
+      ]
+    }
+  ],
+  "suppliedFontCases": [
+    {
+      "id": "g11-s15.36-p2",
+      "glyph": 11,
+      "deviceSize": 15.36,
+      "origin": [
+        8.5,
+        256
+      ],
+      "coverageBounds": [
+        11,
+        246,
+        16,
+        258
+      ],
+      "rgbTextureBase64": "AAAAAAVGm+v//9+UPwkAAAAFOo/f///wn0oFAAAAAA9gtfr//9+KNQAAAAAABVWq+v//5I86AAAAAAAAL4TZ////qlUAAAAAAAAAVar////kjzoAAAAAAAAAVar////kjzoAAAAAAAAAL4TZ////qlUAAAAAAAAABVWq+v//5I86AAAAAAAAAA9gtfr//9+KNQAAAAAAAAAFOo/f///wqlUPAAAAAAAAAAVGm+v//9+POgUA",
+      "freshNativeTextureSha256": [
+        "427b1b29cc2db8c5a4c1faea35bdb372ad2572c39ed526a01a273719e591abb3",
+        "427b1b29cc2db8c5a4c1faea35bdb372ad2572c39ed526a01a273719e591abb3",
+        "427b1b29cc2db8c5a4c1faea35bdb372ad2572c39ed526a01a273719e591abb3"
+      ]
+    },
+    {
+      "id": "g12-s15.36-p1",
+      "glyph": 12,
+      "deviceSize": 15.36,
+      "origin": [
+        8.25,
+        256
+      ],
+      "coverageBounds": [
+        10,
+        246,
+        15,
+        258
+      ],
+      "rgbTextureBase64": "ABRkufr/+sVwIAAAAAAAAAAAK4DV///6uWQUAAAAAAAAAA9gtfr//9+KNQAAAAAAAAAPZLn////VgCsAAAAAAAAAK4DV////r1oFAAAAAAAAD2S5////1YArAAAAAAAAD2S5////1YArAAAAAAAAK4DV////r1oFAAAAAAAPZLn////VgCsAAAAAAA9gtfr//9+KNQAAAAAAIHXK///6uWQUAAAABRlpufr/+sVwIAAAAAAA",
+      "freshNativeTextureSha256": [
+        "cd085bb20f3c34aa303c745fec2b28130c41a8beb5b1c02dc04dfd359473bc51",
+        "cd085bb20f3c34aa303c745fec2b28130c41a8beb5b1c02dc04dfd359473bc51",
+        "cd085bb20f3c34aa303c745fec2b28130c41a8beb5b1c02dc04dfd359473bc51"
+      ]
+    },
+    {
+      "id": "g68-s15.36-p1",
+      "glyph": 68,
+      "deviceSize": 15.36,
+      "origin": [
+        8.25,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        248,
+        17,
+        256
+      ],
+      "rgbTextureBase64": "AAAACylgi7jN5/H6///////27M2sdT8UAAAAAAAAAA9gtfr27OPjzbi4zefx+v////rFcCAAAAAAAAAFBQUAAAAAAAAAAAAUab7/////qlUAAAAAABQ/gLfY7Pb/////////////////qlUAAAAPYLX6//////bs4824o6OjwuD/////qlUAAAA2i+D////eiTQAAAAAAAUlesr/////qlUAAAAbcMX/////+vHdw8PN5/H6////////qlUAAAAABSNkq93x+v//+vHdt4A/L3DF////qlUA",
+      "freshNativeTextureSha256": [
+        "92452dc8bf2e8986d6991593a08d3622d08f46e692f1256b5d979ad773d63db3",
+        "92452dc8bf2e8986d6991593a08d3622d08f46e692f1256b5d979ad773d63db3",
+        "92452dc8bf2e8986d6991593a08d3622d08f46e692f1256b5d979ad773d63db3"
+      ]
+    },
+    {
+      "id": "g72-s15.36-p0",
+      "glyph": 72,
+      "deviceSize": 15.36,
+      "origin": [
+        8.0,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        248,
+        17,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAUP4C33fH6//////bszaFaIwUAAAAAAAAFRpvr//////bszbi4zez2////+rlkFAAAAA9gtfr///++aRQAAAAAAAUvhNX////FcBsAAC+E2f/////////////////////////kjzoAACuA1f////DRsqOjo6Ojo6Ojo6Ojo6OjbTYAAAVVqvr////ViTQJAAAAAAAAAAAAAAUFBQAAAAAFL4DQ+v/////27OPNuK7D2OPs9v+qVQAAAAAAAAAFI06Kt9js9v//////+vHnzaxhKwAA",
+      "freshNativeTextureSha256": [
+        "01ecdff9ab22ca1ede0fd1d1ed0f358684c6286e6edcf52a662640027dd26db9",
+        "01ecdff9ab22ca1ede0fd1d1ed0f358684c6286e6edcf52a662640027dd26db9",
+        "01ecdff9ab22ca1ede0fd1d1ed0f358684c6286e6edcf52a662640027dd26db9"
+      ]
+    },
+    {
+      "id": "g85-s15.36-p0",
+      "glyph": 85,
+      "deviceSize": 15.36,
+      "origin": [
+        8.0,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        248,
+        18,
+        256
+      ],
+      "rgbTextureBase64": "AABVqv//////////2YQ5NHW34fb/////8J9KBQAAAAAfPVxcdKrg//////r6+v/27M24uM3dlkoFAAAAAAAAAAAAAFWq///////wr1oUAAAAAAAAAAAAAAAAAAAAAAAAAFWq//////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq//////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq//////+qVQAAAAAAAAAAAAAAAAAAAB89dIuuw+H2///////24cOui3Q9HwAAAAAAAAAAAFWq//////////////////////+qVQAAAAAAAAAA",
+      "freshNativeTextureSha256": [
+        "3a800c81b93a5990d588135670c6dca488f0b5b58760b702fdb5951dfd33174e",
+        "3a800c81b93a5990d588135670c6dca488f0b5b58760b702fdb5951dfd33174e",
+        "3a800c81b93a5990d588135670c6dca488f0b5b58760b702fdb5951dfd33174e"
+      ]
+    },
+    {
+      "id": "g54-s32-p0",
+      "glyph": 54,
+      "deviceSize": 32,
+      "origin": [
+        8.0,
+        256
+      ],
+      "coverageBounds": [
+        9,
+        233,
+        26,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAkePGmLuM3j5/H6//////////rx5+Pjzbiji3RHMhMJAAAAAAAAAAAAAAAAAAAFGU+W1/b////////////////////////////////////////68c19MgAAAAAAAAAAD1Cl6///////////////////////////////////////////////8J9KBQAAAAAAAAA1it/////////////////////68efj4+Pj4+z2///////////////fijUAAAAAAAAAACZ70P///////////////+u1aSgJAAAAAAAAAAAAAAkTMkd0lsPh9sp1IAAAAAAAAAAAAFWq////////////////2YQvAAAAAAAAAAAAAAAAAAAAAAAAAAAABQUFAAAAAAAAAAAAAFWq////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACZ70P//////////////+sV1JQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgdcr/////////////////68CKUygJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUab6//////////////////////24beASB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGVqq6//////////////////////////24beAQxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6//////////////////////////rmvIBDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4C34fb/////////////////////////9st7LwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoU4q85vr/////////////////////66VQDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqXc+v/////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFOo/f////////////////r1oFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq////////////////1YArAAAPLjcoCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2S5////////////////qlUAAAArgNX/+vHdw5Z0RzIYDgUAAAAAAAAAAAAAAAAFDi1ptev////////////////VgCsAAAArgNX////////////////68efj4+Pj4+Pj7Pb/////////////////////+rlkFAAAAAArgNX//////////////////////////////////////////////////+uqVRQAAAAAAAAbZ7z2///////////////////////////////////////////65ryAPxQAAAAAAAAAAAAAAAAACR48UXSLrsPY4+fx+v////////////bs49jDrotpPB4JAAAAAAAAAAAAAAAA",
+      "freshNativeTextureSha256": [
+        "3497a1212a78510fe76489dcbf2a0936c2708c922ab63ef4bff212ff5728cfd9",
+        "3497a1212a78510fe76489dcbf2a0936c2708c922ab63ef4bff212ff5728cfd9",
+        "3497a1212a78510fe76489dcbf2a0936c2708c922ab63ef4bff212ff5728cfd9"
+      ]
+    }
+  ]
+}

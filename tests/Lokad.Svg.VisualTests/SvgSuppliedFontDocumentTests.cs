@@ -7,7 +7,7 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-/// <summary>Protects supplied Mono Bold positioning and output contracts while the complete CC0 document remains pending.</summary>
+/// <summary>Protects the complete CC0 document, supplied Mono Bold positioning and exact output contracts.</summary>
 public sealed class SvgSuppliedFontDocumentTests
 {
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents");
@@ -65,7 +65,7 @@ public sealed class SvgSuppliedFontDocumentTests
             byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
             PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216));
             Assert.True(comparison.DimensionsMatch);
-            if (OperatingSystem.IsLinux() || Required(item, "role") != "document-output") Assert.True(comparison.IsExact);
+            Assert.True(comparison.IsExact);
         }
     }
 
