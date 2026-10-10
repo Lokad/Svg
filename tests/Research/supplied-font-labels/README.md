@@ -8,6 +8,28 @@ sizes, and inherited alias/paint. They are separate from the document ledger.
 acceptance remains pending: Windows is not exact and composite accents are
 still rejected.**
 
+The next Windows dependency is an internal axial TrueType instruction stage.
+[Independent native geometry](diagnostics/true-type-contours.json) supplies eleven
+glyph/size outlines under two FreeType 2.13.2 interpreter query profiles, giving
+**22/22 exact intermediate checks**. These are separate from Windows grid-fit
+qualification and final font pixels. Public rendering does not call this stage;
+the same original document, font and platform references remain selected.
+
+The stage borrows `fpgm`, `prep` and simple-glyph instructions from the supplied
+face. Its explicit target distinguishes CVT precision and preparation lifecycle;
+the qualified probe restores initial CVT values and retains storage across the
+default-to-grayscale transition. Bounded axial vectors, reference/zone state,
+signed stack arithmetic, functions/branches, CVT/storage, point rounding/shifts,
+deltas and untouched-point interpolation cover the executed programs. Limits are
+4,096 stack/storage/CVT entries and twilight points, 1,024 functions, 32 call
+levels and 65,535 bytes per program. Work and cancellation cover execution,
+skipped operands, initialization and interpolation; arrays reserve before
+allocation and release on failure. Synthetic controls protect these boundaries.
+Executed nonaxial/unimplemented opcodes, IDEF declarations, composite instruction
+replay and vertical phantom metrics remain explicit unsupported outcomes.
+The Windows policy and symmetric LCD coverage still need their own qualification;
+the wider finite G9 label/path subset remains open.
+
 `font-pack.json` selects the unchanged, standalone static Noto Sans Regular 2.008
 TrueType face 0 under the document's `Example` alias. The public program and OFL
 notice are test assets; callers still supply font programs explicitly. No fonts
@@ -69,10 +91,11 @@ the remaining finite G9 subset stay open. Caller-supplied bytes remain borrowed.
 Output-scale/viewBox controls reuse the frozen large-glyph reference and protect
 mapping exactly once; tiny collapsed outlines, opacity rounding and owner cleanup
 have separate synthetic controls.
-Complete qualification passes 6,341 tests on each platform
-(4,449 core / 1,886 visual / six FontProbe). All 2,849 prior PNGs and 2,755
-established exact results remain unchanged, including corporate 27/27 documents
-and 258/258 variants. Frozen browser captures and evaluation assets are reused.
+Complete build/test qualification passes 6,444 tests on each platform
+(4,504 core / 1,934 visual / six FontProbe). The earlier complete bank qualification
+retains 2,849 PNGs and 2,755 established exact results, including corporate 27/27
+documents and 258/258 variants. It is reused while the new internal stage has no
+public rendering caller. Frozen browser captures and evaluation assets stay unchanged.
 
 The bounded shared kerning reader admits ordered pair-list and class-pair
 X-advance adjustments, coverage/class-definition formats 1/2, up to 32 selected

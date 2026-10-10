@@ -10815,3 +10815,50 @@ documents / 258/258 variants**, 30/30 development documents and 2/2 completed
 original acceptance fixtures. Scene layouts remain 72/272/68 bytes. Existing
 healthy native reference captures are reused; no implementation fingerprints or
 browser recapture is required for this correction.
+
+## Bounded managed TrueType instruction contours (2026-10-10)
+
+The same original live-text document now has a shared internal axial instruction
+stage. It borrows the supplied static face, executes font/preparation/simple-glyph
+programs, and returns owned F26 quadratic contours through the existing decoder
+and contour accumulator. It is not connected to public pixel rendering.
+Eleven [independent outlines](../tests/Research/supplied-font-labels/diagnostics/true-type-contours.json)
+under FreeType 2.13.2 query profiles 35 and 40 give **22 exact geometry checks**
+for `A`, `V`, `O` and `a` at the bank's small, fractional, ordinary and large sizes.
+These do not qualify the Windows native grid-fit policy or symmetric LCD masks;
+Linux remains 1/1 document and 6/7 controls, Windows 0/1 and 0/7.
+
+Preparation policies distinguish full-precision and fractional-font-unit CVT
+scaling. The independently traced default-to-grayscale transition restores initial
+CVT values and retains storage/functions before rerunning preparation. Axial
+point fitting preserves original versus current distances, signed division and
+multiplication rounding, touched axes, twilight initialization and raw-font-unit
+IUP interpolation. The four `A` traces at 24/32/48/96 agree instruction by
+instruction for stack, CVT and storage. Native intermediate inputs stay in tests;
+the implementation always computes contours from the caller's unchanged program.
+
+Declared arrays reserve before allocation; initialization, instructions, skipped
+operands, loops and points charge work and observe cancellation. Bounds are 4,096
+stack/storage/CVT entries and twilight points, 1,024 functions, 32 call levels and
+65,535 bytes per program. Malformed stacks, tables, operands and flow are
+categorized. Executed unimplemented/nonaxial instructions, IDEF declarations,
+composite replay and vertical phantom metrics remain unsupported. No vertical
+metrics are invented. Zero-stack empty programs are valid; unrepresentable scales
+and coordinates fail with a categorized limit. Partial owners release on failure
+and callers can retry without changing supplied bytes.
+
+Arithmetic, CVT precision and interpolation adapt FreeType 2.13.2 under its
+Project License, attributed in `THIRD_PARTY_NOTICES.txt` and retained unaltered
+in `licenses/FreeType/FTL.TXT` for source/package distribution. There is no native runtime
+dependency. Windows query/grid-fit qualification and managed symmetric LCD
+coverage are the next dependencies for this same document. All finite G2–G9
+promises and S17 remain open. Frozen browser/font/reference assets and the prior
+complete bank qualification are reused because public rendering is unchanged.
+
+Complete Windows/native-Linux Release build/test checks pass **6,444 tests per
+platform** (4,504 core / 1,934 visual / six FontProbe), with zero warnings,
+errors, failures or skips. Fifty-five focused instruction checks and 48
+contour/resource checks protect the new stage separately from font pixel counts.
+The final small refactor also passes those affected checks on Windows. Package
+content retains the exact notice/license text and the isolated installed Windows
+consumer passes. This checkpoint does not close the separate S17 release gate.

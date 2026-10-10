@@ -67,9 +67,17 @@ font preblend before clipping and paint alpha. The font and both platform
 references remain unchanged. Previously admitted composites retain their prior
 coverage until shared composite hinting is implemented.
 
-Next, complete bounded managed TrueType grid fitting and LCD coverage for
-Windows before counting the
-document complete. Charge extra metric-glyph discovery, hint execution and mask
+An internal bounded axial TrueType instruction stage now matches **22/22
+independent intermediate contour checks**: eleven glyph/size witnesses under
+FreeType 2.13.2 interpreter queries 35 and 40. Its explicit CVT precision and
+preparation lifecycle preserve native distinctions; it draws no masks and is
+not connected to public rendering. This does not qualify Windows grid fitting
+or change any document/control pixel count.
+
+Next, qualify the managed instruction stage against the measured Windows
+grid-fit policy, then implement symmetric LCD coverage for the same original
+single `A`. Keep the current size/curve/fractional controls alongside it.
+Charge extra metric-glyph discovery, hint execution and mask
 storage; preserve caller-owned bytes, directed curves and native paint distinctions.
 Use the existing size/curve/fractional controls as each mechanism advances.
 Advance rounding does not affect the first single glyph's ink; the Linux pair
@@ -124,13 +132,13 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,341 tests/platform**: 4,449 core, 1,886 visual, six FontProbe. Test counts are not document counts. |
-| Complete retained banks | All **2,908 prior reports**, **2,849 prior PNGs** and **2,755 established exact comparisons** are preserved. Established document/reference captures are reused. The separate pending public-font bank has its declared native captures and diagnostics. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,444 tests/platform**: 4,504 core, 1,934 visual, six FontProbe. Test counts are not document counts. |
+| Complete retained banks | The prior qualification of **2,908 reports**, **2,849 PNGs** and **2,755 established exact comparisons** is reused: the new instruction stage has no public rendering caller. Established document/reference captures remain unchanged. The separate pending public-font bank has its declared native captures and diagnostics. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
 | Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
-| Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission and the internal Latin hint stage preserve borrowed font bytes and release owned scratch on rejection. Inert typography values still do not request or retain fonts. |
+| Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission and the internal Latin/TrueType hint stages preserve borrowed font bytes and release owned scratch on rejection. Inert typography values still do not request or retain fonts. |
 | Scene layouts | Draw command / geometry / paint remain **72/272/68 bytes**. No new throughput claim follows from this correction. |
 | Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
@@ -807,6 +815,13 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
   - [ ] Extend shared composite hinting and admit the queued component flags.
     Previously admitted composites keep their existing rendering route; this
     compatibility boundary does not close composite pixel fidelity.
+  - [x] Establish a bounded axial TrueType instruction stage against eleven
+    independent glyph/size outlines under both declared native interpreter
+    profiles (22 checks). Protect signed arithmetic, distance variants, IUP,
+    preparation transitions, malformed programs, work, cancellation and owner
+    cleanup. These intermediate controls do not qualify Windows grid fitting;
+    composites, vertical phantom metrics and executed unimplemented opcodes
+    retain explicit outcomes.
   - [ ] Managed TrueType grid fitting and symmetric LCD coverage averaged to
     alpha on Windows, followed by the qualified font preblend. Ordinary path or
     grayscale coverage cannot substitute for the measured LCD route.

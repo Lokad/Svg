@@ -1,0 +1,412 @@
+namespace Lokad.Svg.Fonts;
+
+using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
+
+internal enum TrueTypeHintZone { Twilight, Glyph }
+internal enum TrueTypeHintAxis { Y, X }
+internal enum TrueTypeHintProgramKind { Font, Preparation, Glyph }
+internal enum TrueTypeHintRound { Grid, HalfGrid, DoubleGrid, Down, Up, Off }
+internal enum TrueTypeHintControlScale { FullPrecision, FractionalFontUnits }
+internal enum TrueTypeHintPreparation { Single, DefaultThenTarget }
+
+/// <summary>Declares bounded interpreter storage from a validated TrueType maxp table.</summary>
+internal readonly record struct TrueTypeHintProfile(int Stack, int Storage, int Functions, int Twilight);
+
+/// <summary>Supplies explicit rasterizer queries without acquiring a native rasterizer.</summary>
+internal readonly record struct TrueTypeHintTarget(int Version, bool Grayscale, bool ClearType, bool VerticalSubpixel, TrueTypeHintControlScale ControlScale, TrueTypeHintPreparation Preparation);
+
+internal struct TrueTypeHintPoint
+{
+    internal int X, Y, OriginalX, OriginalY, UnscaledX, UnscaledY;
+    internal bool TouchedX, TouchedY, Unavailable;
+    internal TrueTypeHintPoint(int x, int y, int unscaledX, int unscaledY) { X = OriginalX = x; Y = OriginalY = y; UnscaledX = unscaledX; UnscaledY = unscaledY; TouchedX = TouchedY = Unavailable = false; }
+}
+
+internal readonly record struct TrueTypeHintFunction(bool Defined, ReadOnlyMemory<byte> Program);
+
+/// <summary>Executes the bounded axial TrueType subset needed by the selected public Latin font.</summary>
+/// <remarks>Owns scratch and borrows programs, glyph points and contour ends for one conversion.
+/// Every visited instruction, skipped operand and point consumes work and observes cancellation.
+/// Malformed stacks/ranges are categorized; unsupported executed instructions remain explicit.
+/// A machine and its caller-owned inputs belong to one thread and one glyph; disposal releases
+/// its reservation and function-program borrows. It does not select fonts or draw pixels.
+/// Axial arithmetic and interpolation adapt FreeType 2.13.2; see THIRD_PARTY_NOTICES.txt.
+/// Target queries and preparation lifecycle are explicit intermediate-contour policies,
+/// not qualifications of a Windows native grid fitter or LCD rasterizer.</remarks>
+internal sealed class TrueTypeHinting : IDisposable
+{
+    private RenderBudget.BudgetReservation? _reservation;
+    private readonly int[] _stack, _storage, _cvt, _initialCvt;
+    private readonly TrueTypeHintFunction[] _functions;
+    private readonly TrueTypeHintPoint[] _twilight, _glyph;
+    private readonly ushort[] _ends;
+    private readonly ParserWorkCounter _work;
+    private readonly CancellationToken _token;
+    private TrueTypeHintTarget _target;
+    private readonly int _ppem, _scale;
+    private int _count, _depth, _loop = 1, _rp0, _rp1, _rp2;
+    private int _deltaBase = 9, _deltaShift = 3, _cutIn = 68, _instructionControl;
+    private TrueTypeHintAxis _axis = TrueTypeHintAxis.X;
+    private TrueTypeHintRound _round = TrueTypeHintRound.Grid;
+    private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
+
+    private TrueTypeHinting(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, int scale, TrueTypeHintTarget target, RenderBudget.BudgetReservation reservation, ParserWorkCounter work, CancellationToken token)
+    {
+        _stack = new int[profile.Stack]; _storage = new int[profile.Storage];
+        _functions = new TrueTypeHintFunction[profile.Functions]; _twilight = new TrueTypeHintPoint[profile.Twilight];
+        _cvt = new int[cvt.Length]; _initialCvt = new int[cvt.Length];
+        for (int i = 0; i < cvt.Length; i++) { work.Consume(token); _cvt[i] = _initialCvt[i] = cvt[i]; }
+        _glyph = glyph; _ends = ends; _ppem = ppem; _scale = scale; _target = target;
+        _reservation = reservation; _work = work; _token = token;
+    }
+
+    internal static TrueTypeHinting Create(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, int scale, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        if (profile.Stack is < 0 or > 4096 || profile.Storage is < 0 or > 4096 || profile.Functions is < 0 or > 1024 || profile.Twilight is < 0 or > 4096 || cvt.Length > 4096 || glyph.Length > 32772)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "TrueType interpreter storage exceeds the supported bounds.");
+        if (ppem is < 0 or > 32767 || scale < 0) throw Invalid("The TrueType device scale is invalid.");
+        ValidateTarget(target);
+        int previous = -1;
+        foreach (ushort end in ends)
+        {
+            work.Consume(token);
+            if (end <= previous || end >= glyph.Length) throw Invalid("TrueType contour ends are outside their ordered point range.");
+            previous = end;
+        }
+        long bytes = 512 + ParserCollectionMemory.GetArrayByteCount<int>(profile.Stack)
+            + ParserCollectionMemory.GetArrayByteCount<int>(profile.Storage) + 2 * ParserCollectionMemory.GetArrayByteCount<int>(cvt.Length)
+            + ParserCollectionMemory.GetArrayByteCount<TrueTypeHintFunction>(profile.Functions) + ParserCollectionMemory.GetArrayByteCount<TrueTypeHintPoint>(profile.Twilight);
+        RenderBudget.BudgetReservation reservation = budget.Reserve(bytes, SvgMemoryCategory.Geometry);
+        try { return new(profile, cvt, glyph, ends, ppem, scale, target, reservation, work, token); }
+        catch { reservation.Dispose(); throw; }
+    }
+
+    internal ReadOnlySpan<int> ControlValues => _reservation is not null ? _cvt : throw new InvalidOperationException("The TrueType interpreter is disposed.");
+    internal ReadOnlySpan<int> Storage => _reservation is not null ? _storage : throw new InvalidOperationException("The TrueType interpreter is disposed.");
+    internal int DefinedFunctions { get; private set; }
+
+    /// <summary>Restores initial CVT values while retaining declared storage and functions for an explicit query-mode transition.</summary>
+    /// <remarks>The creation scale and preparation policy remain fixed; only rasterizer queries can change.</remarks>
+    internal void Prepare(ReadOnlyMemory<byte> program, TrueTypeHintTarget target)
+    {
+        if (_reservation is null) throw new InvalidOperationException("The TrueType interpreter is disposed.");
+        ValidateTarget(target);
+        if (target.ControlScale != _target.ControlScale || target.Preparation != _target.Preparation)
+            throw Invalid("A TrueType mode transition cannot change its CVT scale or preparation policy.");
+        for (int i = 0; i < _cvt.Length; i++) { _work.Consume(_token); _cvt[i] = _initialCvt[i]; }
+        _target = target;
+        Run(program, TrueTypeHintProgramKind.Preparation);
+    }
+
+    internal void Run(ReadOnlyMemory<byte> program, TrueTypeHintProgramKind kind)
+    {
+        if (_reservation is null) throw new InvalidOperationException("The TrueType interpreter is disposed.");
+        _work.Consume(_token);
+        if (kind is not TrueTypeHintProgramKind.Font and not TrueTypeHintProgramKind.Preparation and not TrueTypeHintProgramKind.Glyph)
+            throw Invalid("The TrueType program kind is invalid.");
+        if (program.Length > ushort.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A TrueType program exceeds its supported byte bound.");
+        _count = 0;
+        if (kind == TrueTypeHintProgramKind.Glyph)
+        {
+            if ((_instructionControl & 1) != 0) return;
+            // Glyph-local reference/zone/vector state starts at the prescribed defaults.
+            _rp0 = _rp1 = _rp2 = 0; _zp0 = _zp1 = _zp2 = TrueTypeHintZone.Glyph;
+            _axis = TrueTypeHintAxis.X; _loop = 1;
+            if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; }
+        }
+        try { Execute(program, kind); }
+        catch (OverflowException) { throw Invalid("TrueType arithmetic exceeds its signed coordinate range."); }
+    }
+
+    private void Execute(ReadOnlyMemory<byte> program, TrueTypeHintProgramKind kind)
+    {
+        int pc = 0, conditionalDepth = 0;
+        while (pc < program.Length)
+        {
+            _work.Consume(_token);
+            int start = pc; byte opcode = program.Span[pc++];
+            if (opcode is 0x40 or 0x41 or >= 0xB0 and <= 0xBF)
+            {
+                bool words = opcode == 0x41 || opcode >= 0xB8;
+                int count = opcode is 0x40 or 0x41 ? ReadByte() : (opcode & 7) + 1;
+                for (int i = 0; i < count; i++) { _work.Consume(_token); Push(words ? (short)((ReadByte() << 8) | ReadByte()) : ReadByte()); }
+                continue;
+            }
+            switch (opcode)
+            {
+                case 0x00: case 0x01: _axis = (TrueTypeHintAxis)opcode; break;
+                case 0x10: _rp0 = Pop(); break;
+                case 0x11: _rp1 = Pop(); break;
+                case 0x12: _rp2 = Pop(); break;
+                case 0x13: _zp0 = Zone(Pop()); break;
+                case 0x14: _zp1 = Zone(Pop()); break;
+                case 0x15: _zp2 = Zone(Pop()); break;
+                case 0x16: _zp0 = _zp1 = _zp2 = Zone(Pop()); break;
+                case 0x17: _loop = Pop(); if (_loop < 0 || _loop > _stack.Length) throw Invalid("The TrueType point loop is outside its stack bound."); break;
+                case 0x18: _round = TrueTypeHintRound.Grid; break;
+                case 0x19: _round = TrueTypeHintRound.HalfGrid; break;
+                case 0x1B:
+                    if (conditionalDepth == 0) throw Invalid("ELSE occurred outside a TrueType conditional.");
+                    Skip(false); conditionalDepth--; break;
+                case 0x1D: _cutIn = Pop(); break;
+                case 0x20: Push(Peek(1)); break;
+                case 0x21: Pop(); break;
+                case 0x22: _count = 0; break;
+                case 0x23: { int a = Pop(), b = Pop(); Push(a); Push(b); break; }
+                case 0x24: Push(_count); break;
+                case 0x25: Push(Peek(Pop())); break;
+                case 0x26: { int k = Pop(), value = Peek(k); int index = _count - k; for (int i = index; i < _count - 1; i++) { _work.Consume(_token); _stack[i] = _stack[i + 1]; } _stack[_count - 1] = value; break; }
+                case 0x2A: { int function = Pop(), count = Pop(); if (count < 0) throw Invalid("A TrueType function loop has a negative count."); for (int i = 0; i < count; i++) Call(function); break; }
+                case 0x2B: Call(Pop()); break;
+                case 0x2C:
+                {
+                    if (kind == TrueTypeHintProgramKind.Glyph) throw Invalid("A glyph cannot define TrueType functions.");
+                    int function = Index(Pop(), _functions.Length); int first = pc;
+                    while (pc < program.Length && program.Span[pc] != 0x2D)
+                    {
+                        _work.Consume(_token);
+                        if (program.Span[pc] == 0x2C) throw Invalid("A TrueType function definition is nested.");
+                        SkipInstruction();
+                    }
+                    if (pc == program.Length) throw Invalid("A TrueType function has no ENDF.");
+                    if (!_functions[function].Defined) DefinedFunctions++;
+                    _functions[function] = new(true, program.Slice(first, pc - first)); pc++; break;
+                }
+                case 0x2D: throw Invalid("ENDF occurred outside a TrueType function definition.");
+                case 0x2E: case 0x2F:
+                {
+                    int p = Pop(); ref TrueTypeHintPoint point = ref Point(_zp0, p);
+                    int coordinate = Coordinate(point, false); Move(ref point, opcode == 0x2F ? checked(Round(coordinate) - coordinate) : 0, true);
+                    _rp0 = _rp1 = p; break;
+                }
+                case 0x30: case 0x31: InterpolateUntouched((TrueTypeHintAxis)(opcode & 1)); break;
+                case 0x34: case 0x35: ShiftContour(opcode); break;
+                case 0x38:
+                {
+                    int amount = Pop(); for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp2, Pop()); Move(ref p, amount, true); } _loop = 1; break;
+                }
+                case 0x3C:
+                {
+                    int reference = Coordinate(Point(_zp0, _rp0), false);
+                    for (int i = 0; i < _loop; i++) { _work.Consume(_token); ref TrueTypeHintPoint p = ref Point(_zp1, Pop()); Move(ref p, checked(reference - Coordinate(p, false)), true); } _loop = 1; break;
+                }
+                case 0x3D: _round = TrueTypeHintRound.DoubleGrid; break;
+                case 0x3E: case 0x3F:
+                {
+                    int value = _cvt[Index(Pop(), _cvt.Length)], p = Pop(); ref TrueTypeHintPoint point = ref Point(_zp0, p);
+                    if (_zp0 == TrueTypeHintZone.Twilight)
+                    {
+                        if (_axis == TrueTypeHintAxis.X) point.OriginalX = value; else point.OriginalY = value;
+                        SetCoordinate(ref point, value);
+                    }
+                    int original = Coordinate(point, false);
+                    if (opcode == 0x3F) { if (Math.Abs((long)value - original) > _cutIn) value = original; value = Round(value); }
+                    Move(ref point, checked(value - original), true); _rp0 = _rp1 = p; break;
+                }
+                case 0x42: { int value = Pop(); _storage[Index(Pop(), _storage.Length)] = value; break; }
+                case 0x43: Push(_storage[Index(Pop(), _storage.Length)]); break;
+                case 0x44: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = value; break; }
+                case 0x45: Push(_cvt[Index(Pop(), _cvt.Length)]); break;
+                case 0x46: case 0x47: Push(Coordinate(Point(_zp2, Pop()), opcode == 0x47)); break;
+                case 0x49: case 0x4A:
+                {
+                    int a = Pop(), b = Pop(); TrueTypeHintPoint p = Point(_zp0, b), q = Point(_zp1, a);
+                    // MD[0] (0x4A) measures the original distance; MD[1]
+                    // (0x49) the fitted distance. Scale the font-unit difference once.
+                    int distance = opcode == 0x4A && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph
+                        ? Divide(checked((_axis == TrueTypeHintAxis.X ? p.UnscaledX - q.UnscaledX : p.UnscaledY - q.UnscaledY)), 65536, _scale)
+                        : checked(Coordinate(p, opcode == 0x4A) - Coordinate(q, opcode == 0x4A));
+                    Push(distance); break;
+                }
+                case 0x4B: Push(_ppem); break;
+                case 0x50: case 0x51: case 0x52: case 0x53: case 0x54: case 0x55:
+                case 0x5A: case 0x5B: case 0x60: case 0x61: case 0x62: case 0x63:
+                {
+                    int b = Pop(), a = Pop();
+                    Push(opcode switch
+                    {
+                        0x50 => a < b ? 1 : 0, 0x51 => a <= b ? 1 : 0,
+                        0x52 => a > b ? 1 : 0, 0x53 => a >= b ? 1 : 0,
+                        0x54 => a == b ? 1 : 0, 0x55 => a != b ? 1 : 0,
+                        0x5A => a != 0 && b != 0 ? 1 : 0, 0x5B => a != 0 || b != 0 ? 1 : 0,
+                        0x60 => checked(a + b), 0x61 => checked(a - b),
+                        0x62 => b == 0 ? throw Invalid("TrueType arithmetic divides by zero.") : checked((int)((long)a * 64 / b)),
+                        _ => Divide(a, 64, b)
+                    });
+                    break;
+                }
+                case 0x58: if (Pop() != 0 || Skip(true)) conditionalDepth++; break;
+                case 0x59:
+                    if (conditionalDepth == 0) throw Invalid("EIF occurred outside a TrueType conditional.");
+                    conditionalDepth--; break;
+                case 0x5C: Push(Pop() == 0 ? 1 : 0); break;
+                case 0x5D: case 0x71: case 0x72: DeltaPoints(opcode); break;
+                case 0x5E: _deltaBase = Pop(); break;
+                case 0x5F: _deltaShift = Pop(); if (_deltaShift is < 0 or > 6) throw Invalid("The TrueType delta shift is invalid."); break;
+                case 0x64: Push(checked((int)Math.Abs((long)Pop()))); break;
+                case 0x65: Push(checked(-Pop())); break;
+                case 0x66: Push(Pop() & ~63); break;
+                case 0x67: Push(checked((Pop() + 63) & ~63)); break;
+                case 0x78: { int condition = Pop(), offset = Pop(); if (condition != 0) Jump(offset); break; }
+                case 0x79: { int condition = Pop(), offset = Pop(); if (condition == 0) Jump(offset); break; }
+                case 0x1C: Jump(Pop()); break;
+                case 0x7A: _round = TrueTypeHintRound.Off; break;
+                case 0x7C: _round = TrueTypeHintRound.Up; break;
+                case 0x7D: _round = TrueTypeHintRound.Down; break;
+                case 0x85: Pop(); break; // Scan conversion flags do not alter this contour-only stage.
+                case 0x88:
+                {
+                    int selector = Pop(), result = (selector & 1) != 0 ? _target.Version : 0;
+                    if ((selector & 32) != 0 && _target.Grayscale) result |= 1 << 12;
+                    if ((selector & 64) != 0 && _target.ClearType) result |= 1 << 13;
+                    if ((selector & 2048) != 0 && _target.VerticalSubpixel) result |= 1 << 17;
+                    Push(result); break;
+                }
+                case 0x8A: { int a = Pop(), b = Pop(), c = Pop(); Push(b); Push(a); Push(c); break; }
+                case 0x8D: Pop(); break;
+                case 0x8E:
+                {
+                    int selector = Pop(), value = Pop(); if (selector is < 1 or > 3 || value != 0 && value != 1 << (selector - 1)) throw Invalid("The TrueType instruction-control value is invalid.");
+                    if (kind != TrueTypeHintProgramKind.Glyph || selector == 3) _instructionControl = (_instructionControl & ~(1 << (selector - 1))) | value;
+                    break;
+                }
+                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = Divide(value, 65536, _scale); break; }
+                default: throw new SvgException(SvgErrorCode.UnsupportedFeature, $"TrueType hint opcode 0x{opcode:X2} is not implemented.");
+            }
+
+            byte ReadByte() { if (pc >= program.Length) throw Invalid("TrueType push operands are truncated."); return program.Span[pc++]; }
+            void Jump(int offset) { int destination = checked(start + offset); if (destination < 0 || destination > program.Length) throw Invalid("A TrueType jump leaves its program."); pc = destination; }
+            void SkipInstruction()
+            {
+                byte op = ReadByte(); int count = op is 0x40 or 0x41 ? ReadByte() : op is >= 0xB0 and <= 0xBF ? (op & 7) + 1 : 0;
+                bool words = op == 0x41 || op >= 0xB8 && op <= 0xBF;
+                int bytes = count * (words ? 2 : 1); if (bytes > program.Length - pc) throw Invalid("Skipped TrueType push operands are truncated.");
+                for (int i = 0; i < bytes; i++) _work.Consume(_token); pc += bytes;
+            }
+            bool Skip(bool acceptsElse)
+            {
+                int nesting = 0;
+                while (pc < program.Length)
+                {
+                    _work.Consume(_token); byte op = program.Span[pc];
+                    if (op == 0x58) nesting++;
+                    else if (op == 0x59) { if (nesting == 0) { pc++; return false; } nesting--; }
+                    else if (op == 0x1B && nesting == 0 && acceptsElse) { pc++; return true; }
+                    SkipInstruction();
+                }
+                throw Invalid("A TrueType conditional has no closing EIF.");
+            }
+            void Call(int index)
+            {
+                _work.Consume(_token); TrueTypeHintFunction function = _functions[Index(index, _functions.Length)];
+                if (!function.Defined) throw Invalid("An undefined TrueType function was called.");
+                if (_depth == 32) throw new SvgException(SvgErrorCode.LimitExceeded, "TrueType function nesting exceeds its limit.");
+                _depth++; try { Execute(function.Program, kind); } finally { _depth--; }
+            }
+            void ShiftContour(byte op)
+            {
+                TrueTypeHintZone referenceZone = op == 0x34 ? _zp1 : _zp0;
+                int referenceIndex = op == 0x34 ? _rp2 : _rp1;
+                TrueTypeHintPoint reference = Point(referenceZone, referenceIndex);
+                int delta = checked(Coordinate(reference, false) - Coordinate(reference, true));
+                int contour = Pop(), first, end;
+                if (_zp2 == TrueTypeHintZone.Twilight) { if (contour != 0) throw Invalid("A twilight contour index is invalid."); first = 0; end = _twilight.Length; }
+                else { int index = Index(contour, _ends.Length); first = index == 0 ? 0 : _ends[index - 1] + 1; end = _ends[index] + 1; }
+                for (int i = first; i < end; i++) { _work.Consume(_token); if (_zp2 == referenceZone && i == referenceIndex) continue; ref TrueTypeHintPoint p = ref Point(_zp2, i); Move(ref p, delta, false); }
+            }
+            void DeltaPoints(byte op)
+            {
+                int count = Pop(); if (count < 0 || count > _count / 2) throw Invalid("TrueType delta operands exceed the stack.");
+                for (int i = 0; i < count; i++)
+                {
+                    _work.Consume(_token); int p = Pop(), argument = Pop();
+                    if (argument is < 0 or > 255) throw Invalid("A TrueType delta argument is invalid.");
+                    int ppem = checked(_deltaBase + (op == 0x71 ? 16 : op == 0x72 ? 32 : 0) + (argument >> 4));
+                    ref TrueTypeHintPoint point = ref Point(_zp0, p);
+                    if (ppem == _ppem) { int step = (argument & 15) - 8; if (step >= 0) step++; Move(ref point, step * (64 >> _deltaShift), true); }
+                }
+            }
+            void InterpolateUntouched(TrueTypeHintAxis axis)
+            {
+                int first = 0;
+                foreach (ushort last in _ends)
+                {
+                    int firstTouched = -1, previous = -1;
+                    for (int i = first; i <= last; i++)
+                    {
+                        _work.Consume(_token); if (!(axis == TrueTypeHintAxis.X ? _glyph[i].TouchedX : _glyph[i].TouchedY)) continue;
+                        if (firstTouched < 0) firstTouched = i;
+                        if (previous >= 0) Interpolate(previous + 1, i - 1, previous, i);
+                        previous = i;
+                    }
+                    if (firstTouched >= 0) { Interpolate(previous + 1, last, previous, firstTouched); Interpolate(first, firstTouched - 1, previous, firstTouched); }
+                    first = last + 1;
+                }
+                void Interpolate(int from, int to, int a, int b)
+                {
+                    int unscaledA = Unscaled(_glyph[a]), unscaledB = Unscaled(_glyph[b]);
+                    int originalA = Original(_glyph[a]), originalB = Original(_glyph[b]);
+                    int currentA = Current(_glyph[a]), currentB = Current(_glyph[b]);
+                    if (unscaledA > unscaledB) { (unscaledA, unscaledB) = (unscaledB, unscaledA); (originalA, originalB) = (originalB, originalA); (currentA, currentB) = (currentB, currentA); }
+                    int scale = unscaledA == unscaledB || currentA == currentB ? 0 : Divide(checked(currentB - currentA), checked(unscaledB - unscaledA), 65536);
+                    for (int i = from; i <= to; i++)
+                    {
+                        _work.Consume(_token); int original = Original(_glyph[i]); int value;
+                        if (original <= originalA) value = checked(original + currentA - originalA);
+                        else if (original >= originalB) value = checked(original + currentB - originalB);
+                        else if (unscaledA == unscaledB || currentA == currentB) value = currentA;
+                        else value = checked(currentA + Divide(checked(Unscaled(_glyph[i]) - unscaledA), 65536, scale));
+                        if (axis == TrueTypeHintAxis.X) _glyph[i].X = value; else _glyph[i].Y = value;
+                    }
+                }
+                int Original(TrueTypeHintPoint p) => axis == TrueTypeHintAxis.X ? p.OriginalX : p.OriginalY;
+                int Current(TrueTypeHintPoint p) => axis == TrueTypeHintAxis.X ? p.X : p.Y;
+                int Unscaled(TrueTypeHintPoint p) => axis == TrueTypeHintAxis.X ? p.UnscaledX : p.UnscaledY;
+            }
+        }
+        if (conditionalDepth != 0) throw Invalid("A TrueType conditional has no closing EIF.");
+    }
+
+    private static int Divide(int value, int denominator, int multiplier)
+    {
+        if (denominator == 0) throw Invalid("TrueType arithmetic divides by zero.");
+        long product = (long)value * multiplier, magnitude = Math.Abs(product), divisor = Math.Abs((long)denominator);
+        long result = (magnitude + divisor / 2) / divisor; if ((product < 0) != (denominator < 0)) result = -result;
+        return checked((int)result);
+    }
+    private int Coordinate(TrueTypeHintPoint p, bool original) => _axis == TrueTypeHintAxis.X ? original ? p.OriginalX : p.X : original ? p.OriginalY : p.Y;
+    private void SetCoordinate(ref TrueTypeHintPoint p, int value) { if (_axis == TrueTypeHintAxis.X) p.X = value; else p.Y = value; }
+    private void Move(ref TrueTypeHintPoint p, int delta, bool touch)
+    {
+        SetCoordinate(ref p, checked(Coordinate(p, false) + delta));
+        if (touch) { if (_axis == TrueTypeHintAxis.X) p.TouchedX = true; else p.TouchedY = true; }
+    }
+    private int Round(int value)
+    {
+        long absolute = Math.Abs((long)value);
+        long result = _round switch { TrueTypeHintRound.Grid => (absolute + 32) & ~63L, TrueTypeHintRound.HalfGrid => (absolute & ~63L) + 32, TrueTypeHintRound.DoubleGrid => (absolute + 16) & ~31L, TrueTypeHintRound.Down => absolute & ~63L, TrueTypeHintRound.Up => (absolute + 63) & ~63L, _ => absolute };
+        return checked((int)(value < 0 ? -result : result));
+    }
+    private ref TrueTypeHintPoint Point(TrueTypeHintZone zone, int index)
+    {
+        TrueTypeHintPoint[] points = zone == TrueTypeHintZone.Glyph ? _glyph : _twilight;
+        ref TrueTypeHintPoint point = ref points[Index(index, points.Length)];
+        if (point.Unavailable) throw new SvgException(SvgErrorCode.UnsupportedFeature, "TrueType vertical phantom metrics are not implemented.");
+        return ref point;
+    }
+    internal static void ValidateTarget(TrueTypeHintTarget target)
+    {
+        if (target.Version is < 0 or > 255 || target.ControlScale is not TrueTypeHintControlScale.FullPrecision and not TrueTypeHintControlScale.FractionalFontUnits || target.Preparation is not TrueTypeHintPreparation.Single and not TrueTypeHintPreparation.DefaultThenTarget)
+            throw Invalid("The TrueType hint target is invalid.");
+    }
+    private static TrueTypeHintZone Zone(int value) => value is 0 or 1 ? (TrueTypeHintZone)value : throw Invalid("A TrueType zone pointer is invalid.");
+    private static int Index(int value, int length) => (uint)value < (uint)length ? value : throw Invalid("A TrueType index is outside its declared range.");
+    private int Pop() { if (_count == 0) throw Invalid("The TrueType stack underflows."); return _stack[--_count]; }
+    private int Peek(int offset) { if (offset <= 0 || offset > _count) throw Invalid("A TrueType stack index is invalid."); return _stack[_count - offset]; }
+    private void Push(int value) { if (_count == _stack.Length) throw Invalid("The TrueType stack exceeds its declared capacity."); _stack[_count++] = value; }
+    private static SvgException Invalid(string message) => new(SvgErrorCode.MalformedInput, message);
+
+    public void Dispose() { Array.Clear(_functions); _reservation?.Dispose(); _reservation = null; }
+}

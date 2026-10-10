@@ -18,6 +18,7 @@
   <ItemGroup>
     <None Include="../../LICENSE.txt" Pack="true" PackagePath="" Link="LICENSE.txt" />
     <None Include="../../THIRD_PARTY_NOTICES.txt" Pack="true" PackagePath="" Link="THIRD_PARTY_NOTICES.txt" />
+    <None Include="../../licenses/FreeType/FTL.TXT" Pack="true" PackagePath="licenses/FreeType/" Link="licenses/FreeType/FTL.TXT" />
     <None Include="../../README.md" Pack="true" PackagePath="" Link="README.md" />
   </ItemGroup>
 </Project>
