@@ -287,11 +287,15 @@ internal static class SvgRenderedLeafParser
                 {
                     if (textElement.Presentation.HasFill)
                     {
+                        int glyphIndex = 0;
                         foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, budget, workCounter, cancellationToken))
                         {
-                            SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, textElement.Presentation.Color);
-                            try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(glyph)); }
-                            catch { glyph.Dispose(); throw; }
+                            using (contours)
+                            {
+                                SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, textElement.Presentation.Color, run.Font, run.Glyphs[glyphIndex++], run.Style.FontSize, budget);
+                                try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(glyph)); }
+                                catch { glyph.Dispose(); throw; }
+                            }
                         }
                     }
                 }

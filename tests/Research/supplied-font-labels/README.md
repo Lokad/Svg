@@ -4,7 +4,9 @@ The next whole document is the unchanged CC0 `logo-live-text.svg`, rendered at
 64×64 with a transparent background. Seven CC0 controls cover curves/counters,
 AV/space pairs, precomposed composites, fractional placement/size, small and large
 sizes, and inherited alias/paint. They are separate from the document ledger.
-**Pixel acceptance remains pending for this document and all seven controls.**
+**Linux is exact for the document and six admitted controls. Cross-platform
+acceptance remains pending: Windows is not exact and composite accents are
+still rejected.**
 
 `font-pack.json` selects the unchanged, standalone static Noto Sans Regular 2.008
 TrueType face 0 under the document's `Example` alias. The public program and OFL
@@ -55,13 +57,20 @@ retain eleven independently extracted native glyph outlines covering the current
 contour stage matches every witness, including small-stem rounding, the first
 unaligned stem, curved counters and implied-point rounding. Synthetic controls
 protect opposite winding, missing alignment samples, subpixel sizes, cancellation,
-work expiry, memory denial and retry. The internal stage is not connected to
-public glyph rasterization yet. These are geometry controls; the font bank stays
-**0/1 completed documents and 0/7 exact pixel controls**. Connecting output-size
-hinting, native contour coverage and font preblend is the next Linux step;
-Windows grid fitting/LCD coverage and the remaining finite G9 subset stay open.
-Complete qualification of the contour stage passes 6,331 tests on each platform
-(4,442 core / 1,883 visual / six FontProbe). All 2,849 prior PNGs and 2,755
+work expiry, memory denial and retry. These remain geometry controls, separately
+from final pixels. Public Linux simple glyphs now use output-size hints,
+quarter-X/pixel-Y origin rounding, shared native contour replay and font-mask
+preblend before clip coverage and paint alpha. All six raw and six independently
+prepared forms match unchanged Linux references: **1/1 document and 6/7 controls**.
+Windows remains **0/1 and 0/7**, so cross-platform completion stays **0/1 and 0/7**.
+Previously admitted composites retain their earlier rendering route; shared
+composite hinting, the queued accent flags, Windows grid fitting/LCD coverage and
+the remaining finite G9 subset stay open. Caller-supplied bytes remain borrowed.
+Output-scale/viewBox controls reuse the frozen large-glyph reference and protect
+mapping exactly once; tiny collapsed outlines, opacity rounding and owner cleanup
+have separate synthetic controls.
+Complete qualification passes 6,341 tests on each platform
+(4,449 core / 1,886 visual / six FontProbe). All 2,849 prior PNGs and 2,755
 established exact results remain unchanged, including corporate 27/27 documents
 and 258/258 variants. Frozen browser captures and evaluation assets are reused.
 

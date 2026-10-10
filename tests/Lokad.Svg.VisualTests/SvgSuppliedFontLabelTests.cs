@@ -2,11 +2,12 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-/// <summary>Protects public-font admission and independent layout; pixel acceptance remains separately pending in this bank.</summary>
+/// <summary>Protects public-font admission, layout and output contracts; admitted Linux pixels are exact while Windows and the composite control remain pending.</summary>
 public sealed class SvgSuppliedFontLabelTests
 {
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
@@ -94,6 +95,11 @@ public sealed class SvgSuppliedFontLabelTests
             Assert.Equal(png, preparedPng);
         }
         Assert.Equal(unchanged, input);
+        if (OperatingSystem.IsLinux())
+        {
+            byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, "linuxReference")));
+            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);
+        }
     }
 
     [Fact]
@@ -129,6 +135,56 @@ public sealed class SvgSuppliedFontLabelTests
 
     private static ValueTask<SvgFontSnapshot> Prepare(byte[] input)
         => SvgFontSnapshot.CreateAsync(input, Catalog(), Provider(), CancellationToken.None);
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Fits_at_output_size_and_maps_device_contours_once(bool useViewBox)
+    {
+        string root = useViewBox ? "width=\"128\" height=\"128\" viewBox=\"0 0 64 64\"" : "width=\"64\" height=\"64\"";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" " + root + "><text font-family=\"Example\" font-size=\"48\" x=\"4\" y=\"52\">A</text></svg>");
+        double scale = useViewBox ? 1 : 2;
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        SvgRenderOptions options = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        Assert.Equal(128, PngRgbaDecoder.Decode(png, 16_384).Width);
+        SvgRenderOptions preparationOptions = new(null, scale, SvgColor.Transparent, SvgRenderLimits.Default, null);
+        using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog(), Provider(), preparationOptions, CancellationToken.None);
+        Assert.Equal(png, prepared.ConvertToPng(CancellationToken.None).ToArray());
+        if (OperatingSystem.IsLinux())
+        {
+            // The existing frozen A96 output has the same mapped size and origin.
+            byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, "references", "linux64", "large-outline.png"));
+            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_384), PngRgbaDecoder.Decode(png, 16_384)).IsExact);
+        }
+    }
+
+    [Fact]
+    public async Task Positioned_source_releases_denied_scratch_and_borrows_the_font_lifetime()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", "logo-live-text.svg"));
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        SvgPreparedFont font = Assert.Single(snapshot.Fonts);
+        byte[] original = font.Bytes.ToArray();
+        var budget = new RenderBudget(200);
+        using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(36, 8, 48, 30.672), 48, budget))
+        {
+            Assert.Equal(128, budget.Snapshot().CurrentBytes);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.CreateLatinLightPath(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+            Assert.Equal(128, budget.Snapshot().CurrentBytes);
+            Assert.Equal(original, font.Bytes.ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(original, font.Bytes.ToArray());
+        var retryBudget = new RenderBudget(long.MaxValue);
+        SvgGlyphRasterSource retry = SvgGlyphRasterSource.Create(font, new(36, 8, 48, 30.672), 48, retryBudget);
+        using (SvgAuthoredPath path = retry.CreateLatinLightPath(1, 0, 1, 0, retryBudget, new(long.MaxValue), CancellationToken.None)) Assert.True(path.Commands.Length > 0);
+        Assert.Equal(128, retryBudget.Snapshot().CurrentBytes);
+        retry.Dispose();
+        Assert.Equal(0, retryBudget.Snapshot().CurrentBytes);
+        Assert.Throws<InvalidOperationException>(() => retry.CreateLatinLightPath(1, 0, 1, 0, retryBudget, new(long.MaxValue), CancellationToken.None));
+        Assert.Equal(original, font.Bytes.ToArray());
+    }
 
     [Fact]
     public void Missing_corrupt_and_substituted_image_fonts_have_distinct_frozen_native_pixels()

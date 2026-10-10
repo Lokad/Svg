@@ -1,0 +1,45 @@
+using Lokad.Svg.Fonts;
+using Lokad.Svg.Rendering;
+
+namespace Lokad.Svg.Tests;
+
+public sealed partial class OpenTypeFontTests
+{
+    [Theory]
+    [InlineData("0.001")]
+    [InlineData("0.01")]
+    public async Task Device_hinting_collapse_renders_an_empty_glyph(string fontSize)
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='" + fontSize + "' y='3'>A</text></svg>");
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        for (int y = 0; y < 5; y++)
+        for (int x = 0; x < 5; x++)
+            Assert.Equal(0, DecodeAlpha(png, x, y));
+    }
+
+    [Fact]
+    public async Task Linux_simple_hint_stage_preserves_previously_admitted_composite_rendering()
+    {
+        byte[] bytes = CreateTriangleFont();
+        OpenTypeTableRange composite = OpenTypeFont.GetGlyphDataRange(bytes, 2, CancellationToken.None);
+        WriteInt16(bytes, composite.Offset, -1);
+        WriteUInt16(bytes, composite.Offset + 10, 3);
+        WriteUInt16(bytes, composite.Offset + 12, 1);
+        WriteInt16(bytes, composite.Offset + 14, 0);
+        WriteInt16(bytes, composite.Offset + 16, 0);
+        int cmap = FindTableOffset(bytes, 0x636D6170);
+        WriteInt16(bytes, cmap + 12 + 24, -63); // A maps to the admitted composite.
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(bytes)], CancellationToken.None);
+        SvgPreparedFont font = Assert.Single(snapshot.Fonts);
+        var budget = new RenderBudget(10_000);
+        using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(2, 0, 3, 0), 100, budget))
+            Assert.False(source.HasSimpleOutline(new(long.MaxValue), CancellationToken.None));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        Assert.True(SvgConverter.ConvertToPng(input, options, CancellationToken.None).Length > 0);
+    }
+}

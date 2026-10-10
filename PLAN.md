@@ -44,8 +44,10 @@ measurements are retained separately from pixels.
 The first shared admission blocker is corrected: bounded ordered GPOS pair
 lists/class pairs, coverage/class definitions 1/2 and mark-free IgnoreMarks.
 Covered contextual glyphs and actual marks remain explicit unsupported outcomes.
-**This bank has 0/1 completed documents and 0/7 exact controls.** The label now
-renders but still differs from its reference. The
+**Cross-platform completion remains 0/1 documents and 0/7 controls.** Linux now
+has **1/1 document and 6/7 controls exact** through all six raw and six independently
+prepared outputs; Windows remains **0/1 and 0/7**. Composite accents still hit
+their component-flag gate. The
 [native raster diagnosis](tests/Research/supplied-font-labels/diagnostics/native-rasterization.json)
 identifies both pipelines for the selected `A`: Windows uses hinted symmetric
 LCD coverage averaged to alpha and font preblend; Linux uses Fontations Latin
@@ -58,19 +60,21 @@ geometry witnesses** used by the current controls: `A`, `V`, `O` and `a` at thei
 declared small, fractional, ordinary and large device sizes. These intermediate
 contours are checked separately from final font pixels. Sampling and fitting
 borrow the supplied face, charge work and temporary storage, and preserve the
-existing unhinted contour contract. The stage is not connected to public text
-rasterization yet; counts remain **0/1 completed font documents and 0/7 exact
-font controls**.
+existing unhinted contour contract. Public Linux simple-glyph rendering now fits
+at output size, rounds device origins to quarter-X/pixel-Y positions, replays
+directed contours through the shared native coverage machinery, and applies
+font preblend before clipping and paint alpha. The font and both platform
+references remain unchanged. Previously admitted composites retain their prior
+coverage until shared composite hinting is implemented.
 
-Next, connect device-size hinting and font preblend through the existing contour
-machinery, preserving positioned glyph origins and native paint distinctions.
-Complete the corresponding
-managed TrueType grid fitting and LCD coverage for Windows before counting the
+Next, complete bounded managed TrueType grid fitting and LCD coverage for
+Windows before counting the
 document complete. Charge extra metric-glyph discovery, hint execution and mask
 storage; preserve caller-owned bytes, directed curves and native paint distinctions.
 Use the existing size/curve/fractional controls as each mechanism advances.
-Advance rounding does not affect the first single glyph's ink; resolve that
-separate layout defect and composite component flags through the queued controls.
+Advance rounding does not affect the first single glyph's ink; the Linux pair
+control is now exact, while independent layout rounding and composite component
+flags remain visible dependencies for the full G9 subset.
 Do not replace the font, document bytes or either platform reference. Keep this
 same document selected through these remaining gates; G9's text paths and all
 finite label/path promises remain open.
@@ -120,7 +124,7 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,331 tests/platform**: 4,442 core, 1,883 visual, six FontProbe. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,341 tests/platform**: 4,449 core, 1,886 visual, six FontProbe. Test counts are not document counts. |
 | Complete retained banks | All **2,908 prior reports**, **2,849 prior PNGs** and **2,755 established exact comparisons** are preserved. Established document/reference captures are reused. The separate pending public-font bank has its declared native captures and diagnostics. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
@@ -796,10 +800,13 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
   - [x] Establish the bounded managed simple-Latin contour stage against the
     eleven native glyph/size witnesses used by the current bank. These geometry
     checks do not close font pixel acceptance or broader font/script coverage.
-  - [ ] Connect output-size Latin light hints and device-coordinate contour
-    replay on Linux, followed by font preblend. Reuse existing native analytic
-    coverage;
-    system FreeType grayscale rasterization is not this browser's backend.
+  - [x] Connect output-size simple-Latin light hints and device-coordinate contour
+    replay on Linux, followed by font preblend. Existing native analytic coverage
+    completes the selected document and six admitted controls against unchanged
+    references. System FreeType grayscale rasterization is not this browser's backend.
+  - [ ] Extend shared composite hinting and admit the queued component flags.
+    Previously admitted composites keep their existing rendering route; this
+    compatibility boundary does not close composite pixel fidelity.
   - [ ] Managed TrueType grid fitting and symmetric LCD coverage averaged to
     alpha on Windows, followed by the qualified font preblend. Ordinary path or
     grayscale coverage cannot substitute for the measured LCD route.

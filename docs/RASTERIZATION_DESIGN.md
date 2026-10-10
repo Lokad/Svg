@@ -10762,3 +10762,56 @@ layouts remain 72/272/68 bytes. Original SVGs, font programs, options and both
 platforms' frozen references retain their evaluation-data integrity. Existing
 healthy native captures are reused; no browser qualification or implementation
 fingerprints are refreshed for this stage.
+
+## Linux supplied-font device replay and mask preblend (2026-10-10)
+
+The unchanged original `logo-live-text.svg` now matches its frozen Linux image
+through all six raw and six independently prepared supplied-font outputs. Six
+admitted public-font controls also become exact: curves/counters, AV/space pairs,
+fractional size/placement, small fractional origins, large outlines and inherited
+color. Composite accents keep their existing unsupported component-flag outcome.
+Linux therefore has **1/1 document and 6/7 controls exact** in this bank; Windows
+remains **0/1 and 0/7**, and cross-platform completion remains **0/1 and 0/7**.
+The selected document, font, alias/options and both native reference banks stay
+frozen. Diagnostic outlines and masks never become implementation inputs.
+
+Positioned scene metadata borrows the supplied prepared face and retains glyph
+identity, origin and authored font size. Rasterization obtains managed Latin
+light hints at mapped output size, maps F26 contours into device commands once,
+and preserves their native direction and quadratic operands. The pinned native
+horizontal-subpixel strike rounds X to quarters and baseline Y to whole pixels:
+`floor(4*x + 0.5)/4`, `floor(y + 0.5)`. This placement rule closes the fractional
+and pair/space controls without changing the existing font-unit layout contract.
+Independent browser advance rounding remains a separate finite G9 dependency.
+
+Existing authored-path replay, bitmap-local contour coverage and clipped paint
+traversal accept an explicit device coordinate space. Font coverage is obtained
+as an opaque A8 mask before paint. The qualified Linux grayscale preblend uses
+the pinned three-bit canonical color/luminance, gamma 76/64 and contrast 51/255.
+Clip coverage and paint alpha apply afterward with native mask arithmetic.
+Eighty-eight independent values from pinned Skia's `SkMaskGamma::BuildGammaTable`
+protect all eight canonical luminances and representative coverage values;
+synthetic checks protect cancellation, work expiry, opacity independence and
+table boundaries. Synthetic opacity expectations now distinguish the Linux
+native mask rounding from Windows's pending sampler.
+
+Each source metadata owner reserves 128 scene bytes before allocation; glyph
+geometry charges its added reference. Hinting, copied commands, source replay
+and lookup entries charge conversion work and observe cancellation. Scratch and
+retained commands have explicit owners; denied construction releases partial
+storage and preserves the caller's font bytes for retry. Output-scale and root
+viewBox controls reuse the existing frozen A96 reference to verify fitting at
+device size and mapping exactly once. Collapsed tiny glyphs render empty.
+Already admitted composites keep their prior coverage until shared composite
+hinting is implemented, avoiding a new public rejection. Windows's bounded
+managed TrueType grid fitting and symmetric LCD coverage remain required for
+this same document; the finite G2–G9 and S17 exits remain open.
+
+Complete Windows/native-Linux Release qualification passes **6,341 tests per
+platform** (4,449 core / 1,886 visual / six FontProbe), with zero warnings,
+errors, failures or skips. All **2,908 prior reports, 2,849 prior PNGs and 2,755
+established exact comparisons** remain unchanged, including corporate **27/27
+documents / 258/258 variants**, 30/30 development documents and 2/2 completed
+original acceptance fixtures. Scene layouts remain 72/272/68 bytes. Existing
+healthy native reference captures are reused; no implementation fingerprints or
+browser recapture is required for this correction.

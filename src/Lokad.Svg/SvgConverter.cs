@@ -10,6 +10,7 @@ using System.Xml;
 public static class SvgConverter
 {
     private const int GlyphSamplesPerAxis = 4;
+    private enum PathCoordinateSpace { User, Device }
     /// <summary>Owns mapped polygon points with raster bounds, clip and their surface reservation until the rasterizer releases them.</summary>
     private readonly record struct MappedPolygon(SvgDevicePoint[] Points, int StartX, int StartY, int EndX, int EndY, int PathStartX, int PathStartY, int PathEndX, int PathEndY, (double Left, double Top, double Right, double Bottom)? Clip, SvgClipAntialiasing ClipAntialiasing, bool ClipContainsPath, SvgDeviceBounds CompleteBounds, bool HasFractionalEdge, SvgQuadSpan[] QuadSpans, SvgCubicSpan[] CubicSpans, RenderBudget.BudgetReservation? Reservation, int[] ContourEnds, int[]? Signs, SvgPreparedPathContours? Authored, SvgAffineTransform AuthoredMap, SvgPolygonMapping Mapping) : IDisposable
     {
@@ -1194,7 +1195,7 @@ public static class SvgConverter
                     RasterizeRadialFill(geometry.Radial, destination, pass);
                     return;
                 case SvgGeometryKind.PolygonFill:
-                    RasterizePolygonFill(geometry.Polygon, geometry.AuthoredPath, destination);
+                    RasterizePolygonFill(geometry.Polygon, geometry.AuthoredPath, destination, ReadOnlySpan<byte>.Empty);
                     return;
                 case SvgGeometryKind.GradientPolygon:
                     RasterizeGradientPolygon(geometry.GradientPolygon, geometry.AuthoredPath, destination);
@@ -1231,7 +1232,7 @@ public static class SvgConverter
             return coverage;
         }
 
-        MappedPolygon MapPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, bool isEvenOdd, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgPolygonMapping mapping, SvgClipBox? clip, SvgAuthoredPath? authoredPath)
+        MappedPolygon MapPolygon(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, bool isEvenOdd, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgPolygonMapping mapping, SvgClipBox? clip, SvgAuthoredPath? authoredPath, PathCoordinateSpace coordinateSpace)
         {
             SvgPreparedPathContours? authored = null;
             SvgAffineTransform authoredMap = SvgAffineTransform.Identity;
@@ -1244,7 +1245,7 @@ public static class SvgConverter
                 ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 bool binaryViewport = clip is {} binaryClip && (binaryClip.Antialiasing & SvgClipAntialiasing.Binary) != 0
                     || activeViewportClip.Length != 0 && activeViewportIsBinary;
-                SvgAffineTransform outputMap = binaryViewport
+                SvgAffineTransform outputMap = coordinateSpace == PathCoordinateSpace.Device ? SvgAffineTransform.Identity : binaryViewport
                     ? SvgAffineTransform.FromScaleOffset((float)horizontalScale, (float)verticalScale, (float)horizontalOffset, (float)verticalOffset)
                     : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
                 authored = replay.PrepareSource(outputMap, isEvenOdd, budget, preparationWork, cancellationToken);
@@ -1254,13 +1255,20 @@ public static class SvgConverter
                 mapping = authoredPath?.StrokeStyle is null ? SvgPolygonMapping.NativeFillEdges : SvgPolygonMapping.NativeStrokeEdges;
                 quadSpans = authored.QuadSpans; cubicSpans = authored.CubicSpans;
             }
+            if (points.Length == 0)
+            {
+                // Device-size fitting can collapse every contour. Release replay
+                // scratch and return a nonpainting owner without reserving zero bytes.
+                authored?.Dispose();
+                return new([], 0, 0, 0, 0, 0, 0, 0, 0, null, SvgClipAntialiasing.None, true, default, false, [], [], null, [], null, null, SvgAffineTransform.Identity, mapping);
+            }
             bool transferred = false;
             try
             {
-                double pointScaleX = authored is null ? horizontalScale : 1;
-                double pointScaleY = authored is null ? verticalScale : 1;
-                double pointOffsetX = authored is null ? horizontalOffset : 0;
-                double pointOffsetY = authored is null ? verticalOffset : 0;
+                double pointScaleX = authored is null && coordinateSpace == PathCoordinateSpace.User ? horizontalScale : 1;
+                double pointScaleY = authored is null && coordinateSpace == PathCoordinateSpace.User ? verticalScale : 1;
+                double pointOffsetX = authored is null && coordinateSpace == PathCoordinateSpace.User ? horizontalOffset : 0;
+                double pointOffsetY = authored is null && coordinateSpace == PathCoordinateSpace.User ? verticalOffset : 0;
                 long mappingWork = (long)points.Length + 2L * quadSpans.Length + 2L * cubicSpans.Length;
                 if (mappingWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon vertex mapping exceeds the configured limit.");
                 workUnits += mappingWork;
@@ -1442,12 +1450,13 @@ public static class SvgConverter
             return paintClip;
         }
 
-        void RasterizePolygonFill(SvgPolygonFill polygon, SvgAuthoredPath? authoredPath, byte[] destination)
+        void RasterizePolygonFill(SvgPolygonFill polygon, SvgAuthoredPath? authoredPath, byte[] destination, ReadOnlySpan<byte> fontPreblend)
         {
-            if (!polygon.HasFill || polygon.Points.Length < 3) return;
-            using MappedPolygon raster = MapPolygon(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip, authoredPath);
+            if (!polygon.HasFill || (polygon.Points.Length < 3 && fontPreblend.IsEmpty)) return;
+            using MappedPolygon raster = MapPolygon(polygon.Points, polygon.ContourEnds, polygon.Signs, polygon.IsEvenOdd, polygon.QuadSpans, polygon.CubicSpans, polygon.Mapping, polygon.Clip, authoredPath, fontPreblend.Length == 0 ? PathCoordinateSpace.User : PathCoordinateSpace.Device);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
-            SvgAnalyticPaint analyticPaint = ResolveSolidPaint(polygon.Color);
+            SvgAnalyticPaint glyphPaint = ResolveSolidPaint(polygon.Color);
+            SvgAnalyticPaint analyticPaint = fontPreblend.Length == 0 ? glyphPaint : SvgAnalyticPaint.Solid(new SvgColor(0, 0, 0, 255));
             if (activeViewportClip.Length != 0 && activeViewportIsBinary) analyticPaint = analyticPaint.ThroughBinaryRegion();
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
@@ -1514,7 +1523,15 @@ public static class SvgConverter
                         if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
                         double pixelCoverage = !useAnalytic && scan.MightCover(x) ? PixelCoverage(raster, contourEnds, nestingSigns, polygon.IsEvenOdd, raster.Signs, x, y, cancellationToken) : 0.0;
                         int offset = (y * outputWidth + x) * 4;
-                        if (useAnalytic && collectingClipCoverage is not null)
+                        if (fontPreblend.Length != 0)
+                        {
+                            clipPixel.Clear();
+                            if (useAnalytic) walker.PaintPixel(x - storageStartX, clipPixel, analyticPaint, SvgAnalyticClipCoverage.Full);
+                            else clipPixel[3] = CoverageAlpha(255, pixelCoverage);
+                            byte alpha = PolygonClipCoverage(raster, x, y).Apply(fontPreblend[clipPixel[3]]);
+                            glyphPaint.Blend(destination.AsSpan(offset, 4), alpha, SvgAnalyticPaintKind.Mask);
+                        }
+                        else if (useAnalytic && collectingClipCoverage is not null)
                         {
                             clipPixel.Clear();
                             walker.PaintPixel(x - storageStartX, clipPixel, analyticPaint, PolygonClipCoverage(raster, x, y));
@@ -1553,7 +1570,7 @@ public static class SvgConverter
             if (!outline.HasFill || outline.Points.Length < 3) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
-            using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath);
+            using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath, PathCoordinateSpace.User);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgLinearGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
@@ -1675,7 +1692,7 @@ public static class SvgConverter
             if (!outline.HasFill || outline.Points.Length < 3) return;
             // An objectBoundingBox paint on a zero-area box covers nothing: the stroke outline keeps its own extents while the paint box stays degenerate.
             if (!outline.Gradient.IsUserSpace && (outline.Box.Width <= 0 || outline.Box.Height <= 0)) return;
-            using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath);
+            using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath, PathCoordinateSpace.User);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             SvgRadialGradient definition = outline.Gradient;
             SvgRectangle box = outline.Box;
@@ -1844,7 +1861,7 @@ public static class SvgConverter
         void RasterizePatternPolygon(SvgPatternPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
-            using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath);
+            using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath, PathCoordinateSpace.User);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             using RenderBudget.BudgetReservation sourcePatternOwner = budget.Reserve(512, SvgMemoryCategory.Geometry);
             SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null) { ContentPaint = outline.ContentPaint, VectorContent = outline.VectorContent, ShaderPlacement = outline.ShaderPlacement };
@@ -2391,6 +2408,24 @@ public static class SvgConverter
         void RasterizeGlyphContours(SvgGlyphGeometry glyph, byte[] destination)
         {
             if (glyph.Contours.Length == 0) return;
+            if (OperatingSystem.IsLinux() && glyph.Source is SvgGlyphRasterSource source)
+            {
+                ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                if (source.HasSimpleOutline(preparationWork, cancellationToken))
+                {
+                    using SvgAuthoredPath path = source.CreateLatinLightPath(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
+                    if (path.Commands.IsEmpty) { workUnits += preparationWork.Used; return; }
+                    Span<byte> preblend = stackalloc byte[256];
+                    SvgFontMaskPreblend.BuildLinuxGrayTable(preblend, ResolveSolidColor(glyph.Color), preparationWork, cancellationToken);
+                    workUnits += preparationWork.Used;
+                    using SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, glyph.Color, true, false, SvgPolygonMapping.NativeFillEdges, null, null, budget);
+                    RasterizePolygonFill(fill, path, destination, preblend);
+                    return;
+                }
+                // Previously admitted composites retain their existing coverage;
+                // shared composite hinting remains an explicit G9 dependency.
+                workUnits += preparationWork.Used;
+            }
             long segmentCount;
             long sampleWork;
             try

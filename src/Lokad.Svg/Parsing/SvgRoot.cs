@@ -872,32 +872,49 @@ internal sealed class SvgGlyphGeometry : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
 
-    internal SvgGlyphGeometry(SvgGlyphQuadraticContour[] contours, SvgColor color) : this(contours, color, null)
+    internal SvgGlyphGeometry(SvgGlyphQuadraticContour[] contours, SvgColor color) : this(contours, color, null, null)
     {
         ArgumentNullException.ThrowIfNull(contours);
     }
 
-    private SvgGlyphGeometry(SvgGlyphQuadraticContour[] contours, SvgColor color, RenderBudget.BudgetReservation? reservation)
+    private SvgGlyphGeometry(SvgGlyphQuadraticContour[] contours, SvgColor color, RenderBudget.BudgetReservation? reservation, SvgGlyphRasterSource? source)
     {
         Contours = contours;
         Color = color;
         _reservation = reservation;
+        Source = source;
     }
 
     internal SvgGlyphQuadraticContour[] Contours { get; }
 
     internal SvgColor Color { get; }
 
+    internal SvgGlyphRasterSource? Source { get; }
+
     internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color)
     {
         ArgumentNullException.ThrowIfNull(contours);
         SvgGlyphContourTransfer transfer = contours.TransferOwnership();
-        try { return new SvgGlyphGeometry(transfer.Contours, color, transfer.Reservation); }
+        try { return new SvgGlyphGeometry(transfer.Contours, color, transfer.Reservation, null); }
         catch
         {
             transfer.Reservation?.Dispose();
             throw;
         }
+    }
+
+    /// <summary>Adopts contours and positioned source metadata, releasing both on failed ownership transfer.</summary>
+    internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, RenderBudget budget)
+    {
+        if (contours.Contours.Length == 0) return Create(contours, color);
+        SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, position, fontSize, budget);
+        try
+        {
+            SvgGlyphContourTransfer transfer = contours.TransferOwnership();
+            try { return new(transfer.Contours, color, transfer.Reservation, source); }
+            catch { transfer.Reservation?.Dispose(); throw; }
+        }
+        catch { source.Dispose(); throw; }
     }
 
     /// <summary>Reserves scene ownership for contours supplied by a non-rendering caller.</summary>
@@ -919,14 +936,14 @@ internal sealed class SvgGlyphGeometry : IDisposable
             throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph contour storage exceeds the supported accounting range.");
         }
         RenderBudget.BudgetReservation reservation = budget.Reserve(GetStorageByteCount(contours.Length, segmentCount), SvgMemoryCategory.Scene);
-        return new SvgGlyphGeometry(contours, color, reservation);
+        return new SvgGlyphGeometry(contours, color, reservation, null);
     }
 
     internal static long GetStorageByteCount(int contourCount, int segmentCount)
     {
         try
         {
-            return checked(32L + (long)contourCount * Unsafe.SizeOf<SvgGlyphQuadraticContour>() + (long)contourCount * 32L + (long)segmentCount * Unsafe.SizeOf<SvgGlyphQuadraticSegment>());
+            return checked(40L + (long)contourCount * Unsafe.SizeOf<SvgGlyphQuadraticContour>() + (long)contourCount * 32L + (long)segmentCount * Unsafe.SizeOf<SvgGlyphQuadraticSegment>());
         }
         catch (OverflowException)
         {
@@ -936,6 +953,7 @@ internal sealed class SvgGlyphGeometry : IDisposable
 
     public void Dispose()
     {
+        Source?.Dispose();
         _reservation?.Dispose();
         _reservation = null;
     }
