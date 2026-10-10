@@ -30,14 +30,32 @@ match the frozen native Windows/Linux references. This is **1/1 supplied-font
 acceptance document**, separately from the 30 development documents and the two
 non-font original acceptance fixtures. Snapshot-less rejection stays explicit.
 
-**Next complete deliverable: `original-logo-text-path`, 64×64 transparent**, using
-the same unchanged supplied face and alias. Retain the original local path and
-text bytes. Freeze healthy matching platform references with the exact font
-embedded inside the browser SVG image before implementation. Follow the local
-path reference, supplied advances and tangent placement through every remaining
-rejection or mismatch; use small offset/reference/placement controls for shared
-fixes. Other G2 combinations are dependencies only when this document needs them.
+**The original `logo-text-path.svg` is complete at unchanged 64×64 transparent**
+under the same supplied face and alias. Its original local path and text bytes
+match healthy frozen Windows/Linux references through all six raw and six
+independently prepared outputs. The [text-path bank](tests/Research/supplied-font-text-paths/README.md)
+tracks **1/1 document and 7/7 separate controls** for offsets, anchors, relative
+placement, collinear commands, forward references and out-of-range midpoints.
+Shared authored path parsing, composed source maps, queued paint positions and
+existing glyph replay remove the rejection; no raster correction was needed.
+Together the two original supplied-font acceptance documents are **2/2 complete**.
 The finite curved/transformed text-path and full label subset remain promised.
+
+**Next complete deliverable: `commons-svg-translate-textpath`, 512×256 transparent**,
+with an explicit viewport. Its [retained CC0 original](tests/Research/supplied-font-documents/README.md)
+keeps all 704 upstream bytes, four text runs, positioned tspan lines and painted
+local path. The original monospace/bold declarations resolve to the declared
+public static Noto Sans Mono Bold face 0. Source, output and font contract were
+selected before native capture or candidate screening. Freeze healthy matching
+platform references with that exact face embedded inside the SVG image and prove
+its use before implementation. Follow every rejection and mismatch through the
+whole document; absolute span positions, finite supplied-font typography and any
+needed empty-body leaf handling are shared dependencies. Other G2 combinations
+are prerequisites only when this document needs them. This is a pending document,
+separate from completed ledgers and from the seven unresolved font controls below.
+The initial Windows supplied-font probe rejects `tspan x` as unsupported. Implement
+that absolute-position dependency after its native font/reference qualification,
+then continue through later gates and pixels until this whole document is exact.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
 original output, seven controls, upstream face and OFL notice, explicit alias/
@@ -57,7 +75,7 @@ always computes from caller-owned font bytes; diagnostic masks are never inputs.
 Instruction-free Windows outlines and previously admitted composites retain their
 existing coverage route until their shared extensions are qualified.
 
-**Cross-platform document completion is 1/1; control completion remains 0/7.**
+**Live-text bank document completion is 1/1; its control completion remains 0/7.**
 Linux has **6/7 controls exact**, Windows **0/7**. Keep the whole document complete
 while resolving these separate controls; do not expand combinations just to close
 an interpreter grid. Current Windows measurements against unchanged references:
@@ -120,19 +138,20 @@ Mechanisms, control counts and dated qualifications live in
 | Shadowed star (`inv-125`) | 128×128, transparent | Local filter binding, bounded native SourceGraphic replay and shared premultiplied Gaussian blur. |
 | Question-mark export (`inv-126`) | 185×180, transparent | Shared bounded validation of inert outlined-path typography; existing native blur and geometry playback are already exact. |
 | Original live-text acceptance fixture | 64×64, transparent; explicit supplied Noto Sans / `Example` contract | Shared bounded platform hinting, directed contours, symmetric LCD/analytic coverage and font preblend. Separate from the 30 development documents. |
+| Original text-path acceptance fixture | 64×64, transparent; the same supplied Noto Sans / `Example` contract | Local authored path/reference layout, composed source maps and original paint positions reuse existing glyph raster replay. Seven separate controls are exact on both platforms. |
 
 ## 1. Validated checkpoint and limits
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,477 tests/platform**: 4,533 core, 1,938 visual, six FontProbe. Test counts are not document counts. |
-| Complete retained banks | Complete qualification preserves **2,908 prior reports**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The separate public-font bank completes its original document on both platforms through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,525 tests/platform**: 4,560 core, 1,959 visual, six FontProbe. Test counts are not document counts. |
+| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The snapshot-less text-path rejection retains its category/input and now explicitly explains the required prepared font snapshot. Two separate public-font banks complete their original documents through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
 | Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
-| Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission and the internal Latin/TrueType hint stages preserve borrowed font bytes and release owned scratch on rejection. Inert typography values still do not request or retain fonts. |
-| Package/installed consumer | Both platform packages retain exact notices/licenses with no native assets, bundled fonts or runtime dependencies. An isolated installed Windows consumer matches the completed font document through all 12 APIs and passes conversion/catalog/overlap/dimension checks. S17 remote release evidence remains separate. |
+| Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission, Latin/TrueType hints and queued local text-path runs preserve borrowed font bytes and release owned scratch on rejection. Forward paint/reference slots preserve order and opacity. Inert typography values still do not request or retain fonts. |
+| Package/installed consumer | Both platform packages retain exact notices/licenses with no native assets, bundled fonts or runtime dependencies. An isolated installed Windows consumer matches both completed original font documents through all 12 APIs and passes conversion/catalog/overlap/dimension checks. S17 remote release evidence remains separate. |
 | Scene layouts | Draw command / geometry / paint remain **72/272/68 bytes**. No new throughput claim follows from this correction. |
 | Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
@@ -176,9 +195,9 @@ junction, soccerball with shadow and transparent striped pattern are complete.
 The selected development queue is **30/30 complete**, including both baseball,
 both arrow exports, both path-marker documents and the two public-domain filter
 exports. The original marker-instance and drop-shadow acceptance fixtures are
-also complete, counted separately (**2/2**). The supplied-font live-text acceptance
-is complete too (**1/1** under its explicit contract). The next whole deliverable
-is the original text-path fixture declared above. Other promised combinations and
+also complete, counted separately (**2/2**). Both original supplied-font acceptance
+documents are complete (**2/2** under their explicit contracts). The next whole
+deliverable is the retained CC0 SVG Translate document declared above. Other promised combinations and
 finite effects remain open.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
@@ -202,7 +221,7 @@ landed mechanisms remain regression requirements.
 | G6 | **Four retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Static markers and the enumerated filter/blending subset below | Four CC0 exports and the original marker-instance acceptance fixture complete their declared outputs; remaining marker combinations and finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
-| G9 | Supplied-font labels and the enumerated text-path subset below | Original live-text acceptance complete; seven controls and wider labels/text paths stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
+| G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents complete; seven text-path controls exact. SVG Translate is next; seven live-text controls and wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
 
 ### Document deliverables and accounting
 
@@ -829,6 +848,19 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
     rounding, curves/counters, composite flags, small/large sizes, fractional
     origins and inherited color. Expand combinations only for a demonstrated
     dependency; keep the full label/path exit below open.
+  - [x] Complete the unchanged original local text-path document through all
+    12 APIs on both platforms. Seven frozen offset/reference/placement controls
+    are exact, separately from the document. Reuse authored path commands,
+    composed source maps, supplied advances and native glyph replay. Zero-length
+    paths/out-of-range midpoints paint nothing; missing/non-path local references
+    are unresolved resources. Curved/reversing/closed/multiple contours, calibrated
+    lengths, child styles and general tangent glyph maps stay explicit current
+    gates without removing any finite text-path promise.
+  - [ ] Finish the retained CC0 SVG Translate document at its declared 512×256
+    transparent viewport, under the public Mono Bold contract. Freeze intended-font
+    references/proof before implementation, then remove each shared rejection and
+    mismatch. Keep absolute tspan positions and empty-body path admission within
+    the whole-document work; do not require unrelated instance grids first.
 - **Explicit unsupported outcomes:** automatic wrapping, bidi/joining/complex
   shaping, general GSUB/GPOS or mark positioning, vertical text, text-path stretch/
   auto spacing, variable/color/bitmap fonts, CFF/CFF2, WOFF/WOFF2 and host-font
@@ -852,8 +884,9 @@ The measured G3 width-map defect lacks a qualified whole-document witness and
 stays open. Choose shared changes by the complete documents they advance.
 
 The original live-text acceptance fixture is complete under its unchanged public-
-font contract. The next retained deliverable is the original text-path fixture,
-with the same explicit preparation and verified browser embedding. Freeze its
+font contract. Both original supplied-font documents are now complete. The next
+retained deliverable is the CC0 SVG Translate document,
+with explicit preparation and intended-font browser embedding qualification. Freeze its
 matching native references before changing the shared path/layout machinery;
 complete its declared output within the unchanged finite G9 subset. Online sourcing
 continues in bounded public-domain/CC0 batches for remaining in-scope gaps;
@@ -1246,9 +1279,10 @@ Implement or reject features affecting output. Add styled/positioned `tspan`, sp
 explicit line positioning for labels.
 
 Position/rotate lists, `textLength`/`lengthAdjust`, the enumerated extra baselines,
-transformed/stroked text, decorations and text paths are later G9 gates, with
-finite intended admission and acceptance examples in section 3. Their initial
-exclusion does not remove them from the final queue. Automatic wrapping,
+transformed/stroked text, decorations and curved/closed/transformed text paths are
+remaining G9 gates, with finite admission and acceptance examples in section 3.
+The original positive horizontal local text path is complete. The remaining items'
+initial exclusion does not remove them from the final queue. Automatic wrapping,
 bidi/joining/complex scripts, unadmitted mark positioning, general GSUB/GPOS,
 vertical text, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2 remain outside
 that intended text subset.

@@ -389,6 +389,7 @@ internal static class SvgDocumentTraversal
                     SvgPatternReferenceResolver.Resolve(state, true, workCounter, cancellationToken);
                     SvgDeferredPaintLeaves.Resolve(root, state, limits, workCounter, cancellationToken);
                     if (state.DeferredTextFailure is {} textFailure) throw textFailure;
+                    SvgTextPathLayout.Resolve(state, limits, workCounter, cancellationToken);
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
                     SvgResourceUseReplay.Resolve(state, workCounter, cancellationToken);
                     SvgMaskContentReplay.Resolve(root, state, workCounter, cancellationToken);

@@ -10939,3 +10939,67 @@ Both platform packages retain exact FreeType/license notices and contain no nati
 assets, bundled fonts or runtime package dependencies. An isolated installed
 Windows consumer reproduces the unchanged original supplied-font reference
 through all 12 APIs, plus conversion, catalog, overlap and dimension-limit checks.
+
+### Original supplied-font local text path (2026-10-10)
+
+The unchanged `logo-text-path.svg` completes its original 64×64 transparent
+output under the existing public Noto Sans Regular / `Example` contract. It is
+one document, separately from seven focused offset/reference/placement controls
+in `tests/Research/supplied-font-text-paths`. All eight outputs match their frozen
+native Windows/Linux references through six raw and six independently prepared
+APIs. Both original supplied-font acceptance documents are now complete (2/2),
+separately from 30 selected development documents and two non-font originals.
+
+Source/options/font were declared before capture and screening. Chrome
+153.0.8010.52, revision 1681091, recipe 3 embeds the exact supplied face inside the
+SVG image. Each platform retained three stable healthy cleaned captures for all
+eight cases (48 positive captures), plus matching missing/corrupt/substituted-font
+triples (18 negative captures). The negative witnesses change the original
+document's pixels on both platforms and prove font use independently of final
+candidate comparisons. No prior source, font or reference was changed.
+
+Shared text discovery/extraction now admits one local text-path run. Layout
+borrows the existing retained definition source, parses its authored commands
+without flattening or fill closure, and composes ancestor/leaf coordinates.
+The first subset admits one open positive horizontal contour, including collinear
+segments and mapped baselines. Supplied advances/kerning, relative offsets and
+anchoring determine distance; the outer x is an along-path offset and y is
+ignored. Zero length and glyph midpoints beyond either endpoint paint nothing.
+Placed glyphs reuse the existing platform fitting, source replay, coverage and
+preblend. This correction needs no new raster algorithm or fixture predicate.
+
+Queued runs reserve their metadata and glyph arrays, borrow snapshot font bytes
+and keep original scene paint slots while definitions resolve. Deferred paint
+insertion shifts text slots; text insertion shifts later uses and clip/mask group
+ranges. Ownership survives denial, cancellation and partial glyph construction
+through document teardown. Twenty-seven core checks and 21 visual checks protect
+syntax/reference boundaries, authored commands/maps, work, cleanup, all 12 APIs,
+font-use evidence, forward paint order/opacity, untouched outputs and retry.
+Missing/non-path references are unresolved resources. Curved/reversing/closed/
+multiple contours, calibrated lengths, child styles and general tangent glyph
+maps keep explicit gates under the unchanged finite G9 promises.
+
+Complete Release qualification passes 6,525 tests/platform (4,560 core / 1,959
+visual / six FontProbe), preserving all 2,908 prior outcomes, 2,849 prior PNGs,
+2,755 established exact comparisons, corporate 27/27 documents / 258/258 variants,
+current marker/filter/typography controls and scene layouts 72/272/68. One
+snapshot-less text-path diagnostic now explicitly names its required prepared
+font snapshot; category and source remain unchanged. The live-text bank preserves
+its exact original document and six Linux controls; seven Windows controls remain
+unresolved. No source/DLL/script/build/report fingerprints are introduced.
+
+The next selected whole document is Glrx's CC0 SVG Translate textpath, retained
+unchanged (704 bytes, BOM/CRLF) with four text runs, positioned tspan lines and a
+painted local path. Its declared output is an explicit 512×256 transparent
+viewport; the original monospace/bold request resolves to the pinned public static
+Noto Sans Mono Bold face 0. It remains pending in `supplied-font-documents`.
+Native intended-font references/proof must freeze before implementation, then
+shared label/path mechanisms must remove every rejection and mismatch through
+the whole declared document. Other instance/label combinations and the seven
+existing font defects remain visible without becoming exhaustive prerequisites.
+The initial supplied-font Windows probe rejects the retained document's absolute
+`tspan x` declaration. Both platform packages keep exact notices/licenses and no
+native/font/runtime dependency assets; an isolated installed Windows consumer
+matches both original font documents through all 12 APIs and passes ordinary
+conversion, catalog, overlap and dimension-limit scenarios. Remote S17 evidence
+remains separate.

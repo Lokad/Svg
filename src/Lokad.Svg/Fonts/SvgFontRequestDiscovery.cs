@@ -97,6 +97,16 @@ internal static class SvgFontRequestDiscovery
                     SvgTextWhitespaceMode childWhitespaceMode = inheritedWhitespaceMode;
                     InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
                     bool admittedTextSpan = insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanWhitespaceMode(reader, inheritedWhitespaceMode, tspanStyleSheet, workCounter, cancellationToken, out childWhitespaceMode);
+                    if (insideDirectText && isSvgElement && reader.LocalName == "textPath" && reader.Depth == rootDepth + activeCandidateLevel + 1)
+                    {
+                        try
+                        {
+                            _ = SvgTextPathSyntax.Parse(reader, workCounter, cancellationToken);
+                            childWhitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, null, inheritedWhitespaceMode);
+                            admittedTextSpan = true;
+                        }
+                        catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnsupportedFeature) { admittedTextSpan = false; }
+                    }
                     if (!admittedTextSpan && activeCandidateLevel >= 0)
                     {
                         DiscoveryCandidate active = directTextLevels[activeCandidateLevel];

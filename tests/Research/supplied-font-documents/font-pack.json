@@ -1,0 +1,22 @@
+{
+  "packId": "public-noto-sans-mono",
+  "files": [
+    {
+      "relativePath": "fonts/NotoSansMono-Bold.ttf",
+      "byteSize": 525664,
+      "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc"
+    }
+  ],
+  "families": [
+    {
+      "requestedFamily": "monospace",
+      "resolvedFamily": "Noto Sans Mono",
+      "relativeFontFile": "fonts/NotoSansMono-Bold.ttf",
+      "weight": 700,
+      "italic": false,
+      "faceIndex": 0,
+      "hasMathTable": false
+    }
+  ],
+  "fallbacks": []
+}

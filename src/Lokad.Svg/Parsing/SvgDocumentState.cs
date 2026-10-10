@@ -57,6 +57,7 @@ internal sealed class SvgDocumentState : IDisposable
         RadialGradients = new BudgetedParserDictionary<string, SvgRadialGradient>(budget, SvgMemoryCategory.Parser, RadialGradientStorageBytes);
         GradientStops = new BudgetedParserList<SvgGradientStop>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         PendingUses = new BudgetedParserList<PendingUse>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        PendingTextPaths = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         DeferredPaintLeaves = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         DeferredResourceUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskReplayChildren = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -151,6 +152,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<int> ClipDepths { get; }
 
     internal BudgetedParserList<PendingUse> PendingUses { get; }
+    internal BudgetedParserList<SvgPendingTextPath> PendingTextPaths { get; }
 
     /// <summary>Gets closed source-group boundaries used to enforce instance composition gates.</summary>
     internal BudgetedParserDictionary<string, SvgGroupSnapshot> GroupSnapshots { get; }
@@ -350,6 +352,8 @@ internal sealed class SvgDocumentState : IDisposable
         _anonymousSymbols?.Dispose();
         _anonymousSymbolOwner?.Dispose();
         PendingUses.Dispose();
+        foreach (SvgPendingTextPath pending in PendingTextPaths.AsSpan()) { pending.Run.Dispose(); pending.Owner.Dispose(); }
+        PendingTextPaths.Dispose();
         DeferredPaintLeaves.Dispose();
         DeferredResourceUses.Dispose();
         MaskReplayChildren.Dispose();

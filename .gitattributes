@@ -27,3 +27,5 @@ tests/Fixtures/candidates/inv-124.svg -text whitespace=cr-at-eol
 tests/Research/path-marker-documents/capture-inputs/inv-124.svg -text whitespace=cr-at-eol
 # Preserve the downloaded filter exports without changing their upstream bytes.
 tests/Fixtures/candidates/inv-125.svg -text whitespace=cr-at-eol,-blank-at-eol
+# Retain the CC0 upstream document's BOM and CRLF bytes.
+tests/Research/supplied-font-documents/svg-translate-textpath.svg -text whitespace=cr-at-eol

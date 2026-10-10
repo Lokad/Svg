@@ -1,0 +1,16 @@
+{
+  "retrieved": "2026-10-10",
+  "repository": "https://github.com/notofonts/noto-fonts",
+  "revision": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+  "fontUrl": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/hinted/ttf/NotoSansMono/NotoSansMono-Bold.ttf",
+  "licenseUrl": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/LICENSE",
+  "license": "OFL-1.1",
+  "file": "fonts/NotoSansMono-Bold.ttf",
+  "byteSize": 525664,
+  "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc",
+  "faceIndex": 0,
+  "requestedFamily": "monospace",
+  "resolvedFamily": "Noto Sans Mono",
+  "selection": "Explicit supplied public static bold face selected for the next retained CC0 document before capture or candidate screening; preserve its root monospace/bold declarations. No font program editing or host-font fallback.",
+  "browserFontEmbedding": "Browser-only private @font-face family LokadSuppliedMonospace with font-weight 700; root svg CSS maps its original generic monospace alias to that embedded family. Keep product SVG bytes unchanged. Missing/corrupt/substituted-face witnesses must prove actual use inside the SVG image before implementation."
+}

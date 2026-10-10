@@ -268,19 +268,29 @@ internal static class SvgRenderedLeafParser
                 if (textElement.Style.FillRule is not null && !textElement.Style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
-                using BudgetedTextLayout text = ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, out int sourceCharacterCount, out int childNodeCount);
+                using BudgetedTextLayout text = ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, out int sourceCharacterCount, out int childNodeCount, out SvgTextPathReference? textPath);
                 state.TextCharacterCount += sourceCharacterCount;
                 state.NodeCount += childNodeCount;
                 if (text.Value.Length == 0) return true;
                 if (!textElement.Presentation.IsPainted || !textElement.Presentation.HasFill) return true;
                 if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
+                if (textPath is not null) textStyle = textStyle with { Y = 0 };
+                RenderBudget.BudgetReservation? pendingTextOwner = textPath is null ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
                 SvgTextRun run;
                 try { run = SvgTextRunBuilder.Create(textStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, fontSnapshot, budget, workCounter, cancellationToken); }
                 catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)
                 {
+                    pendingTextOwner?.Dispose();
                     // Content has been consumed and its layout will be disposed. Resolve earlier paint
                     // failures first, then propagate this same font failure if those paints are valid.
                     state.DeferredTextFailure ??= exception;
+                    return true;
+                }
+                catch { pendingTextOwner?.Dispose(); throw; }
+                if (textPath is {} pathReference)
+                {
+                    try { state.PendingTextPaths.Add(new(run, pathReference, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."))); }
+                    catch { pendingTextOwner?.Dispose(); run.Dispose(); throw; }
                     return true;
                 }
                 using (run)
@@ -427,8 +437,9 @@ internal static class SvgRenderedLeafParser
             }
         }
 
-        static BudgetedTextLayout ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount)
+        static BudgetedTextLayout ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, out int sourceCharacterCount, out int childNodeCount, out SvgTextPathReference? textPath)
         {
+            textPath = null;
             using var text = new SvgTextLayoutBuffer(budget, letterSpacing, workCounter, cancellationToken);
             var normalizer = new SvgTextWhitespaceNormalizer(whitespaceMode, letterSpacing, 0, false);
             if (element.IsEmptyElement)
@@ -459,6 +470,8 @@ internal static class SvgRenderedLeafParser
                             sourceCharacterCount += read;
                             int currentScope = whitespaceNormalizers.Count - 1;
                             SvgTextWhitespaceNormalizer current = whitespaceNormalizers[currentScope];
+                            if (textPath is not null && currentScope == 0 && (current.Mode == SvgTextWhitespaceMode.Preserve || SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken)))
+                                throw new SvgException(SvgErrorCode.UnsupportedFeature, "A text-path run cannot contain painted siblings in this subset.");
                             bool introducesOutput = !current.HasOutput && (current.Mode == SvgTextWhitespaceMode.Preserve ? SvgTextWhitespaceNormalizer.HasText(chunk.AsSpan(0, read), workCounter, cancellationToken) : SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken));
                             if (introducesOutput)
                             {
@@ -483,10 +496,24 @@ internal static class SvgRenderedLeafParser
                     if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
                     SvgTextWhitespaceNormalizer inheritedNormalizer = whitespaceNormalizers[^1];
                     SvgTextSpanStyle inheritedStyle = new(inheritedNormalizer.Mode, inheritedNormalizer.LetterSpacing);
-                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg" || subtree.LocalName != "tspan") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded text span children are implemented.");
-                    SvgElementAttributePolicy.ValidateTextSpan(subtree, workCounter, cancellationToken);
-                    InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
-                    if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, workCounter, cancellationToken, out SvgTextSpanStyle childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace, letter-spacing, and scalar dx/dy tspan text children are implemented.");
+                    if (subtree.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded SVG text children are implemented.");
+                    SvgTextSpanStyle childStyle;
+                    if (subtree.LocalName == "textPath")
+                    {
+                        if (subtree.Depth != 1 || textPath is not null || whitespaceNormalizers[0].HasOutput) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one text-path run without painted siblings is implemented.");
+                        SvgTextPathReference parsed = SvgTextPathSyntax.Parse(subtree, workCounter, cancellationToken);
+                        textPath = parsed with { PathId = state.Strings.Copy(parsed.PathId) };
+                        InlineStyle pathStyle = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
+                        if (!pathStyle.Equals(default(InlineStyle))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Styles on text-path children are not implemented.");
+                        childStyle = new(SvgTextSyntax.ParseWhitespaceMode(subtree, null, inheritedStyle.WhitespaceMode), inheritedStyle.LetterSpacing);
+                    }
+                    else
+                    {
+                        if (subtree.LocalName != "tspan" || textPath is not null && subtree.Depth == 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded text span children are implemented.");
+                        SvgElementAttributePolicy.ValidateTextSpan(subtree, workCounter, cancellationToken);
+                        InlineStyle styleSheet = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
+                        if (!SvgTextSyntax.TryParseTspanStyle(subtree, inheritedStyle, styleSheet, workCounter, cancellationToken, out childStyle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only whitespace, letter-spacing, and scalar dx/dy tspan text children are implemented.");
+                    }
                     if (!subtree.IsEmptyElement)
                     {
                         int childScopeDepth = whitespaceNormalizers.Count;
