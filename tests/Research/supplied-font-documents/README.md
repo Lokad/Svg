@@ -36,11 +36,16 @@ TrueType fits the child before the parent; Linux light fitting uses the assemble
 outline. [Eighteen independent native contours](diagnostics/composite-contours.json)
 protect both stages. Font header bit 3 now controls integer internal hinting sizes,
 while linear advances retain authored sizes. The whole document renders through
-all 12 APIs: **2,026 Windows / 474 Linux changed pixels** remain (maximum channel
-errors 84 / 69). Shared Latin light topology combines near-point vectors and
+all 12 APIs: **Linux matches exactly; Windows retains 1,670 changed pixels**
+(maximum channel error 65). Shared Latin light topology combines near-point vectors and
 retains wrapped contour segments before fitting and interpolation. All 44 measured
 document outlines match independent native geometry; [ten focused contours](diagnostics/latin-light-near-contours.json)
-protect the previously differing combinations. Follow every mismatch until it matches unchanged references
+protect the previously differing combinations. Shared device advance metrics now
+preserve authored origins and accumulate regular glyph positions on the SVG
+1/64-pixel grid. Text paths accumulate individually rounded character widths.
+Independent native font widths, cumulative positions and fractional span origins
+have focused controls; the Linux whole document now has exact assertions through
+all 12 APIs. Follow every Windows mismatch until it matches unchanged references
 through six raw and six independently prepared APIs on both platforms.
 
 The seven controls are separate from document completion. All render through the
@@ -59,7 +64,7 @@ Windows still has **0/7 controls exact**:
 | Integer strikes | Two sizes and curved glyphs from the document. | 8 / 12 |
 | Scaled strikes | Preserve the original root map and fractional strikes. | 4 / 8 |
 
-Complete Windows/Linux qualification passes 6,623 tests per platform and preserves
+Complete Windows/Linux qualification passes 6,649 tests per platform and preserves
 all 27/27 corporate documents / 258/258 variants, 2,849 prior PNGs and 2,755 prior
 exact comparisons. Keep wider finite
 G9 list/rotate/font/paint/baseline/curve promises and the older live-text defects

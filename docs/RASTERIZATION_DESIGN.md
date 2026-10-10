@@ -11120,3 +11120,34 @@ extent rounding, then addresses the remaining Windows fitting/coverage gaps.
 Complete Release qualification passes 6,623 tests per platform (4,601 core /
 2,016 visual / six FontProbe), preserving the established document and exact-pixel
 ledgers. The whole SVG Translate document and wider finite G9 exit remain open.
+
+### SVG Translate: device advances and SVG fragment positions
+
+At the declared 512×256 viewport, independently placing visible glyphs at the
+browser's character-query coordinates reproduces both frozen references exactly.
+Placing them at the earlier unrounded authored coordinates leaves 470 Windows /
+474 Linux differing pixels; Linux's managed output also matches that latter
+native capture exactly. This separates placement from outline and coverage.
+
+Independent canvas widths under the actual supplied Mono Bold face establish
+Windows advances 9.215988159179688 / 18.431991577148438 and Linux advances
+9.21563720703125 / 18.431289672851562 at device sizes 15.36 / 30.72. Windows uses
+scalar design metrics truncated to 16.16 positions. Linux retains the scaler's
+26.6 size and rounded 16.16 font-unit scale, then rounds the linear advance.
+Regular SVG glyph origins use cumulative offsets floored to 1/64 device pixels;
+text paths accumulate separately ceiled character widths. Authored x/y origins
+and scalar span offsets retain their fractional values. Chunk anchoring and
+current-position continuation share this bounded layout, without new geometry
+or raster implementations.
+
+The whole Linux document now matches the unchanged reference through six raw
+and six independently prepared outputs. Windows improves from 2,026 to 1,670
+differing pixels, maximum channel error 65. All seven Mono controls remain exact
+on Linux; Windows's seven controls and remaining fitting/coverage gap stay open.
+Twenty-five core checks cover measured advances, cumulative and path placement,
+fractional absolute/relative origins, tiny sizes, numeric limits and owned-array
+cleanup. The complete Linux document joins the stable exact-reference assertions.
+
+Complete Windows/Linux Release qualification passes 6,649 tests per platform
+(4,626 core / 2,017 visual / six FontProbe). Prior document and exact-pixel ledgers
+remain protected; SVG Translate remains 0/1 complete across both platforms.

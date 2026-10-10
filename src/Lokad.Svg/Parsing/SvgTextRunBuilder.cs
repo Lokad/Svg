@@ -19,6 +19,10 @@ internal static class SvgTextRunBuilder
 
     /// <summary>Builds one text run with normalized letter-spacing intervals and scalar span offsets retained by direct-text extraction.</summary>
     internal static SvgTextRun Create(SvgTextStyle style, string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => Create(style, text, letterSpacingSpans, positionAdjustments, null, snapshot, budget, workCounter, cancellationToken);
+
+    /// <summary>Builds a run using the already resolved output scale for platform glyph advances and SVG fragments.</summary>
+    internal static SvgTextRun Create(SvgTextStyle style, string text, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, SvgGlyphDeviceMetrics? deviceMetrics, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(snapshot);
@@ -30,7 +34,7 @@ internal static class SvgTextRunBuilder
             throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
         }
 
-        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.LetterSpacing, letterSpacingSpans, positionAdjustments, style.Anchor, budget, style.SourceElementId, workCounter, cancellationToken);
+        SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.LetterSpacing, letterSpacingSpans, positionAdjustments, style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
         return new SvgTextRun(style, font, glyphs);
     }
 

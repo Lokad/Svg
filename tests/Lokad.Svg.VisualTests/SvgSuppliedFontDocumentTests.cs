@@ -16,12 +16,12 @@ public sealed class SvgSuppliedFontDocumentTests
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
         foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
-            if (Required(item, "role") == "supplied-font-control") yield return new object[] { Required(item, "id") };
+            yield return new object[] { Required(item, "id") };
     }
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Position_and_strike_controls_preserve_source_through_twelve_apis(string identity)
+    public async Task Declared_document_and_controls_preserve_source_through_twelve_apis(string identity)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);

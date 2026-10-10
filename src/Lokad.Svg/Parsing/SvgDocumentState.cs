@@ -106,6 +106,8 @@ internal sealed class SvgDocumentState : IDisposable
     /// <summary>Gets or sets the root and output magnification applied after lowering, which scales flattening tolerance.</summary>
     internal double OutputMagnification { get; set; } = 1.0;
 
+    internal double OutputTextScale { get; set; } = 1.0;
+
     internal BudgetedParserList<SvgViewportFrame> Viewports { get; }
 
     internal SvgViewportFrame? EffectiveFrame => Viewports.Count == 0 ? null : Viewports[^1];

@@ -277,7 +277,9 @@ internal static class SvgRenderedLeafParser
                 if (textPath is not null) textStyle = textStyle with { Y = 0 };
                 RenderBudget.BudgetReservation? pendingTextOwner = textPath is null ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
                 SvgTextRun run;
-                try { run = SvgTextRunBuilder.Create(textStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, fontSnapshot, budget, workCounter, cancellationToken); }
+                SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(state.OutputTextScale, SvgGlyphMetricTarget.Windows, textPath is not null)
+                    : OperatingSystem.IsLinux() ? new(state.OutputTextScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
+                try { run = SvgTextRunBuilder.Create(textStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
                 catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)
                 {
                     pendingTextOwner?.Dispose();

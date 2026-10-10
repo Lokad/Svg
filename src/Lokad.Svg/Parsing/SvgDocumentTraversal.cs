@@ -54,6 +54,7 @@ internal static class SvgDocumentTraversal
             root = root with { InheritedPresentation = root.InheritedPresentation with { PaintServerFill = state.Strings.Copy(rootFill) } };
         }
         state.OutputMagnification = System.Math.Max(System.Math.Abs(outputScaleX), System.Math.Abs(outputScaleY));
+        state.OutputTextScale = outputScaleX;
         if (root.SourceOpacity.Value != 1) state.Scene.BeginSourceOpacityScope(root.SourceOpacity, new(0));
         while (reader.Read())
         {

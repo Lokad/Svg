@@ -4098,6 +4098,56 @@ public sealed partial class OpenTypeFontTests
             second => Assert.Equal(2, second.Segments.Length));
     }
 
+    [Theory]
+    [InlineData("windows", false, 18, 12, 110.578125)]
+    [InlineData("linux", false, 18, 12, 110.578125)]
+    [InlineData("windows", true, 18, 12, 110.625)]
+    [InlineData("linux", true, 18, 12, 110.625)]
+    [InlineData("windows", false, 36, 17, 313.34375)]
+    [InlineData("linux", false, 36, 17, 313.328125)]
+    public async Task Device_layout_preserves_the_authored_origin_and_matches_measured_cumulative_offsets(string target, bool textPath, double size, int index, double expectedDeviceOffset)
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1000, 3, 2, 1))], CancellationToken.None);
+        const double scale = 512d / 600;
+        SvgGlyphDeviceMetrics metrics = new(scale, target == "windows" ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, textPath);
+        RenderBudget budget = new(10_000);
+        using (SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), new string('A', 18), size, 10, 40, 0, [], [], SvgTextAnchor.Start, metrics, budget, string.Empty, new(long.MaxValue), CancellationToken.None))
+        {
+            Assert.Equal(10, positions.Glyphs[0].X);
+            Assert.Equal(40, positions.Glyphs[index].Y);
+            Assert.Equal(expectedDeviceOffset, (positions.Glyphs[index].X - 10) * scale, 10);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData("windows")]
+    [InlineData("linux")]
+    public async Task Device_layout_keeps_fractional_absolute_and_relative_span_origins(string target)
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1000, 3, 2, 1))], CancellationToken.None);
+        const double scale = 512d / 600;
+        SvgGlyphDeviceMetrics metrics = new(scale, target == "windows" ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, false);
+        using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAAA", 36, 10.1, 40.2, 0, [], [new(2, 100.1, 50.2, .125, .25)], SvgTextAnchor.Start, metrics, new(10_000), string.Empty, new(long.MaxValue), CancellationToken.None);
+        Assert.Equal(10.1, positions.Glyphs[0].X);
+        Assert.Equal(100.225, positions.Glyphs[2].X, 10);
+        Assert.Equal(50.45, positions.Glyphs[2].Y, 10);
+        Assert.Equal(18.421875, (positions.Glyphs[3].X - positions.Glyphs[2].X) * scale, 10);
+    }
+
+    [Fact]
+    public async Task Device_layout_releases_owned_positions_on_numeric_and_work_denial()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateFont(1000, 3, 2, 1))], CancellationToken.None);
+        SvgPreparedFont font = Assert.Single(snapshot.Fonts);
+        foreach ((double size, long maximumWork) in new[] { (100_000d, long.MaxValue), (18d, 4L) })
+        {
+            RenderBudget budget = new(10_000);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGlyphLayout.CreateStorage(font, "AAA", size, 0, 0, 0, [], [], SvgTextAnchor.Start, new(1, SvgGlyphMetricTarget.Linux, false), budget, string.Empty, new(maximumWork), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+    }
+
     private static SvgFontProgramResolution CreateResolution(byte[] bytes)
         => CreateResolution(bytes, 400);
 

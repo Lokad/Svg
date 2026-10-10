@@ -70,7 +70,7 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "currentDependency": "Whole document renders through 12 APIs after shared scalar positions, element-free path bodies, mirrored composite point assembly, integer hinting-size repair and near-point Latin light topology. All 44 measured document outlines match native light geometry. Frozen-reference pixel gaps remain: Windows 2026 (maximum channel error 84), Linux 474 (maximum channel error 69)."
+      "currentDependency": "Whole document renders through 12 APIs after shared scalar positions, element-free path bodies, mirrored composite point assembly, integer hinting-size repair, near-point Latin light topology and device font advances/SVG fragment positions. Linux matches the unchanged native reference exactly; Windows retains 1670 changed pixels (maximum channel error 65). Finish the Windows fitting/coverage gap before counting completion across both platforms."
     },
     {
       "id": "scalar-x-reset",
