@@ -1,0 +1,461 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One retained original live-text output and seven separate controls under a pinned public supplied-font/browser-embedding contract. References freeze before correction; snapshot-less rejection remains explicit.",
+  "fontPack": "font-pack.json",
+  "fontProvenance": "font-provenance.json",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "original-logo-live-text-64x64-transparent",
+      "document": "original-logo-live-text",
+      "input": "../../Fixtures/original/logo-live-text.svg",
+      "width": 64,
+      "height": 64,
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "fontPack": "font-pack.json",
+      "sourceSha256": "53159c3f72b3647d2bf80dcc71d9a328aa8165b58e6e5afc9cf6b4edd29218b5",
+      "reference": "references/original-logo-live-text-64x64-transparent.png",
+      "selection": "Original document and focused output/options declared before reference capture or candidate screening; supplied static face 0 under Example alias; no host fonts.",
+      "oracleInputSha256": "3f3a8e82acbb41fee0bb893ccc4ecd32e17e10babc193aa4dc27f76229b846e0",
+      "referenceSha256": "84f3970f83bc53a917e3a7430b155e2e9af93c13696656ea878236b25b73db27",
+      "captures": [
+        {
+          "pngSha256": "84f3970f83bc53a917e3a7430b155e2e9af93c13696656ea878236b25b73db27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "84f3970f83bc53a917e3a7430b155e2e9af93c13696656ea878236b25b73db27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "84f3970f83bc53a917e3a7430b155e2e9af93c13696656ea878236b25b73db27",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/original-logo-live-text-64x64-transparent.png",
+      "linuxReferenceSha256": "262779d670d4665f95a9bd43be6210d7266977512bae3a42aef86da0f75ab305",
+      "linuxCaptures": [
+        {
+          "pngSha256": "262779d670d4665f95a9bd43be6210d7266977512bae3a42aef86da0f75ab305",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "262779d670d4665f95a9bd43be6210d7266977512bae3a42aef86da0f75ab305",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "262779d670d4665f95a9bd43be6210d7266977512bae3a42aef86da0f75ab305",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "curve-counters",
+      "input": "curve-counters.svg",
+      "width": 64,
+      "height": 64,
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "fontPack": "font-pack.json",
+      "sourceSha256": "1ceddf92f19f753b09a3b98ef2d69dc898f6a04ba0a538cab1dca56ee0b864f6",
+      "reference": "references/curve-counters.png",
+      "selection": "Original document and focused output/options declared before reference capture or candidate screening; supplied static face 0 under Example alias; no host fonts.",
+      "oracleInputSha256": "f36e8c9a6c69ba85878e009486032f4e32dc0dca86383e7e3f12aaca533675cf",
+      "referenceSha256": "21f4ca34630b0df241f34061e7bb5c29eefbfdd680dda184ad394af219b8b6fc",
+      "captures": [
+        {
+          "pngSha256": "21f4ca34630b0df241f34061e7bb5c29eefbfdd680dda184ad394af219b8b6fc",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "21f4ca34630b0df241f34061e7bb5c29eefbfdd680dda184ad394af219b8b6fc",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "21f4ca34630b0df241f34061e7bb5c29eefbfdd680dda184ad394af219b8b6fc",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/curve-counters.png",
+      "linuxReferenceSha256": "23f890a24021707d6315b7b1cc53326d523627948dadf2393f6de81b4152c628",
+      "linuxCaptures": [
+        {
+          "pngSha256": "23f890a24021707d6315b7b1cc53326d523627948dadf2393f6de81b4152c628",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "23f890a24021707d6315b7b1cc53326d523627948dadf2393f6de81b4152c628",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "23f890a24021707d6315b7b1cc53326d523627948dadf2393f6de81b4152c628",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "pair-and-space",
+      "input": "pair-and-space.svg",
+      "width": 128,
+      "height": 64,
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "fontPack": "font-pack.json",
+      "sourceSha256": "363958e0a1e8f991375199cd4209a0cc00b6bc3946de7e5efc4ce81f3d07f05d",
+      "reference": "references/pair-and-space.png",
+      "selection": "Original document and focused output/options declared before reference capture or candidate screening; supplied static face 0 under Example alias; no host fonts.",
+      "oracleInputSha256": "e3d3dc3f4f9bca4180a73f619083c6bce8dbc3ca8a99d493eb11979ca63ee0aa",
+      "referenceSha256": "901331cb3f91372a7856afa6b2b034cb61c6ce06e2dca777b74701864875d2f0",
+      "captures": [
+        {
+          "pngSha256": "901331cb3f91372a7856afa6b2b034cb61c6ce06e2dca777b74701864875d2f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "901331cb3f91372a7856afa6b2b034cb61c6ce06e2dca777b74701864875d2f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "901331cb3f91372a7856afa6b2b034cb61c6ce06e2dca777b74701864875d2f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/pair-and-space.png",
+      "linuxReferenceSha256": "3297a254f038b8614f73e7cf9371ebe66c238a6dff494cda7f9e824bea19d1c7",
+      "linuxCaptures": [
+        {
+          "pngSha256": "3297a254f038b8614f73e7cf9371ebe66c238a6dff494cda7f9e824bea19d1c7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3297a254f038b8614f73e7cf9371ebe66c238a6dff494cda7f9e824bea19d1c7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3297a254f038b8614f73e7cf9371ebe66c238a6dff494cda7f9e824bea19d1c7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "composite-accents",
+      "input": "composite-accents.svg",
+      "width": 96,
+      "height": 64,
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "fontPack": "font-pack.json",
+      "sourceSha256": "b21bacd5d61639c5223af41004b86b3f2be3cc67b456deb1b6d8a6467c110b4e",
+      "reference": "references/composite-accents.png",
+      "selection": "Original document and focused output/options declared before reference capture or candidate screening; supplied static face 0 under Example alias; no host fonts.",
+      "oracleInputSha256": "81895b03419f29f007dbeb8d8aceafd3c70eae2b94ddf6441d48fd384dd3e374",
+      "referenceSha256": "bde692ca60e932193019fd30268fac0ed24c3489a3faf1658996a3f47689dbca",
+      "captures": [
+        {
+          "pngSha256": "bde692ca60e932193019fd30268fac0ed24c3489a3faf1658996a3f47689dbca",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bde692ca60e932193019fd30268fac0ed24c3489a3faf1658996a3f47689dbca",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bde692ca60e932193019fd30268fac0ed24c3489a3faf1658996a3f47689dbca",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/composite-accents.png",
+      "linuxReferenceSha256": "27fbe900265038c791d6794988d5af19f79df8cddf6ec37fcc44355fb47eb57d",
+      "linuxCaptures": [
+        {
+          "pngSha256": "27fbe900265038c791d6794988d5af19f79df8cddf6ec37fcc44355fb47eb57d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "27fbe900265038c791d6794988d5af19f79df8cddf6ec37fcc44355fb47eb57d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "27fbe900265038c791d6794988d5af19f79df8cddf6ec37fcc44355fb47eb57d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "fractional-position-size",
+      "input": "fractional-position-size.svg",
+      "width": 128,
+      "height": 64,
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "fontPack": "font-pack.json",
+      "sourceSha256": "b325f251d77f667814e5102f810d84e676c97aa9ed4342082e8c48def1c5b782",
+      "reference": "references/fractional-position-size.png",
+      "selection": "Original document and focused output/options declared before reference capture or candidate screening; supplied static face 0 under Example alias; no host fonts.",
+      "oracleInputSha256": "147af77845756768e88d2babf36cd7ec27f71e222d4ad357809c20b449f94232",
+      "referenceSha256": "0979c4ea06fe332ff1e7c1602d769a270a8f27b009c2e783ce1eef86675ba1f5",
+      "captures": [
+        {
+          "pngSha256": "0979c4ea06fe332ff1e7c1602d769a270a8f27b009c2e783ce1eef86675ba1f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0979c4ea06fe332ff1e7c1602d769a270a8f27b009c2e783ce1eef86675ba1f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0979c4ea06fe332ff1e7c1602d769a270a8f27b009c2e783ce1eef86675ba1f5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/fractional-position-size.png",
+      "linuxReferenceSha256": "cd30c62c7e294cc512b219cf9a4a4eda208c790983dfba3a9f050f8f2eac484a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "cd30c62c7e294cc512b219cf9a4a4eda208c790983dfba3a9f050f8f2eac484a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cd30c62c7e294cc512b219cf9a4a4eda208c790983dfba3a9f050f8f2eac484a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cd30c62c7e294cc512b219cf9a4a4eda208c790983dfba3a9f050f8f2eac484a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "small-fractional-origin",
+      "input": "small-fractional-origin.svg",
+      "width": 64,
+      "height": 64,
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "fontPack": "font-pack.json",
+      "sourceSha256": "ee60237e99f8af7bb1b83ad1bfc3f0d59ef6fa94de9740f7e531f72bede71b2d",
+      "reference": "references/small-fractional-origin.png",
+      "selection": "Original document and focused output/options declared before reference capture or candidate screening; supplied static face 0 under Example alias; no host fonts.",
+      "oracleInputSha256": "ba46f54ddf7a601266ef759ce790834180ca93d71e8799eb2c0c8e2f1a945c18",
+      "referenceSha256": "7ea069a30d9e2788f46f7667d6196a14b825c16d2761b5394563bca4470bb07e",
+      "captures": [
+        {
+          "pngSha256": "7ea069a30d9e2788f46f7667d6196a14b825c16d2761b5394563bca4470bb07e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ea069a30d9e2788f46f7667d6196a14b825c16d2761b5394563bca4470bb07e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7ea069a30d9e2788f46f7667d6196a14b825c16d2761b5394563bca4470bb07e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/small-fractional-origin.png",
+      "linuxReferenceSha256": "85dc1522bef6f8d2f931f0721f505f2bbe2a68966aff04df12361c4a36ca2158",
+      "linuxCaptures": [
+        {
+          "pngSha256": "85dc1522bef6f8d2f931f0721f505f2bbe2a68966aff04df12361c4a36ca2158",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "85dc1522bef6f8d2f931f0721f505f2bbe2a68966aff04df12361c4a36ca2158",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "85dc1522bef6f8d2f931f0721f505f2bbe2a68966aff04df12361c4a36ca2158",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "large-outline",
+      "input": "large-outline.svg",
+      "width": 128,
+      "height": 128,
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "fontPack": "font-pack.json",
+      "sourceSha256": "ab4e700cfdbac50041f4c89d6c3668c2a140a339d1c4e5ae45ce0bfc8ca3eac9",
+      "reference": "references/large-outline.png",
+      "selection": "Original document and focused output/options declared before reference capture or candidate screening; supplied static face 0 under Example alias; no host fonts.",
+      "oracleInputSha256": "bc25197baa57b1a6538f1201bc39eb4b7c4626759a754d6ea78a8b0b7e550352",
+      "referenceSha256": "0618c2c363a74d5c1f90dcd0ea99275d1b19bfab395607926ba1c6eeaef06284",
+      "captures": [
+        {
+          "pngSha256": "0618c2c363a74d5c1f90dcd0ea99275d1b19bfab395607926ba1c6eeaef06284",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0618c2c363a74d5c1f90dcd0ea99275d1b19bfab395607926ba1c6eeaef06284",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0618c2c363a74d5c1f90dcd0ea99275d1b19bfab395607926ba1c6eeaef06284",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/large-outline.png",
+      "linuxReferenceSha256": "d4f12609447d0796e8efc1d7dc15d0fdaa187820fce530e16ba37d5928314615",
+      "linuxCaptures": [
+        {
+          "pngSha256": "d4f12609447d0796e8efc1d7dc15d0fdaa187820fce530e16ba37d5928314615",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d4f12609447d0796e8efc1d7dc15d0fdaa187820fce530e16ba37d5928314615",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d4f12609447d0796e8efc1d7dc15d0fdaa187820fce530e16ba37d5928314615",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "inherited-alias-paint",
+      "input": "inherited-alias-paint.svg",
+      "width": 96,
+      "height": 64,
+      "role": "supplied-font-control",
+      "license": "CC0-1.0",
+      "scale": 1,
+      "background": "transparent",
+      "fontPack": "font-pack.json",
+      "sourceSha256": "bee9f6291220710ea55bd77a408fffcd3ddc08dc9f61d91efa3f12ff347d993f",
+      "reference": "references/inherited-alias-paint.png",
+      "selection": "Original document and focused output/options declared before reference capture or candidate screening; supplied static face 0 under Example alias; no host fonts.",
+      "oracleInputSha256": "f7139cdc85afdbaae1e57ed8627c59017254d34950fb8f79617d1187bcef76d9",
+      "referenceSha256": "cc86d876157779a243934fa594d12ec972e204028a433e13b3ce3b9eeecb786d",
+      "captures": [
+        {
+          "pngSha256": "cc86d876157779a243934fa594d12ec972e204028a433e13b3ce3b9eeecb786d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cc86d876157779a243934fa594d12ec972e204028a433e13b3ce3b9eeecb786d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cc86d876157779a243934fa594d12ec972e204028a433e13b3ce3b9eeecb786d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/inherited-alias-paint.png",
+      "linuxReferenceSha256": "42a8179858b526c7824480595350fc0ba00b4021be697d1cc926bbb8ed3a9b69",
+      "linuxCaptures": [
+        {
+          "pngSha256": "42a8179858b526c7824480595350fc0ba00b4021be697d1cc926bbb8ed3a9b69",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "42a8179858b526c7824480595350fc0ba00b4021be697d1cc926bbb8ed3a9b69",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "42a8179858b526c7824480595350fc0ba00b4021be697d1cc926bbb8ed3a9b69",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    }
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": false
+  },
+  "rendererQualification": {
+    "status": "pending exact pixels",
+    "documentsComplete": 0,
+    "documentsDeclared": 1,
+    "controlsExact": 0,
+    "controlsDeclared": 7,
+    "fontAdmission": "ordered bounded pair-list/class kerning",
+    "remainingDocumentBlocker": "native font mask/hinting fidelity",
+    "additionalControlBlocker": "composite component flags"
+  }
+}

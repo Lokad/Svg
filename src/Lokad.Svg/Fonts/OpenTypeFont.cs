@@ -7,7 +7,7 @@ using Lokad.Svg.Parsing;
 /// Validates the bounded standalone-TrueType subset required before glyph parsing.
 /// This reader borrows its input and does not retain, copy, or cache font bytes.
 /// </summary>
-internal static class OpenTypeFont
+internal static partial class OpenTypeFont
 {
     private const int MaximumTableRecords = 128;
     private const int MaximumSimpleGlyphContours = 4_096;
@@ -27,6 +27,7 @@ internal static class OpenTypeFont
     private const uint Os2Tag = 0x4F532F32;
     private const uint KernTag = 0x6B65726E;
     private const uint GposTag = 0x47504F53;
+    private const uint GdefTag = 0x47444546;
     private const uint KernFeatureTag = 0x6B65726E;
     private const uint DefaultScriptTag = 0x44464C54;
     private const uint LocaTag = 0x6C6F6361;
@@ -83,7 +84,7 @@ internal static class OpenTypeFont
         if (tables.TryGetValue(NameTag, out OpenTypeTableRange name)) ValidateNameTable(data, name, workCounter, cancellationToken);
         if (tables.TryGetValue(Os2Tag, out OpenTypeTableRange os2)) ValidateOs2Table(data, os2, workCounter, cancellationToken);
         OpenTypeKernTable? kern = tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, workCounter, cancellationToken) : null;
-        OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, glyphCount, workCounter, cancellationToken) : null;
+        OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, workCounter, cancellationToken) : null;
         return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null);
     }
 
@@ -244,42 +245,6 @@ internal static class OpenTypeFont
             else return ReadInt16(data, offset + 4);
         }
         return 0;
-    }
-
-    /// <summary>Gets the admitted pair adjustment, preferring a validated GPOS kern feature over legacy kern data.</summary>
-    internal static short GetPairAdjustment(ReadOnlyMemory<byte> bytes, ushort leftGlyphIndex, ushort rightGlyphIndex, OpenTypeFontMetrics metrics, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        if (metrics.Gpos is not OpenTypeGposPairTable gpos) return GetKerningAdjustment(bytes, leftGlyphIndex, rightGlyphIndex, metrics, workCounter, cancellationToken);
-        if (leftGlyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(leftGlyphIndex));
-        if (rightGlyphIndex >= metrics.GlyphCount) throw new ArgumentOutOfRangeException(nameof(rightGlyphIndex));
-        ReadOnlySpan<byte> data = bytes.Span;
-        int low = 0;
-        int high = gpos.PairSetCount;
-        while (low < high)
-        {
-            Consume(workCounter, cancellationToken);
-            int index = low + (high - low) / 2;
-            ushort glyph = ReadUInt16(data, gpos.CoverageOffset + 4 + index * 2);
-            if (glyph < leftGlyphIndex) low = index + 1;
-            else high = index;
-        }
-        if (low == gpos.PairSetCount || ReadUInt16(data, gpos.CoverageOffset + 4 + low * 2) != leftGlyphIndex) return 0;
-        int pairSetOffset = GetTableOffset(gpos.Range, gpos.PairPosOffset, ReadUInt16(data, gpos.PairSetOffsetArrayOffset + low * 2), 2, "GPOS PairSet");
-        int pairCount = ReadUInt16(data, pairSetOffset);
-        low = 0;
-        high = pairCount;
-        while (low < high)
-        {
-            Consume(workCounter, cancellationToken);
-            int index = low + (high - low) / 2;
-            int offset = pairSetOffset + 2 + index * 4;
-            ushort glyph = ReadUInt16(data, offset);
-            if (glyph < rightGlyphIndex) low = index + 1;
-            else high = index;
-        }
-        if (low == pairCount) return 0;
-        int pairOffset = pairSetOffset + 2 + low * 4;
-        return ReadUInt16(data, pairOffset) == rightGlyphIndex ? ReadInt16(data, pairOffset + 2) : (short)0;
     }
 
     /// <summary>Gets the validated borrowed glyf-table range for one glyph, which may be empty.</summary>
@@ -857,68 +822,6 @@ internal static class OpenTypeFont
         RequireTableLength(table, minimumLength, "OS/2");
     }
 
-    /// <summary>Validates the direct Latin kern feature's sole PairPos format-1 X-advance lookup without retaining pair storage.</summary>
-    private static OpenTypeGposPairTable? ParseGposPairTable(ReadOnlySpan<byte> data, OpenTypeTableRange table, ushort glyphCount, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        RequireTableLength(table, 10, "GPOS");
-        if (ReadUInt16(data, table.Offset) != 1 || ReadUInt16(data, table.Offset + 2) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only version-1.0 GPOS tables are supported.");
-        int scriptListOffset = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 4), 2, "GPOS ScriptList");
-        int featureListOffset = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 6), 2, "GPOS FeatureList");
-        int lookupListOffset = GetTableOffset(table, table.Offset, ReadUInt16(data, table.Offset + 8), 2, "GPOS LookupList");
-        int featureCount = ReadUInt16(data, featureListOffset);
-        RequireTableRange(table, featureListOffset, checked(2 + featureCount * 6), "GPOS FeatureList");
-        int featureOffset = 0;
-        int kernFeatureIndex = -1;
-        for (int index = 0; index < featureCount; index++)
-        {
-            Consume(workCounter, cancellationToken);
-            int record = featureListOffset + 2 + index * 6;
-            if (ReadUInt32(data, record) != KernFeatureTag) continue;
-            if (featureOffset != 0) throw InvalidFont("The GPOS FeatureList contains duplicate kern features.");
-            featureOffset = GetTableOffset(table, featureListOffset, ReadUInt16(data, record + 4), 4, "GPOS kern feature");
-            kernFeatureIndex = index;
-        }
-        if (featureOffset == 0) return null;
-        ValidateDefaultGposKernFeature(data, table, scriptListOffset, featureCount, kernFeatureIndex, workCounter, cancellationToken);
-        if (ReadUInt16(data, featureOffset) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "GPOS kern feature parameters are not supported.");
-        if (ReadUInt16(data, featureOffset + 2) != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one GPOS kern lookup is supported.");
-        RequireTableRange(table, featureOffset, 6, "GPOS kern feature");
-        int lookupIndex = ReadUInt16(data, featureOffset + 4);
-        int lookupCount = ReadUInt16(data, lookupListOffset);
-        RequireTableRange(table, lookupListOffset, checked(2 + lookupCount * 2), "GPOS LookupList");
-        if (lookupIndex >= lookupCount) throw InvalidFont("The GPOS kern feature references a lookup outside the LookupList.");
-        int lookupOffset = GetTableOffset(table, lookupListOffset, ReadUInt16(data, lookupListOffset + 2 + lookupIndex * 2), 6, "GPOS lookup");
-        if (ReadUInt16(data, lookupOffset) != 2 || ReadUInt16(data, lookupOffset + 2) != 0 || ReadUInt16(data, lookupOffset + 4) != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one unfiltered GPOS PairPos lookup is supported.");
-        RequireTableRange(table, lookupOffset, 8, "GPOS lookup");
-        int pairPosOffset = GetTableOffset(table, lookupOffset, ReadUInt16(data, lookupOffset + 6), 12, "GPOS PairPos");
-        if (ReadUInt16(data, pairPosOffset) != 1 || ReadUInt16(data, pairPosOffset + 4) != 4 || ReadUInt16(data, pairPosOffset + 6) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only GPOS PairPos format-1 first-glyph X-advance adjustments are supported.");
-        int pairSetCount = ReadUInt16(data, pairPosOffset + 8);
-        RequireTableRange(table, pairPosOffset, checked(10 + pairSetCount * 2), "GPOS PairPos");
-        int coverageOffset = GetTableOffset(table, pairPosOffset, ReadUInt16(data, pairPosOffset + 2), 4, "GPOS PairPos coverage");
-        if (ReadUInt16(data, coverageOffset) != 1 || ReadUInt16(data, coverageOffset + 2) != pairSetCount) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only matching GPOS PairPos format-1 coverage arrays are supported.");
-        RequireTableRange(table, coverageOffset, checked(4 + pairSetCount * 2), "GPOS PairPos coverage");
-        ushort previousCoverageGlyph = 0;
-        for (int index = 0; index < pairSetCount; index++)
-        {
-            Consume(workCounter, cancellationToken);
-            ushort coverageGlyph = ReadUInt16(data, coverageOffset + 4 + index * 2);
-            if (coverageGlyph >= glyphCount || index != 0 && coverageGlyph <= previousCoverageGlyph) throw InvalidFont("The GPOS PairPos coverage glyphs are invalid.");
-            previousCoverageGlyph = coverageGlyph;
-            int pairSetOffset = GetTableOffset(table, pairPosOffset, ReadUInt16(data, pairPosOffset + 10 + index * 2), 2, "GPOS PairSet");
-            int pairCount = ReadUInt16(data, pairSetOffset);
-            RequireTableRange(table, pairSetOffset, checked(2 + pairCount * 4), "GPOS PairSet");
-            ushort previousSecondGlyph = 0;
-            for (int pairIndex = 0; pairIndex < pairCount; pairIndex++)
-            {
-                Consume(workCounter, cancellationToken);
-                ushort secondGlyph = ReadUInt16(data, pairSetOffset + 2 + pairIndex * 4);
-                if (secondGlyph >= glyphCount || pairIndex != 0 && secondGlyph <= previousSecondGlyph) throw InvalidFont("The GPOS PairSet glyphs are invalid.");
-                previousSecondGlyph = secondGlyph;
-            }
-        }
-        return new OpenTypeGposPairTable(table, pairPosOffset, coverageOffset, pairPosOffset + 10, pairSetCount);
-    }
-
     private static void ValidateDefaultGposKernFeature(ReadOnlySpan<byte> data, OpenTypeTableRange table, int scriptListOffset, int featureCount, int kernFeatureIndex, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         int scriptCount = ReadUInt16(data, scriptListOffset);
@@ -1080,7 +983,7 @@ internal readonly record struct OpenTypeTableRange(int Offset, int Length);
 internal readonly record struct OpenTypeKernTable(OpenTypeTableRange Range, int PairOffset, int PairCount);
 
 /// <summary>Identifies the validated borrowed records for one admitted GPOS PairPos format-1 kern lookup.</summary>
-internal readonly record struct OpenTypeGposPairTable(OpenTypeTableRange Range, int PairPosOffset, int CoverageOffset, int PairSetOffsetArrayOffset, int PairSetCount);
+internal readonly record struct OpenTypeGposPairTable(OpenTypeTableRange Range, int FeatureOffset, int LookupListOffset, int PairPosOffset, OpenTypeTableRange? Gdef, int GlyphClassOffset);
 
 /// <summary>Represents the validated fixed header of one nonempty TrueType glyf record.</summary>
 internal readonly record struct OpenTypeGlyphHeader(short ContourCount, short XMinimum, short YMinimum, short XMaximum, short YMaximum)

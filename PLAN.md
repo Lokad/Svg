@@ -35,6 +35,25 @@ finite G9 acceptance step; the text-path document and the full label/path subset
 remain promised. Existing snapshot-less rejection stays explicit. Broader G2
 combinations are dependencies only when this document needs them.
 
+The [public-font bank](tests/Research/supplied-font-labels/README.md) now pins that
+unchanged face and OFL notice, the original output and seven separate controls.
+Healthy cleaned native Windows/Linux reference triples are frozen; the platforms
+have different glyph pixels. Missing, corrupt and substituted embeddings prove
+actual font use inside the SVG image. Independent font-unit and browser layout
+measurements are retained separately from pixels.
+
+The first shared admission blocker is corrected: bounded ordered GPOS pair
+lists/class pairs, coverage/class definitions 1/2 and mark-free IgnoreMarks.
+Covered contextual glyphs and actual marks remain explicit unsupported outcomes.
+**This bank has 0/1 completed documents and 0/7 exact controls.** The label now
+renders but still differs from its reference; ordinary-path replay alone does
+not reproduce native text masks. Next, correct native glyph coverage/hinting and
+device layout rounding for the original single `A`, protecting curves, counters
+and fractional placement. Composite accents also expose component-flag admission.
+Do not replace the font, document bytes or either platform reference. Keep this
+same document selected through these remaining gates; G9's text paths and all
+finite label/path promises remain open.
+
 The completed document ledger retains every declared output below. Original
 bytes and prior references remain unchanged. The tiger uses the explicit viewport
 qualification in [capture sizing](docs/ORACLE.md#capture-sizing-behavior): its old
@@ -80,13 +99,13 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,262 tests/platform**: 4,410 core, 1,846 visual, six FontProbe. Test counts are not document counts. |
-| Complete retained banks | All **2,908 prior reports**, **2,849 prior PNGs** and **2,755 established exact comparisons** are preserved. Existing document/reference captures are reused; only the six new controls have new captures. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,295 tests/platform**: 4,425 core, 1,864 visual, six FontProbe. Test counts are not document counts. |
+| Complete retained banks | All **2,908 prior reports**, **2,849 prior PNGs** and **2,755 established exact comparisons** are preserved. Established document/reference captures are reused. The separate pending public-font bank has its declared native captures and diagnostics. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
 | Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
-| Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. New typography spans are charged, validated and discarded; no font or parser-string owner is retained. |
+| Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning and per-glyph admission guards preserve borrowed font bytes and release positioned-glyph reservations on rejection. Inert typography values still do not request or retain fonts. |
 | Scene layouts | Draw command / geometry / paint remain **72/272/68 bytes**. No new throughput claim follows from this correction. |
 | Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
@@ -771,7 +790,7 @@ stays open. Choose shared changes by the complete documents they advance.
 
 The next retained deliverable is the original live-text acceptance fixture under
 G9, with explicit public-font preparation and browser embedding. It remains
-pending until its declared supplied-font output is frozen and exact. The separate
+pending until its now-frozen native supplied-font output is exact. The separate
 text-path fixture follows within the unchanged finite G9 subset. Online sourcing
 continues in bounded public-domain/CC0 batches for remaining in-scope gaps;
 animated exports and effects beyond the enumerated subset remain excluded.

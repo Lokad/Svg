@@ -1,0 +1,301 @@
+{
+  "Platform": "windows",
+  "Reports": [
+    {
+      "Id": "original-logo-live-text-64x64-transparent",
+      "Metrics": {
+        "fontFamily": "Example",
+        "fontSize": "48px",
+        "length": 30.6875,
+        "chars": [
+          {
+            "index": 0,
+            "startX": 8,
+            "startY": 48,
+            "endX": 38.6875,
+            "endY": 48,
+            "width": 30.6875,
+            "height": 65
+          }
+        ]
+      },
+      "Fonts": [
+        {
+          "familyName": "Noto Sans",
+          "postScriptName": "NotoSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 1
+        }
+      ],
+      "StartupHealth": "healthy",
+      "ProfileCleaned": true
+    },
+    {
+      "Id": "curve-counters",
+      "Metrics": {
+        "fontFamily": "Example",
+        "fontSize": "32px",
+        "length": 42.953125,
+        "chars": [
+          {
+            "index": 0,
+            "startX": 4,
+            "startY": 45,
+            "endX": 29,
+            "endY": 45,
+            "width": 25,
+            "height": 43
+          },
+          {
+            "index": 1,
+            "startX": 28.984375,
+            "startY": 45,
+            "endX": 46.953125,
+            "endY": 45,
+            "width": 17.96875,
+            "height": 43
+          }
+        ]
+      },
+      "Fonts": [
+        {
+          "familyName": "Noto Sans",
+          "postScriptName": "NotoSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 2
+        }
+      ],
+      "StartupHealth": "healthy",
+      "ProfileCleaned": true
+    },
+    {
+      "Id": "pair-and-space",
+      "Metrics": {
+        "fontFamily": "Example",
+        "fontSize": "24px",
+        "length": 50.359375,
+        "chars": [
+          {
+            "index": 0,
+            "startX": 8,
+            "startY": 48,
+            "endX": 22.390625,
+            "endY": 48,
+            "width": 14.390625,
+            "height": 33
+          },
+          {
+            "index": 1,
+            "startX": 22.375,
+            "startY": 48,
+            "endX": 36.78125,
+            "endY": 48,
+            "width": 14.40625,
+            "height": 33
+          },
+          {
+            "index": 2,
+            "startX": 36.765625,
+            "startY": 48,
+            "endX": 43.03125,
+            "endY": 48,
+            "width": 6.265625,
+            "height": 33
+          },
+          {
+            "index": 3,
+            "startX": 43.015625,
+            "startY": 48,
+            "endX": 58.359375,
+            "endY": 48,
+            "width": 15.34375,
+            "height": 33
+          }
+        ]
+      },
+      "Fonts": [
+        {
+          "familyName": "Noto Sans",
+          "postScriptName": "NotoSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 4
+        }
+      ],
+      "StartupHealth": "healthy",
+      "ProfileCleaned": true
+    },
+    {
+      "Id": "composite-accents",
+      "Metrics": {
+        "fontFamily": "Example",
+        "fontSize": "28px",
+        "length": 33.6875,
+        "chars": [
+          {
+            "index": 0,
+            "startX": 4,
+            "startY": 44,
+            "endX": 19.796875,
+            "endY": 44,
+            "width": 15.796875,
+            "height": 38
+          },
+          {
+            "index": 1,
+            "startX": 19.78125,
+            "startY": 44,
+            "endX": 37.6875,
+            "endY": 44,
+            "width": 17.90625,
+            "height": 38
+          }
+        ]
+      },
+      "Fonts": [
+        {
+          "familyName": "Noto Sans",
+          "postScriptName": "NotoSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 2
+        }
+      ],
+      "StartupHealth": "healthy",
+      "ProfileCleaned": true
+    },
+    {
+      "Id": "fractional-position-size",
+      "Metrics": {
+        "fontFamily": "Example",
+        "fontSize": "32.5px",
+        "length": 64.03125,
+        "chars": [
+          {
+            "index": 0,
+            "startX": 3.25,
+            "startY": 47.5,
+            "endX": 22.71875,
+            "endY": 47.5,
+            "width": 19.46875,
+            "height": 45
+          },
+          {
+            "index": 1,
+            "startX": 22.703125,
+            "startY": 47.5,
+            "endX": 41.90625,
+            "endY": 47.5,
+            "width": 19.203125,
+            "height": 45
+          },
+          {
+            "index": 2,
+            "startX": 41.890625,
+            "startY": 47.5,
+            "endX": 67.28125,
+            "endY": 47.5,
+            "width": 25.390625,
+            "height": 45
+          }
+        ]
+      },
+      "Fonts": [
+        {
+          "familyName": "Noto Sans",
+          "postScriptName": "NotoSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 3
+        }
+      ],
+      "StartupHealth": "healthy",
+      "ProfileCleaned": true
+    },
+    {
+      "Id": "small-fractional-origin",
+      "Metrics": {
+        "fontFamily": "Example",
+        "fontSize": "16px",
+        "length": 10.234375,
+        "chars": [
+          {
+            "index": 0,
+            "startX": 8.25,
+            "startY": 32.25,
+            "endX": 18.484375,
+            "endY": 32.25,
+            "width": 10.234375,
+            "height": 22
+          }
+        ]
+      },
+      "Fonts": [
+        {
+          "familyName": "Noto Sans",
+          "postScriptName": "NotoSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 1
+        }
+      ],
+      "StartupHealth": "healthy",
+      "ProfileCleaned": true
+    },
+    {
+      "Id": "large-outline",
+      "Metrics": {
+        "fontFamily": "Example",
+        "fontSize": "96px",
+        "length": 61.359375,
+        "chars": [
+          {
+            "index": 0,
+            "startX": 8,
+            "startY": 104,
+            "endX": 69.359375,
+            "endY": 104,
+            "width": 61.359375,
+            "height": 131
+          }
+        ]
+      },
+      "Fonts": [
+        {
+          "familyName": "Noto Sans",
+          "postScriptName": "NotoSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 1
+        }
+      ],
+      "StartupHealth": "healthy",
+      "ProfileCleaned": true
+    },
+    {
+      "Id": "inherited-alias-paint",
+      "Metrics": {
+        "fontFamily": "Example",
+        "fontSize": "32px",
+        "length": 20.453125,
+        "chars": [
+          {
+            "index": 0,
+            "startX": 8,
+            "startY": 48,
+            "endX": 28.453125,
+            "endY": 48,
+            "width": 20.453125,
+            "height": 43
+          }
+        ]
+      },
+      "Fonts": [
+        {
+          "familyName": "Noto Sans",
+          "postScriptName": "NotoSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 1
+        }
+      ],
+      "StartupHealth": "healthy",
+      "ProfileCleaned": true
+    }
+  ],
+  "method": "Independent inline SVG DOM layout with UTF-8 declared, exact embedded face, CSS.getPlatformFontsForNode custom Noto Sans confirmation, blocked external URLs and healthy cleaned native browser; actual image font use is separately established by raster negatives."
+}

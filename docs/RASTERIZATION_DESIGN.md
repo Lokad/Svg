@@ -10589,3 +10589,66 @@ not regression requirements. PLAN now retains the current evidence and finite
 support exits; dated mechanism/checkpoint details stay here and in Git. The next
 whole-document step is public supplied-font live text, with font/reference
 qualification before correction. Remaining G2–G9 and S17 promises stay open.
+
+## Public supplied-font labels and bounded pair kerning (2026-10-10)
+
+The next complete document is the unchanged original live-text `A`, at 64×64
+transparent under an explicit `Example` alias for the public static Noto Sans
+Regular 2.008 TrueType face 0. The unmodified program, OFL notice and upstream
+revision are retained in the [public-font bank](../tests/Research/supplied-font-labels/README.md).
+Seven separately declared CC0 controls cover curves/counters, pairs/space,
+precomposed composites, fractional placement/size, small/large sizes and inherited
+alias/paint. They do not enter the completed-document numerator.
+
+Font/alias/options were declared before capture or screening. Forty-eight fresh
+healthy cleaned image captures freeze eight stable native reference triples per
+platform. Windows/Linux font pixels differ. Eighteen additional healthy cleaned
+captures qualify missing, truncated and substituted embedded programs inside the
+SVG image; every negative differs from the intended-font reference. One PNG per
+stable negative triple is retained with evaluation-data provenance. Independent
+inline SVG DOM metrics confirm the custom Noto Sans face through the browser's
+platform-font report; they complement the actual image raster proof. The accent
+DOM diagnostic declares UTF-8 explicitly. Browser-only embedding never changes
+the converter's original input or caller-owned supplied-program contract.
+
+The first font-admission failure was a single-lookup/single-subtable PairPos
+restriction. The shared borrowed reader now validates ordered pair-list/class
+X-advance kerning, coverage/class definitions 1/2, and GDEF-backed IgnoreMarks
+only for runs without mark glyphs. At most 32 selections and 32 subtables per
+lookup are admitted; distinct lookups execute once in LookupList order. The first
+matching subtable wins even for a zero adjustment; an absent list pair can fall
+through to a class subtable. No lookup/pair/class arrays or font programs are
+copied into the renderer. The [OpenType GPOS specification](https://learn.microsoft.com/en-us/typography/opentype/spec/gpos)
+and [common layout formats](https://learn.microsoft.com/en-us/typography/opentype/spec/chapter2)
+define the ordering, matching and class semantics.
+
+A selected chained-context format-2 lookup can remain dormant for uncovered
+Latin glyphs. Its validated coverage is a conservative unsupported-glyph guard,
+not a context implementation. Covered glyphs, including a sole or final glyph,
+and actual GDEF marks reject explicitly. General shaping and mark positioning
+remain outside the finite G9 subset. Fifteen synthetic checks protect pair/class
+fallback, class zero, zero adjustments, ordering/deduplication, dormant/covered
+contexts, malformed ranges/indices/matrices, lookup/subtable limits, work,
+cancellation, unchanged input and cleanup/retry after a covered-glyph rejection.
+
+Eight public-font layout cases match independent cmap/hmtx/ordered-kern font-unit
+calculations. Eighteen visual/resource checks protect source/program/reference
+integrity, intended-font raster witnesses, snapshot-less rejection and the six
+raw plus six independently prepared output forms. Their passing tests do not
+establish exact text pixels. The original `A` still differs at 230 Windows and
+171 Linux pixels; ordinary-path replay also differs, so replacing the sampler
+alone is insufficient. Browser advances show device rounding distinct from raw
+font-unit metrics. Composite accents retain a component-flag admission gate.
+The same original document remains selected: **0/1 font documents complete and
+0/7 font controls exact**. No font, SVG or platform reference is replaced to
+remove these mismatches, and the finite G9 label/text-path promises remain open.
+
+Complete qualification of this kerning correction passes 6,295 tests per platform
+(4,425 core / 1,864 visual / six FontProbe), with zero warnings/errors/failures/
+skips. All 2,908 prior reports, 2,849 prior PNGs and 2,755 established exact
+comparisons are preserved, including corporate 27/27 documents / 258/258 variants,
+30/30 selected development documents and 2/2 previously completed original
+acceptance fixtures. The new pending font bank remains separate. Scene layouts
+stay 72/272/68 bytes. Prior exact-document browser captures are reused; only the
+new declared font evaluation uses new captures. Implementation fingerprints are
+not regression requirements. Remaining finite G2–G9 and S17 promises stay open.

@@ -1,0 +1,166 @@
+{
+  "purpose": "Negative raster witnesses for actual embedded-font use inside the SVG image. Every result differs from the intended Noto Sans reference; each native result is a healthy cleaned stable fresh-process triple.",
+  "inputRecipe": "Original logo-live-text.svg bytes with no embedded face, with first 64 bytes of Noto Sans embedded, or with pinned unchanged Noto Serif Regular embedded under Example. Browser-only embedding is identical to the positive recipe.",
+  "platforms": [
+    {
+      "platform": "windows",
+      "cases": [
+        {
+          "id": "missing-font",
+          "oracleInputSha256": "53159c3f72b3647d2bf80dcc71d9a328aa8165b58e6e5afc9cf6b4edd29218b5",
+          "changedPixelsFromIntendedFont": 393,
+          "captures": [
+            {
+              "pngSha256": "79ed9daa76676271709e121a423db773dcfa486fac3f41fb52c3ff8eaf0605a1",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "79ed9daa76676271709e121a423db773dcfa486fac3f41fb52c3ff8eaf0605a1",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "79ed9daa76676271709e121a423db773dcfa486fac3f41fb52c3ff8eaf0605a1",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "windows/missing-font.png"
+        },
+        {
+          "id": "corrupt-font",
+          "oracleInputSha256": "721a4dce726c8546dfaec8a127f741e7369a9686b957cb6da0eef57f6428e2f3",
+          "changedPixelsFromIntendedFont": 393,
+          "captures": [
+            {
+              "pngSha256": "79ed9daa76676271709e121a423db773dcfa486fac3f41fb52c3ff8eaf0605a1",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "79ed9daa76676271709e121a423db773dcfa486fac3f41fb52c3ff8eaf0605a1",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "79ed9daa76676271709e121a423db773dcfa486fac3f41fb52c3ff8eaf0605a1",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "windows/corrupt-font.png"
+        },
+        {
+          "id": "substituted-font",
+          "oracleInputSha256": "4c45477f065a92548c31f9e5bae8175759cb7b4bd1bf562c720ea474b49b3268",
+          "changedPixelsFromIntendedFont": 419,
+          "captures": [
+            {
+              "pngSha256": "5cf3ed3815d2f10854cc5a925031f9ad45e26a3deb5dcf6d9d0027220d8c0609",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5cf3ed3815d2f10854cc5a925031f9ad45e26a3deb5dcf6d9d0027220d8c0609",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "5cf3ed3815d2f10854cc5a925031f9ad45e26a3deb5dcf6d9d0027220d8c0609",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "windows/substituted-font.png"
+        }
+      ],
+      "substitution": {
+        "url": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/hinted/ttf/NotoSerif/NotoSerif-Regular.ttf",
+        "license": "OFL-1.1",
+        "sha256": "c8f669ceb2c9c60ccf55198b305e08a997ffca79a38cc7eeb551e643cbe66505",
+        "byteSize": 616196
+      }
+    },
+    {
+      "platform": "linux",
+      "cases": [
+        {
+          "id": "missing-font",
+          "oracleInputSha256": "53159c3f72b3647d2bf80dcc71d9a328aa8165b58e6e5afc9cf6b4edd29218b5",
+          "changedPixelsFromIntendedFont": 337,
+          "captures": [
+            {
+              "pngSha256": "73748fe9e59e5848be9c4bf7777fa7c43ec2e9b531b54f95cd7a5461eae2c44b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "73748fe9e59e5848be9c4bf7777fa7c43ec2e9b531b54f95cd7a5461eae2c44b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "73748fe9e59e5848be9c4bf7777fa7c43ec2e9b531b54f95cd7a5461eae2c44b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "linux/missing-font.png"
+        },
+        {
+          "id": "corrupt-font",
+          "oracleInputSha256": "721a4dce726c8546dfaec8a127f741e7369a9686b957cb6da0eef57f6428e2f3",
+          "changedPixelsFromIntendedFont": 337,
+          "captures": [
+            {
+              "pngSha256": "73748fe9e59e5848be9c4bf7777fa7c43ec2e9b531b54f95cd7a5461eae2c44b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "73748fe9e59e5848be9c4bf7777fa7c43ec2e9b531b54f95cd7a5461eae2c44b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "73748fe9e59e5848be9c4bf7777fa7c43ec2e9b531b54f95cd7a5461eae2c44b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "linux/corrupt-font.png"
+        },
+        {
+          "id": "substituted-font",
+          "oracleInputSha256": "4c45477f065a92548c31f9e5bae8175759cb7b4bd1bf562c720ea474b49b3268",
+          "changedPixelsFromIntendedFont": 344,
+          "captures": [
+            {
+              "pngSha256": "38652b92e91aef7d4eca97b855bcc4d200753e43de2a7e16b3997ef6897d22cf",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "38652b92e91aef7d4eca97b855bcc4d200753e43de2a7e16b3997ef6897d22cf",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "38652b92e91aef7d4eca97b855bcc4d200753e43de2a7e16b3997ef6897d22cf",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ],
+          "reference": "linux/substituted-font.png"
+        }
+      ],
+      "substitution": {
+        "url": "https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/hinted/ttf/NotoSerif/NotoSerif-Regular.ttf",
+        "license": "OFL-1.1",
+        "sha256": "c8f669ceb2c9c60ccf55198b305e08a997ffca79a38cc7eeb551e643cbe66505",
+        "byteSize": 616196
+      }
+    }
+  ]
+}

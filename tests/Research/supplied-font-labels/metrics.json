@@ -1,0 +1,190 @@
+{
+  "method": "Independent FontTools cmap/hmtx/ordered kern pair-list/class evaluation; font units mapped to user units without native-device rounding or hinting.",
+  "unitsPerEm": 1000,
+  "cases": [
+    {
+      "id": "original-logo-live-text-64x64-transparent",
+      "text": "A",
+      "fontSize": 48.0,
+      "glyphs": [
+        {
+          "scalar": 65,
+          "glyphIndex": 36,
+          "x": 8.0,
+          "y": 48.0,
+          "advance": 30.672,
+          "kerning": 0.0
+        }
+      ],
+      "length": 30.671999999999997
+    },
+    {
+      "id": "curve-counters",
+      "text": "Oa",
+      "fontSize": 32.0,
+      "glyphs": [
+        {
+          "scalar": 79,
+          "glyphIndex": 50,
+          "x": 4.0,
+          "y": 45.0,
+          "advance": 24.992,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 97,
+          "glyphIndex": 68,
+          "x": 28.992,
+          "y": 45.0,
+          "advance": 17.952,
+          "kerning": 0.0
+        }
+      ],
+      "length": 42.944
+    },
+    {
+      "id": "pair-and-space",
+      "text": "AV A",
+      "fontSize": 24.0,
+      "glyphs": [
+        {
+          "scalar": 65,
+          "glyphIndex": 36,
+          "x": 8.0,
+          "y": 48.0,
+          "advance": 15.336,
+          "kerning": -0.96
+        },
+        {
+          "scalar": 86,
+          "glyphIndex": 57,
+          "x": 22.375999999999998,
+          "y": 48.0,
+          "advance": 14.4,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 32,
+          "glyphIndex": 3,
+          "x": 36.775999999999996,
+          "y": 48.0,
+          "advance": 6.24,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 65,
+          "glyphIndex": 36,
+          "x": 43.016,
+          "y": 48.0,
+          "advance": 15.336,
+          "kerning": 0.0
+        }
+      ],
+      "length": 50.352
+    },
+    {
+      "id": "composite-accents",
+      "text": "\u00e9\u00c5",
+      "fontSize": 28.0,
+      "glyphs": [
+        {
+          "scalar": 233,
+          "glyphIndex": 171,
+          "x": 4.0,
+          "y": 44.0,
+          "advance": 15.792,
+          "kerning": 0.0
+        },
+        {
+          "scalar": 197,
+          "glyphIndex": 135,
+          "x": 19.792,
+          "y": 44.0,
+          "advance": 17.892,
+          "kerning": 0.0
+        }
+      ],
+      "length": 33.684
+    },
+    {
+      "id": "fractional-position-size",
+      "text": "AVO",
+      "fontSize": 32.5,
+      "glyphs": [
+        {
+          "scalar": 65,
+          "glyphIndex": 36,
+          "x": 3.25,
+          "y": 47.5,
+          "advance": 20.7675,
+          "kerning": -1.3
+        },
+        {
+          "scalar": 86,
+          "glyphIndex": 57,
+          "x": 22.7175,
+          "y": 47.5,
+          "advance": 19.5,
+          "kerning": -0.325
+        },
+        {
+          "scalar": 79,
+          "glyphIndex": 50,
+          "x": 41.8925,
+          "y": 47.5,
+          "advance": 25.3825,
+          "kerning": 0.0
+        }
+      ],
+      "length": 64.025
+    },
+    {
+      "id": "small-fractional-origin",
+      "text": "A",
+      "fontSize": 16.0,
+      "glyphs": [
+        {
+          "scalar": 65,
+          "glyphIndex": 36,
+          "x": 8.25,
+          "y": 32.25,
+          "advance": 10.224,
+          "kerning": 0.0
+        }
+      ],
+      "length": 10.224
+    },
+    {
+      "id": "large-outline",
+      "text": "A",
+      "fontSize": 96.0,
+      "glyphs": [
+        {
+          "scalar": 65,
+          "glyphIndex": 36,
+          "x": 8.0,
+          "y": 104.0,
+          "advance": 61.344,
+          "kerning": 0.0
+        }
+      ],
+      "length": 61.343999999999994
+    },
+    {
+      "id": "inherited-alias-paint",
+      "text": "A",
+      "fontSize": 32.0,
+      "glyphs": [
+        {
+          "scalar": 65,
+          "glyphIndex": 36,
+          "x": 8.0,
+          "y": 48.0,
+          "advance": 20.448,
+          "kerning": 0.0
+        }
+      ],
+      "length": 20.448
+    }
+  ]
+}

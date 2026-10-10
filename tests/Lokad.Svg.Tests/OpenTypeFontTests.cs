@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Lokad.Svg.Tests;
 
-public sealed class OpenTypeFontTests
+public sealed partial class OpenTypeFontTests
 {
     [Fact]
     public void Validates_core_standalone_TrueType_metrics_without_copying_bytes()
