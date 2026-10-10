@@ -70,6 +70,12 @@ internal static class SvgElementAttributePolicy
         while (reader.MoveToNextAttribute())
         {
             workCounter.Consume(cancellationToken);
+            if (reader.NamespaceURI.Length == 0 && kind is SvgElementKind.Rectangle or SvgElementKind.Line or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle
+                && reader.LocalName is "font-family" or "font-size" or "font-style" or "font-weight" or "font-stretch" or "font-variant" or "text-anchor" or "writing-mode" or "letter-spacing")
+            {
+                _ = SvgInertPresentationSyntax.TryValidateTypography(reader.LocalName.AsSpan(), reader.Value.AsSpan(), workCounter, cancellationToken);
+                continue;
+            }
             if (IsAllowed(reader, kind))
             {
                 bool isInheritedStrokeStyle = reader.LocalName == "stroke-dasharray" || reader.LocalName == "stroke-dashoffset" || reader.LocalName == "stroke-linecap" || reader.LocalName == "stroke-linejoin";

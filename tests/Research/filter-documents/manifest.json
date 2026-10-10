@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Three frozen whole-document outputs. The original drop-shadow fixture and shadowed star are exact; the question-mark export reaches its outlined-path styling gate. Outputs, inputs and references remain unchanged.",
+  "purpose": "Three complete frozen whole-document outputs: the original drop-shadow fixture, shadowed star and question-mark export. Original inputs, declared options and references remain unchanged; completion requires all six outputs on Windows/Linux.",
   "cases": [
     {
       "id": "original-logo-filter-mark-64x64-transparent",
@@ -102,9 +102,7 @@
           "profileCleaned": true
         }
       ],
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Symbol_question_vote.svg",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Inline style property 'font-size' is not implemented."
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Symbol_question_vote.svg"
     }
   ],
   "chromeVersion": "153.0.8010.52",

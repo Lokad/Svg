@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Bounded inert typography on geometry, selected by the retained question-mark export. Controls remain separate from completed documents; source and output declarations precede capture and renderer screening.",
+  "cases": [
+    {
+      "id": "inline-outlined-path",
+      "input": "inline-outlined-path.svg",
+      "reference": "references/inline-outlined-path.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "inert-typography-control",
+      "sourceSha256": "dd2e296f2ee34d6f0c84197585bd0a786a6ce59985743c98a42d5f74ae4a5e7e",
+      "license": "CC0-1.0",
+      "verifySix": true,
+      "referenceSha256": "2ad83e8eb2a17bdf463022e3897dc7b718468871219e05d16933e51af2da0f74",
+      "captures": [
+        {
+          "pngSha256": "2ad83e8eb2a17bdf463022e3897dc7b718468871219e05d16933e51af2da0f74",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ad83e8eb2a17bdf463022e3897dc7b718468871219e05d16933e51af2da0f74",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ad83e8eb2a17bdf463022e3897dc7b718468871219e05d16933e51af2da0f74",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "presentation-outlined-path",
+      "input": "presentation-outlined-path.svg",
+      "reference": "references/presentation-outlined-path.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "inert-typography-control",
+      "sourceSha256": "2743b2f7be61d2eebf04fd9d393b0b6c5877b4ed74cc36463153b32763d56a6a",
+      "license": "CC0-1.0",
+      "verifySix": true,
+      "referenceSha256": "2ad83e8eb2a17bdf463022e3897dc7b718468871219e05d16933e51af2da0f74",
+      "captures": [
+        {
+          "pngSha256": "2ad83e8eb2a17bdf463022e3897dc7b718468871219e05d16933e51af2da0f74",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ad83e8eb2a17bdf463022e3897dc7b718468871219e05d16933e51af2da0f74",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ad83e8eb2a17bdf463022e3897dc7b718468871219e05d16933e51af2da0f74",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "all-geometric-leaves",
+      "input": "all-geometric-leaves.svg",
+      "reference": "references/all-geometric-leaves.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "inert-typography-control",
+      "sourceSha256": "8be2501a261db21369c0f3ffec2f799ebee4ec7c7fa03dc6baa0649588f8cc46",
+      "license": "CC0-1.0",
+      "verifySix": true,
+      "referenceSha256": "809fb33f6bd49478fe709e6e582206ecd42185e5cc7e3edc40e4f004cef30311",
+      "captures": [
+        {
+          "pngSha256": "809fb33f6bd49478fe709e6e582206ecd42185e5cc7e3edc40e4f004cef30311",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "809fb33f6bd49478fe709e6e582206ecd42185e5cc7e3edc40e4f004cef30311",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "809fb33f6bd49478fe709e6e582206ecd42185e5cc7e3edc40e4f004cef30311",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "retained-local-instance",
+      "input": "retained-local-instance.svg",
+      "reference": "references/retained-local-instance.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "inert-typography-control",
+      "sourceSha256": "0d7cc5e90bb24608464d63140596b08fe4c6b92133963fc2955f37dd0b5f70bf",
+      "license": "CC0-1.0",
+      "verifySix": true,
+      "referenceSha256": "4c9cd1e05193d3e5609915c631f55e4e22692b81b881c8784c142c10c7e70fe5",
+      "captures": [
+        {
+          "pngSha256": "4c9cd1e05193d3e5609915c631f55e4e22692b81b881c8784c142c10c7e70fe5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4c9cd1e05193d3e5609915c631f55e4e22692b81b881c8784c142c10c7e70fe5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4c9cd1e05193d3e5609915c631f55e4e22692b81b881c8784c142c10c7e70fe5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "pattern-content",
+      "input": "pattern-content.svg",
+      "reference": "references/pattern-content.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "inert-typography-control",
+      "sourceSha256": "194df3f3ef3103bf492ff8f384b0cc5c1bd9423233a87e3c1dd6576aaac01597",
+      "license": "CC0-1.0",
+      "verifySix": true,
+      "referenceSha256": "795ee68857f9bc7c89918bdad0e9580a73d2de0148589de8279587dba028f5b5",
+      "captures": [
+        {
+          "pngSha256": "795ee68857f9bc7c89918bdad0e9580a73d2de0148589de8279587dba028f5b5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "795ee68857f9bc7c89918bdad0e9580a73d2de0148589de8279587dba028f5b5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "795ee68857f9bc7c89918bdad0e9580a73d2de0148589de8279587dba028f5b5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "filtered-source",
+      "input": "filtered-source.svg",
+      "reference": "references/filtered-source.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "inert-typography-control",
+      "sourceSha256": "a2a016982a1cac9e7587402f004c1d2dd934e6aefe6817b6c83ad0513d2fd225",
+      "license": "CC0-1.0",
+      "verifySix": true,
+      "referenceSha256": "e763c174637cdfeeb4009b66c626ed86b53c72e2b44745cb7ac8c648525a35d7",
+      "captures": [
+        {
+          "pngSha256": "e763c174637cdfeeb4009b66c626ed86b53c72e2b44745cb7ac8c648525a35d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e763c174637cdfeeb4009b66c626ed86b53c72e2b44745cb7ac8c648525a35d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e763c174637cdfeeb4009b66c626ed86b53c72e2b44745cb7ac8c648525a35d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  }
+}

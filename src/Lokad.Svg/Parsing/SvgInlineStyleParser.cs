@@ -74,6 +74,7 @@ internal enum InlineImportantProperties
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
 internal static class SvgInlineStyleParser
 {
+    private enum Target : byte { Presentation, DirectText, Geometry }
     internal static InlineStyle Parse(string? value) => value is null ? default : Parse(value.AsSpan());
 
     internal static InlineStyle Parse(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -84,22 +85,26 @@ internal static class SvgInlineStyleParser
         => value is null ? default : Parse(value.AsSpan(), workCounter, cancellationToken, allowsDirectTextFontProperties);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value)
-        => ParseCore(value, null, default, null, false);
+        => ParseCore(value, null, default, null, Target.Presentation);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => ParseCore(value, workCounter, cancellationToken, null, false);
+        => ParseCore(value, workCounter, cancellationToken, null, Target.Presentation);
 
     private static InlineStyle Parse(ReadOnlySpan<char> value, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
-        => ParseCore(value, workCounter, cancellationToken, null, allowsDirectTextFontProperties);
+        => ParseCore(value, workCounter, cancellationToken, null, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => ParseCore(value, workCounter, cancellationToken, strings, false);
+        => ParseCore(value, workCounter, cancellationToken, strings, Target.Presentation);
 
     internal static InlineStyle Parse(ReadOnlySpan<char> value, BudgetedParserStringStore strings, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool allowsDirectTextFontProperties)
-        => ParseCore(value, workCounter, cancellationToken, strings, allowsDirectTextFontProperties);
+        => ParseCore(value, workCounter, cancellationToken, strings, allowsDirectTextFontProperties ? Target.DirectText : Target.Presentation);
 
-    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings, bool allowsDirectTextFontProperties)
+    internal static InlineStyle ParseGeometry(string? value, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => value is null ? default : ParseCore(value.AsSpan(), workCounter, cancellationToken, null, Target.Geometry);
+
+    private static InlineStyle ParseCore(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken, BudgetedParserStringStore? strings, Target target)
     {
+        bool allowsDirectTextFontProperties = target == Target.DirectText;
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null, paintOrder = null;
         string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null;
         string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, pathLength = null, geometryWidth = null, geometryHeight = null;
@@ -151,6 +156,7 @@ internal static class SvgInlineStyleParser
                 else SvgNestedViewportSyntax.ValidateOverflow(stripped);
             }
             else if (property.Equals("preserveAspectRatio", StringComparison.OrdinalIgnoreCase)) ValidateImagePreserveAspectRatioDeclaration(propertyValue);
+            else if (target == Target.Geometry && ValidateInertTypography(property, propertyValue, workCounter, cancellationToken)) { }
             else if (property.Equals("font-variant", StringComparison.OrdinalIgnoreCase)) ValidateFontVariantDeclaration(propertyValue);
             else if (property.Equals("color-interpolation", StringComparison.OrdinalIgnoreCase)) ValidateColorInterpolationDeclaration(propertyValue);
             else if (property.Equals("marker", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-start", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-mid", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-end", StringComparison.OrdinalIgnoreCase))
@@ -221,6 +227,14 @@ internal static class SvgInlineStyleParser
         {
             TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
             SvgTextFontSyntax.ValidateFontVariant(stripped);
+        }
+
+        static bool ValidateInertTypography(ReadOnlySpan<char> property, ReadOnlySpan<char> raw, ParserWorkCounter? work, CancellationToken token)
+        {
+            TryStripImportant(raw, out ReadOnlySpan<char> value);
+            if (value.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
+            return SvgInertPresentationSyntax.TryValidateTypography(property, value, work, token);
         }
 
         static void ValidateColorInterpolationDeclaration(ReadOnlySpan<char> rawValue)

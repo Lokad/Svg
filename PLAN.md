@@ -3,33 +3,45 @@
 Updated 2026-10-10. Complete Windows/Linux qualification preserves
 **27/27 corporate documents and 258/258 variants exact**, against each platform's
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
-Membership, input bytes, options and references stay frozen. This complete
-matrix remains the regression gate.
+Membership, input bytes, options and references stay frozen.
 
-**Current finished filter correction:** 6,233 tests pass per platform (4,387 core /
-1,840 visual / six FontProbe), with zero failures/skips/warnings. The complete
-bank preserves 2,848 previous PNGs byte-for-byte and 2,754 established exact
-comparisons across 2,908 reports; the original drop-shadow adds one exact PNG.
-Command/geometry/paint layouts stay 72/272/68 bytes. Six frozen blur controls
-now exercise whole playback through six APIs, alongside 15 focused binding,
-ownership, opacity and boundary checks. This finished qualification supersedes
-the preceding marker and isolated-kernel receipts for current renderer playback.
-Reuse it until a renderer change or failure requires further complete checks.
+**30/30 selected development documents and 2/2 selected original acceptance
+fixtures are complete**, through all six outputs on both platforms. These are
+separate ledgers; focused controls do not count as completed documents. The
+failure-selected development corpus establishes no representative success rate.
 
-The original CC0 acceptance document `original-logo-marker-mark` is also complete
-at its unchanged 64×64 transparent output through all six APIs on Windows/Linux.
-Its [instance bank](tests/Research/marker-instance-content/manifest.json) keeps
-the original bytes and newly frozen healthy references; twelve focused controls
-are exact and three explicit boundaries remain. This one acceptance fixture is
-counted separately from the 29 completed development documents below.
-The original drop-shadow fixture is now also complete at its frozen 64×64 transparent output, making **2/2 original
-acceptance documents complete**, separate from development documents.
+The question-mark export completes its unchanged 185×180 transparent output.
+Its font and text-layout declarations describe an already outlined path. Shared
+bounded validation discards their inert values on geometric leaves; actual text
+and container semantics keep their existing admission rules. The six
+[inert-typography controls](tests/Research/inert-typography/manifest.json) are
+exact, separately from the whole document. Twenty-three focused core checks
+protect syntax, font independence, work, cancellation, cleanup and boundaries.
+All three [filter documents](tests/Research/filter-documents/manifest.json) now
+match their unchanged references: the original drop-shadow, shadowed star and
+question-mark export. The original marker fixture is also complete at 64×64
+transparent, in its [instance bank](tests/Research/marker-instance-content/manifest.json).
+Neither this checkpoint nor an exact document closes the finite G2–G9 exits.
 
-**29/30 selected development documents are complete**. The shadowed star is
-exact; the question-mark export remains pending.
-The 29 completed documents are exact
-through all six outputs on both platforms. Earlier qualified references stay unchanged;
-the tiger uses the explicit viewport qualification explained below:
+**Next complete deliverable: `original-logo-live-text`, 64×64 transparent**, with
+an explicitly supplied public static Noto Sans Regular face under the existing
+`Example` family alias. Keep the original SVG bytes. Pin the upstream face and
+retain its [OFL notice](https://github.com/notofonts/noto-fonts/blob/main/LICENSE)
+before browser embedding and caller-owned snapshot preparation. Declare the
+font/alias/options, then freeze healthy matching platform reference triples
+before renderer correction. Finish the complete output through all six supplied-font
+APIs; use small glyph/position controls for any shared defect. This is the first
+finite G9 acceptance step; the text-path document and the full label/path subset
+remain promised. Existing snapshot-less rejection stays explicit. Broader G2
+combinations are dependencies only when this document needs them.
+
+The completed document ledger retains every declared output below. Original
+bytes and prior references remain unchanged. The tiger uses the explicit viewport
+qualification in [capture sizing](docs/ORACLE.md#capture-sizing-behavior): its old
+auto-image PNG remains diagnostic, while the declared 362×296 viewport is exact.
+Mechanisms, control counts and dated qualifications live in
+[RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) and
+[SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md); this plan owns the remaining work.
 
 | Complete retained document | Declared output | Shared correction |
 | --- | --- | --- |
@@ -62,730 +74,27 @@ the tiger uses the explicit viewport qualification explained below:
 | Lattice diagram (`inv-123`) | Explicit 512×352, transparent | Authored intermediate vertices, subpath roles and shared bounded marker replay preserve dashed strokes. |
 | Security screw head (`inv-124`) | Explicit 512×512, transparent | Shared automatic tangent placement and visible marker-content overflow. |
 | Shadowed star (`inv-125`) | 128×128, transparent | Local filter binding, bounded native SourceGraphic replay and shared premultiplied Gaussian blur. |
-
-Each document has a stable, healthy, cleaned Linux browser capture triple matching
-its frozen reference byte-for-byte. The [gap manifest](tests/References/inventory/svg-gap-cases.json)
-retains sources, license evidence, outputs and platform provenance. **Documents
-completed: 5/5 in that manifest**, separate from the preserved corporate
-**27/27 / 258/258**. The retained radiation symbol (`inv-094`) is also complete:
-**9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
-[radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
-input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 29; selected queue: 29/30 complete.**
-Every preceding completed output remains exact. Both complete CC0 baseball
-illustrations (`inv-120`, 130×130 transparent; `inv-119`, 1200×800 transparent)
-now match unchanged references through all six APIs on Windows/Linux. Shared
-compound clipping, oval clip identity, percentage rectangles and affine
-linear/radial rectangle paints remove their admission gates. Native child-union
-traversal and local transform-list precision repair the final stitch/outlined-label
-edges. Controls remain separate from completed documents.
-The public-domain vector-effect lead has no healthy browser reference and stays
-outside the corpus. The measured G3 non-scaling width-map defect remains promised.
-Select shared corrections by these retained documents. Controls remain separate
-from completed documents.
-These failure-selected examples establish no representative success rate.
-
-The new [pattern inheritance bank](tests/Research/pattern-inheritance/manifest.json)
-has **17 controls: 15 exact and two explicit unsupported boundaries** through six
-outputs. The earlier vector-content bank retains 17 exact and one rejection.
-Controls diagnose and protect mechanisms; they do not count as completed documents.
-
-The frozen 64×64 `iching-library/nested-rotated-opacity` control is now exact.
-Instance opacity surrounds the instantiated affine viewport clip, matching native
-operation order; seven independent [focused twins](tests/Research/nested-affine-opacity/manifest.json)
-are exact through six outputs. The I Ching bank now has 23 exact and two explicit
-rejections. This closes the measured defect, without claiming the general G5 exit.
-
-The new [gradient-mask bank](tests/Research/gradient-masks/manifest.json) has
-**20 controls: 17 exact and three explicit unsupported boundaries** through six
-outputs. Shared scene replay retains native curves, paint and opacity; luminance
-uses premultiplied color and mask shaders retain the clipped layer's bitmap origin.
-These controls and their resource sweeps protect the completed mask document.
-
-The [oval source-replay bank](tests/Research/oval-source-replay/manifest.json)
-has **eight controls: seven exact and one measured G3 gap**, through six outputs.
-The retained ring isolates the large radiation defect; tiled elliptical placement
-also becomes exact. A non-scaling stroke under a scaled root viewBox still uses
-the wrong width map. This discovered defect stays visible in G3, without counting
-controls as documents or blocking the completed radiation deliverable.
-
-The [affine-arc bank](tests/Research/affine-arcs/manifest.json) separates the complete
-**tiger, 1/1 exact output**, from **15 controls: 12 exact and three explicit
-rejections**, all through six outputs on Windows/Linux. General nonsingular
-matrix fills and source-space endpoint arcs share existing conic/source replay.
-Zero-length stroke outline commands retain their native point count, while edge
-classification removes duplicate vertices. Three old general-map fixture
-backgrounds and the earlier general-matrix rectangle control also become exact
-against unchanged references.
-
-**Explicit tiger qualification decision:** the old 362×296 PNG captures an auto
-image negotiated at 361.984375×295.796875 CSS pixels. It is incompatible with a
-362×296 converter viewport and stays unchanged as diagnostic evidence in the
-research manifest. A separate root-only width/height materialization supplies
-that declared viewport to Chrome; the converter uses the original SVG bytes
-with an explicit viewport. Its new reference was declared before qualification,
-is stable/healthy/cleaned in three captures per platform, and is byte-identical
-on Windows/Linux. The two actual stroke mismatches under this matching frame
-are repaired. This is an explicit capture-contract correction; the old PNG is
-not claimed exact or silently replaced. See [capture sizing](docs/ORACLE.md#capture-sizing-behavior).
-
-The [Malta bank](tests/Research/malta-flag/manifest.json) is **9/9 exact through
-all six APIs on Windows/Linux**. The original native transparent PNG is unchanged;
-the other eight outputs were declared and captured before correction. Every
-reference has a stable, healthy, cleaned Linux triple matching its frozen PNG.
-Fifteen [native fill/replay controls](tests/Research/native-path-replay/manifest.json)
-are exact through six outputs on both platforms. They protect the path/rectangle
-distinction, source oval placement and thin curves crossing bitmap borders.
-Controls do not count as complete documents.
-
-The [Portugal bank](tests/Research/portugal-flag/manifest.json) is **9/9 exact
-through all six APIs on Windows/Linux**. It preserves original converter bytes,
-explicit scales/backgrounds and the existing native transparent PNG. The other
-eight references were captured before correction. Browser small/large inputs
-change only root dimensions and add the declared viewBox; all remaining
-source bytes stay unchanged. Fresh healthy, cleaned Linux triples match
-all nine frozen PNGs. Twelve [source-convexity controls](tests/Research/source-convexity/manifest.json)
-are exact through six APIs on both platforms and remain separate from documents.
-
-The [Bhutan bank](tests/Research/bhutan-flag/manifest.json) is **9/9 exact
-through all six APIs on Windows/Linux**. It keeps original converter bytes at
-scales one third / 1 / 2 and all three backgrounds. The native transparent PNG
-stays unchanged; eight new healthy, cleaned Windows triples freeze the other
-outputs. Browser small/large inputs change only root dimensions and add the
-declared viewBox. Fresh healthy, cleaned Linux triples match all nine frozen
-PNGs byte-for-byte. Earlier shared repairs already qualify every output, so this
-deliverable adds nine document regressions and no production change or synthetic
-controls. The preceding complete corporate/original-bank qualification is reused
-with unchanged production, assets and options; both current full test suites pass.
-
-The [South Africa bank](tests/Research/south-africa-flag/manifest.json) is
-**9/9 exact through all six APIs on Windows/Linux**. It preserves original
-converter bytes and the old native transparent PNG. All nine outputs were fixed
-before capture or correction: scales one third / 1 / 2, sizes 300×200 / 900×600 /
-1800×1200, each on transparent/white/black. Browser small/large sources change
-only root width/height; the original viewBox stays unchanged. Fresh healthy,
-cleaned Linux triples match every frozen PNG byte-for-byte.
-
-Its native/small/large mismatches improve **273/216/18 → 0/0/0**, on every
-background. Single convex straight path clips now reuse native source-content
-replay instead of intersecting flattened painted contours. Clip construction
-bounds stay distinct from bitmap origins; opaque rectangular tile intersections
-retain binary clip paint routing. The [clip bank](tests/Research/convex-path-clips/manifest.json)
-has **11 controls, all exact** through
-six APIs on both platforms. Rectangle targets and ordinary group clips are admitted; scaled/use,
-multi-contour, transformed-coordinate and clip-rule promises remain G5 work.
-
-**Wikifoods (`inv-108`) is complete: 9/9 exact outputs through all six APIs on
-Windows/Linux.** Its [document bank](tests/Research/wikifoods-logo/manifest.json)
-keeps the unchanged CC0 download, scales one third / 1 / 2, sizes 400×400 /
-1200×1200 / 2400×2400 and transparent/white/black backgrounds. All nine frozen
-references retain their original stable, healthy, cleaned capture triples on both
-platforms. Browser small/large inputs change only root dimensions; converter bytes,
-viewBox, options and references stay unchanged.
-
-Shared percentage oval geometry, native curve clip replay and affine radial paint
-mapping remove the admission gates. The final correction constructs path clips
-against the preceding enclosing rectangle and retains each software bitmap's own
-border coverage and nonzero clip bounds. Neighboring output pixels cannot supply
-those bounds: they belong to another bitmap. Paint keeps its separate final clip
-intersection. Drawing-reference transforms compose with the output map before
-float conversion; shader-local matrices and focal-cone evaluation retain their
-native float stages. These shared repairs finish the dome and plate on every
-background, without shape/paint-specific implementations or flattened substitutes.
-
-The [affine radial/clip bank](tests/Research/affine-radial-paints/manifest.json)
-now has **23 controls: 22 exact and one explicit unsupported boundary** through
-six APIs on both platforms. Seven new solid curve/mask twins isolate the document's
-remaining clip defects; their new Linux triples match the frozen PNGs byte-for-byte.
-The four earlier larger paint controls also become exact. Controls remain separate
-from completed documents. The percentage-oval bank keeps nine exact controls and
-three boundaries; the curved-clip bank now keeps ten exact controls and two boundaries.
-
-The finished Wikifoods checkpoint passed Release solution builds with zero
-warnings/errors and **5,708 tests per platform** (4,177 core / 1,525 visual / six
-FontProbe). Its complete original-bank/corporate qualification reused unchanged
-browser references. The next finished-document checkpoint below adds the striped
-pattern; every preceding exact result remains a regression requirement. These
-failure-selected documents establish no representative success rate.
-
-**Striped pattern (`inv-109`) is complete: all nine frozen outputs are exact
-through all six APIs on Windows/Linux.** The [remaining-scope document bank](tests/Research/remaining-scope-documents/manifest.json)
-keeps original-input scales 0.5 / 1 / 2, sizes 187×187 / 374×374 / 748×748, each
-transparent/white/black. Original bytes, options, root-only browser inputs and
-references stay unchanged. Existing healthy, cleaned browser triples are reused.
-The admission baseline at `fd89583f` remains nine local-paint lookup rejections.
-
-Root-local patterns now share the `defs` registration path. The existing bounded
-transform parser retains a composed positive-axis pattern map separately from the
-source grid; templates inherit omitted maps or replace them with an authored map.
-Scaled rectangle content joins the existing ordered vector tile scene. Integral
-texture bounds, fractional-period repeat filtering and native float stages remain
-shared; the legacy unit-scale rectangle route keeps its established pixels.
-A valid pattern aspect declaration is inert without a pattern viewBox, and the
-shared root/nested/image aspect parser defaults omitted fit to `meet`.
-The [placement bank](tests/Research/pattern-affine-placement/manifest.json) has
-**18 controls, now all exact after the set-screw correction**, separate
-from completed documents. Resource denials, replay cancellation and retry protect
-the shared map and retained owners. Other promised affine, content, unit and
-instance combinations remain on the finite G6 checklist.
-
-**The non-ionizing radiation warning (`inv-110`) is complete: its unchanged
-616×540 transparent output is exact through all six APIs on Windows/Linux.**
-Its original 546-byte public-domain SVG, explicit converter viewport, root-only
-browser input and frozen PNG stay unchanged. The admission baseline remains the
-zero-signed-area rejection; no reference is recaptured or replaced. Single
-user-space contours now reuse bounded native clip replay without rejecting
-concavity or nonempty self-intersections whose signed areas cancel.
-
-The [winding bank](tests/Research/native-clip-winding/manifest.json) has **18
-controls: 16 exact and two explicit boundaries**, separate from documents. Five
-star controls exposed an existing ignored even-odd rule: each 126-pixel difference
-is now zero. Clip definitions retain their own cascaded/inherited rule, distinct
-from fill-rule and the clipped target's rule. An older frozen concave-curve control
-also becomes exact. Discovery/parser denial sweeps, raster work/memory denials,
-partial replay cancellation and identical retry protect the shared owners.
-Multi-contour concavity/parity, objectBoundingBox curves, nonuniform curved maps
-and the other promised G5 combinations remain open.
-
-**The geometric pattern (`inv-111`) is complete: its unchanged explicit
-284×284 transparent output is exact through all six APIs on Windows/Linux.**
-The original 39,523-byte CC0 SVG, options, root-only browser materialization and
-frozen PNG remain unchanged; the existing healthy platform triples are reused.
-Deferred local paint leaves retain their copied attributes, inherited contexts,
-mask scopes and command positions. After definitions resolve, the ordinary
-lowerers supply geometry and paints; bounded command insertion preserves drawing
-order and pending use/clip/mask ranges. The next rejection exposed non-axis linear
-paint placement. Shared source coordinates now preserve authored endpoints,
-object bounds and separate local/reference matrices through native float stages,
-with a cached double inverse for finite fallback.
-
-The [deferred-paint bank](tests/Research/deferred-paint-leaves/manifest.json) has
-**29 controls: 26 exact and three explicit boundaries**. Forward/backward twins
-cover linear/radial/pattern paints, genuine rotation/skew, reflected paths,
-opacity, expanded fill/stroke commands, interleaved uses and clips/masks. Missing
-references, cyclic templates and the existing partial-mask gate reject explicitly.
-The latter remains promised G5 work; the covering-mask twin is exact. Every new
-control has a matching healthy, cleaned Linux capture triple. Resource sweeps,
-partial replay cancellation, immutable sources and identical retry protect the
-shared owners. Existing font discovery/error behavior is preserved: earlier
-invalid paints retain priority over a later missing font; valid paints propagate
-the original font diagnostic. No additional text admission boundary is introduced.
-
-**The set-screw diagram (`inv-112`) is complete: its unchanged explicit
-512×538 transparent output matches the frozen reference through all six APIs on
-Windows/Linux.** The rotated vector hatch, ordinary strokes/dashes and reflected
-local uses all survive the complete document. Shared tile replay now retains
-general pattern maps and rotation-invariant texture scales; inherited target
-strokes use existing outline lowering. Generated rectangular stroke outlines
-share the native float rectangle shortcut. Pattern images reuse the gradient
-bitmap-local coordinate cache, preserving separate output/local matrix stages
-and native bilinear half-pixel fractions. No document ID or observed pixel enters
-implementation predicates.
-
-The [general placement bank](tests/Research/pattern-general-placement/manifest.json)
-has **15 exact controls**, including tile-border strokes, rotation/reflection,
-shear, fractional phase/output, clipping outside the source tile, inherited
-content, curved targets and three software-bitmap boundary witnesses. The two
-previous placement-map rejections graduate against their unchanged references;
-the older bank is now 18/18 exact. Controls remain separate from completed documents.
-
-**The gradient-mask export (`inv-113`) is complete: its unchanged explicit
-512×880 transparent output is exact through six APIs on Windows/Linux.** Local
-mask and single-contour clip uses resolve forward/backward references through
-existing geometry replay; nested clip/gradient definitions register in the same
-document scope. Nonsingular axis mask placement composes with output coordinates.
-Source-bound general linear paint maps retain separate native matrices. Source
-clip envelopes round before placement; mask shader matrices and dithering use
-each bitmap's actual clipped layer origin. Gradient stops reuse native float
-number parsing, and arbitrary-stop ramps retain native float factors and biases.
-The [local-reference bank](tests/Research/mask-local-references/manifest.json)
-has **19 exact controls**, separately from the completed whole document.
-
-**The soccerball mask (`inv-114`) is complete at its unchanged 195×195 transparent
-output through six APIs on Windows/Linux.** Ordered direct geometry/local-use
-children promote a mask to the existing bounded vector-scene owner. Original
-attributes and inherited context replay after definitions resolve; ordinary
-geometry lowering and resource-use replay preserve child order, paint and opacity.
-Luminance conversion follows composition of the complete mask scene. Existing
-single-child routes retain their rendering distinctions. No additional target or
-masked-group implementation was required: all three gradient layers, the inverse
-mask and the black curved group become exact after the shared admission repair.
-The [ordered-mask bank](tests/Research/mask-content-order/manifest.json) has
-**12 exact controls**, separately from the whole document. The older
-`gradient-masks/multiple-content-boundary` also graduates against its unchanged PNG.
-Grouped mask content, other unit systems and broader composition remain G5 work.
-
-**All four retained exports (`inv-115`–`inv-118`) are complete.** The bounded five-export
-batch retains four verified public-domain/CC0 failures in the
-[finite-support bank](tests/Research/finite-support-exports/manifest.json), with
-[rights and screening evidence](tests/Research/finite-support-exports/source-records.json).
-Original inputs, explicit viewports and transparent backgrounds were declared at
-`a27d734f` before capture or correction. Thirty healthy, cleaned fresh captures
-(three per export per platform) agree byte-for-byte. Browser materialization changes
-only root dimensions; the converter receives unchanged original bytes.
-
-The spiral's admission baseline rejected its 2.5-pixel rectangle strokes with a
-misleading coordinate error. Rectangle widths now reuse the shared finite
-bare-number/px stroke parser and existing native frame replay. No raster or arc
-change is needed: the whole frozen 915×579 output is exact through six APIs on
-Windows/Linux. Ten [focused width controls](tests/Research/fractional-rectangle-widths/manifest.json)
-retain **nine exact outputs and one explicit fractional use-instance width gate**.
-Negative/nonfinite/unit/dimension boundaries release partial owners and retry;
-fractional frame work denials release surface owners. The remaining use-width
-combination stays promised under G2/G4 and does not block this completed document.
-
-The railway tunnel junction (`inv-117`) is complete at its unchanged 500×500
-transparent output through six APIs on Windows/Linux: **5,569 changed pixels →
-zero**. Deferred mask resolution previously inserted layers into mutable child
-ranges; nested opaque groups sharing a start boundary acquired each other's
-masks, including the wrong following siblings. Parsing now retains each authored
-mask group's own begin/end markers, and resolution binds its resource in place
-after use expansion. Source opacity and recording identity remain separate.
-Empty balanced scopes compact only after binding finishes, under bounded work
-and existing reserved command storage; they allocate no rendering layer.
-No raster kernel, native coverage or mask-content renderer changes.
-
-Sixteen [mask-scope controls](tests/Research/mask-group-scopes/manifest.json) are
-exact through six APIs on both platforms. Eight diagnose previously wrong
-outputs; eight protect already exact behavior. Their 96 fresh captures are
-healthy, cleaned and byte-identical to frozen references. Shared starts/ends,
-adjacent and empty siblings, three-level nesting, forward definitions, clips,
-opacity (including `.999`) and mask-path fill inheritance remain distinct.
-Five controls sweep discovery/parser work, sampled/peak memory and raster-work
-denials with owner release and retry. The whole tunnel document also releases
-partial owners under early/middle/late parser work and peak-memory denial.
-
-The shadowed soccerball (`inv-118`) is complete at its unchanged 512×512
-transparent output through all six APIs on Windows/Linux. Mask containers reuse
-ordinary inherited presentation, including CSS priority, local uses and child
-overrides. Admission exposed a dropped inherited stroke: shader-filled ovals now
-continue through shared solid/dashed/painted stroke lowering. The remaining
-fractional-scale mismatch came from native mask paint-clip dispatch: an enclosing
-source rectangle maps before AA/BW classification, and masks/inner isolated
-surfaces retain independent consumers. The complete mismatch falls from 1,502 to
-755 to zero; no reference or geometry is rebased.
-
-Thirty-three [focused controls](tests/Research/mask-presentation/manifest.json)
-are exact through six APIs on both platforms, with 198 stable, healthy, cleaned
-captures. They cover presentation inheritance, shader fills with independent
-stroke alpha, solid/dashed outlines, pattern ellipses, fractional clip boundaries,
-all-white masks and nested opacity/sibling restoration. Nine controls sweep
-discovery/parser work, sampled/peak memory and raster-work denials; the whole
-document checks early/middle/late work and peak-memory cleanup. Invalid mask
-presentation and non-unit mask-container opacity retain explicit categorized
-outcomes. These controls do not count as documents.
-
-**Transparent striped pattern (`inv-116`) is complete: 1/1 unchanged 283×283
-transparent output, exact through all six APIs on Windows/Linux.** Its original
-2,661 bytes, declared viewport and frozen reference remain unchanged. Admission
-revealed `paint-order`, stop presentation on an unused geometry leaf and pattern
-container style. Typed order retains all six fill/stroke/markers permutations,
-omitted-operation completion, cascade priority and inherited instance order.
-Stable paint-operation batches and shared raster passes reuse native primitives.
-Pattern presentation reuses ordinary container inheritance; leaf stop color/alpha
-is validated without applying it to fill or stroke. Existing affine mapping,
-tile clipping and .4 opacity already match once these gates are removed.
-
-The [paint-order bank](tests/Research/paint-order/manifest.json) keeps **29 exact
-controls**, separately from documents, with 174 healthy matching platform captures.
-Overlapping fill/stroke witnesses protect semantics, including shaders, opacity,
-root/group/inline/stylesheet priority, source overrides, symbols and nested uses.
-Six controls sweep discovery/parser work, memory and raster-work denials; cancellation at the native
-replay boundary releases temporary owners and permits identical retry.
-Invalid/duplicate tokens and non-unit pattern-container opacity remain explicit
-outcomes. Marker painting still requires G8; inherited gradient-stop presentation
-on containers remains unadmitted. No broader G2–G9 exit is claimed.
-
-**Both retained baseball documents are complete.** The
-[compound-clip document bank](tests/Research/compound-clip-documents/manifest.json)
-keeps `inv-120` at 130×130 transparent and `inv-119` at 1200×800 transparent.
-Outputs were declared before screening at `3987efb9`; healthy, cleaned platform
-capture triples match frozen PNGs byte-for-byte. Rights and untouched downloads
-remain in the [source records](tests/Research/compound-clip-documents/source-records.json).
-Both outputs are exact through all six APIs on Windows/Linux; neither SVG,
-render options nor browser references changed to reach equality.
-
-Shared native clip-content replay retains compound curves, holes and parity;
-bounded disjoint convex straight children share one union path. Ordinary
-percentage rectangles and affine linear/radial rectangle paints reuse source
-geometry and paint mapping. Clip definitions retain child-local coordinates,
-native oval identity and layout bounds; nested scopes preserve authored order
-and construct within the preceding clip before applying coverage once.
-
-The last six/four document pixels selected two further shared corrections.
-Native union winding reversal begins at the last stored endpoint; final
-simplification retains contour bounds order, cyclic start and closing-line point
-count. Implicit closes and explicit closing lines retain their native distinction.
-Local scale/translate lists compose in native float axis storage until a matrix,
-rotation or skew promotes that list to double precision. Enclosing groups compose
-completed local maps in double. Actual healthy browser path/matrix traces establish
-both distinctions; the numeric parser and scan-conversion kernels remain unchanged.
-
-The [compound clip controls](tests/Research/compound-clip-content/manifest.json)
-keep **18 controls: 17 exact and one explicit overlapping-child rejection**,
-separate from documents, with 108 healthy, cleaned matching platform captures.
-Two new controls protect implicit closure and child-order independence; four
-numeric contracts protect local-list versus enclosing-group precision. Existing
-work/memory sweeps protect adopted source ownership, cancellation and retry.
-Focused boundaries retain unknown/invalid percentages, unpainted shader targets,
-overlaps and the native 42/43-child limit. Three earlier viewport-height controls
-remain passing. Overlapping/curved sibling unions, object-box ovals and nonuniform
-curve placement remain promised G5 combinations; this delivery does not close G5.
-
-Complete Release checks pass **6,118 tests per platform**: 4,350 core, 1,762 visual
-and six FontProbe, with zero failures/skips/warnings. The complete bank preserves
-all **2,846 prior PNGs byte-for-byte** and all 2,752 prior exact comparisons across
-2,908 reports. Corporate **27/27 / 258/258** and original oracle 1,567 reports /
-1,551 PNGs stay unchanged; command/geometry/paint layouts remain 72/272/68 bytes.
-The percentage rectangle and rotated gradient rectangle controls now assert
-exactness against their original references. Reuse this finished qualification
-until a renderer change warrants another complete run.
-
-**The two CC0 arrow documents complete the preceding 26-document queue.**
-The [marker document bank](tests/Research/marker-documents/manifest.json) retains
-`inv-121` at 2000×500 and `inv-122` at 800×400, both transparent and exact through
-all six APIs on Windows/Linux. Original bytes, declared options and frozen
-references remain unchanged. These documents selected shared line-source stroke
-replay, marker placement and bounded symbol-content reuse; G2 was not a prerequisite.
-
-The [20 marker controls](tests/Research/marker-content/manifest.json) contain
-**16 exact outputs and four categorized boundaries**, counted separately from
-completed documents. They protect fractional/composed line strokes, marker units,
-fixed/automatic/start-reversed orientation, forward cascade, definition paint,
-opacity, viewBox-free content and native binary clipping. All have matching healthy
-Windows/Linux capture triples: 120 captures. Three source-owner controls sweep
-work/memory denial, cancellation and retry. Two previously rejected inert line-fill
-controls now match their unchanged references.
-
-**Both CC0 path-marker documents are complete:** `inv-123` at explicit 512×352
-transparent and `inv-124` at explicit 512×512 transparent, through all six APIs
-on Windows/Linux. The [document bank](tests/Research/path-marker-documents/manifest.json)
-keeps original SVG bytes, declared viewports and unchanged frozen references;
-twelve previously qualified healthy browser captures are reused. Authored
-intermediate vertices, subpath roles, automatic tangents and visible marker
-overflow extend shared command reading and bounded source replay.
-
-The [23 path-marker controls](tests/Research/path-marker-content/manifest.json)
-have **20 exact outputs and three explicit unsupported boundaries** through six
-APIs, separate from completed documents. Their 138 healthy cleaned Windows/Linux
-captures protect straight/quadratic/cubic vertices, closed/degenerate paths,
-dashing, forward cascade, paint order, opacity and viewport overflow. Frozen XML
-`marker` shorthand controls remain inert; separately declared CSS/longhand controls
-activate markers. Isolation bounds now retain a distinct layer role, preserving
-ordinary paint coverage instead of applying mask-clip arithmetic. Three controls
-sweep source ownership, work/memory denial, cancellation and retry.
-
-Finished Release qualification passes **6,171 tests per platform**: 4,356 core,
-1,809 visual and six FontProbe, with zero failures/skips/warnings. All **2,847
-previous PNGs** remain byte-for-byte unchanged and all **2,753 prior exact results**
-stay exact; corporate **27/27 / 258/258** and the original oracle remain frozen.
-Use this qualification until another renderer change warrants a complete run.
-
-**The retained `original-logo-marker-mark` acceptance document is complete:**
-64×64 transparent, all six APIs on Windows/Linux. Its original bytes and existing
-declared output stay fixed. Before correction, three healthy cleaned browser
-captures on each platform froze one identical reference. Shared instance marker
-presentation now reaches retained line/path geometry through existing group,
-symbol and local-use replay. Source marker declarations keep their cascade
-priority; marker definition paint remains independent of instance fill/stroke.
-Viewport clips move with instance geometry, and binary clip restoration keeps
-the native distinction from fractional clip coverage.
-
-The [instance bank](tests/Research/marker-instance-content/manifest.json) has
-**one complete acceptance document plus 15 controls: 12 exact and three explicit
-unsupported boundaries**, through all six APIs. Ninety-six healthy matching
-Windows/Linux captures freeze these outputs. Controls protect source/instance
-precedence, `none`, independent aliases, authored dashed/curved vertices,
-symbol/group cascade, forward references, CSS priority, affine placement,
-isolated opacity and marker source paint. Arc paths, point-list vertices and
-recursive marker uses stay visible as boundaries, not completed promises.
-Three controls sweep work/memory denial, cancellation and retry.
-
-Finished Release qualification passes **6,190 tests per platform**: 4,359 core,
-1,825 visual and six FontProbe, with zero failures/skips/warnings. All **2,847
-prior PNGs** remain byte-for-byte unchanged and all **2,753 prior exact results**
-stay exact across 2,908 reports. The acceptance fixture adds one exact comparison
-and one PNG; the original oracle now has 1,567 reports / 1,552 PNGs. Corporate
-**27/27 / 258/258** and 72/272/68-byte layouts stay frozen. Reuse this finished
-renderer qualification until a renderer change or failed check warrants more work.
-
-**Next deliverable: `original-logo-filter-mark`, 64×64 transparent.** Its existing
-original bytes and declared output are unchanged. The
-[filter document bank](tests/Research/filter-documents/manifest.json) now freezes
-this output and two whole public-domain exports before renderer correction.
-Three healthy cleaned captures per document on each platform match byte-for-byte:
-18 captures, three references. The bounded sourcing batch downloaded two originals
-and retained both in-scope failures, within the six-download/two-retention limit.
-[Source and license evidence](tests/Research/filter-documents/source-records.json)
-records the untouched downloads. No geometry or sizing materialization was needed.
-
-| Pending complete document | Frozen transparent output / current gate | Shared dependency |
-| --- | --- | --- |
-| Original drop-shadow acceptance fixture | 64×64; rectangle `filter` attribute rejected | Bounded SourceGraphic/SourceAlpha capture, blur, offset, flood and source-over composition. |
-| Star with shadow (`inv-125`) | 128×128; inline `filter` property rejected | The same layer/blur evaluator over native polygon coverage. |
-| Question vote symbol (`inv-126`) | 185×180; inline `filter` property rejected; a private SourceGraphic diagnostic also rejects path `font-size` | The same evaluator over translated native arc contours with fractional fill alpha, plus inert font presentation on outlined path content. |
-
-Implement these dependencies through existing geometry/source replay and bounded
-layers, then finish each whole output against its unchanged reference through six
-APIs on both platforms. Attribute and static-CSS local `filter:url(#id)` use the
-same typed resource binding. Preserve object-box versus user-space regions, source
-versus placed coordinates, premultiplied alpha and native blur rounding; apply
-filter effects before clip, mask and container opacity. The original fixture's
-numeric filter rectangle uses the default objectBoundingBox units: retain that
-authored meaning rather than changing its units or bounds. Add small controls for
-the shared defects and resource boundaries discovered during implementation.
-
-The next slice exits when all three declared document outputs are exact and its
-bounded capture/blur/composition owners survive cancellation, denied work and
-memory, and identical retry. Other finite G8 effects stay on the checklist;
-remaining marker combinations and exhaustive G2 completion are not prerequisites.
-Keep controls, original acceptance fixtures and completed online documents
-separately counted. Healthy browser references do not complete a renderer case.
-
-The preceding reference/admission checkpoint passed Release builds and all **27 affected
-document tests on each platform**, with zero failures/skips/warnings. The three
-pending baselines check all six APIs, including empty rejected streams. The
-production renderer was unchanged; it reused the preceding 6,190-test and complete
-corporate/bank qualification. These focused passes add no completed documents.
-
-Shared bounded CPU blur is now implemented for device deviations **2 ≤ sigma <
-135**, plus effectively identity axes. Six
-[kernel controls](tests/Research/filter-blur-kernel/manifest.json) freeze the three
-document-selected deviations, fractional alpha, an identity axis, transparent
-frame boundaries and colored premultiplied channels. These exercise the kernel
-directly; they do not complete public-renderer document outputs. Each reference
-has matching healthy Windows/Linux capture triples. Work is admitted before
-allocation, temporary surfaces and scanline rings are reserved, and fused integer
-sums preserve native division/rounding across both axes.
-
-Focused Release qualification passes **19 checks on each platform**: 13 kernel
-ownership/admission cases and six exact pixel controls, with zero failures,
-skips or build warnings/errors. Work and memory denial sweeps, cancellation before
-execution and during either axis (including the final scanline), immutable source
-bytes and identical retry protect this component. Document playback is unchanged;
-run complete six-API/corporate/bank checks once the connected document correction
-is finished.
-
-Next connect this kernel to bounded SourceGraphic/SourceAlpha capture and local
-filter-resource binding, then finish regions, offset/flood/source-over composition
-and the outlined-path font gate against the three frozen whole outputs. Small
-Gaussian kernels, large-blur rescaling and the remaining finite effects stay open;
-they do not block the three document-selected deviations. Complete-document and
-corporate counts remain unchanged.
-
-The selected development queue is **29/30 complete**, with **1/2 selected original
-acceptance fixtures complete**, separate from corporate **27/27 / 258/258**.
-G8 arc-path directions, polyline/polygon vertices and their instances, angle/length
-units, CSS visible overflow, remaining presentation combinations and the finite
-effects stay promised. The G3 width-map witness, every other finite group exit and
-S17 remain open. No exhaustive G2 completion is required.
-
-The bounded batch downloaded three public-domain/CC0 originals and retains two
-in-scope failures. The vector-effect original still fails pinned-browser image
-decode; it was excluded before renderer screening instead of rewriting its bytes.
-Neither retained baseball document supplies the measured non-scaling root-viewBox
-width witness. That G3 defect stays open; the completed G5 documents
-select further sourcing within the finite support groups. This failure-selected batch establishes no success rate.
-
-| Newly retained document | Frozen transparent output / admission baseline | Shared work it selects |
-| --- | --- | --- |
-| Fibonacci spiral (`inv-115`), complete | Explicit 915×579; 1/1 exact through six APIs on Windows/Linux | Shared finite fractional widths and existing native frames; no further arc correction needed. |
-| Transparent striped pattern (`inv-116`), complete | Explicit 283×283; 1/1 exact through six APIs on Windows/Linux | Shared typed paint order and pattern presentation; existing general mapping and opacity are already exact. |
-| Railway tunnel junction (`inv-117`), complete | Explicit 500×500; admission had 5,569 changed pixels; now 1/1 exact through six APIs on Windows/Linux | Shared authored group boundaries bind deferred masks without swapping nested or sibling owners. |
-| Soccerball with shadow (`inv-118`), complete | Explicit 512×512; mask presentation gate, then 1,502 changed pixels; now 1/1 exact through six APIs on Windows/Linux | Shared inherited mask presentation, oval fill/stroke lowering and native enclosed paint-clip dispatch. |
-
-The fifth export, a railway shift-crossing icon, is already exact through six APIs
-on both platforms and is excluded from the failure corpus. None of that five-file
-batch supplies a qualified whole-document witness for the non-scaling root-viewBox
-width defect; that G3 promise stays open. Four retained failures do not establish
-a representative success rate.
-The two qualified baseball exports completed the preceding development queue at
-**24/24**. Other G2–G9 exits and S17 remain unchanged; no support
-combination is silently deferred.
-
-The [new export bank](tests/Research/remaining-gap-exports/manifest.json) also keeps
-the CC0 gradient-mask example (`inv-113`, 512×880) and soccerball mask (`inv-114`,
-195×195), each at its declared transparent output. All three exports now match
-their unchanged references through six APIs on Windows/Linux. The soccerball's
-ordered direct children are implemented; grouped content, unit systems and other
-promised paint/clip/mask combinations remain visible G5 work. The four-file batch retained
-these three in-scope failures at admission; a vector-effect
-lead has no qualified browser reference because pinned Chrome image decode failed
-on its unchanged ISO-8859-1 input. Its original and healthy cleaned failure report
-stay ignored diagnostic evidence. This exclusion does not defer the measured
-non-scaling width-map defect or shrink G2–G9. No production change is claimed by
-admission, and no representative success rate follows from this selected batch.
-
-| Retained document | Declared outputs / current outcome | Finite next dependencies |
-| --- | --- | --- |
-| Striped pattern (`inv-109`), complete | Nine outputs; 9/9 exact through six APIs on Windows/Linux | Root-local definitions, inert aspect declaration, composed positive-axis map and bounded fractional tile replay are implemented. Other G6 promises stay open. |
-| Non-ionizing radiation warning (`inv-110`), complete | Explicit 616×540 transparent; 1/1 exact through six APIs on Windows/Linux | Native single-contour winding and independent clip/content operation order are implemented. Other G5 promises stay open. |
-| Geometric pattern (`inv-111`), complete | Explicit 284×284 transparent; 1/1 exact through six APIs on Windows/Linux | Shared deferred paint lowering, source command order and native linear paint-coordinate mapping are implemented. Other G2–G9 promises stay open. |
-| Set-screw diagram (`inv-112`), complete | Explicit 512×538 transparent; 1/1 exact through six APIs on Windows/Linux | Shared general grid/tile replay, native border-stroke coverage, inherited target strokes and bitmap-local image coordinates; authored strokes/dashes and reflected uses stay exact. |
-| Gradient-mask example (`inv-113`), complete | Explicit 512×880 transparent; 1/1 exact through six APIs on Windows/Linux | Shared resource-use replay, nested clip/paint definitions, axis mask placement and native bitmap-local paint/stop evaluation are implemented. Other G5 promises stay open. |
-| Soccerball mask (`inv-114`), complete | Explicit 195×195 transparent; 1/1 exact through six APIs on Windows/Linux | Shared ordered direct-child mask replay is implemented; existing shader targets and masked groups need no separate correction. Other G5 promises stay open. |
-
-The bounded batch downloaded four actual exports and retained these three verified
-public-domain/CC0 static, self-contained failures. Herringbone was excluded because
-its credited source PNG carries CC BY-SA despite the SVG's CC0 declaration. The
-fifth lead returned HTTP 429 and was not downloaded or screened. This batch supplies
-development examples, not a population success rate. Three document admissions add
-eleven focused six-API checks per platform. At admission, production was unchanged
-and the finished Wikifoods qualification was reused. The finished striped-pattern
-correction now passes complete bank/corporate qualification on both platforms.
-All corporate and established exact references remain frozen. [Source and screening evidence](tests/Research/remaining-scope-documents/source-records.json)
-records the original asset bytes, rights and exclusions.
-
-The non-scaling root-viewBox stroke-width defect, rotated ellipse maps, gradient-filled
-oval strokes, percentage oval definitions under instances, objectBoundingBox
-curved clips, multi-contour clipping and nonuniform composed curve clips remain
-open in G2–G5. Wikifoods'
-vector-effect path has no stroke and does not exercise the width defect. The finite
-G7–G9 boundaries below remain unchanged; any proposed deferral requires an explicit
-decision. S17 remote CI remains a separate release requirement.
-
-The original admitted fixture/research fidelity repairs are complete. The remaining
-queue covers static, self-contained SVG within the original product scope:
-existing rejected examples, newly discovered rendering defects and the finite
-G2–G9 support exits below. Completing the five gap documents does not close these
-groups or authorize dropping their promised combinations. More verified
-public-domain/CC0 documents should supply examples where the remaining queue
-lacks a complete export. S17 remote CI remains a separate release requirement.
-
-This plan owns priorities and finite exit criteria. [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
-owns admitted subsets and observed gates; [INVENTORY](docs/INVENTORY.md) owns
-document provenance; [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) retains
-mechanisms, controls and rejected models; [BENCHMARKS](docs/BENCHMARKS.md) owns
-timing evidence. Earlier checkpoints remain in those records and Git. R01–R41
-and S1–S17 retain their identities. The September 28 review is historical evidence
-in [the review](docs/REVIEW_2026_09_28.md).
+| Question-mark export (`inv-126`) | 185×180, transparent | Shared bounded validation of inert outlined-path typography; existing native blur and geometry playback are already exact. |
 
 ## 1. Validated checkpoint and limits
 
-| Validated checkpoint evidence | Assessment |
+| Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **6,190 passed on each platform**: 4,359 core, 1,825 visual-project, six FontProbe; zero failed/skipped. Finished marker-instance correction passes complete bank/corporate qualification. Test counts are not image counts. |
-| Memory and delivery checks | Existing parser/raster work, memory-denial, cancellation/retry, geometry/paint and six-output regressions pass. Six new template/grid inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. A 1,024-link forward chain resolves iteratively; aliases borrow one promoted tile scene with independent grids. Missing/cyclic/duplicate/negative templates and oversized tiles release owners; full-document early/middle/late work and peak-memory denials release partial owners before retry. Five mask inputs also sweep parser/discovery work, sampled/peak memory and raster work boundaries; anonymous, unused, duplicate and rejected masks release staging owners. Borrowed replay survives cancellation/retry, and the complete mask document releases early/middle/late work and peak-memory denials. Nested affine-opacity also sweeps parser/discovery work, sampled/peak memory denial, raster work boundaries and cancellation/retry; clip and opacity retain distinct bounded owners. Two new oval inputs sweep every parser work denial and sampled/peak memory denial; discarded unpainted mask fill owners release, and centerline/outline commands survive failed replay unchanged. Three new affine-arc inputs sweep every parser work denial and sampled/peak memory denial, then denied raster work/memory and cancellation/retry with immutable commands. Source point-count and zero-radius arc controls retain their boundary semantics. Three native-fill/hairline inputs sweep every parser work denial and sampled/peak memory denial, plus raster work/memory and cancellation/retry with immutable commands. The complete Malta input releases partial owners after early/middle/late parser work and peak-memory denials before retry. Native float-collapsed ovals enclose no area. Two new near-close straight/cubic fills sweep parser work, sampled/peak memory denial, raster work/memory and cancellation/retry with immutable source commands. Tiled curved clips now exercise late work/memory denial, cancellation before and after partial clip replay, border-owner cleanup and identical retry. The complete Portugal document also releases partial owners under early/middle/late parser work and peak-memory denial before retry. Five new pattern-placement inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. The full striped document releases partial owners under early/middle/late parser work and peak-memory denial. Oversized mapped tiles deny cleanly and the same borrowed scene retries at a smaller output; cancellation during scaled tile replay also releases temporary owners and permits identical retry. Five native-winding inputs also sweep every discovery/parser work denial, sampled/peak parser memory and raster work/memory boundaries. Partial replay cancellation exercises both rules with immutable borrowed commands and identical retry. The full warning sign releases partial owners on early/middle/late parser work and peak-memory denial. Multi-contour parity rejects explicitly and releases staging owners. Seven deferred-paint inputs sweep discovery/parser work, sampled/peak memory and raster work/memory denials. Expanded clipped replay protects partial cancellation, immutable sources and identical retry. The full geometric pattern releases early/middle/late parser-work and peak-memory failure owners; four paint/font-priority cases preserve diagnostics and release owners. Six ordered-mask inputs sweep every discovery/parser work denial, sampled/peak memory denial and raster-work boundaries. The full soccerball releases early/middle/late work and peak-memory failure owners. Cancellation during early/late native replay preserves both borrowed source curves and identical retry; anonymous/unused, duplicate, missing and unsupported children release owners. Five mask-scope inputs sweep discovery/parser work, sampled/peak memory denial and raster work boundaries, including empty nested groups and compacted command tails. The whole tunnel document releases early/middle/late parser-work and peak-memory failure owners before retry. Prior mechanism details retain their dated scope in the design record. Remote CI remains open. |
-| Executed fixture manifest | **1,410 entries = 1,394 exact + zero known-difference renders + 16 rejections**; 799 base documents / 611 variants. The original rotated mark graduates against a new independent browser reference; its source/options and all preceding exact assets remain unchanged. |
-| Executed research manifest | **65 probes = 65 exact + zero known-difference renders + zero rejections**. The tiger graduates at its explicitly qualified viewport; its historical auto-image PNG remains diagnostic. The other 64 research outputs stay unchanged. |
-| Supplemental recorded-paint inventory | **149 controls = 134 exact + 15 valid-input rejections**, checked through all six outputs. Two inert line-fill controls graduate against unchanged references; every preceding exact result is preserved. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
-| Legacy independent-file Default sweep | **92 files = 92 render**. The complete original-bank sweep is freshly checked on both platforms. Portugal, Bhutan and South Africa separately complete all nine declared outputs. Denmark retains its exact Default measurement; its historical matrix remains unqualified. South Africa's retained native comparison is now exact (273 → zero changed pixels). `inv-014`, Malta, radiation, STOP-sign and `inv-013` exact results stay preserved. These Default outputs establish no representative rate. |
-| Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
-| Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
-| Performance and platform limits | Symbol accumulation, fill bindings and retained instance arrays charge bounded parser/scene storage and copy work; viewport restore charges clip setup work. Source stroke identity uses existing recorded-paint padding (68 bytes); draw commands stay 72 bytes and geometry 272 bytes; radial drawing references retain double precision until output composition, with their actual retained value size charged. Binding arrays reserve their actual element size. Rectangle recognition owns no storage; closed rectangle outlines use bounded stack scratch and the existing budgeted output list, without generic stroker scratch. Frame coverage owns no storage; row and pixel/operation work is charged before painting, and empty interiors are skipped. Affine viewport clips register budget-owned native contours and charge a full-canvas RGBA scratch tape (four bytes per output pixel per active affine clip), plus bounded intersection/replay work. Isolated opacity retains separate existing surfaces; no quantitative performance claim. Earlier [cost records](docs/BENCHMARKS.md) keep their dated scope. Remote CI, broader workloads and private-font metrics/pixels remain unproved. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,262 tests/platform**: 4,410 core, 1,846 visual, six FontProbe. Test counts are not document counts. |
+| Complete retained banks | All **2,908 prior reports**, **2,849 prior PNGs** and **2,755 established exact comparisons** are preserved. Existing document/reference captures are reused; only the six new controls have new captures. |
+| Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
+| Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
+| Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
+| Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
+| Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. New typography spans are charged, validated and discarded; no font or parser-string owner is retained. |
+| Scene layouts | Draw command / geometry / paint remain **72/272/68 bytes**. No new throughput claim follows from this correction. |
+| Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
-The finished geometric-pattern correction passes both Release builds and
-**5,836 tests per platform** (4,229 core / 1,601 visual / six FontProbe). Complete
-qualification preserves every one of **2,908 prior comparison reports and 2,845
-emitted PNGs** from the finished warning-sign checkpoint `fb5db27c`, including
-**1,567 original-bank reports and 1,551 original-bank PNGs**. Corporate remains
-**27/27 documents and 258/258 exact variants** against each platform's own frozen
-references, including the three established SDL small-output cross-platform
-distinctions. Every preceding exact document/control stays protected; geometric
-pattern is 1/1 exact; that finished checkpoint completed the then-selected queue at 15/15.
-G2–G9, the non-scaling width-map defect and S17 remote CI stay open. Existing
-browser references are reused; new control triples qualify only the new controls.
-
-The subsequent three-document admission passes both Release builds and **5,839
-tests per platform** (4,229 core / 1,604 visual / six FontProbe). Production,
-previous assets and options are unchanged, so the finished `5531c080` complete-bank
-qualification is reused. Three new six-API rejection checks retain the new frozen
-outputs; all nine new Linux browser captures match their healthy, cleaned Windows
-triples. At that admission checkpoint, selected-document completion was 15/18, with `inv-112` next.
-
-The finished set-screw correction passes both Release builds and **5,866 tests
-per platform** (4,241 core / 1,619 visual / six FontProbe). Complete original and
-corporate checks preserve all **2,908 preceding comparison reports and 2,845
-PNGs byte-for-byte**. Prior SVG inputs, options and references remain unchanged. Fifteen new control triples
-match on both platforms. Six new controls sweep discovery/parser work,
-sampled/peak memory and raster work boundaries; rotated replay cancellation and
-oversized rotated/reflected tile retries preserve borrowed owners. The original
-complete set-screw also releases partial owners under early/middle/late parser
-work and peak-memory denial before retry. That checkpoint completed 16/18;
-`inv-113` was next. Other finite G2–G9 promises and S17 remain open.
-
-The finished gradient-mask correction passes both Release builds and **5,904
-tests per platform** (4,260 core / 1,638 visual / six FontProbe). All **2,845
-preceding PNGs are byte-identical**; 2,907 of 2,908 prior reports are unchanged,
-and one existing rejection now identifies its narrower custom-region boundary.
-The original bank remains 1,567 reports / 1,551 PNGs; corporate stays 27/27 /
-258/258 on each platform's frozen references. Nineteen new control triples match
-on both platforms. Six new resource/placement controls sweep discovery/parser
-work, sampled/peak memory and raster-work boundaries. The complete export releases
-partial owners on early/middle/late work and peak-memory denial before retry;
-missing/duplicate/recursive resource and unqualified paint combinations release
-owners. Eleven frozen browser DOM stop values protect decimal, percentage and
-exponent parsing. A finite-number fallback
-preserves clamping when float place-value intermediates overflow; four boundary
-tokens protect this behavior. Both platforms run the complete suite.
-That checkpoint completed **17/18**, with `inv-114` next.
-
-The finished soccerball correction passes both Release builds and **5,931 tests
-per platform** (4,275 core / 1,650 visual / six FontProbe). Every one of **2,845
-preceding PNGs is byte-identical**; 2,907 of 2,908 prior reports are unchanged and
-the old multiple-child mask rejection becomes exact against its unchanged
-reference. The original bank remains 1,567 reports / 1,551 PNGs; corporate stays
-27/27 / 258/258 on each platform's frozen references. Twelve new control triples
-match on both platforms; existing document triples are reused. Focused resource,
-boundary and cancellation checks protect the shared correction. That checkpoint completed
-**18/18**. The subsequent five-export admission retains four further failures,
-with 18/22 complete at admission and `inv-115` next. It changes no production code,
-existing SVG/PNG assets or output options, so the complete bank/corporate
-qualification at `a27d734f` is reused. Both current Release builds pass with zero
-warnings/errors and **5,935 tests per platform** (4,275 core / 1,654 visual / six
-FontProbe). Eighteen retained-document rows verify original assets, root-only
-capture sizing and all six outputs. Finite G2–G9, the measured width-map defect
-and S17 remain open.
-
-The finished Fibonacci correction passes both Release builds with zero
-warnings/errors and **5,952 tests per platform** (4,282 core / 1,664 visual / six
-FontProbe). Every **2,908 prior bank report and 2,846 prior PNG is unchanged**;
-the original 1,567-report / 1,551-PNG bank and corporate 27/27 / 258/258 remain
-exact against each platform's frozen references. Existing document triples are
-reused; all ten new control triples match on both platforms. Only shared width
-admission changes production code; native raster routes, scene layouts, assets
-and options remain unchanged. At this Fibonacci checkpoint the queue was **19/22
-complete**, with `inv-117` next; G2–G9, the non-scaling width-map defect and S17
-remained open.
-
-The finished tunnel correction passes both Release builds with zero warnings/errors
-and **5,974 tests per platform** (4,288 core / 1,680 visual / six FontProbe).
-Complete qualification preserves all **2,908 preceding reports and 2,846 PNGs**,
-including the original 1,567-report / 1,551-PNG bank and corporate 27/27 / 258/258
-against each platform's frozen references. Sixteen new controls and the complete
-tunnel output are exact through six APIs; original source/options/references and
-scene layouts stay unchanged. At this tunnel checkpoint the selected queue was
-**20/22 complete**, with `inv-118` selected next. G2–G9, the non-scaling width-map defect and S17 remain open.
-
-The finished shadowed-soccerball correction passes both Release builds with zero
-warnings/errors and **6,023 tests/platform** (4,304 core / 1,713 visual / six
-FontProbe). All **2,908 preceding reports and 2,846 PNGs** remain unchanged;
-corporate **27/27 documents / 258/258 variants** remain exact against platform
-references. The complete document and 33 new controls are exact through six APIs,
-with unchanged source/options/reference bytes and 72/272/68-byte scene layouts.
-Existing document qualification is reused; only new control captures are added.
-At this shadowed-soccerball checkpoint the selected queue was **21/22 complete**,
-with `inv-116` next. Its following correction completes the selected queue.
-
-The finished striped-pattern correction passes both Release builds with zero
-warnings/errors and **6,072 tests/platform** (4,324 core / 1,742 visual / six
-FontProbe). Complete checks preserve all **2,908 preceding reports and 2,846 PNGs**,
-including corporate **27/27 / 258/258** on unchanged platform references. The
-document and 29 controls are exact through six APIs; prior SVG/PNG assets and
-72/272/68-byte scene layouts stay unchanged. Existing document captures are reused;
-new control captures supply their independent oracle evidence. The selected queue
-is **22/22 complete**; finite G2–G9 exits, the width-map defect and S17 remain open.
-
-At the 2026-10-09 admission checkpoint, the compound-clip bank added two whole-document regressions;
-**6,074 tests pass per platform** (4,324 core, 1,744 visual, six font-probe), with
-zero build warnings/errors and no failed/skipped tests. Twelve fresh captures
-qualify only these new outputs. Production code, existing SVG/PNG assets, options
-and references are unchanged; reuse `3987efb9`'s complete bank qualification
-(2,908 preserved reports / 2,846 PNGs per platform, corporate 27/27 / 258/258).
-Prior browser captures and separate bank-probe receipts are reused.
-Documents completed remain **22**; the selected queue becomes **24**, with controls
-counted separately. G2–G9 and S17 remain open.
+Reuse this finished qualification until a renderer change, changed evaluation
+input or failure requires more complete checks. Implementation source, DLL and
+script hashes are not regression requirements. Source SVG, reference PNG and
+explicit font/browser asset hashes protect evaluation data and provenance.
+Historical admission/checkpoint details stay in the design record and Git.
 
 ## 2. Execution decisions
 
@@ -818,13 +127,12 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected development queue is **29/30 complete**, including both baseball,
-both arrow exports and both path-marker documents among the completed outputs.
-Their shared line/path marker mechanisms advance G8. The original marker-instance acceptance document is also
-complete, counted separately from those 28. The retained `original-logo-filter-mark`
-and two pending public-domain shadowed exports select bounded shared effect
-evaluation next, against three newly frozen outputs. Other promised combinations
-and finite effects remain open.
+The selected development queue is **30/30 complete**, including both baseball,
+both arrow exports, both path-marker documents and the two public-domain filter
+exports. The original marker-instance and drop-shadow acceptance fixtures are
+also complete, counted separately (**2/2**). The next whole deliverable is the
+supplied-font live-text fixture declared above. Other promised combinations and
+finite effects remain open.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -1305,6 +613,20 @@ declare its output/options; existing exact examples stay regression controls.
   translucent content. Map finite image positions/dimensions, viewBox percentage
   bases, all meet/slice alignments, `none`, fractional/general affine placement,
   clipping, masking and opacity through the shared mapping and sampling route.
+- **Inert geometry typography, implemented:** validate and discard bounded
+  inline `font-family`, `font-size`, `font-style`, `font-weight`, `font-stretch`,
+  `font-variant`, `text-align`, `line-height`, `writing-mode`, `text-anchor`,
+  `letter-spacing`, `white-space` and `-inkscape-font-specification` values on
+  rect/line/path/polygon/polyline/circle/ellipse leaves. SVG presentation
+  attributes `font-family`, `font-size`, `font-style`, `font-weight`,
+  `font-stretch`, `font-variant`, `text-anchor`, `writing-mode` and
+  `letter-spacing` use the same validator. Admitted values include
+  single plain family names, finite scalar lengths/percentages, conventional
+  keywords and global CSS keywords; computed values, family lists and angled
+  oblique forms retain explicit outcomes. This completes `inv-126` with six exact
+  controls. Text, containers, images and stylesheet typography keep their
+  separate functional rules; font-relative geometry lengths are not admitted by
+  discarding a font-size declaration.
 - **CSS matching:** existing ID/class/attribute and selector-list forms plus SVG
   element selectors, element+ID/class, descendant and child combinators on the
   supported SVG tree, including root, nested SVG, definitions and instance replay.
@@ -1372,10 +694,11 @@ results stay exact, and decode, style matching, resampling and cleanup are bound
     regions, Gaussian blur, integer offsets and black drop-shadow composition.
     The original drop-shadow fixture and `inv-125` are complete against frozen
     outputs through six APIs on Windows/Linux.
-  - [ ] Finish `inv-126` against its frozen 185×180 transparent output. Its next
-    gate is valid inert outlined-path typography (`font-size` and the remaining
-    exporter declarations); then diagnose every remaining pixel mismatch.
-    Use focused controls for each shared correction.
+  - [x] `inv-126` is complete at unchanged 185×180 transparent through six
+    APIs on Windows/Linux. Valid inert outlined-path typography shares bounded
+    presentation validation; six exact controls protect geometry, retained
+    instances, pattern content and filtered source capture. No further blur or
+    geometry correction is required for this document.
   - [ ] Small Gaussian kernels and large-blur rescaling; remaining finite
     graph/result combinations, anisotropic/zero blur,
     both unit systems, primitive subregions, clipped halos, sRGB/linearRGB,
@@ -1385,7 +708,7 @@ results stay exact, and decode, style matching, resampling and cleanup are bound
     explicit current gates; this delivery does not defer or close them.
 - **Acceptance:** `original-logo-marker-mark` is complete against its frozen
   reference, as is `original-logo-filter-mark`. `inv-125` is complete;
-  `inv-126` remains the next retained deliverable. Licensed arrow
+  `inv-126` is complete against its unchanged reference. Licensed arrow
   documents are complete. Keep focused tangent/closed-path,
   stroke-width, clipped-halo, anisotropic-blur, alpha and blend witnesses.
 - **Explicit unsupported outcomes:** backdrop inputs, external filter images,
@@ -1438,37 +761,22 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 ### Development sourcing and release work
 
-The original fidelity repairs are complete; the plan now covers unsupported
-SVG within the original static, self-contained product scope in section 5.
-Refresh G2–G9 as retained examples reveal remaining gaps and their dependencies.
-New fidelity defects may interrupt the support queue; fixing an admission gate
-alone does not close a case. The group clipping/opacity and native rectangle-stroke
-interruptions are resolved; numeric stroke opacity is now exact for the admitted
-instance controls. Rendered-group styling is now exact for the admitted slice;
-instance shader fills and independent opacity are now exact too. Container shader
-fill inheritance is exact for the admitted slice. Root/nested viewBox percentage
-bases are repaired. The Illustrator heart, I Ching library and both patterns are
-complete, as are the CC0 mask and all nine radiation outputs. The retained nested
-affine-opacity mismatch is repaired. The retained tiger is complete at its
-explicitly qualified viewport; all nine Malta, Portugal, Bhutan and South Africa outputs are exact.
-The retained Wikifoods logo and striped pattern are each complete at nine frozen
-outputs; the non-ionizing warning, geometric pattern and set-screw diagram are
-complete at one frozen output each, as are the gradient-mask example and
-soccerball mask. The spiral, tunnel junction, shadowed soccerball and transparent
-striped pattern completed the preceding 22-document queue. A subsequent bounded
-three-download batch retained two CC0 baseball exports; both are now complete:
-**24/24 documents in that preceding queue**, through six APIs on Windows/Linux against frozen outputs.
-The G3 width-map defect remains open without a qualified whole-document witness.
-Both CC0 arrow documents and both path-marker documents are complete at their
-frozen transparent outputs. The two public-domain filter exports now extend the
-selected online queue to **29/30 complete**. The original marker-instance fixture
-and original drop-shadow fixture are complete, counted separately (**2/2**).
-The shadowed star completes the 29th online document. Finish `inv-126` against its
-unchanged reference through all six APIs on Windows/Linux, starting with its
-outlined-path presentation gate.
-Choose shared support changes by the complete retained documents they advance.
-Keep the remaining instance combinations visible without making them a
-prerequisite for G3–G6.
+The original fidelity repairs and the selected **30/30 development-document
+queue** are complete. The plan now covers unsupported SVG within the original
+static, self-contained scope in section 5. The original marker/drop-shadow
+acceptance fixtures are also complete (**2/2**, counted separately). Refresh
+G2–G9 from demonstrated gaps; an admitted document can still expose wrong pixels.
+The measured G3 width-map defect lacks a qualified whole-document witness and
+stays open. Choose shared changes by the complete documents they advance.
+
+The next retained deliverable is the original live-text acceptance fixture under
+G9, with explicit public-font preparation and browser embedding. It remains
+pending until its declared supplied-font output is frozen and exact. The separate
+text-path fixture follows within the unchanged finite G9 subset. Online sourcing
+continues in bounded public-domain/CC0 batches for remaining in-scope gaps;
+animated exports and effects beyond the enumerated subset remain excluded.
+Keep other instance combinations visible without making them prerequisites
+for G3–G6 or the next document.
 
 1. Audit actual parser/renderer gates and existing rejected examples against the
    product scope. Select the next shared feature combination from demonstrated
@@ -1678,7 +986,7 @@ All 258 measured renders are exact on each platform.
 All nine Target variants are exact against their original browser references;
 Coca-Cola is also exact in all nine variants. Reference
 availability and renderability remain independent axes. The first cohort's complete reference matrix closes its S8
-measurement obligation, including browser behavior for rejected inputs. The 1,394
+measurement obligation, including browser behavior for rejected inputs. The 1,396
 exact fixture entries remain separate from corporate comparisons.
 
 Report render/reject separately from exact/known-difference/oracle-failure and
@@ -1689,8 +997,8 @@ holdout freeze; retain flags, diagrams and other symbols as separate useful
 strata. Keep every frozen document in its denominator, including
 rejects, known differences, oracle failures and unmeasured variants. Fixture-entry
 percentages and the legacy 92-file Default bank cannot replace corporate-document
-coverage. Ford establishes the outlined-wordmark checkpoint; YouTube is the
-selected curved-mark target and must retain all nine declared cases.
+coverage. Ford and YouTube retain their completed outlined-wordmark and curved-mark
+qualifications, with all nine frozen variants preserved for each.
 
 The achieved fidelity target is 27/27 exact documents and 258/258 exact variants on
 Windows and Linux, including 13/13 marks and 14/14 outlined wordmarks. This is the

@@ -10549,3 +10549,43 @@ Complete Release qualification passes 6,233 checks per platform (4,387 core /
 2,848 preceding PNGs and 2,754 established exact comparisons remain unchanged;
 corporate 27/27 documents / 258/258 variants remain exact. Draw/geometry/paint
 layouts remain 72/272/68 bytes. No implementation fingerprints are required.
+
+
+### Inert geometry typography and complete question-mark export (2026-10-10)
+
+The retained `inv-126` question mark is already an outlined path. Its font and
+text-layout declarations affect no geometry, paint or inheritance into text.
+Geometric leaves now use an explicit inline-parser target and the shared bounded
+inert presentation validator. Thirteen inline properties and nine corresponding
+SVG attributes admit finite keywords/scalars and single plain family names.
+Values are borrowed, charged, validated and discarded; no font acquisition or
+retained string owner is introduced. Global keywords and trailing `!important`
+remain inert; duplicate/misplaced important flags, computed lengths, family lists,
+nonfinite/invalid scalars and unadmitted keywords have categorized outcomes.
+Actual text, containers, images and stylesheet rules retain their separate
+functional admission; font-relative geometry remains gated.
+
+The complete unchanged 185×180 transparent document is exact through six APIs on
+Windows/Linux. Its frozen references and original bytes are reused. Existing
+blur, source replay, paint and geometry mechanisms required no pixel correction.
+This completes the selected development queue at 30/30; the two original
+marker/drop-shadow acceptance fixtures remain 2/2, counted separately.
+
+Six separately declared CC0 controls protect outlined paths, presentation
+attributes, all geometric leaf kinds, retained local instances, pattern content
+and filtered source capture. Thirty-six healthy cleaned fresh browser captures
+freeze stable identical Windows/Linux references. Six visual checks verify these
+controls through all outputs. Twenty-three core checks protect font independence,
+invalid syntax, text/container boundaries, parser-work denial, cancellation and
+partial-owner cleanup. Controls do not enter the completed-document numerator.
+
+Complete Release qualification passes 6,262 tests per platform (4,410 core /
+1,846 visual / six FontProbe), with zero warnings/errors/failures/skips. All
+2,908 preceding reports, 2,849 PNGs and 2,755 established exact comparisons remain
+unchanged, including corporate 27/27 documents / 258/258 variants and the original
+1,567-report / 1,553-PNG bank. Prior focused filter/kernel outputs are also
+unchanged. Scene layouts remain 72/272/68 bytes. Implementation fingerprints are
+not regression requirements. PLAN now retains the current evidence and finite
+support exits; dated mechanism/checkpoint details stay here and in Git. The next
+whole-document step is public supplied-font live text, with font/reference
+qualification before correction. Remaining G2–G9 and S17 promises stay open.
