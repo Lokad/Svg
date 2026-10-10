@@ -10,7 +10,7 @@ public sealed class SvgRemainingScopeDocumentTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "remaining-scope-documents", "remaining-gap-exports", "finite-support-exports", "compound-clip-documents", "marker-documents", "path-marker-documents" })
+        foreach (string family in new[] { "remaining-scope-documents", "remaining-gap-exports", "finite-support-exports", "compound-clip-documents", "marker-documents", "path-marker-documents", "filter-documents" })
         {
             string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -26,7 +26,7 @@ public sealed class SvgRemainingScopeDocumentTests
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(family switch { "remaining-scope-documents" => 11, "remaining-gap-exports" => 3, "finite-support-exports" => 4, "compound-clip-documents" => 2, "marker-documents" => 2, "path-marker-documents" => 2, _ => throw new InvalidDataException("Unknown document family.") }, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family switch { "remaining-scope-documents" => 11, "remaining-gap-exports" => 3, "finite-support-exports" => 4, "compound-clip-documents" => 2, "marker-documents" => 2, "path-marker-documents" => 2, "filter-documents" => 3, _ => throw new InvalidDataException("Unknown document family.") }, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("identical", Required(root, "decodedPixelStability"));
         Assert.Equal("healthy", Required(root, "captureStartupHealth"));
@@ -36,19 +36,30 @@ public sealed class SvgRemainingScopeDocumentTests
         Assert.Equal(document == "inv-109" ? 9 : 1, root.GetProperty("cases").EnumerateArray().Count(c => Required(c, "document") == document));
         Assert.Equal("document-output", Required(item, "role"));
         Assert.NotEmpty(Required(item, "selection"));
-        using JsonDocument sourceRecords = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "source-records.json")));
-        JsonElement source = sourceRecords.RootElement.GetProperty("records").EnumerateArray().Single(c => Required(c, "identity") == document);
-        bool publicDomain = document is "inv-110" or "inv-112" or "inv-115" or "inv-117";
+        bool originalFixture = item.TryGetProperty("sourceKind", out JsonElement sourceKind) && sourceKind.GetString() == "original-acceptance-fixture";
+        bool publicDomain = document is "inv-110" or "inv-112" or "inv-115" or "inv-117" or "inv-125" or "inv-126";
         Assert.Equal(publicDomain ? "Public domain" : "CC0-1.0", Required(item, "license"));
-        Assert.Equal(publicDomain ? "Public domain" : "CC0", Required(source.GetProperty("extmetadata").GetProperty("LicenseShortName"), "value"));
-        Assert.Equal(Required(source, "sourceUrl"), Required(item, "sourceUrl"));
         byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(item, "input")));
-        byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "candidates", document + ".svg"));
+        byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures",
+            originalFixture ? "original" : "candidates", originalFixture ? "logo-filter-mark.svg" : document + ".svg"));
         Assert.Equal(original, input);
-        Assert.Equal(source.GetProperty("size").GetInt32(), input.Length);
-        Assert.Equal(Required(source, "sha1"), Convert.ToHexStringLower(SHA1.HashData(input)));
-        Assert.Equal(Required(source, "sha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
-        Assert.Equal(Required(item, "sourceSha256"), Required(source, "sha256"));
+        Assert.Equal(Required(item, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
+        if (originalFixture)
+        {
+            Assert.Equal("filter-documents", family);
+            Assert.Equal("original-logo-filter-mark", document);
+            Assert.Contains("SPDX-License-Identifier: CC0-1.0", System.Text.Encoding.UTF8.GetString(input), StringComparison.Ordinal);
+        }
+        else
+        {
+            using JsonDocument sourceRecords = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "source-records.json")));
+            JsonElement source = sourceRecords.RootElement.GetProperty("records").EnumerateArray().Single(c => Required(c, "identity") == document);
+            Assert.Equal(publicDomain ? "Public domain" : "CC0", Required(source.GetProperty("extmetadata").GetProperty("LicenseShortName"), "value"));
+            Assert.Equal(Required(source, "sourceUrl"), Required(item, "sourceUrl"));
+            Assert.Equal(source.GetProperty("size").GetInt32(), input.Length);
+            Assert.Equal(Required(source, "sha1"), Convert.ToHexStringLower(SHA1.HashData(input)));
+            Assert.Equal(Required(item, "sourceSha256"), Required(source, "sha256"));
+        }
         int width = item.GetProperty("width").GetInt32(), height = item.GetProperty("height").GetInt32();
         if (item.TryGetProperty("captureInput", out JsonElement captureInput))
         {

@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Three pending whole-document outputs: one original CC0 acceptance fixture and two public-domain online exports. Outputs were declared and frozen before renderer correction. Admission baselines are explicit; none is a completed document.",
+  "cases": [
+    {
+      "id": "original-logo-filter-mark-64x64-transparent",
+      "document": "original-logo-filter-mark",
+      "input": "../../Fixtures/original/logo-filter-mark.svg",
+      "reference": "references/original-logo-filter-mark-64x64-transparent.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "sourceSha256": "dbc9fc154c1f3ec4ac3cf6fc62aad8c074c985f160e35f3dd275f566b971a1b4",
+      "license": "CC0-1.0",
+      "selection": "Whole original SVG and intrinsic transparent output declared before browser capture and renderer screening; selects shared bounded filter/layer replay, native blur and premultiplied composition.",
+      "verifySix": true,
+      "referenceSha256": "df14abff07ea104e64b3c671205a7c66431765ddefe05434aeba9361a05b8e68",
+      "captures": [
+        {
+          "pngSha256": "df14abff07ea104e64b3c671205a7c66431765ddefe05434aeba9361a05b8e68",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "df14abff07ea104e64b3c671205a7c66431765ddefe05434aeba9361a05b8e68",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "df14abff07ea104e64b3c671205a7c66431765ddefe05434aeba9361a05b8e68",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "sourceKind": "original-acceptance-fixture",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Rectangle attribute 'filter' is not implemented."
+    },
+    {
+      "id": "inv-125-128x128-transparent",
+      "document": "inv-125",
+      "input": "../../Fixtures/candidates/inv-125.svg",
+      "reference": "references/inv-125-128x128-transparent.png",
+      "width": 128,
+      "height": 128,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "sourceSha256": "4b472bbdf10c5b4a356ac4ce278814e1d427b6680cd1acc269f61427ce1e0b4c",
+      "license": "Public domain",
+      "selection": "Whole original SVG and intrinsic transparent output declared before browser capture and renderer screening; selects shared bounded filter/layer replay, native blur and premultiplied composition.",
+      "verifySix": true,
+      "referenceSha256": "b91b0d1d7504e8b1cd7400914e596ea470035ba7346f21d53999cd1f79365675",
+      "captures": [
+        {
+          "pngSha256": "b91b0d1d7504e8b1cd7400914e596ea470035ba7346f21d53999cd1f79365675",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b91b0d1d7504e8b1cd7400914e596ea470035ba7346f21d53999cd1f79365675",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b91b0d1d7504e8b1cd7400914e596ea470035ba7346f21d53999cd1f79365675",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Star_with_shadow.svg",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Inline style property 'filter' is not implemented."
+    },
+    {
+      "id": "inv-126-185x180-transparent",
+      "document": "inv-126",
+      "input": "../../Fixtures/candidates/inv-126.svg",
+      "reference": "references/inv-126-185x180-transparent.png",
+      "width": 185,
+      "height": 180,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "sourceSha256": "29b182cd979b8eb6d26a8e811c4f1b538561e37bfe501beff1ad789de9c01abf",
+      "license": "Public domain",
+      "selection": "Whole original SVG and intrinsic transparent output declared before browser capture and renderer screening; selects shared bounded filter/layer replay, native blur and premultiplied composition.",
+      "verifySix": true,
+      "referenceSha256": "544fb4dce063b6e299e15bb31afe7363eaf452e49ccdd6047459fec44234a3f0",
+      "captures": [
+        {
+          "pngSha256": "544fb4dce063b6e299e15bb31afe7363eaf452e49ccdd6047459fec44234a3f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "544fb4dce063b6e299e15bb31afe7363eaf452e49ccdd6047459fec44234a3f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "544fb4dce063b6e299e15bb31afe7363eaf452e49ccdd6047459fec44234a3f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Symbol_question_vote.svg",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Inline style property 'filter' is not implemented."
+    }
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  }
+}

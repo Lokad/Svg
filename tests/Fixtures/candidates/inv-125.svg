@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 13.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 14948)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="128px" height="128px" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve">
+<defs>
+<filter id="Gaussian_Blur">
+<feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+</filter>
+</defs>
+<polygon points="118.428,96.863 80.668,93.178 56.223,122.193 48.06,85.143 12.909,70.863	45.625,51.649 48.344,13.806 76.729,38.983 113.559,29.875 98.384,64.648 " style="fill:#000000;stroke:red;stroke-width:0;filter:url(#Gaussian_Blur)"/>
+<polygon fill="#FFFF00" stroke="#DD8800" points="111.519,92.363 73.759,88.678 49.314,117.693 41.151,80.643 6,66.363 
+	38.716,47.149 41.435,9.306 69.819,34.483 106.649,25.375 91.475,60.148 "/>
+</svg>
