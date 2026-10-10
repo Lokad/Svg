@@ -1,0 +1,2442 @@
+{
+  "schemaVersion": 1,
+  "role": "Independent native curve scan-conversion diagnostics. All source and fitted coordinates, complete translated native textures and independently inverted binary cell maps are retained. No texture or glyph identity is a product input.",
+  "nativeLibrary": "Microsoft DirectWrite 10.0.19041.1 (WinBuild.160101.0800)",
+  "mode": "NATURAL_SYMMETRIC; NATURAL measuring; CLEARTYPE_3x1. Both enabled and disabled grid fitting produce identical retained textures.",
+  "recipe": "Private two-glyph TrueType replay fonts, UPEM 4096/em 64, baseline (8,256), caller-named face 0, hmtx left bearing xMin, no glyph instructions, fpgm or CVT; prep SCANCTRL 511 and the declared SCANTYPE. Synthetic split cases use exact De Casteljau subdivision. Every authored and independently observed fitted coordinate is integer F26. S32 replays the independently fitted public-face outline; its original unchanged native texture agrees.",
+  "qualification": "Every texture and bound agrees through three fresh native processes per translation, in both grid-fit modes. Each cell map exactly reconstructs all 30 native textures, including zero bytes and an outside margin; inversion has no incompatible observations, nonintegral row counts or nonbinary cells.",
+  "sampling": {
+    "columnsPerPixel": 6,
+    "rowsPerPixel": 5,
+    "horizontalWindow": 6,
+    "channelOffsets": [
+      -2,
+      0,
+      2
+    ],
+    "verticalWeights": [
+      4,
+      9,
+      10,
+      9,
+      4
+    ],
+    "alphaNumerator": 255,
+    "alphaDenominator": 216,
+    "alphaRoundingBias": 108,
+    "bitmapOrder": "Top-down rows; most significant bit first; zero outside cellBounds."
+  },
+  "establishedExactCaseIds": [
+    "original-x0-y7-depth1",
+    "original-x7-y31-depth1"
+  ],
+  "pendingSyntheticCaseIds": [
+    "original-x0-y7-depth0",
+    "original-x7-y31-depth0"
+  ],
+  "s32AnalyticExtraCells": [
+    [
+      130,
+      1275
+    ],
+    [
+      127,
+      1276
+    ],
+    [
+      75,
+      1277
+    ]
+  ],
+  "s32Isolation": "Cropping to original contour points 39,40,41,42,0,1,2,3 preserves all covered cells in fine rows 1274..1279. Exact analytic coverage and the diagnostic FreeType high-precision raster add the same three cells; neither misses a native cell.",
+  "cases": [
+    {
+      "id": "original-x0-y7-depth0",
+      "license": "CC0-1.0. Original synthetic geometry and native measurements dedicated to the public domain.",
+      "exactSubdivisionDepth": 0,
+      "scanType": 2,
+      "pointsF26": [
+        [
+          640,
+          7
+        ],
+        [
+          448,
+          135
+        ],
+        [
+          128,
+          391
+        ],
+        [
+          704,
+          391
+        ],
+        [
+          704,
+          7
+        ]
+      ],
+      "onCurve": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        4
+      ],
+      "nativeFittedPointsF26": [
+        [
+          640,
+          7
+        ],
+        [
+          448,
+          135
+        ],
+        [
+          128,
+          391
+        ],
+        [
+          704,
+          391
+        ],
+        [
+          704,
+          7
+        ]
+      ],
+      "coordinateQualification": "GC[0] coordinate observations followed by whole-contour integer Y translation preserve every normalized native RGB texture byte.",
+      "coveredCellCount": 942,
+      "cellBounds": [
+        59,
+        1248,
+        115,
+        1280
+      ],
+      "cellRowStride": 7,
+      "cellBitmapBase64": "AAAAAAAAAH////////4f///////+D////////gP///////4B///////+AH///////gA///////4AD//////+AAf//////gAB//////4AAP/////+AAA//////gAAH/////4AAAf////+AAAD/////gAAAP////4AAAA////+AAAAH////gAAAAf///4AAAAD///+AAAAAP///gAAAAA///4AAAAAH//+AAAAAAf//gAAAAAB//4AAAAAAP/+AAAAAAA//gAAAAAAD/4AAAAAAAP+AAAAAAAB/gAAAAAAAAA=",
+      "nativeTextures": [
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            9,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAJExwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwTCQAAAAAAFD+Ky/b///////////////////////////+qVQAAAAAAAAAABRlPm9z6//////////////////////+qVQAAAAAAAAAAAAAAAAUjZLDm+v////////////////+qVQAAAAAAAAAAAAAAAAAAAAAFI2Sw5vr///////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAABSNapdz6//////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rC4+OXTAAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            9,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAFDhgcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwYDgUAAAAABSNksOb6///////////////////////////VgCsAAAAAAAAAAAk0dcDr///////////////////////VgCsAAAAAAAAAAAAAAAAUP4rL9v/////////////////VgCsAAAAAAAAAAAAAAAAAAAAAFD+Ky/b////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gMDr///////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKGmr2OO9cSYA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "CRMcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcEwkAABQ/isv2////////////////////////////qlUAAAAAAAUZT5vc+v//////////////////////qlUAAAAAAAAAAAAFI2Sw5vr/////////////////qlUAAAAAAAAAAAAAAAAABSNksOb6////////////qlUAAAAAAAAAAAAAAAAAAAAAAAUjWqXc+v//////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOKwuPjl0wA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "BQ4YHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcGA4FAAUjZLDm+v//////////////////////////1YArAAAAAAAJNHXA6///////////////////////1YArAAAAAAAAAAAAFD+Ky/b/////////////////1YArAAAAAAAAAAAAAAAAABQ/isv2////////////1YArAAAAAAAAAAAAAAAAAAAAAAAUP4DA6///////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAACShpq9jjvXEm"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAkTHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBMJAAAUP4rL9v///////////////////////////6pVAAAAAAAFGU+b3Pr//////////////////////6pVAAAAAAAAAAAABSNksOb6/////////////////6pVAAAAAAAAAAAAAAAAAAUjZLDm+v///////////6pVAAAAAAAAAAAAAAAAAAAAAAAFI1ql3Pr//////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDisLj45dM"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAUOGBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBgOBQAAAAAFI2Sw5vr//////////////////////////9WAKwAAAAAAAAAACTR1wOv//////////////////////9WAKwAAAAAAAAAAAAAAABQ/isv2/////////////////9WAKwAAAAAAAAAAAAAAAAAAAAAUP4rL9v///////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAFD+AwOv//////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoaavY471xJgAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAJNHXA6/////////////////////////////+qVQAAAAAAAAAAFD+Ky/b///////////////////////+qVQAAAAAAAAAAAAAABRlPm9z6//////////////////+qVQAAAAAAAAAAAAAAAAAAAAUZT5vc+v////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAFGU+W1/b///////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDgMDr//+qVQAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAFGU+b3Pr////////////////////////////VgCsAAAAAAAAABSNksOb6///////////////////////VgCsAAAAAAAAAAAAAAAk0dcDr///////////////////VgCsAAAAAAAAAAAAAAAAAAAAJNHXA6//////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6///////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqXc+v/VgCsA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "CTR1wOv/////////////////////////////qlUAAAAAABQ/isv2////////////////////////qlUAAAAAAAAAAAUZT5vc+v//////////////////qlUAAAAAAAAAAAAAAAAFGU+b3Pr/////////////qlUAAAAAAAAAAAAAAAAAAAAABRlPltf2////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4DA6///qlUA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "BRlPm9z6////////////////////////////1YArAAAAAAUjZLDm+v//////////////////////1YArAAAAAAAAAAAJNHXA6///////////////////1YArAAAAAAAAAAAAAAAACTR1wOv/////////////1YArAAAAAAAAAAAAAAAAAAAAAAk0dbzm+v//////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6l3Pr/1YAr"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAk0dcDr/////////////////////////////6pVAAAAAAAUP4rL9v///////////////////////6pVAAAAAAAAAAAFGU+b3Pr//////////////////6pVAAAAAAAAAAAAAAAABRlPm9z6/////////////6pVAAAAAAAAAAAAAAAAAAAAAAUZT5bX9v///////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAwOv//6pV"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAUZT5vc+v///////////////////////////9WAKwAAAAAAAAAFI2Sw5vr//////////////////////9WAKwAAAAAAAAAAAAAACTR1wOv//////////////////9WAKwAAAAAAAAAAAAAAAAAAAAk0dcDr/////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAJNHW85vr//////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShepdz6/9WAKwAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAVTZTK3uPj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+OXTAAAAAAAAAAJNHXA6/////////////////////////+qVQAAAAAAAAAAAAAAFD+Ky/b///////////////////+qVQAAAAAAAAAAAAAAAAAABRlDisv2//////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rL9v////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFD+AvOb6//+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwTCQAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAALLG6v2ePj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+O9cSYAAAAAAAAFGU+b3Pr////////////////////////VgCsAAAAAAAAAAAAABSNksOb6///////////////////VgCsAAAAAAAAAAAAAAAAAAAkoabDm+v/////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAJKGmw5vr////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNaodf2///VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUOGBwYDgUA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "FU2Uyt7j4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pjl0wAAAAACTR1wOv/////////////////////////qlUAAAAAAAAAABQ/isv2////////////////////qlUAAAAAAAAAAAAAAAUZQ4rL9v//////////////qlUAAAAAAAAAAAAAAAAAAAAFGUOKy/b/////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gLzm+v//qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJExwcEwkA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "Cyxur9nj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+PjvXEmAAAABRlPm9z6////////////////////////1YArAAAAAAAAAAUjZLDm+v//////////////////1YArAAAAAAAAAAAAAAAJKGmw5vr/////////////1YArAAAAAAAAAAAAAAAAAAAACShpsOb6////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAUjWqHX9v//1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDhgcGA4F"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABVNlMre4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj45dMAAAAAAk0dcDr/////////////////////////6pVAAAAAAAAAAAUP4rL9v///////////////////6pVAAAAAAAAAAAAAAAFGUOKy/b//////////////6pVAAAAAAAAAAAAAAAAAAAABRlDisv2/////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAUP4C85vr//6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACRMcHBMJ"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAssbq/Z4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj471xJgAAAAAAAAUZT5vc+v///////////////////////9WAKwAAAAAAAAAAAAAFI2Sw5vr//////////////////9WAKwAAAAAAAAAAAAAAAAAACShpsOb6/////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v///////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI1qh1/b//9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4YHBgOBQAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAYSYCeo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6NtNgAAAAAAAAUjZLDm+v////////////////////////+qVQAAAAAAAAAAAAAJNHXA6/////////////////////+qVQAAAAAAAAAAAAAAAAAAFD+AwOv///////////////+qVQAAAAAAAAAAAAAAAAAAAAAAABQ/gMDr//////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNHW85vr///+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNCXFw9HwAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAMLmSPo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OIURsAAAAAAAAUP4rL9v/////////////////////////VgCsAAAAAAAAAAAAFGU+b3Pr////////////////////VgCsAAAAAAAAAAAAAAAAABSNapdz6///////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAUjWqXc+v/////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGU+W1/b////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQzUVxNLg8A"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "GEmAnqOjo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OjbTYAAAAFI2Sw5vr/////////////////////////qlUAAAAAAAAACTR1wOv/////////////////////qlUAAAAAAAAAAAAAABQ/gMDr////////////////qlUAAAAAAAAAAAAAAAAAAAAUP4DA6///////////qlUAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUjQlxcPR8A"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "DC5kj6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OjiFEbAAAAFD+Ky/b/////////////////////////1YArAAAAAAAABRlPm9z6////////////////////1YArAAAAAAAAAAAAAAUjWqXc+v//////////////1YArAAAAAAAAAAAAAAAAAAAFI1ql3Pr/////////1YArAAAAAAAAAAAAAAAAAAAAAAAABRlPltf2////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUM1FcTS4P"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABhJgJ6jo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo202AAAABSNksOb6/////////////////////////6pVAAAAAAAAAAk0dcDr/////////////////////6pVAAAAAAAAAAAAAAAUP4DA6////////////////6pVAAAAAAAAAAAAAAAAAAAAFD+AwOv//////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAk0dbzm+v///6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI0JcXD0f"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAwuZI+jo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo4hRGwAAAAAAABQ/isv2/////////////////////////9WAKwAAAAAAAAAAAAUZT5vc+v///////////////////9WAKwAAAAAAAAAAAAAAAAAFI1ql3Pr//////////////9WAKwAAAAAAAAAAAAAAAAAAAAAABSNapdz6/////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZT5bX9v///9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDNRXE0uDwAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAVNFNcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFw9HwAAAAAABRlPm9z6//////////////////////////+qVQAAAAAAAAAAAAUjZLDm+v////////////////////+qVQAAAAAAAAAAAAAAAAAJNHW85vr///////////////+qVQAAAAAAAAAAAAAAAAAAAAAACTR1vOb6//////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGU+Bo6NtNgAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAALJUNXXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxNLg8AAAAAAAk0dcDr///////////////////////////VgCsAAAAAAAAAAAAUP4rL9v/////////////////////VgCsAAAAAAAAAAAAAAAAFGU+W1/b////////////////VgCsAAAAAAAAAAAAAAAAAAAAABRlPltf2///////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rL9v/////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTRql6OIURsA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "FTRTXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcPR8AAAUZT5vc+v//////////////////////////qlUAAAAAAAAFI2Sw5vr/////////////////////qlUAAAAAAAAAAAAACTR1vOb6////////////////qlUAAAAAAAAAAAAAAAAAAAk0dbzm+v//////////qlUAAAAAAAAAAAAAAAAAAAAAAAAJKGmw5vr/////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlPgaOjbTYA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "CyVDV1xcXFxcXFxcXFxcXFxcXFxcXFxcXFxcTS4PAAAJNHXA6///////////////////////////1YArAAAAAAAAFD+Ky/b/////////////////////1YArAAAAAAAAAAAABRlPltf2////////////////1YArAAAAAAAAAAAAAAAAAAUZT5bX9v//////////1YArAAAAAAAAAAAAAAAAAAAAAAAFGUOKy/b/////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk0apejiFEb"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABU0U1xcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXD0fAAAFGU+b3Pr//////////////////////////6pVAAAAAAAABSNksOb6/////////////////////6pVAAAAAAAAAAAAAAk0dbzm+v///////////////6pVAAAAAAAAAAAAAAAAAAAJNHW85vr//////////6pVAAAAAAAAAAAAAAAAAAAAAAAACShpsOb6/////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZT4Gjo202"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAslQ1dcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXE0uDwAAAAAACTR1wOv//////////////////////////9WAKwAAAAAAAAAAABQ/isv2/////////////////////9WAKwAAAAAAAAAAAAAAAAUZT5bX9v///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAFGU+W1/b//////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAABRlDisv2/////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNGqXo4hRGwAA"
+        }
+      ]
+    },
+    {
+      "id": "original-x0-y7-depth1",
+      "license": "CC0-1.0. Original synthetic geometry and native measurements dedicated to the public domain.",
+      "exactSubdivisionDepth": 1,
+      "scanType": 2,
+      "pointsF26": [
+        [
+          640,
+          7
+        ],
+        [
+          544,
+          71
+        ],
+        [
+          416,
+          167
+        ],
+        [
+          288,
+          263
+        ],
+        [
+          128,
+          391
+        ],
+        [
+          704,
+          391
+        ],
+        [
+          704,
+          7
+        ]
+      ],
+      "onCurve": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        6
+      ],
+      "nativeFittedPointsF26": [
+        [
+          640,
+          7
+        ],
+        [
+          544,
+          71
+        ],
+        [
+          416,
+          167
+        ],
+        [
+          288,
+          263
+        ],
+        [
+          128,
+          391
+        ],
+        [
+          704,
+          391
+        ],
+        [
+          704,
+          7
+        ]
+      ],
+      "coordinateQualification": "GC[0] coordinate observations followed by whole-contour integer Y translation preserve every normalized native RGB texture byte.",
+      "coveredCellCount": 941,
+      "cellBounds": [
+        59,
+        1248,
+        115,
+        1280
+      ],
+      "cellRowStride": 7,
+      "cellBitmapBase64": "AAAAAAAAAH////////4f///////+D////////gP///////4B///////+AH///////gA///////4AD//////+AAf//////gAB//////4AAP/////+AAA//////gAAH/////4AAAf////+AAAB/////gAAAP////4AAAA////+AAAAH////gAAAAf///4AAAAD///+AAAAAP///gAAAAA///4AAAAAH//+AAAAAAf//gAAAAAB//4AAAAAAP/+AAAAAAA//gAAAAAAD/4AAAAAAAP+AAAAAAAB/gAAAAAAAAA=",
+      "nativeTextures": [
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            9,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAJExwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwTCQAAAAAAFD+Ky/b///////////////////////////+qVQAAAAAAAAAABRlPm9z6//////////////////////+qVQAAAAAAAAAAAAAAAAUjWqXc+v////////////////+qVQAAAAAAAAAAAAAAAAAAAAAFI2Sw5vr///////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAABSNapdz6//////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rC4+OXTAAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            9,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAFDhgcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwYDgUAAAAABSNksOb6///////////////////////////VgCsAAAAAAAAAAAk0dcDr///////////////////////VgCsAAAAAAAAAAAAAAAAUP4DA6//////////////////VgCsAAAAAAAAAAAAAAAAAAAAAFD+Ky/b////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gMDr///////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKGmr2OO9cSYA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "CRMcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcEwkAABQ/isv2////////////////////////////qlUAAAAAAAUZT5vc+v//////////////////////qlUAAAAAAAAAAAAFI1ql3Pr/////////////////qlUAAAAAAAAAAAAAAAAABSNksOb6////////////qlUAAAAAAAAAAAAAAAAAAAAAAAUjWqXc+v//////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOKwuPjl0wA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "BQ4YHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcGA4FAAUjZLDm+v//////////////////////////1YArAAAAAAAJNHXA6///////////////////////1YArAAAAAAAAAAAAFD+AwOv/////////////////1YArAAAAAAAAAAAAAAAAABQ/isv2////////////1YArAAAAAAAAAAAAAAAAAAAAAAAUP4DA6///////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAACShpq9jjvXEm"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAkTHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBMJAAAUP4rL9v///////////////////////////6pVAAAAAAAFGU+b3Pr//////////////////////6pVAAAAAAAAAAAABSNapdz6/////////////////6pVAAAAAAAAAAAAAAAAAAUjZLDm+v///////////6pVAAAAAAAAAAAAAAAAAAAAAAAFI1ql3Pr//////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDisLj45dM"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAUOGBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBgOBQAAAAAFI2Sw5vr//////////////////////////9WAKwAAAAAAAAAACTR1wOv//////////////////////9WAKwAAAAAAAAAAAAAAABQ/gMDr/////////////////9WAKwAAAAAAAAAAAAAAAAAAAAAUP4rL9v///////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAFD+AwOv//////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoaavY471xJgAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAJNHXA6/////////////////////////////+qVQAAAAAAAAAAFD+Ky/b///////////////////////+qVQAAAAAAAAAAAAAABRlPltf2//////////////////+qVQAAAAAAAAAAAAAAAAAAAAUZT5vc+v////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAFGU+W1/b///////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDgMDr//+qVQAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAFGU+b3Pr////////////////////////////VgCsAAAAAAAAABSNksOb6///////////////////////VgCsAAAAAAAAAAAAAAAk0dbzm+v/////////////////VgCsAAAAAAAAAAAAAAAAAAAAJNHXA6//////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6///////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqXc+v/VgCsA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "CTR1wOv/////////////////////////////qlUAAAAAABQ/isv2////////////////////////qlUAAAAAAAAAAAUZT5bX9v//////////////////qlUAAAAAAAAAAAAAAAAFGU+b3Pr/////////////qlUAAAAAAAAAAAAAAAAAAAAABRlPltf2////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4DA6///qlUA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "BRlPm9z6////////////////////////////1YArAAAAAAUjZLDm+v//////////////////////1YArAAAAAAAAAAAJNHW85vr/////////////////1YArAAAAAAAAAAAAAAAACTR1wOv/////////////1YArAAAAAAAAAAAAAAAAAAAAAAk0dbzm+v//////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6l3Pr/1YAr"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAk0dcDr/////////////////////////////6pVAAAAAAAUP4rL9v///////////////////////6pVAAAAAAAAAAAFGU+W1/b//////////////////6pVAAAAAAAAAAAAAAAABRlPm9z6/////////////6pVAAAAAAAAAAAAAAAAAAAAAAUZT5bX9v///////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAwOv//6pV"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAUZT5vc+v///////////////////////////9WAKwAAAAAAAAAFI2Sw5vr//////////////////////9WAKwAAAAAAAAAAAAAACTR1vOb6/////////////////9WAKwAAAAAAAAAAAAAAAAAAAAk0dcDr/////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAJNHW85vr//////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShepdz6/9WAKwAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAVTZTK3uPj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+OXTAAAAAAAAAAJNHXA6/////////////////////////+qVQAAAAAAAAAAAAAAFD+Ky/b///////////////////+qVQAAAAAAAAAAAAAAAAAAABQ/isv2//////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rL9v////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFD+AvOb6//+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwTCQAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAALLG6v2ePj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+O9cSYAAAAAAAAFGU+b3Pr////////////////////////VgCsAAAAAAAAAAAAABSNksOb6///////////////////VgCsAAAAAAAAAAAAAAAAAAAUjZLDm+v/////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAJKGmw5vr////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNaodf2///VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUOGBwYDgUA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "FU2Uyt7j4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pjl0wAAAAACTR1wOv/////////////////////////qlUAAAAAAAAAABQ/isv2////////////////////qlUAAAAAAAAAAAAAAAAUP4rL9v//////////////qlUAAAAAAAAAAAAAAAAAAAAFGUOKy/b/////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gLzm+v//qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJExwcEwkA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "Cyxur9nj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+PjvXEmAAAABRlPm9z6////////////////////////1YArAAAAAAAAAAUjZLDm+v//////////////////1YArAAAAAAAAAAAAAAAFI2Sw5vr/////////////1YArAAAAAAAAAAAAAAAAAAAACShpsOb6////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAUjWqHX9v//1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDhgcGA4F"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABVNlMre4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj45dMAAAAAAk0dcDr/////////////////////////6pVAAAAAAAAAAAUP4rL9v///////////////////6pVAAAAAAAAAAAAAAAAFD+Ky/b//////////////6pVAAAAAAAAAAAAAAAAAAAABRlDisv2/////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAUP4C85vr//6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACRMcHBMJ"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAssbq/Z4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj471xJgAAAAAAAAUZT5vc+v///////////////////////9WAKwAAAAAAAAAAAAAFI2Sw5vr//////////////////9WAKwAAAAAAAAAAAAAAAAAABSNksOb6/////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v///////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI1qh1/b//9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4YHBgOBQAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAYSYCeo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6NtNgAAAAAAAAUjZLDm+v////////////////////////+qVQAAAAAAAAAAAAAJNHXA6/////////////////////+qVQAAAAAAAAAAAAAAAAAACTR1wOv///////////////+qVQAAAAAAAAAAAAAAAAAAAAAAABQ/gMDr//////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNHW85vr///+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNCXFw9HwAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAMLmSPo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OIURsAAAAAAAAUP4rL9v/////////////////////////VgCsAAAAAAAAAAAAFGU+b3Pr////////////////////VgCsAAAAAAAAAAAAAAAAABRlPm9z6///////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAUjWqXc+v/////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGU+W1/b////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQzUVxNLg8A"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "GEmAnqOjo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OjbTYAAAAFI2Sw5vr/////////////////////////qlUAAAAAAAAACTR1wOv/////////////////////qlUAAAAAAAAAAAAAAAk0dcDr////////////////qlUAAAAAAAAAAAAAAAAAAAAUP4DA6///////////qlUAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUjQlxcPR8A"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "DC5kj6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OjiFEbAAAAFD+Ky/b/////////////////////////1YArAAAAAAAABRlPm9z6////////////////////1YArAAAAAAAAAAAAAAUZT5vc+v//////////////1YArAAAAAAAAAAAAAAAAAAAFI1ql3Pr/////////1YArAAAAAAAAAAAAAAAAAAAAAAAABRlPltf2////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUM1FcTS4P"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABhJgJ6jo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo202AAAABSNksOb6/////////////////////////6pVAAAAAAAAAAk0dcDr/////////////////////6pVAAAAAAAAAAAAAAAJNHXA6////////////////6pVAAAAAAAAAAAAAAAAAAAAFD+AwOv//////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAk0dbzm+v///6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI0JcXD0f"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAwuZI+jo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo4hRGwAAAAAAABQ/isv2/////////////////////////9WAKwAAAAAAAAAAAAUZT5vc+v///////////////////9WAKwAAAAAAAAAAAAAAAAAFGU+b3Pr//////////////9WAKwAAAAAAAAAAAAAAAAAAAAAABSNapdz6/////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZT5bX9v///9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDNRXE0uDwAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAVNFNcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFw9HwAAAAAABRlPm9z6//////////////////////////+qVQAAAAAAAAAAAAUjZLDm+v////////////////////+qVQAAAAAAAAAAAAAAAAAJKGmw5vr///////////////+qVQAAAAAAAAAAAAAAAAAAAAAACTR1vOb6//////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGU+Bo6NtNgAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAALJUNXXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxNLg8AAAAAAAk0dcDr///////////////////////////VgCsAAAAAAAAAAAAUP4rL9v/////////////////////VgCsAAAAAAAAAAAAAAAAFGUOKy/b////////////////VgCsAAAAAAAAAAAAAAAAAAAAABRlPltf2///////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rL9v/////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTRql6OIURsA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "FTRTXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxcPR8AAAUZT5vc+v//////////////////////////qlUAAAAAAAAFI2Sw5vr/////////////////////qlUAAAAAAAAAAAAACShpsOb6////////////////qlUAAAAAAAAAAAAAAAAAAAk0dbzm+v//////////qlUAAAAAAAAAAAAAAAAAAAAAAAAJKGmw5vr/////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlPgaOjbTYA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "CyVDV1xcXFxcXFxcXFxcXFxcXFxcXFxcXFxcTS4PAAAJNHXA6///////////////////////////1YArAAAAAAAAFD+Ky/b/////////////////////1YArAAAAAAAAAAAABRlDisv2////////////////1YArAAAAAAAAAAAAAAAAAAUZT5bX9v//////////1YArAAAAAAAAAAAAAAAAAAAAAAAFGUOKy/b/////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk0apejiFEb"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABU0U1xcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXD0fAAAFGU+b3Pr//////////////////////////6pVAAAAAAAABSNksOb6/////////////////////6pVAAAAAAAAAAAAAAkoabDm+v///////////////6pVAAAAAAAAAAAAAAAAAAAJNHW85vr//////////6pVAAAAAAAAAAAAAAAAAAAAAAAACShpsOb6/////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZT4Gjo202"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAslQ1dcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXE0uDwAAAAAACTR1wOv//////////////////////////9WAKwAAAAAAAAAAABQ/isv2/////////////////////9WAKwAAAAAAAAAAAAAAAAUZQ4rL9v///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAFGU+W1/b//////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAABRlDisv2/////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNGqXo4hRGwAA"
+        }
+      ]
+    },
+    {
+      "id": "original-x7-y31-depth0",
+      "license": "CC0-1.0. Original synthetic geometry and native measurements dedicated to the public domain.",
+      "exactSubdivisionDepth": 0,
+      "scanType": 2,
+      "pointsF26": [
+        [
+          647,
+          31
+        ],
+        [
+          455,
+          159
+        ],
+        [
+          135,
+          415
+        ],
+        [
+          711,
+          415
+        ],
+        [
+          711,
+          31
+        ]
+      ],
+      "onCurve": [
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        4
+      ],
+      "nativeFittedPointsF26": [
+        [
+          647,
+          31
+        ],
+        [
+          455,
+          159
+        ],
+        [
+          135,
+          415
+        ],
+        [
+          711,
+          415
+        ],
+        [
+          711,
+          31
+        ]
+      ],
+      "coordinateQualification": "GC[0] coordinate observations followed by whole-contour integer Y translation preserve every normalized native RGB texture byte.",
+      "coveredCellCount": 910,
+      "cellBounds": [
+        61,
+        1247,
+        116,
+        1279
+      ],
+      "cellRowStride": 7,
+      "cellBitmapBase64": "AAAAAAAAAH////////wf///////8D////////AP///////wB///////8AH///////AA///////wAD//////8AAf//////AAB//////wAAP/////8AAA//////AAAH/////wAAAf////8AAAB/////AAAAP////wAAAA////8AAAAH////AAAAAf///wAAAAB///8AAAAAP///AAAAAA///wAAAAAH//8AAAAAAf//AAAAAAB//wAAAAAAP/8AAAAAAA//AAAAAAAD/wAAAAAAAP8AAAAAAAB/AAAAAAAAAA=",
+      "nativeTextures": [
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            9,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAAFTRTXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxNLg8AAAAAAAUZT5vc+v/////////////////////////VgCsAAAAAAAAAAAAFI2Sw5vr////////////////////VgCsAAAAAAAAAAAAAAAAACShpsOb6///////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v/////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKGmw5vr////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlPgaOIURsA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "CyVDV1xcXFxcXFxcXFxcXFxcXFxcXFxcXFxcPR8AAAAJNHXA6///////////////////////////qlUAAAAAAAAAFD+Ky/b/////////////////////qlUAAAAAAAAAAAAABRlDisv2////////////////qlUAAAAAAAAAAAAAAAAAAAUZQ4rL9v//////////qlUAAAAAAAAAAAAAAAAAAAAAAAAFGUOKy/b/////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk0apejbTYA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "ABU0U1xcXFxcXFxcXFxcXFxcXFxcXFxcXFxcTS4PAAAFGU+b3Pr/////////////////////////1YArAAAAAAAABSNksOb6////////////////////1YArAAAAAAAAAAAAAAkoabDm+v//////////////1YArAAAAAAAAAAAAAAAAAAAJKGmw5vr/////////1YArAAAAAAAAAAAAAAAAAAAAAAAACShpsOb6////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZT4GjiFEb"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAslQ1dcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXD0fAAAACTR1wOv//////////////////////////6pVAAAAAAAAABQ/isv2/////////////////////6pVAAAAAAAAAAAAAAUZQ4rL9v///////////////6pVAAAAAAAAAAAAAAAAAAAFGUOKy/b//////////6pVAAAAAAAAAAAAAAAAAAAAAAAABRlDisv2/////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNGqXo202"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAVNFNcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXE0uDwAAAAAABRlPm9z6/////////////////////////9WAKwAAAAAAAAAAAAUjZLDm+v///////////////////9WAKwAAAAAAAAAAAAAAAAAJKGmw5vr//////////////9WAKwAAAAAAAAAAAAAAAAAAAAAACShpsOb6/////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v///9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGU+Bo4hRGwAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAALJUNXXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFw9HwAAAAAAAAk0dcDr//////////////////////////+qVQAAAAAAAAAAAAAUP4rL9v////////////////////+qVQAAAAAAAAAAAAAAAAAFGUOKy/b///////////////+qVQAAAAAAAAAAAAAAAAAAAAAABRlDisv2//////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rL9v////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTRql6NtNgAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            9,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAACRMcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwYDgUAAAAAABQ/isv2///////////////////////////VgCsAAAAAAAAAAAUZT5vc+v/////////////////////VgCsAAAAAAAAAAAAAAAAFI1ql3Pr////////////////VgCsAAAAAAAAAAAAAAAAAAAAABSNapdz6///////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAUjWqXc+v/////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOKwuO9cSYA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "BQ4YHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcEwkAAAUjZLDm+v//////////////////////////qlUAAAAAAAAJNHXA6///////////////////////qlUAAAAAAAAAAAAAFD+AwOv/////////////////qlUAAAAAAAAAAAAAAAAAABQ/gMDr////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAUP4DA6///////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShpq9jjl0wA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAkTHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcGA4FAAAUP4rL9v//////////////////////////1YArAAAAAAAFGU+b3Pr/////////////////////1YArAAAAAAAAAAAABSNapdz6////////////////1YArAAAAAAAAAAAAAAAAAAUjWqXc+v//////////1YArAAAAAAAAAAAAAAAAAAAAAAAFI1ql3Pr/////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDisLjvXEm"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAUOGBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBMJAAAFI2Sw5vr//////////////////////////6pVAAAAAAAACTR1wOv//////////////////////6pVAAAAAAAAAAAAABQ/gMDr/////////////////6pVAAAAAAAAAAAAAAAAAAAUP4DA6////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAFD+AwOv//////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoaavY45dM"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAJExwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBgOBQAAAAAAFD+Ky/b//////////////////////////9WAKwAAAAAAAAAABRlPm9z6/////////////////////9WAKwAAAAAAAAAAAAAAAAUjWqXc+v///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAFI1ql3Pr//////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAABSNapdz6/////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rC471xJgAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAFDhgcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwTCQAAAAAABSNksOb6//////////////////////////+qVQAAAAAAAAAAAAk0dcDr//////////////////////+qVQAAAAAAAAAAAAAAAAAUP4DA6/////////////////+qVQAAAAAAAAAAAAAAAAAAAAAAFD+AwOv///////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gMDr//////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKGmr2OOXTAAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAACTR1wOv////////////////////////////VgCsAAAAAAAAAABQ/isv2///////////////////////VgCsAAAAAAAAAAAAAAAUZT5bX9v/////////////////VgCsAAAAAAAAAAAAAAAAAAAAFGU+W1/b////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAABRlPltf2///////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4DA6//VgCsA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "BRlPm9z6////////////////////////////qlUAAAAAAAUjZLDm+v//////////////////////qlUAAAAAAAAAAAAJNHW85vr/////////////////qlUAAAAAAAAAAAAAAAAACTR1vOb6////////////qlUAAAAAAAAAAAAAAAAAAAAAAAk0dbzm+v//////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6l3Pr/qlUA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAk0dcDr////////////////////////////1YArAAAAAAAUP4rL9v//////////////////////1YArAAAAAAAAAAAFGU+W1/b/////////////////1YArAAAAAAAAAAAAAAAABRlPltf2////////////1YArAAAAAAAAAAAAAAAAAAAAAAUZT5bX9v//////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAwOv/1YAr"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAUZT5vc+v///////////////////////////6pVAAAAAAAFI2Sw5vr//////////////////////6pVAAAAAAAAAAAACTR1vOb6/////////////////6pVAAAAAAAAAAAAAAAAAAk0dbzm+v///////////6pVAAAAAAAAAAAAAAAAAAAAAAAJNHW85vr//////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAACShepdz6/6pV"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAJNHXA6////////////////////////////9WAKwAAAAAAAAAAFD+Ky/b//////////////////////9WAKwAAAAAAAAAAAAAABRlPltf2/////////////////9WAKwAAAAAAAAAAAAAAAAAAAAUZT5bX9v///////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAFGU+W1/b//////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDgMDr/9WAKwAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAFGU+b3Pr///////////////////////////+qVQAAAAAAAAAABSNksOb6//////////////////////+qVQAAAAAAAAAAAAAAAAk0dbzm+v////////////////+qVQAAAAAAAAAAAAAAAAAAAAAJNHW85vr///////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6//////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqXc+v+qVQAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAAFU2Uyt7j4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+O9cSYAAAAAAAAACTR1wOv////////////////////////VgCsAAAAAAAAAAAAAABQ/isv2///////////////////VgCsAAAAAAAAAAAAAAAAAAAAUP4rL9v/////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAFD+Ky/b////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gLzm+v/VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJExwYDgUA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "Cyxur9nj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pjl0wAAAAABRlPm9z6////////////////////////qlUAAAAAAAAAAAUjZLDm+v//////////////////qlUAAAAAAAAAAAAAAAAFI2Sw5vr/////////////qlUAAAAAAAAAAAAAAAAAAAAABSNksOb6////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAUjWqHX9v//qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDhgcEwkA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABVNlMre4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+PjvXEmAAAAAAk0dcDr////////////////////////1YArAAAAAAAAAAAUP4rL9v//////////////////1YArAAAAAAAAAAAAAAAAFD+Ky/b/////////////1YArAAAAAAAAAAAAAAAAAAAAABQ/isv2////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAUP4C85vr/1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACRMcGA4F"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAssbq/Z4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj45dMAAAAAAUZT5vc+v///////////////////////6pVAAAAAAAAAAAFI2Sw5vr//////////////////6pVAAAAAAAAAAAAAAAABSNksOb6/////////////6pVAAAAAAAAAAAAAAAAAAAAAAUjZLDm+v///////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAFI1qh1/b//6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4YHBMJ"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAAVTZTK3uPj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj471xJgAAAAAAAAAJNHXA6////////////////////////9WAKwAAAAAAAAAAAAAAFD+Ky/b//////////////////9WAKwAAAAAAAAAAAAAAAAAAABQ/isv2/////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAUP4rL9v///////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFD+AvOb6/9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBgOBQAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAALLG6v2ePj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+OXTAAAAAAAAAAFGU+b3Pr///////////////////////+qVQAAAAAAAAAAAAAABSNksOb6//////////////////+qVQAAAAAAAAAAAAAAAAAAAAUjZLDm+v////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAFI2Sw5vr///////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNaodf2//+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUOGBwTCQAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAAGEmAnqOjo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OIURsAAAAAAAAFI2Sw5vr////////////////////////VgCsAAAAAAAAAAAAACTR1wOv////////////////////VgCsAAAAAAAAAAAAAAAAAAAk0dcDr///////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAJNHXA6//////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6///VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUjQlxNLg8A"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "DC5kj6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OjbTYAAAAAFD+Ky/b/////////////////////////qlUAAAAAAAAABRlPm9z6////////////////////qlUAAAAAAAAAAAAAAAUZT5vc+v//////////////qlUAAAAAAAAAAAAAAAAAAAAFGU+b3Pr/////////qlUAAAAAAAAAAAAAAAAAAAAAAAAABRlPltf2////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUM1FcPR8A"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABhJgJ6jo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OjiFEbAAAABSNksOb6////////////////////////1YArAAAAAAAAAAk0dcDr////////////////////1YArAAAAAAAAAAAAAAAJNHXA6///////////////1YArAAAAAAAAAAAAAAAAAAAACTR1wOv/////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAk0dbzm+v//1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI0JcTS4P"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAwuZI+jo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo202AAAAABQ/isv2/////////////////////////6pVAAAAAAAAAAUZT5vc+v///////////////////6pVAAAAAAAAAAAAAAAFGU+b3Pr//////////////6pVAAAAAAAAAAAAAAAAAAAABRlPm9z6/////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAUZT5bX9v///6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDNRXD0f"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAAYSYCeo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo4hRGwAAAAAAAAUjZLDm+v///////////////////////9WAKwAAAAAAAAAAAAAJNHXA6////////////////////9WAKwAAAAAAAAAAAAAAAAAACTR1wOv//////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAk0dcDr/////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNHW85vr//9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNCXE0uDwAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAAMLmSPo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6NtNgAAAAAAAAAUP4rL9v////////////////////////+qVQAAAAAAAAAAAAAFGU+b3Pr///////////////////+qVQAAAAAAAAAAAAAAAAAABRlPm9z6//////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAUZT5vc+v////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGU+W1/b///+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQzUVw9HwAA"
+        }
+      ]
+    },
+    {
+      "id": "original-x7-y31-depth1",
+      "license": "CC0-1.0. Original synthetic geometry and native measurements dedicated to the public domain.",
+      "exactSubdivisionDepth": 1,
+      "scanType": 2,
+      "pointsF26": [
+        [
+          647,
+          31
+        ],
+        [
+          551,
+          95
+        ],
+        [
+          423,
+          191
+        ],
+        [
+          295,
+          287
+        ],
+        [
+          135,
+          415
+        ],
+        [
+          711,
+          415
+        ],
+        [
+          711,
+          31
+        ]
+      ],
+      "onCurve": [
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1
+      ],
+      "contourEnds": [
+        6
+      ],
+      "nativeFittedPointsF26": [
+        [
+          647,
+          31
+        ],
+        [
+          551,
+          95
+        ],
+        [
+          423,
+          191
+        ],
+        [
+          295,
+          287
+        ],
+        [
+          135,
+          415
+        ],
+        [
+          711,
+          415
+        ],
+        [
+          711,
+          31
+        ]
+      ],
+      "coordinateQualification": "GC[0] coordinate observations followed by whole-contour integer Y translation preserve every normalized native RGB texture byte.",
+      "coveredCellCount": 908,
+      "cellBounds": [
+        61,
+        1247,
+        116,
+        1279
+      ],
+      "cellRowStride": 7,
+      "cellBitmapBase64": "AAAAAAAAAH////////wf///////8D////////AP///////wB///////8AH///////AA///////wAD//////8AAf//////AAB//////wAAP/////8AAA//////AAAH/////wAAAf////8AAAB/////AAAAP////wAAAA////8AAAAH////AAAAAf///wAAAAB///8AAAAAP///AAAAAA///wAAAAAH//8AAAAAAf//AAAAAAB//wAAAAAAH/8AAAAAAA//AAAAAAAD/wAAAAAAAP8AAAAAAAA/AAAAAAAAAA=",
+      "nativeTextures": [
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            9,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAAFTRTXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFxNLg8AAAAAAAUZT5vc+v/////////////////////////VgCsAAAAAAAAAAAAFI2Sw5vr////////////////////VgCsAAAAAAAAAAAAAAAAACShpsOb6///////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v/////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6l3Pr////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDdZeIURsA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "CyVDV1xcXFxcXFxcXFxcXFxcXFxcXFxcXFxcPR8AAAAJNHXA6///////////////////////////qlUAAAAAAAAAFD+Ky/b/////////////////////qlUAAAAAAAAAAAAABRlDisv2////////////////qlUAAAAAAAAAAAAAAAAAAAUZQ4rL9v//////////qlUAAAAAAAAAAAAAAAAAAAAAAAAFGUOAwOv/////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXoujbTYA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "ABU0U1xcXFxcXFxcXFxcXFxcXFxcXFxcXFxcTS4PAAAFGU+b3Pr/////////////////////////1YArAAAAAAAABSNksOb6////////////////////1YArAAAAAAAAAAAAAAkoabDm+v//////////////1YArAAAAAAAAAAAAAAAAAAAJKGmw5vr/////////1YArAAAAAAAAAAAAAAAAAAAAAAAACShepdz6////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ3WXiFEb"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAslQ1dcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXD0fAAAACTR1wOv//////////////////////////6pVAAAAAAAAABQ/isv2/////////////////////6pVAAAAAAAAAAAAAAUZQ4rL9v///////////////6pVAAAAAAAAAAAAAAAAAAAFGUOKy/b//////////6pVAAAAAAAAAAAAAAAAAAAAAAAABRlDgMDr/////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6Lo202"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAVNFNcXFxcXFxcXFxcXFxcXFxcXFxcXFxcXE0uDwAAAAAABRlPm9z6/////////////////////////9WAKwAAAAAAAAAAAAUjZLDm+v///////////////////9WAKwAAAAAAAAAAAAAAAAAJKGmw5vr//////////////9WAKwAAAAAAAAAAAAAAAAAAAAAACShpsOb6/////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqXc+v///9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUN1l4hRGwAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAALJUNXXFxcXFxcXFxcXFxcXFxcXFxcXFxcXFw9HwAAAAAAAAk0dcDr//////////////////////////+qVQAAAAAAAAAAAAAUP4rL9v////////////////////+qVQAAAAAAAAAAAAAAAAAFGUOKy/b///////////////+qVQAAAAAAAAAAAAAAAAAAAAAABRlDisv2//////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4DA6/////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShei6NtNgAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            9,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAACRMcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwYDgUAAAAAABQ/isv2///////////////////////////VgCsAAAAAAAAAAAUZT5vc+v/////////////////////VgCsAAAAAAAAAAAAAAAAFI1ql3Pr////////////////VgCsAAAAAAAAAAAAAAAAAAAAABSNapdz6///////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAUjWqHX9v/////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAt9i9cSYA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "BQ4YHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcEwkAAAUjZLDm+v//////////////////////////qlUAAAAAAAAJNHXA6///////////////////////qlUAAAAAAAAAAAAAFD+AwOv/////////////////qlUAAAAAAAAAAAAAAAAAABQ/gMDr////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAUP4C85vr/////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAACSheoc3jl0wA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAkTHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcGA4FAAAUP4rL9v//////////////////////////1YArAAAAAAAFGU+b3Pr/////////////////////1YArAAAAAAAAAAAABSNapdz6////////////////1YArAAAAAAAAAAAAAAAAAAUjWqXc+v//////////1YArAAAAAAAAAAAAAAAAAAAAAAAFI1qh1/b/////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDgLfYvXEm"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAUOGBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBMJAAAFI2Sw5vr//////////////////////////6pVAAAAAAAACTR1wOv//////////////////////6pVAAAAAAAAAAAAABQ/gMDr/////////////////6pVAAAAAAAAAAAAAAAAAAAUP4DA6////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAFD+AvOb6/////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqHN45dM"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAJExwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBgOBQAAAAAAFD+Ky/b//////////////////////////9WAKwAAAAAAAAAABRlPm9z6/////////////////////9WAKwAAAAAAAAAAAAAAAAUjWqXc+v///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAFI1ql3Pr//////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAABSNaodf2/////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4C32L1xJgAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            249,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAFDhgcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwTCQAAAAAABSNksOb6//////////////////////////+qVQAAAAAAAAAAAAk0dcDr//////////////////////+qVQAAAAAAAAAAAAAAAAAUP4DA6/////////////////+qVQAAAAAAAAAAAAAAAAAAAAAAFD+AwOv///////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gLzm+v////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6hzeOXTAAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAAACTR1wOv////////////////////////////VgCsAAAAAAAAAABQ/isv2///////////////////////VgCsAAAAAAAAAAAAAAAUZT5bX9v/////////////////VgCsAAAAAAAAAAAAAAAAAAAAFGU+W1/b////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAABRlPltf2///////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUP4C85vrVgCsA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "BRlPm9z6////////////////////////////qlUAAAAAAAUjZLDm+v//////////////////////qlUAAAAAAAAAAAAJNHW85vr/////////////////qlUAAAAAAAAAAAAAAAAACTR1vOb6////////////qlUAAAAAAAAAAAAAAAAAAAAAAAk0dbzm+v//////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI1qh1/b/qlUA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAk0dcDr////////////////////////////1YArAAAAAAAUP4rL9v//////////////////////1YArAAAAAAAAAAAFGU+W1/b/////////////////1YArAAAAAAAAAAAAAAAABRlPltf2////////////1YArAAAAAAAAAAAAAAAAAAAAAAUZT5bX9v//////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAFD+AvOb61YAr"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            256
+          ],
+          "rgbTextureBase64": "AAUZT5vc+v///////////////////////////6pVAAAAAAAFI2Sw5vr//////////////////////6pVAAAAAAAAAAAACTR1vOb6/////////////////6pVAAAAAAAAAAAAAAAAAAk0dbzm+v///////////6pVAAAAAAAAAAAAAAAAAAAAAAAJNHW85vr//////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNaodf2/6pV"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAJNHXA6////////////////////////////9WAKwAAAAAAAAAAFD+Ky/b//////////////////////9WAKwAAAAAAAAAAAAAABRlPltf2/////////////////9WAKwAAAAAAAAAAAAAAAAAAAAUZT5bX9v///////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAFGU+W1/b//////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gLzm+tWAKwAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            256
+          ],
+          "rgbTextureBase64": "AAAFGU+b3Pr///////////////////////////+qVQAAAAAAAAAABSNksOb6//////////////////////+qVQAAAAAAAAAAAAAAAAk0dbzm+v////////////////+qVQAAAAAAAAAAAAAAAAAAAAAJNHW85vr///////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6//////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUjWqHX9v+qVQAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAAFU2Uyt7j4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+O9cSYAAAAAAAAACTR1wOv////////////////////////VgCsAAAAAAAAAAAAAABQ/isv2///////////////////VgCsAAAAAAAAAAAAAAAAAAAAUP4rL9v/////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAFD+Ky/b////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk0dbzm+v/VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDhgYDgUA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "Cyxur9nj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pjl0wAAAAABRlPm9z6////////////////////////qlUAAAAAAAAAAAUjZLDm+v//////////////////qlUAAAAAAAAAAAAAAAAFI2Sw5vr/////////////qlUAAAAAAAAAAAAAAAAAAAAABSNksOb6////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAUZT5bX9v//qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACRMcEwkA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABVNlMre4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+PjvXEmAAAAAAk0dcDr////////////////////////1YArAAAAAAAAAAAUP4rL9v//////////////////1YArAAAAAAAAAAAAAAAAFD+Ky/b/////////////1YArAAAAAAAAAAAAAAAAAAAAABQ/isv2////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAJNHW85vr/1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4YGA4F"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAssbq/Z4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj45dMAAAAAAUZT5vc+v///////////////////////6pVAAAAAAAAAAAFI2Sw5vr//////////////////6pVAAAAAAAAAAAAAAAABSNksOb6/////////////6pVAAAAAAAAAAAAAAAAAAAAAAUjZLDm+v///////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAFGU+W1/b//6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBMJ"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAAVTZTK3uPj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj471xJgAAAAAAAAAJNHXA6////////////////////////9WAKwAAAAAAAAAAAAAAFD+Ky/b//////////////////9WAKwAAAAAAAAAAAAAAAAAAABQ/isv2/////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAUP4rL9v///////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6/9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUOGBgOBQAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAALLG6v2ePj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+OXTAAAAAAAAAAFGU+b3Pr///////////////////////+qVQAAAAAAAAAAAAAABSNksOb6//////////////////+qVQAAAAAAAAAAAAAAAAAAAAUjZLDm+v////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAFI2Sw5vr///////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlPltf2//+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJExwTCQAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            9,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAAAGEmAnqOjo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OIURsAAAAAAAAFI2Sw5vr////////////////////////VgCsAAAAAAAAAAAAACTR1wOv////////////////////VgCsAAAAAAAAAAAAAAAAAAAk0dcDr///////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAJNHXA6//////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShpsOb6///VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZN1FNLg8A"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "DC5kj6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OjbTYAAAAAFD+Ky/b/////////////////////////qlUAAAAAAAAABRlPm9z6////////////////////qlUAAAAAAAAAAAAAAAUZT5vc+v//////////////qlUAAAAAAAAAAAAAAAAAAAAFGU+b3Pr/////////qlUAAAAAAAAAAAAAAAAAAAAAAAAABRlDisv2////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKEdcPR8A"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "ABhJgJ6jo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6OjiFEbAAAABSNksOb6////////////////////////1YArAAAAAAAAAAk0dcDr////////////////////1YArAAAAAAAAAAAAAAAJNHXA6///////////////1YArAAAAAAAAAAAAAAAAAAAACTR1wOv/////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v//1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGTdRTS4P"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            20,
+            257
+          ],
+          "rgbTextureBase64": "AAwuZI+jo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo202AAAAABQ/isv2/////////////////////////6pVAAAAAAAAAAUZT5vc+v///////////////////6pVAAAAAAAAAAAAAAAFGU+b3Pr//////////////6pVAAAAAAAAAAAAAAAAAAAABRlPm9z6/////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rL9v///6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShHXD0f"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAAYSYCeo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo4hRGwAAAAAAAAUjZLDm+v///////////////////////9WAKwAAAAAAAAAAAAAJNHXA6////////////////////9WAKwAAAAAAAAAAAAAAAAAACTR1wOv//////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAk0dcDr/////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKGmw5vr//9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRk3UU0uDwAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            250,
+            21,
+            257
+          ],
+          "rgbTextureBase64": "AAAMLmSPo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6NtNgAAAAAAAAAUP4rL9v////////////////////////+qVQAAAAAAAAAAAAAFGU+b3Pr///////////////////+qVQAAAAAAAAAAAAAAAAAABRlPm9z6//////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAUZT5vc+v////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOKy/b///+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoR1w9HwAA"
+        }
+      ]
+    },
+    {
+      "id": "S32",
+      "license": "OFL-1.1; fitted Noto Sans Mono Bold outline derivative; see ../fonts/OFL.txt and ../font-provenance.json.",
+      "exactSubdivisionDepth": null,
+      "scanType": 4,
+      "pointsF26": [
+        [
+          563,
+          0
+        ],
+        [
+          453,
+          0
+        ],
+        [
+          238,
+          41
+        ],
+        [
+          143,
+          84
+        ],
+        [
+          143,
+          351
+        ],
+        [
+          258,
+          296
+        ],
+        [
+          471,
+          242
+        ],
+        [
+          571,
+          242
+        ],
+        [
+          678,
+          242
+        ],
+        [
+          813,
+          312
+        ],
+        [
+          813,
+          404
+        ],
+        [
+          813,
+          468
+        ],
+        [
+          741,
+          540
+        ],
+        [
+          606,
+          607
+        ],
+        [
+          512,
+          655
+        ],
+        [
+          418,
+          705
+        ],
+        [
+          262,
+          821
+        ],
+        [
+          172,
+          979
+        ],
+        [
+          172,
+          1091
+        ],
+        [
+          172,
+          1284
+        ],
+        [
+          436,
+          1472
+        ],
+        [
+          651,
+          1472
+        ],
+        [
+          737,
+          1472
+        ],
+        [
+          975,
+          1433
+        ],
+        [
+          1090,
+          1378
+        ],
+        [
+          995,
+          1141
+        ],
+        [
+          895,
+          1189
+        ],
+        [
+          731,
+          1230
+        ],
+        [
+          668,
+          1230
+        ],
+        [
+          567,
+          1230
+        ],
+        [
+          475,
+          1150
+        ],
+        [
+          475,
+          1076
+        ],
+        [
+          475,
+          1018
+        ],
+        [
+          532,
+          946
+        ],
+        [
+          647,
+          887
+        ],
+        [
+          735,
+          843
+        ],
+        [
+          856,
+          785
+        ],
+        [
+          1026,
+          675
+        ],
+        [
+          1116,
+          531
+        ],
+        [
+          1116,
+          419
+        ],
+        [
+          1116,
+          280
+        ],
+        [
+          979,
+          94
+        ],
+        [
+          729,
+          0
+        ]
+      ],
+      "onCurve": [
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "contourEnds": [
+        42
+      ],
+      "nativeFittedPointsF26": [
+        [
+          563,
+          0
+        ],
+        [
+          453,
+          0
+        ],
+        [
+          238,
+          41
+        ],
+        [
+          143,
+          84
+        ],
+        [
+          143,
+          351
+        ],
+        [
+          258,
+          296
+        ],
+        [
+          471,
+          242
+        ],
+        [
+          571,
+          242
+        ],
+        [
+          678,
+          242
+        ],
+        [
+          813,
+          312
+        ],
+        [
+          813,
+          404
+        ],
+        [
+          813,
+          468
+        ],
+        [
+          741,
+          540
+        ],
+        [
+          606,
+          607
+        ],
+        [
+          512,
+          655
+        ],
+        [
+          418,
+          705
+        ],
+        [
+          262,
+          821
+        ],
+        [
+          172,
+          979
+        ],
+        [
+          172,
+          1091
+        ],
+        [
+          172,
+          1284
+        ],
+        [
+          436,
+          1472
+        ],
+        [
+          651,
+          1472
+        ],
+        [
+          737,
+          1472
+        ],
+        [
+          975,
+          1433
+        ],
+        [
+          1090,
+          1378
+        ],
+        [
+          995,
+          1141
+        ],
+        [
+          895,
+          1189
+        ],
+        [
+          731,
+          1230
+        ],
+        [
+          668,
+          1230
+        ],
+        [
+          567,
+          1230
+        ],
+        [
+          475,
+          1150
+        ],
+        [
+          475,
+          1076
+        ],
+        [
+          475,
+          1018
+        ],
+        [
+          532,
+          946
+        ],
+        [
+          647,
+          887
+        ],
+        [
+          735,
+          843
+        ],
+        [
+          856,
+          785
+        ],
+        [
+          1026,
+          675
+        ],
+        [
+          1116,
+          531
+        ],
+        [
+          1116,
+          419
+        ],
+        [
+          1116,
+          280
+        ],
+        [
+          979,
+          94
+        ],
+        [
+          729,
+          0
+        ]
+      ],
+      "coordinateQualification": "GC[0] coordinate observations followed by whole-contour integer Y translation preserve every normalized native RGB texture byte.",
+      "coveredCellCount": 5637,
+      "cellBounds": [
+        60,
+        1164,
+        154,
+        1281
+      ],
+      "cellRowStride": 12,
+      "cellBitmapBase64": "AAAAAAAAAAAAAAAAAAAAAAH//+AAAAAAAAAAAP/////wAAAAAAAAD///////wAAAAAAAf////////AAAAAAD/////////8AAAAAP//////////gAAAA///////////8AAAD////////////AAAH////////////AAAf///////////+AAA////////////+AAB////////////8AAD////////////8AAH////////////4AAH////////////4AAP////////////wAAf////////////wAAf////////////gAA/////////////gAA//////gAD////AAA/////8AAAD///AAB/////wAAAAP/+AAB/////AAAAAA/+AAB////+AAAAAAH8AAB////8AAAAAAA8AAD////8AAAAAAAIAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAB////4AAAAAAAAAAB////8AAAAAAAAAAB////+AAAAAAAAAAB////+AAAAAAAAAAA/////gAAAAAAAAAA/////wAAAAAAAAAAf////4AAAAAAAAAAf////+AAAAAAAAAAP/////wAAAAAAAAAP/////8AAAAAAAAAH//////AAAAAAAAAD//////4AAAAAAAAD//////+AAAAAAAAB///////gAAAAAAAA///////8AAAAAAAAf///////AAAAAAAAH///////4AAAAAAAD///////+AAAAAAAB////////gAAAAAAA////////4AAAAAAAP///////+AAAAAAAD////////gAAAAAAB////////4AAAAAAAf///////+AAAAAAAH////////gAAAAAAB////////wAAAAAAAf///////8AAAAAAAH///////+AAAAAAAB////////AAAAAAAAP///////gAAAAAAAD///////wAAAAAAAA///////4AAAAAAAAH//////8AAAAAAAAB//////+AAAAAAAAAf/////+AAAAAAAAAD//////AAAAAAAAAA//////gAAAAAAAAAP/////gAAAAAAAAAD/////gAAAAAAAAAB/////wAAAAAAAAAAf////wAAAAAAAAAAP////wAAAAAAAAAAH////wAAAAAAAAAAH////wAAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////4AAAAAAAAAAD////wAAAAAAAAAAD////wAAAAAAAAAAD////wcAAAAAAAAAH////wfAAAAAAAAAH////wf4AAAAAAAAP////wf/gAAAAAAAf////gf/8AAAAAAA/////gf//wAAAAAD/////gf///gAAAAf/////Af////gAAP//////Af/////////////+Af/////////////8Af/////////////8Af/////////////4Af/////////////wAf/////////////gAf/////////////AAf////////////+AAf////////////8AAf////////////wAAf////////////gAAf///////////+AAAP///////////4AAAD///////////gAAAAP/////////8AAAAAB/////////gAAAAAAD///////8AAAAAAAAH/////+AAAAAAAAAAB///8AAAAAAAAAAAAAAAAAAAAAAA",
+      "nativeTextures": [
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            9,
+            233,
+            26,
+            256
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAkePGmLuM3j5/H6//////////rx5+Pjzbiji3RHMhMJAAAAAAAAAAAAAAAAAAAFGU+W1/b////////////////////////////////////////68c19MgAAAAAAAAAAD1Cl6///////////////////////////////////////////////8J9KBQAAAAAAAAA1it/////////////////////68efj4+Pj4+z2///////////////fijUAAAAAAAAAACZ70P///////////////+u1aSgJAAAAAAAAAAAAAAkTMkd0lsPh9sp1IAAAAAAAAAAAAFWq////////////////2YQvAAAAAAAAAAAAAAAAAAAAAAAAAAAABQUFAAAAAAAAAAAAAFWq////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACZ70P//////////////+sV1JQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgdcr/////////////////68CKUygJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUab6//////////////////////24beASB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGVqq6//////////////////////////24beAQxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTR1vOb6//////////////////////////rmvIBDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4C34fb/////////////////////////9st7LwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoU4q85vr/////////////////////66VQDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqXc+v/////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFOo/f////////////////r1oFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq////////////////1YArAAAPLjcoCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2S5////////////////qlUAAAArgNX/+vHdw5Z0RzIYDgUAAAAAAAAAAAAAAAAFDi1ptev////////////////VgCsAAAArgNX////////////////68efj4+Pj4+Pj7Pb/////////////////////+rlkFAAAAAArgNX//////////////////////////////////////////////////+uqVRQAAAAAAAAbZ7z2///////////////////////////////////////////65ryAPxQAAAAAAAAAAAAAAAAACR48UXSLrsPY4+fx+v////////////bs49jDrotpPB4JAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            233,
+            26,
+            256
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAUOLVOAosPY4+z2///////////27OPj2MOul4BdPCIOBQAAAAAAAAAAAAAACTR1vOb6////////////////////////////////////////9uGjVxYAAAAAACt70Pr//////////////////////////////////////////////8p1IAAAAAAPYLX6////////////////////9uzj4+Pj4+fx+v/////////////6tWAPAAAAAABQpfr///////////////rQj0MZBQAAAAAAAAAAAAUOIjxdgKzS8eufSgUAAAAAACuA1f///////////////69aBQAAAAAAAAAAAAAAAAAAAAAAAAAABQUFAAAAAAAAACuA1f///////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQpfr//////////////+ufSgkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFSp/w////////////////+tylaTcZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACBwxfr////////////////////68dKhXi0OBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTSE0Pr////////////////////////68dKhXigJAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlPltf2///////////////////////////216FeKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6h0vH6////////////////////////+ualVRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZN2mh1/b/////////////////////+tB7KwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4DA6//////////////////6qlUFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGS5+v//////////////2YQvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACuA1f///////////////6pVHzM3GQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADqP5P//////////////1YArVar///bszayAXTwnEwkAAAAAAAAAAAAAAAAACR5Ij9D6///////////////6qlUFVar/////////////////9uzj4+Pj4+Pj5/H6/////////////////////9+POgUAVar///////////////////////////////////////////////////rQgC8FAAAAQZHm+v//////////////////////////////////////////9tehWiMFAAAAAAAAAAAABQ4tR2iAl7jN4+Ps9v////////////rx5+PNuJeAUy0OBQAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            256
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAJHjxpi7jN4+fx+v/////////68efj4824o4t0RzITCQAAAAAAAAAAAAAAAAAABRlPltf2////////////////////////////////////////+vHNfTIAAAAAAAAAAA9Qpev///////////////////////////////////////////////CfSgUAAAAAAAAANYrf////////////////////+vHn4+Pj4+Ps9v//////////////34o1AAAAAAAAAAAme9D////////////////rtWkoCQAAAAAAAAAAAAAJEzJHdJbD4fbKdSAAAAAAAAAAAABVqv///////////////9mELwAAAAAAAAAAAAAAAAAAAAAAAAAAAAUFBQAAAAAAAAAAAABVqv///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAme9D///////////////rFdSUFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIHXK/////////////////+vAilMoCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVGm+v/////////////////////9uG3gEgeCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlaquv/////////////////////////9uG3gEMZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk0dbzm+v/////////////////////////65ryAQxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAt+H2//////////////////////////bLey8FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKFOKvOb6/////////////////////+ulUA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6l3Pr/////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTqP3////////////////69aBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVqv///////////////9WAKwAADy43KAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9kuf///////////////6pVAAAAK4DV//rx3cOWdEcyGA4FAAAAAAAAAAAAAAAABQ4tabXr////////////////1YArAAAAK4DV////////////////+vHn4+Pj4+Pj4+z2//////////////////////q5ZBQAAAAAK4DV///////////////////////////////////////////////////rqlUUAAAAAAAAG2e89v//////////////////////////////////////////+ua8gD8UAAAAAAAAAAAAAAAAAAkePFF0i67D2OPn8fr////////////27OPYw66LaTweCQAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            256
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAFDi1TgKLD2OPs9v//////////9uzj49jDrpeAXTwiDgUAAAAAAAAAAAAAAAAAAAk0dbzm+v////////////////////////////////////////bho1cWAAAAAAAAAAAre9D6///////////////////////////////////////////////KdSAAAAAAAAAAD2C1+v////////////////////bs4+Pj4+Pn8fr/////////////+rVgDwAAAAAAAAAAUKX6///////////////60I9DGQUAAAAAAAAAAAAFDiI8XYCs0vHrn0oFAAAAAAAAAAArgNX///////////////+vWgUAAAAAAAAAAAAAAAAAAAAAAAAAAAUFBQAAAAAAAAAAAAArgNX///////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUKX6///////////////rn0oJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUqf8P////////////////rcpWk3GQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgcMX6////////////////////+vHSoV4tDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk0hND6////////////////////////+vHSoV4oCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZT5bX9v//////////////////////////9tehXigJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACSheodLx+v////////////////////////rmpVUUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGTdpodf2//////////////////////rQeysAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAwOv/////////////////+qpVBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRkufr//////////////9mELwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArgNX///////////////+qVQAAAB8zNxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6j+T//////////////9WAKwAAAFWq///27M2sgF08JxMJAAAAAAAAAAAAAAAAAAkeSI/Q+v//////////////+qpVBQAAAFWq//////////////////bs4+Pj4+Pj4+fx+v/////////////////////fjzoFAAAAAFWq///////////////////////////////////////////////////60IAvBQAAAAAAAEGR5vr///////////////////////////////////////////bXoVojBQAAAAAAAAAAAAAAAAUOLUdogJe4zePj7Pb////////////68efjzbiXgFMtDgUAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            256
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAACR48aYu4zePn8fr/////////+vHn4+PNuKOLdEcyEwkAAAAAAAAAAAAAAAAAAAUZT5bX9v////////////////////////////////////////rxzX0yAAAAAAAAAAAPUKXr///////////////////////////////////////////////wn0oFAAAAAAAAADWK3/////////////////////rx5+Pj4+Pj7Pb//////////////9+KNQAAAAAAAAAAJnvQ////////////////67VpKAkAAAAAAAAAAAAACRMyR3SWw+H2ynUgAAAAAAAAAAAAVar////////////////ZhC8AAAAAAAAAAAAAAAAAAAAAAAAAAAAFBQUAAAAAAAAAAAAAVar////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJnvQ///////////////6xXUlBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACB1yv/////////////////rwIpTKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRpvr//////////////////////bht4BIHgkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZWqrr//////////////////////////bht4BDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNHW85vr/////////////////////////+ua8gEMZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDgLfh9v/////////////////////////2y3svBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShTirzm+v/////////////////////rpVAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShepdz6/////////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU6j9////////////////+vWgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVar////////////////VgCsAAA8uNygJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZLn///////////////+qVQAAACuA1f/68d3DlnRHMhgOBQAAAAAAAAAAAAAAAAUOLWm16////////////////9WAKwAAACuA1f////////////////rx5+Pj4+Pj4+Ps9v/////////////////////6uWQUAAAAACuA1f//////////////////////////////////////////////////66pVFAAAAAAAABtnvPb///////////////////////////////////////////rmvIA/FAAAAAAAAAAAAAAAAAAJHjxRdIuuw9jj5/H6////////////9uzj2MOui2k8HgkAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 0,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            256
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAABQ4tU4Ciw9jj7Pb///////////bs4+PYw66XgF08Ig4FAAAAAAAAAAAAAAAAAAAJNHW85vr////////////////////////////////////////24aNXFgAAAAAAAAAAK3vQ+v//////////////////////////////////////////////ynUgAAAAAAAAAA9gtfr////////////////////27OPj4+Pj5/H6//////////////q1YA8AAAAAAAAAAFCl+v//////////////+tCPQxkFAAAAAAAAAAAABQ4iPF2ArNLx659KBQAAAAAAAAAAK4DV////////////////r1oFAAAAAAAAAAAAAAAAAAAAAAAAAAAFBQUAAAAAAAAAAAAAK4DV////////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCl+v//////////////659KCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKn/D////////////////63KVpNxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIHDF+v////////////////////rx0qFeLQ4FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNITQ+v////////////////////////rx0qFeKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGU+W1/b///////////////////////////bXoV4oCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqHS8fr////////////////////////65qVVFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRk3aaHX9v/////////////////////60HsrAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDgMDr//////////////////qqVQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZLn6///////////////ZhC8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK4DV////////////////qlUAAAAfMzcZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOo/k///////////////VgCsAAABVqv//9uzNrIBdPCcTCQAAAAAAAAAAAAAAAAAJHkiP0Pr///////////////qqVQUAAABVqv/////////////////27OPj4+Pj4+Pn8fr/////////////////////3486BQAAAABVqv//////////////////////////////////////////////////+tCALwUAAAAAAABBkeb6///////////////////////////////////////////216FaIwUAAAAAAAAAAAAAAAAFDi1HaICXuM3j4+z2////////////+vHn4824l4BTLQ4FAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            9,
+            233,
+            26,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAFDi1HdIujrsPY4+Pj4+Pj49jDrqOji3RcRzITCQAAAAAAAAAAAAAAAAAAAAAABSNaodf2//////////////////////////////////////bhw5ZVHwAAAAAAAAAABS+A0Pr/////////////////////////////////////////////+rVgDwAAAAAAAAAgcMX6///////////////////////////////////////////////wn0oFAAAAAAAAABtwxf////////////////rcpV4tDgUAAAAAAAkTHDJHdIu40vH6/9+KNQAAAAAAAAAAAFCl+v//////////////5I86AAAAAAAAAAAAAAAAAAAAAAAAAAAJHh4UAAAAAAAAAAAAAFWq////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC+E2f//////////////8KpVDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1it/////////////////60I9IHgkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGS5+v////////////////////bXrHVDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUP4/Q+v////////////////////////bXrHVDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKGmw5vr/////////////////////////+ua8gEMZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDgLzm+v/////////////////////////63JtKFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShelsjm+v/////////////////////60IAvBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDi1eodf2//////////////////rAaxsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZXq/w////////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq////////////////1YArAAAFDg4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVqv////////////////r1oFAAArgNX24cOigFMyEwkAAAAAAAAAAAAAAAAAAAAAAAk0hND6///////////////kjzoAAAArgNX////////////68efYw66jo6Ojo6OjuM3n8fr//////////////////9WAKwAAAAArgNX///////////////////////////////////////////////////rQgC8FAAAAAAAme9D/////////////////////////////////////////////+ua8dTQJAAAAAAAAAAAAAAkTMlOAl7jN5/H6//////////////////////rx582sgFMtDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUOGBwcHBwcHBwcHBMJAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            233,
+            26,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAACR48XYCXo7jN4+Pj4+Pj4+PNuKOjl4BoUTwiDgUAAAAAAAAAAAAAAAAAABQ/gLzm+v////////////////////////////////////rx0qxwOg8AAAAAABRVquv//////////////////////////////////////////////9+KNQAAAAAFRpvr////////////////////////////////////////////////ynUgAAAAAABGm/D////////////////rwIBIHgkAAAAAAAUOGCc8XYCiw+H2//q1YA8AAAAAACZ70P///////////////7lkDwAAAAAAAAAAAAAAAAAAAAAAAAAFGR4ZBQAAAAAAACuA1f///////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVar////////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPYLX6////////////////67VpLQ4FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABTqP3/////////////////////rmyJZeKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI2S16/////////////////////////rmyJZeKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOKy/b///////////////////////////bXoV4oCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqHX9v//////////////////////////68BwLwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDdazX9v//////////////////////66pVFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACR5IgLzm+v/////////////////rlkEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNInV////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACuA1f///////////////6pVCQ4OBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC+E2f//////////////2YQvVar68dK4i2k8Ig4FAAAAAAAAAAAAAAAAAAAAAAUZWqrr////////////////uWQPVar/////////////9uzjzbijo6Ojo6OjrsPY7Pb///////////////////CqVQ8AVar////////////////////////////////////////////////////rqlUUAAAAUKX6//////////////////////////////////////////////bXlk8ZBQAAAAAAAAUOIjxpi67D2Oz2///////////////////////27NjDlmk8HgkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJExwcHBwcHBwcHBgOBQAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAABQ4tR3SLo67D2OPj4+Pj4+PYw66jo4t0XEcyEwkAAAAAAAAAAAAAAAAAAAAAAAUjWqHX9v/////////////////////////////////////24cOWVR8AAAAAAAAAAAUvgND6//////////////////////////////////////////////q1YA8AAAAAAAAAIHDF+v//////////////////////////////////////////////8J9KBQAAAAAAAAAbcMX////////////////63KVeLQ4FAAAAAAAJExwyR3SLuNLx+v/fijUAAAAAAAAAAABQpfr//////////////+SPOgAAAAAAAAAAAAAAAAAAAAAAAAAACR4eFAAAAAAAAAAAAABVqv///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvhNn///////////////CqVQ8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANYrf////////////////+tCPSB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRkufr////////////////////216x1QxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFD+P0Pr////////////////////////216x1QxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShpsOb6//////////////////////////rmvIBDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4C85vr/////////////////////////+tybShQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXpbI5vr/////////////////////+tCALwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4tXqHX9v/////////////////6wGsbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGV6v8P///////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVqv///////////////9WAKwAABQ4OCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVar////////////////69aBQAAK4DV9uHDooBTMhMJAAAAAAAAAAAAAAAAAAAAAAAJNITQ+v//////////////5I86AAAAK4DV////////////+vHn2MOuo6Ojo6Ojo7jN5/H6///////////////////VgCsAAAAAK4DV///////////////////////////////////////////////////60IAvBQAAAAAAJnvQ//////////////////////////////////////////////rmvHU0CQAAAAAAAAAAAAAJEzJTgJe4zefx+v/////////////////////68efNrIBTLQ4FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDhgcHBwcHBwcHBwTCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAkePF2Al6O4zePj4+Pj4+Pjzbijo5eAaFE8Ig4FAAAAAAAAAAAAAAAAAAAAAAAUP4C85vr////////////////////////////////////68dKscDoPAAAAAAAAAAAUVarr///////////////////////////////////////////////fijUAAAAAAAAABUab6////////////////////////////////////////////////8p1IAAAAAAAAAAARpvw////////////////68CASB4JAAAAAAAFDhgnPF2AosPh9v/6tWAPAAAAAAAAAAAme9D///////////////+5ZA8AAAAAAAAAAAAAAAAAAAAAAAAABRkeGQUAAAAAAAAAAAArgNX///////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq/////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2C1+v///////////////+u1aS0OBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU6j9/////////////////////65siWXigJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNktev////////////////////////65siWXigJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDisv2///////////////////////////216FeKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6h1/b//////////////////////////+vAcC8FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ3Ws1/b//////////////////////+uqVRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkeSIC85vr/////////////////65ZBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTSJ1f///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArgNX///////////////+qVQAAAAkODgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvhNn//////////////9mELwAAAFWq+vHSuItpPCIOBQAAAAAAAAAAAAAAAAAAAAAFGVqq6////////////////7lkDwAAAFWq//////////////bs4824o6Ojo6Ojo67D2Oz2///////////////////wqlUPAAAAAFWq////////////////////////////////////////////////////66pVFAAAAAAAAFCl+v/////////////////////////////////////////////215ZPGQUAAAAAAAAAAAAFDiI8aYuuw9js9v//////////////////////9uzYw5ZpPB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACRMcHBwcHBwcHBwYDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAUOLUd0i6Ouw9jj4+Pj4+Pj2MOuo6OLdFxHMhMJAAAAAAAAAAAAAAAAAAAAAAAFI1qh1/b/////////////////////////////////////9uHDllUfAAAAAAAAAAAFL4DQ+v/////////////////////////////////////////////6tWAPAAAAAAAAACBwxfr///////////////////////////////////////////////CfSgUAAAAAAAAAG3DF////////////////+tylXi0OBQAAAAAACRMcMkd0i7jS8fr/34o1AAAAAAAAAAAAUKX6///////////////kjzoAAAAAAAAAAAAAAAAAAAAAAAAAAAkeHhQAAAAAAAAAAAAAVar////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL4TZ///////////////wqlUPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADWK3/////////////////rQj0geCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZLn6////////////////////9tesdUMZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ/j9D6////////////////////////9tesdUMZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v/////////////////////////65ryAQxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAvOb6//////////////////////////rcm0oUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6WyOb6//////////////////////rQgC8FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUOLV6h1/b/////////////////+sBrGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRler/D///////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVar////////////////VgCsAAAUODgkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq////////////////+vWgUAACuA1fbhw6KAUzITCQAAAAAAAAAAAAAAAAAAAAAACTSE0Pr//////////////+SPOgAAACuA1f////////////rx59jDrqOjo6Ojo6O4zefx+v//////////////////1YArAAAAACuA1f//////////////////////////////////////////////////+tCALwUAAAAAACZ70P/////////////////////////////////////////////65rx1NAkAAAAAAAAAAAAACRMyU4CXuM3n8fr/////////////////////+vHnzayAUy0OBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4YHBwcHBwcHBwcEwkAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 1,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAJHjxdgJejuM3j4+Pj4+Pj4824o6OXgGhRPCIOBQAAAAAAAAAAAAAAAAAAAAAAFD+AvOb6////////////////////////////////////+vHSrHA6DwAAAAAAAAAAFFWq6///////////////////////////////////////////////34o1AAAAAAAAAAVGm+v////////////////////////////////////////////////KdSAAAAAAAAAAAEab8P///////////////+vAgEgeCQAAAAAABQ4YJzxdgKLD4fb/+rVgDwAAAAAAAAAAJnvQ////////////////uWQPAAAAAAAAAAAAAAAAAAAAAAAAAAUZHhkFAAAAAAAAAAAAK4DV////////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVqv////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9gtfr////////////////rtWktDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFOo/f////////////////////+ubIll4oCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUjZLXr////////////////////////+ubIll4oCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rL9v//////////////////////////9tehXigJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACSheodf2///////////////////////////rwHAvBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUN1rNf2///////////////////////rqlUUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJHkiAvOb6/////////////////+uWQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk0idX////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK4DV////////////////qlUAAAAJDg4FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL4TZ///////////////ZhC8AAABVqvrx0riLaTwiDgUAAAAAAAAAAAAAAAAAAAAABRlaquv///////////////+5ZA8AAABVqv/////////////27OPNuKOjo6Ojo6Ouw9js9v//////////////////8KpVDwAAAABVqv///////////////////////////////////////////////////+uqVRQAAAAAAABQpfr/////////////////////////////////////////////9teWTxkFAAAAAAAAAAAABQ4iPGmLrsPY7Pb///////////////////////bs2MOWaTweCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwcHBwcHBwcGA4FAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            9,
+            233,
+            26,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAkTMkdcaICXo6Ojo6Ojo5eAaFxcRzIcEwkAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqHS8fr////////////////////////////////27M2sgFMoCQAAAAAAAAAAABRVpeb6/////////////////////////////////////////////8p1IAAAAAAAAAAPVarw///////////////////////////////////////////////6tWAPAAAAAAAAAA9kuf/////////////////216FpPCccHBwcHDJHXHSLuM3s9v////CfSgUAAAAAAAAAAEab8P//////////////8J9KBQAAAAAAAAAAAAAAAAAAAAAABQ4tU0krAAAAAAAAAAAAAFWq////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADqP5P//////////////5JQ/BQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKn/D///////////////rmpVoZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK4DV////////////////////9tehaTcZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUvcMDr///////////////////////68dKhaTcZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUjWqXc+v/////////////////////////65ryAQxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAvOb6//////////////////////////rmsGQjBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUOLV6h0vH6///////////////////////rqlUUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZN2mh1/b///////////////////CqVQ8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ/j9D6///////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVqv////////////////0HsmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq////////////////uWQPAAArgMvXrIBdPB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAUWq/w///////////////wm0YAAAArgNX/////////9uzYw66XgGhcXFxcXFxcdIuuw+H2/////////////////+ubRgUAAAArgNX////////////////////////////////////////////////////rqlUUAAAAAAArgNX///////////////////////////////////////////////rmsGQjBQAAAAAAAAAACShHdJbD2Oz2//////////////////////////////bhw5ZpNxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4YHCc8UVxcXFxcXFxcXEcyHBgOBQAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            233,
+            26,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAUOIjxRXHSLo6Ojo6Ojo6OLdFxcUTwnGA4FAAAAAAAAAAAAAAAAAAAAAAUZQ4C34fb////////////////////////////////68d3Dlmk3GQUAAAAAAAUve8v2//////////////////////////////////////////////CfSgUAAAAAK4DV////////////////////////////////////////////////34o1AAAAAAA6j+T////////////////65ryKUzIcHBwcHCc8UWiAosPd8fr////KdSAAAAAAABtwxf///////////////8p1IAAAAAAAAAAAAAAAAAAAAAAAAAkeSE46DwAAAAAAACuA1f///////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9kuf///////////////75pFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgdcr////////////////2y4A0CQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD1Wq8P//////////////////+ua8ilMoCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUSpvc+v//////////////////////9uG3ilMoCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUP4DA6///////////////////////////9tehXigJAAAAAAAAAAAAAAAAAAAAAAAAAAAACSheodf2///////////////////////////2y4o/FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJHkiAt+H2///////////////////////60IAvBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKFOKvOb6///////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUjZLXr////////////////0HsmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC+E2f//////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACuA1f//////////////5I86VaXmyJZ0Ry0OBQAAAAAAAAAAAAAAAAAAAAAAAAAFL4TV////////////////xXAbVar/////////+vHnzbiji3RcXFxcXFxcaICXuNLx+v////////////////rFcCAAVar////////////////////////////////////////////////////60IAvBQAAVar////////////////////////////////////////////////2y4o/FAAAAAAABRk3XYCszefx+v////////////////////////////rx0qyAUygJAAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwyR1xcXFxcXFxcXFE8JxwTCQAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAJEzJHXGiAl6Ojo6Ojo6OXgGhcXEcyHBMJAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6h0vH6////////////////////////////////9uzNrIBTKAkAAAAAAAAAAAAUVaXm+v/////////////////////////////////////////////KdSAAAAAAAAAAD1Wq8P//////////////////////////////////////////////+rVgDwAAAAAAAAAPZLn/////////////////9tehaTwnHBwcHBwyR1x0i7jN7Pb////wn0oFAAAAAAAAAABGm/D///////////////CfSgUAAAAAAAAAAAAAAAAAAAAAAAUOLVNJKwAAAAAAAAAAAABVqv///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6j+T//////////////+SUPwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFSp/w///////////////65qVaGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACuA1f////////////////////bXoWk3GQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFL3DA6///////////////////////+vHSoWk3GQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI1ql3Pr/////////////////////////+ua8gEMZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDgLzm+v/////////////////////////65rBkIwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDi1eodLx+v//////////////////////66pVFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGTdpodf2///////////////////wqlUPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUP4/Q+v//////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVar////////////////9B7JgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVqv///////////////7lkDwAAK4DL16yAXTweCQAAAAAAAAAAAAAAAAAAAAAAAAAAFFqv8P//////////////8JtGAAAAK4DV//////////bs2MOul4BoXFxcXFxcXHSLrsPh9v/////////////////rm0YFAAAAK4DV////////////////////////////////////////////////////66pVFAAAAAAAK4DV///////////////////////////////////////////////65rBkIwUAAAAAAAAAAAkoR3SWw9js9v/////////////////////////////24cOWaTcZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAUOGBwnPFFcXFxcXFxcXFxHMhwYDgUAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAFDiI8UVx0i6Ojo6Ojo6Oji3RcXFE8JxgOBQAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAt+H2////////////////////////////////+vHdw5ZpNxkFAAAAAAAAAAAFL3vL9v/////////////////////////////////////////////wn0oFAAAAAAAAACuA1f///////////////////////////////////////////////9+KNQAAAAAAAAAAOo/k////////////////+ua8ilMyHBwcHBwnPFFogKLD3fH6////ynUgAAAAAAAAAAAbcMX////////////////KdSAAAAAAAAAAAAAAAAAAAAAAAAAJHkhOOg8AAAAAAAAAAAArgNX///////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZLn///////////////++aRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIHXK////////////////9suANAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9VqvD///////////////////rmvIpTKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFEqb3Pr///////////////////////bht4pTKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFD+AwOv///////////////////////////bXoV4oCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqHX9v//////////////////////////9suKPxQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACR5IgLfh9v//////////////////////+tCALwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShTirzm+v//////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI2S16////////////////9B7JgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvhNn///////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArgNX//////////////+SPOgAAAFWl5siWdEctDgUAAAAAAAAAAAAAAAAAAAAAAAAABS+E1f///////////////8VwGwAAAFWq//////////rx5824o4t0XFxcXFxcXGiAl7jS8fr////////////////6xXAgAAAAAFWq////////////////////////////////////////////////////+tCALwUAAAAAAFWq////////////////////////////////////////////////9suKPxQAAAAAAAAAAAUZN12ArM3n8fr////////////////////////////68dKsgFMoCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJExwcMkdcXFxcXFxcXFxRPCccEwkAAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAACRMyR1xogJejo6Ojo6Ojl4BoXFxHMhwTCQAAAAAAAAAAAAAAAAAAAAAAAAAACSheodLx+v////////////////////////////////bszayAUygJAAAAAAAAAAAAFFWl5vr/////////////////////////////////////////////ynUgAAAAAAAAAA9VqvD///////////////////////////////////////////////q1YA8AAAAAAAAAD2S5//////////////////bXoWk8JxwcHBwcMkdcdIu4zez2////8J9KBQAAAAAAAAAARpvw///////////////wn0oFAAAAAAAAAAAAAAAAAAAAAAAFDi1TSSsAAAAAAAAAAAAAVar////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOo/k///////////////klD8FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUqf8P//////////////+ualWhkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArgNX////////////////////216FpNxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABS9wwOv///////////////////////rx0qFpNxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNapdz6//////////////////////////rmvIBDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4C85vr/////////////////////////+uawZCMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4tXqHS8fr//////////////////////+uqVRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRk3aaHX9v//////////////////8KpVDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFD+P0Pr///////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq/////////////////QeyYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVar///////////////+5ZA8AACuAy9esgF08HgkAAAAAAAAAAAAAAAAAAAAAAAAAABRar/D///////////////CbRgAAACuA1f/////////27NjDrpeAaFxcXFxcXFx0i67D4fb/////////////////65tGBQAAACuA1f///////////////////////////////////////////////////+uqVRQAAAAAACuA1f//////////////////////////////////////////////+uawZCMFAAAAAAAAAAAJKEd0lsPY7Pb/////////////////////////////9uHDlmk3GQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDhgcJzxRXFxcXFxcXFxcRzIcGA4FAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 2,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAABQ4iPFFcdIujo6Ojo6Ojo4t0XFxRPCcYDgUAAAAAAAAAAAAAAAAAAAAAAAAABRlDgLfh9v////////////////////////////////rx3cOWaTcZBQAAAAAAAAAABS97y/b/////////////////////////////////////////////8J9KBQAAAAAAAAArgNX////////////////////////////////////////////////fijUAAAAAAAAAADqP5P////////////////rmvIpTMhwcHBwcJzxRaICiw93x+v///8p1IAAAAAAAAAAAG3DF////////////////ynUgAAAAAAAAAAAAAAAAAAAAAAAACR5ITjoPAAAAAAAAAAAAK4DV////////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2S5////////////////vmkUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACB1yv////////////////bLgDQJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPVarw///////////////////65ryKUygJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRKm9z6///////////////////////24beKUygJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gMDr///////////////////////////216FeKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6h1/b///////////////////////////bLij8UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkeSIC34fb///////////////////////rQgC8FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoU4q85vr//////////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNktev////////////////QeyYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAL4TZ///////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK4DV///////////////kjzoAAABVpebIlnRHLQ4FAAAAAAAAAAAAAAAAAAAAAAAAAAUvhNX////////////////FcBsAAABVqv/////////68efNuKOLdFxcXFxcXFxogJe40vH6////////////////+sVwIAAAAABVqv////////////////////////////////////////////////////rQgC8FAAAAAABVqv////////////////////////////////////////////////bLij8UAAAAAAAAAAAFGTddgKzN5/H6////////////////////////////+vHSrIBTKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAACRMcHDJHXFxcXFxcXFxcUTwnHBMJAAAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            9,
+            233,
+            26,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAACRMcJzxRXFxcXFxcXFE8JxwcEwkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6Ww+H2////////////////////////////9uzNuItpPB4JAAAAAAAAAAAAAAUvcMDr/////////////////////////////////////////////9+KNQAAAAAAAAAFOo/f////////////////////////////////////////////////ynUgAAAAAAAAAAVVqvr/////////////////9tesgGhcXFxcXHSLo7jN7Pb///////q1YA8AAAAAAAAAADqP5P//////////////+rlkFAAAAAAAAAAAAAAAAAAAAAAJHjxplnxGBQAAAAAAAAAAAFWq////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEab8P//////////////2YQvAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9gtfr///////////////DFdS8FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFRpvr//////////////////rx0qFeLQ4FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRVpeb6//////////////////////rmyJZeLQ4FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRKltf2//////////////////////////rmvIBDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4C85vr/////////////////////////+ua8dTQJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRk3aaHX9v////////////////////////rQgC8FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDdazX9v///////////////////9+POgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACTR1wOv////////////////wm0YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2S5////////////////xXAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq////////////////xXAbAAAmcaihaTwiDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAFOo/f///////////////6pVAAAAArgNX///////bszbiXgGhRPCccHBwcHBwcMkdogKzX9v////////////////q1YA8AAAArgNX////////////////////////////////////////////////////60HsrAAAAAAArgNX////////////////////////////////////////////////63JtKFAAAAAAAAAAFI1qLuNLx+v/////////////////////////////////68dKsdUMZBQAAAAAAAAAAAAAAAAAAAAAAAAkTJzxRXGiAl6Ojo6Ojo6Ojo4t0XFE8JxMJAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            233,
+            26,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAABQ4YHDJHXFxcXFxcXFxHMhwcGA4FAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUN1rNLx+v//////////////////////////+vHdw6KAUy0OBQAAAAAAAAAUSpvc+v////////////////////////////////////////////q1YA8AAAAAFGS5+v//////////////////////////////////////////////8J9KBQAAAAArgNX/////////////////+ubIlnRcXFxcXGiAl67D3fH6///////fijUAAAAAAA9kuf///////////////9+POgUAAAAAAAAAAAAAAAAAAAAFDi1TiothIAAAAAAAACuA1f///////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtwxf///////////////69aBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1it/////////////////gn0oUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIHDF+v/////////////////24beASB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUve8v2///////////////////////216x1SB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUvcLzm+v/////////////////////////216FeKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6h1/b///////////////////////////bXlk8ZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoU4q85vr////////////////////////rqlUUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXpbI5vr///////////////////q5ZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlPm9z6////////////////xXAbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADqP5P//////////////8JtGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACuA1f//////////////8JtGTIy3ilMyEwkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGS5+v//////////////0HsmVar///////rx3cOui3RcRzIcHBwcHBwcJzxRdJbI5vr////////////////fijUAVar/////////////////////////////////////////////////////66VQDwAAVar/////////////////////////////////////////////////68BwLwUAAAAAFD91osPh9v//////////////////////////////////9uHDll4oCQAAAAAAAAAAAAAAAAAAAAUOGDJHXFx0i6Ojo6Ojo6Ojo5eAaFxHMhgOBQAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAkTHCc8UVxcXFxcXFxRPCccHBMJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShelsPh9v////////////////////////////bszbiLaTweCQAAAAAAAAAAAAAFL3DA6//////////////////////////////////////////////fijUAAAAAAAAABTqP3////////////////////////////////////////////////8p1IAAAAAAAAAAFVar6//////////////////bXrIBoXFxcXFx0i6O4zez2///////6tWAPAAAAAAAAAAA6j+T///////////////q5ZBQAAAAAAAAAAAAAAAAAAAAACR48aZZ8RgUAAAAAAAAAAABVqv///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABGm/D//////////////9mELwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPYLX6///////////////wxXUvBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUab6//////////////////68dKhXi0OBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUVaXm+v/////////////////////65siWXi0OBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUSpbX9v/////////////////////////65ryAQxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOAvOb6//////////////////////////rmvHU0CQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZN2mh1/b////////////////////////60IAvBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ3Ws1/b////////////////////fjzoFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk0dcDr////////////////8JtGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9kuf///////////////8VwGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVqv///////////////8VwGwAAJnGooWk8Ig4FAAAAAAAAAAAAAAAAAAAAAAAAAAAABTqP3///////////////+qVQAAAAK4DV///////27M24l4BoUTwnHBwcHBwcHDJHaICs1/b////////////////6tWAPAAAAK4DV////////////////////////////////////////////////////+tB7KwAAAAAAK4DV////////////////////////////////////////////////+tybShQAAAAAAAAABSNai7jS8fr/////////////////////////////////+vHSrHVDGQUAAAAAAAAAAAAAAAAAAAAAAAAJEyc8UVxogJejo6Ojo6Ojo6OLdFxRPCcTCQAAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAUOGBwyR1xcXFxcXFxcRzIcHBgOBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDdazS8fr///////////////////////////rx3cOigFMtDgUAAAAAAAAAAAAAFEqb3Pr////////////////////////////////////////////6tWAPAAAAAAAAABRkufr///////////////////////////////////////////////CfSgUAAAAAAAAAK4DV//////////////////rmyJZ0XFxcXFxogJeuw93x+v//////34o1AAAAAAAAAAAPZLn////////////////fjzoFAAAAAAAAAAAAAAAAAAAABQ4tU4qLYSAAAAAAAAAAAAArgNX///////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbcMX///////////////+vWgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANYrf////////////////4J9KFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACBwxfr/////////////////9uG3gEgeCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFL3vL9v//////////////////////9tesdUgeCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFL3C85vr/////////////////////////9tehXigJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACSheodf2///////////////////////////215ZPGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKFOKvOb6////////////////////////66pVFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6WyOb6///////////////////6uWQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZT5vc+v///////////////8VwGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6j+T///////////////CbRgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArgNX///////////////CbRgAAAEyMt4pTMhMJAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRkufr//////////////9B7JgAAAFWq///////68d3Drot0XEcyHBwcHBwcHCc8UXSWyOb6////////////////34o1AAAAAFWq/////////////////////////////////////////////////////+ulUA8AAAAAAFWq/////////////////////////////////////////////////+vAcC8FAAAAAAAAABQ/daLD4fb///////////////////////////////////bhw5ZeKAkAAAAAAAAAAAAAAAAAAAAAAAAFDhgyR1xcdIujo6Ojo6Ojo6OXgGhcRzIYDgUAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAJExwnPFFcXFxcXFxcUTwnHBwTCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXpbD4fb////////////////////////////27M24i2k8HgkAAAAAAAAAAAAABS9wwOv/////////////////////////////////////////////34o1AAAAAAAAAAU6j9/////////////////////////////////////////////////KdSAAAAAAAAAABVWq+v/////////////////216yAaFxcXFxcdIujuM3s9v//////+rVgDwAAAAAAAAAAOo/k///////////////6uWQUAAAAAAAAAAAAAAAAAAAAAAkePGmWfEYFAAAAAAAAAAAAVar////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARpvw///////////////ZhC8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2C1+v//////////////8MV1LwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVGm+v/////////////////+vHSoV4tDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFFWl5vr/////////////////////+ubIll4tDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFEqW1/b/////////////////////////+ua8gEMZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDgLzm+v/////////////////////////65rx1NAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGTdpodf2////////////////////////+tCALwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUN1rNf2////////////////////3486BQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJNHXA6/////////////////CbRgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZLn////////////////FcBsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVar////////////////FcBsAACZxqKFpPCIOBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAU6j9////////////////qlUAAAACuA1f//////9uzNuJeAaFE8JxwcHBwcHBwyR2iArNf2////////////////+rVgDwAAACuA1f////////////////////////////////////////////////////rQeysAAAAAACuA1f////////////////////////////////////////////////rcm0oUAAAAAAAAAAUjWou40vH6//////////////////////////////////rx0qx1QxkFAAAAAAAAAAAAAAAAAAAAAAAACRMnPFFcaICXo6Ojo6Ojo6Oji3RcUTwnEwkAAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 3,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAFDhgcMkdcXFxcXFxcXEcyHBwYDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ3Ws0vH6///////////////////////////68d3DooBTLQ4FAAAAAAAAAAAAABRKm9z6////////////////////////////////////////////+rVgDwAAAAAAAAAUZLn6///////////////////////////////////////////////wn0oFAAAAAAAAACuA1f/////////////////65siWdFxcXFxcaICXrsPd8fr//////9+KNQAAAAAAAAAAD2S5////////////////3486BQAAAAAAAAAAAAAAAAAAAAUOLVOKi2EgAAAAAAAAAAAAK4DV////////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG3DF////////////////r1oFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADWK3////////////////+CfShQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgcMX6//////////////////bht4BIHgkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABS97y/b///////////////////////bXrHVIHgkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABS9wvOb6//////////////////////////bXoV4oCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXqHX9v//////////////////////////9teWTxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShTirzm+v///////////////////////+uqVRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShelsjm+v//////////////////+rlkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGU+b3Pr////////////////FcBsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOo/k///////////////wm0YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK4DV///////////////wm0YAAABMjLeKUzITCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZLn6///////////////QeyYAAABVqv//////+vHdw66LdFxHMhwcHBwcHBwnPFF0lsjm+v///////////////9+KNQAAAABVqv/////////////////////////////////////////////////////rpVAPAAAAAABVqv/////////////////////////////////////////////////rwHAvBQAAAAAAAAAUP3Wiw+H2///////////////////////////////////24cOWXigJAAAAAAAAAAAAAAAAAAAAAAAABQ4YMkdcXHSLo6Ojo6Ojo6Ojl4BoXEcyGA4FAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 0,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            9,
+            233,
+            26,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4YHBwcHBwcHBgOBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShTgKzN7Pb/////////////////////9uzjzbiLdEctDgUAAAAAAAAAAAAAAAAUP4rL9v///////////////////////////////////////////+aRPAAAAAAAAAAAIHDF+v//////////////////////////////////////////////34o1AAAAAAAAAABGm/D///////////////////bhw66jo6Ojo7jN4+z2///////////KdSAAAAAAAAAAAC+E2f///////////////9WJNAkAAAAAAAAAAAAAAAAACRMyU4Cs0qtgDwAAAAAAAAAAAFWq////////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCl+v//////////////1YArAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABtwxf///////////////9+eSRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPYLX6////////////////+ubIll4oCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACt70Pr/////////////////////+ua8ilMoCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABS97y/b/////////////////////////+ua8gEMZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ/gLzm+v/////////////////////////65ryAPxQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUN1rNf2/////////////////////////+uqVRQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJHkiAt+H2////////////////////+sVwIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKGmw5vr////////////////kjzoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIHXK////////////////uWQPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFWq////////////////0HsmAAAbUXBeLQ4FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIHXK////////////////qlUAAAArgNX////68dK4i3RRPCcYDgUAAAAAAAAACRMnPGml3Pr////////////////FcBsAAAArgNX/////////////////////////////////////////////////////65tGBQAAAAArgNX/////////////////////////////////////////////////9st7LwUAAAAAAAAPRpHN7Pb///////////////////////////////////////bht4BDGQUAAAAAAAAAAAAAAAAAAAUOGDJHaICXo67D2OPj4+Pj4+Pj4824o5eAaEctDgUAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 1,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            233,
+            26,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAkTHBwcHBwcHBwTCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRk3aZbD3fH6////////////////////+vHn2MOigF08HgkAAAAAAAAAAAAFI2Sw5vr///////////////////////////////////////////q8ZxYAAAAABUab6///////////////////////////////////////////////+rVgDwAAAAAbcMX///////////////////rx0rijo6Ojo67D2Ofx+v/////////wn0oFAAAAAAVar/////////////////CvXhkFAAAAAAAAAAAAAAAABQ4iPGmWyMaFNQAAAAAAACuA1f///////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACZ70P///////////////6pVAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABGm/D///////////////rEdCMFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANYrf//////////////////bXrHVDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9Qpev///////////////////////bXoWk3GQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRVpeb6//////////////////////////bXoV4oCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAUjWqHX9v//////////////////////////9tehWiMFAAAAAAAAAAAAAAAAAAAAAAAAAAAACShelsjm+v////////////////////////rQgC8FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFDi1eodLx+v///////////////////+ubRgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGUOKy/b/////////////////uWQPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUqf8P//////////////5I86AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACuA1f//////////////+qVQNmF1SB4JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUqf8P//////////////1YArVar/////9uHDooBoRzIcEwkAAAAAAAAABQ4YMlOKwOv////////////////wm0YAVar/////////////////////////////////////////////////////+sVwIAAAVar/////////////////////////////////////////////////+ualVRQAAAAAK2u33fH6//////////////////////////////////////rx0qFeKAkAAAAAAAAAAAAAAAAJEyc8UXSLo6O4zePj4+Pj4+Pj49jDrqOLdFE8HgkAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 2,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAUOGBwcHBwcHBwYDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoU4Cszez2//////////////////////bs4824i3RHLQ4FAAAAAAAAAAAAAAAAFD+Ky/b////////////////////////////////////////////mkTwAAAAAAAAAACBwxfr//////////////////////////////////////////////9+KNQAAAAAAAAAARpvw///////////////////24cOuo6Ojo6O4zePs9v//////////ynUgAAAAAAAAAAAvhNn////////////////ViTQJAAAAAAAAAAAAAAAAAAkTMlOArNKrYA8AAAAAAAAAAABVqv///////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQpfr//////////////9WAKwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbcMX////////////////fnkkUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2C1+v////////////////rmyJZeKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAre9D6//////////////////////rmvIpTKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUve8v2//////////////////////////rmvIBDGQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUP4C85vr/////////////////////////+ua8gD8UAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDdazX9v/////////////////////////rqlUUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACR5IgLfh9v////////////////////rFcCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACShpsOb6////////////////5I86AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACB1yv///////////////7lkDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABVqv///////////////9B7JgAAG1FwXi0OBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACB1yv///////////////6pVAAAAK4DV////+vHSuIt0UTwnGA4FAAAAAAAAAAkTJzxppdz6////////////////xXAbAAAAK4DV/////////////////////////////////////////////////////+ubRgUAAAAAK4DV//////////////////////////////////////////////////bLey8FAAAAAAAAD0aRzez2///////////////////////////////////////24beAQxkFAAAAAAAAAAAAAAAAAAAFDhgyR2iAl6Ouw9jj4+Pj4+Pj4+PNuKOXgGhHLQ4FAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 3,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAJExwcHBwcHBwcEwkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZN2mWw93x+v////////////////////rx59jDooBdPB4JAAAAAAAAAAAAAAAABSNksOb6///////////////////////////////////////////6vGcWAAAAAAAAAAVGm+v///////////////////////////////////////////////q1YA8AAAAAAAAAG3DF///////////////////68dK4o6Ojo6Ouw9jn8fr/////////8J9KBQAAAAAAAAAFWq/////////////////wr14ZBQAAAAAAAAAAAAAAAAUOIjxplsjGhTUAAAAAAAAAAAArgNX///////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAme9D///////////////+qVQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARpvw///////////////6xHQjBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADWK3//////////////////216x1QxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPUKXr///////////////////////216FpNxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUVaXm+v/////////////////////////216FeKAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFI1qh1/b///////////////////////////bXoVojBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoXpbI5vr////////////////////////60IAvBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQ4tXqHS8fr////////////////////rm0YFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABRlDisv2/////////////////7lkDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKn/D//////////////+SPOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArgNX///////////////qlUAAAADZhdUgeCQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVKn/D//////////////9WAKwAAAFWq//////bhw6KAaEcyHBMJAAAAAAAAAAUOGDJTisDr////////////////8JtGAAAAAFWq//////////////////////////////////////////////////////rFcCAAAAAAAFWq//////////////////////////////////////////////////rmpVUUAAAAAAAAACtrt93x+v/////////////////////////////////////68dKhXigJAAAAAAAAAAAAAAAAAAAACRMnPFF0i6OjuM3j4+Pj4+Pj4+PYw66ji3RRPB4JAAAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 4,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAFDhgcHBwcHBwcGA4FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKFOArM3s9v/////////////////////27OPNuIt0Ry0OBQAAAAAAAAAAAAAAABQ/isv2////////////////////////////////////////////5pE8AAAAAAAAAAAgcMX6///////////////////////////////////////////////fijUAAAAAAAAAAEab8P//////////////////9uHDrqOjo6OjuM3j7Pb//////////8p1IAAAAAAAAAAAL4TZ////////////////1Yk0CQAAAAAAAAAAAAAAAAAJEzJTgKzSq2APAAAAAAAAAAAAVar////////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUKX6///////////////VgCsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG3DF////////////////355JFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9gtfr////////////////65siWXigJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK3vQ+v/////////////////////65ryKUygJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFL3vL9v/////////////////////////65ryAQxkFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFD+AvOb6//////////////////////////rmvIA/FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ3Ws1/b/////////////////////////66pVFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkeSIC34fb////////////////////6xXAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkoabDm+v///////////////+SPOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgdcr///////////////+5ZA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVar////////////////QeyYAABtRcF4tDgUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgdcr///////////////+qVQAAACuA1f////rx0riLdFE8JxgOBQAAAAAAAAAJEyc8aaXc+v///////////////8VwGwAAACuA1f/////////////////////////////////////////////////////rm0YFAAAAACuA1f/////////////////////////////////////////////////2y3svBQAAAAAAAA9Gkc3s9v//////////////////////////////////////9uG3gEMZBQAAAAAAAAAAAAAAAAAABQ4YMkdogJejrsPY4+Pj4+Pj4+Pjzbijl4BoRy0OBQAAAAAAAAAAAAAAAAAA"
+        },
+        {
+          "xCellPhase": 5,
+          "yCellPhase": 4,
+          "coverageBounds": [
+            10,
+            233,
+            27,
+            257
+          ],
+          "rgbTextureBase64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAACRMcHBwcHBwcHBMJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFGTdplsPd8fr////////////////////68efYw6KAXTweCQAAAAAAAAAAAAAAAAUjZLDm+v//////////////////////////////////////////+rxnFgAAAAAAAAAFRpvr///////////////////////////////////////////////6tWAPAAAAAAAAABtwxf//////////////////+vHSuKOjo6OjrsPY5/H6//////////CfSgUAAAAAAAAABVqv////////////////8K9eGQUAAAAAAAAAAAAAAAAFDiI8aZbIxoU1AAAAAAAAAAAAK4DV////////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJnvQ////////////////qlUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEab8P//////////////+sR0IwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA1it//////////////////9tesdUMZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD1Cl6///////////////////////9tehaTcZBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFFWl5vr/////////////////////////9tehXigJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSNaodf2///////////////////////////216FaIwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKF6WyOb6////////////////////////+tCALwUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUOLV6h0vH6////////////////////65tGBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUZQ4rL9v////////////////+5ZA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFSp/w///////////////kjzoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAK4DV///////////////6pVAAAAA2YXVIHgkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFSp/w///////////////VgCsAAABVqv/////24cOigGhHMhwTCQAAAAAAAAAFDhgyU4rA6/////////////////CbRgAAAABVqv/////////////////////////////////////////////////////6xXAgAAAAAABVqv/////////////////////////////////////////////////65qVVFAAAAAAAAAAra7fd8fr/////////////////////////////////////+vHSoV4oCQAAAAAAAAAAAAAAAAAAAAkTJzxRdIujo7jN4+Pj4+Pj4+Pj2MOuo4t0UTweCQAAAAAAAAAAAAAAAAAA"
+        }
+      ]
+    }
+  ]
+}

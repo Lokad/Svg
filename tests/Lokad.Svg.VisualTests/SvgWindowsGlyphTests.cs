@@ -148,6 +148,56 @@ public sealed class SvgWindowsGlyphTests
     }
 
     [Fact]
+    public void Exact_split_curves_preserve_complete_translated_native_textures()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics");
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "windows-curve-cells.json")));
+        string[] exactIds = native.RootElement.GetProperty("establishedExactCaseIds").EnumerateArray()
+            .Select(item => item.GetString() ?? throw new InvalidDataException("Missing exact curve case.")).ToArray();
+        Assert.NotEmpty(exactIds);
+        JsonElement[] cases = native.RootElement.GetProperty("cases").EnumerateArray().ToArray();
+        foreach (JsonElement item in exactIds.Select(id => cases.Single(item => item.GetProperty("id").GetString() == id)))
+        foreach (JsonElement texture in item.GetProperty("nativeTextures").EnumerateArray())
+        {
+            double originX = 8 + texture.GetProperty("xCellPhase").GetInt32() / 6.0;
+            double originY = 256 + texture.GetProperty("yCellPhase").GetInt32() / 5.0;
+            OpenTypeOutlinePoint[] points = item.GetProperty("pointsF26").EnumerateArray()
+                .Select(point => new OpenTypeOutlinePoint(originX + point[0].GetDouble() / 64, originY - point[1].GetDouble() / 64)).ToArray();
+            int[] flags = item.GetProperty("onCurve").EnumerateArray().Select(flag => flag.GetInt32()).ToArray();
+            var segments = new List<OpenTypeQuadraticSegment>();
+            OpenTypeOutlinePoint current = points[0];
+            for (int index = 1; index < points.Length; index++)
+            {
+                OpenTypeOutlinePoint next = points[index];
+                if (flags[index] != 0) { segments.Add(new(current, next, next)); current = next; }
+                else
+                {
+                    Assert.Equal(1, flags[index + 1]);
+                    segments.Add(new(current, next, points[index + 1])); current = points[++index];
+                }
+            }
+            if (current != points[0]) segments.Add(new(current, points[0], points[0]));
+            OpenTypeQuadraticSegment[] outline = segments.ToArray();
+            SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[outline.Length * 2];
+            byte[] bytes = Convert.FromBase64String(texture.GetProperty("rgbTextureBase64").GetString() ?? throw new InvalidDataException("Missing native curve texture."));
+            JsonElement bounds = texture.GetProperty("coverageBounds");
+            int left = bounds[0].GetInt32(), top = bounds[1].GetInt32(), right = bounds[2].GetInt32(), bottom = bounds[3].GetInt32();
+            Assert.Equal((right - left) * (bottom - top) * 3, bytes.Length);
+            for (int y = top - 1; y <= bottom; y++)
+            for (int x = left - 1; x <= right; x++)
+            {
+                SvgGlyphRgbCoverage expected = default;
+                if (x >= left && x < right && y >= top && y < bottom)
+                {
+                    int offset = ((y - top) * (right - left) + x - left) * 3;
+                    expected = new(bytes[offset], bytes[offset + 1], bytes[offset + 2]);
+                }
+                Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(outline, x, y, scratch, false, new(long.MaxValue), CancellationToken.None));
+            }
+        }
+    }
+
+    [Fact]
     public async Task Windows_implied_curve_midpoints_retain_half_f26_units()
     {
         using SvgFontSnapshot snapshot = await PrepareMono();

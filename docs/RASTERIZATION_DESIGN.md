@@ -11323,3 +11323,70 @@ remains byte-identical: 18 on Windows and 23 on Linux. Both original supplied-fo
 acceptance documents stay complete. Package/public/native/notice contracts reuse
 their preceding qualification; the revised scan and memory behavior has fresh
 measurements. Finite G2–G9 exits and the S17 release gate stay open.
+
+### SVG Translate: isolated quadratic scan conversion
+
+The remaining S32 bottom-row discrepancy is now isolated at the native sampling
+cell level. Thirty complete native textures translate the same fitted replay
+outline through all six horizontal and five vertical cell phases. Inverting the
+known six-column window and vertical weights (4,9,10,9,4) recovers a binary cell
+map independently of a curve approximation. The 217 possible weighted counts
+map injectively to alpha bytes. Overlapping observations agree; every recovered
+row count is integral, every cell is binary, and forward reconstruction matches
+every native byte, including the outside margin. Exact analytic coverage and
+the diagnostic FreeType high-precision raster add the same three cells:
+
+| Absolute fine-grid cell | Analytic curve crossing X | Cell-center X |
+| --- | --- | --- |
+| (130,1275) | 130.5129643 | 130.5 |
+| (127,1276) | 127.5052327 | 127.5 |
+| (75,1277) | 75.4834144 | 75.5 |
+
+Neither diagnostic raster misses a native S32 cell. A contour crop retaining
+original points 39,40,41,42,0,1,2,3, with a straight closure above the failing
+cells and SCANTYPE 2, preserves all native coverage in fine rows 1274..1279.
+This separates these crossings from dropout policy and unrelated glyph geometry.
+The original face, fitted replay and preceding coordinate qualification remain
+unchanged.
+
+Two original CC0 quadratic pairs provide smaller independent controls. Their
+base curve has F26 points (640,0), (448,128), (128,384), closed clockwise through
+(704,384) and (704,0). Translate by (0,7) or (7,31) F26 units, then compare each
+unsplit curve with one exact De Casteljau subdivision. All encoded points are
+integer F26. Forty-eight independent GC coordinate observations preserve every
+normalized native texture byte and agree with every authored point. Both grid-fit
+modes also agree. Despite the identical continuous geometry, subdivision changes
+the native symmetric LCD texture: exact analytic coverage omits one native cell
+for the first unsplit form and two for the second. The split forms agree exactly.
+Thus native scan conversion retains distinctions between curve representations;
+a universally exact analytic intersection alone cannot reproduce these references.
+Fractional authored-point representation experiments required a separate scaler
+check and are not evidence for this conclusion.
+
+[The retained curve diagnostics](../tests/Research/supplied-font-documents/diagnostics/windows-curve-cells.json)
+contain all five source outlines, independently observed fitted coordinates,
+150 complete translated native textures and their binary cell maps. The original
+synthetic geometry is CC0; the S32 outline keeps its supplied-face OFL provenance.
+Each retained texture and bound agrees through three fresh native processes in
+both grid-fit modes. Forward cell-map reconstruction verifies 108,501 channels
+including an outside margin without error. The crop receives the same fresh
+stability checks but remains private diagnostic evidence. No native code or
+diagnostic bitmap enters the product renderer.
+
+Coarse geometric flattening, fixed-point curve samples, square-root rounding,
+uniform subdivision and rounded scan-height subdivision do not reproduce the
+complete S32 map without introducing errors. These experiments remain private;
+selecting a parameter by its lower local error count does not qualify a shared
+rule. The finite next correction must preserve the two split textures, resolve
+the unsplit pair and S32 control, and advance the unchanged whole SVG Translate
+document while retaining every established exact output. No wider combination
+grid becomes a prerequisite for completing that document.
+
+One additional regression fact protects all 60 complete split-form textures,
+including zero bytes and an outside margin, on Windows and Linux. The focused
+Windows-glyph group passes nine tests on each platform. Production rendering,
+document ledgers, font programs and frozen browser references are unchanged, so
+the preceding complete 6,678-test/platform and corpus/package qualification is
+reused explicitly. The whole document still has 62 Windows differing pixels;
+the integer-strike control still has four. This checkpoint claims diagnosis and
+regression protection, with no additional completed document or renderer fix.

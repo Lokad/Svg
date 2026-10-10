@@ -91,6 +91,18 @@ warm-batch measurement in the design record. Peak accounted memory stays at
 692,258 bytes, with denial one byte below the peak releasing all owned storage.
 The remaining native curve controls and the integer-strike bottom row determine
 the next shared correction; preserve every established exact output.
+Thirty translated native textures now isolate that bottom-row discrepancy to
+three extra analytic sampling cells. [The curve diagnostics](tests/Research/supplied-font-documents/diagnostics/windows-curve-cells.json)
+retain complete textures and independently recovered cell maps. Two original
+CC0 quadratic pairs also expose native scan conversion after all 48 fitted
+coordinate observations agree: splitting the exact curve once changes its
+native texture. Preserve the two already exact split forms while resolving the
+two unsplit forms. Qualify a shared curve rule against these finite controls,
+the retained glyph/strike diagnostics and every established exact result, then
+finish the S32 control and this unchanged whole document. Coarse flattening and
+simple fixed-point parameter choices remain unqualified; their lower local
+error counts also introduce new errors. No renderer correction is claimed for
+this diagnostic checkpoint.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
 original output, seven controls, upstream face and OFL notice, explicit alias/

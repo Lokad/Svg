@@ -69,6 +69,19 @@ and two complete supplied-face masks in the glyph controls protect the change;
 all nine agree through three fresh native processes. Other scan-control
 extensions and the remaining curve differences stay separate work.
 
+[The curve-cell diagnostics](diagnostics/windows-curve-cells.json) retain 30
+translated native RGB textures per case and exactly inverted binary cell maps.
+The S32 mask differs from exact analytic coverage in only three cells; cropping
+to the bottom curves preserves them. Two original CC0 quadratic pairs isolate
+scan conversion independently: every authored integer F26 coordinate agrees
+with 48 native GC observations, but exact subdivision changes the native mask.
+All retained textures and bounds agree through three fresh native processes,
+with enabled and disabled grid fitting. The two split forms are already exact
+and have full-texture regression protection across all 30 translations each;
+the two unsplit forms remain pending. These are diagnostic controls, separate
+from the seven SVG controls and whole-document completion. The renderer stays
+at 62 Windows document differences and four integer-strike differences.
+
 The seven controls are separate from document completion. All render through the
 12 APIs; five independent direct-text equivalents protect actual position and
 path semantics. API and layout success do not count as exact native pixels.
