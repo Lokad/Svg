@@ -1,0 +1,685 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "Focused shared line-source, marker viewport, orientation, cascade, opacity and reference controls for complete inv-121/inv-122; five categorized admission boundaries remain explicit.",
+  "cases": [
+    {
+      "id": "odd-width-line",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "odd-width-line.svg",
+      "reference": "references/odd-width-line.png",
+      "sourceSha256": "59f110764179785deab9b5d76ec7304d1524a1fb5d86995d40ccf6041bd3d730",
+      "referenceSha256": "f643c97e0213a678db4fd28e5b438090fefe152d2c860de059fdb5f5c6c912ad",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "f643c97e0213a678db4fd28e5b438090fefe152d2c860de059fdb5f5c6c912ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f643c97e0213a678db4fd28e5b438090fefe152d2c860de059fdb5f5c6c912ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f643c97e0213a678db4fd28e5b438090fefe152d2c860de059fdb5f5c6c912ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "composed-line",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "composed-line.svg",
+      "reference": "references/composed-line.png",
+      "sourceSha256": "75c10b5a60039c904e09958d6bc4cfea113050b2fd4599f452308e3b89fb1ee9",
+      "referenceSha256": "1b2d4cf4c979d4ebbacaaf253f1866921d45858abfc3fe9f0119ce9722751ed7",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "1b2d4cf4c979d4ebbacaaf253f1866921d45858abfc3fe9f0119ce9722751ed7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1b2d4cf4c979d4ebbacaaf253f1866921d45858abfc3fe9f0119ce9722751ed7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1b2d4cf4c979d4ebbacaaf253f1866921d45858abfc3fe9f0119ce9722751ed7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-stroke-width",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-stroke-width.svg",
+      "reference": "references/marker-stroke-width.png",
+      "sourceSha256": "38e214b0f11c21c47e1480a79a389467f46343415d4930f975d822fe89db81d7",
+      "referenceSha256": "c9c3e15b5e65d759ddefcee964398f1bee000f265572dfb36f70c2c99a08a1d7",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "c9c3e15b5e65d759ddefcee964398f1bee000f265572dfb36f70c2c99a08a1d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9c3e15b5e65d759ddefcee964398f1bee000f265572dfb36f70c2c99a08a1d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c9c3e15b5e65d759ddefcee964398f1bee000f265572dfb36f70c2c99a08a1d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-user-space",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-user-space.svg",
+      "reference": "references/marker-user-space.png",
+      "sourceSha256": "76ee95d924d0d2f56fece5680b312635798717bbd3a6ddd67faa173a978212ea",
+      "referenceSha256": "0d0ca8b5ded9b2db8133ecfb5196406254595013801370172f3be5f14631dbc6",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "0d0ca8b5ded9b2db8133ecfb5196406254595013801370172f3be5f14631dbc6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0d0ca8b5ded9b2db8133ecfb5196406254595013801370172f3be5f14631dbc6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0d0ca8b5ded9b2db8133ecfb5196406254595013801370172f3be5f14631dbc6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-reversed-axis",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-reversed-axis.svg",
+      "reference": "references/marker-reversed-axis.png",
+      "sourceSha256": "0582c38b2dea5c891aa65d3b779020c2e63478f51aa9bd7e86e64251a1f980bb",
+      "referenceSha256": "323d0fac2230e88a63115c0c7a7c8c57e552978cc9ba32a6d0bd3ea0c8a3e503",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "323d0fac2230e88a63115c0c7a7c8c57e552978cc9ba32a6d0bd3ea0c8a3e503",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "323d0fac2230e88a63115c0c7a7c8c57e552978cc9ba32a6d0bd3ea0c8a3e503",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "323d0fac2230e88a63115c0c7a7c8c57e552978cc9ba32a6d0bd3ea0c8a3e503",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-reversed-diagonal",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-reversed-diagonal.svg",
+      "reference": "references/marker-reversed-diagonal.png",
+      "sourceSha256": "72d6c24b33a507b672f52bc12c77e53853aa5bb5dced7d40a40c8aa494b69776",
+      "referenceSha256": "4915212b49c0f3e1a5f17b62fdc804cd98ac6324a46f9c188394b50ed9679377",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "4915212b49c0f3e1a5f17b62fdc804cd98ac6324a46f9c188394b50ed9679377",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4915212b49c0f3e1a5f17b62fdc804cd98ac6324a46f9c188394b50ed9679377",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4915212b49c0f3e1a5f17b62fdc804cd98ac6324a46f9c188394b50ed9679377",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-forward-cascade",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-forward-cascade.svg",
+      "reference": "references/marker-forward-cascade.png",
+      "sourceSha256": "1dbdf286e1d134d2b2d0fc1b9d3af4d1253a97704b78b4bfbdba419b6ce56f40",
+      "referenceSha256": "92d20b5ce5f6e86352544447cefb553835f21ed54f1fadb8f63db6fd7f1cc376",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "92d20b5ce5f6e86352544447cefb553835f21ed54f1fadb8f63db6fd7f1cc376",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92d20b5ce5f6e86352544447cefb553835f21ed54f1fadb8f63db6fd7f1cc376",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92d20b5ce5f6e86352544447cefb553835f21ed54f1fadb8f63db6fd7f1cc376",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-element-opacity",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-element-opacity.svg",
+      "reference": "references/marker-element-opacity.png",
+      "sourceSha256": "70ed005ed59da5e8fdd4d39cefc822539f00a03cd50867fa34e269ebbe4d0c1a",
+      "referenceSha256": "d08615cb1fab78e79dadd171ecb1bf6d261eb673d474d80686750538e57a169e",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "d08615cb1fab78e79dadd171ecb1bf6d261eb673d474d80686750538e57a169e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d08615cb1fab78e79dadd171ecb1bf6d261eb673d474d80686750538e57a169e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d08615cb1fab78e79dadd171ecb1bf6d261eb673d474d80686750538e57a169e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-content-use",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-content-use.svg",
+      "reference": "references/marker-content-use.png",
+      "sourceSha256": "f8e79d931f006a1766db838eca22f27beb9324e42dfa0a3d5792bd9f47718bd0",
+      "referenceSha256": "6cedaad01e60d2e297004b2ffba752be4957c17b1d3ae25f1517551a60fa1cca",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "6cedaad01e60d2e297004b2ffba752be4957c17b1d3ae25f1517551a60fa1cca",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6cedaad01e60d2e297004b2ffba752be4957c17b1d3ae25f1517551a60fa1cca",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6cedaad01e60d2e297004b2ffba752be4957c17b1d3ae25f1517551a60fa1cca",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-hidden-and-zero",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-hidden-and-zero.svg",
+      "reference": "references/marker-hidden-and-zero.png",
+      "sourceSha256": "a5cacdcff49b0ca7b3f3e7e42f274e11a307badf4fc09cac61d05d78556ca644",
+      "referenceSha256": "c23d0e4635da3ced1897a9cae3294fde1cdd6abacfed397bffde622bf0aff346",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "c23d0e4635da3ced1897a9cae3294fde1cdd6abacfed397bffde622bf0aff346",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c23d0e4635da3ced1897a9cae3294fde1cdd6abacfed397bffde622bf0aff346",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c23d0e4635da3ced1897a9cae3294fde1cdd6abacfed397bffde622bf0aff346",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-percentage-anchor",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-percentage-anchor.svg",
+      "reference": "references/marker-percentage-anchor.png",
+      "sourceSha256": "699d7c9a2655984e78cd6a4c817747f1bde6342b061b2443393e4dc938c824d4",
+      "referenceSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-binary-edges",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-binary-edges.svg",
+      "reference": "references/marker-binary-edges.png",
+      "sourceSha256": "c041a1f42f16166eed22d4df35fa890a88827b9ded368f7c7675fcf78626399d",
+      "referenceSha256": "60708b7768029234eb874fca28dfa3205a7b4a92c58958790bb57414e77d03e8",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "60708b7768029234eb874fca28dfa3205a7b4a92c58958790bb57414e77d03e8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "60708b7768029234eb874fca28dfa3205a7b4a92c58958790bb57414e77d03e8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "60708b7768029234eb874fca28dfa3205a7b4a92c58958790bb57414e77d03e8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "line-intermediate-marker",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "line-intermediate-marker.svg",
+      "reference": "references/line-intermediate-marker.png",
+      "sourceSha256": "15be19f25fcc928e4facae8bb6302a690e8eea7f082bfda6d762793dcf02b688",
+      "referenceSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-marker-boundary",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Markers on shapes other than lines are not implemented.",
+      "input": "path-marker-boundary.svg",
+      "reference": "references/path-marker-boundary.png",
+      "sourceSha256": "e8c47ebbf00634224f13a3a8f0b1abfd2ae42ac4ab6e0b46a56651512a71ac28",
+      "referenceSha256": "5a899980780a33b4e742cc625c1691cd2b32591683278102df02e75e77e865c0",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "5a899980780a33b4e742cc625c1691cd2b32591683278102df02e75e77e865c0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5a899980780a33b4e742cc625c1691cd2b32591683278102df02e75e77e865c0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5a899980780a33b4e742cc625c1691cd2b32591683278102df02e75e77e865c0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-recursion-boundary",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Markers on retained definition leaves are not implemented.",
+      "input": "marker-recursion-boundary.svg",
+      "reference": "references/marker-recursion-boundary.png",
+      "sourceSha256": "5ce80de9e3da488594effdd71962279b7933fc8ff755154e0a54b320b56cca0f",
+      "referenceSha256": "92d20b5ce5f6e86352544447cefb553835f21ed54f1fadb8f63db6fd7f1cc376",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "92d20b5ce5f6e86352544447cefb553835f21ed54f1fadb8f63db6fd7f1cc376",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92d20b5ce5f6e86352544447cefb553835f21ed54f1fadb8f63db6fd7f1cc376",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "92d20b5ce5f6e86352544447cefb553835f21ed54f1fadb8f63db6fd7f1cc376",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-missing-boundary",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only defined local marker references are implemented.",
+      "input": "marker-missing-boundary.svg",
+      "reference": "references/marker-missing-boundary.png",
+      "sourceSha256": "bf23df6c872a6157a93d169266a828f2be85f48668ebb06c4d94c03839b2d748",
+      "referenceSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-negative-size",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "expectedError": "MalformedInput",
+      "expectedMessage": "Marker dimensions cannot be negative.",
+      "input": "marker-negative-size.svg",
+      "reference": "references/marker-negative-size.png",
+      "sourceSha256": "3c15eebd6f9f246289c986bba2183e018a34f09c783ac1494e8a42ef3a6a4642",
+      "referenceSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7245e926e1c5ba23369c66d8cfb475d1b8eb52de409493c5559425343b443fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-use-boundary",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Marker definitions cannot be ordinary use targets.",
+      "input": "marker-use-boundary.svg",
+      "reference": "references/marker-use-boundary.png",
+      "sourceSha256": "16ab09c68ce1f50903c2ad09a71e9a04009b88d386f8717fb9a5ffa2588eff40",
+      "referenceSha256": "76aae5b2873a9628fa52c91179079dfb6f83b747c1f134d364e8e94f673a8640",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "captures": [
+        {
+          "pngSha256": "76aae5b2873a9628fa52c91179079dfb6f83b747c1f134d364e8e94f673a8640",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "76aae5b2873a9628fa52c91179079dfb6f83b747c1f134d364e8e94f673a8640",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "76aae5b2873a9628fa52c91179079dfb6f83b747c1f134d364e8e94f673a8640",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-source-paint",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-source-paint.svg",
+      "reference": "references/marker-source-paint.png",
+      "sourceSha256": "2062d409ebaa2219033ffbde193346143d214b3e0a2d30c7e7784db5af7609e4",
+      "referenceSha256": "83d26e9ebc1adc7452065b51b393be58b47da7bad52fe2f8c546e48603081e1e",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects discovered marker source-paint inheritance or absent-viewBox clipping.",
+      "captures": [
+        {
+          "pngSha256": "83d26e9ebc1adc7452065b51b393be58b47da7bad52fe2f8c546e48603081e1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "83d26e9ebc1adc7452065b51b393be58b47da7bad52fe2f8c546e48603081e1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "83d26e9ebc1adc7452065b51b393be58b47da7bad52fe2f8c546e48603081e1e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-without-viewbox",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "marker-without-viewbox.svg",
+      "reference": "references/marker-without-viewbox.png",
+      "sourceSha256": "4e86695eae18418275fdf84678802a0a0b267fc75d9f89f8ca5b1eda14380c42",
+      "referenceSha256": "06bcb3d29d777cae2cc4f991a7ab2b7246134b4c89f6567bde9e3ff74f3e37a4",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects discovered marker source-paint inheritance or absent-viewBox clipping.",
+      "captures": [
+        {
+          "pngSha256": "06bcb3d29d777cae2cc4f991a7ab2b7246134b4c89f6567bde9e3ff74f3e37a4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "06bcb3d29d777cae2cc4f991a7ab2b7246134b4c89f6567bde9e3ff74f3e37a4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "06bcb3d29d777cae2cc4f991a7ab2b7246134b4c89f6567bde9e3ff74f3e37a4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ],
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "additionalLinuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "cases": [
+      "marker-source-paint",
+      "marker-without-viewbox"
+    ],
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  }
+}

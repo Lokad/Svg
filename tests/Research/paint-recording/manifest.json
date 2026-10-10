@@ -401,7 +401,21 @@
       "license": "MIT",
       "licenseEvidence": "Repository LICENSE.txt; unchanged unit input or original contributor control.",
       "purpose": "Declared before retaining source stroke visual bounds: wider square caps, parent opacity, folding, copied placement, nested viewport and output mapping.",
-      "outcome": "UnsupportedFeature"
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 64,
+        "MinimumMismatchY": 48,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "line-bounds-linear-square-width6-copy",
@@ -555,7 +569,21 @@
       "license": "MIT",
       "licenseEvidence": "Repository LICENSE.txt; unchanged unit input or original contributor control.",
       "purpose": "Declared before retaining source stroke visual bounds: wider square caps, parent opacity, folding, copied placement, nested viewport and output mapping.",
-      "outcome": "UnsupportedFeature"
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 64,
+        "MinimumMismatchY": 48,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "line-bounds-radial-square-width6-copy",

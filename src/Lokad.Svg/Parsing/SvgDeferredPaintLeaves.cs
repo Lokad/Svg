@@ -14,7 +14,8 @@ internal static class SvgDeferredPaintLeaves
     {
         if (!SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)) return false;
         SvgComputedStyle style = context.ResolveStyle(reader);
-        if (!Missing(style.Fill) && !Missing(style.Stroke ?? context.InheritedStroke.Stroke)) return false;
+        SvgMarkerStyle markers = SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers);
+        if (!Missing(style.Fill) && !Missing(style.Stroke ?? context.InheritedStroke.Stroke) && !MissingMarker(markers.Start) && !MissingMarker(markers.End)) return false;
         SvgDefinitionLeafSource source = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state);
         int start = SvgReferenceResolver.SnapshotMaskScopes(state, context.WorkCounter, context.CancellationToken);
         state.DeferredPaintLeaves.Add(new(source, context with { AuthoredStyle = source.AuthoredStyle, StyleSheet = default },
@@ -27,6 +28,14 @@ internal static class SvgDeferredPaintLeaves
             context.WorkCounter.Consume(context.CancellationToken);
             string id = SvgGradientSyntax.ParsePaintId(paint);
             return !state.Gradients.TryGetValue(id, out _) && !state.RadialGradients.TryGetValue(id, out _) && !state.Patterns.TryGetValue(id, out _);
+        }
+
+        bool MissingMarker(string? value)
+        {
+            if (!SvgMarkerStyle.Active(value)) return false;
+            context.WorkCounter.Consume(context.CancellationToken);
+            string id = SvgGradientSyntax.ParsePaintId(value);
+            return !state.Definitions.TryGetValue(id, out SvgDefinition definition) || definition.Marker is null;
         }
     }
 

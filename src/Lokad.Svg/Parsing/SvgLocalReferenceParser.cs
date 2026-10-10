@@ -9,6 +9,8 @@ internal static class SvgLocalReferenceParser
     {
         SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, baseWidth, baseHeight);
         SvgComputedStyle style = context.ResolveStyle(reader);
+        if (SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on use instances are not implemented.");
         SvgComputedStyle authored = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, context.WorkCounter, context.CancellationToken);
         SvgInheritedStrokeStyle inheritedStroke = context.InheritedStroke.ResolveChild(authored);
         inheritedStroke = new(Copy(inheritedStroke.Linecap), Copy(inheritedStroke.Linejoin), Copy(inheritedStroke.Dasharray), Copy(inheritedStroke.Dashoffset), Copy(inheritedStroke.Width), Copy(inheritedStroke.Miterlimit), Copy(inheritedStroke.StrokeOpacity), Copy(inheritedStroke.Stroke));

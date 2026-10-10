@@ -48,7 +48,8 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         {
             Width = Copy(raw.Width), Linecap = Copy(raw.Linecap), Linejoin = Copy(raw.Linejoin),
             Miterlimit = Copy(raw.Miterlimit), Dasharray = Copy(raw.Dasharray), Dashoffset = Copy(raw.Dashoffset),
-            StrokeOpacity = Copy(raw.StrokeOpacity), PathLength = Copy(raw.PathLength), ClipRule = Copy(raw.ClipRule), PaintOrder = raw.PaintOrder
+            StrokeOpacity = Copy(raw.StrokeOpacity), PathLength = Copy(raw.PathLength), ClipRule = Copy(raw.ClipRule), PaintOrder = raw.PaintOrder,
+            MarkerStart = Copy(raw.MarkerStart), MarkerMid = Copy(raw.MarkerMid), MarkerEnd = Copy(raw.MarkerEnd)
         };
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(512 + ParserCollectionMemory.GetArrayByteCount<Attribute>(reader.AttributeCount), SvgMemoryCategory.Scene);
         try

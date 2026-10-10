@@ -175,6 +175,8 @@ internal readonly record struct SvgAffineTransform(double A, double B, double C,
         SvgClipAntialiasing edges = box.Antialiasing;
         if (A < 0) edges = (edges & ~(SvgClipAntialiasing.Left | SvgClipAntialiasing.Right)) | ((edges & SvgClipAntialiasing.Left) != 0 ? SvgClipAntialiasing.Right : 0) | ((edges & SvgClipAntialiasing.Right) != 0 ? SvgClipAntialiasing.Left : 0);
         if (D < 0) edges = (edges & ~(SvgClipAntialiasing.Top | SvgClipAntialiasing.Bottom)) | ((edges & SvgClipAntialiasing.Top) != 0 ? SvgClipAntialiasing.Bottom : 0) | ((edges & SvgClipAntialiasing.Bottom) != 0 ? SvgClipAntialiasing.Top : 0);
+        if (A < 0) edges = (edges & ~(SvgClipAntialiasing.BinaryLeft | SvgClipAntialiasing.BinaryRight)) | ((edges & SvgClipAntialiasing.BinaryLeft) != 0 ? SvgClipAntialiasing.BinaryRight : 0) | ((edges & SvgClipAntialiasing.BinaryRight) != 0 ? SvgClipAntialiasing.BinaryLeft : 0);
+        if (D < 0) edges = (edges & ~(SvgClipAntialiasing.BinaryTop | SvgClipAntialiasing.BinaryBottom)) | ((edges & SvgClipAntialiasing.BinaryTop) != 0 ? SvgClipAntialiasing.BinaryBottom : 0) | ((edges & SvgClipAntialiasing.BinaryBottom) != 0 ? SvgClipAntialiasing.BinaryTop : 0);
         if (width < 0) { x += width; width = -width; }
         if (height < 0) { y += height; height = -height; }
         return new(x, y, width, height) { Antialiasing = edges };

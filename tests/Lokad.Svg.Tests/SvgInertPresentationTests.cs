@@ -59,7 +59,7 @@ public sealed class SvgInertPresentationTests
     [InlineData("marker-start", "url(#arrow)")]
     [InlineData("marker-mid", "url(#arrow)")]
     [InlineData("marker-end", "url(#arrow)")]
-    [InlineData("marker", "inherit")]
+    [InlineData("marker", "inherit extra")]
     [InlineData("marker-start", "auto")]
     [InlineData("marker-mid", "none extra")]
     [InlineData("marker-end", "none !important !important")]
@@ -141,15 +141,15 @@ public sealed class SvgInertPresentationTests
     }
 
     [Theory]
-    [InlineData("marker:none;marker-start:url(#arrow)")]
-    [InlineData("marker-start:url(#arrow);marker-start:none")]
-    [InlineData("marker-start:none !important;marker-start:url(#arrow)")]
-    public void Unsupported_marker_values_cannot_hide_behind_shorthand_or_priority(string declarations)
+    [InlineData("marker:none;marker-start:url(#arrow)", true)]
+    [InlineData("marker-start:url(#arrow);marker-start:none", false)]
+    [InlineData("marker-start:none !important;marker-start:url(#arrow)", false)]
+    public void Marker_references_follow_shorthand_and_per_property_priority(string declarations, bool active)
     {
-        SvgException error = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(
-            Wrap(Shape.Replace("<path ", "<path style='" + declarations + "' ")),
-            SvgRenderOptions.Default, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        byte[] input = Wrap(Shape.Replace("<path ", "<path style='" + declarations + "' "));
+        if (active)
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        else Assert.Equal(SvgConverter.ConvertToPng(Wrap(Shape), SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Theory]

@@ -1,5 +1,6 @@
 using System.Buffers.Binary;
 using System.IO.Compression;
+using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Tests;
 
@@ -989,11 +990,13 @@ public sealed class SvgShapeElementsTests
 
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x1='0' y1='4' x2='8' y2='4' stroke='red' stroke-width='2.5'/></svg>")]
-    public void Fractional_line_band_strokes_stay_unsupported(string svg)
+    public void Fractional_line_strokes_retain_the_shared_native_centerline(string svg)
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(svg), SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        Assert.Equal(2.5, source.StrokeStyle?.Width);
     }
 
     [Fact]

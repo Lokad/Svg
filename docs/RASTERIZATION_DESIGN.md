@@ -10375,3 +10375,47 @@ oracle 1,567 reports / 1,551 PNGs are preserved. Command/geometry/paint layouts
 remain 72/272/68 bytes. This delivery completes the preceding 24/24 document queue; finite G2–G9 exits,
 the measured non-scaling width-map defect and S17 remain open. No renderer/source/
 DLL/script/report fingerprint enters the regression contract.
+
+
+### Complete marker arrow delivery (2026-10-10)
+
+The original CC0 arrow exports `inv-121` and `inv-122` match every declared output
+through six APIs on Windows/Linux. Their SVGs, options and browser references
+remain unchanged. This completes the selected 26-document queue without closing
+G8's path/vertex/instance and finite-effect promises.
+
+Marker declarations share the ordinary bounded cascade, including shorthand,
+inheritance and priority. Forward line references retain source leaves through
+existing deferred replay. Marker resources reuse ordered symbol/group/use content;
+their paint comes from definition ancestry. Placement retains the tangent,
+start-reversal, stroke-width unit, mapped reference point and content viewport as
+native stages. Percentage marker lengths use the enclosing SVG viewport.
+
+Odd/fractional, diagonal, transformed and scaled-viewport line strokes reuse the
+existing native source-stroke machinery. Native source boxes that decline the
+float rectangle shortcut retain quarter-snapped edge setup. A line's fill remains
+inert, including shader declarations; prior even-width axis fast paths stay intact.
+
+Marker viewport edges carry explicit binary provenance. Axis bounds map with native
+float operands and round before containment/construction dispatch; allocation
+bounds and AA geometry remain separate. Affine hard viewports use bounded native
+fixed line setup and winding spans in the existing per-bitmap clip owner. Binary
+region wrappers forward fringe pairs through ordinary alpha runs. Existing AA
+clips retain their prior arithmetic and all established exact pixels.
+
+Element opacity isolates the stroke and markers together. Complete visual bounds
+round in user coordinates before mapping the bitmap layer. The opacity control
+also protects contained-curve dispatch: testing a fractional source viewport
+before native rounding incorrectly sent an already contained cubic through clipping.
+Float output mapping is restricted to binary marker viewports; older authored
+source replay retains its established composition precision.
+
+Twenty controls have matching healthy Windows/Linux capture triples: 15 exact
+outputs and five categorized boundaries. Source paint and absent-viewBox controls
+protect defects discovered during implementation. Three controls sweep parser/
+discovery work, memory denial, raster limits, cancellation and retry. Two earlier
+line-fill admission controls now match unchanged references. Complete Release
+qualification passes 6,143 tests/platform (4,353 core / 1,784 visual / six FontProbe),
+with zero failures/skips/warnings. All 2,847 prior PNGs and 2,753 prior exact results,
+corporate 27/27 / 258/258 and the original oracle stay preserved. No renderer,
+source-code, DLL or script fingerprints are introduced.

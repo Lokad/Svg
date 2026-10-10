@@ -2,18 +2,19 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgClipContentKind { AffineViewport, ClipPath, OvalClipPath }
+internal enum SvgClipContentKind { AffineViewport, ClipPath, OvalClipPath, BinaryViewport }
 
 /// <summary>Retains a rectangular viewport and its composed scene map until clip command emission.</summary>
 /// <remarks>Placement owns no arrays. Emission reserves its convex source contour and registers a copy with
 /// the existing mask-content scene owner; failures release the temporary contour and commands.</remarks>
 internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineTransform Map)
 {
+    internal bool IsBinary { get; init; }
     internal (SvgClipBox Bounds, int ContentIndex) Register(SvgDocumentState state, SvgSceneBuilder scene, ParserWorkCounter work, CancellationToken token)
     {
         float left = (float)Box.X, top = (float)Box.Y, right = (float)(Box.X + Box.Width), bottom = (float)(Box.Y + Box.Height);
         ReadOnlySpan<SvgDevicePoint> points = stackalloc SvgDevicePoint[] { new(left, bottom), new(left, top), new(right, top), new(right, bottom) };
-        return RegisterContour(points, [points.Length], Map, SvgClipContentKind.AffineViewport, null, null, false, state, scene, work, token);
+        return RegisterContour(points, [points.Length], Map, IsBinary ? SvgClipContentKind.BinaryViewport : SvgClipContentKind.AffineViewport, null, null, false, state, scene, work, token);
     }
 
     /// <summary>Registers borrowed source contours with the shared native clip-content owner.</summary>

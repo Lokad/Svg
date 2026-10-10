@@ -18,6 +18,7 @@ internal static class SvgGroupParser
             workCounter.ConsumeText(fill.Length, cancellationToken);
             resolved = resolved with { Presentation = resolved.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
         }
+        resolved = resolved with { Presentation = resolved.Presentation with { Markers = resolved.Presentation.Markers.Retain(state, workCounter, cancellationToken) } };
         string? maskReference = reader.GetAttribute("mask");
         byte? mask = null;
         string? deferredMask = null;

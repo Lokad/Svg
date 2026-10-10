@@ -32,6 +32,9 @@ internal static class SvgDefinitionParser
                 SvgSymbolPresentation symbol = (state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require a presentation context.")).Presentation;
                 context = context with { InheritedPresentation = new(symbol.Paint, true, true, SvgAffineTransform.Identity) { PaintOrder = symbol.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = symbol.PaintServerFill }, InheritedStroke = symbol.Stroke, InheritedFillRule = symbol.FillRule, RecordingScope = new(1) };
             }
+            SvgComputedStyle retainedStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
+            if (SvgMarkerStyle.Resolve(retainedStyle, context.InheritedPresentation.Markers).HasMarkers)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on retained definition leaves are not implemented.");
             SvgViewBox? symbolViewBox = null;
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, context, state, symbolViewBox)
                 : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
@@ -65,15 +68,19 @@ internal static class SvgDefinitionParser
             state.SawStyleableNode = true;
             return inDefinitions;
         }
-        if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "symbol"
+        if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is ("symbol" or "marker")
             && SvgStructuralVocabulary.IsSymbolDefinitionLocation(directChild, isEligible && state.GroupDepth > 0, state.DefinitionsDepth, state.SymbolDepth, reader.Depth))
         {
-            SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
+            bool marker = reader.LocalName == "marker";
+            state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), workCounter, cancellationToken) : null;
+            if (!marker) SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
             InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken);
-            SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken);
+            SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken) : default;
+            SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader) : SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken);
+            SvgPaint inheritedPaint = marker ? markerContext.InheritedPresentation.Paint : SvgPaint.Default;
             if (style.Display is not null || style.Visibility is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Display and visibility on symbol containers are not implemented.");
             bool shader = SvgPatternSyntax.IsPatternFill(style.Fill);
-            SvgPaint paint = SvgPaintResolver.Resolve(shader ? "#ffffff" : style.Fill, style.FillOpacity, style.Color, SvgPaint.Default, namedColors);
+            SvgPaint paint = SvgPaintResolver.Resolve(shader ? "#ffffff" : style.Fill, style.FillOpacity, style.Color, inheritedPaint, namedColors);
             string? shaderFill = null, shaderId = null;
             if (shader && style.Fill is string fill)
             {
@@ -82,14 +89,14 @@ internal static class SvgDefinitionParser
                 shaderId = CopyStyleValue(SvgGradientSyntax.ParsePaintId(fill), state);
             }
             SvgInheritedStrokeStyle stroke = new(CopyStyleValue(style.Linecap, state), CopyStyleValue(style.Linejoin, state), CopyStyleValue(style.Dasharray, state), CopyStyleValue(style.Dashoffset, state), CopyStyleValue(style.Width, state), CopyStyleValue(style.Miterlimit, state), CopyStyleValue(style.StrokeOpacity, state), CopyStyleValue(style.Stroke, state));
-            SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), style.Fill is not null,
-                style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), SvgColorParser.ParsePaintOpacity(style.Opacity)) { PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+            SvgSymbolPresentation presentation = new(paint, stroke, CopyStyleValue(style.FillRule, state), marker || style.Fill is not null,
+                marker ? paint.FillOpacity : style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity), marker ? paint.CurrentColor : style.Color is null ? null : SvgColorParser.Parse(style.Color, namedColors), SvgColorParser.ParsePaintOpacity(style.Opacity)) { PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             string? id = reader.GetAttribute("id");
             if (id is not null && (state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             state.SymbolId = id is null ? null : state.Strings.Copy(id);
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
-            if (shaderFill is not null)
+            if (shaderFill is not null || marker)
             {
                 state.SymbolDefinition.EnableContent();
                 state.HasRetainedSymbolContent = true;
@@ -1481,7 +1488,7 @@ internal static class SvgDefinitionParser
     internal static void RegisterSymbol(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol registration requires an open builder.");
-        SvgDefinition definition = builder.Build(state.SymbolViewBox, state, work, token);
+        SvgDefinition definition = builder.Build(state.SymbolViewBox, state, work, token) with { Marker = state.MarkerDefinition };
         bool retained = false;
         try
         {
@@ -1502,6 +1509,7 @@ internal static class SvgDefinitionParser
             state.SymbolDepth = -1;
             state.SymbolId = null;
             state.SymbolViewBox = null;
+            state.MarkerDefinition = null;
         }
     }
 

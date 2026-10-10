@@ -6,7 +6,7 @@ frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen. This complete
 matrix remains the regression gate.
 
-**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifoods, striped pattern, non-ionizing warning, geometric pattern, set-screw diagram, gradient-mask example, soccerball mask, Fibonacci spiral, railway tunnel junction, soccerball with shadow and transparent striped pattern and both baseball illustrations are complete**,
+**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifoods, striped pattern, non-ionizing warning, geometric pattern, set-screw diagram, gradient-mask example, soccerball mask, Fibonacci spiral, railway tunnel junction, soccerball with shadow and transparent striped pattern and both baseball illustrations and the two CC0 arrow exports are complete**,
 through all six outputs on both platforms. Earlier qualified references stay unchanged;
 the tiger uses the explicit viewport qualification explained below:
 
@@ -36,6 +36,8 @@ the tiger uses the explicit viewport qualification explained below:
 | Transparent striped pattern (`inv-116`) | Explicit 283×283, transparent; 1/1 output | Typed paint order, ordinary pattern presentation inheritance and existing bounded affine tile replay. |
 | Baseball illustration (`inv-120`) | Explicit 130×130, transparent; 1/1 output | Shared compound clip replay, percentage rectangles, source paint maps, native child-union traversal and local transform-list precision. |
 | Baseball emblem flag (`inv-119`) | Explicit 1200×800, transparent; 1/1 output | The same shared mechanisms complete the related document against its unchanged reference. |
+| Double-arrow export (`inv-121`) | 2000×500, transparent | Shared line-stroke source replay and bounded marker content with native binary viewport clipping. |
+| Diagonal double-arrow export (`inv-122`) | 800×400, transparent | Shared tangent/start-reversal placement and binary-region paint routing. |
 
 Each document has a stable, healthy, cleaned Linux browser capture triple matching
 its frozen reference byte-for-byte. The [gap manifest](tests/References/inventory/svg-gap-cases.json)
@@ -45,7 +47,7 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 24; selected queue: 24/26 complete.**
+references. **Completed development deliverables: 26; selected queue: 26/26 complete.**
 Every preceding completed output remains exact. Both complete CC0 baseball
 illustrations (`inv-120`, 130×130 transparent; `inv-119`, 1200×800 transparent)
 now match unchanged references through all six APIs on Windows/Linux. Shared
@@ -415,31 +417,35 @@ The percentage rectangle and rotated gradient rectangle controls now assert
 exactness against their original references. Reuse this finished qualification
 until a renderer change warrants another complete run.
 
-**Next complete document: `inv-121`, the CC0 double-arrow export at its original
-2000×500 transparent output.** The [marker document bank](tests/Research/marker-documents/manifest.json)
-retains it and `inv-122`, an 800×400 diagonal arrow using `auto-start-reverse`.
-This bounded two-download batch has verified CC0 evidence from the original
-copyright holder, untouched SVGs and healthy matching Windows/Linux reference
-triples. Outputs were declared before screening; both documents currently reject
-active marker values consistently through all six APIs on both platforms.
+**The two CC0 arrow documents are complete: selected queue 26/26.**
+The [marker document bank](tests/Research/marker-documents/manifest.json) retains
+`inv-121` at 2000×500 and `inv-122` at 800×400, both transparent and exact through
+all six APIs on Windows/Linux. Original bytes, declared options and frozen
+references remain unchanged. These documents selected shared line-source stroke
+replay, marker placement and bounded symbol-content reuse; G2 was not a prerequisite.
 
-Finish `inv-121` through each subsequent gate and pixel mismatch against its
-frozen output. Its local start/end definitions, default strokeWidth units,
-viewBox/ref-point/size mapping, automatic tangent orientation and ordinary cubic
-fill select shared marker replay. Audit its five-unit line stroke as the next
-geometry dependency; reuse source-line/stroke machinery if that gate is reached.
-Advance `inv-122` through the shared work, retaining its diagonal-line and start
-reversal dependencies. Synthetic controls protect only these needed semantics,
-resource boundaries and discovered defects; they do not replace whole documents.
-Keep marker-mid, further geometry/instance/content/unit combinations and finite
-filter effects visible in G8. The G3 width-map witness, every other finite group
-promise and S17 remain open. No exhaustive G2 completion is required.
+The [20 marker controls](tests/Research/marker-content/manifest.json) contain
+**15 exact outputs and five categorized boundaries**, counted separately from
+completed documents. They protect fractional/composed line strokes, marker units,
+fixed/automatic/start-reversed orientation, forward cascade, definition paint,
+opacity, viewBox-free content and native binary clipping. All have matching healthy
+Windows/Linux capture triples: 120 captures. Three source-owner controls sweep
+work/memory denial, cancellation and retry. Two previously rejected inert line-fill
+controls now match their unchanged references.
 
-The selected queue is **24/26 complete**, separate from corporate **27/27 /
-258/258**. The added two offline cases pass through six APIs on Windows/Linux as
-categorized rejections. The finished renderer's complete 6,118-test qualification
-and prior bank evidence are reused; source-only retention does not refresh
-unchanged renderer qualification or claim a new complete test count.
+Finished Release qualification passes **6,143 tests per platform**: 4,353 core,
+1,784 visual and six FontProbe, with zero failures/skips/warnings. All **2,847
+previous PNGs** remain byte-for-byte unchanged and all **2,753 prior exact results**
+stay exact; corporate **27/27 / 258/258** and the original oracle remain frozen.
+Use this qualification until another renderer change warrants a complete run.
+
+The next G8 acceptance case is the retained `original-logo-marker-mark`; qualify
+a bounded CC0 path-marker sourcing batch to select a complete practical export
+alongside it. Implement only that document's vertex/tangent, content and viewport
+dependencies. Intermediate vertices, path/polyline/polygon and instance coverage,
+visible overflow, remaining marker presentation and finite filters stay open in G8.
+The G3 width-map witness, other finite group exits and S17 remain open.
+No exhaustive G2 completion is required.
 
 The bounded batch downloaded three public-domain/CC0 originals and retains two
 in-scope failures. The vector-effect original still fails pinned-browser image
@@ -526,11 +532,11 @@ in [the review](docs/REVIEW_2026_09_28.md).
 | Validated checkpoint evidence | Assessment |
 | --- | --- |
 | Windows/Linux Release solution builds | Nine projects each, zero warnings/errors. |
-| Full tests, including corporate selection/measurement | **6,072 passed on each platform**: 4,324 core, 1,742 visual-project, six FontProbe; zero failed/skipped. Finished striped-pattern and shadowed-soccerball correction passes complete bank/corporate qualification. Test counts are not image counts. |
+| Full tests, including corporate selection/measurement | **6,143 passed on each platform**: 4,353 core, 1,784 visual-project, six FontProbe; zero failed/skipped. Finished compound-clip and marker-arrow corrections pass complete bank/corporate qualification. Test counts are not image counts. |
 | Memory and delivery checks | Existing parser/raster work, memory-denial, cancellation/retry, geometry/paint and six-output regressions pass. Six new template/grid inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. A 1,024-link forward chain resolves iteratively; aliases borrow one promoted tile scene with independent grids. Missing/cyclic/duplicate/negative templates and oversized tiles release owners; full-document early/middle/late work and peak-memory denials release partial owners before retry. Five mask inputs also sweep parser/discovery work, sampled/peak memory and raster work boundaries; anonymous, unused, duplicate and rejected masks release staging owners. Borrowed replay survives cancellation/retry, and the complete mask document releases early/middle/late work and peak-memory denials. Nested affine-opacity also sweeps parser/discovery work, sampled/peak memory denial, raster work boundaries and cancellation/retry; clip and opacity retain distinct bounded owners. Two new oval inputs sweep every parser work denial and sampled/peak memory denial; discarded unpainted mask fill owners release, and centerline/outline commands survive failed replay unchanged. Three new affine-arc inputs sweep every parser work denial and sampled/peak memory denial, then denied raster work/memory and cancellation/retry with immutable commands. Source point-count and zero-radius arc controls retain their boundary semantics. Three native-fill/hairline inputs sweep every parser work denial and sampled/peak memory denial, plus raster work/memory and cancellation/retry with immutable commands. The complete Malta input releases partial owners after early/middle/late parser work and peak-memory denials before retry. Native float-collapsed ovals enclose no area. Two new near-close straight/cubic fills sweep parser work, sampled/peak memory denial, raster work/memory and cancellation/retry with immutable source commands. Tiled curved clips now exercise late work/memory denial, cancellation before and after partial clip replay, border-owner cleanup and identical retry. The complete Portugal document also releases partial owners under early/middle/late parser work and peak-memory denial before retry. Five new pattern-placement inputs sweep every parser/discovery work denial, sampled/peak memory denial and raster work boundaries. The full striped document releases partial owners under early/middle/late parser work and peak-memory denial. Oversized mapped tiles deny cleanly and the same borrowed scene retries at a smaller output; cancellation during scaled tile replay also releases temporary owners and permits identical retry. Five native-winding inputs also sweep every discovery/parser work denial, sampled/peak parser memory and raster work/memory boundaries. Partial replay cancellation exercises both rules with immutable borrowed commands and identical retry. The full warning sign releases partial owners on early/middle/late parser work and peak-memory denial. Multi-contour parity rejects explicitly and releases staging owners. Seven deferred-paint inputs sweep discovery/parser work, sampled/peak memory and raster work/memory denials. Expanded clipped replay protects partial cancellation, immutable sources and identical retry. The full geometric pattern releases early/middle/late parser-work and peak-memory failure owners; four paint/font-priority cases preserve diagnostics and release owners. Six ordered-mask inputs sweep every discovery/parser work denial, sampled/peak memory denial and raster-work boundaries. The full soccerball releases early/middle/late work and peak-memory failure owners. Cancellation during early/late native replay preserves both borrowed source curves and identical retry; anonymous/unused, duplicate, missing and unsupported children release owners. Five mask-scope inputs sweep discovery/parser work, sampled/peak memory denial and raster work boundaries, including empty nested groups and compacted command tails. The whole tunnel document releases early/middle/late parser-work and peak-memory failure owners before retry. Prior mechanism details retain their dated scope in the design record. Remote CI remains open. |
 | Executed fixture manifest | **1,410 entries = 1,394 exact + zero known-difference renders + 16 rejections**; 799 base documents / 611 variants. The original rotated mark graduates against a new independent browser reference; its source/options and all preceding exact assets remain unchanged. |
 | Executed research manifest | **65 probes = 65 exact + zero known-difference renders + zero rejections**. The tiger graduates at its explicitly qualified viewport; its historical auto-image PNG remains diagnostic. The other 64 research outputs stay unchanged. |
-| Supplemental recorded-paint inventory | **149 controls = 132 exact + 17 valid-input rejections**, checked through all six outputs with unchanged measured outcomes. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
+| Supplemental recorded-paint inventory | **149 controls = 134 exact + 15 valid-input rejections**, checked through all six outputs. Two inert line-fill controls graduate against unchanged references; every preceding exact result is preserved. These mechanism controls remain separate from the original bank, new development sources and frozen corporate cohort. |
 | Legacy independent-file Default sweep | **92 files = 92 render**. The complete original-bank sweep is freshly checked on both platforms. Portugal, Bhutan and South Africa separately complete all nine declared outputs. Denmark retains its exact Default measurement; its historical matrix remains unqualified. South Africa's retained native comparison is now exact (273 → zero changed pixels). `inv-014`, Malta, radiation, STOP-sign and `inv-013` exact results stay preserved. These Default outputs establish no representative rate. |
 | Corporate cohort freeze | **27 documents / 258 variants**, 13 marks / 14 wordmarks. Membership, sources, root-only materializations, options and references stay unchanged; every variant has a stable reference. |
 | Corporate measurement | **258 rendered comparisons = 258 exact on each platform**, zero known differences/rejections. Every corporate PNG and complete comparison remains unchanged under the shared repairs. **27/27 documents**, marks **13/13**, wordmarks **14/14**. Full fidelity target achieved; S17 remote CI remains open. |
@@ -679,12 +685,12 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected queue is **24/26 complete**; both CC0 baseball exports are complete.
-`inv-121`, the 2000×500 CC0 arrow export, is next. Its related `inv-122` remains
-queued at 800×400. Implement the shared G8 marker and G3 source-line dependencies
-that actually block these documents, then finish their frozen outputs through six
-APIs on Windows/Linux. The fractional use-width control stays visible in G2/G4,
-and the measured G3 width-map defect stays open without a qualified whole document.
+The selected queue is **26/26 complete**, including both baseball and both arrow
+exports. The arrows complete the admitted line-marker slice of G8; further
+path/vertex/instance combinations and finite effects remain open. Qualify the
+next complete CC0 path-marker document and advance its shared dependencies beside
+`original-logo-marker-mark`. The fractional use-width control stays visible in
+G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
 Prioritize composed transforms, paint-coordinate mapping and bounded pattern
 content where they remove several gates. Extend the existing geometry and
@@ -704,7 +710,7 @@ landed mechanisms remain regression requirements.
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
 | G6 | **Four retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
-| G8 | Static markers and the enumerated filter/blending subset below | Two retained CC0 marker documents select the next shared work; finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
+| G8 | Static markers and the enumerated filter/blending subset below | Two CC0 arrow documents complete the line-marker slice; path/instance combinations and finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
 | G9 | Supplied-font labels and the enumerated text-path subset below | Separate experimental feature work; no implicit host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
 
 ### Document deliverables and accounting
@@ -1197,6 +1203,15 @@ results stay exact, and decode, style matching, resampling and cleanup are bound
   finite marker sizes, viewBox/aspect mapping, fixed angle, `auto` and
   `auto-start-reverse`; ordered G3 vector/group/use content with ordinary paints.
   Define zero-length segments, closed paths and recursive references explicitly.
+  - [x] Line start/end, strokeWidth/userSpaceOnUse units, ref-point/size/viewBox
+    mapping, numeric fixed angle, auto/start reversal and bounded ordered content.
+    Keep native binary viewport and region paint routing distinct from AA clips.
+    `inv-121`/`inv-122` are complete, with 15 exact / five boundary controls.
+  - [ ] Path/polyline/polygon vertices and their instances, marker-mid tangent
+    bisectors, zero-length/closed-path behavior, angle/length units, visible
+    overflow and remaining container presentation combinations. Recursive marker
+    content and missing local targets currently reject explicitly; these outcomes
+    do not close the promised combinations.
 - **Effects:** `feGaussianBlur`, `feOffset`, `feFlood`, `feComposite` (`over`/`in`),
   `feMerge`, `feBlend` (`normal`/`multiply`/`screen`) and `feDropShadow`. Inputs are
   SourceGraphic, SourceAlpha and earlier local results; filter/primitive regions,
@@ -1276,10 +1291,10 @@ striped pattern completed the preceding 22-document queue. A subsequent bounded
 three-download batch retained two CC0 baseball exports; both are now complete:
 **24/24 documents in that preceding queue**, through six APIs on Windows/Linux against frozen outputs.
 The G3 width-map defect remains open without a qualified whole-document witness.
-A bounded two-download marker batch now retains two qualified CC0 failures:
-**24/26 complete**, with `inv-121` selected next and `inv-122` queued. Original
-SVGs, nominal transparent options and frozen matching platform references remain
-unchanged. Finite G8 promises select their shared marker/source-line dependencies.
+Both CC0 arrow documents are complete at their frozen transparent outputs:
+**26/26 selected documents complete**. Shared marker and line-source mechanisms
+remove their observed gates and pixel mismatches. Qualify a bounded path-marker
+batch for the next whole G8 deliverable; preserve every remaining finite promise.
 Choose shared support changes by the complete retained documents they advance.
 Keep the remaining instance combinations visible without making them a
 prerequisite for G3–G6.

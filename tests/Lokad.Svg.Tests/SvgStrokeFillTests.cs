@@ -329,10 +329,8 @@ public sealed class SvgStrokeFillTests
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g stroke='red'><g stroke='none'><line x1='2' y1='8' x2='14' y2='8' stroke-width='2'/></g></g></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Only untransformed horizontal or vertical lines are implemented.", rejected.Message);
+        byte[] expected = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'/>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]

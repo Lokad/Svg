@@ -155,11 +155,12 @@ internal static class SvgFontRequestDiscovery
                     }
                     if (rootStyleElement) continue;
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && (directChild || hasGroupAncestor) && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
-                    bool symbolDefinition = !sterile && isSvgElement && reader.LocalName == "symbol"
+                    bool symbolDefinition = !sterile && isSvgElement && reader.LocalName is ("symbol" or "marker")
                         && SvgStructuralVocabulary.IsSymbolDefinitionLocation(directChild, parentAllowsText && hasGroupAncestor, definitionsDepth, symbolDepth, reader.Depth);
                     if (symbolDefinition)
                     {
-                        SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
+                        if (reader.LocalName == "marker") _ = SvgMarkerSyntax.Parse(reader, new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height), workCounter, cancellationToken);
+                        else SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
                         sawStyleableNode = true;
                         if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
                     }
@@ -186,7 +187,7 @@ internal static class SvgFontRequestDiscovery
                     if (!sterile && isSvgElement && !rootElement && reader.LocalName is ("linearGradient" or "radialGradient")) sawStyleableNode = true;
                     if (!sterile && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName) && reader.GetAttribute("clip-path") is not null && !reader.IsEmptyElement) clipDepths.Add(reader.Depth);
                     if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "switch" && (parentAllowsText || viewportSizes.Count > 0 || clipDepths.Count > 0) && !reader.IsEmptyElement) switchScopes.Add(new SwitchScope(reader.Depth, false));
-                    bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "switch" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop");
+                    bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "switch" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "marker" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop");
                     bool isInertForeignElement = !isSvgElement && reader.IsEmptyElement;
                     bool unsupportedContainer = (!rootElement && (reader.LocalName == "style" || (reader.LocalName == "symbol" && !symbolDefinition))) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && !hasGroupAncestor && reader.LocalName == "defs");
                     bool nonemptyRenderedLeaf = !reader.IsEmptyElement && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "image");
@@ -207,6 +208,7 @@ internal static class SvgFontRequestDiscovery
                         if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                         else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
                         else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
+                        else if (reader.LocalName == "marker") _ = SvgMarkerSyntax.Parse(reader, new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height), workCounter, cancellationToken);
                     }
                     InlineStyle styleSheet = isSvgElement && reader.LocalName is ("g" or "a" or "switch" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;

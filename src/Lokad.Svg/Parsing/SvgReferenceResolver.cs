@@ -7,6 +7,7 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
 {
     /// <summary>Records the absence of an instance opacity layer, using the validated source value rather than its rounded alpha byte.</summary>
     internal bool AllowsSolidPaintAnalysis { get; init; }
+    internal bool IsMarker { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal SvgPaintOpacity SourceOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
@@ -50,6 +51,8 @@ internal static class SvgReferenceResolver
     internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
+        if (definition.Marker is not null && !reference.IsMarker)
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Marker definitions cannot be ordinary use targets.");
         if (definition.StrokeContent is {} strokeContent && (reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default || strokeContent.Content.Nodes[0].Style.PaintOrder is not null || reference.InheritedPaintOrder != SvgPaintOrder.FillStrokeMarkers || reference.PaintServerId is not null || !reference.Transform.IsAxisAligned))
             return SvgSymbolContentRenderer.Apply(definition with { SymbolContent = strokeContent }, reference, frame, state, workCounter, cancellationToken);
         if (definition.SymbolContent is not null) return SvgSymbolContentRenderer.Apply(definition, reference, frame, state, workCounter, cancellationToken);
@@ -368,6 +371,7 @@ internal static class SvgReferenceResolver
     {
         if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
         (double sx, double sy, double ox, double oy) = SvgGeometrySyntax.MapViewBox(box, reference.Width.Value, reference.Height.Value);
+        if (reference.IsMarker) { sx = (float)sx; sy = (float)sy; ox = (float)ox; oy = (float)oy; }
         SvgAffineTransform placement = reference.Transform.ComposeChecked(SvgAffineTransform.FromScaleOffset(sx, sy, ox + reference.X, oy + reference.Y));
         return frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(placement) : placement;
     }

@@ -637,7 +637,9 @@ internal static class SvgLeafParser
                 source = source with { VisualBounds = LineVisualBounds(reader, context, frame) };
         }
         catch { parsed.Discard(); throw; }
-        return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+        bool markers = SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers).HasMarkers;
+        SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+        return SvgMarkerRenderer.AttachLine(recorded, reader, context, source, frame, state);
 
         static SvgPaintBounds? LineVisualBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport)
         {
@@ -645,7 +647,7 @@ internal static class SvgLeafParser
             if (SvgStrokeStyleSyntax.ParseLinecap(style.Linecap) != SvgStrokeCap.Square) return null;
             element.WorkCounter.Consume(element.CancellationToken);
             SvgLineSyntax line = SvgLineSyntax.Parse(input);
-            float halfWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? line.StrokeWidth ?? "1") / 2f;
+            float halfWidth = (float)SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? line.StrokeWidth ?? "1", "line") / 2f;
             // A square tip's diagonal bounds the source stroke before dash segmentation.
             float inflation = halfWidth * MathF.Sqrt(2);
             // Recording rounds the local visual bounds before the output viewport transform.
@@ -667,9 +669,10 @@ internal static class SvgLeafParser
         // A line has no fill operation, independently of its inherited fill server.
         if (SvgPatternSyntax.IsPatternFill(style.Fill)) style = style with { Fill = "none" };
         SvgResolvedPaintableElement element = context.ResolveShape(style, reader, true);
-        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
+        double lineWidth = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? syntax.StrokeWidth ?? "1", "line");
+        if (element.Transform != SvgAffineTransform.Identity || frame is {} scaled && scaled.IsScaled || syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2 || syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2 || lineWidth % 2 != 0 || element.Presentation.StrokeColor is null)
+            return LowerNativeLine();
         SvgColor? strokeColor = element.Presentation.StrokeColor;
-        if (element.Transform != SvgAffineTransform.Identity || strokeColor is null || (syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
         int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
         if (strokeWidth == 0)
         {
@@ -677,7 +680,7 @@ internal static class SvgLeafParser
             return new SvgParsedGeometry(none.Detach(), 0);
         }
 
-        if (strokeWidth < 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
+        if (strokeWidth < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive line stroke widths are implemented.");
         SvgStrokeCap linecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
         double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
         if (linecap == SvgStrokeCap.Square && dashes is null) syntax = syntax.WithSquareCaps(strokeWidth);
@@ -698,6 +701,25 @@ internal static class SvgLeafParser
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
         if (linecap == SvgStrokeCap.Square && color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         return LowerDashedLine();
+
+        SvgParsedGeometry LowerNativeLine()
+        {
+            SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, style, element, "line", true);
+            using BudgetedParserList<SvgPoint> noPoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            using BudgetedParserList<int> noEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            if (stroke is null)
+            {
+                using BudgetedParserList<SvgGeometry> empty = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+                return new(empty.Detach(), 0);
+            }
+            using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "line", false, false, int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
+            using RenderBudget.BudgetReservation pathReservation = state.Budget.Reserve(256, SvgMemoryCategory.Parser);
+            string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");
+            return lowering.LowerStrokePath(path, 2, false, false, element, stroke.Value.Color, element.Presentation.IsPainted,
+                stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern,
+                stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, state.Budget);
+
+        }
 
         SvgParsedGeometry LowerRoundCapLine()
         {

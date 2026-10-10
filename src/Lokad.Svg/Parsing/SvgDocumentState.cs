@@ -21,7 +21,7 @@ internal sealed class SvgDocumentState : IDisposable
     private BudgetedParserList<SvgSymbolContentRange>? _strokeContents;
     private RenderBudget.BudgetReservation? _strokeContentOwner;
     private RenderBudget.BudgetReservation? _anonymousSymbolOwner;
-    private const int DefinitionStorageBytes = 256;
+    private static readonly int DefinitionStorageBytes = checked(64 + System.Runtime.CompilerServices.Unsafe.SizeOf<SvgDefinition>());
     private const int ClipStorageBytes = 128;
     // The tile embeds nullable scene geometry. Include its actual value size,
     // plus conservative bucket/key/entry overhead, before dictionary growth.
@@ -267,6 +267,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal bool GroupUseExpanded { get; set; }
 
+    internal SvgMarkerDefinition? MarkerDefinition { get; set; }
     internal string? SymbolId { get; set; }
 
     internal SvgViewBox? SymbolViewBox { get; set; }

@@ -78,7 +78,7 @@ public sealed class RenderBudgetTests
         geometries.Add(SvgGeometry.FromRectangle(new SvgRectangle(0, 0, 1, 1, SvgColor.Transparent, false, null)));
         RenderBudgetSnapshot geometrySnapshot = geometryBudget.Snapshot();
 
-        RenderBudget stylesheetBudget = new(1_000);
+        RenderBudget stylesheetBudget = new(ParserCollectionMemory.GetArrayByteCount<CssRule>(4));
         using var stylesheetRules = new BudgetedParserList<CssRule>(stylesheetBudget, SvgMemoryCategory.Parser);
         stylesheetRules.Add(default);
         RenderBudgetSnapshot stylesheetSnapshot = stylesheetBudget.Snapshot();

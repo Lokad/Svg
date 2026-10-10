@@ -5,12 +5,6 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Validates presentation values whose admitted meanings add no static painting behavior.</summary>
 internal static class SvgInertPresentationSyntax
 {
-    internal static void ValidateMarker(ReadOnlySpan<char> value)
-    {
-        if (!value.Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only none marker values are implemented.");
-    }
-
     /// <summary>Validates a backdrop hint without storing it or creating a backdrop. Active filters remain unsupported.</summary>
     internal static void ValidateBackground(ReadOnlySpan<char> value, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {

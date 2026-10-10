@@ -29,7 +29,7 @@ internal static class SvgContainerInheritance
         SvgInheritedTextStyle textStyle = SvgTextInheritance.Resolve(reader, inheritedTextStyle, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WhiteSpace, inlineStyle.Important, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important));
         SvgInheritedStrokeStyle stroke = inheritedStroke.ResolveChild(computedStyle);
         return new SvgInheritedContainer(
-            new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform) { PaintServerFill = presentation.PaintServerFill, PaintOrder = computedStyle.PaintOrder ?? inheritedPresentation.PaintOrder },
+            new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, transform) { PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(computedStyle, inheritedPresentation.Markers), PaintOrder = computedStyle.PaintOrder ?? inheritedPresentation.PaintOrder },
             textStyle,
             computedStyle.FillRule ?? inheritedFillRule,
             inheritedHasOpacityScope || presentation.Opacity != 255,

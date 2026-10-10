@@ -1678,7 +1678,8 @@ internal ref partial struct SvgAnalyticCoverage
             preparation.Convex = convexRing;
             // Native fills that decline the float rectangle shortcut keep ordinary
             // quarter-snapped edge setup. Legacy geometric boxes retain their calibration.
-            preparation.DesnapBox = box && mapping != SvgPolygonMapping.NativeFillEdges;
+            preparation.DesnapBox = box && mapping != SvgPolygonMapping.NativeFillEdges
+                && !(mapping == SvgPolygonMapping.NativeStrokeEdges && preparation.Source is not null);
             preparation.UseCurveSpans = retained;
         }
         bool convex = preparation.Convex.Value;

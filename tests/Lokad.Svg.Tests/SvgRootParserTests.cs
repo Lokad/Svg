@@ -4540,11 +4540,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_lines_in_scaled_viewports()
+    public void Scaled_viewport_lines_retain_the_source_stroke_and_viewport_map()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><line x1='0' y1='0' x2='8' y2='0' stroke='red' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><line x1='0' y1='0' x2='8' y2='0' stroke='red' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(geometry.AuthoredPath);
+        Assert.Equal(2, source.StrokeStyle?.Width);
+        Assert.Equal(new SvgAffineTransform(2, 0, 0, 2, 8, 8), source.SceneMap);
     }
 
     [Fact]
@@ -6518,11 +6520,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_pattern_fills_on_non_rectangle_leaves()
+    public void Line_fill_servers_do_not_create_fill_geometry()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><line x1='0' y1='0' x2='4' y2='0' stroke='red' stroke-width='2' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><line x1='0' y1='0' x2='4' y2='0' stroke='red' stroke-width='2' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(root.HasUnsupportedChild);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), geometry.AxisAlignedLine.Color);
     }
 
     [Fact]

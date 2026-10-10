@@ -23,11 +23,16 @@ public sealed class SvgCurvedClipSourceTests
     [InlineData("compound:disjoint-rotated-children")]
     [InlineData("compound:nested-local-clip-definitions")]
     [InlineData("compound:percentage-affine-radial")]
+    [InlineData("marker:marker-forward-cascade")]
+    [InlineData("marker:marker-reversed-diagonal")]
+    [InlineData("marker:marker-element-opacity")]
     public void Native_clip_owners_release_at_every_parser_work_denial_and_sampled_memory_denials(string content)
     {
         byte[] input = content.StartsWith('<')
             ? System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + content + "</svg>")
-            : content.StartsWith("compound:", StringComparison.Ordinal)
+            : content.StartsWith("marker:", StringComparison.Ordinal)
+                ? File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "marker-content", content[7..] + ".svg"))
+                : content.StartsWith("compound:", StringComparison.Ordinal)
                 ? File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "compound-clip-content", content[9..] + ".svg"))
                 : File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "native-clip-winding", content + ".svg"));
         RenderBudget discovery = new(1_000_000);

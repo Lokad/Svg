@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Two complete CC0 arrow exports retained for measured G8 marker gaps. Original SVG bytes, nominal transparent outputs and frozen references remain unchanged; complete documents and focused controls are counted separately.",
+  "purpose": "Two complete CC0 arrow exports at unchanged nominal transparent outputs, qualified through all six APIs; source bytes and frozen browser references remain unchanged. Controls are counted separately.",
   "linuxReferenceQualification": {
     "date": "2026-10-10",
     "platform": "linux64",
@@ -34,9 +34,7 @@
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVG_double_arrow_with_marker-start_and_marker-end.svg",
       "role": "document-output",
       "selection": "Complete fontless static arrow export at its nominal authored frame; declared before renderer screening or browser capture.",
-      "materialization": "none",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only none marker values are implemented."
+      "materialization": "none"
     },
     {
       "id": "inv-122-800x400-transparent",
@@ -53,9 +51,7 @@
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVG_double_arrow_with_auto-start-reverse.svg",
       "role": "document-output",
       "selection": "Complete fontless static arrow export at its nominal authored frame; declared before renderer screening or browser capture.",
-      "materialization": "none",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only none marker values are implemented."
+      "materialization": "none"
     }
   ]
 }

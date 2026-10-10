@@ -1,7 +1,12 @@
 namespace Lokad.Svg.Parsing;
 
 [Flags]
-internal enum SvgClipAntialiasing : byte { None = 0, Left = 1, Top = 2, Right = 4, Bottom = 8, All = Left | Top | Right | Bottom }
+internal enum SvgClipAntialiasing : byte
+{
+    None = 0, Left = 1, Top = 2, Right = 4, Bottom = 8, All = Left | Top | Right | Bottom,
+    BinaryLeft = 16, BinaryTop = 32, BinaryRight = 64, BinaryBottom = 128,
+    Binary = BinaryLeft | BinaryTop | BinaryRight | BinaryBottom
+}
 
 /// <summary>Retains rectangle bounds and which boundaries belong to a geometric AA clip.</summary>
 internal readonly record struct SvgClipBox(double X, double Y, double Width, double Height)
@@ -24,14 +29,14 @@ internal readonly record struct SvgClipBox(double X, double Y, double Width, dou
         double right = Math.Min(Right, other.Right);
         double bottom = Math.Min(Bottom, other.Bottom);
         SvgClipAntialiasing edges = SvgClipAntialiasing.None;
-        if (X >= other.X) edges |= Antialiasing & SvgClipAntialiasing.Left;
-        if (other.X >= X) edges |= other.Antialiasing & SvgClipAntialiasing.Left;
-        if (Y >= other.Y) edges |= Antialiasing & SvgClipAntialiasing.Top;
-        if (other.Y >= Y) edges |= other.Antialiasing & SvgClipAntialiasing.Top;
-        if (Right <= other.Right) edges |= Antialiasing & SvgClipAntialiasing.Right;
-        if (other.Right <= Right) edges |= other.Antialiasing & SvgClipAntialiasing.Right;
-        if (Bottom <= other.Bottom) edges |= Antialiasing & SvgClipAntialiasing.Bottom;
-        if (other.Bottom <= Bottom) edges |= other.Antialiasing & SvgClipAntialiasing.Bottom;
+        if (X >= other.X) edges |= Antialiasing & (SvgClipAntialiasing.Left | SvgClipAntialiasing.BinaryLeft);
+        if (other.X >= X) edges |= other.Antialiasing & (SvgClipAntialiasing.Left | SvgClipAntialiasing.BinaryLeft);
+        if (Y >= other.Y) edges |= Antialiasing & (SvgClipAntialiasing.Top | SvgClipAntialiasing.BinaryTop);
+        if (other.Y >= Y) edges |= other.Antialiasing & (SvgClipAntialiasing.Top | SvgClipAntialiasing.BinaryTop);
+        if (Right <= other.Right) edges |= Antialiasing & (SvgClipAntialiasing.Right | SvgClipAntialiasing.BinaryRight);
+        if (other.Right <= Right) edges |= other.Antialiasing & (SvgClipAntialiasing.Right | SvgClipAntialiasing.BinaryRight);
+        if (Bottom <= other.Bottom) edges |= Antialiasing & (SvgClipAntialiasing.Bottom | SvgClipAntialiasing.BinaryBottom);
+        if (other.Bottom <= Bottom) edges |= other.Antialiasing & (SvgClipAntialiasing.Bottom | SvgClipAntialiasing.BinaryBottom);
         return new SvgClipBox(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top)) { Antialiasing = edges };
     }
 

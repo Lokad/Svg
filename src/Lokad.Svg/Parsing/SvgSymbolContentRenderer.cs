@@ -114,7 +114,7 @@ internal static class SvgSymbolContentRenderer
         affineClip = null;
         SvgAffineTransform map = definition.SymbolViewBox is {} box ? SvgReferenceResolver.SymbolInstancePlacement(box, reference, frame) : SvgReferenceResolver.PlainInstancePlacement(reference, frame);
         SvgClipBox? clip = frame?.Clip;
-        if (definition.SymbolViewBox is not null)
+        if (definition.SymbolViewBox is not null || reference.IsMarker)
         {
             if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
             SvgClipBox sourceViewport = new(reference.X, reference.Y, reference.Width.Value, reference.Height.Value);
@@ -122,12 +122,13 @@ internal static class SvgSymbolContentRenderer
             {
                 SvgAffineTransform clipMap = reference.Transform;
                 if (frame is {} parent) clipMap = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(clipMap);
-                affineClip = new(sourceViewport, clipMap);
+                affineClip = new(sourceViewport, clipMap) { IsBinary = reference.IsMarker };
             }
             else
             {
                 SvgClipBox local = reference.Transform.Apply(sourceViewport);
                 if (frame is {} viewport) local = new(local.X * viewport.ScaleX + viewport.OffsetX, local.Y * viewport.ScaleY + viewport.OffsetY, local.Width * viewport.ScaleX, local.Height * viewport.ScaleY);
+                if (reference.IsMarker) local = local with { Antialiasing = SvgClipAntialiasing.Binary };
                 clip = clip is {} parent ? local.Intersect(parent) : local;
             }
         }

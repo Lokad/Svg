@@ -7,4 +7,5 @@ internal readonly record struct SvgInheritedPresentation(SvgPaint Paint, bool Is
     /// <summary>Retains the budget-owned local fill URL independently of numeric opacity and solid paint.</summary>
     internal string? PaintServerFill { get; init; }
     internal SvgPaintOrder PaintOrder { get; init; }
+    internal SvgMarkerStyle Markers { get; init; }
 }

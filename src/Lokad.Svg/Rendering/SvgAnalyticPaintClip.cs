@@ -34,7 +34,7 @@ internal static class SvgAnalyticRectangleClip
     /// <remarks>The caller supplies an immutable mapped rectangle and charges four boundary visits before calling. This constant-size classification allocates nothing, retains no state and is thread safe. It covers the native initially-BW rectangle shortcut and a resulting opaque rectangle after analytic X/Y snapping; it does not construct an AA mask or reproduce successive clip-alpha intersections. Cancellation belongs to the caller's context traversal.</remarks>
     internal static SvgAnalyticPaintClip Classify(double left, double top, double right, double bottom, SvgAnalyticClipBounds bitmap, SvgClipAntialiasing antialiasing)
     {
-        if (antialiasing == SvgClipAntialiasing.None) return SvgAnalyticPaintClip.Binary;
+        if ((antialiasing & SvgClipAntialiasing.All) == 0) return SvgAnalyticPaintClip.Binary;
         float l = (float)left, t = (float)top, r = (float)right, b = (float)bottom;
         if (NearlyIntegral(l) && NearlyIntegral(t) && NearlyIntegral(r) && NearlyIntegral(b)) return SvgAnalyticPaintClip.Binary;
         return (antialiasing & SvgClipAntialiasing.Left) != 0 && HasPartialBoundary(l, bitmap.Left, bitmap.Right, false)
@@ -74,6 +74,7 @@ internal static class SvgAnalyticRectangleClip
 
         static double Snap(double value, SvgClipAntialiasing boundary, bool vertical, SvgClipAntialiasing antialiasing, bool binary)
         {
+            if (((int)antialiasing & ((int)boundary << 4)) != 0) return MathF.Floor((float)value + .5f);
             if ((antialiasing & boundary) == 0) return value;
             if (binary) return MathF.Floor((float)value + .5f);
             double snapped = Math.Truncate((float)value * 256f) / 256;
