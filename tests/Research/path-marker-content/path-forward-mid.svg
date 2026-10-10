@@ -1,0 +1,4 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='130' height='130' viewBox='0 0 100 100'>
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<g marker-mid='url(#m)' transform='translate(5 5) rotate(15 50 50)'><path d='M15 25H45V75M65 30H85' fill='none' stroke='blue' stroke-width='3.5' /></g><defs><marker id='m' markerUnits='userSpaceOnUse' markerWidth='10' markerHeight='10' refX='5' refY='5' ><path d='M1 1L9 5L1 9Z' fill='red'/></marker></defs>
+</svg>

@@ -8,20 +8,23 @@ public sealed class SvgMarkerReferenceTests
 {
     public static IEnumerable<object[]> Cases()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "marker-content");
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
-        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
-            yield return new object[] { Required(item, "id") };
+        foreach (string family in new[] { "marker-content", "path-marker-content" })
+        {
+            string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
+            using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+            foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
+                yield return new object[] { family, Required(item, "id") };
+        }
     }
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Marker_controls_preserve_frozen_pixels_and_explicit_boundaries_through_six_apis(string identity)
+    public async Task Marker_controls_preserve_frozen_pixels_and_explicit_boundaries_through_six_apis(string family, string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "marker-content");
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
-        Assert.Equal(20, root.GetProperty("cases").GetArrayLength());
+        Assert.Equal(family switch { "marker-content" => 20, "path-marker-content" => 23, _ => throw new InvalidDataException("Unknown marker family.") }, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(3, root.GetProperty("freshProcessCaptures").GetInt32());
         Assert.Equal("healthy", Required(root, "captureStartupHealth"));
         Assert.True(root.GetProperty("captureProfilesCleaned").GetBoolean());

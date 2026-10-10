@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Two original CC0 path-marker exports retained for measured finite G8 gaps. Outputs were declared before screening and capture. Original bytes and options stay frozen; browser sizing only inserts the declared root dimensions.",
+  "purpose": "Two original CC0 path-marker exports completed against frozen outputs declared before screening and capture. Original bytes and options stay frozen; browser sizing only inserts the declared root dimensions.",
   "linuxReferenceQualification": {
     "date": "2026-10-10",
     "platform": "linux64",
@@ -41,8 +41,6 @@
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:(1%2B2)_Dimensional_SC_lattice.svg",
       "role": "document-output",
       "selection": "Declared before renderer screening and reference capture; whole CC0 lattice selects shared intermediate path vertices, subpaths and inherited marker content.",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Markers on shapes other than lines are not implemented.",
       "captures": [
         {
           "pngSha256": "5f30dcd353ffd9e65a290636ff1ee22be29a8ee40e7c18d1e98883f4c485f654",
@@ -83,8 +81,6 @@
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Screw_Head_-_7-Node_Security.svg",
       "role": "document-output",
       "selection": "Declared before renderer screening and reference capture; whole CC0 security screw head selects shared intermediate path vertices, automatic tangents and visible marker overflow.",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only hidden viewport overflow is implemented.",
       "captures": [
         {
           "pngSha256": "0483f17690880ab663f95eb9abd5516a06866d607faf01496bd3ba2c03a9e924",

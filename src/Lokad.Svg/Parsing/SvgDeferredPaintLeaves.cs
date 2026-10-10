@@ -15,7 +15,7 @@ internal static class SvgDeferredPaintLeaves
         if (!SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)) return false;
         SvgComputedStyle style = context.ResolveStyle(reader);
         SvgMarkerStyle markers = SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers);
-        if (!Missing(style.Fill) && !Missing(style.Stroke ?? context.InheritedStroke.Stroke) && !MissingMarker(markers.Start) && !MissingMarker(markers.End)) return false;
+        if (!Missing(style.Fill) && !Missing(style.Stroke ?? context.InheritedStroke.Stroke) && !MissingMarker(markers.Start) && !MissingMarker(markers.End) && (reader.LocalName == "line" || !MissingMarker(markers.Mid))) return false;
         SvgDefinitionLeafSource source = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state);
         int start = SvgReferenceResolver.SnapshotMaskScopes(state, context.WorkCounter, context.CancellationToken);
         state.DeferredPaintLeaves.Add(new(source, context with { AuthoredStyle = source.AuthoredStyle, StyleSheet = default },

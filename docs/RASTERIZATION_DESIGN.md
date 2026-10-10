@@ -10384,7 +10384,7 @@ through six APIs on Windows/Linux. Their SVGs, options and browser references
 remain unchanged. This completes the selected 26-document queue without closing
 G8's path/vertex/instance and finite-effect promises.
 
-Marker declarations share the ordinary bounded cascade, including shorthand,
+Marker declarations share the ordinary bounded cascade, including CSS shorthand,
 inheritance and priority. Forward line references retain source leaves through
 existing deferred replay. Marker resources reuse ordered symbol/group/use content;
 their paint comes from definition ancestry. Placement retains the tangent,
@@ -10419,3 +10419,36 @@ qualification passes 6,143 tests/platform (4,353 core / 1,784 visual / six FontP
 with zero failures/skips/warnings. All 2,847 prior PNGs and 2,753 prior exact results,
 corporate 27/27 / 258/258 and the original oracle stay preserved. No renderer,
 source-code, DLL or script fingerprints are introduced.
+
+### Complete path-marker delivery (2026-10-10)
+
+The original CC0 lattice inv-123 (512×352) and security screw head inv-124
+(512×512) match their frozen transparent outputs through six APIs on Windows/Linux.
+Original bytes and declared viewports remain unchanged. Existing browser triples
+are reused; new controls supply independent, healthy matching capture triples.
+
+The shared path reader can retain authored commands without flattening scratch
+or synthetic fill/continuation vertices. A bounded vertex pass retains subpath
+roles and source float directions, quadratic/cubic endpoint derivatives and
+closed-vertex bisectors. Dashing does not introduce marker vertices. Line and
+path attachments share placement, definition-source paint, bounded content replay
+and all six paint-order permutations. Successful transfers clear the body slot;
+denials release all remaining owners. Visible marker overflow skips only its own
+viewport clip, preserving the enclosing frame and native source mapping.
+
+Frozen controls exposed two shared defects. The XML marker shorthand attribute
+is inert in Chromium; CSS shorthand and longhand attributes activate markers.
+The old inputs/references stay intact and separate CSS controls test active
+semantics. Isolated opacity allocation bounds were misclassified as a mask region,
+forcing AA run arithmetic at fractional output scales. The distinct Bounds layer
+role preserves ordinary paint coverage; source visual stroke bounds still supply
+native allocation extents. No independent marker-specific rasterizer is added.
+
+Twenty of 23 new controls are exact; arc paths, point-list markers and CSS visible
+overflow retain explicit boundaries. Three controls sweep work/memory denial,
+cancellation and retry. The earlier path-marker boundary also becomes exact on
+its unchanged reference, leaving 16 exact / four boundaries in that 20-case bank.
+Complete Release qualification passes 6,171 tests per platform (4,356 core /
+1,809 visual / six FontProbe), preserving all 2,847 prior PNGs, all 2,753 exact
+comparisons and corporate 27/27 / 258/258. G8's remaining promises stay open;
+the retained use-instance marker document selects the next implementation change.

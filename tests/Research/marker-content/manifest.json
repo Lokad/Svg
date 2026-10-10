@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Focused shared line-source, marker viewport, orientation, cascade, opacity and reference controls for complete inv-121/inv-122; five categorized admission boundaries remain explicit.",
+  "purpose": "Focused shared line-source, marker viewport, orientation, cascade, opacity and reference controls for complete inv-121/inv-122; four categorized admission boundaries remain explicit.",
   "cases": [
     {
       "id": "odd-width-line",
@@ -433,16 +433,14 @@
       "height": 130,
       "scale": 1,
       "background": "transparent",
-      "role": "boundary",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Markers on shapes other than lines are not implemented.",
+      "role": "fidelity",
       "input": "path-marker-boundary.svg",
       "reference": "references/path-marker-boundary.png",
       "sourceSha256": "e8c47ebbf00634224f13a3a8f0b1abfd2ae42ac4ab6e0b46a56651512a71ac28",
       "referenceSha256": "5a899980780a33b4e742cc625c1691cd2b32591683278102df02e75e77e865c0",
       "license": "CC0-1.0",
       "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
-      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained arrow documents.",
+      "selection": "Previously rejected retained path marker control, now exact against the unchanged input and browser reference.",
       "captures": [
         {
           "pngSha256": "5a899980780a33b4e742cc625c1691cd2b32591683278102df02e75e77e865c0",

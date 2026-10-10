@@ -629,6 +629,7 @@ internal static class SvgLeafParser
     internal static SvgParsedGeometry ParseLine(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        SvgMarkerStyle markers = SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers);
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParseLineCore(reader, context, frame, state);
         try
@@ -637,9 +638,8 @@ internal static class SvgLeafParser
                 source = source with { VisualBounds = LineVisualBounds(reader, context, frame) };
         }
         catch { parsed.Discard(); throw; }
-        bool markers = SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers).HasMarkers;
-        SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
-        return SvgMarkerRenderer.AttachLine(recorded, reader, context, source, frame, state);
+        SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers.HasMarkers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+        return SvgMarkerRenderer.AttachLine(recorded, reader, context, source, frame, state, markers);
 
         static SvgPaintBounds? LineVisualBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport)
         {

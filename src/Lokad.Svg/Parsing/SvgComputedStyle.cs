@@ -42,7 +42,7 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
         if (inlineImportant && inlineValue is not null) return inlineValue;
         if (styleSheetImportant && styleSheetValue is not null) return styleSheetValue;
         string? resolved = inlineValue ?? styleSheetValue ?? reader.GetAttribute(attribute);
-        if (attribute.StartsWith("marker-", StringComparison.Ordinal)) return resolved ?? reader.GetAttribute("marker");
+        if (attribute.StartsWith("marker-", StringComparison.Ordinal)) return resolved;
         if (attribute != "paint-order" && resolved is not null && SvgInlineStyleParser.TryMapPaintKeyword(attribute.AsSpan(), resolved.AsSpan(), out string? mapped)) return mapped;
         return resolved;
     }

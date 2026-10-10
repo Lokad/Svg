@@ -1,0 +1,4 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='130' height='130' viewBox='0 0 100 100'>
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><marker id='s' markerUnits='userSpaceOnUse' markerWidth='10' markerHeight='10' refX='5' refY='5' ><circle cx='5' cy='5' r='4' fill='green'/></marker><marker id='m' markerUnits='userSpaceOnUse' markerWidth='10' markerHeight='10' refX='5' refY='5' ><circle cx='5' cy='5' r='4' fill='red'/></marker><marker id='e' markerUnits='userSpaceOnUse' markerWidth='10' markerHeight='10' refX='5' refY='5' ><circle cx='5' cy='5' r='4' fill='purple'/></marker></defs><path d='M20 20L20 20L50 20M70 70' fill='none' marker-start='url(#s)' marker-mid='url(#m)' marker-end='url(#e)'/>
+</svg>

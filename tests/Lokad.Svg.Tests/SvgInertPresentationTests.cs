@@ -76,6 +76,13 @@ public sealed class SvgInertPresentationTests
             Shape.Replace("<path ", "<path " + property + "='" + value + "' "),
         })
         {
+            if (property == "marker" && value == "url(#arrow)" && body.Contains("marker='", StringComparison.Ordinal))
+            {
+                // SVG's shorthand is a CSS property; Chromium ignores this XML attribute.
+                Assert.Equal(SvgConverter.ConvertToPng(Wrap(Shape), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+                    SvgConverter.ConvertToPng(Wrap(body), SvgRenderOptions.Default, CancellationToken.None).ToArray());
+                continue;
+            }
             RenderBudget budget = new(SvgRenderLimits.Default.MaximumAccountedBytes);
             SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(Wrap(body), SvgRenderLimits.Default,
                 budget, null, new(SvgRenderLimits.Default.MaximumWorkUnits), CancellationToken.None));

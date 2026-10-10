@@ -6,7 +6,7 @@ frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen. This complete
 matrix remains the regression gate.
 
-**The five online gap documents, radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifoods, striped pattern, non-ionizing warning, geometric pattern, set-screw diagram, gradient-mask example, soccerball mask, Fibonacci spiral, railway tunnel junction, soccerball with shadow and transparent striped pattern and both baseball illustrations and the two CC0 arrow exports are complete**,
+**All 28 selected development documents are complete**,
 through all six outputs on both platforms. Earlier qualified references stay unchanged;
 the tiger uses the explicit viewport qualification explained below:
 
@@ -38,6 +38,8 @@ the tiger uses the explicit viewport qualification explained below:
 | Baseball emblem flag (`inv-119`) | Explicit 1200×800, transparent; 1/1 output | The same shared mechanisms complete the related document against its unchanged reference. |
 | Double-arrow export (`inv-121`) | 2000×500, transparent | Shared line-stroke source replay and bounded marker content with native binary viewport clipping. |
 | Diagonal double-arrow export (`inv-122`) | 800×400, transparent | Shared tangent/start-reversal placement and binary-region paint routing. |
+| Lattice diagram (`inv-123`) | Explicit 512×352, transparent | Authored intermediate vertices, subpath roles and shared bounded marker replay preserve dashed strokes. |
+| Security screw head (`inv-124`) | Explicit 512×512, transparent | Shared automatic tangent placement and visible marker-content overflow. |
 
 Each document has a stable, healthy, cleaned Linux browser capture triple matching
 its frozen reference byte-for-byte. The [gap manifest](tests/References/inventory/svg-gap-cases.json)
@@ -47,7 +49,7 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 26; selected queue: 26/28 complete.**
+references. **Completed development deliverables: 28; selected queue: 28/28 complete.**
 Every preceding completed output remains exact. Both complete CC0 baseball
 illustrations (`inv-120`, 130×130 transparent; `inv-119`, 1200×800 transparent)
 now match unchanged references through all six APIs on Windows/Linux. Shared
@@ -425,7 +427,7 @@ references remain unchanged. These documents selected shared line-source stroke
 replay, marker placement and bounded symbol-content reuse; G2 was not a prerequisite.
 
 The [20 marker controls](tests/Research/marker-content/manifest.json) contain
-**15 exact outputs and five categorized boundaries**, counted separately from
+**16 exact outputs and four categorized boundaries**, counted separately from
 completed documents. They protect fractional/composed line strokes, marker units,
 fixed/automatic/start-reversed orientation, forward cascade, definition paint,
 opacity, viewBox-free content and native binary clipping. All have matching healthy
@@ -433,36 +435,45 @@ Windows/Linux capture triples: 120 captures. Three source-owner controls sweep
 work/memory denial, cancellation and retry. Two previously rejected inert line-fill
 controls now match their unchanged references.
 
-Finished Release qualification passes **6,143 tests per platform**: 4,353 core,
-1,784 visual and six FontProbe, with zero failures/skips/warnings. All **2,847
+**Both CC0 path-marker documents are complete:** `inv-123` at explicit 512×352
+transparent and `inv-124` at explicit 512×512 transparent, through all six APIs
+on Windows/Linux. The [document bank](tests/Research/path-marker-documents/manifest.json)
+keeps original SVG bytes, declared viewports and unchanged frozen references;
+twelve previously qualified healthy browser captures are reused. Authored
+intermediate vertices, subpath roles, automatic tangents and visible marker
+overflow extend shared command reading and bounded source replay.
+
+The [23 path-marker controls](tests/Research/path-marker-content/manifest.json)
+have **20 exact outputs and three explicit unsupported boundaries** through six
+APIs, separate from completed documents. Their 138 healthy cleaned Windows/Linux
+captures protect straight/quadratic/cubic vertices, closed/degenerate paths,
+dashing, forward cascade, paint order, opacity and viewport overflow. Frozen XML
+`marker` shorthand controls remain inert; separately declared CSS/longhand controls
+activate markers. Isolation bounds now retain a distinct layer role, preserving
+ordinary paint coverage instead of applying mask-clip arithmetic. Three controls
+sweep source ownership, work/memory denial, cancellation and retry.
+
+Finished Release qualification passes **6,171 tests per platform**: 4,356 core,
+1,809 visual and six FontProbe, with zero failures/skips/warnings. All **2,847
 previous PNGs** remain byte-for-byte unchanged and all **2,753 prior exact results**
 stay exact; corporate **27/27 / 258/258** and the original oracle remain frozen.
 Use this qualification until another renderer change warrants a complete run.
 
-**Next complete document: `inv-123`, the original CC0 lattice diagram at
-512×352 transparent with an explicit viewport.** The
-[path-marker document bank](tests/Research/path-marker-documents/manifest.json)
-also retains `inv-124`, a 512×512 security screw-head drawing. Both outputs were
-declared before screening/capture. Their original SVG bytes remain untouched;
-browser inputs only insert those root dimensions. Verified copyright-holder CC0
-records and twelve healthy matching Windows/Linux captures qualify the references.
-Both documents currently reject consistently through all six APIs on both platforms.
+**Next retained acceptance document: `original-logo-marker-mark`, 64×64
+transparent, with its existing input and declared output.** Freeze a healthy
+browser reference before correction, then keep those inputs/options/pixels fixed.
+Its `<use>` instance inherits an end marker onto a retained line. Select shared
+instance presentation and source replay to remove that measured gate, then finish
+every rendering mismatch.
+Implement the combinations that this document needs; other G2 combinations are
+not prerequisites. A subsequent bounded rights-cleared sourcing batch should
+retain original in-scope failures that exercise remaining instance/effect gaps.
+Keep controls, acceptance fixtures and completed online documents separately counted.
 
-Finish `inv-123` through every gate and mismatch against its frozen output. Its
-inherited marker-mid, straight path vertices, multiple subpaths, dashes and
-viewBox-free marker content select shared vertex placement and existing stroke/
-source replay. Advance `inv-124` through that work; its automatic tangents and
-visible marker overflow remain subsequent measured dependencies. Keep
-`original-logo-marker-mark` visible as the retained instance acceptance gate;
-path marker delivery does not close it. Add focused controls for these shared
-dependencies, discovered defects and boundaries, separately from whole documents.
-
-The selected queue is **26/28 complete**, separate from corporate **27/27 /
-258/258**. The two added offline cases pass focused verification through six APIs
-on Windows/Linux as categorized rejections. Reuse the finished 6,143-test renderer
-qualification and prior bank evidence; source-only retention does not claim a new
-complete test count. Remaining G8 geometry/instance/angle/length/presentation
-combinations and finite filters remain promised. The G3 width-map witness, every
+The selected development queue is **28/28 complete**, separate from corporate
+**27/27 / 258/258**. G8 arc-path directions, polyline/polygon vertices and
+instances, angle/length units, CSS visible overflow, remaining presentation
+combinations and finite filters stay promised. The G3 width-map witness, every
 other finite group exit and S17 remain open. No exhaustive G2 completion is required.
 
 The bounded batch downloaded three public-domain/CC0 originals and retains two
@@ -703,12 +714,10 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected queue is **26/28 complete**, including both baseball and both arrow
-exports. The arrows complete the admitted line-marker slice of G8. `inv-123` is
-the next whole document; `inv-124` follows through shared path vertices, source
-paint and marker replay, with automatic tangents and visible overflow as measured
-dependencies. Keep `original-logo-marker-mark` as the instance acceptance gate.
-Further promised combinations and finite effects remain open.
+The selected development queue is **28/28 complete**, including both baseball,
+both arrow exports and both path-marker documents. Their shared line/path marker
+mechanisms advance G8; the retained `original-logo-marker-mark` instance document
+selects the next correction. Other promised combinations and finite effects remain open.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -1226,12 +1235,16 @@ results stay exact, and decode, style matching, resampling and cleanup are bound
   - [x] Line start/end, strokeWidth/userSpaceOnUse units, ref-point/size/viewBox
     mapping, numeric fixed angle, auto/start reversal and bounded ordered content.
     Keep native binary viewport and region paint routing distinct from AA clips.
-    `inv-121`/`inv-122` are complete, with 15 exact / five boundary controls.
-  - [ ] Path/polyline/polygon vertices and their instances, marker-mid tangent
-    bisectors, zero-length/closed-path behavior, angle/length units, visible
-    overflow and remaining container presentation combinations. Recursive marker
-    content and missing local targets currently reject explicitly; these outcomes
-    do not close the promised combinations.
+    `inv-121`/`inv-122` are complete; their retained controls now have 16 exact /
+    four boundaries against unchanged references.
+  - [x] Straight/quadratic/cubic path vertices, subpath start/end/mid roles,
+    tangent bisectors and repeated/closed vertices; visible marker overflow
+    attributes, shared paint order and isolated opacity. `inv-123`/`inv-124`
+    are complete with 20 exact / three boundary controls.
+  - [ ] Arc-path directions, polyline/polygon vertices and their instances,
+    angle/length units, CSS visible overflow and remaining container presentation
+    combinations. Recursive marker content and missing local targets currently
+    reject explicitly; these outcomes do not close the promised combinations.
 - **Effects:** `feGaussianBlur`, `feOffset`, `feFlood`, `feComposite` (`over`/`in`),
   `feMerge`, `feBlend` (`normal`/`multiply`/`screen`) and `feDropShadow`. Inputs are
   SourceGraphic, SourceAlpha and earlier local results; filter/primitive regions,

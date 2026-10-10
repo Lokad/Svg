@@ -8,7 +8,10 @@ internal enum SvgMarkerOrientation { Angle, Auto, AutoStartReverse }
 
 /// <summary>Retains a marker's local viewport and vertex-placement parameters.</summary>
 internal readonly record struct SvgMarkerDefinition(double Width, double Height, double RefX, double RefY,
-    bool StrokeWidthUnits, SvgMarkerOrientation Orientation, double Angle);
+    bool StrokeWidthUnits, SvgMarkerOrientation Orientation, double Angle)
+{
+    internal bool ClipsViewport { get; init; } = true;
+}
 
 /// <summary>Retains inherited marker declarations independently of fill and stroke paint.</summary>
 internal readonly record struct SvgMarkerStyle(string? Start, string? Mid, string? End)
@@ -55,7 +58,9 @@ internal static class SvgMarkerSyntax
     internal static SvgMarkerDefinition Parse(XmlReader reader, SvgViewportLengthBases bases, ParserWorkCounter work, CancellationToken token)
     {
         SvgElementAttributePolicy.ValidateMarker(reader, work, token);
-        SvgNestedViewportSyntax.ValidateOverflow(reader.GetAttribute("overflow") ?? "hidden");
+        string overflow = reader.GetAttribute("overflow") ?? "hidden";
+        bool visibleOverflow = overflow.AsSpan().Trim().Equals("visible", StringComparison.OrdinalIgnoreCase);
+        if (!visibleOverflow) SvgNestedViewportSyntax.ValidateOverflow(overflow);
         _ = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), work, token);
         double width = Coordinate(reader.GetAttribute("markerWidth"), bases.Width, 3), height = Coordinate(reader.GetAttribute("markerHeight"), bases.Height, 3);
         if (width < 0 || height < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Marker dimensions cannot be negative.");
@@ -67,7 +72,7 @@ internal static class SvgMarkerSyntax
             : orient == "auto-start-reverse" ? SvgMarkerOrientation.AutoStartReverse : SvgMarkerOrientation.Angle;
         double angle = orientation == SvgMarkerOrientation.Angle ? Number(orient, 0) : 0;
         double refX = Coordinate(reader.GetAttribute("refX"), bases.Width, 0), refY = Coordinate(reader.GetAttribute("refY"), bases.Height, 0);
-        return new(width, height, refX, refY, units == "strokeWidth", orientation, angle);
+        return new(width, height, refX, refY, units == "strokeWidth", orientation, angle) { ClipsViewport = !visibleOverflow };
 
         static double Coordinate(string? value, double? basis, double fallback)
         {
@@ -94,27 +99,69 @@ internal static class SvgMarkerSyntax
 /// <summary>Places marker content through bounded symbol replay, preserving its source paint and viewport clip.</summary>
 internal static class SvgMarkerRenderer
 {
-    internal static SvgParsedGeometry AttachLine(SvgParsedGeometry stroke, XmlReader reader, SvgPaintableElementContext context,
-        SvgRecordedPaintStyle paint, SvgViewportFrame? frame, SvgDocumentState state)
+    internal static SvgParsedGeometry AttachLine(SvgParsedGeometry body, XmlReader reader, SvgPaintableElementContext context,
+        SvgRecordedPaintStyle paint, SvgViewportFrame? frame, SvgDocumentState state, SvgMarkerStyle markers)
     {
-        SvgMarkerStyle markers = SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers);
-        if (!markers.HasMarkers) return stroke;
-        ParserWorkCounter work = context.WorkCounter;
-        CancellationToken token = context.CancellationToken;
-        using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
-        bool transferredStroke = false;
+        if (!markers.HasMarkers) return body;
+        Span<SvgMarkerPosition> positions = stackalloc SvgMarkerPosition[2];
         try
         {
             SvgLineSyntax line = SvgLineSyntax.Parse(reader);
+            double angle = MathF.Atan2((float)line.Y2 - line.Y1, (float)line.X2 - line.X1) * (180f / MathF.PI);
+            positions[0] = new(SvgMarkerVertexRole.Start, new(line.X1, line.Y1), angle);
+            positions[1] = new(SvgMarkerVertexRole.End, new(line.X2, line.Y2), angle);
+        }
+        catch { body.Discard(); throw; }
+        return Attach(body, positions, markers, reader, context, paint, frame, state);
+    }
+
+    internal static SvgParsedGeometry AttachPath(SvgParsedGeometry body, XmlReader reader, SvgPaintableElementContext context,
+        SvgRecordedPaintStyle paint, SvgViewportFrame? frame, SvgDocumentState state, SvgMarkerStyle markers, int maximumCommands)
+    {
+        if (!markers.HasMarkers) return body;
+        BudgetedParserList<SvgMarkerPosition> positions;
+        try { positions = SvgMarkerVertices.ReadPath(reader, maximumCommands, state, context.WorkCounter, context.CancellationToken); }
+        catch { body.Discard(); throw; }
+        using (positions) return Attach(body, positions.AsSpan(), markers, reader, context, paint, frame, state);
+    }
+
+    private static SvgParsedGeometry Attach(SvgParsedGeometry body, ReadOnlySpan<SvgMarkerPosition> positions,
+        SvgMarkerStyle markers, XmlReader reader, SvgPaintableElementContext context,
+        SvgRecordedPaintStyle paint, SvgViewportFrame? frame, SvgDocumentState state)
+    {
+        ParserWorkCounter work = context.WorkCounter;
+        CancellationToken token = context.CancellationToken;
+        using BudgetedParserList<SvgGeometry> output = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
+        try
+        {
             SvgComputedStyle style = context.ResolveStyle(reader);
-            double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? line.StrokeWidth ?? "1", "line");
-            double tangent = MathF.Atan2((float)line.Y2 - line.Y1, (float)line.X2 - line.X1) * (180f / MathF.PI);
-            bool markersFirst = paint.PaintOrder is SvgPaintOrder.FillMarkersStroke or SvgPaintOrder.MarkersFillStroke or SvgPaintOrder.MarkersStrokeFill;
-            if (!markersFirst) AddStroke();
-            Add(markers.Start, line.X1, line.Y1, true);
-            // A line has no intermediate vertices. Its marker-mid declaration remains inherited.
-            Add(markers.End, line.X2, line.Y2, false);
-            if (markersFirst) AddStroke();
+            double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width") ?? "1", reader.LocalName);
+            ReadOnlySpan<int> order = paint.PaintOrder switch
+            {
+                SvgPaintOrder.FillStrokeMarkers => [0, 1, 2],
+                SvgPaintOrder.FillMarkersStroke => [0, 2, 1],
+                SvgPaintOrder.StrokeFillMarkers => [1, 0, 2],
+                SvgPaintOrder.StrokeMarkersFill => [1, 2, 0],
+                SvgPaintOrder.MarkersFillStroke => [2, 0, 1],
+                SvgPaintOrder.MarkersStrokeFill => [2, 1, 0],
+                _ => throw new InvalidOperationException("Unexpected marker paint order.")
+            };
+            foreach (int operation in order)
+            {
+                if (operation != 2) { AddBody(operation == 1); continue; }
+                foreach (SvgMarkerPosition position in positions)
+                {
+                    work.Consume(token);
+                    string? value = position.Role switch
+                    {
+                        SvgMarkerVertexRole.Start => markers.Start,
+                        SvgMarkerVertexRole.Mid => markers.Mid,
+                        SvgMarkerVertexRole.End => markers.End,
+                        _ => throw new InvalidOperationException("Unexpected marker vertex role.")
+                    };
+                    Add(value, position.Point.X, position.Point.Y, position.Role == SvgMarkerVertexRole.Start, position.Angle);
+                }
+            }
             SvgClipBox? layerRegion = null;
             if (paint.ElementOpacity.Value != 1 && output.Count != 0)
             {
@@ -125,10 +172,16 @@ internal static class SvgMarkerRenderer
                 foreach (SvgGeometry geometry in output.AsSpan())
                 {
                     work.Consume(token);
-                    SvgAuthoredPath? path = geometry.AuthoredPath?.StrokeOutline ?? geometry.AuthoredPath;
-                    SvgRectangle box = path is null ? SvgMaskSyntax.BoundingBox(geometry) : SvgPathBounds.Compute(path.Commands, work, token);
-                    SvgPaintBounds bounds = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height));
-                    if (path is not null) bounds = bounds.Map(path.SceneMap, work, token);
+                    SvgPaintBounds bounds;
+                    if (geometry.RecordedPaint.Identity > 0 && state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).VisualBounds is {} visual)
+                        bounds = visual;
+                    else
+                    {
+                        SvgAuthoredPath? path = geometry.AuthoredPath?.StrokeOutline ?? geometry.AuthoredPath;
+                        SvgRectangle box = path is null ? SvgMaskSyntax.BoundingBox(geometry) : SvgPathBounds.Compute(path.Commands, work, token);
+                        bounds = new((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height));
+                        if (path is not null) bounds = bounds.Map(path.SceneMap, work, token);
+                    }
                     left = MathF.Min(left, bounds.Left); top = MathF.Min(top, bounds.Top);
                     right = MathF.Max(right, bounds.Right); bottom = MathF.Max(bottom, bounds.Bottom);
                 }
@@ -136,16 +189,22 @@ internal static class SvgMarkerRenderer
                     { Antialiasing = SvgClipAntialiasing.None };
             }
             SvgPaintRecording.WrapInstance(output.AsMutableSpan(), paint.ElementOpacity, state.NewRecordingScope(), layerRegion, state, work, token);
-            return new(output.Detach(), stroke.ElementCount);
+            return new(output.Detach(), body.ElementCount);
 
-            void AddStroke()
+            void AddBody(bool strokeOperation)
             {
-                transferredStroke = true;
-                int transferred = 0;
-                try { for (; transferred < stroke.Geometries.Length; transferred++) output.Add(stroke.Geometries[transferred]); }
-                catch { for (int index = transferred; index < stroke.Geometries.Length; index++) stroke.Geometries[index].Dispose(); throw; }
+                for (int index = 0; index < body.Geometries.Length; index++)
+                {
+                    work.Consume(token);
+                    SvgGeometry geometry = body.Geometries[index];
+                    if (geometry.RecordedPaint.Identity == 0 || state.Scene.GetRecordedPaintValue(geometry.RecordedPaint).IsStroke != strokeOperation) continue;
+                    output.Add(geometry);
+                    // Each successful insertion transfers this owner once. A failed
+                    // insertion leaves it in body for the common denial cleanup.
+                    body.Storage.Items[index] = default;
+                }
             }
-            void Add(string? value, double x, double y, bool start)
+            void Add(string? value, double x, double y, bool start, double tangent)
             {
                 if (!SvgMarkerStyle.Active(value)) return;
                 work.Consume(token);
@@ -185,9 +244,9 @@ internal static class SvgMarkerRenderer
         catch
         {
             foreach (SvgGeometry geometry in output.AsSpan()) geometry.Dispose();
-            if (!transferredStroke) stroke.Discard();
+            body.Discard();
             throw;
         }
-        finally { stroke.Dispose(); }
+        finally { body.Dispose(); }
     }
 }

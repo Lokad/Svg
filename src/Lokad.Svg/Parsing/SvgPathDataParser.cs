@@ -112,6 +112,23 @@ internal static class SvgPathDataParser
     internal static void ParsePath(string? value, SvgAffineTransform transform, SvgContourBuilder builder, SvgFlattenPolicy flattenPolicy, int maximumCommands, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds, BudgetedParserList<SvgAuthoredPathCommand>? authored)
     {
         ArgumentNullException.ThrowIfNull(builder);
+        ParseCore(value, transform, builder, flattenPolicy, maximumCommands, workCounter, cancellationToken, closedEnds, authored);
+    }
+
+    /// <summary>Reads original vertices and controls without flattening or synthesizing fill closure.</summary>
+    /// <remarks>The caller owns command storage and its bounded reservation. Parsing charges the same
+    /// syntax/command work and cancellation as geometry lowering; no contour scratch is allocated.</remarks>
+    internal static void ParseCommands(string value, int maximumCommands, ParserWorkCounter workCounter,
+        CancellationToken cancellationToken, BudgetedParserList<SvgAuthoredPathCommand> commands)
+    {
+        ArgumentNullException.ThrowIfNull(commands);
+        ParseCore(value, SvgAffineTransform.Identity, null, default, maximumCommands, workCounter, cancellationToken, null, commands);
+    }
+
+    private static void ParseCore(string? value, SvgAffineTransform transform, SvgContourBuilder? builder,
+        SvgFlattenPolicy flattenPolicy, int maximumCommands, ParserWorkCounter workCounter,
+        CancellationToken cancellationToken, BudgetedParserList<bool>? closedEnds, BudgetedParserList<SvgAuthoredPathCommand>? authored)
+    {
         ArgumentNullException.ThrowIfNull(workCounter);
         if (maximumCommands < 1) throw new ArgumentOutOfRangeException(nameof(maximumCommands));
         if (value is null) return;
@@ -174,7 +191,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data line commands need a current point from a moveto command.");
-                        BeginContour(currentX, currentY);
+                        BeginContinuation(currentX, currentY);
                         open = true;
                     }
                     hasPreviousCubic = false;
@@ -224,7 +241,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        BeginContour(currentX, currentY);
+                        BeginContinuation(currentX, currentY);
                         open = true;
                     }
                     bool absolute = command == 'C';
@@ -257,7 +274,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        BeginContour(currentX, currentY);
+                        BeginContinuation(currentX, currentY);
                         open = true;
                     }
                     bool absolute = command == 'S';
@@ -289,7 +306,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        BeginContour(currentX, currentY);
+                        BeginContinuation(currentX, currentY);
                         open = true;
                     }
                     bool absolute = command == 'Q';
@@ -319,7 +336,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        BeginContour(currentX, currentY);
+                        BeginContinuation(currentX, currentY);
                         open = true;
                     }
                     bool absolute = command == 'T';
@@ -348,7 +365,7 @@ internal static class SvgPathDataParser
                     if (!open)
                     {
                         if (!hasSubpathStart) throw new SvgException(SvgErrorCode.MalformedInput, "Path-data curve commands need a current point from a moveto command.");
-                        BeginContour(currentX, currentY);
+                        BeginContinuation(currentX, currentY);
                         open = true;
                     }
                     bool absolute = command == 'A';
@@ -363,9 +380,12 @@ internal static class SvgPathDataParser
                         double endX = absolute ? x : RequireFinite(currentX + x);
                         double endY = absolute ? y : RequireFinite(currentY + y);
                         authored?.Add(new(SvgAuthoredPathVerb.Arc, (largeArc ? SvgAuthoredArcFlags.Large : SvgAuthoredArcFlags.None) | (sweep ? SvgAuthoredArcFlags.Sweep : SvgAuthoredArcFlags.None), new(radiusX, radiusY), new(rotation, 0), new(endX, endY)));
-                        if (transform.IsAxisAligned && transform.A == 1 && transform.D == 1)
-                            builder.AddArc(radiusX, radiusY, rotation, largeArc, sweep, MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
-                        else AppendMappedArc(new(currentX, currentY), radiusX, radiusY, rotation, largeArc, sweep, new(endX, endY));
+                        if (builder is not null)
+                        {
+                            if (transform.IsAxisAligned && transform.A == 1 && transform.D == 1)
+                                builder.AddArc(radiusX, radiusY, rotation, largeArc, sweep, MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
+                            else AppendMappedArc(new(currentX, currentY), radiusX, radiusY, rotation, largeArc, sweep, new(endX, endY));
+                        }
                         hasPreviousCubic = false;
                         hasPreviousQuadratic = false;
                         currentX = endX;
@@ -400,25 +420,30 @@ internal static class SvgPathDataParser
         void BeginContour(double x, double y)
         {
             authored?.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(x, y), default, default));
-            builder.BeginContour(MapPathPoint(transform, x, y));
+            builder?.BeginContour(MapPathPoint(transform, x, y));
+        }
+
+        void BeginContinuation(double x, double y)
+        {
+            if (builder is not null) BeginContour(x, y);
         }
 
         void AddLine(double x, double y)
         {
             authored?.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(x, y), default, default));
-            builder.AddLine(MapPathPoint(transform, x, y));
+            builder?.AddLine(MapPathPoint(transform, x, y));
         }
 
         void AddCubic(double firstX, double firstY, double secondX, double secondY, double endX, double endY)
         {
             authored?.Add(new(SvgAuthoredPathVerb.Cubic, SvgAuthoredArcFlags.None, new(firstX, firstY), new(secondX, secondY), new(endX, endY)));
-            builder.AddCubic(MapPathPoint(transform, firstX, firstY), MapPathPoint(transform, secondX, secondY), MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
+            builder?.AddCubic(MapPathPoint(transform, firstX, firstY), MapPathPoint(transform, secondX, secondY), MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
         }
 
         void AddQuadratic(double controlX, double controlY, double endX, double endY)
         {
             authored?.Add(new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, new(controlX, controlY), new(endX, endY), default));
-            builder.AddQuadratic(MapPathPoint(transform, controlX, controlY), MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
+            builder?.AddQuadratic(MapPathPoint(transform, controlX, controlY), MapPathPoint(transform, endX, endY), flattenPolicy, cancellationToken);
         }
 
         void AppendMappedArc(SvgDevicePoint start, double radiusX, double radiusY, double rotation, bool largeArc, bool sweep, SvgDevicePoint end)
@@ -428,15 +453,15 @@ internal static class SvgPathDataParser
             for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) workCounter.Consume(cancellationToken);
             Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
             int count = SvgEndpointArc.Convert(start, radiusX, radiusY, rotation, largeArc, sweep, end, arcs, cancellationToken);
-            if (count == 0) builder.AddLine(MapPathPoint(transform, end.X, end.Y));
+            if (count == 0) builder?.AddLine(MapPathPoint(transform, end.X, end.Y));
             else for (int index = 0; index < count; index++)
-                builder.AddConic(MapPathPoint(transform, arcs[index].Control.X, arcs[index].Control.Y), MapPathPoint(transform, arcs[index].End.X, arcs[index].End.Y), arcs[index].Weight, 8, cancellationToken);
+                builder?.AddConic(MapPathPoint(transform, arcs[index].Control.X, arcs[index].Control.Y), MapPathPoint(transform, arcs[index].End.X, arcs[index].End.Y), arcs[index].Weight, 8, cancellationToken);
         }
 
         void SealContour(bool explicitlyClosed)
         {
             authored?.Add(new(explicitlyClosed ? SvgAuthoredPathVerb.Close : SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
-            builder.EndContour();
+            builder?.EndContour();
             if (closedEnds is not null) closedEnds.Add(explicitlyClosed);
         }
     }

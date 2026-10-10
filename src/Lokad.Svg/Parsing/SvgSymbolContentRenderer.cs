@@ -114,7 +114,7 @@ internal static class SvgSymbolContentRenderer
         affineClip = null;
         SvgAffineTransform map = definition.SymbolViewBox is {} box ? SvgReferenceResolver.SymbolInstancePlacement(box, reference, frame) : SvgReferenceResolver.PlainInstancePlacement(reference, frame);
         SvgClipBox? clip = frame?.Clip;
-        if (definition.SymbolViewBox is not null || reference.IsMarker)
+        if ((definition.SymbolViewBox is not null || reference.IsMarker) && (!reference.IsMarker || definition.Marker is { ClipsViewport: true }))
         {
             if (reference.Width is null || reference.Height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Symbol placement requires known instance dimensions.");
             SvgClipBox sourceViewport = new(reference.X, reference.Y, reference.Width.Value, reference.Height.Value);

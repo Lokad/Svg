@@ -1,0 +1,4 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='130' height='130' viewBox='0 0 100 100'>
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<defs><marker id='m' markerUnits='userSpaceOnUse' markerWidth='10' markerHeight='10' refX='5' refY='5' ><path d='M1 1L9 5L1 9Z' fill='red'/></marker></defs><polyline points='20,20 70,20 70,70' fill='none' stroke='blue' marker='url(#m)'/>
+</svg>

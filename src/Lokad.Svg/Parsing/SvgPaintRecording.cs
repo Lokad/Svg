@@ -316,7 +316,8 @@ internal static class SvgPaintRecording
         operation.Region = viewportClip;
         operation.AffineViewport = affineViewport;
         operation.RegionKind = affineViewport is not null ? SvgLayerRegionKind.AffineViewport
-            : viewportClip is null || viewportClip.Value.Antialiasing == SvgClipAntialiasing.None ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.Viewport;
+            : viewportClip is { Antialiasing: SvgClipAntialiasing.None } ? SvgLayerRegionKind.Bounds
+            : viewportClip is null ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.Viewport;
         SvgLeafMaskBinding? lastInner = null;
         SvgLeafMaskBinding? binding = null;
         for (int index = 0; index < geometries.Length; index++)

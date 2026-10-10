@@ -1,0 +1,783 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "Focused original-vertex, subpath, tangent, paint-order, opacity and overflow controls for complete inv-123/inv-124; finite arc, point-list and CSS-overflow boundaries remain explicit.",
+  "cases": [
+    {
+      "id": "path-mid-dashes",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-mid-dashes.svg",
+      "reference": "references/path-mid-dashes.png",
+      "sourceSha256": "7b6150c231a9730740b8b247e0bbd6c88ce5244916a33606bcabf2eacd5bbb53",
+      "referenceSha256": "0930b13111a333f29ade4bbbe46530df355b5d47f2a2f7e2fdf3ae91800df478",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained inv-123/inv-124 documents.",
+      "captures": [
+        {
+          "pngSha256": "0930b13111a333f29ade4bbbe46530df355b5d47f2a2f7e2fdf3ae91800df478",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0930b13111a333f29ade4bbbe46530df355b5d47f2a2f7e2fdf3ae91800df478",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0930b13111a333f29ade4bbbe46530df355b5d47f2a2f7e2fdf3ae91800df478",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-global-subpaths",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-global-subpaths.svg",
+      "reference": "references/path-global-subpaths.png",
+      "sourceSha256": "7c9711967cacc865a4789ce90dd7272e1771d8dbf2c2fa2c6de59b7906e7ec07",
+      "referenceSha256": "676295aa3815623fac4198a95d496c0c3614c86083c8da9ee971d6c8ff7113e5",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained inv-123/inv-124 documents.",
+      "captures": [
+        {
+          "pngSha256": "676295aa3815623fac4198a95d496c0c3614c86083c8da9ee971d6c8ff7113e5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "676295aa3815623fac4198a95d496c0c3614c86083c8da9ee971d6c8ff7113e5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "676295aa3815623fac4198a95d496c0c3614c86083c8da9ee971d6c8ff7113e5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-open-auto",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-open-auto.svg",
+      "reference": "references/path-open-auto.png",
+      "sourceSha256": "6b888d0c7b5614ad6f713790718e0b70f503b134fbe89fd22d1d04b2541dd734",
+      "referenceSha256": "44cd1bb6532fd0b7875804c27ccce48880d0788c5242b9db87e70371ace4ed6e",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Frozen original marker attribute control: Chromium ignores the XML shorthand; the separate CSS or longhand control activates markers without altering this input or reference.",
+      "captures": [
+        {
+          "pngSha256": "44cd1bb6532fd0b7875804c27ccce48880d0788c5242b9db87e70371ace4ed6e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "44cd1bb6532fd0b7875804c27ccce48880d0788c5242b9db87e70371ace4ed6e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "44cd1bb6532fd0b7875804c27ccce48880d0788c5242b9db87e70371ace4ed6e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-closed-auto",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-closed-auto.svg",
+      "reference": "references/path-closed-auto.png",
+      "sourceSha256": "f1a37efa3a7ad58e51ae2720fce3a0a7261bc5f80d8447e8f0b709ae1f1b7d6c",
+      "referenceSha256": "fc759c0012db3da34ed22e86489d794630f6a22a1ee9f04b5ddf240a816cf719",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Frozen original marker attribute control: Chromium ignores the XML shorthand; the separate CSS or longhand control activates markers without altering this input or reference.",
+      "captures": [
+        {
+          "pngSha256": "fc759c0012db3da34ed22e86489d794630f6a22a1ee9f04b5ddf240a816cf719",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fc759c0012db3da34ed22e86489d794630f6a22a1ee9f04b5ddf240a816cf719",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fc759c0012db3da34ed22e86489d794630f6a22a1ee9f04b5ddf240a816cf719",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-curve-tangents",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-curve-tangents.svg",
+      "reference": "references/path-curve-tangents.png",
+      "sourceSha256": "5b37e0780838a5e7b4ed9998dbb59a5bc2bc678111d31a9b3cd68f9d8878a92b",
+      "referenceSha256": "e3983f8b22cc3d6e96919cbb296117a451590447753d5489dc3e9b084eec80c5",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Frozen original marker attribute control: Chromium ignores the XML shorthand; the separate CSS or longhand control activates markers without altering this input or reference.",
+      "captures": [
+        {
+          "pngSha256": "e3983f8b22cc3d6e96919cbb296117a451590447753d5489dc3e9b084eec80c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e3983f8b22cc3d6e96919cbb296117a451590447753d5489dc3e9b084eec80c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e3983f8b22cc3d6e96919cbb296117a451590447753d5489dc3e9b084eec80c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-degenerate-curves",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-degenerate-curves.svg",
+      "reference": "references/path-degenerate-curves.png",
+      "sourceSha256": "e0a0553edb0621fadec22196a67d2a39d733ddcee0a7676ee3468a33ca636e65",
+      "referenceSha256": "76aae5b2873a9628fa52c91179079dfb6f83b747c1f134d364e8e94f673a8640",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Frozen original marker attribute control: Chromium ignores the XML shorthand; the separate CSS or longhand control activates markers without altering this input or reference.",
+      "captures": [
+        {
+          "pngSha256": "76aae5b2873a9628fa52c91179079dfb6f83b747c1f134d364e8e94f673a8640",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "76aae5b2873a9628fa52c91179079dfb6f83b747c1f134d364e8e94f673a8640",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "76aae5b2873a9628fa52c91179079dfb6f83b747c1f134d364e8e94f673a8640",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-zero-vertices",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-zero-vertices.svg",
+      "reference": "references/path-zero-vertices.png",
+      "sourceSha256": "20a60370a4690c139918c1dd37a9211a6bbb5a8cdaad9d607b0590c912078242",
+      "referenceSha256": "6a252406f39cf734adfba30505b8a56ffb808cdc20a8db97967aee30482a8f00",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained inv-123/inv-124 documents.",
+      "captures": [
+        {
+          "pngSha256": "6a252406f39cf734adfba30505b8a56ffb808cdc20a8db97967aee30482a8f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6a252406f39cf734adfba30505b8a56ffb808cdc20a8db97967aee30482a8f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6a252406f39cf734adfba30505b8a56ffb808cdc20a8db97967aee30482a8f00",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-forward-mid",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-forward-mid.svg",
+      "reference": "references/path-forward-mid.png",
+      "sourceSha256": "65dde5d1e7ce1ad68bfdaf8ad5f10b89a76688730d388faa7bf47a37c343742c",
+      "referenceSha256": "5da273ca25b8bf423435c296d9f0cc44a88b4789137c687a45f1afcce66beb75",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained inv-123/inv-124 documents.",
+      "captures": [
+        {
+          "pngSha256": "5da273ca25b8bf423435c296d9f0cc44a88b4789137c687a45f1afcce66beb75",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5da273ca25b8bf423435c296d9f0cc44a88b4789137c687a45f1afcce66beb75",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5da273ca25b8bf423435c296d9f0cc44a88b4789137c687a45f1afcce66beb75",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-opacity",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-opacity.svg",
+      "reference": "references/path-opacity.png",
+      "sourceSha256": "003f567a9b463596f4b95d4fbbdb61401993919e9ec9fab2be550f9570125bdd",
+      "referenceSha256": "c5afdc9d945b0fd6a4aff374d0c4b0fac035c9baacafb3726c4a8b22148e4f58",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Frozen original marker attribute control: Chromium ignores the XML shorthand; the separate CSS or longhand control activates markers without altering this input or reference.",
+      "captures": [
+        {
+          "pngSha256": "c5afdc9d945b0fd6a4aff374d0c4b0fac035c9baacafb3726c4a8b22148e4f58",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c5afdc9d945b0fd6a4aff374d0c4b0fac035c9baacafb3726c4a8b22148e4f58",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c5afdc9d945b0fd6a4aff374d0c4b0fac035c9baacafb3726c4a8b22148e4f58",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-order-fill-markers-stroke",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-order-fill-markers-stroke.svg",
+      "reference": "references/path-order-fill-markers-stroke.png",
+      "sourceSha256": "b5d9e1398c78b09ac4d0d6acbaff971387f264951d997d4e7faebe3e558d5e4b",
+      "referenceSha256": "339d6e59df6b79775600f0e3f59d2e7301c46c05c30866aee45749191c8a0005",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Frozen original marker attribute control: Chromium ignores the XML shorthand; the separate CSS or longhand control activates markers without altering this input or reference.",
+      "captures": [
+        {
+          "pngSha256": "339d6e59df6b79775600f0e3f59d2e7301c46c05c30866aee45749191c8a0005",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "339d6e59df6b79775600f0e3f59d2e7301c46c05c30866aee45749191c8a0005",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "339d6e59df6b79775600f0e3f59d2e7301c46c05c30866aee45749191c8a0005",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-order-markers-fill-stroke",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-order-markers-fill-stroke.svg",
+      "reference": "references/path-order-markers-fill-stroke.png",
+      "sourceSha256": "d8b5d616f9d332f45c18a83b52538f006871fe300c38d1490e090e5d1f0c127b",
+      "referenceSha256": "339d6e59df6b79775600f0e3f59d2e7301c46c05c30866aee45749191c8a0005",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Frozen original marker attribute control: Chromium ignores the XML shorthand; the separate CSS or longhand control activates markers without altering this input or reference.",
+      "captures": [
+        {
+          "pngSha256": "339d6e59df6b79775600f0e3f59d2e7301c46c05c30866aee45749191c8a0005",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "339d6e59df6b79775600f0e3f59d2e7301c46c05c30866aee45749191c8a0005",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "339d6e59df6b79775600f0e3f59d2e7301c46c05c30866aee45749191c8a0005",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "visible-marker-overflow",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "visible-marker-overflow.svg",
+      "reference": "references/visible-marker-overflow.png",
+      "sourceSha256": "042d899f9ccde0ea0bba678d95e600e524c2d6c0cc65f23870fc3213fc405d85",
+      "referenceSha256": "9ddaa945265333d2db2e3156829743c990352670dc380223fd9c580fbcfa57b0",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained inv-123/inv-124 documents.",
+      "captures": [
+        {
+          "pngSha256": "9ddaa945265333d2db2e3156829743c990352670dc380223fd9c580fbcfa57b0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ddaa945265333d2db2e3156829743c990352670dc380223fd9c580fbcfa57b0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "9ddaa945265333d2db2e3156829743c990352670dc380223fd9c580fbcfa57b0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-arc-boundary",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Markers on arc paths are not implemented.",
+      "input": "path-arc-boundary.svg",
+      "reference": "references/path-arc-boundary.png",
+      "sourceSha256": "28d6416f1ad72d02874d39fc1c41a138a2eccef3f72ff1b2818075b94cbad4bd",
+      "referenceSha256": "6cc3d3c2f71c45e0773d9ab0d7d650ca207af092fd9b54f4c17338884d6dc305",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained inv-123/inv-124 documents.",
+      "captures": [
+        {
+          "pngSha256": "6cc3d3c2f71c45e0773d9ab0d7d650ca207af092fd9b54f4c17338884d6dc305",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6cc3d3c2f71c45e0773d9ab0d7d650ca207af092fd9b54f4c17338884d6dc305",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6cc3d3c2f71c45e0773d9ab0d7d650ca207af092fd9b54f4c17338884d6dc305",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "point-list-marker-boundary",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "point-list-marker-boundary.svg",
+      "reference": "references/point-list-marker-boundary.png",
+      "sourceSha256": "903d5b27af8d52790f9f4ebe9292f19a5d45237afb5a15d5d7195c2fd5175df3",
+      "referenceSha256": "a0d4637acc1e8a3446027f22fe55a566140848ece06e4af678732094d095688d",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Frozen original marker attribute control: Chromium ignores the XML shorthand; the separate CSS or longhand control activates markers without altering this input or reference.",
+      "captures": [
+        {
+          "pngSha256": "a0d4637acc1e8a3446027f22fe55a566140848ece06e4af678732094d095688d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0d4637acc1e8a3446027f22fe55a566140848ece06e4af678732094d095688d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a0d4637acc1e8a3446027f22fe55a566140848ece06e4af678732094d095688d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "marker-css-overflow-boundary",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Only hidden viewport overflow is implemented.",
+      "input": "marker-css-overflow-boundary.svg",
+      "reference": "references/marker-css-overflow-boundary.png",
+      "sourceSha256": "8e5ce56cebaaa695df95899306c0b0de104d864b922c64214363857771255766",
+      "referenceSha256": "1d8085b954f17eba52ac261b628c4fccd8cbe318ad283802828843d4e6919a81",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects a shared dependency or explicit boundary of the retained inv-123/inv-124 documents.",
+      "captures": [
+        {
+          "pngSha256": "1d8085b954f17eba52ac261b628c4fccd8cbe318ad283802828843d4e6919a81",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1d8085b954f17eba52ac261b628c4fccd8cbe318ad283802828843d4e6919a81",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1d8085b954f17eba52ac261b628c4fccd8cbe318ad283802828843d4e6919a81",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-css-open-auto",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-css-open-auto.svg",
+      "reference": "references/path-css-open-auto.png",
+      "sourceSha256": "4948919a34a50a674ee2ec3614c38a0533d11bbd74db1e8add30b536bc34b3eb",
+      "referenceSha256": "7b1fada934ffd2d0c623bc83339ad0eccb6312407cf845f14a4dd7586fb1ea20",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects explicit CSS shorthand marker semantics or the actual point-list admission boundary.",
+      "captures": [
+        {
+          "pngSha256": "7b1fada934ffd2d0c623bc83339ad0eccb6312407cf845f14a4dd7586fb1ea20",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7b1fada934ffd2d0c623bc83339ad0eccb6312407cf845f14a4dd7586fb1ea20",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7b1fada934ffd2d0c623bc83339ad0eccb6312407cf845f14a4dd7586fb1ea20",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-css-closed-auto",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-css-closed-auto.svg",
+      "reference": "references/path-css-closed-auto.png",
+      "sourceSha256": "39572863d9a83f9c3da7201343c0879d4e2b86d306bacd8efd3f2349b07cac27",
+      "referenceSha256": "78f45538ed889dc58980ac3eca5a7885b4d0d61acb5a7629c9abd0854b02dbe4",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects explicit CSS shorthand marker semantics or the actual point-list admission boundary.",
+      "captures": [
+        {
+          "pngSha256": "78f45538ed889dc58980ac3eca5a7885b4d0d61acb5a7629c9abd0854b02dbe4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "78f45538ed889dc58980ac3eca5a7885b4d0d61acb5a7629c9abd0854b02dbe4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "78f45538ed889dc58980ac3eca5a7885b4d0d61acb5a7629c9abd0854b02dbe4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-css-curve-tangents",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-css-curve-tangents.svg",
+      "reference": "references/path-css-curve-tangents.png",
+      "sourceSha256": "a8197c1064ac7d3296392240daa0b3bfa35b3fe8951b8ac145c666ed13613ff0",
+      "referenceSha256": "5b420bc1b9d2942e3d60374e4c1634e8f24c1864c9cddd06b05c15211390dfd5",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects explicit CSS shorthand marker semantics or the actual point-list admission boundary.",
+      "captures": [
+        {
+          "pngSha256": "5b420bc1b9d2942e3d60374e4c1634e8f24c1864c9cddd06b05c15211390dfd5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5b420bc1b9d2942e3d60374e4c1634e8f24c1864c9cddd06b05c15211390dfd5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5b420bc1b9d2942e3d60374e4c1634e8f24c1864c9cddd06b05c15211390dfd5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-css-degenerate-curves",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-css-degenerate-curves.svg",
+      "reference": "references/path-css-degenerate-curves.png",
+      "sourceSha256": "b687381d175781a0fc2abe40281cb47847c3ab5ba2d87b36351721882482efc4",
+      "referenceSha256": "938ffc7778c7266cbe40d2c1361849fd30a49eab6c7f682395276b226f4f0b5c",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects explicit CSS shorthand marker semantics or the actual point-list admission boundary.",
+      "captures": [
+        {
+          "pngSha256": "938ffc7778c7266cbe40d2c1361849fd30a49eab6c7f682395276b226f4f0b5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "938ffc7778c7266cbe40d2c1361849fd30a49eab6c7f682395276b226f4f0b5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "938ffc7778c7266cbe40d2c1361849fd30a49eab6c7f682395276b226f4f0b5c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-css-opacity",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-css-opacity.svg",
+      "reference": "references/path-css-opacity.png",
+      "sourceSha256": "87a0ee63fa93e5f3bb025005f9f88593faab9eddf883b0829c99fd8858ba45a7",
+      "referenceSha256": "90b939ff2b8366479d193e3faa04af065245a34ec27116dbdd71252f3a7cdd91",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects explicit CSS shorthand marker semantics or the actual point-list admission boundary.",
+      "captures": [
+        {
+          "pngSha256": "90b939ff2b8366479d193e3faa04af065245a34ec27116dbdd71252f3a7cdd91",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "90b939ff2b8366479d193e3faa04af065245a34ec27116dbdd71252f3a7cdd91",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "90b939ff2b8366479d193e3faa04af065245a34ec27116dbdd71252f3a7cdd91",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-css-order-fill-markers-stroke",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-css-order-fill-markers-stroke.svg",
+      "reference": "references/path-css-order-fill-markers-stroke.png",
+      "sourceSha256": "e43ec5787381cf913fd70e5932665a52f5ae43d5cb925cede34e05a3fb5919b6",
+      "referenceSha256": "5cc198b96ae95c19145fca4b2d0b2e1b29eba1c34042e390eb697fa5b19398eb",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects explicit CSS shorthand marker semantics or the actual point-list admission boundary.",
+      "captures": [
+        {
+          "pngSha256": "5cc198b96ae95c19145fca4b2d0b2e1b29eba1c34042e390eb697fa5b19398eb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5cc198b96ae95c19145fca4b2d0b2e1b29eba1c34042e390eb697fa5b19398eb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5cc198b96ae95c19145fca4b2d0b2e1b29eba1c34042e390eb697fa5b19398eb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "path-css-order-markers-fill-stroke",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "input": "path-css-order-markers-fill-stroke.svg",
+      "reference": "references/path-css-order-markers-fill-stroke.png",
+      "sourceSha256": "8abd3f4bce1838ebfe5633747f13dd8205a3f6cfc63f10d0d9daf42ea008dcf2",
+      "referenceSha256": "7b1c82310e72d8f17b86e533f692296f47a8bd92587a78c93ae04132742ce423",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects explicit CSS shorthand marker semantics or the actual point-list admission boundary.",
+      "captures": [
+        {
+          "pngSha256": "7b1c82310e72d8f17b86e533f692296f47a8bd92587a78c93ae04132742ce423",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7b1c82310e72d8f17b86e533f692296f47a8bd92587a78c93ae04132742ce423",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7b1c82310e72d8f17b86e533f692296f47a8bd92587a78c93ae04132742ce423",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "point-list-marker-longhand-boundary",
+      "width": 130,
+      "height": 130,
+      "scale": 1,
+      "background": "transparent",
+      "role": "boundary",
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Markers on shapes other than lines and paths are not implemented.",
+      "input": "point-list-marker-longhand-boundary.svg",
+      "reference": "references/point-list-marker-longhand-boundary.png",
+      "sourceSha256": "11a79e55ae324ed20afb4ef451ad6e39591fd15a7246169385e424aed521f79a",
+      "referenceSha256": "bbf02799e49dbc7b1ddabc75e31fabbcee09cdb70fe3a0d2bdf075ad57ef7332",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before capture; protects explicit CSS shorthand marker semantics or the actual point-list admission boundary.",
+      "captures": [
+        {
+          "pngSha256": "bbf02799e49dbc7b1ddabc75e31fabbcee09cdb70fe3a0d2bdf075ad57ef7332",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bbf02799e49dbc7b1ddabc75e31fabbcee09cdb70fe3a0d2bdf075ad57ef7332",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bbf02799e49dbc7b1ddabc75e31fabbcee09cdb70fe3a0d2bdf075ad57ef7332",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ],
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "additionalLinuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "cases": [
+      "path-css-open-auto",
+      "path-css-closed-auto",
+      "path-css-curve-tangents",
+      "path-css-degenerate-curves",
+      "path-css-opacity",
+      "path-css-order-fill-markers-stroke",
+      "path-css-order-markers-fill-stroke",
+      "point-list-marker-longhand-boundary"
+    ],
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  }
+}
