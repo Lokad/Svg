@@ -49,7 +49,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             Width = Copy(raw.Width), Linecap = Copy(raw.Linecap), Linejoin = Copy(raw.Linejoin),
             Miterlimit = Copy(raw.Miterlimit), Dasharray = Copy(raw.Dasharray), Dashoffset = Copy(raw.Dashoffset),
             StrokeOpacity = Copy(raw.StrokeOpacity), PathLength = Copy(raw.PathLength), ClipRule = Copy(raw.ClipRule), PaintOrder = raw.PaintOrder,
-            MarkerStart = Copy(raw.MarkerStart), MarkerMid = Copy(raw.MarkerMid), MarkerEnd = Copy(raw.MarkerEnd)
+            MarkerStart = Copy(raw.MarkerStart), MarkerMid = Copy(raw.MarkerMid), MarkerEnd = Copy(raw.MarkerEnd), Filter = Copy(raw.Filter)
         };
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(512 + ParserCollectionMemory.GetArrayByteCount<Attribute>(reader.AttributeCount), SvgMemoryCategory.Scene);
         try
@@ -85,6 +85,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     {
         _work.Consume(_token);
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
+        if (_authored.Filter is string filter && filter.Trim() != "none") return true;
         // Numeric opacity binds through recorded paint. Shader fills and native
         // stroke colors require source lowering when their inherited values change.
         bool inheritedShader = _element != "line" && _authored.Fill is null && paintServerFill is not null;

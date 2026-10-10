@@ -10507,8 +10507,45 @@ and is admitted before allocation. Reserved rings and intermediate surfaces
 release on success, denial or cancellation; deterministic scanline observations
 protect partial replay and identical retry without modifying the borrowed source.
 
-Six frozen controls compare this kernel directly, including fractional alpha,
-one identity axis, frame clipping and colored premultiplied channels. They do not
-establish filter parsing or whole-document acceptance. The three retained filter
-documents still select resource binding, bounded source capture, regions and
-composition through the existing geometry renderer.
+Six frozen controls first qualified this kernel directly, including fractional
+alpha, one identity axis, frame clipping and colored premultiplied channels.
+They now also match whole filter playback through all six outputs on Windows/Linux,
+using the same unchanged SVGs and references.
+
+### Bounded filter resources and source replay (2026-10-10)
+
+A lazy scene-owned filter arena retains typed regions, ordered primitive inputs
+and placed bindings without expanding geometry or draw commands. Streaming
+construction charges node/depth/attribute traversal and bounded result lookup.
+Unsupported dormant resources retain a categorized admission failure; only live
+bindings raise it. Forward local filter ids resolve at scene sealing. Parser
+names are released then; primitive owners transfer with immutable scene storage.
+
+SourceGraphic borrows ordinary geometry and paint recording. It renders into
+its native integer enclosing source frame; a separately admitted halo frame
+feeds the premultiplied graph. Filter capture keeps ordinary source paint
+routing and skips final capture unpremultiplication. Element opacity surrounds
+the effect instead of being folded into the source. Drop shadow extracts alpha,
+blurs, applies flood color/opacity, offsets, merges SourceGraphic over the shadow
+and crops to the authored filter region. Native source-over arithmetic is shared
+with ordinary playback. Parent isolated layer bounds include filter output.
+
+The original 64×64 drop-shadow fixture and retained 128×128 star are exact through
+six APIs on Windows/Linux, with original inputs, options and frozen references.
+The retained question-mark export now reaches its outlined-path typography gate.
+Fifteen focused checks protect forward/named bindings, priority, opacity,
+dormant definitions, denied work/memory, source immutability, cancellation,
+retry and explicit unsupported pixel semantics. Six unchanged frozen controls
+exercise full blur playback, including fractional alpha and colored sRGB lanes.
+
+Current playback gates include fractional offsets, nonidentity small kernels,
+large-blur rescaling, colored linearRGB arithmetic, general affine filter maps,
+filtered containers/instances and local clip/mask/marker combinations. Primitive
+subregions and remaining finite composite/merge/blend nodes stay queued in G8.
+These are current implementation boundaries, not scope removals.
+
+Complete Release qualification passes 6,233 checks per platform (4,387 core /
+1,840 visual / six FontProbe), with zero warnings/errors/failures/skips. All
+2,848 preceding PNGs and 2,754 established exact comparisons remain unchanged;
+corporate 27/27 documents / 258/258 variants remain exact. Draw/geometry/paint
+layouts remain 72/272/68 bytes. No implementation fingerprints are required.

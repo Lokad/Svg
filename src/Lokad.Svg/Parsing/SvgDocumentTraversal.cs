@@ -239,6 +239,7 @@ internal static class SvgDocumentTraversal
             }
             if (reader.NodeType == XmlNodeType.EndElement)
             {
+                if (reader.Depth == state.FilterDepth) SvgDefinitionParser.RegisterFilter(state);
                 if (reader.Depth == state.SkipDepth) state.SkipDepth = -1;
                 if (reader.Depth == state.DescriptionDepth) state.DescriptionDepth = -1;
                 if (reader.Depth == state.DefinitionsDepth)

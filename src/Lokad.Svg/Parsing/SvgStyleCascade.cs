@@ -16,6 +16,8 @@ internal struct SvgStyleCascade
     private string? _clipRule;
     private string? _paintOrder;
     private string? _markerEnd;
+    private string? _filter;
+    private int _filterRank;
     private string? _markerMid;
     private string? _markerStart;
     private string? _family;
@@ -76,6 +78,7 @@ internal struct SvgStyleCascade
     internal void Apply(InlineStyle style, int specificity)
     {
         _hasVisibleOverflow |= style.HasVisibleOverflow;
+        Apply(ref _filter, ref _filterRank, style.Filter, (style.Important & InlineImportantProperties.Filter) != 0, specificity);
         Apply(ref _markerEnd, ref _markerEndRank, style.MarkerEnd, (style.Important & InlineImportantProperties.MarkerEnd) != 0, specificity);
         Apply(ref _markerMid, ref _markerMidRank, style.MarkerMid, (style.Important & InlineImportantProperties.MarkerMid) != 0, specificity);
         Apply(ref _markerStart, ref _markerStartRank, style.MarkerStart, (style.Important & InlineImportantProperties.MarkerStart) != 0, specificity);
@@ -108,6 +111,7 @@ internal struct SvgStyleCascade
     internal InlineStyle ToInlineStyle()
     {
         InlineImportantProperties important = InlineImportantProperties.None;
+        if (_filterRank >= ImportantBias) important |= InlineImportantProperties.Filter;
         if (_markerEndRank >= ImportantBias) important |= InlineImportantProperties.MarkerEnd;
         if (_markerMidRank >= ImportantBias) important |= InlineImportantProperties.MarkerMid;
         if (_markerStartRank >= ImportantBias) important |= InlineImportantProperties.MarkerStart;
@@ -135,7 +139,7 @@ internal struct SvgStyleCascade
         if (_miterlimitRank >= ImportantBias) important |= InlineImportantProperties.Miterlimit;
         if (_strokeOpacityRank >= ImportantBias) important |= InlineImportantProperties.StrokeOpacity;
         if (_pathLengthRank >= ImportantBias) important |= InlineImportantProperties.PathLength;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, PaintOrder = _paintOrder, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, HasVisibleOverflow = _hasVisibleOverflow, Important = important };
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, HasVisibleOverflow = _hasVisibleOverflow, Important = important };
     }
 
     private static void Apply(ref string? value, ref int currentRank, string? candidate, bool candidateImportant, int specificity)

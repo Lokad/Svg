@@ -8,6 +8,12 @@ internal static class SvgDefinitionParser
 {
     internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        if (state.FilterDefinition is {} activeFilter && reader.Depth > state.FilterDepth)
+        {
+            if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
+            activeFilter.Add(reader, reader.Depth == state.FilterDepth + 1);
+            return true;
+        }
         if (state.HasPatternTemplateReferences && state.PatternDepth < 0 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
             SvgPatternReferenceResolver.Resolve(state, false, workCounter, cancellationToken);
         bool symbolLocation = state.SymbolDepth >= 0 && state.SymbolDefinition is {} activeSymbol && reader.Depth == activeSymbol.ChildDepth(state.SymbolDepth);
@@ -15,6 +21,13 @@ internal static class SvgDefinitionParser
         bool inDefinitions = (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1) || symbolLocation;
         bool rootDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && directChild && reader.GetAttribute("id") is not null;
         bool groupNestedDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && state.PatternId is null && state.MaskId is null && state.ClipPathId is null && state.GroupDepth > 0 && reader.GetAttribute("id") is not null;
+        if ((inDefinitions || rootDefinition || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "filter")
+        {
+            state.FilterDefinition = SvgFilterDefinitionBuilder.Create(reader, state.Budget, workCounter, cancellationToken);
+            if (reader.IsEmptyElement) RegisterFilter(state);
+            else state.FilterDepth = reader.Depth;
+            return true;
+        }
         if ((inDefinitions || rootDefinition || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
         {
             bool symbolChild = state.SymbolDepth >= 0;
@@ -43,6 +56,7 @@ internal static class SvgDefinitionParser
                 InheritedPresentation = context.InheritedPresentation with { Markers = default }
             };
             SvgViewBox? symbolViewBox = null;
+            if (retainedStyle.Filter is not null) dormant = dormant with { AuthoredStyle = (dormant.AuthoredStyle ?? retainedStyle) with { Filter = null } };
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, dormant, state, symbolViewBox)
                 : reader.LocalName == "line" ? ParseLineDefinition(reader, dormant, state)
                 : ParseShapeDefinition(reader, dormant, state, symbolViewBox);
@@ -1490,6 +1504,24 @@ internal static class SvgDefinitionParser
         if (box.X != Math.Truncate(box.X) || box.Y != Math.Truncate(box.Y) || box.Width != Math.Truncate(box.Width) || box.Height != Math.Truncate(box.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer pattern tile content is implemented.");
         if (box.X < tile.OriginX || box.Y < tile.OriginY || box.X + box.Width > tile.OriginX + tile.TileWidth || box.Y + box.Height > tile.OriginY + tile.TileHeight) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern tile content overflowing its tile is not implemented.");
         return content;
+    }
+
+    internal static void RegisterFilter(SvgDocumentState state)
+    {
+        SvgFilterDefinitionBuilder builder = state.FilterDefinition ?? throw new InvalidOperationException("No filter definition is open.");
+        SvgFilterResource resource = builder.Finish();
+        bool adopted = false;
+        try
+        {
+            if (builder.Id is string id) { state.Scene.Filters.AddResource(id, resource); adopted = true; }
+        }
+        finally
+        {
+            if (!adopted) resource.Dispose();
+            builder.Dispose();
+            state.FilterDefinition = null;
+            state.FilterDepth = -1;
+        }
     }
 
     internal static void RegisterSymbol(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)

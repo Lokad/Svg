@@ -209,10 +209,15 @@ public static class SvgConverter
 
     /// <summary>Renders a borrowed scene with shared budget/cancellation; pattern surfaces remain premultiplied for image-shader sampling.</summary>
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, CancellationToken cancellationToken)
+        => Rasterize(root, options, budget, surfaceMode, null, cancellationToken);
+
+    private readonly record struct FilterRasterFrame(int Width, int Height, double ScaleX, double OffsetX, double ScaleY, double OffsetY);
+
+    private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, FilterRasterFrame? frame, CancellationToken cancellationToken)
     {
         (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
-        double scaledWidth = Math.Round(width * options.OutputScale, MidpointRounding.AwayFromZero);
-        double scaledHeight = Math.Round(height * options.OutputScale, MidpointRounding.AwayFromZero);
+        double scaledWidth = frame?.Width ?? Math.Round(width * options.OutputScale, MidpointRounding.AwayFromZero);
+        double scaledHeight = frame?.Height ?? Math.Round(height * options.OutputScale, MidpointRounding.AwayFromZero);
         if (!double.IsFinite(scaledWidth) || !double.IsFinite(scaledHeight) || scaledWidth <= 0 || scaledHeight <= 0 || scaledWidth != Math.Truncate(scaledWidth) || scaledHeight != Math.Truncate(scaledHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive finite integral output dimensions are implemented currently.");
         if (scaledWidth > options.Limits.MaximumDimension || scaledHeight > options.Limits.MaximumDimension) throw new SvgException(SvgErrorCode.LimitExceeded, "Output dimensions exceed the configured dimension limit.");
         int outputWidth = (int)scaledWidth;
@@ -230,6 +235,7 @@ public static class SvgConverter
             workUnits += pixelCount;
         }
         (double horizontalScale, double horizontalOffset, double verticalScale, double verticalOffset) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
+        if (frame is {} filterFrame) (horizontalScale, horizontalOffset, verticalScale, verticalOffset) = (filterFrame.ScaleX, filterFrame.OffsetX, filterFrame.ScaleY, filterFrame.OffsetY);
         if (!double.IsFinite(horizontalScale) || !double.IsFinite(horizontalOffset) || !double.IsFinite(verticalScale) || !double.IsFinite(verticalOffset) || horizontalScale <= 0 || verticalScale <= 0)
         {
             throw new SvgException(SvgErrorCode.LimitExceeded, "Output scaling and viewBox mapping exceed the admitted numeric range.");
@@ -316,6 +322,122 @@ public static class SvgConverter
         {
             surface.Dispose();
             throw;
+        }
+
+        SvgPaintBounds FilterRegion(SvgFilterBinding binding, SvgFilterResource resource, ParserWorkCounter counter)
+        {
+            SvgFilterRegion region = resource.Region;
+            SvgPaintBounds box = binding.ObjectBounds;
+            bool objectUnits = region.Units == SvgFilterUnits.ObjectBoundingBox;
+            double basisX = objectUnits ? box.Right - box.Left : binding.LengthBases.Width ?? width;
+            double basisY = objectUnits ? box.Bottom - box.Top : binding.LengthBases.Height ?? height;
+            double x = Length(region.X, basisX), y = Length(region.Y, basisY);
+            double w = Length(region.Width, basisX), h = Length(region.Height, basisY);
+            if (w <= 0 || h <= 0) return default;
+            SvgAffineTransform map = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            if (objectUnits) { x += box.Left; y += box.Top; }
+            else map = map.ComposeChecked(binding.Transform);
+            SvgPaintBounds bounds = new SvgPaintBounds((float)x, (float)y, (float)(x + w), (float)(y + h)).Map(map, counter, cancellationToken);
+            return bounds;
+
+            double Length(SvgFilterLength length, double basis) => length.Percentage ? length.Value * basis / 100 : objectUnits ? length.Value * basis : length.Value;
+        }
+
+        int RenderFilter(int first, SvgDrawCommand command, byte[] destination)
+        {
+            SvgFilterArena arena = root.SceneStorage?.Filters ?? throw new SvgException(SvgErrorCode.MalformedInput, "Filter resources are missing.");
+            SvgFilterBinding binding = arena.BindingAt(command.MaskContentIndex);
+            SvgFilterResource resource = arena.ResourceAt(binding.ResourceIndex);
+            if (binding.Transform.B != 0 || binding.Transform.C != 0)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters under rotated or skewed placement are not implemented.");
+            int end = first, depth = 0;
+            for (; end < root.Commands.Length; end++)
+            {
+                if (workUnits == options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source traversal exceeds the work limit.");
+                workUnits++;
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgDrawCommand item = root.Commands[end];
+                if (item.Kind == SvgDrawCommandKind.EndGroup && depth-- == 0) break;
+                if (item.Kind == SvgDrawCommandKind.BeginGroup) depth++;
+            }
+            if (end == root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Filter source scope is unbalanced.");
+            ParserWorkCounter regionWork = new(options.Limits.MaximumWorkUnits - workUnits);
+            SvgPaintBounds region = FilterRegion(binding, resource, regionWork);
+            workUnits += regionWork.Used;
+            if (region.Right <= region.Left || region.Bottom <= region.Top) return end + 1;
+            double primitiveScaleX = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox ? binding.ObjectBounds.Right - binding.ObjectBounds.Left : binding.Transform.A;
+            double primitiveScaleY = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox ? binding.ObjectBounds.Bottom - binding.ObjectBounds.Top : binding.Transform.D;
+            SvgFilterDeviceMap primitiveMap = new(primitiveScaleX * horizontalScale, primitiveScaleY * verticalScale);
+            double paddingX = 0, paddingY = 0;
+            foreach (SvgFilterPrimitive primitive in resource.Primitives.Items)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (workUnits == options.Limits.MaximumWorkUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter extent traversal exceeds the work limit.");
+                workUnits++;
+                paddingX += Math.Ceiling(Math.Abs(primitive.SigmaX * primitiveMap.ScaleX) * 4) + Math.Ceiling(Math.Abs(primitive.OffsetX * primitiveMap.ScaleX));
+                paddingY += Math.Ceiling(Math.Abs(primitive.SigmaY * primitiveMap.ScaleY) * 4) + Math.Ceiling(Math.Abs(primitive.OffsetY * primitiveMap.ScaleY));
+            }
+            SvgPaintBounds visual = binding.VisualBounds;
+            double left = Math.Floor(visual.Left * horizontalScale + horizontalOffset), top = Math.Floor(visual.Top * verticalScale + verticalOffset);
+            double right = Math.Ceiling(visual.Right * horizontalScale + horizontalOffset), bottom = Math.Ceiling(visual.Bottom * verticalScale + verticalOffset);
+            double frameLeft = left - paddingX, frameTop = top - paddingY;
+            double frameWidth = right - left + paddingX * 2, frameHeight = bottom - top + paddingY * 2;
+            if (right <= left || bottom <= top) return end + 1;
+            if (!double.IsFinite(frameWidth) || !double.IsFinite(frameHeight) || frameWidth > options.Limits.MaximumDimension || frameHeight > options.Limits.MaximumDimension
+                || frameWidth * frameHeight > options.Limits.MaximumPixels || frameWidth * frameHeight > int.MaxValue / 4)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source and halo exceed the configured surface limits.");
+            int fw = (int)frameWidth, fh = (int)frameHeight, sw = (int)(right - left), sh = (int)(bottom - top);
+            long copyWork = (long)sw * sh * 4 + end - first;
+            if (copyWork >= options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source capture exceeds the work limit.");
+            workUnits += copyWork;
+            using RenderBudget.BudgetReservation commandsOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(end - first), SvgMemoryCategory.Scene);
+            SvgDrawCommand[] sourceCommands = new SvgDrawCommand[end - first];
+            for (int index = first; index < end; index++) { cancellationToken.ThrowIfCancellationRequested(); sourceCommands[index - first] = root.Commands[index]; }
+            SvgRenderLimits limits = options.Limits;
+            SvgRenderLimits sourceLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes,
+                limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(limits.MaximumWorkUnits - workUnits)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+            SvgRenderOptions sourceOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, sourceLimits, options.FontSnapshot);
+            SvgRoot borrowed = root with { Commands = sourceCommands, ParserWorkUnits = 0 };
+            using RasterizedSurface captured = Rasterize(borrowed, sourceOptions, budget, RasterSurfaceMode.PremultipliedFilter,
+                new(sw, sh, horizontalScale, horizontalOffset - left, verticalScale, verticalOffset - top), cancellationToken);
+            workUnits += captured.WorkUnits;
+            int frameBytes = fw * fh * 4;
+            using RenderBudget.BudgetReservation frameOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(frameBytes), SvgMemoryCategory.Surface);
+            byte[] source = new byte[frameBytes];
+            int px = (int)paddingX, py = (int)paddingY;
+            for (int row = 0; row < sh; row++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                captured.Pixels.AsSpan(row * sw * 4, sw * 4).CopyTo(source.AsSpan(((row + py) * fw + px) * 4, sw * 4));
+            }
+            using RasterizedSurface filtered = SvgFilterPlayback.Apply(source, fw, fh, resource, primitiveMap, budget, limits.MaximumWorkUnits - workUnits, cancellationToken);
+            workUnits += filtered.WorkUnits;
+            int restoreLeft = Math.Max(layerBounds.Left, ClampFloor(Math.Max(frameLeft, region.Left) + .5, outputWidth));
+            int restoreTop = Math.Max(layerBounds.Top, ClampFloor(Math.Max(frameTop, region.Top) + .5, outputHeight));
+            int restoreRight = Math.Min(layerBounds.Right, ClampFloor(Math.Min(frameLeft + fw, region.Right) + .5, outputWidth));
+            int restoreBottom = Math.Min(layerBounds.Bottom, ClampFloor(Math.Min(frameTop + fh, region.Bottom) + .5, outputHeight));
+            long restoreWork = (long)Math.Max(0, restoreRight - restoreLeft) * Math.Max(0, restoreBottom - restoreTop);
+            if (restoreWork > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter restore exceeds the work limit.");
+            workUnits += restoreWork;
+            for (int y = restoreTop; y < restoreBottom; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                for (int x = restoreLeft; x < restoreRight; x++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    int target = (y * outputWidth + x) * 4, origin = ((int)(y - frameTop) * fw + (int)(x - frameLeft)) * 4;
+                    float opacity = command.SourceOpacity.Value * foldedOpacity;
+                    int red = (int)MathF.Floor(filtered.Pixels[origin] * opacity + .5f), green = (int)MathF.Floor(filtered.Pixels[origin + 1] * opacity + .5f);
+                    int blue = (int)MathF.Floor(filtered.Pixels[origin + 2] * opacity + .5f), alpha = (int)MathF.Floor(filtered.Pixels[origin + 3] * opacity + .5f);
+                    if (activeViewportClip.Length != 0)
+                    {
+                        int clip = activeViewportClip[target + 3];
+                        red = (red * clip + 127) / 255; green = (green * clip + 127) / 255; blue = (blue * clip + 127) / 255; alpha = (alpha * clip + 127) / 255;
+                    }
+                    BlendPremultipliedOver(destination.AsSpan(target, 4), red, green, blue, alpha);
+                }
+            }
+            return end + 1;
         }
 
         // The recipe-3 page paints its opaque HTML and body backgrounds separately.
@@ -477,6 +599,13 @@ public static class SvgConverter
                 SvgDrawCommand value = root.Commands[cursor];
                 if (value.Kind == SvgDrawCommandKind.BeginGroup)
                 {
+                    if (value.RegionKind == SvgLayerRegionKind.Filter && root.SceneStorage?.Filters is {} filters)
+                    {
+                        SvgFilterBinding binding = filters.BindingAt(value.MaskContentIndex);
+                        SvgPaintBounds filtered = FilterRegion(binding, filters.ResourceAt(binding.ResourceIndex), boundsWork);
+                        left = Math.Min(left, filtered.Left); top = Math.Min(top, filtered.Top);
+                        right = Math.Max(right, filtered.Right); bottom = Math.Max(bottom, filtered.Bottom);
+                    }
                     if (value.RegionKind == SvgLayerRegionKind.Mask && value.MaskContentIndex >= 0 && value.MaskRegion is {} spatialRegion)
                         IncludeBox(new(spatialRegion.X, spatialRegion.Y, spatialRegion.Width, spatialRegion.Height, default, false, null), outputMap, 0);
                     depth++; continue;
@@ -647,6 +776,11 @@ public static class SvgConverter
                 }
                 if (command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
+                    if (command.RegionKind == SvgLayerRegionKind.Filter)
+                    {
+                        index = RenderFilter(index, command, destination);
+                        continue;
+                    }
                     if (command.MaskRegion is null && command.MaskContentIndex < 0 && command.MaskAlpha == 255
                         && TrySinglePaint(index, command.RecordingScope, out int paintEnd))
                     {
@@ -2612,7 +2746,7 @@ public static class SvgConverter
 
     /// <summary>Composites one premultiplied source pixel over the premultiplied destination pixel.</summary>
     /// <remarks>Surfaces store premultiplied colors with SkAlphaMulQ premultiply and SkPMSrcOver compositing (src/core/SkColorPriv.h at the release pin); the capture un-premultiplies once at the end (see ApplyCaptureUnpremultiply). Straight paints premultiply on entry; layer content already is premultiplied. Color lanes saturate per the pin; the alpha lane provably stays within a byte for valid premultiplied inputs.</remarks>
-    private static void BlendPremultipliedOver(Span<byte> destination, int sourceRed, int sourceGreen, int sourceBlue, int sourceAlpha)
+    internal static void BlendPremultipliedOver(Span<byte> destination, int sourceRed, int sourceGreen, int sourceBlue, int sourceAlpha)
     {
         int scale = 256 - sourceAlpha;
         destination[0] = (byte)Math.Min(((destination[0] * scale) >> 8) + sourceRed, 255);
@@ -2639,7 +2773,7 @@ public static class SvgConverter
 
     private static byte MultiplyAlpha(byte left, byte right) => (byte)((left * right + 127) / 255);
 
-    private enum RasterSurfaceMode { Capture, PremultipliedPattern }
+    private enum RasterSurfaceMode { Capture, PremultipliedPattern, PremultipliedFilter }
 
     /// <summary>Owns the pixel surface and its budget reservation until encoding or a failed caller releases it.</summary>
     internal readonly record struct RasterizedSurface(int Width, int Height, byte[] Pixels, RenderBudget.BudgetReservation Reservation, long WorkUnits) : IDisposable

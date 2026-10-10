@@ -11,6 +11,7 @@ internal static class SvgShapePresentationResolver
 {
     internal static SvgResolvedShapePresentation Resolve(SvgComputedStyle style, SvgPaint inheritedPaint, bool inheritedDisplayed, bool inheritedVisibility, bool allowsPaintedStroke, IReadOnlyDictionary<string, SvgColor> namedColors)
     {
+        if (style.Filter is string filter && filter.Trim() != "none") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters on retained definition content are not implemented.");
         SvgResolvedPresentation presentation = SvgPresentationResolver.Resolve(style, inheritedPaint, inheritedDisplayed, inheritedVisibility, namedColors);
         ValidateFillRule(style.FillRule);
         if (!allowsPaintedStroke) SvgPresentationResolver.ValidateStroke(style.Stroke);

@@ -1190,7 +1190,7 @@ internal readonly record struct SvgSymbolFillBinding(bool IsInherited, SvgPaintO
 internal enum SvgDrawCommandKind { Geometry, BeginGroup, EndGroup }
 
 /// <summary>Separates a mask allocation region from a geometric viewport clip at layer restore.</summary>
-internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport, Bounds }
+internal enum SvgLayerRegionKind : byte { Mask, Viewport, AffineViewport, Bounds, Filter }
 
 /// <summary>References retained geometry or marks an isolated layer; mask alpha applies before the separate outer opacity.</summary>
 internal readonly record struct SvgDrawCommand(SvgDrawCommandKind Kind, int GeometryIndex, SvgPaintOpacity SourceOpacity, SvgClipBox? MaskRegion, int MaskContentIndex, byte MaskAlpha)
@@ -1218,9 +1218,11 @@ internal sealed class SvgSceneStorage : IDisposable
     private readonly OwnedSceneArray<SvgVectorContentOwner> _vectorContents;
     private readonly RenderBudget.BudgetReservation _recordedPaintOwner;
     internal SvgRecordedPaintValue[] RecordedPaintValues => _recordedPaintValues.Items;
+    internal SvgFilterArena? Filters { get; }
 
-    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation, List<RenderBudget.BudgetReservation> paintReservations, SvgMaskContent[] maskContents, RenderBudget.BudgetReservation? maskContentReservation, List<RenderBudget.BudgetReservation> maskReservations, OwnedSceneArray<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner, OwnedSceneArray<SvgVectorContentOwner> vectorContents)
+    private SvgSceneStorage(SvgGeometry[] geometries, RenderBudget.BudgetReservation? geometryReservation, SvgDrawCommand[] commands, RenderBudget.BudgetReservation? commandReservation, List<RenderBudget.BudgetReservation> paintReservations, SvgMaskContent[] maskContents, RenderBudget.BudgetReservation? maskContentReservation, List<RenderBudget.BudgetReservation> maskReservations, OwnedSceneArray<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner, OwnedSceneArray<SvgVectorContentOwner> vectorContents, SvgFilterArena? filters)
     {
+        Filters = filters;
         _recordedPaintValues = recordedPaintValues;
         _vectorContents = vectorContents;
         _recordedPaintOwner = recordedPaintOwner;
@@ -1243,7 +1245,7 @@ internal sealed class SvgSceneStorage : IDisposable
 
     internal SvgMaskContent[] MaskContents { get; }
 
-    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands, List<RenderBudget.BudgetReservation> paintReservations, BudgetedSceneList<SvgMaskContent> maskContents, List<RenderBudget.BudgetReservation> maskReservations, BudgetedSceneList<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner, BudgetedSceneList<SvgVectorContentOwner>? vectorContents)
+    internal static SvgSceneStorage Create(BudgetedSceneList<SvgGeometry> geometries, BudgetedSceneList<SvgDrawCommand> commands, List<RenderBudget.BudgetReservation> paintReservations, BudgetedSceneList<SvgMaskContent> maskContents, List<RenderBudget.BudgetReservation> maskReservations, BudgetedSceneList<SvgRecordedPaintValue> recordedPaintValues, RenderBudget.BudgetReservation recordedPaintOwner, BudgetedSceneList<SvgVectorContentOwner>? vectorContents, SvgFilterArena? filters)
     {
         ArgumentNullException.ThrowIfNull(paintReservations);
         ArgumentNullException.ThrowIfNull(maskContents);
@@ -1263,7 +1265,7 @@ internal sealed class SvgSceneStorage : IDisposable
                         OwnedSceneArray<SvgVectorContentOwner> ownedVectors = vectorContents is null ? new([], null) : vectorContents.Detach();
                         try
                         {
-                            return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation, paintReservations, ownedMasks.Items, ownedMasks.Reservation, maskReservations, ownedPaints, recordedPaintOwner, ownedVectors);
+                            return new SvgSceneStorage(ownedGeometries.Items, ownedGeometries.Reservation, ownedCommands.Items, ownedCommands.Reservation, paintReservations, ownedMasks.Items, ownedMasks.Reservation, maskReservations, ownedPaints, recordedPaintOwner, ownedVectors, filters);
                         }
                         catch
                         {
@@ -1310,6 +1312,7 @@ internal sealed class SvgSceneStorage : IDisposable
         _recordedPaintOwner.Dispose();
         foreach (SvgVectorContentOwner content in _vectorContents.Items) content.Dispose();
         _vectorContents.Dispose();
+        Filters?.Dispose();
     }
 }
 
@@ -1331,6 +1334,8 @@ internal sealed class SvgSceneBuilder : IDisposable
     internal const long RecordedPaintOwnerBytes = 192;
     private RenderBudget.BudgetReservation? _recordedPaintOwner;
     private BudgetedSceneList<SvgVectorContentOwner>? _vectorContents;
+    private SvgFilterArena? _filters;
+    internal SvgFilterArena Filters => _filters ??= SvgFilterArena.Create(_budget, _workCounter, _cancellationToken);
 
     internal SvgSceneBuilder(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -1611,8 +1616,10 @@ internal sealed class SvgSceneBuilder : IDisposable
     {
         if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
         if (_hasAuthoredGroupScopes) RemoveEmptyGroups();
+        _filters?.Seal();
         _built = true;
-        SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations, _recordedPaintValues, _recordedPaintOwner ?? throw new InvalidOperationException("Paint arena has already transferred."), _vectorContents);
+        SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations, _recordedPaintValues, _recordedPaintOwner ?? throw new InvalidOperationException("Paint arena has already transferred."), _vectorContents, _filters);
+        _filters = null;
         _recordedPaintOwner = null;
         _paintReservations = new();
         _maskReservations = new();
@@ -1656,6 +1663,7 @@ internal sealed class SvgSceneBuilder : IDisposable
         _maskContents.Dispose();
         foreach (RenderBudget.BudgetReservation reservation in _maskReservations) reservation.Dispose();
         _maskReservations.Clear();
+        _filters?.Dispose();
     }
 }
 

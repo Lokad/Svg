@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Three pending whole-document outputs: one original CC0 acceptance fixture and two public-domain online exports. Outputs were declared and frozen before renderer correction. Admission baselines are explicit; none is a completed document.",
+  "purpose": "Three frozen whole-document outputs. The original drop-shadow fixture and shadowed star are exact; the question-mark export reaches its outlined-path styling gate. Outputs, inputs and references remain unchanged.",
   "cases": [
     {
       "id": "original-logo-filter-mark-64x64-transparent",
@@ -34,9 +34,7 @@
           "profileCleaned": true
         }
       ],
-      "sourceKind": "original-acceptance-fixture",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Rectangle attribute 'filter' is not implemented."
+      "sourceKind": "original-acceptance-fixture"
     },
     {
       "id": "inv-125-128x128-transparent",
@@ -70,9 +68,7 @@
           "profileCleaned": true
         }
       ],
-      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Star_with_shadow.svg",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Inline style property 'filter' is not implemented."
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Star_with_shadow.svg"
     },
     {
       "id": "inv-126-185x180-transparent",
@@ -108,7 +104,7 @@
       ],
       "sourceUrl": "https://commons.wikimedia.org/wiki/File:Symbol_question_vote.svg",
       "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Inline style property 'filter' is not implemented."
+      "expectedMessage": "Inline style property 'font-size' is not implemented."
     }
   ],
   "chromeVersion": "153.0.8010.52",

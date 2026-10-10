@@ -79,6 +79,9 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal SvgSceneBuilder Scene { get; }
 
+    internal SvgFilterDefinitionBuilder? FilterDefinition { get; set; }
+    internal int FilterDepth { get; set; } = -1;
+
     internal BudgetedParserList<SvgDeferredPaintLeaf> DeferredPaintLeaves { get; }
     internal BudgetedParserList<SvgDeferredResourceUse> DeferredResourceUses { get; }
     internal BudgetedParserList<SvgMaskReplayChild> MaskReplayChildren { get; }
@@ -338,6 +341,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     public void Dispose()
     {
+        FilterDefinition?.Dispose();
         SymbolDefinition?.Dispose();
         if (_strokeContents is not null) foreach (SvgSymbolContentRange content in _strokeContents.AsSpan()) content.Content.Dispose();
         _strokeContents?.Dispose();

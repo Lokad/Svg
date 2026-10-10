@@ -6,16 +6,28 @@ frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen. This complete
 matrix remains the regression gate.
 
+**Current finished filter correction:** 6,233 tests pass per platform (4,387 core /
+1,840 visual / six FontProbe), with zero failures/skips/warnings. The complete
+bank preserves 2,848 previous PNGs byte-for-byte and 2,754 established exact
+comparisons across 2,908 reports; the original drop-shadow adds one exact PNG.
+Command/geometry/paint layouts stay 72/272/68 bytes. Six frozen blur controls
+now exercise whole playback through six APIs, alongside 15 focused binding,
+ownership, opacity and boundary checks. This finished qualification supersedes
+the preceding marker and isolated-kernel receipts for current renderer playback.
+Reuse it until a renderer change or failure requires further complete checks.
+
 The original CC0 acceptance document `original-logo-marker-mark` is also complete
 at its unchanged 64×64 transparent output through all six APIs on Windows/Linux.
 Its [instance bank](tests/Research/marker-instance-content/manifest.json) keeps
 the original bytes and newly frozen healthy references; twelve focused controls
 are exact and three explicit boundaries remain. This one acceptance fixture is
-counted separately from the 28 completed development documents below.
+counted separately from the 29 completed development documents below.
+The original drop-shadow fixture is now also complete at its frozen 64×64 transparent output, making **2/2 original
+acceptance documents complete**, separate from development documents.
 
-**28/30 selected development documents are complete**; two retained shadowed
-exports are pending, alongside the original drop-shadow acceptance fixture.
-The 28 completed documents are exact
+**29/30 selected development documents are complete**. The shadowed star is
+exact; the question-mark export remains pending.
+The 29 completed documents are exact
 through all six outputs on both platforms. Earlier qualified references stay unchanged;
 the tiger uses the explicit viewport qualification explained below:
 
@@ -49,6 +61,7 @@ the tiger uses the explicit viewport qualification explained below:
 | Diagonal double-arrow export (`inv-122`) | 800×400, transparent | Shared tangent/start-reversal placement and binary-region paint routing. |
 | Lattice diagram (`inv-123`) | Explicit 512×352, transparent | Authored intermediate vertices, subpath roles and shared bounded marker replay preserve dashed strokes. |
 | Security screw head (`inv-124`) | Explicit 512×512, transparent | Shared automatic tangent placement and visible marker-content overflow. |
+| Shadowed star (`inv-125`) | 128×128, transparent | Local filter binding, bounded native SourceGraphic replay and shared premultiplied Gaussian blur. |
 
 Each document has a stable, healthy, cleaned Linux browser capture triple matching
 its frozen reference byte-for-byte. The [gap manifest](tests/References/inventory/svg-gap-cases.json)
@@ -58,7 +71,7 @@ completed: 5/5 in that manifest**, separate from the preserved corporate
 **9/9 frozen outputs exact through all six APIs on Windows/Linux**. Its
 [radiation bank](tests/Research/radiation-symbol/manifest.json) retains every original
 input, option and reference; previously verified Linux triples match those same
-references. **Completed development deliverables: 28; selected queue: 28/30 complete.**
+references. **Completed development deliverables: 29; selected queue: 29/30 complete.**
 Every preceding completed output remains exact. Both complete CC0 baseball
 illustrations (`inv-120`, 130×130 transparent; `inv-119`, 1200×800 transparent)
 now match unchanged references through all six APIs on Windows/Linux. Shared
@@ -560,7 +573,7 @@ Gaussian kernels, large-blur rescaling and the remaining finite effects stay ope
 they do not block the three document-selected deviations. Complete-document and
 corporate counts remain unchanged.
 
-The selected development queue is **28/30 complete**, with **1/2 selected original
+The selected development queue is **29/30 complete**, with **1/2 selected original
 acceptance fixtures complete**, separate from corporate **27/27 / 258/258**.
 G8 arc-path directions, polyline/polygon vertices and their instances, angle/length
 units, CSS visible overflow, remaining presentation combinations and the finite
@@ -805,7 +818,7 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected development queue is **28/30 complete**, including both baseball,
+The selected development queue is **29/30 complete**, including both baseball,
 both arrow exports and both path-marker documents among the completed outputs.
 Their shared line/path marker mechanisms advance G8. The original marker-instance acceptance document is also
 complete, counted separately from those 28. The retained `original-logo-filter-mark`
@@ -1352,17 +1365,27 @@ results stay exact, and decode, style matching, resampling and cleanup are bound
   execution. Reuse the existing layer and premultiplied-paint machinery.
   - [x] Shared bounded CPU three-box blur for device deviations 2 ≤ sigma < 135,
     plus identity axes. Six direct-kernel references protect native premultiplied
-    channels and rounding. Filter binding and complete documents remain pending.
-  - [ ] Local filter-resource binding from attributes and static CSS; bounded
-    native SourceGraphic/SourceAlpha capture, regions, blur and drop-shadow
-    composition. Finish the three retained [filter documents](tests/Research/filter-documents/manifest.json).
+    channels and rounding. These same controls now pass whole playback
+    through six outputs without recapturing references.
+  - [x] Local filter-resource binding from attributes and static CSS on live
+    geometric leaves; bounded native SourceGraphic/SourceAlpha capture, filter
+    regions, Gaussian blur, integer offsets and black drop-shadow composition.
+    The original drop-shadow fixture and `inv-125` are complete against frozen
+    outputs through six APIs on Windows/Linux.
+  - [ ] Finish `inv-126` against its frozen 185×180 transparent output. Its next
+    gate is valid inert outlined-path typography (`font-size` and the remaining
+    exporter declarations); then diagnose every remaining pixel mismatch.
+    Use focused controls for each shared correction.
   - [ ] Small Gaussian kernels and large-blur rescaling; remaining finite
     graph/result combinations, anisotropic/zero blur,
     both unit systems, primitive subregions, clipped halos, sRGB/linearRGB,
-    composite `over`/`in`, merges and normal/multiply/screen blending.
+    composite `over`/`in`, merges and normal/multiply/screen blending. Fractional
+    offsets, colored linearRGB conversion/composition, rotated/skewed filter
+    maps, filtered containers/instances and clip/mask/marker combinations retain
+    explicit current gates; this delivery does not defer or close them.
 - **Acceptance:** `original-logo-marker-mark` is complete against its frozen
-  reference. The original drop-shadow fixture and two licensed shadowed exports
-  now have healthy frozen outputs; finish their documents. Licensed arrow
+  reference, as is `original-logo-filter-mark`. `inv-125` is complete;
+  `inv-126` remains the next retained deliverable. Licensed arrow
   documents are complete. Keep focused tangent/closed-path,
   stroke-width, clipped-halo, anisotropic-blur, alpha and blend witnesses.
 - **Explicit unsupported outcomes:** backdrop inputs, external filter images,
@@ -1438,10 +1461,11 @@ three-download batch retained two CC0 baseball exports; both are now complete:
 The G3 width-map defect remains open without a qualified whole-document witness.
 Both CC0 arrow documents and both path-marker documents are complete at their
 frozen transparent outputs. The two public-domain filter exports now extend the
-selected online queue to **28/30 complete**. The original marker-instance fixture
-is complete and the original drop-shadow fixture remains pending, counted
-separately. Finish the three retained filter outputs against unchanged references
-while preserving every remaining finite promise.
+selected online queue to **29/30 complete**. The original marker-instance fixture
+and original drop-shadow fixture are complete, counted separately (**2/2**).
+The shadowed star completes the 29th online document. Finish `inv-126` against its
+unchanged reference through all six APIs on Windows/Linux, starting with its
+outlined-path presentation gate.
 Choose shared support changes by the complete retained documents they advance.
 Keep the remaining instance combinations visible without making them a
 prerequisite for G3–G6.

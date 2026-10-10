@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Focused premultiplied CPU blur controls selected by the three retained filter documents. These compare the kernel directly; none is a complete document or an admitted public-renderer output.",
+  "purpose": "Focused premultiplied CPU blur controls selected by the three retained filter documents. Kernel and complete public-renderer playback compare these same frozen outputs; controls remain separate from completed retained documents.",
   "cases": [
     {
       "id": "retained-question-deviation",

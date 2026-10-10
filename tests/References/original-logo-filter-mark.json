@@ -1,0 +1,42 @@
+{
+  "fixtureId": "original-logo-filter-mark",
+  "referencePng": "../Research/filter-documents/references/original-logo-filter-mark-64x64-transparent.png",
+  "referenceSha256": "df14abff07ea104e64b3c671205a7c66431765ddefe05434aeba9361a05b8e68",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "viewport": {
+    "width": 64,
+    "height": 64,
+    "deviceScaleFactor": 1
+  },
+  "background": "transparent",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "comparison": {
+    "dimensionsMatch": true,
+    "changedPixelCount": 0,
+    "maximumChannelError": 0,
+    "meanAbsoluteError": 0,
+    "rootMeanSquareError": 0,
+    "maximumAlphaError": 0,
+    "alphaChangedPixelCount": 0,
+    "minimumMismatchX": 64,
+    "minimumMismatchY": 64,
+    "maximumMismatchX": -1,
+    "maximumMismatchY": -1,
+    "exact": true
+  },
+  "admittedAt": "2026-10-10"
+}
