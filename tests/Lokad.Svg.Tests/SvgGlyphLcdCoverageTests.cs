@@ -45,6 +45,28 @@ public sealed class SvgGlyphLcdCoverageTests
         Assert.Equal((byte)0, SvgGlyphLcdCoverage.GetCoverage([.. outer, .. reversed], 0, 0, new(long.MaxValue), CancellationToken.None).Green);
     }
 
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void Quadratic_endpoint_on_sample_row_keeps_closed_winding(bool reverse, bool reflect)
+    {
+        OpenTypeQuadraticSegment[] segments =
+        [
+            new(new(0, .5), new(1, 0), new(2, 0)),
+            new(new(2, 0), new(2, 1), new(2, 1)),
+            new(new(2, 1), new(0, 1), new(0, 1)),
+            new(new(0, 1), new(0, .5), new(0, .5))
+        ];
+        if (reflect) segments = segments.Select(s => new OpenTypeQuadraticSegment(Mirror(s.Start), Mirror(s.Control), Mirror(s.End))).ToArray();
+        if (reverse) segments = segments.Reverse().Select(s => new OpenTypeQuadraticSegment(s.End, s.Control == s.End ? s.Start : s.Control, s.Start)).ToArray();
+        Assert.Equal(default(SvgGlyphRgbCoverage), SvgGlyphLcdCoverage.GetCoverage(segments, 3, 0, new(long.MaxValue), CancellationToken.None));
+        Assert.NotEqual((byte)0, SvgGlyphLcdCoverage.GetCoverage(segments, 1, 0, new(long.MaxValue), CancellationToken.None).Green);
+
+        static OpenTypeOutlinePoint Mirror(OpenTypeOutlinePoint point) => new(point.X, 1 - point.Y);
+    }
+
     [Fact]
     public void Coverage_observes_cancellation_and_bounds_segment_work()
     {

@@ -5,7 +5,7 @@ explicit supplied-font contract. **1/1 document matches the frozen Windows/Linux
 references through all six raw and six independently prepared APIs.** Seven
 separate CC0 controls cover curves/counters, AV/space pairs, composites,
 fractional placement/size, small/large sizes and inherited alias/paint. Linux has
-**6/7 controls exact**, Windows **0/7**; cross-platform controls remain **0/7**.
+**6/7 controls exact**, Windows **2/7**; cross-platform controls are **2/7 exact**.
 The document's completion does not close the full finite G9 label/path subset.
 
 `font-pack.json` selects the unchanged standalone static Noto Sans Regular 2.008
@@ -70,24 +70,24 @@ nonaxial opcodes, IDEF declarations, composite replay and vertical phantom metri
 keep explicit unsupported outcomes. Rasterizer query bits describe the measured
 policy, rather than claiming all queried features are implemented.
 
-Current Windows control gaps are 14 changed pixels for curves/counters, four for
-pairs, 329 for fractional position/size, 67 for small fractional origin, two for
-large outlines and five for inherited alias/paint. Composite accents still hit
+Current Windows control gaps are 14 changed pixels for curves/counters, 15 for
+fractional position/size, two for large outlines and one for inherited alias/paint.
+Pairs and small fractional origins are exact through all 12 APIs after shared
+LCD strike positioning and curve coverage corrections. Composite accents still hit
 the component-flag gate. These remain visible while the original document is
 complete. The unchanged original text-path document is now complete in its
 [separate bank](../supplied-font-text-paths/README.md), with seven exact controls
 on both platforms. Broader labels, composite hinting, curve/strike fidelity and
 curved/transformed text paths remain finite planned work in `PLAN.md`.
 
-The preceding managed Windows glyph correction passed **6,477 tests/platform** (4,533 core /
-1,938 visual / six FontProbe), preserving the **27/27 corporate documents and
+Complete Windows/Linux qualification passes **6,655 tests/platform** (4,630 core /
+2,019 visual / six FontProbe), preserving the **27/27 corporate documents and
 258/258 variants**, 2,849 prior PNGs and 2,755 established exact comparisons.
 Healthy frozen browser captures, SVG/font bytes, references and declared options
 are reused. Source, DLL, script and report fingerprints are not required.
 
-The subsequent local text-path correction passes **6,525 tests/platform** (4,560
-core / 1,959 visual / six FontProbe) and preserves this bank's exact document,
-six Linux controls and seven unresolved Windows controls. Together both original
+This bank retains its exact document, six exact Linux controls and two exact
+Windows controls. Together both original
 supplied-font documents are complete; the next whole deliverable is the retained
 [CC0 SVG Translate document](../supplied-font-documents/README.md), under an
 explicit public Mono Bold contract. Its admission and reference qualification

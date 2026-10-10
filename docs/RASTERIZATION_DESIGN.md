@@ -11151,3 +11151,51 @@ cleanup. The complete Linux document joins the stable exact-reference assertions
 Complete Windows/Linux Release qualification passes 6,649 tests per platform
 (4,626 core / 2,017 visual / six FontProbe). Prior document and exact-pixel ledgers
 remain protected; SVG Translate remains 0/1 complete across both platforms.
+
+### SVG Translate: Windows LCD strike and curve coverage
+
+Raw DirectWrite masks from the unchanged supplied Mono Bold face reconstruct all
+four text lines above the painted baseline exactly against the frozen browser
+reference. The text-path line also agrees outside the rows intersecting the blue
+baseline. This independently qualifies the selected symmetric LCD profile,
+character placement and black preblend. All 342 measured native F26 point
+coordinates in six selected glyph/strike/phase cases agree with managed fitting;
+each reporting probe preserves every normalized native RGB mask byte.
+
+Quarter-pixel strike origins quantize to the nearest sixth for symmetric LCD
+sampling. The positioned outline keeps this correction separate from its earlier
+float mapping. Windows implied on-curve points retain the exact midpoint of
+adjacent fitted off-curve points, including half F26 units. Linux light outlines
+retain their established midpoint policy. Quadratic crossings own the lower
+endpoint, as line crossings already do; this removes a spurious winding strip
+outside a closed contour when a sample row passes through a shared endpoint.
+The changes borrow the existing fitted contours and add no retained storage.
+Coverage segment visits still charge work and observe cancellation.
+
+Four independently captured fractional-strike `t` RGB masks and two native
+off-curve point pairs are retained in
+[windows-glyph-coverage.json](../tests/Research/supplied-font-documents/diagnostics/windows-glyph-coverage.json).
+Regression checks compare the complete masks plus an outside margin, preserve
+fractional midpoints, and check shared quadratic endpoints under both contour
+directions and vertical reflection. The scaled-strike control now joins exact
+Windows assertions through all 12 output APIs.
+
+The whole Windows document improves from 1,670 differing pixels / maximum error
+65 to 237 / 31 against unchanged references. The remaining native edge/coverage
+discrepancy still blocks cross-platform document completion. Mono controls are
+Windows 1/7 and Linux 7/7 exact; the document remains 0/1 complete across platforms.
+Finer coordinate and sampling quantization experiments did not consistently
+improve the independent masks and remain outside the product.
+
+The correction makes 1,443 previously differing document pixels exact; ten
+previously matching pixels move into the remaining edge/coverage discrepancy.
+Complete before/after/reference pixel records remain under ignored artifacts.
+Every established exact output stays protected. The older live-text bank's pair
+and small-fractional-origin controls also become exact on Windows and join
+reference assertions; its control ledger is now Windows 2/7, Linux 6/7.
+
+Complete Release checks pass 6,655 tests per platform (4,630 core / 2,019 visual /
+six FontProbe). The two new live-text assertions receive focused checks on both
+platforms after the complete qualification; unchanged full suites are reused.
+Package, notice and isolated-consumer receipts are reused from the preceding
+delivery qualification because their contracts are unchanged.

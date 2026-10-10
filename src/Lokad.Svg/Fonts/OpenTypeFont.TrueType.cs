@@ -3,6 +3,8 @@ namespace Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
+internal enum TrueTypeImpliedPointRounding { Down, None }
+
 internal static partial class OpenTypeFont
 {
     /// <summary>Distinguishes program-bearing simple glyphs from previously admitted instruction-free outlines.</summary>
@@ -22,13 +24,19 @@ internal static partial class OpenTypeFont
         return ReadUInt16(data, structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2) != 0;
     }
 
-    /// <summary>Returns owned, instruction-fitted simple contours in F26 device coordinates.</summary>
+    /// <summary>Returns owned instruction-fitted contours with the established integer midpoint policy.</summary>
+    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        => GetTrueTypeContours(bytes, glyphIndex, metrics, deviceSize, target, TrueTypeImpliedPointRounding.Down, budget, work, token);
+
+    /// <summary>Returns owned, instruction-fitted contours with an explicit rasterizer midpoint policy.</summary>
     /// <remarks>Programs and tables borrow the unchanged supplied face. Decoder, machine and
     /// copied point/CVT storage are bounded, reserved before allocation and released on failure.
     /// The explicit target selects rasterizer queries; this internal stage draws no masks and
     /// supplies owned geometry to the managed coverage stage.</remarks>
-    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, TrueTypeImpliedPointRounding impliedPointRounding, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
+        if (impliedPointRounding is not TrueTypeImpliedPointRounding.Down and not TrueTypeImpliedPointRounding.None) throw new ArgumentOutOfRangeException(nameof(impliedPointRounding));
+        bool roundImpliedPoints = impliedPointRounding == TrueTypeImpliedPointRounding.Down;
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767) throw new SvgException(SvgErrorCode.LimitExceeded, "The TrueType device size exceeds its coordinate bound.");
         TrueTypeHinting.ValidateTarget(target);
         if (metrics.ForceIntegerHintingSize)
@@ -46,7 +54,7 @@ internal static partial class OpenTypeFont
             using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), scale, target, budget, work, token);
             using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, budget, work, token);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
-            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, true, work, token);
+            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, roundImpliedPoints, work, token);
             return compositeSegments.Detach();
         }
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
@@ -83,7 +91,7 @@ internal static partial class OpenTypeFont
         }
         for (int i = 0; i < pointCount; i++) { work.Consume(token); decoded.Points[i] = new(points[i].X, points[i].Y, decoded.Points[i].IsOnCurve); }
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, token);
-        BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, true, work, token);
+        BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, roundImpliedPoints, work, token);
         return segments.Detach();
 
         int Scale(int value) => ScaleWith(value, scale);

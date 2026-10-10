@@ -64,10 +64,14 @@ internal static class SvgGlyphLcdCoverage
 
                 void Include(double t)
                 {
-                    if (t is < 0 or >= 1) return;
+                    if (t is < 0 or > 1) return;
+                    double derivative = b + 2 * a * t;
+                    // Own the lower endpoint, matching directed line crossings.
+                    // A descending curve owns its end rather than its start.
+                    if (t == 0 && derivative < 0 || t == 1 && derivative > 0) return;
                     double inverse = 1 - t;
                     double crossing = inverse * inverse * start.X + 2 * inverse * t * control.X + t * t * end.X;
-                    if (crossing <= x) winding += b + 2 * a * t > 0 ? 1 : -1;
+                    if (crossing <= x) winding += derivative > 0 ? 1 : -1;
                 }
             }
             return winding != 0;

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "role": "Focused independent Windows raw LCD coverage and implied midpoint controls; whole document acceptance retains frozen browser references.",
+  "fontProvenance": "../font-provenance.json",
+  "nativeLibrary": "Microsoft DirectWrite 10.0.19041.1 (WinBuild.160101.0800)",
+  "mode": "NATURAL_SYMMETRIC; NATURAL measuring; enabled grid fitting; CLEARTYPE_3x1 texture; exact caller-named unchanged face 0.",
+  "extraction": "Private native probe reads the supplied face without installed font selection. PNG RGB bytes preserve every captured texture byte; alpha is 255. No native probe is shipped.",
+  "pointQualification": "GC[0] after the original glyph program, followed by integer Y translation of every original point, independently recovered each fitted coordinate while preserving every normalized native RGB mask byte. Adjacent off-curve points define an exact midpoint, including half F26 units.",
+  "coverageCases": [
+    {
+      "id": "t-fractional-strike-phase0",
+      "glyph": 87,
+      "scalar": "t",
+      "deviceSize": 15.36,
+      "origin": [
+        8.0,
+        256
+      ],
+      "coverage": "windows-t-fractional-strike-phase0-rgb.png",
+      "coverageBounds": [
+        8,
+        246,
+        17,
+        256
+      ]
+    },
+    {
+      "id": "t-fractional-strike-phase1",
+      "glyph": 87,
+      "scalar": "t",
+      "deviceSize": 15.36,
+      "origin": [
+        8.25,
+        256
+      ],
+      "coverage": "windows-t-fractional-strike-phase1-rgb.png",
+      "coverageBounds": [
+        8,
+        246,
+        17,
+        256
+      ]
+    },
+    {
+      "id": "t-fractional-strike-phase2",
+      "glyph": 87,
+      "scalar": "t",
+      "deviceSize": 15.36,
+      "origin": [
+        8.5,
+        256
+      ],
+      "coverage": "windows-t-fractional-strike-phase2-rgb.png",
+      "coverageBounds": [
+        9,
+        246,
+        17,
+        256
+      ]
+    },
+    {
+      "id": "t-fractional-strike-phase3",
+      "glyph": 87,
+      "scalar": "t",
+      "deviceSize": 15.36,
+      "origin": [
+        8.75,
+        256
+      ],
+      "coverage": "windows-t-fractional-strike-phase3-rgb.png",
+      "coverageBounds": [
+        9,
+        246,
+        18,
+        256
+      ]
+    }
+  ],
+  "impliedMidpointCases": [
+    {
+      "glyph": 68,
+      "deviceSize": 30.72,
+      "origin": [
+        8,
+        256
+      ],
+      "nativeFittedF26Points": [
+        [
+          272,
+          0
+        ],
+        [
+          99,
+          184
+        ]
+      ]
+    },
+    {
+      "glyph": 68,
+      "deviceSize": 30.72,
+      "origin": [
+        8,
+        256
+      ],
+      "nativeFittedF26Points": [
+        [
+          99,
+          525
+        ],
+        [
+          331,
+          694
+        ]
+      ]
+    }
+  ]
+}

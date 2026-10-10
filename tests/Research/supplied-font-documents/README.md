@@ -36,8 +36,8 @@ TrueType fits the child before the parent; Linux light fitting uses the assemble
 outline. [Eighteen independent native contours](diagnostics/composite-contours.json)
 protect both stages. Font header bit 3 now controls integer internal hinting sizes,
 while linear advances retain authored sizes. The whole document renders through
-all 12 APIs: **Linux matches exactly; Windows retains 1,670 changed pixels**
-(maximum channel error 65). Shared Latin light topology combines near-point vectors and
+all 12 APIs: **Linux matches exactly; Windows retains 237 changed pixels**
+(maximum channel error 31). Shared Latin light topology combines near-point vectors and
 retains wrapped contour segments before fitting and interpolation. All 44 measured
 document outlines match independent native geometry; [ten focused contours](diagnostics/latin-light-near-contours.json)
 protect the previously differing combinations. Shared device advance metrics now
@@ -48,23 +48,32 @@ have focused controls; the Linux whole document now has exact assertions through
 all 12 APIs. Follow every Windows mismatch until it matches unchanged references
 through six raw and six independently prepared APIs on both platforms.
 
+Windows symmetric LCD coverage now places quarter strikes on the six-column
+sampling grid, preserves half F26 units at implied quadratic midpoints, and gives
+quadratic and line crossings the same lower endpoint ownership. These corrections
+reduce the whole document from 1,670 differing pixels / maximum error 65 to
+237 / 31. [Four independent native RGB masks and two measured midpoint pairs](diagnostics/windows-glyph-coverage.json)
+protect them. The remaining edge/coverage discrepancy stays open against the
+unchanged references; fitted coordinates agree with all 342 native F26 measurements
+in the selected diagnostic cases.
+
 The seven controls are separate from document completion. All render through the
 12 APIs; five independent direct-text equivalents protect actual position and
 path semantics. API and layout success do not count as exact native pixels.
 Linux has **7/7 controls exact**, protected by frozen-reference assertions.
-Windows still has **0/7 controls exact**:
+Windows has **1/7 controls exact**, with the scaled-strike result now asserted:
 
 | Control | Purpose | Windows changed pixels / maximum channel error |
 | --- | --- | --- |
-| Scalar x reset | Reset x while retaining y. | 4 / 6 |
-| Scalar y reset | Reset y while retaining x. | 2 / 6 |
-| Nested absolute/relative | Combine parent coordinates and descendant offsets. | 2 / 6 |
-| Continued current position | Keep reset y and advance x into the next span. | 6 / 6 |
-| Empty path body | Retain an explicitly closed local baseline. | 2 / 6 |
-| Integer strikes | Two sizes and curved glyphs from the document. | 8 / 12 |
-| Scaled strikes | Preserve the original root map and fractional strikes. | 4 / 8 |
+| Scalar x reset | Reset x while retaining y. | 2 / 5 |
+| Scalar y reset | Reset y while retaining x. | 1 / 5 |
+| Nested absolute/relative | Combine parent coordinates and descendant offsets. | 1 / 5 |
+| Continued current position | Keep reset y and advance x into the next span. | 3 / 5 |
+| Empty path body | Retain an explicitly closed local baseline. | 1 / 5 |
+| Integer strikes | Two sizes and curved glyphs from the document. | 4 / 12 |
+| Scaled strikes | Preserve the original root map and fractional strikes. | 0 / 0 |
 
-Complete Windows/Linux qualification passes 6,649 tests per platform and preserves
+Complete Windows/Linux qualification passes 6,655 tests per platform and preserves
 all 27/27 corporate documents / 258/258 variants, 2,849 prior PNGs and 2,755 prior
 exact comparisons. Keep wider finite
 G9 list/rotate/font/paint/baseline/curve promises and the older live-text defects

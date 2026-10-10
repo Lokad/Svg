@@ -65,7 +65,7 @@ public sealed class SvgSuppliedFontDocumentTests
             byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
             PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216));
             Assert.True(comparison.DimensionsMatch);
-            if (OperatingSystem.IsLinux()) Assert.True(comparison.IsExact);
+            if (OperatingSystem.IsLinux() || identity == "scaled-strikes") Assert.True(comparison.IsExact);
         }
     }
 
