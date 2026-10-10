@@ -529,11 +529,36 @@ remaining marker combinations and exhaustive G2 completion are not prerequisites
 Keep controls, original acceptance fixtures and completed online documents
 separately counted. Healthy browser references do not complete a renderer case.
 
-This reference/admission checkpoint passes Release builds and all **27 affected
+The preceding reference/admission checkpoint passed Release builds and all **27 affected
 document tests on each platform**, with zero failures/skips/warnings. The three
 pending baselines check all six APIs, including empty rejected streams. The
-production renderer is unchanged; reuse its preceding 6,190-test and complete
+production renderer was unchanged; it reused the preceding 6,190-test and complete
 corporate/bank qualification. These focused passes add no completed documents.
+
+Shared bounded CPU blur is now implemented for device deviations **2 ≤ sigma <
+135**, plus effectively identity axes. Six
+[kernel controls](tests/Research/filter-blur-kernel/manifest.json) freeze the three
+document-selected deviations, fractional alpha, an identity axis, transparent
+frame boundaries and colored premultiplied channels. These exercise the kernel
+directly; they do not complete public-renderer document outputs. Each reference
+has matching healthy Windows/Linux capture triples. Work is admitted before
+allocation, temporary surfaces and scanline rings are reserved, and fused integer
+sums preserve native division/rounding across both axes.
+
+Focused Release qualification passes **19 checks on each platform**: 13 kernel
+ownership/admission cases and six exact pixel controls, with zero failures,
+skips or build warnings/errors. Work and memory denial sweeps, cancellation before
+execution and during either axis (including the final scanline), immutable source
+bytes and identical retry protect this component. Document playback is unchanged;
+run complete six-API/corporate/bank checks once the connected document correction
+is finished.
+
+Next connect this kernel to bounded SourceGraphic/SourceAlpha capture and local
+filter-resource binding, then finish regions, offset/flood/source-over composition
+and the outlined-path font gate against the three frozen whole outputs. Small
+Gaussian kernels, large-blur rescaling and the remaining finite effects stay open;
+they do not block the three document-selected deviations. Complete-document and
+corporate counts remain unchanged.
 
 The selected development queue is **28/30 complete**, with **1/2 selected original
 acceptance fixtures complete**, separate from corporate **27/27 / 258/258**.
@@ -1325,10 +1350,14 @@ results stay exact, and decode, style matching, resampling and cleanup are bound
   both filter unit systems and sRGB/linearRGB arithmetic are part of acceptance.
   Allocate bounded intermediate regions and charge blur/composition work before
   execution. Reuse the existing layer and premultiplied-paint machinery.
+  - [x] Shared bounded CPU three-box blur for device deviations 2 ≤ sigma < 135,
+    plus identity axes. Six direct-kernel references protect native premultiplied
+    channels and rounding. Filter binding and complete documents remain pending.
   - [ ] Local filter-resource binding from attributes and static CSS; bounded
     native SourceGraphic/SourceAlpha capture, regions, blur and drop-shadow
     composition. Finish the three retained [filter documents](tests/Research/filter-documents/manifest.json).
-  - [ ] Remaining finite graph/result combinations, anisotropic/zero blur,
+  - [ ] Small Gaussian kernels and large-blur rescaling; remaining finite
+    graph/result combinations, anisotropic/zero blur,
     both unit systems, primitive subregions, clipped halos, sRGB/linearRGB,
     composite `over`/`in`, merges and normal/multiply/screen blending.
 - **Acceptance:** `original-logo-marker-mark` is complete against its frozen

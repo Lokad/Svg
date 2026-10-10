@@ -1,0 +1,299 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Focused premultiplied CPU blur controls selected by the three retained filter documents. These compare the kernel directly; none is a complete document or an admitted public-renderer output.",
+  "cases": [
+    {
+      "id": "retained-question-deviation",
+      "input": "retained-question-deviation.svg",
+      "reference": "references/retained-question-deviation.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "blur-kernel-control",
+      "sourceSha256": "0f17731abd7f8f36d13d5f84c9cf70ed63b2193a66de824e4da9621796d950c2",
+      "license": "CC0-1.0",
+      "deviation": [
+        2.669308510638298,
+        2.669308510638298
+      ],
+      "sourceRectangle": [
+        12,
+        12,
+        32,
+        32
+      ],
+      "sourceRgba": [
+        0,
+        0,
+        0,
+        49
+      ],
+      "referenceSha256": "e763c174637cdfeeb4009b66c626ed86b53c72e2b44745cb7ac8c648525a35d7",
+      "captures": [
+        {
+          "pngSha256": "e763c174637cdfeeb4009b66c626ed86b53c72e2b44745cb7ac8c648525a35d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e763c174637cdfeeb4009b66c626ed86b53c72e2b44745cb7ac8c648525a35d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e763c174637cdfeeb4009b66c626ed86b53c72e2b44745cb7ac8c648525a35d7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "retained-star-deviation",
+      "input": "retained-star-deviation.svg",
+      "reference": "references/retained-star-deviation.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "blur-kernel-control",
+      "sourceSha256": "c63326ed5a915a8596a7d91ddd8e3cc309e25a21776a765186453f6dca78bdf9",
+      "license": "CC0-1.0",
+      "deviation": [
+        3,
+        3
+      ],
+      "sourceRectangle": [
+        12,
+        12,
+        32,
+        32
+      ],
+      "sourceRgba": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "referenceSha256": "fa5e04ab8a2d47f737750e035ea082cc84d81b83e8026bf90ba643736ca91836",
+      "captures": [
+        {
+          "pngSha256": "fa5e04ab8a2d47f737750e035ea082cc84d81b83e8026bf90ba643736ca91836",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fa5e04ab8a2d47f737750e035ea082cc84d81b83e8026bf90ba643736ca91836",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fa5e04ab8a2d47f737750e035ea082cc84d81b83e8026bf90ba643736ca91836",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "retained-shadow-deviation",
+      "input": "retained-shadow-deviation.svg",
+      "reference": "references/retained-shadow-deviation.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "blur-kernel-control",
+      "sourceSha256": "8f0546546f08e66b2c7080b902d80c26e06068e259d078694ed49ef5d84a130e",
+      "license": "CC0-1.0",
+      "deviation": [
+        4,
+        4
+      ],
+      "sourceRectangle": [
+        12,
+        12,
+        32,
+        32
+      ],
+      "sourceRgba": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "referenceSha256": "04efa3b0f9e0f5db4dbe84c454d318ca2bd1c300743dab9a48c1d0c6983fe3cd",
+      "captures": [
+        {
+          "pngSha256": "04efa3b0f9e0f5db4dbe84c454d318ca2bd1c300743dab9a48c1d0c6983fe3cd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "04efa3b0f9e0f5db4dbe84c454d318ca2bd1c300743dab9a48c1d0c6983fe3cd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "04efa3b0f9e0f5db4dbe84c454d318ca2bd1c300743dab9a48c1d0c6983fe3cd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "anisotropic-identity-axis",
+      "input": "anisotropic-identity-axis.svg",
+      "reference": "references/anisotropic-identity-axis.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "blur-kernel-control",
+      "sourceSha256": "b340587e5acb920183d0483c72d3de031f324d6e3abf0ff1617450744426e1c4",
+      "license": "CC0-1.0",
+      "deviation": [
+        0,
+        3
+      ],
+      "sourceRectangle": [
+        12,
+        12,
+        32,
+        32
+      ],
+      "sourceRgba": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "referenceSha256": "fc4a994ec5b8e376bcf3f336cd72201d07e24c8b3633c3464a06e3b9b4676fb3",
+      "captures": [
+        {
+          "pngSha256": "fc4a994ec5b8e376bcf3f336cd72201d07e24c8b3633c3464a06e3b9b4676fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fc4a994ec5b8e376bcf3f336cd72201d07e24c8b3633c3464a06e3b9b4676fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fc4a994ec5b8e376bcf3f336cd72201d07e24c8b3633c3464a06e3b9b4676fb3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "transparent-frame-boundary",
+      "input": "transparent-frame-boundary.svg",
+      "reference": "references/transparent-frame-boundary.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "blur-kernel-control",
+      "sourceSha256": "dda01941c8fc1e719b0dac17afce1f0c1199341e8b929842eb43ca624e9d4670",
+      "license": "CC0-1.0",
+      "deviation": [
+        4,
+        4
+      ],
+      "sourceRectangle": [
+        0,
+        0,
+        15,
+        27
+      ],
+      "sourceRgba": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "referenceSha256": "31315a222aebeed07eacfca8dbc6814e5b8a9084f134dc382d47eab1f94d2270",
+      "captures": [
+        {
+          "pngSha256": "31315a222aebeed07eacfca8dbc6814e5b8a9084f134dc382d47eab1f94d2270",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "31315a222aebeed07eacfca8dbc6814e5b8a9084f134dc382d47eab1f94d2270",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "31315a222aebeed07eacfca8dbc6814e5b8a9084f134dc382d47eab1f94d2270",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "colored-premultiplied-channels",
+      "input": "colored-premultiplied-channels.svg",
+      "reference": "references/colored-premultiplied-channels.png",
+      "width": 64,
+      "height": 64,
+      "scale": 1,
+      "background": "transparent",
+      "role": "blur-kernel-control",
+      "sourceSha256": "dadea703b34477af2ff1597872e6033797da2396d225913ffff27b68bd6be671",
+      "license": "CC0-1.0",
+      "deviation": [
+        3,
+        3
+      ],
+      "sourceRectangle": [
+        12,
+        12,
+        32,
+        32
+      ],
+      "sourceRgba": [
+        128,
+        64,
+        32,
+        255
+      ],
+      "referenceSha256": "a9ca813f49fc9e532ee00abcbbf03138214a57930d5f9c40b50821b2116b544c",
+      "captures": [
+        {
+          "pngSha256": "a9ca813f49fc9e532ee00abcbbf03138214a57930d5f9c40b50821b2116b544c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a9ca813f49fc9e532ee00abcbbf03138214a57930d5f9c40b50821b2116b544c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a9ca813f49fc9e532ee00abcbbf03138214a57930d5f9c40b50821b2116b544c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-10",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  }
+}

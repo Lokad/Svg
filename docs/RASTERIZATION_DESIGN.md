@@ -10488,3 +10488,27 @@ established exact comparisons remain unchanged; one original fixture is promoted
 adding one exact PNG. Command/geometry/paint layouts remain 72/272/68 bytes.
 Remaining finite G8 effects, marker combinations, other group exits and S17 stay
 open. Source/renderer/DLL/script fingerprints are not regression requirements.
+
+### Bounded filter blur kernel (2026-10-10)
+
+`SvgGaussianBlur` borrows independent premultiplied RGBA frames. Its fused
+three-box scanlines retain unsigned integer sums across the three windows and
+quantize once per axis. Odd windows use three equal lengths; even windows use
+two equal lengths and a final window one sample wider. Transparent samples beyond
+the frame preserve bounded halos. Native scaled division multiplies by the
+rounded 32-bit reciprocal rather than replacing it with exact integer division;
+that rounding distinction affects the retained drop-shadow's edge alpha.
+
+The caller supplies device deviations, owns source/output frames and performs
+filter color-space conversion. The current kernel admits 2 ≤ sigma < 135 and
+effectively identity axes. Small Gaussian kernels and large-blur rescaling stay
+explicit pending admissions. Work includes scanline warm-up and ring clearing
+and is admitted before allocation. Reserved rings and intermediate surfaces
+release on success, denial or cancellation; deterministic scanline observations
+protect partial replay and identical retry without modifying the borrowed source.
+
+Six frozen controls compare this kernel directly, including fractional alpha,
+one identity axis, frame clipping and colored premultiplied channels. They do not
+establish filter parsing or whole-document acceptance. The three retained filter
+documents still select resource binding, bounded source capture, regions and
+composition through the existing geometry renderer.
