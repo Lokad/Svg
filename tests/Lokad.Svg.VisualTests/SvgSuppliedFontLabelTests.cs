@@ -7,7 +7,7 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-/// <summary>Protects public-font admission, layout and output contracts; admitted Linux pixels are exact while Windows and the composite control remain pending.</summary>
+/// <summary>Protects public-font admission, layout and output contracts; the selected document is exact on both platforms, while Windows controls and composites remain pending.</summary>
 public sealed class SvgSuppliedFontLabelTests
 {
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
@@ -95,9 +95,9 @@ public sealed class SvgSuppliedFontLabelTests
             Assert.Equal(png, preparedPng);
         }
         Assert.Equal(unchanged, input);
-        if (OperatingSystem.IsLinux())
+        if (OperatingSystem.IsLinux() || identity == "original-logo-live-text-64x64-transparent")
         {
-            byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, "linuxReference")));
+            byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
             Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);
         }
     }

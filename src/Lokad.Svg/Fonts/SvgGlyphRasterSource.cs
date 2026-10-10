@@ -25,6 +25,42 @@ internal sealed class SvgGlyphRasterSource : IDisposable
         return header is OpenTypeGlyphHeader value && !value.IsComposite;
     }
 
+    internal bool HasTrueTypePrograms(RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
+        return OpenTypeFont.HasTrueTypePrograms(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token);
+    }
+
+    /// <summary>Returns exclusively owned, positioned instruction-fitted contours for symmetric LCD coverage.</summary>
+    internal OpenTypeGlyphContourStorage CreateWindowsContours(double scaleX, double offsetX, double scaleY, double offsetY, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
+        TrueTypeHintTarget target = new(42, TrueTypeHintQueryFlags.FontVariations | TrueTypeHintQueryFlags.VerticalPhantoms | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
+        OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, _fontSize * scaleY, target, budget, work, token);
+        try
+        {
+            float originX = MathF.Floor((float)(_glyph.X * scaleX + offsetX) * 4f + .5f) / 4f;
+            float originY = MathF.Floor((float)(_glyph.Y * scaleY + offsetY) + .5f);
+            float ratioX = (float)(scaleX / scaleY);
+            if (!float.IsFinite(originX) || !float.IsFinite(originY) || !float.IsFinite(ratioX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph placement exceeds the device range.");
+            for (int i = 0; i < contours.Segments.Length; i++)
+            {
+                OpenTypeQuadraticSegment segment = contours.Segments[i];
+                contours.Segments[i] = new(Map(segment.Start), Map(segment.Control), Map(segment.End));
+            }
+            return contours;
+
+            OpenTypeOutlinePoint Map(OpenTypeOutlinePoint point)
+            {
+                work.Consume(token);
+                float x = originX + (float)(point.X / 64) * ratioX, y = originY - (float)(point.Y / 64);
+                if (!float.IsFinite(x) || !float.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph outline exceeds the device range.");
+                return new(x, y);
+            }
+        }
+        catch { contours.Dispose(); throw; }
+    }
+
     internal static SvgGlyphRasterSource Create(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(font);

@@ -1,107 +1,91 @@
 # Supplied public-font labels
 
-The next whole document is the unchanged CC0 `logo-live-text.svg`, rendered at
-64×64 with a transparent background. Seven CC0 controls cover curves/counters,
-AV/space pairs, precomposed composites, fractional placement/size, small and large
-sizes, and inherited alias/paint. They are separate from the document ledger.
-**Linux is exact for the document and six admitted controls. Cross-platform
-acceptance remains pending: Windows is not exact and composite accents are
-still rejected.**
+The unchanged CC0 `logo-live-text.svg` is complete at 64×64 transparent under its
+explicit supplied-font contract. **1/1 document matches the frozen Windows/Linux
+references through all six raw and six independently prepared APIs.** Seven
+separate CC0 controls cover curves/counters, AV/space pairs, composites,
+fractional placement/size, small/large sizes and inherited alias/paint. Linux has
+**6/7 controls exact**, Windows **0/7**; cross-platform controls remain **0/7**.
+The document's completion does not close the full finite G9 label/path subset.
 
-The next Windows dependency is an internal axial TrueType instruction stage.
-[Independent native geometry](diagnostics/true-type-contours.json) supplies eleven
-glyph/size outlines under two FreeType 2.13.2 interpreter query profiles, giving
-**22/22 exact intermediate checks**. These are separate from Windows grid-fit
-qualification and final font pixels. Public rendering does not call this stage;
-the same original document, font and platform references remain selected.
+`font-pack.json` selects the unchanged standalone static Noto Sans Regular 2.008
+TrueType face 0 under the original `Example` alias. Its public program and OFL
+notice are test assets; callers supply programs explicitly. No font is bundled
+in the renderer, discovered from the host or read from `external/`.
+`font-provenance.json` retains upstream source and evaluation-data integrity.
 
-The stage borrows `fpgm`, `prep` and simple-glyph instructions from the supplied
-face. Its explicit target distinguishes CVT precision and preparation lifecycle;
-the qualified probe restores initial CVT values and retains storage across the
-default-to-grayscale transition. Bounded axial vectors, reference/zone state,
-signed stack arithmetic, functions/branches, CVT/storage, point rounding/shifts,
-deltas and untouched-point interpolation cover the executed programs. Limits are
-4,096 stack/storage/CVT entries and twilight points, 1,024 functions, 32 call
-levels and 65,535 bytes per program. Work and cancellation cover execution,
-skipped operands, initialization and interpolation; arrays reserve before
-allocation and release on failure. Synthetic controls protect these boundaries.
-Executed nonaxial/unimplemented opcodes, IDEF declarations, composite instruction
-replay and vertical phantom metrics remain explicit unsupported outcomes.
-The Windows policy and symmetric LCD coverage still need their own qualification;
-the wider finite G9 label/path subset remains open.
-
-`font-pack.json` selects the unchanged, standalone static Noto Sans Regular 2.008
-TrueType face 0 under the document's `Example` alias. The public program and OFL
-notice are test assets; callers still supply font programs explicitly. No fonts
-are bundled in the renderer, discovered from the host or read from `external/`.
-`font-provenance.json` pins the upstream source and evaluation-data integrity.
-
-Outputs/options were declared before capture or candidate screening. The pinned
-Chrome 153.0.8010.52 image recipe received the original SVG with a browser-only
-`@font-face` inserted in `defs`, embedding the exact font program as a base64 TTF
-data URL under `Example`, weight 400 and normal style. Converter inputs retain
-their original bytes and use a caller-owned catalog/provider/snapshot instead.
-
-Each output has three fresh-process healthy, cleaned, stable captures on each
-platform. Windows and Linux font pixels differ; `references/` and
-`references/linux64/` freeze their respective native outputs. Their differences
-are not tolerances and neither reference can be replaced to match the renderer.
-No browser is launched during tests.
+Outputs/options were declared before capture or candidate screening. Pinned
+Chrome 153.0.8010.52 received the original SVG with a browser-only `@font-face`
+inserted in `defs`, embedding the exact TTF inside the SVG image under `Example`,
+weight 400 and normal style. Converter inputs retain original bytes and use a
+caller-owned catalog/provider/snapshot. Each platform/output has three healthy,
+cleaned, stable fresh-process captures. `references/` and `references/linux64/`
+freeze different native pixels; neither bank may be replaced to match the renderer.
+Tests launch no browser.
 
 `font-use-proof/qualification.json` records missing, truncated and substituted
-font witnesses captured **inside the SVG image**, with three healthy cleaned
-captures per witness/platform. All differ from the intended-font image. The
-substitution uses unchanged public Noto Serif Regular from the same upstream
-revision and OFL license; its URL, byte size and program digest are recorded.
-One PNG per stable triple is retained. This evidence complements the separate
-browser DOM layout measurements; outer-page `document.fonts.ready` alone does
-not qualify font use inside an image.
+fonts **inside the SVG image**, three matching captures per witness/platform.
+All differ from the intended-font reference. Substitution uses unchanged public
+Noto Serif from the same upstream revision and OFL license. This complements
+separate browser DOM measurements; outer-page `document.fonts.ready` alone does
+not establish font use inside an image.
 
-`metrics.json` contains independent FontTools cmap/hmtx/ordered kern evaluation
-in font units mapped to user units. Browser metrics remain separately recorded:
-native layout rounds advances and native glyph masks/hinting differ from
-ordinary path pixels. Passing these layout/API checks does not count as an exact
-document or control. The original single `A` must be corrected against its
-frozen image; composites have an additional component-flag admission gate.
+`metrics.json` retains independent FontTools cmap/hmtx/ordered kern results.
+Browser metrics stay separately recorded: native layout rounds advances, and
+font hinting/masks differ from ordinary path pixels. Passing metrics/API checks
+never counts as an exact document or control.
 
-[The native raster diagnosis](diagnostics/native-rasterization.json) retains
-intermediate data for that single `A`: a Windows hinted LCD coverage mask and a
-Linux Fontations light-hint outline. The former matches its frozen image after
-measured font preblend; existing managed ordinary-path rendering of the latter,
-followed by Chrome's documented Linux font preblend, matches its frozen image.
-These isolate the remaining managed hinting/mask work. They are diagnostic
-inputs, never product substitutes, acceptance references or exact-font controls.
-Neither document/control counts nor the original font/reference assets change.
+[The native raster diagnosis](diagnostics/native-rasterization.json) retains a
+Windows hinted LCD mean mask and Linux Fontations light-hint outline for the
+selected `A`. Independently replaying these isolates each pipeline. They remain
+diagnostic data, never product inputs or substitutes for acceptance references.
+[Eleven Latin light outlines](diagnostics/latin-light-contours.json) and
+[22 axial TrueType contour checks](diagnostics/true-type-contours.json) protect
+intermediate geometry independently from final pixels.
 
-[The Latin light contour witnesses](diagnostics/latin-light-contours.json)
-retain eleven independently extracted native glyph outlines covering the current
-`A`, `V`, `O` and `a` controls and their declared device sizes. The bounded managed
-contour stage matches every witness, including small-stem rounding, the first
-unaligned stem, curved counters and implied-point rounding. Synthetic controls
-protect opposite winding, missing alignment samples, subpixel sizes, cancellation,
-work expiry, memory denial and retry. These remain geometry controls, separately
-from final pixels. Public Linux simple glyphs now use output-size hints,
-quarter-X/pixel-Y origin rounding, shared native contour replay and font-mask
-preblend before clip coverage and paint alpha. All six raw and six independently
-prepared forms match unchanged Linux references: **1/1 document and 6/7 controls**.
-Windows remains **0/1 and 0/7**, so cross-platform completion stays **0/1 and 0/7**.
-Previously admitted composites retain their earlier rendering route; shared
-composite hinting, the queued accent flags, Windows grid fitting/LCD coverage and
-the remaining finite G9 subset stay open. Caller-supplied bytes remain borrowed.
-Output-scale/viewBox controls reuse the frozen large-glyph reference and protect
-mapping exactly once; tiny collapsed outlines, opacity rounding and owner cleanup
-have separate synthetic controls.
-Complete build/test qualification passes 6,444 tests on each platform
-(4,504 core / 1,934 visual / six FontProbe). The earlier complete bank qualification
-retains 2,849 PNGs and 2,755 established exact results, including corporate 27/27
-documents and 258/258 variants. It is reused while the new internal stage has no
-public rendering caller. Frozen browser captures and evaluation assets stay unchanged.
+Public Linux simple glyphs fit at output size, round origins to quarter-X/pixel-Y,
+replay directed contours through shared native analytic coverage and apply font
+preblend before clipping and paint alpha. Windows program-bearing simple glyphs
+now execute bounded managed font/preparation/glyph instructions at output size
+and use symmetric LCD coverage averaged to alpha before sRGB preblend.
+Instruction-free Windows outlines and previously admitted composites retain
+their earlier route until their shared extensions are qualified.
 
-The bounded shared kerning reader admits ordered pair-list and class-pair
-X-advance adjustments, coverage/class-definition formats 1/2, up to 32 selected
-lookups and 32 subtables per lookup. The first matching subtable wins, including
-zero adjustments; distinct lookups accumulate in LookupList order. IgnoreMarks
-requires validated GDEF classes and rejects runs containing mark glyphs.
-Chained-context format-2 coverage is a conservative unsupported-glyph guard,
-including a sole glyph; its context rules are never executed. General shaping,
-mark positioning and all remaining finite G9 items stay open in `PLAN.md`.
+[Windows geometry and RGB evidence](diagnostics/windows-lcd.json) independently
+qualifies the selected `A`: original query fonts agree across fpgm/prep/glyph;
+36 mask-preserving reporters recover all 18 fitted F26 points; the managed result
+matches every byte of the retained raw RGB texture. Small square/edge fonts and
+eight cell configurations establish six horizontal and five vertical samples,
+with normalized vertical weights 4/9/10/9/4. Exact quadratic crossings preserve
+winding and counters. Displaced RGB coverages round individually, their integer
+mean feeds the pinned font preblend, then viewport coverage and paint alpha apply.
+No recorded mask, point position or program-specific predicate is used by rendering.
+
+The interpreter borrows unchanged tables/programs and reserves declared arrays
+before allocation. Stack/storage/CVT/twilight bounds are 4,096 entries, functions
+1,024, call depth 32 and programs 65,535 bytes. Every instruction, skipped operand,
+point and mask segment visit consumes work and observes cancellation. Partial
+owners release on denial; source bytes stay unchanged. Executed unimplemented/
+nonaxial opcodes, IDEF declarations, composite replay and vertical phantom metrics
+keep explicit unsupported outcomes. Rasterizer query bits describe the measured
+policy, rather than claiming all queried features are implemented.
+
+Current Windows control gaps are 14 changed pixels for curves/counters, four for
+pairs, 329 for fractional position/size, 67 for small fractional origin, two for
+large outlines and five for inherited alias/paint. Composite accents still hit
+the component-flag gate. These remain visible while the original document is
+complete. Broader labels, composite hinting, curve/strike fidelity and the next
+original text-path document remain finite planned work in `PLAN.md`.
+
+Complete Release qualification passes **6,477 tests/platform** (4,533 core /
+1,938 visual / six FontProbe), preserving the **27/27 corporate documents and
+258/258 variants**, 2,849 prior PNGs and 2,755 established exact comparisons.
+Healthy frozen browser captures, SVG/font bytes, references and declared options
+are reused. Source, DLL, script and report fingerprints are not required.
+
+The shared kerning reader admits ordered pair-list/class-pair X advances,
+coverage/class formats 1/2, up to 32 lookups and 32 subtables per lookup. First
+matching subtables win, including zero adjustments; lookups accumulate in order.
+IgnoreMarks requires validated GDEF and rejects actual mark runs. Covered chained
+contexts remain conservative unsupported guards, including a sole glyph. General
+shaping and mark positioning remain outside the supported subset.

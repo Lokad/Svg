@@ -10,7 +10,7 @@ namespace Lokad.Svg.VisualTests;
 public sealed class SvgTrueTypeOutlineTests
 {
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
-    private static TrueTypeHintTarget Target => new(35, true, false, false, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.DefaultThenTarget);
+    private static TrueTypeHintTarget Target => new(35, TrueTypeHintQueryFlags.Grayscale, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.DefaultThenTarget);
 
     public static IEnumerable<object[]> Cases()
     {

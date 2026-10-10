@@ -10,11 +10,31 @@ internal enum TrueTypeHintRound { Grid, HalfGrid, DoubleGrid, Down, Up, Off }
 internal enum TrueTypeHintControlScale { FullPrecision, FractionalFontUnits }
 internal enum TrueTypeHintPreparation { Single, DefaultThenTarget }
 
+/// <summary>Explicit native GETINFO result bits, not a claim that every queried feature is implemented.</summary>
+[Flags]
+internal enum TrueTypeHintQueryFlags
+{
+    None = 0,
+    Rotated = 1 << 8,
+    Stretched = 1 << 9,
+    FontVariations = 1 << 10,
+    VerticalPhantoms = 1 << 11,
+    Grayscale = 1 << 12,
+    ClearType = 1 << 13,
+    CompatibleWidths = 1 << 14,
+    HorizontalStripes = 1 << 15,
+    Bgr = 1 << 16,
+    SubpixelPositioned = 1 << 17,
+    Symmetric = 1 << 18,
+    ClearTypeGrayscale = 1 << 19,
+    All = 0xFFF00
+}
+
 /// <summary>Declares bounded interpreter storage from a validated TrueType maxp table.</summary>
 internal readonly record struct TrueTypeHintProfile(int Stack, int Storage, int Functions, int Twilight);
 
 /// <summary>Supplies explicit rasterizer queries without acquiring a native rasterizer.</summary>
-internal readonly record struct TrueTypeHintTarget(int Version, bool Grayscale, bool ClearType, bool VerticalSubpixel, TrueTypeHintControlScale ControlScale, TrueTypeHintPreparation Preparation);
+internal readonly record struct TrueTypeHintTarget(int Version, TrueTypeHintQueryFlags QueryFlags, TrueTypeHintControlScale ControlScale, TrueTypeHintPreparation Preparation);
 
 internal struct TrueTypeHintPoint
 {
@@ -32,8 +52,8 @@ internal readonly record struct TrueTypeHintFunction(bool Defined, ReadOnlyMemor
 /// A machine and its caller-owned inputs belong to one thread and one glyph; disposal releases
 /// its reservation and function-program borrows. It does not select fonts or draw pixels.
 /// Axial arithmetic and interpolation adapt FreeType 2.13.2; see THIRD_PARTY_NOTICES.txt.
-/// Target queries and preparation lifecycle are explicit intermediate-contour policies,
-/// not qualifications of a Windows native grid fitter or LCD rasterizer.</remarks>
+/// Target queries and preparation lifecycle are explicit native policies. Per-glyph
+/// geometry and mask acceptance belong to the independent visual controls.</remarks>
 internal sealed class TrueTypeHinting : IDisposable
 {
     private RenderBudget.BudgetReservation? _reservation;
@@ -259,9 +279,9 @@ internal sealed class TrueTypeHinting : IDisposable
                 case 0x88:
                 {
                     int selector = Pop(), result = (selector & 1) != 0 ? _target.Version : 0;
-                    if ((selector & 32) != 0 && _target.Grayscale) result |= 1 << 12;
-                    if ((selector & 64) != 0 && _target.ClearType) result |= 1 << 13;
-                    if ((selector & 2048) != 0 && _target.VerticalSubpixel) result |= 1 << 17;
+                    // Selector bits 1..12 map to independent result bits 8..19.
+                    // Subpixel positioning and symmetric rendering are distinct queries.
+                    result |= ((selector & 0x1FFE) << 7) & (int)_target.QueryFlags;
                     Push(result); break;
                 }
                 case 0x8A: { int a = Pop(), b = Pop(), c = Pop(); Push(b); Push(a); Push(c); break; }
@@ -398,7 +418,7 @@ internal sealed class TrueTypeHinting : IDisposable
     }
     internal static void ValidateTarget(TrueTypeHintTarget target)
     {
-        if (target.Version is < 0 or > 255 || target.ControlScale is not TrueTypeHintControlScale.FullPrecision and not TrueTypeHintControlScale.FractionalFontUnits || target.Preparation is not TrueTypeHintPreparation.Single and not TrueTypeHintPreparation.DefaultThenTarget)
+        if (target.Version is < 0 or > 255 || (target.QueryFlags & ~TrueTypeHintQueryFlags.All) != 0 || target.ControlScale is not TrueTypeHintControlScale.FullPrecision and not TrueTypeHintControlScale.FractionalFontUnits || target.Preparation is not TrueTypeHintPreparation.Single and not TrueTypeHintPreparation.DefaultThenTarget)
             throw Invalid("The TrueType hint target is invalid.");
     }
     private static TrueTypeHintZone Zone(int value) => value is 0 or 1 ? (TrueTypeHintZone)value : throw Invalid("A TrueType zone pointer is invalid.");

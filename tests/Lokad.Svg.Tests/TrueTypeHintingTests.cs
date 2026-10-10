@@ -6,7 +6,44 @@ namespace Lokad.Svg.Tests;
 
 public sealed class TrueTypeHintingTests
 {
-    private static TrueTypeHintTarget Target => new(35, true, false, false, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.Single);
+    private static TrueTypeHintTarget Target => new(35, TrueTypeHintQueryFlags.Grayscale, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.Single);
+
+    [Theory]
+    [InlineData(2, (int)TrueTypeHintQueryFlags.Rotated)]
+    [InlineData(4, (int)TrueTypeHintQueryFlags.Stretched)]
+    [InlineData(8, (int)TrueTypeHintQueryFlags.FontVariations)]
+    [InlineData(16, (int)TrueTypeHintQueryFlags.VerticalPhantoms)]
+    [InlineData(32, (int)TrueTypeHintQueryFlags.Grayscale)]
+    [InlineData(64, (int)TrueTypeHintQueryFlags.ClearType)]
+    [InlineData(128, (int)TrueTypeHintQueryFlags.CompatibleWidths)]
+    [InlineData(256, (int)TrueTypeHintQueryFlags.HorizontalStripes)]
+    [InlineData(512, (int)TrueTypeHintQueryFlags.Bgr)]
+    [InlineData(1024, (int)TrueTypeHintQueryFlags.SubpixelPositioned)]
+    [InlineData(2048, (int)TrueTypeHintQueryFlags.Symmetric)]
+    [InlineData(4096, (int)TrueTypeHintQueryFlags.ClearTypeGrayscale)]
+    public void Getinfo_keeps_each_query_in_its_declared_result_bit(int selector, int expected)
+    {
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 8, 0, 0), [], [], [], 48, 65536, Target with { Version = 42, QueryFlags = TrueTypeHintQueryFlags.All }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(new byte[] { 0xB8, (byte)(selector >> 8), (byte)selector, 0x88, 0xB0, 0, 0x23, 0x42 }, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal((int)expected, machine.Storage[0]);
+    }
+
+    [Fact]
+    public void Getinfo_combines_only_selected_supported_bits_and_requested_version()
+    {
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 8, 0, 0), [], [], [], 48, 65536, Target with { Version = 42, QueryFlags = TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Run(Convert.FromHexString("B8184188B0002342B00088B0012342"), TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(42 | (int)(TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.Symmetric), machine.Storage[0]);
+        Assert.Equal(0, machine.Storage[1]);
+    }
+
+    [Fact]
+    public void Rejects_unknown_target_flags_before_scratch_allocation()
+    {
+        var budget = new RenderBudget(long.MaxValue);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => TrueTypeHinting.Create(new(8, 8, 0, 0), [], [], [], 48, 65536, Target with { QueryFlags = (TrueTypeHintQueryFlags)(1 << 20) }, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().PeakBytes);
+    }
 
     [Theory]
     [InlineData("B9FFFF000362B0002342", -21)] // DIV truncates -64/3 toward zero.
@@ -70,7 +107,7 @@ public sealed class TrueTypeHintingTests
         using TrueTypeHinting machine = Create([], [], [64], new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
         machine.Run(Convert.FromHexString("B0002CB020882D"), TrueTypeHintProgramKind.Font);
         byte[] prep = Convert.FromHexString("B00043B00160B0002342B00045B00160B0002344B0002BB0012342");
-        machine.Prepare(prep, Target with { Grayscale = false });
+        machine.Prepare(prep, Target with { QueryFlags = TrueTypeHintQueryFlags.None });
         Assert.Equal(1, machine.Storage[0]);
         Assert.Equal(0, machine.Storage[1]);
         Assert.Equal(65, machine.ControlValues[0]);

@@ -32,7 +32,7 @@
     "reference": "../references/original-logo-live-text-64x64-transparent.png",
     "replayedChangedPixels": 0,
     "replayedMaximumChannelError": 0,
-    "implementationRemaining": "Managed TrueType grid fitting and corresponding LCD coverage; the retained native mask is diagnostic test data only."
+    "implementationRemaining": "Selected A now has qualified managed instruction fitting, symmetric LCD coverage and preblend. Remaining bank controls and the finite G9 subset stay open."
   },
   "linux": {
     "outline": "linux-light-hint-outline.svg",
@@ -48,7 +48,7 @@
     "reference": "../references/linux64/original-logo-live-text-64x64-transparent.png",
     "replayedChangedPixels": 0,
     "replayedMaximumChannelError": 0,
-    "implementationRemaining": "Managed Latin light autohinting, hinted device-coordinate contours and font-specific preblend after existing native contour coverage."
+    "implementationRemaining": "Selected document and six admitted controls now have managed Latin light hinting, native contour replay and preblend. Composite and finite G9 extensions stay open."
   },
   "limits": "Only the selected single A is diagnosed here. Curves, counters, composites, other sizes, colors and fractional origins still need their unchanged controls. No native probe, service or runtime dependency belongs in the product."
 }

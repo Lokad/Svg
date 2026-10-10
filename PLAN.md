@@ -5,8 +5,8 @@ Updated 2026-10-10. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**30/30 selected development documents and 2/2 selected original acceptance
-fixtures are complete**, through all six outputs on both platforms. These are
+**30/30 selected development documents and both original marker/drop-shadow
+acceptance fixtures (2/2) are complete**, through all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
 failure-selected development corpus establishes no representative success rate.
 
@@ -23,69 +23,61 @@ question-mark export. The original marker fixture is also complete at 64×64
 transparent, in its [instance bank](tests/Research/marker-instance-content/manifest.json).
 Neither this checkpoint nor an exact document closes the finite G2–G9 exits.
 
-**Next complete deliverable: `original-logo-live-text`, 64×64 transparent**, with
-an explicitly supplied public static Noto Sans Regular face under the existing
-`Example` family alias. The upstream face, OFL notice, alias/options and healthy
-matching platform reference triples are already qualified in the public-font
-bank. Keep those assets and the original SVG bytes. Finish the complete output
-through all six supplied-font APIs; use small glyph/position controls for any
-shared defect. This is the first finite G9 acceptance step; the text-path document
-and the full label/path subset remain promised. Existing snapshot-less rejection
-stays explicit. Broader G2
-combinations are dependencies only when this document needs them.
+**The original `logo-live-text.svg` is complete at unchanged 64×64 transparent**
+with the explicitly supplied public static Noto Sans Regular face under its
+existing `Example` alias. All six raw and six independently prepared outputs
+match the frozen native Windows/Linux references. This is **1/1 supplied-font
+acceptance document**, separately from the 30 development documents and the two
+non-font original acceptance fixtures. Snapshot-less rejection stays explicit.
 
-The [public-font bank](tests/Research/supplied-font-labels/README.md) now pins that
-unchanged face and OFL notice, the original output and seven separate controls.
-Healthy cleaned native Windows/Linux reference triples are frozen; the platforms
-have different glyph pixels. Missing, corrupt and substituted embeddings prove
-actual font use inside the SVG image. Independent font-unit and browser layout
-measurements are retained separately from pixels.
+**Next complete deliverable: `original-logo-text-path`, 64×64 transparent**, using
+the same unchanged supplied face and alias. Retain the original local path and
+text bytes. Freeze healthy matching platform references with the exact font
+embedded inside the browser SVG image before implementation. Follow the local
+path reference, supplied advances and tangent placement through every remaining
+rejection or mismatch; use small offset/reference/placement controls for shared
+fixes. Other G2 combinations are dependencies only when this document needs them.
+The finite curved/transformed text-path and full label subset remain promised.
 
-The first shared admission blocker is corrected: bounded ordered GPOS pair
-lists/class pairs, coverage/class definitions 1/2 and mark-free IgnoreMarks.
-Covered contextual glyphs and actual marks remain explicit unsupported outcomes.
-**Cross-platform completion remains 0/1 documents and 0/7 controls.** Linux now
-has **1/1 document and 6/7 controls exact** through all six raw and six independently
-prepared outputs; Windows remains **0/1 and 0/7**. Composite accents still hit
-their component-flag gate. The
-[native raster diagnosis](tests/Research/supplied-font-labels/diagnostics/native-rasterization.json)
-identifies both pipelines for the selected `A`: Windows uses hinted symmetric
-LCD coverage averaged to alpha and font preblend; Linux uses Fontations Latin
-light autohinting, ordinary native contour coverage and font preblend. Replaying
-those independently obtained intermediate inputs matches both frozen images
-exactly; these are diagnostic results, not renderer acceptance.
+The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
+original output, seven controls, upstream face and OFL notice, explicit alias/
+options and healthy cleaned platform reference triples. Missing, corrupt and
+substituted embeddings prove actual font use inside the SVG image. Independent
+font-unit and browser layout measurements stay separate from final pixels.
 
-The bounded managed Latin light contour stage now matches all **11/11 native
-geometry witnesses** used by the current controls: `A`, `V`, `O` and `a` at their
-declared small, fractional, ordinary and large device sizes. These intermediate
-contours are checked separately from final font pixels. Sampling and fitting
-borrow the supplied face, charge work and temporary storage, and preserve the
-existing unhinted contour contract. Public Linux simple-glyph rendering now fits
-at output size, rounds device origins to quarter-X/pixel-Y positions, replays
-directed contours through the shared native coverage machinery, and applies
-font preblend before clipping and paint alpha. The font and both platform
-references remain unchanged. Previously admitted composites retain their prior
-coverage until shared composite hinting is implemented.
+Public Linux simple glyphs use output-size Latin light hints, quarter-X/pixel-Y
+origins, shared directed contour coverage and font preblend. The eleven native
+Latin geometry witnesses and 22 independent axial TrueType contour checks remain
+protected. Windows program-bearing simple glyphs now use the measured query/
+preparation policy, bounded managed instruction fitting, symmetric LCD coverage
+averaged to alpha and sRGB font preblend. Independent probes confirm all 18 fitted
+points and every raw RGB mask byte of the selected `A`; eight synthetic cell
+configurations distinguish the exact vertical filter weights. Product rendering
+always computes from caller-owned font bytes; diagnostic masks are never inputs.
+Instruction-free Windows outlines and previously admitted composites retain their
+existing coverage route until their shared extensions are qualified.
 
-An internal bounded axial TrueType instruction stage now matches **22/22
-independent intermediate contour checks**: eleven glyph/size witnesses under
-FreeType 2.13.2 interpreter queries 35 and 40. Its explicit CVT precision and
-preparation lifecycle preserve native distinctions; it draws no masks and is
-not connected to public rendering. This does not qualify Windows grid fitting
-or change any document/control pixel count.
+**Cross-platform document completion is 1/1; control completion remains 0/7.**
+Linux has **6/7 controls exact**, Windows **0/7**. Keep the whole document complete
+while resolving these separate controls; do not expand combinations just to close
+an interpreter grid. Current Windows measurements against unchanged references:
 
-Next, qualify the managed instruction stage against the measured Windows
-grid-fit policy, then implement symmetric LCD coverage for the same original
-single `A`. Keep the current size/curve/fractional controls alongside it.
-Charge extra metric-glyph discovery, hint execution and mask
-storage; preserve caller-owned bytes, directed curves and native paint distinctions.
-Use the existing size/curve/fractional controls as each mechanism advances.
-Advance rounding does not affect the first single glyph's ink; the Linux pair
-control is now exact, while independent layout rounding and composite component
-flags remain visible dependencies for the full G9 subset.
-Do not replace the font, document bytes or either platform reference. Keep this
-same document selected through these remaining gates; G9's text paths and all
-finite label/path promises remain open.
+| Retained control | Remaining outcome |
+| --- | --- |
+| Curves/counters | 14 changed pixels; maximum channel error 12. |
+| AV/space pair | Four changed pixels; maximum error eight. |
+| Composite accents | Explicit component-flag rejection; shared composite hinting remains open. |
+| Fractional position/size | 329 changed pixels; maximum error 28. |
+| Small fractional origin | 67 changed pixels; maximum error 27. |
+| Large outline | Two changed pixels; maximum error three. |
+| Inherited alias/paint | Five changed pixels; maximum error seven. |
+
+Independent advance rounding, curve scan conversion, fractional strike placement,
+composite flags and the remaining finite G9 label/path promises stay visible.
+Each next shared change must advance the selected complete document or one of
+these demonstrated defects. Bounded stack/point/storage/function execution,
+metric discovery, mask work, cancellation and partial-owner cleanup remain
+required; executed unimplemented semantics keep categorized outcomes.
 
 The completed document ledger retains every declared output below. Original
 bytes and prior references remain unchanged. The tiger uses the explicit viewport
@@ -127,18 +119,20 @@ Mechanisms, control counts and dated qualifications live in
 | Security screw head (`inv-124`) | Explicit 512×512, transparent | Shared automatic tangent placement and visible marker-content overflow. |
 | Shadowed star (`inv-125`) | 128×128, transparent | Local filter binding, bounded native SourceGraphic replay and shared premultiplied Gaussian blur. |
 | Question-mark export (`inv-126`) | 185×180, transparent | Shared bounded validation of inert outlined-path typography; existing native blur and geometry playback are already exact. |
+| Original live-text acceptance fixture | 64×64, transparent; explicit supplied Noto Sans / `Example` contract | Shared bounded platform hinting, directed contours, symmetric LCD/analytic coverage and font preblend. Separate from the 30 development documents. |
 
 ## 1. Validated checkpoint and limits
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,444 tests/platform**: 4,504 core, 1,934 visual, six FontProbe. Test counts are not document counts. |
-| Complete retained banks | The prior qualification of **2,908 reports**, **2,849 PNGs** and **2,755 established exact comparisons** is reused: the new instruction stage has no public rendering caller. Established document/reference captures remain unchanged. The separate pending public-font bank has its declared native captures and diagnostics. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,477 tests/platform**: 4,533 core, 1,938 visual, six FontProbe. Test counts are not document counts. |
+| Complete retained banks | Complete qualification preserves **2,908 prior reports**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The separate public-font bank completes its original document on both platforms through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
 | Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
 | Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission and the internal Latin/TrueType hint stages preserve borrowed font bytes and release owned scratch on rejection. Inert typography values still do not request or retain fonts. |
+| Package/installed consumer | Both platform packages retain exact notices/licenses with no native assets, bundled fonts or runtime dependencies. An isolated installed Windows consumer matches the completed font document through all 12 APIs and passes conversion/catalog/overlap/dimension checks. S17 remote release evidence remains separate. |
 | Scene layouts | Draw command / geometry / paint remain **72/272/68 bytes**. No new throughput claim follows from this correction. |
 | Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
@@ -182,8 +176,9 @@ junction, soccerball with shadow and transparent striped pattern are complete.
 The selected development queue is **30/30 complete**, including both baseball,
 both arrow exports, both path-marker documents and the two public-domain filter
 exports. The original marker-instance and drop-shadow acceptance fixtures are
-also complete, counted separately (**2/2**). The next whole deliverable is the
-supplied-font live-text fixture declared above. Other promised combinations and
+also complete, counted separately (**2/2**). The supplied-font live-text acceptance
+is complete too (**1/1** under its explicit contract). The next whole deliverable
+is the original text-path fixture declared above. Other promised combinations and
 finite effects remain open.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
@@ -207,7 +202,7 @@ landed mechanisms remain regression requirements.
 | G6 | **Four retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Static markers and the enumerated filter/blending subset below | Four CC0 exports and the original marker-instance acceptance fixture complete their declared outputs; remaining marker combinations and finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
-| G9 | Supplied-font labels and the enumerated text-path subset below | Separate experimental feature work; no implicit host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
+| G9 | Supplied-font labels and the enumerated text-path subset below | Original live-text acceptance complete; seven controls and wider labels/text paths stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
 
 ### Document deliverables and accounting
 
@@ -822,10 +817,11 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
     cleanup. These intermediate controls do not qualify Windows grid fitting;
     composites, vertical phantom metrics and executed unimplemented opcodes
     retain explicit outcomes.
-  - [ ] Managed TrueType grid fitting and symmetric LCD coverage averaged to
-    alpha on Windows, followed by the qualified font preblend. Ordinary path or
-    grayscale coverage cannot substitute for the measured LCD route.
-  - [ ] Complete the original single `A` through all six raw and six independently
+  - [x] Managed TrueType grid fitting and symmetric LCD coverage averaged to
+    alpha on Windows, followed by the measured font preblend. Independent query
+    fonts, 18 fitted points, all RGB mask bytes and synthetic weight controls
+    qualify the selected `A`; broader controls retain their measured gaps.
+  - [x] Complete the original single `A` through all six raw and six independently
     prepared supplied-font outputs on both platforms. Keep bounded stack/point/
     storage/function execution, cancellation and partial-owner cleanup explicit;
     unimplemented hint semantics must have categorized outcomes.
@@ -855,10 +851,11 @@ G2–G9 from demonstrated gaps; an admitted document can still expose wrong pixe
 The measured G3 width-map defect lacks a qualified whole-document witness and
 stays open. Choose shared changes by the complete documents they advance.
 
-The next retained deliverable is the original live-text acceptance fixture under
-G9, with explicit public-font preparation and browser embedding. It remains
-pending until its now-frozen native supplied-font output is exact. The separate
-text-path fixture follows within the unchanged finite G9 subset. Online sourcing
+The original live-text acceptance fixture is complete under its unchanged public-
+font contract. The next retained deliverable is the original text-path fixture,
+with the same explicit preparation and verified browser embedding. Freeze its
+matching native references before changing the shared path/layout machinery;
+complete its declared output within the unchanged finite G9 subset. Online sourcing
 continues in bounded public-domain/CC0 batches for remaining in-scope gaps;
 animated exports and effects beyond the enumerated subset remain excluded.
 Keep other instance combinations visible without making them prerequisites

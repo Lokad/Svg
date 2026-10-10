@@ -10862,3 +10862,80 @@ contour/resource checks protect the new stage separately from font pixel counts.
 The final small refactor also passes those affected checks on Windows. Package
 content retains the exact notice/license text and the isolated installed Windows
 consumer passes. This checkpoint does not close the separate S17 release gate.
+
+
+## Managed Windows LCD glyph coverage (2026-10-10)
+
+The unchanged original live-text acceptance document is now exact at 64×64
+transparent on Windows and Linux, through all six raw and six independently
+prepared APIs under the existing Noto Sans / `Example` supplied-font contract.
+This is one completed font document; controls remain Linux 6/7, Windows 0/7 and
+cross-platform 0/7. Corporate 27/27 documents / 258/258 variants remain exact.
+The next complete deliverable is the unchanged original text-path fixture;
+all finite G2–G9 exits and the separate S17 release gate remain open.
+
+### Independent geometry and filter qualification
+
+Private DirectWrite probes read the exact named unchanged face 0, with no host
+font selection. Original CC0 TrueType query fonts independently test GETINFO
+selectors in font, preparation and glyph programs; all three phases agree.
+The selected hinted symmetric LCD policy reports version 42 and font-variation,
+vertical-phantom, ClearType, subpixel-positioning and symmetric-rendering bits.
+Subpixel positioning and symmetric rendering have distinct selectors/result bits,
+as specified by [OpenType GETINFO](https://learn.microsoft.com/en-us/typography/opentype/spec/tt_instructions).
+Reported capabilities do not imply implemented variable fonts or vertical metrics.
+
+For the selected A48, reporting instructions appended after the unchanged glyph
+program read one GC[0] coordinate and translate all original points by that integer
+pixel count. Coordinates, flags, contour ends and fpgm/prep/CVT/hmtx stay unchanged.
+All 36 resulting cropped RGB buffers equal the original bytes. Bound differences
+therefore independently recover all 18 fitted F26 point positions; every managed
+point agrees. The raw original RGB texture and extraction provenance are retained
+in [windows-lcd.json](../tests/Research/supplied-font-labels/diagnostics/windows-lcd.json).
+They qualify intermediate geometry/coverage rather than replacing final references.
+
+Separate original square/edge fonts establish displaced RGB box sampling. Eight
+cell configurations distinguish normalized vertical weights 4/9/10/9/4 from an
+incorrect rounded-byte weighting. Six horizontal and five vertical samples use
+exact quadratic crossings and nonzero winding; ten shared horizontal positions
+cover all three displaced windows. Each RGB channel rounds to a byte before its
+integer mean feeds preblend. The computed A mask matches every independently
+retained RGB byte. Ordinary analytic path coverage and unweighted supersampling
+remain negative diagnostic evidence for this specific pipeline.
+
+### Managed ownership and public rendering
+
+Program-bearing simple Windows glyphs now use the existing bounded TrueType
+machine with explicit full-precision CVT and single-preparation policy. Contours
+are fitted at mapped output size and positioned once in exclusively owned storage.
+Closed directed quadratics feed the LCD sampler; no fixture identity, recorded
+point/mask input, native DLL, browser service or additional runtime dependency
+participates. Instruction-free Windows glyphs and previously admitted composites
+retain their existing route until shared extensions are qualified.
+
+The shared pinned Skia font table builder now supports Windows sRGB/contrast-one
+transfer alongside the existing Linux quantized-gamma/contrast policy. RGB means
+are corrected before viewport coverage and paint alpha. Table generation, point
+mapping and every coverage segment visit charge work and observe cancellation.
+Scratch releases on storage/work/mapping denial; supplied font bytes remain
+borrowed and unchanged. Existing interpreter limits/categorized outcomes remain.
+
+Whole bank controls stay explicit: Windows curves/pairs/fractional size/small
+fractional origin/large outline/inherited paint have 14/4/329/67/2/5 changed pixels,
+with maximum errors 12/8/28/27/3/7. Accents retain their component-flag rejection.
+The complete original single-A document is qualified independently of these gaps.
+No reference tolerance or font replacement was introduced.
+
+Complete native Windows/Linux Release checks pass **6,477 tests/platform**
+(4,533 core / 1,938 visual / six FontProbe), with zero warnings/errors/failures/skips.
+The 84 focused instruction/filter checks and 25 font/Windows-geometry checks pass.
+Full retained bank replay preserves all 2,908 prior reports, 2,849 prior PNGs and
+2,755 established exact comparisons, plus all current marker/filter/typography
+controls and scene layouts 72/272/68. Healthy native reference triples remain
+frozen. Finished qualification is reused for documentation updates; no source,
+DLL, script, build or report fingerprints are introduced.
+
+Both platform packages retain exact FreeType/license notices and contain no native
+assets, bundled fonts or runtime package dependencies. An isolated installed
+Windows consumer reproduces the unchanged original supplied-font reference
+through all 12 APIs, plus conversion, catalog, overlap and dimension-limit checks.

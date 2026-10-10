@@ -5,11 +5,27 @@ using Lokad.Svg.Rendering;
 
 internal static partial class OpenTypeFont
 {
+    /// <summary>Distinguishes program-bearing simple glyphs from previously admitted instruction-free outlines.</summary>
+    internal static bool HasTrueTypePrograms(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        ReadOnlySpan<byte> data = bytes.Span;
+        int count = ReadUInt16(data, 4);
+        for (int i = 0; i < count; i++)
+        {
+            work.Consume(token);
+            int entry = 12 + i * 16;
+            if (ReadUInt32(data, entry) is 0x6670676D or 0x70726570 && ReadUInt32(data, entry + 12) != 0) return true;
+        }
+        using OpenTypeSimpleGlyphStructureStorage structure = GetSimpleGlyphStructure(bytes, glyphIndex, metrics, budget, work, token);
+        if (structure.Value.ContourEndpoints.Length == 0) return false;
+        return ReadUInt16(data, structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2) != 0;
+    }
+
     /// <summary>Returns owned, instruction-fitted simple contours in F26 device coordinates.</summary>
     /// <remarks>Programs and tables borrow the unchanged supplied face. Decoder, machine and
     /// copied point/CVT storage are bounded, reserved before allocation and released on failure.
     /// The explicit target selects rasterizer queries; this internal stage draws no masks and
-    /// does not change public glyph admission or coverage.</remarks>
+    /// supplies owned geometry to the managed coverage stage.</remarks>
     internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767) throw new SvgException(SvgErrorCode.LimitExceeded, "The TrueType device size exceeds its coordinate bound.");
@@ -44,7 +60,7 @@ internal static partial class OpenTypeFont
             machine.Run(bytes.Slice(fontProgram.Offset, fontProgram.Length), TrueTypeHintProgramKind.Font);
             ReadOnlyMemory<byte> prep = bytes.Slice(preparation.Offset, preparation.Length);
             if (target.Preparation == TrueTypeHintPreparation.DefaultThenTarget)
-                machine.Prepare(prep, target with { Grayscale = false, ClearType = false, VerticalSubpixel = false });
+                machine.Prepare(prep, target with { QueryFlags = TrueTypeHintQueryFlags.None });
             machine.Prepare(prep, target);
             int lengthOffset = structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2;
             int instructionLength = ReadUInt16(bytes.Span, lengthOffset);

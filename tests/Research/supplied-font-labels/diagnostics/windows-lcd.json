@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "role": "Independent intermediate Windows geometry and raw RGB coverage; document acceptance still uses unchanged platform references.",
+  "fontProvenance": "../font-provenance.json",
+  "glyphIndex": 36,
+  "deviceSize": 48,
+  "origin": [
+    8,
+    48
+  ],
+  "coverage": "windows-A48-rgb-coverage.png",
+  "coverageBounds": [
+    7,
+    14,
+    39,
+    48
+  ],
+  "nativeLibrary": "Microsoft DirectWrite 10.0.19041.1 (WinBuild.160101.0800)",
+  "extraction": "Private native probe reads the exact caller-named unchanged face 0, with no installed font lookup. Full RGB texture bytes are retained; no native probe is shipped.",
+  "mode": "NATURAL_SYMMETRIC; NATURAL measuring; enabled grid fitting; CLEARTYPE_3x1 texture.",
+  "queryProfile": {
+    "version": 42,
+    "resultBits": [
+      "FontVariations",
+      "VerticalPhantoms",
+      "ClearType",
+      "SubpixelPositioned",
+      "Symmetric"
+    ],
+    "qualification": "Original CC0 TrueType query fonts measured each selector independently in fpgm, prep and glyph programs. All three phases agreed. Unhinted masks do not qualify interpreter queries."
+  },
+  "fittedPointPositions": [
+    [
+      1674,
+      0
+    ],
+    [
+      1410,
+      673
+    ],
+    [
+      541,
+      673
+    ],
+    [
+      280,
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      857,
+      2176
+    ],
+    [
+      1106,
+      2176
+    ],
+    [
+      1960,
+      0
+    ],
+    [
+      1081,
+      1555
+    ],
+    [
+      1072,
+      1579
+    ],
+    [
+      1029,
+      1707
+    ],
+    [
+      989,
+      1844
+    ],
+    [
+      977,
+      1881
+    ],
+    [
+      955,
+      1786
+    ],
+    [
+      900,
+      1607
+    ],
+    [
+      882,
+      1555
+    ],
+    [
+      633,
+      896
+    ],
+    [
+      1327,
+      896
+    ]
+  ],
+  "pointExtraction": "Original Noto coordinates, flags, contour ends and fpgm/prep/CVT/hmtx retained. After the original A glyph program, GC[0] reads each X or Y coordinate; a reporter translates all points by that integer pixel count. All 36 resulting cropped RGB buffers equal the original bytes. Subtracting bounds recovers the 18 fitted F26 point positions.",
+  "lcdSampling": {
+    "horizontalSamples": 6,
+    "verticalSamples": 5,
+    "verticalWeights": [
+      4,
+      9,
+      10,
+      9,
+      4
+    ],
+    "channelDisplacements": [
+      -0.3333333333333333,
+      0,
+      0.3333333333333333
+    ],
+    "qualification": "Independent CC0 square/edge fonts and eight separate cell configurations distinguish normalized integer weights from rounded byte weights. The computed A mask matches every retained RGB byte."
+  },
+  "preblend": {
+    "gamma": "sRGB",
+    "contrast": 1,
+    "rgbToGray": "Floor of integer RGB mean before the correcting table.",
+    "qualification": "Pinned Skia font-mask transfer; unchanged selected Windows reference matches through all six raw and six prepared APIs."
+  },
+  "limits": "Qualifies the selected A geometry, mask and complete output. Other retained sizes, curves, colors, fractional placement and composites keep their own acceptance outcomes; this is not a universal font rasterizer qualification."
+}

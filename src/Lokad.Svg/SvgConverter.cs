@@ -2408,19 +2408,56 @@ public static class SvgConverter
         void RasterizeGlyphContours(SvgGlyphGeometry glyph, byte[] destination)
         {
             if (glyph.Contours.Length == 0) return;
-            if (OperatingSystem.IsLinux() && glyph.Source is SvgGlyphRasterSource source)
+            if (glyph.Source is SvgGlyphRasterSource source && (OperatingSystem.IsLinux() || OperatingSystem.IsWindows()))
             {
                 ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 if (source.HasSimpleOutline(preparationWork, cancellationToken))
                 {
-                    using SvgAuthoredPath path = source.CreateLatinLightPath(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
-                    if (path.Commands.IsEmpty) { workUnits += preparationWork.Used; return; }
-                    Span<byte> preblend = stackalloc byte[256];
-                    SvgFontMaskPreblend.BuildLinuxGrayTable(preblend, ResolveSolidColor(glyph.Color), preparationWork, cancellationToken);
-                    workUnits += preparationWork.Used;
-                    using SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, glyph.Color, true, false, SvgPolygonMapping.NativeFillEdges, null, null, budget);
-                    RasterizePolygonFill(fill, path, destination, preblend);
-                    return;
+                    if (OperatingSystem.IsWindows() && source.HasTrueTypePrograms(budget, preparationWork, cancellationToken))
+                    {
+                        using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
+                        Span<byte> preblend = stackalloc byte[256];
+                        SvgColor color = ResolveSolidColor(glyph.Color);
+                        SvgFontMaskPreblend.BuildWindowsGrayTable(preblend, color, preparationWork, cancellationToken);
+                        double lcdMinimumX = double.PositiveInfinity, lcdMinimumY = double.PositiveInfinity, lcdMaximumX = double.NegativeInfinity, lcdMaximumY = double.NegativeInfinity;
+                        foreach (OpenTypeQuadraticSegment segment in contours.Segments)
+                        {
+                            preparationWork.Consume(cancellationToken);
+                            IncludeLcd(segment.Start); IncludeLcd(segment.Control); IncludeLcd(segment.End);
+                        }
+                        if (contours.Segments.Length != 0)
+                        {
+                            int lcdStartX = ClampFloor(lcdMinimumX - 1d / 3, outputWidth), lcdEndX = ClampCeiling(lcdMaximumX + 1d / 3, outputWidth);
+                            int lcdStartY = ClampFloor(lcdMinimumY, outputHeight), lcdEndY = ClampCeiling(lcdMaximumY, outputHeight);
+                            for (int y = lcdStartY; y < lcdEndY; y++)
+                            for (int x = lcdStartX; x < lcdEndX; x++)
+                            {
+                                preparationWork.Consume(cancellationToken);
+                                SvgGlyphRgbCoverage lcdCoverage = SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, preparationWork, cancellationToken);
+                                byte alpha = ViewportAlpha(preblend[lcdCoverage.Mean], x, y);
+                                if (alpha != 0) BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, alpha)));
+                            }
+                        }
+                        workUnits += preparationWork.Used;
+                        return;
+
+                        void IncludeLcd(OpenTypeOutlinePoint point)
+                        {
+                            lcdMinimumX = Math.Min(lcdMinimumX, point.X); lcdMinimumY = Math.Min(lcdMinimumY, point.Y);
+                            lcdMaximumX = Math.Max(lcdMaximumX, point.X); lcdMaximumY = Math.Max(lcdMaximumY, point.Y);
+                        }
+                    }
+                    if (OperatingSystem.IsLinux())
+                    {
+                        using SvgAuthoredPath path = source.CreateLatinLightPath(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
+                        if (path.Commands.IsEmpty) { workUnits += preparationWork.Used; return; }
+                        Span<byte> preblend = stackalloc byte[256];
+                        SvgFontMaskPreblend.BuildLinuxGrayTable(preblend, ResolveSolidColor(glyph.Color), preparationWork, cancellationToken);
+                        workUnits += preparationWork.Used;
+                        using SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, glyph.Color, true, false, SvgPolygonMapping.NativeFillEdges, null, null, budget);
+                        RasterizePolygonFill(fill, path, destination, preblend);
+                        return;
+                    }
                 }
                 // Previously admitted composites retain their existing coverage;
                 // shared composite hinting remains an explicit G9 dependency.
