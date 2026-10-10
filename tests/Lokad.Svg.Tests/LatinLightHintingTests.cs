@@ -6,6 +6,50 @@ namespace Lokad.Svg.Tests;
 
 public sealed class LatinLightHintingTests
 {
+    [Theory]
+    [InlineData(1)]
+    [InlineData(4)]
+    [InlineData(32)]
+    public void Keeps_coincident_near_only_contours_bounded(int count)
+    {
+        OpenTypeGlyphPoint[] points = Enumerable.Repeat(new OpenTypeGlyphPoint(3, 7, true), count).ToArray();
+        RenderBudget budget = new(long.MaxValue);
+
+        LatinLightHinting.Hint(points, [(ushort)(count - 1)], [], 1000, 16, budget, new(10_000), CancellationToken.None);
+
+        Assert.All(points, point => Assert.Equal(new OpenTypeGlyphPoint(3, 7, true), point));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Near_point_discovery_releases_scratch_when_work_expires()
+    {
+        OpenTypeGlyphPoint[] points = Enumerable.Repeat(new OpenTypeGlyphPoint(3, 7, true), 32).ToArray();
+        RenderBudget budget = new(long.MaxValue);
+
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => LatinLightHinting.Hint(points, [31], [], 1000, 16, budget, new(60), CancellationToken.None)).ErrorCode);
+
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.True(budget.Snapshot().PeakBytes > 0);
+        Assert.All(points, point => Assert.Equal(new OpenTypeGlyphPoint(3, 7, true), point));
+        LatinLightHinting.Hint(points, [31], [], 1000, 16, budget, new(10_000), CancellationToken.None);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Near_only_contours_keep_scaled_geometry_without_spurious_edges()
+    {
+        OpenTypeGlyphPoint[] points = [new(0, 300, true), new(0, 303, true), new(3, 303, true), new(3, 300, true)];
+        OpenTypeGlyphPoint[] expected = [new(0, 307, true), new(0, 310, true), new(3, 310, true), new(3, 307, true)];
+        LatinAlignmentZone[] zones = [new(0, 0, 700, 0, false, false), new(700, 700, 700, 0, true, false)];
+        RenderBudget budget = new(long.MaxValue);
+
+        LatinLightHinting.Hint(points, [3], zones, 1000, 16, budget, new(10_000), CancellationToken.None);
+
+        Assert.Equal(expected, points);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     [Fact]
     public void Fits_opposite_windings_to_the_same_alignment_zones()
     {

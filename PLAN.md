@@ -57,7 +57,11 @@ its mirrored closing parenthesis, rounded component placement and parent program
 TrueType fitting runs children before the parent; Linux light fitting uses the
 assembled outline. Eighteen independent native contour witnesses protect these
 stages. The supplied font's integer hinting-size flag now applies to scaler math.
-The whole document renders through all 12 APIs, with **2,026 Windows / 764 Linux
+Shared Latin light topology combines near-point vectors, preserves contour wrap
+segments and interpolates through non-near neighbors. All 44 measured outlines
+from the document's characters and two device sizes match independent native
+geometry; ten previously differing contours are retained as focused regressions.
+The whole document renders through all 12 APIs, with **2,026 Windows / 474 Linux
 changed pixels** against unchanged references. Follow those remaining layout and
 raster mismatches to exact completion. The new
 controls are a separate ledger: **7/7 exact on Linux, 0/7 on Windows**, through
@@ -152,7 +156,7 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,608 tests/platform**: 4,596 core, 2,006 visual, six FontProbe. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,623 tests/platform**: 4,601 core, 2,016 visual, six FontProbe. Test counts are not document counts. |
 | Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The snapshot-less text-path rejection retains its category/input and now explicitly explains the required prepared font snapshot. Two separate public-font banks preserve their completed original documents through 12 APIs. The new Mono Bold document remains pending; seven controls are exact on Linux and zero on Windows. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |

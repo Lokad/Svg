@@ -11090,3 +11090,33 @@ completed original supplied-font documents through 12 APIs. Fresh packages retai
 current notices and licenses without font/native/runtime dependency assets. The
 isolated installed Windows consumer also renders the unchanged SVG Translate
 document with its mirrored component and parent program. G2–G9 and S17 remain open.
+
+### SVG Translate: near-point topology in Latin light fitting
+
+Independent browser measurements at the declared 512×256 viewport reproduce
+both frozen references exactly and confirm the intended supplied face in all four
+text runs. Comparing every used non-space scalar at the actual 15.36 / 30.72
+device sizes isolates ten differing outlines among 44 pinned Skrifa light cases.
+The small `a` counter differs by a full pixel; other errors affect `h`, `m`, `n`,
+`p` and `r`. These are geometry defects before raster coverage.
+
+Shared topology now accumulates short consecutive vectors before classifying
+directions and marks their intermediate points for weak interpolation. Separate
+non-near links support weak-point classification while original contour links
+retain every point for replay. Segment discovery starts at the beginning of a
+wrapped edge, including edges crossing the contour's first point. This removes a
+spurious four-font-unit edge and restores the native anchor and stem placement.
+All discovery and interpolation loops charge work and observe cancellation;
+existing point reservations cover the two added neighbor indices. Coincident
+contours and interrupted discovery have focused cleanup and bounded-work checks.
+
+All 44 measured contours now match exactly. Ten previously differing native
+contours are retained independently of candidate pixels and implementation bytes.
+The Linux whole-document gap falls from 764 to 474 pixels, maximum channel error
+69; all seven Linux controls stay exact. Windows remains at 2,026 pixels. The
+next investigation separates actual painted glyph origins from DOM character
+extent rounding, then addresses the remaining Windows fitting/coverage gaps.
+
+Complete Release qualification passes 6,623 tests per platform (4,601 core /
+2,016 visual / six FontProbe), preserving the established document and exact-pixel
+ledgers. The whole SVG Translate document and wider finite G9 exit remain open.

@@ -149,19 +149,18 @@ internal static class LatinLightHinting
                 if (point.X is < short.MinValue or > short.MaxValue || point.Y is < short.MinValue or > short.MaxValue) throw Limit("The hinted outline exceeds the native font-unit range.");
                 int previous = i == first ? last : i - 1, next = i == last ? first : i + 1;
                 points[i] = new(point.X, point.Y, Multiply(point.X, xScale), Multiply(point.Y, yScale), previous, next, point.IsOnCurve);
-                points[i].In = Direction(point.X - source[previous].X, point.Y - source[previous].Y);
-                points[i].Out = Direction(source[next].X - point.X, source[next].Y - point.Y);
             }
             first = last + 1;
         }
+        ComputeDirections(points, ends, unitsPerEm, work, token);
         for (int i = 0; i < points.Length; i++)
         {
             work.Consume(token);
             ref HintPoint point = ref points[i];
-            HintPoint previous = points[point.Previous], next = points[point.Next];
+            HintPoint previous = points[point.PreviousNonNear], next = points[point.NextNonNear];
             int inX = point.FontX - previous.FontX, inY = point.FontY - previous.FontY;
             int outX = next.FontX - point.FontX, outY = next.FontY - point.FontY;
-            point.Weak = !point.OnCurve || (point.In == point.Out && point.In != 0) || (point.In != 0 && point.In == -point.Out)
+            point.Weak = point.Weak || !point.OnCurve || (point.In == point.Out && point.In != 0) || (point.In != 0 && point.In == -point.Out)
                 || (point.In == 0 && point.Out == 0 && (((inX ^ outX) >= 0 && (inY ^ outY) >= 0) || IsFlat(inX, inY, outX, outY)));
         }
         if (zones.Length != 0 && yScale != 0)
@@ -188,6 +187,63 @@ internal static class LatinLightHinting
             static int Hypot(int x, int y) { x = Math.Abs(x); y = Math.Abs(y); return x > y ? x + (3 * y >> 3) : y + (3 * x >> 3); }
         }
 
+        // Near points contribute to one directional vector and keep their
+        // original contour links for interpolation and outline replay.
+        static void ComputeDirections(HintPoint[] points, ReadOnlySpan<ushort> ends, int unitsPerEm, ParserWorkCounter work, CancellationToken token)
+        {
+            int nearLimit = 20 * unitsPerEm / 2048, first = 0;
+            foreach (ushort last in ends)
+            {
+                int start = first, current = start, previous = points[start].Previous;
+                while (previous != first)
+                {
+                    work.Consume(token);
+                    if (Math.Abs(points[current].FontX - points[previous].FontX) + Math.Abs(points[current].FontY - points[previous].FontY) >= 2 * nearLimit - 1) break;
+                    current = previous; previous = points[current].Previous;
+                }
+                start = current;
+                int anchor = start, next = start, dx = 0, dy = 0;
+                points[start].PreviousNonNear = points[start].NextNonNear = start;
+                do
+                {
+                    work.Consume(token);
+                    current = next; next = points[current].Next;
+                    dx += points[next].FontX - points[current].FontX; dy += points[next].FontY - points[current].FontY;
+                    if (Math.Abs(dx) + Math.Abs(dy) < nearLimit)
+                    {
+                        points[next].Weak = true;
+                        continue;
+                    }
+                    int direction = Direction(dx, dy);
+                    points[next].In = direction; points[next].PreviousNonNear = anchor;
+                    points[anchor].Out = direction; points[anchor].NextNonNear = next;
+                    for (int i = points[anchor].Next; i != next; i = points[i].Next)
+                    {
+                        work.Consume(token);
+                        points[i].In = points[i].Out = direction;
+                    }
+                    anchor = next; points[anchor].NextNonNear = start; points[start].PreviousNonNear = anchor;
+                    dx = dy = 0;
+                } while (next != start);
+                first = last + 1;
+            }
+            for (int i = 0; i < points.Length; i++)
+            {
+                work.Consume(token);
+                ref HintPoint point = ref points[i];
+                if (point.Weak || point.In != 0 || point.Out != 0) continue;
+                HintPoint before = points[point.PreviousNonNear], after = points[point.NextNonNear];
+                int inX = point.FontX - before.FontX, inY = point.FontY - before.FontY;
+                int outX = after.FontX - point.FontX, outY = after.FontY - point.FontY;
+                if ((inX ^ outX) >= 0 && (inY ^ outY) >= 0)
+                {
+                    point.Weak = true;
+                    points[point.PreviousNonNear].NextNonNear = point.NextNonNear;
+                    points[point.NextNonNear].PreviousNonNear = point.PreviousNonNear;
+                }
+            }
+        }
+
 
         static void BuildSegments(HintPoint[] points, ReadOnlySpan<ushort> ends, BudgetedParserList<HintSegment> segments, int unitsPerEm, ParserWorkCounter work, CancellationToken token)
         {
@@ -195,8 +251,15 @@ internal static class LatinLightHinting
             foreach (ushort last in ends)
             {
                 int start = first;
-                while (start <= last && (Math.Abs(points[start].Out) != 1 || points[start].In == points[start].Out)) { work.Consume(token); start++; }
-                if (start > last) { first = last + 1; continue; }
+                if (Math.Abs(points[first].Out) == 1 && Math.Abs(points[last].Out) == 1)
+                {
+                    do
+                    {
+                        work.Consume(token);
+                        start = points[start].Previous;
+                        if (Math.Abs(points[start].Out) != 1) { start = points[start].Next; break; }
+                    } while (start != first);
+                }
                 int index = start;
                 do
                 {
@@ -488,6 +551,7 @@ internal static class LatinLightHinting
     private struct HintPoint(int fontX, int fontY, int x, int y, int previous, int next, bool onCurve)
     {
         internal int FontX = fontX, FontY = fontY, X = x, Y = y, OriginalY = y, Previous = previous, Next = next, In, Out;
+        internal int PreviousNonNear = previous, NextNonNear = next;
         internal bool OnCurve = onCurve, Weak, Touched;
     }
     private struct HintSegment(int first, int last, int direction, int position, int delta, int minimum, int maximum, bool round)
