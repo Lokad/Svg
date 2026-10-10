@@ -13,7 +13,9 @@ internal readonly record struct SvgGlyphRgbCoverage(byte Red, byte Green, byte B
 /// retains no storage. Crossings are shared across sample rows and columns in the
 /// six by five cell grid, with separate directed limits at exact vertices. Contours own center boundaries according
 /// to the independently measured Windows convention; quadratic evaluation preserves
-/// constant coordinates. Enabled smart dropout control includes stubs on both axes.
+/// constant coordinates. Monotonic quadratic scans use bounded implicit conic
+/// coefficients; implied points round after the sampling-grid map. Enabled smart
+/// dropout control includes stubs on both axes.
 /// Every segment, crossing, comparison and cell consumes work and observes cancellation.
 /// Callers own positioning, bounds, clipping, preblend and scratch reservations;
 /// independent calls with separate scratch may run concurrently.</remarks>
@@ -141,11 +143,11 @@ internal static class SvgGlyphLcdCoverage
                     continue;
                 }
                 double A = a.Y - 2 * b.Y + c.Y, B = 2 * (b.Y - a.Y), C = a.Y - sample;
-                if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, upper, scratch, ref count); continue; }
+                if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, sample, horizontal, upper, scratch, work, token, ref count); continue; }
                 double discriminant = B * B - 4 * A * C; if (discriminant <= 0) continue;
                 double root = Math.Sqrt(discriminant);
-                Include((-B + root) / (2 * A), a, b, c, A, B, upper, scratch, ref count);
-                Include((-B - root) / (2 * A), a, b, c, A, B, upper, scratch, ref count);
+                Include((-B + root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, scratch, work, token, ref count);
+                Include((-B - root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, scratch, work, token, ref count);
             }
             for (int i = 1; i < count; i++)
             {
@@ -156,8 +158,15 @@ internal static class SvgGlyphLcdCoverage
                 scratch[j] = item;
             }
             return count;
-            OpenTypeOutlinePoint Map(OpenTypeOutlinePoint p) => horizontal ? new(p.Y * 5, p.X * 6) : new(p.X * 6, p.Y * 5);
-            static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, bool upper, Span<Crossing> scratch, ref int count)
+            OpenTypeOutlinePoint Map(OpenTypeOutlinePoint p)
+            {
+                // Implied points stay fractional through fitting and positioning.
+                // Scan conversion rounds them only after the six by five map;
+                // a half F26 unit rounds upward in the font's upward Y axis.
+                double x = Math.Floor(p.X * 384 + .5) / 64, y = Math.Floor(p.Y * 320 + .25) / 64;
+                return horizontal ? new(y, x) : new(x, y);
+            }
+            static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
             {
                 if (t is < 0 or > 1) return;
                 double derivative = B + 2 * A * t;
@@ -165,7 +174,69 @@ internal static class SvgGlyphLcdCoverage
                 // Horner evaluation leaves a constant coordinate exact. A
                 // Bernstein sum can drift across a center on a straight stem.
                 double crossing = a.X + t * (2 * (b.X - a.X) + t * (a.X - 2 * b.X + c.X));
+                crossing = Adjust(crossing, sample, a, b, c, horizontal, work, token);
                 scratch[count++] = new(crossing, derivative > 0 ? 1 : -1);
+
+                static double Adjust(double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ParserWorkCounter work, CancellationToken token)
+                {
+                    work.Consume(token);
+                    // An implicit quadratic is (Ay*x-Ax*y)^2 +
+                    // D*(By*x-Bx*y)=0, relative to its start. Normalize both
+                    // directions first, with upward font Y. Bounded integer
+                    // coefficient precision determines the scan equation;
+                    // subdivision changes these coefficients, not its tolerance.
+                    double ax = (horizontal ? a.Y : a.X) * 64, ay = -(horizontal ? a.X : a.Y) * 64;
+                    double bx = (horizontal ? b.Y : b.X) * 64, by = -(horizontal ? b.X : b.Y) * 64;
+                    double cx = (horizontal ? c.Y : c.X) * 64, cy = -(horizontal ? c.X : c.Y) * 64;
+                    if (ax == cx || ay == cy || bx < Math.Min(ax, cx) || bx > Math.Max(ax, cx) || by < Math.Min(ay, cy) || by > Math.Max(ay, cy)) return crossing;
+                    int sx = cx > ax ? 1 : -1, sy = cy > ay ? 1 : -1;
+                    long dx = (long)((bx - ax) * sx), dy = (long)((by - ay) * sy), tx = (long)((cx - ax) * sx), ty = (long)((cy - ay) * sy);
+                    if (Math.Max(tx, ty) > 3200) return crossing;
+                    double firstX = Math.Floor((ax + (sx > 0 ? 32 : -33)) / 64) * 64 + 32;
+                    double firstY = Math.Floor((ay + (sy > 0 ? 32 : -33)) / 64) * 64 + 32;
+                    long u = (long)((firstX - ax) * sx), v = (long)((firstY - ay) * sy), determinant = 2 * (dx * ty - tx * dy);
+                    if (determinant == 0) return crossing;
+                    int magnitude = Bits(Math.Max(tx, ty)), shift = Math.Max(0, (Bits(Math.Abs(determinant)) + magnitude - 27) / 3);
+                    if (shift != 0)
+                    {
+                        long half = 1L << (shift - 1);
+                        dx = (dx + half) >> shift; dy = (dy + half) >> shift; tx = (tx + half) >> shift; ty = (ty + half) >> shift;
+                        u = (u + half) >> shift; v = (v + half) >> shift;
+                        determinant = 2 * (dx * ty - tx * dy);
+                    }
+                    long step = 1L << (6 - shift), x2 = tx - 2 * dx, y2 = ty - 2 * dy;
+                    long P = y2 * y2, Q = x2 * x2, R = -x2 * y2, Lx = determinant * dy, Ly = -determinant * dx;
+                    long ownership = sx > 0 ? (sy < 0 ? 1 : 0) : (sy < 0 ? 0 : 1);
+                    double f, fx, fy, p, q, r;
+                    if (magnitude <= 7)
+                    {
+                        f = P * u * u + Q * v * v + 2 * R * u * v + 2 * Lx * u + 2 * Ly * v + ownership;
+                        fx = (P * (step + 2 * u) + 2 * R * v + 2 * Lx) * step;
+                        fy = (Q * (step + 2 * v) + 2 * R * u + 2 * Ly) * step;
+                        p = 2 * P * step * step; q = 2 * Q * step * step; r = 2 * R * step * step;
+                    }
+                    else
+                    {
+                        // Evaluate the initial half-polynomial in two bounded
+                        // products. Its mixed term occurs once. First and second
+                        // differences then give a continuous scan equation at
+                        // every sample center without a per-cell curve walk.
+                        f = (((P >> 1) * u + R * v + Lx) >> (6 - shift)) * u + (((Q >> 1) * v + Ly) >> (6 - shift)) * v + ownership;
+                        fx = P * (u + step / 2) + R * v + Lx; fy = Q * (v + step / 2) + R * u + Ly;
+                        p = P * step; q = Q * step; r = R * step;
+                    }
+                    double k = horizontal ? (sample * 64 - firstX) / 64 * sx : (-sample * 64 - firstY) / 64 * sy;
+                    double qa = (horizontal ? q : p) / 2, qb = (horizontal ? fy : fx) - qa + r * k;
+                    double qc = f + (horizontal ? fx : fy) * k + (horizontal ? p : q) * k * (k - 1) / 2;
+                    double origin = horizontal ? -firstY / 64 : firstX / 64, direction = horizontal ? -sy : sx;
+                    if (qa == 0) return qb == 0 ? crossing : origin - direction * qc / qb;
+                    double discriminant = qb * qb - 4 * qa * qc;
+                    if (discriminant < 0) return crossing;
+                    double root = Math.Sqrt(discriminant), first = origin + direction * (-qb + root) / (2 * qa), second = origin + direction * (-qb - root) / (2 * qa);
+                    return Math.Abs(first - crossing) <= Math.Abs(second - crossing) ? first : second;
+
+                    static int Bits(long value) => value == 0 ? 0 : System.Numerics.BitOperations.Log2((ulong)value) + 1;
+                }
             }
         }
     }

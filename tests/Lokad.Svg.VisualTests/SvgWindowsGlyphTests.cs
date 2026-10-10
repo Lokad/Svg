@@ -148,15 +148,13 @@ public sealed class SvgWindowsGlyphTests
     }
 
     [Fact]
-    public void Exact_split_curves_preserve_complete_translated_native_textures()
+    public void Coefficient_precision_and_implied_points_match_complete_translated_native_curve_textures()
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics");
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "windows-curve-cells.json")));
-        string[] exactIds = native.RootElement.GetProperty("establishedExactCaseIds").EnumerateArray()
-            .Select(item => item.GetString() ?? throw new InvalidDataException("Missing exact curve case.")).ToArray();
-        Assert.NotEmpty(exactIds);
         JsonElement[] cases = native.RootElement.GetProperty("cases").EnumerateArray().ToArray();
-        foreach (JsonElement item in exactIds.Select(id => cases.Single(item => item.GetProperty("id").GetString() == id)))
+        Assert.Equal(5, cases.Length);
+        foreach (JsonElement item in cases)
         foreach (JsonElement texture in item.GetProperty("nativeTextures").EnumerateArray())
         {
             double originX = 8 + texture.GetProperty("xCellPhase").GetInt32() / 6.0;
@@ -172,8 +170,14 @@ public sealed class SvgWindowsGlyphTests
                 if (flags[index] != 0) { segments.Add(new(current, next, next)); current = next; }
                 else
                 {
-                    Assert.Equal(1, flags[index + 1]);
-                    segments.Add(new(current, next, points[index + 1])); current = points[++index];
+                    OpenTypeOutlinePoint following = index + 1 < points.Length ? points[index + 1] : points[0];
+                    if (index + 1 == points.Length || flags[index + 1] != 0)
+                    { segments.Add(new(current, next, following)); current = following; index++; }
+                    else
+                    {
+                        OpenTypeOutlinePoint middle = new((next.X + following.X) / 2, (next.Y + following.Y) / 2);
+                        segments.Add(new(current, next, middle)); current = middle;
+                    }
                 }
             }
             if (current != points[0]) segments.Add(new(current, points[0], points[0]));

@@ -11390,3 +11390,95 @@ the preceding complete 6,678-test/platform and corpus/package qualification is
 reused explicitly. The whole document still has 62 Windows differing pixels;
 the integer-strike control still has four. This checkpoint claims diagnosis and
 regression protection, with no additional completed document or renderer fix.
+
+### SVG Translate: bounded implicit quadratic scans
+
+The shared Windows scan correction now resolves the finite curve controls from
+the preceding checkpoint. All five outlines match all 150 complete translated
+native RGB textures, including zero bytes and an outside margin. The two split
+forms remain exact; both unsplit forms and S32 become exact. The unchanged
+integer-strike SVG control consequently matches through six raw and six prepared
+APIs. Mono controls are now **7/7 on both platforms**. The whole document remains
+**0/1 complete** across platforms: Windows falls from **62 to 36 differing pixels**,
+with maximum channel error 11; Linux stays exact. Twenty-six document pixels and
+four integer-strike pixels are corrected, with no previously matching pixel
+changed in either output. The browser references, source bytes, font program and
+output contracts remain frozen.
+
+The correction evaluates a quadratic's implicit equation with bounded coefficient
+precision. Relative to the start, write its coordinates as
+`x(t) = Bx*t + Ax*t*t`, `y(t) = By*t + Ay*t*t`. Eliminating `t` gives
+`(Ay*x - Ax*y)^2 + D*(By*x - Bx*y) = 0`, where
+`D = Ay*Bx - Ax*By`. Both directions are normalized, with upward font Y. The bit
+widths of the determinant and maximum span determine the reduction of F26
+precision: `max(0, (determinantBits + spanBits - 27) / 3)`. Relative controls,
+endpoints and initial sample offsets round at that reduced precision. Initial
+half-polynomial products round separately; their mixed term occurs once. First
+and second differences then define the scan equation at subsequent centers.
+Solving that equation supplies crossings to the existing directed winding and
+smart-dropout machinery, with no per-cell curve walk or new owned storage.
+
+This explains the independent split/unsplit controls. Exact subdivision lowers
+coefficient magnitudes and therefore preserves more precision, despite unchanged
+continuous geometry. A geometric tolerance, inward epsilon or rounded square root
+cannot express that distinction. The independently inverted LCD cell maps also
+match direct aliased native rendering under a six by five transform for all five
+retained outlines and both grid-fit modes. Native input observations preserve the
+original complete textures and confirm the integer scan coordinates. Diagnostic
+tools and native observations remain private; the managed renderer computes the
+equation from caller-owned contours.
+
+Implied points retain half F26 units through fitting and positioning. Rounding
+happens after the six by five map, where a half unit rounds upward in font Y.
+Rounding the original midpoint instead changes the outline too early. This
+separate stage resolves S32's third bottom-row cell while preserving its previously
+correct near-center cells. Inserting explicit integer on-curve points at the
+existing integer implied midpoints leaves the complete native S32 texture
+unchanged, confirming that this correction needs the shared quadratic geometry
+rather than a separate implementation for off-curve point groups.
+
+The qualified implicit equation currently covers quadratics monotonic in both
+axes with spans up to 50 fine-grid cells. Other curves retain their established
+analytic crossings. Every additional curve evaluation consumes work and observes
+cancellation; caller-owned crossing scratch and its reservation are unchanged.
+The expanded regression fact protects all 150 retained textures on both platforms.
+The SVG bank also asserts the newly exact integer control through all 12 APIs.
+The remaining small edge details and closing-parenthesis strike determine the
+next shared correction. Extend subdivision or boundary/dropout behavior when
+those retained failures require it; this checkpoint closes neither the whole
+document nor the finite G2–G9 and S17 exits.
+
+The same correction completes the older public Noto Sans Regular curves/counters
+and fractional-position/size controls, removing their 13 and 15 Windows pixel
+differences against unchanged references. Exact assertions protect both through
+all 12 APIs. That bank reaches **5/7 Windows controls**, while Linux stays at 6/7.
+The large outline retains two Windows differences and composite accents retain
+their explicit component-flag rejection. Both original supplied-font acceptance
+documents remain complete.
+
+Across the 53 retained Mono glyph/strike/phase diagnostics, all 34 preceding exact
+raw RGB textures are preserved and 43 are now exact. Differing raw channels fall
+from 71 to 33. The pending closing-parenthesis texture still has its original
+missing cell and gains a low-coverage cell in the dropout pass at (10,258), beyond
+the rendered glyph's exclusive bottom bound of 258. Full RGB fidelity
+for that pending diagnostic remains part of the next finite correction. It does
+not change a previously matching pixel in the declared whole-document output.
+
+Complete Windows/Linux Release qualification passes **6,679 tests/platform**
+(4,651 core / 2,022 visual / six FontProbe), with zero warnings, errors, failures
+or skips. Sixteen focused Windows cases also pass the strengthened exact assertions
+after the full suite. All 2,908 prior corpus outcomes, 2,849 PNGs and 2,755
+established exact comparisons are preserved, including **27/27 corporate documents
+and 258/258 variants**. Every preceding exact font output remains byte-identical:
+18 on Windows and 23 on Linux. Package/public/native/notice contracts reuse their
+preceding qualification; no release gate is claimed.
+
+The final isolated preceding/current assembly comparison uses the unchanged
+document, supplied font and options, three warmups and seven synchronous samples.
+Both candidate PNGs agree with their qualified outputs. Whole-document median
+time changes from **106.1 ms to 114.0 ms**, with median managed allocations of
+4,358,504 and 4,358,464 bytes. Peak accounted memory remains **692,258 bytes**.
+The scalar-x control measures 3.96 and 2.19 ms, with unchanged 123,384 allocated
+bytes and 163,840-byte accounted peak. Denial one byte below either peak returns
+LimitExceeded and releases all owned storage; successful conversions also release
+all owners. These small local batches establish no general throughput claim.

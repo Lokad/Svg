@@ -64,7 +64,7 @@ geometry; ten previously differing contours are retained as focused regressions.
 Shared platform font advances and 1/64-pixel SVG fragment positions now preserve
 authored origins, separately rounded text-path widths and positioned text chunks.
 The whole document renders through all 12 APIs and is **exact on Linux**;
-**62 Windows changed pixels** remain against unchanged references (maximum
+**36 Windows changed pixels** remain against unchanged references (maximum
 channel error 11). Shared symmetric LCD strike positioning now maps quarters onto
 the six-column sampling grid. Windows retains fractional implied curve midpoints,
 and quadratic winding owns the same lower endpoints as line winding. Four
@@ -81,28 +81,28 @@ original CC0 boundary textures and two complete supplied-face RGB masks protect
 the correction; all nine are stable through three fresh native processes.
 Finish the remaining Windows curve/coverage mismatch before
 counting the document complete across both platforms. The new
-controls are a separate ledger: **7/7 exact on Linux, 6/7 on Windows**, through
+controls are a separate ledger: **7/7 exact on Linux and Windows**, through
 all 12 APIs. Admission and API equivalence do not close Windows pixels.
 Other instance/font combinations are prerequisites only when this document needs
 them; all finite G9 promises and the seven older font controls remain visible.
-The integer-strike control retains four Windows differences, maximum error 12.
-Shared crossing preparation reduces the added scan cost; keep the current small
-warm-batch measurement in the design record. Peak accounted memory stays at
+The integer-strike control is now exact against its unchanged Windows reference.
+Shared crossing preparation bounds scan cost. The current small local warm batch
+measures 106.1 ms before and 114.0 ms after the conic correction; retain its
+limits in the design record. Peak accounted memory stays at
 692,258 bytes, with denial one byte below the peak releasing all owned storage.
-The remaining native curve controls and the integer-strike bottom row determine
-the next shared correction; preserve every established exact output.
-Thirty translated native textures now isolate that bottom-row discrepancy to
-three extra analytic sampling cells. [The curve diagnostics](tests/Research/supplied-font-documents/diagnostics/windows-curve-cells.json)
-retain complete textures and independently recovered cell maps. Two original
-CC0 quadratic pairs also expose native scan conversion after all 48 fitted
-coordinate observations agree: splitting the exact curve once changes its
-native texture. Preserve the two already exact split forms while resolving the
-two unsplit forms. Qualify a shared curve rule against these finite controls,
-the retained glyph/strike diagnostics and every established exact result, then
-finish the S32 control and this unchanged whole document. Coarse flattening and
-simple fixed-point parameter choices remain unqualified; their lower local
-error counts also introduce new errors. No renderer correction is claimed for
-this diagnostic checkpoint.
+Bounded implicit conic coefficients and sampling-grid rounding of implied points
+correct another 26 document pixels and all four integer-strike differences,
+without changing a previously matching pixel in either output.
+[The curve diagnostics](tests/Research/supplied-font-documents/diagnostics/windows-curve-cells.json)
+now pass all 150 complete native textures: S32 and both original CC0
+split/unsplit pairs, through all 30 cell translations per outline. Coefficient
+magnitude determines fixed-point precision; exact subdivision changes that
+magnitude while preserving continuous geometry. No fitted tolerance or diagnostic
+bitmap enters rendering. Preserve these finite exits and every established exact
+output while resolving the remaining 36 Windows document pixels. The next shared
+correction must address the retained small edge details and closing-parenthesis
+strike, then finish this unchanged whole document. Larger and nonmonotonic curve
+extensions are dependencies only where that document needs them.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
 original output, seven controls, upstream face and OFL notice, explicit alias/
@@ -122,17 +122,17 @@ always computes from caller-owned font bytes; diagnostic masks are never inputs.
 Instruction-free Windows outlines and previously admitted composites retain their
 existing coverage route until their shared extensions are qualified.
 
-**Live-text bank document completion is 1/1; cross-platform controls are 3/7 exact.**
-Linux has **6/7 controls exact**, Windows **3/7**. Keep the whole document complete
+**Live-text bank document completion is 1/1; cross-platform controls are 5/7 exact.**
+Linux has **6/7 controls exact**, Windows **5/7**. Keep the whole document complete
 while resolving these separate controls; do not expand combinations just to close
 an interpreter grid. Current Windows measurements against unchanged references:
 
 | Retained control | Remaining outcome |
 | --- | --- |
-| Curves/counters | 13 changed pixels; maximum channel error 12. |
+| Curves/counters | Exact on both platforms through all 12 APIs. |
 | AV/space pair | Exact on both platforms through all 12 APIs. |
 | Composite accents | Explicit component-flag rejection; shared composite hinting remains open. |
-| Fractional position/size | 15 changed pixels; maximum error 13. |
+| Fractional position/size | Exact on both platforms through all 12 APIs. |
 | Small fractional origin | Exact on both platforms through all 12 APIs. |
 | Large outline | Two changed pixels; maximum error three. |
 | Inherited alias/paint | Exact on both platforms through all 12 APIs. |

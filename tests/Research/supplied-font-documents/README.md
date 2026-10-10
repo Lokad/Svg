@@ -36,7 +36,7 @@ TrueType fits the child before the parent; Linux light fitting uses the assemble
 outline. [Eighteen independent native contours](diagnostics/composite-contours.json)
 protect both stages. Font header bit 3 now controls integer internal hinting sizes,
 while linear advances retain authored sizes. The whole document renders through
-all 12 APIs: **Linux matches exactly; Windows retains 62 changed pixels**
+all 12 APIs: **Linux matches exactly; Windows retains 36 changed pixels**
 (maximum channel error 11). Shared Latin light topology combines near-point vectors and
 retains wrapped contour segments before fitting and interpolation. All 44 measured
 document outlines match independent native geometry; [ten focused contours](diagnostics/latin-light-near-contours.json)
@@ -76,17 +76,20 @@ to the bottom curves preserves them. Two original CC0 quadratic pairs isolate
 scan conversion independently: every authored integer F26 coordinate agrees
 with 48 native GC observations, but exact subdivision changes the native mask.
 All retained textures and bounds agree through three fresh native processes,
-with enabled and disabled grid fitting. The two split forms are already exact
-and have full-texture regression protection across all 30 translations each;
-the two unsplit forms remain pending. These are diagnostic controls, separate
-from the seven SVG controls and whole-document completion. The renderer stays
-at 62 Windows document differences and four integer-strike differences.
+with enabled and disabled grid fitting. Bounded implicit conic coefficients now
+preserve the native distinction between exact split/unsplit representations.
+Implied points round after mapping to the six by five sampling grid. All five
+outlines now match every byte of their 150 translated textures, including an
+outside margin. These shared corrections fix another 26 whole-document pixels
+and all four integer-strike differences, without changing a previously matching
+pixel in either output. The diagnostic controls stay separate from the seven SVG
+controls and whole-document completion; 36 Windows document differences remain.
 
 The seven controls are separate from document completion. All render through the
 12 APIs; five independent direct-text equivalents protect actual position and
 path semantics. API and layout success do not count as exact native pixels.
 Linux has **7/7 controls exact**, protected by frozen-reference assertions.
-Windows has **6/7 controls exact**, protected by frozen-reference assertions:
+Windows has **7/7 controls exact**, protected by frozen-reference assertions:
 
 | Control | Purpose | Windows changed pixels / maximum channel error |
 | --- | --- | --- |
@@ -95,10 +98,10 @@ Windows has **6/7 controls exact**, protected by frozen-reference assertions:
 | Nested absolute/relative | Combine parent coordinates and descendant offsets. | 0 / 0 |
 | Continued current position | Keep reset y and advance x into the next span. | 0 / 0 |
 | Empty path body | Retain an explicitly closed local baseline. | 0 / 0 |
-| Integer strikes | Two sizes and curved glyphs from the document. | 4 / 12 |
+| Integer strikes | Two sizes and curved glyphs from the document. | 0 / 0 |
 | Scaled strikes | Preserve the original root map and fractional strikes. | 0 / 0 |
 
-Complete Windows/Linux qualification passes 6,678 tests per platform and preserves
+Complete Windows/Linux qualification passes 6,679 tests per platform and preserves
 all 27/27 corporate documents / 258/258 variants, 2,849 prior PNGs and 2,755 prior
 exact comparisons. Keep wider finite
 G9 list/rotate/font/paint/baseline/curve promises and the older live-text defects
