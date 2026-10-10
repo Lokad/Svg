@@ -76,6 +76,43 @@ public sealed class SvgGlyphLcdCoverageTests
         Assert.ThrowsAny<OperationCanceledException>(() => SvgGlyphLcdCoverage.GetCoverage([], 0, 0, new(long.MaxValue), cancelled.Token));
     }
 
+    [Theory]
+    [InlineData(false, 0)]
+    [InlineData(true, 28)]
+    public void Native_thin_horizontal_stroke_requires_enabled_smart_dropouts(bool enabled, byte expected)
+    {
+        // Original CC0 font: UPEM 1024, em 16, rectangle (0,0)-(384,1),
+        // prep SCANCTRL 511, SCANTYPE 2 or 4. Native symmetric LCD texture
+        // at an interior pixel is respectively (0,0,0) or (28,28,28).
+        OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 1d / 64);
+        SvgGlyphLcdCoverage.Crossing[] scratch = enabled ? new SvgGlyphLcdCoverage.Crossing[8] : [];
+        Assert.Equal(new SvgGlyphRgbCoverage(expected, expected, expected), SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, scratch, new(long.MaxValue), CancellationToken.None));
+    }
+
+    [Fact]
+    public void Native_slanted_stroke_preserves_last_row_dropout()
+    {
+        // Independent original CC0 trapezoid: points (0,0),(604,0),
+        // (401,768),(0,768), UPEM 1024, em 16. Baseline is at device Y12.
+        OpenTypeOutlinePoint[] points = [new(0, 12), new(604d / 64, 12), new(401d / 64, 0), new(0, 0)];
+        OpenTypeQuadraticSegment[] segments = Enumerable.Range(0, 4).Select(i => new OpenTypeQuadraticSegment(points[i], points[(i + 1) % 4], points[(i + 1) % 4])).ToArray();
+        SvgGlyphRgbCoverage actual = SvgGlyphLcdCoverage.GetCoverage(segments, 9, 11, new SvgGlyphLcdCoverage.Crossing[8], new(long.MaxValue), CancellationToken.None);
+        Assert.Equal(new SvgGlyphRgbCoverage(170, 85, 5), actual);
+    }
+
+    [Fact]
+    public void Smart_dropout_scratch_and_crossing_work_remain_bounded()
+    {
+        OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 1d / 64);
+        Assert.Throws<ArgumentException>(() => SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, new SvgGlyphLcdCoverage.Crossing[7], new(long.MaxValue), CancellationToken.None));
+        SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[8];
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, scratch, new(15), CancellationToken.None)).ErrorCode);
+        using var cancelled = new CancellationTokenSource(); cancelled.Cancel();
+        Assert.ThrowsAny<OperationCanceledException>(() => SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, scratch, new(long.MaxValue), cancelled.Token));
+        OpenTypeQuadraticSegment[] reversed = segments.Reverse().Select(s => new OpenTypeQuadraticSegment(s.End, s.Start, s.Start)).ToArray();
+        Assert.Equal(default(SvgGlyphRgbCoverage), SvgGlyphLcdCoverage.GetCoverage([.. segments, .. reversed], 2, 0, new SvgGlyphLcdCoverage.Crossing[16], new(long.MaxValue), CancellationToken.None));
+    }
+
     private static OpenTypeQuadraticSegment[] Rectangle(double left, double top, double right, double bottom)
     {
         OpenTypeOutlinePoint[] points = [new(left, top), new(right, top), new(right, bottom), new(left, bottom)];

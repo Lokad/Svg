@@ -2416,6 +2416,9 @@ public static class SvgConverter
                     if (OperatingSystem.IsWindows() && source.HasTrueTypePrograms(budget, preparationWork, cancellationToken))
                     {
                         using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
+                        int crossingCount = contours.SmartDropouts ? checked(contours.Segments.Length * 2) : 0;
+                        using RenderBudget.BudgetReservation? crossingReservation = crossingCount == 0 ? null : budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(crossingCount), SvgMemoryCategory.Temporary);
+                        SvgGlyphLcdCoverage.Crossing[] crossings = crossingCount == 0 ? [] : new SvgGlyphLcdCoverage.Crossing[crossingCount];
                         Span<byte> preblend = stackalloc byte[256];
                         SvgColor color = ResolveSolidColor(glyph.Color);
                         SvgFontMaskPreblend.BuildWindowsGrayTable(preblend, color, preparationWork, cancellationToken);
@@ -2433,7 +2436,7 @@ public static class SvgConverter
                             for (int x = lcdStartX; x < lcdEndX; x++)
                             {
                                 preparationWork.Consume(cancellationToken);
-                                SvgGlyphRgbCoverage lcdCoverage = SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, preparationWork, cancellationToken);
+                                SvgGlyphRgbCoverage lcdCoverage = SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, crossings, preparationWork, cancellationToken);
                                 byte alpha = ViewportAlpha(preblend[lcdCoverage.Mean], x, y);
                                 if (alpha != 0) BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, alpha)));
                             }

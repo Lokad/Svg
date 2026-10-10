@@ -113,5 +113,25 @@
         ]
       ]
     }
-  ]
+  ],
+  "smartDropoutCases": [
+    {
+      "id": "A-integer-strike-smart-dropouts",
+      "glyph": 36,
+      "scalar": "A",
+      "deviceSize": 16,
+      "origin": [
+        8,
+        256
+      ],
+      "coverage": "windows-A16-smart-dropouts-rgb.png",
+      "coverageBounds": [
+        7,
+        244,
+        18,
+        256
+      ]
+    }
+  ],
+  "smartDropoutQualification": "The unchanged supplied face enables SCANCTRL 511 / SCANTYPE 4. Private independent fitted-geometry fonts preserve native RGB bytes. SCANTYPE 2 and 4 captures isolate thin-feature coverage; the complete original A16 mask is retained here. The managed renderer computes every cell from supplied geometry and executed program policy."
 }

@@ -55,7 +55,9 @@ internal static partial class OpenTypeFont
             using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, budget, work, token);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
             BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, roundImpliedPoints, work, token);
-            return compositeSegments.Detach();
+            OpenTypeGlyphContourStorage result = compositeSegments.Detach();
+            result.SmartDropouts = fitting.GlyphSmartDropouts;
+            return result;
         }
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
         using OpenTypeGlyphPointStorage decoded = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, token);
@@ -78,6 +80,7 @@ internal static partial class OpenTypeFont
         // Preserve indices without inventing vertical metrics. Executed access
         // to either vertical phantom point is an explicit unsupported outcome.
         points[pointCount + 2].Unavailable = points[pointCount + 3].Unavailable = true;
+        bool smartDropouts;
         using (TrueTypeHinting machine = TrueTypeHinting.Create(profile, cvt, points, structure.Value.ContourEndpoints, ppem, scale, target, budget, work, token))
         {
             machine.Run(bytes.Slice(fontProgram.Offset, fontProgram.Length), TrueTypeHintProgramKind.Font);
@@ -88,11 +91,14 @@ internal static partial class OpenTypeFont
             int lengthOffset = structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2;
             int instructionLength = ReadUInt16(bytes.Span, lengthOffset);
             machine.Run(bytes.Slice(lengthOffset + 2, instructionLength), TrueTypeHintProgramKind.Glyph);
+            smartDropouts = machine.GlyphSmartDropouts;
         }
         for (int i = 0; i < pointCount; i++) { work.Consume(token); decoded.Points[i] = new(points[i].X, points[i].Y, decoded.Points[i].IsOnCurve); }
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, token);
         BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, roundImpliedPoints, work, token);
-        return segments.Detach();
+        OpenTypeGlyphContourStorage fitted = segments.Detach();
+        fitted.SmartDropouts = smartDropouts;
+        return fitted;
 
         int Scale(int value) => ScaleWith(value, scale);
         int ScaleWith(int value, int factor)

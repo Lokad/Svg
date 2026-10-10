@@ -51,6 +51,8 @@ internal static partial class OpenTypeFont
             return round && (!horizontal || _target.Version == 35) ? Round(scaled) : scaled;
         }
 
+        internal bool GlyphSmartDropouts => _machine.GlyphSmartDropouts;
+
         internal void Fit(ushort glyph, OpenTypeGlyphPoint[] outline, ushort[] ends, OpenTypeTableRange range, OpenTypeTableRange instructions, bool composite)
         {
             _work.Consume(_token);

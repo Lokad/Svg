@@ -11199,3 +11199,64 @@ six FontProbe). The two new live-text assertions receive focused checks on both
 platforms after the complete qualification; unchanged full suites are reused.
 Package, notice and isolated-consumer receipts are reused from the preceding
 delivery qualification because their contracts are unchanged.
+
+### SVG Translate: executed smart dropout control
+
+Private fitted-geometry fonts, built from managed post-hint F26 coordinates,
+reproduce all native RGB mask bytes of six selected original glyphs, including
+the remaining `A16` and `S32` controls. This separates their scan conversion from
+coordinate fitting. A standalone FreeType black raster at six by five cells is
+a useful diagnostic candidate, but its remaining native curve/boundary errors
+prevent using it as the document's acceptance oracle or a qualified replacement.
+Fixed-point resolution experiments remain under ignored artifacts.
+
+Two original CC0 synthetic fonts isolate the confirmed thin-feature rule. With
+SCANCTRL 511, changing only SCANTYPE 2 to 4 changes an interior 1/64-pixel-high
+stroke from RGB (0,0,0) to (28,28,28), and the last-row slanted edge from
+(165,80,0) to (170,85,5). These are smart dropout controls including stubs, as
+defined by the [OpenType scan conversion rules](https://learn.microsoft.com/en-us/typography/opentype/spec/tt_instructions#scantype).
+All five captured controls, including the complete unchanged supplied-font A16
+texture, reproduce their bounds and every RGB byte through three fresh processes.
+The original A16 texture and synthetic declarations are retained alongside the
+existing [Windows glyph controls](../tests/Research/supplied-font-documents/diagnostics/windows-glyph-coverage.json).
+
+The bounded interpreter now retains scan-control/type state and reports the
+completed glyph's enabled smart policy. Child-local changes are restored before
+its parent or the next child runs. Windows coverage borrows the fitted contours
+and one temporary array, reserved before allocation for at most two directed
+crossings per segment. It preserves narrow filled intervals between adjacent
+sample centers on both axes, selecting the nearer center only when its neighbor
+is not already covered. Existing center samples, phase mapping and implied-point
+policy stay in place. An explicit crossing sort charges each comparison and
+observes cancellation without wrapping categorized limit/cancellation exceptions.
+Coverage-entry cancellation releases fitted contours and temporary crossing
+storage while preserving the caller's scene and font ownership.
+
+The correction makes five further Mono positioning controls exact. Windows now
+has 6/7 controls exact; Linux remains 7/7. The Windows whole-document discrepancy
+falls from 237 pixels to 210, maximum channel error 31. All 27 repaired document
+pixels now match; no previously matching document pixel changes. The inherited
+alias/paint control also becomes exact, taking the older live-text ledger to
+Windows 3/7 and Linux 6/7; its curve/counter discrepancy falls from 14 to 13 pixels.
+The integer-strike control
+retains four pixels, maximum error 12. Cross-platform document completion remains
+0/1; curve crossings and sampling-center boundaries remain the next shared
+dependencies of this declared deliverable.
+
+A small local Windows comparison uses the preceding qualified assembly and the
+same raw output contract: three warmups followed by seven synchronous renders.
+The baseline reproduces the preceding document PNG byte for byte. Median warm
+time rises from 108.3 ms to 188.6 ms; median allocated bytes rise from 4,292,912 to
+4,358,432. Peak accounted memory stays at 692,258 bytes, and a limit one byte below
+that peak produces LimitExceeded with zero remaining owned storage. These are
+local measurements, not a general throughput claim. Keep the added scan work
+visible and reduce repeated preparation as the remaining coverage stage develops.
+
+Complete Windows/Linux Release qualification passes 6,671 tests per platform
+(4,645 core / 2,020 visual / six FontProbe). Both platforms preserve all 2,849
+established PNGs and 2,755 exact comparisons, including the 27/27 documents and
+258/258 corporate variants. The new inherited-paint assertion receives focused
+Windows checks after the full suite and is included in the finished Linux suite;
+unchanged complete checks are reused. Package/public/native/notice contracts
+reuse their preceding qualification. This correction adds no release claim;
+finite G2–G9 completion and S17 remain open.

@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "role": "Original CC0 synthetic scan-control witnesses, independently captured before product adoption.",
+  "nativeLibrary": "Microsoft DirectWrite 10.0.19041.1 (WinBuild.160101.0800)",
+  "mode": "NATURAL_SYMMETRIC; NATURAL measuring; enabled grid fitting; CLEARTYPE_3x1 texture; exact caller-named unchanged face 0.",
+  "scanControl": 511,
+  "fontUnitsPerEm": 1024,
+  "deviceSize": 16,
+  "origin": [
+    8,
+    256
+  ],
+  "shapes": {
+    "edges-A": [
+      [
+        0,
+        0
+      ],
+      [
+        604,
+        0
+      ],
+      [
+        401,
+        768
+      ],
+      [
+        0,
+        768
+      ]
+    ],
+    "samples-y1": [
+      [
+        0,
+        0
+      ],
+      [
+        384,
+        0
+      ],
+      [
+        384,
+        1
+      ],
+      [
+        0,
+        1
+      ]
+    ]
+  },
+  "program": "Only prep SCANCTRL 511 and SCANTYPE 2 or 4; no CVT, font program or glyph program; hmtx LSB equals minimum X.",
+  "witnesses": [
+    {
+      "id": "edges-A",
+      "pixel": [
+        17,
+        255
+      ],
+      "measurements": [
+        {
+          "scanType": 2,
+          "rgb": [
+            165,
+            80,
+            0
+          ]
+        },
+        {
+          "scanType": 4,
+          "rgb": [
+            170,
+            85,
+            5
+          ]
+        }
+      ]
+    },
+    {
+      "id": "samples-y1",
+      "pixel": [
+        10,
+        255
+      ],
+      "measurements": [
+        {
+          "scanType": 2,
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "scanType": 4,
+          "rgb": [
+            28,
+            28,
+            28
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Specimen numbers and raw original A16 texture are test evidence. Whole-document references and font bytes remain unchanged."
+}

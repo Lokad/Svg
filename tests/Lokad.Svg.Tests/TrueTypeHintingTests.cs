@@ -9,6 +9,39 @@ public sealed class TrueTypeHintingTests
     private static TrueTypeHintTarget Target => new(35, TrueTypeHintQueryFlags.Grayscale, TrueTypeHintControlScale.FractionalFontUnits, TrueTypeHintPreparation.Single);
 
     [Theory]
+    [InlineData(511, 4, 48, 0, true)]
+    [InlineData(511, 2, 48, 0, false)]
+    [InlineData(511, 5, 48, 0, false)]
+    [InlineData(0, 4, 48, 0, false)]
+    [InlineData(272, 4, 16, 0, true)]
+    [InlineData(272, 4, 17, 0, false)]
+    [InlineData(512, 4, 48, (int)TrueTypeHintQueryFlags.Rotated, true)]
+    [InlineData(512, 4, 48, 0, false)]
+    [InlineData(1024, 4, 48, (int)TrueTypeHintQueryFlags.Stretched, true)]
+    [InlineData(4607, 4, 48, 0, false)]
+    public void Glyph_reports_enabled_smart_dropout_policy(int control, byte scanType, int ppem, int query, bool expected)
+    {
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], ppem, 65536, Target with { QueryFlags = (TrueTypeHintQueryFlags)query }, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Prepare(new byte[] { 0xB8, (byte)(control >> 8), (byte)control, 0x85, 0xB0, scanType, 0x8D }, Target with { QueryFlags = (TrueTypeHintQueryFlags)query });
+        machine.Run(ReadOnlyMemory<byte>.Empty, TrueTypeHintProgramKind.Glyph);
+        Assert.Equal(expected, machine.GlyphSmartDropouts);
+    }
+
+    [Fact]
+    public void Child_scan_policy_is_restored_before_parent_and_next_glyph()
+    {
+        using TrueTypeHinting machine = TrueTypeHinting.Create(new(8, 0, 0, 0), [], [], [], 16, 65536, Target, new(long.MaxValue), new(long.MaxValue), CancellationToken.None);
+        machine.Prepare(Convert.FromHexString("B801FF85B0048D"), Target);
+        TrueTypeHintPoint[] points = [new(0, 0, 0, 0), default, default, default, default];
+        machine.HintGlyph(Convert.FromHexString("B0028D"), points, [0], false);
+        Assert.False(machine.GlyphSmartDropouts);
+        machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], true);
+        Assert.True(machine.GlyphSmartDropouts);
+        machine.HintGlyph(ReadOnlyMemory<byte>.Empty, points, [0], false);
+        Assert.True(machine.GlyphSmartDropouts);
+    }
+
+    [Theory]
     [InlineData(2, (int)TrueTypeHintQueryFlags.Rotated)]
     [InlineData(4, (int)TrueTypeHintQueryFlags.Stretched)]
     [InlineData(8, (int)TrueTypeHintQueryFlags.FontVariations)]

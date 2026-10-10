@@ -1093,6 +1093,9 @@ internal sealed class OpenTypeGlyphContourStorage : IDisposable
     /// <summary>Gets validated exclusive segment ends for each nonempty glyph contour in decoder order.</summary>
     internal int[] ContourEnds { get; }
 
+    /// <summary>Gets or sets the fitted glyph's smart dropout policy before its exclusive owner starts rasterization.</summary>
+    internal bool SmartDropouts { get; set; }
+
     public void Dispose()
     {
         _segmentReservation?.Dispose();

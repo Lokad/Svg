@@ -95,7 +95,7 @@ public sealed class SvgSuppliedFontLabelTests
             Assert.Equal(png, preparedPng);
         }
         Assert.Equal(unchanged, input);
-        if (OperatingSystem.IsLinux() || identity is "original-logo-live-text-64x64-transparent" or "pair-and-space" or "small-fractional-origin")
+        if (OperatingSystem.IsLinux() || identity is "original-logo-live-text-64x64-transparent" or "pair-and-space" or "small-fractional-origin" or "inherited-alias-paint")
         {
             byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
             Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);

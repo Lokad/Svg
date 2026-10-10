@@ -64,17 +64,26 @@ geometry; ten previously differing contours are retained as focused regressions.
 Shared platform font advances and 1/64-pixel SVG fragment positions now preserve
 authored origins, separately rounded text-path widths and positioned text chunks.
 The whole document renders through all 12 APIs and is **exact on Linux**;
-**237 Windows changed pixels** remain against unchanged references (maximum
+**210 Windows changed pixels** remain against unchanged references (maximum
 channel error 31). Shared symmetric LCD strike positioning now maps quarters onto
 the six-column sampling grid. Windows retains fractional implied curve midpoints,
 and quadratic winding owns the same lower endpoints as line winding. Four
 independent native quarter-strike RGB masks and two measured midpoint pairs
-protect these corrections. Finish the remaining Windows edge/coverage mismatch before
+protect these corrections. Executed font scan-control policy now enables bounded
+smart dropout coverage on both axes, preserving thin strokes between sample
+centers. A complete independent native A16 texture and two synthetic scan-control
+comparisons protect this shared correction. It makes five further positioning
+controls exact and corrects 27 document pixels. Finish the remaining Windows edge/coverage mismatch before
 counting the document complete across both platforms. The new
-controls are a separate ledger: **7/7 exact on Linux, 1/7 on Windows**, through
+controls are a separate ledger: **7/7 exact on Linux, 6/7 on Windows**, through
 all 12 APIs. Admission and API equivalence do not close Windows pixels.
 Other instance/font combinations are prerequisites only when this document needs
 them; all finite G9 promises and the seven older font controls remain visible.
+The integer-strike control retains four Windows differences, maximum error 12.
+The added scan work has a measured cost: a small seven-sample warm Windows batch
+for this document rises from a median 108 ms to 189 ms; peak accounted memory
+stays at 692,258 bytes. Retain this local measurement as a tradeoff, with further
+coverage work also reducing repeated scan preparation where practical.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
 original output, seven controls, upstream face and OFL notice, explicit alias/
@@ -94,20 +103,20 @@ always computes from caller-owned font bytes; diagnostic masks are never inputs.
 Instruction-free Windows outlines and previously admitted composites retain their
 existing coverage route until their shared extensions are qualified.
 
-**Live-text bank document completion is 1/1; cross-platform controls are 2/7 exact.**
-Linux has **6/7 controls exact**, Windows **2/7**. Keep the whole document complete
+**Live-text bank document completion is 1/1; cross-platform controls are 3/7 exact.**
+Linux has **6/7 controls exact**, Windows **3/7**. Keep the whole document complete
 while resolving these separate controls; do not expand combinations just to close
 an interpreter grid. Current Windows measurements against unchanged references:
 
 | Retained control | Remaining outcome |
 | --- | --- |
-| Curves/counters | 14 changed pixels; maximum channel error 12. |
+| Curves/counters | 13 changed pixels; maximum channel error 12. |
 | AV/space pair | Exact on both platforms through all 12 APIs. |
 | Composite accents | Explicit component-flag rejection; shared composite hinting remains open. |
 | Fractional position/size | 15 changed pixels; maximum error 13. |
 | Small fractional origin | Exact on both platforms through all 12 APIs. |
 | Large outline | Two changed pixels; maximum error three. |
-| Inherited alias/paint | One changed pixel; maximum error five. |
+| Inherited alias/paint | Exact on both platforms through all 12 APIs. |
 
 Independent advance rounding, curve scan conversion, fractional strike placement,
 composite flags and the remaining finite G9 label/path promises stay visible.
@@ -163,8 +172,8 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,655 tests/platform**: 4,630 core, 2,019 visual, six FontProbe. Test counts are not document counts. |
-| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The snapshot-less text-path rejection retains its category/input and now explicitly explains the required prepared font snapshot. Two separate public-font banks preserve their completed original documents through 12 APIs. The new Mono Bold document remains pending; seven controls are exact on Linux and one on Windows. Existing inputs/options/references and healthy native captures remain unchanged. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,671 tests/platform**: 4,645 core, 2,020 visual, six FontProbe. Test counts are not document counts. |
+| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**. The snapshot-less text-path rejection retains its category/input and now explicitly explains the required prepared font snapshot. Two separate public-font banks preserve their completed original documents through 12 APIs. The new Mono Bold document remains pending; seven controls are exact on Linux and six on Windows. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
@@ -240,7 +249,7 @@ landed mechanisms remain regression requirements.
 | G6 | **Four retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Static markers and the enumerated filter/blending subset below | Four CC0 exports and the original marker-instance acceptance fixture complete their declared outputs; remaining marker combinations and finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
-| G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents complete; seven text-path controls exact. SVG Translate is next; five remaining live-text controls and wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
+| G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents complete; seven text-path controls exact. SVG Translate is next; four remaining live-text controls and wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
 
 ### Document deliverables and accounting
 

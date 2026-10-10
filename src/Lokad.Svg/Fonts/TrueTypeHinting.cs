@@ -69,6 +69,7 @@ internal sealed class TrueTypeHinting : IDisposable
     private readonly int _ppem, _scale;
     private int _count, _depth, _loop = 1, _rp0, _rp1, _rp2;
     private int _deltaBase = 9, _deltaShift = 3, _cutIn = 68, _instructionControl;
+    private int _scanControl, _scanType;
     private TrueTypeHintAxis _axis = TrueTypeHintAxis.X;
     private TrueTypeHintRound _round = TrueTypeHintRound.Grid;
     private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
@@ -109,6 +110,9 @@ internal sealed class TrueTypeHinting : IDisposable
     internal ReadOnlySpan<int> Storage => _reservation is not null ? _storage : throw new InvalidOperationException("The TrueType interpreter is disposed.");
     internal int DefinedFunctions { get; private set; }
 
+    /// <summary>Gets the completed glyph's enabled smart dropout policy, including stubs; contour consumers choose their own rasterizer.</summary>
+    internal bool GlyphSmartDropouts { get; private set; }
+
     /// <summary>Fits a borrowed child or assembled composite, retaining font/preparation CVT, storage and functions between components.</summary>
     /// <remarks>Glyph graphics state is restored after each call. Points/endpoints remain caller-owned and are unbound on every exit. Composite originals are already device coordinates and must not be scaled again. This operation shares the machine's single-threaded work, cancellation and bounded storage contract.</remarks>
     internal void HintGlyph(ReadOnlyMemory<byte> program, TrueTypeHintPoint[] points, ushort[] ends, bool composite)
@@ -129,6 +133,7 @@ internal sealed class TrueTypeHinting : IDisposable
         ushort[] savedEnds = _ends;
         bool savedComposite = _compositeGlyph;
         int savedCutIn = _cutIn, savedDeltaBase = _deltaBase, savedDeltaShift = _deltaShift, savedControl = _instructionControl;
+        int savedScanControl = _scanControl, savedScanType = _scanType;
         TrueTypeHintRound savedRound = _round;
         _glyph = points; _ends = ends; _compositeGlyph = composite;
         try { Run(program, TrueTypeHintProgramKind.Glyph); }
@@ -137,6 +142,7 @@ internal sealed class TrueTypeHinting : IDisposable
             _glyph = savedPoints; _ends = savedEnds; _compositeGlyph = savedComposite;
             _cutIn = savedCutIn; _deltaBase = savedDeltaBase; _deltaShift = savedDeltaShift;
             _instructionControl = savedControl; _round = savedRound;
+            _scanControl = savedScanControl; _scanType = savedScanType;
         }
     }
 
@@ -163,14 +169,29 @@ internal sealed class TrueTypeHinting : IDisposable
         _count = 0;
         if (kind == TrueTypeHintProgramKind.Glyph)
         {
-            if ((_instructionControl & 1) != 0) return;
+            if ((_instructionControl & 1) != 0) { GlyphSmartDropouts = SmartDropouts(); return; }
             // Glyph-local reference/zone/vector state starts at the prescribed defaults.
             _rp0 = _rp1 = _rp2 = 0; _zp0 = _zp1 = _zp2 = TrueTypeHintZone.Glyph;
             _axis = TrueTypeHintAxis.X; _loop = 1;
-            if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; }
+            if ((_instructionControl & 2) != 0) { _round = TrueTypeHintRound.Grid; _cutIn = 68; _deltaBase = 9; _deltaShift = 3; _scanControl = _scanType = 0; }
         }
-        try { Execute(program, kind); }
+        try
+        {
+            Execute(program, kind);
+            if (kind == TrueTypeHintProgramKind.Glyph) GlyphSmartDropouts = SmartDropouts();
+        }
         catch (OverflowException) { throw Invalid("TrueType arithmetic exceeds its signed coordinate range."); }
+
+        bool SmartDropouts()
+        {
+            if (_scanType != 4) return false;
+            int threshold = _scanControl & 255;
+            bool small = threshold == 255 || threshold != 0 && _ppem <= threshold;
+            bool rotated = (_target.QueryFlags & TrueTypeHintQueryFlags.Rotated) != 0;
+            bool stretched = (_target.QueryFlags & TrueTypeHintQueryFlags.Stretched) != 0;
+            bool enabled = (_scanControl & 256) != 0 && small || (_scanControl & 512) != 0 && rotated || (_scanControl & 1024) != 0 && stretched;
+            return enabled && ((_scanControl & 2048) == 0 || small) && ((_scanControl & 4096) == 0 || rotated) && ((_scanControl & 8192) == 0 || stretched);
+        }
     }
 
     private void Execute(ReadOnlyMemory<byte> program, TrueTypeHintProgramKind kind)
@@ -308,7 +329,7 @@ internal sealed class TrueTypeHinting : IDisposable
                 case 0x7A: _round = TrueTypeHintRound.Off; break;
                 case 0x7C: _round = TrueTypeHintRound.Up; break;
                 case 0x7D: _round = TrueTypeHintRound.Down; break;
-                case 0x85: Pop(); break; // Scan conversion flags do not alter this contour-only stage.
+                case 0x85: _scanControl = Pop() & 0xFFFF; break;
                 case 0x88:
                 {
                     int selector = Pop(), result = (selector & 1) != 0 ? _target.Version : 0;
@@ -318,7 +339,7 @@ internal sealed class TrueTypeHinting : IDisposable
                     Push(result); break;
                 }
                 case 0x8A: { int a = Pop(), b = Pop(), c = Pop(); Push(b); Push(a); Push(c); break; }
-                case 0x8D: Pop(); break;
+                case 0x8D: _scanType = Pop() & 0xFFFF; break;
                 case 0x8E:
                 {
                     int selector = Pop(), value = Pop(); if (selector is < 1 or > 3 || value != 0 && value != 1 << (selector - 1)) throw Invalid("The TrueType instruction-control value is invalid.");

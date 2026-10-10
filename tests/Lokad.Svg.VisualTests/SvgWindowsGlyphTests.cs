@@ -11,6 +11,26 @@ public sealed class SvgWindowsGlyphTests
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
 
     [Fact]
+    public async Task Cancellation_at_windows_cell_coverage_releases_fitted_contours_and_dropout_scratch()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        using SvgFontSnapshot snapshot = await PrepareMono();
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "scalar-x-reset.svg"));
+        var budget = new RenderBudget(long.MaxValue);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+        {
+            long baseline = budget.Snapshot().CurrentBytes;
+            using var cancellation = new CancellationTokenSource();
+            bool started = false;
+            using (GlyphCoverageProbe.Arm(() => { started = true; cancellation.Cancel(); }))
+                Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.ConvertToPng(root, new(new SvgViewport(64, 64), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), budget, cancellation.Token));
+            Assert.True(started);
+            Assert.Equal(baseline, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Computed_windows_outline_and_rgb_mask_match_independent_native_measurements()
     {
         using SvgFontSnapshot snapshot = await Prepare();
@@ -40,18 +60,21 @@ public sealed class SvgWindowsGlyphTests
     }
 
     [Fact]
-    public async Task Fractional_mono_strike_at_each_quarter_matches_independent_native_rgb_masks()
+    public async Task Mono_quarter_strikes_and_smart_dropout_strike_match_independent_native_rgb_masks()
     {
         using SvgFontSnapshot snapshot = await PrepareMono();
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics");
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "windows-glyph-coverage.json")));
-        foreach (JsonElement item in native.RootElement.GetProperty("coverageCases").EnumerateArray())
+        foreach (JsonElement item in native.RootElement.GetProperty("coverageCases").EnumerateArray().Concat(native.RootElement.GetProperty("smartDropoutCases").EnumerateArray()))
         {
             var budget = new RenderBudget(long.MaxValue);
             JsonElement origin = item.GetProperty("origin"), bounds = item.GetProperty("coverageBounds");
             using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
             using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
             {
+                Assert.True(contours.SmartDropouts);
+                using RenderBudget.BudgetReservation scratchReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(contours.Segments.Length * 2), SvgMemoryCategory.Temporary);
+                SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[contours.Segments.Length * 2];
                 string filename = item.GetProperty("coverage").GetString() ?? throw new InvalidDataException("Missing native RGB texture.");
                 RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(directory, filename)), 256);
                 int left = bounds[0].GetInt32(), top = bounds[1].GetInt32(), right = bounds[2].GetInt32(), bottom = bounds[3].GetInt32();
@@ -65,7 +88,7 @@ public sealed class SvgWindowsGlyphTests
                         int offset = ((y - top) * reference.Width + x - left) * 4;
                         expected = new(reference.Pixels[offset], reference.Pixels[offset + 1], reference.Pixels[offset + 2]);
                     }
-                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, new(long.MaxValue), CancellationToken.None));
+                    Assert.Equal(expected, SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, scratch, new(long.MaxValue), CancellationToken.None));
                 }
             }
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
