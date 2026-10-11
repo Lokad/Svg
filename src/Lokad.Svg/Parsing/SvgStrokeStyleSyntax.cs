@@ -39,10 +39,13 @@ internal static class SvgStrokeStyleSyntax
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(workCounter);
+        if (SvgInlineStyleParser.IsInheritedPaintProperty(localName.AsSpan())
+            && SvgInlineStyleParser.TryMapPaintKeyword(localName.AsSpan(), value.AsSpan(), out _)) return;
         try { ValidateAttribute(localName, value, allowNonButt, allowSquareCap, allowClosedLoopCaps, allowRoundJoin, allowBevelJoin); }
         catch (SvgException)
         {
             if (InlineStrokeDeclaration(reader, localName, workCounter, cancellationToken) is not string inline) throw;
+            if (SvgInlineStyleParser.TryMapPaintKeyword(localName.AsSpan(), inline.AsSpan(), out _)) return;
             ValidateAttribute(localName, inline, allowNonButt, allowSquareCap, allowClosedLoopCaps, allowRoundJoin, allowBevelJoin);
         }
     }

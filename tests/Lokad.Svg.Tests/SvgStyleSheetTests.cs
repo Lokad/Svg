@@ -96,18 +96,20 @@ public sealed class SvgStyleSheetTests
     }
 
     [Theory]
-    [InlineData("fill", "inherit", null)]
+    [InlineData("fill", "inherit", "inherit")]
     [InlineData("fill", "initial", "black")]
-    [InlineData("fill", "unset", null)]
-    [InlineData("color", "INHERIT", null)]
+    [InlineData("fill", "unset", "inherit")]
+    [InlineData("color", "INHERIT", "inherit")]
     [InlineData("fill-opacity", "initial", "1")]
-    [InlineData("fill-opacity", "unset", null)]
+    [InlineData("fill-opacity", "unset", "inherit")]
     [InlineData("stroke", "initial", "none")]
-    [InlineData("stroke", "unset", "none")]
+    [InlineData("stroke", "unset", "inherit")]
     [InlineData("display", "initial", "inline")]
-    [InlineData("visibility", "unset", null)]
+    [InlineData("visibility", "unset", "inherit")]
     [InlineData("opacity", "initial", "1")]
-    [InlineData("fill-rule", "unset", "nonzero")]
+    [InlineData("fill-rule", "unset", "inherit")]
+    [InlineData("stroke", "inherit", "inherit")]
+    [InlineData("fill-rule", "inherit", "inherit")]
     public void Maps_paint_keywords_to_specified_values(string property, string value, string? expected)
     {
         InlineStyle style = SvgInlineStyleParser.Parse(property + ": " + value, new ParserWorkCounter(100), CancellationToken.None);
@@ -129,15 +131,120 @@ public sealed class SvgStyleSheetTests
     }
 
     [Theory]
-    [InlineData("stroke: inherit")]
     [InlineData("display: inherit")]
     [InlineData("opacity: inherit")]
-    [InlineData("fill-rule: inherit")]
     public void Rejects_unplumbed_inherit_declarations(string declaration)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse(declaration, new ParserWorkCounter(100), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("fill", "red", "inherit", "green")]
+    [InlineData("fill", "red", "unset", "green")]
+    [InlineData("fill-opacity", "0.8", "inherit", "0.4")]
+    [InlineData("color", "blue", "inherit", "green")]
+    [InlineData("visibility", "visible", "inherit", "hidden")]
+    [InlineData("stroke", "red", "inherit", "green")]
+    [InlineData("stroke-width", "1", "inherit", "4")]
+    [InlineData("stroke-linecap", "butt", "inherit", "round")]
+    [InlineData("stroke-linejoin", "miter", "inherit", "round")]
+    [InlineData("stroke-miterlimit", "4", "inherit", "2")]
+    [InlineData("stroke-dasharray", "none", "inherit", "4 2")]
+    [InlineData("stroke-dashoffset", "0", "inherit", "2")]
+    [InlineData("stroke-opacity", "1", "inherit", "0.4")]
+    [InlineData("fill-rule", "nonzero", "inherit", "evenodd")]
+    public void Winning_inheritance_binds_to_parent_after_cascade(string property, string lower, string keyword, string parent)
+    {
+        string geometry = "d='M8 8H32V32H8Z M12 12H28V28H12Z M4 4L20 4L8 12' "
+            + (property == "fill" ? "" : "fill='currentColor' ")
+            + (property == "stroke" ? "" : "stroke='black' ")
+            + (property == "stroke-width" ? "" : "stroke-width='4' ");
+        string shape = "<path id='box' class='selected' " + geometry + property + "='" + lower + "'/>";
+        string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><g " + property + "='" + parent + "'>";
+        string expected = prefix + "<path " + geometry + property + "='" + parent + "'/></g></svg>";
+        string actual = prefix + shape + "</g><style>.selected{" + property + ":" + lower + "}#box{" + property + ":" + keyword + "!important}</style></svg>";
+        // The declaration must defeat both the presentation attribute and a normal stylesheet rule.
+        Assert.Equal(RenderPixels(expected, out _, out _), RenderPixels(actual, out _, out _));
+    }
+
+    [Theory]
+    [InlineData("fill: blue; fill: inherit !important; fill: red", "fill: inherit !important")]
+    [InlineData("fill: blue !important; fill: inherit !important", "fill: inherit !important")]
+    [InlineData("fill: inherit; fill: blue", "fill: blue")]
+    [InlineData("fill: inherit !important; fill: blue", "fill: inherit !important")]
+    public void Inline_inheritance_keeps_its_declaration_priority(string declarations, string expectedStyle)
+    {
+        string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><g fill='green'><rect width='8' height='8' fill='red' style='";
+        string suffix = "'/></g></svg>";
+        Assert.Equal(RenderPixels(prefix + expectedStyle + suffix, out _, out _), RenderPixels(prefix + declarations + suffix, out _, out _));
+    }
+
+    [Theory]
+    [InlineData("fill", "blue", "green")]
+    [InlineData("stroke", "blue", "green")]
+    [InlineData("stroke-width", "1", "4")]
+    [InlineData("stroke-dasharray", "none", "4 2")]
+    [InlineData("stroke-opacity", "1", "0.4")]
+    public void Winning_inheritance_in_symbol_source_binds_to_instance_parent(string property, string lower, string parent)
+    {
+        string geometry = "d='M8 8H32V32H8Z M12 12H28V28H12Z' "
+            + (property == "fill" ? "" : "fill='red' ")
+            + (property == "stroke" ? "" : "stroke='black' ");
+        string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'>";
+        string actual = prefix + "<defs><symbol id='item' viewBox='0 0 40 40'><path id='box' " + geometry + property + "='" + lower + "'/></symbol></defs>"
+            + "<use href='#item' width='40' height='40' style='" + property + ":" + parent + "'/><style>#box{" + property + ":inherit!important}</style></svg>";
+        string expected = prefix + "<path " + geometry + property + "='" + parent + "'/></svg>";
+        Assert.Equal(RenderPixels(expected, out _, out _), RenderPixels(actual, out _, out _));
+    }
+
+    [Theory]
+    [InlineData("clip-rule='inherit'")]
+    [InlineData("clip-rule='nonzero' style='clip-rule:inherit!important'")]
+    [InlineData("clip-rule='nonzero' style='clip-rule:unset!important'")]
+    public void Clip_rule_inheritance_preserves_the_parent_parity_boundary(string declaration)
+    {
+        string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' clip-rule='evenodd'><defs><clipPath id='cut'><path d='M8 8H32V32H8Z M12 12H28V28H12Z' ";
+        string suffix = "/></clipPath></defs><rect width='40' height='40' fill='red' clip-path='url(#cut)'/></svg>";
+        SvgException expected = Assert.Throws<SvgException>(() => RenderPixels(prefix + "clip-rule='evenodd'" + suffix, out _, out _));
+        SvgException actual = Assert.Throws<SvgException>(() => RenderPixels(prefix + declaration + suffix, out _, out _));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, actual.ErrorCode);
+        Assert.Equal("Evenodd multi-contour clip paths are not implemented.", expected.Message);
+        Assert.Equal(expected.Message, actual.Message);
+    }
+
+    [Theory]
+    [InlineData("stroke-linecap", "round", "inherit")]
+    [InlineData("stroke-linejoin", "round", "inherit")]
+    [InlineData("stroke-dasharray", "4 2", "unset")]
+    [InlineData("stroke-dashoffset", "2", "inherit")]
+    public void Stroke_attribute_keywords_resolve_before_geometry_validation(string property, string parent, string keyword)
+    {
+        string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><g " + property + "='" + parent + "'><path d='M8 8L32 8L32 32' fill='none' stroke='black' stroke-width='4' ";
+        string suffix = "/></g></svg>";
+        Assert.Equal(RenderPixels(prefix + property + "='" + parent + "'" + suffix, out _, out _), RenderPixels(prefix + property + "='" + keyword + "'" + suffix, out _, out _));
+    }
+
+    [Theory]
+    [InlineData("stroke", "green", "none")]
+    [InlineData("stroke-width", "4", "1")]
+    [InlineData("stroke-linecap", "round", "butt")]
+    [InlineData("stroke-linejoin", "round", "miter")]
+    [InlineData("stroke-miterlimit", "2", "4")]
+    [InlineData("stroke-dasharray", "4 2", "none")]
+    [InlineData("stroke-dashoffset", "2", "0")]
+    [InlineData("stroke-opacity", "0.4", "1")]
+    public void Initial_stroke_values_override_parent_and_lower_declarations(string property, string parent, string initial)
+    {
+        string geometry = "<path d='M4 4L20 4L8 12' fill='none' "
+            + (property == "stroke" ? "" : "stroke='black' ")
+            + (property == "stroke-width" ? "" : "stroke-width='4' ")
+            + (property == "stroke-dasharray" ? "" : "stroke-dasharray='4 2' ");
+        string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><g " + property + "='" + parent + "'>" + geometry;
+        string suffix = "/></g></svg>";
+        Assert.Equal(RenderPixels(prefix + property + "='" + initial + "'" + suffix, out _, out _),
+            RenderPixels(prefix + property + "='" + parent + "' style='" + property + ":initial!important'" + suffix, out _, out _));
     }
 
     [Fact]

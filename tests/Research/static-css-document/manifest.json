@@ -354,7 +354,7 @@
       "linuxReference": "references/linux64/cascade-inherit.png",
       "fontPack": "font-pack.json",
       "selection": "Retained before explicit-inheritance production changes; fontless control with unchanged explicit output.",
-      "rendererOutcome": "mismatch",
+      "rendererOutcome": "exact",
       "oracleInputSha256": "29661786c1d8a100b1e57adbdb243e9177f682d4108370db06a8fd13b3d9e82e",
       "referenceSha256": "38e69951b33a25d09a88b7e4536ae077c78375f2cf06b8143d399a3a7bcab89c",
       "captures": [

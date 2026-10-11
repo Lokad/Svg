@@ -90,7 +90,8 @@ internal static class SvgElementAttributePolicy
                     if (kind is SvgElementKind.Root or SvgElementKind.NestedViewport || !overflow.Trim().Equals("visible".AsSpan(), StringComparison.OrdinalIgnoreCase)) SvgNestedViewportSyntax.ValidateOverflow(overflow);
                 }
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "preserveAspectRatio" && kind is SvgElementKind.Image or SvgElementKind.Pattern) _ = SvgImageSyntax.ParsePlacementAspectRatio(reader.Value);
-                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "clip-rule") SvgClipPathSyntax.ValidateClipRule(reader.Value.AsSpan());
+                if (reader.NamespaceURI.Length == 0 && reader.LocalName == "clip-rule"
+                    && !SvgInlineStyleParser.TryMapPaintKeyword("clip-rule".AsSpan(), reader.Value.AsSpan(), out _)) SvgClipPathSyntax.ValidateClipRule(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName is "marker" or "marker-start" or "marker-mid" or "marker-end") SvgMarkerSyntax.ValidateValue(reader.Value.AsSpan());
                 if (reader.NamespaceURI.Length == 0 && reader.LocalName == "enable-background") SvgInertPresentationSyntax.ValidateBackground(reader.Value.AsSpan(), workCounter, cancellationToken);
                 continue;

@@ -43,11 +43,12 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
     /// <summary>Reads the presentation attribute only when neither an !important nor a normal inline or stylesheet value wins.</summary>
     private static string? Select(XmlReader reader, string attribute, string? inlineValue, bool inlineImportant, string? styleSheetValue, bool styleSheetImportant)
     {
-        if (inlineImportant && inlineValue is not null) return inlineValue;
-        if (styleSheetImportant && styleSheetValue is not null) return styleSheetValue;
-        string? resolved = inlineValue ?? styleSheetValue ?? reader.GetAttribute(attribute);
+        string? resolved = inlineImportant && inlineValue is not null ? inlineValue
+            : styleSheetImportant && styleSheetValue is not null ? styleSheetValue
+            : inlineValue ?? styleSheetValue ?? reader.GetAttribute(attribute);
         if (attribute.StartsWith("marker-", StringComparison.Ordinal)) return resolved;
-        if (attribute != "paint-order" && resolved is not null && SvgInlineStyleParser.TryMapPaintKeyword(attribute.AsSpan(), resolved.AsSpan(), out string? mapped)) return mapped;
+        if (attribute != "paint-order" && resolved is not null && SvgInlineStyleParser.TryMapPaintKeyword(attribute.AsSpan(), resolved.AsSpan(), out string? mapped))
+            return mapped == SvgInlineStyleParser.InheritedValue && SvgInlineStyleParser.IsInheritedPaintProperty(attribute.AsSpan()) ? null : mapped;
         return resolved;
     }
 }

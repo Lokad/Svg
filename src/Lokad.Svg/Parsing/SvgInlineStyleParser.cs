@@ -138,17 +138,17 @@ internal static class SvgInlineStyleParser
                 if (property.Equals("stop-opacity", StringComparison.OrdinalIgnoreCase)) _ = SvgColorParser.ParsePaintOpacity(stopValue.ToString());
                 else if (!stopValue.Equals("currentColor", StringComparison.OrdinalIgnoreCase)) _ = SvgColorParser.Parse(stopValue.ToString(), SvgRootParser.CssNamedColors);
             }
-            else if (property.Equals("stroke-linecap", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linecap", propertyValue); Set(ref linecap, InlineImportantProperties.Linecap, property, propertyValue, strings, ref important, false); }
-            else if (property.Equals("stroke-linejoin", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linejoin", propertyValue); Set(ref linejoin, InlineImportantProperties.Linejoin, property, propertyValue, strings, ref important, false); }
-            else if (property.Equals("stroke-dasharray", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-dasharray", propertyValue); Set(ref dasharray, InlineImportantProperties.Dasharray, property, propertyValue, strings, ref important, false); }
-            else if (property.Equals("stroke-dashoffset", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-dashoffset", propertyValue); Set(ref dashoffset, InlineImportantProperties.Dashoffset, property, propertyValue, strings, ref important, false); }
-            else if (property.Equals("stroke-width", StringComparison.OrdinalIgnoreCase)) Set(ref width, InlineImportantProperties.Width, property, propertyValue, strings, ref important, false);
-            else if (property.Equals("stroke-miterlimit", StringComparison.OrdinalIgnoreCase)) Set(ref miterlimit, InlineImportantProperties.Miterlimit, property, propertyValue, strings, ref important, false);
-            else if (property.Equals("stroke-opacity", StringComparison.OrdinalIgnoreCase)) Set(ref strokeOpacity, InlineImportantProperties.StrokeOpacity, property, propertyValue, strings, ref important, false);
+            else if (property.Equals("stroke-linecap", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linecap", propertyValue); Set(ref linecap, InlineImportantProperties.Linecap, property, propertyValue, strings, ref important, true); }
+            else if (property.Equals("stroke-linejoin", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-linejoin", propertyValue); Set(ref linejoin, InlineImportantProperties.Linejoin, property, propertyValue, strings, ref important, true); }
+            else if (property.Equals("stroke-dasharray", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-dasharray", propertyValue); Set(ref dasharray, InlineImportantProperties.Dasharray, property, propertyValue, strings, ref important, true); }
+            else if (property.Equals("stroke-dashoffset", StringComparison.OrdinalIgnoreCase)) { ValidateStrokeDeclaration("stroke-dashoffset", propertyValue); Set(ref dashoffset, InlineImportantProperties.Dashoffset, property, propertyValue, strings, ref important, true); }
+            else if (property.Equals("stroke-width", StringComparison.OrdinalIgnoreCase)) Set(ref width, InlineImportantProperties.Width, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("stroke-miterlimit", StringComparison.OrdinalIgnoreCase)) Set(ref miterlimit, InlineImportantProperties.Miterlimit, property, propertyValue, strings, ref important, true);
+            else if (property.Equals("stroke-opacity", StringComparison.OrdinalIgnoreCase)) Set(ref strokeOpacity, InlineImportantProperties.StrokeOpacity, property, propertyValue, strings, ref important, true);
             else if (property.Equals("pathLength", StringComparison.OrdinalIgnoreCase)) Set(ref pathLength, InlineImportantProperties.PathLength, property, propertyValue, strings, ref important, false);
             else if (property.Equals("width", StringComparison.OrdinalIgnoreCase)) Set(ref geometryWidth, InlineImportantProperties.GeometryWidth, property, propertyValue, strings, ref important, false);
             else if (property.Equals("height", StringComparison.OrdinalIgnoreCase)) Set(ref geometryHeight, InlineImportantProperties.GeometryHeight, property, propertyValue, strings, ref important, false);
-            else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) { ValidateClipDeclaration(propertyValue); Set(ref clipRule, InlineImportantProperties.ClipRule, property, propertyValue, strings, ref important, false); }
+            else if (property.Equals("clip-rule", StringComparison.OrdinalIgnoreCase)) { ValidateClipDeclaration(propertyValue); Set(ref clipRule, InlineImportantProperties.ClipRule, property, propertyValue, strings, ref important, true); }
             else if (property.Equals("overflow", StringComparison.OrdinalIgnoreCase))
             {
                 TryStripImportant(propertyValue, out ReadOnlySpan<char> stripped);
@@ -207,8 +207,8 @@ internal static class SvgInlineStyleParser
         static void ValidateStrokeDeclaration(string name, ReadOnlySpan<char> rawValue)
         {
             TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
-            if (name == "stroke-dasharray" || name == "stroke-dashoffset") SvgStrokeStyleSyntax.ValidateAttribute(name, stripped.ToString(), true, true, true, true, true);
-            else SvgStrokeStyleSyntax.ValidateAttribute(name, stripped.ToString(), true, true, true, true, true);
+            if (TryMapPaintKeyword(name.AsSpan(), stripped, out _)) return;
+            SvgStrokeStyleSyntax.ValidateAttribute(name, stripped.ToString(), true, true, true, true, true);
         }
 
         static void ValidateImagePreserveAspectRatioDeclaration(ReadOnlySpan<char> rawValue)
@@ -220,6 +220,7 @@ internal static class SvgInlineStyleParser
         static void ValidateClipDeclaration(ReadOnlySpan<char> rawValue)
         {
             TryStripImportant(rawValue, out ReadOnlySpan<char> stripped);
+            if (TryMapPaintKeyword("clip-rule".AsSpan(), stripped, out _)) return;
             SvgClipPathSyntax.ValidateClipRule(stripped);
         }
 
@@ -271,16 +272,18 @@ internal static class SvgInlineStyleParser
             MergeWithImportance(upper.Style, upperImportant, InlineImportantProperties.FontStyle, lower.Style, lowerImportant),
             MergeWithImportance(upper.Size, upperImportant, InlineImportantProperties.FontSize, lower.Size, lowerImportant));
 
-    /// <summary>Maps an inherit, initial or unset paint keyword to its specified value.</summary>
-    /// <returns>True when the value is a keyword, with the mapped value (null for inherited absence). Throws for unplumbed inherit.</returns>
+    internal const string InheritedValue = "inherit";
+
+    /// <summary>Preserves inheritance until the cascade has selected a winning declaration.</summary>
+    /// <returns>True when the value is a supported global keyword. Throws for unplumbed inheritance.</returns>
     internal static bool TryMapPaintKeyword(ReadOnlySpan<char> attribute, ReadOnlySpan<char> value, out string? mapped)
     {
         ReadOnlySpan<char> token = value.Trim();
         if (token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase))
         {
-            if (attribute.Equals("color".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("visibility".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (IsInheritedPaintProperty(attribute))
             {
-                mapped = null;
+                mapped = InheritedValue;
                 return true;
             }
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inherited paint values are not implemented for this property.");
@@ -292,9 +295,9 @@ internal static class SvgInlineStyleParser
         }
         if (token.Equals("unset".AsSpan(), StringComparison.OrdinalIgnoreCase))
         {
-            if (attribute.Equals("color".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("visibility".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (IsInheritedPaintProperty(attribute))
             {
-                mapped = null;
+                mapped = InheritedValue;
                 return true;
             }
             mapped = InitialPaintValue(attribute);
@@ -304,14 +307,34 @@ internal static class SvgInlineStyleParser
         return false;
     }
 
+    internal static bool IsInheritedPaintProperty(ReadOnlySpan<char> attribute)
+        => attribute.Equals("color".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("fill".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("fill-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("visibility".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("fill-rule".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("clip-rule".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("stroke".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("stroke-width".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("stroke-linecap".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("stroke-linejoin".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("stroke-miterlimit".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("stroke-dasharray".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("stroke-dashoffset".AsSpan(), StringComparison.OrdinalIgnoreCase)
+        || attribute.Equals("stroke-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase);
+
     private static string InitialPaintValue(ReadOnlySpan<char> attribute)
     {
         if (attribute.Equals("color".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("fill".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "black";
-        if (attribute.Equals("fill-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("opacity".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "1";
-        if (attribute.Equals("stroke".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "none";
+        if (attribute.Equals("fill-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("opacity".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("stroke-opacity".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("stroke-width".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "1";
+        if (attribute.Equals("stroke".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("stroke-dasharray".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "none";
         if (attribute.Equals("display".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "inline";
         if (attribute.Equals("visibility".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "visible";
-        if (attribute.Equals("fill-rule".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "nonzero";
+        if (attribute.Equals("fill-rule".AsSpan(), StringComparison.OrdinalIgnoreCase) || attribute.Equals("clip-rule".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "nonzero";
+        if (attribute.Equals("stroke-linecap".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "butt";
+        if (attribute.Equals("stroke-linejoin".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "miter";
+        if (attribute.Equals("stroke-miterlimit".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "4";
+        if (attribute.Equals("stroke-dashoffset".AsSpan(), StringComparison.OrdinalIgnoreCase)) return "0";
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Initial paint values are not implemented for this property.");
     }
 

@@ -340,16 +340,24 @@ compound ID/class/attribute forms, descendant and child chains over the actual
 source ancestors. Specificity compares ID, class/attribute and element counts
 independently; `!important` and source order retain their separate precedence.
 The descendant-cascade control is exact through twelve outputs on both platforms.
+Winning `inherit` and inherited `unset` declarations now retain their cascade
+priority before binding to the logical parent for `color`, `fill`, `fill-opacity`,
+`visibility`, fill/clip rules and admitted stroke properties. Paint and stroke
+inheritance also bind through existing source replay. Stroke `initial` values
+restore the property defaults.
+The `cascade-inherit` control is exact through
+twelve outputs on both platforms; its prior 576-pixel mismatch is resolved.
+The seven diagnostic controls stand at **4/7 exact on Windows, 5/7 on Linux**.
 Existing 1,024-character identifier support is preserved; complete selectors
 are bounded to 4,096 characters, with shared memory/work limits and cancellation.
 Root, nested-viewport and `defs` container styling remain explicit unsupported
 outcomes and required G7 exit work; supported leaves may use them as ancestors.
-Complete qualification passes **6,923 tests per platform** (4,791 core, 2,126
+Complete qualification passes **6,963 tests per platform** (4,829 core, 2,128
 visual, six FontProbe), with zero warnings, errors, failures or skips. All
 **2,849 prior PNGs**, **2,755 prior exact results**, **30 supplied-font outputs**
 and corporate **27/27 documents / 258/258 variants** are preserved. The diagram's
-explicit inheritance, translated labels and span paint remain the next shared
-dependencies, alongside the Windows omitted-family mask mismatch. Its
+explicit opacity inheritance, translated labels and span paint remain the next
+shared dependencies, alongside the Windows omitted-family mask mismatch. Its
 whole-document completion remains **0/1**.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
