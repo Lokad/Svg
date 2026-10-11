@@ -118,8 +118,15 @@ cascade. Effective paint follows normalized character intervals through shared
 glyph layout and text-path replay. Hidden and fill-less characters retain their
 advances; display-none content is excluded. An inherited stroke is validated on
 emitted content after a child may replace it with `none`. The whitespace mode
-and letter spacing inherit when no winning declaration replaces them. A scalar span `dx`/`dy` applies before the first retained glyph in that span or one of its descendants; the nearest span that specifies each axis takes precedence, and the resulting current-position shift remains in force for later glyphs. Span spacing applies after each glyph emitted by that span, including before the following parent glyph, and contributes to the enclosing text chunk's anchor calculation. Scalar span offsets are applied after that anchoring adjustment and do not change the anchor width. A single validated version-zero horizontal format-zero legacy `kern` subtable and a single DFLT-script `kern` feature using an unfiltered GPOS PairPos format-1 first-glyph X-advance lookup adjust adjacent direct-run glyphs; GPOS takes precedence when both are present. Other CSS whitespace values, per-span font changes, opacity layers, paint-server fills, painted text strokes, positioning lists and general GPOS shaping remain unsupported and retain their required G9 exit work. Its presentation,
-admitted root-stylesheet and inline `style` font subset is `font-family`,
+and letter spacing inherit when no winning declaration replaces them. A scalar span `dx`/`dy` applies before the first retained glyph in that span or one of its descendants; the nearest span that specifies each axis takes precedence, and the resulting current-position shift remains in force for later glyphs. Span spacing applies after each glyph emitted by that span, including before the following parent glyph, and contributes to the enclosing text chunk's anchor calculation. Scalar span offsets are applied after that anchoring adjustment and do not change the anchor width. A single validated version-zero horizontal format-zero legacy `kern` subtable and a single DFLT-script `kern` feature using an unfiltered GPOS PairPos format-1 first-glyph X-advance lookup adjust adjacent direct-run glyphs; GPOS takes precedence when both are present. Other CSS whitespace values, per-span font changes, opacity layers, paint-server fills, painted text strokes, positioning lists and general GPOS shaping remain unsupported and retain their required G9 exit work.
+
+Composed translations on the text element and admitted containers apply after
+local spacing, anchoring and absolute span positions. Text paths apply that
+placement after baseline measurement. Ordinary glyphs retain the native
+horizontal strike; general maps and per-span transforms remain required G9
+work. Linux glyph coverage uses a local bitmap before placement.
+
+Its presentation, admitted root-stylesheet and inline `style` font subset is `font-family`,
 `font-weight`, `font-style` and `font-size`; admitted scalar positioning is `x`,
 `y`, `dx`, `dy`, scalar `letter-spacing` (added only between glyphs), and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`
 retained only for font diagnostics and a bounded `class` token for admitted generic stylesheet selectors.

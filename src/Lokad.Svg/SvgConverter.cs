@@ -2468,9 +2468,7 @@ public static class SvgConverter
                         if (path.Commands.IsEmpty) { workUnits += preparationWork.Used; return; }
                         Span<byte> preblend = stackalloc byte[256];
                         SvgFontMaskPreblend.BuildLinuxGrayTable(preblend, ResolveSolidColor(glyph.Color), preparationWork, cancellationToken);
-                        workUnits += preparationWork.Used;
-                        using SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, glyph.Color, true, false, SvgPolygonMapping.NativeFillEdges, null, null, budget);
-                        RasterizePolygonFill(fill, path, destination, preblend);
+                        RasterizeMappedBitmap(path, preblend, preparationWork);
                         return;
                     }
                 }

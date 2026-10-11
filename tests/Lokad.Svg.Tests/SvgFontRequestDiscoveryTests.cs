@@ -307,9 +307,9 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Theory]
-    [InlineData("translate(1)")]
+    [InlineData("rotate(5)")]
     [InlineData("scale(2)")]
-    public void Does_not_discover_fonts_from_text_with_an_inherited_nonidentity_transform(string transform)
+    public void Does_not_discover_fonts_from_text_with_an_inherited_nontranslation_transform(string transform)
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><g transform='" + transform + "'><text font-family='Unused'>x</text></g></svg>"), CancellationToken.None);
 

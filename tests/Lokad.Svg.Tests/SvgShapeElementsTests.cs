@@ -494,9 +494,9 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Transformed_rectangle_stroke_stays_unsupported()
+    public void Scaled_rectangle_stroke_stays_unsupported()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='8' height='8' fill='red' stroke='black' stroke-width='2' transform='translate(1, 0)'/></svg>");
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='8' height='8' fill='red' stroke='black' stroke-width='2' transform='scale(2)'/></svg>");
 
         SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
 

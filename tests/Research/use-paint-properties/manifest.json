@@ -417,8 +417,7 @@
       "height": 96,
       "background": "transparent",
       "role": "raster-diagnostic",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only untransformed rectangle strokes, with opacity only when fill-less, are implemented."
+      "rendererOutcome": "exact"
     },
     {
       "id": "paint-server-use-opacity",

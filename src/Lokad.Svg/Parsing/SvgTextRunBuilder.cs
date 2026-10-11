@@ -44,6 +44,10 @@ internal static class SvgTextRunBuilder
 
     /// <summary>Yields each positioned glyph's closed SVG-coordinate contours while retaining at most one decoded consecutive glyph outline.</summary>
     internal static IEnumerable<SvgGlyphContourStorage> GetGlyphContours(SvgTextRun run, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => GetGlyphContours(run, SvgAffineTransform.Identity, budget, workCounter, cancellationToken);
+
+    /// <summary>Applies the admitted parent translation after local layout while reusing the ordinary decoded outline and native strike.</summary>
+    internal static IEnumerable<SvgGlyphContourStorage> GetGlyphContours(SvgTextRun run, SvgAffineTransform placement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         OpenTypeGlyphContourStorage? decoded = null;
         ushort decodedGlyphIndex = 0;
@@ -52,7 +56,7 @@ internal static class SvgTextRunBuilder
             for (int index = 0; index < run.Glyphs.Length; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                SvgPositionedGlyph glyph = run.Glyphs[index];
+                SvgPositionedGlyph glyph = run.Glyphs[index].Translate(placement);
                 if (decoded is null || decodedGlyphIndex != glyph.GlyphIndex)
                 {
                     decoded?.Dispose();

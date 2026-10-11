@@ -5,7 +5,7 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains a bounded glyph run at its original paint position until local definitions are available.</summary>
 /// <remarks>The document owns the run and identifier; the run borrows the prepared font. Parser-thread confined.</remarks>
-internal readonly record struct SvgPendingTextPath(SvgTextRun Run, SvgTextPathReference Reference, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner);
+internal readonly record struct SvgPendingTextPath(SvgTextRun Run, SvgTextPathReference Reference, SvgAffineTransform Placement, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner);
 
 /// <summary>Describes a measured open baseline and its authored offset calibration.</summary>
 internal readonly record struct SvgTextPathBaseline(double X, double Y, double Length)
@@ -85,6 +85,11 @@ internal static class SvgTextPathLayout
                 {
                     SvgGlyphDeviceMetrics metrics = new(state.OutputTextScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
                     glyphMap = metrics.PlaceTextPathPaint(glyphMap, glyph.Advance / 2, glyph.Y, pending.Run.Style.FontSize, pending.Run.Font.Metrics);
+                }
+                if (pending.Placement != SvgAffineTransform.Identity)
+                {
+                    if (glyphMap == SvgAffineTransform.Identity) placed = placed.Translate(pending.Placement);
+                    else glyphMap = pending.Placement.ComposeChecked(glyphMap);
                 }
                 using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(pending.Run.Font, placed, pending.Run.Style.FontSize, glyphMap, state.Budget, work, token);
                 SvgGlyphGeometry geometry = SvgGlyphGeometry.Create(contours, paint.Color, pending.Run.Font, placed, pending.Run.Style.FontSize, glyphMap, state.Budget);

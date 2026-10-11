@@ -175,13 +175,15 @@ internal sealed class SvgGlyphRasterSource : IDisposable
             first = end;
         }
         OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
-        try { return SvgAuthoredPath.Create(owned, SvgAffineTransform.Identity, budget); }
+        try { return SvgAuthoredPath.Create(owned, SvgAffineTransform.FromTranslation(originX, originY), budget); }
         catch { owned.Dispose(); throw; }
 
         SvgDevicePoint Map(OpenTypeOutlinePoint point)
         {
             work.Consume(token);
-            float x = originX + (float)(point.X / 64) * ratioX, y = originY - (float)(point.Y / 64);
+            // Native glyph masks keep outline coordinates local; integer placement
+            // must not change curve subdivision or byte coverage through float rounding.
+            float x = (float)(point.X / 64) * ratioX, y = -(float)(point.Y / 64);
             if (!float.IsFinite(x) || !float.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph outline exceeds the device range.");
             return new(x, y);
         }

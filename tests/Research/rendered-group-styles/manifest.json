@@ -1415,8 +1415,8 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "raster-diagnostic",
+      "rendererOutcome": "exact"
     },
     {
       "id": "rectangle-stroke-ancestor-white",
@@ -1430,8 +1430,8 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "raster-diagnostic",
+      "rendererOutcome": "exact"
     },
     {
       "id": "rectangle-stroke-ancestor-black",
@@ -1445,8 +1445,8 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "raster-diagnostic",
+      "rendererOutcome": "exact"
     },
     {
       "id": "masked-leaf-style-transparent",

@@ -22,6 +22,14 @@ geometry through the shared leaf vocabulary, including circles and ellipses.
 Per-span font changes, opacity layers and ordinary text stroke/paint-server
 support remain required G9 exit work.
 
+Composed translations now place ordinary text and text paths after local layout,
+including absolute span positions. Direct text keeps its native horizontal
+strike; curved paths retain their tangent maps. Ordinary Linux glyphs use the
+existing local bitmap route, so integer placement preserves curve coverage.
+Rectangle strokes admit translations through the common solid/shader and
+definition paths without changing stroke width. Scaled/general rectangle
+strokes, general text maps and per-span transforms retain their required exits.
+
 Embedded root and definition stylesheets are collected in source order before
 font discovery and lowering. They may follow rendered content or definitions;
 the existing cascade, specificity and important precedence apply. The prepass

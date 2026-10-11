@@ -2174,12 +2174,13 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Admits_odd_width_rectangle_strokes_on_the_analytic_subset()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='none' stroke='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-        SvgException transformed = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='blue' stroke='red' stroke-width='2' transform='translate(1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='none' stroke='red'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot translated = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4' fill='blue' stroke='red' stroke-width='1' transform='translate(1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgStroke stroke = Assert.NotNull(root.Rectangles[0].Stroke);
         Assert.Equal(1, stroke.Width);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, transformed.ErrorCode);
+        Assert.Equal(1, translated.Rectangles[0].X);
+        Assert.Equal(new SvgStroke(new SvgColor(255, 0, 0, 255), 1), translated.Rectangles[0].Stroke);
     }
 
     [Fact]

@@ -344,4 +344,14 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
 }
 
 /// <summary>Represents one glyph index, origin and horizontal advance in SVG user units.</summary>
-internal readonly record struct SvgPositionedGlyph(ushort GlyphIndex, double X, double Y, double Advance);
+internal readonly record struct SvgPositionedGlyph(ushort GlyphIndex, double X, double Y, double Advance)
+{
+    /// <summary>Applies composed translation after local spacing, anchoring and absolute span placement, retaining the native horizontal strike and advance.</summary>
+    internal SvgPositionedGlyph Translate(SvgAffineTransform placement)
+    {
+        if (placement == SvgAffineTransform.Identity) return this;
+        if (!placement.IsTranslation) throw new ArgumentException("Glyph translation requires unchanged axes.", nameof(placement));
+        SvgDevicePoint origin = placement.Apply(X, Y);
+        return this with { X = origin.X, Y = origin.Y };
+    }
+}

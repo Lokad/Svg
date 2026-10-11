@@ -257,14 +257,14 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **7,020 tests/platform**: 4,884 core, 2,130 visual, six FontProbe. Latest complete suite wall time is **3m31s Windows / 4m21s Linux**, excluding builds and additional bank probes. Timings vary between runs. Test counts are not document counts. |
-| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,851 prior PNGs** and **2,755 established exact comparisons**, plus all **30 exact supplied-font outputs on each platform** from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; the live-text, straight-path and Mono banks each have seven exact controls on both platforms. The selected curved-label document is **1/1 across both platforms**; its five separate controls are **5/5 exact on both** through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **7,050 tests/platform**: 4,904 core, 2,140 visual, six FontProbe. Latest complete suite wall time is **3m51s Windows / 4m16s Linux**, excluding builds and additional bank probes. Timings vary between runs. Test counts are not document counts. |
+| Complete retained banks | Complete qualification checks all **2,908 prior cases** and preserves **2,851 prior PNGs** and **2,755 established exact comparisons**, plus all **30 exact supplied-font outputs on each platform** from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; the live-text, straight-path and Mono banks each have seven exact controls on both platforms. The selected curved-label document is **1/1 across both platforms**; its five separate controls are **5/5 exact on both** through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
 | Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
 | Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission, Latin/TrueType hints, queued local text-path runs and glyph-local bitmap replay preserve borrowed font bytes and release owned scratch on rejection. Forward paint/reference slots preserve order and opacity. Inert typography values still do not request or retain fonts. |
-| Package/installed consumer | Both current platform packages retain byte-exact current notices/licenses and managed assemblies, without native assets, bundled fonts or package dependencies. Existing installed-consumer API/output receipts remain applicable; public delivery contracts are unchanged. S17 remote release evidence remains separate. |
+| Package/installed consumer | Existing platform package checks verify notices/licenses and managed-only delivery, without native assets, bundled fonts or package dependencies. Installed-consumer API/output receipts remain applicable; public delivery contracts are unchanged. S17 remote release evidence remains separate. |
 | Scene layouts and measured source cost | Draw command / geometry / paint remain **72/272/68 bytes**. Measured Windows peaks are **697,762 bytes** for SVG Translate, **163,840** for scalar-x, **176,276** for curved-midpoint, **163,840** for the composite control and **1,924,748** for `inv-127`. Success and denial one byte below each peak release all owned storage. Small timing samples establish no general throughput claim. |
 | Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
@@ -374,15 +374,24 @@ Existing 1,024-character identifier support is preserved; complete selectors
 are bounded to 4,096 characters, with shared memory/work limits and cancellation.
 Root, nested-viewport and `defs` container styling remain explicit unsupported
 outcomes and required G7 exit work; supported leaves may use them as ancestors.
-The span-paint correction passed complete qualification with **7,020 tests
-per platform** (4,884 core, 2,130 visual, six FontProbe), with zero warnings,
-errors, failures or skips. All
-**2,851 prior PNGs**, **2,755 prior exact results**, **30 supplied-font outputs**
-and corporate **27/27 documents / 258/258 variants** are preserved. The diagram's
-translated filled-rectangle strokes and labels remain the next shared
-dependencies, alongside the Windows omitted-family mask mismatch. The next
-observed gate rejects filled rectangle strokes under translated groups. Its
-whole-document completion remains **0/1**.
+The translation and Linux bitmap correction passed complete qualification with
+**7,050 tests per platform** (4,904 core, 2,140 visual, six FontProbe), with zero
+warnings, errors, failures or skips. All **2,851 prior PNGs**,
+**2,755 prior exact results**, **30 supplied-font outputs**
+and corporate **27/27 documents / 258/258 variants** are preserved. Composed
+translations now place rectangle strokes and text after the existing local
+geometry/layout, including absolute span positions and text paths. Four older
+translated rectangle controls graduate from rejection without asset changes.
+The eight translation controls match unchanged references through twelve outputs
+on both platforms. Ordinary Linux glyphs reuse the local bitmap route, preserving
+coverage under integer placement; the unchanged whole diagram is exact through
+twelve Linux outputs. Windows renders it with seven glyph-mask differences,
+alongside the original three-pixel omitted-family mismatch. Completion across
+both platforms remains **0/1**; resolving those Windows glyph differences is
+the next shared correction. Scaled/general rectangle strokes, general text maps
+and per-span transforms remain visible in their original group exits.
+The existing Linux resource probe passes the whole diagram and translated-label
+control on success and tight memory denial, releasing owned storage on both exits.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.

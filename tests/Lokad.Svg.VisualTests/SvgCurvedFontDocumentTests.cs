@@ -164,6 +164,27 @@ public sealed class SvgCurvedFontDocumentTests
     }
 
     [Theory]
+    [InlineData(400, 100)]
+    [InlineData(-16, -32)]
+    public async Task Ordinary_linux_masks_preserve_integer_translation_and_output_clipping(int dx, int dy)
+    {
+        if (!OperatingSystem.IsLinux()) return;
+        const string source = "<svg xmlns='http://www.w3.org/2000/svg' width='640' height='200'><text font-family='fantasy' font-size='16' x='98' y='43'>referencing and</text></svg>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(source);
+        byte[] translated = System.Text.Encoding.UTF8.GetBytes(source.Replace("<text ", FormattableString.Invariant($"<text transform='translate({dx},{dy})' "), StringComparison.Ordinal));
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        RgbaImage original = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray(), 128_000);
+        RgbaImage shifted = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(translated, options, CancellationToken.None).ToArray(), 128_000);
+        Assert.Contains(original.Pixels, value => value != 0);
+        byte[] expected = new byte[original.Pixels.Length];
+        int left = Math.Max(0, dx), right = Math.Min(640, 640 + dx);
+        for (int y = Math.Max(0, dy); y < Math.Min(200, 200 + dy); y++)
+            original.Pixels.AsSpan(((y - dy) * 640 + left - dx) * 4, (right - left) * 4).CopyTo(expected.AsSpan((y * 640 + left) * 4, (right - left) * 4));
+        Assert.Equal(expected, shifted.Pixels);
+    }
+
+    [Theory]
     [InlineData(256, 0)]
     [InlineData(0, 256)]
     [InlineData(256, 256)]

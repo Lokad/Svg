@@ -229,7 +229,7 @@ internal static class SvgFontRequestDiscovery
                     }
                     if (!sterile && inertDepth < 0 && isSvgElement && (SvgStructuralVocabulary.IsInertContainer(reader.LocalName) || symbolDefinition) && !reader.IsEmptyElement) inertDepth = reader.Depth;
                     SvgTextWhitespaceMode whitespaceMode = SvgTextWhitespaceMode.Default;
-                    if (inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null)
+                    if (inertDepth < 0 && !insideDirectText && isTextEligible && style.Transform.IsTranslation)
                     {
                         SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                         whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, specifiedWhiteSpace, inheritedTextWhitespaceMode);
@@ -237,7 +237,7 @@ internal static class SvgFontRequestDiscovery
                     // SVG text ignores valid fill-rule values; discovery still validates the admitted syntax.
                     if (inertDepth < 0 && !insideDirectText && isTextEligible) SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
                     DiscoveryCandidate candidateState;
-                    if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == SvgAffineTransform.Identity && style.Text.Family is string family)
+                    if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && style.Transform.IsTranslation && style.Text.Family is string family)
                     {
                         candidateState = new DiscoveryCandidate(true, family, style.Text.Weight, style.Text.Italic, whitespaceMode, false, false);
                     }

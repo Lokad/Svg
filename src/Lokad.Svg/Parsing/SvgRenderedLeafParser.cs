@@ -264,7 +264,7 @@ internal static class SvgRenderedLeafParser
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on text are not implemented.");
                 SvgResolvedDirectTextElement resolvedText = context.ResolveTextShape(reader);
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
-                if (!textElement.Transform.Equals(SvgAffineTransform.Identity)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text transforms are not implemented.");
+                if (!textElement.Transform.IsTranslation) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only text translations are implemented.");
                 // ResolveTextShape validates fill-rule syntax; SVG text keeps glyph winding independent of that property.
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
@@ -305,7 +305,7 @@ internal static class SvgRenderedLeafParser
                         catch { pendingTextOwner?.Dispose(); throw; }
                         if (textPath is {} pathReference)
                         {
-                            try { state.PendingTextPaths.Add(new(run, pathReference, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."))); }
+                            try { state.PendingTextPaths.Add(new(run, pathReference, textElement.Transform, textElement.Presentation.Color, state.Scene.AddPaintPlaceholder(), pendingTextOwner ?? throw new InvalidOperationException("A retained text run requires its metadata owner."))); }
                             catch { pendingTextOwner?.Dispose(); run.Dispose(); throw; }
                             continue;
                         }
@@ -314,12 +314,12 @@ internal static class SvgRenderedLeafParser
                             if (hasFill)
                             {
                                 int glyphIndex = 0;
-                                foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, budget, workCounter, cancellationToken))
+                                foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, textElement.Transform, budget, workCounter, cancellationToken))
                                 {
                                     using (contours)
                                     {
                                         SvgTextGlyphPaint glyphPaint = run.GetGlyphPaint(glyphIndex, textElement.Presentation.Color);
-                                        SvgPositionedGlyph positionedGlyph = run.Glyphs[glyphIndex++];
+                                        SvgPositionedGlyph positionedGlyph = run.Glyphs[glyphIndex++].Translate(textElement.Transform);
                                         if (!glyphPaint.HasFill) continue;
                                         SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, glyphPaint.Color, run.Font, positionedGlyph, run.Style.FontSize, budget);
                                         try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(glyph)); }
