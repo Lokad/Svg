@@ -1,0 +1,11 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <pattern id="p" width="16" height="16" patternUnits="userSpaceOnUse">
+      <g transform="translate(100 100)" opacity="0.5"/>
+      <rect x="2" y="3" width="8" height="7" fill="#82280a"/>
+      <g transform="scale(-1 1)"/>
+    </pattern>
+  </defs>
+  <rect width="64" height="64" fill="url(#p)"/>
+</svg>

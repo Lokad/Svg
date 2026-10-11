@@ -59,7 +59,7 @@ internal static class SvgDefinitionParser
             if (retainedStyle.Filter is not null) dormant = dormant with { AuthoredStyle = (dormant.AuthoredStyle ?? retainedStyle) with { Filter = null } };
             SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, dormant, state, symbolViewBox)
                 : reader.LocalName == "line" ? ParseLineDefinition(reader, dormant, state)
-                : ParseShapeDefinition(reader, dormant, state, symbolViewBox);
+                : ParseShapeDefinition(reader, dormant, state, symbolViewBox, true);
             bool retained = false;
             try
             {
@@ -391,7 +391,7 @@ internal static class SvgDefinitionParser
                 workCounter.ConsumeText(fill.Length, cancellationToken);
                 inherited = inherited with { Presentation = inherited.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
             }
-            state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
+            state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
                 { RecordingScope = patternContext.RecordingScope, ClipRule = style.ClipRule ?? patternContext.InheritedClipRule });
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
             else
@@ -405,8 +405,24 @@ internal static class SvgDefinitionParser
             state.SawStyleableNode = true;
             return true;
         }
-        if (state.PatternDepth >= 0 && reader.Depth == state.PatternDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
+        if (state.PatternDepth >= 0 && reader.Depth > state.PatternDepth && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
+            if (reader.LocalName == "g")
+            {
+                if (reader.GetAttribute("mask") is not null || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("filter") is not null)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips, masks and filters on pattern groups are not implemented.");
+                SvgParsedGroup group = SvgGroupParser.Parse(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                if (!reader.IsEmptyElement && group.SourceOpacity.Value != 1)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Isolated opacity on pattern groups is not implemented.");
+                if (!reader.IsEmptyElement)
+                {
+                    _ = GetPatternContentBuilder(state, workCounter, cancellationToken);
+                    state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup });
+                    state.GroupDepth++;
+                }
+                state.SawStyleableNode = true;
+                return true;
+            }
             if (reader.LocalName == "rect" && !SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader).PaintOrder.GetValueOrDefault().StrokeFirst() && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
             {
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
@@ -446,17 +462,8 @@ internal static class SvgDefinitionParser
                     default: SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken); break;
                 }
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
-                SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Vector pattern content requires a tile grid.");
-                SvgSceneBuilder builder = state.PatternContentBuilder ??= new(state.Budget, workCounter, cancellationToken);
-                if (tile.Content is not null)
-                {
-                    SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
-                    SvgPaintableElementContext previous = state.PatternRectangleContext;
-                    AdoptLeaf(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, false, state));
-                    state.PatternTile = tile with { Content = null };
-                }
+                SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
-                context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
                 SvgComputedStyle style = context.ResolveStyle(reader);
                 if (style.Fill is {} fill && SvgLocalUrl.TryParseId(fill, out string fillId) && (fillId == state.PatternId || state.Patterns.TryGetValue(fillId, out _))
                     || style.Stroke is {} stroke && SvgLocalUrl.TryParseId(stroke, out string strokeId) && (strokeId == state.PatternId || state.Patterns.TryGetValue(strokeId, out _)))
@@ -1372,6 +1379,21 @@ internal static class SvgDefinitionParser
 
     }
 
+    /// <summary>Promotes the legacy first rectangle before appending a vector leaf or entering a tile group.</summary>
+    private static SvgSceneBuilder GetPatternContentBuilder(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        SvgPatternTile tile = state.PatternTile ?? throw new InvalidOperationException("Vector pattern content requires a tile grid.");
+        SvgSceneBuilder builder = state.PatternContentBuilder ??= new(state.Budget, workCounter, cancellationToken);
+        if (tile.Content is not null)
+        {
+            SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
+            SvgPaintableElementContext previous = state.PatternRectangleContext;
+            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, false, state), builder, state);
+            state.PatternTile = tile with { Content = null };
+        }
+        return builder;
+    }
+
     internal static void RegisterPattern(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         workCounter.Consume(cancellationToken);
@@ -1586,7 +1608,7 @@ internal static class SvgDefinitionParser
         SvgDefinition definition = reader.LocalName == "rect"
             ? new(RetainParsedGeometries(SvgLeafParser.ParseRectangle(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null)
             : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
-            : ParseShapeDefinition(reader, context, state, null);
+            : ParseShapeDefinition(reader, context, state, null, false);
         try
         {
             SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, reader.GetAttribute("mask"), state, context.WorkCounter, context.CancellationToken);
@@ -1640,16 +1662,18 @@ internal static class SvgDefinitionParser
         catch { reservation.Dispose(); throw; }
     }
 
-    private static SvgDefinition ParseShapeDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox)
+    private static SvgDefinition ParseShapeDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox, bool excludeDefinitionAncestors)
     {
         // Instance replay must retain the host viewport before relative oval lengths can be admitted here.
         if (reader.LocalName is "circle" or "ellipse"
             && (IsPercentage(reader, "cx") || IsPercentage(reader, "cy") || IsPercentage(reader, "r") || IsPercentage(reader, "rx") || IsPercentage(reader, "ry")))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage oval definitions require retained instance viewport bases.");
         SvgComputedStyle style = context.ResolveStyle(reader);
-        // Element-local lowering: the shape lowerers compose the inherited transform with the element attribute themselves, so the inherited
-        // side stays identity here; carrying the parsed attribute would apply it twice. Use clones exclude definition ancestors.
-        SvgPaintableElementContext localContext = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
+        // Use clones exclude definition ancestors. Direct scene content keeps its container
+        // map; ordinary shape lowerers compose the authored element map exactly once.
+        SvgPaintableElementContext localContext = excludeDefinitionAncestors
+            ? context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) }
+            : context;
         string? pathData = reader.LocalName == "path" ? reader.GetAttribute("d") : null;
         string? definitionTransform = reader.LocalName == "path" ? reader.GetAttribute("transform") : null;
         string? vectorEffect = reader.LocalName == "path" ? reader.GetAttribute("vector-effect") : null;
@@ -1784,7 +1808,7 @@ internal static class SvgDefinitionParser
     {
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
-        if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox);
+        if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox, true);
         context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, null);
         context = context with { DeferPaintOpacity = true };

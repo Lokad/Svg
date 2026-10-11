@@ -341,7 +341,12 @@ internal static class SvgDocumentTraversal
                     state.HasOpacityScope = false;
                 }
                 if (state.ClipDepths.Count > 0 && state.ClipDepths[^1] == reader.Depth) state.ClipDepths.RemoveLast();
-                if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth)
+                if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth && state.Groups[^1].Kind == SvgGroupKind.PatternGroup)
+                {
+                    state.Groups.RemoveLast();
+                    state.GroupDepth--;
+                }
+                else if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth)
                 {
                     SvgGroupScope group = state.Groups[^1];
                     state.Groups.RemoveLast();

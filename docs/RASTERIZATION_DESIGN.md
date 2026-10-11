@@ -9056,6 +9056,17 @@ fingerprint refresh merely for documentation changes.
 
 ## Bounded native vector pattern content (2026-10-08)
 
+The grouped tile extension (2026-10-11) completes CC0 `inv-128` at unchanged
+explicit 600×400 through six APIs on Windows/Linux. The pattern scope resets its
+base map once; nested `g` scopes use the existing container resolver, and ordinary
+shape lowering preserves their maps. Definition clones continue to exclude
+ancestors. A legacy first rectangle promotes before grouped content is appended;
+self-closing empty groups preserve its original route. Existing bounded scope/scene storage
+owns partial construction and observes work limits and cancellation. The vector
+bank retains 20 exact and two explicit boundaries; isolated group opacity and
+group clips/masks/filters remain unsupported. Its three new exact controls and
+opacity boundary have matching healthy three-process Windows/Linux captures.
+
 The retained pattern example (`inv-103`) now matches its unchanged 200×200
 transparent reference through all six outputs on Windows/Linux. Three fresh
 Linux browser captures are healthy, cleaned and byte-identical to that reference.

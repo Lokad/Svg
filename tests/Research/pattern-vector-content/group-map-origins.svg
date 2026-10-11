@@ -1,0 +1,16 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="translate(1.25 -2.5)">
+      <g transform="matrix(1.5 0 0 1.5 -9 -30)" fill="#c85019" fill-rule="evenodd">
+        <path d="M6 20h8v8H6z M8 22v4h4v-4z"/>
+        <g transform="translate(8 8)" fill="#82280a">
+          <path d="M6 20a4 4 0 1 0 8 0a4 4 0 1 0 -8 0z"/>
+          <rect x="6" y="25" width="7" height="3" transform="matrix(-1 0 0 1 20 0)"/>
+        </g>
+      </g>
+      <rect x="18" y="1" width="4" height="4" fill="#f0dc82"/>
+    </pattern>
+  </defs>
+  <rect width="64" height="64" fill="url(#p)"/>
+</svg>

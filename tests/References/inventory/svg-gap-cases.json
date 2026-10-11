@@ -393,8 +393,8 @@
         "width": 600,
         "height": 400
       },
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Grouped pattern content is rejected before rendering; declared unchanged 600x400 reference is frozen.",
+      "renderOutcome": "renders",
+      "observedMessage": "Exact against the unchanged declared 600x400 transparent reference through six outputs on both platforms; composed grouped tile content uses shared bounded geometry and paint inheritance.",
       "reference": "tests/References/inventory/inv-128-transparent.png",
       "referenceSha256": "63deddb668f18fb1806da5b657563c12455a20e7442b6150554558a969b955ab",
       "oracle": {

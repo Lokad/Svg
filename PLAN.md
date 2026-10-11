@@ -193,6 +193,20 @@ these demonstrated defects. Bounded stack/point/storage/function execution,
 metric discovery, mask work, cancellation and partial-owner cleanup remain
 required; executed unimplemented semantics keep categorized outcomes.
 
+**Firkin’s CC0 Shapes Pattern (`inv-128`) is complete** at unchanged explicit
+600×400, scale 1, transparent, through six APIs on Windows/Linux. Three healthy
+fresh captures per platform agree with its frozen reference. Bounded grouped
+pattern content composes nested child maps and inherited paint through the shared
+shape/source machinery. Definition clones still exclude source ancestors; direct
+tile content retains them. This is **1/1 newly selected document**, separate from
+the established 30/30 development ledger. Three added controls are exact; isolated
+group opacity retains an explicit boundary and its frozen native expectation.
+The complete Release checks pass **6,851 tests per platform** with zero
+warnings, failures or skips. All **2,849 prior PNGs are byte-identical**, and
+**2,755 prior exact comparisons** remain exact, including the 27/27 corporate
+documents and 258/258 variants. Test-suite wall time is approximately four
+minutes per platform, excluding builds and retained-bank rerenders.
+
 The completed document ledger retains every declared output below. Original
 bytes and prior references remain unchanged. The tiger uses the explicit viewport
 qualification in [capture sizing](docs/ORACLE.md#capture-sizing-behavior): its old
@@ -233,6 +247,7 @@ Mechanisms, control counts and dated qualifications live in
 | Security screw head (`inv-124`) | Explicit 512×512, transparent | Shared automatic tangent placement and visible marker-content overflow. |
 | Shadowed star (`inv-125`) | 128×128, transparent | Local filter binding, bounded native SourceGraphic replay and shared premultiplied Gaussian blur. |
 | Curved German labels (`inv-127`) | Explicit 512×369, transparent; supplied Noto Sans Regular | Shared bounded path layout, native fragment placement, mapped glyph masks and nested component fitting. |
+| CC0 Shapes Pattern (`inv-128`) | Explicit 600×400, transparent; original source unchanged | Shared bounded grouped tile content, composed child maps and inherited solid/gradient paint. |
 | Question-mark export (`inv-126`) | 185×180, transparent | Shared bounded validation of inert outlined-path typography; existing native blur and geometry playback are already exact. |
 | Original live-text acceptance fixture | 64×64, transparent; explicit supplied Noto Sans / `Example` contract | Shared bounded platform hinting, directed contours, symmetric LCD/analytic coverage and font preblend. Separate from the 30 development documents. |
 | Original text-path acceptance fixture | 64×64, transparent; the same supplied Noto Sans / `Example` contract | Local authored path/reference layout, composed source maps and original paint positions reuse existing glyph raster replay. Seven separate controls are exact on both platforms. |
@@ -297,13 +312,14 @@ also complete, counted separately (**2/2**). Both original supplied-font accepta
 documents are complete (**2/2** under their explicit contracts). The retained CC0
 SVG Translate document is also complete (**1/1**, with seven separate exact controls).
 The public-domain curved-label document `inv-127` is complete at 512×369
-under its frozen supplied-font contract. The next selected complete document is
-**Firkin’s CC0 Shapes Pattern (`inv-128`)**, unchanged at explicit **600×400**,
-scale 1, transparent. Its frozen reference is identical across three healthy
-fresh captures on each platform. Advance shared bounded grouped tile content,
-composed child transforms and paint inheritance, then resolve every remaining
-mismatch through six APIs on both platforms. Other promised combinations and
-finite effects remain open.
+under its frozen supplied-font contract. The newly selected **Firkin’s CC0 Shapes Pattern (`inv-128`)** is also complete
+at unchanged explicit **600×400**, scale 1, transparent, through six APIs on both
+platforms. The retained public-domain static CSS diagram `inv-129`
+([source record](docs/INVENTORY.md#inv-129--static-css-comparison-diagram-remaining-scope-candidate))
+is an unqualified next candidate. Its first gate is an omitted font family;
+late/descendant stylesheet rules and span styling are further G7/G9 dependencies.
+Define a deterministic supplied-font contract and freeze declared outputs before
+implementation; keep this candidate outside completed-document denominators. Other promised combinations and finite effects remain open.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -323,7 +339,7 @@ landed mechanisms remain regression requirements.
 | G3 | **Heart, I Ching, radiation, tiger, Malta, Portugal and Bhutan and South Africa documents complete.** Complete remaining curved geometry and static maps | Non-uniform curve maps, transformed strokes/paints and remaining affine gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | **Fractional rectangle placement and direct width admission repaired.** Complete paint-server strokes on ordinary geometry | Three retained rectangle comparisons and twelve new frame controls are exact; broader paints retain admission gates | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
-| G6 | **Four retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
+| G6 | **Five retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Static markers and the enumerated filter/blending subset below | Four CC0 exports and the original marker-instance acceptance fixture complete their declared outputs; remaining marker combinations and finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
 | G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents and CC0 SVG Translate complete; seven controls in each text-path/Mono bank exact. The older composite-accent control is also exact; wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
@@ -346,7 +362,7 @@ G2/G3/G5. The library required valid path-prefix recovery, composed viewport
 clips, inert descriptions and preservation of native contour identity through
 source replay. Its compound Yin/Yang control was already exact before the repair.
 Keep the rotated-symbol gradient rejection (G3) visible; the nested-affine-opacity
-defect (G5) is repaired on its unchanged reference. Four completed documents with pattern elements
+defect (G5) is repaired on its unchanged reference. Five completed documents with pattern elements
 are exact after shared vector content, local template inheritance, fractional
 mapping and general pattern transforms. The separate geometric-pattern export,
 `inv-111`, needed deferred gradient leaves and native affine linear paint maps;
@@ -755,10 +771,20 @@ rasterization, native border coverage and bitmap-local repeat sampling; authored
 strokes/dashes and reflected local uses are exact through all six APIs. Fifteen
 focused placement controls are exact, including three nonzero bitmap-origin cases.
 
-Groups/local uses inside tile content, general referencing-shape/instance maps, content/viewBox/
-bounding-box units and nested viewport gates remain open. Broader source-grid,
+`inv-128` completes its frozen 600×400 transparent output on both platforms.
+Nested groups preserve authored transforms, inherited solid/gradient paint,
+fill rule and visibility in the existing bounded vector scene. Self-closing empty groups
+preserve the legacy rectangle route. The vector bank now has **20 exact controls
+and two explicit boundaries** among 22 cases. Eight focused core cases cover
+tight material memory/work limits, cancellation/retry and partial-scene rejection.
+Isolated group opacity remains promised and explicitly unsupported: the measured
+prototype has residual native layer rounding differences and is not required by
+this completed document. Group clips/masks/filters and local uses remain gates.
+
+General referencing-shape/instance maps, content/viewBox/bounding-box units and
+nested viewport gates remain open. Broader source-grid,
 instance and stroke combinations still need measured controls; completion of the
-four documents closes neither this checklist nor the finite exit below.
+five documents closes neither this checklist nor the finite exit below.
 Extend the bounded vector tile scene with composed pattern transforms,
 viewBox/content units and objectBoundingBox units in measured
 slices. The finite tile-content subset is ordered G3 vector leaves, groups and
@@ -767,8 +793,8 @@ source/scene machinery. Include fractional finite tile origins/sizes, both patte
 unit systems, content units, viewBox/aspect mapping and composed affine transforms.
 Recursive pattern/paint dependencies must have categorized rejection. Embedded
 images and filtered/text tile content remain explicit dependencies on G7–G9,
-not silently dropped promises or a prerequisite for the four retained pattern
-documents. Exit: all four retained originals and the retained multi-child case render exactly;
+not silently dropped promises or a prerequisite for the five retained pattern
+documents. Exit: all five retained originals and the retained multi-child case render exactly;
 focused tile-border, phase, alpha, transformed fill/stroke and inheritance controls
 pass without tile-size or repeat-count-dependent unbounded work.
 

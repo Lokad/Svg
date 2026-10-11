@@ -1,0 +1,13 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse">
+      <rect width="24" height="24" fill="#f0dc82"/>
+      <g opacity="0.6" fill="#82280a" transform="translate(2 2)">
+        <rect width="14" height="14"/><g transform="translate(6 6)"><circle cx="7" cy="7" r="7"/></g>
+      </g>
+      <rect x="1" y="19" width="6" height="4" fill="#c85019"/>
+    </pattern>
+  </defs>
+  <rect width="64" height="64" fill="url(#p)"/>
+</svg>

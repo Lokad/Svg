@@ -414,7 +414,7 @@ internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgI
     internal string? ClipRule { get; init; }
 }
 
-internal enum SvgGroupKind { Group, Link, Switch, Mask, Pattern }
+internal enum SvgGroupKind { Group, Link, Switch, Mask, Pattern, PatternGroup }
 
 /// <summary>Retains closed source-group boundaries whose instance replay remains gated.</summary>
 internal readonly record struct SvgGroupSnapshot(bool IsolatesOpacity, bool HasClip, bool HasMask, bool HasViewport);

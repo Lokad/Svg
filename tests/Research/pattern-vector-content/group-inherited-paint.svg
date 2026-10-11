@@ -1,0 +1,15 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+  <defs>
+    <linearGradient id="paint" x1="0" y1="0" x2="20" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#025bc7"/><stop offset="1" stop-color="#db4526"/>
+    </linearGradient>
+    <pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse">
+      <g fill="url(#paint)" transform="translate(2 2)">
+        <circle cx="7" cy="7" r="6"/>
+        <g fill-opacity="0.6" transform="translate(0 12)"><path d="M0 0h20v6H0z"/></g>
+      </g>
+    </pattern>
+  </defs>
+  <rect width="64" height="64" fill="url(#p)"/>
+</svg>

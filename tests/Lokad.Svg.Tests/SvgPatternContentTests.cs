@@ -81,12 +81,16 @@ public sealed class SvgPatternContentTests
     }
 
     [Theory]
-    [InlineData("", false)]
-    [InlineData("scale(1.5 2)", true)]
-    [InlineData("rotate(-45)", true)]
-    public void Cancellation_during_tile_replay_preserves_borrowed_scene_and_allows_retry(string transform, bool rootLocal)
+    [InlineData("", false, false)]
+    [InlineData("scale(1.5 2)", true, false)]
+    [InlineData("rotate(-45)", true, false)]
+    [InlineData("", false, true)]
+    [InlineData("rotate(-45)", true, true)]
+    public void Cancellation_during_tile_replay_preserves_borrowed_scene_and_allows_retry(string transform, bool rootLocal, bool grouped)
     {
-        string definition = "<pattern id='p' width='256' height='256' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'><circle cx='128' cy='128' r='100' fill='#025bc7'/></pattern>";
+        string content = "<circle cx='128' cy='128' r='100' fill='#025bc7'/>";
+        if (grouped) content = "<g transform='translate(2 -3)'><g transform='scale(0.75)'>" + content + "</g></g>";
+        string definition = "<pattern id='p' width='256' height='256' patternUnits='userSpaceOnUse' patternTransform='" + transform + "'>" + content + "</pattern>";
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'>" + (rootLocal ? definition : "<defs>" + definition + "</defs>") + "<rect width='256' height='256' fill='url(#p)'/></svg>");
         RenderBudget budget = new(8_000_000);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
@@ -108,6 +112,52 @@ public sealed class SvgPatternContentTests
     }
 
     [Theory]
+    [InlineData("group-map-origins")]
+    [InlineData("group-inherited-paint")]
+    [InlineData("empty-group-legacy")]
+    public void Grouped_tiles_release_material_storage_at_tight_limits(string identity)
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "pattern-vector-content", identity + ".svg"));
+        RenderBudget measured = new(8_000_000);
+        ParserWorkCounter work = new(1_000_000);
+        long rasterWork;
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None))
+            rasterWork = surface.WorkUnits;
+        Assert.Equal(0, measured.Snapshot().CurrentBytes);
+
+        RenderBudget parserBudget = new(8_000_000);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgRootParser.Parse(input, SvgRenderLimits.Default, parserBudget, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, parserBudget.Snapshot().CurrentBytes);
+
+        RenderBudget tight = new(measured.Snapshot().PeakBytes - 1);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, tight, CancellationToken.None);
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, tight, CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, tight.Snapshot().CurrentBytes);
+
+        SvgRenderLimits defaults = SvgRenderLimits.Default;
+        SvgRenderLimits limits = new(defaults.MaximumAccountedBytes, defaults.MaximumInputBytes, defaults.MaximumDimension,
+            defaults.MaximumPixels, defaults.MaximumEncodedPngBytes, defaults.MaximumNodes, defaults.MaximumPathCommands,
+            checked((int)rasterWork - 1), defaults.MaximumXmlDepth, defaults.MaximumAttributesPerElement);
+        RenderBudget budget = new(8_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            long retained = budget.Snapshot().CurrentBytes;
+            SvgRenderOptions options = new(null, 1, SvgColor.Transparent, limits);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                SvgConverter.Rasterize(root, options, budget, CancellationToken.None)).ErrorCode);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.Equal(rasterWork, retry.WorkUnits);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("")]
     [InlineData("id='p'")]
     public void Anonymous_and_unused_tiles_release_promoted_sources(string identifier)
@@ -124,6 +174,9 @@ public sealed class SvgPatternContentTests
     [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='4' fill='url(#p)'/></pattern>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='4' mask='url(#m)'/></pattern>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='4'/></pattern><pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='4'/></pattern>", SvgErrorCode.MalformedInput)]
+    [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><rect width='16' height='16'/><g opacity='0.6'><circle cx='8' cy='8' r='4'/></g></pattern>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><g mask='url(#m)'><circle cx='8' cy='8' r='4'/></g></pattern>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<pattern id='p' width='16' height='16' patternUnits='userSpaceOnUse'><g><circle cx='8' cy='8' r='4' fill='url(#p)'/></g></pattern>", SvgErrorCode.UnsupportedFeature)]
     public void Rejected_tile_content_and_duplicate_ids_release_partial_scenes(string content, SvgErrorCode expected)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs>" + content + "</defs><rect width='16' height='16' fill='url(#p)'/></svg>");

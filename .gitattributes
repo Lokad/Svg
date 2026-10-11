@@ -32,3 +32,5 @@ tests/Research/supplied-font-documents/svg-translate-textpath.svg -text whitespa
 # Preserve the downloaded grouped-pattern original and identical conversion input.
 tests/Fixtures/candidates/inv-128.svg -text whitespace=cr-at-eol
 tests/References/inventory/gap-inputs/inv-128.svg -text whitespace=cr-at-eol
+# Preserve authored trailing whitespace in the next static CSS candidate.
+tests/Fixtures/candidates/inv-129.svg whitespace=-blank-at-eol
