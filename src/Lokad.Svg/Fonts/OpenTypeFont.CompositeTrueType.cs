@@ -46,7 +46,10 @@ internal static partial class OpenTypeFont
         internal int ScaleOffset(int value, bool round, bool horizontal)
         {
             _work.Consume(_token);
-            int scaled = Scale(value, _scale);
+            // The Windows scaler drops low fixed-point bits for component
+            // offsets; explicit outline points keep their separate rounding.
+            int scaled = (_target.QueryFlags & TrueTypeHintQueryFlags.ClearType) != 0
+                ? (int)(((long)value * _scale) >> 16) : Scale(value, _scale);
             // Legacy grayscale rounds both axes; the admitted smooth profiles retain fractional X.
             return round && (!horizontal || _target.Version == 35) ? Round(scaled) : scaled;
         }

@@ -61,6 +61,10 @@ internal static class SvgTextPathLayout
                 work.Consume(token);
                 double distance = offset + glyph.X;
                 double midpoint = distance + glyph.Advance / 2;
+                if (!measured.IsHorizontal)
+                    // Native SVG adds the device character offset and inline
+                    // half-width before scalar division and the path offset.
+                    midpoint = ((float)(glyph.X * state.OutputTextScale) + (float)(glyph.Advance * state.OutputTextScale) / 2) / (float)state.OutputTextScale + (float)offset;
                 if (!double.IsFinite(distance) || !double.IsFinite(midpoint)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path placement exceeds the supported range.");
                 if (baseline.Length == 0 || midpoint < 0 || midpoint > baseline.Length) continue;
                 SvgPositionedGlyph placed = measured.IsHorizontal

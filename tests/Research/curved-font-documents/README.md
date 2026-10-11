@@ -1,6 +1,6 @@
 # Retained curved label document
 
-The next whole G9/G3 deliverable is Dr. Olaf Hoffmann's public-domain
+The completed G9/G3 document is Dr. Olaf Hoffmann's public-domain
 [SVGtext-anchor04.svg](https://commons.wikimedia.org/wiki/File:SVGtext-anchor04.svg).
 The retained [original](../../Fixtures/candidates/inv-127.svg) preserves all
 3,351 upstream bytes, including its ISO-8859-1 declaration, inert public SVG
@@ -16,16 +16,12 @@ an explicit caller catalog mapping. The program and OFL notice are borrowed from
 host font discovery is involved. [The manifest](manifest.json) owns the source,
 output and matching-platform reference contract.
 
-Cross-platform document completion is **0/1 (1/1 Linux, 0/1 Windows)**.
-Four of five separate controls are exact on
-both platforms through all six raw and six independently prepared outputs.
-Linux also completes the composite control, giving five exact
-controls there. All 12 Linux document outputs match the unchanged reference.
-Windows still differs at 22 pixels, down from 4,261.
+Cross-platform document completion is **1/1**. The whole document and all five
+separate controls match unchanged Windows/Linux references through all six raw
+and six independently prepared outputs.
 Shared open-curve distance/tangent placement and `USE_MY_METRICS` component inheritance
-now let the unchanged document render. Remaining Windows document text pixels and
-Windows composite control stay open. Finish the whole
-document and all discovered mismatches against its frozen references. Controls
+now let the unchanged document render exactly. All discovered document and control
+mismatches are resolved. Controls
 do not count as completed documents.
 
 | Control | Shared dependency | Current renderer outcome |
@@ -34,7 +30,7 @@ do not count as completed documents.
 | Per-path anchor | Child anchor overriding parent | Exact on both platforms through 12 APIs. |
 | Calibrated path length | Numeric offsets scaled separately from glyph advances | Exact on both platforms through 12 APIs. |
 | Curved midpoint | Curved length, tangent and glyph mapping | Exact on both platforms through 12 APIs. |
-| Composite on path | Supplied precomposed `ü` placement and fitting | Exact on Linux through 12 APIs; Windows still differs at 8 pixels. |
+| Composite on path | Supplied precomposed `ü` placement and fitting | Exact on both platforms through 12 APIs. |
 
 [Independent native placement](diagnostics/curved-midpoint-native-placement.json)
 records three identical healthy intended-font browser measurements and screenshots
@@ -161,7 +157,7 @@ checks pass with 6,819 tests per platform. The focused regression uses independe
 geometry and the bank retains its frozen document references.
 
 
-The latest Windows correction maps explicit font points in fixed precision before
+The preceding Windows correction maps explicit font points in fixed precision before
 constructing implied points, subdivides quadratics into the native scan leaves,
 keeps thin-tip dropouts from both directed row limits, and retains fitting for
 axis-aligned relaxed strikes. The unchanged document improves **4,261 → 22**
@@ -179,3 +175,18 @@ one formerly matching pixel within the incomplete Windows output. Every
 established exact result is preserved. Complete qualification passes 6,834 tests
 per platform (4,724 core / 2,104 visual / six FontProbe), with released resource
 owners and both managed package audits passing.
+
+The final correction makes the unchanged document exact on both platforms:
+**22 → 0 Windows pixels**, through all twelve APIs. Scalar device midpoint and
+fragment placement select the native paint rectangle; rounded scan bounds keep
+thin-tip dropouts in the native cell. Component offsets drop low fixed-point bits
+separately from explicit-point rounding, completing the horizontal composite
+control **8 → 0**. Two further complete native textures, stable through three
+fresh processes, extend the mask bank to fifteen cases. The original inputs,
+options, supplied face and both references stay frozen. The five separate
+controls are now exact on both platforms; finite G9 support promises remain open.
+
+Complete qualification passes **6,836 tests per platform**, preserves corporate
+27/27 documents / 258/258 variants and every established exact output, and passes
+the unchanged resource and package checks. The private completion receipt is
+`artifacts/windows-strike-boundaries-20261011/final-qualification.json`.

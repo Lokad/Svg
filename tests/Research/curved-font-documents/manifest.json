@@ -61,8 +61,8 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "All twelve Linux outputs match the unchanged reference. Shared Windows fixed point mapping, native scan-leaf subdivision, directed thin-tip dropouts and axis-aligned fitting reduce the mismatch to 22 pixels: one hyphen (20) and two scan-tip pixels. Input, supplied font, options and both references remain unchanged.",
+      "rendererOutcome": "exact",
+      "remainingOrCompletedMechanism": "All twelve outputs match unchanged Windows/Linux references. Scalar device midpoint and fragment placement, native rounded scan bounds and shared mapped glyph coverage complete the retained document.",
       "linuxRendererOutcome": "exact"
     },
     {
@@ -343,8 +343,8 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "USE_MY_METRICS inheritance admitted. All twelve Linux outputs match the unchanged reference; Windows native mask fidelity remains open at 8 differing pixels.",
+      "rendererOutcome": "exact",
+      "remainingOrCompletedMechanism": "All twelve outputs match unchanged Windows/Linux references. Native Windows fixed-scale component offsets truncate separately from rounded explicit points; nested accents reuse existing bounded assembly and fitting.",
       "linuxRendererOutcome": "exact"
     }
   ],

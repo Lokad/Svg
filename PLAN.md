@@ -107,7 +107,7 @@ magnitude determines fixed-point precision; exact subdivision changes that
 magnitude while preserving continuous geometry. No fitted tolerance or diagnostic
 bitmap enters rendering. Preserve these finite exits and every established exact
 output. The small edge details and closing-parenthesis strike are now exact.
-The next retained whole document is the public-domain **SVGtext-anchor04.svg
+The retained public-domain **SVGtext-anchor04.svg
 (`inv-127`)**, with unchanged 3,351-byte Latin-1 source, an explicit **512×369
 transparent** viewport and the existing public static Noto Sans Regular face 0
 under its original `fantasy` alias. Source, output and face were declared before
@@ -115,11 +115,9 @@ capture or candidate screening. The [curved-label bank](tests/Research/curved-fo
 retains healthy Windows/Linux reference triples and intended-font proof.
 Its eight cubic path runs, child/inherited anchors, calibrated lengths, dashed
 guides and precomposed accents provide shared G9/G3 dependencies.
-**Cross-platform document completion remains 0/1: Linux is 1/1, Windows 0/1.**
-The whole document is exact on Linux through all 12 APIs; Windows now differs at
-**22 pixels, down from 4,261**. Separate controls are **4/5 Windows / 5/5 Linux**
-exact through 12 APIs: the curved control is now exact on both platforms, while
-Windows's horizontal composite-on-path control remains open at eight pixels.
+**Cross-platform document completion is 1/1.** The unchanged whole document is
+exact on Windows and Linux through all 12 APIs. Its five separate controls are
+**5/5 exact on both platforms**, including curved and horizontal composite text.
 
 Shared authored open-curve distance/tangent maps, independent sibling runs,
 presentation-anchor inheritance, numeric offset calibration, default Latin
@@ -137,18 +135,21 @@ Both directed row limits retain enabled thin-tip dropouts even when normal
 coverage is unchanged. Axis-aligned relaxed strikes retain instruction fitting,
 including quarter-turn glyphs; other mapped strikes use unhinted points.
 The same bounded point/component assembly, contour owners and coverage machinery
-serve these cases. The incomplete Windows document corrects 4,240 previously
-differing pixels and changes one previously matching pixel; every established
-exact result is preserved. [Thirteen complete native RGB textures](tests/Research/curved-font-documents/diagnostics/windows-mapped-masks.json),
+serve these cases. Before the final placement correction, that checkpoint
+corrected 4,240 previously differing pixels and changed one previously matching
+pixel; every established exact result was preserved. [Thirteen complete native RGB textures](tests/Research/curved-font-documents/diagnostics/windows-mapped-masks.json),
 each stable through three fresh processes, protect the shared correction alongside
 subdivision denial, cancellation, retry and unchanged borrowed font bytes.
 
-The remaining 22 Windows document pixels are localized to one hyphen
-(20) and two scan-tip pixels. The independently reconstructed native document
-also retains the hyphen differences; this diagnostic does not qualify a product
-output. Compare those native placement and scan boundaries next, then complete
-the horizontal composite control. Finish the document against frozen references
-before expanding combinations; all finite G2–G9 exits stay visible.
+The final Windows correction resolves all 22 document differences. Native scalar
+midpoint arithmetic and viewport multiplication precede fragment truncation;
+rounded scan bounds keep thin-tip dropouts in the native cell. Fixed component
+offsets truncate separately from explicit-point rounding, completing the eight
+horizontal composite differences. Two further complete native RGB textures,
+stable through three fresh processes, protect the scan boundary and nested accent.
+Inputs, options, supplied face and references stay unchanged. Continue with the
+remaining live-label composite control and finite G9 promises; all G2–G9 exits
+stay visible.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
 original output, seven controls, upstream face and OFL notice, explicit alias/
@@ -177,7 +178,7 @@ an interpreter grid. Current Windows measurements against unchanged references:
 | --- | --- |
 | Curves/counters | Exact on both platforms through all 12 APIs. |
 | AV/space pair | Exact on both platforms through all 12 APIs. |
-| Composite accents | Exact on Linux through 12 APIs; Windows still differs at 34 pixels after shared component-metric inheritance. |
+| Composite accents | Exact on Linux through 12 APIs; Windows differs at 37 pixels (previously 34) after the shared native component-offset correction. This incomplete control is the next fidelity target. |
 | Fractional position/size | Exact on both platforms through all 12 APIs. |
 | Small fractional origin | Exact on both platforms through all 12 APIs. |
 | Large outline | Exact on both platforms through all 12 APIs. |
@@ -229,6 +230,7 @@ Mechanisms, control counts and dated qualifications live in
 | Lattice diagram (`inv-123`) | Explicit 512×352, transparent | Authored intermediate vertices, subpath roles and shared bounded marker replay preserve dashed strokes. |
 | Security screw head (`inv-124`) | Explicit 512×512, transparent | Shared automatic tangent placement and visible marker-content overflow. |
 | Shadowed star (`inv-125`) | 128×128, transparent | Local filter binding, bounded native SourceGraphic replay and shared premultiplied Gaussian blur. |
+| Curved German labels (`inv-127`) | Explicit 512×369, transparent; supplied Noto Sans Regular | Shared bounded path layout, native fragment placement, mapped glyph masks and nested component fitting. |
 | Question-mark export (`inv-126`) | 185×180, transparent | Shared bounded validation of inert outlined-path typography; existing native blur and geometry playback are already exact. |
 | Original live-text acceptance fixture | 64×64, transparent; explicit supplied Noto Sans / `Example` contract | Shared bounded platform hinting, directed contours, symmetric LCD/analytic coverage and font preblend. Separate from the 30 development documents. |
 | Original text-path acceptance fixture | 64×64, transparent; the same supplied Noto Sans / `Example` contract | Local authored path/reference layout, composed source maps and original paint positions reuse existing glyph raster replay. Seven separate controls are exact on both platforms. |
@@ -238,8 +240,8 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,834 tests/platform**: 4,724 core, 2,104 visual, six FontProbe. Latest complete suites take about 2m41 Windows / 3m10 Linux, excluding builds and additional bank probes. Test counts are not document counts. |
-| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 26 Windows / 30 Linux exact font outputs from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. The selected curved-label document is 1/1 on Linux and 0/1 on Windows (0/1 across both platforms); separate controls are **4/5 Windows / 5/5 Linux** exact through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,836 tests/platform**: 4,724 core, 2,106 visual, six FontProbe. Latest complete suite wall time is **4m Windows / 7m16 Linux**, excluding builds and additional bank probes. The preceding run took 2m41 / 3m10; timings vary between runs. Test counts are not document counts. |
+| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 27 Windows / 30 Linux exact font outputs from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. The selected curved-label document is **1/1 across both platforms**; its five separate controls are **5/5 exact on both** through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
@@ -982,9 +984,9 @@ the complex-script scope.
       promised flags remain visible without becoming exhaustive prerequisites.
     - [x] Finish the original output and focused pixel controls through all 12 APIs
       on both platforms, preserving every established exact result.
-  - [ ] Finish public-domain `inv-127` at unchanged explicit 512×369 transparent,
+  - [x] Finish public-domain `inv-127` at unchanged explicit 512×369 transparent,
     under the declared public Noto Sans Regular face 0 and `fantasy` alias. Track
-    **0/1 cross-platform document (1/1 Linux, 0/1 Windows)** separately from its five mechanism controls.
+    **1/1 cross-platform document** separately from its **5/5 exact** mechanism controls.
     - [x] Freeze healthy matching-platform triples and missing/corrupt/substituted
       font proof before renderer screening; preserve original Latin-1 product bytes.
     - [x] Admit bounded language metadata, inherited/child presentation anchors,
@@ -1003,21 +1005,18 @@ the complex-script scope.
       and device strike placement. Retain alphabetic hhea/OS2 metric precedence,
       negative rectangle-top behavior and the existing zero-angle route. Semantic
       curve measurement stays separate from the paint displacement.
-    - [ ] Finish native rotated glyph-mask fidelity on both platforms; zero-angle
-      polynomial baselines retain the established horizontal strike. Keep the
-      curved control separate from document completion. Both Linux origin phases
-      now follow the native quarter-pixel strike after viewport placement. Keep
-      the remaining Windows mask comparison open. The Linux curved control is now
-      exact through 12 APIs using relaxed native strike coefficients, vertical
-      scaler decomposition and unhinted device points. Six independent simple/
-      composite outline checks protect the shared point loader. Whole-document
-      mask fidelity remains the next Windows comparison at its declared scale.
+    - [x] Complete the retained curved document and its five separate controls
+      against frozen Windows/Linux references through all 12 APIs. Native scalar
+      midpoint/fragment placement, rounded scan bounds and shared glyph replay
+      resolve the final Windows differences. Zero-angle polynomial baselines
+      retain the horizontal strike. Keep document completion separate from
+      controls and the remaining finite G9 support promises.
     - [x] Reuse the native relaxed strike transform for mapped Windows outlines.
       Preserve every established exact output. Explicit-point fixed mapping, native
       scan-leaf subdivision and directed thin-tip dropouts now make the curved
-      control exact and reduce the document to 22 differing pixels. Thirteen
-      complete native RGB masks protect unhinted and axis-aligned fitted strikes.
-      The horizontal composite control remains open at eight pixels.
+      control exact. Fifteen complete native RGB masks now protect unhinted and
+      axis-aligned fitted strikes, rounded scan bounds and nested component offsets.
+      The horizontal composite control is exact against its unchanged reference.
     - [x] Complete all 12 Linux document outputs against the frozen reference with
       bounded glyph-local mask construction through shared geometry/source replay.
       Preserve every previously exact font result. Protect integer placement across
@@ -1027,9 +1026,9 @@ the complex-script scope.
       Ten independent native contours cover original accents and metric-dependent
       parent programs, including transformed/nested components. Other composite
       flags and interpreter combinations remain in the finite G9 exit.
-    - [ ] Finish the new and older composite-accent masks against their unchanged
-      matching-platform references; admission alone does not close these controls.
-    - [ ] Resolve every remaining guide/text mismatch and complete all 12 APIs on
+    - [x] Finish the new composite-on-path mask against unchanged Windows/Linux
+      references. The older live-label composite control remains tracked separately.
+    - [x] Resolve every remaining guide/text mismatch and complete all 12 APIs on
       both platforms against the frozen document output.
 - **Explicit unsupported outcomes:** automatic wrapping, bidi/joining/complex
   shaping, general GSUB/GPOS or mark positioning, vertical text, text-path stretch/

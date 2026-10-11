@@ -91,7 +91,9 @@ Healthy frozen browser captures, SVG/font bytes, references and declared options
 are reused. Source, DLL, script and report fingerprints are not required.
 
 This bank retains its exact document and six exact controls across both platforms.
-Linux completes all seven controls; Windows composite accents still differ at 34 pixels.
+Linux completes all seven controls; Windows composite accents differ at 37 pixels
+(previously 34) after the shared native component-offset correction. This incomplete
+control remains the next fidelity target; the original document stays exact.
 Both original supplied-font documents and the retained
 [CC0 SVG Translate document](../supplied-font-documents/README.md) are complete.
 The next whole deliverable is the public-domain

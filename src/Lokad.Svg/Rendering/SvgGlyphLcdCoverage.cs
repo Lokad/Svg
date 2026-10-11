@@ -43,7 +43,11 @@ internal static class SvgGlyphLcdCoverage
                 Bound(segment.Start); Bound(segment.Control); Bound(segment.End);
             }
         }
-        double leftBound = Math.Floor(minX), topBound = Math.Floor(minY), rightBound = Math.Ceiling(maxX), bottomBound = Math.Ceiling(maxY);
+        // Native scan bounds round to cells before choosing a smart dropout.
+        // Preserve a nonempty interval for strokes thinner than one cell.
+        double leftBound = Math.Floor(minX + .5), topBound = Math.Floor(minY + .5), rightBound = Math.Floor(maxX + .5), bottomBound = Math.Floor(maxY + .5);
+        if (leftBound == rightBound) { leftBound = Math.Floor(minX); rightBound = Math.Ceiling(maxX); }
+        if (topBound == bottomBound) { topBound = Math.Floor(minY); bottomBound = Math.Ceiling(maxY); }
         Span<CellCoverage> cells = stackalloc CellCoverage[50]; cells.Clear();
         for (int row = 0; row < 5; row++)
         {

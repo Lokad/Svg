@@ -62,7 +62,10 @@ internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetr
         float roundedAscent = MathF.Floor(ascent + .5f);
         if (Target == SvgGlyphMetricTarget.Linux && MathF.Floor(descent + .5f) < descent && roundedAscent >= 1) roundedAscent--;
         SvgDevicePoint center = map.Apply(halfAdvance, -baselineShift);
-        float centerX = (float)(center.X * Scale), centerY = (float)(center.Y * Scale);
+        // Blink multiplies its scalar path point by the scalar font/viewport
+        // scale before building the fragment rectangle. Rounding only after a
+        // double product can select the adjacent 1/64-pixel paint rectangle.
+        float centerX = (float)center.X * (float)Scale, centerY = (float)center.Y * (float)Scale;
         // Blink paints the unrotated SVG fragment from a LayoutUnit rectangle,
         // truncated toward zero at 1/64. Its character queries retain floats.
         // Rotate this small paint displacement about the advance midpoint before

@@ -11904,3 +11904,40 @@ resource peaks remain unchanged; success and denial one byte below each peak
 release all owners. Both current managed package audits pass. The private receipt
 is `artifacts/mapped-windows-scan-inputs-20261011/final-qualification.json`.
 All finite G2–G9 and S17 exits remain visible.
+
+### Completed curved labels: scalar placement and native scan bounds
+
+The final `inv-127` correction follows the native order of scalar operations:
+add device character offset and inline half-width, divide by the output scale,
+then add the path offset. The scalar path point multiplies by the scalar viewport
+scale before fragment-rectangle truncation. At the retained hyphen these stages
+select the correct 1/64-pixel rectangle and subsequent quarter-pixel strike.
+Native scan bounds round to cells before smart dropout selection; sub-cell
+strokes retain a nonempty interval. This resolves the two remaining pixels in
+the rotated `x`. No glyph identity, reference image or fitted tolerance enters
+the shared calculation.
+
+Windows component offsets drop their low fixed-point product bits separately
+from rounded explicit outline points. The two nested accent offsets in `ü`
+accumulated two F26 units under the previous rounding. Existing bounded component
+assembly and fitting now reproduce the complete native mask. Two additional
+complete native textures, each stable through three fresh processes, extend the
+mask bank to fifteen cases without source or renderer hashes.
+
+The unchanged curved document improves **22 → 0 Windows pixels** and its
+horizontal composite control **8 → 0**, through all twelve APIs. Linux retains
+the exact document and all five controls. Document completion is **1/1 across
+platforms**, with **5/5 separate controls exact on both**. The older live-label
+accent control remains incomplete at **37 Windows pixels (previously 34)** under
+the shared offset correction; it is the next fidelity target. The finite G9 and
+other support exits remain open.
+
+Complete qualification passes **6,836 tests/platform** (4,724 core, 2,106 visual
+and six FontProbe), preserving corporate **27/27 documents / 258/258 variants**,
+2,908 prior outcomes, 2,849 prior PNGs and 2,755 established exact comparisons.
+All 27 Windows / 30 Linux prior exact font outputs remain byte-identical. The
+five resource peaks on each platform stay unchanged, success and tight denial
+release all owners, and both managed package audits pass. Suite wall times are
+239.9 seconds Windows / 436.0 seconds Linux, excluding builds and bank probes.
+The private receipt is
+`artifacts/windows-strike-boundaries-20261011/final-qualification.json`.

@@ -7,24 +7,24 @@ rendering differences are resolved; the original-scope admission and feature
 gaps in [PLAN.md](../PLAN.md#3-ordered-support-queue) remain open. Do not infer
 that every unlisted visible SVG construct is rejected correctly.
 
-The next retained G9/G3 document is the public-domain curved-label export
+The completed retained G9/G3 document is the public-domain curved-label export
 [`inv-127`](../tests/Research/curved-font-documents/README.md), at unchanged
-512×369 transparent under explicitly supplied Noto Sans Regular. It remains
-**0/1 complete across platforms (1/1 Linux, 0/1 Windows)**. Bounded `xml:lang`
+512×369 transparent under explicitly supplied Noto Sans Regular. It is
+**1/1 complete across platforms**. Bounded `xml:lang`
 metadata, presentation `text-anchor`
 inheritance through `svg`/`g`/`a` and child overrides, independent direct sibling
 `textPath` runs and positive `pathLength` offset calibration are admitted.
 Shared `USE_MY_METRICS` inheritance admits the original precomposed accents.
 The unchanged document now renders through all 12 APIs under its declared
 supplied-font contract. Shared authored open curves
-now provide bounded midpoint/tangent maps; native rotated glyph-mask fidelity
-remains open on Windows. The curved control is now exact on both platforms through
-12 APIs. The whole document is exact on Linux and differs at **22 Windows pixels,
-down from 4,261**, after shared explicit-point fixed mapping, native scan-leaf
-subdivision, directed thin-tip dropout ownership and axis-aligned fitting.
-Thirteen complete independent native RGB textures protect these mechanisms.
-The remaining Windows pixels are one hyphen (20) and two scan-tip pixels;
-the horizontal composite control remains open at eight pixels.
+now provide bounded midpoint/tangent maps. The whole document and all five
+controls are exact on both platforms through 12 APIs. Shared explicit-point fixed
+mapping, native scan-leaf subdivision, directed thin-tip dropouts and axis-aligned
+fitting share the existing geometry and coverage machinery. Scalar midpoint and
+fragment placement plus rounded native scan bounds resolve the final 22 Windows
+document differences. Fixed component offsets truncate separately from rounded
+explicit points, completing the horizontal composite control. Fifteen complete
+independent native RGB textures protect these mechanisms.
 Default Latin ligatures use the supplied font's ordered type-4 records, with
 source cluster boundaries retained. Kerned text-path advances are rounded before
 midpoint/tangent placement. The admitted ligature subset is one unfiltered lookup
@@ -39,9 +39,9 @@ vertical scaler decomposition and unhinted TrueType device-grid outlines. Their
 bounded glyph-local masks reuse the existing geometry rasterizer; document integer
 placement and SVG clipping apply after local edge construction and preblend.
 The remaining 156 Linux document differences are resolved. Complete
-qualification passes **6,834 tests/platform** (4,724 core / 2,104 visual / six
-FontProbe), preserving every established exact output. Four separate controls
-are exact on both platforms through 12 APIs; Linux completes all five. Percentage
+qualification passes **6,836 tests/platform** (4,724 core / 2,106 visual / six
+FontProbe), preserving every established exact output. Five separate controls
+are exact on both platforms through 12 APIs. Percentage
 offsets resolve against geometric length; numeric offsets use its calibrated scale. Glyph
 advances remain independent. Open line/quadratic/cubic/conic/endpoint-arc baselines
 are admitted; zero-angle polynomial baselines preserve the horizontal font strike.
