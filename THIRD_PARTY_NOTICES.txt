@@ -89,13 +89,15 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Lokad.Svg also contains a managed adaptation of Chromium CPU tile sizing and
-bordered tile geometry and legacy sRGB color normalization. It has no Chromium runtime dependency.
+bordered tile geometry, legacy sRGB color normalization and SVG text-fragment
+paint positioning. It has no Chromium runtime dependency.
 
 Source release tag: 153.0.8010.52
 Source files: cc/layers/tile_size_calculator.cc, cc/base/tiling_data.cc,
 cc/trees/layer_tree_settings.cc, cc/tiles/picture_layer_tiling.h and
-ui/gfx/color_conversions.cc.
-Copyright 2010, 2011, 2012, 2019 The Chromium Authors.
+ui/gfx/color_conversions.cc, third_party/blink/renderer/core/paint/text_fragment_painter.cc,
+third_party/blink/renderer/core/layout/inline/fragment_item.cc.
+Copyright 2010, 2011, 2012, 2017, 2019 The Chromium Authors.
 
 Chromium license:
 
@@ -127,15 +129,45 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+The SVG alphabetic metric rounding also follows Blink's font_metrics.cc,
+under its separate Apple/contributor BSD license:
+
+Copyright (C) 2005, 2008, 2010 Apple Inc. All rights reserved.
+Copyright (C) 2006 Alexey Proskuryakov
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1.  Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+2.  Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+3.  Neither the name of Apple Computer, Inc. ("Apple") nor the names of
+    its contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY APPLE AND ITS CONTRIBUTORS "AS IS" AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL APPLE OR ITS CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 Lokad.Svg contains a managed adaptation of Fontations/Skrifa Latin light
-alignment-zone sampling, fixed-point scaling, outline topology, edge fitting
-and point interpolation, plus unhinted TrueType device scaling, component point
+alignment-zone sampling, fixed-point scaling, outline topology, edge fitting,
+point interpolation and alphabetic line-metric selection, plus unhinted TrueType device scaling, component point
 placement and implied-point construction. It has no Fontations or native runtime dependency.
 
 Source version: skrifa 0.43.2
 Source files: src/outline/autohint/outline.rs, metrics/blues.rs, metrics/scale.rs,
 topo/segments.rs, topo/edges.rs, hint/edges.rs, hint/outline.rs,
-src/outline/glyf/mod.rs, src/outline/glyf/outline.rs and src/outline/pen.rs.
+src/outline/glyf/mod.rs, src/outline/glyf/outline.rs, src/outline/pen.rs and src/metrics.rs.
 The implied-point iterator also follows read-fonts 0.40.1 src/tables/glyf.rs.
 
 Fontations MIT license:

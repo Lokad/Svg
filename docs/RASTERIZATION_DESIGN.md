@@ -11762,3 +11762,31 @@ are unchanged; previous package/installed-consumer receipts remain valid. The
 complete before/after pixels, native placement and resource evidence are in
 `artifacts/latin-path-shaping-20261011/final-qualification.json`. Remaining glyph
 masks and all other finite G2–G9 exits stay open.
+
+### Native text-fragment paint placement (2026-10-11)
+
+The curved document's float character positions already agreed with native
+layout, but those queries differ from the coordinates used to paint its glyphs.
+Blink truncates the unrotated fragment rectangle toward zero at 1/64 pixel before
+its tangent transform. The shared text-path layout now applies that displacement
+about the advance midpoint before viewport translation and strike placement.
+Cached hhea/OS2 alphabetic metrics retain baseline rounding; negative rectangle
+tops and zero-angle strike routing keep their separate semantics. No glyph IDs,
+document identities or fitted pixel offsets enter the implementation.
+
+Independent positioned native glyphs reproduce the original native text-only
+image with this paint displacement. Vector replay and independent point-loader
+checks narrow the remaining mask work; they do not close the document. Frozen
+Windows differences improve from 5,847 to 4,607 and Linux from 1,545 to 156 through
+all 12 APIs. Windows corrects 1,271 previously differing pixels and changes 31
+previously matching pixels; Linux corrects 1,389 pixels and changes no previously
+matching pixels. All previously exact outputs remain byte-identical.
+The five controls retain 3/5 Windows and 5/5 Linux exact results.
+The document remains 0/1 and all finite G2–G9 promises stay open.
+
+Complete qualification preserves every established exact, with 6,813 tests per
+platform, unchanged corporate 27/27 documents and 258/258 variants, and released
+owners after success and tight memory denial. Both local packages include the
+current attribution and licenses with no native assets, bundled fonts or package
+dependencies. The receipt is
+`artifacts/text-path-paint-20261011/final-qualification.json`.

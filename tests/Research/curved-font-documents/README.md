@@ -19,7 +19,7 @@ output and matching-platform reference contract.
 Document completion is **0/1**. Three of five separate controls are exact on
 both platforms through all six raw and six independently prepared outputs.
 Linux also completes the composite and curved controls, giving five exact
-controls there. The whole document still differs at 5,847 Windows / 1,545 Linux
+controls there. The whole document still differs at 4,607 Windows / 156 Linux
 pixels against its unchanged references.
 Shared open-curve distance/tangent placement and `USE_MY_METRICS` component inheritance
 now let the unchanged document render. Remaining document text pixels and
@@ -37,8 +37,9 @@ do not count as completed documents.
 
 [Independent native placement](diagnostics/curved-midpoint-native-placement.json)
 records three identical healthy intended-font browser measurements and screenshots
-matching the frozen curved control. Its origin agrees within one millionth of a
-pixel. DOM `getPointAtLength` uses a different distance resolution from text layout;
+matching the frozen curved control. Its semantic origin before paint truncation
+agrees within one millionth of a pixel. DOM `getPointAtLength` uses a different
+distance resolution from text layout;
 its separate samples must not replace the text-layout contour measure. Focused
 checks protect zero-angle polynomial strikes, endpoint tangent fallback, bounded
 work/cancellation, retained map ownership and denial cleanup. They do not increase
@@ -69,10 +70,10 @@ The bounded reader follows its default-language feature and ordered type-4
 ligature records; it does not substitute SVG text or reference pixels. Temporary
 UTF-16 cluster lengths preserve span positions and spacing boundaries. Pair
 adjustments enter text-path advances before device rounding and tangent placement.
-All 333 visible Windows clusters agree with measured native positions within
-0.00013 pixels. The original document improves from 6,799 / 3,987 to
-5,847 / 1,545 differing pixels on Windows / Linux; all five controls retain their
-previous results. Remaining document masks and Windows curve/accent pixels stay
+All 333 visible Windows clusters agree with measured native semantic positions
+within 0.00013 pixels before paint placement. That shaping checkpoint reduced
+the original document to 5,847 / 1,545 differing Windows / Linux pixels; all five
+controls retain their previous results. Remaining document masks and Windows curve/accent pixels stay
 open. Separate checks cover all five standard ligatures in this public face;
 they do not count as completed documents or new exact pixel controls.
 
@@ -107,3 +108,20 @@ native interpreter profiles. Four separate diagnostic font copies make a parent
 hint depend on the selected child's metric point, including transformed and nested
 components. They preserve the original supplied face and reference pixels. Bounded
 denial, cancellation and retry checks protect the new assembly dependency.
+
+Native fragment paint placement now reduces those differences to **4,607 Windows
+/ 156 Linux pixels** through all 12 APIs. Blink paints a fragment from an
+unrotated rectangle truncated toward zero to 1/64 pixel, then applies its tangent
+rotation. Character-position queries keep float coordinates. The renderer now
+preserves that distinction, with cached alphabetic line metrics, negative
+rectangle-top handling and the existing zero-angle strike. The five controls
+retain their established results; the whole document remains **0/1**.
+Windows corrects 1,271 previously differing pixels and changes 31 previously
+matching pixels. Linux corrects 1,389 pixels without changing any previously
+matching pixels. Every previously exact output remains byte-identical.
+
+The retained document, font and references are unchanged. Independent positioned
+native glyphs reproduce its native text-only pixels after the paint displacement;
+direct vector replay is already exact. Remaining masks stay open. Current complete
+qualification and owner/package checks are recorded privately in
+`artifacts/text-path-paint-20261011/final-qualification.json`.

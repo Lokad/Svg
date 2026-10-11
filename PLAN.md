@@ -123,9 +123,9 @@ controls remain exact on both platforms through all 12 APIs; Linux also complete
 the composite-on-path and curved controls (**5/5 Linux**, **3/5 Windows**). Windows
 glyph-mask fidelity, accent masks and the remaining document pixels stay open.
 The curved control is exact on Linux and differs at 14 Windows pixels; the complete
-document differs at 5,847 Windows / 1,545 Linux pixels. The curved control's
-measured origin matches three healthy intended-font browser captures within one
-millionth of a pixel. Zero-angle polynomial baselines preserve the existing
+document differs at 4,607 Windows / 156 Linux pixels. The curved control's
+semantic origin before paint truncation matches three healthy intended-font
+browser captures within one millionth of a pixel. Zero-angle polynomial baselines preserve the existing
 horizontal font strike. Mapped Linux glyphs now choose both native quarter-pixel
 strike phases after viewport placement; the retained Linux browser measurements
 agree with the unchanged curved reference. Relaxed native strike coefficients,
@@ -135,9 +135,12 @@ composite outlines protect scaling before component placement and implied points
 Shared default Latin ligatures now select the supplied font's own glyphs for
 each `ff`, preserving source positions and font preference order. Text-path pair
 adjustments enter the glyph advance before device rounding and midpoint/tangent
-placement. All 333 visible Windows clusters agree with native positions within
-0.00013 pixels; source, font, output and reference bytes remain unchanged. Compare
-the remaining document glyph masks at its root-viewBox scale.
+placement. Before paint placement, all 333 visible Windows clusters agree with
+native semantic positions within 0.00013 pixels; source, font, output and reference
+bytes remain unchanged. Native fragment paint rectangles now truncate to 1/64 pixel before tangent
+rotation and quarter-pixel strike placement, using cached alphabetic line metrics.
+This corrects the difference between float character queries and actual paint
+origins. Compare the remaining document glyph masks at its root-viewBox scale.
 Finish this document against frozen references before expanding combinations;
 all finite G2–G9 exits stay visible.
 
@@ -229,15 +232,15 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,800 tests/platform**: 4,711 core, 2,083 visual, six FontProbe. Latest complete suites take about 3m19 Windows / 3m27 Linux, excluding builds and additional bank probes. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,813 tests/platform**: 4,724 core, 2,083 visual, six FontProbe. Latest complete suites take about 2m59 Windows / 3m23 Linux, excluding builds and additional bank probes. Test counts are not document counts. |
 | Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 26 Windows / 29 Linux exact font outputs from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. The selected curved-label document remains 0/1; separate controls are **3/5 Windows / 5/5 Linux** exact through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
 | Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
 | Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission, Latin/TrueType hints and queued local text-path runs preserve borrowed font bytes and release owned scratch on rejection. Forward paint/reference slots preserve order and opacity. Inert typography values still do not request or retain fonts. |
-| Package/installed consumer | Prior delivery qualification confirms both platform packages retain exact notices/licenses with no native assets, bundled fonts or runtime dependencies. Its isolated installed Windows consumer matches both completed original font documents through all 12 APIs, checks nested absolute/relative Mono Bold spans against independent positions, and passes conversion/catalog/overlap/dimension checks. Package and public contracts are unchanged; these receipts are reused. S17 remote release evidence remains separate. |
-| Scene layouts and measured source cost | Draw command / geometry / paint remain **72/272/68 bytes**. Measured Windows peaks stay at **697,762 bytes** for SVG Translate, **163,840** for scalar-x and **176,276** for curved-midpoint. The newly admitted composite control uses **163,840 bytes** and `inv-127` **1,924,748 bytes**. Success and denial one byte below each peak release all owned storage. Small timing samples establish no general throughput claim. |
+| Package/installed consumer | Both current platform packages retain byte-exact current notices/licenses and managed assemblies, without native assets, bundled fonts or package dependencies. Existing installed-consumer API/output receipts remain applicable; public delivery contracts are unchanged. S17 remote release evidence remains separate. |
+| Scene layouts and measured source cost | Draw command / geometry / paint remain **72/272/68 bytes**. Measured Windows peaks are **697,762 bytes** for SVG Translate, **163,840** for scalar-x, **176,276** for curved-midpoint, **163,840** for the composite control and **1,924,748** for `inv-127`. Success and denial one byte below each peak release all owned storage. Small timing samples establish no general throughput claim. |
 | Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
 Reuse this finished qualification until a renderer change, changed evaluation
@@ -990,6 +993,10 @@ the complex-script scope.
       spans. Include pair adjustments before path advance rounding and tangent
       placement. Focused controls protect font preference, coverage formats,
       selected features, limits, denial, cancellation and released owners.
+    - [x] Apply native unrotated fragment paint truncation before tangent rotation
+      and device strike placement. Retain alphabetic hhea/OS2 metric precedence,
+      negative rectangle-top behavior and the existing zero-angle route. Semantic
+      curve measurement stays separate from the paint displacement.
     - [ ] Finish native rotated glyph-mask fidelity on both platforms; zero-angle
       polynomial baselines retain the established horizontal strike. Keep the
       curved control separate from document completion. Both Linux origin phases

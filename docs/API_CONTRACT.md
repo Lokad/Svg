@@ -117,8 +117,11 @@ admitted root-stylesheet and inline `style` font subset is `font-family`,
 `y`, `dx`, `dy`, scalar `letter-spacing` (added only between glyphs), and `text-anchor` (`start`, `middle`, `end`), with a bounded `id`
 retained only for font diagnostics and a bounded `class` token for admitted generic stylesheet selectors.
 Embedded `name` data is structurally validated but does not override manifest family
-selection; `OS/2` version-specific table bounds are likewise checked without
-applying its style or line metrics.
+selection. `OS/2` version-specific table bounds remain checked; its style fields
+do not select a face. Validated hhea/OS2 alphabetic line metrics are retained for
+text-path fragment paint placement. Native unrotated paint rectangles truncate
+to 1/64 pixel before tangent rotation and device strike placement; semantic curve
+measurement retains its float coordinates.
 Its direct text content is limited to 32,768 UTF-16 characters across one
 conversion before layout; subtree reader nodes and cmap/advance lookup traversal
 consume the conversion's parser-work limit. Positioned glyph storage is reserved from the conversion's geometry budget

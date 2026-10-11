@@ -1,9 +1,40 @@
 using Lokad.Svg.Fonts;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
 public sealed class SvgGlyphDeviceMetricsTests
 {
+    [Theory]
+    [InlineData("windows", 12.1328125, 10.140625, 12.125)]
+    [InlineData("linux", 12.1328125, 10.140625, 12.125)]
+    [InlineData("windows", 5.1328125, 10.125, 5.125)]
+    [InlineData("linux", 5.1328125, 10.125, 5.125)]
+    public void Native_fragment_paint_truncation_precedes_rotation_including_negative_rectangle_tops(string target, double originY, double expectedX, double expectedY)
+    {
+        OpenTypeFontMetrics font = default;
+        font = font with { UnitsPerEm = 1000, LineMetrics = new(1000, -200, 1000, 200) };
+        SvgGlyphDeviceMetrics metrics = new(1, target == "windows" ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
+        SvgAffineTransform map = new(0, 1, -1, 0, 10.1328125, originY);
+        SvgAffineTransform placed = metrics.PlaceTextPathPaint(map, 8, 3, 20, font);
+        Assert.Equal(expectedX, placed.E); Assert.Equal(expectedY, placed.F);
+        Assert.Equal(map.A, placed.A); Assert.Equal(map.B, placed.B);
+        Assert.Equal(map.C, placed.C); Assert.Equal(map.D, placed.D);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    [InlineData(double.NaN)]
+    [InlineData(double.PositiveInfinity)]
+    public void Fragment_paint_scale_failure_keeps_the_numeric_limit(double scale)
+    {
+        OpenTypeFontMetrics font = default;
+        font = font with { UnitsPerEm = 1000, LineMetrics = new(1000, -200, 1000, 200) };
+        SvgGlyphDeviceMetrics metrics = new(scale, SvgGlyphMetricTarget.Linux, true);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => metrics.PlaceTextPathPaint(SvgAffineTransform.Identity, 8, 3, 20, font)).ErrorCode);
+    }
+
     // Independent canvas measurements at the document's two actual device sizes,
     // using only the pinned supplied Noto Sans Mono Bold face. Path widths are
     // independently witnessed by the original SVG's character positions.

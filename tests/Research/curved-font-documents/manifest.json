@@ -62,7 +62,7 @@
       ],
       "platformReferencesByteIdentical": false,
       "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "USE_MY_METRICS inheritance, native mapped Linux strike origins, bounded default Latin ligatures and kerned text-path advances are admitted. All twelve outputs render; native glyph-mask fidelity remains open at 5,847 Windows / 1,545 Linux differing pixels against unchanged matching-platform references."
+      "remainingOrCompletedMechanism": "USE_MY_METRICS inheritance, native mapped Linux strikes, default Latin ligatures, kerned path advances and native fragment paint truncation are admitted. All twelve outputs render; glyph-mask fidelity remains open at 4,607 Windows / 156 Linux differing pixels against unchanged matching-platform references."
     },
     {
       "id": "two-path-runs",

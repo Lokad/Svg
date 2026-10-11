@@ -86,7 +86,28 @@ internal static partial class OpenTypeFont
         if (tables.TryGetValue(Os2Tag, out OpenTypeTableRange os2)) ValidateOs2Table(data, os2, workCounter, cancellationToken);
         OpenTypeKernTable? kern = tables.TryGetValue(KernTag, out OpenTypeTableRange kernTable) ? ParseKernTable(data, kernTable, glyphCount, workCounter, cancellationToken) : null;
         OpenTypeGposPairTable? gpos = tables.TryGetValue(GposTag, out OpenTypeTableRange gposTable) ? ParseGposPairTable(data, gposTable, tables.TryGetValue(GdefTag, out OpenTypeTableRange gdef) ? gdef : null, glyphCount, workCounter, cancellationToken) : null;
-        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(GsubTag, out OpenTypeTableRange gsub) ? gsub : null, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null, (ReadUInt16(bytes.Span, head.Offset + 16) & 8) != 0);
+        OpenTypeFontLineMetrics lineMetrics = ReadLineMetrics(data, hhea, tables.TryGetValue(Os2Tag, out OpenTypeTableRange lineOs2) ? lineOs2 : null);
+        return new OpenTypeFontMetrics(unitsPerEm, glyphCount, numberOfHMetrics, indexToLocFormat, hmtx, tables.TryGetValue(CmapTag, out OpenTypeTableRange cmap) ? cmap : null, kern, gpos, tables.TryGetValue(GsubTag, out OpenTypeTableRange gsub) ? gsub : null, tables.TryGetValue(LocaTag, out OpenTypeTableRange loca) ? loca : null, tables.TryGetValue(GlyfTag, out OpenTypeTableRange glyf) ? glyf : null, (ReadUInt16(bytes.Span, head.Offset + 16) & 8) != 0, lineMetrics);
+
+        static OpenTypeFontLineMetrics ReadLineMetrics(ReadOnlySpan<byte> data, OpenTypeTableRange hhea, OpenTypeTableRange? os2)
+        {
+            int ascent = ReadInt16(data, hhea.Offset + 4), descent = ReadInt16(data, hhea.Offset + 6);
+            int windowsAscent = Math.Max(0, ascent), windowsDescent = Math.Max(0, -descent);
+            if (os2 is {} table && table.Length >= 78)
+            {
+                int typoAscent = ReadInt16(data, table.Offset + 68), typoDescent = ReadInt16(data, table.Offset + 70);
+                windowsAscent = ReadUInt16(data, table.Offset + 74); windowsDescent = ReadUInt16(data, table.Offset + 76);
+                bool useTypo = (ReadUInt16(data, table.Offset + 62) & 128) != 0;
+                if (useTypo || ascent == 0 && descent == 0)
+                {
+                    bool hasTypo = useTypo || typoAscent != 0 || typoDescent != 0;
+                    ascent = hasTypo ? typoAscent : windowsAscent;
+                    descent = hasTypo ? typoDescent : -windowsDescent;
+                }
+                if (useTypo) { windowsAscent = typoAscent; windowsDescent = -typoDescent; }
+            }
+            return new(ascent, descent, windowsAscent, windowsDescent);
+        }
     }
 
     /// <summary>Maps one Unicode scalar through a validated Unicode format-4 or format-12 character map.</summary>
@@ -997,7 +1018,10 @@ internal static partial class OpenTypeFont
 }
 
 /// <summary>Represents validated core metrics from borrowed standalone-TrueType data.</summary>
-internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeKernTable? Kern, OpenTypeGposPairTable? Gpos, OpenTypeTableRange? Gsub, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf, bool ForceIntegerHintingSize);
+internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeKernTable? Kern, OpenTypeGposPairTable? Gpos, OpenTypeTableRange? Gsub, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf, bool ForceIntegerHintingSize, OpenTypeFontLineMetrics LineMetrics);
+
+/// <summary>Retains bounded alphabetic line metrics in font units without owning additional font storage.</summary>
+internal readonly record struct OpenTypeFontLineMetrics(int Ascender, int Descender, int WindowsAscender, int WindowsDescender);
 
 internal readonly record struct OpenTypeTableRange(int Offset, int Length);
 

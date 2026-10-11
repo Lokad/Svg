@@ -74,6 +74,11 @@ internal static class SvgTextPathLayout
                     placed = placed with { X = glyphMap.E, Y = glyphMap.F };
                     glyphMap = SvgAffineTransform.Identity;
                 }
+                else if (!measured.IsHorizontal && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
+                {
+                    SvgGlyphDeviceMetrics metrics = new(state.OutputTextScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
+                    glyphMap = metrics.PlaceTextPathPaint(glyphMap, glyph.Advance / 2, glyph.Y, pending.Run.Style.FontSize, pending.Run.Font.Metrics);
+                }
                 using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(pending.Run.Font, placed, pending.Run.Style.FontSize, glyphMap, state.Budget, work, token);
                 SvgGlyphGeometry geometry = SvgGlyphGeometry.Create(contours, pending.Color, pending.Run.Font, placed, pending.Run.Style.FontSize, glyphMap, state.Budget);
                 try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(geometry)); }
