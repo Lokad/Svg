@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Six frozen source-coordinate rectangle-stroke controls advancing complete inv-130; separate from whole-document completion. All six retain the measured admission gate before implementation.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "reflected-nonuniform",
+      "input": "reflected-nonuniform.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/reflected-nonuniform.png",
+      "sourceSha256": "61e9638a1ec0d4d5015c539e8604ce239356fd81f617b15d0ad0f5eb26acdbe7",
+      "referenceSha256": "0c46ef3dd5efd50fbb9ace7e03d5c4fcdb5f94c18530ad543964c2abc2cb76c0",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+    },
+    {
+      "id": "composed-axis",
+      "input": "composed-axis.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/composed-axis.png",
+      "sourceSha256": "51ef39b0c74404651e677954b171008b7f2492c6f435775f752d9bd5f5326ff6",
+      "referenceSha256": "c04200451c5a449173d1ce0ff576abbbb6673f68376c0f1d7aa8793814fef58e",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+    },
+    {
+      "id": "filled-alpha",
+      "input": "filled-alpha.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/filled-alpha.png",
+      "sourceSha256": "e56920bb6e3bf42f3f5b9a2401c7e005438cb2ecc36295b21042d0b6cbd88391",
+      "referenceSha256": "aac94d38979c42840c8ce718bd525ee0b5120c806773d108b65d2074233a3983",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+    },
+    {
+      "id": "scaled-thin-frame",
+      "input": "scaled-thin-frame.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/scaled-thin-frame.png",
+      "sourceSha256": "0b5f50fe67e8fa91f81027af7401ebc1223234d6c0bda199de6a32b05f0b27c2",
+      "referenceSha256": "5be09db3f0287ffddbd828f8dbedecdd92d444c1cccb15cd047cf702f548994a",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+    },
+    {
+      "id": "linear-stroke",
+      "input": "linear-stroke.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/linear-stroke.png",
+      "sourceSha256": "230c5f8d3c80c6191652d8f0f9546e3647e994cfe8c545152a0ab1b4434e3b2b",
+      "referenceSha256": "22bc91381dedf9361e58ac5c02830f4680137ca31ada227b34cda864b188c65d",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+    },
+    {
+      "id": "linear-fill-solid-stroke",
+      "input": "linear-fill-solid-stroke.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/linear-fill-solid-stroke.png",
+      "sourceSha256": "2fc0f2ced5d8d02bfbf03e08a866ce7aea65041ac862aed6ef04a0233b7a1322",
+      "referenceSha256": "1b7cd71b77b3e7948dc007282eed5b04c0a44661aee7e9f4f8d912b292f17c8a",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+    }
+  ]
+}

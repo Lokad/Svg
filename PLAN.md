@@ -403,7 +403,11 @@ Dr. Olaf Hoffmann's public-domain scaled-rectangle export **`inv-130`**, declare
 at **512×512**, scale 1, transparent. Its non-uniform/reflected and composed maps
 reject the current rectangle-stroke gate (G3/G4). Extend shared source stroke
 construction and composed placement, preserving native contour and paint
-semantics; diagnose with focused controls, then finish this whole document.
+semantics, then finish this whole document. Six CC0 source-coordinate controls
+are frozen separately at 96×72: reflection, composed scaling, thin strokes,
+element opacity, linear stroke paint and linear fill with a solid stroke. Three
+healthy cleaned captures per platform agree byte-for-byte. Before implementation
+all six retain the measured rectangle-stroke gate; they do not count as documents.
 The separately retained **`inv-131`** group-clipping export at **512×301** remains
 queued for G5 objectBoundingBox oval clips and group bounds. Both untouched
 sources have healthy, cleaned, stable three-process browser captures per
