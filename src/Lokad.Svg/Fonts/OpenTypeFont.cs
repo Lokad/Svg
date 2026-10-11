@@ -15,7 +15,7 @@ internal static partial class OpenTypeFont
     private const int MaximumCompositeGlyphComponents = 64;
     private const int MaximumCompositeGlyphDepth = 8;
     private const int MaximumExpandedGlyphSegments = 65_536;
-    private const ushort SupportedCompositeFlags = 1 | 2 | 4 | 8 | 32 | 64 | 128 | 256;
+    private const ushort SupportedCompositeFlags = 1 | 2 | 4 | 8 | 32 | 64 | 128 | 256 | 512;
     private const uint TrueTypeScalerType = 0x00010000;
     private const uint TrueTypeCollectionTag = 0x74746366;
     private const uint HeadTag = 0x68656164;

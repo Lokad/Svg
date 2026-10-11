@@ -117,11 +117,13 @@ Its eight cubic path runs, child/inherited anchors, calibrated lengths, dashed
 guides and precomposed accents provide shared G9/G3 dependencies.
 **Document completion remains 0/1.** Language metadata, presentation-anchor
 inheritance, independent sibling runs and positive numeric offset calibration are
-admitted. Shared authored open-curve distance/tangent maps now advance the unchanged
-document to its composite-accent component-flag gate (`USE_MY_METRICS`). Three of
-five separate controls remain exact on both platforms through all 12 APIs. The
-curved control renders through 12 APIs with 14 Windows / 80 Linux pixels still
-differing; native glyph-mask fidelity and composite accents remain open. Its
+admitted. Shared authored open-curve distance/tangent maps and `USE_MY_METRICS`
+component inheritance now let the unchanged document render. Three of five separate
+controls remain exact on both platforms through all 12 APIs; Linux also completes
+the composite-on-path control (**4/5 Linux**, **3/5 Windows**). Native glyph-mask
+fidelity, accent masks and the remaining document pixels stay open. The curved
+control still differs at 14 Windows / 80 Linux pixels; the complete document differs
+at 6,799 Windows / 20,917 Linux pixels. Its
 measured origin matches three healthy intended-font browser captures within one
 millionth of a pixel. Zero-angle polynomial baselines preserve the existing
 horizontal font strike. Finish this document against frozen references before
@@ -146,7 +148,7 @@ Instruction-free Windows outlines and previously admitted composites retain thei
 existing coverage route until their shared extensions are qualified.
 
 **Live-text bank document completion is 1/1; cross-platform controls are 6/7 exact.**
-Linux and Windows have **6/7 controls exact**. Keep the whole document complete
+Linux has **7/7 controls exact** and Windows **6/7**. Keep the whole document complete
 while resolving these separate controls; do not expand combinations just to close
 an interpreter grid. Current Windows measurements against unchanged references:
 
@@ -154,7 +156,7 @@ an interpreter grid. Current Windows measurements against unchanged references:
 | --- | --- |
 | Curves/counters | Exact on both platforms through all 12 APIs. |
 | AV/space pair | Exact on both platforms through all 12 APIs. |
-| Composite accents | Explicit component-flag rejection; shared composite hinting remains open. |
+| Composite accents | Exact on Linux through 12 APIs; Windows still differs at 34 pixels after shared component-metric inheritance. |
 | Fractional position/size | Exact on both platforms through all 12 APIs. |
 | Small fractional origin | Exact on both platforms through all 12 APIs. |
 | Large outline | Exact on both platforms through all 12 APIs. |
@@ -215,7 +217,7 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,729 tests/platform**: 4,675 core, 2,048 visual, six FontProbe. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,749 tests/platform**: 4,676 core, 2,067 visual, six FontProbe. Complete suites take about 2m50 Windows / 3m10 Linux, excluding builds and additional bank probes. Test counts are not document counts. |
 | Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 23 preceding exact font outputs on each platform. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. The selected curved-label document remains 0/1, with three of five separate controls exact through 12 APIs on both platforms. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
@@ -223,7 +225,7 @@ Mechanisms, control counts and dated qualifications live in
 | Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
 | Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission, Latin/TrueType hints and queued local text-path runs preserve borrowed font bytes and release owned scratch on rejection. Forward paint/reference slots preserve order and opacity. Inert typography values still do not request or retain fonts. |
 | Package/installed consumer | Prior delivery qualification confirms both platform packages retain exact notices/licenses with no native assets, bundled fonts or runtime dependencies. Its isolated installed Windows consumer matches both completed original font documents through all 12 APIs, checks nested absolute/relative Mono Bold spans against independent positions, and passes conversion/catalog/overlap/dimension checks. Package and public contracts are unchanged; these receipts are reused. S17 remote release evidence remains separate. |
-| Scene layouts and measured source cost | Draw command / geometry / paint remain **72/272/68 bytes**. Retained glyph maps raise the measured SVG Translate peak from 692,258 to **697,762 bytes**; scalar-x stays at **163,840 bytes**, and curved-midpoint uses **176,276 bytes**. Success and denial one byte below each peak release all owned storage. No new throughput claim follows from this correction. |
+| Scene layouts and measured source cost | Draw command / geometry / paint remain **72/272/68 bytes**. Measured Windows peaks stay at **697,762 bytes** for SVG Translate, **163,840** for scalar-x and **176,276** for curved-midpoint. The newly admitted composite control uses **163,840 bytes** and `inv-127` **1,929,356 bytes**. Success and denial one byte below each peak release all owned storage. Small timing samples establish no general throughput claim. |
 | Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
 Reuse this finished qualification until a renderer change, changed evaluation
@@ -901,7 +903,10 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
     references. System FreeType grayscale rasterization is not this browser's backend.
   - [ ] Extend shared composite hinting and admit the queued component flags.
     Previously admitted composites keep their existing rendering route; this
-    compatibility boundary does not close composite pixel fidelity.
+    compatibility boundary does not close composite pixel fidelity. The new
+    metric-dependent diagnostic parents still expose horizontal-hint differences
+    in the internal v40 compatibility profile. Keep that combination visible;
+    it does not block `inv-127`'s mapped unhinted outlines.
   - [x] Establish a bounded axial TrueType instruction stage against eleven
     independent glyph/size outlines under both declared native interpreter
     profiles (22 checks). Protect signed arithmetic, distance variants, IUP,
@@ -964,8 +969,13 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
     - [ ] Finish native rotated glyph-mask fidelity on both platforms; zero-angle
       polynomial baselines retain the established horizontal strike. Keep the
       curved control separate from document completion.
-    - [ ] Extend shared composite support for the original precomposed accents;
-      protect the older composite-accent control against its unchanged reference.
+    - [x] Admit `USE_MY_METRICS` for the original precomposed accents, retaining
+      selected child phantom points through nested components and parent hints.
+      Ten independent native contours cover original accents and metric-dependent
+      parent programs, including transformed/nested components. Other composite
+      flags and interpreter combinations remain in the finite G9 exit.
+    - [ ] Finish the new and older composite-accent masks against their unchanged
+      matching-platform references; admission alone does not close these controls.
     - [ ] Resolve every remaining guide/text mismatch and complete all 12 APIs on
       both platforms against the frozen document output.
 - **Explicit unsupported outcomes:** automatic wrapping, bidi/joining/complex

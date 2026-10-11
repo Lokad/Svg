@@ -17,10 +17,11 @@ host font discovery is involved. [The manifest](manifest.json) owns the source,
 output and matching-platform reference contract.
 
 Document completion is **0/1**. Three of five separate controls are exact on
-both platforms through all six raw and six independently prepared outputs. Shared
-open-curve distance/tangent placement now advances the unchanged document to the
-supplied face's `USE_MY_METRICS` composite-accent flag. The curved control renders
-through 12 APIs; matching-platform glyph-mask fidelity remains open. Finish the whole
+both platforms through all six raw and six independently prepared outputs.
+Linux also completes the composite control, giving four exact controls there.
+Shared open-curve distance/tangent placement and `USE_MY_METRICS` component inheritance
+now let the unchanged document render. Matching-platform glyph-mask fidelity
+remains open, including the precomposed accents. Finish the whole
 document and all discovered mismatches against its frozen references. Controls
 do not count as completed documents.
 
@@ -30,7 +31,7 @@ do not count as completed documents.
 | Per-path anchor | Child anchor overriding parent | Exact on both platforms through 12 APIs. |
 | Calibrated path length | Numeric offsets scaled separately from glyph advances | Exact on both platforms through 12 APIs. |
 | Curved midpoint | Curved length, tangent and glyph mapping | Renders through 12 APIs; 14 Windows / 80 Linux pixels still differ. |
-| Composite on path | Supplied precomposed `ü` placement and fitting | Explicit `USE_MY_METRICS` component-flag rejection. |
+| Composite on path | Supplied precomposed `ü` placement and fitting | Exact on Linux through 12 APIs; Windows still differs at 8 pixels. |
 
 [Independent native placement](diagnostics/curved-midpoint-native-placement.json)
 records three identical healthy intended-font browser measurements and screenshots
@@ -69,3 +70,10 @@ Regression tests protect frozen evaluation data, the three completed controls
 through twelve APIs, remaining categorized failures, container/child anchor
 inheritance, calibration, aggregate character limits and owner cleanup. Keep
 implementation source, build, DLL and script fingerprints out of this bank.
+
+[Independent composite contours](diagnostics/composite-metrics-contours.json)
+protect the original `é`, `Å` and `ü` at the declared control sizes under both
+native interpreter profiles. Four separate diagnostic font copies make a parent
+hint depend on the selected child's metric point, including transformed and nested
+components. They preserve the original supplied face and reference pixels. Bounded
+denial, cancellation and retry checks protect the new assembly dependency.

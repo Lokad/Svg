@@ -6,6 +6,24 @@ namespace Lokad.Svg.Tests;
 public sealed partial class OpenTypeFontTests
 {
     [Fact]
+    public void Selected_component_metrics_require_device_replay_without_changing_unhinted_geometry()
+    {
+        byte[] bytes = CreateTriangleFont();
+        OpenTypeTableRange range = OpenTypeFont.GetGlyphDataRange(bytes, 2, CancellationToken.None);
+        WriteInt16(bytes, range.Offset, -1);
+        WriteUInt16(bytes, range.Offset + 10, 515);
+        WriteUInt16(bytes, range.Offset + 12, 1);
+        WriteInt16(bytes, range.Offset + 14, 0);
+        WriteInt16(bytes, range.Offset + 16, 0);
+        Assert.Equal(OpenTypeFont.GetGlyphContours(bytes, 1, CancellationToken.None), OpenTypeFont.GetGlyphContours(bytes, 2, CancellationToken.None));
+        byte[] unchanged = bytes.ToArray();
+        RenderBudget budget = new(long.MaxValue);
+        Assert.True(OpenTypeFont.NeedsCompositeDeviceFitting(bytes, 2, OpenTypeFont.ParseMetrics(bytes, CancellationToken.None), budget, new(long.MaxValue), CancellationToken.None));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, bytes);
+    }
+
+    [Fact]
     public void Rounded_composite_offsets_are_metadata_for_device_fitting_and_preserve_unhinted_expansion()
     {
         byte[] bytes = CreateTriangleFont();

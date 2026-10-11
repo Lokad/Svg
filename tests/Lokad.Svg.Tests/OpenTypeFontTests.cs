@@ -682,7 +682,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
-    [InlineData((ushort)512)]
+    [InlineData((ushort)8192)]
     [InlineData((ushort)1024)]
     [InlineData((ushort)2048)]
     [InlineData((ushort)4096)]

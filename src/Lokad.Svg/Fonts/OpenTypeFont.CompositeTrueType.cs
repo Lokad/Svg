@@ -53,10 +53,12 @@ internal static partial class OpenTypeFont
 
         internal bool GlyphSmartDropouts => _machine.GlyphSmartDropouts;
 
-        internal void Fit(ushort glyph, OpenTypeGlyphPoint[] outline, ushort[] ends, OpenTypeTableRange range, OpenTypeTableRange instructions, bool composite)
+        /// <summary>Fits borrowed points in place and returns horizontal phantom coordinates for metric inheritance. Selected device metrics are copied without component placement; scratch is bounded and released on every exit.</summary>
+        internal OpenTypeHorizontalPhantoms Fit(ushort glyph, OpenTypeGlyphPoint[] outline, ushort[] ends, OpenTypeTableRange range, OpenTypeTableRange instructions, bool composite, OpenTypeHorizontalPhantoms? selectedMetrics)
         {
             _work.Consume(_token);
-            if (range.Length == 0) return;
+            // An instruction-free parent keeps its selected child's completed metric state.
+            if (selectedMetrics is {} selected && instructions.Length == 0) return selected;
             using RenderBudget.BudgetReservation scratch = _budget.Reserve(ParserCollectionMemory.GetArrayByteCount<TrueTypeHintPoint>(outline.Length + 4), SvgMemoryCategory.Geometry);
             TrueTypeHintPoint[] points = new TrueTypeHintPoint[outline.Length + 4];
             for (int i = 0; i < outline.Length; i++)
@@ -65,23 +67,23 @@ internal static partial class OpenTypeFont
                 OpenTypeGlyphPoint point = outline[i];
                 points[i] = composite ? new(point.X, point.Y, point.X, point.Y) : new(Scale(point.X, _scale), Scale(point.Y, _scale), point.X, point.Y);
             }
-            OpenTypeGlyphHeader header = ParseGlyphHeader(_bytes, range) ?? throw InvalidFont("A nonempty glyph has no header.");
+            OpenTypeGlyphHeader? header = ParseGlyphHeader(_bytes, range);
             int advanceIndex = Math.Min(glyph, _metrics.NumberOfHMetrics - 1);
             int advance = ReadUInt16(_bytes.Span, _metrics.Hmtx.Offset + advanceIndex * 4);
             int bearingOffset = glyph < _metrics.NumberOfHMetrics ? _metrics.Hmtx.Offset + glyph * 4 + 2 : _metrics.Hmtx.Offset + _metrics.NumberOfHMetrics * 4 + (glyph - _metrics.NumberOfHMetrics) * 2;
-            int origin = header.XMinimum - ReadInt16(_bytes.Span, bearingOffset);
+            int origin = (header?.XMinimum ?? 0) - ReadInt16(_bytes.Span, bearingOffset);
             int firstPhantom = outline.Length;
             int scaledOrigin = Scale(origin, _scale), scaledAdvance = Scale(origin + advance, _scale);
-            points[firstPhantom] = new(scaledOrigin, 0, composite ? scaledOrigin : origin, 0);
-            points[firstPhantom + 1] = new(scaledAdvance, 0, composite ? scaledAdvance : origin + advance, 0);
-            if (composite)
-            {
-                points[firstPhantom].X = Round(scaledOrigin);
-                points[firstPhantom + 1].X = Round(scaledAdvance);
-            }
+            OpenTypeHorizontalPhantoms initial = selectedMetrics ?? new(scaledOrigin, 0, scaledAdvance, 0);
+            points[firstPhantom] = new(initial.LeftX, initial.LeftY, composite ? initial.LeftX : origin, composite ? initial.LeftY : 0);
+            points[firstPhantom + 1] = new(initial.RightX, initial.RightY, composite ? initial.RightX : origin + advance, composite ? initial.RightY : 0);
+            points[firstPhantom].X = Round(initial.LeftX);
+            points[firstPhantom + 1].X = Round(initial.RightX);
             points[firstPhantom + 2].Unavailable = points[firstPhantom + 3].Unavailable = true;
             _machine.HintGlyph(_bytes.Slice(instructions.Offset, instructions.Length), points, ends, composite);
             for (int i = 0; i < outline.Length; i++) { _work.Consume(_token); outline[i] = new(points[i].X, points[i].Y, outline[i].IsOnCurve); }
+            // The native v40 compatibility policy preserves the unrounded metrics.
+            return _target.Version == 40 ? initial : new(points[firstPhantom].X, points[firstPhantom].Y, points[firstPhantom + 1].X, points[firstPhantom + 1].Y);
         }
 
         private static int Round(int value)

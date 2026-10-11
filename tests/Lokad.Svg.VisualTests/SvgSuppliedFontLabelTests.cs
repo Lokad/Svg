@@ -46,7 +46,7 @@ public sealed class SvgSuppliedFontLabelTests
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Public_font_output_contracts_preserve_source_and_existing_composite_boundary(string identity)
+    public async Task Public_font_output_contracts_preserve_source_and_completed_references(string identity)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
@@ -54,17 +54,6 @@ public sealed class SvgSuppliedFontLabelTests
         byte[] unchanged = input.ToArray();
         using SvgFontSnapshot snapshot = await Prepare(input);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        if (identity == "composite-accents")
-        {
-            byte[] untouched = Enumerable.Repeat((byte)0xCC, 64).ToArray();
-            byte[] target = untouched.ToArray();
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, target, options, CancellationToken.None)).ErrorCode);
-            Assert.Equal(untouched, target);
-            using MemoryStream rejected = new();
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, rejected, options, CancellationToken.None)).ErrorCode);
-            Assert.Equal(0, rejected.Length);
-            return;
-        }
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         byte[] destination = new byte[png.Length];
         Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
@@ -95,7 +84,7 @@ public sealed class SvgSuppliedFontLabelTests
             Assert.Equal(png, preparedPng);
         }
         Assert.Equal(unchanged, input);
-        if (OperatingSystem.IsLinux() || OperatingSystem.IsWindows())
+        if (OperatingSystem.IsLinux() || identity != "composite-accents" && OperatingSystem.IsWindows())
         {
             byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
             Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);

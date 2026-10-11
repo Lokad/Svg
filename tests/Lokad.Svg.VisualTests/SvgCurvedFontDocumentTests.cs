@@ -15,12 +15,12 @@ public sealed class SvgCurvedFontDocumentTests
     public static IEnumerable<object[]> Cases()
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
-        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray()) if (Required(item, "rendererOutcome") == "exact") yield return new object[] { Required(item, "id") };
+        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray()) yield return new object[] { Required(item, "id") };
     }
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Completed_controls_match_frozen_references_through_twelve_apis(string identity)
+    public async Task Document_and_controls_preserve_twelve_outputs_and_every_completed_reference(string identity)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
@@ -62,7 +62,8 @@ public sealed class SvgCurvedFontDocumentTests
         if (OperatingSystem.IsLinux() || OperatingSystem.IsWindows())
         {
             byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
-            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);
+            bool completed = Required(item, "rendererOutcome") == "exact" || OperatingSystem.IsLinux() && item.TryGetProperty("linuxRendererOutcome", out JsonElement linuxOutcome) && linuxOutcome.GetString() == "exact";
+            if (completed) Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);
         }
     }
 
@@ -104,21 +105,22 @@ public sealed class SvgCurvedFontDocumentTests
     [Theory]
     [InlineData("inv-127-512x369-transparent")]
     [InlineData("composite-on-path")]
-    public async Task Remaining_document_and_controls_keep_explicit_gates_and_release_owners(string identity)
+    public async Task Newly_admitted_document_and_composite_control_release_owners_and_allow_retry(string identity)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
-        Assert.Equal("UnsupportedFeature", Required(item, "rendererOutcome"));
+        Assert.Contains(Required(item, "rendererOutcome"), new[] { "exact", "rendered-known-difference" });
         byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, "input")));
         using SvgFontSnapshot snapshot = await Prepare(input);
         Assert.Single(snapshot.Fonts);
         RenderBudget budget = new(long.MaxValue);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None)).ErrorCode);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None)) Assert.NotEmpty(root.Geometries);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
-        byte[] target = Enumerable.Repeat((byte)0xCC, 64).ToArray();
+        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, snapshot, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
         SvgRenderOptions options = new(new SvgViewport(item.GetProperty("width").GetInt32(), item.GetProperty("height").GetInt32()), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, target, options, CancellationToken.None)).ErrorCode);
-        Assert.All(target, value => Assert.Equal(0xCC, value));
+        Assert.NotEmpty(SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
     }
 
     [Fact]

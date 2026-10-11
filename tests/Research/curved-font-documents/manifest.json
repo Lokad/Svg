@@ -61,8 +61,8 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "rendererOutcome": "UnsupportedFeature",
-      "remainingOrCompletedMechanism": "Shared open cubic distance/tangent placement advances the original to its supplied composite-accent component-flag gate; final font and guide fidelity remains open."
+      "rendererOutcome": "rendered-known-difference",
+      "remainingOrCompletedMechanism": "USE_MY_METRICS inheritance is admitted. Native glyph-mask fidelity remains open against unchanged matching-platform references."
     },
     {
       "id": "two-path-runs",
@@ -341,8 +341,9 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "rendererOutcome": "UnsupportedFeature",
-      "remainingOrCompletedMechanism": "The supplied face uses composite component flags outside the admitted subset."
+      "rendererOutcome": "rendered-known-difference",
+      "remainingOrCompletedMechanism": "USE_MY_METRICS inheritance admitted. All twelve Linux outputs match the unchanged reference; Windows native mask fidelity remains open at 8 differing pixels.",
+      "linuxRendererOutcome": "exact"
     }
   ],
   "browserEncodingRecipe": "The image-data capture path rejects non-ASCII Latin-1 bytes. Browser-only inputs transcode declared Latin-1 to UTF-8, insert root dimensions and map fantasy to the embedded caller-supplied face. Removing only the injected style/dimensions proves an identical parsed XML tree; original product bytes remain unchanged.",

@@ -347,8 +347,8 @@
       "reference": "tests/Research/curved-font-documents/references/inv-127-512x369-transparent.png",
       "selection": "Complete document, dimensions and unchanged supplied face declared at 58c63d70 before capture or candidate screening.",
       "renderMessage": "SVG text requires a prepared font snapshot.",
-      "suppliedFontOutcome": "UnsupportedFeature",
-      "suppliedFontRemaining": "Supplied composite-accent component flags, then unchanged-reference glyph-mask and guide fidelity; bounded open cubic midpoint/tangent placement now admitted.",
+      "suppliedFontOutcome": "rendered-known-difference",
+      "suppliedFontRemaining": "Bounded open cubic midpoint/tangent placement and USE_MY_METRICS inheritance are admitted. Unchanged-reference native glyph-mask and guide fidelity remain open.",
       "referenceSha256": "ad24fd933e00465e09d23bef538a8cc610f59b743f2b0cf82289c0fee953a738",
       "oracle": {
         "freshProcessCaptures": 3,

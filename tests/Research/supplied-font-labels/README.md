@@ -77,25 +77,27 @@ have exact assertions through all 12 APIs on both platforms. Collapsed-span and
 bounded smart-dropout coverage now also corrects the large-outline control's two
 Windows pixels, making it exact through all 12 APIs. Pairs, small fractional origins and inherited alias/paint
 stay exact after shared LCD strike, curve and smart dropout coverage corrections.
-Composite accents still hit
-the component-flag gate. This remaining control stays visible while the original document is
+Composite accents now render with shared `USE_MY_METRICS` inheritance, while their
+native mask fidelity remains open. This control stays visible while the original document is
 complete. The unchanged original text-path document is now complete in its
 [separate bank](../supplied-font-text-paths/README.md), with seven exact controls
 on both platforms. Broader labels, composite hinting, curve/strike fidelity and
 curved/transformed text paths remain finite planned work in `PLAN.md`.
 
-Complete Windows/Linux qualification passes **6,680 tests/platform** (4,651 core /
-2,023 visual / six FontProbe), preserving the **27/27 corporate documents and
+Complete Windows/Linux qualification passes **6,749 tests/platform** (4,676 core /
+2,067 visual / six FontProbe), preserving the **27/27 corporate documents and
 258/258 variants**, 2,849 prior PNGs and 2,755 established exact comparisons.
 Healthy frozen browser captures, SVG/font bytes, references and declared options
 are reused. Source, DLL, script and report fingerprints are not required.
 
-This bank retains its exact document, six exact Linux controls and five exact
-Windows controls. Together both original
-supplied-font documents are complete; the next whole deliverable is the retained
-[CC0 SVG Translate document](../supplied-font-documents/README.md), under an
-explicit public Mono Bold contract. Its admission and reference qualification
-stay separate from this bank.
+This bank retains its exact document and six exact controls across both platforms.
+Linux completes all seven controls; Windows composite accents still differ at 34 pixels.
+Both original supplied-font documents and the retained
+[CC0 SVG Translate document](../supplied-font-documents/README.md) are complete.
+The next whole deliverable is the public-domain
+[curved-label export](../curved-font-documents/README.md), under its declared
+public Regular face and output contract. Its pixel completion stays separate from
+this bank.
 
 The shared kerning reader admits ordered pair-list/class-pair X advances,
 coverage/class formats 1/2, up to 32 lookups and 32 subtables per lookup. First

@@ -24,7 +24,7 @@ internal static partial class OpenTypeFont
                 foreach (OpenTypeCompositeGlyphComponent component in components.Components)
                 {
                     work.Consume(token);
-                    if ((component.Flags & (4 | 256)) != 0 || Visit(component.GlyphIndex, depth + 1)) return true;
+                    if ((component.Flags & (4 | 256 | 512)) != 0 || Visit(component.GlyphIndex, depth + 1)) return true;
                 }
                 return false;
             }
@@ -59,8 +59,8 @@ internal static partial class OpenTypeFont
                             int offset = structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2;
                             instructions = new(offset + 2, ReadUInt16(bytes.Span, offset));
                         }
-                        fitting?.Fit(glyph, decoded.Points, structure.Value.ContourEndpoints, structure.Value.GlyphRange, instructions, false);
-                        return new(decoded.Points, structure.Value.ContourEndpoints, decoded, structure);
+                        OpenTypeHorizontalPhantoms? phantoms = fitting?.Fit(glyph, decoded.Points, structure.Value.ContourEndpoints, structure.Value.GlyphRange, instructions, false, null);
+                        return new(decoded.Points, structure.Value.ContourEndpoints, decoded, structure, phantoms);
                     }
                     catch { decoded?.Dispose(); structure.Dispose(); throw; }
                 }
@@ -69,10 +69,14 @@ internal static partial class OpenTypeFont
                 using OpenTypeCompositeGlyphComponentStorage components = GetBudgetedCompositeGlyphComponents(bytes, glyph, metrics, budget, work, token);
                 using BudgetedParserList<OpenTypeGlyphPoint> points = new(budget, SvgMemoryCategory.Geometry, work, token);
                 using BudgetedParserList<ushort> ends = new(budget, SvgMemoryCategory.Geometry, work, token);
+                OpenTypeHorizontalPhantoms? selectedMetrics = null;
                 foreach (OpenTypeCompositeGlyphComponent component in components.Components)
                 {
                     work.Consume(token);
                     using OpenTypeGlyphPointOutline child = Expand(component.GlyphIndex, depth + 1);
+                    // Metrics are inherited before the component's outline transform/offset.
+                    // A later marked component replaces an earlier selection, including nested children.
+                    if ((component.Flags & 512) != 0) selectedMetrics = child.Phantoms;
                     if (child.Points.Length > MaximumSimpleGlyphPoints - points.Count) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded composite point count exceeds the supported limit.");
                     if (child.Ends.Length > MaximumSimpleGlyphContours - ends.Count) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded composite contour count exceeds the supported limit.");
                     int basePoint = points.Count;
@@ -93,8 +97,8 @@ internal static partial class OpenTypeFont
                     OwnedParserArray<ushort> ownedEnds = ends.Detach();
                     try
                     {
-                        fitting?.Fit(glyph, ownedPoints.Items, ownedEnds.Items, range, components.Instructions, true);
-                        return new(ownedPoints.Items, ownedEnds.Items, ownedPoints, ownedEnds);
+                        OpenTypeHorizontalPhantoms? phantoms = fitting?.Fit(glyph, ownedPoints.Items, ownedEnds.Items, range, components.Instructions, true, selectedMetrics);
+                        return new(ownedPoints.Items, ownedEnds.Items, ownedPoints, ownedEnds, phantoms);
                     }
                     catch { ownedEnds.Dispose(); throw; }
                 }
@@ -115,15 +119,19 @@ internal static partial class OpenTypeFont
     }
 }
 
+/// <summary>Retains the fitted horizontal metric points in device coordinates; component placement does not transform them. Vertical phantom access remains unsupported.</summary>
+internal readonly record struct OpenTypeHorizontalPhantoms(int LeftX, int LeftY, int RightX, int RightY);
+
 /// <summary>Owns ordered glyph points and contour ends until fitting or quadratic replay finishes. Owners are exclusive; disposal releases both arrays on every exit.</summary>
 internal sealed class OpenTypeGlyphPointOutline : IDisposable
 {
     private readonly IDisposable _pointsOwner, _endsOwner;
-    internal OpenTypeGlyphPointOutline(OpenTypeGlyphPoint[] points, ushort[] ends, IDisposable pointsOwner, IDisposable endsOwner)
+    internal OpenTypeGlyphPointOutline(OpenTypeGlyphPoint[] points, ushort[] ends, IDisposable pointsOwner, IDisposable endsOwner, OpenTypeHorizontalPhantoms? phantoms)
     {
-        Points = points; Ends = ends; _pointsOwner = pointsOwner; _endsOwner = endsOwner;
+        Points = points; Ends = ends; _pointsOwner = pointsOwner; _endsOwner = endsOwner; Phantoms = phantoms;
     }
     internal OpenTypeGlyphPoint[] Points { get; }
     internal ushort[] Ends { get; }
+    internal OpenTypeHorizontalPhantoms? Phantoms { get; }
     public void Dispose() { _pointsOwner.Dispose(); _endsOwner.Dispose(); }
 }
