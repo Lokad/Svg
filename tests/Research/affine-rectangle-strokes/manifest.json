@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Six frozen general/composed rectangle-stroke controls advancing whole inv-132 and shared inv-133-135 gates; initial UnsupportedFeature outcomes retained before correction.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "general-matrix",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "f99847e011e2d4bd0117ae903399f2d5cccc8f73bc24a374a4f332807b8f1245",
+      "referenceSha256": "3c15ee6952711f83958dd7c3fef0609ad2492ede0ad87d4b28f5c3183c778b95",
+      "selection": "Declared at b3372d20 before renderer edits/comparison: native rectangle strokes through general/composed/reflected maps, centered rotation, both skews with fractional root mapping and thin coverage; advances whole inv-132 and shared inv-133-135 gates.",
+      "input": "general-matrix.svg",
+      "reference": "references/general-matrix.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "composed-reflection",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "94c8d343f775a62c399431565bff65bbe849678b1f2f34f3e88f43e70d86726b",
+      "referenceSha256": "bb9776ff23e695d78046a001ad84f0da57f8ed7892b746144c53f66d166a71c3",
+      "selection": "Declared at b3372d20 before renderer edits/comparison: native rectangle strokes through general/composed/reflected maps, centered rotation, both skews with fractional root mapping and thin coverage; advances whole inv-132 and shared inv-133-135 gates.",
+      "input": "composed-reflection.svg",
+      "reference": "references/composed-reflection.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "centered-rotation",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "567dc0640703d406af6ac8de7fe833104c53dd6f314295153a4d5fd1aa0eefab",
+      "referenceSha256": "6458b7c6ae1c4c8b36963ffbde14a87e367fd0f1e95a907acc6b3870489dca94",
+      "selection": "Declared at b3372d20 before renderer edits/comparison: native rectangle strokes through general/composed/reflected maps, centered rotation, both skews with fractional root mapping and thin coverage; advances whole inv-132 and shared inv-133-135 gates.",
+      "input": "centered-rotation.svg",
+      "reference": "references/centered-rotation.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "skew-x-fractional-root",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "af3b92116089a8b9ec8184e40ac223183ac4e5e95d2c79fb91d814532b1f1a80",
+      "referenceSha256": "0a571db2d1eb98c6679ae6db526bb869f95807d005ace99ca7465942498f1f21",
+      "selection": "Declared at b3372d20 before renderer edits/comparison: native rectangle strokes through general/composed/reflected maps, centered rotation, both skews with fractional root mapping and thin coverage; advances whole inv-132 and shared inv-133-135 gates.",
+      "input": "skew-x-fractional-root.svg",
+      "reference": "references/skew-x-fractional-root.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "skew-y-fractional-root",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "a3771b1ae5b17b5f31fe592c543021d73fa45609cf328fa7e83b4ec0ad3be18b",
+      "referenceSha256": "b3e92fe099929c5bbeca7ee0d7ddfdfbc99d324c15f911f4f6e2132a5d818226",
+      "selection": "Declared at b3372d20 before renderer edits/comparison: native rectangle strokes through general/composed/reflected maps, centered rotation, both skews with fractional root mapping and thin coverage; advances whole inv-132 and shared inv-133-135 gates.",
+      "input": "skew-y-fractional-root.svg",
+      "reference": "references/skew-y-fractional-root.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "thin-rotation",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "4fd1960861d7cc7cf4aad86efa23039e087b9fdae2cb5a1c4857b03374bcadea",
+      "referenceSha256": "f546db7f2e9f33a162cce4596c80a3e305a8299eb34c1ed32a8ccbe6845fd2af",
+      "selection": "Declared at b3372d20 before renderer edits/comparison: native rectangle strokes through general/composed/reflected maps, centered rotation, both skews with fractional root mapping and thin coverage; advances whole inv-132 and shared inv-133-135 gates.",
+      "input": "thin-rotation.svg",
+      "reference": "references/thin-rotation.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    }
+  ]
+}

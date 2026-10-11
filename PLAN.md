@@ -461,6 +461,12 @@ parsed XML trees. Source/options/gates are in the
 | `inv-140` rainbow checker; `inv-141` smiley mask export | Bounded gradient-stop capacity/pattern mask content and finite group mask region; 512×512 / authored 256×256 |
 
 **Next deliverable: finish `inv-132` against its unchanged 512×512 reference.**
+The [six affine rectangle-stroke controls](tests/Research/affine-rectangle-strokes/manifest.json)
+are declared at `b3372d20` before correction. General/composed/reflected maps,
+centered rotation, both skews with fractional root mapping and a thin stroke
+have healthy cleaned Windows/Linux reference triples; initial unsupported
+outcomes are protected through the existing harness. Controls remain separate
+from the ten whole documents and require exact results before this slice closes.
 Extend retained source-coordinate rectangle strokes through composed general
 maps, preserving native draw distinctions. Use rotation/skew documents to guide
 shared diagnostics; complete each through every subsequent rejection and pixel
