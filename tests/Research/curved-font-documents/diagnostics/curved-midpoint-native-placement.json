@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "case": "curved-midpoint",
+  "sourceSha256": "d05a438a5faeeafc73cdce1a37131a5adbe60c6f31cb55e4a3cd2c320b3ae06c",
+  "referenceSha256": "c668ed10461d59f2aaa74e102f712fd0e0fd9c5b35d10e3949b953666c281303",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "chromeVersion": "153.0.8010.52",
+  "purpose": "Independent intended-font character placement; DOM path sampling uses a different distance resolution from SVG text layout and is recorded separately.",
+  "freshProcessCaptures": 3,
+  "startupHealth": "healthy",
+  "profilesCleaned": true,
+  "decodedPixelsMatchFrozenReference": true,
+  "measurement": {
+    "platform": "windows",
+    "metrics": {
+      "viewport": {
+        "width": 128,
+        "height": 96
+      },
+      "runs": [
+        {
+          "run": 0,
+          "text": "A",
+          "fontFamily": "LokadSuppliedFantasy",
+          "fontSize": "20px",
+          "fontWeight": "400",
+          "matrix": {
+            "a": 1,
+            "b": 0,
+            "c": 0,
+            "d": 1,
+            "e": 0,
+            "f": 0
+          },
+          "length": 12.78125,
+          "chars": [
+            {
+              "index": 0,
+              "rotation": -50.969764709472656,
+              "startX": 17.154211044311523,
+              "startY": 49.75111770629883,
+              "endX": 25.202951431274414,
+              "endY": 39.82246780395508,
+              "deviceX": 17.154211044311523,
+              "deviceY": 49.75111770629883,
+              "deviceEndX": 25.202951431274414,
+              "width": 29.02271270751953,
+              "height": 26.93136978149414
+            }
+          ]
+        }
+      ],
+      "path": {
+        "length": 159.41053771972656,
+        "samples": [
+          {
+            "distance": 0,
+            "x": 8,
+            "y": 72
+          },
+          {
+            "distance": 24,
+            "x": 17.37165069580078,
+            "y": 50.02501678466797
+          },
+          {
+            "distance": 30.390625,
+            "x": 21.123380661010742,
+            "y": 44.85506820678711
+          },
+          {
+            "distance": 40,
+            "x": 27.743131637573242,
+            "y": 37.90440368652344
+          },
+          {
+            "distance": 80,
+            "x": 64.29469299316406,
+            "y": 24.00082015991211
+          },
+          {
+            "distance": 159.41053771972656,
+            "x": 120,
+            "y": 72
+          }
+        ]
+      }
+    },
+    "fonts": [
+      [
+        {
+          "familyName": "Noto Sans",
+          "postScriptName": "NotoSans-Regular",
+          "isCustomFont": true,
+          "glyphCount": 1
+        }
+      ]
+    ],
+    "startupHealth": "healthy",
+    "profileCleaned": true
+  }
+}

@@ -169,17 +169,19 @@ public sealed class SvgSuppliedFontLabelTests
         var budget = new RenderBudget(200);
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(36, 8, 48, 30.672), 48, budget))
         {
-            Assert.Equal(128, budget.Snapshot().CurrentBytes);
+            long retained = budget.Snapshot().CurrentBytes;
+            Assert.True(retained > 0);
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.CreateLatinLightPath(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None)).ErrorCode);
-            Assert.Equal(128, budget.Snapshot().CurrentBytes);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
             Assert.Equal(original, font.Bytes.ToArray());
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(original, font.Bytes.ToArray());
         var retryBudget = new RenderBudget(long.MaxValue);
         SvgGlyphRasterSource retry = SvgGlyphRasterSource.Create(font, new(36, 8, 48, 30.672), 48, retryBudget);
+        long retryRetained = retryBudget.Snapshot().CurrentBytes;
         using (SvgAuthoredPath path = retry.CreateLatinLightPath(1, 0, 1, 0, retryBudget, new(long.MaxValue), CancellationToken.None)) Assert.True(path.Commands.Length > 0);
-        Assert.Equal(128, retryBudget.Snapshot().CurrentBytes);
+        Assert.Equal(retryRetained, retryBudget.Snapshot().CurrentBytes);
         retry.Dispose();
         Assert.Equal(0, retryBudget.Snapshot().CurrentBytes);
         Assert.Throws<InvalidOperationException>(() => retry.CreateLatinLightPath(1, 0, 1, 0, retryBudget, new(long.MaxValue), CancellationToken.None));

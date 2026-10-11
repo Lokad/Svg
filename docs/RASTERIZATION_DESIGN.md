@@ -11635,3 +11635,66 @@ ms before and 116.2–125.3 ms after. The local measurements record the feature 
 and variability; they establish no general throughput claim. Every measured
 output matches its unchanged qualified PNG. Package/public/native/notice contracts
 reuse the preceding delivery qualification; this is not a release claim.
+
+### Open curved text baselines — 2026-10-11
+
+The retained public-domain `inv-127` now advances from the positive-horizontal
+baseline gate to its supplied composite-accent flag. Its original Latin-1 source,
+512×369 transparent viewport, declared face/alias and frozen references remain
+unchanged. Whole-document completion stays **0/1** and the frozen-control ledger
+stays **3/5 exact**; geometry admission alone does not finish either ledger.
+
+One temporary measured-path owner borrows shared authored commands and composed
+source maps. Lines, quadratics, cubics and conics reuse `SvgCurveMeasure`; endpoint
+arcs reuse bounded native conic construction. Each curve retains at most 256
+distance records through eight subdivision levels. Midpoint lookups charge work
+and cancellation before binary searches and tangent evaluation. Native endpoint
+tangent fallback covers coincident control points. Nonfinite evaluation reports
+`LimitExceeded`; construction failures and disposed runs release private records.
+One open contour is admitted; closed/multiple contours and zero calibration retain
+explicit gates. Positive horizontal paths keep their established double-coordinate
+placement and avoid curve-record allocation.
+
+Glyph placement uses the advance midpoint, measured curve position and tangent,
+then applies half-advance and baseline displacement in the glyph's local frame.
+Ordinary decoded contours and borrowed-font raster sources retain the same map.
+A zero-angle polynomial baseline selects the existing horizontal strike. Rotated
+Windows outlines retain an unhinted shape, quarter positions on both axes and
+symmetric LCD coverage; their phases map to the six-column/five-row sampling
+grid. Linux retains unhinted authored source replay. Both platform mask routes
+remain subject to exact frozen-reference completion.
+
+The original curved single-A control's origin agrees within one millionth of a
+pixel with three healthy intended-font browser measurements. Each native inline
+screenshot also matches the unchanged image reference. DOM path sampling uses a
+different contour resolution from text layout: its reported 159.4105 length must
+not replace the text-layout measure. The shared text measure places the glyph at
+(17.154211, 49.751118), matching the independent character geometry. The native
+record is `tests/Research/curved-font-documents/diagnostics/curved-midpoint-native-placement.json`.
+
+The control now renders through all 12 APIs, with **14 Windows / 80 Linux pixels**
+still differing. A private DirectWrite experiment compares all eight hint/antialias/
+rendering-mode combinations; three fresh processes produce identical complete
+textures. The unhinted LCD route approaches the browser's texture, while hinted
+and grayscale-only candidates differ substantially. Those diagnostic textures
+remain study evidence, not a rendering correction. The supplied precomposed ü
+(glyph 190) uses child 88 with flags 0x226 (`USE_MY_METRICS`) and child 2660 with
+flags 0x7. Shared component metrics and remaining mask pixels are the next concrete
+dependencies; do not admit a flag merely to bypass validation.
+
+A local 20-warmup/21-sample batch records the retained metadata cost. Accounted
+peak memory changes from 692,258 to **697,762 bytes** for unchanged SVG Translate;
+the scalar-x control stays at **163,840 bytes**, and the curved control uses
+**176,276 bytes**. Success and denial one byte below each peak release all owned
+storage. SVG Translate allocates 4,264 further bytes and the scalar control 96.
+Whole-document medians are 114.5 and 112.4 ms, scalar medians 1.92 and 1.97 ms;
+the curved control's median is 1.80 ms. One batch per build establishes no general
+throughput claim. All measured PNGs equal their qualified candidate outputs.
+
+Final Windows/Linux Release qualification passes **6,729 tests/platform**
+(4,675 core / 2,048 visual / six FontProbe), with zero warnings/errors/failures/skips.
+All 2,908 prior outcomes, 2,849 prior PNGs, 2,755 established exact comparisons and
+23 prior exact font outputs per platform are preserved, including corporate
+**27/27 documents / 258/258 variants**. Its receipt is
+`artifacts/curved-path-layout-20261011/final-qualification.json`. The plan and
+support matrix retain every finite G2–G9 exit and the separate remote S17 gate.

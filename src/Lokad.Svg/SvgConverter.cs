@@ -2411,6 +2411,18 @@ public static class SvgConverter
             if (glyph.Source is SvgGlyphRasterSource source && (OperatingSystem.IsLinux() || OperatingSystem.IsWindows()))
             {
                 ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                if (source.HasGlyphMap && OperatingSystem.IsLinux())
+                {
+                    using SvgAuthoredPath path = source.CreateMappedPath(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
+                    Span<byte> preblend = stackalloc byte[256];
+                    SvgColor color = ResolveSolidColor(glyph.Color);
+                    if (OperatingSystem.IsWindows()) SvgFontMaskPreblend.BuildWindowsGrayTable(preblend, color, preparationWork, cancellationToken);
+                    else SvgFontMaskPreblend.BuildLinuxGrayTable(preblend, color, preparationWork, cancellationToken);
+                    workUnits += preparationWork.Used;
+                    using SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, glyph.Color, true, false, SvgPolygonMapping.NativeFillEdges, null, null, budget);
+                    RasterizePolygonFill(fill, path, destination, preblend);
+                    return;
+                }
                 if (source.UsesDeviceFitting(budget, preparationWork, cancellationToken))
                 {
                     if (OperatingSystem.IsWindows() && source.HasTrueTypePrograms(budget, preparationWork, cancellationToken))

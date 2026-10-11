@@ -9,6 +9,25 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgCurveMeasureTests
 {
+    [Theory]
+    [InlineData(0, 0, 3, 4)]
+    [InlineData(1, 0, 3, 4)]
+    [InlineData(1, .5f, 3, 4)]
+    [InlineData(2, 0, 3, 4)]
+    [InlineData(2, 1, 6, 8)]
+    [InlineData(3, 0, 3, 4)]
+    [InlineData(3, 1, 3, 4)]
+    public void Tangents_preserve_endpoint_fallbacks_and_rational_direction(int kind, float parameter, double x, double y)
+    {
+        SvgDevicePoint[] points = [new(0, 0), new(0, 0), new(3, 4), new(6, 8)];
+        if (kind == 0) points[1] = points[2];
+        SvgDevicePoint tangent = SvgCurveMeasure.Tangent((SvgMeasuredCurveKind)kind, points, 2, parameter, new(long.MaxValue), CancellationToken.None);
+        Assert.Equal(new(x, y), tangent);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgCurveMeasure.Tangent((SvgMeasuredCurveKind)kind, points, 2, parameter, new(0), CancellationToken.None)).ErrorCode);
+        using CancellationTokenSource cancelled = new(); cancelled.Cancel();
+        Assert.Equal(cancelled.Token, Assert.Throws<OperationCanceledException>(() => SvgCurveMeasure.Tangent((SvgMeasuredCurveKind)kind, points, 2, parameter, new(long.MaxValue), cancelled.Token)).CancellationToken);
+    }
+
     [Fact]
     public void Curve_distances_knots_and_parameters_match_compiled_native_float_bits()
     {

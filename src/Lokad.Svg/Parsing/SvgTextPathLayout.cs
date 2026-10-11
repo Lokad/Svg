@@ -7,7 +7,7 @@ namespace Lokad.Svg.Parsing;
 /// <remarks>The document owns the run and identifier; the run borrows the prepared font. Parser-thread confined.</remarks>
 internal readonly record struct SvgPendingTextPath(SvgTextRun Run, SvgTextPathReference Reference, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner);
 
-/// <summary>Describes the positive horizontal baseline admitted before general tangent glyph maps.</summary>
+/// <summary>Describes a measured open baseline and its authored offset calibration.</summary>
 internal readonly record struct SvgTextPathBaseline(double X, double Y, double Length)
 {
     /// <summary>Scales authored numeric start offsets; percentages and glyph advances retain their separate coordinates.</summary>
@@ -20,6 +20,13 @@ internal static class SvgTextPathLayout
     internal static SvgTextPathBaseline ReadBaseline(SvgDefinitionLeafSource source, int maximumCommands, RenderBudget budget,
         ParserWorkCounter work, CancellationToken token)
     {
+        using SvgMeasuredTextPath path = ReadMeasured(source, maximumCommands, budget, work, token);
+        return path.Baseline;
+    }
+
+    internal static SvgMeasuredTextPath ReadMeasured(SvgDefinitionLeafSource source, int maximumCommands, RenderBudget budget,
+        ParserWorkCounter work, CancellationToken token)
+    {
         work.Consume(token);
         if (source.LocalName != "path") throw new SvgException(SvgErrorCode.UnresolvedResource, "The text-path reference must identify a path.");
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(source.GetAttribute("pathLength"));
@@ -30,29 +37,7 @@ internal static class SvgTextPathLayout
         (int prefixLength, _) = SvgPathDataParser.ReadRenderablePrefix(data, maximumCommands, work, token);
         using RenderBudget.BudgetReservation? prefixOwner = prefixLength == data.Length ? null : budget.Reserve(32L + 2L * prefixLength, SvgMemoryCategory.Parser);
         SvgPathDataParser.ParseCommands(prefixLength == data.Length ? data : data[..prefixLength], maximumCommands, work, token, commands);
-        SvgDevicePoint start = default;
-        SvgDevicePoint previous = default;
-        bool hasStart = false;
-        foreach (SvgAuthoredPathCommand command in commands.AsSpan())
-        {
-            work.Consume(token);
-            if (command.Verb == SvgAuthoredPathVerb.End) continue;
-            if (command.Verb == SvgAuthoredPathVerb.Move && !hasStart)
-            {
-                start = previous = map.Apply(command.First.X, command.First.Y);
-                hasStart = true;
-                continue;
-            }
-            if (command.Verb != SvgAuthoredPathVerb.Line) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only one open positive horizontal text-path contour is implemented.");
-            SvgDevicePoint next = map.Apply(command.First.X, command.First.Y);
-            if (next.Y != previous.Y || next.X < previous.X) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rotated, curved and reversing text-path tangents are not implemented.");
-            previous = next;
-        }
-        double length = hasStart ? previous.X - start.X : 0;
-        if (!double.IsFinite(length)) throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path length exceeds the supported range.");
-        double offsetScale = pathLength is double calibrated ? length / calibrated : 1;
-        if (!double.IsFinite(offsetScale)) throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path calibration exceeds the supported range.");
-        return new(start.X, start.Y, length) { OffsetScale = offsetScale };
+        return SvgMeasuredTextPath.Create(commands.AsSpan(), map, pathLength, budget, work, token);
     }
 
     /// <summary>Resolves local paths, places glyphs and moves their ordinary scene commands into reserved paint slots.</summary>
@@ -66,7 +51,8 @@ internal static class SvgTextPathLayout
             SvgPendingTextPath pending = state.PendingTextPaths[index];
             if (!state.Definitions.TryGetValue(pending.Reference.PathId, out SvgDefinition definition) || definition.LeafSource is not {} source)
                 throw new SvgException(SvgErrorCode.UnresolvedResource, "The local text-path reference was not found.");
-            SvgTextPathBaseline baseline = ReadBaseline(source, limits.MaximumPathCommands, state.Budget, work, token);
+            using SvgMeasuredTextPath measured = ReadMeasured(source, limits.MaximumPathCommands, state.Budget, work, token);
+            SvgTextPathBaseline baseline = measured.Baseline;
             double offset = pending.Reference.IsPercentage ? baseline.Length * (pending.Reference.StartOffset / 100) : pending.Reference.StartOffset * baseline.OffsetScale;
             if (!double.IsFinite(offset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The resolved text-path offset is not finite.");
             int tail = state.Scene.CommandCount;
@@ -77,9 +63,19 @@ internal static class SvgTextPathLayout
                 double midpoint = distance + glyph.Advance / 2;
                 if (!double.IsFinite(distance) || !double.IsFinite(midpoint)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path placement exceeds the supported range.");
                 if (baseline.Length == 0 || midpoint < 0 || midpoint > baseline.Length) continue;
-                SvgPositionedGlyph placed = glyph with { X = baseline.X + distance, Y = baseline.Y + glyph.Y };
-                using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(pending.Run.Font, placed, pending.Run.Style.FontSize, state.Budget, work, token);
-                SvgGlyphGeometry geometry = SvgGlyphGeometry.Create(contours, pending.Color, pending.Run.Font, placed, pending.Run.Style.FontSize, state.Budget);
+                SvgPositionedGlyph placed = measured.IsHorizontal
+                    ? glyph with { X = baseline.X + distance, Y = baseline.Y + glyph.Y }
+                    : glyph with { X = 0, Y = 0 };
+                SvgAffineTransform glyphMap = measured.IsHorizontal ? SvgAffineTransform.Identity
+                    : measured.GlyphMap(midpoint, glyph.Advance / 2, glyph.Y, work, token);
+                // A zero tangent angle uses the native horizontal strike, even on a curved baseline.
+                if (!measured.IsHorizontal && glyphMap.A == 1 && glyphMap.B == 0 && glyphMap.C == 0 && glyphMap.D == 1)
+                {
+                    placed = placed with { X = glyphMap.E, Y = glyphMap.F };
+                    glyphMap = SvgAffineTransform.Identity;
+                }
+                using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(pending.Run.Font, placed, pending.Run.Style.FontSize, glyphMap, state.Budget, work, token);
+                SvgGlyphGeometry geometry = SvgGlyphGeometry.Create(contours, pending.Color, pending.Run.Font, placed, pending.Run.Style.FontSize, glyphMap, state.Budget);
                 try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(geometry)); }
                 catch { geometry.Dispose(); throw; }
             }

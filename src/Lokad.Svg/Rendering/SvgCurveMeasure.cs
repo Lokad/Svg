@@ -153,6 +153,51 @@ internal static class SvgCurveMeasure
             (((y3 + 3 * (y1 - y2) - y0) * t + 3 * (y2 - 2 * y1 + y0)) * t + 3 * (y1 - y0)) * t + y0);
     }
 
+    /// <summary>Evaluates the native curve tangent vector, including coincident endpoint controls.</summary>
+    /// <remarks>The caller normalizes the returned vector. Uses bounded scalar work and caller-owned input;
+    /// no allocation or retained storage. A fully degenerate curve returns a zero vector.</remarks>
+    internal static SvgDevicePoint Tangent(SvgMeasuredCurveKind kind, ReadOnlySpan<SvgDevicePoint> p, float weight,
+        float t, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        Validate(kind, p, weight);
+        if (kind == SvgMeasuredCurveKind.Conic && weight == 0) weight = 1;
+        if (!float.IsFinite(t) || t < 0 || t > 1) throw new ArgumentOutOfRangeException(nameof(t));
+        if (kind == SvgMeasuredCurveKind.Line) return Difference(p[1], p[0]);
+        int last = kind == SvgMeasuredCurveKind.Cubic ? 3 : 2;
+        if ((t == 0 && p[0] == p[1]) || (t == 1 && p[last - 1] == p[last]))
+        {
+            SvgDevicePoint result = kind == SvgMeasuredCurveKind.Cubic
+                ? t == 0 ? Difference(p[2], p[0]) : Difference(p[3], p[1])
+                : Difference(p[2], p[0]);
+            return result.X == 0 && result.Y == 0 ? Difference(p[last], p[0]) : result;
+        }
+        return new(Component(kind, (float)p[0].X, (float)p[1].X, (float)p[2].X,
+                last == 3 ? (float)p[3].X : 0, weight, t),
+            Component(kind, (float)p[0].Y, (float)p[1].Y, (float)p[2].Y,
+                last == 3 ? (float)p[3].Y : 0, weight, t));
+
+        static float Component(SvgMeasuredCurveKind kind, float p0, float p1, float p2, float p3, float weight, float t)
+        {
+            if (kind == SvgMeasuredCurveKind.Quadratic)
+            {
+                float b = p1 - p0, a = p2 - p1 - b;
+                float value = a * t + b;
+                return value + value;
+            }
+            if (kind == SvgMeasuredCurveKind.Conic)
+            {
+                float delta = p2 - p0, c = weight * (p1 - p0);
+                return ((weight * delta - delta) * t + (delta - c - c)) * t + c;
+            }
+            float a3 = p3 + 3 * (p1 - p2) - p0;
+            float b3 = 2 * (p2 - 2 * p1 + p0), c3 = p1 - p0;
+            return (a3 * t + b3) * t + c3;
+        }
+
+        static SvgDevicePoint Difference(SvgDevicePoint a, SvgDevicePoint b) => new((float)a.X - (float)b.X, (float)a.Y - (float)b.Y);
+    }
+
     private static void WalkPolynomial(SvgMeasuredCurveKind kind, ReadOnlySpan<SvgDevicePoint> p, int minimum, int maximum,
         int depth, float tolerance, Span<SvgCurveMeasureStep> output, ref float distance, ref int count,
         ParserWorkCounter work, CancellationToken token)

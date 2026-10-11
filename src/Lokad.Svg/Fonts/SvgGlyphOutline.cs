@@ -14,11 +14,15 @@ internal static class SvgGlyphOutline
 
     /// <summary>Converts one glyph and transfers the final contour-array scene reservation to the retained glyph geometry.</summary>
     internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => GetContourStorage(font, glyph, fontSize, SvgAffineTransform.Identity, budget, workCounter, cancellationToken);
+
+    /// <summary>Applies a retained glyph-local affine map after ordinary font-unit outline conversion.</summary>
+    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         double scale = Validate(font, glyph, fontSize, budget);
 
         using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, glyph.GlyphIndex, font.Metrics, budget, workCounter, cancellationToken);
-        return TransformDecodedContours(glyph, scale, decoded, budget, workCounter, cancellationToken);
+        return TransformDecodedContours(glyph, scale, glyphMap, decoded, budget, workCounter, cancellationToken);
     }
 
     /// <summary>Converts one glyph while borrowing decoded storage that remains owned and disposed by the caller.</summary>
@@ -26,7 +30,7 @@ internal static class SvgGlyphOutline
     {
         ArgumentNullException.ThrowIfNull(decoded);
         double scale = Validate(font, glyph, fontSize, budget);
-        return TransformDecodedContours(glyph, scale, decoded, budget, workCounter, cancellationToken);
+        return TransformDecodedContours(glyph, scale, SvgAffineTransform.Identity, decoded, budget, workCounter, cancellationToken);
     }
 
     private static double Validate(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget)
@@ -41,7 +45,7 @@ internal static class SvgGlyphOutline
         return scale;
     }
 
-    private static SvgGlyphContourStorage TransformDecodedContours(SvgPositionedGlyph glyph, double scale, OpenTypeGlyphContourStorage decoded, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static SvgGlyphContourStorage TransformDecodedContours(SvgPositionedGlyph glyph, double scale, SvgAffineTransform glyphMap, OpenTypeGlyphContourStorage decoded, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         OpenTypeQuadraticSegment[] source = decoded.Segments;
         if (source.Length == 0) return new([], null);
@@ -63,6 +67,11 @@ internal static class SvgGlyphOutline
         {
             double x = glyph.X + point.X * scale;
             double y = glyph.Y - point.Y * scale;
+            if (glyphMap != SvgAffineTransform.Identity)
+            {
+                SvgDevicePoint mapped = glyphMap.Apply(x, y);
+                x = mapped.X; y = mapped.Y;
+            }
             if (!double.IsFinite(x) || !double.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The transformed glyph outline exceeds the admitted numeric range.");
             return new SvgGlyphOutlinePoint(x, y);
         }

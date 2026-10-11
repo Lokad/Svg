@@ -11,10 +11,13 @@ internal sealed class SvgGlyphRasterSource : IDisposable
     private RenderBudget.BudgetReservation? _reservation;
     private readonly SvgPositionedGlyph _glyph;
     private readonly double _fontSize;
+    private readonly SvgAffineTransform _glyphMap;
 
-    private SvgGlyphRasterSource(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget.BudgetReservation reservation)
+    internal bool HasGlyphMap => _glyphMap != SvgAffineTransform.Identity;
+
+    private SvgGlyphRasterSource(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, RenderBudget.BudgetReservation reservation)
     {
-        _font = font; _glyph = glyph; _fontSize = fontSize; _reservation = reservation;
+        _font = font; _glyph = glyph; _fontSize = fontSize; _glyphMap = glyphMap; _reservation = reservation;
     }
 
     /// <summary>Identifies the admitted simple-outline stage without changing existing composite admission.</summary>
@@ -39,22 +42,29 @@ internal sealed class SvgGlyphRasterSource : IDisposable
         return OpenTypeFont.HasTrueTypePrograms(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token);
     }
 
-    /// <summary>Returns exclusively owned, positioned instruction-fitted contours for symmetric LCD coverage.</summary>
+    /// <summary>Returns owned device contours for symmetric LCD coverage, with rotated outlines retaining their unhinted shape.</summary>
     internal OpenTypeGlyphContourStorage CreateWindowsContours(double scaleX, double offsetX, double scaleY, double offsetY, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
         TrueTypeHintTarget target = new(42, TrueTypeHintQueryFlags.FontVariations | TrueTypeHintQueryFlags.VerticalPhantoms | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
-        OpenTypeGlyphContourStorage contours = OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, _fontSize * scaleY, target, TrueTypeImpliedPointRounding.None, budget, work, token);
+        double fittingScale = HasGlyphMap ? Math.Sqrt(_glyphMap.C * scaleX * _glyphMap.C * scaleX + _glyphMap.D * scaleY * _glyphMap.D * scaleY) : scaleY;
+        OpenTypeGlyphContourStorage contours = HasGlyphMap
+            ? OpenTypeFont.GetGlyphContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token)
+            : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, _fontSize * fittingScale, target, TrueTypeImpliedPointRounding.None, budget, work, token);
         try
         {
-            float originX = MathF.Floor((float)(_glyph.X * scaleX + offsetX) * 4f + .5f) / 4f;
-            float originY = MathF.Floor((float)(_glyph.Y * scaleY + offsetY) + .5f);
+            SvgDevicePoint origin = _glyphMap.Apply(_glyph.X, _glyph.Y);
+            float originX = MathF.Floor((float)(origin.X * scaleX + offsetX) * 4f + .5f) / 4f;
+            float originY = HasGlyphMap ? MathF.Floor((float)(origin.Y * scaleY + offsetY) * 4f + .5f) / 4f
+                : MathF.Floor((float)(origin.Y * scaleY + offsetY) + .5f);
             float ratioX = (float)(scaleX / scaleY);
             if (!float.IsFinite(originX) || !float.IsFinite(originY) || !float.IsFinite(ratioX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph placement exceeds the device range.");
             // Native symmetric LCD coverage quantizes the quarter-pixel strike
             // origin onto its six-column grid before sampling the fitted outline.
             double phase = originX - MathF.Floor(originX);
             double phaseCorrection = Math.Floor(phase * 6 + .5) / 6 - phase;
+            double verticalPhase = originY - MathF.Floor(originY);
+            double verticalCorrection = HasGlyphMap ? Math.Floor(verticalPhase * 5 + .5) / 5 - verticalPhase : 0;
             for (int i = 0; i < contours.Segments.Length; i++)
             {
                 OpenTypeQuadraticSegment segment = contours.Segments[i];
@@ -65,20 +75,67 @@ internal sealed class SvgGlyphRasterSource : IDisposable
             OpenTypeOutlinePoint Map(OpenTypeOutlinePoint point)
             {
                 work.Consume(token);
-                float x = originX + (float)(point.X / 64) * ratioX, y = originY - (float)(point.Y / 64);
+                float px = (float)(point.X / 64), py = -(float)(point.Y / 64);
+                float x = originX + px * ratioX, y = originY + py;
+                if (HasGlyphMap)
+                {
+                    px = (float)(point.X * (_fontSize * fittingScale / font.UnitsPerEm));
+                    py = -(float)(point.Y * (_fontSize * fittingScale / font.UnitsPerEm));
+                    x = originX + ((float)(_glyphMap.A * scaleX / fittingScale) * px + (float)(_glyphMap.C * scaleX / fittingScale) * py);
+                    y = originY + ((float)(_glyphMap.B * scaleY / fittingScale) * px + (float)(_glyphMap.D * scaleY / fittingScale) * py);
+                }
                 if (!float.IsFinite(x) || !float.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph outline exceeds the device range.");
-                return new(x + phaseCorrection, y);
+                return new(x + phaseCorrection, y + verticalCorrection);
             }
         }
         catch { contours.Dispose(); throw; }
     }
 
     internal static SvgGlyphRasterSource Create(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget)
+        => Create(font, glyph, fontSize, SvgAffineTransform.Identity, budget);
+
+    internal static SvgGlyphRasterSource Create(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(font);
-        RenderBudget.BudgetReservation reservation = budget.Reserve(128, SvgMemoryCategory.Scene);
-        try { return new(font, glyph, fontSize, reservation); }
+        RenderBudget.BudgetReservation reservation = budget.Reserve(192, SvgMemoryCategory.Scene);
+        try { return new(font, glyph, fontSize, glyphMap, reservation); }
         catch { reservation.Dispose(); throw; }
+    }
+
+    /// <summary>Replays a mapped outline as device commands without rounding away its tangent transform.</summary>
+    /// <remarks>The returned path owns its commands. The font is borrowed; all decoded scratch is released
+    /// before return. Curve and point traversal charges work and checks cancellation.</remarks>
+    internal SvgAuthoredPath CreateMappedPath(double scaleX, double offsetX, double scaleY, double offsetY,
+        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
+        using OpenTypeGlyphContourStorage contours = OpenTypeFont.GetGlyphContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token);
+        using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Geometry, work, token);
+        double size = _fontSize / font.UnitsPerEm;
+        int first = 0;
+        foreach (int end in contours.ContourEnds)
+        {
+            work.Consume(token);
+            OpenTypeOutlinePoint origin = contours.Segments[first].Start;
+            commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, Map(origin), default, default));
+            for (int index = first; index < end; index++)
+            {
+                work.Consume(token);
+                OpenTypeQuadraticSegment segment = contours.Segments[index];
+                if (index == end - 1 && segment.Control == segment.End && segment.End == origin) continue;
+                commands.Add(segment.Control == segment.End
+                    ? new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, Map(segment.End), default, default)
+                    : new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, Map(segment.Control), Map(segment.End), default));
+            }
+            commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+            first = end;
+        }
+        SvgAffineTransform map = SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY).ComposeChecked(_glyphMap);
+        OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
+        try { return SvgAuthoredPath.Create(owned, map, budget); }
+        catch { owned.Dispose(); throw; }
+
+        SvgDevicePoint Map(OpenTypeOutlinePoint point) => new(_glyph.X + point.X * size, _glyph.Y - point.Y * size);
     }
 
     /// <summary>Returns native-directed device commands after fitting at mapped size; applies the glyph origin once.</summary>

@@ -348,7 +348,7 @@
       "selection": "Complete document, dimensions and unchanged supplied face declared at 58c63d70 before capture or candidate screening.",
       "renderMessage": "SVG text requires a prepared font snapshot.",
       "suppliedFontOutcome": "UnsupportedFeature",
-      "suppliedFontRemaining": "Curved path baselines and tangent placement, then composite accents.",
+      "suppliedFontRemaining": "Supplied composite-accent component flags, then unchanged-reference glyph-mask and guide fidelity; bounded open cubic midpoint/tangent placement now admitted.",
       "referenceSha256": "ad24fd933e00465e09d23bef538a8cc610f59b743f2b0cf82289c0fee953a738",
       "oracle": {
         "freshProcessCaptures": 3,

@@ -307,9 +307,10 @@ public sealed class SvgWindowsGlyphTests
         var budget = new RenderBudget(boundary == 0 ? 200 : long.MaxValue);
         using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(36, 8, 48, 30.672), 48, budget))
         {
+            long retained = budget.Snapshot().CurrentBytes;
             Assert.True(source.HasTrueTypePrograms(new(long.MaxValue), new(long.MaxValue), CancellationToken.None));
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => source.CreateWindowsContours(boundary == 2 ? double.PositiveInfinity : 1, 0, 1, 0, budget, new(boundary == 1 ? 5000 : long.MaxValue), CancellationToken.None)).ErrorCode);
-            Assert.Equal(128, budget.Snapshot().CurrentBytes);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         Assert.Equal(original, font.Bytes.ToArray());

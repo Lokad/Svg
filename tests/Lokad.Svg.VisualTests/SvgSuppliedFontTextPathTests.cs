@@ -118,7 +118,7 @@ public sealed class SvgSuppliedFontTextPathTests
     [Theory]
     [InlineData("<text font-family='Example' font-size='16'><textPath href='#missing'>A</textPath></text>", SvgErrorCode.UnresolvedResource)]
     [InlineData("<defs><rect id='p' width='40' height='40'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>", SvgErrorCode.UnresolvedResource)]
-    [InlineData("<defs><path id='p' d='M8 48 Q32 16 56 48'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<defs><path id='p' d='M8 48 Q32 16 56 48 Z'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath></text>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<defs><path id='p' d='M8 48 H56'/></defs><text font-family='Example' font-size='16'>A<textPath href='#p'>A</textPath></text>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<defs><path id='p' d='M8 48 H56'/></defs><text font-family='Example' font-size='16'><textPath href='#p'>A</textPath>A</text>", SvgErrorCode.UnsupportedFeature)]
     public async Task Reference_and_layout_failures_release_queued_runs_and_leave_output_untouched(string body, SvgErrorCode category)

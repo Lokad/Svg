@@ -62,7 +62,7 @@
       ],
       "platformReferencesByteIdentical": false,
       "rendererOutcome": "UnsupportedFeature",
-      "remainingOrCompletedMechanism": "Curved path baselines and tangent glyph placement remain open; composite accents follow."
+      "remainingOrCompletedMechanism": "Shared open cubic distance/tangent placement advances the original to its supplied composite-accent component-flag gate; final font and guide fidelity remains open."
     },
     {
       "id": "two-path-runs",
@@ -229,8 +229,8 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "rendererOutcome": "UnsupportedFeature",
-      "remainingOrCompletedMechanism": "Curved path baseline and tangent glyph placement remain open."
+      "rendererOutcome": "rendered-known-difference",
+      "remainingOrCompletedMechanism": "Shared measured midpoint and tangent map render through all 12 APIs. Matching-platform glyph-mask fidelity remains open."
     },
     {
       "id": "calibrated-path-length",

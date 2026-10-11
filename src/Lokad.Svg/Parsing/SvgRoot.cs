@@ -905,9 +905,12 @@ internal sealed class SvgGlyphGeometry : IDisposable
 
     /// <summary>Adopts contours and positioned source metadata, releasing both on failed ownership transfer.</summary>
     internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, RenderBudget budget)
+        => Create(contours, color, font, position, fontSize, SvgAffineTransform.Identity, budget);
+
+    internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget)
     {
         if (contours.Contours.Length == 0) return Create(contours, color);
-        SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, position, fontSize, budget);
+        SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, position, fontSize, glyphMap, budget);
         try
         {
             SvgGlyphContourTransfer transfer = contours.TransferOwnership();

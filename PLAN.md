@@ -94,8 +94,9 @@ Other instance/font combinations are prerequisites only when this document needs
 them; all finite G9 promises and the seven older font controls remain visible.
 The integer-strike control is exact against its unchanged Windows reference.
 Shared crossing preparation bounds scan cost. Local resource measurements and
-their limits are recorded in the design record. Peak accounted memory stays at
-692,258 bytes, with denial one byte below the peak releasing all owned storage.
+their limits are recorded in the design record. At the preceding glyph checkpoint,
+peak accounted memory was 692,258 bytes, with denial one byte below the peak
+releasing all owned storage.
 Bounded implicit conic coefficients and sampling-grid rounding of implied points
 correct another 26 document pixels and all four integer-strike differences,
 without changing a previously matching pixel in either output.
@@ -115,11 +116,15 @@ freezes separate healthy Windows/Linux reference triples and intended-font proof
 Its eight cubic path runs, child/inherited anchors, calibrated lengths, dashed
 guides and precomposed accents provide shared G9/G3 dependencies.
 **Document completion remains 0/1.** Language metadata, presentation-anchor
-inheritance, independent sibling runs and positive numeric offset calibration now
-advance the unchanged document to its curved-baseline rejection. Three of five
-separate controls are exact on both platforms through all 12 APIs. Curved tangent
-placement, composite accents and final pixel fidelity remain open. Finish this
-document against frozen references before
+inheritance, independent sibling runs and positive numeric offset calibration are
+admitted. Shared authored open-curve distance/tangent maps now advance the unchanged
+document to its composite-accent component-flag gate (`USE_MY_METRICS`). Three of
+five separate controls remain exact on both platforms through all 12 APIs. The
+curved control renders through 12 APIs with 14 Windows / 80 Linux pixels still
+differing; native glyph-mask fidelity and composite accents remain open. Its
+measured origin matches three healthy intended-font browser captures within one
+millionth of a pixel. Zero-angle polynomial baselines preserve the existing
+horizontal font strike. Finish this document against frozen references before
 expanding combinations; all finite G2–G9 exits stay visible.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
@@ -210,7 +215,7 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,716 tests/platform**: 4,664 core, 2,046 visual, six FontProbe. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,729 tests/platform**: 4,675 core, 2,048 visual, six FontProbe. Test counts are not document counts. |
 | Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 23 preceding exact font outputs on each platform. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. The selected curved-label document remains 0/1, with three of five separate controls exact through 12 APIs on both platforms. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
@@ -218,7 +223,7 @@ Mechanisms, control counts and dated qualifications live in
 | Corporate cohort | **27/27 documents / 258/258 variants exact** on matching platform references; 13/13 marks and 14/14 wordmarks. Membership, inputs, options and references remain frozen. |
 | Resource contracts | Parser/discovery/raster work, memory denial, cancellation/retry and borrowed-source ownership regressions pass. Bounded kerning, per-glyph admission, Latin/TrueType hints and queued local text-path runs preserve borrowed font bytes and release owned scratch on rejection. Forward paint/reference slots preserve order and opacity. Inert typography values still do not request or retain fonts. |
 | Package/installed consumer | Prior delivery qualification confirms both platform packages retain exact notices/licenses with no native assets, bundled fonts or runtime dependencies. Its isolated installed Windows consumer matches both completed original font documents through all 12 APIs, checks nested absolute/relative Mono Bold spans against independent positions, and passes conversion/catalog/overlap/dimension checks. Package and public contracts are unchanged; these receipts are reused. S17 remote release evidence remains separate. |
-| Scene layouts | Draw command / geometry / paint remain **72/272/68 bytes**. No new throughput claim follows from this correction. |
+| Scene layouts and measured source cost | Draw command / geometry / paint remain **72/272/68 bytes**. Retained glyph maps raise the measured SVG Translate peak from 692,258 to **697,762 bytes**; scalar-x stays at **163,840 bytes**, and curved-midpoint uses **176,276 bytes**. Success and denial one byte below each peak release all owned storage. No new throughput claim follows from this correction. |
 | Remaining limits | The measured non-scaling root-viewBox width defect and all remaining finite G2–G9 promises stay open. Remote Windows/Linux build/test/package/resource evidence remains a separate S17 release gate. |
 
 Reuse this finished qualification until a renderer change, changed evaluation
@@ -921,10 +926,12 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
     are exact, separately from the document. Reuse authored path commands,
     composed source maps, supplied advances and native glyph replay. Zero-length
     paths/out-of-range midpoints paint nothing; missing/non-path local references
-    are unresolved resources. Curved/reversing/closed/multiple contours, zero calibrated
-    lengths, child styles and general tangent glyph maps stay explicit current
-    gates. Positive offset calibration, presentation anchors and sibling runs
-    advance the selected next document without closing the finite text-path exit.
+    are unresolved resources. Open line/quadratic/cubic/conic/endpoint-arc baselines
+    now reuse bounded native curve measurement and tangent maps. Closed/multiple
+    contours, zero calibrated lengths and child style expansion keep explicit
+    gates; rotated glyph-mask fidelity and the wider finite exit remain open.
+    Positive offset calibration, presentation anchors and sibling runs advance
+    the selected next document without closing the finite text-path exit.
   - [x] Finish the retained CC0 SVG Translate document at its declared 512×256
     transparent viewport, under the public Mono Bold contract. Do not require
     unrelated instance/font grids first. The separate seven-control bank diagnoses
@@ -951,8 +958,12 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
       independent sibling path runs and positive numeric offset calibration.
     - [x] Qualify the three completed controls on Linux as well as Windows, through
       all six raw and six independently prepared outputs.
-    - [ ] Reuse authored cubic paths for bounded length/tangent glyph placement;
-      preserve native font preparation and source replay distinctions.
+    - [x] Reuse authored cubic paths for bounded length/tangent glyph placement;
+      retain glyph-local maps beside the borrowed supplied face. Native character
+      geometry, endpoint tangent fallback, denial and cancellation are protected.
+    - [ ] Finish native rotated glyph-mask fidelity on both platforms; zero-angle
+      polynomial baselines retain the established horizontal strike. Keep the
+      curved control separate from document completion.
     - [ ] Extend shared composite support for the original precomposed accents;
       protect the older composite-accent control against its unchanged reference.
     - [ ] Resolve every remaining guide/text mismatch and complete all 12 APIs on
@@ -1375,7 +1386,8 @@ Implement or reject features affecting output. Add styled/positioned `tspan`, sp
 explicit line positioning for labels.
 
 Position/rotate lists, `textLength`/`lengthAdjust`, the enumerated extra baselines,
-transformed/stroked text, decorations and curved/closed/transformed text paths are
+transformed/stroked text, decorations, rotated glyph-mask fidelity and
+closed/transformed text-path combinations are
 remaining G9 gates, with finite admission and acceptance examples in section 3.
 The original positive horizontal local text path is complete. The remaining items'
 initial exclusion does not remove them from the final queue. Automatic wrapping,

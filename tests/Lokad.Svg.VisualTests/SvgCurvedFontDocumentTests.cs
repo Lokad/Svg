@@ -103,7 +103,6 @@ public sealed class SvgCurvedFontDocumentTests
 
     [Theory]
     [InlineData("inv-127-512x369-transparent")]
-    [InlineData("curved-midpoint")]
     [InlineData("composite-on-path")]
     public async Task Remaining_document_and_controls_keep_explicit_gates_and_release_owners(string identity)
     {
@@ -120,6 +119,47 @@ public sealed class SvgCurvedFontDocumentTests
         SvgRenderOptions options = new(new SvgViewport(item.GetProperty("width").GetInt32(), item.GetProperty("height").GetInt32()), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, target, options, CancellationToken.None)).ErrorCode);
         Assert.All(target, value => Assert.Equal(0xCC, value));
+    }
+
+    [Fact]
+    public async Task Curved_control_retains_mapped_glyph_source_and_releases_storage_on_budget_denial()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, "curved-midpoint.svg"));
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        byte[] original = Assert.Single(snapshot.Fonts).Bytes.ToArray();
+        RenderBudget accounting = new(long.MaxValue);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, accounting, snapshot, CancellationToken.None))
+        {
+            Assert.True(accounting.Snapshot().CurrentBytes > 0);
+            Assert.True(Assert.Single(root.Geometries).Glyph.Source is {} source && source.HasGlyphMap);
+        }
+        Assert.Equal(0, accounting.Snapshot().CurrentBytes);
+        RenderBudget denied = new(accounting.Snapshot().PeakBytes - 1);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, snapshot, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        SvgRenderOptions options = new(new SvgViewport(128, 96), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        RgbaImage image = PngRgbaDecoder.Decode(png, 12_288);
+        Assert.Contains(image.Pixels, value => value != 0);
+        Assert.Equal(png, (await SvgConverter.ConvertToPngAsync(input, options, CancellationToken.None)).ToArray());
+        Assert.Equal(original, Assert.Single(snapshot.Fonts).Bytes.ToArray());
+        // Pixel completion remains in the manifest's separate ledger until both frozen references match.
+    }
+
+    [Theory]
+    [InlineData("M8 48 C24 48 40 48 56 48")]
+    [InlineData("M8 48 Q32 48 56 48")]
+    public async Task Zero_angle_polynomial_baselines_preserve_horizontal_font_strikes(string data)
+    {
+        byte[] input = Document("<defs><path id='p' d='" + data + "'/></defs><text><textPath href='#p' startOffset='16'>A</textPath></text>", "");
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] equivalent = Document("<defs><path id='p' d='M8 48 H56'/></defs><text><textPath href='#p' startOffset='16'>A</textPath></text>", "");
+        Assert.Equal(SvgConverter.ConvertToPng(equivalent, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+        RenderBudget budget = new(long.MaxValue);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+            Assert.True(Assert.Single(root.Geometries).Glyph.Source is {} source && !source.HasGlyphMap);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Theory]
