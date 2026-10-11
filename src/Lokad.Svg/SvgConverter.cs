@@ -1157,7 +1157,9 @@ public static class SvgConverter
 
         void RasterizeGeometryCore(SvgGeometry geometry, byte[] destination, SvgPaintPass pass)
         {
-            if (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.AuthoredPath is SvgAuthoredPath centerline && centerline.StrokeStyle is { Shape: SvgAuthoredStrokeShape.Path })
+            if (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.AuthoredPath is SvgAuthoredPath centerline
+                && centerline.StrokeStyle is SvgAuthoredStrokeStyle strokeStyle
+                && (strokeStyle.Shape == SvgAuthoredStrokeShape.Path || !centerline.SceneMap.PreservesAxisAlignedRectangles))
             {
                 ParserWorkCounter hairlineWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 SvgPolygonFill stroke = geometry.Polygon;
@@ -2663,7 +2665,7 @@ public static class SvgConverter
             SvgAffineTransform outputMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             SvgAffineTransform map = outputMap.ComposeChecked(source.SceneMap);
             SvgAffineTransform widthMap = outputMap.ComposeChecked(style.WidthMap);
-            if (!map.IsAxisAligned || !widthMap.IsAxisAligned) return null;
+            if (!map.PreservesAxisAlignedRectangles || !widthMap.PreservesAxisAlignedRectangles) return null;
             SvgRectanglePathRecognizer recognizer = new();
             foreach (SvgAuthoredPathCommand command in source.Commands)
             {
@@ -2673,10 +2675,14 @@ public static class SvgConverter
                 if (!recognizer.Add(command.Verb, command.First)) return null;
             }
             if (recognizer.Finish() is not SvgRecognizedRectangle { Closed: true } rectangle) return null;
-            double x1 = MapRectangleEdge(rectangle.Left, map.A, map.E), x2 = MapRectangleEdge(rectangle.Right, map.A, map.E);
-            double y1 = MapRectangleEdge(rectangle.Top, map.D, map.F), y2 = MapRectangleEdge(rectangle.Bottom, map.D, map.F);
+            bool exchangeAxes = !map.IsAxisAligned;
+            double x1 = MapRectangleEdge(exchangeAxes ? rectangle.Top : rectangle.Left, exchangeAxes ? map.C : map.A, map.E);
+            double x2 = MapRectangleEdge(exchangeAxes ? rectangle.Bottom : rectangle.Right, exchangeAxes ? map.C : map.A, map.E);
+            double y1 = MapRectangleEdge(exchangeAxes ? rectangle.Left : rectangle.Top, exchangeAxes ? map.B : map.D, map.F);
+            double y2 = MapRectangleEdge(exchangeAxes ? rectangle.Right : rectangle.Bottom, exchangeAxes ? map.B : map.D, map.F);
             return SvgRectangleFrameCoverage.Create(Math.Min(x1, x2), Math.Min(y1, y2), Math.Max(x1, x2), Math.Max(y1, y2),
-                style.Width * Math.Abs(widthMap.A), style.Width * Math.Abs(widthMap.D));
+                style.Width * Math.Abs(widthMap.IsAxisAligned ? widthMap.A : widthMap.C),
+                style.Width * Math.Abs(widthMap.IsAxisAligned ? widthMap.D : widthMap.B));
         }
 
         void RasterizeRectangleStroke(SvgRectangle rectangle, SvgStroke stroke, byte[] destination)

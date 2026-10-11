@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Six frozen general/composed rectangle-stroke controls advancing whole inv-132 and shared inv-133-135 gates; initial UnsupportedFeature outcomes retained before correction.",
+  "purpose": "Eight frozen general/composed/quarter-turn rectangle-stroke controls advancing complete inv-132-135; all twelve raw/prepared outputs are exact on Windows/Linux. Controls remain separate from whole documents.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -34,8 +34,7 @@
       "reference": "references/general-matrix.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "composed-reflection",
@@ -54,8 +53,7 @@
       "reference": "references/composed-reflection.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "centered-rotation",
@@ -74,8 +72,7 @@
       "reference": "references/centered-rotation.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "skew-x-fractional-root",
@@ -94,8 +91,7 @@
       "reference": "references/skew-x-fractional-root.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "skew-y-fractional-root",
@@ -114,8 +110,7 @@
       "reference": "references/skew-y-fractional-root.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "thin-rotation",
@@ -134,8 +129,45 @@
       "reference": "references/thin-rotation.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
+    },
+    {
+      "id": "thin-quarter-turn",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "f955f0b9cbade26501909c462cb71cb621754cf580e84e1a5542de9a0c06bbcf",
+      "referenceSha256": "d9afbdee6d93e3b66f7ee087b1fc897ea454c5514e755cbcb41c64469ad2a3c3",
+      "selection": "Declared at 7468f558 after parser prototype but before hairline/frame edits or comparison: quarter turns preserve native rectangle dispatch, including thin and independent scaled widths. Protects shared non-axis rectangle admission.",
+      "input": "thin-quarter-turn.svg",
+      "reference": "references/thin-quarter-turn.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity"
+    },
+    {
+      "id": "scaled-quarter-turn",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "b6ba9f898f442751f98f2eb871cf03a40fa1239d7c63ba93549890fc4112a913",
+      "referenceSha256": "86040657ed7102a37a9c46cc6d2fb46d78ba7a89bd94d68ac2a85fa54c1bc567",
+      "selection": "Declared at 7468f558 after parser prototype but before hairline/frame edits or comparison: quarter turns preserve native rectangle dispatch, including thin and independent scaled widths. Protects shared non-axis rectangle admission.",
+      "input": "scaled-quarter-turn.svg",
+      "reference": "references/scaled-quarter-turn.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity"
     }
   ]
 }

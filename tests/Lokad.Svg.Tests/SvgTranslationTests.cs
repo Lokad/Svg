@@ -89,10 +89,12 @@ public sealed class SvgRectangleTranslationTests
     [InlineData("skewY(10)")]
     [InlineData("rotate(5)")]
     [InlineData("skewX(10)")]
-    public void Rectangle_strokes_keep_non_axis_aligned_maps_explicit(string transform)
+    public void Rectangle_strokes_paint_under_non_axis_aligned_maps(string transform)
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><rect x='4' y='3' width='24' height='22' stroke='blue' stroke-width='2' transform='" + transform + "'/></svg>");
-        SvgException failure = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, failure.ErrorCode);
+        string source = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><rect x='4' y='3' width='24' height='22' stroke='blue' stroke-width='2' transform='" + transform + "'/></svg>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(source);
+        byte[] fillOnly = System.Text.Encoding.UTF8.GetBytes(source.Replace("stroke='blue'", "stroke='none'", StringComparison.Ordinal));
+        Assert.NotEqual(SvgConverter.ConvertToPng(fillOnly, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 }

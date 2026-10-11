@@ -1,12 +1,13 @@
 # Lokad.Svg — renderer fidelity and remaining SVG support
 
-Updated 2026-10-11. Complete Windows/Linux qualification preserves
+Updated 2026-10-12. Complete Windows/Linux qualification preserves
 **27/27 corporate documents and 258/258 variants exact**, against each platform's
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**35/45 retained development documents are complete.** The preceding 35 stay
-complete; the ten newly retained public-domain/CC0 outputs are **0/10 complete**.
+**39/45 retained development documents are complete.** The preceding 35 stay
+complete; the newly retained public-domain/CC0 batch is **4/10 complete**
+(`inv-132` matrix, `inv-133` rotation, `inv-134` skewX and `inv-135` skewY).
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
@@ -252,6 +253,12 @@ Mechanisms, control counts and dated qualifications live in
 | CC0 Shapes Pattern (`inv-128`) | Explicit 600×400, transparent; original source unchanged | Shared bounded grouped tile content, composed child maps and inherited solid/gradient paint. |
 | Question-mark export (`inv-126`) | 185×180, transparent | Shared bounded validation of inert outlined-path typography; existing native blur and geometry playback are already exact. |
 | Static CSS comparison diagram (`inv-129`) | Explicit 750×200, transparent; supplied Noto Sans Regular / initial serif contract | Shared cascade, span paint, composed translations, local Linux masks and Windows axis-edge continuation ownership. |
+| Scaled rectangle strokes (`inv-130`) | Explicit 512×512, transparent | Native source frames retain independent axis widths under composed/reflected scaling. |
+| Group circle clips (`inv-131`) | Explicit 512×301, transparent | Normalized oval clips use stroke-independent geometry bounds and ordered local group/use replay. |
+| Matrix rectangle strokes (`inv-132`) | Explicit 512×512, transparent | Shared source stroke construction through general/reflected composed maps. |
+| Rotated rectangle strokes (`inv-133`) | Explicit 512×512, transparent | Composed group/leaf and centered rotation retain native stroke coverage. |
+| SkewX rectangle strokes (`inv-134`) | Explicit 512×512, transparent | Shared source frames and composed horizontal skew maps. |
+| SkewY rectangle strokes (`inv-135`) | Explicit 512×512, transparent | Shared source frames and composed vertical skew maps. |
 | Original live-text acceptance fixture | 64×64, transparent; explicit supplied Noto Sans / `Example` contract | Shared bounded platform hinting, directed contours, symmetric LCD/analytic coverage and font preblend. Separate from the listed development documents. |
 | Original text-path acceptance fixture | 64×64, transparent; the same supplied Noto Sans / `Example` contract | Local authored path/reference layout, composed source maps and original paint positions reuse existing glyph raster replay. Seven separate controls are exact on both platforms. |
 | CC0 SVG Translate textpath | 512×256, transparent; supplied Noto Sans Mono Bold face 0 | Shared span positioning, composite fitting, platform advances and native quadratic/dropout coverage. All 12 APIs are exact on both platforms; seven separate controls are exact. |
@@ -308,7 +315,7 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected development queue has **35 completed / 45 selected**, including both baseball,
+The selected development queue has **39 completed / 45 selected**, including both baseball,
 both arrow exports, both path-marker documents and the two public-domain filter
 exports. The original marker-instance and drop-shadow acceptance fixtures are
 also complete, counted separately (**2/2**). Both original supplied-font acceptance
@@ -445,7 +452,8 @@ That two-document source batch completed **2/2**, bringing the preceding queue t
 **35/35**. G2–G9/S17 remain open: general source/reference maps, other clip content
 and the finite original-scope combinations retain their explicit group exits.
 The next bounded batch retains **ten whole static, self-contained, fontless
-documents (`inv-132`–`inv-141`)**, all currently rejected on Windows/Linux. Outputs
+documents (`inv-132`–`inv-141`)**. All initially rejected on Windows/Linux;
+`inv-132`–`inv-135` are now complete, with six other outputs still queued. Outputs
 were declared at `6e759f24` before comparison. Three healthy cleaned captures per
 platform agree with each frozen reference; original downloads remain unchanged.
 Browser-only Latin-1 transport for the two pattern documents preserves their
@@ -453,32 +461,44 @@ parsed XML trees. Source/options/gates are in the
 [development manifest](tests/References/inventory/svg-gap-cases.json) and
 [source ledger](docs/INVENTORY.md#remaining-support-batch-2026-10-11).
 
-| Complete documents queued | Shared first gate / declared transparent output |
+| Selected whole documents | Shared first gate / declared transparent output |
 | --- | --- |
-| `inv-132` matrix; `inv-133` rotation; `inv-134` skewX; `inv-135` skewY | Non-axis rectangle strokes; each 512×512 |
+| `inv-132` matrix; `inv-133` rotation; `inv-134` skewX; `inv-135` skewY — complete | Non-axis rectangle strokes repaired; each 512×512 |
 | `inv-136` compound/nested clips; `inv-137` open/zero-area clips | Normalized path clips and degenerate clip semantics; 512×277 / 512×269 |
 | `inv-138` rotated honeycomb; `inv-139` phased checker columns | Pattern viewBox mapping and aliases; 512×357 / 512×341 |
 | `inv-140` rainbow checker; `inv-141` smiley mask export | Bounded gradient-stop capacity/pattern mask content and finite group mask region; 512×512 / authored 256×256 |
 
-**Next deliverable: finish `inv-132` against its unchanged 512×512 reference.**
-The [six affine rectangle-stroke controls](tests/Research/affine-rectangle-strokes/manifest.json)
-are declared at `b3372d20` before correction. General/composed/reflected maps,
-centered rotation, both skews with fractional root mapping and a thin stroke
-have healthy cleaned Windows/Linux reference triples; initial unsupported
-outcomes are protected through the existing harness. Controls remain separate
-from the ten whole documents and require exact results before this slice closes.
-Extend retained source-coordinate rectangle strokes through composed general
-maps, preserving native draw distinctions. Use rotation/skew documents to guide
-shared diagnostics; complete each through every subsequent rejection and pixel
-mismatch. Add focused controls before correction and track their results
-separately. This batch is **0/10 complete**, making the current queue **35/45**.
-Other G2–G9/S17 exits remain open; completed documents and corporate membership
-stay protected. Verify the new asset declarations through the existing harness;
-unchanged production code does not require repeating completed qualification.
-The existing inventory harness passes all **19 cases on Windows/Linux**
-(nine prior cases plus these ten), with zero failures/skips. Source/oracle capture
-evidence is in `artifacts/remaining-support-sourcing-20261011/`; no new testing or
-measurement framework, production change or prior reference refresh is involved.
+**The complete `inv-132`–`inv-135` originals now match unchanged 512×512
+transparent references through all twelve raw/prepared outputs on Windows/Linux.**
+Shared sharp-rectangle source replay admits composed general stroke maps; native
+hairline coverage preserves the rectangle path's contour start, while maps that
+exchange axes retain direct rectangle-frame coverage and independent widths.
+The [eight affine controls](tests/Research/affine-rectangle-strokes/manifest.json)
+are separately exact: six froze at `b3372d20` before parser correction; two
+quarter-turn boundaries were declared at `7468f558` before frame/hairline edits.
+Original inputs/options/references and prior completed documents remain unchanged.
+
+Complete qualification passes **7,115 tests per platform** (4,930 core / 2,179
+visual / six FontProbe), with zero failures/skips in the final runs. All **2,855
+prior ordinary PNGs**, every established exact comparison, previous focused/static
+CSS results and **30 exact supplied-font outputs per platform** remain unchanged.
+The sole ordinary change is `transformed-rectangle-controls/stroke-boundary`,
+graduating from rejection to its frozen exact result. Corporate **27/27 documents
+/ 258/258 variants** remain protected. Nine focused core checks cover empty
+dimensions, numeric/clip boundaries, sampled work/memory denial, cancellation and
+cleanup. The reused two-workload resource probe passes normal conversion and tight
+denial; this does not reopen completed memory qualification. API/package contracts
+are unchanged. Receipt: `artifacts/affine-rectangle-strokes-20261012/final-qualification.json`.
+
+This new batch is **4/10 complete**, making the current queue **39/45**.
+**Next deliverable: complete `inv-139`'s phased pattern columns at frozen 512×341
+transparent.** Extend shared pattern viewBox/aspect and alias-coordinate mapping;
+`inv-138` exposes additional local group/use, rotation and visible-overflow gates.
+Implement dependencies required by the selected whole document, then proceed
+through every mismatch. Declare focused controls before correction and retain
+the remaining G2–G9/S17 promises without exhaustive prerequisites.
+The preceding source-freeze inventory check passed 19 cases on both platforms;
+finished renderer qualification above supersedes that narrower evidence.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -703,12 +723,11 @@ The [retained-content slice](docs/RASTERIZATION_DESIGN.md#retained-symbol-groups
 
 ### G3 — curved geometry and transforms
 
-The next whole-document correction is `inv-132`; `inv-133`–`inv-135` share its
-non-axis rectangle-stroke admission gate. Preserve source construction and the
-composed output map for matrix, centered rotation and both skew directions;
-do not substitute a generic polygon draw where native rectangle coverage differs.
-This advances the existing finite transform/stroke exit without requiring the
-remaining G2 combinations first.
+`inv-132`–`inv-135` complete matrix, centered-rotation and both skew witnesses
+for shared sharp-rectangle source strokes. Eight controls also preserve fractional
+root mapping, thin native path coverage and axis-exchanging native frames. This
+advances the finite transform/stroke exit; rounded/general paint and remaining
+instance/clip combinations stay open without becoming prerequisites for G6.
 
 The complete CC0 `inv-106` I Ching library now matches its stable 280×720
 reference. Diagnosis corrected the earlier attribution: its Yin/Yang compound
@@ -1258,9 +1277,9 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 The original fidelity repairs and the **33 previously completed development
 documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
-(**2/2**). Ten newly retained outputs (`inv-132`–`inv-141`) are **0/10 complete**,
-making the current selected development queue **35/45 complete**. Their frozen
-whole-document references and first gates are listed above; start with `inv-132`.
+(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **4/10
+complete**, making the current selected development queue **39/45 complete**.
+Their frozen references and first gates are listed above; next, finish `inv-139`.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh

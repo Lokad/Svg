@@ -27,6 +27,12 @@ internal static class SvgLeafParser
             && (!SvgGradientSyntax.IsGradientFill(patternStyle.Fill) || !earlyTransform.IsAxisAligned)
             && (patternStyle.Stroke is null or "none" || SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth)))
             return LowerTransformedFill(reader, context, syntax, frame, state);
+        if (!earlyTransform.IsAxisAligned && !rounded)
+        {
+            if (reader.GetAttribute("clip-path") is not null && !state.DeferringLeafClip)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths on transformed rectangle strokes are not implemented.");
+            return LowerRoundedRect(reader, context, syntax, 0, 0, frame, state);
+        }
         SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
         if (!rounded && !earlyTransform.IsTranslation && patternStyle.Stroke is string mappedStroke
@@ -67,18 +73,10 @@ internal static class SvgLeafParser
                 using BudgetedGeometryBuilder empty = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
                 return new SvgParsedGeometry(empty.Detach(), 0);
             }
-            using BudgetedParserList<SvgFractionalPoint> points = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
-            double right = rectangle.X + rectangle.Width, bottom = rectangle.Y + rectangle.Height;
-            // Match native rectangle source order and float endpoints; the shared
-            // contour route composes placement, while raster replay keeps shape identity.
-            points.Add(new(rectangle.X, bottom));
-            points.Add(new(rectangle.X, rectangle.Y));
-            points.Add(new(right, rectangle.Y));
-            points.Add(new(right, bottom));
             using BudgetedParserList<SvgPoint> noPoints = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
             using BudgetedParserList<int> noEnds = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
             using SvgOrthogonalGeometryLowering lowering = new(noPoints, noEnds, "rect", false, false, int.MaxValue, document.Budget, elementContext.WorkCounter, elementContext.CancellationToken);
-            SvgParsedGeometry filled = lowering.LowerFractionalPointList(points, SvgPolygonMapping.FiniteEdges, element, clip, document.Budget) with { ElementCount = 0 };
+            SvgParsedGeometry filled = lowering.LowerRectangleSourceFill(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element, clip, document.Budget);
             if (!shader || !element.Presentation.HasFill || filled.Geometries.Length == 0) return filled;
             using BudgetedGeometryBuilder repainted = new(document.Budget, SvgMemoryCategory.Geometry, elementContext.WorkCounter, elementContext.CancellationToken);
             try
@@ -180,6 +178,11 @@ internal static class SvgLeafParser
         if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern) fillStyle = fillStyle with { Stroke = "none" };
         SvgResolvedPaintableElement element = context.ResolveShape(fillStyle, reader, true);
         SvgAffineTransform transform = context.ResolveTransform(reader);
+        if (!transform.IsAxisAligned && (syntax.Width == 0 || syntax.Height == 0))
+        {
+            using BudgetedGeometryBuilder empty = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
+            return new SvgParsedGeometry(empty.Detach(), 0);
+        }
         if (paintPattern)
         {
             if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");

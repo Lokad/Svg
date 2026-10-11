@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Existing frozen transformed-rectangle-fills controls; gradient-boundary now matches its unchanged reference through all six APIs after shared rectangle coordinate/source-paint support. Other established outcomes remain protected.",
+  "purpose": "Existing frozen transformed-rectangle fill controls; gradient-boundary and stroke-boundary match unchanged references through shared source paint/stroke replay. Other established outcomes remain protected.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -183,9 +183,7 @@
       "width": 64,
       "height": 48,
       "background": "transparent",
-      "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only axis-aligned rectangle transforms are implemented."
+      "role": "fidelity"
     },
     {
       "id": "composed-nonuniform",

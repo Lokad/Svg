@@ -441,10 +441,27 @@ internal ref struct SvgOrthogonalGeometryLowering
         return LowerNativeEllipseStroke(centerX, centerY, radiusX, radiusY, element, stroke, null, 0, null, 4, nonScaling, frame, budget);
     }
 
-    /// <summary>Lowers one axis-aligned rounded rectangle to a sampled polygon fill.</summary>
+    /// <summary>Lowers native rectangle source corners through the shared retained convex fill route.</summary>
+    /// <remarks>The result owns bounded scene/source storage; caller work and cancellation apply
+    /// to every corner and source command. Partial construction releases all temporary owners.</remarks>
+    internal SvgParsedGeometry LowerRectangleSourceFill(double x, double y, double width, double height,
+        SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
+    {
+        using BudgetedParserList<SvgFractionalPoint> points = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
+        double right = x + width, bottom = y + height;
+        points.Add(new(x, bottom));
+        points.Add(new(x, y));
+        points.Add(new(right, y));
+        points.Add(new(right, bottom));
+        return LowerFractionalPointList(points, SvgPolygonMapping.FiniteEdges, element, frame, budget) with { ElementCount = 0 };
+    }
+
+    /// <summary>Lowers axis-aligned rounded rectangles or general-mapped sharp rectangles to retained fills.</summary>
     internal SvgParsedGeometry LowerRoundedRectFill(double x, double y, double width, double height, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
+        if (!element.Transform.IsAxisAligned && radiusX == 0 && radiusY == 0)
+            return LowerRectangleSourceFill(x, y, width, height, element, frame, budget);
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         SvgRectangle placed = element.Transform.Apply(new SvgRectangle(x, y, width, height, default, false, null));
         SvgRectangle shifted = frame is null ? placed : frame.Value.Shift(placed);
@@ -498,9 +515,9 @@ internal ref struct SvgOrthogonalGeometryLowering
         double radiusX, double radiusY, SvgResolvedPaintableElement element,
         SvgStrokeStyleSyntax.SvgAdmittedStroke stroke, SvgViewportFrame? frame, RenderBudget budget)
     {
-        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
-        // Scaling rectangles with zero corner radii construct their outline in source coordinates;
-        // its retained map carries independent axis scales through final playback.
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, radiusX != 0 || radiusY != 0);
+        // Sharp rectangles construct their outline in source coordinates; the
+        // retained map carries independent scales, rotations and skews to playback.
         double deviceWidth = radiusX == 0 && radiusY == 0 && !stroke.NonScalingStroke
             ? stroke.Width : StrokeDeviceWidth(stroke.Width, element.Transform, frame, stroke.NonScalingStroke);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);

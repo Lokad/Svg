@@ -589,8 +589,8 @@
         "height": 512
       },
       "selection": "Declared at 6e759f24 before renderer comparison/capture: whole untouched static fontless export, explicit nominal source-page frame, root dimensions only in browser input.",
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Only axis-aligned rectangle transforms are implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Complete: unchanged 512x512 transparent reference is exact through all twelve raw/prepared outputs on Windows/Linux after shared source-coordinate rectangle stroke replay, native thin-stroke dispatch and axis-exchanging frame coverage.",
       "reference": "tests/References/inventory/inv-132-transparent.png",
       "referenceSha256": "2289e90e5b1a301bcdb7d4fdae0ad724c9bca2bba77c2f66ce3c09f938ed3dcc",
       "sourceRevisionUrl": "https://commons.wikimedia.org/wiki/File:SVGtransform_matrix01.svg?oldid=963516585",
@@ -654,8 +654,8 @@
         "height": 512
       },
       "selection": "Declared at 6e759f24 before renderer comparison/capture: whole untouched static fontless export, explicit nominal source-page frame, root dimensions only in browser input.",
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Only axis-aligned rectangle transforms are implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Complete: unchanged 512x512 transparent reference is exact through all twelve raw/prepared outputs on Windows/Linux after shared source-coordinate rectangle stroke replay, native thin-stroke dispatch and axis-exchanging frame coverage.",
       "reference": "tests/References/inventory/inv-133-transparent.png",
       "referenceSha256": "9dce0ded0522aade027e515b8bbb9559bbb58673090f2096c9c4eb240c5d97b7",
       "sourceRevisionUrl": "https://commons.wikimedia.org/wiki/File:SVGtransform_rotate01.svg?oldid=963516623",
@@ -718,8 +718,8 @@
         "height": 512
       },
       "selection": "Declared at 6e759f24 before renderer comparison/capture: whole untouched static fontless export, explicit nominal source-page frame, root dimensions only in browser input.",
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Only axis-aligned rectangle transforms are implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Complete: unchanged 512x512 transparent reference is exact through all twelve raw/prepared outputs on Windows/Linux after shared source-coordinate rectangle stroke replay, native thin-stroke dispatch and axis-exchanging frame coverage.",
       "reference": "tests/References/inventory/inv-134-transparent.png",
       "referenceSha256": "93f33d2459249dd4b0b33c10624ae1b73077a63c25431c0f1e1308c3f4164090",
       "sourceRevisionUrl": "https://commons.wikimedia.org/wiki/File:SVGtransform_skewX01.svg?oldid=963516685",
@@ -782,8 +782,8 @@
         "height": 512
       },
       "selection": "Declared at 6e759f24 before renderer comparison/capture: whole untouched static fontless export, explicit nominal source-page frame, root dimensions only in browser input.",
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Only axis-aligned rectangle transforms are implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Complete: unchanged 512x512 transparent reference is exact through all twelve raw/prepared outputs on Windows/Linux after shared source-coordinate rectangle stroke replay, native thin-stroke dispatch and axis-exchanging frame coverage.",
       "reference": "tests/References/inventory/inv-135-transparent.png",
       "referenceSha256": "f4d17bc8331b753ae0fb72f1793f9cccae2fb0207fab3dc5bba01ee3c7fa0805",
       "sourceRevisionUrl": "https://commons.wikimedia.org/wiki/File:SVGtransform_skewY01.svg?oldid=963516698",

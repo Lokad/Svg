@@ -25,7 +25,20 @@ internal static class SvgHairlineStroke
         float lengthX = FastLength((float)widthMap.A * strokeWidth, (float)widthMap.B * strokeWidth);
         float lengthY = FastLength((float)widthMap.C * strokeWidth, (float)widthMap.D * strokeWidth);
         if (!(lengthX <= 1 && lengthY <= 1)) return false;
-        ReadOnlySpan<SvgAuthoredPathCommand> commands = path.Commands;
+        scoped ReadOnlySpan<SvgAuthoredPathCommand> commands = path.Commands;
+        Span<SvgAuthoredPathCommand> rectangleCommands = stackalloc SvgAuthoredPathCommand[5];
+        if (style.Shape == SvgAuthoredStrokeShape.Rectangle && commands.Length == 5)
+        {
+            // General-mapped drawRect falls back to a path starting at top-left.
+            // The rounded-rectangle source starts at bottom-left. Hairline segment
+            // overlap makes that otherwise equivalent contour order observable.
+            rectangleCommands[0] = commands[1] with { Verb = SvgAuthoredPathVerb.Move };
+            rectangleCommands[1] = commands[2];
+            rectangleCommands[2] = commands[3];
+            rectangleCommands[3] = commands[0] with { Verb = SvgAuthoredPathVerb.Line };
+            rectangleCommands[4] = commands[4];
+            commands = rectangleCommands;
+        }
         float coverage = (lengthX + lengthY) * .5f;
         byte alpha = coverage == 1 ? color.Alpha : (byte)((color.Alpha * (int)(coverage * 256)) >> 8);
         SvgAnalyticPaint paint = constantPaint is {} constant

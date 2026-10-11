@@ -12090,3 +12090,45 @@ The existing two-workload resource probe covers inv-131 and referenced-lines on
 success and tight denial. Approximate memory policy from 8399711b is unchanged;
 no new measurement framework or completed-memory requalification was introduced.
 Private receipt: artifacts/object-bounding-clips-20261011/final-qualification.json.
+
+## General sharp-rectangle strokes and native dispatch (2026-10-12)
+
+The untouched public-domain matrix, rotation, skewX and skewY examples
+`inv-132`â€“`inv-135` complete their declared 512Ã—512 transparent outputs. Their
+original downloads and references remain unchanged. Six controls froze before
+parser correction; two further quarter-turn controls were declared before the
+corresponding frame/hairline edits. Controls stay separate from document counts.
+
+The parser formerly applied an axis-only rectangle placement before reaching its
+retained stroke route. Sharp general-mapped strokes now enter that shared route
+directly; unsupported clip combinations still reject. Rectangle fills share the
+existing retained convex source replay through `LowerRectangleSourceFill`, with
+the same native source corners and composed map used by affine fill-only leaves.
+Sharp source outlines no longer require uniform general maps: native construction
+occurs before placement. Rounded and remaining paint/reference/clip combinations
+retain their individual finite G2â€“G6 boundaries.
+
+Native draw distinctions remain observable. Thin general-mapped rectangles use
+the existing hairline renderer. Native rectangle fallback starts its closed path
+at top-left, while rounded-rectangle source commands start at bottom-left. Equal
+geometric contours initially left two differing corner pixels; preserving the
+native start resolves their segment-overlap rounding. Maps that exchange axes
+still preserve axis-aligned rectangles, so they use specialized frame coverage,
+mapping geometry extents and independent stroke widths in their respective axes.
+Treating those quarter turns as generic paths produced 130/139 differing pixels
+in the two controls; the shared frame preparation removes both mismatches.
+
+Complete Windows/Linux qualification passes 7,115 tests per platform and all
+twelve raw/prepared outputs for the four documents and eight controls. Every
+previous rendered ordinary PNG, established exact result, focused/static CSS
+output and exact supplied-font output remains protected. One older rotated-stroke
+control graduates on its unchanged reference. Nine focused core checks cover
+empty geometry, numeric and clip boundaries, sampled work/storage denial,
+cancellation and cleanup. The existing two-workload resource probe covers a
+whole document and thin control on normal conversion and tight denial.
+Approximate memory policy and API/package contracts remain unchanged.
+
+The selected development ledger is 39/45 complete; this batch is 4/10. Finite
+G2â€“G9/S17 exits remain open. Next, complete `inv-139` through shared pattern
+viewBox/alias mapping, taking its frozen whole output through every later gate
+and mismatch without requiring exhaustive instance combinations first.

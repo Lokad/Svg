@@ -5,16 +5,18 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
-## Current development documents (2026-10-11)
+## Current development documents (2026-10-12)
 
-The current development queue is **35 complete / 45 selected**. The prior 35
+The current development queue is **39 complete / 45 selected**. The prior 35
 completed documents stay protected, separately from corporate **27/27 documents
 / 258/258 variants** and the original acceptance fixtures. The new bounded batch
 retains ten unchanged public-domain/CC0 SVGs with declared outputs and frozen
-native Windows/Linux references; all ten currently reject. See the
+native Windows/Linux references. Matrix, rotation and both skew documents
+(`inv-132`–`inv-135`) now match all twelve raw/prepared outputs on both platforms;
+the six other documents remain queued. See the
 [remaining-support source ledger](#remaining-support-batch-2026-10-11).
-The next deliverable is the complete matrix-transform document `inv-132`;
-rotation and both skew examples share its rectangle-stroke gate. These are
+The next deliverable is the phased pattern-column document `inv-139`, using
+shared viewBox/alias mapping to advance the remaining pattern queue. These are
 failure-selected development cases, not a representative success-rate cohort.
 
 ## Completed development checkpoint (2026-10-09)
@@ -3374,11 +3376,13 @@ to each artist upload. Retained asset pages identify Manuela’s gradient/checke
 remix lineage and qubodup’s remix of Justin Ternet’s own generic face drawings;
 neither page carries a rights-review tag. The renderer tests need no network.
 
-This batch is **0/10 complete**; the prior **35 completed documents** remain
-protected, making the current selected queue **35/45**. Next: complete
-`inv-132` against its unchanged reference by extending shared native rectangle
-stroke construction through composed general maps. The rotation and skew
-documents guide the same mechanism; controls remain separate from document
-counts. Compound/degenerate clips, pattern viewBox/aliases/content and finite
+This batch is **4/10 complete**; the prior **35 completed documents** remain
+protected, making the current selected queue **39/45**. `inv-132`–`inv-135` match
+unchanged 512×512 references through all twelve APIs on Windows/Linux. Eight
+separate controls are exact, including thin general strokes and axis-exchanging
+frames. Complete qualification passes 7,115 tests per platform with every prior
+exact result protected. Next: complete phased pattern columns `inv-139` against
+its frozen reference through shared viewBox/alias mapping. Compound/degenerate
+clips, pattern viewBox/aliases/content and finite
 group mask regions remain queued, without making exhaustive G2 a prerequisite.
 Corporate membership and all established exact references stay unchanged.
