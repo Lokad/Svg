@@ -54,13 +54,11 @@ internal static class SvgFontRequestDiscovery
         try
         {
             XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, workCounter, cancellationToken);
+            SvgRootStyleSheetParser.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
             using ReadOnlyMemoryStream stream = new(svg);
             using XmlReader reader = XmlReader.Create(stream, settings);
             bool hasRoot = false;
             int rootDepth = -1;
-            string? rootId = null;
-            string? rootClass = null;
-            bool sawStyleableNode = false;
             bool hasUnsupportedContent = false;
             int nodeCount = 0;
             int inertDepth = -1;
@@ -83,8 +81,6 @@ internal static class SvgFontRequestDiscovery
                         SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
                         hasRoot = true;
                         rootDepth = reader.Depth;
-                        rootId = reader.GetAttribute("id");
-                        rootClass = reader.GetAttribute("class");
                     }
                     SvgStructuralAdmission.ValidateElementStructure(reader, limits);
                     if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
@@ -155,22 +151,18 @@ internal static class SvgFontRequestDiscovery
                     if (inheritedLevels.Count == 0)
                     {
                         SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
+                        SvgRootStyleSheetParser.ThrowIfTargetsRoot(root.Id, root.Class, styleRules, workCounter, cancellationToken);
                         rootWidth = root.UserViewportWidth;
                         rootHeight = root.UserViewportHeight;
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.InheritedStroke.Stroke, root.Opacity != 255) { PaintServerFill = root.InheritedPresentation.PaintServerFill };
                     }
                     else style = inheritedLevels[inheritedLevels.Count - 1];
-                    bool rootStyleElement = isSvgElement && reader.LocalName == "style" && directChild;
-                    if (rootStyleElement)
+                    bool collectedStyleElement = isSvgElement && reader.LocalName == "style" && (directChild || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1);
+                    if (collectedStyleElement)
                     {
-                        SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode);
-                        SvgRootStyleSheetParser.ThrowIfAttributed(reader);
-                        using OwnedStyleSheetText styleText = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
-                        SvgStyleSheet.Parse(styleText.Value, limits.MaximumNodes, styleRules, styleStrings, budget, workCounter, cancellationToken);
-                        if (SvgStyleSheet.TargetsRootId(rootId, styleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
-                        if (SvgStyleSheet.TargetsRootClass(rootClass, styleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
+                        SvgRootStyleSheetParser.Consume(reader, budget, workCounter, cancellationToken);
+                        continue;
                     }
-                    if (rootStyleElement) continue;
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && (directChild || hasGroupAncestor) && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
                     bool symbolDefinition = !sterile && isSvgElement && reader.LocalName is ("symbol" or "marker")
                         && SvgStructuralVocabulary.IsSymbolDefinitionLocation(directChild, parentAllowsText && hasGroupAncestor, definitionsDepth, symbolDepth, reader.Depth);
@@ -178,10 +170,8 @@ internal static class SvgFontRequestDiscovery
                     {
                         if (reader.LocalName == "marker") _ = SvgMarkerSyntax.Parse(reader, new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height), workCounter, cancellationToken);
                         else SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
-                        sawStyleableNode = true;
                         if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
                     }
-                    if (!sterile && isSvgElement && ((definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1) || (symbolDepth >= 0 && reader.Depth == symbolDepth + 1)) && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)) sawStyleableNode = true;
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = !sterile && parentAllowsText && textElement;
@@ -195,13 +185,8 @@ internal static class SvgFontRequestDiscovery
                         SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, baseWidth, baseHeight);
                         SvgViewBox? viewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
                         plainViewport = true;
-                        sawStyleableNode = true;
                         if (!reader.IsEmptyElement) viewportSizes.Add(new SvgViewportSize(viewBox?.Width ?? viewport.Width, viewBox?.Height ?? viewport.Height, reader.Depth));
                     }
-                    if (!sterile && isSvgElement && !rootElement && reader.LocalName == "clipPath") sawStyleableNode = true;
-                    if (!sterile && isSvgElement && !rootElement && reader.LocalName == "mask") sawStyleableNode = true;
-                    if (!sterile && isSvgElement && !rootElement && reader.LocalName == "pattern") sawStyleableNode = true;
-                    if (!sterile && isSvgElement && !rootElement && reader.LocalName is ("linearGradient" or "radialGradient")) sawStyleableNode = true;
                     if (!sterile && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName) && reader.GetAttribute("clip-path") is not null && !reader.IsEmptyElement) clipDepths.Add(reader.Depth);
                     if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "switch" && (parentAllowsText || viewportSizes.Count > 0 || clipDepths.Count > 0) && !reader.IsEmptyElement) switchScopes.Add(new SwitchScope(reader.Depth, false));
                     bool isKnownContent = isSvgElement && reader.LocalName is ("svg" or "g" or "a" or "switch" or "text" or "rect" or "line" or "use" or "path" or "polygon" or "polyline" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "marker" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop");
@@ -272,7 +257,6 @@ internal static class SvgFontRequestDiscovery
                         if (group) groupDepth++;
                         if (candidateState.HasRequest) activeCandidateLevel = directTextLevels.Count - 1;
                     }
-                    if (!sterile && isSvgElement && parentAllowsText && reader.LocalName is ("rect" or "line" or "use" or "path" or "polygon" or "polyline" or "text" or "image")) sawStyleableNode = true;
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {

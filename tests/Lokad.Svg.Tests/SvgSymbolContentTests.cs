@@ -111,15 +111,15 @@ public sealed class SvgSymbolContentTests
     }
 
     [Fact]
-    public void Nested_nonrendering_groups_leave_font_discovery_and_late_stylesheet_checks_intact()
+    public void Nested_nonrendering_groups_preserve_font_discovery_and_late_stylesheets()
     {
         RenderBudget budget = new(1_000_000);
         byte[] input = Input("<symbol id='s'><g font-family='Unused'><g><circle r='3'/></g></g></symbol><use href='#s'/><text font-family='Example'>A</text>");
         Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, SvgRenderLimits.Default, new(100_000), budget, CancellationToken.None)).Family);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
         byte[] lateStyle = Input("<symbol id='s'><g/></symbol><style>rect { fill: red; }</style><rect width='4' height='4'/>");
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(lateStyle, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(lateStyle, SvgRenderLimits.Default, new(100_000), budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(SvgConverter.ConvertToPng(Input("<rect width='4' height='4' fill='red'/>"), SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(lateStyle, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        Assert.Empty(SvgFontRequestDiscovery.Discover(lateStyle, SvgRenderLimits.Default, new(100_000), budget, CancellationToken.None));
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

@@ -172,20 +172,40 @@ public sealed class SvgStyleSheetTests
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
     [Theory]
-    [InlineData(false, false)]
-    [InlineData(true, true)]
-    public void Rejects_a_late_root_stylesheet(bool sawStyleableNode, bool throws)
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Late_stylesheets_apply_to_earlier_content(bool inDefinitions)
     {
-        if (throws)
-        {
-            SvgException exception = Assert.Throws<SvgException>(() => SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode));
+        string sheet = "<style>#box { fill: #025bc7; }</style>";
+        if (inDefinitions) sheet = "<defs>" + sheet + "</defs>";
+        byte[] actual = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect id='box' width='8' height='8'/>" + sheet + "</svg>", out _, out _);
+        byte[] expected = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' fill='#025bc7'/></svg>", out _, out _);
+        Assert.Equal(expected, actual);
+    }
 
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
-        }
-        else
-        {
-            SvgRootStyleSheetParser.ThrowIfLate(sawStyleableNode);
-        }
+    [Theory]
+    [InlineData(1, false)]
+    [InlineData(2, false)]
+    [InlineData(2, true)]
+    [InlineData(4, false)]
+    [InlineData(4, true)]
+    public void Late_prefixed_stylesheets_use_the_xml_input_encoding(int stride, bool bigEndian)
+    {
+        System.Text.Encoding encoding = stride switch { 2 => bigEndian ? System.Text.Encoding.BigEndianUnicode : System.Text.Encoding.Unicode, 4 => new System.Text.UTF32Encoding(bigEndian, true, true), _ => System.Text.Encoding.UTF8 };
+        string xml = "<s:svg xmlns:s='http://www.w3.org/2000/svg' width='8' height='8'><s:rect id='box' width='8' height='8'/><s:style>#box{fill:blue}</s:style></s:svg>";
+        byte[] input = encoding.GetPreamble().Concat(encoding.GetBytes(xml)).ToArray();
+        byte[] expected = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><rect width='8' height='8' fill='blue'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(expected, SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
+
+    [Fact]
+    public void Partial_late_stylesheet_rejection_releases_parser_storage()
+    {
+        RenderBudget budget = new(1_000_000);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><rect id='box' width='8' height='8'/><style>#box{fill:blue}.box:hover{fill:red}</style></svg>"u8.ToArray();
+        SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Theory]
@@ -238,15 +258,14 @@ public sealed class SvgStyleSheetTests
     }
 
     [Fact]
-    public void Late_defs_stylesheet_stays_unsupported()
+    public void Root_and_late_definition_stylesheets_keep_source_order()
     {
-        // S9: streaming cannot apply rules parsed after content, so late stylesheets reject.
-        byte[] input = System.Text.Encoding.UTF8.GetBytes(
+        byte[] actual = RenderPixels(
             "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" +
-            "<polygon points='0,0 8,0 8,8 0,8' fill='red'/>" +
-            "<defs><style>.a{fill:#00ff00;}</style></defs></svg>");
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+            "<style>.a{fill:red !important}</style><polygon class='a' points='0,0 8,0 8,8 0,8'/>" +
+            "<defs><style>.a{fill:#00ff00 !important}</style></defs><style>.a{fill:blue !important}</style></svg>", out _, out _);
+        byte[] expected = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polygon points='0,0 8,0 8,8 0,8' fill='blue'/></svg>", out _, out _);
+        Assert.Equal(expected, actual);
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

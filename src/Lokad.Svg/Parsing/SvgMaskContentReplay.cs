@@ -51,7 +51,6 @@ internal static class SvgMaskContentReplay
             state.MaskHasReplayContent = true;
         }
         state.HasUnsupportedContent |= !reader.IsEmptyElement;
-        state.SawStyleableNode = true;
         return true;
     }
 

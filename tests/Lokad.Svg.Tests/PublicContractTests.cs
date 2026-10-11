@@ -483,9 +483,7 @@ public sealed class PublicContractTests
             catch (SvgException) { }
         }
 
-        SvgException complete = Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(full, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, complete.ErrorCode);
+        Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(full, CancellationToken.None)).Family);
     }
 
     [Fact]
@@ -505,11 +503,11 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Stylesheets_after_rectangle_definitions_are_rejected_before_instancing()
+    public void Stylesheets_after_rectangle_definitions_apply_before_instancing()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><rect id='tile' width='1' height='1'/></defs><style>rect { fill: red; }</style><use href='#tile'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] actual = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><defs><rect id='tile' width='1' height='1'/></defs><style>rect { fill: red; }</style><use href='#tile'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] expected = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(expected, actual);
     }
 
     [Fact]

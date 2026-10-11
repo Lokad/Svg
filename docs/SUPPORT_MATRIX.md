@@ -1,4 +1,22 @@
-# Support matrix
+# Supplied text defaults and late embedded rules (2026-10-11)
+
+Omitting `font-family` requests the initial `serif` family through the caller's
+font catalogue and its existing fallback order. Font programs still come solely
+from the caller. An unavailable selected source yields `UnresolvedResource`;
+ordinary conversion without a required prepared snapshot remains unsupported.
+Absolute font sizes admit bare numbers, px, in, cm, mm, pt and pc at 96 CSS pixels
+per inch. Text coordinates retain their existing bare-number/px subset.
+
+Embedded root and definition stylesheets are collected in source order before
+font discovery and lowering. They may follow rendered content or definitions;
+the existing cascade, specificity and important precedence apply. The prepass
+shares structural, memory and work limits and cancellation with its operation.
+External stylesheets, unsupported attributes and selectors retain explicit rejection.
+The retained static CSS diagram's remaining G7/G9 dependencies and its frozen
+whole-document/font contract are tracked in PLAN.md; this correction does not
+complete that document or the finite G7/G9 exits.
+
+## Support matrix
 
 ## Current state
 
@@ -381,8 +399,7 @@ records the new solid paint bindings and measured stroke/paint-server/group limi
 The [frame repair](RASTERIZATION_DESIGN.md#ordered-rectangle-stroke-frames-2026-10-08)
 records the now-exact rectangle strokes and remaining clip-crossing gate.
 The [stroke-opacity follow-up](RASTERIZATION_DESIGN.md#stroke-opacity-at-instance-time-2026-10-08)
-records the original opacity repair. That bank now has 70 exact cases and eleven
-retained gates: nine fractional diagonal lines and two late stylesheet inputs.
+records the original opacity repair. That bank now has 72 exact cases and nine retained fractional diagonal-line gates. The two late stylesheet inputs use the shared bounded prepass.
 The three shader rectangle definitions and rendered-group styles now match
 their unchanged references. Unstyled closed unpainted paths preserve their authored
 commands for newly added solid use strokes. Numeric opacity syntax follows the

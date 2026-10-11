@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Stroke-opacity inheritance controls: 70 exact and eleven retained geometry or stylesheet rejections, through all six outputs.",
+  "purpose": "Stroke-opacity inheritance controls: 72 exact and nine retained geometry rejections, through all six outputs.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -592,8 +592,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "css-cascade-black",
@@ -607,8 +606,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "rendered-container-opacity-transparent",

@@ -3,13 +3,55 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Parses the supported root stylesheets before rendered content is traversed.</summary>
+/// <summary>Collects embedded root and definition stylesheets in source order before discovery or lowering.</summary>
 internal static class SvgRootStyleSheetParser
 {
-    /// <summary>Rejects a root stylesheet that follows styleable content; earlier stylesheets accumulate in document order.</summary>
-    internal static void ThrowIfLate(bool sawStyleableNode)
+    /// <summary>Scans bounded XML without a DOM; the caller owns the rules and copied declaration strings.</summary>
+    internal static void Collect(ReadOnlyMemory<byte> svg, XmlReaderSettings settings, SvgRenderLimits limits, BudgetedParserList<CssRule> rules, BudgetedParserStringStore strings, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (sawStyleableNode) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Root-level stylesheet rules must precede supported definitions and rendered content.");
+        cancellationToken.ThrowIfCancellationRequested();
+        // XML names are literal. ASCII-compatible inputs without either spelling
+        // need no second reader; wide encodings fall through to ordinary XML parsing.
+        ReadOnlySpan<byte> bytes = svg.Span;
+        if (!bytes.Contains((byte)0) && bytes.IndexOf("<style"u8) < 0 && bytes.IndexOf(":style"u8) < 0) return;
+        using ReadOnlyMemoryStream stream = new(svg);
+        using XmlReader reader = XmlReader.Create(stream, settings);
+        int rootDepth = -1, definitionsDepth = -1, descriptionDepth = -1, nodes = 0;
+        while (reader.Read())
+        {
+            workCounter.Consume(cancellationToken);
+            if (reader.NodeType == XmlNodeType.EndElement)
+            {
+                if (reader.Depth == definitionsDepth) definitionsDepth = -1;
+                if (reader.Depth == descriptionDepth) descriptionDepth = -1;
+                continue;
+            }
+            if (reader.NodeType != XmlNodeType.Element) continue;
+            SvgStructuralAdmission.ValidateElementStructure(reader, limits);
+            if (nodes++ >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
+            if (rootDepth < 0)
+            {
+                SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
+                rootDepth = reader.Depth;
+                continue;
+            }
+            if (reader.NamespaceURI != "http://www.w3.org/2000/svg" || descriptionDepth >= 0 && reader.Depth > descriptionDepth) continue;
+            if (SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName))
+            {
+                if (!reader.IsEmptyElement) descriptionDepth = reader.Depth;
+                continue;
+            }
+            if (reader.LocalName == "defs" && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
+            if (reader.LocalName != "style" || reader.Depth != rootDepth + 1 && reader.Depth != definitionsDepth + 1) continue;
+            ThrowIfAttributed(reader);
+            using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
+            SvgStyleSheet.Parse(text.Value, limits.MaximumNodes, rules, strings, budget, workCounter, cancellationToken);
+        }
+    }
+
+    internal static void ThrowIfTargetsRoot(string? id, string? classes, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (SvgStyleSheet.TargetsRootId(id, rules, workCounter, cancellationToken) || SvgStyleSheet.TargetsRootClass(classes, rules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
     }
 
     /// <summary>Rejects stylesheet element attributes except the inert type and identifier declarations exporters emit.</summary>
@@ -26,15 +68,10 @@ internal static class SvgRootStyleSheetParser
         reader.MoveToElement();
     }
 
-    internal static void Parse(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, int maximumRules, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <summary>Consumes an already collected stylesheet during the ordinary structural traversal.</summary>
+    internal static void Consume(XmlReader reader, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        ThrowIfLate(state.SawStyleableNode);
         ThrowIfAttributed(reader);
-        using (OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken))
-        {
-            SvgStyleSheet.Parse(text.Value, maximumRules, state.StyleRules, state.Strings, budget, workCounter, cancellationToken);
-        }
-        if (SvgStyleSheet.TargetsRootId(root.Id, state.StyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
-        if (SvgStyleSheet.TargetsRootClass(root.Class, state.StyleRules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
+        using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
     }
 }

@@ -7,19 +7,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Traverses one bounded SVG document after reader setup without materializing a DOM.</summary>
 internal static class SvgDocumentTraversal
 {
-    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken)
-        => Parse(reader, limits, budget, namedColors, fontSnapshot, new ParserWorkCounter(limits.MaximumWorkUnits), cancellationToken);
-
-    /// <summary>Traverses one document under a caller-owned operation work counter.</summary>
-    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-        => Parse(reader, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken, 1.0, 1.0);
-
-    /// <summary>Traverses one document under a caller-owned operation work counter with a known root and output magnification.</summary>
-    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY)
-        => Parse(reader, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken, outputScaleX, outputScaleY, null);
-
-    /// <summary>Traverses one document under a caller-owned operation work counter with a known root, output magnification and explicit viewport.</summary>
-    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport)
+    internal static SvgRoot Parse(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
         while (reader.Read())
@@ -29,14 +17,14 @@ internal static class SvgDocumentTraversal
             SvgStructuralAdmission.ValidateElementStructure(reader, limits);
             SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
             SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, workCounter, cancellationToken);
-            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputScaleX, outputScaleY, explicitViewport);
+            return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputScaleX, outputScaleY, explicitViewport, styleRules, styleStrings);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
 
 
     }
 
-    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport)
+    private static SvgRoot TraverseRoot(XmlReader reader, SvgRenderLimits limits, RenderBudget budget, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, CancellationToken cancellationToken, ParserWorkCounter workCounter, SvgRootAttributes root, double outputScaleX, double outputScaleY, SvgViewport? explicitViewport, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore styleStrings)
     {
         if (reader.IsEmptyElement)
         {
@@ -45,7 +33,8 @@ internal static class SvgDocumentTraversal
         }
         int rootDepth = reader.Depth;
         root = root with { ContainingViewport = explicitViewport };
-        using SvgDocumentState state = new(budget, workCounter, cancellationToken);
+        using SvgDocumentState state = new(budget, workCounter, cancellationToken, styleRules, styleStrings, false);
+        SvgRootStyleSheetParser.ThrowIfTargetsRoot(root.Id, root.Class, state.StyleRules, workCounter, cancellationToken);
         // The root element consumes one node, matching font-request discovery's uniform per-element count.
         state.NodeCount = 1;
         if (root.InheritedPresentation.PaintServerFill is string rootFill)
@@ -156,7 +145,6 @@ internal static class SvgDocumentTraversal
                             state.ViewportOpacityDepth = reader.Depth;
                         }
                     }
-                    state.SawStyleableNode = true;
                 }
                 else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");
                 else if (state.ClipDepths.Count > 0 && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside clipped groups is not implemented.");
@@ -173,7 +161,6 @@ internal static class SvgDocumentTraversal
                         state.NodeCount = subtree.NodeCount;
                         state.HasUnsupportedContent |= subtree.HasElements;
                     }
-                    state.SawStyleableNode = true;
                 }
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName))
                 {
@@ -228,11 +215,11 @@ internal static class SvgDocumentTraversal
                 }
                 else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                 {
-                    SvgRootStyleSheetParser.Parse(reader, root, state, limits.MaximumNodes, budget, workCounter, cancellationToken);
+                    SvgRootStyleSheetParser.Consume(reader, budget, workCounter, cancellationToken);
                 }
                 else if (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                 {
-                    SvgRootStyleSheetParser.Parse(reader, root, state, limits.MaximumNodes, budget, workCounter, cancellationToken);
+                    SvgRootStyleSheetParser.Consume(reader, budget, workCounter, cancellationToken);
                 }
                 else if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) state.HasUnsupportedContent = true;
                 else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsInertContainer(reader.LocalName)) { }

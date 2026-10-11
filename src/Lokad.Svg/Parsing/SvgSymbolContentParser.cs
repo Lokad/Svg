@@ -58,7 +58,6 @@ internal static class SvgSymbolContentParser
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, start, 1), BorrowedFromSymbol = true });
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
         }
-        state.SawStyleableNode = true;
         return true;
 
         string? Copy(string? value)

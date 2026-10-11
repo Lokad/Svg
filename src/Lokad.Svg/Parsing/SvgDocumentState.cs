@@ -32,16 +32,25 @@ internal sealed class SvgDocumentState : IDisposable
     // Radial entries retain their actual paint value, including the separate shader matrices.
     private static readonly int RadialGradientStorageBytes = checked(64 + (int)System.Runtime.CompilerServices.Unsafe.SizeOf<SvgRadialGradient>() + (int)ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(SvgGradientSyntax.MaximumGradientStops));
 
+    private readonly bool _ownsStyleStorage;
+
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        : this(budget, workCounter, cancellationToken, new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken), new(budget), true)
+    {
+    }
+
+    /// <summary>Uses collected style storage without copying it; borrowed stores outlive this state and are released by the caller.</summary>
+    internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore strings, bool ownsStyleStorage)
     {
         Budget = budget;
         Scene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
-        Strings = new BudgetedParserStringStore(budget);
+        Strings = strings;
+        _ownsStyleStorage = ownsStyleStorage;
         Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Switches = new BudgetedParserList<SwitchScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         ClipDepths = new BudgetedParserList<int>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Viewports = new BudgetedParserList<SvgViewportFrame>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        StyleRules = new BudgetedParserList<CssRule>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        StyleRules = styleRules;
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         ClipPolygons = new BudgetedParserDictionary<string, SvgClipPolygon>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
@@ -207,7 +216,6 @@ internal sealed class SvgDocumentState : IDisposable
     // No text or glyph owners survive this failed run; document teardown releases prior scene owners.
     internal SvgException? DeferredTextFailure { get; set; }
 
-    internal bool SawStyleableNode { get; set; }
 
     internal int DefinitionsDepth { get; set; } = -1;
 
@@ -396,8 +404,11 @@ internal sealed class SvgDocumentState : IDisposable
         MaskScopes.Dispose();
         MaskScopeSnapshots.Dispose();
         ClipDepths.Dispose();
-        StyleRules.Dispose();
-        Strings.Dispose();
+        if (_ownsStyleStorage)
+        {
+            StyleRules.Dispose();
+            Strings.Dispose();
+        }
         Switches.Dispose();
         Groups.Dispose();
         Viewports.Dispose();

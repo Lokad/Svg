@@ -32,7 +32,6 @@ internal static class SvgResourceUseReplay
         SvgComputedStyle style = context.ResolveStyle(reader);
         bool evenOdd = style.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(style.ClipRule.AsSpan());
         state.HasUnsupportedContent |= !reader.IsEmptyElement;
-        state.SawStyleableNode = true;
         return new(reference, clipId, evenOdd);
     }
 

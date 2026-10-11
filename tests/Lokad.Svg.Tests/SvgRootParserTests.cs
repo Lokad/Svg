@@ -1962,11 +1962,10 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_stylesheets_after_styleable_content()
+    public void Applies_stylesheets_after_styleable_content()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1'/><style>rect { fill: red; }</style></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><rect width='1' height='1'/><style>rect { fill: red; }</style></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Equal(new SvgRectangle(0, 0, 1, 1, new SvgColor(255, 0, 0, 255), true, null), Assert.Single(root.Rectangles));
     }
 
     [Fact]

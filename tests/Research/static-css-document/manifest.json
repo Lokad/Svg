@@ -189,7 +189,7 @@
       "linuxReference": "references/linux64/late-rules.png",
       "fontPack": "font-pack.json",
       "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "oracleInputSha256": "0dfcb1bd94ad4784839fb69e3313c89c5c8a97d4bda68618c202936c77212c49",
       "referenceSha256": "4eccaf14db0e3b6c85405bf13b30cdcae75c9c30cb64cb4047640725dbdad5df",
       "captures": [

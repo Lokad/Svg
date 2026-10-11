@@ -44,11 +44,11 @@ public sealed class SvgSymbolLocationTests
     [InlineData("<symbol/>")]
     [InlineData("<symbol id='s'/>")]
     [InlineData("<defs><symbol/></defs>")]
-    public void Empty_symbols_count_as_styleable_nodes_in_rendering_and_discovery(string content)
+    public void Empty_symbols_allow_late_stylesheets_without_font_requests(string content)
     {
         byte[] input = Input(content + "<style>g { fill: red; }</style><rect width='4' height='4'/>");
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).ErrorCode);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        Assert.Empty(SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
+        Assert.Equal(SvgConverter.ConvertToPng(Input("<rect width='4' height='4'/>"), SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Theory]

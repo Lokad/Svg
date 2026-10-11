@@ -1,4 +1,28 @@
-# Rasterization transition design
+# Late embedded stylesheet collection (2026-10-11)
+
+The retained public-domain static CSS comparison diagram supplies rules after
+its content. One bounded XML prepass now collects root and definition stylesheet
+rules in source order for both font-request discovery and scene lowering. It
+uses the existing parser lists, string storage, XML policy, cascade and limits,
+without constructing a DOM. Lowering borrows the collected storage until the
+operation releases it. Ordinary ASCII-compatible inputs with no stylesheet
+name candidate retain a single XML traversal; wide input encodings use the XML
+reader. Empty roots retain their inexpensive path.
+
+The point-size and late-rule controls have frozen platform references. The two
+previously rejected white/black CSS stroke-opacity inputs also use their original
+sources and references, extending the 81-case bank to 72 exact results. Prefixes
+and UTF-8/16/32 encodings, late source-order ties, definition paint, font acquisition
+and suppression, malformed rules, truncation and partial-rejection cleanup have
+focused protection. No renderer or script fingerprint qualifies these results.
+
+The diagram remains incomplete: descendant/child selector matching, explicit
+inheritance, translated labels and span paint still block its unchanged whole
+output. Its omitted-family control also retains a small Windows font-mask
+mismatch. Finish those shared mechanisms against the declared outputs before
+claiming document completion.
+
+## Rasterization transition design
 
 The renderer now has shared contour preparation, analytic coverage, retained
 curves and bounded paint/layer routes. General pinned-browser equality remains
@@ -8551,10 +8575,7 @@ stroke role and alpha. Normal unpainted rendered paths keep their existing route
 the existing unstyled single-contour instance-stroke admission remains in force.
 Straight and quadratic unpainted sources now match the frozen browser references.
 
-All 64 admitted controls are exact through six public output APIs. Seventeen remain
-UnsupportedFeature: nine fractional diagonal-line cases (G3/G4), two late stylesheet
-cases (G7), three shader rectangle definitions (G2/G4), and three rendered-group
-style cases (G2). The repaired six renders cover inherited rendered-container
+Following the instance-paint and late stylesheet corrections, all 72 admitted controls are exact through six public output APIs. Nine fractional diagonal-line cases remain UnsupportedFeature (G3/G4). The repaired six renders cover inherited rendered-container
 opacity and inline use opacity. Source/reference bytes are unchanged. The
 31-case use-paint bank keeps 26 exact and five rejected outcomes; one rejection
 message now names stroke opacity along with color/fill opacity.

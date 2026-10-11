@@ -91,7 +91,6 @@ internal static class SvgDefinitionParser
                 state.NodeCount = subtree.NodeCount;
                 state.HasUnsupportedContent |= subtree.HasElements;
             }
-            state.SawStyleableNode = true;
             return inDefinitions;
         }
         if (reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName is ("symbol" or "marker")
@@ -127,7 +126,6 @@ internal static class SvgDefinitionParser
                 state.SymbolDefinition.EnableContent();
                 state.HasRetainedSymbolContent = true;
             }
-            state.SawStyleableNode = true;
             if (reader.IsEmptyElement) RegisterSymbol(state, workCounter, cancellationToken);
             else state.SymbolDepth = reader.Depth;
             return true;
@@ -149,7 +147,6 @@ internal static class SvgDefinitionParser
                 if (state.ClipPathId is not null) RegisterClipBox(state, workCounter, cancellationToken);
             }
             else state.ClipPathDepth = reader.Depth;
-            state.SawStyleableNode = true;
             return true;
         }
         if (state.ClipPathDepth >= 0 && reader.Depth == state.ClipPathDepth + 1 && reader.NamespaceURI == "http://www.w3.org/2000/svg")
@@ -174,7 +171,6 @@ internal static class SvgDefinitionParser
                 SvgRectangle rect = clipTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
                 state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                state.SawStyleableNode = true;
                 return true;
             }
             if (reader.LocalName == "path")
@@ -206,7 +202,6 @@ internal static class SvgDefinitionParser
                     state.ClipPolygon = null;
                 }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                state.SawStyleableNode = true;
                 return true;
             }
             if (reader.LocalName is "circle" or "ellipse")
@@ -239,7 +234,6 @@ internal static class SvgDefinitionParser
                     state.ClipPolygon = new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned };
                 }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                state.SawStyleableNode = true;
                 return true;
             }
             state.HasUnsupportedContent = true;
@@ -297,7 +291,6 @@ internal static class SvgDefinitionParser
                 state.MaskDepth = reader.Depth;
                 state.Groups.Add(scope);
             }
-            state.SawStyleableNode = true;
             return true;
         }
         if (state.MaskDepth >= 0 && reader.Depth == state.MaskDepth + 1 && !resourceDefinition && reader.NamespaceURI == "http://www.w3.org/2000/svg")
@@ -328,7 +321,6 @@ internal static class SvgDefinitionParser
                     }
                     catch { foreach (SvgGeometry geometry in lowered.Geometries) geometry.Dispose(); throw; }
                     state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                    state.SawStyleableNode = true;
                     return true;
                 }
             }
@@ -343,7 +335,6 @@ internal static class SvgDefinitionParser
                 state.MaskValue = SvgMaskSyntax.InterpretValue(element.Presentation.Color, state.MaskIsAlpha);
                 state.MaskContentBox = element.Transform.Apply(new SvgClipBox(syntax.X, syntax.Y, syntax.Width, syntax.Height));
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                state.SawStyleableNode = true;
                 return true;
             }
             if (reader.LocalName == "circle")
@@ -364,7 +355,6 @@ internal static class SvgDefinitionParser
                 }
                 catch { lowered.Discard(); throw; }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                state.SawStyleableNode = true;
                 return true;
             }
             state.HasUnsupportedContent = true;
@@ -402,7 +392,6 @@ internal static class SvgDefinitionParser
                 state.PatternTile = null;
                 state.PatternTemplate = default;
             }
-            state.SawStyleableNode = true;
             return true;
         }
         if (state.PatternDepth >= 0 && reader.Depth > state.PatternDepth && reader.NamespaceURI == "http://www.w3.org/2000/svg")
@@ -420,7 +409,6 @@ internal static class SvgDefinitionParser
                     state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup });
                     state.GroupDepth++;
                 }
-                state.SawStyleableNode = true;
                 return true;
             }
             if (reader.LocalName == "rect" && !SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken).ResolveStyle(reader).PaintOrder.GetValueOrDefault().StrokeFirst() && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
@@ -446,7 +434,6 @@ internal static class SvgDefinitionParser
                     state.PatternRectangleSource = SvgDefinitionLeafSource.Capture(reader, tileContext, state);
                     state.PatternRectangleContext = tileContext;
                     state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                    state.SawStyleableNode = true;
                     return true;
                 }
                 catch { parsedContent.Discard(); throw; }
@@ -470,7 +457,6 @@ internal static class SvgDefinitionParser
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern paints inside pattern content are not implemented.");
                 AdoptLeaf(LowerInstanceSource(reader, context, state));
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                state.SawStyleableNode = true;
                 return true;
 
                 void AdoptLeaf(SvgDefinition lowered) => SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
@@ -487,7 +473,6 @@ internal static class SvgDefinitionParser
             if (!reader.IsEmptyElement) state.RadialGradientDepth = reader.Depth;
             else if (state.RadialGradientId is not null) RegisterRadialGradient(state, workCounter, cancellationToken);
             state.GradientStops.Clear();
-            state.SawStyleableNode = true;
             return true;
         }
         if ((state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1 || directChild || resourceDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "linearGradient")
@@ -499,7 +484,6 @@ internal static class SvgDefinitionParser
             if (!reader.IsEmptyElement) state.GradientDepth = reader.Depth;
             else if (state.GradientId is not null) RegisterGradient(state, workCounter, cancellationToken);
             state.GradientStops.Clear();
-            state.SawStyleableNode = true;
             return true;
         }
         if (((state.GradientDepth >= 0 && reader.Depth == state.GradientDepth + 1) || (state.RadialGradientDepth >= 0 && reader.Depth == state.RadialGradientDepth + 1)) && reader.NamespaceURI == "http://www.w3.org/2000/svg")
@@ -510,7 +494,6 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidateGradientStop(reader, workCounter, cancellationToken);
                 state.GradientStops.Add(SvgGradientSyntax.ParseStop(reader, namedColors, workCounter, cancellationToken));
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
-                state.SawStyleableNode = true;
                 return true;
             }
             state.HasUnsupportedContent = true;
@@ -542,7 +525,6 @@ internal static class SvgDefinitionParser
             string? maskAttribute = reader.GetAttribute("mask");
             SvgReferenceResolver.ResolveOrDefer(reference, state.Definitions, state.PendingUses, state.Scene, useFrame, ResolveDeferredMaskValue(reader, state), maskAttribute is null ? null : state.Strings.Copy(maskAttribute), deferredClip, state, workCounter, cancellationToken);
             state.HasUnsupportedContent |= !reader.IsEmptyElement;
-            state.SawStyleableNode = true;
             return true;
         }
         return false;

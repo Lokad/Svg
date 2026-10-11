@@ -333,8 +333,16 @@ CSS font sizes while retaining the narrower position syntax. The point-size
 control is exact through twelve raw/prepared outputs on both platforms; the
 omitted-family control is exact on Linux and retains a three-pixel Windows
 mismatch. The diagram remains incomplete. Focused checks pass **829 font/text
-tests and 13 bank/contract tests per platform**; finish the CSS correction before
-running the complete qualification again.
+tests and 13 bank/contract tests per platform**. Shared stylesheet collection now
+admits embedded root/definition rules in source order before discovery and
+lowering. Its late-rule control and the two retained opaque stroke-opacity CSS
+cases match their unchanged references on both platforms. Complete qualification
+passes **6,882 tests per platform** (4,750 core, 2,126 visual, six FontProbe), with
+zero warnings, errors, failures or skips. All **2,849 prior PNGs**, **2,755 prior
+exact results**, **30 supplied-font outputs** and corporate **27/27 documents /
+258/258 variants** are preserved. The diagram's ancestor selectors, explicit
+inheritance, translated labels and span paint remain the next shared dependencies;
+its whole-document completion remains **0/1**.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -467,8 +475,7 @@ opacity remain independent. Existing shader stroke channels resolve the inherite
 opacity with the browser's byte boundary. Unstyled closed paths with `fill="none"`
 retain authored centerlines, so adding a use stroke now paints straight and curved
 sources correctly. The [81-case bank](tests/Research/use-stroke-opacity/manifest.json)
-is now 70 exact and 11 rejected through six outputs. Nine fractional diagonal-line
-cases remain G3/G4 and two late stylesheet cases remain G7. The three shader
+is now 72 exact and nine rejected through six outputs. Nine fractional diagonal-line cases remain G3/G4; the two late stylesheet cases are repaired by the shared G7 prepass. The three shader
 rectangle definitions and rendered-group style cases now match their unchanged
 references. The additional supported twins are separate inputs; these rejected originals stay frozen.
 
