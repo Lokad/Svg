@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Complete unchanged public-domain static CSS comparison diagram and seven separate controls. Caller supplies the deterministic default serif mapping; every declared output must match frozen platform references. Finite G7/G9 exits remain open.",
+  "purpose": "Complete unchanged public-domain static CSS comparison diagram and nine separate controls. Caller supplies the deterministic default serif mapping; every declared output must match frozen platform references. Finite G7/G9 exits remain open.",
   "selectedAt": "7ca79f5f",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
@@ -448,6 +448,116 @@
         }
       ],
       "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "text-fill-rule-nonzero",
+      "input": "text-fill-rule-nonzero.svg",
+      "width": 176,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "4c55ae3d9f7ff45a884baaa3eff7def06efab80498d9b56cca9695a63b78e8fe",
+      "reference": "references/text-fill-rule-nonzero.png",
+      "linuxReference": "references/linux64/text-fill-rule-nonzero.png",
+      "fontPack": "font-pack.json",
+      "selection": "Retained paired text fill-rule controls before changing the inherited direct-text admission gate; supplied Noto Sans through the existing default serif contract.",
+      "rendererOutcome": "exact",
+      "oracleInputSha256": "24e42f6092fd1dff3a5aa2ef70237562c7e28307379780f77974e5999cbfc86b",
+      "referenceSha256": "711227b7bd5ed4fa5e2e4a0917c62af6dca6368cab2ba4926af5018c29afb7e1",
+      "captures": [
+        {
+          "pngSha256": "711227b7bd5ed4fa5e2e4a0917c62af6dca6368cab2ba4926af5018c29afb7e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "711227b7bd5ed4fa5e2e4a0917c62af6dca6368cab2ba4926af5018c29afb7e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "711227b7bd5ed4fa5e2e4a0917c62af6dca6368cab2ba4926af5018c29afb7e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "ddd5a8e184dc701d02be7336e424003950869ac51fd7bb7fd1619bbb579df31c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ddd5a8e184dc701d02be7336e424003950869ac51fd7bb7fd1619bbb579df31c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ddd5a8e184dc701d02be7336e424003950869ac51fd7bb7fd1619bbb579df31c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ddd5a8e184dc701d02be7336e424003950869ac51fd7bb7fd1619bbb579df31c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "text-fill-rule-evenodd",
+      "input": "text-fill-rule-evenodd.svg",
+      "width": 176,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "09b4a97e8dad020653ae673847ad7fb47f8c329eb1228ff2c134c446dd10f258",
+      "reference": "references/text-fill-rule-evenodd.png",
+      "linuxReference": "references/linux64/text-fill-rule-evenodd.png",
+      "fontPack": "font-pack.json",
+      "selection": "Retained paired text fill-rule controls before changing the inherited direct-text admission gate; supplied Noto Sans through the existing default serif contract.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "27ae4a7be739fbb29a6666b0d9762e838804305e841fd04f3d743cc2cc1ef425",
+      "referenceSha256": "711227b7bd5ed4fa5e2e4a0917c62af6dca6368cab2ba4926af5018c29afb7e1",
+      "captures": [
+        {
+          "pngSha256": "711227b7bd5ed4fa5e2e4a0917c62af6dca6368cab2ba4926af5018c29afb7e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "711227b7bd5ed4fa5e2e4a0917c62af6dca6368cab2ba4926af5018c29afb7e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "711227b7bd5ed4fa5e2e4a0917c62af6dca6368cab2ba4926af5018c29afb7e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "ddd5a8e184dc701d02be7336e424003950869ac51fd7bb7fd1619bbb579df31c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ddd5a8e184dc701d02be7336e424003950869ac51fd7bb7fd1619bbb579df31c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ddd5a8e184dc701d02be7336e424003950869ac51fd7bb7fd1619bbb579df31c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ddd5a8e184dc701d02be7336e424003950869ac51fd7bb7fd1619bbb579df31c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
     }
   ],
   "chromeVersion": "153.0.8010.52",

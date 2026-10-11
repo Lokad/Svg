@@ -322,7 +322,8 @@ existing public Noto Sans Regular face 0; omitted families request that alias
 through the existing catalogue selection and fallback rules. An unavailable
 selected font source fails without consulting host fonts. The bank
 `tests/Research/static-css-document/manifest.json` freezes the whole document and
-seven separate diagnostic controls on both platforms before implementation.
+nine separate diagnostic controls on both platforms before their corresponding
+implementation.
 Finish its default-family requests, absolute point font size, late stylesheet,
 descendant/child selectors, explicit inheritance, translated labels and span
 paint against those references. Keep it outside completed-document denominators
@@ -352,12 +353,15 @@ separately from accumulated group and mask alpha. Retained source replay binds
 it per instance and preserves intervening symbol/container parents; omitted,
 `initial` and `unset` opacity keep their noninherited initial value.
 The frozen `force-inherit` control is exact through twelve outputs on both
-platforms. The seven diagnostic controls stand at **5/7 exact on Windows, 6/7 on Linux**.
+platforms. The nine diagnostic controls stand at **6/9 exact on Windows, 7/9 on Linux**.
+The new paired text controls freeze the next fill-rule gate: Chrome renders them
+identically on each platform; the nonzero case is exact through twelve outputs,
+while inherited evenodd retains the direct-text rejection.
 Existing 1,024-character identifier support is preserved; complete selectors
 are bounded to 4,096 characters, with shared memory/work limits and cancellation.
 Root, nested-viewport and `defs` container styling remain explicit unsupported
 outcomes and required G7 exit work; supported leaves may use them as ancestors.
-Complete qualification passes **6,987 tests per platform** (4,853 core, 2,128
+The opacity correction passed complete qualification with **6,987 tests per platform** (4,853 core, 2,128
 visual, six FontProbe), with zero warnings, errors, failures or skips. All
 **2,849 prior PNGs**, **2,755 prior exact results**, **30 supplied-font outputs**
 and corporate **27/27 documents / 258/258 variants** are preserved. The diagram's
