@@ -482,11 +482,11 @@ internal static partial class OpenTypeFont
     internal static OpenTypeQuadraticSegment[] BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         using var segments = new OpenTypeSegmentAccumulator(null, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, GlyphDecoderBudgetPhase.None, workCounter, cancellationToken);
-        BuildQuadraticContours(points, endpoints, segments, false, false, workCounter, cancellationToken);
+        BuildQuadraticContours(points, endpoints, segments, false, TrueTypeImpliedPointRounding.None, workCounter, cancellationToken);
         return segments.ToArray();
     }
 
-    private static void BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, OpenTypeSegmentAccumulator segments, bool retainContourBoundaries, bool roundImpliedPoints, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    private static void BuildQuadraticContours(ReadOnlySpan<OpenTypeGlyphPoint> points, ReadOnlySpan<ushort> endpoints, OpenTypeSegmentAccumulator segments, bool retainContourBoundaries, TrueTypeImpliedPointRounding impliedPointRounding, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         if (endpoints.Length == 0) return;
         if (points.Length == 0 || endpoints[^1] != points.Length - 1) throw new ArgumentException("Contour endpoints must cover the supplied points.", nameof(endpoints));
@@ -499,7 +499,7 @@ internal static partial class OpenTypeFont
             if (last < first) throw new ArgumentException("Contour endpoints must be strictly increasing.", nameof(endpoints));
             OpenTypeGlyphPoint initial = points[first];
             OpenTypeGlyphPoint final = points[last];
-            OpenTypeOutlinePoint start = initial.IsOnCurve ? ToOutlinePoint(initial) : final.IsOnCurve ? ToOutlinePoint(final) : ContourMidpoint(ToOutlinePoint(final), ToOutlinePoint(initial), roundImpliedPoints);
+            OpenTypeOutlinePoint start = initial.IsOnCurve ? ToOutlinePoint(initial) : final.IsOnCurve ? ToOutlinePoint(final) : ContourMidpoint(ToOutlinePoint(final), ToOutlinePoint(initial), impliedPointRounding);
             OpenTypeOutlinePoint current = start;
             OpenTypeOutlinePoint? control = null;
             for (int index = first; index <= last; index++)
@@ -516,7 +516,7 @@ internal static partial class OpenTypeFont
                 }
                 else if (control is OpenTypeOutlinePoint pending)
                 {
-                    OpenTypeOutlinePoint implied = ContourMidpoint(pending, ToOutlinePoint(point), roundImpliedPoints);
+                    OpenTypeOutlinePoint implied = ContourMidpoint(pending, ToOutlinePoint(point), impliedPointRounding);
                     segments.Add(new OpenTypeQuadraticSegment(current, pending, implied));
                     current = implied;
                     control = ToOutlinePoint(point);
@@ -529,10 +529,15 @@ internal static partial class OpenTypeFont
             first = last + 1;
         }
 
-        static OpenTypeOutlinePoint ContourMidpoint(OpenTypeOutlinePoint first, OpenTypeOutlinePoint second, bool round)
+        static OpenTypeOutlinePoint ContourMidpoint(OpenTypeOutlinePoint first, OpenTypeOutlinePoint second, TrueTypeImpliedPointRounding rounding)
         {
             OpenTypeOutlinePoint result = Midpoint(first, second);
-            return round ? new(Math.Floor(result.X), Math.Floor(result.Y)) : result;
+            return rounding switch
+            {
+                TrueTypeImpliedPointRounding.Down => new(Math.Floor(result.X), Math.Floor(result.Y)),
+                TrueTypeImpliedPointRounding.TowardZero => new(Math.Truncate(result.X), Math.Truncate(result.Y)),
+                _ => result
+            };
         }
     }
 
@@ -560,7 +565,7 @@ internal static partial class OpenTypeFont
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
         using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, structure.Value, budget, workCounter, cancellationToken);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, workCounter, cancellationToken);
-        BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, false, workCounter, cancellationToken);
+        BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, TrueTypeImpliedPointRounding.None, workCounter, cancellationToken);
         return segments.Detach();
     }
 

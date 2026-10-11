@@ -18,10 +18,12 @@ output and matching-platform reference contract.
 
 Document completion is **0/1**. Three of five separate controls are exact on
 both platforms through all six raw and six independently prepared outputs.
-Linux also completes the composite control, giving four exact controls there.
+Linux also completes the composite and curved controls, giving five exact
+controls there. The whole document still differs at 6,799 Windows / 3,987 Linux
+pixels against its unchanged references.
 Shared open-curve distance/tangent placement and `USE_MY_METRICS` component inheritance
-now let the unchanged document render. Matching-platform glyph-mask fidelity
-remains open, including the precomposed accents. Finish the whole
+now let the unchanged document render. Remaining document text pixels and
+Windows curve/accent controls stay open. Finish the whole
 document and all discovered mismatches against its frozen references. Controls
 do not count as completed documents.
 
@@ -30,7 +32,7 @@ do not count as completed documents.
 | Two path runs | Independent sibling layout/paint slots | Exact on both platforms through 12 APIs. |
 | Per-path anchor | Child anchor overriding parent | Exact on both platforms through 12 APIs. |
 | Calibrated path length | Numeric offsets scaled separately from glyph advances | Exact on both platforms through 12 APIs. |
-| Curved midpoint | Curved length, tangent and glyph mapping | Renders through 12 APIs; 14 Windows / 36 Linux pixels still differ. |
+| Curved midpoint | Curved length, tangent and glyph mapping | Exact on Linux through 12 APIs; 14 Windows pixels still differ. |
 | Composite on path | Supplied precomposed `ü` placement and fitting | Exact on Linux through 12 APIs; Windows still differs at 8 pixels. |
 
 [Independent native placement](diagnostics/curved-midpoint-native-placement.json)
@@ -47,8 +49,16 @@ retains three further healthy intended-font measurements against the unchanged
 Linux reference. Mapped glyphs now choose native quarter-pixel phases on both axes
 after viewport placement, while preserving the tangent transform. This reduces
 Linux curved-control differences from 80 to 36 and whole-document differences
-from 20,917 to 11,962. Native scaler/transform and glyph-mask coverage remain open;
-standalone contour agreement does not complete the document.
+from 20,917 to 11,962.
+
+[Independent unhinted outlines](diagnostics/unhinted-device-outlines.json) retain
+six simple/composite glyph-size witnesses from the pinned native point loader.
+Three further healthy intended-font captures establish relaxed strike coefficients
+and vertical scaler decomposition. Scaling TrueType points before component
+placement and implied-point construction now makes the Linux curved control
+exact through all 12 APIs and reduces whole-document differences to 3,987. Strike
+placement keeps the original composed transform. Remaining document text placement
+and masks, Windows curve/accent pixels and the wider finite G9 exit stay open.
 
 The five synthetic controls are original fixtures dedicated to
 [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/). Their dimensions,

@@ -109,9 +109,10 @@ internal sealed class SvgGlyphRasterSource : IDisposable
         RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
-        using OpenTypeGlyphContourStorage contours = OpenTypeFont.GetGlyphContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token);
+        SvgAffineTransform normalized = new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0);
+        SvgGlyphStrikeTransform strike = SvgGlyphStrikeTransform.Create(_fontSize * scaleY, normalized);
+        using OpenTypeGlyphContourStorage contours = OpenTypeFont.GetUnhintedDeviceContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Geometry, work, token);
-        double size = _fontSize / font.UnitsPerEm;
         int first = 0;
         foreach (int end in contours.ContourEnds)
         {
@@ -135,12 +136,12 @@ internal sealed class SvgGlyphRasterSource : IDisposable
         float originX = MathF.Floor((float)glyphOrigin.X * 4f + .5f) / 4f;
         float originY = MathF.Floor((float)glyphOrigin.Y * 4f + .5f) / 4f;
         if (!float.IsFinite(originX) || !float.IsFinite(originY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The mapped glyph placement exceeds the device range.");
-        map = new(map.A, map.B, map.C, map.D, originX, originY);
+        map = new(strike.RemainingMap.A, strike.RemainingMap.B, strike.RemainingMap.C, strike.RemainingMap.D, originX, originY);
         OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
         try { return SvgAuthoredPath.Create(owned, map, budget); }
         catch { owned.Dispose(); throw; }
 
-        SvgDevicePoint Map(OpenTypeOutlinePoint point) => new(point.X * size, -point.Y * size);
+        SvgDevicePoint Map(OpenTypeOutlinePoint point) => new(point.X / 64, -point.Y / 64);
     }
 
     /// <summary>Returns native-directed device commands after fitting at mapped size; applies the glyph origin once.</summary>

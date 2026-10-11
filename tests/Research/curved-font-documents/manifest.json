@@ -62,7 +62,7 @@
       ],
       "platformReferencesByteIdentical": false,
       "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "USE_MY_METRICS inheritance and native mapped Linux strike origins are admitted. All twelve outputs render; native glyph-mask fidelity remains open at 6,799 Windows / 11,962 Linux differing pixels against unchanged matching-platform references."
+      "remainingOrCompletedMechanism": "USE_MY_METRICS inheritance and native mapped Linux strike origins are admitted. All twelve outputs render; native glyph-mask fidelity remains open at 6,799 Windows / 3,987 Linux differing pixels against unchanged matching-platform references."
     },
     {
       "id": "two-path-runs",
@@ -230,7 +230,8 @@
       ],
       "platformReferencesByteIdentical": false,
       "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "Shared measured midpoint/tangent maps and native mapped Linux quarter-pixel strike origins render through all 12 APIs. Matching-platform glyph-mask fidelity remains open at 14 Windows / 36 Linux differing pixels."
+      "remainingOrCompletedMechanism": "Shared measured midpoint/tangent maps render through all 12 APIs. Native relaxed strike coefficients, vertical scaler decomposition and unhinted device-grid outlines complete the unchanged Linux reference. Windows glyph-mask fidelity remains open at 14 differing pixels.",
+      "linuxRendererOutcome": "exact"
     },
     {
       "id": "calibrated-path-length",

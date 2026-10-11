@@ -32,9 +32,9 @@ internal static partial class OpenTypeFont
         }
     }
 
-    /// <summary>Assembles owned, ordered component points either in font units or by fitting each child before its parent.</summary>
-    /// <remarks>Depth, component/point counts and cycles are bounded. Temporary and returned arrays reserve geometry bytes before allocation; every visit/copy observes work and cancellation. The optional fitter borrows one supplied face and interpreter, and never owns returned points.</remarks>
-    private static OpenTypeGlyphPointOutline GetGlyphPointOutline(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CompositeTrueTypeHinting? fitting, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    /// <summary>Assembles owned, ordered component points in font units, by unhinted device scaling, or by fitting each child before its parent.</summary>
+    /// <remarks>Depth, component/point counts and cycles are bounded. Temporary and returned arrays reserve geometry bytes before allocation; every visit/copy observes work and cancellation. The optional fitter borrows one supplied face and interpreter, and never owns returned points. Device scaling runs before component placement; these conversion-local owners are not shared between threads.</remarks>
+    private static OpenTypeGlyphPointOutline GetGlyphPointOutline(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, CompositeTrueTypeHinting? fitting, OpenTypeUnhintedDeviceScale? scaling, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         using OpenTypeGlyphRecursionTracker active = new(MaximumCompositeGlyphDepth + 1, budget, work, token);
         return Expand(glyphIndex, 0);
@@ -53,13 +53,22 @@ internal static partial class OpenTypeFont
                     try
                     {
                         decoded = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, token);
+                        if (scaling is {} deviceScale)
+                            for (int index = 0; index < decoded.Points.Length; index++)
+                            {
+                                work.Consume(token);
+                                OpenTypeGlyphPoint point = decoded.Points[index];
+                                decoded.Points[index] = new(deviceScale.Apply(point.X), deviceScale.Apply(point.Y), point.IsOnCurve);
+                            }
                         OpenTypeTableRange instructions = default;
                         if (structure.Value.GlyphRange.Length > 10)
                         {
                             int offset = structure.Value.GlyphRange.Offset + 10 + structure.Value.ContourEndpoints.Length * 2;
                             instructions = new(offset + 2, ReadUInt16(bytes.Span, offset));
                         }
-                        OpenTypeHorizontalPhantoms? phantoms = fitting?.Fit(glyph, decoded.Points, structure.Value.ContourEndpoints, structure.Value.GlyphRange, instructions, false, null);
+                        OpenTypeHorizontalPhantoms? phantoms = fitting is not null
+                            ? fitting.Fit(glyph, decoded.Points, structure.Value.ContourEndpoints, structure.Value.GlyphRange, instructions, false, null)
+                            : scaling is {} scale ? ScaledPhantoms(glyph, structure.Value.GlyphRange, scale) : null;
                         return new(decoded.Points, structure.Value.ContourEndpoints, decoded, structure, phantoms);
                     }
                     catch { decoded?.Dispose(); structure.Dispose(); throw; }
@@ -80,8 +89,8 @@ internal static partial class OpenTypeFont
                     if (child.Points.Length > MaximumSimpleGlyphPoints - points.Count) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded composite point count exceeds the supported limit.");
                     if (child.Ends.Length > MaximumSimpleGlyphContours - ends.Count) throw new SvgException(SvgErrorCode.LimitExceeded, "The expanded composite contour count exceeds the supported limit.");
                     int basePoint = points.Count;
-                    int dx = fitting is null ? component.HorizontalOffset : fitting.ScaleOffset(component.HorizontalOffset, (component.Flags & 4) != 0, true);
-                    int dy = fitting is null ? component.VerticalOffset : fitting.ScaleOffset(component.VerticalOffset, (component.Flags & 4) != 0, false);
+                    int dx = fitting is not null ? fitting.ScaleOffset(component.HorizontalOffset, (component.Flags & 4) != 0, true) : scaling is {} xScale ? xScale.Apply(component.HorizontalOffset) : component.HorizontalOffset;
+                    int dy = fitting is not null ? fitting.ScaleOffset(component.VerticalOffset, (component.Flags & 4) != 0, false) : scaling is {} yScale ? yScale.Apply(component.VerticalOffset) : component.VerticalOffset;
                     foreach (OpenTypeGlyphPoint point in child.Points)
                     {
                         work.Consume(token);
@@ -97,7 +106,9 @@ internal static partial class OpenTypeFont
                     OwnedParserArray<ushort> ownedEnds = ends.Detach();
                     try
                     {
-                        OpenTypeHorizontalPhantoms? phantoms = fitting?.Fit(glyph, ownedPoints.Items, ownedEnds.Items, range, components.Instructions, true, selectedMetrics);
+                        OpenTypeHorizontalPhantoms? phantoms = fitting is not null
+                            ? fitting.Fit(glyph, ownedPoints.Items, ownedEnds.Items, range, components.Instructions, true, selectedMetrics)
+                            : scaling is {} scale ? selectedMetrics ?? ScaledPhantoms(glyph, range, scale) : null;
                         return new(ownedPoints.Items, ownedEnds.Items, ownedPoints, ownedEnds, phantoms);
                     }
                     catch { ownedEnds.Dispose(); throw; }
@@ -105,6 +116,16 @@ internal static partial class OpenTypeFont
                 catch { ownedPoints.Dispose(); throw; }
             }
             finally { active.Exit(glyph); }
+        }
+
+        OpenTypeHorizontalPhantoms ScaledPhantoms(ushort glyph, OpenTypeTableRange range, OpenTypeUnhintedDeviceScale scale)
+        {
+            work.Consume(token);
+            OpenTypeGlyphHeader? header = ParseGlyphHeader(bytes, range);
+            int advance = GetAdvanceWidth(bytes, glyph, metrics, work, token);
+            int bearingOffset = glyph < metrics.NumberOfHMetrics ? metrics.Hmtx.Offset + glyph * 4 + 2 : metrics.Hmtx.Offset + metrics.NumberOfHMetrics * 4 + (glyph - metrics.NumberOfHMetrics) * 2;
+            int origin = (header?.XMinimum ?? 0) - ReadInt16(bytes.Span, bearingOffset);
+            return new(scale.Apply(origin), 0, scale.Apply(origin + advance), 0);
         }
 
         static int Transform(int x, double xx, int y, double xy, int offset)

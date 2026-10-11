@@ -26,7 +26,9 @@ These adaptations do not depend on native Skia.
 Font grayscale mask preblend, canonical luminance and horizontal subpixel/baseline
 position rounding also adapt src/core/SkMaskGamma.cpp, src/core/SkMaskGamma.h,
 src/core/SkScalerContext.cpp, src/core/SkPaintPriv.cpp, src/core/SkGlyph.h and
-src/core/SkGlyphRunPainter.cpp at the same revision. Copyright 2012, 2013 Google
+src/core/SkGlyphRunPainter.cpp at the same revision. Relaxed glyph-strike
+coefficients and vertical scaler decomposition also adapt src/core/SkScalerContext.cpp
+and src/utils/SkMatrix22.cpp. Copyright 2012, 2013, 2014 Google
 Inc.; 2006, 2018 The Android Open Source Project.
 
 Source revision: f8b66b7597c4cc859d3ed190e9c6872241e6721c
@@ -127,11 +129,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Lokad.Svg contains a managed adaptation of Fontations/Skrifa Latin light
 alignment-zone sampling, fixed-point scaling, outline topology, edge fitting
-and point interpolation. It has no Fontations or native runtime dependency.
+and point interpolation, plus unhinted TrueType device scaling, component point
+placement and implied-point construction. It has no Fontations or native runtime dependency.
 
 Source version: skrifa 0.43.2
 Source files: src/outline/autohint/outline.rs, metrics/blues.rs, metrics/scale.rs,
-topo/segments.rs, topo/edges.rs, hint/edges.rs and hint/outline.rs.
+topo/segments.rs, topo/edges.rs, hint/edges.rs, hint/outline.rs,
+src/outline/glyf/mod.rs, src/outline/glyf/outline.rs and src/outline/pen.rs.
+The implied-point iterator also follows read-fonts 0.40.1 src/tables/glyf.rs.
 
 Fontations MIT license:
 

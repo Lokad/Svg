@@ -17,12 +17,13 @@ Shared `USE_MY_METRICS` inheritance admits the original precomposed accents.
 The unchanged document now renders through all 12 APIs under its declared
 supplied-font contract. Shared authored open curves
 now provide bounded midpoint/tangent maps; native rotated glyph-mask fidelity
-remains open: the curved control has 14 Windows / 36 Linux differing pixels.
-Mapped Linux glyphs select both native quarter-pixel strike phases after viewport
-placement. Complete qualification passes **6,753 tests/platform** (4,676 core /
-2,071 visual / six FontProbe), preserving every established exact output. Three
-separate controls are exact on both platforms through 12 APIs; Linux also
-completes the composite control, giving four of five controls there. Percentage
+remains open on Windows: the curved control differs at 14 pixels there and is
+exact on Linux. The whole document differs at 6,799 Windows / 3,987 Linux pixels.
+Mapped Linux glyphs use native quarter-pixel placement, relaxed strike coefficients,
+vertical scaler decomposition and unhinted TrueType device-grid outlines. Complete
+qualification passes **6,767 tests/platform** (4,683 core / 2,078 visual / six
+FontProbe), preserving every established exact output. Three separate controls
+are exact on both platforms through 12 APIs; Linux completes all five. Percentage
 offsets resolve against geometric length; numeric offsets use its calibrated scale. Glyph
 advances remain independent. Open line/quadratic/cubic/conic/endpoint-arc baselines
 are admitted; zero-angle polynomial baselines preserve the horizontal font strike.

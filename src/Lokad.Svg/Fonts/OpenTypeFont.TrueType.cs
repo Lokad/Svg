@@ -3,7 +3,7 @@ namespace Lokad.Svg.Fonts;
 using Lokad.Svg.Parsing;
 using Lokad.Svg.Rendering;
 
-internal enum TrueTypeImpliedPointRounding { Down, None }
+internal enum TrueTypeImpliedPointRounding { Down, None, TowardZero }
 
 internal static partial class OpenTypeFont
 {
@@ -36,7 +36,6 @@ internal static partial class OpenTypeFont
     internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, TrueTypeImpliedPointRounding impliedPointRounding, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         if (impliedPointRounding is not TrueTypeImpliedPointRounding.Down and not TrueTypeImpliedPointRounding.None) throw new ArgumentOutOfRangeException(nameof(impliedPointRounding));
-        bool roundImpliedPoints = impliedPointRounding == TrueTypeImpliedPointRounding.Down;
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767) throw new SvgException(SvgErrorCode.LimitExceeded, "The TrueType device size exceeds its coordinate bound.");
         TrueTypeHinting.ValidateTarget(target);
         if (metrics.ForceIntegerHintingSize)
@@ -52,9 +51,9 @@ internal static partial class OpenTypeFont
         {
             (TrueTypeHintProfile compositeProfile, OpenTypeTableRange compositeCvt, OpenTypeTableRange compositeFont, OpenTypeTableRange compositePrep) = ReadHintTables();
             using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), scale, target, budget, work, token);
-            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, budget, work, token);
+            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, budget, work, token);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
-            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, roundImpliedPoints, work, token);
+            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, impliedPointRounding, work, token);
             OpenTypeGlyphContourStorage result = compositeSegments.Detach();
             result.SmartDropouts = fitting.GlyphSmartDropouts;
             return result;
@@ -95,7 +94,7 @@ internal static partial class OpenTypeFont
         }
         for (int i = 0; i < pointCount; i++) { work.Consume(token); decoded.Points[i] = new(points[i].X, points[i].Y, decoded.Points[i].IsOnCurve); }
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, token);
-        BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, roundImpliedPoints, work, token);
+        BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, impliedPointRounding, work, token);
         OpenTypeGlyphContourStorage fitted = segments.Detach();
         fitted.SmartDropouts = smartDropouts;
         return fitted;

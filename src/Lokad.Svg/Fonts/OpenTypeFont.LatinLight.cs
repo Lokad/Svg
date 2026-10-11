@@ -15,12 +15,12 @@ internal static partial class OpenTypeFont
         using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, work, cancellationToken, true);
         if (structure.CompositeHeader is not null)
         {
-            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, budget, work, cancellationToken);
+            using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, null, budget, work, cancellationToken);
             Span<LatinAlignmentZone> compositeZones = stackalloc LatinAlignmentZone[6];
             int compositeZoneCount = GetLatinAlignmentZones(bytes, metrics, compositeZones, budget, work, cancellationToken);
             LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, budget, work, cancellationToken);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, cancellationToken);
-            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, true, work, cancellationToken);
+            BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, TrueTypeImpliedPointRounding.Down, work, cancellationToken);
             return compositeSegments.Detach();
         }
         if (structure.Value.ContourEndpoints.Length == 0) return new([], [], null, null);
@@ -29,7 +29,7 @@ internal static partial class OpenTypeFont
         int zoneCount = GetLatinAlignmentZones(bytes, metrics, zones, budget, work, cancellationToken);
         LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, budget, work, cancellationToken);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, cancellationToken);
-        BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, true, work, cancellationToken);
+        BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, TrueTypeImpliedPointRounding.Down, work, cancellationToken);
         return segments.Detach();
     }
 
