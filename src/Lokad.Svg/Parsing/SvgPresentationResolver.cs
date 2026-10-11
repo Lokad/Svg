@@ -15,7 +15,7 @@ internal static class SvgPresentationResolver
         SvgPaint paint = SvgPaintResolver.Resolve(style.Fill, style.FillOpacity, style.Color, inheritedPaint, namedColors);
         bool isDisplayed = inheritedDisplayed && ParseDisplay(style.Display);
         bool isVisible = ParseVisibility(style.Visibility, inheritedVisibility);
-        return new SvgResolvedPresentation(paint, isDisplayed, isVisible, SvgColorParser.ParseOpacity(style.Opacity));
+        return new SvgResolvedPresentation(paint, isDisplayed, isVisible, style.GetOpacity().Alpha);
     }
 
     internal static bool IsPainted(string? display, string? visibility, bool inheritedDisplayed, bool inheritedVisibility)

@@ -409,7 +409,7 @@
       "linuxReference": "references/linux64/force-inherit.png",
       "fontPack": "font-pack.json",
       "selection": "Retained before explicit-inheritance production changes; fontless control with unchanged explicit output.",
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "oracleInputSha256": "bf52371baa169adb4e02b4a521583375ee4f5ce08e1f9f577c7d7870fd15ad4c",
       "referenceSha256": "0578ef972da5af454a6afa251c5cc9f11ce53f42a6bdba0fbb5dd03f7d3f0fbe",
       "captures": [

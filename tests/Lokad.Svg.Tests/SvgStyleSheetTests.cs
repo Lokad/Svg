@@ -107,6 +107,8 @@ public sealed class SvgStyleSheetTests
     [InlineData("display", "initial", "inline")]
     [InlineData("visibility", "unset", "inherit")]
     [InlineData("opacity", "initial", "1")]
+    [InlineData("opacity", "inherit", "inherit")]
+    [InlineData("opacity", "unset", "1")]
     [InlineData("fill-rule", "unset", "inherit")]
     [InlineData("stroke", "inherit", "inherit")]
     [InlineData("fill-rule", "inherit", "inherit")]
@@ -132,7 +134,6 @@ public sealed class SvgStyleSheetTests
 
     [Theory]
     [InlineData("display: inherit")]
-    [InlineData("opacity: inherit")]
     public void Rejects_unplumbed_inherit_declarations(string declaration)
     {
         SvgException exception = Assert.Throws<SvgException>(() => SvgInlineStyleParser.Parse(declaration, new ParserWorkCounter(100), CancellationToken.None));

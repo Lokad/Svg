@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 internal static class SvgSymbolContentRenderer
 {
     private readonly record struct Context(SvgPaint Paint, string? PaintServerId, string? PaintServerFill, SvgPaintOpacity StrokeOpacity, SvgInheritedStrokeStyle Stroke, string? FillRule, SvgAffineTransform Transform, SvgClipBox? Clip, bool Displayed, bool Visible)
-    { internal SvgPaintOrder PaintOrder { get; init; } internal SvgMarkerStyle Markers { get; init; } }
+    { internal SvgPaintOpacity? OwnOpacity { get; init; } internal SvgPaintOpacity ElementOpacity => OwnOpacity ?? SvgPaintOpacity.Opaque; internal SvgPaintOrder PaintOrder { get; init; } internal SvgMarkerStyle Markers { get; init; } }
     private readonly record struct Frame(SvgSymbolContentRange Range, int Next, Context Context, int OutputStart, SvgPaintOpacity Opacity, SvgRecordingScope Scope, SvgClipBox? CompositionClip, SvgAffineViewportClip? AffineClip, string? MaskReference);
 
     internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? viewport, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
@@ -42,14 +42,15 @@ internal static class SvgSymbolContentRenderer
                 stack[^1] = frame with { Next = frame.Next + 1 };
                 if (node.Kind == SvgSymbolContentKind.Group)
                 {
-                    Context child = frame.Context with { Markers = node.Style.Markers.InheritFrom(frame.Context.Markers), PaintOrder = node.Style.PaintOrder ?? frame.Context.PaintOrder, Paint = node.Style.Resolve(frame.Context.Paint), PaintServerId = node.Style.HasAuthoredFill ? node.Style.PaintServerId : frame.Context.PaintServerId, PaintServerFill = node.Style.HasAuthoredFill ? node.Style.PaintServerFill : frame.Context.PaintServerFill, StrokeOpacity = node.Style.StrokeOpacity ?? frame.Context.StrokeOpacity, Stroke = node.Style.Stroke.InheritFrom(frame.Context.Stroke), FillRule = node.Style.FillRule ?? frame.Context.FillRule, Transform = frame.Context.Transform.ComposeChecked(node.Transform), Displayed = frame.Context.Displayed && node.Style.IsDisplayed, Visible = node.Style.IsVisible ?? frame.Context.Visible };
+                    SvgPaintOpacity opacity = node.Style.ResolveOpacity(frame.Context.ElementOpacity);
+                    Context child = frame.Context with { OwnOpacity = opacity, Markers = node.Style.Markers.InheritFrom(frame.Context.Markers), PaintOrder = node.Style.PaintOrder ?? frame.Context.PaintOrder, Paint = node.Style.Resolve(frame.Context.Paint), PaintServerId = node.Style.HasAuthoredFill ? node.Style.PaintServerId : frame.Context.PaintServerId, PaintServerFill = node.Style.HasAuthoredFill ? node.Style.PaintServerFill : frame.Context.PaintServerFill, StrokeOpacity = node.Style.StrokeOpacity ?? frame.Context.StrokeOpacity, Stroke = node.Style.Stroke.InheritFrom(frame.Context.Stroke), FillRule = node.Style.FillRule ?? frame.Context.FillRule, Transform = frame.Context.Transform.ComposeChecked(node.Transform), Displayed = frame.Context.Displayed && node.Style.IsDisplayed, Visible = node.Style.IsVisible ?? frame.Context.Visible };
                     stack[^1] = frame with { Next = node.End + 1 };
                     SvgSymbolContentRange contents = new(frame.Range.Content, frame.Next + 1, node.End - frame.Next - 1);
-                    SvgClipBox? compositionClip = node.Style.Opacity.Value != 1 ? child.Clip : null;
+                    SvgClipBox? compositionClip = opacity.Value != 1 ? child.Clip : null;
                     // An inherited viewport clip surrounds the isolated container. Apply it
                     // once when restoring the group; children retain only their local clips.
                     if (compositionClip is not null) child = child with { Clip = null };
-                    stack.Add(new(contents, contents.Start, child, output.Count, node.Style.Opacity, state.NewRecordingScope(), compositionClip, null, null));
+                    stack.Add(new(contents, contents.Start, child, output.Count, opacity, state.NewRecordingScope(), compositionClip, null, null));
                     continue;
                 }
                 if (node.Kind == SvgSymbolContentKind.Unsupported) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Styled group use instances with text, images, viewports, clips or masks are not implemented.");
@@ -59,26 +60,27 @@ internal static class SvgSymbolContentRenderer
                 if (node.Kind == SvgSymbolContentKind.Leaf)
                 {
                     SvgUseReference leaf = new(string.Empty, 0, 0, null, null, frame.Context.Transform, SvgAffineTransform.Identity, 255, displayed && visible, null, null, null)
-                    { InheritedMarkers = frame.Context.Markers, InheritedPaintOrder = frame.Context.PaintOrder, InheritedFill = frame.Context.Paint, PaintServerId = frame.Context.PaintServerId, PaintServerFill = frame.Context.PaintServerFill, InheritedStrokeOpacity = frame.Context.StrokeOpacity, InheritedStroke = frame.Context.Stroke, InheritedFillRule = frame.Context.FillRule, RecordingScope = state.NewRecordingScope(), AllowsSolidPaintAnalysis = true, IsDisplayed = displayed, IsVisible = visible };
+                    { ParentElementOpacity = frame.Context.ElementOpacity, InheritedMarkers = frame.Context.Markers, InheritedPaintOrder = frame.Context.PaintOrder, InheritedFill = frame.Context.Paint, PaintServerId = frame.Context.PaintServerId, PaintServerFill = frame.Context.PaintServerFill, InheritedStrokeOpacity = frame.Context.StrokeOpacity, InheritedStroke = frame.Context.Stroke, InheritedFillRule = frame.Context.FillRule, RecordingScope = state.NewRecordingScope(), AllowsSolidPaintAnalysis = true, IsDisplayed = displayed, IsVisible = visible };
                     AddMapped(node.Definition, leaf, frame.Context.Clip);
                     continue;
                 }
                 if (!state.Definitions.TryGetValue(node.Reference.Id, out SvgDefinition target) && !state.RenderedGroupDefinitions.TryGetValue(node.Reference.Id, out target))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local references in symbol content are implemented.");
                 SvgPaint instancePaint = node.Style.Resolve(frame.Context.Paint);
-                SvgUseReference use = node.Reference with { Transform = frame.Context.Transform.ComposeChecked(node.Reference.Transform), InheritedTransform = frame.Context.Transform, InheritedMarkers = node.Style.Markers.InheritFrom(frame.Context.Markers), InheritedPaintOrder = node.Style.PaintOrder ?? frame.Context.PaintOrder, InheritedFill = instancePaint, PaintServerId = node.Reference.PaintServerId ?? (node.Style.HasAuthoredFill ? null : frame.Context.PaintServerId), PaintServerFill = node.Reference.PaintServerFill ?? (node.Style.HasAuthoredFill ? null : frame.Context.PaintServerFill), InheritedStrokeOpacity = node.Style.StrokeOpacity ?? frame.Context.StrokeOpacity, InheritedStroke = node.Style.Stroke.InheritFrom(frame.Context.Stroke), InheritedFillRule = node.Reference.InheritedFillRule ?? frame.Context.FillRule, FillOverride = node.Reference.FillOverride is null ? null : instancePaint, Opacity = 255, IsPainted = displayed && visible, IsDisplayed = displayed, IsVisible = visible, RecordingScope = state.NewRecordingScope() };
+                SvgPaintOpacity useOpacity = node.Style.ResolveOpacity(frame.Context.ElementOpacity);
+                SvgUseReference use = node.Reference with { SourceOpacity = useOpacity, ParentElementOpacity = null, Transform = frame.Context.Transform.ComposeChecked(node.Reference.Transform), InheritedTransform = frame.Context.Transform, InheritedMarkers = node.Style.Markers.InheritFrom(frame.Context.Markers), InheritedPaintOrder = node.Style.PaintOrder ?? frame.Context.PaintOrder, InheritedFill = instancePaint, PaintServerId = node.Reference.PaintServerId ?? (node.Style.HasAuthoredFill ? null : frame.Context.PaintServerId), PaintServerFill = node.Reference.PaintServerFill ?? (node.Style.HasAuthoredFill ? null : frame.Context.PaintServerFill), InheritedStrokeOpacity = node.Style.StrokeOpacity ?? frame.Context.StrokeOpacity, InheritedStroke = node.Style.Stroke.InheritFrom(frame.Context.Stroke), InheritedFillRule = node.Reference.InheritedFillRule ?? frame.Context.FillRule, FillOverride = node.Reference.FillOverride is null ? null : instancePaint, Opacity = 255, IsPainted = displayed && visible, IsDisplayed = displayed, IsVisible = visible, RecordingScope = state.NewRecordingScope() };
                 if (target.SymbolContent is {} range)
                 {
                     ValidateRenderedGroup(target);
                     Context child = Place(target, use, ClipFrame(frame.Context.Clip), displayed, visible, out SvgAffineViewportClip? nestedClip);
-                    stack.Add(new(range, range.Start, child, output.Count, node.Reference.SourceOpacity, use.RecordingScope, null, nestedClip, node.Reference.SourceMaskReference));
+                    stack.Add(new(range, range.Start, child, output.Count, useOpacity, use.RecordingScope, null, nestedClip, node.Reference.SourceMaskReference));
                 }
                 else
                 {
                     int start = output.Count;
                     AddMapped(target with { SymbolFillBindings = target.SourceFillBindings ?? target.SymbolFillBindings }, use, frame.Context.Clip);
                     SvgReferenceResolver.ApplyMask(output.AsMutableSpan().Slice(start), null, null, node.Reference.SourceMaskReference, state, work, token);
-                    SvgPaintRecording.WrapInstance(output.AsMutableSpan().Slice(start), node.Reference.SourceOpacity, use.RecordingScope, state, work, token);
+                    SvgPaintRecording.WrapInstance(output.AsMutableSpan().Slice(start), useOpacity, use.RecordingScope, state, work, token);
                 }
             }
             SvgGeometry[] result = SvgReferenceResolver.RetainInstanceBatch(output.AsSpan(), state, work, token);
@@ -132,6 +134,6 @@ internal static class SvgSymbolContentRenderer
                 clip = clip is {} parent ? local.Intersect(parent) : local;
             }
         }
-        return new(reference.FillOverride ?? reference.InheritedFill, reference.PaintServerId, reference.PaintServerFill, reference.InheritedStrokeOpacity, reference.InheritedStroke, reference.InheritedFillRule, map, clip, displayed, visible) { Markers = reference.InheritedMarkers, PaintOrder = reference.InheritedPaintOrder };
+        return new(reference.FillOverride ?? reference.InheritedFill, reference.PaintServerId, reference.PaintServerFill, reference.InheritedStrokeOpacity, reference.InheritedStroke, reference.InheritedFillRule, map, clip, displayed, visible) { OwnOpacity = reference.ElementParentOpacity, Markers = reference.InheritedMarkers, PaintOrder = reference.InheritedPaintOrder };
     }
 }

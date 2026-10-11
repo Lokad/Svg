@@ -20,14 +20,14 @@ internal static class SvgLocalReferencePresentationResolver
     {
         if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill-rule overrides on use elements are not implemented.");
         bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible);
-        byte opacity = SvgColorParser.ParseOpacity(style.Opacity);
+        byte opacity = style.GetOpacity().Alpha;
         bool paintServer = style.Fill is not null && SvgPatternSyntax.IsPatternFill(style.Fill);
         SvgPaint paint = SvgPaintResolver.Resolve(paintServer ? "#ffffff" : style.Fill, style.FillOpacity, style.Color, inheritedPresentation.Paint, namedColors);
         SvgUseStrokeOverride? stroke = ResolveStrokeOverride(style, inheritedPresentation with { Paint = paint }, namedColors);
         SvgPaintOpacity strokeOpacity = SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
         if (paintServer) return new SvgResolvedLocalReferencePresentation(opacity, isPainted, null, strings.Copy(SvgGradientSyntax.ParsePaintId(style.Fill)), stroke) { Paint = paint, StrokeOpacity = strokeOpacity };
         SvgPaint? fillOverride = style.Fill is null ? null : paint;
-        return new SvgResolvedLocalReferencePresentation(opacity, isPainted, fillOverride, null, stroke) { Paint = paint, StrokeOpacity = strokeOpacity, AllowsSolidPaintAnalysis = SvgColorParser.ParsePaintOpacity(style.Opacity).Value == 1 };
+        return new SvgResolvedLocalReferencePresentation(opacity, isPainted, fillOverride, null, stroke) { Paint = paint, StrokeOpacity = strokeOpacity, AllowsSolidPaintAnalysis = style.GetOpacity().Value == 1 };
 
         static SvgUseStrokeOverride? ResolveStrokeOverride(SvgComputedStyle style, SvgInheritedPresentation inheritedPresentation, IReadOnlyDictionary<string, SvgColor> namedColors)
         {

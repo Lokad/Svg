@@ -136,14 +136,16 @@ internal static class SvgDocumentTraversal
                     SvgClipBox box = new(clipOriginX, clipOriginY, viewport.Width * clipScaleX, viewport.Height * clipScaleY);
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
                     if (!reader.IsEmptyElement && (composedScaleX != 1 || composedScaleY != 1)) state.ScaledViewportPushes++;
-                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth));
-                    byte viewportOpacity = SvgColorParser.ParseOpacity(reader.GetAttribute("opacity"));
+                    SvgPaintableElementContext viewportContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+                    SvgPaintOpacity sourceViewportOpacity = SvgComputedStyle.Resolve(reader, default).ResolveOpacity(viewportContext.InheritedPresentation.ElementOpacity).GetOpacity();
+                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth) { OwnOpacity = sourceViewportOpacity });
+                    byte viewportOpacity = sourceViewportOpacity.Alpha;
                     if (viewportOpacity != 255)
                     {
                         if (root.Opacity != 255 || state.HasOpacityScope) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested viewport opacity requires separate compositing calibration.");
                         if (!reader.IsEmptyElement)
                         {
-                            state.Scene.BeginSourceOpacityScope(SvgColorParser.ParsePaintOpacity(reader.GetAttribute("opacity")), new(-1));
+                            state.Scene.BeginSourceOpacityScope(sourceViewportOpacity, new(-1));
                             state.HasOpacityScope = true;
                             state.ViewportOpacityDepth = reader.Depth;
                         }

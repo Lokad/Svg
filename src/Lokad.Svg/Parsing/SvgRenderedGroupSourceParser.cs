@@ -18,7 +18,7 @@ internal static class SvgRenderedGroupSourceParser
             || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, colors, work, token);
-        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token);
+        SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, work, token).ResolveOpacity(context.InheritedPresentation.ElementOpacity);
         SvgSymbolContent content;
         if (state.RenderedGroupContent is null)
         {
@@ -40,13 +40,13 @@ internal static class SvgRenderedGroupSourceParser
             Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
         SvgPaintOpacity? fillOpacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
         SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
-        SvgPaintOpacity opacity = SvgColorParser.ParsePaintOpacity(style.Opacity);
+        SvgPaintOpacity opacity = style.GetOpacity();
         string? fillRule = Copy(style.FillRule);
-        SvgSymbolPresentation presentation = new(paint, stroke, fillRule, style.Fill is not null, fillOpacity, color, opacity) { Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, work, token), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+        SvgSymbolPresentation presentation = new(paint, stroke, fillRule, style.Fill is not null, fillOpacity, color, opacity) { InheritsOpacity = style.InheritsOpacity, Markers = new SvgMarkerStyle(style.MarkerStart, style.MarkerMid, style.MarkerEnd).Retain(state, work, token), PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
         content.BeginGroup(reader.Depth, id, presentation,
             new(paint, style.Fill is not null, fillOpacity, color, opacity, SvgPresentationResolver.ParseDisplay(style.Display),
                 style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true))
-            { Markers = presentation.Markers, PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
+            { InheritsOpacity = style.InheritsOpacity, Markers = presentation.Markers, PaintOrder = style.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId, Stroke = stroke, FillRule = fillRule, StrokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity) },
             SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
         if (id is not null) state.RenderedGroupDefinitions.TryAdd(id, new([], false, null, null)
             { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true, RenderedGroupId = id });

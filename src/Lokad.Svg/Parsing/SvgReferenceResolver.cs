@@ -10,6 +10,10 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal bool IsMarker { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal SvgPaintOpacity SourceOpacity { get; init; } = SvgPaintOpacity.Opaque;
+    internal bool InheritsOpacity { get; init; }
+    /// <summary>Supplies the logical parent opacity when a synthetic leaf reference lowers an authored inherit declaration.</summary>
+    internal SvgPaintOpacity? ParentElementOpacity { get; init; }
+    internal SvgPaintOpacity ElementParentOpacity => ParentElementOpacity ?? SourceOpacity;
     internal SvgPaint InheritedFill { get; init; } = SvgPaint.Default;
     internal SvgPaintOpacity InheritedStrokeOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal SvgInheritedStrokeStyle InheritedStroke { get; init; }
@@ -81,7 +85,7 @@ internal static class SvgReferenceResolver
                     if (geometry.LeafMask is not null && source.GetAttribute("mask") is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, retainMappedContour, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, retainMappedContour, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }

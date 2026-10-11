@@ -7,6 +7,8 @@ internal enum SvgSymbolContentKind { Leaf, Group, EndGroup, Use, Unsupported }
 /// <summary>Retains independently authored container paint; absent properties inherit from the instance context.</summary>
 internal readonly record struct SvgSymbolContentStyle(SvgPaint Paint, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? Color, SvgPaintOpacity Opacity, bool IsDisplayed, bool? IsVisible)
 {
+    internal bool InheritsOpacity { get; init; }
+    internal SvgPaintOpacity ResolveOpacity(SvgPaintOpacity parentOpacity) => InheritsOpacity ? parentOpacity : Opacity;
     internal string? PaintServerFill { get; init; }
     internal SvgPaintOrder? PaintOrder { get; init; }
     internal SvgMarkerStyle Markers { get; init; }
@@ -60,7 +62,7 @@ internal sealed class SvgSymbolContent : IDisposable
             content = new(budget, work, token, presentation, owner);
             content._building.Add(new(SvgSymbolContentKind.Group, default, default,
                 new(presentation.Paint, presentation.HasAuthoredFill, presentation.FillOpacity, presentation.CurrentColor, presentation.SourceOpacity, true, null)
-                { Markers = presentation.Markers, PaintOrder = presentation.PaintOrder, PaintServerFill = presentation.PaintServerFill, PaintServerId = presentation.PaintServerId, FillRule = presentation.FillRule, Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
+                { InheritsOpacity = presentation.InheritsOpacity, Markers = presentation.Markers, PaintOrder = presentation.PaintOrder, PaintServerFill = presentation.PaintServerFill, PaintServerId = presentation.PaintServerId, FillRule = presentation.FillRule, Stroke = presentation.Stroke, StrokeOpacity = presentation.Stroke.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(presentation.Stroke.StrokeOpacity) }, SvgAffineTransform.Identity, -1));
             return content;
         }
         catch { if (content is null) owner.Dispose(); else content.Dispose(); throw; }
@@ -92,7 +94,7 @@ internal sealed class SvgSymbolContent : IDisposable
         if (!hasAuthoredFill) reference = reference with { PaintServerId = null, PaintServerFill = null, FillOverride = null };
         _building.Add(new(SvgSymbolContentKind.Use, default, reference,
             new(reference.InheritedFill, hasAuthoredFill, fillOpacity, color, reference.SourceOpacity, displayed, visible)
-            { Markers = markers, PaintOrder = paintOrder, Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgAffineTransform.Identity, -1));
+            { InheritsOpacity = reference.InheritsOpacity, Markers = markers, PaintOrder = paintOrder, Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgAffineTransform.Identity, -1));
         return start;
     }
 

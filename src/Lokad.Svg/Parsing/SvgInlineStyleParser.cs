@@ -281,7 +281,7 @@ internal static class SvgInlineStyleParser
         ReadOnlySpan<char> token = value.Trim();
         if (token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase))
         {
-            if (IsInheritedPaintProperty(attribute))
+            if (IsInheritedPaintProperty(attribute) || attribute.Equals("opacity".AsSpan(), StringComparison.OrdinalIgnoreCase))
             {
                 mapped = InheritedValue;
                 return true;

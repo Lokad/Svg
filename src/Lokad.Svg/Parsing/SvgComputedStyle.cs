@@ -5,6 +5,13 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Represents the supported presentation values after inline, stylesheet and attribute precedence.</summary>
 internal readonly record struct SvgComputedStyle(string? Color, string? Fill, string? FillOpacity, string? Stroke, string? Display, string? Visibility, string? Opacity, string? FillRule)
 {
+    /// <summary>Retains the parent's own opacity for an explicit inherit declaration, before any layer or mask composition.</summary>
+    internal SvgPaintOpacity? ComputedOpacity { get; init; }
+    internal bool InheritsOpacity => Opacity == SvgInlineStyleParser.InheritedValue;
+    internal SvgComputedStyle ResolveOpacity(SvgPaintOpacity parentOpacity)
+        => this with { ComputedOpacity = InheritsOpacity ? parentOpacity : null };
+    internal SvgPaintOpacity GetOpacity() => ComputedOpacity ?? SvgColorParser.ParsePaintOpacity(Opacity);
+
     /// <summary>Gets the cascaded stroke linecap value, falling back to the presentation attribute.</summary>
     internal string? Linecap { get; init; }
 

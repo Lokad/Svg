@@ -118,7 +118,8 @@ public sealed class SvgPatternTemplateTests
         StringBuilder text = new("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs>");
         for (int index = 0; index < 1024; index++) text.Append("<pattern id='p").Append(index).Append("' href='#p").Append(index + 1).Append("'/>");
         text.Append("<pattern id='p1024' width='8' height='8' patternUnits='userSpaceOnUse'><circle cx='4' cy='4' r='2' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p0)'/></svg>");
-        RenderBudget budget = new(8_000_000);
+        // The retained contexts now include independently resolved element opacity.
+        RenderBudget budget = new(10_000_000);
         ParserWorkCounter work = new(1_000_000);
         using (SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes(text.ToString()), SvgRenderLimits.Default, budget, null, work, CancellationToken.None))
         using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))

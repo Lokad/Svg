@@ -37,17 +37,17 @@ internal static class SvgSymbolContentParser
             SvgInheritedStrokeStyle stroke = new(Copy(style.Linecap), Copy(style.Linejoin), Copy(style.Dasharray), Copy(style.Dashoffset), Copy(style.Width), Copy(style.Miterlimit), Copy(style.StrokeOpacity), Copy(style.Stroke));
             SvgPaintOpacity? opacity = style.FillOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.FillOpacity);
             SvgColor? color = style.Color is null ? null : SvgColorParser.Parse(style.Color, colors);
-            SvgPaintOpacity sourceOpacity = SvgColorParser.ParsePaintOpacity(style.Opacity);
+            SvgPaintOpacity sourceOpacity = style.ResolveOpacity(inherited.SourceOpacity).GetOpacity();
             SvgSymbolPresentation presentation = new(paint, inherited.Stroke.ResolveChild(style with { Linecap = stroke.Linecap, Linejoin = stroke.Linejoin, Dasharray = stroke.Dasharray, Dashoffset = stroke.Dashoffset, Width = stroke.Width, Miterlimit = stroke.Miterlimit, StrokeOpacity = stroke.StrokeOpacity, Stroke = stroke.Stroke }),
-                Copy(style.FillRule) ?? inherited.FillRule, style.Fill is not null || inherited.HasAuthoredFill, opacity ?? inherited.FillOpacity, color ?? inherited.CurrentColor, sourceOpacity) { Markers = markers.InheritFrom(inherited.Markers), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
+                Copy(style.FillRule) ?? inherited.FillRule, style.Fill is not null || inherited.HasAuthoredFill, opacity ?? inherited.FillOpacity, color ?? inherited.CurrentColor, sourceOpacity) { InheritsOpacity = style.InheritsOpacity, Markers = markers.InheritFrom(inherited.Markers), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
             content.BeginGroup(reader.Depth, id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
-                { Markers = markers, PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
+                { InheritsOpacity = style.InheritsOpacity, Markers = markers, PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
             if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
             if (reader.IsEmptyElement) content.EndGroup(reader.Depth, state);
         }
         else
         {
-            SvgPaintableElementContext context = new(new(inherited.Paint, true, true, SvgAffineTransform.Identity) { Markers = inherited.Markers, PaintOrder = inherited.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = inherited.PaintServerFill }, root.InheritedTextStyle, inherited.Stroke, sheet, colors, work, token, state.OutputMagnification, null) { RecordingScope = new(1) };
+            SvgPaintableElementContext context = new(new(inherited.Paint, true, true, SvgAffineTransform.Identity) { OwnOpacity = inherited.SourceOpacity, Markers = inherited.Markers, PaintOrder = inherited.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers, PaintServerFill = inherited.PaintServerFill }, root.InheritedTextStyle, inherited.Stroke, sheet, colors, work, token, state.OutputMagnification, null) { RecordingScope = new(1) };
             double? width = state.SymbolViewBox?.Width ?? root.UserViewportWidth;
             double? height = state.SymbolViewBox?.Height ?? root.UserViewportHeight;
             SvgUseReference reference = SvgLocalReferenceParser.ParseUse(reader, context, state.Strings, width, height, state);

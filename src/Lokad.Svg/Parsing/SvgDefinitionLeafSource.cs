@@ -88,6 +88,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
     {
         _work.Consume(_token);
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
+        if (_authored.InheritsOpacity) return true;
         if (_authored.Filter is string filter && filter.Trim() != "none") return true;
         // Numeric opacity binds through recorded paint. Shader fills and native
         // stroke colors require source lowering when their inherited values change.
@@ -98,7 +99,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             || resolved with { StrokeOpacity = null } != _constructedStroke with { StrokeOpacity = null };
     }
 
-    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers, bool retainMappedContour, SvgDocumentState state)
+    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers, SvgPaintOpacity parentOpacity, bool retainMappedContour, SvgDocumentState state)
     {
         _attribute = -1;
         // A use supplies fill only where the source did not author one. The original
@@ -106,7 +107,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         SvgComputedStyle authored = _authored;
         if (_element != "line" && authored.Fill is null && paintServerFill is not null) authored = authored with { Fill = paintServerFill };
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
-        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { PaintOrder = paintOrder, Markers = markers }, SvgInheritedTextStyle.Default,
+        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { OwnOpacity = parentOpacity, PaintOrder = paintOrder, Markers = markers }, SvgInheritedTextStyle.Default,
             resolved, default, _colors, _work, _token, state.OutputMagnification, fillRule)
         {
             RecordingScope = new(1),

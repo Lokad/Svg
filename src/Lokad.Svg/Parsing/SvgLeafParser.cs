@@ -46,7 +46,7 @@ internal static class SvgLeafParser
         if (stroke is not null && SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
         if (stroke is not null && effectiveFrame is not null && effectiveFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
         if (effectiveFrame is not null) rectangle = ClipStrokedRectangle(rectangle, stroke, effectiveFrame.Value);
-        SvgSolidPaint? solidPaint = SvgColorParser.ParsePaintOpacity(element.Style.Opacity).Value == 1 ? SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint) : null;
+        SvgSolidPaint? solidPaint = element.Style.GetOpacity().Value == 1 ? SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint) : null;
         return RetainSingleGeometry(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }) with { SolidPaint = solidPaint }, state, context);
 
         static SvgParsedGeometry LowerTransformedFill(XmlReader input, SvgPaintableElementContext elementContext, SvgRectangleSyntax rectangle, SvgViewportFrame? clip, SvgDocumentState document)
@@ -88,7 +88,7 @@ internal static class SvgLeafParser
                 SvgRectangle box = new(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, default, false, null);
                 if (linear) gradient = SvgGradientSyntax.BindLinearSourceMap(gradient, box, source.SceneMap, document, elementContext.WorkCounter, elementContext.CancellationToken);
                 else radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, source.SceneMap, elementContext.WorkCounter, elementContext.CancellationToken);
-                byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
+                byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
                 foreach (SvgGeometry geometry in filled.Geometries)
                 {
                     SvgGeometry painted = geometry.TransferAuthoredPathTo(linear
@@ -186,7 +186,7 @@ internal static class SvgLeafParser
         bool isLinear = false;
         byte opacity = 255;
         SvgRectangle box = default;
-        if (paintGradient || paintPattern) opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
+        if (paintGradient || paintPattern) opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
         if (paintGradient)
         {
             string paintId = SvgGradientSyntax.ParsePaintId(style.Fill);
@@ -342,7 +342,7 @@ internal static class SvgLeafParser
         SvgRectangle rectangle = localTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, element.Presentation.Color, element.Presentation.HasFill, null));
         SvgStroke? stroke = ParseRectangleStroke(element.Presentation.StrokeColor, element.Style.Width ?? syntax.StrokeWidth, localTransform, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, element.Presentation.Opacity, rectangle.HasFill);
         if (stroke is not null && SvgStrokeStyleSyntax.ParseDasharray(element.Style.Dasharray) is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid (none) stroke dash arrays are implemented.");
-        SvgSolidPaint? solidPaint = SvgColorParser.ParsePaintOpacity(element.Style.Opacity).Value == 1 ? SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint) : null;
+        SvgSolidPaint? solidPaint = element.Style.GetOpacity().Value == 1 ? SvgPaintResolver.ResolveSolidPaint(element.Presentation.Paint) : null;
         return new SvgParsedRectangle(SvgGeometry.FromRectangle(rectangle with { Stroke = element.Presentation.IsPainted ? stroke : null }) with { SolidPaint = solidPaint }, element.Style);
     }
 
@@ -412,7 +412,7 @@ internal static class SvgLeafParser
                 isLinear = true;
             }
             else if (!state.RadialGradients.TryGetValue(paintId, out radial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
-            opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
+            opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
             if (!isLinear && !transform.IsAxisAligned)
             {
                 float left = (float)syntax.CenterX - (float)syntax.RadiusX, top = (float)syntax.CenterY - (float)syntax.RadiusY;

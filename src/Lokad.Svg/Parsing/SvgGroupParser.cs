@@ -11,7 +11,7 @@ internal static class SvgGroupParser
         else SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
         SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
         InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
-        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet);
+        SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, context.StyleSheet).ResolveOpacity(context.InheritedPresentation.ElementOpacity);
         SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inline, style, context.StyleSheet, context.InheritedPresentation, context.InheritedFillRule, context.InheritedTextStyle, context.InheritedStroke, root.Opacity != 255 || state.HasOpacityScope, namedColors, workCounter, cancellationToken);
         if (style.Fill is not null && resolved.Presentation.PaintServerFill is string fill)
         {
@@ -46,7 +46,7 @@ internal static class SvgGroupParser
         byte combined = mask is null ? resolved.Opacity : SvgReferenceResolver.MultiplyAlpha(resolved.Opacity, mask.Value);
         bool hasMaskScope = reader.IsEmptyElement ? false : PushMaskScope(reader, state);
         SvgGroupKind kind = reader.LocalName == "switch" ? SvgGroupKind.Switch : SvgStructuralVocabulary.IsGroupContainer(reader.LocalName) ? SvgGroupKind.Group : SvgGroupKind.Link;
-        SvgPaintOpacity sourceOpacity = SvgColorParser.ParsePaintOpacity(style.Opacity);
+        SvgPaintOpacity sourceOpacity = style.GetOpacity();
         SvgRecordingScope opacityScope = context.RecordingScope.Value == 0 ? new(1) : context.RecordingScope;
         if (reader.GetAttribute("clip-path") is not null || resolved.Presentation.Transform != context.InheritedPresentation.Transform)
             opacityScope = state.NewRecordingScope();

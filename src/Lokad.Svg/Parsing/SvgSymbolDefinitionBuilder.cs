@@ -4,6 +4,7 @@ namespace Lokad.Svg.Parsing;
 
 internal readonly record struct SvgSymbolPresentation(SvgPaint Paint, SvgInheritedStrokeStyle Stroke, string? FillRule, bool HasAuthoredFill, SvgPaintOpacity? FillOpacity, SvgColor? CurrentColor, SvgPaintOpacity SourceOpacity)
 {
+    internal bool InheritsOpacity { get; init; }
     internal string? PaintServerFill { get; init; }
     internal SvgPaintOrder? PaintOrder { get; init; }
     internal SvgMarkerStyle Markers { get; init; }

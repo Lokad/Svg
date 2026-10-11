@@ -321,7 +321,7 @@ internal static class SvgOrthogonalShapeParser
                 if (pattern && (transform != SvgAffineTransform.Identity || frame is { IsScaled: true } || frame is { OffsetX: not 0 } || frame is { OffsetY: not 0 }))
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed fractional point-list pattern placements are implemented.");
                 SvgRectangle box = linear && gradient.IsUserSpace || radial && circle.IsUserSpace || pattern ? default : BoxFromFilledGeometryBounds(source, context.WorkCounter, context.CancellationToken);
-                byte opacity = SvgReferenceResolver.MultiplyAlpha(SvgColorParser.ParseOpacity(style.Opacity), SvgColorParser.ParseOpacity(style.FillOpacity));
+                byte opacity = SvgReferenceResolver.MultiplyAlpha(style.GetOpacity().Alpha, SvgColorParser.ParseOpacity(style.FillOpacity));
                 using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 try
                 {

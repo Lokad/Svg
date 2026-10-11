@@ -347,17 +347,22 @@ inheritance also bind through existing source replay. Stroke `initial` values
 restore the property defaults.
 The `cascade-inherit` control is exact through
 twelve outputs on both platforms; its prior 576-pixel mismatch is resolved.
-The seven diagnostic controls stand at **4/7 exact on Windows, 5/7 on Linux**.
+Explicit `opacity:inherit` resolves the logical parent's own computed opacity,
+separately from accumulated group and mask alpha. Retained source replay binds
+it per instance and preserves intervening symbol/container parents; omitted,
+`initial` and `unset` opacity keep their noninherited initial value.
+The frozen `force-inherit` control is exact through twelve outputs on both
+platforms. The seven diagnostic controls stand at **5/7 exact on Windows, 6/7 on Linux**.
 Existing 1,024-character identifier support is preserved; complete selectors
 are bounded to 4,096 characters, with shared memory/work limits and cancellation.
 Root, nested-viewport and `defs` container styling remain explicit unsupported
 outcomes and required G7 exit work; supported leaves may use them as ancestors.
-Complete qualification passes **6,963 tests per platform** (4,829 core, 2,128
+Complete qualification passes **6,987 tests per platform** (4,853 core, 2,128
 visual, six FontProbe), with zero warnings, errors, failures or skips. All
 **2,849 prior PNGs**, **2,755 prior exact results**, **30 supplied-font outputs**
 and corporate **27/27 documents / 258/258 variants** are preserved. The diagram's
-explicit opacity inheritance, translated labels and span paint remain the next
-shared dependencies, alongside the Windows omitted-family mask mismatch. Its
+direct-text fill-rule admission, translated labels and span paint remain the
+next shared dependencies, alongside the Windows omitted-family mask mismatch. Its
 whole-document completion remains **0/1**.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.

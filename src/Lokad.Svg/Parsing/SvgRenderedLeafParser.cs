@@ -63,7 +63,7 @@ internal static class SvgRenderedLeafParser
         SvgRecordedPaintValue paint = state.Scene.GetRecordedPaintValue(state.Scene.GeometryAt(firstGeometry).RecordedPaint);
         if (paint.ObjectBounds is not {} objectBounds) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter source requires retained object bounds.");
         int binding = state.Scene.Filters.AddBinding(id, objectBounds, paint.VisualBounds ?? objectBounds, context.ResolveTransform(reader), context.LengthBases);
-        SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, 0, SvgColorParser.ParsePaintOpacity(style.Opacity), null, binding, 255) { RegionKind = SvgLayerRegionKind.Filter };
+        SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, 0, style.GetOpacity(), null, binding, 255) { RegionKind = SvgLayerRegionKind.Filter };
         state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);
         state.Scene.InsertCommands(start, [begin]);
         return parsed;

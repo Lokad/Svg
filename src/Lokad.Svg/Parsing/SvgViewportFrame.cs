@@ -3,6 +3,8 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Carries one nested viewport map, user-space percentage bases, absolute clip box and XML depth.</summary>
 internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY, double ScaleX, double ScaleY, double? ViewportWidth, double? ViewportHeight, SvgClipBox Clip, int Depth)
 {
+    internal SvgPaintOpacity? OwnOpacity { get; init; }
+    internal SvgPaintOpacity ElementOpacity => OwnOpacity ?? SvgPaintOpacity.Opaque;
     internal bool IsScaled => ScaleX != 1 || ScaleY != 1;
 
     internal bool IsTrivial => OffsetX == 0 && OffsetY == 0 && !IsScaled;
