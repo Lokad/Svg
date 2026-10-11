@@ -1110,7 +1110,7 @@ from the four failure-selected online documents.
 | R36 | Extend practical inheritance and typed style state only through measured G1/G2/G7 blockers. |
 | R37 | Complete remaining transform/instance gates under G3, with independent semantic controls. |
 | R38 | Use actual-size bounded storage and measure meaningful allocation changes; no repository-wide rewrite. |
-| R39 | Reserve before allocation/work, bound expansion and check cancellation. Audit every new owner, transfer and failure path. |
+| R39 | Reserve before material allocations/work, bound expansion and check cancellation. Audit ownership, transfers and failure paths according to material memory impact, using the approximate accounting requirements below. |
 
 ### Original finding dispositions and retained regressions
 
@@ -1170,7 +1170,7 @@ Read [the C# guidelines](docs/GUIDELINES_CSHARP.md) before C# changes.
 
 | Default bound | Value / interpretation |
 | --- | --- |
-| Renderer-accounted live storage | 256 MiB; not process/host memory. Audit every changed R38/R39 ownership/allocation path. |
+| Renderer-accounted live storage | 256 MiB budget under approximate accounting; shared runtime/host overhead and borrowed storage are identified separately. Audit material R38/R39 ownership/allocation changes. |
 | SVG input / encoded PNG | 16 MiB / 128 MiB. |
 | Output | 16,384 per axis; 16,777,216 pixels. |
 | Nodes / cumulative path commands | 100,000 / 1,000,000. |
@@ -1185,6 +1185,25 @@ allowance, ledger peaks, cumulative managed allocations, borrowed storage and
 process working set. Charge curve/stroke/dash/reference expansion, pair/vertex
 scans, coverage/paint, images and intermediate surfaces before denied work;
 check cancellation within bounded chunks and release owners on every exit.
+
+Memory accounting is approximate: directionally no more than **20% of
+conversion-attributable live memory** should be unaccounted for across
+representative workloads. This is an engineering target, not an exact guarantee
+at every instant. Identify shared runtime/host overhead and borrowed storage
+separately. Prefer conservative estimates and aggregate allowances for dominant
+allocations: pixel buffers, decoded images, intermediate surfaces, geometry,
+glyph data and large collections. Avoid excessive overcharging.
+
+Completion does not require byte-exact small-object accounting, individual
+metadata receipts, GC-round retirement proofs or precise accounting of the
+bookkeeping machinery. Interpret ownership audits according to material memory
+impact. Preserve meaningful size/work limits, cancellation, cleanup and output
+integrity; validate through a small representative normal/adversarial workload
+set using existing scenarios, without creating another measurement framework.
+
+These requirements supersede conflicting exact-accounting completion wording.
+Rendering correctness remains the priority. Preserve completed work and useful
+protections; do not reopen them for requalification under this clarification.
 
 ### Validation and evidence policy
 
