@@ -11861,3 +11861,46 @@ exact font outputs. Resource owners release after success and denial one byte
 below the measured peaks; both current managed package audits pass. Inputs,
 options, supplied faces and platform references remain unchanged. The receipt is
 `artifacts/windows-mapped-strikes-20261011/final-qualification.json`.
+
+
+### Explicit Windows points and bounded quadratic scan leaves
+
+`GetGlyphRunOutline` supplies vector geometry; the native LCD scanner uses a
+separate fixed-point pipeline. Independent explicit-point and leaf observations
+show that Windows normalizes its matrix before separately rounded point products,
+then constructs implied points and maps them into the six by five scan grid.
+The managed renderer now follows those stages through shared bounded point and
+component assembly. Quadratics divide at vertical extrema before horizontal
+extrema, then at bounded spans, before forming implicit scan coefficients.
+Signed nearest division and midpoint arithmetic preserve the measured leaves.
+Subdivision borrows its source, reserves expanded and exact arrays before
+allocation, charges each visit, checks cancellation and bounds recursive depth.
+
+Both directed row limits retain enabled thin-tip dropouts even when normal
+coverage agrees. Axis-aligned relaxed strikes retain instruction fitting,
+including quarter turns; other mapped strikes use unhinted points. Fitted explicit
+points receive the device map before implied-point construction. Horizontal
+unmapped fitting retains its existing route.
+
+Thirteen complete [native RGB textures](../tests/Research/curved-font-documents/diagnostics/windows-mapped-masks.json)
+are byte-identical through three fresh processes. They replace the earlier float
+outer-contour witness with complete scanner masks, including extrema and thin
+vertices. Three focused subdivision checks cover denial, cancellation, retry and
+unchanged borrows. No input, supplied face, option or reference changes.
+`inv-127` improves **4,261 → 22 Windows pixels** through all 12 APIs: 4,240
+previously differing pixels are corrected and one formerly matching pixel changes
+within this incomplete document. Its curved control is now exact on both
+platforms; the horizontal composite control remains open at eight Windows pixels.
+The 22 document pixels localize to one hyphen (20) and two scan-tip pixels.
+Linux remains exact; cross-platform document completion remains 0/1.
+
+Both Release builds and **6,834 tests/platform** pass without warnings, failures
+or skips: 4,724 core, 2,104 visual and six FontProbe. Complete suite wall time is
+160.9 seconds Windows / 190.0 seconds Linux, excluding builds and bank probes.
+Qualification preserves 2,908 prior outcomes, 2,849 prior PNGs, 2,755 established
+exact comparisons and 26 Windows / 30 Linux prior exact font outputs. Corporate
+27/27 documents and 258/258 variants remain exact. The five measured Windows
+resource peaks remain unchanged; success and denial one byte below each peak
+release all owners. Both current managed package audits pass. The private receipt
+is `artifacts/mapped-windows-scan-inputs-20261011/final-qualification.json`.
+All finite G2–G9 and S17 exits remain visible.

@@ -66,6 +66,7 @@ internal static class SvgGlyphLcdCoverage
                         CellCoverage normal = ((lower | upper) & CellCoverage.Closed) != 0 ? CellCoverage.Interior : CellCoverage.None;
                         cells[index] = ((lower | upper) & CellCoverage.Dropout) | CellCoverage.Boundary | normal;
                     }
+                    cells[index] |= upper & CellCoverage.Dropout;
                 }
             }
         }

@@ -18,11 +18,13 @@ Shared `USE_MY_METRICS` inheritance admits the original precomposed accents.
 The unchanged document now renders through all 12 APIs under its declared
 supplied-font contract. Shared authored open curves
 now provide bounded midpoint/tangent maps; native rotated glyph-mask fidelity
-remains open on Windows: the curved control differs at 16 pixels there and is
-exact on Linux. The whole document is exact on Linux through all 12 APIs and
-differs at 4,261 Windows pixels after shared native strike relaxation and
-vertical scaler decomposition. An independent DirectWrite outer contour protects
-the mapped Windows outline; its mask coverage remains open.
+remains open on Windows. The curved control is now exact on both platforms through
+12 APIs. The whole document is exact on Linux and differs at **22 Windows pixels,
+down from 4,261**, after shared explicit-point fixed mapping, native scan-leaf
+subdivision, directed thin-tip dropout ownership and axis-aligned fitting.
+Thirteen complete independent native RGB textures protect these mechanisms.
+The remaining Windows pixels are one hyphen (20) and two scan-tip pixels;
+the horizontal composite control remains open at eight pixels.
 Default Latin ligatures use the supplied font's ordered type-4 records, with
 source cluster boundaries retained. Kerned text-path advances are rounded before
 midpoint/tangent placement. The admitted ligature subset is one unfiltered lookup
@@ -37,8 +39,8 @@ vertical scaler decomposition and unhinted TrueType device-grid outlines. Their
 bounded glyph-local masks reuse the existing geometry rasterizer; document integer
 placement and SVG clipping apply after local edge construction and preblend.
 The remaining 156 Linux document differences are resolved. Complete
-qualification passes **6,819 tests/platform** (4,724 core / 2,089 visual / six
-FontProbe), preserving every established exact output. Three separate controls
+qualification passes **6,834 tests/platform** (4,724 core / 2,104 visual / six
+FontProbe), preserving every established exact output. Four separate controls
 are exact on both platforms through 12 APIs; Linux completes all five. Percentage
 offsets resolve against geometric length; numeric offsets use its calibrated scale. Glyph
 advances remain independent. Open line/quadratic/cubic/conic/endpoint-arc baselines

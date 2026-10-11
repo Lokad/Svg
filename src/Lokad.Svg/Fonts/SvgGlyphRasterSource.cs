@@ -51,7 +51,9 @@ internal sealed class SvgGlyphRasterSource : IDisposable
             ? SvgGlyphStrikeTransform.Create(_fontSize * scaleY, new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0))
             : default;
         OpenTypeGlyphContourStorage contours = HasGlyphMap
-            ? OpenTypeFont.GetGlyphContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token)
+            ? strike.RelaxedMap.B == 0 && strike.RelaxedMap.C == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0
+                ? OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, target, TrueTypeImpliedPointRounding.None, OpenTypeWindowsGlyphTransform.Create(new(1, strike.RemainingMap, strike.RelaxedMap), 1), budget, work, token)
+                : OpenTypeFont.GetWindowsUnhintedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike, budget, work, token)
             : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, _fontSize * scaleY, target, TrueTypeImpliedPointRounding.None, budget, work, token);
         try
         {
@@ -59,7 +61,7 @@ internal sealed class SvgGlyphRasterSource : IDisposable
             float originX = MathF.Floor((float)(origin.X * scaleX + offsetX) * 4f + .5f) / 4f;
             float originY = HasGlyphMap ? MathF.Floor((float)(origin.Y * scaleY + offsetY) * 4f + .5f) / 4f
                 : MathF.Floor((float)(origin.Y * scaleY + offsetY) + .5f);
-            float ratioX = (float)(scaleX / scaleY);
+            float ratioX = HasGlyphMap ? 1 : (float)(scaleX / scaleY);
             if (!float.IsFinite(originX) || !float.IsFinite(originY) || !float.IsFinite(ratioX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph placement exceeds the device range.");
             // Native symmetric LCD coverage quantizes the quarter-pixel strike
             // origin onto its six-column grid before sampling the fitted outline.
@@ -72,6 +74,10 @@ internal sealed class SvgGlyphRasterSource : IDisposable
                 OpenTypeQuadraticSegment segment = contours.Segments[i];
                 contours.Segments[i] = new(Map(segment.Start), Map(segment.Control), Map(segment.End));
             }
+            if (HasGlyphMap)
+            {
+                using (contours) return SvgWindowsGlyphCurves.Prepare(contours, budget, work, token);
+            }
             return contours;
 
             OpenTypeOutlinePoint Map(OpenTypeOutlinePoint point)
@@ -79,13 +85,6 @@ internal sealed class SvgGlyphRasterSource : IDisposable
                 work.Consume(token);
                 float px = (float)(point.X / 64), py = -(float)(point.Y / 64);
                 float x = originX + px * ratioX, y = originY + py;
-                if (HasGlyphMap)
-                {
-                    px = (float)(point.X * (strike.DeviceSize / font.UnitsPerEm));
-                    py = -(float)(point.Y * (strike.DeviceSize / font.UnitsPerEm));
-                    x = originX + ((float)strike.RemainingMap.A * px + (float)strike.RemainingMap.C * py);
-                    y = originY + ((float)strike.RemainingMap.B * px + (float)strike.RemainingMap.D * py);
-                }
                 if (!float.IsFinite(x) || !float.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph outline exceeds the device range.");
                 return new(x + phaseCorrection, y + verticalCorrection);
             }

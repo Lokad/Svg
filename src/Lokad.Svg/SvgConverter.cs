@@ -2423,9 +2423,9 @@ public static class SvgConverter
                     RasterizeMappedBitmap(path, preblend, preparationWork);
                     return;
                 }
-                if (source.UsesDeviceFitting(budget, preparationWork, cancellationToken))
+                if (source.HasGlyphMap || source.UsesDeviceFitting(budget, preparationWork, cancellationToken))
                 {
-                    if (OperatingSystem.IsWindows() && source.HasTrueTypePrograms(budget, preparationWork, cancellationToken))
+                    if (OperatingSystem.IsWindows() && (source.HasGlyphMap || source.HasTrueTypePrograms(budget, preparationWork, cancellationToken)))
                     {
                         using OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
                         int crossingCount = checked(contours.Segments.Length * 2);

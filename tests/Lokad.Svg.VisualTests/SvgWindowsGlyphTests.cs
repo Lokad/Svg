@@ -10,41 +10,85 @@ public sealed class SvgWindowsGlyphTests
 {
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
 
-    [Fact]
-    public async Task Mapped_windows_outline_uses_the_independent_native_strike_transform()
+    [Theory]
+    [InlineData("curved-A")]
+    [InlineData("document-0")]
+    [InlineData("document-120")]
+    [InlineData("document-251")]
+    [InlineData("document-298")]
+    [InlineData("document-214")]
+    [InlineData("document-316")]
+    [InlineData("document-30")]
+    [InlineData("document-49")]
+    [InlineData("document-50")]
+    [InlineData("document-57")]
+    [InlineData("document-97")]
+    [InlineData("document-156")]
+    public async Task Mapped_windows_masks_match_complete_independent_native_textures(string identity)
     {
-        // IDWriteFontFace.GetGlyphRunOutline for the unchanged Noto Sans glyph 36,
-        // at the pinned Skia vertical strike size and remaining transform. These
-        // outer vertices include the independently measured six/five-cell phase.
-        // Coverage is a separate gate: this control's complete mask is not exact yet.
-        OpenTypeOutlinePoint[] expected =
-        [
-            new(24.199055989583332, 41.33759765625),
-            new(19.68411382039388, 39.8888671875),
-            new(16.118977864583332, 44.283104705810544),
-            new(18.47972043355306, 48.3870132446289),
-            new(17.333333333333332, 49.8),
-            new(9.71497376759847, 36.4353530883789),
-            new(10.735384305318197, 35.177635955810544),
-            new(25.37063725789388, 39.89355545043945)
-        ];
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "curved-font-documents", "diagnostics", "windows-mapped-masks.json")));
+        JsonElement item = native.RootElement.GetProperty("cases").EnumerateArray().Single(item => item.GetProperty("id").GetString() == identity);
         using SvgFontSnapshot snapshot = await Prepare();
+        SvgPreparedFont font = Assert.Single(snapshot.Fonts);
+        byte[] original = font.Bytes.ToArray();
         RenderBudget budget = new(long.MaxValue);
-        SvgAffineTransform map = new(.6297303263167993, -.776813823330235,
-            .776813823330235, .6297303263167993, 17.145682061058995, 49.75283765207207);
-        using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(36, 0, 0, 0), 20, map, budget))
+        JsonElement matrix = item.GetProperty("map"), bounds = item.GetProperty("coverageBounds");
+        SvgAffineTransform map = new(matrix[0].GetDouble(), matrix[1].GetDouble(), matrix[2].GetDouble(), matrix[3].GetDouble(), matrix[4].GetDouble(), matrix[5].GetDouble());
+        int ox = (int)Math.Floor(map.E), oy = (int)Math.Floor(map.F);
+        int left = bounds[0].GetInt32(), top = bounds[1].GetInt32(), right = bounds[2].GetInt32(), bottom = bounds[3].GetInt32();
+        byte[] expectedBytes = Convert.FromBase64String(item.GetProperty("rgbTextureBase64").GetString() ?? throw new InvalidDataException("Missing native texture."));
+        Assert.Equal((right - left) * (bottom - top) * 3, expectedBytes.Length);
+        using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(item.GetProperty("glyph").GetUInt16(), 0, 0, 0), item.GetProperty("deviceSize").GetDouble(), map, budget))
         using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
         {
-            Assert.Equal(8, contours.ContourEnds[0]);
-            for (int index = 0; index < expected.Length; index++)
+            using RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphLcdCoverage.Crossing>(contours.Segments.Length * 2), SvgMemoryCategory.Temporary);
+            SvgGlyphLcdCoverage.Crossing[] scratch = new SvgGlyphLcdCoverage.Crossing[contours.Segments.Length * 2];
+            for (int y = top - 1; y <= bottom; y++)
+            for (int x = left - 1; x <= right; x++)
             {
-                OpenTypeQuadraticSegment segment = contours.Segments[index];
-                Assert.Equal(expected[index].X, segment.Start.X, 10);
-                Assert.Equal(expected[index].Y, segment.Start.Y, 10);
-                Assert.Equal(segment.Control, segment.End);
+                SvgGlyphRgbCoverage expected = default;
+                if (x >= left && x < right && y >= top && y < bottom)
+                {
+                    int offset = ((y - top) * (right - left) + x - left) * 3;
+                    expected = new(expectedBytes[offset], expectedBytes[offset + 1], expectedBytes[offset + 2]);
+                }
+                SvgGlyphRgbCoverage actual = SvgGlyphLcdCoverage.GetCoverage(contours.Segments, ox + x, oy + y, scratch, contours.SmartDropouts, new(long.MaxValue), CancellationToken.None);
+                Assert.True(expected == actual, $"{identity} ({x}, {y}): expected {expected}, actual {actual}");
             }
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(original, font.Bytes.ToArray());
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void Denied_windows_curve_subdivision_releases_its_owner_and_preserves_the_borrow(int boundary)
+    {
+        OpenTypeQuadraticSegment[] segments = [new(new(1, 1), new(18, -3), new(2, 20))];
+        using OpenTypeGlyphContourStorage original = new(segments, [1], null, null);
+        RenderBudget budget = new(boundary == 0 ? 100 : long.MaxValue);
+        using CancellationTokenSource cancellation = new();
+        bool observed = false;
+        using (GlyphDecoderBudgetProbe.Arm((phase, _) =>
+        {
+            if (boundary == 2 && phase == GlyphDecoderBudgetPhase.ExpandedSegmentCapacity)
+            { observed = true; cancellation.Cancel(); }
+        }))
+        {
+            if (boundary == 2)
+                Assert.ThrowsAny<OperationCanceledException>(() => SvgWindowsGlyphCurves.Prepare(original, budget, new(long.MaxValue), cancellation.Token));
+            else
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgWindowsGlyphCurves.Prepare(original, budget, new(boundary == 1 ? 4 : long.MaxValue), CancellationToken.None)).ErrorCode);
+        }
+        Assert.Equal(boundary == 2, observed);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(new(new(1, 1), new(18, -3), new(2, 20)), original.Segments[0]);
+        RenderBudget retryBudget = new(long.MaxValue);
+        using (OpenTypeGlyphContourStorage retry = SvgWindowsGlyphCurves.Prepare(original, retryBudget, new(long.MaxValue), CancellationToken.None))
+            Assert.True(retry.Segments.Length > original.Segments.Length);
+        Assert.Equal(0, retryBudget.Snapshot().CurrentBytes);
     }
 
     [Fact]

@@ -34,6 +34,11 @@ internal static partial class OpenTypeFont
     /// The explicit target selects rasterizer queries; this internal stage draws no masks and
     /// supplies owned geometry to the managed coverage stage.</remarks>
     internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, TrueTypeImpliedPointRounding impliedPointRounding, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        => GetTrueTypeContours(bytes, glyphIndex, metrics, deviceSize, target, impliedPointRounding, null, budget, work, token);
+
+    /// <summary>Fits explicit points and applies an optional Windows device matrix before constructing implied curve points.</summary>
+    /// <remarks>Shares the supplied-face interpreter and all ownership, work and cancellation contracts above. The immutable post-transform owns no storage; every transformed point charges work before contour lowering.</remarks>
+    internal static OpenTypeGlyphContourStorage GetTrueTypeContours(ReadOnlyMemory<byte> bytes, ushort glyphIndex, OpenTypeFontMetrics metrics, double deviceSize, TrueTypeHintTarget target, TrueTypeImpliedPointRounding impliedPointRounding, OpenTypeWindowsGlyphTransform? postTransform, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         if (impliedPointRounding is not TrueTypeImpliedPointRounding.Down and not TrueTypeImpliedPointRounding.None) throw new ArgumentOutOfRangeException(nameof(impliedPointRounding));
         if (!double.IsFinite(deviceSize) || deviceSize <= 0 || deviceSize > 32767) throw new SvgException(SvgErrorCode.LimitExceeded, "The TrueType device size exceeds its coordinate bound.");
@@ -52,6 +57,7 @@ internal static partial class OpenTypeFont
             (TrueTypeHintProfile compositeProfile, OpenTypeTableRange compositeCvt, OpenTypeTableRange compositeFont, OpenTypeTableRange compositePrep) = ReadHintTables();
             using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), scale, target, budget, work, token);
             using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, budget, work, token);
+            MapPoints(outline.Points);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
             BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, impliedPointRounding, work, token);
             OpenTypeGlyphContourStorage result = compositeSegments.Detach();
@@ -93,11 +99,22 @@ internal static partial class OpenTypeFont
             smartDropouts = machine.GlyphSmartDropouts;
         }
         for (int i = 0; i < pointCount; i++) { work.Consume(token); decoded.Points[i] = new(points[i].X, points[i].Y, decoded.Points[i].IsOnCurve); }
+        MapPoints(decoded.Points);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, token);
         BuildQuadraticContours(decoded.Points, structure.Value.ContourEndpoints, segments, true, impliedPointRounding, work, token);
         OpenTypeGlyphContourStorage fitted = segments.Detach();
         fitted.SmartDropouts = smartDropouts;
         return fitted;
+
+        void MapPoints(Span<OpenTypeGlyphPoint> points)
+        {
+            if (postTransform is not OpenTypeWindowsGlyphTransform transform) return;
+            for (int index = 0; index < points.Length; index++)
+            {
+                work.Consume(token);
+                points[index] = transform.ApplyFitted(points[index]);
+            }
+        }
 
         int Scale(int value) => ScaleWith(value, scale);
         int ScaleWith(int value, int factor)

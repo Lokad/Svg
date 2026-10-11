@@ -62,7 +62,7 @@
       ],
       "platformReferencesByteIdentical": false,
       "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "All twelve Linux outputs match the unchanged reference after native fragment placement and bounded glyph-local mask construction. Windows glyph-mask fidelity remains open at 4,261 differing pixels. The input, supplied font, options and both platform references are unchanged.",
+      "remainingOrCompletedMechanism": "All twelve Linux outputs match the unchanged reference. Shared Windows fixed point mapping, native scan-leaf subdivision, directed thin-tip dropouts and axis-aligned fitting reduce the mismatch to 22 pixels: one hyphen (20) and two scan-tip pixels. Input, supplied font, options and both references remain unchanged.",
       "linuxRendererOutcome": "exact"
     },
     {
@@ -230,8 +230,8 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "Shared measured midpoint/tangent maps render through all 12 APIs. Native relaxed strike coefficients, vertical scaler decomposition and unhinted device-grid outlines complete the unchanged Linux reference. Windows glyph-mask fidelity remains open at 16 differing pixels.",
+      "rendererOutcome": "exact",
+      "remainingOrCompletedMechanism": "All twelve outputs match the unchanged references on Windows and Linux. Shared explicit-point fixed mapping, native scan-leaf subdivision and enabled smart dropout coverage preserve the curved glyph mask.",
       "linuxRendererOutcome": "exact"
     },
     {
