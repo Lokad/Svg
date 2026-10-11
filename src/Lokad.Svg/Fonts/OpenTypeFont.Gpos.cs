@@ -86,7 +86,7 @@ internal static partial class OpenTypeFont
                 {
                     RequireTableRange(table, subtable, 12, "GPOS chained-context admission header");
                     int coverage = GetTableOffset(table, subtable, ReadUInt16(data, subtable + 2), 4, "GPOS chained-context coverage");
-                    ValidateGposCoverage(data, table, coverage, glyphCount, workCounter, cancellationToken);
+                    ValidateGlyphCoverage(data, table, coverage, glyphCount, workCounter, cancellationToken);
                 }
                 else throw new SvgException(SvgErrorCode.UnsupportedFeature, "This GPOS kern lookup type or format is not supported.");
             }
@@ -99,7 +99,7 @@ internal static partial class OpenTypeFont
             int format = ReadUInt16(data, offset);
             if (format is not 1 and not 2 || ReadUInt16(data, offset + 4) != 4 || ReadUInt16(data, offset + 6) != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only GPOS pair-list/class first-glyph X-advance adjustments are supported.");
             int coverage = GetTableOffset(table, offset, ReadUInt16(data, offset + 2), 4, "GPOS PairPos coverage");
-            int coveredCount = ValidateGposCoverage(data, table, coverage, glyphCount, workCounter, token);
+            int coveredCount = ValidateGlyphCoverage(data, table, coverage, glyphCount, workCounter, token);
             if (format == 2)
             {
                 RequireTableRange(table, offset, 16, "GPOS class pairs");
@@ -152,8 +152,8 @@ internal static partial class OpenTypeFont
             {
                 Consume(workCounter, token);
                 int subtable = GetTableOffset(graph.Range, lookup, ReadUInt16(data, lookup + 6 + index * 2), 4, "GPOS subtable");
-                int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "GPOS coverage");
-                if (GetGposCoverageIndex(data, coverage, glyph, workCounter, token) >= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The glyph requires unsupported contextual GPOS positioning.");
+                int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "OpenType coverage");
+                if (GetGlyphCoverageIndex(data, coverage, glyph, workCounter, token) >= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The glyph requires unsupported contextual GPOS positioning.");
             }
         }
     }
@@ -175,8 +175,8 @@ internal static partial class OpenTypeFont
             {
                 Consume(workCounter, cancellationToken);
                 int subtable = GetTableOffset(graph.Range, lookup, ReadUInt16(data, lookup + 6 + index * 2), 10, "GPOS PairPos");
-                int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "GPOS coverage");
-                int covered = GetGposCoverageIndex(data, coverage, leftGlyphIndex, workCounter, cancellationToken);
+                int coverage = GetTableOffset(graph.Range, subtable, ReadUInt16(data, subtable + 2), 4, "OpenType coverage");
+                int covered = GetGlyphCoverageIndex(data, coverage, leftGlyphIndex, workCounter, cancellationToken);
                 if (covered < 0) continue;
                 if (ReadUInt16(data, subtable) == 2)
                 {
@@ -224,12 +224,12 @@ internal static partial class OpenTypeFont
         return true;
     }
 
-    private static int ValidateGposCoverage(ReadOnlySpan<byte> data, OpenTypeTableRange table, int offset, int glyphCount, ParserWorkCounter? workCounter, CancellationToken token)
+    private static int ValidateGlyphCoverage(ReadOnlySpan<byte> data, OpenTypeTableRange table, int offset, int glyphCount, ParserWorkCounter? workCounter, CancellationToken token)
     {
         int format = ReadUInt16(data, offset);
         int count = ReadUInt16(data, offset + 2);
-        if (format is not 1 and not 2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only GPOS coverage formats 1 and 2 are supported.");
-        RequireTableRange(table, offset, 4 + count * (format == 1 ? 2 : 6), "GPOS coverage");
+        if (format is not 1 and not 2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only OpenType coverage formats 1 and 2 are supported.");
+        RequireTableRange(table, offset, 4 + count * (format == 1 ? 2 : 6), "OpenType coverage");
         int previous = -1;
         int covered = 0;
         for (int index = 0; index < count; index++)
@@ -238,14 +238,14 @@ internal static partial class OpenTypeFont
             int record = offset + 4 + index * (format == 1 ? 2 : 6);
             int start = ReadUInt16(data, record);
             int end = format == 1 ? start : ReadUInt16(data, record + 2);
-            if (start <= previous || end < start || end >= glyphCount || format == 2 && ReadUInt16(data, record + 4) != covered) throw InvalidFont("The GPOS coverage glyphs or indices are invalid.");
+            if (start <= previous || end < start || end >= glyphCount || format == 2 && ReadUInt16(data, record + 4) != covered) throw InvalidFont("The OpenType coverage glyphs or indices are invalid.");
             previous = end;
             covered += end - start + 1;
         }
         return covered;
     }
 
-    private static int GetGposCoverageIndex(ReadOnlySpan<byte> data, int offset, ushort glyph, ParserWorkCounter? workCounter, CancellationToken token)
+    private static int GetGlyphCoverageIndex(ReadOnlySpan<byte> data, int offset, ushort glyph, ParserWorkCounter? workCounter, CancellationToken token)
     {
         bool ranges = ReadUInt16(data, offset) == 2;
         int low = 0;

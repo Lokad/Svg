@@ -11724,3 +11724,41 @@ byte below the peak. Samples establish no general throughput claim. Fresh
 Windows/Linux packages and isolated installed consumers verify the updated
 notices, qualified curved outputs and managed-only delivery. The receipt is
 `artifacts/glyph-mask-native-paths-20261011/final-qualification.json`.
+
+
+### Default Latin ligatures and text-path advances (2026-10-11)
+
+The unchanged curved-label document used eight native `ff` ligatures while the
+renderer placed their components independently. Its `ex` pair adjustment also
+followed advance rounding and did not enter the midpoint used for path rotation.
+The shared font reader now borrows Latin/DFLT default-language `liga` records;
+one unfiltered type-4 lookup supports ordered format-1 subtables, coverage 1/2
+and two to eight Basic Latin components. Limits of 32 subtables and 4,096 records
+bound traversal; every visit observes work and cancellation. Other lookup types,
+flags and multiple lookups remain
+explicit unsupported boundaries. No glyph IDs or font identities enter product
+selection. Existing glyph outline and raster replay are reused.
+
+Temporary accounted UTF-16 cluster lengths preserve positioning and spacing
+boundaries; retained glyph storage exposes only live clusters. Nonzero spacing
+prevents merging. Text-path pair adjustments enter the glyph advance before its
+platform/device rounding and midpoint/tangent placement. Focused controls protect
+preference, selected features, both coverage formats, source offsets, malformed
+and unsupported tables, work/memory denial, cancellation and released owners.
+Five separate public-face checks protect its standard ligature glyphs.
+
+The original document improves from 6,799 to 5,847 differing Windows pixels and
+from 3,987 to 1,545 Linux pixels through all 12 APIs. The five frozen curved
+controls retain their previous outcomes: 3/5 Windows and 5/5 Linux exact. The
+document remains 0/1 complete. Every established exact is preserved, including
+26 Windows / 29 Linux font outputs. All 6,800 tests pass on each platform with
+zero failures/skips/warnings; 2,849 old PNGs and 2,755 exact comparisons remain
+unchanged, including corporate 27/27 documents and 258/258 variants.
+
+Five inputs on each platform match qualified PNGs under public output metrics;
+success and denial one byte below each measured peak release owned storage.
+Samples establish no general throughput claim. Package/public delivery contracts
+are unchanged; previous package/installed-consumer receipts remain valid. The
+complete before/after pixels, native placement and resource evidence are in
+`artifacts/latin-path-shaping-20261011/final-qualification.json`. Remaining glyph
+masks and all other finite G2–G9 exits stay open.

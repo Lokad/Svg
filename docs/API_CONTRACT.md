@@ -124,6 +124,15 @@ conversion before layout; subtree reader nodes and cmap/advance lookup traversal
 consume the conversion's parser-work limit. Positioned glyph storage is reserved from the conversion's geometry budget
 before allocation and released after each direct text run is lowered.
 
+Default standard ligatures for contiguous Basic Latin letters use the supplied
+font's Latin (or DFLT) default-language `liga` feature. The bounded subset is one
+unfiltered type-4 lookup with format-1 subtables, coverage formats 1/2 and two
+to eight components, in font preference order. Nonzero letter spacing and
+positioned-span boundaries prevent merging; UTF-16 source positions remain
+attached to the resulting clusters. Text-path kerning enters the glyph advance
+before device rounding and midpoint/tangent placement. Other selected lookup
+types, flags, multiple lookups and general shaping remain unsupported.
+
 `SvgPreparedDocument.CreateAsync` is the single-conversion preparation owner. It
 discovers selected supplied fonts and lowers the admitted scene under the supplied
 render limits, retaining its verified snapshot. It carries accumulated preparation

@@ -19,7 +19,7 @@ output and matching-platform reference contract.
 Document completion is **0/1**. Three of five separate controls are exact on
 both platforms through all six raw and six independently prepared outputs.
 Linux also completes the composite and curved controls, giving five exact
-controls there. The whole document still differs at 6,799 Windows / 3,987 Linux
+controls there. The whole document still differs at 5,847 Windows / 1,545 Linux
 pixels against its unchanged references.
 Shared open-curve distance/tangent placement and `USE_MY_METRICS` component inheritance
 now let the unchanged document render. Remaining document text pixels and
@@ -63,6 +63,18 @@ and masks, Windows curve/accent pixels and the wider finite G9 exit stay open.
 The five synthetic controls are original fixtures dedicated to
 [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/). Their dimensions,
 font contract and references were frozen before renderer screening too.
+
+Default Latin ligatures now select the unchanged font's own glyph for each `ff`.
+The bounded reader follows its default-language feature and ordered type-4
+ligature records; it does not substitute SVG text or reference pixels. Temporary
+UTF-16 cluster lengths preserve span positions and spacing boundaries. Pair
+adjustments enter text-path advances before device rounding and tangent placement.
+All 333 visible Windows clusters agree with measured native positions within
+0.00013 pixels. The original document improves from 6,799 / 3,987 to
+5,847 / 1,545 differing pixels on Windows / Linux; all five controls retain their
+previous results. Remaining document masks and Windows curve/accent pixels stay
+open. Separate checks cover all five standard ligatures in this public face;
+they do not count as completed documents or new exact pixel controls.
 
 Chrome 153.0.8010.52 produced three identical healthy captures per source and
 platform, with cleaned profiles. Windows and Linux references intentionally

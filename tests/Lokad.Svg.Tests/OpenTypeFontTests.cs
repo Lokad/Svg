@@ -222,7 +222,7 @@ public sealed partial class OpenTypeFontTests
 
         using (SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(font, "A", 10, 0, 0, SvgTextAnchor.Start, successfulBudget, successfulWork, CancellationToken.None))
         {
-            Assert.Single(glyphs.Glyphs);
+            Assert.Single(glyphs.Glyphs.ToArray());
         }
 
         Assert.Equal(9, successfulWork.Used);
@@ -258,7 +258,7 @@ public sealed partial class OpenTypeFontTests
         {
             Assert.Equal(1, lookupCount);
             Assert.Equal(18, exactWork.Used);
-            Assert.All(glyphs.Glyphs, glyph => Assert.Equal((ushort)1, glyph.GlyphIndex));
+            Assert.All(glyphs.Glyphs.ToArray(), glyph => Assert.Equal((ushort)1, glyph.GlyphIndex));
         }
         Assert.Equal(0, exactBudget.Snapshot().CurrentBytes);
         RenderBudget deniedBudget = new(1_024);
@@ -3142,7 +3142,7 @@ public sealed partial class OpenTypeFontTests
         Assert.Equal(firstX, glyphs.Glyphs[0].X);
         Assert.Equal(secondX, glyphs.Glyphs[1].X);
         Assert.Equal(thirdX, glyphs.Glyphs[2].X);
-        Assert.Equal([3d, 5d, 5d], glyphs.Glyphs.Select(static glyph => glyph.Y));
+        Assert.Equal([3d, 5d, 5d], glyphs.Glyphs.ToArray().Select(static glyph => glyph.Y));
         glyphs.Dispose();
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -3157,8 +3157,8 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         using SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAA", 100, 200, 3, 0, [], [new(1, null, 6, 0, 0)], anchor, new RenderBudget(128), string.Empty, null, CancellationToken.None);
 
-        Assert.Equal([firstX, secondX, thirdX], glyphs.Glyphs.Select(static glyph => glyph.X));
-        Assert.Equal([3d, 6d, 6d], glyphs.Glyphs.Select(static glyph => glyph.Y));
+        Assert.Equal([firstX, secondX, thirdX], glyphs.Glyphs.ToArray().Select(static glyph => glyph.X));
+        Assert.Equal([3d, 6d, 6d], glyphs.Glyphs.ToArray().Select(static glyph => glyph.Y));
     }
 
     [Theory]
@@ -3169,7 +3169,7 @@ public sealed partial class OpenTypeFontTests
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(gpos ? CreateTriangleGposFont() : CreateTriangleKernFont())], CancellationToken.None);
         using SvgPositionedGlyphStorage glyphs = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), "AAA", 100, 0, 3, 0, [], [new(1, null, 6, 0, 0)], SvgTextAnchor.Start, new RenderBudget(128), string.Empty, null, CancellationToken.None);
 
-        Assert.Equal([0d, 60d, 90d], glyphs.Glyphs.Select(static glyph => glyph.X));
+        Assert.Equal([0d, 60d, 90d], glyphs.Glyphs.ToArray().Select(static glyph => glyph.X));
     }
 
     [Fact]
@@ -4013,7 +4013,7 @@ public sealed partial class OpenTypeFontTests
         RenderBudget budget = new(64);
         using SvgTextRun run = SvgTextRunBuilder.Create(style, "A", snapshot, budget, CancellationToken.None);
 
-        SvgPositionedGlyph glyph = Assert.Single(run.Glyphs);
+        SvgPositionedGlyph glyph = Assert.Single(run.Glyphs.ToArray());
         Assert.Equal((ushort)1, glyph.GlyphIndex);
         Assert.Equal(6, glyph.X);
         Assert.Equal(8, glyph.Y);

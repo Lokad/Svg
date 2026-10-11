@@ -78,7 +78,7 @@ internal sealed class SvgTextRun : IDisposable
 
     internal SvgPreparedFont Font { get; }
 
-    internal SvgPositionedGlyph[] Glyphs => _glyphs.Glyphs;
+    internal ReadOnlySpan<SvgPositionedGlyph> Glyphs => _glyphs.Glyphs;
 
     public void Dispose() => _glyphs.Dispose();
 }

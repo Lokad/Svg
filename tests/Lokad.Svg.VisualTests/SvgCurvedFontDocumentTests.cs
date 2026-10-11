@@ -12,6 +12,23 @@ public sealed class SvgCurvedFontDocumentTests
 {
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "curved-font-documents");
 
+    [Theory]
+    [InlineData("ff", 1651, 688)]
+    [InlineData("ffi", 1654, 946)]
+    [InlineData("ffl", 1655, 946)]
+    [InlineData("fi", 1652, 602)]
+    [InlineData("fl", 1653, 602)]
+    public async Task Public_face_ligatures_reuse_the_unchanged_font_glyphs(string text, ushort expectedGlyph, ushort expectedAdvance)
+    {
+        byte[] input = Document("<text>" + text + "</text>", string.Empty);
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-sans");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, Provider(), CancellationToken.None);
+        using SvgPositionedGlyphStorage positions = SvgGlyphLayout.CreateStorage(Assert.Single(snapshot.Fonts), text, 20, 0, 0, new RenderBudget(10_000), CancellationToken.None);
+        SvgPositionedGlyph glyph = Assert.Single(positions.Glyphs.ToArray());
+        Assert.Equal(expectedGlyph, glyph.GlyphIndex);
+        Assert.Equal(expectedAdvance * .02, glyph.Advance);
+    }
+
     public static IEnumerable<object[]> Cases()
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));

@@ -18,10 +18,16 @@ The unchanged document now renders through all 12 APIs under its declared
 supplied-font contract. Shared authored open curves
 now provide bounded midpoint/tangent maps; native rotated glyph-mask fidelity
 remains open on Windows: the curved control differs at 14 pixels there and is
-exact on Linux. The whole document differs at 6,799 Windows / 3,987 Linux pixels.
+exact on Linux. The whole document differs at 5,847 Windows / 1,545 Linux pixels.
+Default Latin ligatures use the supplied font's ordered type-4 records, with
+source cluster boundaries retained. Kerned text-path advances are rounded before
+midpoint/tangent placement. The admitted ligature subset is one unfiltered lookup
+from Latin/DFLT default-language `liga`, format-1 subtables, coverage formats 1/2
+and two to eight Basic Latin letters; nonzero spacing and positioned boundaries
+prevent merging. Other lookup combinations and complex shaping remain unsupported.
 Mapped Linux glyphs use native quarter-pixel placement, relaxed strike coefficients,
 vertical scaler decomposition and unhinted TrueType device-grid outlines. Complete
-qualification passes **6,767 tests/platform** (4,683 core / 2,078 visual / six
+qualification passes **6,800 tests/platform** (4,711 core / 2,083 visual / six
 FontProbe), preserving every established exact output. Three separate controls
 are exact on both platforms through 12 APIs; Linux completes all five. Percentage
 offsets resolve against geometric length; numeric offsets use its calibrated scale. Glyph
