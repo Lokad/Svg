@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG Tiny 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">
+<svg version="1.1" baseProfile="tiny"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="-500 -500 1000 1000"
+     xml:lang="de"
+     fill="none"
+     stroke="#ccc" stroke-width="20" width="512" height="512">
+
+<title>transform: matrix</title>
+<desc>
+Ein großes blau gerandetes Rechteck wird mittels des Attributes transform vom Typ
+matrix verschoben, so daß ein rotes gerandetes Rechteck komplett verdeckt
+wird. Ein grau gerandetes Rechteck zeigt die unverschobene Position.
+
+Transformationen vom Typ matrix vertauschen im Allgemeinen nicht
+miteinander. Die kleinen Rechtecke zeigen Beispiele dazu.
+</desc>
+
+<path stroke="red" stroke-width="14"
+      d="M380,-160 -170,-410 -290,10 260,260z" />
+
+
+<rect x="-200" y="-300" width="500" height="600"
+      transform="matrix(-1.1 -0.5 -0.2 0.7 100 -50)"
+      stroke="blue" />
+
+
+<rect x="-50" y="-100" width="150" height="200"
+      transform="matrix(1.1 -0.1 0.2 0.5 -50 20) matrix(-1.1 0.3 -0.2 -0.5 20 -40)"
+      stroke="#004" />
+<rect x="-50" y="-100" width="150" height="200"
+      transform="matrix(-1.1 0.3 -0.2 -0.5 20 -40) matrix(1.1 -0.1 0.2 0.5 -50 20)"
+      stroke="#006" />
+</svg>
+
+

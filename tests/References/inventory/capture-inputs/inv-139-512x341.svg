@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg viewBox="0 0 150 100"
+    xmlns="http://www.w3.org/2000/svg" version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xml:lang="de" width="512" height="341">
+
+<title>SVG-Beispiel: nicht periodische Muster</title>
+<desc>
+SVG-Beispiel für Muster (pattern).
+
+Durch eine zufällige Translation kann ein nicht periodisches
+Muster erreicht werden. Hier werden Muster mit zwei Quadraten
+in jeder Spalte in y-Richtung zufällig verschoben, es gibt also
+nur eine Periodizität in y-Richtung. Das ist folglich keine
+periodische Parkettierung der Ebene. Gleichwohl kann aber
+das Element pattern in einem solchen Falle verwendet werden,
+um die Flächenfüllung in y-Richtung zu realisieren.
+</desc>
+
+
+<defs>
+<pattern id="Muster0" patternUnits="userSpaceOnUse"
+         x="0" y="0" width="10" height="20"
+         viewBox="0 0 10 20">
+    <rect  x="0" y="-10" width="10" height="10" fill="#fc0" />
+    <rect  x="0" y="0" width="10" height="10" fill="#00a" />
+    <rect  x="0" y="10" width="10" height="10" fill="#fc0" />
+    <rect  x="0" y="20" width="10" height="10" fill="#00a" />
+</pattern>
+
+<pattern id="Muster1" xlink:href="#Muster0"
+         viewBox="0 1 10 20"/>
+<pattern id="Muster2" xlink:href="#Muster0"
+         viewBox="0 2 10 20"/>
+<pattern id="Muster3" xlink:href="#Muster0"
+         viewBox="0 3 10 20"/>
+<pattern id="Muster4" xlink:href="#Muster0"
+         viewBox="0 4 10 20"/>
+<pattern id="Muster5" xlink:href="#Muster0"
+         viewBox="0 5 10 20"/>
+<pattern id="Muster6" xlink:href="#Muster0"
+         viewBox="0 6 10 20"/>
+<pattern id="Muster7" xlink:href="#Muster0"
+         viewBox="0 7 10 20"/>
+<pattern id="Muster8" xlink:href="#Muster0"
+         viewBox="0 8 10 20"/>
+<pattern id="Muster9" xlink:href="#Muster0"
+         viewBox="0 9 10 20"/>
+</defs>
+
+<rect x="0" y="-100" width="10" height="400" fill="url(#Muster0)" />
+<rect x="10" y="-100" width="10" height="400" fill="url(#Muster8)" />
+<rect x="20" y="-100" width="10" height="400" fill="url(#Muster1)" />
+<rect x="30" y="-100" width="10" height="400" fill="url(#Muster3)" />
+<rect x="40" y="-100" width="10" height="400" fill="url(#Muster4)" />
+<rect x="50" y="-100" width="10" height="400" fill="url(#Muster5)" />
+<rect x="60" y="-100" width="10" height="400" fill="url(#Muster2)" />
+<rect x="70" y="-100" width="10" height="400" fill="url(#Muster7)" />
+<rect x="80" y="-100" width="10" height="400" fill="url(#Muster9)" />
+<rect x="90" y="-100" width="10" height="400" fill="url(#Muster6)" />
+<rect x="100" y="-100" width="10" height="400" fill="url(#Muster8)" />
+<rect x="110" y="-100" width="10" height="400" fill="url(#Muster0)" />
+<rect x="120" y="-100" width="10" height="400" fill="url(#Muster3)" />
+<rect x="130" y="-100" width="10" height="400" fill="url(#Muster4)" />
+<rect x="140" y="-100" width="10" height="400" fill="url(#Muster7)" />
+</svg>
+

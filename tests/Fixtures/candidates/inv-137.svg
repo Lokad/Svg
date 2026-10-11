@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 1900 1000"
+     xml:lang="de">
+
+<title>SVG-Beispiel zu clipPath</title>
+<desc>
+Verschiedene offene Pfade und clipPath.
+
+Nur wenn ein Pfad eine Fläche aufspannt,
+kann diese auch einen sichtbaren Ausschnitt definieren.
+Links sind zwei Beispiele zu sehen, die Flächen
+aufspannen, rechts zwei, bei denen keine Fläche
+augespannt wird.
+
+Das komplette Objekt ist zudem blaß hinterlegt.
+Der korrekte Ausschnitt ist rot gerandet dargestellt
+und rechts daneben als schwarze Silhouette.
+</desc>
+
+<defs>
+
+<clipPath id="clip0">
+<path id="p0" d="M-200,-200h300v300h-300M-100,-100v300h300v-300" />
+</clipPath>
+
+<clipPath id="clip1">
+<path id="p1"
+      d="M-200,-100h400 M-200,0h400 M-200,100h400
+         M-100,-200v400 M0,-200v400 M100,-200v400
+         M50,50 0 0 50,-50 0 0 -50,-50 0 0 -50,50 0 0"
+      stroke-width="10" stroke="black"/>
+</clipPath>
+
+<clipPath id="clip2">
+<path id="p2" d="M-100,-100h200v200h-200M-100,-100v200h200v-200"
+      stroke-width="10" stroke="black" />
+</clipPath>
+
+<clipPath id="clip3">
+<path id="p3"
+      d="M-200,-200C100,-200 200,100 200,200
+         M100,200 100,-100 -200,-100" />
+</clipPath>
+
+
+</defs>
+
+<rect x="0" y="0" width="1900" height="1000" fill="#ffd" stroke="black" />
+
+<g transform="translate(250,250)">
+<circle cx="0" cy="0" r="210" fill="#00a" opacity="0.2" />
+<circle cx="0" cy="0" r="210" fill="none" stroke="red" />
+<circle cx="0" cy="0" r="210" fill="#00a" clip-path="url(#clip0)" />
+<use xlink:href="#p0" fill="none" stroke="red" />
+<use x="450" xlink:href="#p0" stroke="red" />
+</g>
+
+<g transform="translate(1200,250)">
+<circle cx="0" cy="0" r="210" fill="#00a" opacity="0.2" />
+<circle cx="0" cy="0" r="210" fill="none" stroke="red" />
+<circle cx="0" cy="0" r="210" fill="#00a" clip-path="url(#clip1)" />
+<use x="450" xlink:href="#p1" />
+</g>
+
+<g transform="translate(1200,750)">
+<circle cx="0" cy="0" r="210" fill="#00a" opacity="0.2" />
+<circle cx="0" cy="0" r="210" fill="none" stroke="red" />
+<circle cx="0" cy="0" r="210" fill="#00a" clip-path="url(#clip2)" />
+<use x="450" xlink:href="#p2" />
+</g>
+
+<g transform="translate(250,750)">
+<circle cx="0" cy="0" r="210" fill="#00a" opacity="0.2" />
+<circle cx="0" cy="0" r="210" fill="none" stroke="red" />
+<circle cx="0" cy="0" r="210" fill="#00a" clip-path="url(#clip3)" />
+<use xlink:href="#p3" fill="none" stroke="red" />
+<use x="450" xlink:href="#p3" stroke="red" />
+</g>
+
+</svg>
+

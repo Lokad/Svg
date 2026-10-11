@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 1850 1000"
+     xml:lang="de">
+
+<title>SVG-Beispiel zu clipPath</title>
+<desc>
+Verschiedene kompliziertere Variationen zu clipPath.
+
+Links ist der Inhalt von clipPath ein use-Element,
+welches eine Gruppe mit zwei Kreisen referenziert.
+
+Rechts wird clip-path="inherit" getestet, unten drunter
+sind die geerbten ausgeschnittenen Inhalte nebeneinander
+zum Vergleich angegeben.
+
+Links unten wird innerhalb von clipPath ein weiterer
+clipPath referenziert, die Schnittfläche wird also
+als Ausschnitt verwendet.
+
+Das komplette Objekt ist zudem blaß hinterlegt.
+Der korrekte Ausschnitt ist rot gerandet dargestellt
+und rechts daneben als schwarze Silhouette.
+</desc>
+
+<defs>
+
+<g id="cp">
+<circle cx="210" cy="290" r="160" />
+<circle cx="290" cy="210" r="160" />
+</g>
+<clipPath id="clip0">
+<use xlink:href="#cp" />
+</clipPath>
+
+<g id="c">
+<circle cx="210" cy="290" r="160" fill="none" stroke="red" />
+<circle cx="290" cy="210" r="160" fill="none" stroke="red" />
+<circle cx="660" cy="290" r="160" />
+<circle cx="740" cy="210" r="160" />
+<circle cx="660" cy="290" r="160" fill="none" stroke="red" />
+<circle cx="740" cy="210" r="160" fill="none" stroke="red" />
+</g>
+
+<g id="g" fill="#00a">
+<circle cx="210" cy="210" r="160" />
+<circle cx="290" cy="290" r="160" />
+</g>
+
+<clipPath id="clip1" clipPathUnits="objectBoundingBox">
+<path id="p0" d="M0,0h0.75v0.75h-0.75zM0.25,0.25h0.75v0.75h-0.75z" clip-rule="evenodd" />
+</clipPath>
+<path id="p1" d="M50,50h300v300h-300zM150,150h300v300h-300z" clip-rule="evenodd" />
+
+
+<clipPath id="clip2">
+<path id="pc" d="M-50,50A100,100 0 0 0 150,50A100,100 0 1 0 -50,50z
+         M-80,-30A50,50 0 1 1 20,-30A50,50 0 0 1 -80,-30z" />
+</clipPath>
+
+<clipPath id="clip3">
+<circle id="cc" cx="0" cy="0" r="120" clip-path="url(#clip2)" />
+</clipPath>
+
+</defs>
+
+<rect x="0" y="0" width="1850" height="1000" fill="#ffd" stroke="black" />
+
+<g>
+<use xlink:href="#g" opacity="0.2" />
+<use xlink:href="#g" clip-path="url(#clip0)" />
+<use xlink:href="#c" />
+</g>
+
+
+<g transform="translate(900,0)">
+
+<g fill="#00a" opacity="0.2">
+<circle cx="210" cy="210" r="160" />
+<circle cx="290" cy="290" r="160" />
+</g>
+
+<g clip-path="url(#clip1)" fill="#00a">
+<circle cx="210" cy="210" r="160" clip-path="inherit" />
+<circle cx="290" cy="290" r="160" clip-path="inherit" />
+</g>
+
+<use xlink:href="#p1" fill="none" stroke="red" />
+<use xlink:href="#p1" x="450" stroke="red" fill-rule="evenodd"/>
+
+<g fill="#00a">
+<circle cx="210" cy="210" r="160" clip-path="url(#clip1)" transform="translate(0,450)"/>
+<use xlink:href="#p0" fill="none" stroke="red" stroke-width="0.003"
+     transform="translate(50,500) scale(320)" />
+
+<circle cx="290" cy="290" r="160" clip-path="url(#clip1)" transform="translate(300,500)"/>
+<use xlink:href="#p0" fill="none" stroke="red" stroke-width="0.003"
+     transform="translate(430,630) scale(320)" />
+</g>
+
+</g>
+
+
+<g fill="#00a" transform="translate(250,700)">
+
+<circle cx="0" cy="0" r="200" opacity="0.2" />
+
+<circle cx="0" cy="0" r="200" clip-path="url(#clip3)" />
+
+<use xlink:href="#pc" fill="none" stroke="red" />
+
+<circle cx="0" cy="0" r="120" fill="none" stroke="red" />
+
+<use xlink:href="#pc" x="350" fill="none" stroke="red" />
+
+<circle cx="350" cy="0" r="120" fill="none" stroke="red" />
+
+<use xlink:href="#cc" x="350" fill="black" />
+
+</g>
+
+
+</svg>
+

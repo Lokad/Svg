@@ -5,7 +5,19 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
-## Current development documents (2026-10-09)
+## Current development documents (2026-10-11)
+
+The current development queue is **35 complete / 45 selected**. The prior 35
+completed documents stay protected, separately from corporate **27/27 documents
+/ 258/258 variants** and the original acceptance fixtures. The new bounded batch
+retains ten unchanged public-domain/CC0 SVGs with declared outputs and frozen
+native Windows/Linux references; all ten currently reject. See the
+[remaining-support source ledger](#remaining-support-batch-2026-10-11).
+The next deliverable is the complete matrix-transform document `inv-132`;
+rotation and both skew examples share its rectangle-stroke gate. These are
+failure-selected development cases, not a representative success-rate cohort.
+
+## Completed development checkpoint (2026-10-09)
 
 All five retained gap documents are exact on Windows/Linux, separate from the
 preserved corporate 27/27 documents and 258/258 variants. The existing radiation
@@ -3322,3 +3334,51 @@ Malta graduation inventory record with no new download. Full 92-document Release
 - Original: `tests/Fixtures/candidates/inv-130.svg`, unchanged 1624-byte UTF-8 source; SHA-256 `8b7670e549e232a48b1796cdbd6a2babc9e018e14ed37b3afd9c60709414e361`. Static, fontless and self-contained; declaration-only DTD remains untouched.
 - Declared output: explicit 512×512, scale 1, transparent. Converter uses original bytes; browser input inserts only root width/height. Three healthy cleaned captures on each platform are stable and byte identical; references froze before implementation.
 - Complete on both platforms: all twelve raw/prepared outputs match the unchanged 512×512 transparent reference. Shared native rectangle-frame replay preserves independent axis stroke widths under authored non-uniform, reflected and composed maps. Six separate CC0 controls are exact; complete qualification passes 7,064 tests per platform with prior outcomes and PNGs unchanged. Development ledger: 34/35 complete (new source batch 1/2); corporate 27/27 documents / 258/258 variants remain unchanged. General G3/G4 combinations remain open.
+
+## Remaining support batch (2026-10-11)
+
+Ten candidates selected from the finite G2–G9 gaps at `6e759f24` are retained:
+eight public-domain examples by [Dr. Olaf Hoffmann](https://en.wikibooks.org/wiki/de:User:Doktorchen)
+and two CC0 Openclipart exports. Each source below records its author and rights
+evidence in the [development manifest](../tests/References/inventory/svg-gap-cases.json).
+Retrieved 2026-10-11; original files are untouched, including their encoding,
+line endings and declaration-only DTDs. No live text, animation, scripts or
+external resource references occur in these SVGs. The first rejection agrees
+on Windows/Linux for each whole original; later gates remain to be diagnosed.
+
+Outputs were declared before comparison or successful capture: scale 1,
+transparent, explicit viewport. Commons nominal frames supply the eight
+Hoffmann sizes. The rainbow checker uses a declared 512-pixel square from its
+authored square viewBox; the smiley export keeps its authored 256×256 frame.
+Browser copies insert root dimensions only, except that the two Latin-1
+pattern files also transcode to UTF-8 for the existing image-data transport.
+Removing the dimensions proves identical parsed XML trees for those copies;
+converter inputs remain original bytes. Three healthy, cleaned fresh native
+captures per platform agree byte for byte with each frozen reference.
+
+| Whole original / source and rights | Bytes | Declared transparent output | First rejection / group |
+| --- | --- | --- | --- |
+| [inv-132](../tests/Fixtures/candidates/inv-132.svg) — [SVGtransform matrix01](https://commons.wikimedia.org/wiki/File:SVGtransform_matrix01.svg?oldid=963516585); PD-self | 1,320 | 512×512 | Only axis-aligned rectangle transforms are implemented. (G3/G4) |
+| [inv-133](../tests/Fixtures/candidates/inv-133.svg) — [SVGtransform rotate01](https://commons.wikimedia.org/wiki/File:SVGtransform_rotate01.svg?oldid=963516623); PD-self | 1,599 | 512×512 | Only axis-aligned rectangle transforms are implemented. (G3/G4) |
+| [inv-134](../tests/Fixtures/candidates/inv-134.svg) — [SVGtransform skewX01](https://commons.wikimedia.org/wiki/File:SVGtransform_skewX01.svg?oldid=963516685); PD-self | 1,309 | 512×512 | Only axis-aligned rectangle transforms are implemented. (G3/G4) |
+| [inv-135](../tests/Fixtures/candidates/inv-135.svg) — [SVGtransform skewY01](https://commons.wikimedia.org/wiki/File:SVGtransform_skewY01.svg?oldid=963516698); PD-self | 1,309 | 512×512 | Only axis-aligned rectangle transforms are implemented. (G3/G4) |
+| [inv-136](../tests/Fixtures/candidates/inv-136.svg) — [SVGclipPath04](https://commons.wikimedia.org/wiki/File:SVGclipPath04.svg?oldid=963513878); PD-self | 3,555 | 512×277 | Only userSpaceOnUse clip-path paths are implemented. (G5) |
+| [inv-137](../tests/Fixtures/candidates/inv-137.svg) — [SVGclipPath05](https://commons.wikimedia.org/wiki/File:SVGclipPath05.svg?oldid=963513891); PD-self | 2,650 | 512×269 | Degenerate clip paths are not implemented. (G5) |
+| [inv-138](../tests/Fixtures/candidates/inv-138.svg) — [SVGpattern02](https://commons.wikimedia.org/wiki/File:SVGpattern02.svg?oldid=963515883); PD-self | 4,026 | 512×357 | Pattern attribute 'viewBox' is not implemented. (G6) |
+| [inv-139](../tests/Fixtures/candidates/inv-139.svg) — [SVGpattern03](https://commons.wikimedia.org/wiki/File:SVGpattern03.svg?oldid=963515896); PD-self | 3,026 | 512×341 | Pattern attribute 'viewBox' is not implemented. (G6) |
+| [inv-140](../tests/Fixtures/candidates/inv-140.svg) — [Rainbow checker pattern](https://openclipart.org/detail/330535); CC0-1.0, Manuela | 2,558 | 512×512 | Only gradients with at most eight stops are implemented. (G4/G5/G6) |
+| [inv-141](../tests/Fixtures/candidates/inv-141.svg) — [Cute Japanese Anime Smiley Faces Tiling Pattern Background](https://openclipart.org/detail/348359); CC0-1.0, qubodup | 62,342 | 256×256 | Only mask content covering masked group children is implemented. (G5) |
+
+The [Openclipart upload policy](https://openclipart.org/share) applies CC0-1.0
+to each artist upload. Retained asset pages identify Manuela’s gradient/checker
+remix lineage and qubodup’s remix of Justin Ternet’s own generic face drawings;
+neither page carries a rights-review tag. The renderer tests need no network.
+
+This batch is **0/10 complete**; the prior **35 completed documents** remain
+protected, making the current selected queue **35/45**. Next: complete
+`inv-132` against its unchanged reference by extending shared native rectangle
+stroke construction through composed general maps. The rotation and skew
+documents guide the same mechanism; controls remain separate from document
+counts. Compound/degenerate clips, pattern viewBox/aliases/content and finite
+group mask regions remain queued, without making exhaustive G2 a prerequisite.
+Corporate membership and all established exact references stay unchanged.

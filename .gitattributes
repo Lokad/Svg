@@ -46,3 +46,9 @@ tests/Research/transformed-rectangle-strokes/*.svg -text
 
 # Preserve the frozen normalized clip control bytes.
 tests/Research/object-bounding-clips/*.svg -text
+
+# Preserve the ten remaining-support originals and their declared browser frames.
+tests/Fixtures/candidates/inv-13[2-9].svg -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+tests/Fixtures/candidates/inv-14[01].svg -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+tests/References/inventory/capture-inputs/inv-13[2-9]-*.svg -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+tests/References/inventory/capture-inputs/inv-14[01]-*.svg -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof

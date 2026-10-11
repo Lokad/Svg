@@ -1,0 +1,87 @@
+<?xml version="1.0"  encoding="utf-8" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.1" xml:lang="de"
+     viewBox="-300 -300 3300 2300" width="512" height="357">
+
+
+  <title>Parkettierung mit kristallographischer Gruppe p6.</title>
+  <desc>
+Links oben ist das manuell zusammengestellt Muster zu sehen, in
+der großen Fläche die Anwendung des Musters.
+
+Eine Strategie der Mustererstellung:
+Zunächst wird die Basisstruktur erstellt - hier Pfade, die die erwünschte Symmetrie
+aufweisen. Das beabsichtigte Grundmuster wird mit ausreichend manuell angeordneten Kopien erstellt. In diesem Grundmuster wird ein rechteckiger Auschnitt gesucht, beziehungsweise berechnet, der sich als periodische Fortsetzung eignet (rot). Dies Rechteck wird sodann als Muster verwendet (große Fläche). Mittels patternTransform kann zudem das Grundmuster noch transformiert werden. Das Grundmuster kann nach erfolgreicher Erstellung natürlich einfach ins Element defs oder pattern verschoben werden, damit es nicht direkt angezeigt wird.
+
+
+
+Gruppe p6:
+Ein sechszähliges Rotationszentrum und zwei dreizählige Rotationszentren und drei zweizählige Rotationszentren.
+Spiegel- oder Gleitspiegelachsen gibt es nicht.
+</desc>
+
+  <defs>
+<radialGradient id="Radial1" gradientUnits="userSpaceOnUse"
+     cx="0" cy="0" r="87" fx="0" fy="0">
+        <stop offset="0" stop-color="#0f0" />
+        <stop offset="0.5" stop-color="#2a4" />
+        <stop offset="0.6" stop-color="#071" />
+        <stop offset="0.9" stop-color="#020"/>
+  </radialGradient>
+<pattern id="pattern" patternUnits="userSpaceOnUse" patternTransform="rotate(-8)"
+             x="-300" y="-346.410161514"
+             width="600" height="692.820323028"
+             viewBox="-150 -173.205080757 300 346.410161514"  overflow="visible">
+     <use xlink:href="#pat" stroke-linejoin="round" stroke="#00a" />
+</pattern>
+
+
+  </defs>
+
+<path d="M250 -250 2950 -250 2950 1950 -250 1950 -250 250C350,350 300,300 250 -250z"
+fill="url(#pattern)" stroke-width="2" stroke="black">
+    <title>Fläche mit Muster</title>
+</path>
+
+
+  <g id="pat" stroke-width="2">
+    <title>manuell angeordnete Waben</title>
+    <use xlink:href="#wabe" x="0" y="173.205080757" />
+    <use xlink:href="#wabe" x="0" y="-173.205080757" />
+
+    <use xlink:href="#wabe" x="150" y="86.6025403784" />
+    <use xlink:href="#wabe" x="150" y="-86.6025403784" />
+
+    <use xlink:href="#wabe" x="-150" y="86.6025403784" />
+    <use xlink:href="#wabe" x="-150" y="-86.6025403784" />
+
+    <use xlink:href="#wabe" x="0" y="0" />
+
+
+  </g>
+
+
+
+<g id="wabe" fill="none">
+<title>Grundfigur</title>
+<circle r="100" stroke="none" fill="url(#Radial1)" />
+<path fill="yellow"
+d="M95 0 C64.72135955 47.0228201834 28.2842712475 28.2842712475 -10 -17.3205080757 5.5107285922E-15 90 43.3012701892 25 95 0
+M47.5 82.2724133595 C-8.36227706141 79.5617516295 -10.3527618041 38.6370330516 10 -17.3205080757 -77.9422863406 45 3.06151588456E-15 50 47.5 82.2724133595
+M-47.5 82.2724133595 C-73.0836366114 32.5389314461 -38.6370330516 10.3527618041 20 -2.44921270764E-15 -77.9422863406 -45 -43.3012701892 25 -47.5 82.2724133595
+M-95 1.16337603613E-14 C-64.72135955 -47.0228201834 -28.2842712475 -28.2842712475 10 17.3205080757 -1.65321857766E-14 -90 -43.3012701892 -25 -95 1.16337603613E-14
+M-47.5 -82.2724133595 C8.36227706141 -79.5617516295 10.3527618041 -38.6370330516 -10 17.3205080757 77.9422863406 -45 -9.18454765367E-15 -50 -47.5 -82.2724133595
+M47.5 -82.2724133595 C73.0836366114 -32.5389314461 38.6370330516 -10.3527618041 -20 2.26619938093E-14 77.9422863406 45 43.3012701892 -25 47.5 -82.2724133595
+" />
+
+<circle r="10" stroke="red" fill="#80a" />
+<circle r="3" stroke="none" fill="#ff8" />
+
+</g>
+<rect x="-150" y="-173.205080757"
+      width="300" height="346.410161514"
+      fill="none" stroke="red" stroke-width="4" />
+</svg>

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg"  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 8 8">
+ <defs>
+  <linearGradient id="g" y2="1" >
+   <stop stop-color="#fea100" offset="0"/>
+   <stop stop-color="#fea100" offset=".1875"/>
+   <stop stop-color="#09c264" offset=".1875"/>
+   <stop stop-color="#09c264" offset=".3125"/>
+   <stop stop-color="#6747f0" offset=".3125"/>
+   <stop stop-color="#6747f0" offset=".4375"/>
+   <stop stop-color="#c3007c" offset=".4375"/>
+   <stop stop-color="#c3007c" offset=".5625"/>5
+   <stop stop-color="#fea100" offset=".5625"/>
+   <stop stop-color="#fea100" offset=".6875"/>
+   <stop stop-color="#09c264" offset=".6875"/>
+   <stop stop-color="#09c264" offset=".8125"/>
+   <stop stop-color="#6747f0" offset=".8125"/>
+   <stop stop-color="#6747f0" offset=".9375"/>
+   <stop stop-color="#c3007c" offset=".9375"/>
+   <stop stop-color="#c3007c" offset="1"/>
+  </linearGradient>
+  <linearGradient id="h" y2="1" >
+   <stop stop-color="#fe0000" offset="0"/>
+   <stop stop-color="#fe0000" offset=".125"/>
+   <stop stop-color="#fee300" offset=".125"/>
+   <stop stop-color="#fee300" offset=".25"/>
+   <stop stop-color="#1ac9ee" offset=".25"/>
+   <stop stop-color="#1ac9ee" offset=".375"/>
+   <stop stop-color="#8100d4" offset=".375"/>
+   <stop stop-color="#8100d4" offset=".5"/>5
+   <stop stop-color="#fe0000" offset=".5"/>
+   <stop stop-color="#fe0000" offset=".625"/>
+   <stop stop-color="#fee300" offset=".625"/>
+   <stop stop-color="#fee300" offset=".75"/>
+   <stop stop-color="#1ac9ee" offset=".75"/>
+   <stop stop-color="#1ac9ee" offset=".875"/>
+   <stop stop-color="#8100d4" offset=".875"/>
+   <stop stop-color="#8100d4" offset="1"/>
+  </linearGradient>
+  <rect width="1" height="1" id="w" fill="#fff" stroke="none" />
+	<rect width="1" height="1" id="b" fill="#000" stroke="none" />
+	<pattern id="p" width="2" height="2" patternUnits="userSpaceOnUse" >
+			<use xlink:href="#w" />
+			<use xlink:href="#w" x="1" y="1" />
+			<use xlink:href="#b" x="1" />
+			<use xlink:href="#b" y="1" />
+	</pattern>
+  <mask id="mp" >
+    <rect width="8" height="8" fill="url(#p)" />
+  </mask>
+	<pattern id="q" width="2" height="2" patternUnits="userSpaceOnUse" >
+			<use xlink:href="#b" />
+			<use xlink:href="#b" x="1" y="1" />
+			<use xlink:href="#w" x="1" />
+			<use xlink:href="#w" y="1" />
+	</pattern>
+  <mask id="mq" >
+    <rect width="8" height="8" fill="url(#q)" />
+  </mask>
+ </defs>
+
+<rect width="8" height="8" fill="url(#g)" mask="url(#mq)" />
+<rect width="8" height="8" fill="url(#h)" mask="url(#mp)" />
+</svg>

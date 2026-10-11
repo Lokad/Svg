@@ -5,9 +5,10 @@ Updated 2026-10-11. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**35/35 retained development documents are complete, including both newly sourced
-outputs. Both original marker/drop-shadow acceptance fixtures (2/2) are
-complete.** Completed cases match all six outputs on both platforms. These are
+**35/45 retained development documents are complete.** The preceding 35 stay
+complete; the ten newly retained public-domain/CC0 outputs are **0/10 complete**.
+Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
+Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
 failure-selected development corpus establishes no representative success rate.
 
@@ -307,7 +308,7 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected development queue is **35/35 complete**, including both baseball,
+The selected development queue has **35 completed / 45 selected**, including both baseball,
 both arrow exports, both path-marker documents and the two public-domain filter
 exports. The original marker-instance and drop-shadow acceptance fixtures are
 also complete, counted separately (**2/2**). Both original supplied-font acceptance
@@ -337,7 +338,7 @@ the original nine diagnostics and eight translation controls are separately
 documents before this addition; its former 30/30 headline was stale. The listed
 checkpoint completed all **33 then-listed development documents**, without
 changing the corporate cohort or original acceptance ledgers. Two later source
-additions below make the current queue **35/35** after completing the scaled-stroke
+additions below made the preceding queue **35/35** after completing the scaled-stroke
 and group-clipping exports. Other promised combinations and finite effects remain
 open.
 Caller-resolved initial families and absolute CSS font sizes are admitted while
@@ -440,15 +441,38 @@ remain exact through all twelve APIs. The existing two-workload resource probe
 covers the whole document and a referenced-line control on success and tight
 memory denial; owned storage releases on both exits. No package/API contract
 changed. Receipt: `artifacts/object-bounding-clips-20261011/final-qualification.json`.
-The new source batch is **2/2 complete**, and the selected development queue is
+That two-document source batch completed **2/2**, bringing the preceding queue to
 **35/35**. G2–G9/S17 remain open: general source/reference maps, other clip content
 and the finite original-scope combinations retain their explicit group exits.
-Next, refresh the remaining gap queue from those exits and a batch of at most ten
-public-domain/CC0 candidates. Retain whole static, self-contained SVGs that expose
-a rejection or pixel mismatch; declare outputs and freeze references before
-correction. Select
-the next shared change by the whole documents it advances. Completed documents
-and corporate membership remain protected.
+The next bounded batch retains **ten whole static, self-contained, fontless
+documents (`inv-132`–`inv-141`)**, all currently rejected on Windows/Linux. Outputs
+were declared at `6e759f24` before comparison. Three healthy cleaned captures per
+platform agree with each frozen reference; original downloads remain unchanged.
+Browser-only Latin-1 transport for the two pattern documents preserves their
+parsed XML trees. Source/options/gates are in the
+[development manifest](tests/References/inventory/svg-gap-cases.json) and
+[source ledger](docs/INVENTORY.md#remaining-support-batch-2026-10-11).
+
+| Complete documents queued | Shared first gate / declared transparent output |
+| --- | --- |
+| `inv-132` matrix; `inv-133` rotation; `inv-134` skewX; `inv-135` skewY | Non-axis rectangle strokes; each 512×512 |
+| `inv-136` compound/nested clips; `inv-137` open/zero-area clips | Normalized path clips and degenerate clip semantics; 512×277 / 512×269 |
+| `inv-138` rotated honeycomb; `inv-139` phased checker columns | Pattern viewBox mapping and aliases; 512×357 / 512×341 |
+| `inv-140` rainbow checker; `inv-141` smiley mask export | Bounded gradient-stop capacity/pattern mask content and finite group mask region; 512×512 / authored 256×256 |
+
+**Next deliverable: finish `inv-132` against its unchanged 512×512 reference.**
+Extend retained source-coordinate rectangle strokes through composed general
+maps, preserving native draw distinctions. Use rotation/skew documents to guide
+shared diagnostics; complete each through every subsequent rejection and pixel
+mismatch. Add focused controls before correction and track their results
+separately. This batch is **0/10 complete**, making the current queue **35/45**.
+Other G2–G9/S17 exits remain open; completed documents and corporate membership
+stay protected. Verify the new asset declarations through the existing harness;
+unchanged production code does not require repeating completed qualification.
+The existing inventory harness passes all **19 cases on Windows/Linux**
+(nine prior cases plus these ten), with zero failures/skips. Source/oracle capture
+evidence is in `artifacts/remaining-support-sourcing-20261011/`; no new testing or
+measurement framework, production change or prior reference refresh is involved.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -673,6 +697,13 @@ The [retained-content slice](docs/RASTERIZATION_DESIGN.md#retained-symbol-groups
 
 ### G3 — curved geometry and transforms
 
+The next whole-document correction is `inv-132`; `inv-133`–`inv-135` share its
+non-axis rectangle-stroke admission gate. Preserve source construction and the
+composed output map for matrix, centered rotation and both skew directions;
+do not substitute a generic polygon draw where native rectangle coverage differs.
+This advances the existing finite transform/stroke exit without requiring the
+remaining G2 combinations first.
+
 The complete CC0 `inv-106` I Ching library now matches its stable 280×720
 reference. Diagnosis corrected the earlier attribution: its Yin/Yang compound
 curves were already exact; `Hexagram_U4DCA`'s `z0` tail caused the first rejection.
@@ -757,6 +788,14 @@ stroker. Exit: the retained mixed-subpath, gradient-line and shader-oval cases a
 focused boundary twins are exact, with ownership/budget checks passing.
 
 ### G5 — viewports, clips, masks and composition
+
+New whole-document witnesses are `inv-136` (normalized compound paths, local
+group/use clip content, inheritance and nested intersections), `inv-137` (open,
+zero-area and curved clips) and `inv-141` (a finite mask region over mapped group
+children). Their current first rejections do not describe every later mismatch.
+Work through complete frozen outputs rather than closing these combinations from
+isolated controls alone. `inv-140` also needs pattern content inside masks, shared
+with G6, after its bounded gradient-stop gate is resolved.
 
 `symbol-content/group-alias-use` and its inline diagnostic now match unchanged
 references. The shared repair defers inherited viewport coverage until layer
@@ -913,6 +952,11 @@ General referencing-shape/instance maps, content/viewBox/bounding-box units and
 nested viewport gates remain open. Broader source-grid,
 instance and stroke combinations still need measured controls; completion of the
 five documents closes neither this checklist nor the finite exit below.
+The new `inv-138`/`inv-139` references make pattern viewBox, alias phase and
+composed pattern placement concrete acceptance documents. `inv-138` also needs
+local group/use tile content and visible overflow; `inv-140` needs ordered local
+uses in tiles rendered inside luminance masks. Keep those dependencies inside the
+existing finite content/unit/map exit, with explicit recursive outcomes.
 Extend the bounded vector tile scene with composed pattern transforms,
 viewBox/content units and objectBoundingBox units in measured
 slices. The finite tile-content subset is ordered G3 vector leaves, groups and
@@ -922,7 +966,8 @@ unit systems, content units, viewBox/aspect mapping and composed affine transfor
 Recursive pattern/paint dependencies must have categorized rejection. Embedded
 images and filtered/text tile content remain explicit dependencies on G7–G9,
 not silently dropped promises or a prerequisite for the five retained pattern
-documents. Exit: all five retained originals and the retained multi-child case render exactly;
+documents. Exit: all five retained originals, the retained multi-child case and
+new `inv-138`/`inv-139`/`inv-140` outputs render exactly;
 focused tile-border, phase, alpha, transformed fill/stroke and inheritance controls
 pass without tile-size or repeat-count-dependent unbounded work.
 
@@ -1207,7 +1252,9 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 The original fidelity repairs and the **33 previously completed development
 documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
-(**2/2**), making the selected development queue **35/35 complete**.
+(**2/2**). Ten newly retained outputs (`inv-132`–`inv-141`) are **0/10 complete**,
+making the current selected development queue **35/45 complete**. Their frozen
+whole-document references and first gates are listed above; start with `inv-132`.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh
