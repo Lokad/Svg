@@ -11698,3 +11698,23 @@ All 2,908 prior outcomes, 2,849 prior PNGs, 2,755 established exact comparisons 
 **27/27 documents / 258/258 variants**. Its receipt is
 `artifacts/curved-path-layout-20261011/final-qualification.json`. The plan and
 support matrix retain every finite G2–G9 exit and the separate remote S17 gate.
+
+### Mapped Linux glyph strike origins — 2026-10-11
+
+Mapped glyph replay now retains glyph-local operands and applies composed viewport
+placement before selecting both native quarter-pixel strike phases. Three healthy
+Linux intended-font captures match the unchanged curved control reference and
+retain the same measured origin as Windows. The curved control improves from
+80 to 36 differing Linux pixels; `inv-127` improves from 20,917 to 11,962. Windows
+outputs stay byte-identical. The document remains 0/1 complete, with separate
+controls at 3/5 Windows and 4/5 Linux. Native scaler/transform/coverage and accent
+mask fidelity remain open; intermediate contour agreement does not qualify pixels.
+
+Full qualification passes 6,753 tests/platform and preserves 2,849 prior PNGs,
+2,755 prior exact comparisons, 26 Windows / 28 Linux exact font outputs and the
+27/27 corporate documents / 258/258 variants. Linux accounted peaks are
+227,732 bytes for the curve and 2,428,548 for the retained document.
+All five measured inputs release their owners after success and denial one byte
+below the peak. Samples establish no general throughput claim. The receipt is
+`artifacts/rotated-font-masks-20261011/final-qualification.json`; unchanged package,
+notices, installed-consumer and public API qualification is reused.

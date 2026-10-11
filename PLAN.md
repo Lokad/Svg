@@ -122,12 +122,15 @@ component inheritance now let the unchanged document render. Three of five separ
 controls remain exact on both platforms through all 12 APIs; Linux also completes
 the composite-on-path control (**4/5 Linux**, **3/5 Windows**). Native glyph-mask
 fidelity, accent masks and the remaining document pixels stay open. The curved
-control still differs at 14 Windows / 80 Linux pixels; the complete document differs
-at 6,799 Windows / 20,917 Linux pixels. Its
+control still differs at 14 Windows / 36 Linux pixels; the complete document differs
+at 6,799 Windows / 11,962 Linux pixels. Its
 measured origin matches three healthy intended-font browser captures within one
 millionth of a pixel. Zero-angle polynomial baselines preserve the existing
-horizontal font strike. Finish this document against frozen references before
-expanding combinations; all finite G2–G9 exits stay visible.
+horizontal font strike. Mapped Linux glyphs now choose both native quarter-pixel
+strike phases after viewport placement; the retained Linux browser measurements
+agree with the unchanged curved reference. Native scaler/transform and glyph-mask
+coverage remain the next shared dependencies. Finish this document against frozen
+references before expanding combinations; all finite G2–G9 exits stay visible.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
 original output, seven controls, upstream face and OFL notice, explicit alias/
@@ -217,8 +220,8 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,749 tests/platform**: 4,676 core, 2,067 visual, six FontProbe. Complete suites take about 2m50 Windows / 3m10 Linux, excluding builds and additional bank probes. Test counts are not document counts. |
-| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 23 preceding exact font outputs on each platform. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. The selected curved-label document remains 0/1, with three of five separate controls exact through 12 APIs on both platforms. Existing inputs/options/references and healthy native captures remain unchanged. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,753 tests/platform**: 4,676 core, 2,071 visual, six FontProbe. Latest complete suites take about 3m21 Windows / 3m28 Linux, excluding builds and additional bank probes. Test counts are not document counts. |
+| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 26 Windows / 28 Linux exact font outputs from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. The selected curved-label document remains 0/1; separate controls are **3/5 Windows / 4/5 Linux** exact through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
@@ -968,7 +971,10 @@ catalog/style/coverage fallback and the existing bounded pair-positioning subset
       geometry, endpoint tangent fallback, denial and cancellation are protected.
     - [ ] Finish native rotated glyph-mask fidelity on both platforms; zero-angle
       polynomial baselines retain the established horizontal strike. Keep the
-      curved control separate from document completion.
+      curved control separate from document completion. Both Linux origin phases
+      now follow the native quarter-pixel strike after viewport placement. Keep
+      the remaining scaler/transform/coverage comparison open until the whole
+      curved mask matches; standalone scaled contours do not qualify pixels.
     - [x] Admit `USE_MY_METRICS` for the original precomposed accents, retaining
       selected child phantom points through nested components and parent hints.
       Ten independent native contours cover original accents and metric-dependent

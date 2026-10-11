@@ -12,15 +12,18 @@ The next retained G9/G3 document is the public-domain curved-label export
 512×369 transparent under explicitly supplied Noto Sans Regular. It remains
 **0/1 complete**. Bounded `xml:lang` metadata, presentation `text-anchor`
 inheritance through `svg`/`g`/`a` and child overrides, independent direct sibling
-`textPath` runs and positive `pathLength` offset calibration now advance it to
-the supplied composite-accent component-flag gate. Shared authored open curves
+`textPath` runs and positive `pathLength` offset calibration are admitted.
+Shared `USE_MY_METRICS` inheritance admits the original precomposed accents.
+The unchanged document now renders through all 12 APIs under its declared
+supplied-font contract. Shared authored open curves
 now provide bounded midpoint/tangent maps; native rotated glyph-mask fidelity
-remains open: the curved control has 14 Windows / 80 Linux differing pixels.
-Complete qualification passes **6,729 tests/platform** (4,675 core / 2,048 visual /
-six FontProbe), preserving every established exact output. Three separate controls
-are exact on both platforms through
-12 APIs. Percentage offsets resolve
-against geometric length; numeric offsets use its calibrated scale. Glyph
+remains open: the curved control has 14 Windows / 36 Linux differing pixels.
+Mapped Linux glyphs select both native quarter-pixel strike phases after viewport
+placement. Complete qualification passes **6,753 tests/platform** (4,676 core /
+2,071 visual / six FontProbe), preserving every established exact output. Three
+separate controls are exact on both platforms through 12 APIs; Linux also
+completes the composite control, giving four of five controls there. Percentage
+offsets resolve against geometric length; numeric offsets use its calibrated scale. Glyph
 advances remain independent. Open line/quadratic/cubic/conic/endpoint-arc baselines
 are admitted; zero-angle polynomial baselines preserve the horizontal font strike.
 Zero calibration, closed/multiple contours, painted direct text siblings and child

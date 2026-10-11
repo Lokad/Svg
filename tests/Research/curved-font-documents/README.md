@@ -30,7 +30,7 @@ do not count as completed documents.
 | Two path runs | Independent sibling layout/paint slots | Exact on both platforms through 12 APIs. |
 | Per-path anchor | Child anchor overriding parent | Exact on both platforms through 12 APIs. |
 | Calibrated path length | Numeric offsets scaled separately from glyph advances | Exact on both platforms through 12 APIs. |
-| Curved midpoint | Curved length, tangent and glyph mapping | Renders through 12 APIs; 14 Windows / 80 Linux pixels still differ. |
+| Curved midpoint | Curved length, tangent and glyph mapping | Renders through 12 APIs; 14 Windows / 36 Linux pixels still differ. |
 | Composite on path | Supplied precomposed `ü` placement and fitting | Exact on Linux through 12 APIs; Windows still differs at 8 pixels. |
 
 [Independent native placement](diagnostics/curved-midpoint-native-placement.json)
@@ -41,6 +41,14 @@ its separate samples must not replace the text-layout contour measure. Focused
 checks protect zero-angle polynomial strikes, endpoint tangent fallback, bounded
 work/cancellation, retained map ownership and denial cleanup. They do not increase
 the document or frozen-control completion counts.
+
+[Linux native placement](diagnostics/curved-midpoint-linux-native-placement.json)
+retains three further healthy intended-font measurements against the unchanged
+Linux reference. Mapped glyphs now choose native quarter-pixel phases on both axes
+after viewport placement, while preserving the tangent transform. This reduces
+Linux curved-control differences from 80 to 36 and whole-document differences
+from 20,917 to 11,962. Native scaler/transform and glyph-mask coverage remain open;
+standalone contour agreement does not complete the document.
 
 The five synthetic controls are original fixtures dedicated to
 [CC0-1.0](https://creativecommons.org/publicdomain/zero/1.0/). Their dimensions,

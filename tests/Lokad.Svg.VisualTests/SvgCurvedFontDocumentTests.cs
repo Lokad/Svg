@@ -103,6 +103,54 @@ public sealed class SvgCurvedFontDocumentTests
     private static ValueTask<SvgFontSnapshot> Prepare(byte[] input) => SvgFontSnapshot.CreateAsync(input, Catalog(), Provider(), CancellationToken.None);
 
     [Theory]
+    [InlineData(1, 0, 0, 17.25, 49.75)]
+    [InlineData(1.024, 0, 0.18, 17.5, 51.25)]
+    [InlineData(1.024, -40, -60, -22.5, -9)]
+    public async Task Rotated_strike_uses_native_device_phase_after_viewport_placement(double scale, double xOffset, double yOffset, double x, double y)
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, "curved-midpoint.svg"));
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        byte[] unchangedFont = Assert.Single(snapshot.Fonts).Bytes.ToArray();
+        RenderBudget budget = new(long.MaxValue);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, CancellationToken.None))
+        {
+            SvgGlyphRasterSource source = Assert.Single(root.Geometries).Glyph.Source ?? throw new InvalidDataException("Missing mapped glyph source.");
+            long retained = budget.Snapshot().CurrentBytes;
+            using (SvgAuthoredPath path = source.CreateMappedPath(scale, xOffset, scale, yOffset, budget, new(long.MaxValue), CancellationToken.None))
+            {
+                Assert.Equal(x, path.SceneMap.E);
+                Assert.Equal(y, path.SceneMap.F);
+                Assert.True(path.SceneMap.B < 0);
+                Assert.True(path.SceneMap.C > 0);
+                Assert.NotEmpty(path.Commands.ToArray());
+            }
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchangedFont, Assert.Single(snapshot.Fonts).Bytes.ToArray());
+    }
+
+    [Fact]
+    public void Linux_native_placement_matches_the_unchanged_curved_control_reference()
+    {
+        using JsonDocument diagnostic = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "diagnostics", "curved-midpoint-linux-native-placement.json")));
+        JsonElement root = diagnostic.RootElement;
+        byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, "references", "linux64", "curved-midpoint.png"));
+        Assert.Equal(Required(root, "referenceSha256"), Convert.ToHexStringLower(SHA256.HashData(reference)));
+        Assert.Equal(3, root.GetProperty("captures").GetArrayLength());
+        foreach (JsonElement capture in root.GetProperty("captures").EnumerateArray())
+        {
+            Assert.Equal("healthy", Required(capture, "startupHealth"));
+            Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
+        }
+        JsonElement character = root.GetProperty("measurement").GetProperty("metrics").GetProperty("runs")[0].GetProperty("chars")[0];
+        Assert.Equal(17.154211044311523, character.GetProperty("startX").GetDouble());
+        Assert.Equal(49.75111770629883, character.GetProperty("startY").GetDouble());
+        Assert.Equal(17.25, root.GetProperty("nativeStrikeOrigin").GetProperty("x").GetDouble());
+        Assert.Equal(49.75, root.GetProperty("nativeStrikeOrigin").GetProperty("y").GetDouble());
+    }
+
+    [Theory]
     [InlineData("inv-127-512x369-transparent")]
     [InlineData("composite-on-path")]
     public async Task Newly_admitted_document_and_composite_control_release_owners_and_allow_retry(string identity)

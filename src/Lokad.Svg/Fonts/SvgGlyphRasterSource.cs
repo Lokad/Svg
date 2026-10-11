@@ -102,7 +102,7 @@ internal sealed class SvgGlyphRasterSource : IDisposable
         catch { reservation.Dispose(); throw; }
     }
 
-    /// <summary>Replays a mapped outline as device commands without rounding away its tangent transform.</summary>
+    /// <summary>Replays a mapped outline at the native two-axis subpixel strike origin, preserving its tangent transform.</summary>
     /// <remarks>The returned path owns its commands. The font is borrowed; all decoded scratch is released
     /// before return. Curve and point traversal charges work and checks cancellation.</remarks>
     internal SvgAuthoredPath CreateMappedPath(double scaleX, double offsetX, double scaleY, double offsetY,
@@ -131,11 +131,16 @@ internal sealed class SvgGlyphRasterSource : IDisposable
             first = end;
         }
         SvgAffineTransform map = SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY).ComposeChecked(_glyphMap);
+        SvgDevicePoint glyphOrigin = map.Apply(_glyph.X, _glyph.Y);
+        float originX = MathF.Floor((float)glyphOrigin.X * 4f + .5f) / 4f;
+        float originY = MathF.Floor((float)glyphOrigin.Y * 4f + .5f) / 4f;
+        if (!float.IsFinite(originX) || !float.IsFinite(originY)) throw new SvgException(SvgErrorCode.LimitExceeded, "The mapped glyph placement exceeds the device range.");
+        map = new(map.A, map.B, map.C, map.D, originX, originY);
         OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
         try { return SvgAuthoredPath.Create(owned, map, budget); }
         catch { owned.Dispose(); throw; }
 
-        SvgDevicePoint Map(OpenTypeOutlinePoint point) => new(_glyph.X + point.X * size, _glyph.Y - point.Y * size);
+        SvgDevicePoint Map(OpenTypeOutlinePoint point) => new(point.X * size, -point.Y * size);
     }
 
     /// <summary>Returns native-directed device commands after fitting at mapped size; applies the glyph origin once.</summary>
