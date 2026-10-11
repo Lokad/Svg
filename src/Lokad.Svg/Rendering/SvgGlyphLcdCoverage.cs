@@ -17,7 +17,9 @@ internal readonly record struct SvgGlyphRgbCoverage(byte Red, byte Green, byte B
 /// coefficients; implied points round after the sampling-grid map. Enabled smart
 /// dropout control includes collapsed tips on both axes and keeps their selected
 /// cells inside the mapped contour bounds. Zero-direction crossings represent
-/// quadratic tangencies; they affect enabled dropouts without changing winding.
+/// isolated quadratic tangencies; they affect enabled dropouts without changing winding.
+/// Monotonic axis edges own their smooth curve continuations; searching those
+/// borrowed edges charges work and observes cancellation without retaining storage.
 /// Every segment, crossing, comparison and cell consumes work and observes cancellation.
 /// Callers own positioning, bounds, clipping, preblend and scratch reservations;
 /// independent calls with separate scratch may run concurrently.</remarks>
@@ -175,11 +177,11 @@ internal static class SvgGlyphLcdCoverage
                     continue;
                 }
                 double A = a.Y - 2 * b.Y + c.Y, B = 2 * (b.Y - a.Y), C = a.Y - sample;
-                if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, sample, horizontal, upper, scratch, work, token, ref count); continue; }
+                if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, sample, horizontal, upper, segments, scratch, work, token, ref count); continue; }
                 double discriminant = B * B - 4 * A * C; if (discriminant < 0) continue;
                 double root = Math.Sqrt(discriminant);
-                Include((-B + root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, scratch, work, token, ref count);
-                if (root != 0) Include((-B - root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, scratch, work, token, ref count);
+                Include((-B + root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, segments, scratch, work, token, ref count);
+                if (root != 0) Include((-B - root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, segments, scratch, work, token, ref count);
             }
             for (int i = 1; i < count; i++)
             {
@@ -190,16 +192,37 @@ internal static class SvgGlyphLcdCoverage
                 scratch[j] = item;
             }
             return count;
-            static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
+            static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, ReadOnlySpan<OpenTypeQuadraticSegment> segments, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
             {
                 if (t is < 0 or > 1) return;
                 double derivative = B + 2 * A * t;
                 if (upper ? t == 0 && derivative > 0 || t == 1 && derivative < 0 : t == 0 && derivative < 0 || t == 1 && derivative > 0) return;
+                // A monotonic axis edge owns its smooth continuation into a
+                // curve. Curved extrema and isolated tangencies still retain dropouts.
+                if (derivative == 0 && (t == 0 || t == 1) && AxisEdgeContinues(t == 0 ? a : c, b, t == 0 ? c : a, segments, horizontal, work, token)) return;
                 // Horner evaluation leaves a constant coordinate exact. A
                 // Bernstein sum can drift across a center on a straight stem.
                 double crossing = a.X + t * (2 * (b.X - a.X) + t * (a.X - 2 * b.X + c.X));
                 if (t is > 0 and < 1 && derivative != 0) crossing = Adjust(crossing, sample, a, b, c, horizontal, work, token);
                 scratch[count++] = new(crossing, Math.Sign(derivative));
+
+                static bool AxisEdgeContinues(OpenTypeOutlinePoint endpoint, OpenTypeOutlinePoint control, OpenTypeOutlinePoint other, ReadOnlySpan<OpenTypeQuadraticSegment> segments, bool horizontal, ParserWorkCounter work, CancellationToken token)
+                {
+                    double direction = control.X - endpoint.X;
+                    if (direction == 0) direction = other.X - endpoint.X;
+                    if (direction == 0) return false;
+                    foreach (OpenTypeQuadraticSegment segment in segments)
+                    {
+                        work.Consume(token);
+                        OpenTypeOutlinePoint start = Map(segment.Start, horizontal), end = Map(segment.End, horizontal);
+                        if (start.Y != endpoint.Y || end.Y != endpoint.Y || start != endpoint && end != endpoint) continue;
+                        OpenTypeOutlinePoint middle = Map(segment.Control, horizontal);
+                        if (middle.Y != endpoint.Y || middle.X < Math.Min(start.X, end.X) || middle.X > Math.Max(start.X, end.X)) continue;
+                        OpenTypeOutlinePoint neighbor = start == endpoint ? end : start;
+                        if (direction > 0 ? neighbor.X < endpoint.X : neighbor.X > endpoint.X) return true;
+                    }
+                    return false;
+                }
 
                 static double Adjust(double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ParserWorkCounter work, CancellationToken token)
                 {

@@ -23,7 +23,7 @@
       "linuxReference": "references/linux64/inv-129-750x200-transparent.png",
       "fontPack": "font-pack.json",
       "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
-      "rendererOutcome": "known-difference",
+      "rendererOutcome": "exact",
       "oracleInputSha256": "d12ab3aadeedac25cc4adbfaba91b7d1ef9d5e43c73733746717989b648adafd",
       "referenceSha256": "403bee5f1c55471cee4b28289602c2c62ec823b5d6ec18351146a79bf04e153c",
       "captures": [
@@ -61,8 +61,7 @@
           "profileCleaned": true
         }
       ],
-      "platformReferencesByteIdentical": false,
-      "linuxRendererOutcome": "exact"
+      "platformReferencesByteIdentical": false
     },
     {
       "id": "omitted-family",
@@ -79,7 +78,7 @@
       "linuxReference": "references/linux64/omitted-family.png",
       "fontPack": "font-pack.json",
       "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
-      "rendererOutcome": "mismatch",
+      "rendererOutcome": "exact",
       "oracleInputSha256": "9eb2c9d1dcdba070e3053ef1cc3c6f483f24fce504d163f6fbc72582c6566da7",
       "referenceSha256": "29008de161546be1c62ab962d12c48779b4b31cb2687386a88b1a59e11342770",
       "captures": [
@@ -117,8 +116,7 @@
           "profileCleaned": true
         }
       ],
-      "platformReferencesByteIdentical": false,
-      "linuxRendererOutcome": "exact"
+      "platformReferencesByteIdentical": false
     },
     {
       "id": "point-font-size",

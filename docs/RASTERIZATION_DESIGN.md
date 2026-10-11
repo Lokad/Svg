@@ -12001,3 +12001,19 @@ per platform stay unchanged, owners release after success and tight denial,
 and both managed package audits pass. Suite wall times are 242.7 seconds Windows /
 250.0 seconds Linux, excluding builds and bank probes. The private receipt is
 `artifacts/windows-accent-strikes-20261011/final-qualification.json`.
+
+
+### Windows glyph axis-edge continuations
+
+An endpoint tangent that smoothly continues a monotonic axis edge does not start
+an isolated smart-dropout span. The shared scanner checks the borrowed mapped
+edge geometry before retaining that zero-direction crossing. Curved extrema and
+isolated thin tips keep their established dropout coverage. Every visited edge
+charges work and observes cancellation; the correction retains no storage.
+
+Six complete unchanged-face RGB textures, stable in three fresh processes,
+protect four quarter strikes and neighboring glyphs alongside the existing
+curved-tip and mapped-mask controls. The retained static CSS diagram improves
+seven Windows pixels to zero, and its omitted-family control improves three to
+zero, without losing a formerly matching pixel. All twelve document outputs
+match unchanged references on both platforms; Linux pixels remain unchanged.

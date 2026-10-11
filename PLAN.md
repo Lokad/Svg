@@ -5,7 +5,7 @@ Updated 2026-10-11. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**30/30 selected development documents and both original marker/drop-shadow
+**33/33 listed development documents and both original marker/drop-shadow
 acceptance fixtures (2/2) are complete**, through all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
 failure-selected development corpus establishes no representative success rate.
@@ -27,7 +27,7 @@ Neither this checkpoint nor an exact document closes the finite G2–G9 exits.
 with the explicitly supplied public static Noto Sans Regular face under its
 existing `Example` alias. All six raw and six independently prepared outputs
 match the frozen native Windows/Linux references. This is **1/1 supplied-font
-acceptance document**, separately from the 30 development documents and the two
+acceptance document**, separately from the listed development documents and the two
 non-font original acceptance fixtures. Snapshot-less rejection stays explicit.
 
 **The original `logo-text-path.svg` is complete at unchanged 64×64 transparent**
@@ -249,7 +249,8 @@ Mechanisms, control counts and dated qualifications live in
 | Curved German labels (`inv-127`) | Explicit 512×369, transparent; supplied Noto Sans Regular | Shared bounded path layout, native fragment placement, mapped glyph masks and nested component fitting. |
 | CC0 Shapes Pattern (`inv-128`) | Explicit 600×400, transparent; original source unchanged | Shared bounded grouped tile content, composed child maps and inherited solid/gradient paint. |
 | Question-mark export (`inv-126`) | 185×180, transparent | Shared bounded validation of inert outlined-path typography; existing native blur and geometry playback are already exact. |
-| Original live-text acceptance fixture | 64×64, transparent; explicit supplied Noto Sans / `Example` contract | Shared bounded platform hinting, directed contours, symmetric LCD/analytic coverage and font preblend. Separate from the 30 development documents. |
+| Static CSS comparison diagram (`inv-129`) | Explicit 750×200, transparent; supplied Noto Sans Regular / initial serif contract | Shared cascade, span paint, composed translations, local Linux masks and Windows axis-edge continuation ownership. |
+| Original live-text acceptance fixture | 64×64, transparent; explicit supplied Noto Sans / `Example` contract | Shared bounded platform hinting, directed contours, symmetric LCD/analytic coverage and font preblend. Separate from the listed development documents. |
 | Original text-path acceptance fixture | 64×64, transparent; the same supplied Noto Sans / `Example` contract | Local authored path/reference layout, composed source maps and original paint positions reuse existing glyph raster replay. Seven separate controls are exact on both platforms. |
 | CC0 SVG Translate textpath | 512×256, transparent; supplied Noto Sans Mono Bold face 0 | Shared span positioning, composite fitting, platform advances and native quadratic/dropout coverage. All 12 APIs are exact on both platforms; seven separate controls are exact. |
 
@@ -257,8 +258,8 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **7,050 tests/platform**: 4,904 core, 2,140 visual, six FontProbe. Latest complete suite wall time is **3m51s Windows / 4m16s Linux**, excluding builds and additional bank probes. Timings vary between runs. Test counts are not document counts. |
-| Complete retained banks | Complete qualification checks all **2,908 prior cases** and preserves **2,851 prior PNGs** and **2,755 established exact comparisons**, plus all **30 exact supplied-font outputs on each platform** from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; the live-text, straight-path and Mono banks each have seven exact controls on both platforms. The selected curved-label document is **1/1 across both platforms**; its five separate controls are **5/5 exact on both** through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **7,056 tests/platform**: 4,904 core, 2,146 visual, six FontProbe. Latest complete suite wall time is **4m35s Windows / 6m49s Linux**, excluding builds and additional bank probes. Timings vary between runs. Test counts are not document counts. |
+| Complete retained banks | Complete qualification checks all **2,908 prior cases** and preserves **2,855 prior PNGs** and **2,755 established exact comparisons**, plus all **30 exact supplied-font outputs on each platform** from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; the live-text, straight-path and Mono banks each have seven exact controls on both platforms. The selected curved-label document is **1/1 across both platforms**; its five separate controls are **5/5 exact on both** through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
@@ -305,7 +306,7 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected development queue is **30/30 complete**, including both baseball,
+The selected development queue is **33/33 complete**, including both baseball,
 both arrow exports, both path-marker documents and the two public-domain filter
 exports. The original marker-instance and drop-shadow acceptance fixtures are
 also complete, counted separately (**2/2**). Both original supplied-font acceptance
@@ -315,8 +316,8 @@ The public-domain curved-label document `inv-127` is complete at 512×369
 under its frozen supplied-font contract. The newly selected **Firkin’s CC0 Shapes Pattern (`inv-128`)** is also complete
 at unchanged explicit **600×400**, scale 1, transparent, through six APIs on both
 platforms. The retained public-domain static CSS diagram `inv-129`
-([source record](docs/INVENTORY.md#inv-129--static-css-comparison-diagram-remaining-scope-candidate))
-is the next selected complete document at unchanged explicit **750×200**, scale 1,
+([source record](docs/INVENTORY.md#inv-129--static-css-comparison-diagram))
+is complete through all twelve outputs on both platforms at unchanged explicit **750×200**, scale 1,
 transparent. Its declared caller catalogue maps the initial `serif` family to the
 existing public Noto Sans Regular face 0; omitted families request that alias
 through the existing catalogue selection and fallback rules. An unavailable
@@ -327,15 +328,20 @@ implementation. Eight additional translation controls are frozen separately
 before admitting translated strokes or labels: solid/shader rectangle strokes,
 definition replay, nested label placement, absolute span positions and straight
 and curved text paths. Keep these controls separate from document completion.
-Finish its default-family requests, absolute point font size, late stylesheet,
+Its default-family requests, absolute point font size, late stylesheet,
 descendant/child selectors, explicit inheritance, translated labels and span
-paint against those references. Keep it outside completed-document denominators
-until every declared output matches. Other promised combinations and finite
-effects remain open.
+paint now match those unchanged references. Document completion is **1/1**;
+the original nine diagnostics and eight translation controls are separately
+**17/17 exact on both platforms**. The completion table had 32 development
+documents before this addition; its former 30/30 headline was stale. The listed
+development ledger now counts **33/33**, without changing the corporate cohort
+or original acceptance ledgers. Other promised combinations and finite effects
+remain open.
 Caller-resolved initial families and absolute CSS font sizes are admitted while
 position syntax retains its existing bounds. The point-size control is exact
 through twelve raw/prepared outputs on both platforms; the omitted-family
-control is exact on Linux and retains a three-pixel Windows mismatch. Shared
+control is exact on both platforms; shared Windows scan ownership resolves its
+three previously differing pixels. Shared
 stylesheet collection admits embedded root/definition rules in source order
 before discovery and lowering. Its late-rule control and the two retained
 opaque stroke-opacity CSS cases match their unchanged references.
@@ -356,7 +362,7 @@ separately from accumulated group and mask alpha. Retained source replay binds
 it per instance and preserves intervening symbol/container parents; omitted,
 `initial` and `unset` opacity keep their noninherited initial value.
 The frozen `force-inherit` control is exact through twelve outputs on both
-platforms. The nine diagnostic controls stand at **8/9 exact on Windows, 9/9 on Linux**.
+platforms. The nine original diagnostic controls are **9/9 exact on both platforms**.
 The paired text controls were frozen before admission changed. Both valid
 fill-rule values are inert for SVG text and now match unchanged platform
 references through twelve outputs; invalid values retain rejection before font
@@ -374,24 +380,24 @@ Existing 1,024-character identifier support is preserved; complete selectors
 are bounded to 4,096 characters, with shared memory/work limits and cancellation.
 Root, nested-viewport and `defs` container styling remain explicit unsupported
 outcomes and required G7 exit work; supported leaves may use them as ancestors.
-The translation and Linux bitmap correction passed complete qualification with
-**7,050 tests per platform** (4,904 core, 2,140 visual, six FontProbe), with zero
-warnings, errors, failures or skips. All **2,851 prior PNGs**,
-**2,755 prior exact results**, **30 supplied-font outputs**
-and corporate **27/27 documents / 258/258 variants** are preserved. Composed
-translations now place rectangle strokes and text after the existing local
-geometry/layout, including absolute span positions and text paths. Four older
-translated rectangle controls graduate from rejection without asset changes.
-The eight translation controls match unchanged references through twelve outputs
-on both platforms. Ordinary Linux glyphs reuse the local bitmap route, preserving
-coverage under integer placement; the unchanged whole diagram is exact through
-twelve Linux outputs. Windows renders it with seven glyph-mask differences,
-alongside the original three-pixel omitted-family mismatch. Completion across
-both platforms remains **0/1**; resolving those Windows glyph differences is
-the next shared correction. Scaled/general rectangle strokes, general text maps
-and per-span transforms remain visible in their original group exits.
-The existing Linux resource probe passes the whole diagram and translated-label
+Complete qualification passes **7,056 tests per platform** (4,904 core,
+2,146 visual, six FontProbe), with zero warnings, errors, failures or skips.
+All **2,855 prior bank PNGs**, **2,755 historical exact comparisons**, four
+subsequently graduated rectangle controls, **30 exact font outputs per platform**
+and corporate **27/27 documents / 258/258 variants** are preserved.
+Composed translations place rectangle strokes and text after local geometry and
+layout, including absolute span positions and text paths. Local Linux glyph
+bitmaps preserve coverage under integer placement. Windows scan ownership now
+recognizes a monotonic axis edge's smooth continuation into a curve, retaining
+curved extrema and isolated thin-tip dropouts. The unchanged whole diagram
+improves **7 → 0 Windows pixels**, with no formerly matching pixels changed;
+Linux remains exact. Six complete native glyph textures, stable through three
+fresh processes, protect quarter-strike continuations and neighboring shapes.
+The existing resource probe passes the whole diagram and translated-label
 control on success and tight memory denial, releasing owned storage on both exits.
+Scaled/general rectangle strokes, general text maps and per-span transforms
+remain visible in their original group exits. Select the next complete document
+from a small public-domain/CC0 batch exposing one of the remaining finite gaps.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -1148,7 +1154,7 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 ### Development sourcing and release work
 
-The original fidelity repairs and the selected **30/30 development-document
+The original fidelity repairs and the selected **33/33 listed development-document
 queue** are complete. The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh

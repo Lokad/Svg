@@ -3298,11 +3298,11 @@ Malta graduation inventory record with no new download. Full 92-document Release
 - variants: all nine explicit small/intended/large × transparent/white/black cases in the frozen cohort manifest; original geometry preserved.
 - status: unmeasured at the pre-comparison freeze; every capture gap or renderer failure retains the document denominator.
 
-### inv-129 — Static CSS comparison diagram (remaining-scope candidate)
+### inv-129 — Static CSS comparison diagram
 
 - Source: [File:T304209.svg](https://commons.wikimedia.org/wiki/File:T304209.svg?oldid=1188151953), by [H2g2bob](https://commons.wikimedia.org/wiki/User:H2g2bob); retrieved 2026-10-11.
 - License: public domain, as declared by the preserved Commons revision and its imageinfo metadata.
 - Original: `tests/Fixtures/candidates/inv-129.svg`, unchanged 2,750-byte UTF-8 source; SHA-256 `1a59209f5af7fff09cc18f65d9bc80075660a4b05fc5b4a61d329890919e075c`.
 - Static, self-contained document: six circle/rectangle comparison groups, ten text nodes, four spans and a late embedded stylesheet; nominal 750×200. No nonlocal references or animation.
 - Initial outcome: UnsupportedFeature, “Text requires an explicit font-family in the initial supported subset.” Late stylesheet placement, descendant rules, inherited/important declarations and span styling are further G7/G9 dependencies.
-- Unqualified candidate: define a deterministic supplied-font contract, then declare outputs and freeze references before implementation. It is outside every completed-document and corporate denominator.
+- Completed declared output: explicit 750×200, scale 1, transparent, with the caller catalogue mapping initial `serif` to the public static Noto Sans Regular face 0. All six raw and six independently prepared APIs match unchanged healthy frozen Windows/Linux references. The whole document is 1/1 complete; its nine original diagnostics and eight translation controls are 17/17 exact separately. It remains outside the frozen corporate cohort; broader finite G7/G9 exits stay open.

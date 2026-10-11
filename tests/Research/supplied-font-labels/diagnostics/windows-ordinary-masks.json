@@ -1,0 +1,104 @@
+{
+  "font": "NotoSans-Regular.ttf",
+  "fontSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "faceIndex": 0,
+  "method": "Independent IDWriteFactory2 glyph-run analysis of the unchanged supplied face, grid fitting enabled and natural symmetric LCD coverage; no installed-font discovery. Complete textures and bounds are byte-identical through three fresh processes. Native fitted line/quadratic operands also agree; these masks protect scan ownership without replacing frozen document references.",
+  "cases": [
+    {
+      "id": "f-0",
+      "glyph": 73,
+      "deviceSize": 16,
+      "origin": [
+        8,
+        256
+      ],
+      "coverageBounds": [
+        7,
+        244,
+        15,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAAAAFI1qh0vH6////+vGyYhYAAAAAAAAAABtwxf//1ZRIJxwcMjwzFAAAAAAAAAAAADqP5P/VgCsAAAAAAAAAAAAAAAAbUZLD4fb/////////////qlUAAAAAAAAFDhgcHGiz///ZjkIcHBwcEwkAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAA"
+    },
+    {
+      "id": "f-1",
+      "glyph": 73,
+      "deviceSize": 16,
+      "origin": [
+        8.25,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        244,
+        15,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAABSNaodLx+v////rxsmIWAAAAAAAbcMX//9WUSCccHDI8MxQAAAAAAAA6j+T/1YArAAAAAAAAAAAAG1GSw+H2/////////////6pVAAAABQ4YHBxos///2Y5CHBwcHBMJAAAAAAAAAABVqv//1YArAAAAAAAAAAAAAAAAAABVqv//1YArAAAAAAAAAAAAAAAAAABVqv//1YArAAAAAAAAAAAAAAAAAABVqv//1YArAAAAAAAAAAAAAAAAAABVqv//1YArAAAAAAAAAAAAAAAAAABVqv//1YArAAAAAAAAAAAAAAAAAABVqv//1YArAAAAAAAAAAAA"
+    },
+    {
+      "id": "f-2",
+      "glyph": 73,
+      "deviceSize": 16,
+      "origin": [
+        8.5,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        244,
+        15,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAABQ/gLfh9v/////23Yg8AAAAAAAARpvw//C5bjIcHCc8NyMFAAAAAAAPZLn//6pVAAAAAAAAAAAAADZtuNLx+v///////////9WAKwAAAAkTHBxCjtn//7NoHBwcHBgOBQAAAAAAAAArgNX//6pVAAAAAAAAAAAAAAAAAAArgNX//6pVAAAAAAAAAAAAAAAAAAArgNX//6pVAAAAAAAAAAAAAAAAAAArgNX//6pVAAAAAAAAAAAAAAAAAAArgNX//6pVAAAAAAAAAAAAAAAAAAArgNX//6pVAAAAAAAAAAAAAAAAAAArgNX//6pVAAAAAAAAAAAA"
+    },
+    {
+      "id": "f-3",
+      "glyph": 73,
+      "deviceSize": 16,
+      "origin": [
+        8.75,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        244,
+        16,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAAAAUP4C34fb/////9t2IPAAAAAAAAAAAAEab8P/wuW4yHBwnPDcjBQAAAAAAAAAAD2S5//+qVQAAAAAAAAAAAAAAAAA2bbjS8fr////////////VgCsAAAAAAAAJExwcQo7Z//+zaBwcHBwYDgUAAAAAAAAAAAAAK4DV//+qVQAAAAAAAAAAAAAAAAAAAAAAK4DV//+qVQAAAAAAAAAAAAAAAAAAAAAAK4DV//+qVQAAAAAAAAAAAAAAAAAAAAAAK4DV//+qVQAAAAAAAAAAAAAAAAAAAAAAK4DV//+qVQAAAAAAAAAAAAAAAAAAAAAAK4DV//+qVQAAAAAAAAAAAAAAAAAAAAAAK4DV//+qVQAAAAAAAAAAAAAA"
+    },
+    {
+      "id": "r-1",
+      "glyph": 85,
+      "deviceSize": 16,
+      "origin": [
+        8.25,
+        256
+      ],
+      "coverageBounds": [
+        9,
+        247,
+        15,
+        256
+      ],
+      "rgbTextureBase64": "AFWq/9mELxQ/gLfh9v///6pVAFWq///V0NDmwIpTMhwcIhkPAFWq////1YQvBQAAAAAAAAAAAFWq///ZhC8AAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAAAFWq///VgCsAAAAAAAAAAAAA"
+    },
+    {
+      "id": "t-3",
+      "glyph": 87,
+      "deviceSize": 16,
+      "origin": [
+        8.75,
+        256
+      ],
+      "coverageBounds": [
+        8,
+        245,
+        15,
+        256
+      ],
+      "rgbTextureBase64": "AAAAAAAAAEab8KpVAAAAAAAAAAAAAAAAAAAAOo/k/6pVAAAAAAAAAAAAAAA2d8jm+v/////////////VgCsAAAAJExwcaLP//7NoHBwcHBwYDgUAAAAAAAAAVar//6pVAAAAAAAAAAAAAAAAAAAAVar//6pVAAAAAAAAAAAAAAAAAAAAVar//6pVAAAAAAAAAAAAAAAAAAAAVar//6pVAAAAAAAAAAAAAAAAAAAAVar//69aBQAAAAAAAAAAAAAAAAAANYrf//rQj0gnHCc8Mx8AAAAAAAAAAA86e7fh9v////rxnEwA"
+    }
+  ]
+}
