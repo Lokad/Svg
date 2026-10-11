@@ -470,10 +470,12 @@ internal static class SvgRenderedLeafParser
             whitespaceNormalizers.Add(normalizer);
             using RenderBudget.BudgetReservation chunkReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount(4_096, sizeof(char)), SvgMemoryCategory.Parser);
             char[] chunk = new char[4_096];
+            int depthOffset = element.Depth;
             using XmlReader subtree = element.ReadSubtree();
             while (subtree.Read())
             {
                 workCounter.Consume(cancellationToken);
+                state.CssAncestors.Observe(subtree, depthOffset);
                 if (subtree.NodeType is XmlNodeType.Text or XmlNodeType.CDATA or XmlNodeType.Whitespace or XmlNodeType.SignificantWhitespace)
                 {
                     int read;
@@ -506,7 +508,7 @@ internal static class SvgRenderedLeafParser
                 }
                 if (subtree.NodeType == XmlNodeType.Element && subtree.Depth != 0)
                 {
-                    if (subtree.Depth + element.Depth >= maximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
+                    if (subtree.Depth + depthOffset >= maximumXmlDepth) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG XML nesting exceeds the configured limit.");
                     if (childNodeCount >= remainingNodeCount) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                     childNodeCount++;
                     if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");

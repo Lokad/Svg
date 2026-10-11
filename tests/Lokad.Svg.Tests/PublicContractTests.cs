@@ -603,7 +603,7 @@ public sealed class PublicContractTests
 
     [Theory]
     [InlineData("<rect vector-effect='non-scaling-stroke'/>")]
-    [InlineData("<style>circle { fill: red; }</style><rect/>")]
+    [InlineData("<style>circle:hover { fill: red; }</style><rect/>")]
     [InlineData("<style>rect { fill: red</style><rect/>")]
     [InlineData("<foreign:rect xmlns:foreign='urn:foreign' width='1' height='1'><foreign:child/></foreign:rect>")]
     [InlineData("<g opacity='0.5'><g opacity='0.5'><rect/></g></g>")]

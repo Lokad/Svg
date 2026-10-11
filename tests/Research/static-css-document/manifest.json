@@ -244,7 +244,7 @@
       "linuxReference": "references/linux64/descendant-cascade.png",
       "fontPack": "font-pack.json",
       "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "oracleInputSha256": "bd74f2896a2b4e454dbb3dc7ab91391afb36122219288a04ef81f25a660ef269",
       "referenceSha256": "7f6f9cd2c7b47cd4024fa34d1d086114e8974ecc1a0b123bfad947a26ced8a6a",
       "captures": [

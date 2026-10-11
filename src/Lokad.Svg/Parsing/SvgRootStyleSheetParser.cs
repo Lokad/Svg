@@ -51,7 +51,11 @@ internal static class SvgRootStyleSheetParser
 
     internal static void ThrowIfTargetsRoot(string? id, string? classes, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (SvgStyleSheet.TargetsRootId(id, rules, workCounter, cancellationToken) || SvgStyleSheet.TargetsRootClass(classes, rules, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
+        for (int index = 0; index < rules.Count; index++)
+        {
+            workCounter.Consume(cancellationToken);
+            if (rules[index].MatchesRoot(id, classes, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
+        }
     }
 
     /// <summary>Rejects stylesheet element attributes except the inert type and identifier declarations exporters emit.</summary>

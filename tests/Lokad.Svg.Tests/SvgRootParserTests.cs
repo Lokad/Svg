@@ -3997,7 +3997,7 @@ public sealed class SvgRootParserTests
         RenderBudget budget = new(10_000);
         ParserWorkCounter workCounter = new(1);
         using SvgDocumentState state = new(budget, workCounter, CancellationToken.None);
-        state.StyleRules.Add(new CssRule(CssSelectorKind.Class, "selected", null, 10, default));
+        state.StyleRules.Add(new CssRule(".selected", new(0, 1, 0), default, false));
         SvgRootAttributes root = new(new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), SvgInheritedTextStyle.Default, SvgInheritedStrokeStyle.Default, null, null, 255, null, null, null, null);
 
         SvgException exception = Assert.Throws<SvgException>(() => SvgRenderedLeafParser.TryParse(reader, true, true, root, state, SvgRenderLimits.Default, budget, new Dictionary<string, SvgColor>(), null, workCounter, CancellationToken.None));
@@ -4013,9 +4013,13 @@ public sealed class SvgRootParserTests
         using System.Xml.XmlReader reader = System.Xml.XmlReader.Create(new System.IO.StringReader("<svg xmlns='http://www.w3.org/2000/svg'><rect class='" + classValue + "'/></svg>"));
         Assert.True(reader.Read());
         Assert.True(reader.Read());
-        CssRule rule = new(CssSelectorKind.Class, "selected", null, 10, default);
+        CssRule rule = new(".selected", new(0, 1, 0), default, false);
+        RenderBudget budget = new(10_000);
+        ParserWorkCounter work = new(10);
+        using BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser, work, CancellationToken.None);
+        using SvgCssAncestorContext ancestors = new(rules, budget, work, CancellationToken.None);
 
-        SvgException exception = Assert.Throws<SvgException>(() => rule.Matches(reader, true, false, false, new ParserWorkCounter(10), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => rule.Matches(reader, ancestors, work, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Contains("identifiers and class values", exception.Message);

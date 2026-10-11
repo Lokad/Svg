@@ -51,6 +51,7 @@ internal sealed class SvgDocumentState : IDisposable
         ClipDepths = new BudgetedParserList<int>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         Viewports = new BudgetedParserList<SvgViewportFrame>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         StyleRules = styleRules;
+        CssAncestors = new(styleRules, budget, workCounter, cancellationToken);
         Definitions = new BudgetedParserDictionary<string, SvgDefinition>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         Clips = new BudgetedParserDictionary<string, SvgClipBox>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
         ClipPolygons = new BudgetedParserDictionary<string, SvgClipPolygon>(budget, SvgMemoryCategory.Parser, ClipStorageBytes);
@@ -122,6 +123,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgViewportFrame? EffectiveFrame => Viewports.Count == 0 ? null : Viewports[^1];
 
     internal BudgetedParserList<CssRule> StyleRules { get; }
+
+    internal SvgCssAncestorContext CssAncestors { get; }
 
     internal BudgetedParserDictionary<string, SvgDefinition> Definitions { get; }
 
@@ -404,6 +407,7 @@ internal sealed class SvgDocumentState : IDisposable
         MaskScopes.Dispose();
         MaskScopeSnapshots.Dispose();
         ClipDepths.Dispose();
+        CssAncestors.Dispose();
         if (_ownsStyleStorage)
         {
             StyleRules.Dispose();

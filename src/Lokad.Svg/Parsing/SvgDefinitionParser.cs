@@ -502,6 +502,7 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth < 0 && (directChild || state.GroupDepth > 0) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader, workCounter, cancellationToken);
+            SvgStyleSheet.ThrowIfTargetsUnstyledContainer(reader, state.StyleRules, state.CssAncestors, workCounter, cancellationToken);
             if (!reader.IsEmptyElement) state.DefinitionsDepth = reader.Depth;
             return true;
         }

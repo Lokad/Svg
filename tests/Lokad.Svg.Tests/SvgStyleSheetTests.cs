@@ -10,10 +10,10 @@ public sealed class SvgStyleSheetTests
     public void Cascades_each_presentation_property_by_specificity_then_source_order()
     {
         SvgStyleCascade cascade = new();
-        cascade.Apply(new InlineStyle("red", "red", "0.25", null, "none", null, "0.5", null), 1);
-        cascade.Apply(new InlineStyle(null, "blue", null, "none", "inline", "hidden", "0.75", "evenodd"), 1);
-        cascade.Apply(new InlineStyle(null, "green", "0.5", null, null, null, null, null), 0);
-        cascade.Apply(new InlineStyle(null, null, "0.5", null, null, null, null, null), 2);
+        cascade.Apply(new InlineStyle("red", "red", "0.25", null, "none", null, "0.5", null), new(0, 0, 1));
+        cascade.Apply(new InlineStyle(null, "blue", null, "none", "inline", "hidden", "0.75", "evenodd"), new(0, 0, 1));
+        cascade.Apply(new InlineStyle(null, "green", "0.5", null, null, null, null, null), default);
+        cascade.Apply(new InlineStyle(null, null, "0.5", null, null, null, null, null), new(0, 0, 2));
 
         InlineStyle style = cascade.ToInlineStyle();
 
@@ -31,9 +31,9 @@ public sealed class SvgStyleSheetTests
     public void Cascades_css_whitespace_by_specificity_then_source_order()
     {
         SvgStyleCascade cascade = new();
-        cascade.Apply(new InlineStyle(null, null, null, null, null, null, null, null) { WhiteSpace = "pre" }, 1);
-        cascade.Apply(new InlineStyle(null, null, null, null, null, null, null, null) { WhiteSpace = "normal" }, 0);
-        cascade.Apply(new InlineStyle(null, null, null, null, null, null, null, null) { WhiteSpace = "normal" }, 1);
+        cascade.Apply(new InlineStyle(null, null, null, null, null, null, null, null) { WhiteSpace = "pre" }, new(0, 0, 1));
+        cascade.Apply(new InlineStyle(null, null, null, null, null, null, null, null) { WhiteSpace = "normal" }, default);
+        cascade.Apply(new InlineStyle(null, null, null, null, null, null, null, null) { WhiteSpace = "normal" }, new(0, 0, 1));
 
         Assert.Equal("normal", cascade.ToInlineStyle().WhiteSpace);
     }
@@ -42,8 +42,8 @@ public sealed class SvgStyleSheetTests
     public void Important_stylesheet_declarations_beat_higher_specificity_normal_declarations()
     {
         SvgStyleCascade cascade = new();
-        cascade.Apply(new InlineStyle(null, "red", null, null, null, null, null, null), 100);
-        cascade.Apply(new InlineStyle(null, "blue", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, 1);
+        cascade.Apply(new InlineStyle(null, "red", null, null, null, null, null, null), new(1, 0, 0));
+        cascade.Apply(new InlineStyle(null, "blue", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, new(0, 0, 1));
 
         InlineStyle style = cascade.ToInlineStyle();
 
@@ -55,8 +55,8 @@ public sealed class SvgStyleSheetTests
     public void Later_important_stylesheet_declarations_win_source_order_ties()
     {
         SvgStyleCascade cascade = new();
-        cascade.Apply(new InlineStyle(null, "red", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, 1);
-        cascade.Apply(new InlineStyle(null, "blue", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, 1);
+        cascade.Apply(new InlineStyle(null, "red", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, new(0, 0, 1));
+        cascade.Apply(new InlineStyle(null, "blue", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, new(0, 0, 1));
 
         Assert.Equal("blue", cascade.ToInlineStyle().Fill);
     }
@@ -65,8 +65,8 @@ public sealed class SvgStyleSheetTests
     public void Normal_stylesheet_declarations_do_not_override_earlier_important_ones()
     {
         SvgStyleCascade cascade = new();
-        cascade.Apply(new InlineStyle(null, "red", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, 1);
-        cascade.Apply(new InlineStyle(null, "blue", null, null, null, null, null, null), 101);
+        cascade.Apply(new InlineStyle(null, "red", null, null, null, null, null, null) { Important = InlineImportantProperties.Fill }, new(0, 0, 1));
+        cascade.Apply(new InlineStyle(null, "blue", null, null, null, null, null, null), new(1, 0, 1));
 
         Assert.Equal("red", cascade.ToInlineStyle().Fill);
     }

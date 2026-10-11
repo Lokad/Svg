@@ -3,8 +3,6 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Accumulates specified stylesheet declarations by per-property !important priority, specificity and source order.</summary>
 internal struct SvgStyleCascade
 {
-    private const int ImportantBias = 1_000_000;
-
     private string? _color;
     private string? _fill;
     private string? _fillOpacity;
@@ -17,7 +15,7 @@ internal struct SvgStyleCascade
     private string? _paintOrder;
     private string? _markerEnd;
     private string? _filter;
-    private int _filterRank;
+    private CssDeclarationRank _filterRank;
     private string? _markerMid;
     private string? _markerStart;
     private string? _family;
@@ -35,47 +33,35 @@ internal struct SvgStyleCascade
     private string? _strokeOpacity;
     private string? _pathLength;
     private bool _hasVisibleOverflow;
-    private int _colorRank;
-    private int _fillRank;
-    private int _fillOpacityRank;
-    private int _strokeRank;
-    private int _displayRank;
-    private int _visibilityRank;
-    private int _opacityRank;
-    private int _fillRuleRank;
-    private int _clipRuleRank;
-    private int _paintOrderRank;
-    private int _markerEndRank;
-    private int _markerMidRank;
-    private int _markerStartRank;
-    private int _familyRank;
-    private int _weightRank;
-    private int _fontStyleRank;
-    private int _fontSizeRank;
-    private int _whiteSpaceRank;
-    private int _letterSpacingRank;
-    private int _linecapRank;
-    private int _linejoinRank;
-    private int _dasharrayRank;
-    private int _dashoffsetRank;
-    private int _widthRank;
-    private int _miterlimitRank;
-    private int _strokeOpacityRank;
-    private int _pathLengthRank;
+    private CssDeclarationRank _colorRank;
+    private CssDeclarationRank _fillRank;
+    private CssDeclarationRank _fillOpacityRank;
+    private CssDeclarationRank _strokeRank;
+    private CssDeclarationRank _displayRank;
+    private CssDeclarationRank _visibilityRank;
+    private CssDeclarationRank _opacityRank;
+    private CssDeclarationRank _fillRuleRank;
+    private CssDeclarationRank _clipRuleRank;
+    private CssDeclarationRank _paintOrderRank;
+    private CssDeclarationRank _markerEndRank;
+    private CssDeclarationRank _markerMidRank;
+    private CssDeclarationRank _markerStartRank;
+    private CssDeclarationRank _familyRank;
+    private CssDeclarationRank _weightRank;
+    private CssDeclarationRank _fontStyleRank;
+    private CssDeclarationRank _fontSizeRank;
+    private CssDeclarationRank _whiteSpaceRank;
+    private CssDeclarationRank _letterSpacingRank;
+    private CssDeclarationRank _linecapRank;
+    private CssDeclarationRank _linejoinRank;
+    private CssDeclarationRank _dasharrayRank;
+    private CssDeclarationRank _dashoffsetRank;
+    private CssDeclarationRank _widthRank;
+    private CssDeclarationRank _miterlimitRank;
+    private CssDeclarationRank _strokeOpacityRank;
+    private CssDeclarationRank _pathLengthRank;
 
-    public SvgStyleCascade()
-    {
-        _colorRank = _fillRank = _fillOpacityRank = _strokeRank = -1;
-        _displayRank = _visibilityRank = _opacityRank = _fillRuleRank = -1;
-        _markerStartRank = -1;
-        _markerMidRank = -1;
-        _markerEndRank = -1;
-        _clipRuleRank = _paintOrderRank = -1;
-        _familyRank = _weightRank = _fontStyleRank = _fontSizeRank = _whiteSpaceRank = _letterSpacingRank = -1;
-        _linecapRank = _linejoinRank = _dasharrayRank = _dashoffsetRank = _widthRank = _miterlimitRank = _strokeOpacityRank = _pathLengthRank = -1;
-    }
-
-    internal void Apply(InlineStyle style, int specificity)
+    internal void Apply(InlineStyle style, CssSpecificity specificity)
     {
         _hasVisibleOverflow |= style.HasVisibleOverflow;
         Apply(ref _filter, ref _filterRank, style.Filter, (style.Important & InlineImportantProperties.Filter) != 0, specificity);
@@ -111,43 +97,54 @@ internal struct SvgStyleCascade
     internal InlineStyle ToInlineStyle()
     {
         InlineImportantProperties important = InlineImportantProperties.None;
-        if (_filterRank >= ImportantBias) important |= InlineImportantProperties.Filter;
-        if (_markerEndRank >= ImportantBias) important |= InlineImportantProperties.MarkerEnd;
-        if (_markerMidRank >= ImportantBias) important |= InlineImportantProperties.MarkerMid;
-        if (_markerStartRank >= ImportantBias) important |= InlineImportantProperties.MarkerStart;
-        if (_colorRank >= ImportantBias) important |= InlineImportantProperties.Color;
-        if (_fillRank >= ImportantBias) important |= InlineImportantProperties.Fill;
-        if (_fillOpacityRank >= ImportantBias) important |= InlineImportantProperties.FillOpacity;
-        if (_strokeRank >= ImportantBias) important |= InlineImportantProperties.Stroke;
-        if (_displayRank >= ImportantBias) important |= InlineImportantProperties.Display;
-        if (_visibilityRank >= ImportantBias) important |= InlineImportantProperties.Visibility;
-        if (_opacityRank >= ImportantBias) important |= InlineImportantProperties.Opacity;
-        if (_fillRuleRank >= ImportantBias) important |= InlineImportantProperties.FillRule;
-        if (_paintOrderRank >= ImportantBias) important |= InlineImportantProperties.PaintOrder;
-        if (_clipRuleRank >= ImportantBias) important |= InlineImportantProperties.ClipRule;
-        if (_familyRank >= ImportantBias) important |= InlineImportantProperties.Family;
-        if (_weightRank >= ImportantBias) important |= InlineImportantProperties.Weight;
-        if (_fontStyleRank >= ImportantBias) important |= InlineImportantProperties.FontStyle;
-        if (_fontSizeRank >= ImportantBias) important |= InlineImportantProperties.FontSize;
-        if (_whiteSpaceRank >= ImportantBias) important |= InlineImportantProperties.WhiteSpace;
-        if (_letterSpacingRank >= ImportantBias) important |= InlineImportantProperties.LetterSpacing;
-        if (_linecapRank >= ImportantBias) important |= InlineImportantProperties.Linecap;
-        if (_linejoinRank >= ImportantBias) important |= InlineImportantProperties.Linejoin;
-        if (_dasharrayRank >= ImportantBias) important |= InlineImportantProperties.Dasharray;
-        if (_dashoffsetRank >= ImportantBias) important |= InlineImportantProperties.Dashoffset;
-        if (_widthRank >= ImportantBias) important |= InlineImportantProperties.Width;
-        if (_miterlimitRank >= ImportantBias) important |= InlineImportantProperties.Miterlimit;
-        if (_strokeOpacityRank >= ImportantBias) important |= InlineImportantProperties.StrokeOpacity;
-        if (_pathLengthRank >= ImportantBias) important |= InlineImportantProperties.PathLength;
+        if (_filterRank.Important) important |= InlineImportantProperties.Filter;
+        if (_markerEndRank.Important) important |= InlineImportantProperties.MarkerEnd;
+        if (_markerMidRank.Important) important |= InlineImportantProperties.MarkerMid;
+        if (_markerStartRank.Important) important |= InlineImportantProperties.MarkerStart;
+        if (_colorRank.Important) important |= InlineImportantProperties.Color;
+        if (_fillRank.Important) important |= InlineImportantProperties.Fill;
+        if (_fillOpacityRank.Important) important |= InlineImportantProperties.FillOpacity;
+        if (_strokeRank.Important) important |= InlineImportantProperties.Stroke;
+        if (_displayRank.Important) important |= InlineImportantProperties.Display;
+        if (_visibilityRank.Important) important |= InlineImportantProperties.Visibility;
+        if (_opacityRank.Important) important |= InlineImportantProperties.Opacity;
+        if (_fillRuleRank.Important) important |= InlineImportantProperties.FillRule;
+        if (_paintOrderRank.Important) important |= InlineImportantProperties.PaintOrder;
+        if (_clipRuleRank.Important) important |= InlineImportantProperties.ClipRule;
+        if (_familyRank.Important) important |= InlineImportantProperties.Family;
+        if (_weightRank.Important) important |= InlineImportantProperties.Weight;
+        if (_fontStyleRank.Important) important |= InlineImportantProperties.FontStyle;
+        if (_fontSizeRank.Important) important |= InlineImportantProperties.FontSize;
+        if (_whiteSpaceRank.Important) important |= InlineImportantProperties.WhiteSpace;
+        if (_letterSpacingRank.Important) important |= InlineImportantProperties.LetterSpacing;
+        if (_linecapRank.Important) important |= InlineImportantProperties.Linecap;
+        if (_linejoinRank.Important) important |= InlineImportantProperties.Linejoin;
+        if (_dasharrayRank.Important) important |= InlineImportantProperties.Dasharray;
+        if (_dashoffsetRank.Important) important |= InlineImportantProperties.Dashoffset;
+        if (_widthRank.Important) important |= InlineImportantProperties.Width;
+        if (_miterlimitRank.Important) important |= InlineImportantProperties.Miterlimit;
+        if (_strokeOpacityRank.Important) important |= InlineImportantProperties.StrokeOpacity;
+        if (_pathLengthRank.Important) important |= InlineImportantProperties.PathLength;
         return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, HasVisibleOverflow = _hasVisibleOverflow, Important = important };
     }
 
-    private static void Apply(ref string? value, ref int currentRank, string? candidate, bool candidateImportant, int specificity)
+    private static void Apply(ref string? value, ref CssDeclarationRank currentRank, string? candidate, bool candidateImportant, CssSpecificity specificity)
     {
         if (candidate is null) return;
-        int rank = specificity + (candidateImportant ? ImportantBias : 0);
-        if (rank < currentRank) return;
+        if (currentRank.Important != candidateImportant)
+        {
+            if (currentRank.Important) return;
+        }
+        else
+        {
+            int comparison = specificity.Ids.CompareTo(currentRank.Specificity.Ids);
+            if (comparison == 0) comparison = specificity.Classes.CompareTo(currentRank.Specificity.Classes);
+            if (comparison == 0) comparison = specificity.Elements.CompareTo(currentRank.Specificity.Elements);
+            if (comparison < 0) return;
+        }
         value = candidate;
-        currentRank = rank;
+        currentRank = new(candidateImportant, specificity);
     }
+
+    private readonly record struct CssDeclarationRank(bool Important, CssSpecificity Specificity);
 }

@@ -328,21 +328,29 @@ descendant/child selectors, explicit inheritance, translated labels and span
 paint against those references. Keep it outside completed-document denominators
 until every declared output matches. Other promised combinations and finite
 effects remain open.
-The first shared correction admits caller-resolved initial families and absolute
-CSS font sizes while retaining the narrower position syntax. The point-size
-control is exact through twelve raw/prepared outputs on both platforms; the
-omitted-family control is exact on Linux and retains a three-pixel Windows
-mismatch. The diagram remains incomplete. Focused checks pass **829 font/text
-tests and 13 bank/contract tests per platform**. Shared stylesheet collection now
-admits embedded root/definition rules in source order before discovery and
-lowering. Its late-rule control and the two retained opaque stroke-opacity CSS
-cases match their unchanged references on both platforms. Complete qualification
-passes **6,882 tests per platform** (4,750 core, 2,126 visual, six FontProbe), with
-zero warnings, errors, failures or skips. All **2,849 prior PNGs**, **2,755 prior
-exact results**, **30 supplied-font outputs** and corporate **27/27 documents /
-258/258 variants** are preserved. The diagram's ancestor selectors, explicit
-inheritance, translated labels and span paint remain the next shared dependencies;
-its whole-document completion remains **0/1**.
+Caller-resolved initial families and absolute CSS font sizes are admitted while
+position syntax retains its existing bounds. The point-size control is exact
+through twelve raw/prepared outputs on both platforms; the omitted-family
+control is exact on Linux and retains a three-pixel Windows mismatch. Shared
+stylesheet collection admits embedded root/definition rules in source order
+before discovery and lowering. Its late-rule control and the two retained
+opaque stroke-opacity CSS cases match their unchanged references.
+The shared selector matcher now supports case-sensitive SVG element selectors,
+compound ID/class/attribute forms, descendant and child chains over the actual
+source ancestors. Specificity compares ID, class/attribute and element counts
+independently; `!important` and source order retain their separate precedence.
+The descendant-cascade control is exact through twelve outputs on both platforms.
+Existing 1,024-character identifier support is preserved; complete selectors
+are bounded to 4,096 characters, with shared memory/work limits and cancellation.
+Root, nested-viewport and `defs` container styling remain explicit unsupported
+outcomes and required G7 exit work; supported leaves may use them as ancestors.
+Complete qualification passes **6,923 tests per platform** (4,791 core, 2,126
+visual, six FontProbe), with zero warnings, errors, failures or skips. All
+**2,849 prior PNGs**, **2,755 prior exact results**, **30 supplied-font outputs**
+and corporate **27/27 documents / 258/258 variants** are preserved. The diagram's
+explicit inheritance, translated labels and span paint remain the next shared
+dependencies, alongside the Windows omitted-family mask mismatch. Its
+whole-document completion remains **0/1**.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -487,7 +495,7 @@ CSS precedence survives replay. A borrowed source sidecar preserves child styles
 for previously flattened symbols. Aliases exclude the referenced ancestors.
 The [99-case style bank](tests/Research/use-stroke-style/manifest.json) is 96 exact
 and three rejected translucent shader-circle cases (G4). The preceding 81-case
-opacity bank is now 70 exact and 11 rejected, while the old inherited-symbol-stroke
+opacity bank is now 72 exact and nine rejected, while the old inherited-symbol-stroke
 case stays exact against unchanged bytes. Plain rectangle non-miter joins and
 existing shape-specific stroke gates remain explicit.
 
@@ -849,9 +857,9 @@ declare its output/options; existing exact examples stay regression controls.
 - **CSS matching:** existing ID/class/attribute and selector-list forms plus SVG
   element selectors, element+ID/class, descendant and child combinators on the
   supported SVG tree, including root, nested SVG, definitions and instance replay.
-  Apply static stylesheets in source order wherever admitted, including the two
-  retained late-stylesheet failures. Preserve specificity, `!important`, inline
-  precedence and inheritance for the presentation/font properties enumerated in
+  Apply static stylesheets in source order wherever admitted; the two retained
+  late-stylesheet controls are now exact through the shared prepass. Preserve
+  specificity, `!important`, inline precedence and inheritance for the presentation/font properties enumerated in
   G2–G6/G9; include SVG geometry width/height declarations already parsed today.
   Static `paint-order` covers `normal` and ordered lists of distinct `fill`,
   `stroke`, `markers` tokens, appending omitted operations in default order.

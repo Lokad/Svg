@@ -35,6 +35,7 @@ internal static class SvgDocumentTraversal
         root = root with { ContainingViewport = explicitViewport };
         using SvgDocumentState state = new(budget, workCounter, cancellationToken, styleRules, styleStrings, false);
         SvgRootStyleSheetParser.ThrowIfTargetsRoot(root.Id, root.Class, state.StyleRules, workCounter, cancellationToken);
+        state.CssAncestors.Observe(reader, 0);
         // The root element consumes one node, matching font-request discovery's uniform per-element count.
         state.NodeCount = 1;
         if (root.InheritedPresentation.PaintServerFill is string rootFill)
@@ -48,6 +49,7 @@ internal static class SvgDocumentTraversal
         while (reader.Read())
         {
             workCounter.Consume(cancellationToken);
+            state.CssAncestors.Observe(reader, 0);
             if (reader.NodeType == XmlNodeType.Element)
             {
                 SvgStructuralAdmission.ValidateElementStructure(reader, limits);
@@ -95,6 +97,7 @@ internal static class SvgDocumentTraversal
                 {
                     state.RenderedGroupContent?.AddUnsupported();
                     SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
+                    SvgStyleSheet.ThrowIfTargetsUnstyledContainer(reader, state.StyleRules, state.CssAncestors, workCounter, cancellationToken);
                     SvgViewportFrame? parentFrame = state.EffectiveFrame;
                     SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.UserViewportWidth, parentFrame?.ViewportHeight ?? root.UserViewportHeight);
                     SvgViewBox? nestedViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);

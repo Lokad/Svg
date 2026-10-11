@@ -55,6 +55,7 @@ internal static class SvgFontRequestDiscovery
         {
             XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, limits, budget, workCounter, cancellationToken);
             SvgRootStyleSheetParser.Collect(svg, settings, limits, styleRules, styleStrings, budget, workCounter, cancellationToken);
+            using SvgCssAncestorContext ancestors = new(styleRules, budget, workCounter, cancellationToken);
             using ReadOnlyMemoryStream stream = new(svg);
             using XmlReader reader = XmlReader.Create(stream, settings);
             bool hasRoot = false;
@@ -74,6 +75,7 @@ internal static class SvgFontRequestDiscovery
             while (reader.Read())
             {
                 workCounter.Consume(cancellationToken);
+                ancestors.Observe(reader, 0);
                 if (reader.NodeType == XmlNodeType.Element)
                 {
                     if (!hasRoot)
@@ -89,10 +91,9 @@ internal static class SvgFontRequestDiscovery
                     bool insideDirectText = activeCandidateLevel >= 0;
                     bool directChild = reader.Depth == rootDepth + 1;
                     bool hasGroupAncestor = groupDepth != 0;
-                    bool parentIsGroup = groupLevels.Count > 0 && groupLevels[groupLevels.Count - 1];
                     SvgTextWhitespaceMode inheritedWhitespaceMode = whitespaceLevels.Count == 0 ? SvgTextWhitespaceMode.Default : whitespaceLevels[whitespaceLevels.Count - 1];
                     SvgTextWhitespaceMode childWhitespaceMode = inheritedWhitespaceMode;
-                    InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
+                    InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
                     bool admittedTextSpan = false;
                     if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new(inheritedWhitespaceMode, 0), tspanStyleSheet, workCounter, cancellationToken, out SvgTextSpanStyle spanStyle))
                     {
@@ -158,6 +159,8 @@ internal static class SvgFontRequestDiscovery
                     }
                     else style = inheritedLevels[inheritedLevels.Count - 1];
                     bool collectedStyleElement = isSvgElement && reader.LocalName == "style" && (directChild || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1);
+                    if (!sterile && !insideDirectText && !rootElement && isSvgElement && reader.LocalName is ("svg" or "defs"))
+                        SvgStyleSheet.ThrowIfTargetsUnstyledContainer(reader, styleRules, ancestors, workCounter, cancellationToken);
                     if (collectedStyleElement)
                     {
                         SvgRootStyleSheetParser.Consume(reader, budget, workCounter, cancellationToken);
@@ -213,7 +216,7 @@ internal static class SvgFontRequestDiscovery
                         else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
                         else if (reader.LocalName == "marker") _ = SvgMarkerSyntax.Parse(reader, new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height), workCounter, cancellationToken);
                     }
-                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("g" or "a" or "switch" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, directChild, hasGroupAncestor, parentIsGroup, workCounter, cancellationToken) : default;
+                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("g" or "a" or "switch" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
                     if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("g" or "a" or "switch" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken, out specifiedWhiteSpace);
