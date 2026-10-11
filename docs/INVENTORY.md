@@ -3306,3 +3306,19 @@ Malta graduation inventory record with no new download. Full 92-document Release
 - Static, self-contained document: six circle/rectangle comparison groups, ten text nodes, four spans and a late embedded stylesheet; nominal 750×200. No nonlocal references or animation.
 - Initial outcome: UnsupportedFeature, “Text requires an explicit font-family in the initial supported subset.” Late stylesheet placement, descendant rules, inherited/important declarations and span styling are further G7/G9 dependencies.
 - Completed declared output: explicit 750×200, scale 1, transparent, with the caller catalogue mapping initial `serif` to the public static Noto Sans Regular face 0. All six raw and six independently prepared APIs match unchanged healthy frozen Windows/Linux references. The whole document is 1/1 complete; its nine original diagnostics and eight translation controls are 17/17 exact separately. It remains outside the frozen corporate cohort; broader finite G7/G9 exits stay open.
+
+### inv-131 — Group bounding-box circle clips
+
+- Source: [SVGclipPath03.svg](https://commons.wikimedia.org/wiki/File:SVGclipPath03.svg?oldid=963513867), by [Dr. Olaf Hoffmann](https://en.wikibooks.org/wiki/de:User:Doktorchen); retrieved 2026-10-11.
+- License: public domain (PD-self), declared by the pinned Commons revision and imageinfo metadata.
+- Original: `tests/Fixtures/candidates/inv-131.svg`, unchanged 2517-byte UTF-8 source; SHA-256 `ea04331d33a97c66c67e2f70e83effa3a491091702d873728d39a27392828db9`. Static, fontless and self-contained; declaration-only DTD remains untouched.
+- Declared output: explicit 512×301, scale 1, transparent. Converter uses original bytes; browser input inserts only root width/height. Three healthy cleaned captures on each platform are stable and byte identical; references froze before implementation.
+- Initial outcome on both platforms: UnsupportedFeature, “Only userSpaceOnUse oval clip content is implemented.” Queued under G5 for objectBoundingBox circle clips on rendered groups and referenced content. This document remains outside completed-document and corporate denominators.
+
+### inv-130 — Scaled rectangle strokes
+
+- Source: [SVGtransform scale01.svg](https://commons.wikimedia.org/wiki/File:SVGtransform_scale01.svg?oldid=963516636), by [Dr. Olaf Hoffmann](https://en.wikibooks.org/wiki/de:User:Doktorchen); retrieved 2026-10-11.
+- License: public domain (PD-self), declared by the pinned Commons revision and imageinfo metadata.
+- Original: `tests/Fixtures/candidates/inv-130.svg`, unchanged 1624-byte UTF-8 source; SHA-256 `8b7670e549e232a48b1796cdbd6a2babc9e018e14ed37b3afd9c60709414e361`. Static, fontless and self-contained; declaration-only DTD remains untouched.
+- Declared output: explicit 512×512, scale 1, transparent. Converter uses original bytes; browser input inserts only root width/height. Three healthy cleaned captures on each platform are stable and byte identical; references froze before implementation.
+- Initial outcome on both platforms: UnsupportedFeature, “Only rectangle strokes under translations, with opacity only when fill-less, are implemented.” Next whole-document deliverable under G3/G4; preserve authored non-uniform, reflected and composed maps. This document remains outside completed-document and corporate denominators.

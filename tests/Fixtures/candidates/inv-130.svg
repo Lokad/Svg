@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG Tiny 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-tiny.dtd">
+<svg version="1.1" baseProfile="tiny"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="-500 -500 1000 1000"
+     xml:lang="de"
+     fill="none"
+     stroke="#ccc" stroke-width="20">
+
+<title>transform: scale</title>
+<desc>
+Blaue gerandete Rechtecke werden mittels des Attributes transform vom Typ
+scale skaliert, so daß rot gerandete Rechtecke komplett verdeckt
+werden. Ein grau gerandetes Rechteck zeigt das nicht transformierte Rechteck.
+
+Gleiche Transformationstypen vertauschen immer miteinander, dies wird mit
+den dunkler gerandeten Rechtecken angedeutet.
+</desc>
+
+
+<rect x="-300" y="-100" width="500" height="300" />
+
+
+<g fill="red" stroke="none">
+<rect x="-100" y="-220" width="250" height="40" />
+<rect x="-100" y="380" width="250" height="40" />
+
+<rect x="-105" y="-200" width="10" height="600" />
+<rect x="145" y="-200" width="10" height="600" />
+</g>
+
+<!-- 150,-200 250,600  10,40 -->
+<rect x="-300" y="-100" width="500" height="300"
+      transform="scale(-0.5,2)"
+      stroke="blue" />
+
+<rect x="-300" y="-100" width="500" height="300"
+      transform="scale(0.5,-0.1) scale(-1,-20)"
+      stroke-width="14" stroke="#00a" />
+
+<rect x="-300" y="-100" width="500" height="300"
+      transform="scale(-1,-20) scale(0.5,-0.1)"
+      stroke-width="8" stroke="#007" />
+
+<rect x="-300" y="-100" width="500" height="300"
+      transform="scale(2,0.5) scale(-0.25,4)"
+      stroke-width="2" stroke="#004" />
+</svg>
+
+

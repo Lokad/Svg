@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 1700 1000"
+     xml:lang="de">
+
+<title>SVG-Beispiel zu clipPath</title>
+<desc>
+Verschiedene Variationen, clipPath mit
+clipPathUnits objectBoundingBox bei Gruppierungselementen.
+
+Sofern der Ausschnitt auf ein Gruppierungselement wie g
+angewendet wird, wird aus den Kindelementen eine objectBoundingBox
+berechnet, so daß diese alle Kindelemente umschließt.
+Offenbar ist dies auch möglich, wenn die Kindelemente selbst gar
+keine eigene objectBoundingBox haben oder die Gruppe per use
+referenziert wird.
+
+Das komplette Symbol ist zudem blaß hinterlegt.
+Der korrekte Ausschnitt ist rot gerandet dargestellt
+und rechts daneben als schwarze Silhouette.
+</desc>
+
+<defs>
+
+
+<clipPath id="clip0" clipPathUnits="objectBoundingBox">
+<circle cx=".5" cy=".5" r=".4" />
+</clipPath>
+
+<g id="c">
+<circle cx="250" cy="250" r="160" fill="none" stroke="red" />
+<circle cx="650" cy="250" r="160" stroke="red" />
+</g>
+
+</defs>
+
+<rect x="0" y="0" width="1700" height="1000" fill="#ffd" stroke="black" />
+
+
+
+<g>
+<g opacity="0.2">
+<rect x="50" y="50" width="300" height="300" fill="#00a" />
+<rect x="150" y="150" width="300" height="300" fill="#00a" />
+</g>
+<g clip-path="url(#clip0)">
+<rect x="50" y="50" width="300" height="300" fill="#00a" />
+<rect x="150" y="150" width="300" height="300" fill="#00a" />
+</g>
+
+<use xlink:href="#c" />
+</g>
+
+<g transform="translate(850,0)">
+<g opacity="0.2">
+<rect x="50" y="50" width="100" height="100" fill="#00a" />
+<rect x="350" y="350" width="100" height="100" fill="#00a" />
+</g>
+<g clip-path="url(#clip0)">
+<rect x="50" y="50" width="100" height="100" fill="#00a" />
+<rect x="350" y="350" width="100" height="100" fill="#00a" />
+</g>
+
+<use xlink:href="#c" />
+</g>
+
+
+<g transform="translate(0,500)">
+<g opacity="0.2">
+<g stroke-width="10" id="g">
+<line x1="250" y1="50" x2="250" y2="450" stroke="#00a" />
+<line x1="50" y1="250" x2="450" y2="250" stroke="#00a" />
+</g>
+</g>
+<g clip-path="url(#clip0)" stroke-width="10">
+<line x1="250" y1="50" x2="250" y2="450" stroke="#00a" />
+<line x1="50" y1="250" x2="450" y2="250" stroke="#00a" />
+</g>
+
+<use xlink:href="#c" />
+</g>
+
+<g transform="translate(850,500)">
+<use xlink:href="#g" opacity="0.2" />
+<use xlink:href="#g" clip-path="url(#clip0)" />
+<use xlink:href="#c" />
+</g>
+
+
+</svg>
+

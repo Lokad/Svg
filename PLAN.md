@@ -5,8 +5,9 @@ Updated 2026-10-11. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**33/33 listed development documents and both original marker/drop-shadow
-acceptance fixtures (2/2) are complete**, through all six outputs on both platforms. These are
+**33/35 retained development documents are complete; two newly sourced outputs
+remain pending. Both original marker/drop-shadow acceptance fixtures (2/2) are
+complete.** Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
 failure-selected development corpus establishes no representative success rate.
 
@@ -258,7 +259,7 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **7,056 tests/platform**: 4,904 core, 2,146 visual, six FontProbe. Latest complete suite wall time is **4m35s Windows / 6m49s Linux**, excluding builds and additional bank probes. Timings vary between runs. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **7,056 tests/platform in the latest complete qualification**: 4,904 core, 2,146 visual, six FontProbe. Latest complete suite wall time is **4m35s Windows / 6m49s Linux**, excluding builds and additional bank probes. Timings vary between runs. Test counts are not document counts. |
 | Complete retained banks | Complete qualification checks all **2,908 prior cases** and preserves **2,855 prior PNGs** and **2,755 established exact comparisons**, plus all **30 exact supplied-font outputs on each platform** from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; the live-text, straight-path and Mono banks each have seven exact controls on both platforms. The selected curved-label document is **1/1 across both platforms**; its five separate controls are **5/5 exact on both** through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
@@ -306,7 +307,7 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected development queue is **33/33 complete**, including both baseball,
+The selected development queue is **33/35 complete**, including both baseball,
 both arrow exports, both path-marker documents and the two public-domain filter
 exports. The original marker-instance and drop-shadow acceptance fixtures are
 also complete, counted separately (**2/2**). Both original supplied-font acceptance
@@ -334,9 +335,10 @@ paint now match those unchanged references. Document completion is **1/1**;
 the original nine diagnostics and eight translation controls are separately
 **17/17 exact on both platforms**. The completion table had 32 development
 documents before this addition; its former 30/30 headline was stale. The listed
-development ledger now counts **33/33**, without changing the corporate cohort
-or original acceptance ledgers. Other promised combinations and finite effects
-remain open.
+checkpoint completed all **33 then-listed development documents**, without
+changing the corporate cohort or original acceptance ledgers. Two later source
+additions below make the current queue **33/35**. Other promised combinations
+and finite effects remain open.
 Caller-resolved initial families and absolute CSS font sizes are admitted while
 position syntax retains its existing bounds. The point-size control is exact
 through twelve raw/prepared outputs on both platforms; the omitted-family
@@ -396,8 +398,20 @@ fresh processes, protect quarter-strike continuations and neighboring shapes.
 The existing resource probe passes the whole diagram and translated-label
 control on success and tight memory denial, releasing owned storage on both exits.
 Scaled/general rectangle strokes, general text maps and per-span transforms
-remain visible in their original group exits. Select the next complete document
-from a small public-domain/CC0 batch exposing one of the remaining finite gaps.
+remain visible in their original group exits. The next complete document is
+Dr. Olaf Hoffmann's public-domain scaled-rectangle export **`inv-130`**, declared
+at **512×512**, scale 1, transparent. Its non-uniform/reflected and composed maps
+reject the current rectangle-stroke gate (G3/G4). Extend shared source stroke
+construction and composed placement, preserving native contour and paint
+semantics; diagnose with focused controls, then finish this whole document.
+The separately retained **`inv-131`** group-clipping export at **512×301** remains
+queued for G5 objectBoundingBox oval clips and group bounds. Both untouched
+sources have healthy, cleaned, stable three-process browser captures per
+platform; Windows/Linux references are byte identical. Neither counts as a
+completed document: this newly retained batch is **0/2 complete**, while the
+previous 33 completions remain protected. All **nine inventory gap tests**,
+including both new cases, pass on Windows/Linux with zero warnings, failures
+or skips. Corporate membership and references remain frozen.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -1154,8 +1168,10 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 ### Development sourcing and release work
 
-The original fidelity repairs and the selected **33/33 listed development-document
-queue** are complete. The plan now covers unsupported SVG within the original
+The original fidelity repairs and the **33 previously completed development
+documents** remain protected. The two new `inv-130`/`inv-131` outputs are pending
+(**0/2**), making the selected development queue **33/35 complete**.
+The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh
 G2–G9 from demonstrated gaps; an admitted document can still expose wrong pixels.

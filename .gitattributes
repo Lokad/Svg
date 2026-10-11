@@ -34,3 +34,9 @@ tests/Fixtures/candidates/inv-128.svg -text whitespace=cr-at-eol
 tests/References/inventory/gap-inputs/inv-128.svg -text whitespace=cr-at-eol
 # Preserve authored trailing whitespace in the next static CSS candidate.
 tests/Fixtures/candidates/inv-129.svg whitespace=-blank-at-eol
+
+# Preserve untouched stroke/clip exports and their root-only browser frames.
+tests/Fixtures/candidates/inv-131.svg -text whitespace=-blank-at-eol,-blank-at-eof
+tests/References/inventory/capture-inputs/inv-131-512x301.svg -text whitespace=-blank-at-eol,-blank-at-eof
+tests/Fixtures/candidates/inv-130.svg -text whitespace=-blank-at-eol,-blank-at-eof
+tests/References/inventory/capture-inputs/inv-130-512x512.svg -text whitespace=-blank-at-eol,-blank-at-eof
