@@ -12017,3 +12017,37 @@ curved-tip and mapped-mask controls. The retained static CSS diagram improves
 seven Windows pixels to zero, and its omitted-family control improves three to
 zero, without losing a formerly matching pixel. All twelve document outputs
 match unchanged references on both platforms; Linux pixels remain unchanged.
+
+
+### Composed axis rectangle strokes (2026-10-11)
+
+The retained public-domain `inv-130` is complete at its declared 512×512
+transparent output through all twelve APIs on both platforms. Its original SVG
+and frozen browser reference are unchanged. Six separately frozen CC0 controls
+are also exact, covering reflection, composed non-uniform scales, thin strokes,
+element opacity, linear stroke paint and linear fill with a solid stroke.
+
+Generated path outlines admitted the whole document but differed at native frame
+edges. Source replay now retains the rectangle draw operation beside its
+centerline. The existing rectangle-frame coverage maps independent horizontal
+and vertical widths through the composed scene/output map and emits native paint
+operations through the common solid/linear/radial/pattern path. Thin rectangle
+frames retain their native behavior alongside the ordinary path hairline route.
+Rectangle fill repainting preserves the separately lowered stroke and source owner.
+Bounded source preparation and frame rows charge work and observe cancellation;
+frame coverage owns no additional heap storage. General non-axis admission and
+the remaining G3/G4 combinations stay open.
+
+Complete qualification passes 7,064 tests/platform (4,904 core / 2,154 visual /
+six FontProbe), with zero warnings/errors/failures/skips. All 2,908 prior ordinary
+outcomes, 2,855 prior PNGs, 2,755 historical exact comparisons, 30 exact supplied-
+font outputs/platform, existing focused/static CSS results and corporate
+27/27 documents / 258/258 variants are preserved. The existing small resource
+helper checks the whole document and thin-stroke control on normal conversion
+and tight memory denial; both release owned storage. Approximate memory
+requirements remain unchanged. Package/API contracts did not change.
+
+The selected development ledger is 34/35 complete; the new source batch is 1/2.
+Next is `inv-131`, requiring objectBoundingBox oval clips and group/reference
+geometry bounds. Finite G2–G9 and S17 exits remain open. The private receipt is
+`artifacts/scaled-rectangle-strokes-20261011/final-qualification.json`.

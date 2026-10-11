@@ -4,8 +4,11 @@ namespace Lokad.Svg.Parsing;
 
 internal enum SvgAuthoredPathVerb { Move, Line, Quadratic, Cubic, Arc, Conic, End, Close }
 
-/// <summary>Retains stroke width, its independent scene map and admitted cap semantics beside the centerline.</summary>
-internal readonly record struct SvgAuthoredStrokeStyle(double Width, SvgAffineTransform WidthMap, SvgStrokeCap Cap);
+/// <summary>Identifies the native draw operation whose coverage must survive source replay.</summary>
+internal enum SvgAuthoredStrokeShape { Path, Rectangle }
+
+/// <summary>Retains stroke width, its independent scene map, cap semantics and source operation beside the centerline.</summary>
+internal readonly record struct SvgAuthoredStrokeStyle(double Width, SvgAffineTransform WidthMap, SvgStrokeCap Cap, SvgAuthoredStrokeShape Shape);
 
 [Flags]
 internal enum SvgAuthoredArcFlags : byte { None = 0, Large = 1, Sweep = 2 }

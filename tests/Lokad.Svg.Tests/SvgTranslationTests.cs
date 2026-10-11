@@ -86,10 +86,10 @@ public sealed class SvgRectangleTranslationTests
     }
 
     [Theory]
-    [InlineData("scale(2)")]
+    [InlineData("skewY(10)")]
     [InlineData("rotate(5)")]
     [InlineData("skewX(10)")]
-    public void Translation_admission_keeps_other_rectangle_stroke_maps_explicit(string transform)
+    public void Rectangle_strokes_keep_non_axis_aligned_maps_explicit(string transform)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><rect x='4' y='3' width='24' height='22' stroke='blue' stroke-width='2' transform='" + transform + "'/></svg>");
         SvgException failure = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));

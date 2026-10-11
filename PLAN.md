@@ -5,8 +5,8 @@ Updated 2026-10-11. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**33/35 retained development documents are complete; two newly sourced outputs
-remain pending. Both original marker/drop-shadow acceptance fixtures (2/2) are
+**34/35 retained development documents are complete; one newly sourced output
+remains pending. Both original marker/drop-shadow acceptance fixtures (2/2) are
 complete.** Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
 failure-selected development corpus establishes no representative success rate.
@@ -307,7 +307,7 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected development queue is **33/35 complete**, including both baseball,
+The selected development queue is **34/35 complete**, including both baseball,
 both arrow exports, both path-marker documents and the two public-domain filter
 exports. The original marker-instance and drop-shadow acceptance fixtures are
 also complete, counted separately (**2/2**). Both original supplied-font acceptance
@@ -337,8 +337,8 @@ the original nine diagnostics and eight translation controls are separately
 documents before this addition; its former 30/30 headline was stale. The listed
 checkpoint completed all **33 then-listed development documents**, without
 changing the corporate cohort or original acceptance ledgers. Two later source
-additions below make the current queue **33/35**. Other promised combinations
-and finite effects remain open.
+additions below make the current queue **34/35** after completing the scaled-stroke
+export. Other promised combinations and finite effects remain open.
 Caller-resolved initial families and absolute CSS font sizes are admitted while
 position syntax retains its existing bounds. The point-size control is exact
 through twelve raw/prepared outputs on both platforms; the omitted-family
@@ -382,8 +382,8 @@ Existing 1,024-character identifier support is preserved; complete selectors
 are bounded to 4,096 characters, with shared memory/work limits and cancellation.
 Root, nested-viewport and `defs` container styling remain explicit unsupported
 outcomes and required G7 exit work; supported leaves may use them as ancestors.
-Complete qualification passes **7,056 tests per platform** (4,904 core,
-2,146 visual, six FontProbe), with zero warnings, errors, failures or skips.
+The preceding CSS/translation correction passed **7,056 tests per platform**
+(4,904 core, 2,146 visual, six FontProbe), with zero warnings, errors, failures or skips.
 All **2,855 prior bank PNGs**, **2,755 historical exact comparisons**, four
 subsequently graduated rectangle controls, **30 exact font outputs per platform**
 and corporate **27/27 documents / 258/258 variants** are preserved.
@@ -397,25 +397,33 @@ Linux remains exact. Six complete native glyph textures, stable through three
 fresh processes, protect quarter-strike continuations and neighboring shapes.
 The existing resource probe passes the whole diagram and translated-label
 control on success and tight memory denial, releasing owned storage on both exits.
-Scaled/general rectangle strokes, general text maps and per-span transforms
-remain visible in their original group exits. The next complete document is
-Dr. Olaf Hoffmann's public-domain scaled-rectangle export **`inv-130`**, declared
-at **512×512**, scale 1, transparent. Its non-uniform/reflected and composed maps
-reject the current rectangle-stroke gate (G3/G4). Extend shared source stroke
-construction and composed placement, preserving native contour and paint
-semantics, then finish this whole document. Six CC0 source-coordinate controls
-are frozen separately at 96×72: reflection, composed scaling, thin strokes,
-element opacity, linear stroke paint and linear fill with a solid stroke. Three
-healthy cleaned captures per platform agree byte-for-byte. Before implementation
-all six retain the measured rectangle-stroke gate; they do not count as documents.
-The separately retained **`inv-131`** group-clipping export at **512×301** remains
-queued for G5 objectBoundingBox oval clips and group bounds. Both untouched
-sources have healthy, cleaned, stable three-process browser captures per
-platform; Windows/Linux references are byte identical. Neither counts as a
-completed document: this newly retained batch is **0/2 complete**, while the
-previous 33 completions remain protected. All **nine inventory gap tests**,
-including both new cases, pass on Windows/Linux with zero warnings, failures
-or skips. Corporate membership and references remain frozen.
+The complete public-domain scaled-rectangle export **`inv-130`** now matches its
+unchanged **512×512**, scale 1, transparent reference through all twelve raw and
+prepared APIs on Windows/Linux. Native rectangle frames retain independent
+horizontal/vertical stroke widths under reflected, non-uniform and composed
+axis maps. The shared paint path also admits the control's linear fill with a
+solid stroke. All **six separate CC0 controls** at 96×72 are exact on both
+platforms: reflection, composed scaling, thin strokes, element opacity, linear
+stroke paint and linear fill with solid stroke. Their references froze before
+implementation from three healthy, cleaned captures per platform.
+Complete qualification passes **7,064 tests per platform** (4,904 core / 2,154
+visual / six FontProbe), preserving all **2,908 prior outcomes**, **2,855 prior
+bank PNGs**, **2,755 historical exact comparisons**, **30 exact font outputs per
+platform** and corporate **27/27 documents / 258/258 variants**. Existing focused
+and static CSS outputs remain unchanged. The reused small resource check covers
+the complete document and a thin-stroke control; success and tight memory denial
+release owned storage. No package/API contract changed. The private receipt is
+`artifacts/scaled-rectangle-strokes-20261011/final-qualification.json`.
+General non-axis rectangle strokes, general text maps and per-span transforms
+remain in their original group exits; G3/G4 are not complete.
+The next whole deliverable is the separately retained **`inv-131`** group-clipping
+export at **512×301**. Extend shared objectBoundingBox oval clip content and
+group/reference geometry bounds, then finish all four panels against its unchanged
+reference. Both untouched sources have healthy, cleaned, stable three-process
+browser captures per platform; Windows/Linux references are byte identical.
+The new source batch is **1/2 complete** and the development queue **34/35**;
+the previous 33 completions remain protected. Corporate membership and references
+remain frozen.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -665,8 +673,8 @@ See [the completed document](docs/RASTERIZATION_DESIGN.md#illustrator-heart-and-
 `original-number-general-map` is exact on its three frozen backgrounds, and the
 retained tiger is complete at its explicitly qualified viewport. Nonsingular
 general matrix fills and mapped source-space arcs reuse the shared lowerers;
-scalar stroke widths still require perpendicular equal-length columns. Singular
-matrix syntax keeps an explicit unsupported outcome. `original-curve-root-quad-none` rejects non-uniform
+general scalar stroke widths still require perpendicular equal-length columns.
+Singular matrix syntax keeps an explicit unsupported outcome. `original-curve-root-quad-none` rejects non-uniform
 viewBox/output curve mapping. Reflected pattern groups and magnified use add
 shape/paint/instance gates. Complete these through one composed affine map,
 preserving authored curves, stroke semantics and paint coordinates. The finite
@@ -699,7 +707,7 @@ ordered frame. Their preceding 85/81/85-pixel residuals exposed different seam
 and corner coverage. Twelve new controls become exact too, covering fractional
 placement, scaled thin strokes, collapsed interiors and solid strokes over shader
 fills on three backgrounds. Three clip-crossing controls retain their explicit
-admission gate. The inline transformed rectangle twin rejects separately.
+admission gate. The inline translated rectangle twin is also exact.
 See [the repair](docs/RASTERIZATION_DESIGN.md#ordered-rectangle-stroke-frames-2026-10-08).
 
 The complete Fibonacci spiral now admits its fractional widths through shared
@@ -1173,8 +1181,8 @@ and leave it open; a supported document does not authorize shrinking group scope
 ### Development sourcing and release work
 
 The original fidelity repairs and the **33 previously completed development
-documents** remain protected. The two new `inv-130`/`inv-131` outputs are pending
-(**0/2**), making the selected development queue **33/35 complete**.
+documents** remain protected. The new `inv-130` output is complete and `inv-131`
+remains pending (**1/2**), making the selected development queue **34/35 complete**.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh

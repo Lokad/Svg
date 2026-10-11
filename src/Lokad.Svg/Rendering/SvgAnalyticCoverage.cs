@@ -177,6 +177,7 @@ internal ref partial struct SvgAnalyticCoverage
     private readonly bool _convex;
     private readonly bool _rawBox;
     private readonly SvgFatRectangleCoverage? _fatRectangle;
+    private readonly SvgRectangleFrameCoverage? _rectangleFrame;
     private int _rectangleRow;
     private readonly int _leftClip;
     private readonly int _rightClip;
@@ -259,6 +260,21 @@ internal ref partial struct SvgAnalyticCoverage
         _directSpans = [];
     }
 
+    private SvgAnalyticCoverage(SvgRectangleFrameCoverage rectangle, int xStart, int width)
+    {
+        this = default;
+        _rectangleFrame = rectangle;
+        _xStart = xStart;
+        _width = width;
+        _edges = [];
+        _row = [];
+        _temp = [];
+        _alphas = [];
+        _directLinks = [];
+        _directOperations = [];
+        _directSpans = [];
+    }
+
     public void Dispose()
     {
         _directOperationReservation?.Dispose();
@@ -272,6 +288,15 @@ internal ref partial struct SvgAnalyticCoverage
     internal void PaintPixel(int x, scoped Span<byte> destination, SvgAnalyticPaint paint, SvgAnalyticClipCoverage clipCoverage)
     {
         if (clipCoverage.IsEmpty) return;
+        if (_rectangleFrame is {} frame)
+        {
+            _rowCancellationToken.ThrowIfCancellationRequested();
+            Span<byte> operations = stackalloc byte[4];
+            int count = frame.GetOperations(x + _xStart, _rectangleRow, operations);
+            for (int operation = 0; operation < count; operation++)
+                paint.Blend(destination, clipCoverage.Apply(operations[operation]), SvgAnalyticPaintKind.Direct);
+            return;
+        }
         if (_fatRectangle is {} rectangle)
         {
             _rowCancellationToken.ThrowIfCancellationRequested();
@@ -454,7 +479,7 @@ internal ref partial struct SvgAnalyticCoverage
     }
 
     /// <summary>Gets pending mask/run coverage, indexed from the preparation x start. Direct paint events must be replayed separately through PaintPixel.</summary>
-    internal ReadOnlySpan<byte> Row => _fatRectangle is not null ? ReadOnlySpan<byte>.Empty : new(_row, 1, _width);
+    internal ReadOnlySpan<byte> Row => _fatRectangle is not null || _rectangleFrame is not null ? ReadOnlySpan<byte>.Empty : new(_row, 1, _width);
     /// <summary>Gets the retained edge count for resource and traversal diagnostics.</summary>
     internal int EdgeCount => _edges.Length;
     private static int FixedMul(int left, int right) => (int)(((long)left * right) >> 16);
@@ -1413,6 +1438,11 @@ internal ref partial struct SvgAnalyticCoverage
         }
         if (ends.Length < 1 || points.Length < 3 || xEnd <= xStart || !preparation.PointValuesEligible || (constructionClip is null && !preparation.PointsFitCanvas)) return default;
         cancellationToken.ThrowIfCancellationRequested();
+        if (preparation.RectangleFrame is {} frame)
+        {
+            eligible = true;
+            return new(frame, xStart, xEnd - xStart);
+        }
         if (ends.Length == 1 && mapping is (SvgPolygonMapping.NativeFillEdges or SvgPolygonMapping.NativeStrokeEdges) && !preparation.UsesRunBlitter && paintClip == SvgAnalyticPaintClip.Binary)
         {
             ReadOnlySpan<SvgAuthoredPathCommand> commands = preparation.Source is {} source ? source.Commands : ReadOnlySpan<SvgAuthoredPathCommand>.Empty;
@@ -2370,6 +2400,13 @@ internal ref partial struct SvgAnalyticCoverage
     {
         cancellationToken.ThrowIfCancellationRequested();
         _rowCancellationToken = cancellationToken;
+        if (_rectangleFrame is not null)
+        {
+            rowWork = 1 + 3L * _width;
+            if (rowWork > maximumRowWork) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame row exceeds the remaining work limit.");
+            _rectangleRow = y;
+            return;
+        }
         if (_fatRectangle is not null)
         {
             if (maximumRowWork < 1) throw new SvgException(SvgErrorCode.LimitExceeded, "Filled rectangle row exceeds the remaining work limit.");

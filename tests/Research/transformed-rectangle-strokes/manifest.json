@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Six frozen source-coordinate rectangle-stroke controls advancing complete inv-130; separate from whole-document completion. All six retain the measured admission gate before implementation.",
+  "purpose": "Six frozen source-coordinate rectangle-stroke controls advancing complete inv-130; all twelve outputs are exact on Windows/Linux through shared native frame playback. Controls remain separate from whole-document completion.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -34,9 +34,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+      "role": "fidelity"
     },
     {
       "id": "composed-axis",
@@ -55,9 +53,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+      "role": "fidelity"
     },
     {
       "id": "filled-alpha",
@@ -76,9 +72,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+      "role": "fidelity"
     },
     {
       "id": "scaled-thin-frame",
@@ -97,9 +91,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+      "role": "fidelity"
     },
     {
       "id": "linear-stroke",
@@ -118,9 +110,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+      "role": "fidelity"
     },
     {
       "id": "linear-fill-solid-stroke",
@@ -139,9 +129,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 4e109e67 before renderer edits or comparison: source-coordinate rectangle strokes under non-uniform/reflected/composed maps; separate from whole-document completion.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented."
+      "role": "fidelity"
     }
   ]
 }

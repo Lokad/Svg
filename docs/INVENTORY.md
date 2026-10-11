@@ -3313,7 +3313,7 @@ Malta graduation inventory record with no new download. Full 92-document Release
 - License: public domain (PD-self), declared by the pinned Commons revision and imageinfo metadata.
 - Original: `tests/Fixtures/candidates/inv-131.svg`, unchanged 2517-byte UTF-8 source; SHA-256 `ea04331d33a97c66c67e2f70e83effa3a491091702d873728d39a27392828db9`. Static, fontless and self-contained; declaration-only DTD remains untouched.
 - Declared output: explicit 512×301, scale 1, transparent. Converter uses original bytes; browser input inserts only root width/height. Three healthy cleaned captures on each platform are stable and byte identical; references froze before implementation.
-- Initial outcome on both platforms: UnsupportedFeature, “Only userSpaceOnUse oval clip content is implemented.” Queued under G5 for objectBoundingBox circle clips on rendered groups and referenced content. This document remains outside completed-document and corporate denominators.
+- Initial outcome on both platforms: UnsupportedFeature, “Only userSpaceOnUse oval clip content is implemented.” Queued under G5 for objectBoundingBox circle clips on rendered groups and referenced content. This document remains pending in the declared development ledger; the corporate cohort is unchanged.
 
 ### inv-130 — Scaled rectangle strokes
 
@@ -3321,4 +3321,4 @@ Malta graduation inventory record with no new download. Full 92-document Release
 - License: public domain (PD-self), declared by the pinned Commons revision and imageinfo metadata.
 - Original: `tests/Fixtures/candidates/inv-130.svg`, unchanged 1624-byte UTF-8 source; SHA-256 `8b7670e549e232a48b1796cdbd6a2babc9e018e14ed37b3afd9c60709414e361`. Static, fontless and self-contained; declaration-only DTD remains untouched.
 - Declared output: explicit 512×512, scale 1, transparent. Converter uses original bytes; browser input inserts only root width/height. Three healthy cleaned captures on each platform are stable and byte identical; references froze before implementation.
-- Initial outcome on both platforms: UnsupportedFeature, “Only rectangle strokes under translations, with opacity only when fill-less, are implemented.” Next whole-document deliverable under G3/G4; preserve authored non-uniform, reflected and composed maps. This document remains outside completed-document and corporate denominators.
+- Complete on both platforms: all twelve raw/prepared outputs match the unchanged 512×512 transparent reference. Shared native rectangle-frame replay preserves independent axis stroke widths under authored non-uniform, reflected and composed maps. Six separate CC0 controls are exact; complete qualification passes 7,064 tests per platform with prior outcomes and PNGs unchanged. Development ledger: 34/35 complete (new source batch 1/2); corporate 27/27 documents / 258/258 variants remain unchanged. General G3/G4 combinations remain open.

@@ -401,7 +401,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         }
         return LowerNativeStrokeCommands(commands, deviceMap, deviceWidth, stroke.Width, miterLimit,
             SvgStrokeCap.Butt, SvgStrokeJoin.Miter, dashes, dashOffset, pathLength, nonScaling, stroke.Color,
-            element.Presentation.IsPainted, element.OutputMagnification, frame, budget);
+            element.Presentation.IsPainted, element.OutputMagnification, frame, budget, SvgAuthoredStrokeShape.Path);
 
     }
 
@@ -499,14 +499,19 @@ internal ref struct SvgOrthogonalGeometryLowering
         SvgStrokeStyleSyntax.SvgAdmittedStroke stroke, SvgViewportFrame? frame, RenderBudget budget)
     {
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
-        double deviceWidth = StrokeDeviceWidth(stroke.Width, element.Transform, frame, stroke.NonScalingStroke);
+        // Scaling rectangles with zero corner radii construct their outline in source coordinates;
+        // its retained map carries independent axis scales through final playback.
+        double deviceWidth = radiusX == 0 && radiusY == 0 && !stroke.NonScalingStroke
+            ? stroke.Width : StrokeDeviceWidth(stroke.Width, element.Transform, frame, stroke.NonScalingStroke);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
         SvgRoundedRectPath.Append(commands, x, y, width, height, radiusX, radiusY);
         int count = commands.Count;
         return LowerNativeStrokeCommands(commands, deviceMap, deviceWidth, stroke.Width, stroke.MiterLimit,
             stroke.Cap, stroke.Join, stroke.DashPattern, stroke.DashOffset, stroke.PathLength,
             stroke.NonScalingStroke, stroke.Color, element.Presentation.IsPainted, element.OutputMagnification,
-            frame, budget) with { ElementCount = count };
+            frame, budget, radiusX == 0 && radiusY == 0 && stroke.Join == SvgStrokeJoin.Miter
+                && stroke.MiterLimit >= 1.4142135623730951 && stroke.DashPattern is null
+                ? SvgAuthoredStrokeShape.Rectangle : SvgAuthoredStrokeShape.Path) with { ElementCount = count };
     }
 
     /// <summary>Retains mapped path bounds and authored fill commands with the caller mapping discipline.</summary>
@@ -848,7 +853,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             if (closed) authored.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
             authored.Add(new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
             return LowerNativeStrokeCommands(authored, deviceMap, deviceWidth, width, miterLimit, cap, join, dashes,
-                dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget) with { ElementCount = points.Count + 1 };
+                dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget, SvgAuthoredStrokeShape.Path) with { ElementCount = points.Count + 1 };
         }
         int pointCapacity = points.Count + 1 > MaximumFlattenedContourPoints ? MaximumFlattenedContourPoints : points.Count + 1;
         long scratchBytes;
@@ -888,7 +893,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         if (closed) authored.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
         authored.Add(new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
         return LowerNativeStrokeCommands(authored, deviceMap, deviceWidth, width, miterLimit, cap, join, dashes,
-            dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget) with { ElementCount = points.Count + 1 };
+            dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget, SvgAuthoredStrokeShape.Path) with { ElementCount = points.Count + 1 };
     }
 
     /// <summary>Scales one dash pattern into device units.</summary>
@@ -1340,7 +1345,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             return LowerStrokeContours(builder, closedEnds.AsSpan(), hasCurves, element.Transform, width, miterLimit, cap, join, dashes, dashOffset, pathLength, nonScaling, color, hasFill, frame, budget) with { ElementCount = commandCount + 1 };
         if (builder.PointCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke point count exceeds the configured path-command limit.");
         return LowerNativeStrokeCommands(authored, deviceMap, deviceWidth, width, miterLimit, cap, join, dashes,
-            dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget) with { ElementCount = commandCount + 1 };
+            dashOffset, pathLength, nonScaling, color, hasFill, element.OutputMagnification, frame, budget, SvgAuthoredStrokeShape.Path) with { ElementCount = commandCount + 1 };
     }
 
     /// <summary>Filters and strokes caller-owned source verbs, transferring their array only to a successfully retained centerline.</summary>
@@ -1350,7 +1355,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerNativeStrokeCommands(BudgetedParserList<SvgAuthoredPathCommand> authored,
         SvgAffineTransform deviceMap, double deviceWidth, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join,
         double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgColor color, bool hasFill,
-        double outputMagnification, SvgViewportFrame? frame, RenderBudget budget)
+        double outputMagnification, SvgViewportFrame? frame, RenderBudget budget, SvgAuthoredStrokeShape shape)
     {
         OwnedParserArray<SvgAuthoredPathCommand> commands = new([], null);
         try
@@ -1371,7 +1376,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 if (stroked.Geometries.Length == 1)
                 {
-                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap), stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Missing native stroke outline."), budget) };
+                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap, shape), stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Missing native stroke outline."), budget) };
                     commands = new([], null);
                 }
                 return stroked;

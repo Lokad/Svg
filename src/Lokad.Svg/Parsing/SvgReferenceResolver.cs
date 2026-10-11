@@ -242,7 +242,8 @@ internal static class SvgReferenceResolver
                 SvgViewportFrame? clipFrame = placed.Clip is SvgClipBox clip ? new(0, 0, 1, 1, null, null, clip, 0) : null;
                 using SvgParsedGeometry native = lowering.LowerNativeStrokeCommands(commands, retained.SceneMap,
                     deviceWidth, deviceWidth, miterLimit, SvgStrokeCap.Butt, stroke.Join, null, 0, null,
-                    true, nativeColor, reference.IsPainted, state.OutputMagnification, clipFrame, state.Budget);
+                    true, nativeColor, reference.IsPainted, state.OutputMagnification, clipFrame, state.Budget,
+                    retained.StrokeStyle?.Shape ?? SvgAuthoredStrokeShape.Path);
                 try { return native.Geometries.ToArray(); }
                 catch { native.Discard(); throw; }
             }

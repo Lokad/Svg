@@ -494,13 +494,16 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Scaled_rectangle_stroke_stays_unsupported()
+    public void Scaled_rectangle_stroke_scales_its_width_with_the_shape()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='8' height='8' fill='red' stroke='black' stroke-width='2' transform='scale(2)'/></svg>");
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><rect x='2' y='2' width='8' height='8' fill='red' stroke='black' stroke-width='2' transform='scale(2)'/></svg>", out _, out _);
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 24, 1, 10));
+        Assert.Equal(new SvgColor(0, 0, 0, 255), Pixel(pixels, 24, 2, 10));
+        Assert.Equal(new SvgColor(0, 0, 0, 255), Pixel(pixels, 24, 5, 10));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 24, 6, 10));
+        Assert.Equal(new SvgColor(0, 0, 0, 255), Pixel(pixels, 24, 21, 10));
+        Assert.Equal(new SvgColor(0, 0, 0, 0), Pixel(pixels, 24, 22, 10));
     }
 
     [Fact]

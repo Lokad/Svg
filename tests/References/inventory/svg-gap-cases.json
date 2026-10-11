@@ -526,8 +526,8 @@
         "height": 512
       },
       "selection": "Whole untouched fontless static export; explicit nominal 512-pixel source-page frame declared at bedad6fe before renderer comparison or capture. Root dimensions alone supply the browser frame.",
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Only rectangle strokes under translations, with opacity only when fill-less, are implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Complete: unchanged 512x512 transparent reference is exact through all twelve raw/prepared outputs on Windows/Linux after shared source-coordinate rectangle-frame correction.",
       "reference": "tests/References/inventory/inv-130-transparent.png",
       "referenceSha256": "5f18fd967526fd2e4cdccc1b4748bc6a3069fdf209107215375c1e7c843d4098",
       "oracle": {
