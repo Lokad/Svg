@@ -492,7 +492,14 @@ are unchanged. Receipt: `artifacts/affine-rectangle-strokes-20261012/final-quali
 
 This new batch is **4/10 complete**, making the current queue **39/45**.
 **Next deliverable: complete `inv-139`'s phased pattern columns at frozen 512×341
-transparent.** Extend shared pattern viewBox/aspect and alias-coordinate mapping;
+transparent.** Extend shared pattern viewBox/aspect and alias-coordinate mapping.
+The [six pattern viewBox controls](tests/Research/pattern-viewbox/manifest.json)
+are declared at `c1e7d591` before correction and have healthy cleaned native
+Windows/Linux reference triples. They protect retained source content across
+aliases, fractional mapping, independent aspect inheritance, viewBox precedence
+over content units/percentage bases and composed tile/group maps. Initial
+rejections stay in the existing harness until corrected; controls are separate
+from whole-document completion.
 `inv-138` exposes additional local group/use, rotation and visible-overflow gates.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain

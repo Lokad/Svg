@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="72" viewBox="0 0 96 72">
+<defs><pattern id="slice" href="#base" preserveAspectRatio="xMinYMax slice"/><pattern id="shift" href="#slice" viewBox="0 1 4 8"/><pattern id="base" patternUnits="userSpaceOnUse" width="12" height="8" viewBox="0 0 4 8" preserveAspectRatio="xMaxYMin meet"><rect x="-2" y="-4" width="8" height="16" fill="#8ab8e6"/><rect width="4" height="4" fill="#94364c"/><rect y="4" width="4" height="4" fill="#e9ad28"/></pattern></defs><rect width="32" height="72" fill="url(#base)"/><rect x="32" width="32" height="72" fill="url(#slice)"/><rect x="64" width="32" height="72" fill="url(#shift)"/>
+</svg>

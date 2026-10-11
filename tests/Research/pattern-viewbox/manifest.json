@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Six frozen pattern viewBox/alias/aspect controls advancing whole inv-139; initial UnsupportedFeature outcomes retained before correction.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "phase-alias",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "a3935f1cd719d5512df76f56a75bc5bbd5b25a766a88d8a0d49f7ad070ac8506",
+      "referenceSha256": "4739fbb486ad570dac53b05c89f62fe3098afa2a540a45809e528d5345d6e794",
+      "selection": "Declared at c1e7d591 before renderer edits/comparison: whole inv-139 dependencies and shared pattern viewBox/alias/aspect mapping, retained unclipped source content, ignored content-unit precedence/percentages and composed group/pattern maps.",
+      "input": "phase-alias.svg",
+      "reference": "references/phase-alias.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "none-fractional-root",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "ebf754b4338b8a4c1256a34be5ec6829c35dc05d34d90ad6da25f007c2b994a2",
+      "referenceSha256": "d64f08a556f9f34263909fd18a1e7a82683c466a4c6bcc150f2a87ed2a155fa1",
+      "selection": "Declared at c1e7d591 before renderer edits/comparison: whole inv-139 dependencies and shared pattern viewBox/alias/aspect mapping, retained unclipped source content, ignored content-unit precedence/percentages and composed group/pattern maps.",
+      "input": "none-fractional-root.svg",
+      "reference": "references/none-fractional-root.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "aspect-meet",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "168a5e03b271a74da88bfd0b70455e4425df41e598cb59ecb21ac3905f697dc0",
+      "referenceSha256": "b8e1e8bf605ba08e172c91edbbc2121136a49f1dcb646685656e26dd943066f8",
+      "selection": "Declared at c1e7d591 before renderer edits/comparison: whole inv-139 dependencies and shared pattern viewBox/alias/aspect mapping, retained unclipped source content, ignored content-unit precedence/percentages and composed group/pattern maps.",
+      "input": "aspect-meet.svg",
+      "reference": "references/aspect-meet.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "aspect-inheritance",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "8399a82e2359626179c017e83cc8ed04200b812b9849502d7743aba191fb2f4c",
+      "referenceSha256": "96affd393bc0ae2adb5b71a5cd895bff902b796680bbf94e69d11009a42e7eab",
+      "selection": "Declared at c1e7d591 before renderer edits/comparison: whole inv-139 dependencies and shared pattern viewBox/alias/aspect mapping, retained unclipped source content, ignored content-unit precedence/percentages and composed group/pattern maps.",
+      "input": "aspect-inheritance.svg",
+      "reference": "references/aspect-inheritance.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "ignored-content-units",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "1f2954c05712d3f78ddd854f88ec29898fb1c36acaccc2515f049f7ab45d6050",
+      "referenceSha256": "c1b6e3e3ebfb5c16d2de14a2c745b4e771d976b8fc00f1f469bbf15a6bffa2e1",
+      "selection": "Declared at c1e7d591 before renderer edits/comparison: whole inv-139 dependencies and shared pattern viewBox/alias/aspect mapping, retained unclipped source content, ignored content-unit precedence/percentages and composed group/pattern maps.",
+      "input": "ignored-content-units.svg",
+      "reference": "references/ignored-content-units.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "transformed-group",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "fcaa722f7e498dc6e7e1b8a9a3bc8c17ad068fd3f8bcc765f05d2941cc22e09a",
+      "referenceSha256": "56cdb748a6c447203118a5d641e1ad1d6cfb988888b28bf020e8e2b3b84a1342",
+      "selection": "Declared at c1e7d591 before renderer edits/comparison: whole inv-139 dependencies and shared pattern viewBox/alias/aspect mapping, retained unclipped source content, ignored content-unit precedence/percentages and composed group/pattern maps.",
+      "input": "transformed-group.svg",
+      "reference": "references/transformed-group.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    }
+  ]
+}

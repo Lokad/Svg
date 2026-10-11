@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="72" viewBox="0 0 96 72">
+<defs><pattern id="base" patternUnits="userSpaceOnUse" width="8" height="12" viewBox="0 0 8 12"><rect y="-6" width="8" height="6" fill="#fc0"/><rect width="8" height="6" fill="#00a"/><rect y="6" width="8" height="6" fill="#fc0"/><rect y="12" width="8" height="6" fill="#00a"/></pattern><pattern id="phase" href="#base" viewBox="0 3 8 12"/></defs><rect width="40" height="72" fill="url(#base)"/><rect x="40" width="56" height="72" fill="url(#phase)"/>
+</svg>

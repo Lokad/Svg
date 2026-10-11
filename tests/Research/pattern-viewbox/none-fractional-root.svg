@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="72" viewBox="-5 -3 110 84">
+<defs><pattern id="p" patternUnits="userSpaceOnUse" x="2.5" y="1.25" width="13.5" height="9.75" viewBox="-2 1 9 12" preserveAspectRatio="none"><rect x="-2" y="1" width="9" height="6" fill="#df7824"/><rect x="-2" y="7" width="9" height="6" fill="#214eaf"/><rect x="1" y="3" width="3" height="4" fill="#45cecb"/></pattern></defs><rect x="-5" y="-3" width="110" height="84" fill="url(#p)"/>
+</svg>
