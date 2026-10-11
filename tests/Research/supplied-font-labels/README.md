@@ -4,8 +4,8 @@ The unchanged CC0 `logo-live-text.svg` is complete at 64×64 transparent under i
 explicit supplied-font contract. **1/1 document matches the frozen Windows/Linux
 references through all six raw and six independently prepared APIs.** Seven
 separate CC0 controls cover curves/counters, AV/space pairs, composites,
-fractional placement/size, small/large sizes and inherited alias/paint. Linux has
-**6/7 controls exact**, Windows **6/7**; cross-platform controls are **6/7 exact**.
+fractional placement/size, small/large sizes and inherited alias/paint. All
+**7/7 controls are exact on both platforms**.
 The document's completion does not close the full finite G9 label/path subset.
 
 `font-pack.json` selects the unchanged standalone static Noto Sans Regular 2.008
@@ -77,29 +77,39 @@ have exact assertions through all 12 APIs on both platforms. Collapsed-span and
 bounded smart-dropout coverage now also corrects the large-outline control's two
 Windows pixels, making it exact through all 12 APIs. Pairs, small fractional origins and inherited alias/paint
 stay exact after shared LCD strike, curve and smart dropout coverage corrections.
-Composite accents now render with shared `USE_MY_METRICS` inheritance, while their
-native mask fidelity remains open. This control stays visible while the original document is
-complete. The unchanged original text-path document is now complete in its
+Composite accents render with shared `USE_MY_METRICS` inheritance and native
+1/16-pixel horizontal component rounding; their complete masks and outputs are
+exact. The unchanged original text-path document is now complete in its
 [separate bank](../supplied-font-text-paths/README.md), with seven exact controls
 on both platforms. Broader labels, composite hinting, curve/strike fidelity and
 curved/transformed text paths remain finite planned work in `PLAN.md`.
 
-Complete Windows/Linux qualification passes **6,749 tests/platform** (4,676 core /
+An earlier complete Windows/Linux qualification passed **6,749 tests/platform** (4,676 core /
 2,067 visual / six FontProbe), preserving the **27/27 corporate documents and
 258/258 variants**, 2,849 prior PNGs and 2,755 established exact comparisons.
 Healthy frozen browser captures, SVG/font bytes, references and declared options
 are reused. Source, DLL, script and report fingerprints are not required.
 
-This bank retains its exact document and six exact controls across both platforms.
-Linux completes all seven controls; Windows composite accents differ at 37 pixels
-(previously 34) after the shared native component-offset correction. This incomplete
-control remains the next fidelity target; the original document stays exact.
+This bank retains its exact document and **seven exact controls on both platforms**.
+Native `ROUND_XY_TO_GRID` rounds flagged Windows horizontal component offsets
+to 1/16 pixel after scaling, while vertical placement rounds to whole pixels.
+This resolves all **37 Windows accent pixels** without changing previously
+matching pixels. Two complete native accent textures, stable through three fresh
+processes, protect nested acute and parent ring placement. The original font,
+SVG input, options and references stay unchanged.
 Both original supplied-font documents and the retained
 [CC0 SVG Translate document](../supplied-font-documents/README.md) are complete.
-The next whole deliverable is the public-domain
+The completed public-domain
 [curved-label export](../curved-font-documents/README.md), under its declared
-public Regular face and output contract. Its pixel completion stays separate from
-this bank.
+public Regular face and output contract, is exact on both platforms with all five
+controls exact. Its pixel completion stays separate from this bank. Wider finite
+G9 label/path promises remain open.
+
+The completed accent correction passes **6,838 tests per platform** and preserves
+every prior exact output, corporate 27/27 documents / 258/258 variants, resource
+cleanup and managed package checks. Complete qualification uses the existing
+harness; the private receipt is
+`artifacts/windows-accent-strikes-20261011/final-qualification.json`.
 
 The shared kerning reader admits ordered pair-list/class-pair X advances,
 coverage/class formats 1/2, up to 32 lookups and 32 subtables per lookup. First

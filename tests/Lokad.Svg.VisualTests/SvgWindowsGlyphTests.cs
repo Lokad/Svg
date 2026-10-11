@@ -26,6 +26,8 @@ public sealed class SvgWindowsGlyphTests
     [InlineData("document-118")]
     [InlineData("document-156")]
     [InlineData("horizontal-composite")]
+    [InlineData("horizontal-nested-acute")]
+    [InlineData("horizontal-parent-ring")]
     public async Task Mapped_windows_masks_match_complete_independent_native_textures(string identity)
     {
         using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "curved-font-documents", "diagnostics", "windows-mapped-masks.json")));

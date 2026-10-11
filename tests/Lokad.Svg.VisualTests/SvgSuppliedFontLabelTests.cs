@@ -7,7 +7,7 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-/// <summary>Protects public-font admission, layout and exact outputs; the selected document and six controls are exact on both platforms, while composite promises stay open.</summary>
+/// <summary>Protects public-font admission, layout and exact outputs; the selected document and seven controls are exact on both platforms, while wider composite promises stay open.</summary>
 public sealed class SvgSuppliedFontLabelTests
 {
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
@@ -84,7 +84,7 @@ public sealed class SvgSuppliedFontLabelTests
             Assert.Equal(png, preparedPng);
         }
         Assert.Equal(unchanged, input);
-        if (OperatingSystem.IsLinux() || identity != "composite-accents" && OperatingSystem.IsWindows())
+        if (OperatingSystem.IsLinux() || OperatingSystem.IsWindows())
         {
             byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
             Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);

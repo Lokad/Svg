@@ -344,7 +344,7 @@
       ],
       "platformReferencesByteIdentical": false,
       "rendererOutcome": "exact",
-      "remainingOrCompletedMechanism": "All twelve outputs match unchanged Windows/Linux references. Native Windows fixed-scale component offsets truncate separately from rounded explicit points; nested accents reuse existing bounded assembly and fitting.",
+      "remainingOrCompletedMechanism": "All twelve outputs match unchanged Windows/Linux references. Flagged native Windows horizontal component offsets round to 1/16 pixel after scaling; nested accents reuse existing bounded assembly and fitting.",
       "linuxRendererOutcome": "exact"
     }
   ],

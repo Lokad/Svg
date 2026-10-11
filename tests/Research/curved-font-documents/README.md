@@ -186,7 +186,14 @@ fresh processes, extend the mask bank to fifteen cases. The original inputs,
 options, supplied face and both references stay frozen. The five separate
 controls are now exact on both platforms; finite G9 support promises remain open.
 
-Complete qualification passes **6,836 tests per platform**, preserves corporate
+The curved-document checkpoint passes **6,836 tests per platform**, preserves corporate
 27/27 documents / 258/258 variants and every established exact output, and passes
 the unchanged resource and package checks. The private completion receipt is
 `artifacts/windows-strike-boundaries-20261011/final-qualification.json`.
+
+The shared component follow-up replaces product truncation with native
+`ROUND_XY_TO_GRID` horizontal rounding to 1/16 pixel after ordinary scaling.
+The original curved document and all five controls stay exact; the older live-text
+accent control becomes exact as well. Two stable complete native accent textures
+extend the independent RGB mask bank to seventeen. Wider finite G9 promises
+remain open, and no input, supplied face, option or reference changes.

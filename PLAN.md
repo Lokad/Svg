@@ -143,12 +143,14 @@ subdivision denial, cancellation, retry and unchanged borrowed font bytes.
 
 The final Windows correction resolves all 22 document differences. Native scalar
 midpoint arithmetic and viewport multiplication precede fragment truncation;
-rounded scan bounds keep thin-tip dropouts in the native cell. Fixed component
-offsets truncate separately from explicit-point rounding, completing the eight
-horizontal composite differences. Two further complete native RGB textures,
+rounded scan bounds keep thin-tip dropouts in the native cell. Flagged horizontal
+component offsets round to 1/16 pixel after scaling, separately from whole-pixel
+vertical placement, completing the eight horizontal composite differences and
+the older live-label accent control. Two further complete native RGB textures,
 stable through three fresh processes, protect the scan boundary and nested accent.
-Inputs, options, supplied face and references stay unchanged. Continue with the
-remaining live-label composite control and finite G9 promises; all G2–G9 exits
+Two additional stable native textures protect nested acute and parent ring
+placement, extending the bank to seventeen. Inputs, options, supplied face and
+references stay unchanged. Continue with finite G9 promises; all G2–G9 exits
 stay visible.
 
 The [public-font bank](tests/Research/supplied-font-labels/README.md) retains its
@@ -169,16 +171,16 @@ always computes from caller-owned font bytes; diagnostic masks are never inputs.
 Instruction-free Windows outlines and previously admitted composites retain their
 existing coverage route until their shared extensions are qualified.
 
-**Live-text bank document completion is 1/1; cross-platform controls are 6/7 exact.**
-Linux has **7/7 controls exact** and Windows **6/7**. Keep the whole document complete
-while resolving these separate controls; do not expand combinations just to close
-an interpreter grid. Current Windows measurements against unchanged references:
+**Live-text bank document completion is 1/1; controls are 7/7 exact on both platforms.**
+Preserve these results while advancing the finite G9 label/path promises; do not
+expand combinations just to close an interpreter grid. Current measurements
+against unchanged references:
 
-| Retained control | Remaining outcome |
+| Retained control | Qualified outcome |
 | --- | --- |
 | Curves/counters | Exact on both platforms through all 12 APIs. |
 | AV/space pair | Exact on both platforms through all 12 APIs. |
-| Composite accents | Exact on Linux through 12 APIs; Windows differs at 37 pixels (previously 34) after the shared native component-offset correction. This incomplete control is the next fidelity target. |
+| Composite accents | Exact on both platforms through all 12 APIs. Native 1/16-pixel horizontal component rounding resolves the remaining 37 Windows pixels; nested and parent-accent masks stay independently protected. |
 | Fractional position/size | Exact on both platforms through all 12 APIs. |
 | Small fractional origin | Exact on both platforms through all 12 APIs. |
 | Large outline | Exact on both platforms through all 12 APIs. |
@@ -240,8 +242,8 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,836 tests/platform**: 4,724 core, 2,106 visual, six FontProbe. Latest complete suite wall time is **4m Windows / 7m16 Linux**, excluding builds and additional bank probes. The preceding run took 2m41 / 3m10; timings vary between runs. Test counts are not document counts. |
-| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 27 Windows / 30 Linux exact font outputs from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; all seven Mono controls are exact on both platforms. The selected curved-label document is **1/1 across both platforms**; its five separate controls are **5/5 exact on both** through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,838 tests/platform**: 4,724 core, 2,108 visual, six FontProbe. Latest complete suite wall time is **4m3 Windows / 4m10 Linux**, excluding builds and additional bank probes. The preceding run took 4m / 7m16; timings vary between runs. Test counts are not document counts. |
+| Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,849 prior PNGs** and **2,755 established exact comparisons**, plus all 29 Windows / 30 Linux exact font outputs from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; the live-text, straight-path and Mono banks each have seven exact controls on both platforms. The selected curved-label document is **1/1 across both platforms**; its five separate controls are **5/5 exact on both** through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
 | Research and recorded-paint banks | 65 research probes are exact at their qualified viewports. Supplemental paint controls retain 134 exact / 15 valid-input rejections, separately from documents. |
@@ -952,7 +954,7 @@ the complex-script scope.
     prepared supplied-font outputs on both platforms. Keep bounded stack/point/
     storage/function execution, cancellation and partial-owner cleanup explicit;
     unimplemented hint semantics must have categorized outcomes.
-  - [ ] Complete the seven existing controls, including independent advance
+  - [x] Complete the seven existing controls, including independent advance
     rounding, curves/counters, composite flags, small/large sizes, fractional
     origins and inherited color. Expand combinations only for a demonstrated
     dependency; keep the full label/path exit below open.
@@ -1014,7 +1016,7 @@ the complex-script scope.
     - [x] Reuse the native relaxed strike transform for mapped Windows outlines.
       Preserve every established exact output. Explicit-point fixed mapping, native
       scan-leaf subdivision and directed thin-tip dropouts now make the curved
-      control exact. Fifteen complete native RGB masks now protect unhinted and
+      control exact. Seventeen complete native RGB masks now protect unhinted and
       axis-aligned fitted strikes, rounded scan bounds and nested component offsets.
       The horizontal composite control is exact against its unchanged reference.
     - [x] Complete all 12 Linux document outputs against the frozen reference with
@@ -1027,7 +1029,7 @@ the complex-script scope.
       parent programs, including transformed/nested components. Other composite
       flags and interpreter combinations remain in the finite G9 exit.
     - [x] Finish the new composite-on-path mask against unchanged Windows/Linux
-      references. The older live-label composite control remains tracked separately.
+      references. The older live-label composite control is also exact, tracked separately.
     - [x] Resolve every remaining guide/text mismatch and complete all 12 APIs on
       both platforms against the frozen document output.
 - **Explicit unsupported outcomes:** automatic wrapping, bidi/joining/complex
@@ -1055,9 +1057,10 @@ stays open. Choose shared changes by the complete documents they advance.
 The original live-text acceptance fixture is complete under its unchanged public-
 font contract. Both original supplied-font documents and the CC0 SVG Translate
 document are complete under their declared font/output contracts. The retained
-public-domain curved-label export `inv-127` is the next complete-document target,
-with matching native references already frozen. Finish its shared dependencies and
-every declared output within the finite subset. Online sourcing
+public-domain curved-label export `inv-127` is complete through all 12 APIs on both
+platforms, with all five controls exact. The live-text bank's seven controls are
+also exact. Select the next complete document from the remaining finite G2–G9
+gaps rather than expanding completed font combinations. Online sourcing
 continues in bounded public-domain/CC0 batches for remaining in-scope gaps;
 animated exports and effects beyond the enumerated subset remain excluded.
 Keep other instance combinations visible without making them prerequisites

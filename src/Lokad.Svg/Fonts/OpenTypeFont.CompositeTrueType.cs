@@ -46,10 +46,15 @@ internal static partial class OpenTypeFont
         internal int ScaleOffset(int value, bool round, bool horizontal)
         {
             _work.Consume(_token);
-            // The Windows scaler drops low fixed-point bits for component
-            // offsets; explicit outline points keep their separate rounding.
-            int scaled = (_target.QueryFlags & TrueTypeHintQueryFlags.ClearType) != 0
-                ? (int)(((long)value * _scale) >> 16) : Scale(value, _scale);
+            int scaled = Scale(value, _scale);
+            // ROUND_XY_TO_GRID uses sixteenth-pixel X placement in the
+            // Windows subpixel profile, separately from whole-pixel Y fitting.
+            if (round && horizontal && (_target.QueryFlags & (TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned)) == (TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned))
+            {
+                long rounded = ((long)scaled + 2) & ~3L;
+                if (rounded < int.MinValue || rounded > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "A rounded composite offset exceeds its signed bound.");
+                return (int)rounded;
+            }
             // Legacy grayscale rounds both axes; the admitted smooth profiles retain fractional X.
             return round && (!horizontal || _target.Version == 35) ? Round(scaled) : scaled;
         }

@@ -11941,3 +11941,31 @@ release all owners, and both managed package audits pass. Suite wall times are
 239.9 seconds Windows / 436.0 seconds Linux, excluding builds and bank probes.
 The private receipt is
 `artifacts/windows-strike-boundaries-20261011/final-qualification.json`.
+
+### Windows component offsets with ROUND_XY_TO_GRID
+
+Independent native offset and fitted-point observations refine the preceding
+component correction: scaling rounds normally, then flagged subpixel horizontal
+offsets round to **1/16 pixel**, while vertical offsets round to whole pixels.
+The previous product truncation happened to produce the correct nested `ü`
+placement at its retained strike, but differed for the older `éÅ` control.
+Its nested acute had a five-F26 horizontal displacement and its parent ring a
+one-F26 displacement; base glyph points already agreed. Shared component
+assembly now uses the native horizontal rounding rule with the existing signed
+overflow guard. Other fitting profiles keep their established policy.
+
+The unchanged `éÅ` output improves **37 → 0 Windows pixels**, with no previously
+matching pixels changed, through all twelve APIs. Linux stays exact. The older
+live-text bank reaches **7/7 exact controls on both platforms**. Two additional
+complete native textures, stable through three fresh processes, extend the bank
+to seventeen; they protect nested negative/positive offsets and parent accent
+fitting. The completed curved document and its five controls remain exact.
+
+Complete qualification passes **6,838 tests/platform** (4,724 core / 2,108 visual /
+six FontProbe), preserving corporate **27/27 documents / 258/258 variants**, all
+2,908 prior outcomes, 2,849 prior PNGs, 2,755 established exact comparisons and
+29 Windows / 30 Linux prior exact font outputs. The five measured resource peaks
+per platform stay unchanged, owners release after success and tight denial,
+and both managed package audits pass. Suite wall times are 242.7 seconds Windows /
+250.0 seconds Linux, excluding builds and bank probes. The private receipt is
+`artifacts/windows-accent-strikes-20261011/final-qualification.json`.
