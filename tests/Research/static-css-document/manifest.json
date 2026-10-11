@@ -299,7 +299,7 @@
       "linuxReference": "references/linux64/span-paint.png",
       "fontPack": "font-pack.json",
       "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "oracleInputSha256": "dcb831b9af95791f8359d68af2cdcbaf4edeabe74231a6a305e0260aa186be99",
       "referenceSha256": "098a118409421719b1467dbceb2e46fff599a7f977e8931fc780a857a4a35041",
       "captures": [

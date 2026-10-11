@@ -1,0 +1,82 @@
+namespace Lokad.Svg.Parsing;
+
+using Lokad.Svg.Rendering;
+
+/// <summary>Owns active paint scopes and transfers material paint intervals with the normalized layout; all calls share the construction work/cancellation context.</summary>
+/// <remarks>Parser-thread confined. Caller text and contexts remain borrowed; disposal releases every retained scope, interval and layout owner.</remarks>
+internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
+{
+    private readonly SvgTextLayoutBuffer _layout;
+    private readonly BudgetedParserList<SvgTextPaintStyle> _scopes;
+    private readonly RenderBudget _budget;
+    private readonly ParserWorkCounter _workCounter;
+    private readonly CancellationToken _cancellationToken;
+    private readonly SvgTextGlyphPaint _defaultPaint;
+    private BudgetedParserList<SvgTextPaintSpan>? _spans;
+    private int _length;
+
+    internal SvgTextPaintOutput(RenderBudget budget, double letterSpacing, SvgTextPaintStyle paint, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        _budget = budget;
+        _workCounter = workCounter;
+        _cancellationToken = cancellationToken;
+        _defaultPaint = paint.GlyphPaint;
+        _layout = new(budget, letterSpacing, workCounter, cancellationToken);
+        _scopes = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        try { _scopes.Add(paint); }
+        catch { _scopes.Dispose(); _layout.Dispose(); throw; }
+    }
+
+    internal SvgTextPaintStyle GetPaint(int scopeDepth) => _scopes[scopeDepth];
+    internal void EnterPaintSpan(SvgTextPaintStyle paint) => _scopes.Add(paint);
+    internal void ExitPaintSpan() => _scopes.RemoveLast();
+
+    public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text paint output calls must retain their construction work context.");
+        cancellationToken.ThrowIfCancellationRequested();
+        if (value.IsEmpty) return;
+        SvgTextPaintStyle style = GetPaint(scopeDepth);
+        if (!style.IsDisplayed) return;
+        style.ValidateEmission();
+        _layout.Append(value, letterSpacing, scopeDepth, maximumLength, workCounter, cancellationToken);
+        SvgTextGlyphPaint paint = style.GlyphPaint;
+        int start = _length;
+        _length = checked(start + value.Length);
+        if (_spans is null && paint == _defaultPaint) return;
+        if (_spans is null)
+        {
+            _spans = new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+            if (start != 0) _spans.Add(new(0, start, _defaultPaint));
+        }
+        if (_spans.Count != 0 && _spans[^1].Paint == paint)
+            _spans[^1] = _spans[^1] with { End = _length };
+        else _spans.Add(new(start, _length, paint));
+    }
+
+    public void EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => _layout.EnterPositioningSpan(offset, scopeDepth, workCounter, cancellationToken);
+    public void ExitPositioningSpan(int scopeDepth) => _layout.ExitPositioningSpan(scopeDepth);
+
+    internal SvgExtractedTextRun Detach(SvgTextPathReference? path)
+    {
+        if (_scopes.Count != 1) throw new InvalidOperationException("Text paint scopes must be closed before layout transfer.");
+        BudgetedTextLayout layout = _layout.Detach();
+        try
+        {
+            OwnedParserArray<SvgTextPaintSpan> spans = _spans is null ? new([], null) : _spans.Detach();
+            _spans = null;
+            _length = 0;
+            return new(layout, path, spans);
+        }
+        catch { layout.Dispose(); throw; }
+    }
+
+    public void Dispose()
+    {
+        _spans?.Dispose();
+        _spans = null;
+        _scopes.Dispose();
+        _layout.Dispose();
+    }
+}

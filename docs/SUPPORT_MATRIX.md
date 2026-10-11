@@ -11,6 +11,17 @@ Direct text admits both valid `fill-rule` values, `nonzero` and `evenodd`,
 including inherited and cascaded declarations. SVG text ignores that property;
 glyph winding and coverage remain unchanged. Invalid values remain unsupported.
 
+Nested `tspan` elements admit solid fill, current color, fill opacity, unpainted
+stroke, display and visibility through attributes and the existing cascade.
+Effective paint follows normalized character intervals through the shared glyph
+layout and text-path replay. Hidden and fill-less characters retain advances;
+`display:none` content is excluded. A child may replace an inherited stroke with
+`none` before emitted content is validated. Actually painted strokes retain
+explicit rejection before font acquisition. Font discovery recognizes supported
+geometry through the shared leaf vocabulary, including circles and ellipses.
+Per-span font changes, opacity layers and ordinary text stroke/paint-server
+support remain required G9 exit work.
+
 Embedded root and definition stylesheets are collected in source order before
 font discovery and lowering. They may follow rendered content or definitions;
 the existing cascade, specificity and important precedence apply. The prepass

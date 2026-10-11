@@ -14,6 +14,7 @@ internal static class SvgTextLimits
 internal enum SvgTextWhitespaceMode { Default, Preserve }
 
 /// <summary>Receives normalized direct text with its owning span depth, active letter spacing, and explicit positioning scope lifecycle.</summary>
+/// <remarks>Implementations are parser-thread confined, own retained output, reserve material buffers before growth and observe the borrowed work/cancellation context within bounded chunks.</remarks>
 internal interface ISvgTextOutput
 {
     /// <summary>Appends an emitted interval; <paramref name="scopeDepth"/> identifies the owning open text span, and the caller retains the value and work context.</summary>
@@ -38,6 +39,7 @@ internal readonly record struct SvgTextSpanStyle
         WhitespaceMode = whitespaceMode;
         LetterSpacing = letterSpacing;
         PositionOffset = positionOffset;
+        Paint = SvgTextPaintStyle.Default;
     }
 
     internal SvgTextWhitespaceMode WhitespaceMode { get; }
@@ -46,13 +48,17 @@ internal readonly record struct SvgTextSpanStyle
 
     /// <summary>Gets the scalar position adjustment explicitly declared by this span, if any; it is not inherited as a style value.</summary>
     internal SvgTextPositionOffset? PositionOffset { get; }
+    internal SvgTextPaintStyle Paint { get; init; }
 }
 
 /// <summary>Identifies one contiguous UTF-16 interval emitted with a non-default scalar letter spacing.</summary>
 internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, double LetterSpacing);
 
 /// <summary>Owns one extracted layout until its consumer disposes it; sibling path runs have independent whitespace and anchoring boundaries.</summary>
-internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path);
+internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path, OwnedParserArray<SvgTextPaintSpan> PaintSpans) : IDisposable
+{
+    public void Dispose() { Layout.Dispose(); PaintSpans.Dispose(); }
+}
 
 /// <summary>Represents explicit scalar coordinates and offsets before the first retained character in a text span.</summary>
 internal readonly record struct SvgTextPositionOffset
@@ -330,7 +336,7 @@ internal static class SvgTextSyntax
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only default and preserve xml:space values are supported for direct text.");
     }
 
-    /// <summary>Recognizes nested whitespace, spacing, and scalar positioning tspan declarations and resolves them over the parent values.</summary>
+    /// <summary>Recognizes bounded nested whitespace, positioning and solid-paint declarations over the parent values.</summary>
     internal static bool TryParseTspanStyle(XmlReader reader, SvgTextSpanStyle inherited, InlineStyle styleSheet, ParserWorkCounter workCounter, CancellationToken cancellationToken, out SvgTextSpanStyle style)
     {
         ArgumentNullException.ThrowIfNull(reader);
@@ -339,6 +345,7 @@ internal static class SvgTextSyntax
         if (HasUnsupportedProperties(styleSheet)) return false;
         string? xmlSpace = null;
         string? whiteSpace = null;
+        InlineStyle parsedInline = default;
         InlineImportantProperties inlineImportant = InlineImportantProperties.None;
         string? inlineLetterSpacing = null;
         string? presentationLetterSpacing = null;
@@ -348,7 +355,7 @@ internal static class SvgTextSyntax
         string? dy = null;
         if (!reader.HasAttributes)
         {
-            style = new SvgTextSpanStyle(styleSheet.WhiteSpace is string styleSheetWhiteSpace ? ParseCssWhitespaceMode(styleSheetWhiteSpace) : inherited.WhitespaceMode, styleSheet.LetterSpacing is string styleSheetLetterSpacing ? SvgGeometrySyntax.ParseTextCoordinate(styleSheetLetterSpacing) : inherited.LetterSpacing, null);
+            style = new SvgTextSpanStyle(styleSheet.WhiteSpace is string styleSheetWhiteSpace ? ParseCssWhitespaceMode(styleSheetWhiteSpace) : inherited.WhitespaceMode, styleSheet.LetterSpacing is string styleSheetLetterSpacing ? SvgGeometrySyntax.ParseTextCoordinate(styleSheetLetterSpacing) : inherited.LetterSpacing, null) { Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, default, styleSheet), inherited.Paint) };
             return true;
         }
         while (reader.MoveToNextAttribute())
@@ -364,7 +371,8 @@ internal static class SvgTextSyntax
             {
                 if (whiteSpace is not null || inlineLetterSpacing is not null) { reader.MoveToElement(); style = inherited; return false; }
                 InlineStyle inline = SvgInlineStyleParser.Parse(reader.Value, workCounter, cancellationToken, true);
-                if ((inline.WhiteSpace is null && inline.LetterSpacing is null) || HasUnsupportedProperties(inline)) { reader.MoveToElement(); style = inherited; return false; }
+                if ((inline.WhiteSpace is null && inline.LetterSpacing is null && !HasPaintProperties(inline)) || HasUnsupportedProperties(inline)) { reader.MoveToElement(); style = inherited; return false; }
+                parsedInline = inline;
                 whiteSpace = inline.WhiteSpace;
                 inlineImportant = inline.Important;
                 inlineLetterSpacing = inline.LetterSpacing;
@@ -401,6 +409,7 @@ internal static class SvgTextSyntax
                 continue;
             }
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "color" or "fill" or "fill-opacity" or "stroke" or "fill-rule" or "display" or "visibility") continue;
             reader.MoveToElement();
             style = inherited;
             return false;
@@ -410,11 +419,14 @@ internal static class SvgTextSyntax
         if (SvgInlineStyleParser.MergeWithImportance(whiteSpace, inlineImportant, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
         string? letterSpacing = SvgInlineStyleParser.MergeWithImportance(inlineLetterSpacing, inlineImportant, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important) ?? presentationLetterSpacing;
         SvgTextPositionOffset? positionOffset = x is null && y is null && dx is null && dy is null ? null : new SvgTextPositionOffset(x is null ? null : SvgGeometrySyntax.ParseTextCoordinate(x), y is null ? null : SvgGeometrySyntax.ParseTextCoordinate(y), dx is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dx), dy is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dy));
-        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset);
+        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset) { Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint) };
         return true;
 
         static bool HasUnsupportedProperties(InlineStyle style)
-            => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.Opacity is not null || style.FillRule is not null || style.TextFont.Family is not null || style.TextFont.Weight is not null || style.TextFont.Style is not null || style.TextFont.Size is not null;
+            => style.Opacity is not null || style.TextFont.Family is not null || style.TextFont.Weight is not null || style.TextFont.Style is not null || style.TextFont.Size is not null || style.Filter is not null || style.Width is not null || style.StrokeOpacity is not null || style.GeometryWidth is not null || style.GeometryHeight is not null;
+
+        static bool HasPaintProperties(InlineStyle style)
+            => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.FillRule is not null;
     }
 
     /// <summary>Recognizes admitted nested text spans while returning only the inherited whitespace mode needed by font discovery.</summary>

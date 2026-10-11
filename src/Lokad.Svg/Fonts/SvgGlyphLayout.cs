@@ -46,6 +46,10 @@ internal static class SvgGlyphLayout
 
     /// <summary>Builds output-grid positions while retaining authored origins and bounded chunk/spacing semantics.</summary>
     internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => CreateStorage(font, text, fontSize, originX, originY, letterSpacing, letterSpacingSpans, positionAdjustments, [], anchor, deviceMetrics, budget, sourceElementId, workCounter, cancellationToken);
+
+    /// <summary>Retains effective glyph paints only for varying normalized intervals, sharing layout, cancellation and owned geometry storage with the ordinary run.</summary>
+    internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(text);
@@ -55,6 +59,16 @@ internal static class SvgGlyphLayout
         if (!double.IsFinite(originX) || !double.IsFinite(originY) || !double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(originX));
         ValidateLetterSpacingSpans(text, letterSpacingSpans);
         ValidatePositionAdjustments(text, positionAdjustments);
+        int paintEnd = 0;
+        foreach (SvgTextPaintSpan paint in paintSpans)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            workCounter?.Consume(cancellationToken);
+            if (paint.Start != paintEnd || paint.End <= paint.Start || paint.End > text.Length) throw new ArgumentException("Text paint intervals must partition normalized text.", nameof(paintSpans));
+            if (paint.End < text.Length && char.IsSurrogatePair(text, paint.End - 1)) throw new ArgumentException("Text paint intervals cannot divide a Unicode scalar.", nameof(paintSpans));
+            paintEnd = paint.End;
+        }
+        if (!paintSpans.IsEmpty && paintEnd != text.Length) throw new ArgumentException("Text paint intervals must cover normalized text.", nameof(paintSpans));
         double scale = fontSize / font.UnitsPerEm;
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
         int glyphCount = 0;
@@ -68,9 +82,16 @@ internal static class SvgGlyphLayout
         if (glyphCount == 0) return new SvgPositionedGlyphStorage([], 0, null);
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + glyphCount * 32L), SvgMemoryCategory.Geometry);
         RenderBudget.BudgetReservation? clusterReservation = null;
+        RenderBudget.BudgetReservation? paintReservation = null;
         try
         {
             var glyphs = new SvgPositionedGlyph[glyphCount];
+            SvgTextGlyphPaint[] glyphPaints = [];
+            if (paintSpans.Length > 1)
+            {
+                paintReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgTextGlyphPaint>(glyphCount), SvgMemoryCategory.Geometry);
+                glyphPaints = new SvgTextGlyphPaint[glyphCount];
+            }
             int[]? sourceLengths = null;
             OpenTypeGsubLigatureTable? ligatures = OpenTypeFont.GetLatinLigatures(font.Bytes, font.Metrics, workCounter, cancellationToken);
             Span<GlyphLookup> cachedLookups = stackalloc GlyphLookup[GlyphLookupCacheCapacity];
@@ -79,6 +100,7 @@ internal static class SvgGlyphLayout
             int mappedSourceOffset = 0;
             int mappedSpacingIndex = 0;
             int mappedPositionIndex = 0;
+            int mappedPaintIndex = 0;
             var mappedScalars = text.EnumerateRunes();
             while (mappedScalars.MoveNext())
             {
@@ -109,6 +131,12 @@ internal static class SvgGlyphLayout
                 double spacing = GetLetterSpacing(mappedSourceOffset, letterSpacing, letterSpacingSpans, ref mappedSpacingIndex);
                 while (mappedPositionIndex < positionAdjustments.Length && positionAdjustments[mappedPositionIndex].Start <= mappedSourceOffset) mappedPositionIndex++;
                 int sourceEnd = letterSpacingSpans.IsEmpty ? text.Length : letterSpacingSpans[mappedSpacingIndex].End;
+                if (!paintSpans.IsEmpty)
+                {
+                    while (paintSpans[mappedPaintIndex].End <= mappedSourceOffset) mappedPaintIndex++;
+                    sourceEnd = Math.Min(sourceEnd, paintSpans[mappedPaintIndex].End);
+                    if (glyphPaints.Length != 0) glyphPaints[glyphPosition] = paintSpans[mappedPaintIndex].Paint;
+                }
                 if (mappedPositionIndex < positionAdjustments.Length) sourceEnd = Math.Min(sourceEnd, positionAdjustments[mappedPositionIndex].Start);
                 if (spacing == 0 && ligatures is {} graph && OpenTypeFont.TryGetLatinLigature(font.Bytes, font.Metrics, graph, text, mappedSourceOffset, sourceEnd, glyphIndex, workCounter, cancellationToken, out ushort ligatureGlyph, out int ligatureLength))
                 {
@@ -226,11 +254,14 @@ internal static class SvgGlyphLayout
                 chunkStart = chunkEnd;
                 chunkShift += chunkWidth - width;
             }
-            return new SvgPositionedGlyphStorage(glyphs, positionedGlyphCount, reservation);
+            SvgPositionedGlyphStorage result = new(glyphs, positionedGlyphCount, reservation, glyphPaints, paintReservation);
+            paintReservation = null;
+            return result;
         }
         catch
         {
             reservation.Dispose();
+            paintReservation?.Dispose();
             throw;
         }
         finally { clusterReservation?.Dispose(); }
@@ -287,17 +318,29 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
     private RenderBudget.BudgetReservation? _reservation;
     private readonly SvgPositionedGlyph[] _glyphs;
     private readonly int _count;
+    private readonly SvgTextGlyphPaint[] _glyphPaints;
+    private RenderBudget.BudgetReservation? _paintReservation;
 
     internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation)
+        : this(glyphs, count, reservation, [], null) { }
+
+    internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation, SvgTextGlyphPaint[] glyphPaints, RenderBudget.BudgetReservation? paintReservation)
     {
         _glyphs = glyphs;
         _count = count;
         _reservation = reservation;
+        _glyphPaints = glyphPaints;
+        _paintReservation = paintReservation;
     }
 
     internal ReadOnlySpan<SvgPositionedGlyph> Glyphs => _glyphs.AsSpan(0, _count);
+    internal ReadOnlySpan<SvgTextGlyphPaint> GlyphPaints => _glyphPaints.Length == 0 ? [] : _glyphPaints.AsSpan(0, _count);
 
-    public void Dispose() => Interlocked.Exchange(ref _reservation, null)?.Dispose();
+    public void Dispose()
+    {
+        Interlocked.Exchange(ref _reservation, null)?.Dispose();
+        Interlocked.Exchange(ref _paintReservation, null)?.Dispose();
+    }
 }
 
 /// <summary>Represents one glyph index, origin and horizontal advance in SVG user units.</summary>

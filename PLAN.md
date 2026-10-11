@@ -257,7 +257,7 @@ Mechanisms, control counts and dated qualifications live in
 
 | Current evidence | Assessment |
 | --- | --- |
-| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **6,994 tests/platform**: 4,858 core, 2,130 visual, six FontProbe. Latest complete suite wall time is **3m10s Windows / 3m29s Linux**, excluding builds and additional bank probes. Timings vary between runs. Test counts are not document counts. |
+| Windows/Linux Release builds and tests | Zero warnings/errors/failures/skips. **7,020 tests/platform**: 4,884 core, 2,130 visual, six FontProbe. Latest complete suite wall time is **3m31s Windows / 4m21s Linux**, excluding builds and additional bank probes. Timings vary between runs. Test counts are not document counts. |
 | Complete retained banks | Complete qualification preserves all **2,908 prior outcomes**, **2,851 prior PNGs** and **2,755 established exact comparisons**, plus all **30 exact supplied-font outputs on each platform** from the preceding checkpoint. Both original public-font documents and the retained CC0 Mono Bold document are complete through 12 APIs; the live-text, straight-path and Mono banks each have seven exact controls on both platforms. The selected curved-label document is **1/1 across both platforms**; its five separate controls are **5/5 exact on both** through 12 APIs. Existing inputs/options/references and healthy native captures remain unchanged. |
 | Original fixture manifest | **1,410 entries = 1,396 exact + zero known-difference renders + 14 categorized rejections**. Entries include variants; they do not establish corporate-document coverage. |
 | Original oracle bank | **1,567 reports / 1,553 PNGs**; every previous result remains unchanged. |
@@ -353,23 +353,32 @@ separately from accumulated group and mask alpha. Retained source replay binds
 it per instance and preserves intervening symbol/container parents; omitted,
 `initial` and `unset` opacity keep their noninherited initial value.
 The frozen `force-inherit` control is exact through twelve outputs on both
-platforms. The nine diagnostic controls stand at **7/9 exact on Windows, 8/9 on Linux**.
+platforms. The nine diagnostic controls stand at **8/9 exact on Windows, 9/9 on Linux**.
 The paired text controls were frozen before admission changed. Both valid
 fill-rule values are inert for SVG text and now match unchanged platform
 references through twelve outputs; invalid values retain rejection before font
 acquisition. Glyph winding and coverage are unchanged.
+Normalized text now retains effective solid span paint through the existing
+continuous layout and text-path replay. Nested solid fill, current color,
+fill-opacity and visibility declarations use the common cascade and inheritance;
+hidden and fill-less characters keep their advances, while display-none content
+is excluded.
+Inherited strokes are validated on emitted content after span overrides. The
+frozen span-paint control is exact through twelve outputs on both platforms.
+Font discovery uses the shared geometry vocabulary, including circles and
+ellipses, so supported preceding shapes retain required font requests.
 Existing 1,024-character identifier support is preserved; complete selectors
 are bounded to 4,096 characters, with shared memory/work limits and cancellation.
 Root, nested-viewport and `defs` container styling remain explicit unsupported
 outcomes and required G7 exit work; supported leaves may use them as ancestors.
-The text fill-rule correction passed complete qualification with **6,994 tests
-per platform** (4,858 core, 2,130 visual, six FontProbe), with zero warnings,
+The span-paint correction passed complete qualification with **7,020 tests
+per platform** (4,884 core, 2,130 visual, six FontProbe), with zero warnings,
 errors, failures or skips. All
 **2,851 prior PNGs**, **2,755 prior exact results**, **30 supplied-font outputs**
 and corporate **27/27 documents / 258/258 variants** are preserved. The diagram's
-effective span paint and translated labels remain the next shared dependencies,
-alongside the Windows omitted-family mask mismatch. The next observed gate
-rejects inherited text stroke before a child span can override it. Its
+translated filled-rectangle strokes and labels remain the next shared
+dependencies, alongside the Windows omitted-family mask mismatch. The next
+observed gate rejects filled rectangle strokes under translated groups. Its
 whole-document completion remains **0/1**.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
