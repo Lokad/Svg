@@ -359,6 +359,70 @@
         "referenceSha256": "ad24fd933e00465e09d23bef538a8cc610f59b743f2b0cf82289c0fee953a738",
         "fontUseProof": "tests/Research/curved-font-documents/font-use-proof/qualification.json"
       }
+    },
+    {
+      "id": "inv-128",
+      "title": "Shapes pattern",
+      "sourceUrl": "https://openclipart.org/detail/284818/shapes-pattern",
+      "downloadUrl": "https://openclipart.org/download/284818/ShapesPattern.svg",
+      "creator": "Firkin",
+      "creatorUrl": "https://openclipart.org/artist/Firkin",
+      "retrievalDate": "2026-10-11",
+      "license": "CC0-1.0",
+      "licenseEvidence": "The artwork page declares the Creative Commons Zero 1.0 public-domain dedication; Openclipart also identifies all uploaded clipart as CC0.",
+      "licenseEvidenceUrl": "https://openclipart.org/detail/284818/shapes-pattern",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "original": "Fixtures/candidates/inv-128.svg",
+      "originalSha256": "0433f71eeb4f4590600520da7dbbad404c40ff473d37e12210d8c055ad62e904",
+      "input": "tests/References/inventory/gap-inputs/inv-128.svg",
+      "inputSha256": "0433f71eeb4f4590600520da7dbbad404c40ff473d37e12210d8c055ad62e904",
+      "materialization": "Unchanged downloaded bytes. Converter receives an explicit 600x400 viewport; browser capture replaces only root width/height with 600/400 while preserving the authored viewBox, geometry and all other bytes.",
+      "featureTags": [
+        "pattern",
+        "grouped-tile-content",
+        "composed-transforms",
+        "reflection",
+        "arc-path"
+      ],
+      "gap": "G6",
+      "width": 600,
+      "height": 400,
+      "outputScale": 1,
+      "background": "transparent",
+      "viewport": {
+        "width": 600,
+        "height": 400
+      },
+      "renderOutcome": "UnsupportedFeature",
+      "observedMessage": "Grouped pattern content is rejected before rendering; declared unchanged 600x400 reference is frozen.",
+      "reference": "tests/References/inventory/inv-128-transparent.png",
+      "referenceSha256": "63deddb668f18fb1806da5b657563c12455a20e7442b6150554558a969b955ab",
+      "oracle": {
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "win64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true,
+        "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9"
+      },
+      "linuxOracle": {
+        "chromeVersion": "153.0.8010.52",
+        "chromiumRevision": "1681091",
+        "platform": "linux64",
+        "captureRecipeRevision": "3",
+        "deviceScaleFactor": 1,
+        "freshProcessCaptures": 3,
+        "decodedPixelStability": "identical",
+        "captureStartupHealth": "healthy",
+        "captureProfilesCleaned": true,
+        "reference": "tests/References/inventory/inv-128-transparent.png",
+        "referenceSha256": "63deddb668f18fb1806da5b657563c12455a20e7442b6150554558a969b955ab",
+        "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989"
+      }
     }
   ]
 }

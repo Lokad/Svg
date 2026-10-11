@@ -296,9 +296,14 @@ exports. The original marker-instance and drop-shadow acceptance fixtures are
 also complete, counted separately (**2/2**). Both original supplied-font acceptance
 documents are complete (**2/2** under their explicit contracts). The retained CC0
 SVG Translate document is also complete (**1/1**, with seven separate exact controls).
-Finish the selected public-domain curved-label document `inv-127` at 512×369
-under its frozen supplied-font contract. Other promised combinations and finite
-effects remain open.
+The public-domain curved-label document `inv-127` is complete at 512×369
+under its frozen supplied-font contract. The next selected complete document is
+**Firkin’s CC0 Shapes Pattern (`inv-128`)**, unchanged at explicit **600×400**,
+scale 1, transparent. Its frozen reference is identical across three healthy
+fresh captures on each platform. Advance shared bounded grouped tile content,
+composed child transforms and paint inheritance, then resolve every remaining
+mismatch through six APIs on both platforms. Other promised combinations and
+finite effects remain open.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -321,7 +326,7 @@ landed mechanisms remain regression requirements.
 | G6 | **Four retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Static markers and the enumerated filter/blending subset below | Four CC0 exports and the original marker-instance acceptance fixture complete their declared outputs; remaining marker combinations and finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
-| G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents and CC0 SVG Translate complete; seven controls in each text-path/Mono bank exact. The older composite-accent control and wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
+| G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents and CC0 SVG Translate complete; seven controls in each text-path/Mono bank exact. The older composite-accent control is also exact; wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
 
 ### Document deliverables and accounting
 
