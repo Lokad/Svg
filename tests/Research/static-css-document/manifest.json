@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Complete unchanged public-domain static CSS comparison diagram and nine separate controls. Caller supplies the deterministic default serif mapping; every declared output must match frozen platform references. Finite G7/G9 exits remain open.",
+  "purpose": "Complete unchanged public-domain static CSS diagram, nine original diagnostic controls and eight translation controls. Every declared output must match frozen platform references; finite G7/G9 exits remain open.",
   "selectedAt": "7ca79f5f",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
@@ -553,6 +553,446 @@
         },
         {
           "pngSha256": "ddd5a8e184dc701d02be7336e424003950869ac51fd7bb7fd1619bbb579df31c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "translated-solid-rect",
+      "input": "translated-solid-rect.svg",
+      "width": 64,
+      "height": 48,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "917234d92996f9298ec8ca13c39338df540713e743ac0b4db1e0d8fdf407468a",
+      "reference": "references/translated-solid-rect.png",
+      "linuxReference": "references/linux64/translated-solid-rect.png",
+      "fontPack": "font-pack.json",
+      "selection": "Translation dependencies of retained inv-129, frozen before admitting translated rectangle strokes or text. Existing whole-document references remain unchanged.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "b4e6d4bc6bc9ad53c2481cac6224c3d4d0985c56096200b1319a56ff673fee63",
+      "referenceSha256": "2fdecdedf0ee4fe9361bf8b779aeee0ff86747dc9ff5cd59f373e2abba4884c7",
+      "captures": [
+        {
+          "pngSha256": "2fdecdedf0ee4fe9361bf8b779aeee0ff86747dc9ff5cd59f373e2abba4884c7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2fdecdedf0ee4fe9361bf8b779aeee0ff86747dc9ff5cd59f373e2abba4884c7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2fdecdedf0ee4fe9361bf8b779aeee0ff86747dc9ff5cd59f373e2abba4884c7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "2fdecdedf0ee4fe9361bf8b779aeee0ff86747dc9ff5cd59f373e2abba4884c7",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2fdecdedf0ee4fe9361bf8b779aeee0ff86747dc9ff5cd59f373e2abba4884c7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2fdecdedf0ee4fe9361bf8b779aeee0ff86747dc9ff5cd59f373e2abba4884c7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2fdecdedf0ee4fe9361bf8b779aeee0ff86747dc9ff5cd59f373e2abba4884c7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "translated-gradient-rect",
+      "input": "translated-gradient-rect.svg",
+      "width": 64,
+      "height": 48,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "021946efeeb157de264dace8ba54b37fae30157315aa6be727661f84a13617da",
+      "reference": "references/translated-gradient-rect.png",
+      "linuxReference": "references/linux64/translated-gradient-rect.png",
+      "fontPack": "font-pack.json",
+      "selection": "Translation dependencies of retained inv-129, frozen before admitting translated rectangle strokes or text. Existing whole-document references remain unchanged.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "2f5df530e44938ea1225e8063b7989bd228c0952381a46c1fe22bbd5672cb9d7",
+      "referenceSha256": "0007d7baf93a9206f7fc4b62f69e2e9b3ee70d3a3cc7c8bc88972189f9f1bb6f",
+      "captures": [
+        {
+          "pngSha256": "0007d7baf93a9206f7fc4b62f69e2e9b3ee70d3a3cc7c8bc88972189f9f1bb6f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0007d7baf93a9206f7fc4b62f69e2e9b3ee70d3a3cc7c8bc88972189f9f1bb6f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0007d7baf93a9206f7fc4b62f69e2e9b3ee70d3a3cc7c8bc88972189f9f1bb6f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "0007d7baf93a9206f7fc4b62f69e2e9b3ee70d3a3cc7c8bc88972189f9f1bb6f",
+      "linuxCaptures": [
+        {
+          "pngSha256": "0007d7baf93a9206f7fc4b62f69e2e9b3ee70d3a3cc7c8bc88972189f9f1bb6f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0007d7baf93a9206f7fc4b62f69e2e9b3ee70d3a3cc7c8bc88972189f9f1bb6f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0007d7baf93a9206f7fc4b62f69e2e9b3ee70d3a3cc7c8bc88972189f9f1bb6f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "translated-pattern-rect",
+      "input": "translated-pattern-rect.svg",
+      "width": 64,
+      "height": 48,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "7ec8d6e631659f978fa33fec1fd84c08c444d7bb4c7e16c5d575e98e4777a02d",
+      "reference": "references/translated-pattern-rect.png",
+      "linuxReference": "references/linux64/translated-pattern-rect.png",
+      "fontPack": "font-pack.json",
+      "selection": "Translation dependencies of retained inv-129, frozen before admitting translated rectangle strokes or text. Existing whole-document references remain unchanged.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "d4ed09142913655b9abe2abd46a73e9f8da0bf11b9a5fbd6a20d06b115078a7a",
+      "referenceSha256": "8a725929c9294d6bd29b0bedc6962d2ffde79f5a58687bfb1c5cf172675ce07b",
+      "captures": [
+        {
+          "pngSha256": "8a725929c9294d6bd29b0bedc6962d2ffde79f5a58687bfb1c5cf172675ce07b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8a725929c9294d6bd29b0bedc6962d2ffde79f5a58687bfb1c5cf172675ce07b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8a725929c9294d6bd29b0bedc6962d2ffde79f5a58687bfb1c5cf172675ce07b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "8a725929c9294d6bd29b0bedc6962d2ffde79f5a58687bfb1c5cf172675ce07b",
+      "linuxCaptures": [
+        {
+          "pngSha256": "8a725929c9294d6bd29b0bedc6962d2ffde79f5a58687bfb1c5cf172675ce07b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8a725929c9294d6bd29b0bedc6962d2ffde79f5a58687bfb1c5cf172675ce07b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8a725929c9294d6bd29b0bedc6962d2ffde79f5a58687bfb1c5cf172675ce07b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "translated-definition-rect",
+      "input": "translated-definition-rect.svg",
+      "width": 64,
+      "height": 48,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "ef6a4297c853f19acc2b7ac0b32ae485b530492c0b482e4f4ab1e114ed55dcad",
+      "reference": "references/translated-definition-rect.png",
+      "linuxReference": "references/linux64/translated-definition-rect.png",
+      "fontPack": "font-pack.json",
+      "selection": "Translation dependencies of retained inv-129, frozen before admitting translated rectangle strokes or text. Existing whole-document references remain unchanged.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "840230e019d189dc15e9faa3fc40d10f18b6355d20c2c1658c2bcb65a678cce6",
+      "referenceSha256": "fc7ce830f19c27d1638f826ca1680c779919839b62d4093e8e33de2db53b84f0",
+      "captures": [
+        {
+          "pngSha256": "fc7ce830f19c27d1638f826ca1680c779919839b62d4093e8e33de2db53b84f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fc7ce830f19c27d1638f826ca1680c779919839b62d4093e8e33de2db53b84f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fc7ce830f19c27d1638f826ca1680c779919839b62d4093e8e33de2db53b84f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "fc7ce830f19c27d1638f826ca1680c779919839b62d4093e8e33de2db53b84f0",
+      "linuxCaptures": [
+        {
+          "pngSha256": "fc7ce830f19c27d1638f826ca1680c779919839b62d4093e8e33de2db53b84f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fc7ce830f19c27d1638f826ca1680c779919839b62d4093e8e33de2db53b84f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fc7ce830f19c27d1638f826ca1680c779919839b62d4093e8e33de2db53b84f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "translated-label",
+      "input": "translated-label.svg",
+      "width": 184,
+      "height": 80,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "9147b5f5496b2e052983dd1d974f06240e695e580e50d9447f66c8c294d9e4ff",
+      "reference": "references/translated-label.png",
+      "linuxReference": "references/linux64/translated-label.png",
+      "fontPack": "font-pack.json",
+      "selection": "Translation dependencies of retained inv-129, frozen before admitting translated rectangle strokes or text. Existing whole-document references remain unchanged.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "4e76b8a1ba3eed66d61209d15c3cc716660b603c9d6123149369f91273ea014b",
+      "referenceSha256": "8fee1697551929faf6e9094503a41c214f38fb0f851cb9e77c2c1feaceac626c",
+      "captures": [
+        {
+          "pngSha256": "8fee1697551929faf6e9094503a41c214f38fb0f851cb9e77c2c1feaceac626c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8fee1697551929faf6e9094503a41c214f38fb0f851cb9e77c2c1feaceac626c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8fee1697551929faf6e9094503a41c214f38fb0f851cb9e77c2c1feaceac626c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "13ce3ffea4fcdbe00a7a488b6839aed97e13c567520c34e49bad3e416837f3c5",
+      "linuxCaptures": [
+        {
+          "pngSha256": "13ce3ffea4fcdbe00a7a488b6839aed97e13c567520c34e49bad3e416837f3c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "13ce3ffea4fcdbe00a7a488b6839aed97e13c567520c34e49bad3e416837f3c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "13ce3ffea4fcdbe00a7a488b6839aed97e13c567520c34e49bad3e416837f3c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "translated-span-labels",
+      "input": "translated-span-labels.svg",
+      "width": 184,
+      "height": 80,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "ccd24be8df3c671830954af3959eb90f8a57d1133d5f9770e3fbb6d7c7fb3a3b",
+      "reference": "references/translated-span-labels.png",
+      "linuxReference": "references/linux64/translated-span-labels.png",
+      "fontPack": "font-pack.json",
+      "selection": "Translation dependencies of retained inv-129, frozen before admitting translated rectangle strokes or text. Existing whole-document references remain unchanged.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "12d94f10b5a08a59cf2c00087126025b67c96eb2ef265cd97bda032175d68c4d",
+      "referenceSha256": "8fb590925f1025ca625801376877b998bffd4af1a5ba2dd6dc8a9793848cb429",
+      "captures": [
+        {
+          "pngSha256": "8fb590925f1025ca625801376877b998bffd4af1a5ba2dd6dc8a9793848cb429",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8fb590925f1025ca625801376877b998bffd4af1a5ba2dd6dc8a9793848cb429",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "8fb590925f1025ca625801376877b998bffd4af1a5ba2dd6dc8a9793848cb429",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "29a221f277c900aceed073563b6b4aa17d3f701f4992a2d254a75503a871ce08",
+      "linuxCaptures": [
+        {
+          "pngSha256": "29a221f277c900aceed073563b6b4aa17d3f701f4992a2d254a75503a871ce08",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "29a221f277c900aceed073563b6b4aa17d3f701f4992a2d254a75503a871ce08",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "29a221f277c900aceed073563b6b4aa17d3f701f4992a2d254a75503a871ce08",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "translated-straight-text-path",
+      "input": "translated-straight-text-path.svg",
+      "width": 160,
+      "height": 96,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "16df4c7eb8156bbf9e38b64ba099926904f34c3f5631bed3922d02bc57d69b0a",
+      "reference": "references/translated-straight-text-path.png",
+      "linuxReference": "references/linux64/translated-straight-text-path.png",
+      "fontPack": "font-pack.json",
+      "selection": "Translation dependencies of retained inv-129, frozen before admitting translated rectangle strokes or text. Existing whole-document references remain unchanged.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "b74e4f22b34e49e9a094d3f425c9db51ddde937f55b344eea97dc1433469f0d4",
+      "referenceSha256": "c5df58b74e7dfb8808944681c606c6609cb132f1037fbd79c922b8dfb259ea0d",
+      "captures": [
+        {
+          "pngSha256": "c5df58b74e7dfb8808944681c606c6609cb132f1037fbd79c922b8dfb259ea0d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c5df58b74e7dfb8808944681c606c6609cb132f1037fbd79c922b8dfb259ea0d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c5df58b74e7dfb8808944681c606c6609cb132f1037fbd79c922b8dfb259ea0d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "ddf0b246c136c37b001aef67d77d88ecd4d4722707f92ff6fd762f69b0d47831",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ddf0b246c136c37b001aef67d77d88ecd4d4722707f92ff6fd762f69b0d47831",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ddf0b246c136c37b001aef67d77d88ecd4d4722707f92ff6fd762f69b0d47831",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ddf0b246c136c37b001aef67d77d88ecd4d4722707f92ff6fd762f69b0d47831",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "translated-curved-text-path",
+      "input": "translated-curved-text-path.svg",
+      "width": 160,
+      "height": 96,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "7afb4064467b6e0429364c003061cd04f84282052ab0acaae8d7bae65eb48eb6",
+      "reference": "references/translated-curved-text-path.png",
+      "linuxReference": "references/linux64/translated-curved-text-path.png",
+      "fontPack": "font-pack.json",
+      "selection": "Translation dependencies of retained inv-129, frozen before admitting translated rectangle strokes or text. Existing whole-document references remain unchanged.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "e9e4ccb84a90f52fa21d8d1667be30650aff4590d00e137a83744a7e8a0a6770",
+      "referenceSha256": "f45ef3bcac3e7a87e9d7cbfe09533c206422808668216792268927835bf2647b",
+      "captures": [
+        {
+          "pngSha256": "f45ef3bcac3e7a87e9d7cbfe09533c206422808668216792268927835bf2647b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f45ef3bcac3e7a87e9d7cbfe09533c206422808668216792268927835bf2647b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f45ef3bcac3e7a87e9d7cbfe09533c206422808668216792268927835bf2647b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "713ff32fa1ee7391c82cf5a8d65368f77f8ef06ea6bc574569070045b56d52a0",
+      "linuxCaptures": [
+        {
+          "pngSha256": "713ff32fa1ee7391c82cf5a8d65368f77f8ef06ea6bc574569070045b56d52a0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "713ff32fa1ee7391c82cf5a8d65368f77f8ef06ea6bc574569070045b56d52a0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "713ff32fa1ee7391c82cf5a8d65368f77f8ef06ea6bc574569070045b56d52a0",
           "startupHealth": "healthy",
           "profileCleaned": true
         }
