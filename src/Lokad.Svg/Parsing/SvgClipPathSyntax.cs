@@ -99,6 +99,19 @@ internal static class SvgClipPathSyntax
             }
             else if (state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon clipPolygon))
             {
+                if (clipPolygon.IsObjectBoundingBox)
+                {
+                    SvgObjectBoundingClip bounds = new(pending.Transform, parent);
+                    for (int index = pending.FirstGeometryIndex; index < pending.FirstGeometryIndex + pending.GeometryCount; index++)
+                        bounds.Add(state.Scene.GeometryAt(index), workCounter, cancellationToken);
+                    SvgLeafMaskOperation operation = bounds.Register(clipPolygon, state, workCounter, cancellationToken);
+                    for (int index = pending.FirstGeometryIndex; index < pending.FirstGeometryIndex + pending.GeometryCount; index++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        state.Scene.AssignLeafMask(index, SvgLeafMaskComposition.NewBinding(state, operation, state.Scene.GeometryAt(index).LeafMask));
+                    }
+                    continue;
+                }
                 if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths in transformed viewports are not implemented.");
                 if (state.GroupUseExpanded) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths with use instances are not implemented.");
                 if (pending.GeometryCount == 0) continue;
@@ -509,6 +522,25 @@ internal static class SvgClipPathSyntax
             }
             else if (state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon polygon))
             {
+                if (polygon.IsObjectBoundingBox)
+                {
+                    SvgObjectBoundingClip target = new(pending.Transform, parent);
+                    for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        SvgDrawCommand command = state.Scene.CommandAt(index);
+                        if (command.Kind == SvgDrawCommandKind.Geometry) target.Add(state.Scene.GeometryAt(command.GeometryIndex), workCounter, cancellationToken);
+                    }
+                    SvgLeafMaskOperation boundingOperation = target.Register(polygon, state, workCounter, cancellationToken);
+                    for (int index = pending.FirstCommandIndex; index < pending.EndCommandIndex; index++)
+                    {
+                        workCounter.Consume(cancellationToken);
+                        SvgDrawCommand command = state.Scene.CommandAt(index);
+                        if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                        state.Scene.AssignLeafMask(command.GeometryIndex, SvgLeafMaskComposition.NewBinding(state, boundingOperation, state.Scene.GeometryAt(command.GeometryIndex).LeafMask));
+                    }
+                    continue;
+                }
                 if (polygon.ContourEnds.Length != 1 && !polygon.UsesNativeReplay) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-contour polygon clip-paths on groups are implemented.");
                 SvgAffineTransform map = pending.Transform;
                 if (parent is {} viewport)

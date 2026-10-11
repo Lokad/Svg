@@ -461,8 +461,8 @@
         "height": 301
       },
       "selection": "Whole untouched fontless static export; explicit nominal 512-pixel source-page frame declared at bedad6fe before renderer comparison or capture. Root dimensions alone supply the browser frame.",
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Only userSpaceOnUse oval clip content is implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Exact against the unchanged declared 512x301 transparent reference through all twelve raw/prepared outputs on Windows/Linux; normalized oval clip bounds, dormant group replay and native placed lines.",
       "reference": "tests/References/inventory/inv-131-transparent.png",
       "referenceSha256": "e27f00f100215b96d826b4352a9e0fdad1c679dbea9076c1bfed0d9d55b053e4",
       "oracle": {

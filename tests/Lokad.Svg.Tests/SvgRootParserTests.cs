@@ -198,12 +198,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_group_wrapped_definition_content_instead_of_painting_it()
+    public void Retains_group_wrapped_definition_content_without_painting_it()
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g><defs><g><rect width='5' height='5' fill='red'/></g></defs></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         Assert.Empty(root.Geometries);
-        Assert.True(root.HasUnsupportedChild);
+        Assert.False(root.HasUnsupportedChild);
     }
 
     [Fact]
@@ -310,13 +310,12 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgErrorCode.LimitExceeded, rejected.ErrorCode);
     }
     [Fact]
-    public void Rejects_group_wrapped_definitions_at_conversion()
+    public void Group_wrapped_definitions_convert_without_painting_their_content()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><g><defs><g><rect width='5' height='5' fill='red'/></g></defs></g></svg>"u8.ToArray();
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] empty = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'/>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(empty, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
@@ -1509,8 +1508,10 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#line' x='1' y='2' opacity='0.5'/><defs><line id='line' x1='0' y1='1' x2='2' y2='1' stroke='red' stroke-width='2'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
-        Assert.Equal(new SvgAxisAlignedLine(1, 3, 3, 3, new SvgColor(255, 0, 0, 255), true, 2), geometry.AxisAlignedLine);
+        SvgAuthoredPath source = geometry.AuthoredPath ?? throw new InvalidOperationException("Missing native line centerline.");
+        Assert.Equal(new SvgDevicePoint(1, 3), source.SceneMap.Apply(source.Commands[0].First.X, source.Commands[0].First.Y));
+        Assert.Equal(new SvgDevicePoint(3, 3), source.SceneMap.Apply(source.Commands[1].First.X, source.Commands[1].First.Y));
+        Assert.Equal(2, source.StrokeStyle?.Width);
         SvgRecordedPaintAssertions.ElementOpacity(root, new(128, 0.5f));
     }
 
@@ -1520,8 +1521,10 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><symbol id='line'><line x2='2' stroke='red' stroke-width='2'/></symbol></defs><use href='#line' x='1' y='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
-        Assert.Equal(new SvgAxisAlignedLine(1, 1, 3, 1, new SvgColor(255, 0, 0, 255), true, 2), geometry.AxisAlignedLine);
+        SvgAuthoredPath source = geometry.AuthoredPath ?? throw new InvalidOperationException("Missing native line centerline.");
+        Assert.Equal(new SvgDevicePoint(1, 1), source.SceneMap.Apply(source.Commands[0].First.X, source.Commands[0].First.Y));
+        Assert.Equal(new SvgDevicePoint(3, 1), source.SceneMap.Apply(source.Commands[1].First.X, source.Commands[1].First.Y));
+        Assert.Equal(2, source.StrokeStyle?.Width);
     }
 
     [Fact]
@@ -1530,16 +1533,20 @@ public sealed class SvgRootParserTests
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><line id='line' x1='1' y1='1' x2='2' y2='1' stroke='red' stroke-width='2'/></defs><use href='#line' x='3' y='2' transform='scale(2) translate(1, 0)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry geometry = Assert.Single(root.Geometries);
-        Assert.Equal(SvgGeometryKind.AxisAlignedLine, geometry.Kind);
-        Assert.Equal(new SvgAxisAlignedLine(10, 6, 12, 6, new SvgColor(255, 0, 0, 255), true, 4), geometry.AxisAlignedLine);
+        SvgAuthoredPath source = geometry.AuthoredPath ?? throw new InvalidOperationException("Missing native line centerline.");
+        Assert.Equal(new SvgDevicePoint(10, 6), source.SceneMap.Apply(source.Commands[0].First.X, source.Commands[0].First.Y));
+        Assert.Equal(new SvgDevicePoint(12, 6), source.SceneMap.Apply(source.Commands[1].First.X, source.Commands[1].First.Y));
+        Assert.Equal(2, source.StrokeStyle?.Width);
+        Assert.Equal(2, source.StrokeStyle?.WidthMap.A);
+        Assert.Equal(2, source.StrokeStyle?.WidthMap.D);
     }
 
     [Fact]
-    public void Rejects_fractional_axis_aligned_line_use_offsets()
+    public void Fractional_line_use_offsets_match_direct_native_placement()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><line id='line' x2='2' stroke='red' stroke-width='2'/></defs><use href='#line' x='0.25'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] instance = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><line id='line' x2='2' y1='3' y2='3' stroke='red' stroke-width='2'/></defs><use href='#line' x='0.25'/></svg>"u8.ToArray();
+        byte[] direct = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><line x2='2' y1='3' y2='3' stroke='red' stroke-width='2' transform='translate(.25)'/></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(direct, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(instance, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]

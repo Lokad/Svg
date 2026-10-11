@@ -3313,7 +3313,7 @@ Malta graduation inventory record with no new download. Full 92-document Release
 - License: public domain (PD-self), declared by the pinned Commons revision and imageinfo metadata.
 - Original: `tests/Fixtures/candidates/inv-131.svg`, unchanged 2517-byte UTF-8 source; SHA-256 `ea04331d33a97c66c67e2f70e83effa3a491091702d873728d39a27392828db9`. Static, fontless and self-contained; declaration-only DTD remains untouched.
 - Declared output: explicit 512×301, scale 1, transparent. Converter uses original bytes; browser input inserts only root width/height. Three healthy cleaned captures on each platform are stable and byte identical; references froze before implementation.
-- Initial outcome on both platforms: UnsupportedFeature, “Only userSpaceOnUse oval clip content is implemented.” Queued under G5 for objectBoundingBox circle clips on rendered groups and referenced content. This document remains pending in the declared development ledger; the corporate cohort is unchanged.
+- Complete on both platforms: all twelve raw/prepared outputs match the unchanged 512×301 transparent reference. Shared normalized oval clips use stroke-independent leaf/group/instance bounds; dormant defs groups reuse ordered source replay and placed lines retain native stroke coverage. Seven separate CC0 controls are exact. Qualification passes 7,088 tests per platform, preserving prior outcomes and PNGs. Development ledger: 35/35 complete (new source batch 2/2); corporate 27/27 documents / 258/258 variants remain unchanged. Finite G2–G9/S17 exits remain open.
 
 ### inv-130 — Scaled rectangle strokes
 

@@ -17,8 +17,19 @@ internal static class SvgDefinitionParser
         if (state.HasPatternTemplateReferences && state.PatternDepth < 0 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName))
             SvgPatternReferenceResolver.Resolve(state, false, workCounter, cancellationToken);
         bool symbolLocation = state.SymbolDepth >= 0 && state.SymbolDefinition is {} activeSymbol && reader.Depth == activeSymbol.ChildDepth(state.SymbolDepth);
-        if (symbolLocation && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgSymbolContentParser.TryParse(reader, root, state, namedColors, workCounter, cancellationToken)) return true;
+        if (symbolLocation && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgSymbolContentParser.TryParse(reader, root, state, namedColors, workCounter, cancellationToken, false)) return true;
         bool inDefinitions = (state.DefinitionsDepth >= 0 && reader.Depth == state.DefinitionsDepth + 1) || symbolLocation;
+        if (inDefinitions && state.SymbolDepth < 0 && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "g")
+        {
+            // A dormant group shares ordered source replay with symbols, without
+            // adding a viewport or painting its definition location.
+            state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken,
+                new(SvgPaint.Default, default, null, false, null, null, SvgPaintOpacity.Opaque));
+            _ = SvgSymbolContentParser.TryParse(reader, root, state, namedColors, workCounter, cancellationToken, true);
+            if (reader.IsEmptyElement) RegisterSymbol(state, workCounter, cancellationToken);
+            else state.SymbolDepth = reader.Depth;
+            return true;
+        }
         bool rootDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && directChild && reader.GetAttribute("id") is not null;
         bool groupNestedDefinition = state.DefinitionsDepth < 0 && state.SymbolDepth < 0 && state.PatternId is null && state.MaskId is null && state.ClipPathId is null && state.GroupDepth > 0 && reader.GetAttribute("id") is not null;
         if ((inDefinitions || rootDefinition || groupNestedDefinition) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "filter")
@@ -213,22 +224,24 @@ internal static class SvgDefinitionParser
             {
                 if (state.ClipBox is not null || state.ClipPolygon is not null)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element curved clip content is implemented.");
-                if (state.ClipIsObjectBoundingBox)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse oval clip content is implemented.");
                 SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
-                SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, context.LengthBases) : SvgEllipseSyntax.ParseEllipse(reader, context.LengthBases);
+                SvgViewportLengthBases clipBases = state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases;
+                SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, clipBases) : SvgEllipseSyntax.ParseEllipse(reader, clipBases);
                 SvgAffineTransform childMap = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
                 if (!SvgOrthogonalGeometryLowering.AppendNativeEllipseCommands(commands, oval.CenterX, oval.CenterY, oval.RadiusX, oval.RadiusY))
-                    state.ClipBox = new(0, 0, 0, 0);
+                {
+                    if (state.ClipIsObjectBoundingBox) state.ClipPolygon = new([], []) { IsObjectBoundingBox = true };
+                    else state.ClipBox = new(0, 0, 0, 0);
+                }
                 else
                 {
                     OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
                     SvgAuthoredPath source;
                     try { source = SvgAuthoredPath.CreateConvexShape(owned, childMap, state.Budget); }
                     catch { owned.Dispose(); throw; }
-                    state.ClipPolygon = new([], []) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned };
+                    state.ClipPolygon = new([], []) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned, IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
                     using SvgPreparedPathContours prepared = source.Prepare(SvgAffineTransform.Identity, false, state.Budget, workCounter, cancellationToken);
                     state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
                         + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length), SvgMemoryCategory.Scene));
@@ -236,7 +249,7 @@ internal static class SvgDefinitionParser
                     int[] ends = new int[prepared.ContourEnds.Length];
                     for (int index = 0; index < points.Length; index++) { workCounter.Consume(cancellationToken); points[index] = prepared.Points[index]; }
                     for (int index = 0; index < ends.Length; index++) { workCounter.Consume(cancellationToken); ends[index] = prepared.ContourEnds[index]; }
-                    state.ClipPolygon = new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned };
+                    state.ClipPolygon = new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned, IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
                 }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 return true;

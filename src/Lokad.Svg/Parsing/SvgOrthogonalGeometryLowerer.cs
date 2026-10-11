@@ -1361,10 +1361,13 @@ internal ref struct SvgOrthogonalGeometryLowering
         try
         {
             SvgAffineTransform retainedMap = deviceMap;
+            SvgRectangle? sourceBounds = null;
             double magnification = Math.Max(Math.Sqrt(deviceMap.A * deviceMap.A + deviceMap.B * deviceMap.B), Math.Sqrt(deviceMap.C * deviceMap.C + deviceMap.D * deviceMap.D));
             if (dashes is null) commands = authored.Detach();
             else
             {
+                SvgRectangle originalBounds = SvgPathBounds.Compute(authored.AsSpan(), _workCounter, _cancellationToken);
+                sourceBounds = nonScaling ? deviceMap.Apply(originalBounds) : originalBounds;
                 commands = SvgNativeDashPath.Filter(authored.AsSpan(), dashes, dashOffset, pathLength,
                     nonScaling ? deviceMap : SvgAffineTransform.Identity, (float)(outputMagnification * (nonScaling ? 1 : magnification)), budget, _workCounter, _cancellationToken);
                 if (nonScaling) retainedMap = SvgAffineTransform.Identity;
@@ -1376,7 +1379,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 if (stroked.Geometries.Length == 1)
                 {
-                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap, shape), stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Missing native stroke outline."), budget) };
+                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new SvgAuthoredStrokeStyle(nonScaling ? deviceWidth : width, nonScaling ? SvgAffineTransform.Identity : deviceMap, cap, shape) { SourceBounds = sourceBounds }, stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Missing native stroke outline."), budget) };
                     commands = new([], null);
                 }
                 return stroked;

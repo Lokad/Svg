@@ -12051,3 +12051,42 @@ The selected development ledger is 34/35 complete; the new source batch is 1/2.
 Next is `inv-131`, requiring objectBoundingBox oval clips and group/reference
 geometry bounds. Finite G2–G9 and S17 exits remain open. The private receipt is
 `artifacts/scaled-rectangle-strokes-20261011/final-qualification.json`.
+
+
+### Normalized oval group and instance clips (2026-10-11)
+
+The unchanged public-domain `inv-131` completes its declared 512×301 transparent
+output through all twelve APIs on Windows/Linux. Seven separately frozen CC0
+controls are exact at 96×72. Original inputs and native references remain unchanged.
+This completes the selected 35/35 development documents and the new source batch
+2/2, separately from corporate 27/258 and the existing acceptance ledgers.
+
+Normalized circle/ellipse content shares the native curved clip registry. A bounded
+source-geometry union excludes stroke extent while retaining zero-width/height
+children until group union. Its referencing map places the normalized contour.
+Leaves, groups and expanded local instances attach the same existing clip operation.
+Native centerlines preserve cap-independent bounds; dash filtering retains the
+undashed source box without retaining a second command collection. Dormant defs
+groups share ordered symbol source nodes with no added viewport. Existing source
+style, transform, visibility, opacity, work, ownership and cancellation paths apply.
+
+The first admitted replay differed at 398 document pixels and 42 referenced-line
+control pixels. Mapping the integer line primitive lost native stroke coverage.
+Placed line source replay now retains its centerline and width map, removing both
+differences. Extreme mapped widths still reject explicitly. General rotated/skewed
+or singular referencing maps and non-axis source geometry maps remain unsupported;
+their finite promises stay open in PLAN.md, alongside the other G2–G9 exits.
+
+Seventeen focused core checks cover caps/dashes, empty/degenerate clips, dormant
+source styling, duplicate IDs, sampled work/memory denial, cancellation and cleanup.
+Complete qualification passes 7,088 tests per platform (4,921 core / 2,161 visual /
+six FontProbe), preserving the 2,908 prior outcomes, 2,855 ordinary PNGs, historical
+exact results, focused/static CSS outputs and thirty exact font outputs per platform.
+The preceding whole inv-130 and its six controls remain exact through twelve APIs.
+One older non-axis rectangle instance now reaches its existing geometry gate
+after dormant group replay; its UnsupportedFeature outcome is unchanged. This
+reviewed message change is retained in the private receipt, without reference churn.
+The existing two-workload resource probe covers inv-131 and referenced-lines on
+success and tight denial. Approximate memory policy from 8399711b is unchanged;
+no new measurement framework or completed-memory requalification was introduced.
+Private receipt: artifacts/object-bounding-clips-20261011/final-qualification.json.

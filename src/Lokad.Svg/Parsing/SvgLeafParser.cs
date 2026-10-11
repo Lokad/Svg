@@ -672,7 +672,7 @@ internal static class SvgLeafParser
         if (SvgPatternSyntax.IsPatternFill(style.Fill)) style = style with { Fill = "none" };
         SvgResolvedPaintableElement element = context.ResolveShape(style, reader, true);
         double lineWidth = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? syntax.StrokeWidth ?? "1", "line");
-        if (element.Transform != SvgAffineTransform.Identity || frame is {} scaled && scaled.IsScaled || syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2 || syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2 || lineWidth % 2 != 0 || element.Presentation.StrokeColor is null)
+        if (context.RetainInstanceStrokePath || NeedsSourceBounds() || element.Transform != SvgAffineTransform.Identity || frame is {} scaled && scaled.IsScaled || syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2 || syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2 || lineWidth % 2 != 0 || element.Presentation.StrokeColor is null)
             return LowerNativeLine();
         SvgColor? strokeColor = element.Presentation.StrokeColor;
         int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
@@ -703,6 +703,19 @@ internal static class SvgLeafParser
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
         if (linecap == SvgStrokeCap.Square && color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         return LowerDashedLine();
+
+        bool NeedsSourceBounds()
+        {
+            // Forward clip definitions can still select normalized units. Keep
+            // original endpoints before caps, dashes or viewport clipping.
+            if (state.DeferringLeafClip) return true;
+            foreach (PendingGroupClip pending in state.PendingGroupClips.AsSpan())
+            {
+                context.WorkCounter.Consume(context.CancellationToken);
+                if (pending.EndCommandIndex < 0 && (!state.ClipPolygons.TryGetValue(pending.ClipId, out SvgClipPolygon clip) || clip.IsObjectBoundingBox)) return true;
+            }
+            return false;
+        }
 
         SvgParsedGeometry LowerNativeLine()
         {

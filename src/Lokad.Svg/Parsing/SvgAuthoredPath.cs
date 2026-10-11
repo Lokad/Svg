@@ -8,7 +8,11 @@ internal enum SvgAuthoredPathVerb { Move, Line, Quadratic, Cubic, Arc, Conic, En
 internal enum SvgAuthoredStrokeShape { Path, Rectangle }
 
 /// <summary>Retains stroke width, its independent scene map, cap semantics and source operation beside the centerline.</summary>
-internal readonly record struct SvgAuthoredStrokeStyle(double Width, SvgAffineTransform WidthMap, SvgStrokeCap Cap, SvgAuthoredStrokeShape Shape);
+internal readonly record struct SvgAuthoredStrokeStyle(double Width, SvgAffineTransform WidthMap, SvgStrokeCap Cap, SvgAuthoredStrokeShape Shape)
+{
+    /// <summary>Retains undashed geometry bounds when filtering replaces the source verbs.</summary>
+    internal SvgRectangle? SourceBounds { get; init; }
+}
 
 [Flags]
 internal enum SvgAuthoredArcFlags : byte { None = 0, Large = 1, Sweep = 2 }
@@ -225,8 +229,15 @@ internal sealed class SvgAuthoredPath : IDisposable
         SvgAuthoredPath? copiedOutline = null;
         try
         {
-            SvgAuthoredStrokeStyle? copiedStyle = StrokeStyle is SvgAuthoredStrokeStyle style
-                ? style with { WidthMap = placement.ComposeChecked(style.WidthMap) } : null;
+            SvgAuthoredStrokeStyle? copiedStyle = null;
+            if (StrokeStyle is SvgAuthoredStrokeStyle style)
+            {
+                SvgAffineTransform widthMap = placement.ComposeChecked(style.WidthMap);
+                double width = style.Width * Math.Max(Math.Sqrt(widthMap.A * widthMap.A + widthMap.B * widthMap.B), Math.Sqrt(widthMap.C * widthMap.C + widthMap.D * widthMap.D));
+                if (!double.IsFinite(width) || width > int.MaxValue)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Placed native stroke widths exceed the supported numeric range.");
+                copiedStyle = style with { WidthMap = widthMap };
+            }
             copiedOutline = _strokeOutline?.Copy(placement, budget, workCounter, cancellationToken);
             return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, copiedOutline, IsKnownConvex, budget);
         }

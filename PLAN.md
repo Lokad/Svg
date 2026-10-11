@@ -5,8 +5,8 @@ Updated 2026-10-11. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**34/35 retained development documents are complete; one newly sourced output
-remains pending. Both original marker/drop-shadow acceptance fixtures (2/2) are
+**35/35 retained development documents are complete, including both newly sourced
+outputs. Both original marker/drop-shadow acceptance fixtures (2/2) are
 complete.** Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
 failure-selected development corpus establishes no representative success rate.
@@ -307,7 +307,7 @@ and the radiation symbol, tiger, Malta, Portugal, Bhutan, South Africa, Wikifood
 and striped pattern, non-ionizing warning, geometric pattern, set-screw diagram,
 gradient-mask example, soccerball mask, Fibonacci spiral and railway tunnel
 junction, soccerball with shadow and transparent striped pattern are complete.
-The selected development queue is **34/35 complete**, including both baseball,
+The selected development queue is **35/35 complete**, including both baseball,
 both arrow exports, both path-marker documents and the two public-domain filter
 exports. The original marker-instance and drop-shadow acceptance fixtures are
 also complete, counted separately (**2/2**). Both original supplied-font acceptance
@@ -337,8 +337,9 @@ the original nine diagnostics and eight translation controls are separately
 documents before this addition; its former 30/30 headline was stale. The listed
 checkpoint completed all **33 then-listed development documents**, without
 changing the corporate cohort or original acceptance ledgers. Two later source
-additions below make the current queue **34/35** after completing the scaled-stroke
-export. Other promised combinations and finite effects remain open.
+additions below make the current queue **35/35** after completing the scaled-stroke
+and group-clipping exports. Other promised combinations and finite effects remain
+open.
 Caller-resolved initial families and absolute CSS font sizes are admitted while
 position syntax retains its existing bounds. The point-size control is exact
 through twelve raw/prepared outputs on both platforms; the omitted-family
@@ -416,19 +417,38 @@ release owned storage. No package/API contract changed. The private receipt is
 `artifacts/scaled-rectangle-strokes-20261011/final-qualification.json`.
 General non-axis rectangle strokes, general text maps and per-span transforms
 remain in their original group exits; G3/G4 are not complete.
-The next whole deliverable is the separately retained **`inv-131`** group-clipping
-export at **512×301**. Extend shared objectBoundingBox oval clip content and
-group/reference geometry bounds, then finish all four panels against its unchanged
-reference. Seven separate CC0 controls are frozen before implementation at 96×72:
-leaf stroke-independent bounds, overlapping/disjoint rectangle groups, crossed
-lines, composed placement, group references and fractional root mapping. Three
-healthy cleaned captures per platform agree byte-for-byte; all seven currently
-reject at the oval clip admission gate. Both untouched sources have healthy,
-cleaned, stable three-process
-browser captures per platform; Windows/Linux references are byte identical.
-The new source batch is **1/2 complete** and the development queue **34/35**;
-the previous 33 completions remain protected. Corporate membership and references
-remain frozen.
+The public-domain group-clipping export **`inv-131`** is now complete at its
+unchanged **512×301**, scale 1, transparent output through all twelve raw and
+prepared APIs on Windows/Linux. Shared normalized oval clip placement uses
+stroke-independent source geometry bounds, including zero-width/height children
+before group union. Dormant groups inside `defs` reuse ordered symbol source
+replay without adding a viewport. Placed line instances retain native centerlines;
+caps and dash filtering preserve the original geometry bounds.
+All **seven separate CC0 controls** at 96×72 are exact: leaf stroke-independent
+bounds, overlapping/disjoint groups, crossed lines, composed placement, group
+references and fractional root mapping. Their unchanged references froze before
+implementation from three healthy cleaned native captures per platform.
+Seventeen focused core checks protect empty/degenerate bounds, caps/dashes,
+source styles/transforms, duplicate IDs, sampled resource denial and cancellation.
+Extreme placed stroke widths retain an explicit numeric rejection.
+Complete qualification passes **7,088 tests per platform** (4,921 core / 2,161
+visual / six FontProbe), preserving all **2,908 prior outcomes**, **2,855 prior
+ordinary bank PNGs**, all established exact comparisons, prior focused/static CSS
+results, **30 exact font outputs per platform** and corporate **27/27 documents /
+258/258 variants**. The preceding whole document and six frame controls also
+remain exact through all twelve APIs. The existing two-workload resource probe
+covers the whole document and a referenced-line control on success and tight
+memory denial; owned storage releases on both exits. No package/API contract
+changed. Receipt: `artifacts/object-bounding-clips-20261011/final-qualification.json`.
+The new source batch is **2/2 complete**, and the selected development queue is
+**35/35**. G2–G9/S17 remain open: general source/reference maps, other clip content
+and the finite original-scope combinations retain their explicit group exits.
+Next, refresh the remaining gap queue from those exits and a batch of at most ten
+public-domain/CC0 candidates. Retain whole static, self-contained SVGs that expose
+a rejection or pixel mismatch; declare outputs and freeze references before
+correction. Select
+the next shared change by the whole documents it advances. Completed documents
+and corporate membership remain protected.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -1186,8 +1206,8 @@ and leave it open; a supported document does not authorize shrinking group scope
 ### Development sourcing and release work
 
 The original fidelity repairs and the **33 previously completed development
-documents** remain protected. The new `inv-130` output is complete and `inv-131`
-remains pending (**1/2**), making the selected development queue **34/35 complete**.
+documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
+(**2/2**), making the selected development queue **35/35 complete**.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh

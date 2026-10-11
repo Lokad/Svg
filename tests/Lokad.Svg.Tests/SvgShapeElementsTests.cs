@@ -461,13 +461,12 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Fractional_effective_line_width_stays_unsupported()
+    public void Fractional_effective_line_width_matches_direct_native_scaling()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><line id='l' x1='0' y1='0' x2='4' y2='0' stroke='red' stroke-width='2'/></defs><use href='#l' transform='scale(1.25)'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] direct = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><line x1='0' y1='0' x2='4' y2='0' stroke='red' stroke-width='2' transform='scale(1.25)'/></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(direct, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]

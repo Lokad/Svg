@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Parses retained group/use content without rendering definition locations or retaining XML.</summary>
 internal static class SvgSymbolContentParser
 {
-    internal static bool TryParse(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
+    internal static bool TryParse(XmlReader reader, SvgRootAttributes root, SvgDocumentState state, IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token, bool definitionRoot)
     {
         if (reader.LocalName is not ("g" or "use")) return false;
         SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol content requires an open builder.");
@@ -18,6 +18,7 @@ internal static class SvgSymbolContentParser
         if (id is not null && (id == state.SymbolId || state.Definitions.TryGetValue(id, out _) || state.GroupSnapshots.TryGetValue(id, out _) || state.RenderedGroupDefinitions.TryGetValue(id, out _)))
             throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
         id = id is null ? null : state.Strings.Copy(id);
+        if (definitionRoot) state.SymbolId = id;
         InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, false, state, work, token);
         SvgComputedStyle style = SvgComputedStyleResolver.Resolve(reader, sheet, work, token);
         SvgPaintOpacity? strokeOpacity = style.StrokeOpacity is null ? null : SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
@@ -40,9 +41,9 @@ internal static class SvgSymbolContentParser
             SvgPaintOpacity sourceOpacity = style.ResolveOpacity(inherited.SourceOpacity).GetOpacity();
             SvgSymbolPresentation presentation = new(paint, inherited.Stroke.ResolveChild(style with { Linecap = stroke.Linecap, Linejoin = stroke.Linejoin, Dasharray = stroke.Dasharray, Dashoffset = stroke.Dashoffset, Width = stroke.Width, Miterlimit = stroke.Miterlimit, StrokeOpacity = stroke.StrokeOpacity, Stroke = stroke.Stroke }),
                 Copy(style.FillRule) ?? inherited.FillRule, style.Fill is not null || inherited.HasAuthoredFill, opacity ?? inherited.FillOpacity, color ?? inherited.CurrentColor, sourceOpacity) { InheritsOpacity = style.InheritsOpacity, Markers = markers.InheritFrom(inherited.Markers), PaintOrder = style.PaintOrder ?? inherited.PaintOrder, PaintServerFill = shaderFill, PaintServerId = shaderId };
-            content.BeginGroup(reader.Depth, id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
+            content.BeginGroup(reader.Depth, definitionRoot ? null : id, presentation, new(paint, style.Fill is not null, opacity, color, sourceOpacity, displayed, visible)
                 { InheritsOpacity = style.InheritsOpacity, Markers = markers, PaintOrder = style.PaintOrder, PaintServerFill = shader ? shaderFill : null, PaintServerId = shader ? shaderId : null, FillRule = Copy(style.FillRule), Stroke = stroke, StrokeOpacity = strokeOpacity }, SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
-            if (id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
+            if (!definitionRoot && id is not null) state.Definitions.TryAdd(id, new([], false, null, null) { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true });
             if (reader.IsEmptyElement) content.EndGroup(reader.Depth, state);
         }
         else

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Seven frozen normalized oval clip controls advancing complete inv-131; separate from whole-document completion. All seven retain the measured oval clip admission gate before implementation.",
+  "purpose": "Seven frozen normalized oval clip controls advancing complete inv-131; all twelve outputs are exact on Windows/Linux through shared source geometry bounds and native replay. Controls remain separate from whole-document completion.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -34,9 +34,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+      "role": "fidelity"
     },
     {
       "id": "overlapping-group",
@@ -55,9 +53,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+      "role": "fidelity"
     },
     {
       "id": "disjoint-group",
@@ -76,9 +72,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+      "role": "fidelity"
     },
     {
       "id": "crossed-line-group",
@@ -97,9 +91,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+      "role": "fidelity"
     },
     {
       "id": "composed-group",
@@ -118,9 +110,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+      "role": "fidelity"
     },
     {
       "id": "referenced-lines",
@@ -139,9 +129,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+      "role": "fidelity"
     },
     {
       "id": "fractional-root-map",
@@ -160,9 +148,7 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+      "role": "fidelity"
     }
   ]
 }

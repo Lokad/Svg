@@ -74,7 +74,8 @@ internal static class SvgReferenceResolver
             bool retainMappedContour = source.LocalName == "path" && definition.Geometries.Length > 0
                 && (definition.Geometries[0].Kind is SvgGeometryKind.OrthogonalBand or SvgGeometryKind.Rectangle
                     || definition.Geometries[0].AuthoredPath is { StrokeStyle: null })
-                || !reference.Transform.IsAxisAligned && source.LocalName is "path" or "rect" or "polygon" or "polyline";
+                || !reference.Transform.IsAxisAligned && source.LocalName is "path" or "rect" or "polygon" or "polyline"
+                || source.LocalName == "line" && PlainInstancePlacement(reference, frame) != SvgAffineTransform.Identity;
             if (retainMappedContour || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers))
             {
                 foreach (SvgGeometry geometry in definition.Geometries)
@@ -1536,13 +1537,28 @@ internal static class SvgReferenceResolver
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
         SvgViewportFrame? frame = pendingUse.Frame;
-        if (pendingUse.DeferredClip is SvgDeferredClip deferred) frame = ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state);
+        SvgClipPolygon? boundingClip = pendingUse.DeferredClip is {} clipReference
+            && state.ClipPolygons.TryGetValue(clipReference.ClipId, out SvgClipPolygon clipContent) && clipContent.IsObjectBoundingBox
+            ? clipContent : null;
+        if (pendingUse.DeferredClip is SvgDeferredClip deferred)
+            frame = boundingClip is null ? ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state) : deferred.Parent;
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
         byte? mask = pendingUse.Mask;
         if (pendingUse.MaskReference is not null && mask is null && !state.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(pendingUse.MaskReference), out _)) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
         SvgGeometry[] applied = ApplyInstanceMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference, state, workCounter, cancellationToken);
         try
         {
+            if (boundingClip is {} content)
+            {
+                SvgObjectBoundingClip bounds = new(pendingUse.Reference.Transform, frame);
+                foreach (SvgGeometry geometry in applied) bounds.Add(geometry, workCounter, cancellationToken);
+                SvgLeafMaskOperation operation = bounds.Register(content, state, workCounter, cancellationToken);
+                for (int index = 0; index < applied.Length; index++)
+                {
+                    workCounter.Consume(cancellationToken);
+                    applied[index] = applied[index] with { LeafMask = SvgLeafMaskComposition.NewBinding(state, operation, applied[index].LeafMask) };
+                }
+            }
             if (pendingUse.MaskScopeCount > 0) foreach (SvgGeometry geometry in applied) SvgMaskSyntax.ValidateMaskScopeSnapshot(state, pendingUse.MaskScopeStart, pendingUse.MaskScopeCount, SvgMaskSyntax.BoundingBox(geometry));
             return applied;
         }

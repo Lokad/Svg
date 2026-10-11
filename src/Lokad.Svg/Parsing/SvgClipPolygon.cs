@@ -13,6 +13,8 @@ internal readonly record struct SvgClipPolygon(SvgDevicePoint[] Points, int[] Co
     internal bool UsesNativeReplay { get; init; }
     /// <summary>Retains the native oval clip identity when its child map preserves axis-aligned oval bounds.</summary>
     internal bool IsOval { get; init; }
+    /// <summary>Maps normalized content through the referencing element's geometry bounds before native replay.</summary>
+    internal bool IsObjectBoundingBox { get; init; }
     /// <summary>Preserves the union of mapped child layout boxes independently of path union geometry.</summary>
     internal SvgPaintBounds? ResourceBounds { get; init; }
     internal int ChildCount { get; init; } = 1;
