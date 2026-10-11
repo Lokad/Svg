@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Seven frozen normalized oval clip controls advancing complete inv-131; separate from whole-document completion. All seven retain the measured oval clip admission gate before implementation.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "leaf-stroke-bounds",
+      "input": "leaf-stroke-bounds.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/leaf-stroke-bounds.png",
+      "sourceSha256": "96427e0cce8cb6f75b38c9036583d748347ccd973aa5751652ca78659b3e25ba",
+      "referenceSha256": "31b7611a7822faa2296037eaf9daed00cb415ed7a00d660e9aa7bc15f1a415be",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+    },
+    {
+      "id": "overlapping-group",
+      "input": "overlapping-group.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/overlapping-group.png",
+      "sourceSha256": "aa0a70c03eaf7f4b83e19d58f86bdadeef3101d7da04c693f64e58e77fbef9d1",
+      "referenceSha256": "d598709039d1de7f70937da662ec52b67f4deece6b836346445198d72987a207",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+    },
+    {
+      "id": "disjoint-group",
+      "input": "disjoint-group.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/disjoint-group.png",
+      "sourceSha256": "ade6aefb324c9ec7fb68b8a07768b05161b2bca580a4f9c5c931de9ae47fdb67",
+      "referenceSha256": "5d54a8a47a39c673b405011351b8189ec58a494362f3bd601dc8230873ba7ccd",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+    },
+    {
+      "id": "crossed-line-group",
+      "input": "crossed-line-group.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/crossed-line-group.png",
+      "sourceSha256": "32b703742f93622e3776322492cec0a7ac4b2bfcdf5c1948a870c6956ea5ace4",
+      "referenceSha256": "d7bde9a725fc6aa33d162fadb51a63fde50c5944ac32122ab72a1b9ca5774131",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+    },
+    {
+      "id": "composed-group",
+      "input": "composed-group.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/composed-group.png",
+      "sourceSha256": "a2c5d3e858f401b41e21df73e022300d31e6b55b34bfbe0b8cb282e01252d7e1",
+      "referenceSha256": "4010e595a59ef096cd08118e78f8b478fd9d596fb0843948dedf4105f765d736",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+    },
+    {
+      "id": "referenced-lines",
+      "input": "referenced-lines.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/referenced-lines.png",
+      "sourceSha256": "359bdd3f3751c2a30ba9bf88e1989834f45ad18e08b272a4738c3093063fe78b",
+      "referenceSha256": "a740db10ac4c43fddbede45cb4e3e8f4937a37280911e16a9b8c692d0c846622",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+    },
+    {
+      "id": "fractional-root-map",
+      "input": "fractional-root-map.svg",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "reference": "references/fractional-root-map.png",
+      "sourceSha256": "74509ced1358e17c2221ff7cca1018cd07c1ebe3e1a9e7b8ceccd3dc9680dfe2",
+      "referenceSha256": "0938cfed463a24838387fbb315e6b972637d1e2d776082854672b15da46a4ce3",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared at 6cac1b42 before renderer edits or comparison: normalized oval clips on leaf/group/reference geometry bounds, composed placement and fractional root mapping; advances complete inv-131.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature",
+      "observedMessage": "Only userSpaceOnUse oval clip content is implemented."
+    }
+  ]
+}

@@ -43,3 +43,6 @@ tests/References/inventory/capture-inputs/inv-130-512x512.svg -text whitespace=-
 
 # Preserve the frozen source-coordinate stroke control bytes.
 tests/Research/transformed-rectangle-strokes/*.svg -text
+
+# Preserve the frozen normalized clip control bytes.
+tests/Research/object-bounding-clips/*.svg -text

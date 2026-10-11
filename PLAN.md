@@ -419,7 +419,12 @@ remain in their original group exits; G3/G4 are not complete.
 The next whole deliverable is the separately retained **`inv-131`** group-clipping
 export at **512×301**. Extend shared objectBoundingBox oval clip content and
 group/reference geometry bounds, then finish all four panels against its unchanged
-reference. Both untouched sources have healthy, cleaned, stable three-process
+reference. Seven separate CC0 controls are frozen before implementation at 96×72:
+leaf stroke-independent bounds, overlapping/disjoint rectangle groups, crossed
+lines, composed placement, group references and fractional root mapping. Three
+healthy cleaned captures per platform agree byte-for-byte; all seven currently
+reject at the oval clip admission gate. Both untouched sources have healthy,
+cleaned, stable three-process
 browser captures per platform; Windows/Linux references are byte identical.
 The new source batch is **1/2 complete** and the development queue **34/35**;
 the previous 33 completions remain protected. Corporate membership and references
