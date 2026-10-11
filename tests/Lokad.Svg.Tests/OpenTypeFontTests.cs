@@ -1785,7 +1785,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example'>A</text></svg> trailing", SvgErrorCode.MalformedInput)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' textLength='50'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' stroke='red'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' fill-rule='evenodd'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' fill-rule='positive'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' style='white-space: pre-line'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-variant='small-caps' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text text-decoration='underline' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
@@ -2488,7 +2488,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Svg_based_snapshot_rejects_nondefault_text_fill_rules_before_font_acquisition()
+    public async Task Svg_based_snapshot_rejects_invalid_text_fill_rules_before_font_acquisition()
     {
         byte[] bytes = CreateFont(1024, 3, 2, 1);
         string hash = Convert.ToHexString(SHA256.HashData(bytes));
@@ -2496,7 +2496,7 @@ public sealed partial class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
 
-        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused' fill-rule='evenodd'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused' fill-rule='positive'>x</text></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, source.RequestCount);
@@ -2511,7 +2511,7 @@ public sealed partial class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
 
-        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><g style='fill-rule:evenodd'><text font-family='Unused'>x</text></g></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><g style='fill-rule:positive'><text font-family='Unused'>x</text></g></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, source.RequestCount);
@@ -2545,7 +2545,7 @@ public sealed partial class OpenTypeFontTests
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
         var source = new CountingFontSource(bytes);
 
-        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><style>g { fill-rule: evenodd; }</style><g><text font-family='Unused'>x</text></g></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
+        SvgException exception = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync("<svg xmlns='http://www.w3.org/2000/svg'><style>g { fill-rule: positive; }</style><g><text font-family='Unused'>x</text></g></svg>"u8.ToArray(), catalog, new CountingFontProvider(source), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, source.RequestCount);
@@ -3946,7 +3946,7 @@ public sealed partial class OpenTypeFontTests
 
     [Theory]
     [InlineData("clip-path='url(#missing)'")]
-    [InlineData("fill-rule='evenodd'")]
+    [InlineData("fill-rule='positive'")]
     public async Task Rejects_unimplemented_direct_text_attributes(string attribute)
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);

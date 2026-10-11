@@ -519,7 +519,7 @@
       "linuxReference": "references/linux64/text-fill-rule-evenodd.png",
       "fontPack": "font-pack.json",
       "selection": "Retained paired text fill-rule controls before changing the inherited direct-text admission gate; supplied Noto Sans through the existing default serif contract.",
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "oracleInputSha256": "27ae4a7be739fbb29a6666b0d9762e838804305e841fd04f3d743cc2cc1ef425",
       "referenceSha256": "711227b7bd5ed4fa5e2e4a0917c62af6dca6368cab2ba4926af5018c29afb7e1",
       "captures": [

@@ -227,7 +227,8 @@ internal static class SvgFontRequestDiscovery
                         SvgElementAttributePolicy.ValidateText(reader, workCounter, cancellationToken);
                         whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, specifiedWhiteSpace, inheritedTextWhitespaceMode);
                     }
-                    if (inertDepth < 0 && !insideDirectText && isTextEligible && style.FillRule is not null && !style.FillRule.Equals("nonzero", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only the default nonzero fill rule is implemented for direct text.");
+                    // SVG text ignores valid fill-rule values; discovery still validates the admitted syntax.
+                    if (inertDepth < 0 && !insideDirectText && isTextEligible) SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
                     if (inertDepth < 0 && !insideDirectText && isTextEligible && style.Stroke is not null && !style.Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only unpainted strokes are implemented for direct text.");
                     DiscoveryCandidate candidateState;
                     if (!hasUnsupportedContent && inertDepth < 0 && !insideDirectText && isTextEligible && reader.GetAttribute("transform") is null && style.Transform == SvgAffineTransform.Identity && style.IsDisplayed && style.IsVisible && style.HasFill && style.Text.Family is string family)

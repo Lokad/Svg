@@ -7,6 +7,10 @@ ordinary conversion without a required prepared snapshot remains unsupported.
 Absolute font sizes admit bare numbers, px, in, cm, mm, pt and pc at 96 CSS pixels
 per inch. Text coordinates retain their existing bare-number/px subset.
 
+Direct text admits both valid `fill-rule` values, `nonzero` and `evenodd`,
+including inherited and cascaded declarations. SVG text ignores that property;
+glyph winding and coverage remain unchanged. Invalid values remain unsupported.
+
 Embedded root and definition stylesheets are collected in source order before
 font discovery and lowering. They may follow rendered content or definitions;
 the existing cascade, specificity and important precedence apply. The prepass
