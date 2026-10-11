@@ -318,8 +318,9 @@ platforms. The retained public-domain static CSS diagram `inv-129`
 ([source record](docs/INVENTORY.md#inv-129--static-css-comparison-diagram-remaining-scope-candidate))
 is the next selected complete document at unchanged explicit **750×200**, scale 1,
 transparent. Its declared caller catalogue maps the initial `serif` family to the
-existing public Noto Sans Regular face 0; omitted families request that alias,
-and a missing catalogue mapping fails without consulting host fonts. The bank
+existing public Noto Sans Regular face 0; omitted families request that alias
+through the existing catalogue selection and fallback rules. An unavailable
+selected font source fails without consulting host fonts. The bank
 `tests/Research/static-css-document/manifest.json` freezes the whole document and
 five separate diagnostic controls on both platforms before implementation.
 Finish its default-family requests, absolute point font size, late stylesheet,
@@ -327,6 +328,13 @@ descendant/child selectors, explicit inheritance, translated labels and span
 paint against those references. Keep it outside completed-document denominators
 until every declared output matches. Other promised combinations and finite
 effects remain open.
+The first shared correction admits caller-resolved initial families and absolute
+CSS font sizes while retaining the narrower position syntax. The point-size
+control is exact through twelve raw/prepared outputs on both platforms; the
+omitted-family control is exact on Linux and retains a three-pixel Windows
+mismatch. The diagram remains incomplete. Focused checks pass **829 font/text
+tests and 13 bank/contract tests per platform**; finish the CSS correction before
+running the complete qualification again.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.

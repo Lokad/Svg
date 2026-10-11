@@ -286,13 +286,13 @@ internal static class SvgTextSyntax
     internal static SvgTextStyle Parse(XmlReader reader, SvgTextInlineFontProperties inline, SvgInheritedTextStyle inherited, string? letterSpacing)
     {
         ArgumentNullException.ThrowIfNull(reader);
-        string family = SvgTextFontSyntax.ParseFamily(inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text requires an explicit font-family in the initial supported subset."));
+        string family = SvgTextFontSyntax.ParseFamily(inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family ?? "serif");
         string? weightValue = inline.Weight ?? reader.GetAttribute("font-weight");
         int weight = weightValue is null ? inherited.Weight : SvgTextFontSyntax.ParseWeight(weightValue);
         string? styleValue = inline.Style ?? reader.GetAttribute("font-style");
         bool italic = styleValue is null ? inherited.Italic : SvgTextFontSyntax.ParseItalic(styleValue);
         string? sizeValue = inline.Size ?? reader.GetAttribute("font-size");
-        double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseTextCoordinate(sizeValue);
+        double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseFontSize(sizeValue);
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
         double parsedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);

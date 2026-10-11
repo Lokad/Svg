@@ -8,7 +8,8 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Represents the admitted single-font text properties inherited by a rendered text descendant.</summary>
 internal sealed class SvgInheritedTextStyle
 {
-    internal static SvgInheritedTextStyle Default { get; } = new(null, 400, false, 16, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start);
+    // The initial CSS family is a request into the caller's catalogue, never a host-font lookup.
+    internal static SvgInheritedTextStyle Default { get; } = new("serif", 400, false, 16, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start);
 
     internal SvgInheritedTextStyle(string? family, int weight, bool italic, double fontSize, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, SvgTextAnchor anchor)
     {
@@ -63,7 +64,7 @@ internal static class SvgTextInheritance
         string? styleValue = inline.Style ?? reader.GetAttribute("font-style");
         bool italic = styleValue is null ? inherited.Italic : SvgTextFontSyntax.ParseItalic(styleValue);
         string? sizeValue = inline.Size ?? reader.GetAttribute("font-size");
-        double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseTextCoordinate(sizeValue);
+        double fontSize = sizeValue is null ? inherited.FontSize : SvgGeometrySyntax.ParseFontSize(sizeValue);
         if (fontSize <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text font-size must be positive.");
         string? xmlSpace = reader.GetAttribute("space", "http://www.w3.org/XML/1998/namespace");
         SvgTextWhitespaceMode xmlMode = xmlSpace is null ? inherited.WhitespaceMode : ParseContainerXmlSpace(xmlSpace);

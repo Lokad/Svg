@@ -139,6 +139,30 @@ public sealed class SvgCurvedFontDocumentTests
 
     private static ValueTask<SvgFontSnapshot> Prepare(byte[] input) => SvgFontSnapshot.CreateAsync(input, Catalog(), Provider(), CancellationToken.None);
 
+    [Fact]
+    public async Task Unavailable_initial_family_source_fails_without_host_font_substitution()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><text>A</text></svg>"u8.ToArray();
+        // Catalogue fallback remains available, but only the caller can supply its selected face.
+        SvgException error = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(input, Catalog(), new UnavailableProvider(), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.UnresolvedResource, error.ErrorCode);
+    }
+
+    [Theory]
+    [InlineData("12pt", "16")]
+    [InlineData("1pc", "16")]
+    [InlineData("0.5in", "48")]
+    [InlineData("2.54cm", "96")]
+    [InlineData("25.4mm", "96")]
+    public async Task Absolute_font_sizes_match_their_css_pixel_size(string size, string pixels)
+    {
+        byte[] DocumentAt(string value) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='200' height='120' font-family='fantasy'><text x='4' y='104' font-size='" + value + "'>A</text></svg>");
+        byte[] input = DocumentAt(size), expected = DocumentAt(pixels);
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        Assert.Equal(SvgConverter.ConvertToPng(expected, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+    }
+
     [Theory]
     [InlineData(256, 0)]
     [InlineData(0, 256)]
@@ -443,6 +467,16 @@ public sealed class SvgCurvedFontDocumentTests
 
     private static string Required(JsonElement item, string name)
         => item.GetProperty(name).GetString() ?? throw new InvalidDataException(name);
+
+    /// <summary>Declines every source, observes cancellation and performs no I/O; safe for concurrent requests.</summary>
+    private sealed class UnavailableProvider : ISvgFontProgramSourceProvider
+    {
+        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            return ValueTask.FromResult<ISvgFontProgramSource?>(null);
+        }
+    }
 
     /// <summary>Returns the immutable caller-owned public test program, observes cancellation and performs no I/O or host discovery; safe for concurrent requests.</summary>
     private sealed class MemoryProvider(byte[] bytes) : ISvgFontProgramSourceProvider

@@ -94,6 +94,15 @@ internal static class SvgGeometrySyntax
         return result;
     }
 
+    /// <summary>Resolves an absolute font size in CSS pixels without admitting physical units for text positions.</summary>
+    internal static double ParseFontSize(string value)
+    {
+        ReadOnlySpan<char> token = value.AsSpan().Trim();
+        // Keep the existing finite bare/px validation and its unsupported-size outcomes.
+        if (token.Length == 0 || token.EndsWith("px", StringComparison.OrdinalIgnoreCase) || !char.IsLetter(token[^1]) && token[^1] != '%') return ParseTextCoordinate(value);
+        return ParseLength(value) ?? throw new InvalidOperationException("Font size parsing returned no value.");
+    }
+
     internal static int ParseInteger(string value) => ParseInteger(value.AsSpan());
 
     internal static int ParseInteger(ReadOnlySpan<char> value)

@@ -237,14 +237,14 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
-    public void Rejects_a_missing_or_list_font_family()
+    public void Uses_the_initial_serif_request_and_rejects_a_list_font_family()
     {
         using XmlReader missing = XmlReader.Create(new StringReader("<text/>"));
         missing.Read();
         using XmlReader list = XmlReader.Create(new StringReader("<text font-family='First, Second'/>"));
         list.Read();
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgTextSyntax.Parse(missing)).ErrorCode);
+        Assert.Equal("serif", SvgTextSyntax.Parse(missing).Font.Family);
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgTextSyntax.Parse(list)).ErrorCode);
     }
 

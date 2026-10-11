@@ -78,7 +78,7 @@
       "linuxReference": "references/linux64/omitted-family.png",
       "fontPack": "font-pack.json",
       "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "mismatch",
       "oracleInputSha256": "9eb2c9d1dcdba070e3053ef1cc3c6f483f24fce504d163f6fbc72582c6566da7",
       "referenceSha256": "29008de161546be1c62ab962d12c48779b4b31cb2687386a88b1a59e11342770",
       "captures": [
@@ -116,7 +116,8 @@
           "profileCleaned": true
         }
       ],
-      "platformReferencesByteIdentical": false
+      "platformReferencesByteIdentical": false,
+      "linuxRendererOutcome": "exact"
     },
     {
       "id": "point-font-size",
@@ -133,7 +134,7 @@
       "linuxReference": "references/linux64/point-font-size.png",
       "fontPack": "font-pack.json",
       "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "oracleInputSha256": "76e6360d33afbd9074768553d047245c85fb5b9fdc84dfe3d44eaaddda4df493",
       "referenceSha256": "736f07f08a45737f91b74195ba66c849a69249d69d7a5c9cba1fab40c2fa57dd",
       "captures": [

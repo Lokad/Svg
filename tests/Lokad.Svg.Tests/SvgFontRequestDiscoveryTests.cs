@@ -7,6 +7,30 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgFontRequestDiscoveryTests
 {
+    [Theory]
+    [InlineData("<text>A</text>", "serif")]
+    [InlineData("<g font-family='Example'><text>A</text></g>", "Example")]
+    [InlineData("<text> </text>", "")]
+    [InlineData("<text fill='none'>A</text>", "")]
+    public void Initial_family_is_a_caller_request_only_for_painted_text(string content, string expected)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + content + "</svg>");
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, CancellationToken.None);
+        Assert.Equal(expected.Length == 0 ? [] : new[] { expected }, requests.Select(static request => request.Family).ToArray());
+    }
+
+    [Theory]
+    [InlineData("12pt")]
+    [InlineData("1pc")]
+    [InlineData("0.5in")]
+    [InlineData("1cm")]
+    [InlineData("1mm")]
+    public void Absolute_font_sizes_are_admitted_in_container_inheritance(string size)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' font-size='" + size + "'><text>A</text></svg>");
+        Assert.Equal("serif", Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).Family);
+    }
+
     [Fact]
     public void Does_not_reserve_a_direct_text_chunk_without_eligible_text()
     {
