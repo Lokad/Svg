@@ -7,7 +7,7 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-/// <summary>Protects the retained curved document, independent completed controls and explicit caller-supplied face.</summary>
+/// <summary>Protects retained font documents, independent controls and explicit caller-supplied faces.</summary>
 public sealed class SvgCurvedFontDocumentTests
 {
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "curved-font-documents");
@@ -31,20 +31,37 @@ public sealed class SvgCurvedFontDocumentTests
 
     public static IEnumerable<object[]> Cases()
     {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
-        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray()) yield return new object[] { Required(item, "id") };
+        foreach (string family in new[] { "curved-font-documents", "static-css-document" })
+        {
+            string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
+            using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+            foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray()) yield return new object[] { family, Required(item, "id") };
+        }
     }
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Document_and_controls_preserve_twelve_outputs_and_every_completed_reference(string identity)
+    public async Task Document_and_controls_preserve_twelve_outputs_and_every_completed_reference(string family, string identity)
     {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
-        byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, "input")));
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(item, "input")));
         byte[] unchanged = input.ToArray();
-        using SvgFontSnapshot snapshot = await Prepare(input);
+        SvgFontPackCatalog catalog = Catalog(directory);
         SvgViewport viewport = new(item.GetProperty("width").GetInt32(), item.GetProperty("height").GetInt32());
+        if (Required(item, "rendererOutcome") == "unsupported")
+        {
+            SvgException error = await Assert.ThrowsAsync<SvgException>(async () =>
+            {
+                using SvgPreparedDocument pending = await SvgPreparedDocument.CreateAsync(input, catalog, Provider(), new SvgRenderOptions(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None);
+                pending.ConvertToPng(CancellationToken.None);
+            });
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+            Assert.Equal(unchanged, input);
+            return;
+        }
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, Provider(), CancellationToken.None);
         SvgRenderOptions options = new(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
         byte[] destination = new byte[png.Length];
@@ -62,7 +79,7 @@ public sealed class SvgCurvedFontDocumentTests
         for (int mode = 0; mode < 6; mode++)
         {
             // Each prepared document owns exactly one conversion and font lease.
-            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog(), Provider(), new SvgRenderOptions(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None);
+            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, catalog, Provider(), new SvgRenderOptions(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None);
             using MemoryStream preparedStream = new();
             byte[] preparedPng = mode switch
             {
@@ -78,16 +95,19 @@ public sealed class SvgCurvedFontDocumentTests
         Assert.Equal(unchanged, input);
         if (OperatingSystem.IsLinux() || OperatingSystem.IsWindows())
         {
-            byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
+            byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
             bool completed = Required(item, "rendererOutcome") == "exact" || OperatingSystem.IsLinux() && item.TryGetProperty("linuxRendererOutcome", out JsonElement linuxOutcome) && linuxOutcome.GetString() == "exact";
             if (completed) Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);
         }
     }
 
-    [Fact]
-    public void Public_font_bank_pins_evaluation_data_and_frozen_native_reference_triples()
+    [Theory]
+    [InlineData("curved-font-documents")]
+    [InlineData("static-css-document")]
+    public void Public_font_bank_pins_evaluation_data_and_frozen_native_reference_triples(string family)
     {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
         Assert.Equal(6, root.GetProperty("cases").GetArrayLength());
         Assert.Equal(1, root.GetProperty("cases").EnumerateArray().Count(c => Required(c, "role") == "document-output"));
@@ -95,12 +115,12 @@ public sealed class SvgCurvedFontDocumentTests
         Assert.True(File.ReadAllText(Path.Combine(FontDirectory, "fonts", "OFL.txt")).Contains("SIL OPEN FONT LICENSE", StringComparison.Ordinal));
         foreach (JsonElement item in root.GetProperty("cases").EnumerateArray())
         {
-            Assert.Equal(Required(item, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, "input"))))));
+            Assert.Equal(Required(item, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(Path.Combine(directory, Required(item, "input"))))));
             foreach (bool linux in new[] { false, true })
             {
                 string reference = Required(item, linux ? "linuxReference" : "reference");
                 string expectedHash = Required(item, linux ? "linuxReferenceSha256" : "referenceSha256");
-                byte[] png = File.ReadAllBytes(Path.Combine(DirectoryPath, reference));
+                byte[] png = File.ReadAllBytes(Path.Combine(directory, reference));
                 Assert.Equal(expectedHash, Convert.ToHexStringLower(SHA256.HashData(png)));
                 PngRgbaDecoder.Decode(png, checked(item.GetProperty("width").GetInt32() * item.GetProperty("height").GetInt32()));
                 JsonElement captures = item.GetProperty(linux ? "linuxCaptures" : "captures");
@@ -413,7 +433,10 @@ public sealed class SvgCurvedFontDocumentTests
     }
 
     private static SvgFontPackCatalog Catalog()
-        => SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-sans");
+        => Catalog(DirectoryPath);
+
+    private static SvgFontPackCatalog Catalog(string directory)
+        => SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), "public-noto-sans");
 
     private static MemoryProvider Provider()
         => new(File.ReadAllBytes(Path.Combine(FontDirectory, "fonts", "NotoSans-Regular.ttf")));

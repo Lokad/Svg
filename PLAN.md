@@ -316,10 +316,17 @@ under its frozen supplied-font contract. The newly selected **Firkin’s CC0 Sha
 at unchanged explicit **600×400**, scale 1, transparent, through six APIs on both
 platforms. The retained public-domain static CSS diagram `inv-129`
 ([source record](docs/INVENTORY.md#inv-129--static-css-comparison-diagram-remaining-scope-candidate))
-is an unqualified next candidate. Its first gate is an omitted font family;
-late/descendant stylesheet rules and span styling are further G7/G9 dependencies.
-Define a deterministic supplied-font contract and freeze declared outputs before
-implementation; keep this candidate outside completed-document denominators. Other promised combinations and finite effects remain open.
+is the next selected complete document at unchanged explicit **750×200**, scale 1,
+transparent. Its declared caller catalogue maps the initial `serif` family to the
+existing public Noto Sans Regular face 0; omitted families request that alias,
+and a missing catalogue mapping fails without consulting host fonts. The bank
+`tests/Research/static-css-document/manifest.json` freezes the whole document and
+five separate diagnostic controls on both platforms before implementation.
+Finish its default-family requests, absolute point font size, late stylesheet,
+descendant/child selectors, explicit inheritance, translated labels and span
+paint against those references. Keep it outside completed-document denominators
+until every declared output matches. Other promised combinations and finite
+effects remain open.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.

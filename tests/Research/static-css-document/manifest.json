@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Complete unchanged public-domain static CSS comparison diagram and five separate controls. Caller supplies the deterministic default serif mapping; every declared output must match frozen platform references. Finite G7/G9 exits remain open.",
+  "selectedAt": "7ca79f5f",
+  "fontPack": "font-pack.json",
+  "fontProvenance": "font-provenance.json",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "cases": [
+    {
+      "id": "inv-129-750x200-transparent",
+      "input": "../../Fixtures/candidates/inv-129.svg",
+      "width": 750,
+      "height": 200,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "Public domain",
+      "sourceSha256": "1a59209f5af7fff09cc18f65d9bc80075660a4b05fc5b4a61d329890919e075c",
+      "reference": "references/inv-129-750x200-transparent.png",
+      "linuxReference": "references/linux64/inv-129-750x200-transparent.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "d12ab3aadeedac25cc4adbfaba91b7d1ef9d5e43c73733746717989b648adafd",
+      "referenceSha256": "403bee5f1c55471cee4b28289602c2c62ec823b5d6ec18351146a79bf04e153c",
+      "captures": [
+        {
+          "pngSha256": "403bee5f1c55471cee4b28289602c2c62ec823b5d6ec18351146a79bf04e153c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "403bee5f1c55471cee4b28289602c2c62ec823b5d6ec18351146a79bf04e153c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "403bee5f1c55471cee4b28289602c2c62ec823b5d6ec18351146a79bf04e153c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "61e12a4c0045236232ceaabfff689e1ea5603e3e2821e8a97c188dd433b94a1a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "61e12a4c0045236232ceaabfff689e1ea5603e3e2821e8a97c188dd433b94a1a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "61e12a4c0045236232ceaabfff689e1ea5603e3e2821e8a97c188dd433b94a1a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "61e12a4c0045236232ceaabfff689e1ea5603e3e2821e8a97c188dd433b94a1a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "omitted-family",
+      "input": "omitted-family.svg",
+      "width": 160,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "2dcf8e2e8273b9316e8ba1995ca8d3b720469c3d1aadcccec16f61b31693c2ed",
+      "reference": "references/omitted-family.png",
+      "linuxReference": "references/linux64/omitted-family.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "9eb2c9d1dcdba070e3053ef1cc3c6f483f24fce504d163f6fbc72582c6566da7",
+      "referenceSha256": "29008de161546be1c62ab962d12c48779b4b31cb2687386a88b1a59e11342770",
+      "captures": [
+        {
+          "pngSha256": "29008de161546be1c62ab962d12c48779b4b31cb2687386a88b1a59e11342770",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "29008de161546be1c62ab962d12c48779b4b31cb2687386a88b1a59e11342770",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "29008de161546be1c62ab962d12c48779b4b31cb2687386a88b1a59e11342770",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "904f263e19f7fcabe4c0d6eb7a39de95e475e4c755fe4448a5f87116e29a128f",
+      "linuxCaptures": [
+        {
+          "pngSha256": "904f263e19f7fcabe4c0d6eb7a39de95e475e4c755fe4448a5f87116e29a128f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "904f263e19f7fcabe4c0d6eb7a39de95e475e4c755fe4448a5f87116e29a128f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "904f263e19f7fcabe4c0d6eb7a39de95e475e4c755fe4448a5f87116e29a128f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "point-font-size",
+      "input": "point-font-size.svg",
+      "width": 160,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "e8666815a50de71e325204c468825352835df4e3993f9283e17fc8c1914ea1a1",
+      "reference": "references/point-font-size.png",
+      "linuxReference": "references/linux64/point-font-size.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "76e6360d33afbd9074768553d047245c85fb5b9fdc84dfe3d44eaaddda4df493",
+      "referenceSha256": "736f07f08a45737f91b74195ba66c849a69249d69d7a5c9cba1fab40c2fa57dd",
+      "captures": [
+        {
+          "pngSha256": "736f07f08a45737f91b74195ba66c849a69249d69d7a5c9cba1fab40c2fa57dd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "736f07f08a45737f91b74195ba66c849a69249d69d7a5c9cba1fab40c2fa57dd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "736f07f08a45737f91b74195ba66c849a69249d69d7a5c9cba1fab40c2fa57dd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "7f654677a38e593a13303b60c518fcfeffd3c6ee6df6d721d8efb4f2d803c052",
+      "linuxCaptures": [
+        {
+          "pngSha256": "7f654677a38e593a13303b60c518fcfeffd3c6ee6df6d721d8efb4f2d803c052",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7f654677a38e593a13303b60c518fcfeffd3c6ee6df6d721d8efb4f2d803c052",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7f654677a38e593a13303b60c518fcfeffd3c6ee6df6d721d8efb4f2d803c052",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "late-rules",
+      "input": "late-rules.svg",
+      "width": 160,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "80a8eb012e83d00b516a0a006d38a1a9f53c60289c766daa0937808330ffebd2",
+      "reference": "references/late-rules.png",
+      "linuxReference": "references/linux64/late-rules.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "0dfcb1bd94ad4784839fb69e3313c89c5c8a97d4bda68618c202936c77212c49",
+      "referenceSha256": "4eccaf14db0e3b6c85405bf13b30cdcae75c9c30cb64cb4047640725dbdad5df",
+      "captures": [
+        {
+          "pngSha256": "4eccaf14db0e3b6c85405bf13b30cdcae75c9c30cb64cb4047640725dbdad5df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4eccaf14db0e3b6c85405bf13b30cdcae75c9c30cb64cb4047640725dbdad5df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4eccaf14db0e3b6c85405bf13b30cdcae75c9c30cb64cb4047640725dbdad5df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "4eccaf14db0e3b6c85405bf13b30cdcae75c9c30cb64cb4047640725dbdad5df",
+      "linuxCaptures": [
+        {
+          "pngSha256": "4eccaf14db0e3b6c85405bf13b30cdcae75c9c30cb64cb4047640725dbdad5df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4eccaf14db0e3b6c85405bf13b30cdcae75c9c30cb64cb4047640725dbdad5df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4eccaf14db0e3b6c85405bf13b30cdcae75c9c30cb64cb4047640725dbdad5df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "descendant-cascade",
+      "input": "descendant-cascade.svg",
+      "width": 160,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "13183bfe991b21333c3b5da5662d2b09f09a581eccadc8f52228a1919d1e15ae",
+      "reference": "references/descendant-cascade.png",
+      "linuxReference": "references/linux64/descendant-cascade.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "bd74f2896a2b4e454dbb3dc7ab91391afb36122219288a04ef81f25a660ef269",
+      "referenceSha256": "7f6f9cd2c7b47cd4024fa34d1d086114e8974ecc1a0b123bfad947a26ced8a6a",
+      "captures": [
+        {
+          "pngSha256": "7f6f9cd2c7b47cd4024fa34d1d086114e8974ecc1a0b123bfad947a26ced8a6a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7f6f9cd2c7b47cd4024fa34d1d086114e8974ecc1a0b123bfad947a26ced8a6a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7f6f9cd2c7b47cd4024fa34d1d086114e8974ecc1a0b123bfad947a26ced8a6a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "7f6f9cd2c7b47cd4024fa34d1d086114e8974ecc1a0b123bfad947a26ced8a6a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "7f6f9cd2c7b47cd4024fa34d1d086114e8974ecc1a0b123bfad947a26ced8a6a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7f6f9cd2c7b47cd4024fa34d1d086114e8974ecc1a0b123bfad947a26ced8a6a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7f6f9cd2c7b47cd4024fa34d1d086114e8974ecc1a0b123bfad947a26ced8a6a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "span-paint",
+      "input": "span-paint.svg",
+      "width": 160,
+      "height": 64,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "43a853558f2857c7f0e2244b0747ed569f2d3c1b562f1e45f785c170b4722ef8",
+      "reference": "references/span-paint.png",
+      "linuxReference": "references/linux64/span-paint.png",
+      "fontPack": "font-pack.json",
+      "selection": "Declared unchanged source, output and caller-supplied default serif mapping before native capture and production editing.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "dcb831b9af95791f8359d68af2cdcbaf4edeabe74231a6a305e0260aa186be99",
+      "referenceSha256": "098a118409421719b1467dbceb2e46fff599a7f977e8931fc780a857a4a35041",
+      "captures": [
+        {
+          "pngSha256": "098a118409421719b1467dbceb2e46fff599a7f977e8931fc780a857a4a35041",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "098a118409421719b1467dbceb2e46fff599a7f977e8931fc780a857a4a35041",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "098a118409421719b1467dbceb2e46fff599a7f977e8931fc780a857a4a35041",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "e201cfde28b00f4727dc5a0546f6bafe607bf49527f14f16e63b2dbb0ca47b4d",
+      "linuxCaptures": [
+        {
+          "pngSha256": "e201cfde28b00f4727dc5a0546f6bafe607bf49527f14f16e63b2dbb0ca47b4d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e201cfde28b00f4727dc5a0546f6bafe607bf49527f14f16e63b2dbb0ca47b4d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e201cfde28b00f4727dc5a0546f6bafe607bf49527f14f16e63b2dbb0ca47b4d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    }
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-11",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": false
+  }
+}
