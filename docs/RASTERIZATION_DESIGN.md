@@ -10679,8 +10679,13 @@ Linux's system FreeType 2.13.2 is only a diagnostic approximation. The exact
 Chrome 153.0.8010.52
 [font manager](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/skia/ext/font_utils.cc)
 uses Fontations. Its DEPS pins Skia
-`f8b66b7597c4cc859d3ed190e9c6872241e6721c`; that revision pins Skrifa 0.43.2,
-read-fonts 0.40.1 and font-types 0.12.0. The
+`f8b66b7597c4cc859d3ed190e9c6872241e6721c`. Skia's standalone dependencies pin
+Skrifa 0.43.2, read-fonts 0.40.1 and font-types 0.12.0; those are the original
+adaptation/probe versions. Chromium's own
+[Cargo.lock](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/rust/chromium_crates_io/Cargo.lock)
+instead pins Skrifa 0.44.0, read-fonts 0.41.0 and font-types 0.12.2 for this Chrome
+build. A later probe using that actual crate set confirms all 333 unhinted
+device outlines of the retained curved document are unchanged. The
 [Fontations scaler](https://github.com/google/skia/blob/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/ports/SkTypeface_fontations.cpp)
 forces Latin autohinting for the slight mode, obtains a hinted path and uses
 ordinary native path coverage for its A8 mask. The private pinned-Skrifa probe
@@ -11790,3 +11795,38 @@ owners after success and tight memory denial. Both local packages include the
 current attribution and licenses with no native assets, bundled fonts or package
 dependencies. The receipt is
 `artifacts/text-path-paint-20261011/final-qualification.json`.
+
+
+### Bounded glyph-local masks for the retained curved document
+
+The remaining 156 Linux differences in `inv-127` came from constructing glyph
+edges in document coordinates. Isolated native canvas text/path comparisons
+and independent managed glyph-sized masks separated geometry from mask paint:
+all 333 unhinted outlines agree with Chromium's actual Skrifa 0.44.0 crate set,
+and the existing managed rasterizer reproduces the native text-only image
+exactly when each glyph is built in its own small bitmap. Ordinary native SVG
+vector paint is not an interchangeable oracle for the glyph mask.
+
+Mapped Linux glyph replay now transforms device controls and adds the fractional
+quarter-pixel origin in float precision before rounding out the control bounds.
+A scoped child scene borrows the owned path/fill and uses the ordinary rasterizer
+in its local bitmap. It shares the conversion budget, remaining work and token;
+full glyph construction precedes final document clipping. Preblend and the
+parent SVG paint apply when stamping at the integer document origin. Temporary
+paths, scene arrays and surfaces release on success, denial and cancellation;
+font ownership stays with the caller. Zero-angle and Windows strikes stay on
+their established routes.
+
+All 12 Linux document outputs now match the unchanged reference. Windows remains
+at 4,607 differences, so cross-platform completion stays 0/1. Five focused
+regressions cover integer placement across coordinate precision boundaries,
+output clipping, memory/work denial, cancellation, retry and borrowed face bytes.
+The existing frozen document/reference and every previously exact font control
+remain unchanged. Both Release builds and 6,818 tests/platform pass without
+warnings, failures or skips. Qualification preserves 2,908 prior outcomes,
+2,849 prior PNGs and 2,755 established exact comparisons, plus 26 Windows / 29
+Linux prior exact font outputs. Resource owners release after success and denial
+one byte below each measured peak; both current package audits pass. Finished
+qualification is recorded privately in
+`artifacts/glyph-local-bitmaps-20261011/final-qualification.json`; finite G2–G9
+and S17 exits remain open.

@@ -120,6 +120,70 @@ public sealed class SvgCurvedFontDocumentTests
     private static ValueTask<SvgFontSnapshot> Prepare(byte[] input) => SvgFontSnapshot.CreateAsync(input, Catalog(), Provider(), CancellationToken.None);
 
     [Theory]
+    [InlineData(256, 0)]
+    [InlineData(0, 256)]
+    [InlineData(256, 256)]
+    [InlineData(-16, -32)]
+    public async Task Rotated_linux_masks_preserve_integer_translation_and_output_clipping(int dx, int dy)
+    {
+        // These local curve controls cross float-coordinate precision boundaries
+        // when placed in the document. A glyph bitmap must retain its local mask.
+        if (!OperatingSystem.IsLinux()) return;
+        const string content = "font-family='fantasy' font-size='20.48'><defs><path id='p' d='M8 72 C24 8 104 8 120 72'/></defs><text><textPath href='#p' startOffset='24'>%0e</textPath></text></svg>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='640' height='640' " + content);
+        byte[] translated = System.Text.Encoding.UTF8.GetBytes(FormattableString.Invariant($"<svg xmlns='http://www.w3.org/2000/svg' width='640' height='640' viewBox='{-dx} {-dy} 640 640' ") + content);
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        RgbaImage original = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray(), 409_600);
+        RgbaImage shifted = PngRgbaDecoder.Decode(SvgConverter.ConvertToPng(translated, options, CancellationToken.None).ToArray(), 409_600);
+        Assert.Contains(original.Pixels, value => value != 0);
+        byte[] expected = new byte[original.Pixels.Length];
+        int left = Math.Max(0, dx), right = Math.Min(640, 640 + dx);
+        for (int y = Math.Max(0, dy); y < Math.Min(640, 640 + dy); y++)
+        {
+            original.Pixels.AsSpan(((y - dy) * 640 + left - dx) * 4, (right - left) * 4)
+                .CopyTo(expected.AsSpan((y * 640 + left) * 4, (right - left) * 4));
+        }
+        Assert.Equal(expected, shifted.Pixels);
+    }
+
+    [Fact]
+    public async Task Rotated_mask_rendering_releases_scratch_after_denial_and_cancellation_then_retries()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, "curved-midpoint.svg"));
+        using SvgFontSnapshot snapshot = await Prepare(input);
+        byte[] font = Assert.Single(snapshot.Fonts).Bytes.ToArray();
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        RenderBudget budget = new(long.MaxValue);
+        byte[] expected;
+        using (SvgRoot root = SvgRootParser.Parse(input, options.Limits, budget, snapshot, CancellationToken.None))
+        {
+            expected = SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray();
+            long retained = budget.Snapshot().CurrentBytes;
+            using CancellationTokenSource cancellation = new();
+            cancellation.Cancel();
+            Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.ConvertToPng(root, options, budget, cancellation.Token));
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            SvgRenderLimits limits = options.Limits;
+            SvgRenderLimits workLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
+                limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)root.ParserWorkUnits + 300), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+            SvgRenderOptions workDenied = new(null, 1, SvgColor.Transparent, workLimits, snapshot);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(root, workDenied, budget, CancellationToken.None)).ErrorCode);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            Assert.Equal(expected, SvgConverter.ConvertToPng(root, options, budget, CancellationToken.None).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, options.Limits, denied, snapshot, CancellationToken.None);
+            SvgConverter.ConvertToPng(root, options, denied, CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        Assert.Equal(font, Assert.Single(snapshot.Fonts).Bytes.ToArray());
+    }
+
+    [Theory]
     [InlineData(1, 0, 0, 17.25, 49.75)]
     [InlineData(1.024, 0, 0.18, 17.5, 51.25)]
     [InlineData(1.024, -40, -60, -22.5, -9)]

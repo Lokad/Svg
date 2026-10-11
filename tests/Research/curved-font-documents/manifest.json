@@ -62,7 +62,8 @@
       ],
       "platformReferencesByteIdentical": false,
       "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "USE_MY_METRICS inheritance, native mapped Linux strikes, default Latin ligatures, kerned path advances and native fragment paint truncation are admitted. All twelve outputs render; glyph-mask fidelity remains open at 4,607 Windows / 156 Linux differing pixels against unchanged matching-platform references."
+      "remainingOrCompletedMechanism": "All twelve Linux outputs match the unchanged reference after native fragment placement and bounded glyph-local mask construction. Windows glyph-mask fidelity remains open at 4,607 differing pixels. The input, supplied font, options and both platform references are unchanged.",
+      "linuxRendererOutcome": "exact"
     },
     {
       "id": "two-path-runs",

@@ -122,6 +122,12 @@ do not select a face. Validated hhea/OS2 alphabetic line metrics are retained fo
 text-path fragment paint placement. Native unrotated paint rectangles truncate
 to 1/64 pixel before tangent rotation and device strike placement; semantic curve
 measurement retains its float coordinates.
+Mapped Linux glyph masks are constructed in bounded glyph-local bitmaps using
+the shared geometry rasterizer. The fractional strike origin precedes local edge
+construction; the document's integer origin and SVG viewport clip apply when
+painting the finished mask. Bitmap dimensions, pixels, storage and traversal
+consume the conversion's existing limits, budget and work; cancellation and
+failure release scratch without disposing the borrowed supplied face.
 Its direct text content is limited to 32,768 UTF-16 characters across one
 conversion before layout; subtree reader nodes and cmap/advance lookup traversal
 consume the conversion's parser-work limit. Positioned glyph storage is reserved from the conversion's geometry budget

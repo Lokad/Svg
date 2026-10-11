@@ -16,13 +16,14 @@ an explicit caller catalog mapping. The program and OFL notice are borrowed from
 host font discovery is involved. [The manifest](manifest.json) owns the source,
 output and matching-platform reference contract.
 
-Document completion is **0/1**. Three of five separate controls are exact on
+Cross-platform document completion is **0/1 (1/1 Linux, 0/1 Windows)**.
+Three of five separate controls are exact on
 both platforms through all six raw and six independently prepared outputs.
 Linux also completes the composite and curved controls, giving five exact
-controls there. The whole document still differs at 4,607 Windows / 156 Linux
-pixels against its unchanged references.
+controls there. All 12 Linux document outputs match the unchanged reference.
+Windows still differs at 4,607 pixels.
 Shared open-curve distance/tangent placement and `USE_MY_METRICS` component inheritance
-now let the unchanged document render. Remaining document text pixels and
+now let the unchanged document render. Remaining Windows document text pixels and
 Windows curve/accent controls stay open. Finish the whole
 document and all discovered mismatches against its frozen references. Controls
 do not count as completed documents.
@@ -109,19 +110,33 @@ hint depend on the selected child's metric point, including transformed and nest
 components. They preserve the original supplied face and reference pixels. Bounded
 denial, cancellation and retry checks protect the new assembly dependency.
 
-Native fragment paint placement now reduces those differences to **4,607 Windows
+Native fragment paint placement first reduced those differences to **4,607 Windows
 / 156 Linux pixels** through all 12 APIs. Blink paints a fragment from an
 unrotated rectangle truncated toward zero to 1/64 pixel, then applies its tangent
 rotation. Character-position queries keep float coordinates. The renderer now
 preserves that distinction, with cached alphabetic line metrics, negative
 rectangle-top handling and the existing zero-angle strike. The five controls
-retain their established results; the whole document remains **0/1**.
+retained their established results; cross-platform document completion stayed **0/1**.
 Windows corrects 1,271 previously differing pixels and changes 31 previously
 matching pixels. Linux corrects 1,389 pixels without changing any previously
 matching pixels. Every previously exact output remains byte-identical.
 
-The retained document, font and references are unchanged. Independent positioned
-native glyphs reproduce its native text-only pixels after the paint displacement;
-direct vector replay is already exact. Remaining masks stay open. Current complete
-qualification and owner/package checks are recorded privately in
-`artifacts/text-path-paint-20261011/final-qualification.json`.
+Bounded glyph-local bitmap construction now removes all **156 remaining Linux
+pixel differences**, through all 12 APIs. Independent local masks for all 333
+visible glyphs reproduce the native text-only image exactly. The transform and
+fractional strike origin apply before local edge construction; the document's
+integer origin and SVG clip apply when painting the preblended mask. This uses
+the existing managed geometry rasterizer and shares the conversion's memory,
+surface, work and cancellation limits. Integer translation across coordinate
+precision boundaries, output clipping, owner release and retry have focused
+regressions. Native SVG vector paint is not an interchangeable glyph-mask oracle.
+
+The actual Chromium crate set is Skrifa 0.44.0 / read-fonts 0.41.0 / font-types
+0.12.2, distinct from the original standalone Skia probe/adaptation versions.
+An independent probe with the Chromium versions confirms all 333 unhinted
+outlines remain identical; the correction is in bitmap construction.
+
+The document, font, options and both references are unchanged. Windows masks
+remain the next shared comparison. Current complete qualification and
+owner/package checks are recorded privately in
+`artifacts/glyph-local-bitmaps-20261011/final-qualification.json`.

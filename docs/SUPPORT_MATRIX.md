@@ -10,7 +10,8 @@ that every unlisted visible SVG construct is rejected correctly.
 The next retained G9/G3 document is the public-domain curved-label export
 [`inv-127`](../tests/Research/curved-font-documents/README.md), at unchanged
 512×369 transparent under explicitly supplied Noto Sans Regular. It remains
-**0/1 complete**. Bounded `xml:lang` metadata, presentation `text-anchor`
+**0/1 complete across platforms (1/1 Linux, 0/1 Windows)**. Bounded `xml:lang`
+metadata, presentation `text-anchor`
 inheritance through `svg`/`g`/`a` and child overrides, independent direct sibling
 `textPath` runs and positive `pathLength` offset calibration are admitted.
 Shared `USE_MY_METRICS` inheritance admits the original precomposed accents.
@@ -18,7 +19,8 @@ The unchanged document now renders through all 12 APIs under its declared
 supplied-font contract. Shared authored open curves
 now provide bounded midpoint/tangent maps; native rotated glyph-mask fidelity
 remains open on Windows: the curved control differs at 14 pixels there and is
-exact on Linux. The whole document differs at 4,607 Windows / 156 Linux pixels.
+exact on Linux. The whole document is exact on Linux through all 12 APIs and
+differs at 4,607 Windows pixels.
 Default Latin ligatures use the supplied font's ordered type-4 records, with
 source cluster boundaries retained. Kerned text-path advances are rounded before
 midpoint/tangent placement. The admitted ligature subset is one unfiltered lookup
@@ -29,8 +31,11 @@ Mapped path runs first truncate the native fragment paint rectangle to 1/64
 pixel, then apply the tangent map and device strike placement. Cached alphabetic
 line metrics preserve native baseline rounding and negative rectangle tops.
 Mapped Linux glyphs use native quarter-pixel placement, relaxed strike coefficients,
-vertical scaler decomposition and unhinted TrueType device-grid outlines. Complete
-qualification passes **6,813 tests/platform** (4,724 core / 2,083 visual / six
+vertical scaler decomposition and unhinted TrueType device-grid outlines. Their
+bounded glyph-local masks reuse the existing geometry rasterizer; document integer
+placement and SVG clipping apply after local edge construction and preblend.
+The remaining 156 Linux document differences are resolved. Complete
+qualification passes **6,818 tests/platform** (4,724 core / 2,088 visual / six
 FontProbe), preserving every established exact output. Three separate controls
 are exact on both platforms through 12 APIs; Linux completes all five. Percentage
 offsets resolve against geometric length; numeric offsets use its calibrated scale. Glyph
