@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Complete unchanged public-domain static CSS comparison diagram and five separate controls. Caller supplies the deterministic default serif mapping; every declared output must match frozen platform references. Finite G7/G9 exits remain open.",
+  "purpose": "Complete unchanged public-domain static CSS comparison diagram and seven separate controls. Caller supplies the deterministic default serif mapping; every declared output must match frozen platform references. Finite G7/G9 exits remain open.",
   "selectedAt": "7ca79f5f",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
@@ -338,6 +338,116 @@
         }
       ],
       "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "cascade-inherit",
+      "input": "cascade-inherit.svg",
+      "width": 64,
+      "height": 32,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "29661786c1d8a100b1e57adbdb243e9177f682d4108370db06a8fd13b3d9e82e",
+      "reference": "references/cascade-inherit.png",
+      "linuxReference": "references/linux64/cascade-inherit.png",
+      "fontPack": "font-pack.json",
+      "selection": "Retained before explicit-inheritance production changes; fontless control with unchanged explicit output.",
+      "rendererOutcome": "mismatch",
+      "oracleInputSha256": "29661786c1d8a100b1e57adbdb243e9177f682d4108370db06a8fd13b3d9e82e",
+      "referenceSha256": "38e69951b33a25d09a88b7e4536ae077c78375f2cf06b8143d399a3a7bcab89c",
+      "captures": [
+        {
+          "pngSha256": "38e69951b33a25d09a88b7e4536ae077c78375f2cf06b8143d399a3a7bcab89c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "38e69951b33a25d09a88b7e4536ae077c78375f2cf06b8143d399a3a7bcab89c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "38e69951b33a25d09a88b7e4536ae077c78375f2cf06b8143d399a3a7bcab89c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "38e69951b33a25d09a88b7e4536ae077c78375f2cf06b8143d399a3a7bcab89c",
+      "linuxCaptures": [
+        {
+          "pngSha256": "38e69951b33a25d09a88b7e4536ae077c78375f2cf06b8143d399a3a7bcab89c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "38e69951b33a25d09a88b7e4536ae077c78375f2cf06b8143d399a3a7bcab89c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "38e69951b33a25d09a88b7e4536ae077c78375f2cf06b8143d399a3a7bcab89c",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "force-inherit",
+      "input": "force-inherit.svg",
+      "width": 64,
+      "height": 40,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "bf52371baa169adb4e02b4a521583375ee4f5ce08e1f9f577c7d7870fd15ad4c",
+      "reference": "references/force-inherit.png",
+      "linuxReference": "references/linux64/force-inherit.png",
+      "fontPack": "font-pack.json",
+      "selection": "Retained before explicit-inheritance production changes; fontless control with unchanged explicit output.",
+      "rendererOutcome": "unsupported",
+      "oracleInputSha256": "bf52371baa169adb4e02b4a521583375ee4f5ce08e1f9f577c7d7870fd15ad4c",
+      "referenceSha256": "0578ef972da5af454a6afa251c5cc9f11ce53f42a6bdba0fbb5dd03f7d3f0fbe",
+      "captures": [
+        {
+          "pngSha256": "0578ef972da5af454a6afa251c5cc9f11ce53f42a6bdba0fbb5dd03f7d3f0fbe",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0578ef972da5af454a6afa251c5cc9f11ce53f42a6bdba0fbb5dd03f7d3f0fbe",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0578ef972da5af454a6afa251c5cc9f11ce53f42a6bdba0fbb5dd03f7d3f0fbe",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "0578ef972da5af454a6afa251c5cc9f11ce53f42a6bdba0fbb5dd03f7d3f0fbe",
+      "linuxCaptures": [
+        {
+          "pngSha256": "0578ef972da5af454a6afa251c5cc9f11ce53f42a6bdba0fbb5dd03f7d3f0fbe",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0578ef972da5af454a6afa251c5cc9f11ce53f42a6bdba0fbb5dd03f7d3f0fbe",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0578ef972da5af454a6afa251c5cc9f11ce53f42a6bdba0fbb5dd03f7d3f0fbe",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
     }
   ],
   "chromeVersion": "153.0.8010.52",

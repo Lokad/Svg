@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="32">
+  <g fill="#c85019" fill-opacity="0.5">
+    <rect id="box" class="selected" x="4" y="4" width="24" height="24" fill="red" fill-opacity="0.75"/>
+    <rect x="36" y="4" width="24" height="24" fill="#c85019" fill-opacity="0.5"/>
+  </g>
+  <style>.selected{fill:blue;fill-opacity:1}#box{fill:inherit!important;fill-opacity:inherit!important}</style>
+</svg>

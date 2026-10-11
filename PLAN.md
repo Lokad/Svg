@@ -322,7 +322,7 @@ existing public Noto Sans Regular face 0; omitted families request that alias
 through the existing catalogue selection and fallback rules. An unavailable
 selected font source fails without consulting host fonts. The bank
 `tests/Research/static-css-document/manifest.json` freezes the whole document and
-five separate diagnostic controls on both platforms before implementation.
+seven separate diagnostic controls on both platforms before implementation.
 Finish its default-family requests, absolute point font size, late stylesheet,
 descendant/child selectors, explicit inheritance, translated labels and span
 paint against those references. Keep it outside completed-document denominators

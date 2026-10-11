@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="40">
+  <g fill="red" stroke="black" stroke-width="4" opacity="0.5">
+    <rect id="box" x="8" y="8" width="16" height="16" fill="blue" stroke="green" stroke-width="1" opacity="0.75"/>
+    <rect x="40" y="8" width="16" height="16" fill="red" stroke="black" stroke-width="4" opacity="0.5"/>
+  </g>
+  <style>#box{fill:inherit;stroke:inherit;stroke-width:inherit;opacity:inherit!important}</style>
+</svg>
