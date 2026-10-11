@@ -47,10 +47,12 @@ internal sealed class SvgGlyphRasterSource : IDisposable
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
         TrueTypeHintTarget target = new(42, TrueTypeHintQueryFlags.FontVariations | TrueTypeHintQueryFlags.VerticalPhantoms | TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned | TrueTypeHintQueryFlags.Symmetric, TrueTypeHintControlScale.FullPrecision, TrueTypeHintPreparation.Single);
-        double fittingScale = HasGlyphMap ? Math.Sqrt(_glyphMap.C * scaleX * _glyphMap.C * scaleX + _glyphMap.D * scaleY * _glyphMap.D * scaleY) : scaleY;
+        SvgGlyphStrikeTransform strike = HasGlyphMap
+            ? SvgGlyphStrikeTransform.Create(_fontSize * scaleY, new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0))
+            : default;
         OpenTypeGlyphContourStorage contours = HasGlyphMap
             ? OpenTypeFont.GetGlyphContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, budget, work, token)
-            : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, _fontSize * fittingScale, target, TrueTypeImpliedPointRounding.None, budget, work, token);
+            : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, _fontSize * scaleY, target, TrueTypeImpliedPointRounding.None, budget, work, token);
         try
         {
             SvgDevicePoint origin = _glyphMap.Apply(_glyph.X, _glyph.Y);
@@ -79,10 +81,10 @@ internal sealed class SvgGlyphRasterSource : IDisposable
                 float x = originX + px * ratioX, y = originY + py;
                 if (HasGlyphMap)
                 {
-                    px = (float)(point.X * (_fontSize * fittingScale / font.UnitsPerEm));
-                    py = -(float)(point.Y * (_fontSize * fittingScale / font.UnitsPerEm));
-                    x = originX + ((float)(_glyphMap.A * scaleX / fittingScale) * px + (float)(_glyphMap.C * scaleX / fittingScale) * py);
-                    y = originY + ((float)(_glyphMap.B * scaleY / fittingScale) * px + (float)(_glyphMap.D * scaleY / fittingScale) * py);
+                    px = (float)(point.X * (strike.DeviceSize / font.UnitsPerEm));
+                    py = -(float)(point.Y * (strike.DeviceSize / font.UnitsPerEm));
+                    x = originX + ((float)strike.RemainingMap.A * px + (float)strike.RemainingMap.C * py);
+                    y = originY + ((float)strike.RemainingMap.B * px + (float)strike.RemainingMap.D * py);
                 }
                 if (!float.IsFinite(x) || !float.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The hinted glyph outline exceeds the device range.");
                 return new(x + phaseCorrection, y + verticalCorrection);

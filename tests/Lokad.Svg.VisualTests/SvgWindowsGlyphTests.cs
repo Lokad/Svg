@@ -11,6 +11,43 @@ public sealed class SvgWindowsGlyphTests
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
 
     [Fact]
+    public async Task Mapped_windows_outline_uses_the_independent_native_strike_transform()
+    {
+        // IDWriteFontFace.GetGlyphRunOutline for the unchanged Noto Sans glyph 36,
+        // at the pinned Skia vertical strike size and remaining transform. These
+        // outer vertices include the independently measured six/five-cell phase.
+        // Coverage is a separate gate: this control's complete mask is not exact yet.
+        OpenTypeOutlinePoint[] expected =
+        [
+            new(24.199055989583332, 41.33759765625),
+            new(19.68411382039388, 39.8888671875),
+            new(16.118977864583332, 44.283104705810544),
+            new(18.47972043355306, 48.3870132446289),
+            new(17.333333333333332, 49.8),
+            new(9.71497376759847, 36.4353530883789),
+            new(10.735384305318197, 35.177635955810544),
+            new(25.37063725789388, 39.89355545043945)
+        ];
+        using SvgFontSnapshot snapshot = await Prepare();
+        RenderBudget budget = new(long.MaxValue);
+        SvgAffineTransform map = new(.6297303263167993, -.776813823330235,
+            .776813823330235, .6297303263167993, 17.145682061058995, 49.75283765207207);
+        using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(Assert.Single(snapshot.Fonts), new(36, 0, 0, 0), 20, map, budget))
+        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
+        {
+            Assert.Equal(8, contours.ContourEnds[0]);
+            for (int index = 0; index < expected.Length; index++)
+            {
+                OpenTypeQuadraticSegment segment = contours.Segments[index];
+                Assert.Equal(expected[index].X, segment.Start.X, 10);
+                Assert.Equal(expected[index].Y, segment.Start.Y, 10);
+                Assert.Equal(segment.Control, segment.End);
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Collapsed_tips_and_bounded_dropouts_match_complete_independent_native_textures()
     {
         string path = Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-documents", "diagnostics", "windows-smart-stubs.json");

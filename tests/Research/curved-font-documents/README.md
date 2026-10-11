@@ -21,7 +21,7 @@ Three of five separate controls are exact on
 both platforms through all six raw and six independently prepared outputs.
 Linux also completes the composite and curved controls, giving five exact
 controls there. All 12 Linux document outputs match the unchanged reference.
-Windows still differs at 4,607 pixels.
+Windows still differs at 4,261 pixels.
 Shared open-curve distance/tangent placement and `USE_MY_METRICS` component inheritance
 now let the unchanged document render. Remaining Windows document text pixels and
 Windows curve/accent controls stay open. Finish the whole
@@ -33,7 +33,7 @@ do not count as completed documents.
 | Two path runs | Independent sibling layout/paint slots | Exact on both platforms through 12 APIs. |
 | Per-path anchor | Child anchor overriding parent | Exact on both platforms through 12 APIs. |
 | Calibrated path length | Numeric offsets scaled separately from glyph advances | Exact on both platforms through 12 APIs. |
-| Curved midpoint | Curved length, tangent and glyph mapping | Exact on Linux through 12 APIs; 14 Windows pixels still differ. |
+| Curved midpoint | Curved length, tangent and glyph mapping | Exact on Linux through 12 APIs; 16 Windows pixels still differ. |
 | Composite on path | Supplied precomposed `ü` placement and fitting | Exact on Linux through 12 APIs; Windows still differs at 8 pixels. |
 
 [Independent native placement](diagnostics/curved-midpoint-native-placement.json)
@@ -139,4 +139,23 @@ outlines remain identical; the correction is in bitmap construction.
 The document, font, options and both references are unchanged. Windows masks
 remain the next shared comparison. Current complete qualification and
 owner/package checks are recorded privately in
-`artifacts/glyph-local-bitmaps-20261011/final-qualification.json`.
+`artifacts/windows-mapped-strikes-20261011/final-qualification.json`.
+
+Mapped Windows outlines now share the native relaxed strike transform and
+vertical scaler decomposition. All twelve document outputs improve from
+**4,607 to 4,261 differing pixels**. The shared correction resolves 1,106
+previously differing document pixels and changes 760 previously matching pixels
+within this incomplete output. An independent DirectWrite outer contour of the
+curved control agrees with the mapped managed outline; coverage is a
+separate gate. Its full mask differs at 16 pixels (previously 14), and the
+composite control stays at eight. All previously exact controls and Linux
+document outputs remain unchanged.
+
+A private diagnostic captures all 333 visible glyphs through DirectWrite with
+the unchanged supplied face, relaxed strikes and unhinted LCD sampling, then
+paints those masks in document order over the unchanged guides. It leaves 68 differences against
+the frozen Windows reference. This narrows the main remaining comparison to
+managed mask coverage, with the native residuals still requiring investigation;
+it does not qualify a product output. Complete regression, resource and package
+checks pass with 6,819 tests per platform. The focused regression uses independent
+geometry and the bank retains its frozen document references.

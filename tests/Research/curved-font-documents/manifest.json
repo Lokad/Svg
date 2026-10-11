@@ -62,7 +62,7 @@
       ],
       "platformReferencesByteIdentical": false,
       "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "All twelve Linux outputs match the unchanged reference after native fragment placement and bounded glyph-local mask construction. Windows glyph-mask fidelity remains open at 4,607 differing pixels. The input, supplied font, options and both platform references are unchanged.",
+      "remainingOrCompletedMechanism": "All twelve Linux outputs match the unchanged reference after native fragment placement and bounded glyph-local mask construction. Windows glyph-mask fidelity remains open at 4,261 differing pixels. The input, supplied font, options and both platform references are unchanged.",
       "linuxRendererOutcome": "exact"
     },
     {
@@ -231,7 +231,7 @@
       ],
       "platformReferencesByteIdentical": false,
       "rendererOutcome": "rendered-known-difference",
-      "remainingOrCompletedMechanism": "Shared measured midpoint/tangent maps render through all 12 APIs. Native relaxed strike coefficients, vertical scaler decomposition and unhinted device-grid outlines complete the unchanged Linux reference. Windows glyph-mask fidelity remains open at 14 differing pixels.",
+      "remainingOrCompletedMechanism": "Shared measured midpoint/tangent maps render through all 12 APIs. Native relaxed strike coefficients, vertical scaler decomposition and unhinted device-grid outlines complete the unchanged Linux reference. Windows glyph-mask fidelity remains open at 16 differing pixels.",
       "linuxRendererOutcome": "exact"
     },
     {

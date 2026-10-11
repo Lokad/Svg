@@ -11830,3 +11830,34 @@ one byte below each measured peak; both current package audits pass. Finished
 qualification is recorded privately in
 `artifacts/glyph-local-bitmaps-20261011/final-qualification.json`; finite G2–G9
 and S17 exits remain open.
+
+
+### Native Windows transform for mapped glyph outlines
+
+Mapped Windows outlines now reuse `SvgGlyphStrikeTransform`, including native
+coefficient relaxation before vertical scaler decomposition. Placement keeps the
+original authored transform and established strike phases; only outline scaling
+uses the relaxed coefficients. Horizontal unmapped fitting keeps its existing
+interpreter, ownership and sampling policy. This shared change reduces `inv-127`
+from 4,607 to 4,261 differing Windows pixels through all 12 APIs. Linux remains
+exact, and cross-platform completion stays 0/1.
+The incomplete Windows output corrects 1,106 previously differing pixels and
+changes 760 previously matching pixels; established exact outputs are preserved.
+
+An independent DirectWrite `GetGlyphRunOutline` witness protects all eight outer
+vertices of the curved A at its native strike size and remaining transform. Its
+coverage remains a separate open gate: 16 differing pixels, previously 14; the
+composite-on-path control remains at eight. Independent unhinted LCD masks at
+that transform reproduce the frozen curved-control reference exactly. Assembling
+333 independent DirectWrite masks over the document guides leaves 68 differences
+against the frozen whole-document reference. This is diagnostic evidence that
+narrows the managed coverage comparison, not renderer qualification. The native
+residuals remain open too.
+
+Both Release builds and all 6,819 tests/platform pass without warnings, failures
+or skips. Complete qualification preserves all 2,908 prior outcomes, 2,849 prior
+PNGs, 2,755 established exact comparisons and all 26 Windows / 30 Linux prior
+exact font outputs. Resource owners release after success and denial one byte
+below the measured peaks; both current managed package audits pass. Inputs,
+options, supplied faces and platform references remain unchanged. The receipt is
+`artifacts/windows-mapped-strikes-20261011/final-qualification.json`.
