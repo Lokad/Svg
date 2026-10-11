@@ -304,7 +304,7 @@ internal static class SvgReferenceResolver
 
         static SvgGeometry LowerEmbeddedInstancePatternFill(SvgPatternGeometry band, SvgUseReference instance, SvgViewportFrame? viewportFrame)
         {
-            SvgPatternTile tile = new(SvgGeometry.FromRectangle(band.Content) with { SolidPaint = band.ContentPaint }, band.OriginX, band.OriginY, band.TileWidth, band.TileHeight, SvgAffineTransform.Identity) { VectorContent = band.VectorContent };
+            SvgPatternTile tile = new(SvgGeometry.FromRectangle(band.Content) with { SolidPaint = band.ContentPaint }, band.OriginX, band.OriginY, band.TileWidth, band.TileHeight, SvgAffineTransform.Identity) { VectorContent = band.VectorContent, ContentViewBox = band.ContentViewBox };
             SvgRectangle placement = InstancePlacement(band.Fill, instance);
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
             return LowerInstancePatternFill(tile, placement, composed, viewportFrame, MapInstanceSolidStroke(band.Fill, band.Stroke, instance, viewportFrame), band.ShaderPlacement);
@@ -582,7 +582,7 @@ internal static class SvgReferenceResolver
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
         SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
         SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
-        SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, outline.Content, outline.ContentPaint, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, outline.VectorContent, outline.VectorContent is null ? SvgAffineTransform.Identity : PlainInstancePlacement(reference, frame).ComposeChecked(outline.ShaderPlacement), state.Budget));
+        SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, outline.Content, outline.ContentPaint, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, outline.VectorContent, outline.VectorContent is null ? SvgAffineTransform.Identity : PlainInstancePlacement(reference, frame).ComposeChecked(outline.ShaderPlacement), outline.ContentViewBox, state.Budget));
         return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
     }
 
@@ -1187,7 +1187,7 @@ internal static class SvgReferenceResolver
             double contentHeight = band.Content.Height * scaleY;
             if (!IsIntegerGrid(originX) || !IsIntegerGrid(originY) || !IsIntegerGrid(tileWidth) || !IsIntegerGrid(tileHeight)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer-mapped symbol-held pattern tiles are implemented.");
             SvgRectangle content = new(contentX, contentY, contentWidth, contentHeight, band.Content.Color, band.Content.HasFill, band.Content.Stroke);
-            SvgPatternTile tile = new(SvgGeometry.FromRectangle(content) with { SolidPaint = band.ContentPaint }, band.VectorContent is null ? (int)originX : band.OriginX, band.VectorContent is null ? (int)originY : band.OriginY, band.VectorContent is null ? (int)tileWidth : band.TileWidth, band.VectorContent is null ? (int)tileHeight : band.TileHeight, SvgAffineTransform.Identity) { VectorContent = band.VectorContent };
+            SvgPatternTile tile = new(SvgGeometry.FromRectangle(content) with { SolidPaint = band.ContentPaint }, band.VectorContent is null ? (int)originX : band.OriginX, band.VectorContent is null ? (int)originY : band.OriginY, band.VectorContent is null ? (int)tileWidth : band.TileWidth, band.VectorContent is null ? (int)tileHeight : band.TileHeight, SvgAffineTransform.Identity) { VectorContent = band.VectorContent, ContentViewBox = band.ContentViewBox };
             SvgUseReference composed = instance with { Opacity = MultiplyAlpha(band.Opacity, instance.Opacity), IsPainted = band.Fill.HasFill && instance.IsPainted };
             return LowerInstancePatternFill(tile, fill, composed, viewportFrame, fill.Stroke, band.VectorContent is null ? band.ShaderPlacement : SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY).ComposeChecked(band.ShaderPlacement));
 
@@ -1318,7 +1318,7 @@ internal static class SvgReferenceResolver
             }
             byte opacity = MultiplyAlpha(source.Opacity, instance.Opacity);
             SvgAffineTransform placement = PlainInstancePlacement(instance, viewportFrame).ComposeChecked(SvgAffineTransform.FromScaleOffset(scaleX, scaleY, offsetX, offsetY));
-            SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, source.ContourEnds, source.Signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, source.ContentPaint, source.VectorContent is null ? (int)gridOriginX : source.OriginX, source.VectorContent is null ? (int)gridOriginY : source.OriginY, source.VectorContent is null ? (int)gridTileWidth : source.TileWidth, source.VectorContent is null ? (int)gridTileHeight : source.TileHeight, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, source.VectorContent, source.VectorContent is null ? SvgAffineTransform.Identity : placement.ComposeChecked(source.ShaderPlacement), document.Budget));
+            SvgGeometry result = SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(mapped, source.ContourEnds, source.Signs, Array.Empty<SvgQuadSpan>(), Array.Empty<SvgCubicSpan>(), content, source.ContentPaint, source.VectorContent is null ? (int)gridOriginX : source.OriginX, source.VectorContent is null ? (int)gridOriginY : source.OriginY, source.VectorContent is null ? (int)gridTileWidth : source.TileWidth, source.VectorContent is null ? (int)gridTileHeight : source.TileHeight, source.HasFill && instance.IsPainted, source.IsEvenOdd, opacity, source.Mapping, clip, source.VectorContent, source.VectorContent is null ? SvgAffineTransform.Identity : placement.ComposeChecked(source.ShaderPlacement), source.ContentViewBox, document.Budget));
             return geometry.CopyAuthoredPathTo(result, placement, document.Budget, workCounter, cancellationToken);
 
             static bool IsIntegerGrid(double value)

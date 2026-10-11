@@ -212,9 +212,9 @@ public static class SvgConverter
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, CancellationToken cancellationToken)
         => Rasterize(root, options, budget, surfaceMode, null, cancellationToken);
 
-    private readonly record struct FilterRasterFrame(int Width, int Height, double ScaleX, double OffsetX, double ScaleY, double OffsetY);
+    private readonly record struct RasterFrame(int Width, int Height, double ScaleX, double OffsetX, double ScaleY, double OffsetY);
 
-    private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, FilterRasterFrame? frame, CancellationToken cancellationToken)
+    private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, RasterFrame? frame, CancellationToken cancellationToken)
     {
         (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
         double scaledWidth = frame?.Width ?? Math.Round(width * options.OutputScale, MidpointRounding.AwayFromZero);
@@ -1872,7 +1872,7 @@ public static class SvgConverter
             using MappedPolygon raster = MapPolygon(outline.Points, outline.ContourEnds, outline.Signs, outline.IsEvenOdd, outline.QuadSpans, outline.CubicSpans, outline.Mapping, outline.Clip, authoredPath, PathCoordinateSpace.User);
             if (raster.EndY <= raster.StartY || raster.EndX <= raster.StartX) return;
             using RenderBudget.BudgetReservation sourcePatternOwner = budget.Reserve(512, SvgMemoryCategory.Geometry);
-            SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null) { ContentPaint = outline.ContentPaint, VectorContent = outline.VectorContent, ShaderPlacement = outline.ShaderPlacement };
+            SvgPatternGeometry source = new(outline.Content, outline.OriginX, outline.OriginY, outline.TileWidth, outline.TileHeight, default, outline.Opacity, null) { ContentPaint = outline.ContentPaint, VectorContent = outline.VectorContent, ContentViewBox = outline.ContentViewBox, ShaderPlacement = outline.ShaderPlacement };
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(source) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry tile = mappedTile ?? source;
@@ -1985,7 +1985,7 @@ public static class SvgConverter
                 if (!imageMap.TryInvert(out _)) return false;
                 mapped = new(default, 0, 0, pixelsX, pixelsY, pattern.Fill, pattern.Opacity, pattern.Stroke)
                 {
-                    VectorContent = pattern.VectorContent,
+                    VectorContent = pattern.VectorContent, ContentViewBox = pattern.ContentViewBox,
                     ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY),
                     RasterSourceBox = new(0, 0, width, height, SvgViewBoxAlignment.None, SvgViewBoxAlignment.None, SvgViewBoxFit.None),
                     NativeImageMap = positiveAxis && IsDeviceInteger(tileWidth) && IsDeviceInteger(tileHeight) ? null : outputMap,
@@ -1999,7 +1999,7 @@ public static class SvgConverter
             double contentWidth = pattern.Content.Width * scaleX, contentHeight = pattern.Content.Height * scaleY;
             SvgClipBox? contentClip = pattern.Content.Clip is {} clip ? new SvgClipBox((clip.X - pattern.OriginX) * scaleX, (clip.Y - pattern.OriginY) * scaleY, clip.Width * scaleX, clip.Height * scaleY) { Antialiasing = clip.Antialiasing } : null;
             mapped = new SvgPatternGeometry(new SvgRectangle(contentX, contentY, contentWidth, contentHeight, pattern.Content.Color, pattern.Content.HasFill, pattern.Content.Stroke) { Clip = contentClip }, 0, 0, (int)tileWidth, (int)tileHeight, pattern.Fill, pattern.Opacity, pattern.Stroke)
-                { ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY), ContentPaint = pattern.ContentPaint, VectorContent = pattern.VectorContent };
+                { ShaderPlacement = SvgAffineTransform.FromScaleOffset(1, 1, originX, originY), ContentPaint = pattern.ContentPaint, VectorContent = pattern.VectorContent, ContentViewBox = pattern.ContentViewBox };
             return true;
 
             static bool IsDeviceInteger(double value)
@@ -2037,7 +2037,16 @@ public static class SvgConverter
                 SvgRenderOptions tileOptions = new(new SvgViewport(pattern.TextureWidth, pattern.TextureHeight), 1, SvgColor.Transparent, tileLimits);
                 SvgSceneStorage scene = content.Scene;
                 SvgRoot tileRoot = new(null, null, pattern.RasterSourceBox ?? throw new InvalidOperationException("Vector tile replay requires a mapped source grid."), scene.Geometries, scene.Commands, false, 0, scene);
-                RasterizedSurface rendered = Rasterize(tileRoot, tileOptions, budget, RasterSurfaceMode.PremultipliedPattern, cancellationToken);
+                RasterFrame? contentFrame = null;
+                if (pattern.ContentViewBox is {} contentViewBox && pattern.RasterSourceBox is {} sourceBox)
+                {
+                    (double sx, double sy, double tx, double ty) = SvgGeometrySyntax.MapViewBox(contentViewBox, sourceBox.Width, sourceBox.Height);
+                    SvgShaderMatrix contentMap = new((float)sx, 0, (float)tx, 0, (float)sy, (float)ty);
+                    SvgShaderMatrix pixelMap = new(pattern.TextureWidth / (float)sourceBox.Width, 0, 0, 0, pattern.TextureHeight / (float)sourceBox.Height, 0);
+                    SvgShaderMatrix map = SvgShaderMatrix.Concat(pixelMap, contentMap);
+                    contentFrame = new(pattern.TextureWidth, pattern.TextureHeight, map.ScaleX, map.TranslateX, map.ScaleY, map.TranslateY);
+                }
+                RasterizedSurface rendered = Rasterize(tileRoot, tileOptions, budget, RasterSurfaceMode.PremultipliedPattern, contentFrame, cancellationToken);
                 workUnits += rendered.WorkUnits;
                 return rendered;
             }

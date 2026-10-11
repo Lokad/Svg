@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Six frozen pattern viewBox/alias/aspect controls advancing whole inv-139; initial UnsupportedFeature outcomes retained before correction.",
+  "purpose": "Six frozen pattern viewBox/alias/aspect controls are exact through all twelve raw/prepared APIs on Windows/Linux. Controls stay separate from the completed inv-139 whole document.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -34,8 +34,7 @@
       "reference": "references/phase-alias.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "none-fractional-root",
@@ -54,8 +53,7 @@
       "reference": "references/none-fractional-root.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "aspect-meet",
@@ -74,8 +72,7 @@
       "reference": "references/aspect-meet.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "aspect-inheritance",
@@ -94,8 +91,7 @@
       "reference": "references/aspect-inheritance.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "ignored-content-units",
@@ -114,8 +110,7 @@
       "reference": "references/ignored-content-units.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "transformed-group",
@@ -134,8 +129,7 @@
       "reference": "references/transformed-group.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     }
   ]
 }

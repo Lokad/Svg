@@ -7,6 +7,8 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgPatternTile(SvgGeometry? Content, double OriginX, double OriginY, double TileWidth, double TileHeight, SvgAffineTransform Transform)
 {
     internal SvgVectorContent? VectorContent { get; init; }
+    /// <summary>Maps borrowed source content independently of the repeat grid and texture dimensions.</summary>
+    internal SvgViewBox? ContentViewBox { get; init; }
     internal bool HasContent => Content is not null || VectorContent is not null;
     internal double ShiftX => Transform.E;
     internal double ShiftY => Transform.F;
@@ -29,8 +31,13 @@ internal static class SvgPatternSyntax
             target = state.Strings.Copy(href.AsSpan(1));
         }
         string? transform = reader.GetAttribute("patternTransform");
+        string? aspect = reader.GetAttribute("preserveAspectRatio");
+        if (aspect is not null && aspect.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Pattern aspect ratio values exceed the syntax limit.");
         return new(ParseOptional("x"), ParseOptional("y"), ParseExtent("width"), ParseExtent("height"),
-            transform is null ? null : ParsePatternTransform(transform), ParseUnits("patternUnits"), ParseUnits("patternContentUnits"), target);
+            transform is null ? null : ParsePatternTransform(transform), ParseUnits("patternUnits"), ParseUnits("patternContentUnits"), target,
+            SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), null, workCounter, cancellationToken),
+            aspect is null ? null : SvgGeometrySyntax.ParsePreserveAspectRatio(aspect));
 
         SvgAffineTransform ParsePatternTransform(string value)
         {
@@ -141,7 +148,7 @@ internal static class SvgPatternSyntax
             for (int bandIndex = 0; bandIndex < bands.Length; bandIndex++)
             {
                 context.WorkCounter.Consume(context.CancellationToken);
-                bands[bandIndex] = SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bands[bandIndex].Rectangle, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ShaderPlacement = tile.VectorContent is null ? SvgAffineTransform.Identity : (frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform).ComposeChecked(tile.VectorPlacement) });
+                bands[bandIndex] = SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bands[bandIndex].Rectangle, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, ShaderPlacement = tile.VectorContent is null ? SvgAffineTransform.Identity : (frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform).ComposeChecked(tile.VectorPlacement) });
             }
             return SvgGradientSyntax.AppendPaintFillStroke(solid, reader, context, elementName, isPath, points, contourEnds, transform, frame, maximumGeometryElements, budget, bandStroke, bandStrokeShape);
         }
@@ -152,7 +159,7 @@ internal static class SvgPatternSyntax
     internal static SvgGeometry LowerPatternFillGeometry(SvgPatternTile tile, SvgRectangle fill, bool fillHasFill, byte fillOpacity, SvgStroke? stroke, SvgAffineTransform shaderPlacement)
     {
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || !tile.HasContent) return SvgGeometry.FromOrthogonalBand(new SvgRectangle(fill.X, fill.Y, fill.Width, fill.Height, SvgColor.Transparent, false, null));
-        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content?.Rectangle ?? default, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill with { HasFill = fillHasFill }, fillOpacity, stroke) { ShaderPlacement = shaderPlacement.ComposeChecked(tile.VectorPlacement), ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent });
+        return SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content?.Rectangle ?? default, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, fill with { HasFill = fillHasFill }, fillOpacity, stroke) { ShaderPlacement = shaderPlacement.ComposeChecked(tile.VectorPlacement), ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox });
     }
 
     internal static SvgParsedGeometry LowerPatternRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgDocumentState state, SvgViewportFrame? frame)
@@ -352,10 +359,10 @@ internal static class SvgPatternSyntax
         if (probe is not null)
         {
             // A zero width paints no stroke bands, so the pattern fill above reaches the scene alone.
-            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, top with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ShaderPlacement = tile.VectorPlacement }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
-            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bottom with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ShaderPlacement = tile.VectorPlacement }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
-            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, left with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ShaderPlacement = tile.VectorPlacement }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
-            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, right with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ShaderPlacement = tile.VectorPlacement }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, top with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, ShaderPlacement = tile.VectorPlacement }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, bottom with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, ShaderPlacement = tile.VectorPlacement }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, left with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, ShaderPlacement = tile.VectorPlacement }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
+            stroked.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, right with { HasFill = paintBands }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, ShaderPlacement = tile.VectorPlacement }) with { RecordedPaint = SvgRecordedPaint.SourceStroke });
         }
         return new SvgParsedGeometry(stroked.Detach(), 0);
     }
@@ -395,7 +402,7 @@ internal static class SvgPatternSyntax
         if (frame is not null) band = frame.Value.ClipShifted(band);
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || !tile.HasContent) return RetainSingleBand(SvgGeometry.FromOrthogonalBand(band with { HasFill = false }), state, context);
         SvgRectangle content = tile.Content?.Rectangle ?? default;
-        return RetainSingleBand(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, band, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ShaderPlacement = tile.VectorPlacement }), state, context);
+        return RetainSingleBand(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, band, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, ShaderPlacement = tile.VectorPlacement }), state, context);
     }
 
     /// <summary>Lowers one round-capped pattern-tile line stroke into one tile-evaluated band with two repainted tip discs.</summary>
@@ -414,7 +421,7 @@ internal static class SvgPatternSyntax
             using BudgetedGeometryBuilder repainted = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             foreach (SvgGeometry existing in white.Geometries)
             {
-                if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, existing.Rectangle, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ShaderPlacement = tile.VectorPlacement }));
+                if (existing.Kind == SvgGeometryKind.OrthogonalBand) repainted.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(content, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, existing.Rectangle, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, ShaderPlacement = tile.VectorPlacement }));
                 else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, tile, opacity, state.Budget)));
             }
             white.Dispose();
@@ -432,7 +439,7 @@ internal static class SvgPatternSyntax
         {
             SvgRectangle run = runRects[runIndex];
             if (!tile.HasContent || tile.TileWidth == 0 || tile.TileHeight == 0) runs.Add(SvgGeometry.FromOrthogonalBand(run with { HasFill = false }));
-            else runs.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content?.Rectangle ?? default, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, run with { HasFill = paintsAny && painted }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ShaderPlacement = tile.VectorPlacement }));
+            else runs.Add(SvgGeometry.FromPatternFill(new SvgPatternGeometry(tile.Content?.Rectangle ?? default, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, run with { HasFill = paintsAny && painted }, opacity, null) { ContentPaint = tile.Content?.SolidPaint, VectorContent = tile.VectorContent, ContentViewBox = tile.ContentViewBox, ShaderPlacement = tile.VectorPlacement }));
         }
         return new SvgParsedGeometry(runs.Detach(), 0);
     }

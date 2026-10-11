@@ -12132,3 +12132,40 @@ The selected development ledger is 39/45 complete; this batch is 4/10. Finite
 G2â€“G9/S17 exits remain open. Next, complete `inv-139` through shared pattern
 viewBox/alias mapping, taking its frozen whole output through every later gate
 and mismatch without requiring exhaustive instance combinations first.
+
+## Pattern viewBox, aliases and texture mapping (2026-10-12)
+
+The untouched public-domain `inv-139` phased columns complete their frozen
+512×341 transparent output through all twelve raw/prepared APIs on Windows/Linux.
+Six independently frozen controls cover alias phases, fractional/root maps,
+meet/none/slice fit, independent aspect inheritance, content-unit precedence and
+composed pattern/group maps. Reference and original input bytes stay unchanged.
+
+Pattern templates inherit viewBox and preserveAspectRatio independently, retaining
+borrowed vector source content beyond the base tile so an alias can reveal it.
+The content viewBox maps into the logical tile first. A separate float map then
+scales into the independently rounded pixel texture dimensions. Reusing the
+existing raster frame and premultiplied tile scene preserves native paint and
+repeat sampling, without a second content renderer.
+
+With a viewBox, patternContentUnits does not determine the content map, as specified
+by [SVG pattern coordinates](https://www.w3.org/TR/SVG2/pservers.html#PatternElement).
+A pattern viewBox does not establish a new SVG viewport: percentage lengths keep
+the enclosing viewport basis under [SVG viewport rules](https://www.w3.org/TR/SVG2/coords.html#EstablishingANewSVGViewport).
+The frozen ignored-content-units control and focused percentage equivalence case
+protect that distinction. An initial percentage-basis override was removed before
+qualification because it produced 1,728 differing control pixels.
+
+Complete qualification passes 7,130 tests per platform (4,939 core / 2,185 visual /
+six FontProbe), with zero failures/skips. All 2,856 prior ordinary PNGs and their
+outcomes, focused/static CSS outputs, thirty exact font outputs per platform and
+corporate 27/27 documents / 258/258 variants remain unchanged. Nine focused core
+cases protect invalid viewBoxes, empty tiles, reference graphs, sampled work and
+storage denial, cancellation and cleanup. The existing two-workload resource probe
+passes normal conversion and tight denial. Approximate memory policy and public
+API/package contracts remain unchanged.
+
+The development ledger is 40/45 complete, with this batch 5/10. Finite G2–G9/S17
+remain open. Next is `inv-138`'s 512×357 honeycomb: its viewBox gate is removed,
+while visible overflow and local group/use content still block the whole output.
+Private receipt: artifacts/pattern-viewbox-20261012/final-qualification.json.

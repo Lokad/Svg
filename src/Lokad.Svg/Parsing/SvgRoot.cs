@@ -782,6 +782,8 @@ internal sealed class SvgPatternPolygon : IDisposable
     /// <summary>Borrowed vector tile owner; parent scene storage controls its lifetime.</summary>
     internal SvgVectorContent? VectorContent { get; init; }
 
+    internal SvgViewBox? ContentViewBox { get; init; }
+
     /// <summary>Maps vector tile coordinates into the paint instance; legacy rectangle tiles retain their existing grid.</summary>
     internal SvgAffineTransform ShaderPlacement { get; init; } = SvgAffineTransform.Identity;
 
@@ -814,10 +816,10 @@ internal sealed class SvgPatternPolygon : IDisposable
 
     /// <summary>Creates one pattern outline carrying retained spans with exact scene storage.</summary>
     internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, RenderBudget budget)
-        => Create(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, null, SvgAffineTransform.Identity, budget);
+        => Create(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, null, SvgAffineTransform.Identity, null, budget);
 
     /// <summary>Creates an outline borrowing its vector tile from the parent scene; disposal releases only contour storage.</summary>
-    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, SvgVectorContent? vectorContent, SvgAffineTransform shaderPlacement, RenderBudget budget)
+    internal static SvgPatternPolygon Create(SvgDevicePoint[] points, int[] contourEnds, int[]? signs, SvgQuadSpan[] quadSpans, SvgCubicSpan[] cubicSpans, SvgRectangle content, SvgSolidPaint? contentPaint, double originX, double originY, double tileWidth, double tileHeight, bool hasFill, bool isEvenOdd, byte opacity, SvgPolygonMapping mapping, SvgClipBox? clip, SvgVectorContent? vectorContent, SvgAffineTransform shaderPlacement, SvgViewBox? contentViewBox, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(contourEnds);
@@ -829,7 +831,7 @@ internal sealed class SvgPatternPolygon : IDisposable
         try { bytes = checked(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(points.Length) + ParserCollectionMemory.GetArrayByteCount<int>(contourEnds.Length) + (signs is null ? 0 : ParserCollectionMemory.GetArrayByteCount<int>(signs.Length)) + ParserCollectionMemory.GetArrayByteCount<SvgQuadSpan>(quadSpans.Length) + ParserCollectionMemory.GetArrayByteCount<SvgCubicSpan>(cubicSpans.Length)); }
         catch (OverflowException) { throw new SvgException(SvgErrorCode.LimitExceeded, "Polygon fill storage exceeds the supported accounting range."); }
         RenderBudget.BudgetReservation? reservation = bytes == 0 ? null : budget.Reserve(bytes, SvgMemoryCategory.Scene);
-        return new SvgPatternPolygon(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation) { VectorContent = vectorContent, ShaderPlacement = shaderPlacement };
+        return new SvgPatternPolygon(points, contourEnds, signs, quadSpans, cubicSpans, content, contentPaint, originX, originY, tileWidth, tileHeight, hasFill, isEvenOdd, opacity, mapping, clip, reservation) { VectorContent = vectorContent, ShaderPlacement = shaderPlacement, ContentViewBox = contentViewBox };
     }
 
     /// <summary>Repaints one solid outline as a pattern-tile outline, rendering empty tiles as unpainted fills. Callers admit the paint once for identical errors.</summary>
@@ -840,7 +842,7 @@ internal sealed class SvgPatternPolygon : IDisposable
     internal static SvgGeometry RepaintOutline(SvgPolygonFill solid, SvgPatternTile tile, byte opacity, SvgAffineTransform shaderPlacement, RenderBudget budget)
     {
         if (tile.TileWidth == 0 || tile.TileHeight == 0 || !tile.HasContent) return Adopt(SvgGeometry.FromPolygonFill(SvgPolygonFill.Create(solid.Points, solid.ContourEnds, solid.Signs, default, false, solid.IsEvenOdd, solid.Mapping, solid.Clip, null, budget)));
-        return Adopt(SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, tile.Content?.Rectangle ?? default, tile.Content?.SolidPaint, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, tile.VectorContent, tile.VectorContent is null ? SvgAffineTransform.Identity : shaderPlacement.ComposeChecked(tile.VectorPlacement), budget)));
+        return Adopt(SvgGeometry.FromPatternPolygon(SvgPatternPolygon.Create(solid.Points, solid.ContourEnds, solid.Signs, solid.QuadSpans, solid.CubicSpans, tile.Content?.Rectangle ?? default, tile.Content?.SolidPaint, tile.OriginX, tile.OriginY, tile.TileWidth, tile.TileHeight, solid.HasFill, solid.IsEvenOdd, opacity, solid.Mapping, solid.Clip, tile.VectorContent, tile.VectorContent is null ? SvgAffineTransform.Identity : shaderPlacement.ComposeChecked(tile.VectorPlacement), tile.ContentViewBox, budget)));
 
         SvgGeometry Adopt(SvgGeometry repaint)
         {
@@ -981,6 +983,8 @@ internal sealed class SvgPatternGeometry : IDisposable
 
     /// <summary>Borrowed vector tile owner; parent scene storage controls its lifetime.</summary>
     internal SvgVectorContent? VectorContent { get; init; }
+
+    internal SvgViewBox? ContentViewBox { get; init; }
 
     internal double OriginX { get; }
 
