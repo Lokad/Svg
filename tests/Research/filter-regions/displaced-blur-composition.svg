@@ -1,0 +1,5 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='512' height='341' viewBox='0 0 300 200'><defs><filter xmlns="http://www.w3.org/2000/svg" id="f5" primitiveUnits="objectBoundingBox" filterRes="50 25" x="0.5" y="0.5" width="1" height="1">
+  <feGaussianBlur x="-0.2" y="-0.2" width="1.5" height="1.5" stdDeviation="2" />
+</filter>
+</defs><rect width='300' height='200' fill='#ccf'/><rect x='220' y='120' width='60' height='60' fill='blue' stroke='green' stroke-width='10' filter='url(#f5)'/></svg>

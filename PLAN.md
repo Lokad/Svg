@@ -727,6 +727,21 @@ container `filter`; the ordinary blur control is already exact. There are seven
 rejected controls total. Preserve this denominator and each frozen
 reference while fixing every later gate needed by the complete document.
 
+Fifteen additional controls isolate the measured scaled-source, cropped blur,
+opaque/transparent composition and identity-filter capture differences. The
+family now has **23 frozen controls**, with healthy, cleaned, byte-identical
+Windows/Linux native triples. Their baseline expectations remain measured at
+`5df00df6`: 18 admission failures, four rendering differences and one exact
+ordinary blur. These diagnostics were declared before their corresponding
+corrections; they do not increase the complete-document count.
+
+The local G8 correction is still in progress. The complete unchanged `inv-143`
+currently renders with **1,065 differing pixels, maximum channel error 1**;
+`inv-144` still requires grouped filter source capture. Neither is completed or
+qualified. Finish these documents against their frozen references, then run the
+required complete checks. The pushed vector-effect checkpoint has green hosted
+Windows/Ubuntu CI; keep intermediate diagnostic preparation local.
+
 The bounded six-lead screen retained three static fontless public-domain exports:
 
 | Whole original / declared transparent output | Current first gate | Finite support dependencies |
