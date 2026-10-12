@@ -623,6 +623,10 @@ neutral exporter declarations on geometric leaves, a meaningful isolation
 boundary and nested cropping without non-unit opacity. The non-unit nested
 opacity control retains its explicit composition gate; it is not a prerequisite
 for the selected whole document.
+Four elliptical-arc controls, declared at `5f578561` before stroke admission,
+retain three exact fill/reflection/composed-mask cases and the rotated-ellipse
+stroke rejection encountered next in `inv-141`. Extend retained native strokes
+while preserving the general uniform-width and numeric limits.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
