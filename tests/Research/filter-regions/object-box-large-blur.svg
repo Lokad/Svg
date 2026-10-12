@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='96' height='72'><defs><filter id='f' filterUnits='objectBoundingBox' primitiveUnits='objectBoundingBox' x='-.5' y='-.5' width='2' height='2'><feGaussianBlur stdDeviation='4' x='-.5' y='-.5' width='2' height='2'/></filter></defs><rect x='24' y='18' width='36' height='36' fill='blue' stroke='green' stroke-width='6' filter='url(#f)'/></svg>

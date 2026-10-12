@@ -715,9 +715,17 @@ stay unchanged. Receipt:
 
 **Next deliverable: complete `inv-143`'s filter export at unchanged 512×341
 transparent.** Extend shared primitive regions and object-box coordinates,
-large-blur rescaling and bounded legacy resolution validation; diagnose controls
+colored linearRGB conversion, large-blur rescaling and bounded legacy resolution
+validation; diagnose controls
 before each shared fix. Then carry those mechanisms into `inv-144`'s filtered
 overlapping group source. Do not make unrelated G2 combinations prerequisites.
+Eight [filter-region controls](tests/Research/filter-regions/manifest.json) were
+declared at `54d44d59` before correction. Healthy native Windows/Linux triples are
+stable and byte identical. Five primitive-region cases retain their `x` gate,
+one legacy-resolution case retains `filterRes`, and the group case retains
+container `filter`; the ordinary blur control is already exact. There are seven
+rejected controls total. Preserve this denominator and each frozen
+reference while fixing every later gate needed by the complete document.
 
 The bounded six-lead screen retained three static fontless public-domain exports:
 
