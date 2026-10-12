@@ -521,6 +521,13 @@ transparent.** Its first rejection advances from pattern viewBox to visible
 overflow; local group/use tile content, inherited radial paint and composed
 rotation are dependencies of the whole output. Extend bounded tile/source replay
 and paint-coordinate mapping, then resolve every remaining mismatch.
+Six [pattern instance controls](tests/Research/pattern-instance-content/manifest.json)
+were declared at `389404c8` before correction and frozen from healthy cleaned
+Windows/Linux browser triples. They cover ordered forward uses, group stroke/paint
+inheritance, alias viewBoxes and rotated radial content. Visible/hidden overflow
+produce identical clipped native references; preserve that observed behavior with
+both controls. Initial UnsupportedFeature outcomes stay recorded until corrected;
+these controls do not count as a completed document.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain
 the remaining G2–G9/S17 promises without exhaustive prerequisites.

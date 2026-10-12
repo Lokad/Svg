@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Six frozen local pattern instance/overflow controls advancing inv-138; initial UnsupportedFeature outcomes retained before correction.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "forward-use-order",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "acff89e456706c0f97dcc24daba9bd91bd70f3b82d5d994a68116201c7984aa3",
+      "referenceSha256": "03b0755075fa3ac830774f1b921ceea4bcd835401291e721fba66468d5fb6c22",
+      "selection": "Declared at 389404c8 before renderer edits/comparison: whole inv-138 local group/use tile dependencies, ordered forward references, inheritance, alias phase, bounded overflow and rotated radial paint.",
+      "input": "forward-use-order.svg",
+      "reference": "references/forward-use-order.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "group-use-inheritance",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "3cbc838579373743abbb5572afa71a42ea8409a24ed1afb23efde5ea3e9f0667",
+      "referenceSha256": "86973308e9547d122beb6ef6ec48cef42ce2d1a95b68f2a853fdf94ea95b0f4b",
+      "selection": "Declared at 389404c8 before renderer edits/comparison: whole inv-138 local group/use tile dependencies, ordered forward references, inheritance, alias phase, bounded overflow and rotated radial paint.",
+      "input": "group-use-inheritance.svg",
+      "reference": "references/group-use-inheritance.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "alias-use-viewbox",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "5c9384f49cc6772b72015de302e583d8c22a410ab6f9bac21ddfada516d51269",
+      "referenceSha256": "476ea45d53003beac7155da170800a37468a24553552dc504347cc50824a1b97",
+      "selection": "Declared at 389404c8 before renderer edits/comparison: whole inv-138 local group/use tile dependencies, ordered forward references, inheritance, alias phase, bounded overflow and rotated radial paint.",
+      "input": "alias-use-viewbox.svg",
+      "reference": "references/alias-use-viewbox.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "visible-overflow",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "1c100b3d7e76df6365b311b11edc86e242238b9be484986053c6bc91c3275d8b",
+      "referenceSha256": "eda5bbe1a75f3ff093681f79fa6a6802e949b6ffba5d45880a2aae87e30d5ce7",
+      "selection": "Declared at 389404c8 before renderer edits/comparison: whole inv-138 local group/use tile dependencies, ordered forward references, inheritance, alias phase, bounded overflow and rotated radial paint.",
+      "input": "visible-overflow.svg",
+      "reference": "references/visible-overflow.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "hidden-overflow",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "95e903143af2ab93d109106dd51f63b738ff1de45509846d2249e3cc324396fc",
+      "referenceSha256": "eda5bbe1a75f3ff093681f79fa6a6802e949b6ffba5d45880a2aae87e30d5ce7",
+      "selection": "Declared at 389404c8 before renderer edits/comparison: whole inv-138 local group/use tile dependencies, ordered forward references, inheritance, alias phase, bounded overflow and rotated radial paint.",
+      "input": "hidden-overflow.svg",
+      "reference": "references/hidden-overflow.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "rotated-radial-use",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "ea2aba23a273c14c338c00e31ceda69f62927c6f6a6eeeb738cdbdf90b777b19",
+      "referenceSha256": "ce0f4fcd158fcc463dce44526178976a7912bd8cd1db0096cdb3da8eb112e450",
+      "selection": "Declared at 389404c8 before renderer edits/comparison: whole inv-138 local group/use tile dependencies, ordered forward references, inheritance, alias phase, bounded overflow and rotated radial paint.",
+      "input": "rotated-radial-use.svg",
+      "reference": "references/rotated-radial-use.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    }
+  ]
+}

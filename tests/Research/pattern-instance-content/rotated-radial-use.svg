@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="72">
+<defs><radialGradient id="r" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="4"><stop stop-color="#0f0"/><stop offset=".5" stop-color="#2a4"/><stop offset=".6" stop-color="#071"/><stop offset=".9" stop-color="#020"/></radialGradient><pattern id="p" patternUnits="userSpaceOnUse" x="-3" y="-4" width="12.5" height="14.5" viewBox="-3 -4 6.25 7.25" overflow="visible" patternTransform="rotate(-8)"><use href="#pair" stroke="#00a" stroke-width=".5"/></pattern><g id="pair"><use href="#dot" x="0" y="3.5"/><use href="#dot" x="0" y="-3.5"/><use href="#dot" x="3"/></g><g id="dot" fill="none"><circle r="4.5" fill="url(#r)" stroke="none"/><path d="M4 0C2 3 -2 3 -4 0C-2 -3 2 -3 4 0Z" fill="#fd0"/><circle r=".6" fill="#80a" stroke="red"/></g></defs><rect width="96" height="72" fill="url(#p)"/>
+</svg>
