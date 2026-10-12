@@ -613,6 +613,11 @@ before correction. `inv-136` remains queued at 512×277 for normalized, overlapp
 group/use, inherited and nested/intersecting clip content. Implement dependencies
 required by the selected document, without exhaustive G2 prerequisites; retain
 every finite G2–G9/S17 promise.
+Eight [group-mask crop controls](tests/Research/group-mask-crop/manifest.json)
+were declared at `a17e385c` before correction. Healthy cleaned native triples
+agree on both platforms; baseline outcomes retain seven partial-coverage
+rejections and one exact covering-uniform result. Reuse bounded mask/source scene
+replay to retain partial coverage while preserving the uniform result.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
