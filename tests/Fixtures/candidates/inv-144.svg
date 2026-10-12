@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg viewBox="0 0 300 200"
+  xmlns="http://www.w3.org/2000/svg" version="1.1"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xml:lang="de">
+<title>filter</title>
+<desc>
+Auswirkung verschiedener Filterregionen und Auflösungen
+auf eine Gruppe mit zwei Rechtecken mit Koordinatenangaben
+relativ zur Größe des Elementes.
+Als Filter wird ein einfacher Gaußscher Weichzeichner verwendet.
+
+Links oben ist das ungefilterte Rechteck zum Vergleich angegeben.
+</desc>
+<defs>
+
+<filter id="f1" filterUnits="objectBoundingBox"
+        primitiveUnits="objectBoundingBox"
+        x="0" y="0" width="1" height="1">
+  <feGaussianBlur x="-0.3" y="-0.3" width="0.8" height="0.8"
+                  stdDeviation="2"/>
+</filter>
+
+<filter id="f2" filterUnits="objectBoundingBox"
+        primitiveUnits="objectBoundingBox"
+        x="-0.4" y="-0.4" width="1.8" height="1.8">
+  <feGaussianBlur x="-0.1" y="-0.1" width="0.6" height="0.6"
+                  stdDeviation="2"/>
+</filter>
+
+<filter id="f3" filterUnits="objectBoundingBox"
+        primitiveUnits="objectBoundingBox"
+        x="-0.5" y="-0.5" width="2" height="2">
+  <feGaussianBlur x="0" y="0" width="1" height="1"
+                  stdDeviation="2"/>
+</filter>
+
+<filter id="f4" filterUnits="objectBoundingBox"
+        primitiveUnits="objectBoundingBox"
+        filterRes="50"
+        x="-0.5" y="-0.5" width="2" height="2">
+  <feGaussianBlur x="-0.2" y="-0.2" width="1" height="1"
+                  stdDeviation="2"/>
+</filter>
+
+<filter id="f5" filterUnits="objectBoundingBox"
+        primitiveUnits="objectBoundingBox"
+        filterRes="50 25"
+        x="0.5" y="0.5" width="1" height="1">
+  <feGaussianBlur x="-0.2" y="-0.2" width="1.5" height="1.5"
+                  stdDeviation="2"/>
+</filter>
+</defs>
+<rect x="0" y="0" width="300" height="200" fill="#ccf" />
+<line x1="100" x2="100" y1="0" y2="200" stroke="white" />
+<line x1="200" x2="200" y1="0" y2="200" stroke="white" />
+<line y1="100" y2="100" x1="0" x2="300" stroke="white" />
+
+<g>
+<rect x="20" y="20" width="40" height="40" fill="blue"
+      stroke="green" stroke-width="10" />
+<rect x="40" y="40" width="40" height="40" fill="yellow"
+      stroke="red" stroke-width="10" />
+</g>
+<g filter="url(#f1)">
+<rect x="120" y="20" width="40" height="40" fill="blue"
+      stroke="green" stroke-width="10" />
+<rect x="140" y="40" width="40" height="40" fill="yellow"
+      stroke="red" stroke-width="10" />
+</g>
+<g filter="url(#f2)">
+<rect x="220" y="20" width="40" height="40" fill="blue"
+      stroke="green" stroke-width="10" />
+<rect x="240" y="40" width="40" height="40" fill="yellow"
+      stroke="red" stroke-width="10" />
+</g>
+<g filter="url(#f3)">
+<rect x="20" y="120" width="40" height="40" fill="blue"
+      stroke="green" stroke-width="10" />
+<rect x="40" y="140" width="40" height="40" fill="yellow"
+      stroke="red" stroke-width="10" />
+</g>
+<g filter="url(#f4)">
+<rect x="120" y="120" width="40" height="40" fill="blue"
+      stroke="green" stroke-width="10" />
+<rect x="140" y="140" width="40" height="40" fill="yellow"
+      stroke="red" stroke-width="10" />
+</g>
+<g filter="url(#f5)">
+<rect x="220" y="120" width="40" height="40" fill="blue"
+      stroke="green" stroke-width="10" />
+<rect x="240" y="140" width="40" height="40" fill="yellow"
+      stroke="red" stroke-width="10" />
+</g>
+
+</svg>
+

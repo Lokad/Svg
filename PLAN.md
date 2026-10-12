@@ -5,12 +5,15 @@ Updated 2026-10-12. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**45/45 retained development documents are complete.** The preceding 35 stay
+**45/48 retained development documents are complete.** The preceding 35 stay
 complete; the newly retained public-domain/CC0 batch is **10/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
 `inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker,
 `inv-137` open/degenerate clips, `inv-141` smiley mask export and
 `inv-136` normalized/inherited/nested clips).
+Three newly retained public-domain exports (`inv-142`–`inv-144`) are **0/3
+complete**. Their original bytes and cross-platform native references are frozen;
+the previous 45 completed documents stay protected.
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
@@ -682,18 +685,36 @@ denial probe passes. Approximate memory policy and public/API/package contracts
 remain unchanged. Receipt:
 `artifacts/clip-intersections-20261012/final-qualification.json`.
 
-**Next deliverable: retain and finish a new licensed document demonstrating a
-remaining original-scope gap.** The current queue is complete; G2–G9 and S17 are
-still open. Refresh witness selection from the finite exits below. Start a bounded
-batch of up to six public-domain/CC0 candidates from source pages with explicit
-rights evidence. Prefer a complete export exposing the measured G3 width-map
-defect or valid overlapping/multi-shape clip content, then image/CSS, effects or
-supplied-font gaps with their required contracts. Screen original bytes at declared
-output/options, retain rejection or measured mismatch cases, and keep already
-exact downloads out of the failure queue. Freeze healthy matching-platform
-references before correction. Use existing inventory/comparison tools; no new
-qualification or measurement framework. Implement shared dependencies selected
-by the next document, preserving every finite exit and completed result.
+**Next deliverable: complete `inv-142`'s retained vector-effect export at frozen
+512×266 transparent.** Preserve the original Latin-1 bytes. Its initial root
+`viewport-fill` rejection precedes the inherited/local-use non-scaling strokes,
+general transforms, reflection and native cubic source replay needed by the whole
+document. Diagnose each later rejection and mismatch against the unchanged
+reference; the measured G3 width-map defect stays open until a qualified whole
+witness proves its repair. Declare small focused controls before corresponding
+implementation changes, selected by this complete document rather than a G2 grid.
+
+The bounded six-lead screen retained three static fontless public-domain exports:
+
+| Whole original / declared transparent output | Current first gate | Finite support dependencies |
+| --- | --- | --- |
+| [inv-142](tests/Fixtures/candidates/inv-142.svg), SVGvector-effect01; 512×266 | Root `viewport-fill` | G2/G3/G4/G7: validated legacy exporter presentation, inherited/instanced vector effects, composed native stroke maps |
+| [inv-143](tests/Fixtures/candidates/inv-143.svg), SVGfilter01; 512×341 | Filter `x` | G8: explicit filter/primitive regions, object-box units, Gaussian blur and resolution declarations |
+| [inv-144](tests/Fixtures/candidates/inv-144.svg), SVGfilter02; 512×341 | Group `filter` | G8 plus G2/G3: filtered source bounds/composition for grouped overlapping fills and strokes |
+
+All three sources have explicit author public-domain releases on pinned Commons
+pages/API. Healthy cleaned native triples on Windows/Linux are stable and byte
+identical. Browser transport alone transcodes Latin-1 XML to UTF-8 and adds root
+dimensions; parsed SVG trees are identical after removing those dimensions.
+The converter still consumes unchanged original bytes with declared viewports.
+This qualifies the vector-effect lead previously excluded on image-decode failure.
+No reference, membership or previous complete result is rebased.
+
+The other leads remain explicit: animated SVGclipPath06 is outside the static
+scope; static SVGmask02/03 need caller-supplied/browser-matched font contracts
+before retention. Their G5/G9 support stays in scope. No feature deferral follows
+from this batch selection. Use existing inventory/comparison tools, preserve every
+finite G2–G9/S17 exit, and keep already exact downloads out of the failure queue.
 
 | Remaining witness priority | Finite work to demonstrate |
 | --- | --- |
@@ -1512,10 +1533,10 @@ and leave it open; a supported document does not authorize shrinking group scope
 The original fidelity repairs and the **33 previously completed development
 documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
 (**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **10/10
-complete**, making the current selected development queue **45/45 complete**.
+complete**, completing the previous selected development queue **45/45**.
 Their frozen references and original first gates are listed above; all ten outputs
-are complete. Select the next licensed whole-document failure from the remaining
-finite exits through the bounded sourcing step above.
+are complete. The next three licensed failures make the current ledger **45/48**;
+complete `inv-142`, then select shared dependencies by the remaining full exports.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh

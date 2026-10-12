@@ -131,11 +131,12 @@ Linux captures per output match their frozen PNG byte-for-byte.
 
 The bounded batch downloaded four fontless static exports. The fourth,
 [SVGvector-effect01.svg](https://commons.wikimedia.org/wiki/File:SVGvector-effect01.svg),
-has verified public-domain rights but no qualified browser reference: pinned
-Chrome image decode failed on the original ISO-8859-1 bytes after root-only sizing.
-The healthy, cleaned launch report and unchanged download stay ignored diagnostic
-artifacts. It is outside this retained batch; the underlying static vector-effect
-and measured width-map work remain in PLAN. No representative success rate follows
+was initially excluded despite verified public-domain rights: pinned Chrome
+image decode failed on the original ISO-8859-1 bytes after root-only sizing.
+The later capture-only UTF-8 conversion preserves the parsed SVG tree and now
+qualifies healthy, cleaned Windows/Linux triples. It is retained as `inv-142`
+below, with unchanged renderer input bytes; vector-effect/width-map work stays
+within the finite PLAN scope. No representative success rate follows
 from four failure-selected leads.
 
 All three exports now complete their whole declared outputs through six APIs on
@@ -3407,3 +3408,34 @@ Next: a bounded public-domain/CC0 batch of remaining original-scope failures,
 prioritizing a measured width-map or valid multi-shape clip witness before broader
 image/CSS/effect/supplied-font dependencies. Finite G2–G9/S17 remain open.
 Corporate membership and all established exact references stay unchanged.
+
+### Three remaining-scope public-domain exports (2026-10-12)
+
+The bounded screen examined six Commons SVG-Buch leads. Three static fontless
+failures are retained separately from the completed ten-document batch:
+
+| Whole original / rights source | Bytes | Declared transparent output | First rejection / group |
+| --- | --- | --- | --- |
+| [inv-142](../tests/Fixtures/candidates/inv-142.svg) — [SVGvector-effect01](https://commons.wikimedia.org/wiki/File:SVGvector-effect01.svg?oldid=963516774), Dr. Olaf Hoffmann; PD-self | 2,269 | 512×266 | Root `viewport-fill` (G2/G3/G4/G7) |
+| [inv-143](../tests/Fixtures/candidates/inv-143.svg) — [SVGfilter01](https://commons.wikimedia.org/wiki/File:SVGfilter01.svg?oldid=963515008), Dr. Olaf Hoffmann; PD-self | 2,794 | 512×341 | Filter `x` (G8) |
+| [inv-144](../tests/Fixtures/candidates/inv-144.svg) — [SVGfilter02](https://commons.wikimedia.org/wiki/File:SVGfilter02.svg?oldid=963515020), Dr. Olaf Hoffmann; PD-self | 3,453 | 512×341 | Group `filter` (G8) |
+
+Pinned description-page public-domain dedications agree with imageinfo license,
+artist, source and upstream byte-count/SHA-1 metadata. Original downloads remain
+unchanged converter inputs. Explicit viewport/scale/background declarations
+preceded comparison. Browser inputs alone transcode declared Latin-1 XML to UTF-8
+and add root pixel dimensions; parsed trees match after removing those dimensions.
+Three fresh healthy cleaned captures per platform are stable and byte identical.
+This resolves the earlier vector-effect capture transport failure. The source,
+options and PNG identities are in svg-gap-cases.json; no implementation hashes.
+
+Animated SVGclipPath06 is outside the static scope. Static SVGmask02 and SVGmask03
+contain live labels; their G5/G9 lead status is retained in private screening until
+explicit caller-supplied/browser-matched font contracts can qualify references.
+They are not removed from support scope. No already exact download was added.
+
+Current selected development ledger **45/48 complete**; new batch **0/3**.
+Next is full inv-142 against its unchanged 512×266 transparent reference. The
+filter documents retain explicit region/primitive-unit/group source dependencies.
+Corporate27/27 documents /258/258 variants and all previous exact results remain
+protected by the unchanged renderer qualification. Finite G2–G9/S17 stay open.

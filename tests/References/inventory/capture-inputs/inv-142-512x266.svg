@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.2" baseProfile="tiny"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xml:lang="de"
+   viewBox="30 40 520 270"
+   viewport-fill="#cfe"
+   viewport-fill-opacity="0.9"
+   fill="blue" stroke="#c0c" stroke-width="5"
+   stroke-linecap="round" width="512" height="266">
+
+<title>SVG-Beispiel vector-effect</title>
+<desc>
+Die Eigenschaft vector-effect wird mit dem Wert inherit auf einen
+Pfad angewendet. Dieser wird einige Male referenziert und dann transformiert.
+Diese Kopien haben ebenfalls vector-effect gesetzt, entweder auf non-scaling-stroke
+(magenta Strich) oder none (gelber Strich). stroke-width ist auf 5 gesetzt.
+Dies ist unabhängig von den Transformationen, wenn non-scaling-stroke vorliegt.
+Daher haben jene Pfade mit magenta Strich alle die gleiche Strichbreite, die
+von denen mit gelbem Strich variieren. Zudem ändert sich die Strichbreite der
+Pfade mit magenta Strich nicht, wenn das Dokument vergrößert oder verkleinert
+wird.
+</desc>
+
+<defs>
+<path id="p" vector-effect="inherit"
+d='M-0.01,32.25C-0.31,56.32 -7.14,17.67 -11.9,26.72S-11.56,11.16 -22.29,20.08S-13.32,4.85 -31.03,10.06S-22.31,-1.57 -48.11,-5.06S-17.25,-9.16 -41.88,-24.21S-13.58,-17.37 -24.69,-33.97S-5.25,-21.09 -8.64,-40.72S3.36,-19.08 9.28,-43.65S11.72,-17.36 25.79,-35.49S13.89,-8.68 35.06,-20.27S21.99,-3.1 30.95,-3.26S8.33,2.39 35.67,11.57S17.38,14.57 32.06,28.84S4.21,8.64 15.73,35.28S0.29,8.18 -0.01,32.25z' />
+</defs>
+
+
+<use xlink:href="#p" x="100" y="100"
+     vector-effect="non-scaling-stroke" />
+<use xlink:href="#p" x="120" y="100" transform="scale(2)"
+     vector-effect="non-scaling-stroke" />
+<use xlink:href="#p" x="200" y="-300" transform="scale(0.4 -0.6)"
+     vector-effect="non-scaling-stroke" />
+<use xlink:href="#p" x="-650" y="-200" transform="scale(-0.4) skewX(-30)"
+     vector-effect="non-scaling-stroke" />
+
+<g stroke="yellow">
+<use xlink:href="#p" x="100" y="260"
+     vector-effect="none" />
+<use xlink:href="#p" x="220" y="100" transform="scale(2)"
+     vector-effect="none" />
+<use xlink:href="#p" x="900" y="-100" transform="scale(0.4 -0.8)"
+     vector-effect="none" />
+<use xlink:href="#p" x="-720" y="200" transform="scale(-0.4) skewY(30)"
+     vector-effect="none" />
+</g>
+
+
+</svg>
+
