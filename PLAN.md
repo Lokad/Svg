@@ -531,6 +531,10 @@ these controls do not count as a completed document.
 A seventh descriptive-leaf control was declared at `0dd5ba67` before changing
 metadata admission. The untouched honeycomb also exposes titles inside rendered
 paths; preserve inert descriptions through shared lowering/font discovery.
+Two further honeycomb texture controls freeze before the remaining correction:
+89×103 and the document's actual 94×108 texture density. Both retain the original
+public-domain path coordinates, local group/use structure and native paint/stroke
+distinctions, separately from document completion.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain
 the remaining G2–G9/S17 promises without exhaustive prerequisites.

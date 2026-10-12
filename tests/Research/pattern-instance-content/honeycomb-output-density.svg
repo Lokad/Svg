@@ -1,0 +1,43 @@
+<!-- SPDX-License-Identifier: CC0-1.0; geometry adapted from Dr. Olaf Hoffmann public-domain SVGpattern02.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="94" height="108">
+<defs><radialGradient id="Radial1" gradientUnits="userSpaceOnUse"
+     cx="0" cy="0" r="87" fx="0" fy="0">
+        <stop offset="0" stop-color="#0f0" />
+        <stop offset="0.5" stop-color="#2a4" />
+        <stop offset="0.6" stop-color="#071" />
+        <stop offset="0.9" stop-color="#020"/>
+  </radialGradient><pattern id="p" patternUnits="userSpaceOnUse" width="94" height="108" viewBox="-150 -173.205080757 300 346.410161514" preserveAspectRatio="none"><use xlink:href="#pat" stroke-linejoin="round" stroke="#00a"/></pattern><g id="pat" stroke-width="2">
+
+    <use xlink:href="#wabe" x="0" y="173.205080757" />
+    <use xlink:href="#wabe" x="0" y="-173.205080757" />
+
+    <use xlink:href="#wabe" x="150" y="86.6025403784" />
+    <use xlink:href="#wabe" x="150" y="-86.6025403784" />
+
+    <use xlink:href="#wabe" x="-150" y="86.6025403784" />
+    <use xlink:href="#wabe" x="-150" y="-86.6025403784" />
+
+    <use xlink:href="#wabe" x="0" y="0" />
+
+
+  </g>
+
+
+
+<g id="wabe" fill="none">
+
+<circle r="100" stroke="none" fill="url(#Radial1)" />
+<path fill="yellow"
+d="M95 0 C64.72135955 47.0228201834 28.2842712475 28.2842712475 -10 -17.3205080757 5.5107285922E-15 90 43.3012701892 25 95 0
+M47.5 82.2724133595 C-8.36227706141 79.5617516295 -10.3527618041 38.6370330516 10 -17.3205080757 -77.9422863406 45 3.06151588456E-15 50 47.5 82.2724133595
+M-47.5 82.2724133595 C-73.0836366114 32.5389314461 -38.6370330516 10.3527618041 20 -2.44921270764E-15 -77.9422863406 -45 -43.3012701892 25 -47.5 82.2724133595
+M-95 1.16337603613E-14 C-64.72135955 -47.0228201834 -28.2842712475 -28.2842712475 10 17.3205080757 -1.65321857766E-14 -90 -43.3012701892 -25 -95 1.16337603613E-14
+M-47.5 -82.2724133595 C8.36227706141 -79.5617516295 10.3527618041 -38.6370330516 -10 17.3205080757 77.9422863406 -45 -9.18454765367E-15 -50 -47.5 -82.2724133595
+M47.5 -82.2724133595 C73.0836366114 -32.5389314461 38.6370330516 -10.3527618041 -20 2.26619938093E-14 77.9422863406 45 43.3012701892 -25 47.5 -82.2724133595
+" />
+
+<circle r="10" stroke="red" fill="#80a" />
+<circle r="3" stroke="none" fill="#ff8" />
+
+</g>
+</defs><rect width="94" height="108" fill="url(#p)"/></svg>

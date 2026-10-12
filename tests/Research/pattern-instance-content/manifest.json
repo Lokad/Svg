@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Seven frozen pattern instance/overflow and descriptive-leaf controls advancing inv-138; initial UnsupportedFeature outcomes retained before correction.",
+  "purpose": "Nine frozen pattern instance/overflow, descriptive-leaf and honeycomb texture controls advancing inv-138; pre-correction UnsupportedFeature outcomes retained until qualification.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -154,6 +154,46 @@
       "reference": "references/leaf-descriptions.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "honeycomb-tile",
+      "width": 89,
+      "height": 103,
+      "viewport": {
+        "width": 89,
+        "height": 103
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "8c32bcf209c773fcf9a94eec89ee54db3a801d39224dd150d0cd142eade77381",
+      "referenceSha256": "cddc4fbc57f4f5dd0b265ec75ba67db26ba8dbc2251c2f44adf0d21bb68c9b23",
+      "selection": "Declared at febb9e0c before remaining tile/sampling correction: isolate inv-138 original public-domain group/use geometry into one 89x103 texture, retaining decimal coordinates and native paint/stroke distinctions.",
+      "input": "honeycomb-tile.svg",
+      "reference": "references/honeycomb-tile.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism layout dedicated by its SPDX CC0-1.0 declaration; geometry adapted from Dr. Olaf Hoffmann public-domain SVGpattern02.svg.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "honeycomb-output-density",
+      "width": 94,
+      "height": 108,
+      "viewport": {
+        "width": 94,
+        "height": 108
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "3e7e8f9b01244907e753f61b8732c758231a77d3e3f4b25be49bb7fbfa4ee563",
+      "referenceSha256": "dac98566cbe46f203c33e980a9e4eda917a12ebb57566b6167691ddee5144b90",
+      "selection": "Declared at febb9e0c before remaining tile/sampling correction: isolate the actual 94x108 picture texture for inv-138 at declared 512x357, alongside the already exact 89x103 density control.",
+      "input": "honeycomb-output-density.svg",
+      "reference": "references/honeycomb-output-density.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism layout dedicated by its SPDX CC0-1.0 declaration; geometry adapted from Dr. Olaf Hoffmann public-domain SVGpattern02.svg.",
       "role": "fidelity",
       "expectedError": "UnsupportedFeature"
     }
