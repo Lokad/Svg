@@ -693,6 +693,11 @@ document. Diagnose each later rejection and mismatch against the unchanged
 reference; the measured G3 width-map defect stays open until a qualified whole
 witness proves its repair. Declare small focused controls before corresponding
 implementation changes, selected by this complete document rather than a G2 grid.
+Eight [vector-effect controls](tests/Research/vector-effects/manifest.json) were
+declared at `4f6c277b` before correction. Healthy cleaned native Windows/Linux
+triples are stable and byte identical. Baselines retain five rejections, two
+root-viewBox width mismatches and one exact ordinary scaling stroke. Preserve
+explicit inheritance, source-authored precedence and non-inheritance independently.
 
 The bounded six-lead screen retained three static fontless public-domain exports:
 
