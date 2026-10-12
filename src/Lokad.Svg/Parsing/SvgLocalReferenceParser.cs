@@ -7,7 +7,7 @@ internal static class SvgLocalReferenceParser
 {
     internal static SvgUseReference ParseUse(XmlReader reader, SvgPaintableElementContext context, BudgetedParserStringStore strings, double? baseWidth, double? baseHeight, SvgDocumentState state)
     {
-        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, baseWidth, baseHeight);
+        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, baseWidth, baseHeight, context.WorkCounter, context.CancellationToken);
         SvgComputedStyle style = context.ResolveStyle(reader);
         SvgMarkerStyle markers = SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers);
         if (state.MarkerDefinition is not null && markers.HasMarkers)

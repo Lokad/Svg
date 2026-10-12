@@ -3376,17 +3376,22 @@ to each artist upload. Retained asset pages identify Manuela’s gradient/checke
 remix lineage and qubodup’s remix of Justin Ternet’s own generic face drawings;
 neither page carries a rights-review tag. The renderer tests need no network.
 
-This batch is **5/10 complete**; the prior **35 completed documents** remain
-protected, making the current selected queue **40/45**. `inv-132`–`inv-135` match
+This batch is **6/10 complete**; the prior **35 completed documents** remain
+protected, making the current selected queue **41/45**. `inv-132`–`inv-135` match
 unchanged 512×512 references through all twelve APIs on Windows/Linux. Eight
 separate controls are exact, including thin general strokes and axis-exchanging
 frames. `inv-139` also completes its unchanged 512×341 transparent reference
 through all twelve APIs on both platforms. Shared viewBox/aspect and alias maps
 preserve source content and enclosing SVG percentage bases; six separate controls
-are exact. Complete qualification passes 7,130 tests per platform with all 2,856
-prior ordinary PNGs and every established exact result protected.
-Next: complete `inv-138`'s rotated honeycomb at frozen 512×357. Its first rejection
-is now pattern `overflow`; local group/use tile content and composed radial paint
-remain dependencies. Compound/degenerate clips, other pattern units/content and
+are exact. `inv-138` also completes its unchanged 512×357 transparent reference
+through all twelve APIs on Windows/Linux. Shared ordered local tile replay,
+descriptive-leaf admission, absolute radial stop sampling and native float local
+placement resolve every rejection and pixel mismatch. Nine separate controls
+are exact. Complete qualification passes 7,155 tests per platform with all 2,856
+prior ordinary PNGs, 2,908 outcomes and every established exact result protected.
+Next: complete `inv-140`'s rainbow checker at frozen 512×512. Its two sixteen-stop
+gradients first require bounded shared stop sampling; local checker tile uses and
+luminance masks remain whole-output dependencies. Compound/degenerate clips,
+other pattern units/content and
 finite group mask regions remain queued, without exhaustive G2 as a prerequisite.
 Corporate membership and all established exact references stay unchanged.

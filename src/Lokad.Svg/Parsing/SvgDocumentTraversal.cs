@@ -272,6 +272,8 @@ internal static class SvgDocumentTraversal
                     state.PatternContentBuilder = null;
                     state.PatternRectangleSource = null;
                     state.PatternRectangleContext = default;
+                    state.PatternUseStart = 0;
+                    state.PatternUseCount = 0;
                     state.PatternTemplate = default;
                     state.PatternDepth = -1;
                     state.PatternId = null;
@@ -394,6 +396,7 @@ internal static class SvgDocumentTraversal
                     if (state.DeferredTextFailure is {} textFailure) throw textFailure;
                     SvgTextPathLayout.Resolve(state, limits, workCounter, cancellationToken);
                     state.ValidateSymbolReferences(workCounter, cancellationToken);
+                    SvgPatternUseReplay.Resolve(state, workCounter, cancellationToken);
                     SvgResourceUseReplay.Resolve(state, workCounter, cancellationToken);
                     SvgMaskContentReplay.Resolve(root, state, workCounter, cancellationToken);
                     SvgReferenceResolver.ResolvePendingUses(state.Definitions, state.PendingUses, state.Scene, state, workCounter, cancellationToken);

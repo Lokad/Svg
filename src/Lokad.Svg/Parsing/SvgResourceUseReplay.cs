@@ -3,7 +3,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgResourceUseKind { Mask, Clip }
+internal enum SvgResourceUseKind { Mask, Clip, Pattern }
 internal readonly record struct SvgResourceUse(SvgUseReference Reference, string? ClipId, bool IsEvenOdd);
 internal readonly record struct SvgDeferredResourceUse(string Id, SvgResourceUseKind Kind, bool IsAlpha, SvgResourceUse Use);
 
@@ -121,13 +121,32 @@ internal static class SvgResourceUseReplay
     }
 
     internal static void AppendMaskUse(SvgResourceUse use, SvgSceneBuilder builder, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        => AppendUse(use, builder, state, SvgResourceUseKind.Mask, work, token);
+
+    internal static void AppendPatternUse(SvgResourceUse use, SvgSceneBuilder builder, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        => AppendUse(use, builder, state, SvgResourceUseKind.Pattern, work, token);
+
+    /// <summary>Adopts shared reference replay into a resource scene; tile paints reject recursive pattern dependencies.</summary>
+    private static void AppendUse(SvgResourceUse use, SvgSceneBuilder builder, SvgDocumentState state, SvgResourceUseKind kind, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
-        if (!state.Definitions.TryGetValue(use.Reference.Id, out SvgDefinition source))
+        if (!state.Definitions.TryGetValue(use.Reference.Id, out SvgDefinition source)
+            && !state.RenderedGroupDefinitions.TryGetValue(use.Reference.Id, out source))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
         SvgGeometry[] mapped = SvgReferenceResolver.Apply(source, use.Reference with { Opacity = 255 }, null, state, work, token);
         bool adopted = false;
-        try { AppendMaskUse(use, use.Reference, mapped, builder, state, work, token); adopted = true; }
+        try
+        {
+            if (kind == SvgResourceUseKind.Pattern)
+                foreach (SvgGeometry geometry in mapped)
+                {
+                    work.Consume(token);
+                    if (geometry.Kind is SvgGeometryKind.PatternFill or SvgGeometryKind.PatternPolygon)
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern paints inside pattern content are not implemented.");
+                }
+            AppendMaskUse(use, use.Reference, mapped, builder, state, work, token);
+            adopted = true;
+        }
         finally { if (!adopted) foreach (SvgGeometry geometry in mapped) geometry.Dispose(); }
     }
 

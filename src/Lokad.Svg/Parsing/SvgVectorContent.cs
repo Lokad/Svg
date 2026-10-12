@@ -2,7 +2,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Owns an immutable vector replay scene for pattern tiles and mask contents.</summary>
+/// <summary>Owns a vector replay scene for pattern tiles and mask contents, sealed before rasterization.</summary>
 /// <remarks>The parent scene adopts this owner once. Paints and masks borrow it until parent disposal;
 /// rasterization borrows its scene without disposing it. Creation charges metadata before allocation.
 /// Conversion is single-threaded; callers must not dispose this owner during replay. Cleanup observes no cancellation.</remarks>
@@ -11,13 +11,32 @@ internal sealed class SvgVectorContent : IDisposable
     private SvgSceneStorage? _scene;
     private RenderBudget.BudgetReservation? _reservation;
 
-    private SvgVectorContent(SvgSceneStorage scene, RenderBudget.BudgetReservation reservation)
+    private SvgVectorContent(SvgSceneStorage? scene, RenderBudget.BudgetReservation reservation)
     {
         _scene = scene;
         _reservation = reservation;
     }
 
     internal SvgSceneStorage Scene => _scene ?? throw new ObjectDisposedException(nameof(SvgVectorContent));
+
+    /// <summary>Creates the parent-owned identity borrowed by paints while local tile references are pending.</summary>
+    internal static SvgVectorContent CreatePending(RenderBudget budget)
+    {
+        RenderBudget.BudgetReservation reservation = budget.Reserve(128, SvgMemoryCategory.Scene);
+        try { return new(null, reservation); }
+        catch { reservation.Dispose(); throw; }
+    }
+
+    /// <summary>Adopts the sealed scene once, before parser completion; failure disposes the supplied owner.</summary>
+    internal void Complete(SvgSceneStorage scene)
+    {
+        if (_reservation is null || _scene is not null)
+        {
+            scene.Dispose();
+            throw new InvalidOperationException("Pending vector content must be completed once before disposal.");
+        }
+        _scene = scene;
+    }
 
     /// <summary>Adopts a sealed replay scene, including disposal on allocation/accounting failure.</summary>
     internal static SvgVectorContent Create(SvgSceneStorage scene, RenderBudget budget)

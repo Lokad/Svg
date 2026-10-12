@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Nine frozen pattern instance/overflow, descriptive-leaf and honeycomb texture controls advancing inv-138; pre-correction UnsupportedFeature outcomes retained until qualification.",
+  "purpose": "Nine frozen pattern instance/overflow, descriptive-leaf and texture controls are exact through all twelve raw/prepared APIs on Windows/Linux. Controls stay separate from the completed inv-138 whole document.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -34,8 +34,7 @@
       "reference": "references/forward-use-order.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "group-use-inheritance",
@@ -54,8 +53,7 @@
       "reference": "references/group-use-inheritance.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "alias-use-viewbox",
@@ -74,8 +72,7 @@
       "reference": "references/alias-use-viewbox.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "visible-overflow",
@@ -94,8 +91,7 @@
       "reference": "references/visible-overflow.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "hidden-overflow",
@@ -114,8 +110,7 @@
       "reference": "references/hidden-overflow.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "rotated-radial-use",
@@ -134,8 +129,7 @@
       "reference": "references/rotated-radial-use.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "leaf-descriptions",
@@ -154,8 +148,7 @@
       "reference": "references/leaf-descriptions.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "honeycomb-tile",
@@ -174,8 +167,7 @@
       "reference": "references/honeycomb-tile.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism layout dedicated by its SPDX CC0-1.0 declaration; geometry adapted from Dr. Olaf Hoffmann public-domain SVGpattern02.svg.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "honeycomb-output-density",
@@ -194,8 +186,7 @@
       "reference": "references/honeycomb-output-density.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism layout dedicated by its SPDX CC0-1.0 declaration; geometry adapted from Dr. Olaf Hoffmann public-domain SVGpattern02.svg.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     }
   ]
 }

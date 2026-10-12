@@ -56,6 +56,16 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
 
     internal static SvgShaderPaint Ramp(ReadOnlySpan<SvgGradientStop> stops, SvgColor start, SvgColor end, double offset1, double offset2, double position, byte opacity, int matrix)
         => Ramp(stops, start, end, offset1, offset2, position, opacity / 255f, matrix);
+
+    /// <summary>Samples an absolute radial coordinate after radius-based spread, padding beyond the authored end stops.</summary>
+    internal static SvgShaderPaint RadialRamp(ReadOnlySpan<SvgGradientStop> stops, SvgColor start, SvgColor end,
+        double offset1, double offset2, double position, float opacityScale, int matrix)
+    {
+        double absolute = Math.Clamp(position, offset1, offset2);
+        if (stops.Length > 2) return Ramp(stops, start, end, 0, 1, absolute, opacityScale, matrix);
+        double local = offset2 > offset1 ? (absolute - offset1) / (offset2 - offset1) : 0;
+        return Ramp(stops, start, end, 0, 1, local, opacityScale, matrix);
+    }
     internal static SvgShaderPaint Ramp(ReadOnlySpan<SvgGradientStop> stops, SvgColor start, SvgColor end, double offset1, double offset2, double position, float opacityScale, int matrix)
     {
         float firstAlpha = stops.Length == 0 ? start.Alpha * (1f / 255f) : stops[0].Alpha;

@@ -72,6 +72,8 @@ internal sealed class SvgDocumentState : IDisposable
         DeferredResourceUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         MaskReplayChildren = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         DeferredMaskContents = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        PatternUses = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        DeferredPatternContents = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         GroupSnapshots = new BudgetedParserDictionary<string, SvgGroupSnapshot>(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         RenderedGroupDefinitions = new(budget, SvgMemoryCategory.Parser, DefinitionStorageBytes);
         GroupSnapshotStarts = new BudgetedParserList<SvgGroupSnapshotStart>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -97,6 +99,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<SvgDeferredResourceUse> DeferredResourceUses { get; }
     internal BudgetedParserList<SvgMaskReplayChild> MaskReplayChildren { get; }
     internal BudgetedParserList<SvgDeferredMaskContent> DeferredMaskContents { get; }
+    internal BudgetedParserList<SvgPatternContentUse> PatternUses { get; }
+    internal BudgetedParserList<SvgDeferredPatternContent> DeferredPatternContents { get; }
     internal int MaskReplayChildStart { get; set; }
     internal int MaskReplayChildCount { get; set; }
     internal bool MaskHasReplayContent { get; set; }
@@ -260,6 +264,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgSceneBuilder? PatternContentBuilder { get; set; }
     internal SvgDefinitionLeafSource? PatternRectangleSource { get; set; }
     internal SvgPaintableElementContext PatternRectangleContext { get; set; }
+    internal int PatternUseStart { get; set; }
+    internal int PatternUseCount { get; set; }
 
     internal string? MaskId { get; set; }
 
@@ -399,6 +405,9 @@ internal sealed class SvgDocumentState : IDisposable
         MaskContentBoxes.Dispose();
         MaskContentBuilder?.Dispose();
         PatternContentBuilder?.Dispose();
+        foreach (SvgDeferredPatternContent content in DeferredPatternContents.AsSpan()) content.Builder.Dispose();
+        DeferredPatternContents.Dispose();
+        PatternUses.Dispose();
         Patterns.Dispose();
         PatternDefinitions.Dispose();
         Gradients.Dispose();

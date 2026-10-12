@@ -414,6 +414,12 @@ internal static class SvgDefinitionParser
         }
         if (state.PatternDepth >= 0 && reader.Depth > state.PatternDepth && reader.NamespaceURI == "http://www.w3.org/2000/svg")
         {
+            if (reader.LocalName == "use")
+            {
+                SvgPatternUseReplay.Retain(reader, root, state, namedColors,
+                    GetPatternContentBuilder(state, workCounter, cancellationToken), workCounter, cancellationToken);
+                return true;
+            }
             if (reader.LocalName == "g")
             {
                 if (reader.GetAttribute("mask") is not null || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("filter") is not null)
@@ -1403,10 +1409,20 @@ internal static class SvgDefinitionParser
         if (state.PatternDefinitions.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
         if (state.PatternContentBuilder is {} builder)
         {
-            SvgLeafMaskComposition.Emit(state, builder, workCounter, cancellationToken);
-            SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
+            SvgVectorContent content;
+            if (state.PatternUseCount == 0)
+            {
+                SvgLeafMaskComposition.Emit(state, builder, workCounter, cancellationToken);
+                content = SvgVectorContent.Create(builder.Build(), state.Budget);
+            }
+            else content = SvgVectorContent.CreatePending(state.Budget);
             try { state.Scene.AdoptVectorContent(content); }
             catch { content.Dispose(); throw; }
+            if (state.PatternUseCount != 0)
+            {
+                state.DeferredPatternContents.Add(new(builder, content, state.PatternUseStart, state.PatternUseCount));
+                state.PatternContentBuilder = null;
+            }
             tile = tile with { Content = null, VectorContent = content };
         }
         SvgPatternDefinition definition = new(retainedId, state.PatternTemplate, tile, state.PatternRectangleSource, state.PatternRectangleContext, false);

@@ -12169,3 +12169,51 @@ The development ledger is 40/45 complete, with this batch 5/10. Finite G2–G9/S
 remain open. Next is `inv-138`'s 512×357 honeycomb: its viewBox gate is removed,
 while visible overflow and local group/use content still block the whole output.
 Private receipt: artifacts/pattern-viewbox-20261012/final-qualification.json.
+
+## Ordered pattern instances and native scalar placement (2026-10-12)
+
+The untouched public-domain `inv-138` honeycomb completes its frozen 512×357
+transparent output through all twelve raw/prepared APIs on Windows/Linux. Nine
+separate controls cover ordered forward local uses, inherited group strokes/paint,
+alias viewBoxes, rotated radial content, overflow, inert leaf descriptions and
+two texture densities. Original documents and reference PNGs stay unchanged.
+
+Pattern uses retain slots in the existing bounded vector tile builder. After
+local definitions resolve, common resource/reference replay appends mapped draws
+and moves their commands into those slots in descending order. One parent-owned
+content identity allows intervening paints and aliases to borrow the eventual
+sealed scene. Staging builders release on failure; completed scenes become
+immutable before rasterization. Indirect pattern paint dependencies reject,
+and existing local geometry cycle classification remains MalformedInput.
+
+SVG leaves may contain inert descriptions without contributing drawings or font
+requests. Shared structural consumption now admits those descriptions while
+counting their nodes and rejecting active/rendered children. Both visible and
+hidden pattern overflow retain clipped native tile behavior in fresh platform
+captures. SVG leaves visible overflow beyond the tile underspecified; the frozen
+browser contract defines these outcomes. See [SVG pattern rendering](https://www.w3.org/TR/SVG/latest/pservers.html#PatternElement).
+
+The honeycomb's radial gradient ends at 0.9. Its shader already supplies an
+absolute radius coordinate; rescaling that coordinate by the stop interval again
+distorted 111,327 pixels. Shared radial ramp sampling applies end-stop padding
+without a second interval map. The remaining 739 document pixels originated in
+35 pixels of its 94×108 texture. Native local use lengths narrow to float before
+source-map composition, whereas retaining their decimal doubles shifted coverage
+at this density. The common local-reference syntax now preserves native scalars,
+with finite fallback for intermediate overflow in otherwise bounded tokens.
+The separate 89×103 density and all earlier exact outputs remain protected.
+
+Complete qualification passes 7,155 tests per platform (4,955 core / 2,194 visual /
+six FontProbe), with zero failures/skips and zero build warnings/errors. All 2,856
+prior ordinary PNGs and 2,908 outcomes, established exact/focused/static CSS
+results, thirty exact font outputs per platform and corporate 27/258 stay unchanged.
+Sixteen new core cases protect dependencies, active-child admission, multiple
+staging scenes, sampled work/storage denial, cancellation, radial padding and
+finite native offsets. The existing two-workload resource probe passes normal
+conversion, tight denial and cleanup. Approximate memory policy and public
+API/package contracts remain unchanged; no memory requalification framework.
+
+The development ledger is 41/45 complete, with this batch 6/10. Finite G2–G9/S17
+remain open. Next is inv-140's unchanged 512×512 checker: bounded sixteen-stop
+gradients, ordered local tiles and luminance masks. Private receipt:
+artifacts/pattern-instances-20261012/final-qualification.json.

@@ -6,6 +6,20 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgLocalReferenceSyntaxTests
 {
+    [Theory]
+    [InlineData("86.6025403784", 86.6025390625)]
+    [InlineData("00000000000000000000000000000000000000002", 2)]
+    [InlineData("1e-100", 0)]
+    public void Local_offsets_retain_finite_native_length_scalars(string value, double expected)
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<use href='#tile' x='" + value + "px'/>"));
+        using BudgetedParserStringStore strings = new(new RenderBudget(1_000));
+        Assert.True(reader.Read());
+        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, null, null, new(10_000), CancellationToken.None);
+        Assert.Equal(expected, syntax.X);
+        Assert.True(double.IsFinite(syntax.X));
+    }
+
     [Fact]
     public void Parses_and_retains_bounded_local_use_syntax_before_style_resolution()
     {
@@ -13,7 +27,7 @@ public sealed class SvgLocalReferenceSyntaxTests
         using BudgetedParserStringStore strings = new(new RenderBudget(1_000));
         Assert.True(reader.Read());
 
-        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, null, null);
+        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, null, null, new(10_000), CancellationToken.None);
 
         Assert.Equal("tile", syntax.Id);
         Assert.Equal(2.25, syntax.X);
@@ -30,7 +44,7 @@ public sealed class SvgLocalReferenceSyntaxTests
         using BudgetedParserStringStore strings = new(budget);
         Assert.True(reader.Read());
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgLocalReferenceSyntax.Parse(reader, strings, null, null));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgLocalReferenceSyntax.Parse(reader, strings, null, null, new(10_000), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, budget.Snapshot().BytesByCategory[(int)SvgMemoryCategory.Parser]);
@@ -43,7 +57,7 @@ public sealed class SvgLocalReferenceSyntaxTests
         using BudgetedParserStringStore strings = new(new RenderBudget(1_000));
         Assert.True(reader.Read());
 
-        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, null, null);
+        SvgLocalReferenceSyntax syntax = SvgLocalReferenceSyntax.Parse(reader, strings, null, null, new(10_000), CancellationToken.None);
 
         Assert.Equal("tile", syntax.Id);
         Assert.Equal(2, syntax.X);

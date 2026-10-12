@@ -5,10 +5,10 @@ Updated 2026-10-12. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**40/45 retained development documents are complete.** The preceding 35 stay
-complete; the newly retained public-domain/CC0 batch is **5/10 complete**
-(`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY and
-`inv-139` phased pattern columns).
+**41/45 retained development documents are complete.** The preceding 35 stay
+complete; the newly retained public-domain/CC0 batch is **6/10 complete**
+(`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
+`inv-138` honeycomb and `inv-139` phased pattern columns).
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
@@ -515,26 +515,40 @@ two-workload resource probe passes normal conversion and tight denial with owned
 storage released. Approximate memory policy and API/package contracts stay
 unchanged. Receipt: `artifacts/pattern-viewbox-20261012/final-qualification.json`.
 
-This new batch is **5/10 complete**, making the current queue **40/45**.
-**Next deliverable: complete `inv-138`'s rotated honeycomb at frozen 512×357
-transparent.** Its first rejection advances from pattern viewBox to visible
-overflow; local group/use tile content, inherited radial paint and composed
-rotation are dependencies of the whole output. Extend bounded tile/source replay
-and paint-coordinate mapping, then resolve every remaining mismatch.
-Six [pattern instance controls](tests/Research/pattern-instance-content/manifest.json)
-were declared at `389404c8` before correction and frozen from healthy cleaned
-Windows/Linux browser triples. They cover ordered forward uses, group stroke/paint
-inheritance, alias viewBoxes and rotated radial content. Visible/hidden overflow
-produce identical clipped native references; preserve that observed behavior with
-both controls. Initial UnsupportedFeature outcomes stay recorded until corrected;
-these controls do not count as a completed document.
-A seventh descriptive-leaf control was declared at `0dd5ba67` before changing
-metadata admission. The untouched honeycomb also exposes titles inside rendered
-paths; preserve inert descriptions through shared lowering/font discovery.
-Two further honeycomb texture controls freeze before the remaining correction:
-89×103 and the document's actual 94×108 texture density. Both retain the original
-public-domain path coordinates, local group/use structure and native paint/stroke
-distinctions, separately from document completion.
+The untouched `inv-138` rotated honeycomb now completes its frozen 512×357
+transparent output through all twelve raw/prepared APIs on Windows/Linux.
+Ordered local group/use tile content shares existing reference expansion and
+bounded vector scenes. Deferred use slots preserve intervening paint order and
+seal before rasterization. Inert descriptions inside geometric leaves share
+lowering/font discovery; active children still reject. Radial ramps sample
+absolute radius coordinates once, including non-unit end-stop ranges. Native
+float local offsets precede composed source placement, removing the final
+35 texture pixels and their 739 propagated document differences.
+
+All nine [pattern instance controls](tests/Research/pattern-instance-content/manifest.json)
+are exact through twelve APIs, separately from document completion. Six were
+declared at `389404c8`; descriptive-leaf and two texture-density controls were
+declared before their corresponding changes. Healthy cleaned Windows/Linux
+browser triples stay frozen. Visible/hidden overflow have identical clipped
+native references; both controls preserve that observed behavior.
+
+Complete qualification passes **7,155 tests per platform** (4,955 core / 2,194
+visual / six FontProbe), zero failures/skips and zero build warnings/errors.
+All **2,856 prior ordinary PNGs** and **2,908 outcomes**, established exact,
+focused/static CSS results and **30 exact font outputs per platform** remain
+unchanged. Corporate **27/27 documents / 258/258 variants** stay exact. Sixteen
+new core cases protect dependency/active-child outcomes, multiple staging scenes,
+sampled work/storage denial, cancellation, radial padding and finite native
+coordinate scalars. The existing two-workload resource probe passes success,
+tight denial and cleanup. Approximate memory policy and API/package contracts
+remain unchanged. Receipt: `artifacts/pattern-instances-20261012/final-qualification.json`.
+
+This new batch is **6/10 complete**, making the current queue **41/45**.
+**Next deliverable: complete `inv-140`'s rainbow checker at frozen 512×512
+transparent.** Both authored gradients have sixteen stops and repeated offsets;
+the current eight-stop gate blocks them. Extend bounded shared stop sampling,
+then take its ordered checker tile uses and luminance masks through every further
+rejection or mismatch against the unchanged whole reference.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain
 the remaining G2–G9/S17 promises without exhaustive prerequisites.
@@ -559,7 +573,7 @@ landed mechanisms remain regression requirements.
 | G3 | **Heart, I Ching, radiation, tiger, Malta, Portugal and Bhutan and South Africa documents complete.** Complete remaining curved geometry and static maps | Non-uniform curve maps, transformed strokes/paints and remaining affine gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | **Fractional rectangle placement and direct width admission repaired.** Complete paint-server strokes on ordinary geometry | Three retained rectangle comparisons and twelve new frame controls are exact; broader paints retain admission gates | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
-| G6 | **Six retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
+| G6 | **Seven retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Static markers and the enumerated filter/blending subset below | Four CC0 exports and the original marker-instance acceptance fixture complete their declared outputs; remaining marker combinations and finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
 | G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents and CC0 SVG Translate complete; seven controls in each text-path/Mono bank exact. The older composite-accent control is also exact; wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
@@ -582,7 +596,7 @@ G2/G3/G5. The library required valid path-prefix recovery, composed viewport
 clips, inert descriptions and preservation of native contour identity through
 source replay. Its compound Yin/Yang control was already exact before the repair.
 Keep the rotated-symbol gradient rejection (G3) visible; the nested-affine-opacity
-defect (G5) is repaired on its unchanged reference. Six completed documents with pattern elements
+defect (G5) is repaired on its unchanged reference. Seven completed documents with pattern elements
 are exact after shared vector content, local template inheritance, fractional
 mapping and general pattern transforms. The separate geometric-pattern export,
 `inv-111`, needed deferred gradient leaves and native affine linear paint maps;
@@ -1012,7 +1026,8 @@ and two explicit boundaries** among 22 cases. Eight focused core cases cover
 tight material memory/work limits, cancellation/retry and partial-scene rejection.
 Isolated group opacity remains promised and explicitly unsupported: the measured
 prototype has residual native layer rounding differences and is not required by
-this completed document. Group clips/masks/filters and local uses remain gates.
+this completed document. Group clips/masks/filters remain gates; ordered local
+uses are covered by the honeycomb correction below.
 
 `inv-139` completes its unchanged 512×341 transparent reference through all twelve
 APIs on both platforms. Pattern viewBox and preserveAspectRatio inherit
@@ -1022,13 +1037,22 @@ content map before the independent texture map. With a viewBox, content units
 are ignored and percentage lengths keep their enclosing SVG viewport bases.
 Six separate controls are exact; original inputs and references remain frozen.
 
+`inv-138` completes its unchanged 512×357 transparent reference through all twelve
+APIs on both platforms. Ordered local group/use content resolves forward targets
+through shared reference replay, retaining paint order in the bounded tile builder.
+Native clipped overflow, inert geometric-leaf descriptions, absolute radial ramps
+and float local length placement remove every measured rejection/mismatch. Nine
+separate controls are exact, including the document's 94×108 texture density.
+Missing/external references and indirect pattern dependencies have explicit
+unsupported outcomes; cyclic local geometry graphs retain MalformedInput.
+Owned staging and sealed scenes release on success, denial and cancellation.
+
 General referencing-shape/instance maps, content/bounding-box units and
 nested viewport gates remain open. Broader source-grid,
 instance and stroke combinations still need measured controls; completion of the
-six documents closes neither this checklist nor the finite exit below.
-The completed `inv-139` and retained `inv-138` references make pattern viewBox,
-alias phase and composed placement concrete acceptance documents. `inv-138` needs
-local group/use tile content and visible overflow; `inv-140` needs ordered local
+seven documents closes neither this checklist nor the finite exit below.
+The completed `inv-138`/`inv-139` references protect pattern viewBox, alias phase,
+local tile instances and composed placement. `inv-140` needs ordered local
 uses in tiles rendered inside luminance masks. Keep those dependencies inside the
 existing finite content/unit/map exit, with explicit recursive outcomes.
 Extend the bounded vector tile scene with composed pattern transforms,
@@ -1326,9 +1350,9 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 The original fidelity repairs and the **33 previously completed development
 documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
-(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **5/10
-complete**, making the current selected development queue **40/45 complete**.
-Their frozen references and first gates are listed above; next, finish `inv-138`.
+(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **6/10
+complete**, making the current selected development queue **41/45 complete**.
+Their frozen references and first gates are listed above; next, finish `inv-140`.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh

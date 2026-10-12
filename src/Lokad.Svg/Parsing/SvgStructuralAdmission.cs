@@ -14,13 +14,14 @@ internal static class SvgStructuralAdmission
         if (reader.AttributeCount > limits.MaximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
     }
 
-    /// <summary>Consumes a geometric leaf body without admitting child elements, counting every nested element and charging reader work with cancellation checks. Borrows the reader and allocates no retained storage.</summary>
+    /// <summary>Consumes a geometric leaf body, admitting inert descriptions while counting every nested element and charging reader work with cancellation checks. Borrows the reader and allocates no retained storage.</summary>
     internal static SvgLeafSubtree ConsumeLeafSubtree(XmlReader reader, SvgRenderLimits limits, int nodeCount, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(reader);
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(workCounter);
         int leafDepth = reader.Depth;
+        int descriptionDepth = -1;
         bool hasElements = false;
         while (reader.Read())
         {
@@ -30,9 +31,17 @@ internal static class SvgStructuralAdmission
                 ValidateElementStructure(reader, limits);
                 if (nodeCount >= limits.MaximumNodes) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG node count exceeds the configured limit.");
                 nodeCount++;
-                hasElements = true;
+                bool svg = reader.NamespaceURI == "http://www.w3.org/2000/svg";
+                if (descriptionDepth >= 0)
+                    hasElements |= svg && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName);
+                else if (svg && SvgStructuralVocabulary.IsDescriptiveElement(reader.LocalName))
+                {
+                    if (!reader.IsEmptyElement) descriptionDepth = reader.Depth;
+                }
+                else hasElements = true;
             }
             else if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == leafDepth) return new(hasElements, nodeCount);
+            else if (reader.NodeType == XmlNodeType.EndElement && reader.Depth == descriptionDepth) descriptionDepth = -1;
         }
         return new(hasElements, nodeCount);
     }
