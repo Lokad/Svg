@@ -913,8 +913,8 @@
         "height": 269
       },
       "selection": "Declared at 6e759f24 before renderer comparison/capture: whole untouched static fontless export, explicit nominal source-page frame, root dimensions only in browser input.",
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Degenerate clip paths are not implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Exact through all six raw and six independently prepared APIs on Windows/Linux against unchanged original 512x269 transparent reference; separate controls and complete regression qualification pass.",
       "reference": "tests/References/inventory/inv-137-transparent.png",
       "referenceSha256": "755237a134de5a2fd95ba518a189e5ea36fa25eb47b919d868daf52e9bc1903a",
       "sourceRevisionUrl": "https://commons.wikimedia.org/wiki/File:SVGclipPath05.svg?oldid=963513891",

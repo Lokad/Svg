@@ -12258,3 +12258,45 @@ The development ledger is 42/45 complete, source batch 7/10. Finite G2–G9/S17
 remain open. Next is `inv-137`'s unchanged 512×269 open/degenerate clip document,
 using shared path/clip replay. Private receipt:
 artifacts/gradient-stops-20261012/final-qualification.json.
+
+## Open and canceling clip contours (2026-10-12)
+
+The untouched public-domain `inv-137` completes its frozen 512×269 transparent
+output through all twelve raw/prepared APIs on Windows/Linux. Nine separately
+declared CC0 controls cover empty siblings, stroke-free clip coverage, canceling
+winding, mixed open contours, curves, parity, resource-path uses and root placement.
+Their native triples are healthy, cleaned and stable on both platforms.
+
+Short contours contribute no clip fill; every area-bearing contour closes
+implicitly and replays native directed winding/parity without a convexity or
+signed-area deletion gate. Clip-child path IDs retain unconstructed ordinary
+source attributes. Referencing uses lower their authored/inherited fill and stroke
+through the existing source registry; unused clip strokes remain unconstructed.
+
+The clip's enclosing source rectangle retains native coverage on axis-aligned
+maps too. Its nonzero bounds govern subsequent curve construction in each bitmap,
+with the original bitmap origin preserved; its coverage intersects separately.
+The former paint-only rectangle shortcut left 201 wrong pixels in the complete
+document. Reusing the existing bounded clip owner resolves them while preserving
+source-curve, ordinary stroke, paint and composition distinctions.
+
+All eighteen previous winding controls remain exact; the former two-point and
+compound-concavity boundaries now render against their unchanged references.
+Six new core cases protect empty siblings, independently constructed source
+stroke and duplicate IDs. Existing parity/inheritance tests now check holes;
+material denial, cleanup, borrowed-source cancellation and retry stay protected.
+
+Complete qualification passes 7,186 tests/platform (4,971 core / 2,209 visual /
+six FontProbe), zero failures/skips and zero build warnings/errors. All 2,855
+unchanged preceding ordinary PNGs, established exact/focused/static CSS results,
+thirty exact font outputs/platform and corporate 27/27 documents / 258/258
+variants are preserved.
+One previously unqualified Union Jack candidate changes to match a fresh native
+capture; it is excluded from completed frozen-reference document counts.
+The existing two-workload normal/tight-denial probe releases owned storage on
+both exits. Approximate memory policy and public contracts remain unchanged.
+
+Development ledger 43/45, source batch 8/10. Next is complete `inv-141` at unchanged
+256×256 transparent through bounded group-mask clipping; `inv-136` remains queued.
+Finite G2–G9/S17 stay open. Receipt:
+artifacts/open-clips-20261012/final-qualification.json.

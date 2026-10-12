@@ -208,11 +208,11 @@ public sealed class SvgStyleSheetTests
     {
         string prefix = "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' clip-rule='evenodd'><defs><clipPath id='cut'><path d='M8 8H32V32H8Z M12 12H28V28H12Z' ";
         string suffix = "/></clipPath></defs><rect width='40' height='40' fill='red' clip-path='url(#cut)'/></svg>";
-        SvgException expected = Assert.Throws<SvgException>(() => RenderPixels(prefix + "clip-rule='evenodd'" + suffix, out _, out _));
-        SvgException actual = Assert.Throws<SvgException>(() => RenderPixels(prefix + declaration + suffix, out _, out _));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, actual.ErrorCode);
-        Assert.Equal("Evenodd multi-contour clip paths are not implemented.", expected.Message);
-        Assert.Equal(expected.Message, actual.Message);
+        byte[] expected = RenderPixels(prefix + "clip-rule='evenodd'" + suffix, out _, out _);
+        byte[] actual = RenderPixels(prefix + declaration + suffix, out _, out _);
+        Assert.Equal(expected, actual);
+        Assert.Equal((byte)0, actual[(20 * 40 + 20) * 4 + 3]);
+        Assert.Equal((byte)255, actual[(10 * 40 + 10) * 4 + 3]);
     }
 
     [Theory]

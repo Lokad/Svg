@@ -5,10 +5,11 @@ Updated 2026-10-12. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**42/45 retained development documents are complete.** The preceding 35 stay
-complete; the newly retained public-domain/CC0 batch is **7/10 complete**
+**43/45 retained development documents are complete.** The preceding 35 stay
+complete; the newly retained public-domain/CC0 batch is **8/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
-`inv-138` honeycomb, `inv-139` phased columns and `inv-140` rainbow checker).
+`inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker and
+`inv-137` open/degenerate clips).
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
@@ -573,30 +574,45 @@ probe passes normal conversion, tight denial and cleanup. Approximate memory
 policy and API/package contracts are unchanged. Receipt:
 `artifacts/gradient-stops-20261012/final-qualification.json`.
 
-This new batch is **7/10 complete**, making the current queue **42/45**.
-**Next deliverable: complete `inv-137`'s open/degenerate clip examples at frozen
-512×269 transparent.** Admit valid empty, open and canceling contour outcomes
-through shared native path/clip replay, preserving siblings and source stroke
-distinctions. Resolve every later rejection or mismatch against the unchanged
-whole reference. Compound/intersecting `inv-136` and group-mask `inv-141` stay queued.
-Seven [open-clip controls](tests/Research/open-clip-contours/manifest.json) were
-declared at `1a964952` before correction and have healthy cleaned Windows/Linux
-native triples. Baseline outcomes preserve five rejections, one exact curved case
-and the 2,706-pixel opposite-winding difference. They cover empty siblings,
-stroke-independent clip coverage, open/mixed/canceling/parity contours and ordinary
-use targets declared inside clipPath. Extend shared source/clip replay and the
-existing definition registry; controls stay separate from document completion.
-The eighth placed-curve control was declared at `4cb10dbc` before the remaining
-201-pixel correction. Its clean native triples agree on both platforms and the
-current renderer already matches it; preserve that placement result.
-The ninth root-placed control, declared at `d0fa0c6e`, reproduces the whole
-document's remaining 201-pixel clip-fill difference at its actual density and
-bitmap position; both platforms' healthy cleaned native triples are frozen.
-Implement dependencies required by the selected whole document, then proceed
-through every mismatch. Declare focused controls before correction and retain
-the remaining G2–G9/S17 promises without exhaustive prerequisites.
-The preceding source-freeze inventory check passed 19 cases on both platforms;
-finished renderer qualification above supersedes that narrower evidence.
+The gradient checkpoint made the new batch **7/10 complete**. The subsequent
+**`inv-137` open/degenerate clip document is complete** at unchanged **512×269
+transparent**, through all six raw and six independently prepared APIs on both
+platforms. This advances the batch to **8/10** and the development ledger to
+**43/45**. Original source bytes, declared options and references stay frozen.
+
+Nine [open-clip controls](tests/Research/open-clip-contours/manifest.json) are
+exact separately from the complete document. Seven were declared at `1a964952`
+before parser correction; the two later placement controls were declared at
+`4cb10dbc` and `d0fa0c6e` before the remaining rendering correction. All have
+healthy cleaned native Windows/Linux triples. Empty and short contours contribute
+no coverage; open, concave, canceling and parity compound paths share native
+source replay. Ordinary uses of clip-child path IDs retain their own fill/stroke.
+Enclosing rectangle coverage also trims axis-aligned clip construction; retaining
+its native bitmap bounds resolves the document's residual 201 curved-edge pixels.
+The older two-point and compound-concavity controls now match their unchanged
+references, making the eighteen-case winding bank entirely exact.
+
+Complete qualification passes **7,186 tests per platform** (4,971 core / 2,209
+visual / six FontProbe), with zero failures/skips and zero build warnings/errors.
+All established exact/focused/static CSS results and **30 exact font outputs per
+platform** remain unchanged, as do **2,855 of 2,856 prior ordinary PNGs**. One
+previously unqualified Union Jack candidate now matches a fresh healthy cleaned
+native capture; it does not add a frozen-reference completed document. Corporate **27/27
+documents / 258/258 variants** stay exact. Six new focused core cases protect
+empty siblings, independent stroke construction and duplicate source IDs; older
+rejection tests now verify admitted winding/parity, inheritance and cleanup.
+The existing two-workload probe passes normal conversion, tight denial and
+cleanup. Approximate memory policy and API/package contracts remain unchanged.
+Receipt: `artifacts/open-clips-20261012/final-qualification.json`.
+
+**Next deliverable: complete `inv-141`'s retained smiley tiling export at frozen
+256×256 transparent.** Extend bounded group-mask clipping through the existing
+source/scene, affine geometry and layer machinery. Resolve every later rejection
+and mismatch against its unchanged whole reference; declare focused controls
+before correction. `inv-136` remains queued at 512×277 for normalized, overlapping,
+group/use, inherited and nested/intersecting clip content. Implement dependencies
+required by the selected document, without exhaustive G2 prerequisites; retain
+every finite G2–G9/S17 promise.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -958,10 +974,12 @@ self-intersections through the same native scene. Their independent nonzero/
 even-odd rule resolves from the clip definition's attributes, inline/style-sheet
 cascade and ancestors; fill-rule and target rule remain independent. The complete
 warning sign is 1/1 exact through six APIs on both platforms, and the older
-concave-curve control is exact. Eighteen new controls retain sixteen exact results
-and two explicit boundaries. Existing nonzero convex multi-contour intersection
-stays admitted; multi-contour concavity/parity, broader clip shapes, holes, group/
-use and transformed-coordinate combinations remain within the finite exit.
+concave-curve control is exact. The eighteen winding controls initially retained
+sixteen exact results and two explicit boundaries. Open/empty and compound
+concave/parity paths now share native source replay;
+all eighteen winding controls and nine open-clip controls are exact, and whole
+`inv-137` is complete. Broader clip shapes, group/use and transformed-coordinate
+combinations remain within the finite exit.
 
 `inv-107` is complete at 744×1052 against its unchanged Windows/Linux reference.
 Root/defs local masks share bounded source lowering and the existing immutable
@@ -1401,9 +1419,10 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 The original fidelity repairs and the **33 previously completed development
 documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
-(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **7/10
-complete**, making the current selected development queue **42/45 complete**.
-Their frozen references and first gates are listed above; next, finish `inv-137`.
+(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **8/10
+complete**, making the current selected development queue **43/45 complete**.
+Their frozen references and first gates are listed above; `inv-137` is now complete.
+Next, finish `inv-141`, then `inv-136`.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh

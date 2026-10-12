@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Nine frozen open/degenerate clip and resource-definition controls advancing inv-137; baseline rejections, exact placements and measured winding/root-placed curve differences retained before correction.",
+  "purpose": "Nine frozen open/degenerate clip, source-use and placement controls are exact through all twelve raw/prepared APIs on Windows/Linux; separate from complete inv-137.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -34,8 +34,7 @@
       "reference": "references/empty-path-sibling.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "open-lines-ignore-stroke",
@@ -54,8 +53,7 @@
       "reference": "references/open-lines-ignore-stroke.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "opposite-winding",
@@ -74,21 +72,7 @@
       "reference": "references/opposite-winding.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 2706,
-        "MaximumChannelError": 255,
-        "MeanAbsoluteError": 54.391927083333336,
-        "RootMeanSquareError": 113.28420478266483,
-        "MaximumAlphaError": 0,
-        "AlphaChangedPixelCount": 0,
-        "MinimumMismatchX": 16,
-        "MinimumMismatchY": 12,
-        "MaximumMismatchX": 75,
-        "MaximumMismatchY": 59,
-        "IsExact": false
-      }
+      "role": "fidelity"
     },
     {
       "id": "mixed-open-area",
@@ -107,8 +91,7 @@
       "reference": "references/mixed-open-area.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "open-curved-compound",
@@ -146,8 +129,7 @@
       "reference": "references/parity-open-compound.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "resource-path-use",
@@ -166,8 +148,7 @@
       "reference": "references/resource-path-use.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "placed-open-curves",
@@ -205,21 +186,7 @@
       "reference": "references/root-placed-curves.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 201,
-        "MaximumChannelError": 43,
-        "MeanAbsoluteError": 0.006438414846654275,
-        "RootMeanSquareError": 0.29506116556839523,
-        "MaximumAlphaError": 0,
-        "AlphaChangedPixelCount": 0,
-        "MinimumMismatchX": 27,
-        "MinimumMismatchY": 151,
-        "MaximumMismatchX": 116,
-        "MaximumMismatchY": 243,
-        "IsExact": false
-      }
+      "role": "fidelity"
     }
   ]
 }

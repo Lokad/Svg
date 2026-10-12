@@ -76,13 +76,23 @@ public sealed class SvgNativeClipWindingTests
     }
 
     [Fact]
-    public void Unsupported_multi_contour_parity_releases_definition_staging()
+    public void Multi_contour_parity_preserves_holes_and_releases_definition_staging()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><clipPath id='c' clip-rule='evenodd'><path d='M0 0H32V32H0Z M4 4H28V28H4Z'/></clipPath><rect width='32' height='32' clip-path='url(#c)'/></svg>"u8.ToArray();
         RenderBudget budget = new(1_000_000);
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Equal("Evenodd multi-contour clip paths are not implemented.", rejected.Message);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal((byte)0, surface.Pixels[(16 * 32 + 16) * 4 + 3]);
+            Assert.Equal((byte)255, surface.Pixels[(2 * 32 + 2) * 4 + 3]);
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        RenderBudget denied = new(budget.Snapshot().PeakBytes - 1);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None);
+            using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, denied, CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
     }
 }
