@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="72">
+<defs><clipPath id="c"><path d="M8 16H88M8 36H88M8 56H88M20 8V64M48 8V64M76 8V64" stroke="black" stroke-width="12"/></clipPath></defs><rect width="96" height="72" fill="#ffd"/><circle cx="48" cy="36" r="32" fill="#00a" clip-path="url(#c)"/><rect x="84" y="8" width="8" height="56" fill="#245c91"/>
+</svg>

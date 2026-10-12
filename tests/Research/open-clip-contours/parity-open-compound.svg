@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="72">
+<defs><clipPath id="c"><path d="M8 8H62V54H8M30 20H88V64H30" clip-rule="evenodd"/></clipPath></defs><rect width="96" height="72" fill="#ffd"/><circle cx="48" cy="36" r="32" fill="#00a" clip-path="url(#c)"/>
+</svg>

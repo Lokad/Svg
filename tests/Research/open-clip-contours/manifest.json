@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Seven frozen open/degenerate clip and resource-definition controls advancing inv-137; baseline rejections, one exact result and one measured difference retained before correction.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "empty-path-sibling",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "ff00ce64a41e19770146c17029c3b13dd83736fd594d25b69e10d5756b6db7ef",
+      "referenceSha256": "c3935170a7b6a7d288b5c777bd58f3d192fb0c55f317f0ab10ceb222a1542d67",
+      "selection": "Declared at 1a964952 before renderer correction/comparison: whole inv-137 open/degenerate clip dependencies, empty sibling behavior, stroke-independent fill coverage, canceling nonzero winding, mixed valid/area-free contours, open curves and parity.",
+      "input": "empty-path-sibling.svg",
+      "reference": "references/empty-path-sibling.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "open-lines-ignore-stroke",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "2f72d6bc45ba24f387af4465dc7b27795a8ae68f5cdd49d9e5b3f9f9c4af508b",
+      "referenceSha256": "c3935170a7b6a7d288b5c777bd58f3d192fb0c55f317f0ab10ceb222a1542d67",
+      "selection": "Declared at 1a964952 before renderer correction/comparison: whole inv-137 open/degenerate clip dependencies, empty sibling behavior, stroke-independent fill coverage, canceling nonzero winding, mixed valid/area-free contours, open curves and parity.",
+      "input": "open-lines-ignore-stroke.svg",
+      "reference": "references/open-lines-ignore-stroke.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "opposite-winding",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "540300de65118692417ae3276bab9f1a033afd292decb9eed0e01f9c97b66c75",
+      "referenceSha256": "c3935170a7b6a7d288b5c777bd58f3d192fb0c55f317f0ab10ceb222a1542d67",
+      "selection": "Declared at 1a964952 before renderer correction/comparison: whole inv-137 open/degenerate clip dependencies, empty sibling behavior, stroke-independent fill coverage, canceling nonzero winding, mixed valid/area-free contours, open curves and parity.",
+      "input": "opposite-winding.svg",
+      "reference": "references/opposite-winding.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 2706,
+        "MaximumChannelError": 255,
+        "MeanAbsoluteError": 54.391927083333336,
+        "RootMeanSquareError": 113.28420478266483,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 16,
+        "MinimumMismatchY": 12,
+        "MaximumMismatchX": 75,
+        "MaximumMismatchY": 59,
+        "IsExact": false
+      }
+    },
+    {
+      "id": "mixed-open-area",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "65bdcad0f96159e1e42b0230bea3ad49730c686d69813dd8beda5c5a9450970d",
+      "referenceSha256": "d4d39aba18add914d76dbf1a70c1ff70b4d1bcb06cb1d24b05afadb0f920eb99",
+      "selection": "Declared at 1a964952 before renderer correction/comparison: whole inv-137 open/degenerate clip dependencies, empty sibling behavior, stroke-independent fill coverage, canceling nonzero winding, mixed valid/area-free contours, open curves and parity.",
+      "input": "mixed-open-area.svg",
+      "reference": "references/mixed-open-area.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "open-curved-compound",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "c09755e4c70fa85c37e7d2bb3c1db3b63220aecf5a51d17d867893e3b4c3f23a",
+      "referenceSha256": "f828761260f9743a896e14ae1e5f3f0f52159adee1c96878d07dfe9db5a6adfa",
+      "selection": "Declared at 1a964952 before renderer correction/comparison: whole inv-137 open/degenerate clip dependencies, empty sibling behavior, stroke-independent fill coverage, canceling nonzero winding, mixed valid/area-free contours, open curves and parity.",
+      "input": "open-curved-compound.svg",
+      "reference": "references/open-curved-compound.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity"
+    },
+    {
+      "id": "parity-open-compound",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "96a2e442dfbdda9038cc01e55e065fdfeb4bb430f6d4447792a606896a15efff",
+      "referenceSha256": "a15850abeb118c1a6262d5716684dbb7f32e3a3a95bb6711adad677ed011da76",
+      "selection": "Declared at 1a964952 before renderer correction/comparison: whole inv-137 open/degenerate clip dependencies, empty sibling behavior, stroke-independent fill coverage, canceling nonzero winding, mixed valid/area-free contours, open curves and parity.",
+      "input": "parity-open-compound.svg",
+      "reference": "references/parity-open-compound.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "resource-path-use",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "976f2558f9dbb1c8bfc532d61c70d21bd5e9258a8eca12db2dc890bb329b5c27",
+      "referenceSha256": "3a7a92392b46de8742f87aa1e764c7f6427eb3665fbd5ea10cee15b18b2f7db5",
+      "selection": "Declared at 1a964952 before source-registry correction: inv-137 local uses target paths declared inside clipPath; clip coverage ignores stroke while ordinary instances retain authored/inherited stroke and placement.",
+      "input": "resource-path-use.svg",
+      "reference": "references/resource-path-use.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    }
+  ]
+}

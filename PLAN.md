@@ -579,6 +579,13 @@ This new batch is **7/10 complete**, making the current queue **42/45**.
 through shared native path/clip replay, preserving siblings and source stroke
 distinctions. Resolve every later rejection or mismatch against the unchanged
 whole reference. Compound/intersecting `inv-136` and group-mask `inv-141` stay queued.
+Seven [open-clip controls](tests/Research/open-clip-contours/manifest.json) were
+declared at `1a964952` before correction and have healthy cleaned Windows/Linux
+native triples. Baseline outcomes preserve five rejections, one exact curved case
+and the 2,706-pixel opposite-winding difference. They cover empty siblings,
+stroke-independent clip coverage, open/mixed/canceling/parity contours and ordinary
+use targets declared inside clipPath. Extend shared source/clip replay and the
+existing definition registry; controls stay separate from document completion.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain
 the remaining G2–G9/S17 promises without exhaustive prerequisites.
