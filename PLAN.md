@@ -748,10 +748,11 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S02 removes the temporary transformed
-glyph array and copy, preserving final contour ownership and exact coordinates.
-The first S01 tranche is complete with all prior cases retained; its measured
-routine-suite timings are in the maintenance backlog. Continue the direct
+**Next deliverable:** maintenance-review S03 reuses font-mask preblend tables
+for unchanged canonical luminance and platform mode, preserving their arithmetic
+and measuring a multi-character label. S02's direct contour transformation and
+the first S01 tranche are complete; measurements are in the maintenance backlog.
+Continue the direct
 allocation/preparation items in that order. Rendering
 correctness keeps precedence: select the next complete rights-clear static SVG
 by the remaining finite G2–G9 mechanisms it exercises, without making exhaustive
@@ -1694,8 +1695,8 @@ affected methods after the completed filter checkpoint. These items extend
 R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review's
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
-Order: preserve the qualified rendering correction and completed first S01
-tranche; take the direct S02–S06 improvements, then measure S07–S09 before their larger
+Order: preserve the qualified rendering correction, completed first S01 tranche
+and S02; take the direct S03–S06 improvements, then measure S07–S09 before their larger
 raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1703,7 +1704,7 @@ changes when a demonstrated support blocker takes priority.
 | Review ID | Bounded change | Acceptance / measurement |
 | --- | --- | --- |
 | S01 | Separate visual cases from output-API permutations in existing visual tests. | Preserve every distinct input, viewport, scale, background and platform reference; compare pixels through a canonical API. Retain a small representative raw/prepared six-sink contract matrix, complex and supplied-font scenes, and independently useful API/feature regressions. Measure the complete routine suite once before/after. |
-| S02 | Transform decoded glyph segments directly into final contour arrays; remove the temporary transformed array and copy. | Existing glyph-outline tests and TransformAndCopyContours benchmark: identical multi-contour/mapped output, lower allocated bytes, preserved validation, cancellation and failure cleanup. Move the segment probe to the actual transformation. |
+| S02 | **Complete.** Transform decoded glyph segments directly into final contour arrays; remove the temporary transformed array and copy. | Existing glyph-outline tests and TransformAndCopyContours benchmark: identical multi-contour/mapped output, lower allocated bytes, preserved validation, cancellation and failure cleanup. The segment probe observes actual transformation. |
 | S03 | Reuse font-mask preblend tables for unchanged platform mode and canonical luminance. | Byte-identical tables and Windows/Linux text references; measure a multi-character label. Use a last-table owner or the bounded set of at most 16 tables (4 KiB payload), preserving construction arithmetic and charging real retained storage/work. |
 | S04 | Prepare immutable gradient segment coefficients once per effective replay. | Existing arbitrary/repeated-stop, alpha, spread, scale, linear/radial references remain exact; measure a gradient-heavy document. Preserve binary search, endpoints, float/FMA/division order and dithering; no approximate lookup table. |
 | S05 | Reuse immutable definition/attribute strings when their lifetime permits; aggregate reservations with common ownership. | Definition/use-heavy and attribute-heavy parser measurements; preserve forward references, style replay, material denial and cleanup. Share equal Name/LocalName and already-owned values; retain required span copies, avoid global interning or a new arena framework. |
@@ -1737,6 +1738,34 @@ not renderer throughput measurements or a fixed speedup guarantee. Production
 code, inputs, options and frozen references are unchanged. Existing renderer
 qualification remains valid. Details:
 `artifacts/maintenance-review-20261012/s01-results.json`.
+
+**S02 complete.** Glyph conversion writes directly into final per-contour arrays,
+reserving their existing aggregate scene allowance once. It preserves coordinate
+arithmetic, validated contour boundaries, decoded-storage borrowing, final-owner
+transfer and bounded cancellation/work. The deterministic cancellation probe now
+runs after a segment is transformed. The shared-work test measures the actual
+boundary and checks exact-limit success /one-unit denial rather than charging
+the removed copy pass.
+
+Release builds and **7,312 tests/platform** pass on Windows/Linux (5,034 core /
+2,272 visual /six FontProbe), with no failures/skips/warnings. Every preceding
+case is retained. Two focused cases cover borrowed decoding with only the final
+storage allowance, unchanged borrowed data, mapped structural contours and
+numeric-failure cleanup. Existing cancellation, memory/work denial, transfer and
+exact font/text-path references remain protected; original assets stay frozen.
+
+The existing synthetic-font benchmarks in an isolated worktree measure
+**688 → 480 allocated bytes** for TransformAndCopyContours and approximately
+**202,613 → 197,700 bytes** for LowerStyledText. Elapsed means vary across short
+runs: contour transformation 230–269 ns before /164–290 ns after, and lowering
+167–232 µs before /173–349 µs after. A longer lowering comparison (six warmups /
+twelve iterations) measures **231.9 → 172.6 µs**. These observations do not show
+a consistent timing regression or establish a general renderer/text speedup;
+the demonstrated result is reduced allocation and temporary live storage.
+The benchmark uses the existing triangle font and repeated styled labels,
+separately from native supplied-font acceptance. Tests and measurements are under
+`artifacts/maintenance-review-20261012/`; no new measurement framework or
+accounting requalification is required.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.

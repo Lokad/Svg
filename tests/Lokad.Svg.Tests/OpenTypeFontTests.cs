@@ -3510,7 +3510,7 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Glyph_outline_decoding_and_transformation_reserve_their_temporary_segments()
+    public async Task Glyph_outline_decoding_and_final_contours_observe_the_memory_limit()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         SvgPositionedGlyph positioned = Assert.Single(SvgGlyphLayout.Layout(snapshot.Fonts[0], "A", 100, 0, 0, CancellationToken.None));
@@ -3666,46 +3666,54 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Glyph_outline_charges_svg_transform_and_contour_copying_to_the_shared_work_counter()
+    public async Task Glyph_outline_charges_transformation_to_the_shared_work_boundary()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         var glyph = new SvgPositionedGlyph(1, 0, 0, 1);
         RenderBudget successfulBudget = new(10_000);
-        var successfulWork = new ParserWorkCounter(37);
+        var successfulWork = new ParserWorkCounter(long.MaxValue);
 
         using (SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font, glyph, 1, successfulBudget, successfulWork, CancellationToken.None))
         {
             SvgGlyphQuadraticContour contour = Assert.Single(contours.Contours);
             Assert.Equal(3, contour.Segments.Length);
         }
-        Assert.Equal(37, successfulWork.Used);
+        long requiredWork = successfulWork.Used;
+        Assert.True(requiredWork > 0);
+        Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
+        var exactWork = new ParserWorkCounter(requiredWork);
+        using (SvgGlyphContourStorage exact = SvgGlyphOutline.GetContourStorage(font, glyph, 1, successfulBudget, exactWork, CancellationToken.None))
+        {
+            Assert.Equal(3, Assert.Single(exact.Contours).Segments.Length);
+            Assert.Equal(requiredWork, exactWork.Used);
+        }
         Assert.Equal(0, successfulBudget.Snapshot().CurrentBytes);
         RenderBudget deniedBudget = new(10_000);
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContourStorage(font, glyph, 1, deniedBudget, new ParserWorkCounter(36), CancellationToken.None));
+        SvgException exception = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContourStorage(font, glyph, 1, deniedBudget, new ParserWorkCounter(requiredWork - 1), CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Equal(0, deniedBudget.Snapshot().CurrentBytes);
     }
 
     [Fact]
-    public async Task Glyph_outline_observes_cancellation_during_contour_copying()
+    public async Task Glyph_outline_observes_cancellation_during_transformation()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         SvgPreparedFont font = Assert.Single(snapshot.Fonts);
         RenderBudget budget = new(10_000);
         using CancellationTokenSource cancellation = new();
-        bool copiedSegment = false;
+        bool transformedSegment = false;
         using IDisposable probe = GlyphOutlineProbe.Arm(() =>
         {
-            copiedSegment = true;
+            transformedSegment = true;
             cancellation.Cancel();
         });
 
         Assert.ThrowsAny<OperationCanceledException>(() => SvgGlyphOutline.GetContourStorage(font, new SvgPositionedGlyph(1, 0, 0, 1), 1, budget, new ParserWorkCounter(long.MaxValue), cancellation.Token));
 
-        Assert.True(copiedSegment);
+        Assert.True(transformedSegment);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -3731,23 +3739,23 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Direct_text_lowering_releases_scene_and_parser_reservations_when_contour_copying_is_cancelled()
+    public async Task Direct_text_lowering_releases_scene_and_parser_reservations_when_transformation_is_cancelled()
     {
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
         SvgRenderLimits limits = new(300_000, 1_024, 16, 256, 1_024, 16, 16, 100_000);
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
         RenderBudget budget = new(limits.MaximumAccountedBytes);
         using CancellationTokenSource cancellation = new();
-        bool copiedSegment = false;
+        bool transformedSegment = false;
         using IDisposable probe = GlyphOutlineProbe.Arm(() =>
         {
-            copiedSegment = true;
+            transformedSegment = true;
             cancellation.Cancel();
         });
 
         Assert.ThrowsAny<OperationCanceledException>(() => SvgRootParser.Parse(svg, limits, budget, snapshot, cancellation.Token));
 
-        Assert.True(copiedSegment);
+        Assert.True(transformedSegment);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
@@ -4124,6 +4132,52 @@ public sealed partial class OpenTypeFontTests
 
         Assert.Equal(new SvgGlyphQuadraticSegment(new(3, 2.7), new(3.5, 2.7), new(3.5, 2.7)), first);
         Assert.Equal(first.Start, contour.Segments[^1].End);
+    }
+
+    [Fact]
+    public async Task Borrowed_glyph_decoding_needs_only_final_contour_storage_and_remains_unchanged()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgPreparedFont font = Assert.Single(snapshot.Fonts);
+        using OpenTypeGlyphContourStorage decoded = OpenTypeFont.GetGlyphContours(font.Bytes, 1, font.Metrics, new RenderBudget(10_000), null, CancellationToken.None);
+        OpenTypeQuadraticSegment[] unchanged = decoded.Segments.ToArray();
+        RenderBudget budget = new(SvgGlyphGeometry.GetStorageByteCount(decoded.ContourEnds.Length, decoded.Segments.Length));
+        using (SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font, new(1, 2, 3, 1), 100, decoded, budget, null, CancellationToken.None))
+        {
+            Assert.Equal(new SvgGlyphQuadraticSegment[]
+            {
+                new(new(3, 2), new(4, 2), new(4, 2)),
+                new(new(4, 2), new(3, 1), new(3, 1)),
+                new(new(3, 1), new(3, 2), new(3, 2))
+            }, Assert.Single(contours.Contours).Segments);
+            Assert.True(budget.Snapshot().CurrentBytes > 0);
+            Assert.Equal(unchanged, decoded.Segments);
+            Assert.Equal([3], decoded.ContourEnds);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public async Task Multi_contour_glyphs_keep_affine_mapping_and_release_numeric_failure_storage()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateOriginReturningContourFont())], CancellationToken.None);
+        SvgPreparedFont font = Assert.Single(snapshot.Fonts);
+        RenderBudget budget = new(10_000);
+        using (SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(font, new(1, 2, 3, 1), 1_024, new SvgAffineTransform(0, 1, -1, 0, 10, 20), budget, null, CancellationToken.None))
+        {
+            Assert.Collection(contours.Contours,
+                first =>
+                {
+                    Assert.Equal(4, first.Segments.Length);
+                    Assert.Equal(new SvgGlyphQuadraticSegment(new(7, 22), new(7, 32), new(7, 32)), first.Segments[0]);
+                    Assert.Equal(first.Segments[0].Start, first.Segments[1].End);
+                },
+                second => Assert.Equal(2, second.Segments.Length));
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        SvgException error = Assert.Throws<SvgException>(() => SvgGlyphOutline.GetContourStorage(font, new(1, 2, 3, 1), 1_024, new SvgAffineTransform(double.MaxValue, 0, 0, 1, 0, 0), budget, null, CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

@@ -1,6 +1,6 @@
 namespace Lokad.Svg.Fonts;
 
-/// <summary>Provides an execution-context-local segment-copy seam for deterministic glyph-outline cancellation tests.</summary>
+/// <summary>Provides an execution-context-local segment-transformation seam for deterministic glyph-outline cancellation tests.</summary>
 internal static class GlyphOutlineProbe
 {
     private static readonly AsyncLocal<Action?> Callback = new();
@@ -13,7 +13,7 @@ internal static class GlyphOutlineProbe
         return new Scope(previous);
     }
 
-    internal static void SegmentCopied()
+    internal static void SegmentTransformed()
     {
         Action? callback = Callback.Value;
         Callback.Value = null;

@@ -49,19 +49,36 @@ internal static class SvgGlyphOutline
     {
         OpenTypeQuadraticSegment[] source = decoded.Segments;
         if (source.Length == 0) return new([], null);
-        RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + (long)source.Length * 48L), SvgMemoryCategory.Geometry);
+        ReadOnlySpan<int> contourEnds = decoded.ContourEnds;
+        if (contourEnds.Length == 0 || contourEnds[^1] != source.Length) throw new InvalidOperationException("Decoded glyph contour boundaries do not cover their segments.");
+        RenderBudget.BudgetReservation reservation = budget.Reserve(SvgGlyphGeometry.GetStorageByteCount(contourEnds.Length, source.Length), SvgMemoryCategory.Scene);
         try
         {
-            var transformed = new SvgGlyphQuadraticSegment[source.Length];
-            for (int index = 0; index < transformed.Length; index++)
+            var contours = new SvgGlyphQuadraticContour[contourEnds.Length];
+            int first = 0;
+            for (int contourIndex = 0; contourIndex < contours.Length; contourIndex++)
             {
-                Consume(workCounter, cancellationToken);
-                OpenTypeQuadraticSegment segment = source[index];
-                transformed[index] = new SvgGlyphQuadraticSegment(Transform(segment.Start), Transform(segment.Control), Transform(segment.End));
+                Consume();
+                int end = contourEnds[contourIndex];
+                if (end <= first || end > source.Length) throw new InvalidOperationException("Decoded glyph contour boundaries are invalid.");
+                var segments = new SvgGlyphQuadraticSegment[end - first];
+                for (int index = 0; index < segments.Length; index++)
+                {
+                    Consume();
+                    OpenTypeQuadraticSegment segment = source[first + index];
+                    segments[index] = new SvgGlyphQuadraticSegment(Transform(segment.Start), Transform(segment.Control), Transform(segment.End));
+                    GlyphOutlineProbe.SegmentTransformed();
+                }
+                contours[contourIndex] = new SvgGlyphQuadraticContour(segments);
+                first = end;
             }
-            return CopyContours(transformed, decoded.ContourEnds, budget, workCounter, cancellationToken);
+            return new(contours, reservation);
         }
-        finally { reservation.Dispose(); }
+        catch
+        {
+            reservation.Dispose();
+            throw;
+        }
 
         SvgGlyphOutlinePoint Transform(OpenTypeOutlinePoint point)
         {
@@ -75,46 +92,12 @@ internal static class SvgGlyphOutline
             if (!double.IsFinite(x) || !double.IsFinite(y)) throw new SvgException(SvgErrorCode.LimitExceeded, "The transformed glyph outline exceeds the admitted numeric range.");
             return new SvgGlyphOutlinePoint(x, y);
         }
-    }
 
-    private static SvgGlyphContourStorage CopyContours(ReadOnlySpan<SvgGlyphQuadraticSegment> segments, ReadOnlySpan<int> contourEnds, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        if (segments.Length == 0) return new([], null);
-        if (contourEnds.Length == 0 || contourEnds[^1] != segments.Length) throw new InvalidOperationException("Decoded glyph contour boundaries do not cover their segments.");
-        RenderBudget.BudgetReservation reservation = budget.Reserve(SvgGlyphGeometry.GetStorageByteCount(contourEnds.Length, segments.Length), SvgMemoryCategory.Scene);
-        try
+        void Consume()
         {
-            var contours = new SvgGlyphQuadraticContour[contourEnds.Length];
-            int first = 0;
-            for (int contourIndex = 0; contourIndex < contours.Length; contourIndex++)
-            {
-                Consume(workCounter, cancellationToken);
-                int end = contourEnds[contourIndex];
-                if (end <= first || end > segments.Length) throw new InvalidOperationException("Decoded glyph contour boundaries are invalid.");
-                int length = end - first;
-                var copied = new SvgGlyphQuadraticSegment[length];
-                for (int index = 0; index < copied.Length; index++)
-                {
-                    Consume(workCounter, cancellationToken);
-                    copied[index] = segments[first + index];
-                    GlyphOutlineProbe.SegmentCopied();
-                }
-                contours[contourIndex] = new SvgGlyphQuadraticContour(copied);
-                first = end;
-            }
-            return new(contours, reservation);
+            if (workCounter is null) cancellationToken.ThrowIfCancellationRequested();
+            else workCounter.Consume(cancellationToken);
         }
-        catch
-        {
-            reservation.Dispose();
-            throw;
-        }
-    }
-
-    private static void Consume(ParserWorkCounter? workCounter, CancellationToken cancellationToken)
-    {
-        if (workCounter is null) cancellationToken.ThrowIfCancellationRequested();
-        else workCounter.Consume(cancellationToken);
     }
 }
 
