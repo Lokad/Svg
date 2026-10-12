@@ -39,7 +39,9 @@ The frozen corporate matrix has 258 rendered comparisons on Windows and Linux:
 258 exact, zero known differences and zero rejections. Every declared variant is exact for
 27/27 documents, including 13/13 marks and 14/14 outlined wordmarks. Local
 Windows and Linux delivery checks and the complete fresh Linux browser matrix
-pass; remote CI evidence remains pending. See [PLAN.md](PLAN.md) for the current
+pass; the [Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38285636122)
+also passes build/test, sandboxed Chrome, resource,
+font, artifact-validation and package checks. See [PLAN.md](PLAN.md) for the current
 release assessment and cohort selection limits.
 
 Generated native stroke outlines retain source operands until final mapping,

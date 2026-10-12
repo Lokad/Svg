@@ -1611,11 +1611,13 @@ from the frozen 27-document / 258-variant regression gate and establishes no
 representative success rate. Future representative cohorts must be selected
 before comparison.
 
-Remote Windows/Linux build/test/package/resource CI evidence remains S17's open
-release gate. The frozen corporate matrix is exact locally on both platforms.
-Publishing the reviewed branch is a separate authorized action; lack of remote runs does not
-block the support queue. No release or general SVG compatibility claim follows
-from the four failure-selected online documents.
+Remote Windows/Linux build/test/package/resource CI evidence is verified by the
+[Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38285636122) at
+`6d4dfe7a`. Both hosted jobs pass, including
+healthy sandboxed Chrome captures and forced-timeout storage cleanup. The frozen
+corporate matrix stays exact on both platforms. Remaining S17 release requirements
+and the finite support queue stay open. No release or general SVG compatibility
+claim follows from the failure-selected development corpus.
 
 ## 4. Findings and stage ledger
 
@@ -1627,7 +1629,7 @@ from the four failure-selected online documents.
 | R27 | Execute every declared case and retain admission separately from fidelity. Original fixture/research rendering differences are resolved; newly admitted support gaps require their own unchanged-reference comparison. |
 | R28 | Preserve inverse paint maps; remaining pattern/coordinate combinations are G3/G5/G6. |
 | R30 | Keep shared contour preparation and coverage across four paints. Consolidate further only where a demonstrated dependency requires it. |
-| R31 | Existing capture/transport/cleanup and CI artifact validation are retained; remote evidence remains S17. Git identifies implementation, asset hashes protect inputs/oracles/tool downloads. |
+| R31 | Existing capture/transport/cleanup and CI artifact validation are retained; Windows/Linux remote CI is verified at `6d4dfe7a`. Git identifies implementation, asset hashes protect inputs/oracles/tool downloads. |
 | R33 | Preserve clipping, path/control bounds and AA paint-clip provenance; broader clip/mask combinations are G5. |
 | R34 | Preserve exact analytic contact/winding, density and zero-area native stroke contours. New stroke combinations are G4; general browser fidelity needs new cases. |
 | R35 | Preserve source curves and bitmap-local float mapping; general affine/instance admissions are G2/G3. |
@@ -1671,7 +1673,7 @@ from the four failure-selected online documents.
 | S14 | Rectangle clips, masks and bounded isolated composition exist; G5 governs broader regions, content and nested viewport combinations. |
 | S15 | Experimental supplied-font text, lower priority than outlined logos; section 6 / G9. |
 | S16 | Narrow embedded PNG/pattern support; G6/G7/G8 cover measured static extensions. |
-| S17 | Full 27/27 and 258/258 platform-reference fidelity achieved, local delivery evidence retained. Remote CI remains open; no claim of general or representative SVG success. |
+| S17 | Full 27/27 and 258/258 platform-reference fidelity achieved; local delivery and hosted Windows/Linux CI evidence retained. Remaining release/scope requirements stay open; no claim of general or representative SVG success. |
 
 ## 5. Product contract, evidence and completion
 
