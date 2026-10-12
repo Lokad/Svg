@@ -12217,3 +12217,44 @@ The development ledger is 41/45 complete, with this batch 6/10. Finite G2–G9/S
 remain open. Next is inv-140's unchanged 512×512 checker: bounded sixteen-stop
 gradients, ordered local tiles and luminance masks. Private receipt:
 artifacts/pattern-instances-20261012/final-qualification.json.
+
+## Bounded larger gradient ramps (2026-10-12)
+
+The untouched CC0 `inv-140` rainbow checker completes its frozen 512×512
+transparent output through all twelve raw/prepared APIs on Windows/Linux. Its
+two sixteen-stop gradients, ordered local checker tiles and luminance masks use
+the existing paint, vector-scene and composition paths. Six separate controls
+are exact, covering linear/radial ramps, repeated offsets, affine alpha, forward
+inheritance, checker masks and the maximum admitted 256-stop ramp. Original
+documents and reference PNGs stay unchanged.
+
+The stop bound is 256; a 257th stop has a LimitExceeded outcome. Binary interval
+selection uses at most eight comparisons per pixel. It selects the rightmost
+coincident stop, preserving [SVG stop overlap semantics](https://www.w3.org/TR/SVG2/pservers.html#GradientStops).
+Native float factor/bias/FMA interpolation, radial radius coordinates, alpha,
+dither and degenerate paint dispatch retain their existing behavior. No separate
+implementation is introduced for the checker document or each paint/shape pair.
+
+Clamped and deferred stop arrays reserve their actual lengths before allocation.
+Fixed dictionary allowances cover entries rather than a maximum-sized array per
+gradient; href aliases borrow the retained arrays. Scene adoption covers polygon
+paint arrays as well as ordinary gradient bands. This keeps dominant collection
+storage bounded without charging every simple gradient for the new maximum.
+Normalization and copy scans charge shared work and observe cancellation. The
+approximate memory policy remains unchanged; no metadata/GC proof framework.
+
+Ten focused core cases cover the 256/257-stop boundaries for both gradient kinds,
+forward array sharing, coincident-stop color, invalid ranges, sampled denial,
+cancellation and retry. The older nine-stop rejection input now protects its
+supported result. Complete qualification passes 7,171 tests per platform
+(4,965 core / 2,200 visual / six FontProbe), with zero failures/skips and zero
+build warnings/errors. All 2,856 prior ordinary PNGs and 2,908 outcomes,
+established exact/focused/static CSS outputs, thirty exact font outputs/platform
+and corporate 27/27 documents / 258/258 variants remain unchanged. The existing
+two-workload probe passes normal conversion, tight denial and cleanup; public
+API/package contracts stay unchanged.
+
+The development ledger is 42/45 complete, source batch 7/10. Finite G2–G9/S17
+remain open. Next is `inv-137`'s unchanged 512×269 open/degenerate clip document,
+using shared path/clip replay. Private receipt:
+artifacts/gradient-stops-20261012/final-qualification.json.

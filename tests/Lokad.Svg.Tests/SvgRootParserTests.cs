@@ -5788,11 +5788,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_linear_gradients_with_more_than_eight_stops()
+    public void Admits_linear_gradients_with_more_than_eight_stops()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.1' stop-color='#ff0000'/><stop offset='0.2' stop-color='#ff0000'/><stop offset='0.3' stop-color='#ff0000'/><stop offset='0.4' stop-color='#ff0000'/><stop offset='0.5' stop-color='#ff0000'/><stop offset='0.6' stop-color='#ff0000'/><stop offset='0.7' stop-color='#ff0000'/><stop offset='0.8' stop-color='#ff0000'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='0.1' stop-color='#ff0000'/><stop offset='0.2' stop-color='#ff0000'/><stop offset='0.3' stop-color='#ff0000'/><stop offset='0.4' stop-color='#ff0000'/><stop offset='0.5' stop-color='#ff0000'/><stop offset='0.6' stop-color='#ff0000'/><stop offset='0.7' stop-color='#ff0000'/><stop offset='0.8' stop-color='#ff0000'/></linearGradient></defs><rect width='8' height='8' fill='url(#g)'/></svg>"), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgGradientStop[] stops = Assert.Single(root.Geometries).Gradient.Gradient.Stops;
+        Assert.Equal(9, stops.Length);
+        Assert.All(stops, stop => Assert.Equal(new SvgColor(255, 0, 0, 255), stop.Color));
     }
 
     [Fact]

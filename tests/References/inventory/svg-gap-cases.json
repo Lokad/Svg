@@ -1109,8 +1109,8 @@
         "height": 512
       },
       "selection": "Declared at 6e759f24 before renderer comparison/capture: whole untouched static fontless export, explicit 512-pixel square frame from authored square viewBox, root dimensions only in browser input.",
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Only gradients with at most eight stops are implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Complete through all twelve raw/prepared APIs on Windows/Linux against unchanged 512x512 transparent reference. Six bounded gradient-stop controls are exact separately.",
       "reference": "tests/References/inventory/inv-140-transparent.png",
       "referenceSha256": "006c3401bd4b12a09fcb2ca75daa3bcf0f963831407f98454103cb76ff3fa797",
       "sourceAssetId": 330535,

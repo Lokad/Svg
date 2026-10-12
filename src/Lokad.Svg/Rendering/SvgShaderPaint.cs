@@ -72,10 +72,15 @@ internal readonly record struct SvgShaderPaint(float Red, float Green, float Blu
         float secondAlpha = stops.Length == 0 ? end.Alpha * (1f / 255f) : stops[^1].Alpha;
         if (stops.Length > 2)
         {
-            // Parsing bounds the ramp to eight stops, keeping pixel work bounded.
+            // The 256-stop admission bound permits at most eight search comparisons per pixel.
             float absolute = (float)(offset1 + position * (offset2 - offset1));
-            int segment = 0;
-            while (segment < stops.Length - 2 && absolute >= (float)stops[segment + 1].Offset) segment++;
+            int segment = 0, last = stops.Length - 2;
+            while (segment < last)
+            {
+                int middle = (segment + last + 1) / 2;
+                if (absolute >= (float)stops[middle].Offset) segment = middle;
+                else last = middle - 1;
+            }
             SvgGradientStop left = stops[segment], right = stops[segment + 1];
             float leftPosition = (float)left.Offset, gap = (float)right.Offset - leftPosition;
             if (gap <= 0) return GradientAlpha(right.Color, right.Color, right.Alpha, right.Alpha, 0, opacityScale, matrix);

@@ -26,11 +26,11 @@ internal sealed class SvgDocumentState : IDisposable
     // The tile embeds nullable scene geometry. Include its actual value size,
     // plus conservative bucket/key/entry overhead, before dictionary growth.
     private static readonly int PatternStorageBytes = checked(64 + (int)ParserCollectionMemory.GetArrayByteCount<SvgPatternTile>(1));
-    // Covers one gradient entry plus one retained clamped stop array sized from its actual element type.
-    private static readonly int GradientStorageBytes = checked(64 + (int)System.Runtime.CompilerServices.Unsafe.SizeOf<SvgLinearGradient>() + (int)ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(SvgGradientSyntax.MaximumGradientStops));
+    // Entry allowances exclude stop arrays, which reserve their actual lengths before allocation.
+    private static readonly int GradientStorageBytes = checked(64 + (int)System.Runtime.CompilerServices.Unsafe.SizeOf<SvgLinearGradient>());
 
     // Radial entries retain their actual paint value, including the separate shader matrices.
-    private static readonly int RadialGradientStorageBytes = checked(64 + (int)System.Runtime.CompilerServices.Unsafe.SizeOf<SvgRadialGradient>() + (int)ParserCollectionMemory.GetArrayByteCount<SvgGradientStop>(SvgGradientSyntax.MaximumGradientStops));
+    private static readonly int RadialGradientStorageBytes = checked(64 + (int)System.Runtime.CompilerServices.Unsafe.SizeOf<SvgRadialGradient>());
 
     private readonly bool _ownsStyleStorage;
 

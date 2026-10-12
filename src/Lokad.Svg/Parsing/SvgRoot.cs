@@ -1475,6 +1475,8 @@ internal sealed class SvgSceneBuilder : IDisposable
             SvgGeometryKind.GradientFill => geometry.Gradient.Gradient.Stops,
             SvgGeometryKind.GradientStroke => geometry.GradientStroke.Gradient.Stops,
             SvgGeometryKind.RadialGradient => geometry.Radial.Gradient.Stops,
+            SvgGeometryKind.GradientPolygon => geometry.GradientPolygon.Gradient.Stops,
+            SvgGeometryKind.RadialPolygon => geometry.RadialPolygon.Gradient.Stops,
             _ => null,
         };
         if (stops is null || stops.Length == 0 || !_reservedStopArrays.Add(stops)) return;

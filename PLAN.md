@@ -5,10 +5,10 @@ Updated 2026-10-12. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**41/45 retained development documents are complete.** The preceding 35 stay
-complete; the newly retained public-domain/CC0 batch is **6/10 complete**
+**42/45 retained development documents are complete.** The preceding 35 stay
+complete; the newly retained public-domain/CC0 batch is **7/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
-`inv-138` honeycomb and `inv-139` phased pattern columns).
+`inv-138` honeycomb, `inv-139` phased columns and `inv-140` rainbow checker).
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
@@ -543,20 +543,42 @@ coordinate scalars. The existing two-workload resource probe passes success,
 tight denial and cleanup. Approximate memory policy and API/package contracts
 remain unchanged. Receipt: `artifacts/pattern-instances-20261012/final-qualification.json`.
 
-This new batch is **6/10 complete**, making the current queue **41/45**.
-**Next deliverable: complete `inv-140`'s rainbow checker at frozen 512×512
-transparent.** Both authored gradients have sixteen stops and repeated offsets;
-the current eight-stop gate blocks them. Extend bounded shared stop sampling,
-then take its ordered checker tile uses and luminance masks through every further
-rejection or mismatch against the unchanged whole reference.
+The untouched `inv-140` rainbow checker now completes its frozen 512×512
+transparent output through all twelve raw/prepared APIs on Windows/Linux.
+Shared linear/radial ramps admit up to 256 stops, with LimitExceeded above that
+bound. Binary interval lookup makes at most eight comparisons per pixel and
+preserves the latter stop at coincident offsets and existing native float/FMA
+sampling. Its sixteen-stop gradients, ordered local checker tiles and luminance
+masks match the unchanged whole reference through the existing scene machinery.
 The [six gradient-stop controls](tests/Research/gradient-stop-ranges/manifest.json)
 were declared at `1d559265` before correction and have healthy cleaned native
-Windows/Linux reference triples. They cover sixteen/32-stop linear/radial ramps,
+Windows/Linux reference triples. All six are exact through twelve APIs, covering
+sixteen/32-stop linear/radial ramps,
 repeated offsets, affine alpha sampling, forward inheritance, checker masks and
-the intended 256-stop bound. Initial UnsupportedFeature outcomes remain recorded
-until corrected. Extend shared stop lookup with bounded search and allowances for
-actual retained arrays; preserve simple-gradient costs and every established exact
-result. These controls stay separate from document completion.
+the 256-stop bound. Stop arrays reserve their actual lengths before allocation;
+aliases borrow them. Entry allowances avoid charging a maximum-sized array per
+gradient, and scene adoption covers polygon paint arrays. Normalization scans
+charge work and observe cancellation. Controls stay separate from document counts.
+
+Complete qualification passes **7,171 tests per platform** (4,965 core / 2,200
+visual / six FontProbe), with zero failures/skips and zero build warnings/errors.
+All **2,856 prior ordinary PNGs** and **2,908 outcomes**, established exact,
+focused/static CSS results and **30 exact font outputs per platform** stay
+unchanged. Corporate **27/27 documents / 258/258 variants** remain exact. Ten
+focused core cases protect 256/257-stop boundaries, shared forward arrays,
+coincident-stop color, invalid ranges, sampled denial, cancellation and cleanup.
+The older nine-stop rejection test now protects its admitted unchanged input;
+the new bound retains meaningful rejection. The existing two-workload resource
+probe passes normal conversion, tight denial and cleanup. Approximate memory
+policy and API/package contracts are unchanged. Receipt:
+`artifacts/gradient-stops-20261012/final-qualification.json`.
+
+This new batch is **7/10 complete**, making the current queue **42/45**.
+**Next deliverable: complete `inv-137`'s open/degenerate clip examples at frozen
+512×269 transparent.** Admit valid empty, open and canceling contour outcomes
+through shared native path/clip replay, preserving siblings and source stroke
+distinctions. Resolve every later rejection or mismatch against the unchanged
+whole reference. Compound/intersecting `inv-136` and group-mask `inv-141` stay queued.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain
 the remaining G2–G9/S17 promises without exhaustive prerequisites.
@@ -581,7 +603,7 @@ landed mechanisms remain regression requirements.
 | G3 | **Heart, I Ching, radiation, tiger, Malta, Portugal and Bhutan and South Africa documents complete.** Complete remaining curved geometry and static maps | Non-uniform curve maps, transformed strokes/paints and remaining affine gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | **Fractional rectangle placement and direct width admission repaired.** Complete paint-server strokes on ordinary geometry | Three retained rectangle comparisons and twelve new frame controls are exact; broader paints retain admission gates | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
-| G6 | **Seven retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
+| G6 | **Eight retained pattern documents complete.** Finish the promised content, unit and affine combinations | Remaining static paint combinations | G2/G3/G5, bounded tile rendering; S13/S16 |
 | G7 | Embedded PNGs and the enumerated static CSS subset below | Missing image/cascade combinations; retain an acceptance export before implementation | Explicit data only, bounded decode/resampling and shared cascade; S9/S16 |
 | G8 | Static markers and the enumerated filter/blending subset below | Four CC0 exports and the original marker-instance acceptance fixture complete their declared outputs; remaining marker combinations and finite effects stay queued | G3–G5, bounded intermediate surfaces; S16 |
 | G9 | Supplied-font labels and the enumerated text-path subset below | Both original supplied-font acceptance documents and CC0 SVG Translate complete; seven controls in each text-path/Mono bank exact. The older composite-accent control is also exact; wider label/path promises stay open; no host font discovery | Section 6, caller-owned snapshots and shared glyph contours; S7/S15 |
@@ -604,7 +626,7 @@ G2/G3/G5. The library required valid path-prefix recovery, composed viewport
 clips, inert descriptions and preservation of native contour identity through
 source replay. Its compound Yin/Yang control was already exact before the repair.
 Keep the rotated-symbol gradient rejection (G3) visible; the nested-affine-opacity
-defect (G5) is repaired on its unchanged reference. Seven completed documents with pattern elements
+defect (G5) is repaired on its unchanged reference. Eight completed documents with pattern elements
 are exact after shared vector content, local template inheritance, fractional
 mapping and general pattern transforms. The separate geometric-pattern export,
 `inv-111`, needed deferred gradient leaves and native affine linear paint maps;
@@ -882,8 +904,9 @@ group/use clip content, inheritance and nested intersections), `inv-137` (open,
 zero-area and curved clips) and `inv-141` (a finite mask region over mapped group
 children). Their current first rejections do not describe every later mismatch.
 Work through complete frozen outputs rather than closing these combinations from
-isolated controls alone. `inv-140` also needs pattern content inside masks, shared
-with G6, after its bounded gradient-stop gate is resolved.
+isolated controls alone. `inv-140` now completes ordered pattern content inside
+luminance masks after the shared bounded gradient-stop correction; its exact
+whole output closes neither G5 nor G6.
 
 `symbol-content/group-alias-use` and its inline diagnostic now match unchanged
 references. The shared repair defers inherited viewport coverage until layer
@@ -1055,14 +1078,21 @@ Missing/external references and indirect pattern dependencies have explicit
 unsupported outcomes; cyclic local geometry graphs retain MalformedInput.
 Owned staging and sealed scenes release on success, denial and cancellation.
 
+`inv-140` completes its unchanged 512×512 transparent reference through all twelve
+APIs on both platforms. Bounded 256-stop linear/radial sampling admits its two
+sixteen-stop hard-edge gradients; existing ordered local tiles and luminance
+mask composition render the whole checker exactly. Six separate controls are
+exact, including 32-stop inheritance/alpha maps and the maximum admitted ramp.
+No mask- or shape-specific implementation was added for this document.
+
 General referencing-shape/instance maps, content/bounding-box units and
 nested viewport gates remain open. Broader source-grid,
 instance and stroke combinations still need measured controls; completion of the
-seven documents closes neither this checklist nor the finite exit below.
+eight documents closes neither this checklist nor the finite exit below.
 The completed `inv-138`/`inv-139` references protect pattern viewBox, alias phase,
-local tile instances and composed placement. `inv-140` needs ordered local
-uses in tiles rendered inside luminance masks. Keep those dependencies inside the
-existing finite content/unit/map exit, with explicit recursive outcomes.
+local tile instances and composed placement. The completed `inv-140` also protects
+ordered local uses in tiles rendered inside luminance masks. Keep broader
+combinations inside the finite content/unit/map exit, with explicit recursive outcomes.
 Extend the bounded vector tile scene with composed pattern transforms,
 viewBox/content units and objectBoundingBox units in measured
 slices. The finite tile-content subset is ordered G3 vector leaves, groups and
@@ -1358,9 +1388,9 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 The original fidelity repairs and the **33 previously completed development
 documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
-(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **6/10
-complete**, making the current selected development queue **41/45 complete**.
-Their frozen references and first gates are listed above; next, finish `inv-140`.
+(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **7/10
+complete**, making the current selected development queue **42/45 complete**.
+Their frozen references and first gates are listed above; next, finish `inv-137`.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh
