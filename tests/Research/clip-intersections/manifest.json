@@ -8,7 +8,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Ten clip controls frozen before their corresponding corrections: initial eight selected at709e4c07, two use fill-rule controls selected at4e27f642. Native Windows/Linux triples healthy, cleaned and stable; controls stay separate from inv-136.",
+  "purpose": "Ten frozen clip controls: nine exact through all twelve raw/prepared APIs on Windows/Linux; overlapping direct clip children retain an explicit boundary. Container-use clip references correctly contribute empty coverage under the direct-shape rule. Separate from complete original inv-136.",
   "cases": [
     {
       "id": "group-oval-union",
@@ -23,8 +23,7 @@
       "reference": "references/group-oval-union.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "object-path-parity",
@@ -39,8 +38,7 @@
       "reference": "references/object-path-parity.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "group-object-inherited",
@@ -55,8 +53,7 @@
       "reference": "references/group-object-inherited.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "nested-oval-intersection",
@@ -71,21 +68,7 @@
       "reference": "references/nested-oval-intersection.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 723,
-        "MaximumChannelError": 255,
-        "MeanAbsoluteError": 12.28490306712963,
-        "RootMeanSquareError": 50.938872893904794,
-        "MaximumAlphaError": 255,
-        "AlphaChangedPixelCount": 677,
-        "MinimumMismatchX": 23,
-        "MinimumMismatchY": 13,
-        "MaximumMismatchX": 72,
-        "MaximumMismatchY": 62,
-        "IsExact": false
-      }
+      "role": "fidelity"
     },
     {
       "id": "clip-child-oval-use",
@@ -100,8 +83,7 @@
       "reference": "references/clip-child-oval-use.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "fractional-root-group-union",
@@ -116,8 +98,7 @@
       "reference": "references/fractional-root-group-union.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "overlapping-path-child-union",
@@ -132,7 +113,7 @@
       "reference": "references/overlapping-path-child-union.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
+      "role": "unsupported-boundary",
       "expectedError": "UnsupportedFeature"
     },
     {
@@ -148,8 +129,7 @@
       "reference": "references/forward-group-clip-use.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "use-fill-rule-inherited",
@@ -164,8 +144,7 @@
       "reference": "references/use-fill-rule-inherited.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "use-fill-rule-source-wins",
@@ -180,8 +159,7 @@
       "reference": "references/use-fill-rule-source-wins.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     }
   ],
   "linuxReferenceQualification": {

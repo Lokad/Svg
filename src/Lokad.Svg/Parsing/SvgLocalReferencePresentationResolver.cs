@@ -18,7 +18,7 @@ internal static class SvgLocalReferencePresentationResolver
 {
     internal static SvgResolvedLocalReferencePresentation Resolve(SvgComputedStyle style, SvgInheritedPresentation inheritedPresentation, IReadOnlyDictionary<string, SvgColor> namedColors, BudgetedParserStringStore strings)
     {
-        if (style.FillRule is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fill-rule overrides on use elements are not implemented.");
+        SvgShapePresentationResolver.ValidateFillRule(style.FillRule);
         bool isPainted = SvgPresentationResolver.IsPainted(style.Display, style.Visibility, inheritedPresentation.IsDisplayed, inheritedPresentation.IsVisible);
         byte opacity = style.GetOpacity().Alpha;
         bool paintServer = style.Fill is not null && SvgPatternSyntax.IsPatternFill(style.Fill);

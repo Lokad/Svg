@@ -177,10 +177,9 @@ internal static class SvgDocumentTraversal
                         string? groupId = reader.GetAttribute("id");
                         state.GroupSnapshotStarts.Add(new SvgGroupSnapshotStart(groupId is null ? null : state.Strings.Copy(groupId), reader.GetAttribute("clip-path") is not null, reader.GetAttribute("mask") is not null));
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Switch) state.Switches.Add(new SwitchScope(reader.Depth, false));
-                        string? clipReference = reader.GetAttribute("clip-path");
-                        if (clipReference is not null)
+                        string? groupClipId = parsedGroup.Scope.ClipPathId;
+                        if (groupClipId is not null)
                         {
-                            string groupClipId = SvgClipPathSyntax.ParseClipId(clipReference);
                             if (state.Clips.TryGetValue(groupClipId, out SvgClipBox clipBox))
                             {
                                 SvgViewportFrame? clipParent = state.EffectiveFrame;

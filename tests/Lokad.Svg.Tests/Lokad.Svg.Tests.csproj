@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <None Include="../Research/group-mask-crop/*.svg" Link="TestData/group-mask-crop/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/clip-intersections/*.svg" Link="TestData/clip-intersections/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-061.svg" Link="TestData/south-africa-flag.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-065.svg" Link="TestData/portugal-flag.svg" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Fixtures/candidates/inv-057.svg" Link="TestData/malta-flag.svg" CopyToOutputDirectory="PreserveNewest" />

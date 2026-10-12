@@ -436,6 +436,8 @@ internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgI
     internal bool HasDeferredMask { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal string? ClipRule { get; init; }
+    /// <summary>Retains this container's computed local clip reference for explicitly inherited child declarations.</summary>
+    internal string? ClipPathId { get; init; }
 }
 
 internal enum SvgGroupKind { Group, Link, Switch, Mask, Pattern, PatternGroup }

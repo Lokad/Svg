@@ -53,7 +53,25 @@ Fourteen of sixteen separately declared controls are exact; non-unit nested
 opacity and meaningful isolation retain explicit gates. The older deferred
 partial-leaf-mask control is also exact against its frozen reference. Placed
 partial groups, directly masked instances, masked text and remaining finite
-G5/G8 combinations stay open. Development ledger 44/45; next document inv-136.
+G5/G8 combinations stay open. Inv-141 advanced the ledger to 44/45; inv-136 was queued at that checkpoint.
+
+## Normalized, inherited and nested clips (2026-10-12)
+
+Complete inv-136 matches its unchanged 512×277 transparent reference through
+twelve APIs on Windows/Linux. Normalized path clips reuse native geometry bounds;
+explicit inheritance resolves the immediate container's reference with each
+child's own bounds. Use fill rules retain source-authored precedence. Circle
+clip-child IDs replay ordinary painted instances with correctly placed native
+clips. Clip uses referencing containers contribute empty coverage per SVG's
+direct-shape restriction.
+
+Nested circle clip masks reuse bounded stencil/layer replay. Painted content
+retains its own enclosing rectangle; mask curves construct in larger target bounds.
+Nine of ten controls are exact; direct overlapping children remain unsupported.
+The older object-box curved control is also exact. Nested group/object-box mask
+targets and deeper/cyclic resources retain explicit current boundaries. Remaining
+finite G2–G9/S17 work is unchanged. The current development ledger is 45/45;
+next is bounded public-domain/CC0 sourcing for a new original-scope failure.
 
 ## Support matrix
 

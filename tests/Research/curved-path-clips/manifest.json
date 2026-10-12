@@ -158,10 +158,9 @@
       "sourceSha256": "1d122eb90e4468e35a4ff1af297b69b88c647ac32d03f0defc31b4b95b64527c",
       "license": "CC0-1.0",
       "licenseEvidence": "Repository-authored CC0 focused control, including simple arc geometry from the retained CC0 Wikifoods logo.",
-      "selection": "Declared at 4797ffc6 before clip-content correction: native curve commands, radius correction, group placement, independent paints and root scales required by the complete Wikifoods document.",
+      "selection": "Declared at 4797ffc6 before clip-content correction: native curve commands, radius correction, group placement, independent paints and root scales required by the complete Wikifoods document. Graduated after inv-136 normalized-path clip correction; unchanged reference is exact.",
       "role": "mechanism-control",
-      "referenceSha256": "ef2b10ced2c032ee20ae17ac26fea16c75594efa780bc1e9dca77591fc373a99",
-      "expectedError": "UnsupportedFeature"
+      "referenceSha256": "ef2b10ced2c032ee20ae17ac26fea16c75594efa780bc1e9dca77591fc373a99"
     },
     {
       "id": "scaled-root-small",

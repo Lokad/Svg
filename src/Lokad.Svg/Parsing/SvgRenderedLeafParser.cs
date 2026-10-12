@@ -341,9 +341,9 @@ internal static class SvgRenderedLeafParser
 
         static SvgViewportFrame? ResolveShapeClipFrame(XmlReader reader, string elementName, bool isPath, SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, SvgPaintableElementContext context)
         {
-            string? reference = reader.GetAttribute("clip-path");
-            if (reference is null) return SvgClipPathSyntax.ResolveLeafClip(reader, state);
-            if (!state.ObjectClips.TryGetValue(SvgClipPathSyntax.ParseClipId(reference), out _)) return SvgClipPathSyntax.ResolveLeafClip(reader, state);
+            string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);
+            if (clipId is null) return SvgClipPathSyntax.ResolveLeafClip(reader, state);
+            if (!state.ObjectClips.TryGetValue(clipId, out _)) return SvgClipPathSyntax.ResolveLeafClip(reader, state);
             double minimumX;
             double minimumY;
             double maximumX;

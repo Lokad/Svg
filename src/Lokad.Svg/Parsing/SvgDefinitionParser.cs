@@ -193,7 +193,6 @@ internal static class SvgDefinitionParser
             {
                 if (state.ClipBox is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle clip paths are implemented.");
                 SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
-                if (state.ClipIsObjectBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse clip-path paths are implemented.");
                 SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
@@ -212,7 +211,8 @@ internal static class SvgDefinitionParser
                     state.Definitions.TryAdd(state.Strings.Copy(pathId), source);
                 }
                 bool isEvenOdd = clipStyle.ClipRule is null ? state.ClipIsEvenOdd : SvgClipPathSyntax.ParseClipRule(clipStyle.ClipRule.AsSpan());
-                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, state, workCounter, cancellationToken);
+                SvgClipPolygon clipContent = ParseClipPathPolygon(reader.GetAttribute("d"), clipTransform, isEvenOdd, state, workCounter, cancellationToken)
+                    with { IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
                 if (state.ClipPolygon is {} first)
                 {
                     SvgClipPolygon combined;
@@ -242,6 +242,15 @@ internal static class SvgDefinitionParser
                 SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgViewportLengthBases clipBases = state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases;
+                if (reader.GetAttribute("id") is {} ovalId)
+                {
+                    if (state.Definitions.TryGetValue(ovalId, out _) || state.GroupSnapshots.TryGetValue(ovalId, out _) || state.RenderedGroupDefinitions.TryGetValue(ovalId, out _))
+                        throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
+                    state.Definitions.TryAdd(state.Strings.Copy(ovalId), new([], false, null, null)
+                    {
+                        LeafSource = SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state)
+                    });
+                }
                 SvgEllipseSyntax oval = reader.LocalName == "circle" ? SvgEllipseSyntax.ParseCircle(reader, clipBases) : SvgEllipseSyntax.ParseEllipse(reader, clipBases);
                 SvgAffineTransform childMap = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
                 using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
@@ -264,7 +273,8 @@ internal static class SvgDefinitionParser
                     int[] ends = new int[prepared.ContourEnds.Length];
                     for (int index = 0; index < points.Length; index++) { workCounter.Consume(cancellationToken); points[index] = prepared.Points[index]; }
                     for (int index = 0; index < ends.Length; index++) { workCounter.Consume(cancellationToken); ends[index] = prepared.ContourEnds[index]; }
-                    state.ClipPolygon = new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned, IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
+                    string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
+                    state.ClipPolygon = new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned, IsObjectBoundingBox = state.ClipIsObjectBoundingBox, NestedClipId = nestedClip is null ? null : state.Strings.Copy(nestedClip) };
                 }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 return true;
@@ -1626,6 +1636,19 @@ internal static class SvgDefinitionParser
             : ParseShapeDefinition(reader, context, state, null, false);
         try
         {
+            if (SvgClipPathSyntax.ResolveClipId(reader, state) is {} clipId)
+            {
+                SvgAffineTransform map = context.ResolveTransform(reader);
+                for (int index = 0; index < definition.Geometries.Length; index++)
+                {
+                    context.WorkCounter.Consume(context.CancellationToken);
+                    SvgGeometry geometry = definition.Geometries[index];
+                    definition.Geometries[index] = geometry with
+                    {
+                        LeafMask = SvgClipPathSyntax.BindResourceClip(clipId, map, geometry.LeafMask, state, context.WorkCounter, context.CancellationToken)
+                    };
+                }
+            }
             SvgReferenceResolver.ApplyMask(definition.Geometries, null, null, reader.GetAttribute("mask"), state, context.WorkCounter, context.CancellationToken);
             SvgPaintRecording.FinishDefinition(definition.Geometries, state, context.WorkCounter, context.CancellationToken);
             return BindSymbolFill(definition, reader, context, state, context.WorkCounter, context.CancellationToken, false);

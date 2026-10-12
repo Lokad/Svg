@@ -44,11 +44,16 @@ public sealed class SvgLocalReferencePresentationResolverTests
     }
 
     [Fact]
-    public void Retains_the_use_fill_rule_admission_boundary()
+    public void Valid_instance_fill_rule_preserves_its_resolved_paint()
     {
         SvgComputedStyle style = new(null, null, null, null, null, null, null, "evenodd");
-        SvgException exception = Assert.Throws<SvgException>(() => SvgLocalReferencePresentationResolver.Resolve(style, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000))));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(10_000);
+        using BudgetedParserStringStore strings = new(budget);
+        SvgInheritedPresentation inherited = new(SvgPaint.Default, true, true, SvgAffineTransform.Identity);
+        Dictionary<string, SvgColor> colors = new();
+        SvgResolvedLocalReferencePresentation expected = SvgLocalReferencePresentationResolver.Resolve(style with { FillRule = null }, inherited, colors, strings);
+        SvgResolvedLocalReferencePresentation actual = SvgLocalReferencePresentationResolver.Resolve(style, inherited, colors, strings);
+        Assert.Equal(expected, actual);
     }
 
     [Fact]

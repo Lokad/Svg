@@ -5,6 +5,7 @@ namespace Lokad.Svg.Parsing;
 internal readonly record struct SvgLeafMaskOwner(IDisposable Owner);
 internal readonly record struct SvgLeafMaskOperationReference(SvgLeafMaskOperation Operation);
 internal readonly record struct SvgLeafMaskBindingReference(SvgLeafMaskBinding Binding);
+internal readonly record struct SvgNativeClipReference(string Id, SvgAffineTransform Map);
 
 /// <summary>Stores one parser-owned mask value/region, or a lazily mapped instance of an earlier operation.</summary>
 /// <remarks>Shared within one conversion; mutation is single-threaded. Bindings borrow operations.
@@ -27,6 +28,8 @@ internal sealed class SvgLeafMaskOperation : IDisposable
     internal SvgClipBox? Region { get; set; }
     internal SvgLayerRegionKind RegionKind { get; set; }
     internal SvgAffineViewportClip? AffineViewport { get; set; }
+    /// <summary>Borrows a parser-owned clip id until native content is emitted after instance placement.</summary>
+    internal SvgNativeClipReference? NativeClip { get; set; }
     internal int ContentIndex { get; set; } = -1;
     /// <summary>Releases this metadata reservation without disposing borrowed operations or observing cancellation.</summary>
     /// <remarks>Only the conversion owner disposes this single-threaded value; budget release is idempotent.</remarks>
@@ -238,6 +241,8 @@ internal static class SvgLeafMaskComposition
                             mapped.Value = source.Value;
                             mapped.SourceOpacity = source.SourceOpacity;
                             mapped.RegionKind = source.RegionKind;
+                            if (source.NativeClip is {} native)
+                                mapped.NativeClip = native with { Map = mapped.Map.ComposeChecked(native.Map) };
                             if (source.AffineViewport is {} affine)
                                 mapped.AffineViewport = affine with { Map = mapped.Map.ComposeChecked(affine.Map) };
                             else if (source.RegionKind == SvgLayerRegionKind.Viewport && !mapped.Map.IsAxisAligned && source.Region is SvgClipBox viewport)
@@ -250,7 +255,15 @@ internal static class SvgLeafMaskComposition
                         }
                         if (operation.AffineViewport is {} clip && operation.ContentIndex < 0)
                             (operation.Region, operation.ContentIndex) = clip.Register(state, scene, work, token);
-                        if (operation.Value != 255 || operation.Region is not null || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
+                        if (operation.NativeClip is {} nativeClip && operation.ContentIndex < 0)
+                        {
+                            if (!state.ClipPolygons.TryGetValue(nativeClip.Id, out SvgClipPolygon content))
+                                throw new InvalidOperationException("Retained native clip content is missing.");
+                            (operation.Region, operation.ContentIndex) = SvgAffineViewportClip.RegisterContour(content.Points, content.ContourEnds,
+                                nativeClip.Map, content.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath,
+                                content.UsesNativeReplay ? content.SourcePath : null, content.ResourceBounds, content.IsEvenOdd, state, scene, work, token);
+                        }
+                        if (operation.Value != 255 || operation.Region is not null || operation.ContentIndex >= 0 || operation.SourceOpacity.Value != 1) desired.Add(new(operation));
                     }
                 }
                 int common = 0;

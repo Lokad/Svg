@@ -5,11 +5,12 @@ Updated 2026-10-12. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**44/45 retained development documents are complete.** The preceding 35 stay
-complete; the newly retained public-domain/CC0 batch is **9/10 complete**
+**45/45 retained development documents are complete.** The preceding 35 stay
+complete; the newly retained public-domain/CC0 batch is **10/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
 `inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker,
-`inv-137` open/degenerate clips and `inv-141` smiley mask export).
+`inv-137` open/degenerate clips, `inv-141` smiley mask export and
+`inv-136` normalized/inherited/nested clips).
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
@@ -642,21 +643,69 @@ two-workload normal/tight-denial probe passes. Approximate memory policy and
 API/package contracts remain unchanged. Receipt:
 `artifacts/group-mask-crop-20261012/final-qualification.json`.
 
-**Next deliverable: complete `inv-136` at unchanged 512×277 transparent.**
-Advance its normalized, overlapping, group/use, inherited and nested/intersecting
-clips through shared bounded clip geometry and source replay. Declare focused
-controls before correction and finish all later rejections and mismatches against
-the unchanged whole reference. Implement dependencies needed by this document
-without exhaustive G2 prerequisites; preserve every finite G2–G9/S17 promise.
-Eight [clip-intersection controls](tests/Research/clip-intersections/manifest.json)
-were declared at `709e4c07` before inv-136 correction. Healthy cleaned native
-triples agree on both platforms. Baselines retain seven rejections and a measured
-nested clip defect; protect group/use union, normalized parity coordinates,
-inherited child boxes, resource-child identity and fractional root placement.
-Two later use fill-rule controls, declared at `4e27f642` before attribute
-admission, retain source-authored precedence and inherited instance winding.
-The first normalized/inherited clip prototypes are exact; whole inv-136
-qualification remains pending.
+The untouched **`inv-136` SVGclipPath04 export is complete** at frozen
+**512×277 transparent**, through all six raw and six independently prepared APIs
+on Windows/Linux. This completes the source batch **10/10** and the selected
+development ledger **45/45**. Source bytes, options and references stay unchanged.
+
+Normalized path clips reuse existing object-bounds and native replay. Explicit
+clip inheritance uses the immediate container's computed reference; each child
+retains its own coordinate map/bounds. Use fill-rule declarations share source
+construction and preserve source-authored precedence. Clip-child circle IDs
+retain ordinary source aliases, and their native clips materialize after instance
+placement. Container targets of clip uses contribute empty geometry under SVG's
+[direct-target restriction](https://www.w3.org/TR/SVG11/masking.html#EstablishingANewClippingPath);
+this is measured native behavior.
+
+Nested circle clips reuse bounded white stencil scenes and alpha-mask composition.
+The content's enclosing rectangle clips painted content independently; mask curves
+construct in the target's larger paint bounds. Separate direct oval, path clip,
+mask and image-restore arithmetic resolves the final fractional edge pixels.
+Nine of ten [clip controls](tests/Research/clip-intersections/manifest.json) are
+exact through twelve APIs; overlapping direct clip children retain an explicit
+UnsupportedFeature outcome. Eight controls were declared at `709e4c07`, and two
+use-rule controls at `4e27f642`, before corresponding corrections. Healthy cleaned
+native Windows/Linux triples remain frozen. The older object-box curved control
+also matches its unchanged reference. Controls stay separate from documents.
+
+Complete qualification passes **7,245 tests/platform** (5,004 core /2,235 visual
+/six FontProbe), zero failures/skips and zero build warnings/errors. Passing
+suite runs took 3m23s on Windows and 3m55s on Linux, excluding builds and image
+banks. All **2,856
+prior ordinary PNGs**, established exact/focused/static CSS outputs, **30 exact
+font outputs/platform** and corporate **27/27 documents /258/258 variants** are
+preserved. The complete bank has 90 exact cases through twelve APIs. Ten focused
+core cases protect material denial, native source/instance ownership, cancellation
+and identical retry, immediate inheritance, invalid rules and honest unqualified
+nested group/object-box/cycle boundaries. The existing two-workload normal/tight-
+denial probe passes. Approximate memory policy and public/API/package contracts
+remain unchanged. Receipt:
+`artifacts/clip-intersections-20261012/final-qualification.json`.
+
+**Next deliverable: retain and finish a new licensed document demonstrating a
+remaining original-scope gap.** The current queue is complete; G2–G9 and S17 are
+still open. Refresh witness selection from the finite exits below. Start a bounded
+batch of up to six public-domain/CC0 candidates from source pages with explicit
+rights evidence. Prefer a complete export exposing the measured G3 width-map
+defect or valid overlapping/multi-shape clip content, then image/CSS, effects or
+supplied-font gaps with their required contracts. Screen original bytes at declared
+output/options, retain rejection or measured mismatch cases, and keep already
+exact downloads out of the failure queue. Freeze healthy matching-platform
+references before correction. Use existing inventory/comparison tools; no new
+qualification or measurement framework. Implement shared dependencies selected
+by the next document, preserving every finite exit and completed result.
+
+| Remaining witness priority | Finite work to demonstrate |
+| --- | --- |
+| G2–G4 | Practical remaining instance maps; fractional effective stroke widths, non-scaling/native curved width maps and remaining shader stroke/coordinate combinations. |
+| G5–G6 | Valid overlapping/curved clip children, further nested group/use masks and unit/map combinations; remaining tile content/units/maps, with image/text/filter dependencies explicit. |
+| G7 | The enumerated PNG formats/transparency and image maps; remaining static selectors/cascade and declaration locations. |
+| G8 | The enumerated marker, blur/subregion/result/color-space/composite/merge/blending combinations; preserve explicit unsupported effects. |
+| G9 | The enumerated supplied-font span/list/length/baseline/paint/decoration and path combinations; preserve font provenance and platform contracts. |
+
+This prioritizes acquisition and does not defer or narrow any G2–G9 requirement.
+S17 remains the existing finished-release delivery gate after support work.
+
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -972,12 +1021,11 @@ focused boundary twins are exact, with ownership/budget checks passing.
 
 ### G5 — viewports, clips, masks and composition
 
-New whole-document witnesses are `inv-136` (normalized compound paths, local
-group/use clip content, inheritance and nested intersections), `inv-137` (open,
-zero-area and curved clips) and `inv-141` (a finite mask region over mapped group
-children). Their current first rejections do not describe every later mismatch.
-Work through complete frozen outputs rather than closing these combinations from
-isolated controls alone. `inv-140` now completes ordered pattern content inside
+The retained whole-document witnesses `inv-136` (normalized compound paths,
+explicit inheritance and nested clip masks), `inv-137` (open, zero-area and curved
+clips) and `inv-141` (finite group masks) are complete against their unchanged
+references. These documents do not close the finite exit: valid overlapping clip
+children, broader group/use and transformed/unit composition still need witnesses. `inv-140` now completes ordered pattern content inside
 luminance masks after the shared bounded gradient-stop correction; its exact
 whole output closes neither G5 nor G6.
 
@@ -1463,10 +1511,11 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 The original fidelity repairs and the **33 previously completed development
 documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
-(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **9/10
-complete**, making the current selected development queue **44/45 complete**.
-Their frozen references and first gates are listed above; `inv-137` and `inv-141`
-are now complete. Next, finish `inv-136`.
+(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **10/10
+complete**, making the current selected development queue **45/45 complete**.
+Their frozen references and original first gates are listed above; all ten outputs
+are complete. Select the next licensed whole-document failure from the remaining
+finite exits through the bounded sourcing step above.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh

@@ -12334,3 +12334,40 @@ are preserved. The existing two-workload probe covers normal/tight-denial cleanu
 Approximate memory policy and public contracts are unchanged. Ledger 44/45,
 source batch 9/10; next inv-136. Finite G2–G9/S17 remain open. Receipt:
 artifacts/group-mask-crop-20261012/final-qualification.json.
+
+## Normalized and nested resource clip masks (2026-10-12)
+
+Original inv-136 completes its unchanged 512×277 transparent reference through
+twelve raw/prepared APIs on Windows/Linux. ObjectBoundingBox path clips share
+the existing object-bound collector and authored replay. Explicit clip inheritance
+borrows the immediate container's computed id; ordinary absence is non-inherited.
+Use fill-rule declarations pass through existing source construction and retain
+authored-source precedence. Invalid rules still reject before rendering.
+
+Circle clip-child IDs retain unconstructed aliases. Native clip references borrow
+registry ids/maps until leaf operation emission after instance placement. Emitted
+mask content owns copied native paths, with no staging reference escaping.
+Invalid container targets of clip uses contribute empty coverage according to
+SVG's direct-path/text/basic-shape rule; no geometric group union is substituted.
+
+Nested circle resources require bounded mask replay rather than only stacked
+native clipping. A white stencil uses existing native contours and clip tapes.
+Alpha-mask restoration stays separate from direct oval/path clip arithmetic.
+The enclosing rectangle clips the painted content, while stencil curves construct
+in target paint bounds. Applying that rectangle to mask construction changed curve
+pixels. Its correct content placement resolves the final eight fractional pixels.
+No alternative curve renderer or per-shape paint implementation was introduced.
+
+Nine of ten frozen controls are exact; overlapping direct clip children retain
+an explicit boundary. The older object-box curved control is exact too. Ten core
+cases protect sampled denial, cleanup, mapped native ownership, cancellation and
+identical retry, immediate inheritance and meaningful unsupported boundaries.
+Complete qualification passes 7,245 tests/platform (5,004 core /2,235 visual /
+six FontProbe), zero failures/skips/build warnings. All 2,856 prior ordinary PNGs,
+established exact/focused/static CSS results, thirty exact font outputs/platform
+and corporate 27/27 documents /258/258 variants remain protected. The complete
+bank has 90 exact twelve-API cases. The existing two-workload resource probe passes
+normal/tight-denial cleanup; approximate memory policy and public contracts remain
+unchanged. Ledger 45/45, source batch 10/10; finite G2–G9/S17 remain open. Next is
+bounded licensed original-scope failure sourcing. Receipt:
+artifacts/clip-intersections-20261012/final-qualification.json.

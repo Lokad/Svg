@@ -66,8 +66,23 @@ internal static class SvgResourceUseReplay
             work.Consume(token);
             SvgDeferredResourceUse pending = state.DeferredResourceUses[index];
             if (pending.Kind != kind) continue;
+            if (kind == SvgResourceUseKind.Clip
+                && (state.GroupSnapshots.TryGetValue(pending.Use.Reference.Id, out _)
+                    || state.RenderedGroupDefinitions.TryGetValue(pending.Use.Reference.Id, out _)))
+            {
+                state.Clips.TryAdd(pending.Id, new(0, 0, 0, 0));
+                continue;
+            }
             if (!state.Definitions.TryGetValue(pending.Use.Reference.Id, out SvgDefinition source))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local geometry references in resource content are implemented.");
+            if (kind == SvgResourceUseKind.Clip && (source.StrokeContent is not null || source.SymbolContent is not null || source.RenderedGroupId is not null))
+            {
+                // A clip use must directly reference a path/text/basic shape.
+                // Container references contribute no geometry, including a one-child group.
+                // The paired empty polygon remains the definition's staging marker.
+                state.Clips.TryAdd(pending.Id, new(0, 0, 0, 0));
+                continue;
+            }
             SvgUseReference reference = pending.Use.Reference;
             if (kind == SvgResourceUseKind.Clip)
                 reference = reference with { FillOverride = new(new(255, 255, 255, 255), true, SvgPaintOpacity.Opaque, new(255, 255, 255, 255), false), PaintServerId = null, PaintServerFill = null, Opacity = 255 };
