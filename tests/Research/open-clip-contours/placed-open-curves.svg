@@ -1,0 +1,5 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 356.25 356.25">
+<defs><clipPath id="c"><path d="M-200 -200C100 -200 200 100 200 200M100 200 100 -100 -200 -100"/></clipPath></defs>
+<rect width="356.25" height="356.25" fill="#ffd"/><g transform="translate(178.125 178.125)"><circle r="210" fill="#00a" opacity=".2"/><circle r="210" fill="none" stroke="red"/><circle r="210" fill="#00a" clip-path="url(#c)"/><path d="M-200 -200C100 -200 200 100 200 200M100 200 100 -100 -200 -100" fill="none" stroke="red"/></g>
+</svg>

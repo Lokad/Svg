@@ -586,6 +586,9 @@ and the 2,706-pixel opposite-winding difference. They cover empty siblings,
 stroke-independent clip coverage, open/mixed/canceling/parity contours and ordinary
 use targets declared inside clipPath. Extend shared source/clip replay and the
 existing definition registry; controls stay separate from document completion.
+The eighth placed-curve control was declared at `4cb10dbc` before the remaining
+201-pixel correction. Its clean native triples agree on both platforms and the
+current renderer already matches it; preserve that placement result.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain
 the remaining G2–G9/S17 promises without exhaustive prerequisites.
