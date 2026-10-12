@@ -549,6 +549,14 @@ transparent.** Both authored gradients have sixteen stops and repeated offsets;
 the current eight-stop gate blocks them. Extend bounded shared stop sampling,
 then take its ordered checker tile uses and luminance masks through every further
 rejection or mismatch against the unchanged whole reference.
+The [six gradient-stop controls](tests/Research/gradient-stop-ranges/manifest.json)
+were declared at `1d559265` before correction and have healthy cleaned native
+Windows/Linux reference triples. They cover sixteen/32-stop linear/radial ramps,
+repeated offsets, affine alpha sampling, forward inheritance, checker masks and
+the intended 256-stop bound. Initial UnsupportedFeature outcomes remain recorded
+until corrected. Extend shared stop lookup with bounded search and allowances for
+actual retained arrays; preserve simple-gradient costs and every established exact
+result. These controls stay separate from document completion.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain
 the remaining G2–G9/S17 promises without exhaustive prerequisites.

@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Six frozen gradient-stop controls advancing inv-140; initial UnsupportedFeature outcomes retained before correction.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  },
+  "cases": [
+    {
+      "id": "linear-sixteen",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "78e25961f5a7e03b28a26492ee8eff16bfb063fac2f150ac13420b1019c161b2",
+      "referenceSha256": "77024c748d14e7cb9bc2c85b5d622a6628171499ae5d6e9878e29cf879cda451",
+      "selection": "Declared at 1d559265 before renderer correction/comparison: inv-140 sixteen-stop dependencies, bounded larger ramps, repeated offsets, radial padding, alpha/affine sampling, forward inheritance and local checker tiles in luminance masks.",
+      "input": "linear-sixteen.svg",
+      "reference": "references/linear-sixteen.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "radial-sixteen",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "a5493941f50df978042b01bb72c0343a3c2c38eeb93138636409e131283dafbf",
+      "referenceSha256": "7c3b4e40eebc09b0bcc452904290633f7f8e3c0e1eb9f983be97ce44d92e657c",
+      "selection": "Declared at 1d559265 before renderer correction/comparison: inv-140 sixteen-stop dependencies, bounded larger ramps, repeated offsets, radial padding, alpha/affine sampling, forward inheritance and local checker tiles in luminance masks.",
+      "input": "radial-sixteen.svg",
+      "reference": "references/radial-sixteen.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "affine-alpha-thirtytwo",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "32fefbe454fc5e7cbda399f5eaffab76b8cd63174839f1559b989c3d5cea97ca",
+      "referenceSha256": "5ecc04abdf3624ef1e1d93db6f5bdcb7ab45930d269aced5e0fba8ce6f7e1ae2",
+      "selection": "Declared at 1d559265 before renderer correction/comparison: inv-140 sixteen-stop dependencies, bounded larger ramps, repeated offsets, radial padding, alpha/affine sampling, forward inheritance and local checker tiles in luminance masks.",
+      "input": "affine-alpha-thirtytwo.svg",
+      "reference": "references/affine-alpha-thirtytwo.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "forward-inheritance",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "1f01701dfa2303ab47f5f84fdfa681bf1e0f67e582e3eab9efddc4724b767bdb",
+      "referenceSha256": "6c7b7bf98b4b148d1c543152f15927e6a08bc2404dff1f37447bd17f9fad6e3b",
+      "selection": "Declared at 1d559265 before renderer correction/comparison: inv-140 sixteen-stop dependencies, bounded larger ramps, repeated offsets, radial padding, alpha/affine sampling, forward inheritance and local checker tiles in luminance masks.",
+      "input": "forward-inheritance.svg",
+      "reference": "references/forward-inheritance.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "checker-mask",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "6ce96014c16e57d0d19172e93fb6b786d6fe1c017de9d692dccda3e7b0e085ef",
+      "referenceSha256": "3a26834018ae1ef544ef9528a0983a56b4e631b5eed0ab1c67aa6553b3e2f4bf",
+      "selection": "Declared at 1d559265 before renderer correction/comparison: inv-140 sixteen-stop dependencies, bounded larger ramps, repeated offsets, radial padding, alpha/affine sampling, forward inheritance and local checker tiles in luminance masks.",
+      "input": "checker-mask.svg",
+      "reference": "references/checker-mask.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "maximum-twofiftysix",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "527b6a0b4ab9161b580493030b29a7f5773100b9f4d7fa5519b9d8bc6fa32abd",
+      "referenceSha256": "c2d83b6299ac8a2d8f481f66cdf12bcee98e7b4d5867f11466c46818b482416a",
+      "selection": "Declared at 1d559265 before renderer correction/comparison: inv-140 sixteen-stop dependencies, bounded larger ramps, repeated offsets, radial padding, alpha/affine sampling, forward inheritance and local checker tiles in luminance masks.",
+      "input": "maximum-twofiftysix.svg",
+      "reference": "references/maximum-twofiftysix.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    }
+  ]
+}
