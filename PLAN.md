@@ -618,6 +618,11 @@ were declared at `a17e385c` before correction. Healthy cleaned native triples
 agree on both platforms; baseline outcomes retain seven partial-coverage
 rejections and one exact covering-uniform result. Reuse bounded mask/source scene
 replay to retain partial coverage while preserving the uniform result.
+Four later controls, declared at `b3a79480` before further correction, retain
+neutral exporter declarations on geometric leaves, a meaningful isolation
+boundary and nested cropping without non-unit opacity. The non-unit nested
+opacity control retains its explicit composition gate; it is not a prerequisite
+for the selected whole document.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
