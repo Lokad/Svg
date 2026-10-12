@@ -16,41 +16,54 @@ internal static class ParserCollectionMemory
         => GetArrayByteCount(count, Unsafe.SizeOf<T>());
 }
 
-/// <summary>Owns exact parser-string reservations for copies retained by stylesheet rules or deferred references.</summary>
+/// <summary>Retains immutable parser strings under one aggregate lifetime allowance, copying only span-backed values.</summary>
 internal sealed class BudgetedParserStringStore : IDisposable
 {
     private const long StringHeaderBytes = 32;
-    // Covers the reservation object, the list reference, and the first/grown
-    // reservation-pointer array. The first list entry is the worst amortized case.
-    private const long PerStringTrackingBytes = 128;
+    // Conservative aggregate allowances cover reference-set backing growth and
+    // the store/set/reservation objects, without one tracking object per string.
+    private const long PerStringTrackingBytes = 48;
+    private const long StoreTrackingBytes = 192;
     private readonly RenderBudget _budget;
-    private List<RenderBudget.BudgetReservation>? _reservations;
+    private HashSet<string>? _retained;
+    private RenderBudget.BudgetReservation? _reservation;
 
     internal BudgetedParserStringStore(RenderBudget budget) => _budget = budget;
 
     internal string Copy(ReadOnlySpan<char> value)
     {
         if (value.IsEmpty) return string.Empty;
-        long bytes = checked(StringHeaderBytes + (long)value.Length * sizeof(char) + PerStringTrackingBytes);
-        RenderBudget.BudgetReservation reservation = _budget.Reserve(bytes, SvgMemoryCategory.Parser);
-        try
-        {
-            string copy = value.ToString();
-            (_reservations ??= []).Add(reservation);
-            return copy;
-        }
-        catch
-        {
-            reservation.Dispose();
-            throw;
-        }
+        RetainAllowance(value.Length);
+        string copy = value.ToString();
+        HashSet<string> retained = _retained ?? throw new InvalidOperationException("String retention is unavailable.");
+        retained.Add(copy);
+        return copy;
+    }
+
+    /// <summary>Retains an existing immutable string once by reference identity; no reader, process-wide intern table or caller buffer is retained.</summary>
+    internal string Copy(string value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        if (value.Length == 0) return string.Empty;
+        if (_retained is {} existing && existing.Contains(value)) return value;
+        RetainAllowance(value.Length);
+        HashSet<string> retained = _retained ?? throw new InvalidOperationException("String retention is unavailable.");
+        retained.Add(value);
+        return value;
+    }
+
+    private void RetainAllowance(int length)
+    {
+        long bytes = checked(StringHeaderBytes + (long)length * sizeof(char) + PerStringTrackingBytes);
+        if (_reservation is null) _reservation = _budget.Reserve(StoreTrackingBytes + bytes, SvgMemoryCategory.Parser);
+        else _reservation.Grow(bytes);
+        _retained ??= new(ReferenceEqualityComparer.Instance);
     }
 
     public void Dispose()
     {
-        if (_reservations is null) return;
-        foreach (RenderBudget.BudgetReservation reservation in _reservations) reservation.Dispose();
-        _reservations = null;
+        _retained = null;
+        Interlocked.Exchange(ref _reservation, null)?.Dispose();
     }
 }
 

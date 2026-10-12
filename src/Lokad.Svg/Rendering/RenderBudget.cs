@@ -24,6 +24,12 @@ internal sealed class RenderBudget
 
     internal BudgetReservation Reserve(long bytes, SvgMemoryCategory category)
     {
+        Charge(bytes, category);
+        return new BudgetReservation(this, bytes, category);
+    }
+
+    private void Charge(long bytes, SvgMemoryCategory category)
+    {
         if (bytes <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(bytes));
@@ -41,8 +47,6 @@ internal sealed class RenderBudget
         {
             _peakBytes = _currentBytes;
         }
-
-        return new BudgetReservation(this, bytes, category);
     }
 
     internal RenderBudgetSnapshot Snapshot()
@@ -56,11 +60,11 @@ internal sealed class RenderBudget
         _bytesByCategory[(int)category] -= bytes;
     }
 
-    /// <summary>Represents one reservation and releases it exactly once when disposed.</summary>
+    /// <summary>Represents one storage allowance and releases it exactly once when disposed; growth is confined to the owning conversion thread.</summary>
     internal sealed class BudgetReservation : IDisposable
     {
         private RenderBudget? _owner;
-        private readonly long _bytes;
+        private long _bytes;
         private readonly SvgMemoryCategory _category;
 
         internal BudgetReservation(RenderBudget owner, long bytes, SvgMemoryCategory category)
@@ -68,6 +72,14 @@ internal sealed class RenderBudget
             _owner = owner;
             _bytes = bytes;
             _category = category;
+        }
+
+        /// <summary>Adds an aggregate allowance before material allocation; denial leaves both owner and reservation unchanged. Must not race disposal.</summary>
+        internal void Grow(long bytes)
+        {
+            RenderBudget owner = _owner ?? throw new ObjectDisposedException(nameof(BudgetReservation));
+            owner.Charge(bytes, _category);
+            _bytes += bytes;
         }
 
         public void Dispose()

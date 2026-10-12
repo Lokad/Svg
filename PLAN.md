@@ -748,9 +748,10 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S05 reuses safe immutable definition
-strings and aggregates reservations with shared lifetimes, measuring definition/use
-and attribute-heavy parsing. S04's gradient coefficients are prepared outside
+**Next deliverable:** maintenance-review S06 reads CSS element identity once
+per cascade resolution, preserving selectors, rule order and specificity and
+measuring the styled parser. S05's immutable string retention and aggregate
+allowances are qualified; S04's gradient coefficients are prepared outside
 pixel sampling with exact references preserved. S03's measured cache prototype is deferred:
 its public-label comparisons do not establish an end-to-end benefit. The retained
 benchmark and explicit revisit condition are in the maintenance backlog. Continue
@@ -1698,7 +1699,7 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02/S04; S03 is explicitly deferred on the measurements below. Take S05–S06,
+and S02/S04/S05; S03 is explicitly deferred on the measurements below. Take S06,
 then measure S07–S09 before their larger
 raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
@@ -1710,7 +1711,7 @@ changes when a demonstrated support blocker takes priority.
 | S02 | **Complete.** Transform decoded glyph segments directly into final contour arrays; remove the temporary transformed array and copy. | Existing glyph-outline tests and TransformAndCopyContours benchmark: identical multi-contour/mapped output, lower allocated bytes, preserved validation, cancellation and failure cleanup. The segment probe observes actual transformation. |
 | S03 | **Deferred after measurement; prototype removed.** Reuse font-mask preblend tables only when representative profiling justifies it. | The retained public Noto Sans label benchmark measures complete conversion with acquisition outside timing. Revisit after S07/native text profiling identifies table construction as material; then preserve byte-identical tables/references, arithmetic, bounded storage and real work. No cache is a release prerequisite. |
 | S04 | **Complete.** Prepare immutable gradient segment coefficients once per effective replay. | Arbitrary/repeated-stop, alpha, spread, scale, linear/radial references remain exact. The retained rainbow checker improves in the measured end-to-end comparison; binary search, endpoints, float/FMA/division order and dithering are preserved. |
-| S05 | Reuse immutable definition/attribute strings when their lifetime permits; aggregate reservations with common ownership. | Definition/use-heavy and attribute-heavy parser measurements; preserve forward references, style replay, material denial and cleanup. Share equal Name/LocalName and already-owned values; retain required span copies, avoid global interning or a new arena framework. |
+| S05 | **Complete.** Reuse immutable definition/attribute strings and aggregate reservations with common ownership. | Definition/use-heavy and attribute-heavy parser allocations decrease; forward references, style replay, material denial and cleanup are preserved. Equal Name/LocalName and already-owned values share storage; span copies remain, without global interning or a new arena framework. |
 | S06 | Read CSS element identity once per cascade resolution when rules exist. | Existing stylesheet/combinator tests and styled parser benchmark; preserve selector order, specificity and the cheap no-rules route. No selector index/cache in this item. |
 | S07 | Hoist Windows glyph dropout bounds and reuse horizontal scan crossings within a row. | Measure first; exact thin-stroke, vertex, dropout, mapped/composite and supplied-font cases on Windows, relevant Linux checks. Preserve classification/rounding; bound scratch storage. Consider vertical reuse only after measurement, without a width-by-height-by-segment cache. |
 | S08 | Flatten the fallback glyph's identical eight-point quadratic subdivisions once per glyph. | Benchmark a case that actually selects fallback; preserve winding, endpoint arithmetic, finite coordinates and cancellation. Bound/release temporary storage and retain empty-region behavior. Do not claim native-fitting text benefits from fallback measurements. |
@@ -1822,6 +1823,44 @@ The existing benchmark project retains SvgGradientDocumentBenchmarks for this
 input. Test results and measurements stay under
 `artifacts/maintenance-review-20261012/`; finite G2–G9/S17 requirements and the
 approximate memory policy are unchanged.
+
+**S05 complete (2026-10-13).** The parser string store retains existing immutable
+strings by reference identity and still materializes span-backed values. A
+store-local reference set prevents repeated charging of an already-retained
+string; equal-content distinct objects keep separate storage allowances. Captured
+unprefixed Name/LocalName values share one retained name. Retention charges bounded
+operation work rather than repeating character-copy work for unchanged strings.
+No reader, mutable caller buffer or process-wide intern table is retained.
+
+One aggregate reservation grows before material retention/allocation, replacing
+the reservation object and list entry for every small string. Conservative string,
+reference-collection and owner allowances remain under the accepted approximate
+policy. Denied growth leaves the current owner unchanged; disposal drops retained
+references and releases the whole allowance. Stores keep their existing document,
+stylesheet or filter-parser lifetime; this changes no scene/font lease contract.
+
+Release builds and **7,327 tests/platform** pass on Windows/Linux (5,049 core /
+2,272 visual /six FontProbe), with no failures/skips/warnings. Every preceding
+case is retained. Five focused cases cover identity reuse, independent span
+copies, reader disposal, growth denial and owner cleanup. Existing forward-use,
+inherited/replayed style and exact references remain protected. The existing
+memory-probe scenarios pass on both platforms, covering normal and denied
+conversion, cancellation/output integrity, XML workspace, font-discovery cleanup,
+embedded images and patterns. No new memory measurement framework or requalification
+of completed ownership work is required.
+
+Existing attribute-heavy workloads and a definition/use workload are measured
+with setup outside timing. **Attribute parser allocation: 820.67 → 599.79 KiB**;
+**definition/use parser allocation: 751.03 → 653.16 KiB**. Complete attribute-heavy
+conversion allocation falls approximately **853.5 → 632.6 KiB**. Timing varies
+with host activity: the first complete-conversion pair measures 2.12 → 3.71 ms,
+while the interleaved repeat measures **3.55 → 2.42 ms**. Definition/use short
+comparisons are slower; a longer targeted pair (six warmups/twenty-four iterations)
+measures **1.681 → 1.624 ms**. These observations do not establish a general speedup
+or a consistent timing regression; reduced allocation is the demonstrated result.
+Tests, both platform memory-probe summaries and measurements remain under
+`artifacts/maintenance-review-20261012/`. Frozen assets, finite G2–G9/S17 exits and
+the approximate memory policy are unchanged.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.

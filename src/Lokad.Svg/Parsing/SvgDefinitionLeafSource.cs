@@ -4,7 +4,7 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains one validated shape's immutable attributes and authored style for instance fill and stroke construction.</summary>
-/// <remarks>The document string store owns copied values; the document reservation list owns the reader and
+/// <remarks>The document string store retains immutable values; the document reservation list owns the reader and
 /// attribute array. This is an attribute adapter for existing leaf lowerers, with no child tree or serialized XML.
 /// Replay is confined to the parser thread. Attribute scans charge work and observe cancellation.</remarks>
 internal sealed class SvgDefinitionLeafSource : XmlReader
@@ -63,7 +63,9 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             {
                 context.WorkCounter.Consume(context.CancellationToken);
                 reader.MoveToAttribute(index);
-                attributes[index] = new(Copy(reader.Name) ?? throw new InvalidOperationException(), Copy(reader.LocalName) ?? throw new InvalidOperationException(),
+                string name = Copy(reader.Name) ?? throw new InvalidOperationException();
+                string localName = reader.LocalName;
+                attributes[index] = new(name, localName == name ? name : Copy(localName) ?? throw new InvalidOperationException(),
                     Copy(reader.Prefix) ?? throw new InvalidOperationException(), Copy(reader.NamespaceURI) ?? throw new InvalidOperationException(), Copy(reader.Value) ?? throw new InvalidOperationException());
             }
             reader.MoveToElement();
@@ -77,7 +79,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         string? Copy(string? value)
         {
             if (value is null) return null;
-            context.WorkCounter.ConsumeText(value.Length, context.CancellationToken);
+            context.WorkCounter.Consume(context.CancellationToken);
             return state.Strings.Copy(value);
         }
     }

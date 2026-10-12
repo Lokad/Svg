@@ -1,5 +1,6 @@
 using BenchmarkDotNet.Attributes;
 using Lokad.Svg.Fonts;
+using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Benchmarks;
 
@@ -9,6 +10,7 @@ public class SvgParseBenchmarks
 {
     private byte[] _attributes = [];
     private byte[] _styledText = [];
+    private byte[] _definitionUses = [];
 
     [GlobalSetup]
     public void SetUp()
@@ -23,6 +25,14 @@ public class SvgParseBenchmarks
 
         soup.Append("</svg>");
         _attributes = System.Text.Encoding.UTF8.GetBytes(soup.ToString());
+        System.Text.StringBuilder definitions = new("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs>");
+        for (int index = 0; index < 64; index++)
+            definitions.Append("<rect id='tile").Append(index).Append("' width='8' height='8' class='tile' style='fill: steelblue; fill-opacity: .5; stroke: none'/> ");
+        definitions.Append("</defs>");
+        for (int index = 0; index < 64; index++)
+            definitions.Append("<use href='#tile").Append(index).Append("' x='").Append(index % 8 * 8).Append("' y='").Append(index / 8 * 8).Append("'/>");
+        definitions.Append("</svg>");
+        _definitionUses = System.Text.Encoding.UTF8.GetBytes(definitions.ToString());
         System.Text.StringBuilder text = new("<svg xmlns='http://www.w3.org/2000/svg' font-family='Example' font-size='16' fill='red'><style>.label { white-space: pre; }</style><g font-style='italic' style='letter-spacing: 1'>");
         for (int index = 0; index < 8; index++)
         {
@@ -35,6 +45,20 @@ public class SvgParseBenchmarks
 
     [Benchmark]
     public int ConvertAttributeHeavyShapes() => SvgConverter.ConvertToPng(_attributes, SvgRenderOptions.Default, CancellationToken.None).Length;
+
+    [Benchmark]
+    public int ParseAttributeHeavyShapes()
+    {
+        using SvgRoot root = SvgRootParser.Parse(_attributes, SvgRenderLimits.Default, CancellationToken.None);
+        return root.Geometries.Length;
+    }
+
+    [Benchmark]
+    public int ParseDefinitionUses()
+    {
+        using SvgRoot root = SvgRootParser.Parse(_definitionUses, SvgRenderLimits.Default, CancellationToken.None);
+        return root.Geometries.Length;
+    }
 
     [Benchmark]
     public int DiscoverStyledTextRequests() => SvgFontRequestDiscovery.Discover(_styledText, SvgRenderLimits.Default, CancellationToken.None).Length;
