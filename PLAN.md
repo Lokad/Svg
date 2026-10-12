@@ -528,6 +528,9 @@ inheritance, alias viewBoxes and rotated radial content. Visible/hidden overflow
 produce identical clipped native references; preserve that observed behavior with
 both controls. Initial UnsupportedFeature outcomes stay recorded until corrected;
 these controls do not count as a completed document.
+A seventh descriptive-leaf control was declared at `0dd5ba67` before changing
+metadata admission. The untouched honeycomb also exposes titles inside rendered
+paths; preserve inert descriptions through shared lowering/font discovery.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain
 the remaining G2–G9/S17 promises without exhaustive prerequisites.

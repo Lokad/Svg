@@ -1,0 +1,5 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="72">
+<defs><pattern id="p" patternUnits="userSpaceOnUse" width="12" height="12" viewBox="0 0 12 12"><rect width="6" height="12" fill="#c46a32"/><rect x="6" width="6" height="12" fill="#245d92"/></pattern></defs>
+<path d="M0 0H96V72H0Z" fill="url(#p)"><title>Descriptive leaf metadata</title><desc><tspan>This descriptive subtree does not request fonts.</tspan></desc><metadata>Original diagnostic</metadata></path>
+</svg>

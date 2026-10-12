@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Six frozen local pattern instance/overflow controls advancing inv-138; initial UnsupportedFeature outcomes retained before correction.",
+  "purpose": "Seven frozen pattern instance/overflow and descriptive-leaf controls advancing inv-138; initial UnsupportedFeature outcomes retained before correction.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -132,6 +132,26 @@
       "selection": "Declared at 389404c8 before renderer edits/comparison: whole inv-138 local group/use tile dependencies, ordered forward references, inheritance, alias phase, bounded overflow and rotated radial paint.",
       "input": "rotated-radial-use.svg",
       "reference": "references/rotated-radial-use.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "expectedError": "UnsupportedFeature"
+    },
+    {
+      "id": "leaf-descriptions",
+      "width": 96,
+      "height": 72,
+      "viewport": {
+        "width": 96,
+        "height": 72
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "9d450148b9d6bd5df1a632595c23d09f173cd1425a2f6bb95575b4572ad6a42f",
+      "referenceSha256": "ec9f09c20272189761dcfd01408141f99dc3eb2de839df388048ac5d75d5f935",
+      "selection": "Declared at 0dd5ba67 before description-admission changes: inv-138 exposes descriptive children on a rendered path; shared inert metadata handling must preserve geometry and avoid font discovery.",
+      "input": "leaf-descriptions.svg",
+      "reference": "references/leaf-descriptions.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "role": "fidelity",
