@@ -653,6 +653,10 @@ were declared at `709e4c07` before inv-136 correction. Healthy cleaned native
 triples agree on both platforms. Baselines retain seven rejections and a measured
 nested clip defect; protect group/use union, normalized parity coordinates,
 inherited child boxes, resource-child identity and fractional root placement.
+Two later use fill-rule controls, declared at `4e27f642` before attribute
+admission, retain source-authored precedence and inherited instance winding.
+The first normalized/inherited clip prototypes are exact; whole inv-136
+qualification remains pending.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
