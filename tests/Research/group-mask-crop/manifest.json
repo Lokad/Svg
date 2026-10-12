@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Sixteen frozen group-mask/exporter/elliptical arc controls; each baseline declared before its correction. Three ellipse placements already exact, rotated ellipse stroke retains the next inv-141 rejection.",
+  "purpose": "Sixteen frozen group-mask/exporter/elliptical-arc controls: fourteen exact through all twelve raw/prepared APIs on Windows/Linux, two explicit nested-opacity/isolation boundaries. Separate from completed whole inv-141.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -30,8 +30,7 @@
       "reference": "references/opaque-group-crop.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "fractional-luminance-crop",
@@ -46,8 +45,7 @@
       "reference": "references/fractional-luminance-crop.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "fractional-alpha-crop",
@@ -62,8 +60,7 @@
       "reference": "references/fractional-alpha-crop.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "default-user-space-crop",
@@ -78,8 +75,7 @@
       "reference": "references/default-user-space-crop.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "nested-crop-opacity",
@@ -94,7 +90,7 @@
       "reference": "references/nested-crop-opacity.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
+      "role": "unsupported-boundary",
       "expectedError": "UnsupportedFeature"
     },
     {
@@ -110,8 +106,7 @@
       "reference": "references/forward-group-use-crop.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "shared-leaf-group-crop",
@@ -126,8 +121,7 @@
       "reference": "references/shared-leaf-group-crop.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "covering-uniform-preserved",
@@ -157,8 +151,7 @@
       "reference": "references/exporter-default-path.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "exporter-default-rectangle",
@@ -173,8 +166,7 @@
       "reference": "references/exporter-default-rectangle.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "exporter-meaningful-isolation-boundary",
@@ -189,7 +181,7 @@
       "reference": "references/exporter-meaningful-isolation-boundary.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
+      "role": "unsupported-boundary",
       "expectedError": "UnsupportedFeature"
     },
     {
@@ -235,8 +227,7 @@
       "reference": "references/rotated-elliptical-stroke.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "reflected-elliptical-arc",

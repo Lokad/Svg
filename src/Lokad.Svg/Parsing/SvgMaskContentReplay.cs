@@ -94,4 +94,35 @@ internal static class SvgMaskContentReplay
             state.MaskContents.Replace(pending.Id, new([], 255, pending.IsAlpha) { VectorContent = content });
         }
     }
+
+    /// <summary>Materializes one uniform rectangle's native spatial paint when its scalar value cannot cover the target.</summary>
+    /// <remarks>Source attributes and context remain borrowed from document staging. Identity replay caches one immutable
+    /// scene; mapped replay owns a distinct scene. Both adopt through the existing parent owner, reserve material storage,
+    /// charge lowering/copy work and observe cancellation. Returned content never retains a staging source reference.</remarks>
+    internal static SvgMaskContent ResolveUniformSource(string id, SvgAffineTransform placement, SvgDocumentState state,
+        ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        if (!state.MaskContents.TryGetValue(id, out SvgMaskContent mask) || mask.UniformSource is not {} source)
+            throw new InvalidOperationException("A uniform mask requires its retained rectangle source.");
+        if (placement == SvgAffineTransform.Identity && mask.VectorContent is {} cached)
+            return new([], 255, mask.IsAlpha) { VectorContent = cached };
+        SvgMaskReplayChild child = state.MaskReplayChildren[source.ChildIndex];
+        SvgPaintableElementContext context = child.Context with
+        {
+            InheritedPresentation = child.Context.InheritedPresentation with
+            {
+                Transform = placement.ComposeChecked(child.Context.InheritedPresentation.Transform)
+            }
+        };
+        using SvgSceneBuilder builder = new(state.Budget, work, token);
+        SvgDefinition lowered = SvgDefinitionParser.LowerInstanceSource(child.Source, context, state);
+        SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
+        SvgLeafMaskComposition.Emit(state, builder, work, token);
+        SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
+        try { state.Scene.AdoptVectorContent(content); }
+        catch { content.Dispose(); throw; }
+        if (placement == SvgAffineTransform.Identity) state.MaskContents.Replace(id, mask with { VectorContent = content });
+        return new([], 255, mask.IsAlpha) { VectorContent = content };
+    }
 }

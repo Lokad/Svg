@@ -180,7 +180,7 @@ internal static class SvgFontRequestDiscovery
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = !sterile && parentAllowsText && textElement;
-                    bool childAllowsText = !sterile && parentAllowsText && isSvgElement && clipDepths.Count == 0 && (reader.Depth == rootDepth || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
+                    bool childAllowsText = !sterile && parentAllowsText && isSvgElement && clipDepths.Count == 0 && reader.GetAttribute("mask") is null && (reader.Depth == rootDepth || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
                     bool plainViewport = false;
                     if (!sterile && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && !rootElement && (directChild || viewportSizes.Count > 0) && reader.LocalName == "svg")
                     {

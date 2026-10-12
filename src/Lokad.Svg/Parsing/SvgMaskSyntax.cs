@@ -9,7 +9,7 @@ internal readonly record struct PendingLeafMask(int FirstGeometryIndex, int Geom
 
 /// <summary>Retains one masked group command range whose mask reference resolves at document end.</summary>
 /// <remarks>Uniform and spatial group masks apply after child composition, independently of definition order.</remarks>
-internal readonly record struct PendingGroupMask(string MaskId, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgViewportFrame? Parent);
+internal readonly record struct PendingGroupMask(string MaskId, int FirstCommandIndex, int EndCommandIndex, int Depth, SvgViewportFrame? Parent, SvgAffineTransform Transform);
 
 /// <summary>Parses bounded mask definitions and retains leaf values or isolated group operations.</summary>
 internal static class SvgMaskSyntax
@@ -124,6 +124,19 @@ internal static class SvgMaskSyntax
             pending.Operation.Resolved = true;
             if (pending.GeometryCount == 0) continue;
             SvgRectangle fallback = UnionBounds(state, pending, workCounter, cancellationToken);
+            if (pending.Operation.ContentIndex < 0 && state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent uniform)
+                && uniform.UniformSource is not null && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox uniformBox))
+            {
+                SvgAffineTransform map = pending.Transform;
+                if (pending.Parent is {} parent) map = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(map);
+                bool covers = map.IsAxisAligned && map.Apply(uniformBox).Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height);
+                if (!covers)
+                {
+                    SvgMaskContent spatial = SvgMaskContentReplay.ResolveUniformSource(pending.MaskId, map, state, workCounter, cancellationToken);
+                    pending.Operation.ContentIndex = state.Scene.AddMaskContent(spatial);
+                    pending.Operation.Value = 255;
+                }
+            }
             if (pending.Operation.ContentIndex < 0 && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
             SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
             SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
@@ -170,7 +183,7 @@ internal static class SvgMaskSyntax
             {
                 if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
                 SvgClipBox resolved = new(fallback.X + fractions.X * fallback.Width, fallback.Y + fractions.Y * fallback.Height, fractions.Width * fallback.Width, fractions.Height * fallback.Height);
-                if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox cover) && !cover.Contains(resolved.X, resolved.Y, resolved.X + resolved.Width, resolved.Y + resolved.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
+                if (!HasUniformSource(state, pending.MaskId) && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox cover) && !cover.Contains(resolved.X, resolved.Y, resolved.X + resolved.Width, resolved.Y + resolved.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
                 return resolved;
             }
             return MaskRegion(fallback);
@@ -179,8 +192,14 @@ internal static class SvgMaskSyntax
     /// <summary>Requires retained mask content to cover the masked geometry bounding box.</summary>
     internal static void ValidateMaskCoverage(string reference, SvgDocumentState state, SvgRectangle fallback)
     {
-        if (state.MaskContentBoxes.TryGetValue(ParseMaskId(reference), out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
+        string id = ParseMaskId(reference);
+        // Instance masks retain their existing admission until their own mapped
+        // spatial binding is resolved; a source snapshot alone does not add coverage.
+        if (state.MaskContentBoxes.TryGetValue(id, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
     }
+
+    internal static bool HasUniformSource(SvgDocumentState state, string id)
+        => state.MaskContents.TryGetValue(id, out SvgMaskContent content) && content.UniformSource is not null;
 
     /// <summary>Requires every open masked-group scope to cover one lowered child, including stroked extents.</summary>
     internal static void ValidateMaskScopes(SvgDocumentState state, SvgGeometry geometry)
@@ -258,7 +277,21 @@ internal static class SvgMaskSyntax
                 RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
                 continue;
             }
-            if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox contentBox)) ValidateGroupMaskCoverage(state, pending, contentBox, workCounter, cancellationToken);
+            if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox contentBox))
+            {
+                if (HasUniformSource(state, pending.MaskId) && !GroupCovered(state, pending, contentBox, workCounter, cancellationToken))
+                {
+                    if (pending.Transform != SvgAffineTransform.Identity)
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial uniform masks on placed groups are not implemented.");
+                    if (pending.Parent is not null && !pending.Parent.Value.IsTrivial)
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
+                    SvgMaskContent content = SvgMaskContentReplay.ResolveUniformSource(pending.MaskId, SvgAffineTransform.Identity, state, workCounter, cancellationToken);
+                    int contentIndex = state.Scene.AddMaskContent(content);
+                    RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
+                    continue;
+                }
+                ValidateGroupMaskCoverage(state, pending, contentBox, workCounter, cancellationToken);
+            }
             // Bind the authored group's own layer. Equal child/parent boundaries and
             // adjacent empty/sibling ranges must never decide which mask owns a scope.
             RewriteGroupMaskScope(state, pending, value, maskRegion, -1);
@@ -273,6 +306,22 @@ internal static class SvgMaskSyntax
                 if (command.Kind != SvgDrawCommandKind.Geometry) continue;
                 if (state.Scene.GeometryAt(command.GeometryIndex).Kind == SvgGeometryKind.GlyphContours) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
             }
+        }
+
+        static bool GroupCovered(SvgDocumentState state, PendingGroupMask pending, SvgClipBox content, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            bool covers = true;
+            for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
+                if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                SvgGeometry geometry = state.Scene.GeometryAt(command.GeometryIndex);
+                if (geometry.Kind == SvgGeometryKind.GlyphContours) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
+                SvgRectangle box = CoverageBox(geometry);
+                covers &= content.Contains(box.X, box.Y, box.X + box.Width, box.Y + box.Height);
+            }
+            return covers;
         }
 
         static void ValidateGroupMaskCoverage(SvgDocumentState state, PendingGroupMask pending, SvgClipBox content, ParserWorkCounter workCounter, CancellationToken cancellationToken)

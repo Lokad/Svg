@@ -5,6 +5,34 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Validates presentation values whose admitted meanings add no static painting behavior.</summary>
 internal static class SvgInertPresentationSyntax
 {
+    /// <summary>Validates the neutral rendering keywords and unused geometric solid-paint declarations emitted by exporters.</summary>
+    /// <remarks>Borrowed values are bounded, charged and discarded. Only initial rendering behavior is admitted;
+    /// nondefault isolation, blending and rendering hints retain explicit unsupported outcomes. Solid-paint values
+    /// apply only to nontext geometry here; solid-color paint servers remain outside this declaration slice.</remarks>
+    internal static bool TryValidateRenderingDefaults(ReadOnlySpan<char> property, ReadOnlySpan<char> value,
+        bool isGeometry, ParserWorkCounter? work, CancellationToken token)
+    {
+        string? expected = property.Equals("isolation", StringComparison.OrdinalIgnoreCase)
+            || property.Equals("color-rendering", StringComparison.OrdinalIgnoreCase)
+            || property.Equals("image-rendering", StringComparison.OrdinalIgnoreCase)
+            || property.Equals("shape-rendering", StringComparison.OrdinalIgnoreCase)
+            || property.Equals("text-rendering", StringComparison.OrdinalIgnoreCase) ? "auto"
+            : property.Equals("mix-blend-mode", StringComparison.OrdinalIgnoreCase) ? "normal"
+            : property.Equals("color-interpolation-filters", StringComparison.OrdinalIgnoreCase) ? "linearRGB" : null;
+        bool solidColor = isGeometry && property.Equals("solid-color", StringComparison.OrdinalIgnoreCase);
+        bool solidOpacity = isGeometry && property.Equals("solid-opacity", StringComparison.OrdinalIgnoreCase);
+        if (expected is null && !solidColor && !solidOpacity) return false;
+        if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Rendering declaration exceeds the syntax limit.");
+        work?.ConsumeText(value.Length, token);
+        token.ThrowIfCancellationRequested();
+        if (solidColor) _ = SvgColorParser.Parse(value.ToString(), SvgRootParser.CssNamedColors);
+        else if (solidOpacity) _ = SvgColorParser.ParsePaintOpacity(value.ToString());
+        else if (!value.Equals(expected, StringComparison.OrdinalIgnoreCase))
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nondefault rendering declaration is not implemented.");
+        return true;
+    }
+
     /// <summary>Validates bounded typography on geometry that contains no text or font-relative lengths.</summary>
     /// <remarks>Values are borrowed and discarded; no font or string owner is created. Scalar scans
     /// charge work and observe cancellation. Text/container callers retain their separate font rules.</remarks>

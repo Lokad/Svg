@@ -5,11 +5,11 @@ Updated 2026-10-12. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**43/45 retained development documents are complete.** The preceding 35 stay
-complete; the newly retained public-domain/CC0 batch is **8/10 complete**
+**44/45 retained development documents are complete.** The preceding 35 stay
+complete; the newly retained public-domain/CC0 batch is **9/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
-`inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker and
-`inv-137` open/degenerate clips).
+`inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker,
+`inv-137` open/degenerate clips and `inv-141` smiley mask export).
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
@@ -605,28 +605,49 @@ The existing two-workload probe passes normal conversion, tight denial and
 cleanup. Approximate memory policy and API/package contracts remain unchanged.
 Receipt: `artifacts/open-clips-20261012/final-qualification.json`.
 
-**Next deliverable: complete `inv-141`'s retained smiley tiling export at frozen
-256×256 transparent.** Extend bounded group-mask clipping through the existing
-source/scene, affine geometry and layer machinery. Resolve every later rejection
-and mismatch against its unchanged whole reference; declare focused controls
-before correction. `inv-136` remains queued at 512×277 for normalized, overlapping,
-group/use, inherited and nested/intersecting clip content. Implement dependencies
-required by the selected document, without exhaustive G2 prerequisites; retain
-every finite G2–G9/S17 promise.
-Eight [group-mask crop controls](tests/Research/group-mask-crop/manifest.json)
-were declared at `a17e385c` before correction. Healthy cleaned native triples
-agree on both platforms; baseline outcomes retain seven partial-coverage
-rejections and one exact covering-uniform result. Reuse bounded mask/source scene
-replay to retain partial coverage while preserving the uniform result.
-Four later controls, declared at `b3a79480` before further correction, retain
-neutral exporter declarations on geometric leaves, a meaningful isolation
-boundary and nested cropping without non-unit opacity. The non-unit nested
-opacity control retains its explicit composition gate; it is not a prerequisite
-for the selected whole document.
-Four elliptical-arc controls, declared at `5f578561` before stroke admission,
-retain three exact fill/reflection/composed-mask cases and the rotated-ellipse
-stroke rejection encountered next in `inv-141`. Extend retained native strokes
-while preserving the general uniform-width and numeric limits.
+The untouched **`inv-141` smiley tiling export is complete** at frozen
+**256×256 transparent**, through all six raw and six independently prepared APIs
+on Windows/Linux. The source batch is now **9/10** and the development ledger
+**44/45**. Original source bytes, declared options and references stay unchanged.
+
+Uniform rectangle masks retain their existing scalar route when content covers
+the target. Partial ordinary leaves and unplaced groups reuse bounded native
+source/scene replay with spatial mask coverage. Conservative scene ownership,
+work/cancellation and cleanup follow the existing machinery; staging references
+do not escape into emitted scenes. Neutral inline exporter rendering declarations
+are validated and discarded. Retained native elliptical stroke outlines now
+admit rotated uniform maps through the existing width and numeric limits.
+
+The [sixteen group-mask controls](tests/Research/group-mask-crop/manifest.json)
+were declared before their corresponding corrections at `a17e385c`, `b3a79480`
+and `5f578561`, then frozen with healthy cleaned native Windows/Linux triples.
+Fourteen are exact through twelve APIs; non-unit nested opacity and meaningful
+isolation retain explicit UnsupportedFeature outcomes. The earlier deferred
+partial-leaf-mask control now matches its unchanged frozen reference. Controls
+stay separate from completed documents. Placed partial group masks, directly
+masked instances, text-bearing masks, custom transformed regions and other finite
+G5/G8 combinations remain promised work, without blocking this document.
+
+Complete qualification passes **7,225 tests per platform** (4,994 core /2,225
+visual /six FontProbe), zero failures/skips and zero build warnings/errors.
+Passing suite runs took 3m28s on Windows and 3m59s on Linux, excluding builds
+and the separate image banks.
+All **2,856 prior ordinary PNGs**, established exact/focused/static CSS results,
+**30 exact font outputs/platform** and corporate **27/27 documents /258/258
+variants** are preserved. The complete bank has 79 exact cases through twelve
+APIs. Focused protection covers spatial fallback, native arc strokes, defaults,
+honest boundaries, sampled denial, cancellation and identical retry; former
+rejection tests now check pixels, font discovery and cleanup. The existing
+two-workload normal/tight-denial probe passes. Approximate memory policy and
+API/package contracts remain unchanged. Receipt:
+`artifacts/group-mask-crop-20261012/final-qualification.json`.
+
+**Next deliverable: complete `inv-136` at unchanged 512×277 transparent.**
+Advance its normalized, overlapping, group/use, inherited and nested/intersecting
+clips through shared bounded clip geometry and source replay. Declare focused
+controls before correction and finish all later rejections and mismatches against
+the unchanged whole reference. Implement dependencies needed by this document
+without exhaustive G2 prerequisites; preserve every finite G2–G9/S17 promise.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
@@ -1433,10 +1454,10 @@ and leave it open; a supported document does not authorize shrinking group scope
 
 The original fidelity repairs and the **33 previously completed development
 documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
-(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **8/10
-complete**, making the current selected development queue **43/45 complete**.
-Their frozen references and first gates are listed above; `inv-137` is now complete.
-Next, finish `inv-141`, then `inv-136`.
+(**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **9/10
+complete**, making the current selected development queue **44/45 complete**.
+Their frozen references and first gates are listed above; `inv-137` and `inv-141`
+are now complete. Next, finish `inv-136`.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh

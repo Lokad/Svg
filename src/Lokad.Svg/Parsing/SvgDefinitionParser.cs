@@ -1437,7 +1437,17 @@ internal static class SvgDefinitionParser
         if (state.MaskCustomRegion is SvgClipBox region && !state.MaskRegions.TryAdd(retainedId, region)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
         if (state.MaskFractionRegion is SvgClipBox fractions && !state.MaskFractionRegions.TryAdd(retainedId, fractions)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
         if (state.MaskContentBox is SvgClipBox content && !state.MaskContentBoxes.TryAdd(retainedId, content)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG mask ids must be unique.");
-        if (!state.MaskDefaultUserSpaceRegion && state.MaskCustomRegion is SvgClipBox custom && state.MaskContentBox is SvgClipBox cover && !cover.Contains(custom.X, custom.Y, custom.X + custom.Width, custom.Y + custom.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
+        if (state.MaskValue is not null && state.MaskReplayChildCount == 1
+            && state.MaskReplayChildren[state.MaskReplayChildStart].Source.LocalName == "rect")
+        {
+            // Retain the existing borrowed snapshot, not another geometry copy.
+            // Covering targets keep the scalar route; partial targets replay native paint.
+            state.MaskContents.TryAdd(retainedId, new([], 255, state.MaskIsAlpha)
+            {
+                UniformSource = new(state.MaskReplayChildStart)
+            });
+        }
+        else if (!state.MaskDefaultUserSpaceRegion && state.MaskCustomRegion is SvgClipBox custom && state.MaskContentBox is SvgClipBox cover && !cover.Contains(custom.X, custom.Y, custom.X + custom.Width, custom.Y + custom.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
     }
 
     internal static void RegisterClipPolygon(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

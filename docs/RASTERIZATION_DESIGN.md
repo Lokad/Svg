@@ -12300,3 +12300,37 @@ Development ledger 43/45, source batch 8/10. Next is complete `inv-141` at uncha
 256×256 transparent through bounded group-mask clipping; `inv-136` remains queued.
 Finite G2–G9/S17 stay open. Receipt:
 artifacts/open-clips-20261012/final-qualification.json.
+
+## Partial uniform masks and retained elliptical strokes (2026-10-12)
+
+The complete inv-141 smiley export now matches its unchanged 256×256 transparent
+reference through twelve raw/prepared APIs on Windows/Linux. Uniform rectangle
+mask definitions retain a borrowed source index alongside their scalar value.
+Covering targets keep the established scalar pixels. Partial ordinary leaves
+and unplaced groups materialize immutable native vector content through existing
+lowering, paint recording and parent scene owners; identity replay is cached.
+Emitted mask scenes contain no document staging reference. Group own transforms
+remain explicit admission boundaries for partial uniform masks, as do directly
+masked instances and text-bearing groups. Existing forward-mask/forward-clip
+behavior remains admitted; forward clips over already defined masks retain their
+previous gate. Font discovery excludes rejected masked-group text.
+
+Neutral inline exporter rendering keywords are validated and discarded, and
+unused geometric solid-color/solid-opacity declarations are syntax checked.
+Meaningful isolation, blending and nondefault rendering hints remain unsupported.
+Rotated elliptical strokes construct their retained native outline in source
+space and use the existing uniform/numeric device-width resolver. No independent
+arc or mask renderer was introduced.
+
+Sixteen controls froze before their respective corrections: fourteen exact,
+two explicit nested-opacity/isolation boundaries. An older deferred partial-mask
+case also matches its unchanged reference. Sampled work/storage denial,
+cancellation during replay, cleanup, unchanged retry pixels and source staging
+lifetimes remain protected. Complete qualification passes 7,225 tests/platform
+(4,994 core /2,225 visual /six FontProbe), zero failures/skips and build warnings.
+All 2,856 preceding ordinary PNGs, established exact/focused/static CSS outputs,
+thirty exact font outputs/platform and corporate 27/27 documents /258/258 variants
+are preserved. The existing two-workload probe covers normal/tight-denial cleanup.
+Approximate memory policy and public contracts are unchanged. Ledger 44/45,
+source batch 9/10; next inv-136. Finite G2–G9/S17 remain open. Receipt:
+artifacts/group-mask-crop-20261012/final-qualification.json.

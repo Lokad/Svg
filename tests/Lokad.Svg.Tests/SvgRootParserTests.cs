@@ -3040,27 +3040,42 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_partially_covering_mask_content()
+    public void Crops_partially_covering_mask_content()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((0 * 8 + 0) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((4 * 8 + 4) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
-    public void Rejects_transformed_mask_content()
+    public void Crops_transformed_mask_content()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#ffffff' transform='translate(2,0) scale(2,1)'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='8' height='8' fill='#ffffff' transform='translate(2,0) scale(2,1)'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((3 * 8 + 3) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((3 * 8 + 0) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
-    public void Rejects_partially_covering_mask_content_on_bands()
+    public void Crops_partially_covering_mask_content_on_bands()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><path d='M0,0 H8 V8 H0 Z' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><path d='M0,0 H8 V8 H0 Z' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((0 * 8 + 0) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((4 * 8 + 4) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -3074,11 +3089,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_mask_content_outside_its_custom_region()
+    public void Crops_mask_content_inside_its_custom_region()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((0 * 8 + 0) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((4 * 8 + 4) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -4337,11 +4357,16 @@ public sealed class SvgRootParserTests
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
     }
     [Fact]
-    public void Rejects_forward_masks_on_groups_with_uncovered_children()
+    public void Crops_forward_masks_on_groups_with_uncovered_children()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><g mask='url(#later)'><rect x='0' y='0' width='8' height='8' fill='red'/></g><defs><mask id='later'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, surface.Pixels.AsSpan((0 * 8 + 0) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((4 * 8 + 4) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -7238,11 +7263,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_masked_groups_with_partial_mask_content()
+    public void Crops_masked_groups_with_partial_mask_content()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='4' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='4' height='4' fill='red'/><rect x='4' y='4' width='4' height='4' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='4' height='8' fill='#808080'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='4' height='4' fill='red'/><rect x='4' y='4' width='4' height='4' fill='blue'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 255, 0, 0, 128 }, surface.Pixels.AsSpan((1 * 8 + 1) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((5 * 8 + 5) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -7264,27 +7294,42 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_masked_groups_with_forward_uses_outside_mask_content()
+    public void Crops_masked_groups_with_forward_uses_outside_mask_content()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='4' height='4' fill='#808080'/></mask></defs><g mask='url(#m)'><use href='#r'/></g><defs><rect id='r' x='0' y='0' width='8' height='8'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='4' height='4' fill='#808080'/></mask></defs><g mask='url(#m)'><use href='#r'/></g><defs><rect id='r' x='0' y='0' width='8' height='8'/></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 0, 0, 0, 128 }, surface.Pixels.AsSpan((1 * 8 + 1) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((5 * 8 + 5) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
-    public void Rejects_masked_groups_with_strokes_outside_mask_content()
+    public void Crops_masked_groups_with_strokes_outside_mask_content()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='4' height='4' fill='#808080'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect x='0' y='0' width='4' height='4' fill='#808080'/></mask></defs><g mask='url(#m)'><rect x='0' y='0' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 0, 0, 255, 128 }, surface.Pixels.AsSpan((0 * 8 + 0) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((5 * 8 + 5) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
-    public void Rejects_opacity_scopes_inside_masked_groups()
+    public void Empty_mask_intersection_preserves_nested_opacity_cleanup()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#808080'/></mask></defs><g mask='url(#fade)'><g opacity='0.5'><rect width='8' height='8' fill='red'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='fade'><rect x='8' y='8' width='48' height='48' fill='#808080'/></mask></defs><g mask='url(#fade)'><g opacity='0.5'><rect width='8' height='8' fill='red'/></g></g></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((0 * 8 + 0) * 4, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels.AsSpan((5 * 8 + 5) * 4, 4).ToArray());
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

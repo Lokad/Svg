@@ -32,6 +32,7 @@ public sealed class SvgDeferredPaintLeafTests
     [InlineData("expanded-paint-use-order-forward")]
     [InlineData("expanded-paint-forward-group-clip")]
     [InlineData("expanded-paint-covering-leaf-mask")]
+    [InlineData("expanded-paint-forward-leaf-mask")]
     public void Deferred_source_and_paint_owners_release_at_every_work_denial_and_sampled_memory_denials(string id)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "deferred-paint-leaves", id + ".svg"));
@@ -119,7 +120,6 @@ public sealed class SvgDeferredPaintLeafTests
     [Theory]
     [InlineData("missing-reference-boundary")]
     [InlineData("cyclic-template-boundary")]
-    [InlineData("expanded-paint-forward-leaf-mask")]
     public void Rejected_deferred_resources_release_source_attributes_and_paint_owners(string id)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "deferred-paint-leaves", id + ".svg"));

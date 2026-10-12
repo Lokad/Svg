@@ -157,6 +157,7 @@ internal static class SvgInlineStyleParser
             }
             else if (property.Equals("preserveAspectRatio", StringComparison.OrdinalIgnoreCase)) ValidateImagePreserveAspectRatioDeclaration(propertyValue);
             else if (target == Target.Geometry && ValidateInertTypography(property, propertyValue, workCounter, cancellationToken)) { }
+            else if (ValidateRenderingDefaults(property, propertyValue, target == Target.Geometry, workCounter, cancellationToken)) { }
             else if (property.Equals("font-variant", StringComparison.OrdinalIgnoreCase)) ValidateFontVariantDeclaration(propertyValue);
             else if (property.Equals("color-interpolation", StringComparison.OrdinalIgnoreCase)) ValidateColorInterpolationDeclaration(propertyValue);
             else if (property.Equals("marker", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-start", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-mid", StringComparison.OrdinalIgnoreCase) || property.Equals("marker-end", StringComparison.OrdinalIgnoreCase))
@@ -236,6 +237,14 @@ internal static class SvgInlineStyleParser
             if (value.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
             return SvgInertPresentationSyntax.TryValidateTypography(property, value, work, token);
+        }
+
+        static bool ValidateRenderingDefaults(ReadOnlySpan<char> property, ReadOnlySpan<char> raw, bool isGeometry, ParserWorkCounter? work, CancellationToken token)
+        {
+            TryStripImportant(raw, out ReadOnlySpan<char> value);
+            if (value.Contains("!important".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Misplaced !important inline style declarations are not implemented.");
+            return SvgInertPresentationSyntax.TryValidateRenderingDefaults(property, value, isGeometry, work, token);
         }
 
         static void ValidateColorInterpolationDeclaration(ReadOnlySpan<char> rawValue)

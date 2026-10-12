@@ -429,11 +429,9 @@
       "sourceSha256": "3b1a7cbf855ee553d15ac7ab1e07f4110e02bb1e0e2b9f04e82caf08263502f2",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "selection": "Declared before finishing the inv-111 correction; protects general source paint matrices, expanded command order, forward uses and clip/mask ranges.",
-      "role": "unsupported-boundary",
-      "referenceSha256": "7b177721aa75887f9cf588f2b3f74141b2a08e9416d632f4b2a8c06f71bb0d65",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only mask content covering the masked geometry is implemented."
+      "selection": "Declared before finishing the inv-111 correction; protects general source paint matrices, expanded command order, forward uses and clip/mask ranges. Graduated after the inv-141 shared partial-mask correction; unchanged frozen reference is exact.",
+      "role": "fidelity",
+      "referenceSha256": "7b177721aa75887f9cf588f2b3f74141b2a08e9416d632f4b2a8c06f71bb0d65"
     },
     {
       "id": "expanded-paint-covering-leaf-mask",

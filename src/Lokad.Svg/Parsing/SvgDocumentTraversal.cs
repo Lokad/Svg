@@ -153,7 +153,7 @@ internal static class SvgDocumentTraversal
                 }
                 else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");
                 else if (state.ClipDepths.Count > 0 && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside clipped groups is not implemented.");
-                else if (state.MaskScopes.Count > 0 && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
+                else if (textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg" && HasMaskedGroup(state, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
                 else if (SvgRenderedLeafParser.TryParse(reader, directChild, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
                 {
                     // Rendered leaves admit no rendered children: an explicitly closed leaf with an element-free
@@ -193,7 +193,7 @@ internal static class SvgDocumentTraversal
                             {
                                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
                             }
-                            else if (parsedGroup.Scope.HasMaskScope)
+                            else if (parsedGroup.DeferredMask is {} knownMaskId && state.Masks.TryGetValue(knownMaskId, out _))
                             {
                                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Forward clip-path definitions on masked groups are not implemented.");
                             }
@@ -209,7 +209,7 @@ internal static class SvgDocumentTraversal
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
                         if (parsedGroup.DeferredMask is not null)
                         {
-                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame));
+                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame, parsedGroup.Scope.InheritedPresentation.Transform));
                         }
                         if (parsedGroup.Scope.IsolatesOpacity || parsedGroup.Scope.HasDeferredMask)
                         {
@@ -418,6 +418,16 @@ internal static class SvgDocumentTraversal
             }
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG root element is not closed.");
+
+        static bool HasMaskedGroup(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        {
+            foreach (SvgGroupScope group in state.Groups.AsSpan())
+            {
+                workCounter.Consume(cancellationToken);
+                if (group.HasDeferredMask) return true;
+            }
+            return false;
+        }
 
         // Seal shader-mask replay under one parent-owned vector scene; failure releases staging owners.
         static void RegisterMaskScene(SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

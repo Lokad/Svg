@@ -1339,8 +1339,8 @@ internal ref struct SvgOrthogonalGeometryLowering
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
-        if (hasArc && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under rotated polygon transforms stay unsupported.");
-        if (hasArc && (scaleX != scaleY || scaleX <= 0)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Elliptical arcs under non-uniform polygon transforms stay unsupported.");
+        // Retained endpoint arcs construct their native outline in source space.
+        // The shared width resolver keeps uniform/numeric stroke admission intact.
         double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
         long wantedPoints = hasCurves

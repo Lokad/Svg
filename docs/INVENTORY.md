@@ -3376,8 +3376,8 @@ to each artist upload. Retained asset pages identify Manuela’s gradient/checke
 remix lineage and qubodup’s remix of Justin Ternet’s own generic face drawings;
 neither page carries a rights-review tag. The renderer tests need no network.
 
-This batch is **7/10 complete**; the prior **35 completed documents** remain
-protected, making the current selected queue **42/45**. `inv-132`–`inv-135` match
+This batch is **9/10 complete**; the prior **35 completed documents** remain
+protected, making the current selected queue **44/45**. `inv-132`–`inv-135` match
 unchanged 512×512 references through all twelve APIs on Windows/Linux. Eight
 separate controls are exact, including thin general strokes and axis-exchanging
 frames. `inv-139` also completes its unchanged 512×341 transparent reference
@@ -3392,7 +3392,13 @@ all twelve APIs on Windows/Linux. Shared bounded 256-stop ramps, ordered checker
 tiles and luminance masks match the entire output; six separate controls are exact.
 Complete qualification passes 7,171 tests per platform with all 2,856 prior
 ordinary PNGs, 2,908 outcomes and every established exact result protected.
-Next: complete `inv-137`'s open/degenerate clips at frozen 512×269 through shared
-path/clip replay. Compound/intersecting clips, other pattern units/content and
-finite group mask regions remain queued, without exhaustive G2 as a prerequisite.
+The later inv-137 open/degenerate clips and inv-141 smiley mask export also
+complete their unchanged 512×269 and 256×256 transparent references through
+twelve APIs on both platforms. Their nine and fourteen exact controls remain
+separate; two inv-141 controls retain explicit opacity/isolation boundaries.
+Latest complete qualification passes 7,225 tests/platform and preserves all
+2,856 prior ordinary PNGs and every established exact result.
+Next: complete inv-136 at frozen 512×277 through shared normalized, overlapping,
+group/use, inherited and nested clip replay. Other finite clip, mask, pattern
+and effect combinations remain queued without exhaustive G2 as a prerequisite.
 Corporate membership and all established exact references stay unchanged.

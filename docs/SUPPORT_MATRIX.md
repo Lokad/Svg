@@ -39,6 +39,22 @@ The retained static CSS diagram's remaining G7/G9 dependencies and its frozen
 whole-document/font contract are tracked in PLAN.md; this correction does not
 complete that document or the finite G7/G9 exits.
 
+## Partial mask coverage and elliptical strokes (2026-10-12)
+
+Complete inv-141 matches its unchanged 256×256 transparent reference through
+twelve APIs on Windows/Linux. Uniform single-rectangle masks keep their scalar
+route for covering content; partial ordinary leaves and unplaced groups use
+bounded native spatial replay. Rotated elliptical strokes reuse their retained
+source outline under the existing uniform-width and numeric limits. Neutral
+inline exporter rendering defaults are validated; meaningful isolation/blending
+and nondefault rendering hints retain explicit unsupported outcomes.
+
+Fourteen of sixteen separately declared controls are exact; non-unit nested
+opacity and meaningful isolation retain explicit gates. The older deferred
+partial-leaf-mask control is also exact against its frozen reference. Placed
+partial groups, directly masked instances, masked text and remaining finite
+G5/G8 combinations stay open. Development ledger 44/45; next document inv-136.
+
 ## Support matrix
 
 ## Current state
