@@ -7,7 +7,7 @@ using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
 
-/// <summary>Protects public-font admission, layout and exact outputs; the selected document and seven controls are exact on both platforms, while wider composite promises stay open.</summary>
+/// <summary>Protects public-font admission, layout, exact outputs and representative raw/prepared sink contracts; the selected document and seven controls are exact on both platforms, while wider composite promises stay open.</summary>
 public sealed class SvgSuppliedFontLabelTests
 {
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
@@ -46,7 +46,7 @@ public sealed class SvgSuppliedFontLabelTests
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Public_font_output_contracts_preserve_source_and_completed_references(string identity)
+    public async Task Public_font_pixels_preserve_source_and_completed_references(string identity)
     {
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
@@ -55,6 +55,33 @@ public sealed class SvgSuppliedFontLabelTests
         using SvgFontSnapshot snapshot = await Prepare(input);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        if (Required(item, "role") == "document-output") await CheckOutputContracts(input, options, png);
+        Assert.Equal(unchanged, input);
+        if (OperatingSystem.IsLinux() || OperatingSystem.IsWindows())
+        {
+            byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
+            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);
+        }
+    }
+
+    [Theory]
+    [InlineData("mask-leaf-leaf-pattern.svg", "original-mask-leaf-leaf-pattern", 47, 41, "white")]
+    [InlineData("mask-leaf-nested-masked-copy.svg", "original-mask-leaf-nested-masked-copy", 49, 43, "transparent")]
+    public async Task Complex_font_free_scenes_preserve_raw_and_prepared_output_contracts(string filename, string identifier, int width, int height, string background)
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", filename));
+        byte[] unchanged = input.ToArray();
+        SvgColor color = background == "white" ? new(255, 255, 255, 255) : SvgColor.Transparent;
+        SvgRenderOptions options = new(null, 1, color, SvgRenderLimits.Default);
+        byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        byte[] reference = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", identifier + "-" + background + ".png"));
+        Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, checked(width * height)), PngRgbaDecoder.Decode(png, checked(width * height))).IsExact);
+        await CheckOutputContracts(input, options, png);
+        Assert.Equal(unchanged, input);
+    }
+
+    private static async Task CheckOutputContracts(byte[] input, SvgRenderOptions options, byte[] png)
+    {
         byte[] destination = new byte[png.Length];
         Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
         Assert.Equal(png, destination);
@@ -70,7 +97,7 @@ public sealed class SvgSuppliedFontLabelTests
         for (int mode = 0; mode < 6; mode++)
         {
             // Each prepared document owns exactly one conversion and font lease.
-            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog(), Provider(), SvgRenderOptions.Default, CancellationToken.None);
+            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog(), Provider(), new(options.Viewport, options.OutputScale, options.BackgroundColor, options.Limits), CancellationToken.None);
             using MemoryStream preparedStream = new();
             byte[] preparedPng = mode switch
             {
@@ -82,12 +109,7 @@ public sealed class SvgSuppliedFontLabelTests
                 _ => await prepared.ConvertToPngAsync(preparedStream, CancellationToken.None) == png.Length ? preparedStream.ToArray() : []
             };
             Assert.Equal(png, preparedPng);
-        }
-        Assert.Equal(unchanged, input);
-        if (OperatingSystem.IsLinux() || OperatingSystem.IsWindows())
-        {
-            byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
-            Assert.True(PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216)).IsExact);
+            Assert.Throws<ObjectDisposedException>(() => prepared.ConvertToPng(CancellationToken.None));
         }
     }
 

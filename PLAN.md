@@ -312,7 +312,7 @@ Historical admission/checkpoint details stay in the design record and Git.
 6. Preserve the stronger achieved 27/27 and 258/258 matrix. S17's original minimum
    remains 80% exact documents overall and within each frozen corporate stratum;
    it does not authorize losing current exact results. See [S17_DECISIONS](docs/S17_DECISIONS.md).
-7. Finish the active filter correctness checkpoint, then follow the
+7. Preserve the completed filter correctness checkpoint, then follow the
    [maintenance backlog](#maintenance-and-performance-backlog) alongside the
    document-driven support queue. Rendering correctness keeps precedence;
    maintenance items do not add prerequisites to every G2–G9 or S17 exit.
@@ -748,10 +748,11 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** apply maintenance-review S01 to separate routine visual
-comparisons from repeated output-API permutations, retaining representative
-raw/prepared contracts and all distinct visual cases. Then take the direct
-allocation/preparation items in the ordered maintenance backlog. Rendering
+**Next deliverable:** maintenance-review S02 removes the temporary transformed
+glyph array and copy, preserving final contour ownership and exact coordinates.
+The first S01 tranche is complete with all prior cases retained; its measured
+routine-suite timings are in the maintenance backlog. Continue the direct
+allocation/preparation items in that order. Rendering
 correctness keeps precedence: select the next complete rights-clear static SVG
 by the remaining finite G2–G9 mechanisms it exercises, without making exhaustive
 instance combinations prerequisites. Use the standing numerical controls to
@@ -1658,8 +1659,8 @@ representative success rate. Future representative cohorts must be selected
 before comparison.
 
 Remote Windows/Linux build/test/package/resource CI evidence is verified by the
-[Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38285636122) at
-`6d4dfe7a`. Both hosted jobs pass, including
+[Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38306930641) at
+`c74c0f8b`. Both hosted jobs pass, including
 healthy sandboxed Chrome captures and forced-timeout storage cleanup. The frozen
 corporate matrix stays exact on both platforms. Remaining S17 release requirements
 and the finite support queue stay open. No release or general SVG compatibility
@@ -1675,7 +1676,7 @@ claim follows from the failure-selected development corpus.
 | R27 | Execute every declared case and retain admission separately from fidelity. Original fixture/research rendering differences are resolved; newly admitted support gaps require their own unchanged-reference comparison. |
 | R28 | Preserve inverse paint maps; remaining pattern/coordinate combinations are G3/G5/G6. |
 | R30 | Keep shared contour preparation and coverage across four paints. Reuse invariant preparation and consolidate repeated stroke admission through the maintenance backlog; preserve intentional paint-rounding distinctions. |
-| R31 | Existing capture/transport/cleanup and CI artifact validation are retained; Windows/Linux remote CI is verified at `6d4dfe7a`. Git identifies implementation, asset hashes protect inputs/oracles/tool downloads. |
+| R31 | Existing capture/transport/cleanup and CI artifact validation are retained; Windows/Linux remote CI is verified at `c74c0f8b`. Git identifies implementation, asset hashes protect inputs/oracles/tool downloads. |
 | R33 | Preserve clipping, path/control bounds and AA paint-clip provenance; broader clip/mask combinations are G5. |
 | R34 | Preserve exact analytic contact/winding, density and zero-area native stroke contours. New stroke combinations are G4; general browser fidelity needs new cases. |
 | R35 | Preserve source curves and bitmap-local float mapping; general affine/instance admissions are G2/G3. |
@@ -1693,8 +1694,8 @@ affected methods after the completed filter checkpoint. These items extend
 R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review's
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
-Order: finish and qualify the current rendering correction; take S01, then the
-direct S02–S06 improvements; measure S07–S09 before committing to their larger
+Order: preserve the qualified rendering correction and completed first S01
+tranche; take the direct S02–S06 improvements, then measure S07–S09 before their larger
 raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1715,6 +1716,27 @@ changes when a demonstrated support blocker takes priority.
 | S12 | Recheck and remove four unreferenced internal helpers. | Search all current sources for AppendStrippedContour, SvgRootLength.ToAbsoluteOrNull, SvgStyleSheet.GetIdentifierAttribute and SvgRoot.BeginOpacityScope before deletion. Release build and affected tests suffice; no absence tests or throughput claim. |
 | S13 | Conditional: broaden the one-glyph raw decode cache only if a realistic nonconsecutive label still benefits after S02. | Measure lookup/retained-memory cost first. If justified, use a small byte-bounded per-run/conversion cache keyed by prepared font and glyph index; preserve leases, immutable decoding and per-position contours. Otherwise leave deferred. |
 | S14 | Conditional: reuse immutable validated TrueType table/profile preparation; investigate reusable VM initialization separately. | Profile an existing supplied-font label, beyond the synthetic triangle-font benchmark. Preserve lazy validation, target/size/transform distinctions, mutable CVT/storage/graphics state and composite semantics. Do not share a live mutable VM across glyphs; defer unless a bounded change proves useful. |
+
+**S01 first tranche complete.** Leaf-mask, symbol-instance and remaining-scope
+document families retain every distinct visual/admission case through the
+canonical owned-output API. Supplied-font controls retain their native pixel
+comparisons. The original supplied-font document, a patterned mask on white,
+and nested instanced masks on transparency exercise all six raw and six
+independently prepared outputs; consumed prepared documents reject reuse.
+Existing capacity, overlap, non-array memory, cancellation, backpressure,
+publication/failure and ownership checks remain. Other independent API/feature
+regressions remain in their existing families.
+
+Complete routine checks pass **7,310 tests/platform** (5,032 core /2,272 visual /
+six FontProbe), with no failures/skips/build warnings. Comparing test results
+confirms every previous case is retained, with exactly two representative cases
+added. One preceding/finished suite run measured **Windows 5m51s → 1m58s** and
+**Linux 5m34s → 1m43s**, summing the three project test intervals and excluding
+builds and additional qualification probes. These are observed suite timings,
+not renderer throughput measurements or a fixed speedup guarantee. Production
+code, inputs, options and frozen references are unchanged. Existing renderer
+qualification remains valid. Details:
+`artifacts/maintenance-review-20261012/s01-results.json`.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.
@@ -1828,8 +1850,8 @@ protections; do not reopen them for requalification under this clarification.
 
 ### Validation and evidence policy
 
-- After the active filter checkpoint is sealed under its existing twelve-API
-  acceptance condition, S01 prospectively replaces routine per-fixture six/twelve
+- The filter checkpoint is sealed under its existing twelve-API acceptance
+  condition. S01 prospectively replaces routine per-fixture six/twelve
   conversions with canonical pixel comparisons plus a representative raw/prepared
   API contract matrix. This overrides repeated API-permutation qualification
   wording for subsequent ordinary visual work, without changing historical

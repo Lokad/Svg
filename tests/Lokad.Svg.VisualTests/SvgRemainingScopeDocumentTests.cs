@@ -21,7 +21,7 @@ public sealed class SvgRemainingScopeDocumentTests
 
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Retained_documents_preserve_frozen_outputs_and_admission_gates_through_six_apis(string family, string identity)
+    public void Retained_documents_preserve_frozen_outputs_and_admission_gates(string family, string identity)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
@@ -111,14 +111,6 @@ public sealed class SvgRemainingScopeDocumentTests
         {
             SvgErrorCode expectedError = Enum.Parse<SvgErrorCode>(error.GetString() ?? throw new InvalidDataException());
             Check(Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None)));
-            byte[] target = new byte[checked(width * height * 4)];
-            Check(Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, target, options, CancellationToken.None)));
-            using MemoryStream rejected = new();
-            Check(Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, rejected, options, CancellationToken.None)));
-            Check(await Assert.ThrowsAsync<SvgException>(async () => await SvgConverter.ConvertToPngAsync(input, options, CancellationToken.None)));
-            Check(await Assert.ThrowsAsync<SvgException>(async () => await SvgConverter.ConvertToPngAsync(input, target, options, CancellationToken.None)));
-            Check(await Assert.ThrowsAsync<SvgException>(async () => await SvgConverter.ConvertToPngAsync(input, rejected, options, CancellationToken.None)));
-            Assert.Equal(0, rejected.Length);
             return;
 
             void Check(SvgException exception)
@@ -131,18 +123,6 @@ public sealed class SvgRemainingScopeDocumentTests
         PixelComparison comparison = PixelComparer.Compare(reference, PngRgbaDecoder.Decode(png, checked(width * height)));
         if (item.TryGetProperty("knownDifference", out JsonElement difference)) Assert.Equal(difference.Deserialize<PixelComparison>(), comparison);
         else Assert.True(comparison.IsExact, identity + ": " + comparison);
-        byte[] destination = new byte[png.Length];
-        Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
-        Assert.Equal(png, destination);
-        using MemoryStream stream = new();
-        Assert.Equal(png.Length, SvgConverter.ConvertToPng(input, stream, options, CancellationToken.None));
-        Assert.Equal(png, stream.ToArray());
-        Assert.Equal(png, (await SvgConverter.ConvertToPngAsync(input, options, CancellationToken.None)).ToArray());
-        Assert.Equal(png.Length, await SvgConverter.ConvertToPngAsync(input, destination, options, CancellationToken.None));
-        Assert.Equal(png, destination);
-        using MemoryStream asyncStream = new();
-        Assert.Equal(png.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, options, CancellationToken.None));
-        Assert.Equal(png, asyncStream.ToArray());
     }
 
     private static string Required(JsonElement element, string name) => element.GetProperty(name).GetString() ?? throw new InvalidDataException(name + " is missing.");

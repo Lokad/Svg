@@ -28,7 +28,7 @@ public sealed class SvgLeafMaskReferenceTests
     [InlineData("mask-leaf-forward-use-stroke.svg", "original-mask-leaf-forward-use-stroke", 49, 43)]
     [InlineData("mask-leaf-single-leaf-symbol-stroke.svg", "original-mask-leaf-single-leaf-symbol-stroke", 49, 43)]
     [InlineData("research-mask-layer-round-leaf.svg", "original-research-mask-layer-round-leaf", 43, 37)]
-    public async Task Leaf_and_instance_masks_match_browser_pixels_for_three_backgrounds_and_all_six_outputs(string filename, string identifier, int width, int height)
+    public void Leaf_and_instance_masks_match_browser_pixels_for_three_backgrounds(string filename, string identifier, int width, int height)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Fixtures", "original", filename));
         foreach ((string background, SvgColor color) in new[] { ("transparent", SvgColor.Transparent), ("white", new SvgColor(255, 255, 255, 255)), ("black", new SvgColor(0, 0, 0, 255)) })
@@ -37,18 +37,6 @@ public sealed class SvgLeafMaskReferenceTests
             RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "tests", "References", identifier + "-" + background + ".png")), checked(width * height));
             byte[] expected = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
             Assert.True(PixelComparer.Compare(reference, PngRgbaDecoder.Decode(expected, checked(width * height))).IsExact);
-            byte[] destination = new byte[expected.Length];
-            Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, destination, options, CancellationToken.None));
-            Assert.Equal(expected, destination);
-            using MemoryStream stream = new();
-            Assert.Equal(expected.Length, SvgConverter.ConvertToPng(input, stream, options, CancellationToken.None));
-            Assert.Equal(expected, stream.ToArray());
-            Assert.Equal(expected, (await SvgConverter.ConvertToPngAsync(input, options, CancellationToken.None)).ToArray());
-            Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, destination, options, CancellationToken.None));
-            Assert.Equal(expected, destination);
-            using MemoryStream asyncStream = new();
-            Assert.Equal(expected.Length, await SvgConverter.ConvertToPngAsync(input, asyncStream, options, CancellationToken.None));
-            Assert.Equal(expected, asyncStream.ToArray());
         }
     }
 }
