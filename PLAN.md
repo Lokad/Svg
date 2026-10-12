@@ -648,6 +648,11 @@ clips through shared bounded clip geometry and source replay. Declare focused
 controls before correction and finish all later rejections and mismatches against
 the unchanged whole reference. Implement dependencies needed by this document
 without exhaustive G2 prerequisites; preserve every finite G2–G9/S17 promise.
+Eight [clip-intersection controls](tests/Research/clip-intersections/manifest.json)
+were declared at `709e4c07` before inv-136 correction. Healthy cleaned native
+triples agree on both platforms. Baselines retain seven rejections and a measured
+nested clip defect; protect group/use union, normalized parity coordinates,
+inherited child boxes, resource-child identity and fractional root placement.
 The fractional use-width control stays visible in
 G2/G4, and the measured G3 width-map defect stays open without a qualified whole document.
 Exhaustive G2 completion does not block G3–G6. Keep other promised combinations visible in their group exits.
