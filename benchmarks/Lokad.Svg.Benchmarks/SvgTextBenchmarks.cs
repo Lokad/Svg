@@ -7,6 +7,55 @@ using System.Text;
 
 namespace Lokad.Svg.Benchmarks;
 
+/// <summary>Measures a retained public-font label with acquisition outside the timed complete conversion.</summary>
+[MemoryDiagnoser]
+public class SvgSuppliedLabelBenchmarks
+{
+    private byte[] _svg = [];
+    private SvgFontSnapshot? _snapshot;
+    private SvgRenderOptions _options = SvgRenderOptions.Default;
+
+    [GlobalSetup]
+    public async Task SetUp()
+    {
+        string directory = Path.Combine(FindRepository(), "tests", "Research", "supplied-font-labels");
+        _svg = File.ReadAllBytes(Path.Combine(directory, "pair-and-space.svg"));
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, "font-pack.json")), "public-noto-sans");
+        MemoryProvider provider = new(File.ReadAllBytes(Path.Combine(directory, "fonts", "NotoSans-Regular.ttf")));
+        _snapshot = await SvgFontSnapshot.CreateAsync(_svg, catalog, provider, CancellationToken.None);
+        _options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, _snapshot);
+
+        static string FindRepository()
+        {
+            foreach (string start in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })
+                for (DirectoryInfo? candidate = new(start); candidate is not null; candidate = candidate.Parent)
+                    if (File.Exists(Path.Combine(candidate.FullName, "Lokad.Svg.slnx"))) return candidate.FullName;
+            throw new DirectoryNotFoundException("Run label benchmarks from a Lokad.Svg checkout.");
+        }
+    }
+
+    [Benchmark]
+    public int ConvertPublicLabel() => SvgConverter.ConvertToPng(_svg, _options, CancellationToken.None).Length;
+
+    [GlobalCleanup]
+    public void CleanUp()
+    {
+        _snapshot?.Dispose();
+        _snapshot = null;
+    }
+
+    /// <summary>Returns immutable caller-owned test font bytes, observes cancellation and is safe for concurrent requests; no I/O or host discovery occurs.</summary>
+    private sealed class MemoryProvider(byte[] bytes) : ISvgFontProgramSourceProvider
+    {
+        public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            if (file.RelativePath != "fonts/NotoSans-Regular.ttf") throw new InvalidDataException("Unexpected benchmark font request.");
+            return ValueTask.FromResult<ISvgFontProgramSource?>(new SvgMemoryFontProgramSource("public-noto-sans", bytes));
+        }
+    }
+}
+
 /// <summary>Measures supplied-font text acquisition, lowering and end-to-end preparation without including input setup.</summary>
 [MemoryDiagnoser]
 public class SvgTextBenchmarks

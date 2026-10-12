@@ -1,6 +1,6 @@
 # Lokad.Svg — renderer fidelity and remaining SVG support
 
-Updated 2026-10-12. Complete Windows/Linux qualification preserves
+Updated 2026-10-13. Complete Windows/Linux qualification preserves
 **27/27 corporate documents and 258/258 variants exact**, against each platform's
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
@@ -748,11 +748,12 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S03 reuses font-mask preblend tables
-for unchanged canonical luminance and platform mode, preserving their arithmetic
-and measuring a multi-character label. S02's direct contour transformation and
-the first S01 tranche are complete; measurements are in the maintenance backlog.
-Continue the direct
+**Next deliverable:** maintenance-review S04 prepares gradient coefficients
+outside pixel sampling, preserving float arithmetic, endpoint/duplicate-stop
+semantics, alpha, spread and dithering. S03's measured cache prototype is deferred:
+its public-label comparisons do not establish an end-to-end benefit. The retained
+benchmark and explicit revisit condition are in the maintenance backlog. Continue
+the direct
 allocation/preparation items in that order. Rendering
 correctness keeps precedence: select the next complete rights-clear static SVG
 by the remaining finite G2–G9 mechanisms it exercises, without making exhaustive
@@ -1696,7 +1697,8 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02; take the direct S03–S06 improvements, then measure S07–S09 before their larger
+and S02; S03 is explicitly deferred on the measurements below. Take S04–S06,
+then measure S07–S09 before their larger
 raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1705,7 +1707,7 @@ changes when a demonstrated support blocker takes priority.
 | --- | --- | --- |
 | S01 | Separate visual cases from output-API permutations in existing visual tests. | Preserve every distinct input, viewport, scale, background and platform reference; compare pixels through a canonical API. Retain a small representative raw/prepared six-sink contract matrix, complex and supplied-font scenes, and independently useful API/feature regressions. Measure the complete routine suite once before/after. |
 | S02 | **Complete.** Transform decoded glyph segments directly into final contour arrays; remove the temporary transformed array and copy. | Existing glyph-outline tests and TransformAndCopyContours benchmark: identical multi-contour/mapped output, lower allocated bytes, preserved validation, cancellation and failure cleanup. The segment probe observes actual transformation. |
-| S03 | Reuse font-mask preblend tables for unchanged platform mode and canonical luminance. | Byte-identical tables and Windows/Linux text references; measure a multi-character label. Use a last-table owner or the bounded set of at most 16 tables (4 KiB payload), preserving construction arithmetic and charging real retained storage/work. |
+| S03 | **Deferred after measurement; prototype removed.** Reuse font-mask preblend tables only when representative profiling justifies it. | The retained public Noto Sans label benchmark measures complete conversion with acquisition outside timing. Revisit after S07/native text profiling identifies table construction as material; then preserve byte-identical tables/references, arithmetic, bounded storage and real work. No cache is a release prerequisite. |
 | S04 | Prepare immutable gradient segment coefficients once per effective replay. | Existing arbitrary/repeated-stop, alpha, spread, scale, linear/radial references remain exact; measure a gradient-heavy document. Preserve binary search, endpoints, float/FMA/division order and dithering; no approximate lookup table. |
 | S05 | Reuse immutable definition/attribute strings when their lifetime permits; aggregate reservations with common ownership. | Definition/use-heavy and attribute-heavy parser measurements; preserve forward references, style replay, material denial and cleanup. Share equal Name/LocalName and already-owned values; retain required span copies, avoid global interning or a new arena framework. |
 | S06 | Read CSS element identity once per cascade resolution when rules exist. | Existing stylesheet/combinator tests and styled parser benchmark; preserve selector order, specificity and the cheap no-rules route. No selector index/cache in this item. |
@@ -1766,6 +1768,31 @@ The benchmark uses the existing triangle font and repeated styled labels,
 separately from native supplied-font acceptance. Tests and measurements are under
 `artifacts/maintenance-review-20261012/`; no new measurement framework or
 accounting requalification is required.
+
+**S03 measured decision (2026-10-13).** A one-table, conversion-owned prototype
+reused canonical luminance/platform inputs, invalidated partial rebuilds and
+preserved native pixels. Prototype builds and 7,318 tests/platform passed on
+Windows/Linux, retaining every preceding case with six focused cache cases.
+Those cases qualify the experiment; they are not additions to the final corpus.
+
+Two interleaved comparisons of the retained public Noto Sans `AV A` label measure
+**5.49 → 6.43 ms** and **6.59 → 6.86 ms**, using six warmups/twelve iterations in
+an isolated worktree. The second comparison's timing uncertainty overlaps.
+Allocated storage increases **142.15 → 142.51 KiB** per conversion. Font/input
+loading and snapshot acquisition stay outside timing. These observations do not
+establish an end-to-end benefit or prove that reuse cannot benefit another
+workload. The repeated computation alone does not justify landing its ownership
+and failure-handling code.
+
+**Decision:** retain SvgSuppliedLabelBenchmarks in the existing benchmark project;
+remove the production cache and its experiment-only tests. Production/tests return
+to the qualified S02 state (**7,312 tests/platform**); exact assets and the memory
+policy are unchanged. No repeated qualification of unchanged rendering code is
+required. Revisit S03 if S07/native label profiling makes preblend construction
+material or a representative longer label demonstrates a useful bounded reuse
+tradeoff. This maintenance deferral narrows no G2–G9 promise and adds no S17 gate.
+Measurements and the saved prototype stay under
+`artifacts/maintenance-review-20261012/`.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.
