@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Eight frozen open/degenerate clip and resource-definition controls advancing inv-137; seven baseline outcomes and a later exact placed-curve control retained before further correction.",
+  "purpose": "Nine frozen open/degenerate clip and resource-definition controls advancing inv-137; baseline rejections, exact placements and measured winding/root-placed curve differences retained before correction.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -187,6 +187,39 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "role": "fidelity"
+    },
+    {
+      "id": "root-placed-curves",
+      "width": 512,
+      "height": 269,
+      "viewport": {
+        "width": 512,
+        "height": 269
+      },
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "0b1f8740f8c0f747f22071c1c704dedfcbc81226bb35e507a91ad490ae7f5a61",
+      "referenceSha256": "1e5f84a7db6b826ca246a5ecef5d4ff239b7fbc532063c9cc89cd4366416b741",
+      "selection": "Declared at d0fa0c6e before remaining rendering correction: derivative diagnostics isolate inv-137 residual201 pixels to the open cubic clip fill; preserve the actual root density, fractional horizontal offset and native bitmap position.",
+      "input": "root-placed-curves.svg",
+      "reference": "references/root-placed-curves.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity",
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 201,
+        "MaximumChannelError": 43,
+        "MeanAbsoluteError": 0.006438414846654275,
+        "RootMeanSquareError": 0.29506116556839523,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 27,
+        "MinimumMismatchY": 151,
+        "MaximumMismatchX": 116,
+        "MaximumMismatchY": 243,
+        "IsExact": false
+      }
     }
   ]
 }

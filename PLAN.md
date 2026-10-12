@@ -589,6 +589,9 @@ existing definition registry; controls stay separate from document completion.
 The eighth placed-curve control was declared at `4cb10dbc` before the remaining
 201-pixel correction. Its clean native triples agree on both platforms and the
 current renderer already matches it; preserve that placement result.
+The ninth root-placed control, declared at `d0fa0c6e`, reproduces the whole
+document's remaining 201-pixel clip-fill difference at its actual density and
+bitmap position; both platforms' healthy cleaned native triples are frozen.
 Implement dependencies required by the selected whole document, then proceed
 through every mismatch. Declare focused controls before correction and retain
 the remaining G2–G9/S17 promises without exhaustive prerequisites.
