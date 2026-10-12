@@ -5,16 +5,17 @@ Updated 2026-10-12. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**46/48 retained development documents are complete.** The preceding 35 stay
+**48/48 retained development documents are complete.** The preceding 35 stay
 complete; the newly retained public-domain/CC0 batch is **10/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
 `inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker,
 `inv-137` open/degenerate clips, `inv-141` smiley mask export and
 `inv-136` normalized/inherited/nested clips).
-Three newly retained public-domain exports (`inv-142`–`inv-144`) are **1/3
-complete**: the vector-effect export `inv-142` is exact at 512×266 transparent
-through all twelve raw/prepared APIs on Windows/Linux. Their original bytes and cross-platform native references are frozen;
-the previous 45 completed documents stay protected.
+The newly retained public-domain exports (`inv-142`–`inv-144`) are **3/3
+complete**: `inv-142` at 512×266 and `inv-143`/`inv-144` at 512×341 transparent,
+through all twelve raw/prepared APIs on Windows/Linux. Their original bytes and
+cross-platform native references remain frozen; every preceding exact result is
+preserved. Finite G2–G9 and S17 work remains open.
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
@@ -311,6 +312,10 @@ Historical admission/checkpoint details stay in the design record and Git.
 6. Preserve the stronger achieved 27/27 and 258/258 matrix. S17's original minimum
    remains 80% exact documents overall and within each frozen corporate stratum;
    it does not authorize losing current exact results. See [S17_DECISIONS](docs/S17_DECISIONS.md).
+7. Finish the active filter correctness checkpoint, then follow the
+   [maintenance backlog](#maintenance-and-performance-backlog) alongside the
+   document-driven support queue. Rendering correctness keeps precedence;
+   maintenance items do not add prerequisites to every G2–G9 or S17 exit.
 
 ## 3. Ordered support queue
 
@@ -713,42 +718,54 @@ storage. Memory policy, public/API/package contracts and finite G2–G9/S17 scop
 stay unchanged. Receipt:
 `artifacts/vector-effects-20261012/final-qualification.json`.
 
-**Next deliverable: complete `inv-143`'s filter export at unchanged 512×341
-transparent.** Extend shared primitive regions and object-box coordinates,
-colored linearRGB conversion, large-blur rescaling and bounded legacy resolution
-validation; diagnose controls
-before each shared fix. Then carry those mechanisms into `inv-144`'s filtered
-overlapping group source. Do not make unrelated G2 combinations prerequisites.
-Eight [filter-region controls](tests/Research/filter-regions/manifest.json) were
-declared at `54d44d59` before correction. Healthy native Windows/Linux triples are
-stable and byte identical. Five primitive-region cases retain their `x` gate,
-one legacy-resolution case retains `filterRes`, and the group case retains
-container `filter`; the ordinary blur control is already exact. There are seven
-rejected controls total. Preserve this denominator and each frozen
-reference while fixing every later gate needed by the complete document.
+Both complete unchanged filter exports `inv-143`/`inv-144` are exact at
+512×341 transparent through all twelve raw/prepared APIs on Windows/Linux.
+Primitive subregions, object-box coordinates, linearRGB transfer, progressive
+large-blur rescaling and grouped geometric SourceGraphic reuse shared source
+and layer machinery. The reduced source image includes the requested primitive
+output when choosing its placement; shifted/chained results retain bounded
+intermediate padding. Legacy `filterRes` receives bounded inert validation.
+Group opacity applies after filtering composed children. Nested filters and
+clip/mask/viewport/marker/text/image combinations retain explicit current gates.
 
-Fifteen additional controls isolate the measured scaled-source, cropped blur,
-opaque/transparent composition and identity-filter capture differences. The
-family now has **23 frozen controls**, with healthy, cleaned, byte-identical
-Windows/Linux native triples. Their baseline expectations remain measured at
-`5df00df6`: 18 admission failures, four rendering differences and one exact
-ordinary blur. These diagnostics were declared before their corresponding
-corrections; they do not increase the complete-document count.
+The [filter-region family](tests/Research/filter-regions/manifest.json) has
+**24 frozen controls: 22 exact /two measured numerical residuals**. The original
+eight preceded the shared correction; later controls were frozen as new
+mismatches were isolated. Native Windows/Linux triples are healthy, cleaned,
+stable and byte identical. Preserve the 85-pixel rectangle fringe under G3/G4
+and six transparent displaced-blur alpha/shader rounding pixels under G8.
+Controls remain separate from complete documents; these residuals do not change
+either original export's exact result.
 
-The local G8 correction is still in progress. The complete unchanged `inv-143`
-currently renders with **1,065 differing pixels, maximum channel error 1**;
-`inv-144` still requires grouped filter source capture. Neither is completed or
-qualified. Finish these documents against their frozen references, then run the
-required complete checks. The pushed vector-effect checkpoint has green hosted
-Windows/Ubuntu CI; keep intermediate diagnostic preparation local.
+Complete qualification passes **7,308 tests/platform** (**5,032 core /2,270 visual /
+six FontProbe**), zero failures/skips/build warnings. Corporate **27/27 /258/258**,
+all **2,856 prior ordinary PNGs**, every established exact result, focused/static
+CSS banks and thirty exact font outputs/platform remain protected. The complete
+bank has **123 exact twelve-API cases**. Forty-nine focused core checks cover
+graph/source behavior, work/memory denial, cleanup, cancellation, retry, dormant
+groups, cascaded filter declarations and bounded extreme blur values. The existing
+two-workload resource probe passes normal/tight denial with zero retained
+accounted storage. The approximate memory policy remains unchanged. Receipt:
+`artifacts/filter-regions-20261012/final-qualification.json`.
+
+**Next deliverable:** apply maintenance-review S01 to separate routine visual
+comparisons from repeated output-API permutations, retaining representative
+raw/prepared contracts and all distinct visual cases. Then take the direct
+allocation/preparation items in the ordered maintenance backlog. Rendering
+correctness keeps precedence: select the next complete rights-clear static SVG
+by the remaining finite G2–G9 mechanisms it exercises, without making exhaustive
+instance combinations prerequisites. Use the standing numerical controls to
+diagnose shared corrections. The selected development queue is now 48/48; finite
+SVG support and S17 remain open. Expand the queue only with unchanged, licensed
+whole sources and frozen declared outputs that demonstrate remaining gaps.
 
 The bounded six-lead screen retained three static fontless public-domain exports:
 
 | Whole original / declared transparent output | Current first gate | Finite support dependencies |
 | --- | --- | --- |
 | [inv-142](tests/Fixtures/candidates/inv-142.svg), SVGvector-effect01; 512×266 | Exact; complete | G2/G3/G4/G7: validated legacy exporter presentation, inherited/instanced vector effects, composed native stroke maps |
-| [inv-143](tests/Fixtures/candidates/inv-143.svg), SVGfilter01; 512×341 | Filter `x` | G8: explicit filter/primitive regions, object-box units, Gaussian blur and resolution declarations |
-| [inv-144](tests/Fixtures/candidates/inv-144.svg), SVGfilter02; 512×341 | Group `filter` | G8 plus G2/G3: filtered source bounds/composition for grouped overlapping fills and strokes |
+| [inv-143](tests/Fixtures/candidates/inv-143.svg), SVGfilter01; 512×341 | Exact; complete | G8: explicit filter/primitive regions, object-box units, Gaussian blur and resolution declarations |
+| [inv-144](tests/Fixtures/candidates/inv-144.svg), SVGfilter02; 512×341 | Exact; complete | G8 plus G2/G3: filtered source bounds/composition for grouped overlapping fills and strokes |
 
 All three sources have explicit author public-domain releases on pinned Commons
 pages/API. Healthy cleaned native triples on Windows/Linux are stable and byte
@@ -1385,7 +1402,7 @@ results stay exact, and decode, style matching, resampling and cleanup are bound
   both filter unit systems and sRGB/linearRGB arithmetic are part of acceptance.
   Allocate bounded intermediate regions and charge blur/composition work before
   execution. Reuse the existing layer and premultiplied-paint machinery.
-  - [x] Shared bounded CPU three-box blur for device deviations 2 ≤ sigma < 135,
+  - [x] Shared bounded CPU three-box blur for device deviations 2 ≤ sigma ≤ 135,
     plus identity axes. Six direct-kernel references protect native premultiplied
     channels and rounding. These same controls now pass whole playback
     through six outputs without recapturing references.
@@ -1399,12 +1416,18 @@ results stay exact, and decode, style matching, resampling and cleanup are bound
     presentation validation; six exact controls protect geometry, retained
     instances, pattern content and filtered source capture. No further blur or
     geometry correction is required for this document.
-  - [ ] Small Gaussian kernels and large-blur rescaling; remaining finite
+  - [x] Complete `inv-143`/`inv-144` through full Windows/Linux twelve-API
+    qualification. Shared primitive regions, both coordinate unit
+    systems, colored linearRGB blur, bounded large-blur rescaling and ordinary
+    grouped geometric sources already match these two original exports. Keep
+    the six transparent restoration rounding pixels visible within this exit.
+  - [ ] Small Gaussian kernels; remaining finite
     graph/result combinations, anisotropic/zero blur,
     both unit systems, primitive subregions, clipped halos, sRGB/linearRGB,
     composite `over`/`in`, merges and normal/multiply/screen blending. Fractional
-    offsets, colored linearRGB conversion/composition, rotated/skewed filter
-    maps, filtered containers/instances and clip/mask/marker combinations retain
+    offsets, colored linearRGB shadow/composition, rotated/skewed filter
+    maps, other filtered containers/instances, nested filters and
+    clip/mask/marker/text/image combinations retain
     explicit current gates; this delivery does not defer or close them.
 - **Acceptance:** `original-logo-marker-mark` is complete against its frozen
   reference, as is `original-logo-filter-mark`. `inv-125` is complete;
@@ -1585,10 +1608,10 @@ documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
 (**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **10/10
 complete**, completing the previous selected development queue **45/45**.
 Their frozen references and original first gates are listed above; all ten outputs
-are complete. The next three licensed exports make the ledger **46/48**
-after `inv-142`; complete `inv-143`/`inv-144` through their shared finite filter
-dependencies next. The vector-effect checkpoint is sealed by complete
-Windows/Linux twelve-API qualification.
+are complete. The final three licensed exports (`inv-142`–`inv-144`) complete
+the retained ledger **48/48**. Their vector-effect/filter corrections are sealed
+by full Windows/Linux twelve-API qualification. Select subsequent whole
+documents by the remaining finite support mechanisms they exercise.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh
@@ -1651,15 +1674,64 @@ claim follows from the failure-selected development corpus.
 | R26 | Preserve the complete frozen first cohort; broader representativeness and remote CI remain open. Failure-selected additions are development inputs. |
 | R27 | Execute every declared case and retain admission separately from fidelity. Original fixture/research rendering differences are resolved; newly admitted support gaps require their own unchanged-reference comparison. |
 | R28 | Preserve inverse paint maps; remaining pattern/coordinate combinations are G3/G5/G6. |
-| R30 | Keep shared contour preparation and coverage across four paints. Consolidate further only where a demonstrated dependency requires it. |
+| R30 | Keep shared contour preparation and coverage across four paints. Reuse invariant preparation and consolidate repeated stroke admission through the maintenance backlog; preserve intentional paint-rounding distinctions. |
 | R31 | Existing capture/transport/cleanup and CI artifact validation are retained; Windows/Linux remote CI is verified at `6d4dfe7a`. Git identifies implementation, asset hashes protect inputs/oracles/tool downloads. |
 | R33 | Preserve clipping, path/control bounds and AA paint-clip provenance; broader clip/mask combinations are G5. |
 | R34 | Preserve exact analytic contact/winding, density and zero-area native stroke contours. New stroke combinations are G4; general browser fidelity needs new cases. |
 | R35 | Preserve source curves and bitmap-local float mapping; general affine/instance admissions are G2/G3. |
 | R36 | Extend practical inheritance and typed style state only through measured G1/G2/G7 blockers. |
 | R37 | Complete remaining transform/instance gates under G3, with independent semantic controls. |
-| R38 | Use actual-size bounded storage and measure meaningful allocation changes; no repository-wide rewrite. |
+| R38 | Use actual-size bounded storage; remove redundant glyph/string copies and measure meaningful allocation changes through the maintenance backlog. No repository-wide rewrite. |
 | R39 | Reserve before material allocations/work, bound expansion and check cancellation. Audit ownership, transfers and failure paths according to material memory impact, using the approximate accounting requirements below. |
+
+### Maintenance and performance backlog
+
+Integrated from the 2026-10-12 inspection in
+`artifacts/maintenance-review-20261012/REVIEW.md`. The review inspected HEAD
+`27431143` plus concurrent filter edits; it ran no benchmarks or tests. Recheck
+affected methods after the completed filter checkpoint. These items extend
+R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review's
+S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
+
+Order: finish and qualify the current rendering correction; take S01, then the
+direct S02–S06 improvements; measure S07–S09 before committing to their larger
+raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
+not release requirements. Advance complete retained documents between maintenance
+changes when a demonstrated support blocker takes priority.
+
+| Review ID | Bounded change | Acceptance / measurement |
+| --- | --- | --- |
+| S01 | Separate visual cases from output-API permutations in existing visual tests. | Preserve every distinct input, viewport, scale, background and platform reference; compare pixels through a canonical API. Retain a small representative raw/prepared six-sink contract matrix, complex and supplied-font scenes, and independently useful API/feature regressions. Measure the complete routine suite once before/after. |
+| S02 | Transform decoded glyph segments directly into final contour arrays; remove the temporary transformed array and copy. | Existing glyph-outline tests and TransformAndCopyContours benchmark: identical multi-contour/mapped output, lower allocated bytes, preserved validation, cancellation and failure cleanup. Move the segment probe to the actual transformation. |
+| S03 | Reuse font-mask preblend tables for unchanged platform mode and canonical luminance. | Byte-identical tables and Windows/Linux text references; measure a multi-character label. Use a last-table owner or the bounded set of at most 16 tables (4 KiB payload), preserving construction arithmetic and charging real retained storage/work. |
+| S04 | Prepare immutable gradient segment coefficients once per effective replay. | Existing arbitrary/repeated-stop, alpha, spread, scale, linear/radial references remain exact; measure a gradient-heavy document. Preserve binary search, endpoints, float/FMA/division order and dithering; no approximate lookup table. |
+| S05 | Reuse immutable definition/attribute strings when their lifetime permits; aggregate reservations with common ownership. | Definition/use-heavy and attribute-heavy parser measurements; preserve forward references, style replay, material denial and cleanup. Share equal Name/LocalName and already-owned values; retain required span copies, avoid global interning or a new arena framework. |
+| S06 | Read CSS element identity once per cascade resolution when rules exist. | Existing stylesheet/combinator tests and styled parser benchmark; preserve selector order, specificity and the cheap no-rules route. No selector index/cache in this item. |
+| S07 | Hoist Windows glyph dropout bounds and reuse horizontal scan crossings within a row. | Measure first; exact thin-stroke, vertex, dropout, mapped/composite and supplied-font cases on Windows, relevant Linux checks. Preserve classification/rounding; bound scratch storage. Consider vertical reuse only after measurement, without a width-by-height-by-segment cache. |
+| S08 | Flatten the fallback glyph's identical eight-point quadratic subdivisions once per glyph. | Benchmark a case that actually selects fallback; preserve winding, endpoint arithmetic, finite coordinates and cancellation. Bound/release temporary storage and retain empty-region behavior. Do not claim native-fitting text benefits from fallback measurements. |
+| S09 | Reuse an identical rasterized pattern tile within a lowered paint operation or a small conversion-local owner. | Patterned rectangle stroke and repeated identical instances improve; differing size/map instances do not share. Preserve fractional sampling, phase and alpha. Key content, source box, dimensions, viewBox, mapping and paint inputs; bound retained surfaces and drop reuse under pressure. |
+| S10 | Make unarmed glyph/polygon/outline probes cheap using an established armed guard or operation-boundary hook. | Measure the unarmed path; preserve execution-context isolation and deterministic cancellation. No dummy work or different Release semantics. |
+| S11 | Share common axis-aligned gradient/radial/pattern line-stroke admission and parsed values. | Existing cross-paint line/stroke cases pass; retain zero-width return, validation order, authored-versus-cascaded validation and paint-specific gates. No new generic renderer abstraction. |
+| S12 | Recheck and remove four unreferenced internal helpers. | Search all current sources for AppendStrippedContour, SvgRootLength.ToAbsoluteOrNull, SvgStyleSheet.GetIdentifierAttribute and SvgRoot.BeginOpacityScope before deletion. Release build and affected tests suffice; no absence tests or throughput claim. |
+| S13 | Conditional: broaden the one-glyph raw decode cache only if a realistic nonconsecutive label still benefits after S02. | Measure lookup/retained-memory cost first. If justified, use a small byte-bounded per-run/conversion cache keyed by prepared font and glyph index; preserve leases, immutable decoding and per-position contours. Otherwise leave deferred. |
+| S14 | Conditional: reuse immutable validated TrueType table/profile preparation; investigate reusable VM initialization separately. | Profile an existing supplied-font label, beyond the synthetic triangle-font benchmark. Preserve lazy validation, target/size/transform distinctions, mutable CVT/storage/graphics state and composite semantics. Do not share a live mutable VM across glyphs; defer unless a bounded change proves useful. |
+
+For implemented allocation/preparation changes, report elapsed time and allocated
+bytes separately using an existing focused benchmark or one representative case.
+Use a stable checkout without competing jobs for timing; an inspection or local
+microbenchmark does not establish an end-to-end speedup. Add a representative
+supplied-font case to the existing benchmarks when S07/S13/S14 needs it, with font
+acquisition outside the timed section unless preparation itself is measured.
+Run affected exact/resource checks per change and complete delivery qualification
+once at the finished checkpoint under section 5. No new measurement/evidence
+framework, exhaustive Cartesian matrix, process-wide cache or pooling policy.
+
+Keep completed R14/R15/R19 contour/sharing work closed unless a new measurement
+demonstrates a problem. PNG segmented staging/final copies, font integrity and
+leases, platform distinctions and single-use prepared ownership serve existing
+contracts. Root output preflight is not a second full-document parse. Preserve
+these protections and the approximate 20% memory policy; file size or a visible
+CopyTo alone does not justify redesign.
 
 ### Original finding dispositions and retained regressions
 
@@ -1756,6 +1828,19 @@ protections; do not reopen them for requalification under this clarification.
 
 ### Validation and evidence policy
 
+- After the active filter checkpoint is sealed under its existing twelve-API
+  acceptance condition, S01 prospectively replaces routine per-fixture six/twelve
+  conversions with canonical pixel comparisons plus a representative raw/prepared
+  API contract matrix. This overrides repeated API-permutation qualification
+  wording for subsequent ordinary visual work, without changing historical
+  evidence, distinct visual cases, the frozen 27 documents /258 variants, or
+  independently useful API/feature interaction regressions. Preserve insufficient
+  capacity, non-array memory, overlap rejection, async/backpressure, token
+  cancellation, stream failure/publication, independent results, prepared lifetime
+  and cleanup in existing PublicContractTests/PngEncoderTests and the matrix.
+  Full platform/release checks remain required at their appropriate boundaries.
+  Replace incidental exact work-count expectations only when an actual
+  optimization requires it; retain denial-before-work and ownership checks.
 - Tests check observable behavior. Git identifies our implementation; pinned
   revisions and URLs identify upstream code. Do not record hashes of source code,
   scripts, local adapters, our builds or packages, or diagnostic reports. Asset

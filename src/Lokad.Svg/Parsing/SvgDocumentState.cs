@@ -215,6 +215,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal int TextCharacterCount { get; set; }
 
     internal int GroupDepth { get; set; }
+    internal int FilterGroupDepth { get; set; }
 
     internal bool HasOpacityScope { get; set; }
 
@@ -435,6 +436,7 @@ internal readonly record struct SvgGroupScope(int Depth, SvgGroupKind Kind, SvgI
 {
     /// <summary>Retains an authored mask group's layer boundary before its deferred resource resolves; opacity inheritance stays independent.</summary>
     internal bool HasDeferredMask { get; init; }
+    internal bool HasFilter { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
     internal string? ClipRule { get; init; }
     /// <summary>Retains this container's computed local clip reference for explicitly inherited child declarations.</summary>

@@ -1,9 +1,55 @@
 using Lokad.Svg.Rendering;
+using Lokad.Svg.Parsing;
 
 namespace Lokad.Svg.Tests;
 
 public sealed class SvgGaussianBlurTests
 {
+    [Theory]
+    [InlineData(135f)]
+    [InlineData(144f)]
+    [InlineData(532f)]
+    public void Placed_large_blurs_release_denied_owners_preserve_source_and_retry_identically(float sigma)
+    {
+        const int width = 128, height = 96;
+        byte[] source = new byte[width * height * 4];
+        for (int offset = 0; offset < source.Length; offset += 4) source[offset + 2] = source[offset + 3] = 255;
+        byte[] before = (byte[])source.Clone(), expected = new byte[source.Length];
+        SvgShaderPaint[] samples = new SvgShaderPaint[width * height];
+        RenderBudget accepted = new(1_000_000);
+        long work = Run(expected, samples, accepted, long.MaxValue, CancellationToken.None);
+        long peak = accepted.Snapshot().PeakBytes;
+        Assert.Contains(expected, value => value > 0);
+        Assert.Contains(samples, value => value.Alpha > 0);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        foreach (long available in new[] { 0, work / 2, work - 1 })
+        {
+            RenderBudget denied = new(1_000_000);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(new byte[source.Length], new SvgShaderPaint[samples.Length], denied, available, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        foreach (long limit in new[] { 1, peak / 2, peak - 1 })
+        {
+            RenderBudget denied = new(limit);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(new byte[source.Length], new SvgShaderPaint[samples.Length], denied, work, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        using CancellationTokenSource cancellation = new();
+        cancellation.Cancel();
+        byte[] retry = new byte[source.Length];
+        Assert.Throws<OperationCanceledException>(() => Run(retry, new SvgShaderPaint[samples.Length], accepted, work, cancellation.Token));
+        Assert.All(retry, value => Assert.Equal(0, value));
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        SvgShaderPaint[] retrySamples = new SvgShaderPaint[samples.Length];
+        Assert.Equal(work, Run(retry, retrySamples, accepted, work, CancellationToken.None));
+        Assert.Equal(expected, retry); Assert.Equal(samples, retrySamples); Assert.Equal(before, source);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+
+        long Run(byte[] destination, SvgShaderPaint[] outputSamples, RenderBudget budget, long availableWork, CancellationToken token)
+            => SvgGaussianBlur.ApplyRescaled(source, destination, width, height, new(sigma, sigma), new(0, 0, width, height),
+                false, SvgFilterColorSpace.LinearRgb, outputSamples, budget, availableWork, token);
+    }
+
     [Fact]
     public void Every_denied_work_and_memory_boundary_releases_owners_and_preserves_source_before_retry()
     {
@@ -99,7 +145,7 @@ public sealed class SvgGaussianBlurTests
     [Theory]
     [InlineData(0.5f)]
     [InlineData(1.999f)]
-    [InlineData(135f)]
+    [InlineData(135.001f)]
     [InlineData(float.MaxValue)]
     public void Pending_kernel_and_rescaling_admissions_reject_before_allocating(float sigma)
     {

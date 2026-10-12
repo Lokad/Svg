@@ -71,8 +71,8 @@ Nine of ten controls are exact; direct overlapping children remain unsupported.
 The older object-box curved control is also exact. Nested group/object-box mask
 targets and deeper/cyclic resources retain explicit current boundaries. Remaining
 finite G2–G9/S17 work is unchanged. That checkpoint completed the preceding 45/45
-queue. The current retained development ledger is 46/48 after the vector-effect
-export below; the next whole documents are the two retained filter exports.
+queue. The subsequent vector-effect and filter exports below complete the
+retained development ledger at 48/48; finite remaining combinations stay open.
 
 ## Instance vector effects and viewport stroke maps (2026-10-12)
 
@@ -1025,3 +1025,25 @@ allocation and reuses it for header and chunk-length framing, including all `IDA
 chunks.
 
 The target scope and release criteria remain in [PLAN.md](../PLAN.md).
+
+
+## Finite filter regions and grouped source capture (2026-10-12)
+
+The untouched `inv-143`/`inv-144` exports are exact at 512×341 transparent through
+all twelve raw/prepared APIs on Windows/Linux. Filter/primitive regions preserve
+object-box and user-space coordinates; omitted components use input defaults.
+Colored linearRGB blur uses the pinned native transfer arithmetic. Large Gaussian
+deviations use bounded progressive rescaling and the native device cap, retaining
+the requested output in source-image placement. Shifted/chained results reserve
+intermediate halo space. Legacy filterRes declarations are validated and inert.
+Ordinary geometric group children compose before filtering and outer opacity;
+attributes, inline declarations and the admitted static CSS select the same path.
+
+Nested filters, other container/instance targets, filter combinations with clips,
+masks, viewports, markers, text or images, small kernels, fractional offsets and
+the remaining finite composites/merges/blends stay open in G8. The 24 frozen
+controls retain 22 exact results, the old 85-pixel rectangle fringe and six
+transparent restoration rounding pixels. All 7,308 tests/platform, 123 exact
+twelve-API cases and 2,856 prior rendered PNGs pass qualification; corporate
+27/27 /258/258 and all established exact results are preserved. This completes
+the selected development queue at 48/48; finite G2–G9/S17 remain open.

@@ -42,7 +42,7 @@ internal readonly record struct SvgComputedStyle(string? Color, string? Fill, st
     internal static SvgComputedStyle Resolve(XmlReader reader, InlineStyle inlineStyle, InlineStyle styleSheet)
     {
         string? filter = Select(reader, "filter", inlineStyle.Filter, (inlineStyle.Important & InlineImportantProperties.Filter) != 0, styleSheet.Filter, (styleSheet.Important & InlineImportantProperties.Filter) != 0);
-        if (filter is not null && filter.Trim() != "none" && reader.LocalName is not ("rect" or "line" or "path" or "polygon" or "polyline" or "circle" or "ellipse"))
+        if (filter is not null && filter.Trim() != "none" && reader.LocalName is not ("g" or "rect" or "line" or "path" or "polygon" or "polyline" or "circle" or "ellipse"))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters on containers, instances, text or images are not implemented.");
         if ((inlineStyle.HasVisibleOverflow || styleSheet.HasVisibleOverflow) && reader.LocalName is "svg" or "symbol" or "image" or "pattern" or "marker" or "foreignObject")
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only hidden viewport overflow is implemented.");

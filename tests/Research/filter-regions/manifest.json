@@ -8,7 +8,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Twenty-three frozen controls for unchanged inv-143/144: the original eight plus scaled placement, opaque/transparent cropped composition and identity-filter source diagnostics. Baselines remain measured at 5df00df6; staged production correction is not qualified. Controls stay separate from complete documents.",
+  "purpose": "Twenty-four frozen finite filter controls: 22 exact, two measured numerical residuals. Shared primitive regions, object-box coordinates, linearRGB color transfer, bounded large blur and grouped overlapping SourceGraphic complete unchanged inv-143/144. Controls stay separate from complete documents; full qualification is required before closing the checkpoint.",
   "cases": [
     {
       "id": "primitive-region-identity",
@@ -23,8 +23,7 @@
       "reference": "references/primitive-region-identity.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "primitive-region-halo",
@@ -39,8 +38,7 @@
       "reference": "references/primitive-region-halo.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "object-box-primitive-region",
@@ -55,8 +53,7 @@
       "reference": "references/object-box-primitive-region.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "object-box-large-blur",
@@ -71,8 +68,7 @@
       "reference": "references/object-box-large-blur.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "legacy-filter-resolution",
@@ -87,8 +83,7 @@
       "reference": "references/legacy-filter-resolution.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "fractional-primitive-region",
@@ -103,8 +98,7 @@
       "reference": "references/fractional-primitive-region.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "group-overlap-source",
@@ -119,8 +113,7 @@
       "reference": "references/group-overlap-source.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "ordinary-region-preserved",
@@ -150,21 +143,7 @@
       "reference": "references/scaled-rectangle-source.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 85,
-        "MaximumChannelError": 1,
-        "MeanAbsoluteError": 0.00012171233504398827,
-        "RootMeanSquareError": 0.011032331351259727,
-        "MaximumAlphaError": 0,
-        "AlphaChangedPixelCount": 0,
-        "MinimumMismatchX": 43,
-        "MinimumMismatchY": 127,
-        "MaximumMismatchX": 127,
-        "MaximumMismatchY": 127,
-        "IsExact": false
-      }
+      "role": "fidelity"
     },
     {
       "id": "scaled-object-large-blur",
@@ -179,8 +158,7 @@
       "reference": "references/scaled-object-large-blur.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "scaled-filter-boundary",
@@ -195,8 +173,7 @@
       "reference": "references/scaled-filter-boundary.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "translated-rectangle-source",
@@ -225,7 +202,8 @@
         "MaximumMismatchX": 127,
         "MaximumMismatchY": 298,
         "IsExact": false
-      }
+      },
+      "remainingGap": "Retain the existing 85-pixel native rectangle-fringe difference under G3/G4."
     },
     {
       "id": "translated-large-blur",
@@ -240,8 +218,7 @@
       "reference": "references/translated-large-blur.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "large-blur-composition",
@@ -256,8 +233,7 @@
       "reference": "references/large-blur-composition.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "translated-blur-composition",
@@ -272,8 +248,7 @@
       "reference": "references/translated-blur-composition.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "cropped-blur-composition",
@@ -288,8 +263,7 @@
       "reference": "references/cropped-blur-composition.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "legacy-blur-composition",
@@ -304,8 +278,7 @@
       "reference": "references/legacy-blur-composition.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "displaced-blur-composition",
@@ -320,8 +293,7 @@
       "reference": "references/displaced-blur-composition.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "cropped-blur-transparent",
@@ -336,8 +308,7 @@
       "reference": "references/cropped-blur-transparent.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "legacy-blur-transparent",
@@ -352,8 +323,7 @@
       "reference": "references/legacy-blur-transparent.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "displaced-blur-transparent",
@@ -369,7 +339,21 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "knownDifference": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 6,
+        "MaximumChannelError": 14,
+        "MeanAbsoluteError": 0.0001718291788856305,
+        "RootMeanSquareError": 0.04367269038690539,
+        "MaximumAlphaError": 1,
+        "AlphaChangedPixelCount": 6,
+        "MinimumMismatchX": 437,
+        "MinimumMismatchY": 259,
+        "MaximumMismatchX": 437,
+        "MaximumMismatchY": 272,
+        "IsExact": false
+      },
+      "remainingGap": "Six remaining shader/alpha rounding pixels in transparent displaced large-blur restoration; retain under finite G8. Complete inv-143/144 opaque-background outputs are exact separately."
     },
     {
       "id": "shifted-filter-source",
@@ -384,21 +368,7 @@
       "reference": "references/shifted-filter-source.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 3911,
-        "MaximumChannelError": 255,
-        "MeanAbsoluteError": 2.0446856098790325,
-        "RootMeanSquareError": 20.583509285505876,
-        "MaximumAlphaError": 255,
-        "AlphaChangedPixelCount": 3911,
-        "MinimumMismatchX": 366,
-        "MinimumMismatchY": 25,
-        "MaximumMismatchX": 486,
-        "MaximumMismatchY": 144,
-        "IsExact": false
-      }
+      "role": "fidelity"
     },
     {
       "id": "translated-filter-source",
@@ -413,21 +383,22 @@
       "reference": "references/translated-filter-source.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 3996,
-        "MaximumChannelError": 255,
-        "MeanAbsoluteError": 2.044797298845308,
-        "RootMeanSquareError": 20.58450760116152,
-        "MaximumAlphaError": 255,
-        "AlphaChangedPixelCount": 3911,
-        "MinimumMismatchX": 25,
-        "MinimumMismatchY": 196,
-        "MaximumMismatchX": 145,
-        "MaximumMismatchY": 315,
-        "IsExact": false
-      }
+      "role": "fidelity"
+    },
+    {
+      "id": "maximum-unscaled-kernel",
+      "width": 192,
+      "height": 160,
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "e5d7f036ded6f7baed417bbb821e7a9c59e7c60876bbbe75511c3ff492d09f87",
+      "referenceSha256": "e1780079ac41b2b7ae01b4eb748cc813dafb6eb9a793a5d0801920dd6ed18ad1",
+      "selection": "Frozen after initial large-blur/kernel-admission prototype, before diagnosing the remaining pixel correction. Isolates the maximum unscaled N32 kernel from resampling and color conversion; separate from complete documents.",
+      "input": "maximum-unscaled-kernel.svg",
+      "reference": "references/maximum-unscaled-kernel.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "role": "fidelity"
     }
   ],
   "linuxReferenceQualification": {

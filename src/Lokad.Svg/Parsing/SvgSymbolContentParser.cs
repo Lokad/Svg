@@ -27,6 +27,7 @@ internal static class SvgSymbolContentParser
         bool? visible = style.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(style.Visibility, true);
         SvgSymbolPresentation inherited = builder.Presentation;
         SvgSymbolContent content = builder.EnableContent();
+        if (style.Filter is string filter && filter.Trim() != "none") content.AddUnsupported();
         state.HasRetainedSymbolContent = true;
         if (reader.LocalName == "g")
         {

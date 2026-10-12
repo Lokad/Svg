@@ -70,21 +70,21 @@ internal static class SvgPaintRecording
         SvgRecordingScope drawScope = reader.GetAttribute("mask") is null ? opacityScope : state.NewRecordingScope();
         float strokeBoundsInflation = 0;
         string? strokePaint = style.Stroke ?? context.InheritedStroke.Stroke;
-        if (reader.LocalName is "path" or "polygon" or "polyline" && strokePaint is not null && strokePaint != "none")
+        if (reader.LocalName is "path" or "polygon" or "polyline" or "rect" or "circle" or "ellipse" or "line" && strokePaint is not null && strokePaint != "none")
         {
             float half = (float)SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? reader.GetAttribute("stroke-width"), reader.LocalName) / 2f;
-            float expansion = SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) == SvgStrokeJoin.Miter
+            float expansion = reader.LocalName is "path" or "polygon" or "polyline" && SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true) == SvgStrokeJoin.Miter
                 ? MathF.Max((float)SvgStrokeStyleSyntax.ParseMiterLimit(style.Miterlimit), 1) : 1;
-            if (SvgStrokeStyleSyntax.ParseLinecap(style.Linecap) == SvgStrokeCap.Square) expansion = MathF.Max(expansion, MathF.Sqrt(2));
+            if (reader.LocalName != "rect" && SvgStrokeStyleSyntax.ParseLinecap(style.Linecap) == SvgStrokeCap.Square) expansion = MathF.Max(expansion, MathF.Sqrt(2));
             strokeBoundsInflation = half * expansion;
         }
         return new(style.GetOpacity(), SvgPaintResolver.ResolveSolidPaint(fill).Alpha,
             fill.FillOpacity.Alpha / 255f, (stroke.Alpha / 255f) * strokeOpacity.Value, strokeOpacity.Alpha / 255f,
             fillServer ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
             style.Stroke is not null && SvgLocalUrl.TryParseId(style.Stroke, out _) ? SvgPaintOrigin.PaintServer : SvgPaintOrigin.Solid,
-            fill.HasFill, reader.GetAttribute("clip-path") is not null, drawScope, opacityScope) { PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = PrimitiveBounds(reader, context, frame), StrokeBoundsInflation = strokeBoundsInflation };
+            fill.HasFill, reader.GetAttribute("clip-path") is not null, drawScope, opacityScope) { PaintOrder = style.PaintOrder ?? context.InheritedPresentation.PaintOrder, ObjectBounds = PrimitiveBounds(reader, context, frame, 0), VisualBounds = strokeBoundsInflation > 0 ? PrimitiveBounds(reader, context, frame, strokeBoundsInflation) : null, StrokeBoundsInflation = strokeBoundsInflation };
 
-        static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport)
+        static SvgPaintBounds? PrimitiveBounds(XmlReader input, SvgPaintableElementContext element, SvgViewportFrame? viewport, float inflation)
         {
             element.WorkCounter.Consume(element.CancellationToken);
             SvgPaintBounds bounds;
@@ -107,6 +107,7 @@ internal static class SvgPaintRecording
                 default:
                     return null;
             }
+            if (inflation > 0) bounds = new(bounds.Left - inflation, bounds.Top - inflation, bounds.Right + inflation, bounds.Bottom + inflation);
             SvgAffineTransform placement = element.ResolveTransform(input);
             if (viewport is {} parent)
                 placement = SvgAffineTransform.FromScaleOffset(parent.ScaleX, parent.ScaleY, parent.OffsetX, parent.OffsetY).ComposeChecked(placement);

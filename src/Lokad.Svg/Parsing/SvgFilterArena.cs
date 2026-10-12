@@ -12,7 +12,12 @@ internal readonly record struct SvgFilterInput(int Index)
 }
 internal readonly record struct SvgFilterLength(double Value, bool Percentage);
 internal readonly record struct SvgFilterRegion(SvgFilterLength X, SvgFilterLength Y, SvgFilterLength Width, SvgFilterLength Height, SvgFilterUnits Units);
-internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, SvgFilterInput Input, double SigmaX, double SigmaY, double OffsetX, double OffsetY, SvgColor Flood, float FloodOpacity);
+/// <summary>Retains authored subregion lengths; omitted components borrow the input's default subregion.</summary>
+internal readonly record struct SvgFilterPrimitiveRegion(SvgFilterLength? X, SvgFilterLength? Y, SvgFilterLength? Width, SvgFilterLength? Height);
+internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, SvgFilterInput Input, double SigmaX, double SigmaY, double OffsetX, double OffsetY, SvgColor Flood, float FloodOpacity)
+{
+    internal SvgFilterPrimitiveRegion? Region { get; init; }
+}
 internal readonly record struct SvgFilterAdmission(SvgErrorCode Code, string Message);
 internal readonly record struct SvgFilterResource(SvgFilterRegion Region, SvgFilterUnits PrimitiveUnits, SvgFilterColorSpace ColorSpace,
     OwnedSceneArray<SvgFilterPrimitive> Primitives, SvgFilterAdmission? Rejection) : IDisposable
@@ -20,7 +25,10 @@ internal readonly record struct SvgFilterResource(SvgFilterRegion Region, SvgFil
     public void Dispose() => Primitives.Dispose();
 }
 internal readonly record struct SvgFilterBinding(string? ReferenceId, int ResourceIndex, SvgPaintBounds ObjectBounds,
-    SvgPaintBounds VisualBounds, SvgAffineTransform Transform, SvgViewportLengthBases LengthBases);
+    SvgPaintBounds VisualBounds, SvgAffineTransform Transform, SvgViewportLengthBases LengthBases)
+{
+    internal bool GroupSource { get; init; }
+}
 
 /// <summary>Owns filter resources and placed bindings until its scene is disposed.</summary>
 /// <remarks>Construction is single-threaded and budgeted. Sealing resolves references and drops parser-only names.
@@ -36,6 +44,7 @@ internal sealed class SvgFilterArena : IDisposable
     private BudgetedParserStringStore? _strings;
     private bool _sealed;
     private bool _disposed;
+    internal bool HasGroupSources { get; private set; }
 
     private SvgFilterArena(RenderBudget budget, ParserWorkCounter work, CancellationToken token, RenderBudget.BudgetReservation owner)
     {
@@ -68,13 +77,25 @@ internal sealed class SvgFilterArena : IDisposable
     }
 
     internal int AddBinding(string id, SvgPaintBounds objectBounds, SvgPaintBounds visualBounds,
-        SvgAffineTransform transform, SvgViewportLengthBases lengthBases)
+        SvgAffineTransform transform, SvgViewportLengthBases lengthBases, bool groupSource)
     {
         if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
         BudgetedParserStringStore strings = _strings ?? throw new InvalidOperationException("Filter strings are unavailable.");
         int index = _bindings.Count;
-        _bindings.Add(new(strings.Copy(id), -1, objectBounds, visualBounds, transform, lengthBases));
+        _bindings.Add(new(strings.Copy(id), -1, objectBounds, visualBounds, transform, lengthBases) { GroupSource = groupSource });
+        HasGroupSources |= groupSource;
         return index;
+    }
+
+    /// <summary>Identifies a source boundary while the owning scene finalizes its drawing ranges.</summary>
+    internal bool IsGroupSource(int index) => _bindings[index].GroupSource;
+
+    /// <summary>Completes a group source's aggregate bounds before immutable resources are sealed.</summary>
+    internal void SetGroupBounds(int index, SvgPaintBounds objectBounds, SvgPaintBounds visualBounds)
+    {
+        if (_sealed || _disposed) throw new InvalidOperationException("Filter construction is closed.");
+        _work.Consume(_token);
+        _bindings[index] = _bindings[index] with { ObjectBounds = objectBounds, VisualBounds = visualBounds };
     }
 
     internal void Seal()

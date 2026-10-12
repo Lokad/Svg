@@ -52,7 +52,15 @@ internal static class SvgGroupParser
             opacityScope = state.NewRecordingScope();
         SvgRecordingScope contentScope = maskReference is null ? opacityScope : state.NewRecordingScope();
         string? clipId = SvgClipPathSyntax.ResolveClipId(reader, state);
-        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { HasDeferredMask = deferredMask is not null, RecordingScope = contentScope, ClipRule = style.ClipRule ?? context.InheritedClipRule, ClipPathId = clipId is null ? null : state.Strings.Copy(clipId) }, combined, deferredMask) { SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
+        string? filterId = null;
+        if (style.Filter is string filter && filter.Trim() != "none")
+        {
+            if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
+            if (maskReference is not null || clipId is not null || state.EffectiveFrame is not null || state.PatternDepth >= 0)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group filters combined with masks, clips or nested viewports are not implemented.");
+            if (!reader.IsEmptyElement && resolved.Presentation.IsDisplayed) filterId = state.Strings.Copy(id);
+        }
+        return new SvgParsedGroup(new SvgGroupScope(reader.Depth, kind, resolved.Presentation, resolved.TextStyle, combined != 255 || sourceOpacity.Value != 1, hasMaskScope, resolved.Stroke, resolved.FillRule) { HasFilter = filterId is not null, HasDeferredMask = deferredMask is not null, RecordingScope = contentScope, ClipRule = style.ClipRule ?? context.InheritedClipRule, ClipPathId = clipId is null ? null : state.Strings.Copy(clipId) }, combined, deferredMask) { FilterId = filterId, LengthBases = context.LengthBases, SourceOpacity = sourceOpacity, RecordingScope = opacityScope };
     }
 
     /// <summary>Pushes the referenced mask content box for child coverage checks, reporting whether a scope was pushed.</summary>
@@ -70,6 +78,8 @@ internal static class SvgGroupParser
 /// <summary>Couples a stored child context with the opacity required to enter its isolated surface.</summary>
 internal readonly record struct SvgParsedGroup(SvgGroupScope Scope, byte Opacity, string? DeferredMask)
 {
+    internal string? FilterId { get; init; }
+    internal SvgViewportLengthBases LengthBases { get; init; }
     internal SvgPaintOpacity SourceOpacity { get; init; }
     internal SvgRecordingScope RecordingScope { get; init; }
 }

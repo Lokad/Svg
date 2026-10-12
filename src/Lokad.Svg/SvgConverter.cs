@@ -370,6 +370,7 @@ public static class SvgConverter
             double primitiveScaleY = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox ? binding.ObjectBounds.Bottom - binding.ObjectBounds.Top : binding.Transform.D;
             SvgFilterDeviceMap primitiveMap = new(primitiveScaleX * horizontalScale, primitiveScaleY * verticalScale);
             double paddingX = 0, paddingY = 0;
+            double offsetPaddingX = 0, offsetPaddingY = 0;
             foreach (SvgFilterPrimitive primitive in resource.Primitives.Items)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -377,17 +378,43 @@ public static class SvgConverter
                 workUnits++;
                 paddingX += Math.Ceiling(Math.Abs(primitive.SigmaX * primitiveMap.ScaleX) * 4) + Math.Ceiling(Math.Abs(primitive.OffsetX * primitiveMap.ScaleX));
                 paddingY += Math.Ceiling(Math.Abs(primitive.SigmaY * primitiveMap.ScaleY) * 4) + Math.Ceiling(Math.Abs(primitive.OffsetY * primitiveMap.ScaleY));
+                offsetPaddingX += Math.Ceiling(Math.Abs(primitive.OffsetX * primitiveMap.ScaleX));
+                offsetPaddingY += Math.Ceiling(Math.Abs(primitive.OffsetY * primitiveMap.ScaleY));
             }
             SvgPaintBounds visual = binding.VisualBounds;
             double left = Math.Floor(visual.Left * horizontalScale + horizontalOffset), top = Math.Floor(visual.Top * verticalScale + verticalOffset);
             double right = Math.Ceiling(visual.Right * horizontalScale + horizontalOffset), bottom = Math.Ceiling(visual.Bottom * verticalScale + verticalOffset);
-            double frameLeft = left - paddingX, frameTop = top - paddingY;
-            double frameWidth = right - left + paddingX * 2, frameHeight = bottom - top + paddingY * 2;
+            // The source grid only needs the captured image and requested output.
+            // Kernel samples beyond this union are transparent; allocating the
+            // entire halo makes large blurs needlessly exhaust work and storage.
+            double requestedLeft = Math.Max(region.Left, layerBounds.Left), requestedTop = Math.Max(region.Top, layerBounds.Top);
+            double requestedRight = Math.Min(region.Right, layerBounds.Right), requestedBottom = Math.Min(region.Bottom, layerBounds.Bottom);
+            if (requestedRight <= requestedLeft || requestedBottom <= requestedTop) return end + 1;
+            if (right + paddingX < requestedLeft || bottom + paddingY < requestedTop || left - paddingX > requestedRight || top - paddingY > requestedBottom) return end + 1;
+            // Shifted and chained results may feed visible pixels from outside the
+            // final output window. A single blur needs only the complete source;
+            // graphs retain conservative intermediate halo/shift allowances.
+            double replayPaddingX = resource.Primitives.Items.Length > 1 ? paddingX : offsetPaddingX;
+            double replayPaddingY = resource.Primitives.Items.Length > 1 ? paddingY : offsetPaddingY;
+            double frameLeft = Math.Floor(Math.Min(left, requestedLeft - replayPaddingX)), frameTop = Math.Floor(Math.Min(top, requestedTop - replayPaddingY));
+            double frameWidth = Math.Ceiling(Math.Max(right, requestedRight + replayPaddingX)) - frameLeft;
+            double frameHeight = Math.Ceiling(Math.Max(bottom, requestedBottom + replayPaddingY)) - frameTop;
             if (right <= left || bottom <= top) return end + 1;
             if (!double.IsFinite(frameWidth) || !double.IsFinite(frameHeight) || frameWidth > options.Limits.MaximumDimension || frameHeight > options.Limits.MaximumDimension
                 || frameWidth * frameHeight > options.Limits.MaximumPixels || frameWidth * frameHeight > int.MaxValue / 4)
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source and halo exceed the configured surface limits.");
             int fw = (int)frameWidth, fh = (int)frameHeight, sw = (int)(right - left), sh = (int)(bottom - top);
+            bool objectPrimitiveUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
+            SvgAffineTransform primitiveCoordinates = objectPrimitiveUnits
+                ? SvgAffineTransform.FromScaleOffset(primitiveMap.ScaleX, primitiveMap.ScaleY,
+                    binding.ObjectBounds.Left * horizontalScale + horizontalOffset - frameLeft,
+                    binding.ObjectBounds.Top * verticalScale + verticalOffset - frameTop)
+                : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset - frameLeft, verticalOffset - frameTop).ComposeChecked(binding.Transform);
+            SvgPaintBounds gridRegion = new((float)(region.Left - frameLeft), (float)(region.Top - frameTop),
+                (float)(region.Right - frameLeft), (float)(region.Bottom - frameTop));
+            primitiveMap = primitiveMap with { Regions = new(primitiveCoordinates,
+                objectPrimitiveUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), gridRegion)
+                { SourceBounds = new((float)(left - frameLeft), (float)(top - frameTop), (float)(right - frameLeft), (float)(bottom - frameTop)) } };
             long copyWork = (long)sw * sh * 4 + end - first;
             if (copyWork >= options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source capture exceeds the work limit.");
             workUnits += copyWork;
@@ -405,18 +432,18 @@ public static class SvgConverter
             int frameBytes = fw * fh * 4;
             using RenderBudget.BudgetReservation frameOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(frameBytes), SvgMemoryCategory.Surface);
             byte[] source = new byte[frameBytes];
-            int px = (int)paddingX, py = (int)paddingY;
+            int px = (int)(left - frameLeft), py = (int)(top - frameTop);
             for (int row = 0; row < sh; row++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 captured.Pixels.AsSpan(row * sw * 4, sw * 4).CopyTo(source.AsSpan(((row + py) * fw + px) * 4, sw * 4));
             }
-            using RasterizedSurface filtered = SvgFilterPlayback.Apply(source, fw, fh, resource, primitiveMap, budget, limits.MaximumWorkUnits - workUnits, cancellationToken);
+            using SvgFilterResult filtered = SvgFilterPlayback.Apply(source, fw, fh, resource, primitiveMap, budget, limits.MaximumWorkUnits - workUnits, cancellationToken);
             workUnits += filtered.WorkUnits;
-            int restoreLeft = Math.Max(layerBounds.Left, ClampFloor(Math.Max(frameLeft, region.Left) + .5, outputWidth));
-            int restoreTop = Math.Max(layerBounds.Top, ClampFloor(Math.Max(frameTop, region.Top) + .5, outputHeight));
-            int restoreRight = Math.Min(layerBounds.Right, ClampFloor(Math.Min(frameLeft + fw, region.Right) + .5, outputWidth));
-            int restoreBottom = Math.Min(layerBounds.Bottom, ClampFloor(Math.Min(frameTop + fh, region.Bottom) + .5, outputHeight));
+            int restoreLeft = Math.Max(layerBounds.Left, ClampFloor(Math.Max(frameLeft, region.Left), outputWidth));
+            int restoreTop = Math.Max(layerBounds.Top, ClampFloor(Math.Max(frameTop, region.Top), outputHeight));
+            int restoreRight = Math.Min(layerBounds.Right, ClampCeiling(Math.Min(frameLeft + fw, region.Right), outputWidth));
+            int restoreBottom = Math.Min(layerBounds.Bottom, ClampCeiling(Math.Min(frameTop + fh, region.Bottom), outputHeight));
             long restoreWork = (long)Math.Max(0, restoreRight - restoreLeft) * Math.Max(0, restoreBottom - restoreTop);
             if (restoreWork > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter restore exceeds the work limit.");
             workUnits += restoreWork;
@@ -428,6 +455,13 @@ public static class SvgConverter
                     cancellationToken.ThrowIfCancellationRequested();
                     int target = (y * outputWidth + x) * 4, origin = ((int)(y - frameTop) * fw + (int)(x - frameLeft)) * 4;
                     float opacity = command.SourceOpacity.Value * foldedOpacity;
+                    if (filtered.Samples is {} shaderSamples)
+                    {
+                        SvgShaderPaint sample = shaderSamples[origin / 4];
+                        new SvgShaderPaint(sample.Red * opacity, sample.Green * opacity, sample.Blue * opacity, sample.Alpha * opacity)
+                            .Blend(destination.AsSpan(target, 4), activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[target + 3]);
+                        continue;
+                    }
                     int red = (int)MathF.Floor(filtered.Pixels[origin] * opacity + .5f), green = (int)MathF.Floor(filtered.Pixels[origin + 1] * opacity + .5f);
                     int blue = (int)MathF.Floor(filtered.Pixels[origin + 2] * opacity + .5f), alpha = (int)MathF.Floor(filtered.Pixels[origin + 3] * opacity + .5f);
                     if (activeViewportClip.Length != 0)
@@ -2845,7 +2879,7 @@ public static class SvgConverter
 
         static double MapRectangleEdge(double value, double scale, double offset)
         {
-            return MapEdge(value, scale, offset);
+            return MapNativePolygonEdge(value, scale, offset);
         }
 
         static double MapNativePolygonEdge(double value, double scale, double offset)

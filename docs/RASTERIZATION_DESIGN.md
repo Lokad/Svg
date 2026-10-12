@@ -12405,3 +12405,28 @@ twelve-API cases. Normal/tight-denial probes release all accounted storage.
 Ledger 46/48, new source batch 1/3. Finite G2–G9/S17 remain open; next is the
 complete inv-143 filter export. Receipt:
 artifacts/vector-effects-20261012/final-qualification.json.
+
+
+## Shared filter regions and group sources (2026-10-12)
+
+Primitive subregions map separately from blur distances into the retained device
+frame. Crop evaluated outputs while preserving the source halo needed by a blur.
+Large deviations progressively reduce the source image, then blur and restore it.
+The image bounds include its requested primitive output to preserve native
+resampling placement. Shifted/chained graphs retain bounded intermediate padding.
+LinearRGB samples keep final shader precision through composition. Pixel, shader
+and graph arrays have aggregate budget owners and bounded work/cancellation.
+
+Group filter boundaries retain their cascaded declaration and outer opacity.
+After deferred children resolve, one bounded scan aggregates their recorded object
+and visual bounds; existing source replay composes them once before filtering.
+Nested filters and unsupported descendant combinations reject explicitly.
+
+Both unchanged inv-143/144 outputs are exact through all twelve APIs on
+Windows/Linux. Qualification passes 7,308 tests/platform and 123 exact twelve-API
+cases, preserving corporate 27/27 /258/258 and all 2,856 prior rendered PNGs.
+The existing resource scenarios pass success/tight denial with no retained
+accounted storage. Approximate memory accounting remains an engineering target.
+The 24 separate controls have 22 exact outcomes; the 85-pixel rectangle fringe
+and six transparent restoration rounding pixels remain explicit. Receipt:
+artifacts/filter-regions-20261012/final-qualification.json.

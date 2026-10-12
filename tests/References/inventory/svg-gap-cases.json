@@ -1311,8 +1311,8 @@
         "width": 512,
         "height": 341
       },
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Filter attribute 'x' is not implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Complete unchanged original 512x341 transparent output through all twelve raw/prepared APIs on Windows/Linux. Shared primitive regions, object-box coordinates, colored linearRGB blur, bounded requested-output-aware rescaling and grouped SourceGraphic capture. Frozen references and all established exact results preserved; 22/24 diagnostic controls exact, remaining numerical controls explicit.",
       "reference": "tests/References/inventory/inv-143-transparent.png",
       "referenceSha256": "092bdb48e54b239f92845648c8976eaf777a77a1a42d22809b23471a73b0db5a",
       "commonsApiLicense": "Public domain",
@@ -1382,8 +1382,8 @@
         "width": 512,
         "height": 341
       },
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "Group attribute 'filter' is not implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Complete unchanged original 512x341 transparent output through all twelve raw/prepared APIs on Windows/Linux. Shared primitive regions, object-box coordinates, colored linearRGB blur, bounded requested-output-aware rescaling and grouped SourceGraphic capture. Frozen references and all established exact results preserved; 22/24 diagnostic controls exact, remaining numerical controls explicit.",
       "reference": "tests/References/inventory/inv-144-transparent.png",
       "referenceSha256": "b21e5ae07014e70bbaa618f101368116b066a775b421ed1c55cefeb512d55101",
       "commonsApiLicense": "Public domain",

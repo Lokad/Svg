@@ -1643,6 +1643,7 @@ internal sealed class SvgSceneBuilder : IDisposable
     {
         if (_built) throw new InvalidOperationException("The SVG scene has already been built.");
         if (_hasAuthoredGroupScopes) RemoveEmptyGroups();
+        if (_filters is { HasGroupSources: true } filters) ResolveGroupSources(filters);
         _filters?.Seal();
         _built = true;
         SvgSceneStorage storage = SvgSceneStorage.Create(_geometries, _commands, _paintReservations, _maskContents, _maskReservations, _recordedPaintValues, _recordedPaintOwner ?? throw new InvalidOperationException("Paint arena has already transferred."), _vectorContents, _filters);
@@ -1651,6 +1652,49 @@ internal sealed class SvgSceneBuilder : IDisposable
         _paintReservations = new();
         _maskReservations = new();
         return storage;
+
+        void ResolveGroupSources(SvgFilterArena filters)
+        {
+            int active = -1, depth = 0;
+            SvgPaintBounds? objectBounds = null, visualBounds = null;
+            foreach (SvgDrawCommand command in _commands.Items)
+            {
+                _workCounter.Consume(_cancellationToken);
+                if (command.Kind == SvgDrawCommandKind.BeginGroup)
+                {
+                    if (command.RegionKind == SvgLayerRegionKind.Filter)
+                    {
+                        if (active >= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested filter sources are not implemented.");
+                        if (filters.IsGroupSource(command.MaskContentIndex))
+                        { active = command.MaskContentIndex; depth = 0; objectBounds = null; visualBounds = null; }
+                    }
+                    else if (active >= 0)
+                    {
+                        if (command.MaskRegion is not null || command.MaskContentIndex >= 0 || command.MaskAlpha != 255)
+                            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masked or clipped filter descendants are not implemented.");
+                        depth++;
+                    }
+                }
+                else if (active >= 0 && command.Kind == SvgDrawCommandKind.EndGroup)
+                {
+                    if (depth > 0) depth--;
+                    else { filters.SetGroupBounds(active, objectBounds ?? default, visualBounds ?? objectBounds ?? default); active = -1; }
+                }
+                else if (active >= 0 && command.Kind == SvgDrawCommandKind.Geometry)
+                {
+                    SvgGeometry geometry = _geometries[command.GeometryIndex];
+                    if (geometry.LeafMask is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masked filter descendants are not implemented.");
+                    SvgRecordedPaintValue paint = GetRecordedPaintValue(geometry.RecordedPaint);
+                    if (paint.ObjectBounds is not {} box) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Group filter descendants require retained source bounds.");
+                    objectBounds = Union(objectBounds, box);
+                    visualBounds = Union(visualBounds, paint.VisualBounds ?? box);
+                }
+            }
+            if (active >= 0) throw new SvgException(SvgErrorCode.MalformedInput, "Filter group source is unbalanced.");
+
+            static SvgPaintBounds Union(SvgPaintBounds? previous, SvgPaintBounds next) => previous is {} box
+                ? new(Math.Min(box.Left, next.Left), Math.Min(box.Top, next.Top), Math.Max(box.Right, next.Right), Math.Max(box.Bottom, next.Bottom)) : next;
+        }
 
         void RemoveEmptyGroups()
         {

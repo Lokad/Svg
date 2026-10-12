@@ -53,7 +53,8 @@ The retained integer bowtie is exact against its original browser PNG. Native fl
 rectangle endpoints close IBM's three large variants, completing the frozen-cohort
 fidelity target on both platforms.
 
-All admitted original fixture and research comparisons are now exact. Native
+The frozen corporate matrix and completed original documents are exact;
+measured numerical research residuals remain visible in PLAN.md. Native
 stroke coverage keeps zero-signed-area contours carrying local winding, closing
 the final contained-ring witness. [The support queue](PLAN.md#3-ordered-support-queue)
 now targets remaining static SVG combinations, with four sourced
@@ -252,3 +253,12 @@ package from a clean consumer directory:
 ```powershell
 tools/test-package.ps1 -PackageDirectory artifacts/packages -ResultsDirectory artifacts/package-smoke
 ```
+
+The unchanged `inv-143`/`inv-144` filter exports are exact at 512×341 transparent
+through all twelve raw/prepared APIs on Windows/Linux. Shared primitive regions,
+object-box coordinates, linearRGB transfer, bounded large-blur rescaling and
+grouped geometric source capture complete the retained development queue at
+**48/48**. The 24 frozen controls have 22 exact results and two measured numerical
+residuals. Qualification passes 7,308 tests/platform, preserves all 2,856 prior
+rendered PNGs and the corporate 27/27 documents /258/258 variants. Remaining finite
+SVG support and release work stays in [PLAN.md](PLAN.md).

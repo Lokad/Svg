@@ -54,7 +54,22 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
                     "sRGB" => SvgFilterColorSpace.Srgb,
                     _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter color space is not implemented.")
                 };
-                builder.ValidateAttributes(reader, "id class x y width height filterUnits primitiveUnits color-interpolation-filters");
+                builder.ValidateAttributes(reader, "id class x y width height filterUnits primitiveUnits color-interpolation-filters filterRes");
+                if (reader.GetAttribute("filterRes") is string legacyResolution)
+                {
+                    if (legacyResolution.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Legacy filter resolution exceeds the syntax limit.");
+                    work.ConsumeText(legacyResolution.Length, token);
+                    int count = 0;
+                    foreach (Range part in legacyResolution.AsSpan().SplitAny(" ,\t\r\n".AsSpan()))
+                    {
+                        if (legacyResolution.AsSpan()[part].IsEmpty) continue;
+                        count++;
+                        if (count > 2 || !int.TryParse(legacyResolution.AsSpan()[part], NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out int value) || value < 0)
+                            throw new SvgException(SvgErrorCode.MalformedInput, "Legacy filter resolution requires one or two nonnegative integers.");
+                    }
+                    if (count == 0) throw new SvgException(SvgErrorCode.MalformedInput, "Legacy filter resolution cannot be empty.");
+                }
             }
             catch (SvgException error) when (error.ErrorCode != SvgErrorCode.LimitExceeded) { builder.Reject(error); }
             return builder;
@@ -80,9 +95,9 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
             };
             ValidateAttributes(reader, kind switch
             {
-                SvgFilterPrimitiveKind.GaussianBlur => "id in result stdDeviation color-interpolation-filters",
-                SvgFilterPrimitiveKind.Offset => "id in result dx dy color-interpolation-filters",
-                _ => "id in result dx dy stdDeviation flood-color flood-opacity color-interpolation-filters"
+                SvgFilterPrimitiveKind.GaussianBlur => "id in result stdDeviation color-interpolation-filters x y width height",
+                SvgFilterPrimitiveKind.Offset => "id in result dx dy color-interpolation-filters x y width height",
+                _ => "id in result dx dy stdDeviation flood-color flood-opacity color-interpolation-filters x y width height"
             });
             if (reader.GetAttribute("color-interpolation-filters") is string space && space != (_colorSpace == SvgFilterColorSpace.Srgb ? "sRGB" : "linearRGB"))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Mixed primitive filter color spaces are not implemented.");
@@ -99,11 +114,28 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
             double dy = reader.GetAttribute("dy") is string y ? Number(y.AsSpan()) : kind == SvgFilterPrimitiveKind.DropShadow ? 2 : 0;
             SvgColor flood = reader.GetAttribute("flood-color") is string color ? SvgColorParser.Parse(color, SvgRootParser.CssNamedColors) : new(0, 0, 0, 255);
             float opacity = SvgColorParser.ParsePaintOpacity(reader.GetAttribute("flood-opacity")).Value;
-            primitive = new(kind, Input(reader.GetAttribute("in")), sigmaX, sigmaY, dx, dy, flood, opacity);
+            primitive = new(kind, Input(reader.GetAttribute("in")), sigmaX, sigmaY, dx, dy, flood, opacity)
+            {
+                Region = ReadRegion(reader)
+            };
         }
         catch (SvgException error) when (error.ErrorCode != SvgErrorCode.LimitExceeded) { Reject(error); }
         _primitives.Add(primitive);
         _results.Add(new(reader.GetAttribute("result") is string result ? _strings.Copy(result) : null));
+
+        SvgFilterPrimitiveRegion? ReadRegion(XmlReader input)
+        {
+            string? x = input.GetAttribute("x"), y = input.GetAttribute("y"), width = input.GetAttribute("width"), height = input.GetAttribute("height");
+            if (x is null && y is null && width is null && height is null) return null;
+            return new(Read(x), Read(y), Read(width), Read(height));
+
+            SvgFilterLength? Read(string? value)
+            {
+                if (value is null) return null;
+                _work.ConsumeText(value.Length, _token);
+                return Length(value, default);
+            }
+        }
 
         SvgFilterInput Input(string? name)
         {

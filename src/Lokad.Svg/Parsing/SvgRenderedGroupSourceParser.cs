@@ -50,7 +50,8 @@ internal static class SvgRenderedGroupSourceParser
             SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), work, token));
         if (id is not null) state.RenderedGroupDefinitions.TryAdd(id, new([], false, null, null)
             { SymbolContent = new(content, 0, 0), BorrowedFromSymbol = true, RenderedGroupId = id });
-        if (reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null) content.AddUnsupported();
+        if (reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null
+            || style.Filter is string filter && filter.Trim() != "none") content.AddUnsupported();
         if (reader.IsEmptyElement) EndGroup(reader.Depth, state, work, token);
 
         string? Copy(string? value)

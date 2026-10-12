@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='192' height='160'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='192' height='160' color-interpolation-filters='sRGB'><feGaussianBlur stdDeviation='135'/></filter></defs><rect x='48' y='40' width='80' height='60' fill='black' filter='url(#f)'/></svg>

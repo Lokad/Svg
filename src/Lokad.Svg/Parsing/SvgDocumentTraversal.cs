@@ -207,13 +207,22 @@ internal static class SvgDocumentTraversal
                             }
                         }
                         if (parsedGroup.Scope.Kind == SvgGroupKind.Group) state.GroupDepth++;
+                        if (parsedGroup.Scope.HasFilter) state.FilterGroupDepth++;
                         if (parsedGroup.DeferredMask is not null)
                         {
                             state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame, parsedGroup.Scope.InheritedPresentation.Transform));
                         }
-                        if (parsedGroup.Scope.IsolatesOpacity || parsedGroup.Scope.HasDeferredMask)
+                        if (parsedGroup.Scope.IsolatesOpacity || parsedGroup.Scope.HasDeferredMask || parsedGroup.Scope.HasFilter)
                         {
                             state.Scene.BeginSourceOpacityScope(parsedGroup.SourceOpacity, parsedGroup.RecordingScope);
+                            if (parsedGroup.FilterId is {} filterId)
+                            {
+                                int binding = state.Scene.Filters.AddBinding(filterId, default, default,
+                                    parsedGroup.Scope.InheritedPresentation.Transform, parsedGroup.LengthBases, true);
+                                int position = state.Scene.CommandCount - 1;
+                                state.Scene.ReplaceCommand(position, state.Scene.CommandAt(position) with
+                                { RegionKind = SvgLayerRegionKind.Filter, MaskContentIndex = binding });
+                            }
                             if (parsedGroup.Scope.IsolatesOpacity) state.HasOpacityScope = true;
                         }
                     }
@@ -362,6 +371,7 @@ internal static class SvgDocumentTraversal
                     }
                     if (group.HasMaskScope) state.MaskScopes.RemoveLast();
                     if (group.Kind == SvgGroupKind.Group) state.GroupDepth--;
+                    if (group.HasFilter) state.FilterGroupDepth--;
                     for (int pendingGroupIndex = state.PendingGroupClips.Count - 1; pendingGroupIndex >= 0; pendingGroupIndex--)
                     {
                         workCounter.Consume(cancellationToken);
@@ -382,7 +392,7 @@ internal static class SvgDocumentTraversal
                             break;
                         }
                     }
-                    if (group.IsolatesOpacity || group.HasDeferredMask)
+                    if (group.IsolatesOpacity || group.HasDeferredMask || group.HasFilter)
                     {
                         state.Scene.EndOpacityScope();
                         if (group.IsolatesOpacity) state.HasOpacityScope = false;

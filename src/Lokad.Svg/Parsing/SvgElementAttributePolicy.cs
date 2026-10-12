@@ -128,6 +128,7 @@ internal static class SvgElementAttributePolicy
 
     private static bool IsAllowed(XmlReader reader, SvgElementKind kind)
     {
+        if (kind == SvgElementKind.Group && reader.NamespaceURI.Length == 0 && reader.LocalName == "filter") return true;
         // Language metadata does not select a font or introduce host shaping in the admitted label subset.
         if (reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "lang")
         {

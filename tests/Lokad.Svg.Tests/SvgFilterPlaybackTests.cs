@@ -6,6 +6,54 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgFilterPlaybackTests
 {
+    [Fact]
+    public void Extreme_finite_gaussian_deviations_use_the_bounded_native_device_cap()
+    {
+        byte[] capped = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='532'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
+        byte[] extreme = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1e300'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
+        Assert.Equal(SvgConverter.ConvertToPng(capped, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(extreme, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
+
+    [Theory]
+    [InlineData("filter='url(#f)'", "")]
+    [InlineData("class='filtered'", "<style>.filtered { filter:url(#f); }</style>")]
+    [InlineData("style='filter:url(#f) !important;filter:none'", "")]
+    public void Group_sources_compose_overlapping_children_before_filter_and_outer_opacity(string attributes, string css)
+    {
+        byte[] input = Document(css + "<g " + attributes + " opacity='.5'><rect width='4' height='4' fill='red'/><rect width='4' height='4' fill='blue'/></g><defs><filter id='f'><feGaussianBlur stdDeviation='0'/></filter></defs>");
+        SvgRenderOptions options = new(null, 1, new(255, 255, 255, 255), SvgRenderLimits.Default);
+        byte[] png = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        RenderBudget budget = new(1_000_000);
+        DecodedSolidImage image = PngImageDecoder.DecodeSolidColor(png, options.Limits, budget, new ParserWorkCounter(options.Limits.MaximumWorkUnits), CancellationToken.None);
+        Assert.Equal(new SvgColor(127, 127, 255, 255), image.Color);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Hidden_and_empty_groups_do_not_activate_dormant_filter_failures()
+    {
+        byte[] plain = Document("<rect width='4' height='4' fill='blue'/>");
+        byte[] withGroups = Document("<g display='none' filter='url(#missing)'><rect width='4' height='4'/></g><g filter='url(#missing)'/><rect width='4' height='4' fill='blue'/>");
+        Assert.Equal(SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(withGroups, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
+
+    [Theory]
+    [InlineData("<g filter='url(#f)'><rect width='4' height='4' filter='url(#f)'/></g>")]
+    [InlineData("<g filter='url(#f)' clip-path='url(#c)'><rect width='4' height='4'/></g>")]
+    [InlineData("<g filter='url(#f)' mask='url(#m)'><rect width='4' height='4'/></g>")]
+    public void Pending_filter_group_combinations_reject_without_output_and_release_parser_owners(string content)
+    {
+        byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='3'/></filter></defs>" + content);
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using MemoryStream stream = new();
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, stream.Length);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -60,7 +108,7 @@ public sealed class SvgFilterPlaybackTests
         RenderBudget accepted = new(1_000_000);
         byte[] expected;
         long work;
-        using (SvgConverter.RasterizedSurface result = SvgFilterPlayback.Apply(source, 13, 9, resource, new(1, 1), accepted, long.MaxValue, CancellationToken.None))
+        using (SvgFilterResult result = SvgFilterPlayback.Apply(source, 13, 9, resource, new(1, 1), accepted, long.MaxValue, CancellationToken.None))
         { expected = (byte[])result.Pixels.Clone(); work = result.WorkUnits; }
         long peak = accepted.Snapshot().PeakBytes;
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
@@ -76,7 +124,7 @@ public sealed class SvgFilterPlaybackTests
             Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.Apply(source, 13, 9, resource, new(1, 1), budget, work, CancellationToken.None)).ErrorCode);
             Assert.Equal(0, budget.Snapshot().CurrentBytes);
         }
-        using (SvgConverter.RasterizedSurface retry = SvgFilterPlayback.Apply(source, 13, 9, resource, new(1, 1), accepted, work, CancellationToken.None)) Assert.Equal(expected, retry.Pixels);
+        using (SvgFilterResult retry = SvgFilterPlayback.Apply(source, 13, 9, resource, new(1, 1), accepted, work, CancellationToken.None)) Assert.Equal(expected, retry.Pixels);
         Assert.Equal(before, source);
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
         using CancellationTokenSource cancellation = new();
@@ -88,7 +136,7 @@ public sealed class SvgFilterPlaybackTests
     [Theory]
     [InlineData("<feOffset dx='.5'/>")]
     [InlineData("<feGaussianBlur stdDeviation='.5'/>")]
-    [InlineData("<feGaussianBlur stdDeviation='3'/>")]
+    [InlineData("<feDropShadow stdDeviation='1e300'/>")]
     public void Pending_pixel_semantics_fail_before_any_stream_output(string primitive)
     {
         byte[] input = Document("<defs><filter id='f'>" + primitive + "</filter></defs><rect width='4' height='4' fill='red' filter='url(#f)'/>");
