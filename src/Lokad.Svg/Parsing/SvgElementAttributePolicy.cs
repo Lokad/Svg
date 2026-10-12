@@ -70,6 +70,12 @@ internal static class SvgElementAttributePolicy
         while (reader.MoveToNextAttribute())
         {
             workCounter.Consume(cancellationToken);
+            if (kind == SvgElementKind.Root && reader.NamespaceURI.Length == 0
+                && reader.LocalName is "viewport-fill" or "viewport-fill-opacity")
+            {
+                ValidateLegacyViewportPresentation(reader.LocalName, reader.Value, workCounter, cancellationToken);
+                continue;
+            }
             if (reader.NamespaceURI.Length == 0 && kind is SvgElementKind.Rectangle or SvgElementKind.Line or SvgElementKind.Path or SvgElementKind.PointList or SvgElementKind.Circle
                 && reader.LocalName is "font-family" or "font-size" or "font-style" or "font-weight" or "font-stretch" or "font-variant" or "text-anchor" or "writing-mode" or "letter-spacing")
             {
@@ -99,6 +105,25 @@ internal static class SvgElementAttributePolicy
             throw new SvgException(SvgErrorCode.UnsupportedFeature, elementName + " attribute '" + reader.Name + "' is not implemented.");
         }
         reader.MoveToElement();
+
+        // Native SVG2 rendering ignores these SVG Tiny viewport properties. Validate
+        // their bounded values without turning them into a background paint layer.
+        static void ValidateLegacyViewportPresentation(string name, string value, ParserWorkCounter work, CancellationToken token)
+        {
+            if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Viewport presentation exceeds the configured syntax limit.");
+            work.ConsumeText(value.Length, token);
+            string trimmed = value.Trim();
+            if (trimmed == "inherit") return;
+            if (name == "viewport-fill-opacity")
+            {
+                if (!double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double opacity) || !double.IsFinite(opacity))
+                    throw new SvgException(SvgErrorCode.MalformedInput, "Viewport opacity must be finite.");
+                return;
+            }
+            if (trimmed is "none" or "currentColor") return;
+            _ = SvgColorParser.Parse(trimmed, SvgRootParser.CssNamedColors);
+        }
     }
 
     private static bool IsAllowed(XmlReader reader, SvgElementKind kind)
@@ -120,6 +145,13 @@ internal static class SvgElementAttributePolicy
         if ((kind is SvgElementKind.Root or SvgElementKind.Group or SvgElementKind.Text or SvgElementKind.TextSpan) && reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace" && reader.LocalName == "space") return true;
         if (reader.NamespaceURI.Length != 0 && (reader.NamespaceURI == "http://www.w3.org/1999/xlink" || reader.NamespaceURI == "http://www.w3.org/XML/1998/namespace")) return false;
         if (reader.NamespaceURI.Length != 0) return true;
+        if (reader.LocalName == "vector-effect" && kind == SvgElementKind.Use)
+        {
+            if (reader.Value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "SVG scalar attribute values exceed the configured syntax limit.");
+            _ = SvgStrokeStyleSyntax.ParseVectorEffect(reader.Value);
+            return true;
+        }
         bool allowed = kind switch
         {
             SvgElementKind.Root => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "version" or "baseProfile" or "enable-background" or "overflow" or "font-family" or "font-weight" or "font-style" or "font-variant" or "font-size" or "letter-spacing" or "text-anchor" or "color" or "fill" or "fill-opacity" or "fill-rule" or "stroke" or "stroke-opacity" or "stroke-width" or "stroke-miterlimit" or "opacity" or "display" or "visibility" or "clip-rule" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "pathLength" or "color-interpolation" or "style",

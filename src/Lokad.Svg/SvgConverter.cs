@@ -2915,6 +2915,12 @@ public static class SvgConverter
     /// <summary>Probes root dimensions and the output transform without lowering, falling back to unit scales when the root cannot be resolved.</summary>
     internal static (double HorizontalScale, double VerticalScale) TryResolveOutputScales(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
     {
+        SvgAffineTransform map = TryResolveOutputMap(svg, options, budget, cancellationToken);
+        return (map.A, map.D);
+    }
+
+    internal static SvgAffineTransform TryResolveOutputMap(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, CancellationToken cancellationToken)
+    {
         try
         {
             using RenderBudget.BudgetReservation workspace = budget.Reserve(SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, options.Limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
@@ -2926,28 +2932,28 @@ public static class SvgConverter
             {
                 probe.Consume(cancellationToken);
                 if (reader.NodeType != XmlNodeType.Element) continue;
-                if (!reader.LocalName.Equals("svg", StringComparison.Ordinal)) return (1.0, 1.0);
+                if (!reader.LocalName.Equals("svg", StringComparison.Ordinal)) return SvgAffineTransform.Identity;
                 SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, probe, cancellationToken);
                 (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
-                (double horizontalScale, _, double verticalScale, _) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
-                if (!double.IsFinite(horizontalScale) || !double.IsFinite(verticalScale) || horizontalScale <= 0 || verticalScale <= 0) return (1.0, 1.0);
-                return (horizontalScale, verticalScale);
+                (double horizontalScale, double offsetX, double verticalScale, double offsetY) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
+                if (!double.IsFinite(horizontalScale) || !double.IsFinite(verticalScale) || horizontalScale <= 0 || verticalScale <= 0) return SvgAffineTransform.Identity;
+                return SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, offsetX, offsetY);
             }
 
-            return (1.0, 1.0);
+            return SvgAffineTransform.Identity;
         }
         catch (OperationCanceledException) { throw; }
         catch (Exception exception) when (exception is SvgException or XmlException or InvalidOperationException or OverflowException)
         {
-            return (1.0, 1.0);
+            return SvgAffineTransform.Identity;
         }
     }
 
     private static SvgRoot ParseRoot(ReadOnlyMemory<byte> svg, SvgRenderOptions options, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
-        (double outputScaleX, double outputScaleY) = TryResolveOutputScales(svg, options, budget, cancellationToken);
+        SvgAffineTransform outputMap = TryResolveOutputMap(svg, options, budget, cancellationToken);
         ParserWorkCounter counter = workCounter ?? new ParserWorkCounter(options.Limits.MaximumWorkUnits);
-        try { return SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, counter, cancellationToken, outputScaleX, outputScaleY, options.Viewport); }
+        try { return SvgRootParser.Parse(svg, options.Limits, budget, options.FontSnapshot, counter, cancellationToken, outputMap, options.Viewport); }
         catch (XmlException exception) { throw new SvgException(SvgErrorCode.MalformedInput, "SVG XML is malformed: " + exception.Message); }
     }
 

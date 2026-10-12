@@ -8,7 +8,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Eight frozen controls before inv-142 correction: root legacy declarations, non-scaling viewport widths, explicit instance inheritance/source precedence and ordinary stroke preservation. Five rejections, two known width-map differences, one already exact control. Controls stay separate from documents.",
+  "purpose": "Eight frozen controls for complete inv-142 correction: all exact. Root legacy declarations, non-scaling viewport widths, explicit instance inheritance/source precedence and ordinary stroke preservation. Controls stay separate from documents.",
   "cases": [
     {
       "id": "legacy-viewport-presentation",
@@ -23,8 +23,7 @@
       "reference": "references/legacy-viewport-presentation.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "root-oval-non-scaling",
@@ -39,21 +38,7 @@
       "reference": "references/root-oval-non-scaling.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 842,
-        "MaximumChannelError": 255,
-        "MeanAbsoluteError": 11.73191550925926,
-        "RootMeanSquareError": 48.793983897436924,
-        "MaximumAlphaError": 255,
-        "AlphaChangedPixelCount": 842,
-        "MinimumMismatchX": 13,
-        "MinimumMismatchY": 15,
-        "MaximumMismatchX": 82,
-        "MaximumMismatchY": 56,
-        "IsExact": false
-      }
+      "role": "fidelity"
     },
     {
       "id": "root-cubic-non-scaling",
@@ -68,21 +53,7 @@
       "reference": "references/root-cubic-non-scaling.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 596,
-        "MaximumChannelError": 255,
-        "MeanAbsoluteError": 8.350911458333334,
-        "RootMeanSquareError": 41.14860925938423,
-        "MaximumAlphaError": 255,
-        "AlphaChangedPixelCount": 596,
-        "MinimumMismatchX": 0,
-        "MinimumMismatchY": 0,
-        "MaximumMismatchX": 82,
-        "MaximumMismatchY": 43,
-        "IsExact": false
-      }
+      "role": "fidelity"
     },
     {
       "id": "use-inherited-effect",
@@ -97,8 +68,7 @@
       "reference": "references/use-inherited-effect.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "use-source-effect-wins",
@@ -113,8 +83,7 @@
       "reference": "references/use-source-effect-wins.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "use-effect-not-inherited",
@@ -129,8 +98,7 @@
       "reference": "references/use-effect-not-inherited.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "reflected-skew-effect",
@@ -145,8 +113,7 @@
       "reference": "references/reflected-skew-effect.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "ordinary-scaling-preserved",

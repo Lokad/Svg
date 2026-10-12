@@ -1240,8 +1240,8 @@
         "width": 512,
         "height": 266
       },
-      "renderOutcome": "UnsupportedFeature",
-      "observedMessage": "SVG root attribute 'viewport-fill' is not implemented.",
+      "renderOutcome": "renders",
+      "observedMessage": "Complete through all twelve raw/prepared APIs on Windows/Linux against unchanged 512x266 transparent reference. Shared explicit vector-effect inheritance, outer viewport host-coordinate strokes and instance stroke resolution; eight focused controls exact separately.",
       "reference": "tests/References/inventory/inv-142-transparent.png",
       "referenceSha256": "b1e7b7d711bc0a92535bcc5ff1afb42215fd6642ff80b096dbecded0b4a822f8",
       "commonsApiLicense": "Public domain",

@@ -5,14 +5,15 @@ Updated 2026-10-12. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**45/48 retained development documents are complete.** The preceding 35 stay
+**46/48 retained development documents are complete.** The preceding 35 stay
 complete; the newly retained public-domain/CC0 batch is **10/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
 `inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker,
 `inv-137` open/degenerate clips, `inv-141` smiley mask export and
 `inv-136` normalized/inherited/nested clips).
-Three newly retained public-domain exports (`inv-142`–`inv-144`) are **0/3
-complete**. Their original bytes and cross-platform native references are frozen;
+Three newly retained public-domain exports (`inv-142`–`inv-144`) are **1/3
+complete**: the vector-effect export `inv-142` is exact at 512×266 transparent
+through all twelve raw/prepared APIs on Windows/Linux. Their original bytes and cross-platform native references are frozen;
 the previous 45 completed documents stay protected.
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
@@ -685,25 +686,44 @@ denial probe passes. Approximate memory policy and public/API/package contracts
 remain unchanged. Receipt:
 `artifacts/clip-intersections-20261012/final-qualification.json`.
 
-**Next deliverable: complete `inv-142`'s retained vector-effect export at frozen
-512×266 transparent.** Preserve the original Latin-1 bytes. Its initial root
-`viewport-fill` rejection precedes the inherited/local-use non-scaling strokes,
-general transforms, reflection and native cubic source replay needed by the whole
-document. Diagnose each later rejection and mismatch against the unchanged
-reference; the measured G3 width-map defect stays open until a qualified whole
-witness proves its repair. Declare small focused controls before corresponding
-implementation changes, selected by this complete document rather than a G2 grid.
-Eight [vector-effect controls](tests/Research/vector-effects/manifest.json) were
-declared at `4f6c277b` before correction. Healthy cleaned native Windows/Linux
-triples are stable and byte identical. Baselines retain five rejections, two
-root-viewBox width mismatches and one exact ordinary scaling stroke. Preserve
-explicit inheritance, source-authored precedence and non-inheritance independently.
+The complete `inv-142` vector-effect export is exact against the frozen 512×266
+transparent reference through all twelve raw/prepared APIs on Windows/Linux.
+Original Latin-1 XML and oracle bytes are unchanged. Shared bounded validation
+admits legacy root viewport presentation without a background paint layer;
+explicit use/source vector-effect inheritance, independent width/centerline maps
+and instance subdivision resolution reuse the native source constructor.
+Root/container vector-effect declarations and remaining instance combinations
+keep their current gates. They remain on the finite G2–G4 checklist.
+All eight [vector-effect controls](tests/Research/vector-effects/manifest.json)
+declared at `4f6c277b` are exact. Native Windows/Linux triples remain stable and
+byte identical. Their preceding five rejections and two width mismatches are
+repaired; ordinary scaling, source precedence and non-inheritance stay protected.
+
+Complete qualification passes **7,273 tests/platform** (**5,021 core /2,246 visual /
+six FontProbe**), zero failures/skips/build warnings. Corporate **27/27 /258/258**,
+every established exact result, 2,855 unchanged prior ordinary PNGs, the focused
+and static CSS banks and thirty exact font outputs/platform remain protected.
+The only changed prior PNG is the known non-scaling circle: its width correction
+reduces 251,540 changed pixels to 98 (maximum alpha error 7), retaining that conic
+coverage gap explicitly under G3/G4. The complete bank has **99 exact twelve-API
+cases**. Seventeen core cases protect syntax limits, output integrity, sampled
+material denial, cancellation cleanup and identical retry. The existing two-
+workload resource probe passes normal/tight denial with zero retained accounted
+storage. Memory policy, public/API/package contracts and finite G2–G9/S17 scope
+stay unchanged. Receipt:
+`artifacts/vector-effects-20261012/final-qualification.json`.
+
+**Next deliverable: complete `inv-143`'s filter export at unchanged 512×341
+transparent.** Extend shared primitive regions and object-box coordinates,
+large-blur rescaling and bounded legacy resolution validation; diagnose controls
+before each shared fix. Then carry those mechanisms into `inv-144`'s filtered
+overlapping group source. Do not make unrelated G2 combinations prerequisites.
 
 The bounded six-lead screen retained three static fontless public-domain exports:
 
 | Whole original / declared transparent output | Current first gate | Finite support dependencies |
 | --- | --- | --- |
-| [inv-142](tests/Fixtures/candidates/inv-142.svg), SVGvector-effect01; 512×266 | Root `viewport-fill` | G2/G3/G4/G7: validated legacy exporter presentation, inherited/instanced vector effects, composed native stroke maps |
+| [inv-142](tests/Fixtures/candidates/inv-142.svg), SVGvector-effect01; 512×266 | Exact; complete | G2/G3/G4/G7: validated legacy exporter presentation, inherited/instanced vector effects, composed native stroke maps |
 | [inv-143](tests/Fixtures/candidates/inv-143.svg), SVGfilter01; 512×341 | Filter `x` | G8: explicit filter/primitive regions, object-box units, Gaussian blur and resolution declarations |
 | [inv-144](tests/Fixtures/candidates/inv-144.svg), SVGfilter02; 512×341 | Group `filter` | G8 plus G2/G3: filtered source bounds/composition for grouped overlapping fills and strokes |
 
@@ -1000,8 +1020,10 @@ explicit nonpainting or categorized outcome, without invalid owners. Perspective
 maps are outside this static SVG subset. The heart and I Ching documents are
 complete; the radiation symbol is now 9/9 exact after routing oval strokes through
 shared native source replay. Seven new oval controls are exact; the eighth retains
-the discovered non-scaling root-viewBox width defect. Correct that shared width
-map within this exit. The `curved-path-clips/composed-group-cubic` control freezes a new nonuniform
+the discovered non-scaling root-viewBox width defect. The `inv-142` shared
+host-coordinate correction repairs the width map; its unchanged oval reference
+still exposes 98 conic coverage pixels (maximum alpha error 7). Complete that
+remaining numerical discrepancy within this exit. The `curved-path-clips/composed-group-cubic` control freezes a new nonuniform
 composed curve-clip boundary. Its prototype still differs at 58 pixels (maximum
 alpha error 46) after retaining both native clip coverages, so this combination
 continues to reject explicitly. ObjectBoundingBox curved clips remain in the G5
@@ -1540,14 +1562,18 @@ documents** remain protected. Both new `inv-130`/`inv-131` outputs are complete
 (**2/2**). The next ten retained outputs (`inv-132`–`inv-141`) are **10/10
 complete**, completing the previous selected development queue **45/45**.
 Their frozen references and original first gates are listed above; all ten outputs
-are complete. The next three licensed failures make the current ledger **45/48**;
-complete `inv-142`, then select shared dependencies by the remaining full exports.
+are complete. The next three licensed exports make the ledger **46/48**
+after `inv-142`; complete `inv-143`/`inv-144` through their shared finite filter
+dependencies next. The vector-effect checkpoint is sealed by complete
+Windows/Linux twelve-API qualification.
 The plan now covers unsupported SVG within the original
 static, self-contained scope in section 5. The original marker/drop-shadow
 acceptance fixtures are also complete (**2/2**, counted separately). Refresh
 G2–G9 from demonstrated gaps; an admitted document can still expose wrong pixels.
-The measured G3 width-map defect lacks a qualified whole-document witness and
-stays open. Choose shared changes by the complete documents they advance.
+The G3 width-map correction has the complete `inv-142` witness. Its older
+non-scaling circle control improves from 251,540 changed pixels to 98, with
+maximum alpha error 7; that conic coverage discrepancy remains open under G3/G4.
+Choose shared changes by the complete documents they advance.
 
 The original live-text acceptance fixture is complete under its unchanged public-
 font contract. Both original supplied-font documents and the CC0 SVG Translate

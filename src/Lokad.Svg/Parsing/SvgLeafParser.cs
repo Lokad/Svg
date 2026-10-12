@@ -452,7 +452,7 @@ internal static class SvgLeafParser
                 // through the ordinary solid/dashed/painted outline machinery.
                 filled = RetainSingleGeometry(repainted, state, context);
             }
-            bool nonScalingStroke = SvgStrokeStyleSyntax.ParseVectorEffect(reader.GetAttribute("vector-effect"));
+            bool nonScalingStroke = element.Style.NonScalingStroke;
             if (elementName != "circle")
             {
                 if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern)

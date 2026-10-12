@@ -52,7 +52,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             Width = Copy(raw.Width), Linecap = Copy(raw.Linecap), Linejoin = Copy(raw.Linejoin),
             Miterlimit = Copy(raw.Miterlimit), Dasharray = Copy(raw.Dasharray), Dashoffset = Copy(raw.Dashoffset),
             StrokeOpacity = Copy(raw.StrokeOpacity), PathLength = Copy(raw.PathLength), ClipRule = Copy(raw.ClipRule), PaintOrder = raw.PaintOrder,
-            MarkerStart = Copy(raw.MarkerStart), MarkerMid = Copy(raw.MarkerMid), MarkerEnd = Copy(raw.MarkerEnd), Filter = Copy(raw.Filter)
+            VectorEffect = Copy(raw.VectorEffect), MarkerStart = Copy(raw.MarkerStart), MarkerMid = Copy(raw.MarkerMid), MarkerEnd = Copy(raw.MarkerEnd), Filter = Copy(raw.Filter)
         };
         RenderBudget.BudgetReservation reservation = state.Budget.Reserve(512 + ParserCollectionMemory.GetArrayByteCount<Attribute>(reader.AttributeCount), SvgMemoryCategory.Scene);
         try
@@ -99,7 +99,7 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             || resolved with { StrokeOpacity = null } != _constructedStroke with { StrokeOpacity = null };
     }
 
-    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers, SvgPaintOpacity parentOpacity, bool retainMappedContour, SvgDocumentState state)
+    internal SvgDefinition Lower(SvgInheritedStrokeStyle inherited, SvgPaint paint, string? fillRule, string? paintServerFill, SvgPaintOrder paintOrder, SvgMarkerStyle markers, SvgPaintOpacity parentOpacity, bool parentNonScalingStroke, SvgAffineTransform instancePlacement, bool retainMappedContour, SvgDocumentState state)
     {
         _attribute = -1;
         // A use supplies fill only where the source did not author one. The original
@@ -107,9 +107,13 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
         SvgComputedStyle authored = _authored;
         if (_element != "line" && authored.Fill is null && paintServerFill is not null) authored = authored with { Fill = paintServerFill };
         SvgInheritedStrokeStyle resolved = inherited.ResolveChild(_authored);
-        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { OwnOpacity = parentOpacity, PaintOrder = paintOrder, Markers = markers }, SvgInheritedTextStyle.Default,
-            resolved, default, _colors, _work, _token, state.OutputMagnification, fillRule)
+        double instanceMagnification = Math.Max(Math.Sqrt(instancePlacement.A * instancePlacement.A + instancePlacement.B * instancePlacement.B),
+            Math.Sqrt(instancePlacement.C * instancePlacement.C + instancePlacement.D * instancePlacement.D));
+        if (instanceMagnification == 0) instanceMagnification = 1;
+        SvgPaintableElementContext context = new(new(paint, true, true, SvgAffineTransform.Identity) { NonScalingStroke = parentNonScalingStroke, OwnOpacity = parentOpacity, PaintOrder = paintOrder, Markers = markers }, SvgInheritedTextStyle.Default,
+            resolved, default, _colors, _work, _token, state.OutputMagnification * instanceMagnification, fillRule)
         {
+            StrokeHostMap = state.OutputMap.ComposeChecked(instancePlacement),
             RecordingScope = new(1),
             AuthoredStyle = authored,
             RetainInstanceStrokePath = retainMappedContour

@@ -1393,7 +1393,7 @@ internal static class SvgDefinitionParser
         {
             SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
             SvgPaintableElementContext previous = state.PatternRectangleContext;
-            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, false, state), builder, state);
+            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, false, state), builder, state);
             state.PatternTile = tile with { Content = null };
         }
         return builder;

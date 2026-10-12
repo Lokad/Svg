@@ -218,7 +218,7 @@ internal static class SvgStrokeStyleSyntax
             if (!hasPositive) return null;
             if (hasZero && cap != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero-length dashes with round or square caps are not implemented.");
         }
-        bool nonScaling = ParseVectorEffect(reader.GetAttribute("vector-effect"));
+        bool nonScaling = shape.Style.NonScalingStroke;
         double? pathLength = ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
         if (pathLength == 0 && dashes is not null)
         {
@@ -232,9 +232,13 @@ internal static class SvgStrokeStyleSyntax
 
     /// <summary>Parses the vector effect, defaulting to scaling strokes like SVG.</summary>
     internal static bool ParseVectorEffect(string? value)
+        => ParseVectorEffect(value, false);
+
+    internal static bool ParseVectorEffect(string? value, bool parent)
     {
         if (value is null) return false;
         ReadOnlySpan<char> token = value.AsSpan().Trim();
+        if (token.Equals("inherit".AsSpan(), StringComparison.OrdinalIgnoreCase)) return parent;
         if (token.Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
         if (token.Equals("non-scaling-stroke".AsSpan(), StringComparison.OrdinalIgnoreCase)) return true;
         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only scaling and non-scaling strokes are implemented.");

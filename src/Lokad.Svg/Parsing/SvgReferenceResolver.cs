@@ -18,6 +18,7 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal SvgPaintOpacity InheritedStrokeOpacity { get; init; } = SvgPaintOpacity.Opaque;
     internal SvgInheritedStrokeStyle InheritedStroke { get; init; }
     internal string? InheritedFillRule { get; init; }
+    internal bool NonScalingStroke { get; init; }
     internal SvgPaintOrder InheritedPaintOrder { get; init; }
     internal SvgMarkerStyle InheritedMarkers { get; init; }
     internal string? SourceMaskReference { get; init; }
@@ -71,12 +72,20 @@ internal static class SvgReferenceResolver
             }
             // An instanced path is one native draw. Replaying generated integer
             // bands as separate rectangles changes fractional AA and paint order.
+            bool placedNativeStroke = false;
+            if (source.LocalName == "path" && !PlainInstancePlacement(reference, frame).IsTranslation)
+                foreach (SvgGeometry geometry in definition.Geometries)
+                {
+                    workCounter.Consume(cancellationToken);
+                    placedNativeStroke |= geometry.AuthoredPath?.StrokeStyle is not null;
+                }
             bool retainMappedContour = source.LocalName == "path" && definition.Geometries.Length > 0
                 && (definition.Geometries[0].Kind is SvgGeometryKind.OrthogonalBand or SvgGeometryKind.Rectangle
                     || definition.Geometries[0].AuthoredPath is { StrokeStyle: null })
                 || !reference.Transform.IsAxisAligned && source.LocalName is "path" or "rect" or "polygon" or "polyline"
+                || placedNativeStroke
                 || source.LocalName == "line" && PlainInstancePlacement(reference, frame) != SvgAffineTransform.Identity;
-            if (retainMappedContour || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers))
+            if (source.AuthoredStyle.VectorEffect is not null || retainMappedContour || source.RequiresConstruction(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers))
             {
                 foreach (SvgGeometry geometry in definition.Geometries)
                 {
@@ -86,7 +95,7 @@ internal static class SvgReferenceResolver
                     if (geometry.LeafMask is not null && source.GetAttribute("mask") is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, retainMappedContour, state);
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.NonScalingStroke, PlainInstancePlacement(reference, frame), retainMappedContour, state);
                 try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }
@@ -243,7 +252,7 @@ internal static class SvgReferenceResolver
                 SvgViewportFrame? clipFrame = placed.Clip is SvgClipBox clip ? new(0, 0, 1, 1, null, null, clip, 0) : null;
                 using SvgParsedGeometry native = lowering.LowerNativeStrokeCommands(commands, retained.SceneMap,
                     deviceWidth, deviceWidth, miterLimit, SvgStrokeCap.Butt, stroke.Join, null, 0, null,
-                    true, nativeColor, reference.IsPainted, state.OutputMagnification, clipFrame, state.Budget,
+                    true, nativeColor, reference.IsPainted, state.OutputMagnification, SvgAffineTransform.Identity, clipFrame, state.Budget,
                     retained.StrokeStyle?.Shape ?? SvgAuthoredStrokeShape.Path);
                 try { return native.Geometries.ToArray(); }
                 catch { native.Discard(); throw; }

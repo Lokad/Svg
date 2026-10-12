@@ -118,6 +118,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal int SkipDepth { get; set; } = -1;
 
     /// <summary>Gets or sets the root and output magnification applied after lowering, which scales flattening tolerance.</summary>
+    internal SvgAffineTransform OutputMap { get; set; } = SvgAffineTransform.Identity;
     internal double OutputMagnification { get; set; } = 1.0;
 
     internal double OutputTextScale { get; set; } = 1.0;

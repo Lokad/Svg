@@ -110,19 +110,19 @@
       "role": "fidelity",
       "knownDifference": {
         "DimensionsMatch": true,
-        "ChangedPixelCount": 251540,
-        "MaximumChannelError": 255,
-        "MeanAbsoluteError": 104.69030724158654,
-        "RootMeanSquareError": 143.4839528407497,
-        "MaximumAlphaError": 255,
-        "AlphaChangedPixelCount": 251540,
-        "MinimumMismatchX": 0,
-        "MinimumMismatchY": 0,
-        "MaximumMismatchX": 575,
-        "MaximumMismatchY": 519,
+        "ChangedPixelCount": 98,
+        "MaximumChannelError": 85,
+        "MeanAbsoluteError": 0.0007204026442307692,
+        "RootMeanSquareError": 0.14330774359747628,
+        "MaximumAlphaError": 7,
+        "AlphaChangedPixelCount": 98,
+        "MinimumMismatchX": 255,
+        "MinimumMismatchY": 131,
+        "MaximumMismatchX": 417,
+        "MaximumMismatchY": 397,
         "IsExact": false
       },
-      "remainingGap": "Existing non-scaling stroke width is enlarged by the scaled root viewBox; keep this shared width-map dependency visible in G3."
+      "remainingGap": "Root viewBox width enlargement is repaired by the inv-142 host-coordinate stroke change. A separate native conic coverage discrepancy remains at 98 pixels, maximum alpha error 7, against the unchanged 640x520 reference; retain under G3/G4."
     },
     {
       "id": "wide-circle-small",

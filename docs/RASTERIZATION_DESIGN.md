@@ -12371,3 +12371,37 @@ normal/tight-denial cleanup; approximate memory policy and public contracts rema
 unchanged. Ledger 45/45, source batch 10/10; finite G2–G9/S17 remain open. Next is
 bounded licensed original-scope failure sourcing. Receipt:
 artifacts/clip-intersections-20261012/final-qualification.json.
+
+### Instance vector effects and outer viewport stroke construction (2026-10-12)
+
+The original public-domain SVGvector-effect01 export (`inv-142`) consumes its
+unchanged Latin-1 XML at the declared 512×266 transparent output. Root
+`viewport-fill` and `viewport-fill-opacity` receive bounded color/finite-number
+validation and retain the native SVG2 transparent viewport behavior; this does
+not implement SVG Tiny viewport painting. Other unknown attributes still reject.
+
+Vector effect has an initial value of none. Explicit inherit reads the immediate
+parent or use instance; absent declarations do not inherit. Source-authored none
+and non-scaling-stroke retain precedence. Existing source replay carries that
+resolved value independently of ordinarily inherited stroke presentation.
+
+Non-scaling native outlines construct after the composed outer viewport,
+instance and leaf maps. Their inverse host map retains scene geometry for the
+existing replay and paint machinery; width mapping stays independent of the
+centerline map. Ordinary native strokes retain source construction, with instance
+magnification included in subdivision resolution. No alternate shape stroker or
+paint implementation is introduced.
+
+Eight independently frozen controls and the whole export are exact through all
+twelve raw/prepared APIs on Windows/Linux. The previous non-scaling circle width error improves from
+251,540 changed pixels to 98 (maximum alpha error 7); its conic coverage gap stays
+open under G3/G4 on the unchanged reference. Seventeen focused core cases protect
+bounded legacy values, rejected output integrity, material work/memory denial,
+cancellation cleanup and identical retry. Qualification passes 7,273 tests/platform
+(5,021 core /2,246 visual /six FontProbe), with no failures/skips/build warnings.
+Corporate 27/27 /258/258 and every established exact result are preserved;
+2,855 prior ordinary PNGs remain byte unchanged. The complete bank has 99 exact
+twelve-API cases. Normal/tight-denial probes release all accounted storage.
+Ledger 46/48, new source batch 1/3. Finite G2–G9/S17 remain open; next is the
+complete inv-143 filter export. Receipt:
+artifacts/vector-effects-20261012/final-qualification.json.
