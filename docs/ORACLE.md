@@ -103,6 +103,17 @@ smoke command performs that cache-only verification before capture. This is only
 still requires the full recipe metadata, repeated-capture stability checks, and
 fixture admission.
 
+## Linux CI sandbox permissions
+
+Ubuntu CI runners also require permission to create the user namespaces used by
+Chrome's sandbox. The workflow provisions and verifies the pinned Linux executable,
+then loads an AppArmor policy attached to that exact executable path. Its `userns`
+permission follows [Chromium's documented AppArmor setup](https://chromium.googlesource.com/chromium/src/+/main/docs/security/apparmor-userns-restrictions.md).
+The policy applies only on the disposable CI runner. System-wide user-namespace
+restrictions and the sandboxed capture/health requirements are preserved; there is
+no sandbox-disable flag or reference change. The normal three fresh-process smoke
+captures and artifact validator still decide whether this setup is healthy.
+
 ## Windows sandbox permissions and launch health
 
 Setup uses the pinned Chrome installer's

@@ -30,6 +30,22 @@ jobs:
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke
       - if: runner.os == 'Linux'
+        name: Allow the pinned Chrome executable to create its sandbox
+        shell: pwsh
+        run: |
+          $chromeExecutable = & tools/setup-chrome.ps1 -CacheDirectory artifacts/chrome -PinPath tools/chrome-for-testing.linux64.json
+          $chromeSandboxPolicyPath = Join-Path $env:RUNNER_TEMP 'lokad-svg-chrome-apparmor'
+          $chromeSandboxPolicyText = @"
+          abi <abi/4.0>,
+          include <tunables/global>
+          profile lokad-svg-ci-chrome "$chromeExecutable" flags=(unconfined) {
+            userns,
+          }
+          "@
+          Set-Content -LiteralPath $chromeSandboxPolicyPath -Value $chromeSandboxPolicyText -Encoding utf8NoBOM
+          & sudo apparmor_parser --replace $chromeSandboxPolicyPath
+          if ($LASTEXITCODE -ne 0) { throw 'Pinned Chrome AppArmor sandbox policy could not be loaded.' }
+      - if: runner.os == 'Linux'
         shell: pwsh
         run: tools/test-chrome.ps1 -CacheDirectory artifacts/chrome -ResultsDirectory artifacts/chrome-smoke -PinPath tools/chrome-for-testing.linux64.json
       - shell: pwsh
