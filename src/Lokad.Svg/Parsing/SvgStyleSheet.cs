@@ -35,11 +35,15 @@ internal static class SvgStyleSheet
     internal static InlineStyle Resolve(XmlReader reader, BudgetedParserList<CssRule> rules, SvgCssAncestorContext ancestors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgStyleCascade cascade = new();
+        SvgCssElement element = default;
         for (int ruleIndex = 0; ruleIndex < rules.Count; ruleIndex++)
         {
             CssRule rule = rules[ruleIndex];
             workCounter.Consume(cancellationToken);
-            if (!rule.Matches(reader, ancestors, workCounter, cancellationToken)) continue;
+            // The reader stays on this element throughout the cascade. Read after the
+            // first work/cancellation check, and leave the no-rule path untouched.
+            if (ruleIndex == 0) element = SvgCssElement.Read(reader);
+            if (!rule.Matches(element, ancestors, workCounter, cancellationToken)) continue;
             cascade.Apply(rule.Style, rule.Specificity);
         }
         return cascade.ToInlineStyle();
@@ -425,10 +429,10 @@ internal sealed class ParserWorkCounter
 
 internal readonly record struct CssRule(string Selector, CssSpecificity Specificity, InlineStyle Style, bool HasCombinator)
 {
-    internal bool Matches(XmlReader reader, SvgCssAncestorContext ancestors, ParserWorkCounter work, CancellationToken token)
+    internal bool Matches(SvgCssElement element, SvgCssAncestorContext ancestors, ParserWorkCounter work, CancellationToken token)
         => HasCombinator
-            ? SvgCssSelectorSyntax.MatchesChain(Selector, SvgCssElement.Read(reader), ancestors, work, token)
-            : SvgCssSelectorSyntax.Matches(Selector.AsSpan(), SvgCssElement.Read(reader), work, token);
+            ? SvgCssSelectorSyntax.MatchesChain(Selector, element, ancestors, work, token)
+            : SvgCssSelectorSyntax.Matches(Selector.AsSpan(), element, work, token);
 
     internal bool MatchesRoot(string? id, string? classes, ParserWorkCounter work, CancellationToken token)
         => !HasCombinator && SvgCssSelectorSyntax.Matches(Selector.AsSpan(), new("svg", id, classes, true), work, token);

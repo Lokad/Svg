@@ -4047,7 +4047,8 @@ public sealed class SvgRootParserTests
         using BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser, work, CancellationToken.None);
         using SvgCssAncestorContext ancestors = new(rules, budget, work, CancellationToken.None);
 
-        SvgException exception = Assert.Throws<SvgException>(() => rule.Matches(reader, ancestors, work, CancellationToken.None));
+        SvgCssElement element = SvgCssElement.Read(reader);
+        SvgException exception = Assert.Throws<SvgException>(() => rule.Matches(element, ancestors, work, CancellationToken.None));
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
         Assert.Contains("identifiers and class values", exception.Message);

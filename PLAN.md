@@ -748,11 +748,14 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S06 reads CSS element identity once
-per cascade resolution, preserving selectors, rule order and specificity and
-measuring the styled parser. S05's immutable string retention and aggregate
-allowances are qualified; S04's gradient coefficients are prepared outside
-pixel sampling with exact references preserved. S03's measured cache prototype is deferred:
+**Next deliverable:** measure maintenance-review S07's Windows glyph scan
+preparation using the retained supplied-font label before changing the rasterizer.
+Start with invariant dropout bounds, then bounded horizontal crossing reuse if
+the measurements justify it; preserve native cell classification and rounding.
+S06's CSS element identity is read once per cascade resolution and qualified;
+S05's immutable string retention and aggregate allowances are qualified; S04's
+gradient coefficients are prepared outside pixel sampling with exact references
+preserved. S03's measured cache prototype is deferred:
 its public-label comparisons do not establish an end-to-end benefit. The retained
 benchmark and explicit revisit condition are in the maintenance backlog. Continue
 the direct
@@ -1699,8 +1702,8 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02/S04/S05; S03 is explicitly deferred on the measurements below. Take S06,
-then measure S07–S09 before their larger
+and S02/S04/S05/S06; S03 is explicitly deferred on the measurements below.
+Measure S07–S09 before their larger
 raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1712,7 +1715,7 @@ changes when a demonstrated support blocker takes priority.
 | S03 | **Deferred after measurement; prototype removed.** Reuse font-mask preblend tables only when representative profiling justifies it. | The retained public Noto Sans label benchmark measures complete conversion with acquisition outside timing. Revisit after S07/native text profiling identifies table construction as material; then preserve byte-identical tables/references, arithmetic, bounded storage and real work. No cache is a release prerequisite. |
 | S04 | **Complete.** Prepare immutable gradient segment coefficients once per effective replay. | Arbitrary/repeated-stop, alpha, spread, scale, linear/radial references remain exact. The retained rainbow checker improves in the measured end-to-end comparison; binary search, endpoints, float/FMA/division order and dithering are preserved. |
 | S05 | **Complete.** Reuse immutable definition/attribute strings and aggregate reservations with common ownership. | Definition/use-heavy and attribute-heavy parser allocations decrease; forward references, style replay, material denial and cleanup are preserved. Equal Name/LocalName and already-owned values share storage; span copies remain, without global interning or a new arena framework. |
-| S06 | Read CSS element identity once per cascade resolution when rules exist. | Existing stylesheet/combinator tests and styled parser benchmark; preserve selector order, specificity and the cheap no-rules route. No selector index/cache in this item. |
+| S06 | **Complete.** Read CSS element identity once per cascade resolution when rules exist. | Existing stylesheet/combinator and frozen visual checks pass on both platforms. Styled parsing/conversion measurements show a small timing change within overlapping uncertainty ranges and unchanged allocation. Selector order, specificity, work/cancellation checks and the cheap no-rules route remain intact; no selector index/cache. |
 | S07 | Hoist Windows glyph dropout bounds and reuse horizontal scan crossings within a row. | Measure first; exact thin-stroke, vertex, dropout, mapped/composite and supplied-font cases on Windows, relevant Linux checks. Preserve classification/rounding; bound scratch storage. Consider vertical reuse only after measurement, without a width-by-height-by-segment cache. |
 | S08 | Flatten the fallback glyph's identical eight-point quadratic subdivisions once per glyph. | Benchmark a case that actually selects fallback; preserve winding, endpoint arithmetic, finite coordinates and cancellation. Bound/release temporary storage and retain empty-region behavior. Do not claim native-fitting text benefits from fallback measurements. |
 | S09 | Reuse an identical rasterized pattern tile within a lowered paint operation or a small conversion-local owner. | Patterned rectangle stroke and repeated identical instances improve; differing size/map instances do not share. Preserve fractional sampling, phase and alpha. Key content, source box, dimensions, viewBox, mapping and paint inputs; bound retained surfaces and drop reuse under pressure. |
@@ -1861,6 +1864,29 @@ or a consistent timing regression; reduced allocation is the demonstrated result
 Tests, both platform memory-probe summaries and measurements remain under
 `artifacts/maintenance-review-20261012/`. Frozen assets, finite G2–G9/S17 exits and
 the approximate memory policy are unchanged.
+
+**S06 complete (2026-10-13).** One borrowed `SvgCssElement` is read after the
+first rule's existing work/cancellation check and reused by the existing simple
+and combinator matchers for that cascade. A rule-free resolution does not read
+attributes. Rule ordering, specificity, matching work and ancestor storage are
+unchanged; the independent identifier-limit test consumes the updated contract.
+No reader, selector cache or new retained storage is introduced.
+
+Complete Release checks pass on Windows and Linux: **7,327 tests per platform
+(5,049 core, 2,272 visual, six FontProbe)**, zero warnings/errors/skips. Every
+preceding test case remains, including exact references and style/replay/resource
+controls; no additional implementation-mirroring tests were added for this small
+refactor. The existing memory probes passed on both platforms at S05; S06 does
+not add allocations or change ownership, so unchanged memory qualification was
+not repeated merely for this documentation.
+
+The existing parser benchmark now includes 64 shapes under 64 simple/combinator
+rules, with source setup outside timing. Six warmups and 16 measured iterations
+gave **2.772 → 2.643 ms** for parsing and **3.062 → 2.957 ms** for complete
+conversion. Uncertainty ranges overlap; this is a modest local result, not a
+strong general speedup claim. Allocation stays **576.92 KiB / 609.80 KiB**
+respectively. Detailed comparisons and test results remain in ignored
+`artifacts/maintenance-review-20261012/`; frozen inputs and references are unchanged.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.

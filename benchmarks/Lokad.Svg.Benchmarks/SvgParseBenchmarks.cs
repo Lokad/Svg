@@ -11,6 +11,7 @@ public class SvgParseBenchmarks
     private byte[] _attributes = [];
     private byte[] _styledText = [];
     private byte[] _definitionUses = [];
+    private byte[] _styledShapes = [];
 
     [GlobalSetup]
     public void SetUp()
@@ -33,6 +34,14 @@ public class SvgParseBenchmarks
             definitions.Append("<use href='#tile").Append(index).Append("' x='").Append(index % 8 * 8).Append("' y='").Append(index / 8 * 8).Append("'/>");
         definitions.Append("</svg>");
         _definitionUses = System.Text.Encoding.UTF8.GetBytes(definitions.ToString());
+        System.Text.StringBuilder styled = new("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><style>");
+        for (int index = 0; index < 32; index++)
+            styled.Append(".shade").Append(index).Append(" { fill: steelblue; } g .shade").Append(index).Append(" { fill-opacity: .5; }");
+        styled.Append("</style><g>");
+        for (int index = 0; index < 64; index++)
+            styled.Append("<rect id='cell").Append(index).Append("' class='cell shade").Append(index % 32).Append("' x='").Append(index % 8 * 8).Append("' y='").Append(index / 8 * 8).Append("' width='8' height='8'/>");
+        styled.Append("</g></svg>");
+        _styledShapes = System.Text.Encoding.UTF8.GetBytes(styled.ToString());
         System.Text.StringBuilder text = new("<svg xmlns='http://www.w3.org/2000/svg' font-family='Example' font-size='16' fill='red'><style>.label { white-space: pre; }</style><g font-style='italic' style='letter-spacing: 1'>");
         for (int index = 0; index < 8; index++)
         {
@@ -62,4 +71,14 @@ public class SvgParseBenchmarks
 
     [Benchmark]
     public int DiscoverStyledTextRequests() => SvgFontRequestDiscovery.Discover(_styledText, SvgRenderLimits.Default, CancellationToken.None).Length;
+
+    [Benchmark]
+    public int ParseStyledShapes()
+    {
+        using SvgRoot root = SvgRootParser.Parse(_styledShapes, SvgRenderLimits.Default, CancellationToken.None);
+        return root.Geometries.Length;
+    }
+
+    [Benchmark]
+    public int ConvertStyledShapes() => SvgConverter.ConvertToPng(_styledShapes, SvgRenderOptions.Default, CancellationToken.None).Length;
 }
