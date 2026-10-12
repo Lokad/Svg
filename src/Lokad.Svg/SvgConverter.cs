@@ -1605,6 +1605,14 @@ public static class SvgConverter
                 if (!useAnalytic) break;
             }
         }
+        SvgGradientRamp PrepareGradientRamp(ReadOnlySpan<SvgGradientStop> stops, SvgColor start, SvgColor end, double offset1, double offset2)
+        {
+            ParserWorkCounter preparation = new(options.Limits.MaximumWorkUnits - workUnits);
+            SvgGradientRamp ramp = SvgGradientRamp.Create(stops, start, end, offset1, offset2, budget, preparation, cancellationToken);
+            workUnits += preparation.Used;
+            return ramp;
+        }
+
         void RasterizeGradientPolygon(SvgGradientPolygon outline, SvgAuthoredPath? authoredPath, byte[] destination)
         {
             if (!outline.HasFill || outline.Points.Length < 3) return;
@@ -1620,6 +1628,8 @@ public static class SvgConverter
             double offsetSpan = definition.Offset2 - definition.Offset1;
             SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
+            using SvgGradientRamp ramp = denominator != 0 || definition.Stops.Length == 1
+                ? PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2) : default;
 
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
@@ -1719,7 +1729,7 @@ public static class SvgConverter
                     }
                     position = local;
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, ShaderAlpha(outline.Opacity), GradientDither(x, y));
+                    SvgShaderPaint sample = ramp.SampleLinear(position, ShaderAlpha(outline.Opacity), GradientDither(x, y));
                     if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), PolygonClipCoverage(raster, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y));
                 }
@@ -1739,6 +1749,7 @@ public static class SvgConverter
             SvgRectangle box = outline.Box;
             SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (definition.Radius <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
+            using SvgGradientRamp ramp = PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
 
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
@@ -1890,7 +1901,7 @@ public static class SvgConverter
                         if (position > 1) position = 1;
                     }
                     int offset = (y * outputWidth + x) * 4;
-                    SvgShaderPaint sample = SvgShaderPaint.RadialRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, ShaderAlpha(outline.Opacity), GradientDither(x, y));
+                    SvgShaderPaint sample = ramp.SampleRadial(position, ShaderAlpha(outline.Opacity), GradientDither(x, y));
                     if (useAnalytic) walker.PaintPixel(x - storageStartX, destination.AsSpan(offset, 4), SvgAnalyticPaint.Shader(sample), PolygonClipCoverage(raster, x, y));
                     else sample.Blend(destination.AsSpan(offset, 4), ViewportAlpha(CoverageAlpha(255, pixelCoverage), x, y));
                 }
@@ -2260,6 +2271,8 @@ public static class SvgConverter
             double offsetSpan = definition.Offset2 - definition.Offset1;
             SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateLinear(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             if (paint && offsetSpan <= 0 && definition.Stops.Length != 1) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only two-stop increasing-offset linear gradients are implemented.");
+            if (!paint || endX <= startX || endY <= startY || (denominator == 0 && definition.Stops.Length != 1)) return;
+            using SvgGradientRamp ramp = PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
 
             if (paint && (denominator != 0 || definition.Stops.Length == 1))
             for (int y = startY; y < endY; y++)
@@ -2303,7 +2316,7 @@ public static class SvgConverter
                 }
                 position = local;
                 int offset = (y * outputWidth + x) * 4;
-                SvgShaderPaint.Ramp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
+                ramp.SampleLinear(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
             }
             }
 
@@ -2329,6 +2342,8 @@ public static class SvgConverter
             SvgShaderCoordinates nativeCoordinates = SvgShaderCoordinates.CreateRadial(definition, box, horizontalScale, verticalScale, horizontalOffset, verticalOffset);
             int startX = raster.Left, endX = raster.Right, startY = raster.Top, endY = raster.Bottom;
             if (paint && (definition.Radius <= 0 && definition.Stops.Length != 1)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive-radius radial gradients are implemented.");
+            if (!paint || endX <= startX || endY <= startY) return;
+            using SvgGradientRamp ramp = PrepareGradientRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2);
 
             if (paint)
             for (int y = startY; y < endY; y++)
@@ -2425,7 +2440,7 @@ public static class SvgConverter
                     if (position > 1) position = 1;
                 }
                 int offset = (y * outputWidth + x) * 4;
-                SvgShaderPaint.RadialRamp(definition.Stops, definition.Start, definition.End, definition.Offset1, definition.Offset2, position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
+                ramp.SampleRadial(position, ShaderAlpha(opacity), GradientDither(x, y)).Blend(destination.AsSpan(offset, 4), ViewportAlpha(raster.GetAlpha(x, y), x, y));
             }
             }
         }

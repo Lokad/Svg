@@ -748,9 +748,10 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S04 prepares gradient coefficients
-outside pixel sampling, preserving float arithmetic, endpoint/duplicate-stop
-semantics, alpha, spread and dithering. S03's measured cache prototype is deferred:
+**Next deliverable:** maintenance-review S05 reuses safe immutable definition
+strings and aggregates reservations with shared lifetimes, measuring definition/use
+and attribute-heavy parsing. S04's gradient coefficients are prepared outside
+pixel sampling with exact references preserved. S03's measured cache prototype is deferred:
 its public-label comparisons do not establish an end-to-end benefit. The retained
 benchmark and explicit revisit condition are in the maintenance backlog. Continue
 the direct
@@ -1697,7 +1698,7 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02; S03 is explicitly deferred on the measurements below. Take S04–S06,
+and S02/S04; S03 is explicitly deferred on the measurements below. Take S05–S06,
 then measure S07–S09 before their larger
 raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
@@ -1708,7 +1709,7 @@ changes when a demonstrated support blocker takes priority.
 | S01 | Separate visual cases from output-API permutations in existing visual tests. | Preserve every distinct input, viewport, scale, background and platform reference; compare pixels through a canonical API. Retain a small representative raw/prepared six-sink contract matrix, complex and supplied-font scenes, and independently useful API/feature regressions. Measure the complete routine suite once before/after. |
 | S02 | **Complete.** Transform decoded glyph segments directly into final contour arrays; remove the temporary transformed array and copy. | Existing glyph-outline tests and TransformAndCopyContours benchmark: identical multi-contour/mapped output, lower allocated bytes, preserved validation, cancellation and failure cleanup. The segment probe observes actual transformation. |
 | S03 | **Deferred after measurement; prototype removed.** Reuse font-mask preblend tables only when representative profiling justifies it. | The retained public Noto Sans label benchmark measures complete conversion with acquisition outside timing. Revisit after S07/native text profiling identifies table construction as material; then preserve byte-identical tables/references, arithmetic, bounded storage and real work. No cache is a release prerequisite. |
-| S04 | Prepare immutable gradient segment coefficients once per effective replay. | Existing arbitrary/repeated-stop, alpha, spread, scale, linear/radial references remain exact; measure a gradient-heavy document. Preserve binary search, endpoints, float/FMA/division order and dithering; no approximate lookup table. |
+| S04 | **Complete.** Prepare immutable gradient segment coefficients once per effective replay. | Arbitrary/repeated-stop, alpha, spread, scale, linear/radial references remain exact. The retained rainbow checker improves in the measured end-to-end comparison; binary search, endpoints, float/FMA/division order and dithering are preserved. |
 | S05 | Reuse immutable definition/attribute strings when their lifetime permits; aggregate reservations with common ownership. | Definition/use-heavy and attribute-heavy parser measurements; preserve forward references, style replay, material denial and cleanup. Share equal Name/LocalName and already-owned values; retain required span copies, avoid global interning or a new arena framework. |
 | S06 | Read CSS element identity once per cascade resolution when rules exist. | Existing stylesheet/combinator tests and styled parser benchmark; preserve selector order, specificity and the cheap no-rules route. No selector index/cache in this item. |
 | S07 | Hoist Windows glyph dropout bounds and reuse horizontal scan crossings within a row. | Measure first; exact thin-stroke, vertex, dropout, mapped/composite and supplied-font cases on Windows, relevant Linux checks. Preserve classification/rounding; bound scratch storage. Consider vertical reuse only after measurement, without a width-by-height-by-segment cache. |
@@ -1793,6 +1794,34 @@ material or a representative longer label demonstrates a useful bounded reuse
 tradeoff. This maintenance deferral narrows no G2–G9 promise and adds no S17 gate.
 Measurements and the saved prototype stay under
 `artifacts/maintenance-review-20261012/`.
+
+**S04 complete (2026-10-13).** One prepared ramp serves linear/radial rectangle
+and polygon replay. Two-stop factors/biases stay inline without owned storage;
+arbitrary ramps reserve at most 255 segments before allocation and release them
+at replay-scope exit. Preparation consumes real bounded work and checks cancellation.
+The segment search, normalized color divisions, gap reciprocal, factor/bias
+arithmetic, fused interpolation, alpha multiplication order and dithering remain
+unchanged. Repeated and float-collapsed intervals retain right-stop behavior;
+radial padding and two-stop normalization remain distinct. Fully clipped-out
+rectangles prepare no unused coefficients. The previous scalar sampler remains
+an independent compatibility reference for existing coordinate/numerical tests.
+
+Release builds and **7,322 tests/platform** pass on Windows/Linux (5,044 core /
+2,272 visual /six FontProbe), with no failures/skips/warnings. Every preceding
+case is retained; ten focused cases check float bits and prior rejections,
+empty geometry, source independence, material denial, partial-construction cleanup
+and cancellation. All established exact references and the frozen corporate
+**27/27 documents /258/258 variants** remain protected; assets/options are unchanged.
+
+The unchanged retained `inv-140` rainbow checker at 512×512 transparent measures
+**100.5 → 89.93 ms** for complete owned-memory conversion (six warmups/twelve
+iterations in an isolated worktree). Allocated storage increases by approximately
+**2.7 KiB**, with both runs around **5.32 MiB/conversion**. This is the observed
+benefit for that gradient-heavy document, not a universal renderer speedup.
+The existing benchmark project retains SvgGradientDocumentBenchmarks for this
+input. Test results and measurements stay under
+`artifacts/maintenance-review-20261012/`; finite G2–G9/S17 requirements and the
+approximate memory policy are unchanged.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.
