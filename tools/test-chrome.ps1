@@ -95,6 +95,7 @@ $candidates = [System.Collections.Generic.List[string]]::new()
 $candidateHashes = [System.Collections.Generic.List[string]]::new()
 $captureDiagnostics = [System.Collections.Generic.List[object]]::new()
 $profilesBefore = [Collections.Generic.HashSet[string]]::new([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-chrome-*'), [StringComparer]::Ordinal)
+$captureRootsBefore = [Collections.Generic.HashSet[string]]::new([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-capture-*'), [StringComparer]::Ordinal)
 for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
 {
     $candidate = Join-Path $ResultsDirectory "pinned-chrome-smoke-$captureId-$attempt.png"
@@ -162,4 +163,5 @@ catch { if ($_.Exception.Message -notmatch 'deadline|timed out') { throw } }
 if ((Get-FileHash -LiteralPath $wrapperOutput -Algorithm SHA256).Hash -cne $preservedHash) { throw 'Failed capture replaced the existing destination.' }
 if (@(Get-ChildItem -LiteralPath $wrapperDirectory -Filter '*.tmp').Count -ne 0) { throw 'Failed capture left partial publication files.' }
 if (-not $profilesBefore.SetEquals([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-chrome-*'))) { throw 'Chrome smoke or wrapper controls leaked a profile; pre-existing profiles were not modified.' }
+if (-not $captureRootsBefore.SetEquals([string[]][IO.Directory]::GetDirectories([IO.Path]::GetTempPath(), 'lokad-svg-capture-*'))) { throw 'Chrome wrapper controls leaked an owned temporary root; pre-existing roots were not modified.' }
 $fingerprint | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $fingerprintPath -NoNewline -Encoding utf8

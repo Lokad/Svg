@@ -114,6 +114,13 @@ restrictions and the sandboxed capture/health requirements are preserved; there 
 no sandbox-disable flag or reference change. The normal three fresh-process smoke
 captures and artifact validator still decide whether this setup is healthy.
 
+The capture process wrapper supplies a fresh, parent-owned temporary root through
+the child's temporary-directory environment. Chrome profiles and runtime scratch
+therefore remain reclaimable when a forced parent deadline terminates the child
+before its own cleanup executes. The wrapper waits for termination, removes only
+its newly created root and preserves existing destinations and borrowed profiles.
+Smoke tests check both profile and wrapper-root cleanup after timeout rejection.
+
 ## Windows sandbox permissions and launch health
 
 Setup uses the pinned Chrome installer's

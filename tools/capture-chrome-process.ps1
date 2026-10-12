@@ -27,10 +27,17 @@ $start.ArgumentList.Add($ChromeExecutable)
 $start.ArgumentList.Add($Width.ToString([Globalization.CultureInfo]::InvariantCulture))
 $start.ArgumentList.Add($Height.ToString([Globalization.CultureInfo]::InvariantCulture))
 if ($Background -ne 'transparent') { $start.ArgumentList.Add($Background) }
-$process = [Diagnostics.Process]::Start($start)
-if ($null -eq $process) { throw 'Chrome capture process could not be started.' }
-$clock = [Diagnostics.Stopwatch]::StartNew()
-$stderrTask = $process.StandardError.ReadToEndAsync()
+# The parent owns this private temporary root even when its child is forcibly
+# terminated before ChromeProcess can run its profile cleanup.
+$captureTempParent = [IO.Path]::TrimEndingDirectorySeparator([IO.Path]::GetFullPath([IO.Path]::GetTempPath()))
+$captureTempDirectory = [IO.Path]::GetFullPath((Join-Path $captureTempParent ('lokad-svg-capture-' + [Guid]::NewGuid().ToString('N'))))
+if ([IO.Path]::GetDirectoryName($captureTempDirectory) -cne $captureTempParent) { throw 'Capture temporary root escapes the intended temporary directory.' }
+$start.Environment['TMPDIR'] = $captureTempDirectory
+$start.Environment['TEMP'] = $captureTempDirectory
+$start.Environment['TMP'] = $captureTempDirectory
+$process = $null
+$stderrTask = $null
+$createdTempDirectory = $false
 $output = $null
 $input = $null
 $createdStaging = $false
@@ -40,6 +47,12 @@ function Get-RemainingCaptureTime {
     return [TimeSpan]::FromMilliseconds($remaining)
 }
 try {
+    New-Item -ItemType Directory -Path $captureTempDirectory | Out-Null
+    $createdTempDirectory = $true
+    $process = [Diagnostics.Process]::Start($start)
+    if ($null -eq $process) { throw 'Chrome capture process could not be started.' }
+    $clock = [Diagnostics.Stopwatch]::StartNew()
+    $stderrTask = $process.StandardError.ReadToEndAsync()
     $output = [IO.File]::Open($staging, [IO.FileMode]::CreateNew, [IO.FileAccess]::Write, [IO.FileShare]::None)
     $createdStaging = $true
     $outputTask = $process.StandardOutput.BaseStream.CopyToAsync($output)
@@ -61,8 +74,11 @@ try {
 }
 finally {
     try {
-        if (-not $process.HasExited) { $process.Kill($true) }
-        if ($stderrTask.Wait(5000)) { [IO.File]::WriteAllText(($OutputFile + '.stderr.txt'), $stderrTask.GetAwaiter().GetResult()) }
+        if ($null -ne $process) {
+            if (-not $process.HasExited) { $process.Kill($true) }
+            if (-not $process.WaitForExit(5000)) { throw 'Chrome capture process did not terminate after its parent deadline.' }
+        }
+        if ($null -ne $stderrTask -and $stderrTask.Wait(5000)) { [IO.File]::WriteAllText(($OutputFile + '.stderr.txt'), $stderrTask.GetAwaiter().GetResult()) }
     }
     finally {
         try {
@@ -70,8 +86,15 @@ finally {
             if ($null -ne $output) { $output.Dispose() }
         }
         finally {
-            $process.Dispose()
-            if ($createdStaging -and [IO.File]::Exists($staging)) { [IO.File]::Delete($staging) }
+            try {
+                if ($null -ne $process) { $process.Dispose() }
+                if ($createdStaging -and [IO.File]::Exists($staging)) { [IO.File]::Delete($staging) }
+            }
+            finally {
+                if ($createdTempDirectory -and [IO.Directory]::Exists($captureTempDirectory)) {
+                    Remove-Item -LiteralPath $captureTempDirectory -Recurse -Force
+                }
+            }
         }
     }
 }
