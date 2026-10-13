@@ -748,10 +748,10 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** measure maintenance-review S07's Windows glyph scan
-preparation using the retained supplied-font label before changing the rasterizer.
-Start with invariant dropout bounds, then bounded horizontal crossing reuse if
-the measurements justify it; preserve native cell classification and rounding.
+**Next deliverable:** maintenance-review S07's first bounded Windows glyph scan
+preparation change, measured against the supplied-font baseline below. Start with
+invariant dropout bounds, then bounded horizontal crossing reuse if the
+measurements justify it; preserve native cell classification and rounding.
 S06's CSS element identity is read once per cascade resolution and qualified;
 S05's immutable string retention and aggregate allowances are qualified; S04's
 gradient coefficients are prepared outside pixel sampling with exact references
@@ -1666,8 +1666,9 @@ representative success rate. Future representative cohorts must be selected
 before comparison.
 
 Remote Windows/Linux build/test/package/resource CI evidence is verified by the
-[Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38306930641) at
-`c74c0f8b`. Both hosted jobs pass, including
+[Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38324471537) at
+`35fc2cae`, including the completed S01/S02/S04/S05/S06 maintenance batch and
+S03's measurement/defer decision. Both hosted jobs pass, including
 healthy sandboxed Chrome captures and forced-timeout storage cleanup. The frozen
 corporate matrix stays exact on both platforms. Remaining S17 release requirements
 and the finite support queue stay open. No release or general SVG compatibility
@@ -1679,11 +1680,11 @@ claim follows from the failure-selected development corpus.
 
 | ID | Remaining work |
 | --- | --- |
-| R26 | Preserve the complete frozen first cohort; broader representativeness and remote CI remain open. Failure-selected additions are development inputs. |
+| R26 | Preserve the complete frozen first cohort; broader representativeness remains open. Remote Windows/Linux CI is verified at `35fc2cae`. Failure-selected additions are development inputs. |
 | R27 | Execute every declared case and retain admission separately from fidelity. Original fixture/research rendering differences are resolved; newly admitted support gaps require their own unchanged-reference comparison. |
 | R28 | Preserve inverse paint maps; remaining pattern/coordinate combinations are G3/G5/G6. |
 | R30 | Keep shared contour preparation and coverage across four paints. Reuse invariant preparation and consolidate repeated stroke admission through the maintenance backlog; preserve intentional paint-rounding distinctions. |
-| R31 | Existing capture/transport/cleanup and CI artifact validation are retained; Windows/Linux remote CI is verified at `c74c0f8b`. Git identifies implementation, asset hashes protect inputs/oracles/tool downloads. |
+| R31 | Existing capture/transport/cleanup and CI artifact validation are retained; Windows/Linux remote CI is verified at `35fc2cae`. Git identifies implementation, asset hashes protect inputs/oracles/tool downloads. |
 | R33 | Preserve clipping, path/control bounds and AA paint-clip provenance; broader clip/mask combinations are G5. |
 | R34 | Preserve exact analytic contact/winding, density and zero-area native stroke contours. New stroke combinations are G4; general browser fidelity needs new cases. |
 | R35 | Preserve source curves and bitmap-local float mapping; general affine/instance admissions are G2/G3. |
@@ -1887,6 +1888,20 @@ conversion. Uncertainty ranges overlap; this is a modest local result, not a
 strong general speedup claim. Allocation stays **576.92 KiB / 609.80 KiB**
 respectively. Detailed comparisons and test results remain in ignored
 `artifacts/maintenance-review-20261012/`; frozen inputs and references are unchanged.
+
+**S07 baseline started (2026-10-13); implementation remains open.** The existing
+public Noto Sans `AV A` complete-conversion benchmark at `35fc2cae`, with font
+acquisition outside timing, gives **7.007 ms / 142.22 KiB** across six warmups and
+12 measured iterations on Windows. Timing is variable (0.492 ms standard
+deviation); this is a before measurement, not an improvement or completion claim.
+The production path still computes enabled dropout bounds per pixel and gathers
+the same horizontal scans for each pixel across a row. Prepare those invariants
+within the existing per-glyph owner, preserving mapped/implied-point arithmetic,
+cell classification, work and cancellation; measure the finished correction
+against this label before claiming benefit. Use the existing exact thin-stroke,
+vertex, dropout, mapped/composite and supplied-font controls. No width-by-height
+scan cache or new measurement framework is required. Private baseline details:
+`artifacts/maintenance-review-20261012/s07-before/`.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.
