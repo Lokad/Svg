@@ -8,6 +8,9 @@ internal readonly record struct SvgFilterDeviceMap(double ScaleX, double ScaleY)
     internal SvgFilterRegionContext? Regions { get; init; }
 }
 
+/// <summary>Retains one integer-offset source branch and its composed intermediate crop.</summary>
+internal readonly record struct SvgOffsetFilterPlacement(double X, double Y, bool AlphaOnly, SvgPaintBounds Clip);
+
 /// <summary>Maps primitive coordinates to the bounded source grid, separately from Gaussian distances.</summary>
 internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordinates, SvgViewportLengthBases LengthBases, SvgPaintBounds FilterRegion)
 {
@@ -66,29 +69,26 @@ internal static class SvgFilterPlayback
                 token.ThrowIfCancellationRequested();
                 SvgFilterPrimitive primitive = resource.Primitives.Items[index];
                 bool inputLinear = primitive.Input.Index >= 0 && primitive.Input.Index < index && linear[primitive.Input.Index];
-                ReadOnlySpan<byte> input;
-                if (primitive.Input == SvgFilterInput.SourceGraphic) input = graphic;
-                else if (primitive.Input == SvgFilterInput.SourceAlpha)
-                {
-                    if (outputs[count].Pixels is null)
-                    {
-                        Charge(pixels);
-                        outputs[count] = Allocate();
-                        for (int offset = 0; offset < bytes; offset += 4)
-                        {
-                            token.ThrowIfCancellationRequested();
-                            outputs[count].Pixels[offset + 3] = graphic[offset + 3];
-                        }
-                    }
-                    input = outputs[count].Pixels;
-                }
-                else if ((uint)primitive.Input.Index < (uint)index) input = outputs[primitive.Input.Index].Pixels;
-                else throw new SvgException(SvgErrorCode.MalformedInput, "Filter graph input is outside its earlier results.");
+                ReadOnlySpan<byte> input = ReadInput(primitive.Input, index, graphic);
                 outputs[index] = Allocate();
                 Span<byte> output = outputs[index].Pixels;
                 if (map.Regions is {} coordinates)
                 {
                     SvgPaintBounds defaults = primitive.Input.Index >= 0 ? regions[primitive.Input.Index] : coordinates.FilterRegion;
+                    if (primitive.Kind == SvgFilterPrimitiveKind.Merge && primitive.MergeCount > 0)
+                    {
+                        bool first = true;
+                        foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
+                        {
+                            Charge(1);
+                            if (merged.Index < 0) { defaults = coordinates.FilterRegion; break; }
+                            if ((uint)merged.Index >= (uint)index) throw new SvgException(SvgErrorCode.MalformedInput, "Filter merge input is outside its earlier results.");
+                            SvgPaintBounds region = regions[merged.Index];
+                            if (first) { defaults = region; first = false; }
+                            else defaults = new(Math.Min(defaults.Left, region.Left), Math.Min(defaults.Top, region.Top),
+                                Math.Max(defaults.Right, region.Right), Math.Max(defaults.Bottom, region.Bottom));
+                        }
+                    }
                     regions[index] = ResolveRegion(primitive.Region, defaults, coordinates);
                     if (regions[index].Right <= regions[index].Left || regions[index].Bottom <= regions[index].Top) continue;
                 }
@@ -158,6 +158,32 @@ internal static class SvgFilterPlayback
                 {
                     Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY);
                     linear[index] = inputLinear;
+                }
+                else if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
+                {
+                    if (primitive.MergeCount == 1)
+                    {
+                        SvgFilterInput merged = resource.MergeInputs.Items[primitive.MergeFirst];
+                        Charge(bytes);
+                        ReadInput(merged, index, graphic).CopyTo(output);
+                        linear[index] = merged.Index >= 0 && linear[merged.Index];
+                        if (map.Regions is not null) Clip(output, regions[index], CropRounding.Outward);
+                        continue;
+                    }
+                    bool destinationLinear = resource.ColorSpace == SvgFilterColorSpace.LinearRgb;
+                    foreach (SvgFilterInput merged in resource.MergeInputs.Items.AsSpan(primitive.MergeFirst, primitive.MergeCount))
+                    {
+                        ReadOnlySpan<byte> layer = ReadInput(merged, index, graphic);
+                        bool layerLinear = merged.Index >= 0 && linear[merged.Index];
+                        if (layerLinear == destinationLinear) Composite(layer, output);
+                        else
+                        {
+                            using SvgConverter.RasterizedSurface converted = Allocate();
+                            ConvertColor(layer, converted.Pixels, resource.ColorSpace);
+                            Composite(converted.Pixels, output);
+                        }
+                    }
+                    linear[index] = destinationLinear;
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow)
                 {
@@ -244,6 +270,39 @@ internal static class SvgFilterPlayback
             catch { owner.Dispose(); throw; }
         }
 
+        ReadOnlySpan<byte> ReadInput(SvgFilterInput reference, int before, ReadOnlySpan<byte> graphic)
+        {
+            if (reference == SvgFilterInput.SourceGraphic) return graphic;
+            if (reference == SvgFilterInput.SourceAlpha)
+            {
+                if (outputs[count].Pixels is null)
+                {
+                    Charge(pixels);
+                    outputs[count] = Allocate();
+                    for (int offset = 0; offset < bytes; offset += 4)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        outputs[count].Pixels[offset + 3] = graphic[offset + 3];
+                    }
+                }
+                return outputs[count].Pixels;
+            }
+            if ((uint)reference.Index < (uint)before) return outputs[reference.Index].Pixels;
+            throw new SvgException(SvgErrorCode.MalformedInput, "Filter graph input is outside its earlier results.");
+        }
+
+        void Composite(ReadOnlySpan<byte> input, Span<byte> output)
+        {
+            Charge(pixels);
+            for (int offset = 0; offset < bytes; offset += 4)
+            {
+                token.ThrowIfCancellationRequested();
+                const float byteScale = 1f / 255f;
+                new SvgShaderPaint(input[offset] * byteScale, input[offset + 1] * byteScale,
+                    input[offset + 2] * byteScale, input[offset + 3] * byteScale).Blend(output.Slice(offset, 4), 255);
+            }
+        }
+
         void Charge(long amount)
         {
             if (amount > availableWork - work) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter graph exceeds the configured work limit.");
@@ -322,10 +381,7 @@ internal static class SvgFilterPlayback
 
         void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy)
         {
-            if (!double.IsFinite(dx) || !double.IsFinite(dy) || dx < int.MinValue || dx > int.MaxValue || dy < int.MinValue || dy > int.MaxValue)
-                throw new SvgException(SvgErrorCode.LimitExceeded, "Filter offset exceeds the numeric range.");
-            if (dx != Math.Truncate(dx) || dy != Math.Truncate(dy))
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fractional filter offsets are not implemented.");
+            ValidateOffset(dx, dy);
             Charge(pixels);
             for (int y = 0; y < height; y++)
             {
@@ -339,6 +395,14 @@ internal static class SvgFilterPlayback
                         input.Slice((int)(sy * width + sx) * 4, 4).CopyTo(output.Slice((y * width + x) * 4, 4));
                 }
             }
+        }
+
+        static void ValidateOffset(double dx, double dy)
+        {
+            if (!double.IsFinite(dx) || !double.IsFinite(dy) || dx < int.MinValue || dx > int.MaxValue || dy < int.MinValue || dy > int.MaxValue)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Filter offset exceeds the numeric range.");
+            if (dx != Math.Truncate(dx) || dy != Math.Truncate(dy))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fractional filter offsets are not implemented.");
         }
     }
 }

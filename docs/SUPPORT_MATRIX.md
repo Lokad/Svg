@@ -1047,3 +1047,24 @@ transparent restoration rounding pixels. All 7,308 tests/platform, 123 exact
 twelve-API cases and 2,856 prior rendered PNGs pass qualification; corporate
 27/27 /258/258 and all established exact results are preserved. This completes
 the selected development queue at 48/48; finite G2–G9/S17 remain open.
+
+## Ordered offset merges (2026-10-13)
+
+Local `feMerge` nodes admit SourceGraphic, SourceAlpha and earlier named results
+in authored source-over order. Omitted `in` uses the primitive preceding the merge;
+an empty merge is transparent. Filter graphs retain at most 256 primitives and
+256 total merge inputs, with bounded work/storage and categorized forward,
+missing, recursive or unsupported nested content. Both sRGB and linearRGB retain
+their existing conversion policy; a single merged input preserves its source
+color space. Primitive crops survive chained offsets and merging.
+
+Shared integer-offset source replay preserves padded native devices, intermediate
+crops and float placement through the parent CPU bitmap. The unchanged complete
+`inv-146` output and eight separate oval/text controls match frozen platform
+references; four additional canonical [merge controls](../tests/Research/filter-merges/README.md)
+protect the new semantics. Direct uniformly mapped solid text fill/stroke and
+filtered source text retain the preceding qualified glyph route. Earlier broad
+statements that every painted text stroke or merge rejects are superseded by
+these qualified slices. Dashed/non-scaling/stroke-before-fill/path text strokes,
+fractional offsets, mixed primitive color spaces, remaining finite effects and
+other promised container/paint/map combinations stay open under PLAN.md.

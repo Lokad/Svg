@@ -3439,3 +3439,20 @@ Next is full inv-142 against its unchanged 512×266 transparent reference. The
 filter documents retain explicit region/primitive-unit/group source dependencies.
 Corporate27/27 documents /258/258 variants and all previous exact results remain
 protected by the unchanged renderer qualification. Finite G2–G9/S17 stay open.
+
+## Complete offset/merge export (2026-10-13)
+
+The selected development ledger now has **50/50 complete documents**, retaining
+all preceding declared outputs. [inv-146](../tests/Research/offset-merge-document/README.md)
+is Dr. Olaf Hoffmann's unchanged public-domain SVGfeOffset01.svg: 1,589 Latin-1
+XML bytes, explicit 800×700 transparent output, original seven offsets and merge,
+two ellipses and live `SVG` label. Its declared public Noto Sans Regular face 0
+remains supplied under the original `serif` alias, with OFL notice and healthy
+platform capture/font-proof triples. Native references were frozen before renderer
+corrections; no source, text, filter, font or reference substitution was made.
+
+The complete output matches both platform references through twelve raw/prepared
+APIs. Eight focused oval/text controls and four [merge controls](../tests/Research/filter-merges/README.md)
+have separate denominators. This closes the selected document, not finite G2–G9
+or S17, and establishes no representative general SVG success rate. See PLAN.md
+for finished qualification and remaining deliverables.

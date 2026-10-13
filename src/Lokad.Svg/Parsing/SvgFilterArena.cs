@@ -2,7 +2,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgFilterPrimitiveKind : byte { GaussianBlur, Offset, DropShadow, Unsupported }
+internal enum SvgFilterPrimitiveKind : byte { GaussianBlur, Offset, DropShadow, Merge, Unsupported }
 internal enum SvgFilterUnits : byte { ObjectBoundingBox, UserSpace }
 internal enum SvgFilterColorSpace : byte { LinearRgb, Srgb }
 internal readonly record struct SvgFilterInput(int Index)
@@ -17,12 +17,15 @@ internal readonly record struct SvgFilterPrimitiveRegion(SvgFilterLength? X, Svg
 internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, SvgFilterInput Input, double SigmaX, double SigmaY, double OffsetX, double OffsetY, SvgColor Flood, float FloodOpacity)
 {
     internal SvgFilterPrimitiveRegion? Region { get; init; }
+    internal int MergeFirst { get; init; }
+    internal int MergeCount { get; init; }
 }
 internal readonly record struct SvgFilterAdmission(SvgErrorCode Code, string Message);
 internal readonly record struct SvgFilterResource(SvgFilterRegion Region, SvgFilterUnits PrimitiveUnits, SvgFilterColorSpace ColorSpace,
     OwnedSceneArray<SvgFilterPrimitive> Primitives, SvgFilterAdmission? Rejection) : IDisposable
 {
-    public void Dispose() => Primitives.Dispose();
+    internal OwnedSceneArray<SvgFilterInput> MergeInputs { get; init; } = new([], null);
+    public void Dispose() { MergeInputs.Dispose(); Primitives.Dispose(); }
 }
 internal readonly record struct SvgFilterBinding(string? ReferenceId, int ResourceIndex, SvgPaintBounds ObjectBounds,
     SvgPaintBounds VisualBounds, SvgAffineTransform Transform, SvgViewportLengthBases LengthBases)

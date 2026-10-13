@@ -12466,3 +12466,40 @@ and SVG bytes were not changed. The finite G2–G9/S17 exits remain open; this i
 bounded support correction, without a performance or general SVG claim.
 Private logs and case-retention summary are under
 artifacts/maintenance-review-20261012/scaled-use-results.json.
+
+## Ordered merge sources and parent-device mapping (2026-10-13)
+
+The complete public-domain `inv-146` retains its 1,589 Latin-1 XML bytes,
+800×700 transparent output, two stroked ellipses, seven cumulative offsets and
+live supplied-font label. The [offset bank](../tests/Research/offset-merge-document/README.md)
+keeps its original platform references and intended-font proof. Bounded merge
+nodes reference SourceGraphic, SourceAlpha or an earlier result; omitted inputs
+borrow the primitive before the merge. One owned array retains ordered inputs.
+Empty merges paint nothing; one input preserves its color space without a
+quantized round trip. Generic playback retains intermediate primitive crops.
+
+Pure integer-offset graphs with an optional final merge replay one bounded source
+device per existing CPU tile. The source device has one transparent padding texel
+and a distinct inset content clip. Its demand includes the native layer hint's
+drawable and filtered output bounds: an input without ink can still enlarge the
+shared capture and affect clipped curve construction. Intermediate offset crops
+remain composed along each branch; source-over order and sRGB/linearRGB remain
+separate from placement.
+
+The last 66 differing pixels came from collapsing two device translations.
+At the pinned Skia revision, [SkDevice::setGlobalCTM](https://github.com/google/skia/blob/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkDevice.cpp#L76)
+keeps the parent bitmap's rounded float CTM before applying the source device's
+integer origin. Shared authored source mapping now preserves that order rather
+than composing a single mathematically equivalent double translation. Ordinary
+cropped and inset-clipped ellipse diagnostics were already exact and excluded a
+general stroker/curve-clipping repair. The whole document now matches both frozen
+references; [four independent controls](../tests/Research/filter-merges/README.md)
+protect merge order, default alpha input, intermediate crop and large bitmap maps.
+
+Keep the existing general blur/shadow halo unchanged. A region-clamped experiment
+regressed 109 pixels in the original drop-shadow document and its exact fixture;
+it was removed. Offset source capture supplies the needed bounded path without
+changing established blur behavior or raising default resource limits. Focused
+tests protect source immutability, denied work/storage, partial-owner cleanup,
+during-source cancellation and retry. Full platform qualification is recorded
+in PLAN.md; the wider finite G8/G9 exits remain open.

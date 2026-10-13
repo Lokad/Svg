@@ -95,11 +95,15 @@ public sealed class SvgFilterPlaybackTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
-    [Fact]
-    public void Graph_limits_release_intermediates_preserve_source_and_allow_exact_retry()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Graph_limits_release_intermediates_preserve_source_and_allow_exact_retry(bool merge)
     {
         RenderBudget parserBudget = new(1_000_000);
-        using SvgRoot root = SvgRootParser.Parse(Document("<defs><filter id='f'><feDropShadow stdDeviation='3' dx='1' dy='1' flood-opacity='.5'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>"), SvgRenderLimits.Default, parserBudget, CancellationToken.None);
+        string graph = "<feDropShadow stdDeviation='3' dx='1' dy='1' flood-opacity='.5' result='a'/>"
+            + (merge ? "<feMerge><feMergeNode in='a'/><feMergeNode in='SourceAlpha'/><feMergeNode in='SourceGraphic'/></feMerge>" : "");
+        using SvgRoot root = SvgRootParser.Parse(Document("<defs><filter id='f'>" + graph + "</filter></defs><rect width='4' height='4' filter='url(#f)'/>"), SvgRenderLimits.Default, parserBudget, CancellationToken.None);
         SvgFilterArena arena = root.SceneStorage?.Filters ?? throw new InvalidOperationException();
         SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(root.Commands[0].MaskContentIndex).ResourceIndex);
         byte[] source = new byte[13 * 9 * 4];
@@ -152,6 +156,137 @@ public sealed class SvgFilterPlaybackTests
         using MemoryStream stream = new();
         Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, stream.Length);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Merge_nodes_preserve_authored_source_over_order(bool reverse)
+    {
+        string nodes = reverse ? "<feMergeNode in='SourceGraphic'/><feMergeNode in='a'/>" : "<feMergeNode in='a'/><feMergeNode in='SourceGraphic'/>";
+        byte[] source = [128, 0, 0, 128, 0, 0, 128, 128];
+        byte[] pixels = Apply("<feOffset dx='1' result='a'/><feMerge>" + nodes + "</feMerge>", source, 2);
+        Assert.Equal(reverse ? new byte[] { 128, 0, 64, 192 } : [64, 0, 128, 192], pixels.AsSpan(4, 4).ToArray());
+        Assert.Equal(new byte[] { 128, 0, 0, 128, 0, 0, 128, 128 }, source);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("in='a'")]
+    public void Missing_merge_input_borrows_the_result_before_merge(string input)
+    {
+        byte[] pixels = Apply("<feOffset in='SourceAlpha' result='a'/><feMerge><feMergeNode in='SourceGraphic'/><feMergeNode " + input + "/></feMerge>", [0, 0, 128, 128], 1);
+        Assert.Equal(new byte[] { 0, 0, 64, 192 }, pixels);
+    }
+
+    [Theory]
+    [InlineData("<feMerge/>")]
+    [InlineData("<feMerge></feMerge>")]
+    public void Empty_merge_produces_transparent_pixels(string primitive)
+        => Assert.Equal(new byte[4], Apply(primitive, [100, 40, 20, 128], 1));
+
+    [Fact]
+    public void Single_merge_input_preserves_its_srgb_bytes_without_a_color_round_trip()
+    {
+        byte[] source = [20, 41, 63, 128];
+        Assert.Equal(source, Apply("<feMerge><feMergeNode/></feMerge>", source, 1));
+    }
+
+    [Theory]
+    [InlineData("<feMerge><feMergeNode in='later'/></feMerge><feOffset result='later'/>")]
+    [InlineData("<feMerge result='self'><feMergeNode in='self'/></feMerge>")]
+    [InlineData("<feMerge><feMergeNode dx='1'/></feMerge>")]
+    [InlineData("<feMerge><g><feMergeNode/></g></feMerge>")]
+    public void Invalid_merge_graphs_remain_dormant_until_used_and_release_owners(string graph)
+    {
+        byte[] plain = Document("<rect width='4' height='4'/>");
+        byte[] dormant = Document("<defs><filter id='f'>" + graph + "</filter></defs><rect width='4' height='4'/>");
+        Assert.Equal(SvgConverter.ConvertToPng(plain, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(dormant, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        byte[] active = Document("<defs><filter id='f'>" + graph + "</filter></defs><rect width='4' height='4' filter='url(#f)'/>");
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(active, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using MemoryStream output = new();
+        Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(active, output, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(0, output.Length);
+    }
+
+    [Fact]
+    public void Merge_input_growth_has_a_bounded_limit_and_releases_partial_storage()
+    {
+        string nodes = string.Concat(Enumerable.Repeat("<feMergeNode in='SourceGraphic'/>", 257));
+        byte[] input = Document("<defs><filter id='f'><feMerge>" + nodes + "</feMerge></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Offset_source_cancellation_releases_the_partial_bitmap_and_allows_retry()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='800' height='700'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='800' height='700'><feOffset dx='315' dy='450' result='a'/><feMerge><feMergeNode in='SourceGraphic'/><feMergeNode in='a'/></feMerge></filter></defs><g filter='url(#f)' transform='translate(0 0)'><ellipse cx='48' cy='48' rx='45' ry='28' fill='none' stroke='blue' stroke-width='2'/></g></svg>");
+        RenderBudget budget = new(16_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            long retained = budget.Snapshot().CurrentBytes;
+            using CancellationTokenSource cancellation = new();
+            bool reached = false;
+            using (SvgAnalyticPaintProbe.Arm((phase, count) => { reached = true; cancellation.Cancel(); }))
+            {
+                OperationCanceledException error = Assert.ThrowsAny<OperationCanceledException>(() =>
+                {
+                    using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, cancellation.Token);
+                });
+                Assert.Equal(cancellation.Token, error.CancellationToken);
+            }
+            Assert.True(reached);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            long work;
+            byte[] pixels;
+            using (SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
+            {
+                Assert.Contains(retry.Pixels, value => value != 0);
+                work = retry.WorkUnits;
+                pixels = retry.Pixels.ToArray();
+            }
+            foreach (long allowedWork in new[] { work / 2, work - 1 })
+            {
+                SvgRenderLimits limits = SvgRenderLimits.Default;
+                limits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
+                    limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)allowedWork), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                {
+                    using SvgConverter.RasterizedSurface denied = SvgConverter.Rasterize(scene, new(null, 1, SvgColor.Transparent, limits), budget, CancellationToken.None);
+                }).ErrorCode);
+                Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            }
+            RenderBudget tight = new(budget.Snapshot().PeakBytes - retained - 1_024);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            {
+                using SvgConverter.RasterizedSurface denied = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, tight, CancellationToken.None);
+            }).ErrorCode);
+            Assert.Equal(0, tight.Snapshot().CurrentBytes);
+            using SvgConverter.RasterizedSurface final = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.Equal(pixels, final.Pixels);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    private static byte[] Apply(string graph, byte[] source, int width)
+    {
+        RenderBudget parserBudget = new(1_000_000);
+        byte[] input = Document("<defs><filter id='f' color-interpolation-filters='sRGB'>" + graph + "</filter></defs><rect width='4' height='4' filter='url(#f)'/>");
+        byte[] pixels;
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parserBudget, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+            RenderBudget rasterBudget = new(1_000_000);
+            using (SvgFilterResult result = SvgFilterPlayback.Apply(source, width, 1, resource, new(1, 1), rasterBudget, 1_000_000, CancellationToken.None)) pixels = result.Pixels.ToArray();
+            Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parserBudget.Snapshot().CurrentBytes);
+        return pixels;
     }
 
     private static byte[] Document(string content) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'>" + content + "</svg>");

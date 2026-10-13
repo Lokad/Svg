@@ -5,7 +5,11 @@
 namespace Lokad.Svg.Rendering;
 
 /// <summary>Distinguishes a bordered edge-construction clip from its exclusively owned output pixels.</summary>
-internal readonly record struct SvgCpuRasterContext(SvgAnalyticClipBounds BitmapClip, SvgAnalyticClipBounds Interior);
+internal readonly record struct SvgCpuRasterContext(SvgAnalyticClipBounds BitmapClip, SvgAnalyticClipBounds Interior)
+{
+    internal SvgCpuBitmapOrigin? ConstructionOrigin { get; init; }
+    internal SvgCpuBitmapOrigin Origin => ConstructionOrigin ?? new(BitmapClip.Left, BitmapClip.Top);
+}
 
 /// <summary>Identifies the canvas origin of one bordered software bitmap.</summary>
 internal readonly record struct SvgCpuBitmapOrigin(int X, int Y);
@@ -20,11 +24,20 @@ internal readonly struct SvgCpuRasterGrid
     private readonly int _tileHeight;
 
     internal SvgCpuRasterGrid(int width, int height)
+        : this(width, height, false) { }
+
+    internal SvgCpuRasterGrid(int width, int height, bool singleBitmap)
     {
         if (width <= 0) throw new ArgumentOutOfRangeException(nameof(width));
         if (height <= 0) throw new ArgumentOutOfRangeException(nameof(height));
         _width = width;
         _height = height;
+        if (singleBitmap)
+        {
+            _tileWidth = Math.Max(3, width);
+            _tileHeight = Math.Max(3, height);
+            return;
+        }
         int tileWidth = 256;
         int tileHeight = 256;
         if (width < tileWidth) tileHeight = 512;

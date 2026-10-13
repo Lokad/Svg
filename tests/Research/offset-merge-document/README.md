@@ -29,7 +29,7 @@ and source replay. Finite G3/G8/G9 exits remain open.
 Composed native conic placement and the shared source stroke route now make all
 five oval controls exact on Windows and Linux. The complete document advances
 through its original live-text label to the ordered merge requirement. Its source, text,
-filter chain and both references remain unchanged; it is still incomplete.
+filter chain and both references remain unchanged.
 
 Three predeclared CC0 supplied-font controls retain fill plus stroke opacity,
 stroke-only winding and the document's exact scale/rotation/anchor/paint context.
@@ -39,4 +39,14 @@ the complete document and now match unchanged references on both platforms.
 The shared direct-text route retains native glyph masks and stroke construction,
 including translucent fill/stroke paint and uniform scale/rotation placement.
 Dashed, non-scaling and stroke-before-fill text remain explicit unsupported
-combinations in finite G9; the complete offset/merge document stays open.
+combinations in finite G9.
+
+Bounded ordered merge admission and shared source capture now make the complete
+document exact against both frozen references. Default merge inputs refer to the
+primitive before the merge; explicit nodes preserve source-over order. Offset
+chains retain intermediate crops. Source devices preserve the native parent CTM's
+float rounding and keep padded bitmap origins separate from content clips.
+Four [independent merge controls](../filter-merges/README.md) protect order, alpha,
+crop and bitmap mapping without multiplying visual cases by API permutations.
+Complete-document acceptance retains all twelve raw/prepared outputs. This
+document closes its own deliverable; the wider finite G8/G9 promises remain open.

@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "Four orthogonal offset/merge controls against unchanged independent platform references; complete supplied-font inv-146 is tracked separately.",
+  "cases": [
+    {
+      "id": "ordered-srgb",
+      "input": "ordered-srgb.svg",
+      "width": 48,
+      "height": 32,
+      "sourceSha256": "9f608d9a1645442abb9cd6076f0e3b8f616c7b147e1f552917cf2bb21c8e6c69",
+      "background": "transparent",
+      "role": "fidelity",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused SVG dedicated through its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before native captures to protect identified ordered merge, default alpha, intermediate crop and parent/source-device float mapping semantics. Separate from retained whole document completion.",
+      "reference": "references/ordered-srgb.png",
+      "referenceSha256": "2f4720f82922a69a81a9d7cc13f4f22657c73904d5391daadf6ac5927f82c08d",
+      "captures": [
+        {
+          "pngSha256": "2f4720f82922a69a81a9d7cc13f4f22657c73904d5391daadf6ac5927f82c08d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2f4720f82922a69a81a9d7cc13f4f22657c73904d5391daadf6ac5927f82c08d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2f4720f82922a69a81a9d7cc13f4f22657c73904d5391daadf6ac5927f82c08d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/ordered-srgb.png",
+      "linuxReferenceSha256": "2f4720f82922a69a81a9d7cc13f4f22657c73904d5391daadf6ac5927f82c08d",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2f4720f82922a69a81a9d7cc13f4f22657c73904d5391daadf6ac5927f82c08d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2f4720f82922a69a81a9d7cc13f4f22657c73904d5391daadf6ac5927f82c08d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2f4720f82922a69a81a9d7cc13f4f22657c73904d5391daadf6ac5927f82c08d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "default-alpha",
+      "input": "default-alpha.svg",
+      "width": 48,
+      "height": 32,
+      "sourceSha256": "61710c77ae8293a475f503ff617bfa042f8a0ce85194031c73b4fef72869cc6e",
+      "background": "transparent",
+      "role": "fidelity",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused SVG dedicated through its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before native captures to protect identified ordered merge, default alpha, intermediate crop and parent/source-device float mapping semantics. Separate from retained whole document completion.",
+      "reference": "references/default-alpha.png",
+      "referenceSha256": "abf92f54c202bb9ab281bc9a04b44f63522e79cfda469c1e19be91258836d8f0",
+      "captures": [
+        {
+          "pngSha256": "abf92f54c202bb9ab281bc9a04b44f63522e79cfda469c1e19be91258836d8f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "abf92f54c202bb9ab281bc9a04b44f63522e79cfda469c1e19be91258836d8f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "abf92f54c202bb9ab281bc9a04b44f63522e79cfda469c1e19be91258836d8f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/default-alpha.png",
+      "linuxReferenceSha256": "abf92f54c202bb9ab281bc9a04b44f63522e79cfda469c1e19be91258836d8f0",
+      "linuxCaptures": [
+        {
+          "pngSha256": "abf92f54c202bb9ab281bc9a04b44f63522e79cfda469c1e19be91258836d8f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "abf92f54c202bb9ab281bc9a04b44f63522e79cfda469c1e19be91258836d8f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "abf92f54c202bb9ab281bc9a04b44f63522e79cfda469c1e19be91258836d8f0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "cropped-input",
+      "input": "cropped-input.svg",
+      "width": 48,
+      "height": 32,
+      "sourceSha256": "7b998ff7ced2468afb89e7dc2c91035ff8fc6df1468a36d98a8e889b715222ec",
+      "background": "transparent",
+      "role": "fidelity",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused SVG dedicated through its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before native captures to protect identified ordered merge, default alpha, intermediate crop and parent/source-device float mapping semantics. Separate from retained whole document completion.",
+      "reference": "references/cropped-input.png",
+      "referenceSha256": "d41c21e358e89be64d4b96b61ddb77f414d6670d40b630cf98748fc758778da6",
+      "captures": [
+        {
+          "pngSha256": "d41c21e358e89be64d4b96b61ddb77f414d6670d40b630cf98748fc758778da6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d41c21e358e89be64d4b96b61ddb77f414d6670d40b630cf98748fc758778da6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d41c21e358e89be64d4b96b61ddb77f414d6670d40b630cf98748fc758778da6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/cropped-input.png",
+      "linuxReferenceSha256": "d41c21e358e89be64d4b96b61ddb77f414d6670d40b630cf98748fc758778da6",
+      "linuxCaptures": [
+        {
+          "pngSha256": "d41c21e358e89be64d4b96b61ddb77f414d6670d40b630cf98748fc758778da6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d41c21e358e89be64d4b96b61ddb77f414d6670d40b630cf98748fc758778da6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d41c21e358e89be64d4b96b61ddb77f414d6670d40b630cf98748fc758778da6",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "parent-bitmap-map",
+      "input": "parent-bitmap-map.svg",
+      "width": 800,
+      "height": 700,
+      "sourceSha256": "fd366c6a8a4a0f5d5cf0af6385a10b7a5aa3f57701ed5bbf14a669755e24a421",
+      "background": "transparent",
+      "role": "fidelity",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused SVG dedicated through its SPDX CC0-1.0 declaration.",
+      "selection": "Declared before native captures to protect identified ordered merge, default alpha, intermediate crop and parent/source-device float mapping semantics. Separate from retained whole document completion.",
+      "reference": "references/parent-bitmap-map.png",
+      "referenceSha256": "6fabf115f99fd1920d3522abbeae6dfb1fb074705707bf7ecd55b96829b2d5fd",
+      "captures": [
+        {
+          "pngSha256": "6fabf115f99fd1920d3522abbeae6dfb1fb074705707bf7ecd55b96829b2d5fd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6fabf115f99fd1920d3522abbeae6dfb1fb074705707bf7ecd55b96829b2d5fd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6fabf115f99fd1920d3522abbeae6dfb1fb074705707bf7ecd55b96829b2d5fd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/parent-bitmap-map.png",
+      "linuxReferenceSha256": "6fabf115f99fd1920d3522abbeae6dfb1fb074705707bf7ecd55b96829b2d5fd",
+      "linuxCaptures": [
+        {
+          "pngSha256": "6fabf115f99fd1920d3522abbeae6dfb1fb074705707bf7ecd55b96829b2d5fd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6fabf115f99fd1920d3522abbeae6dfb1fb074705707bf7ecd55b96829b2d5fd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6fabf115f99fd1920d3522abbeae6dfb1fb074705707bf7ecd55b96829b2d5fd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}
