@@ -104,6 +104,7 @@ public sealed class SvgCurvedFontDocumentTests
     [Theory]
     [InlineData("curved-font-documents")]
     [InlineData("static-css-document")]
+    [InlineData("mask-group-documents")]
     public void Public_font_bank_pins_evaluation_data_and_frozen_native_reference_triples(string family)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
@@ -136,6 +137,42 @@ public sealed class SvgCurvedFontDocumentTests
     }
 
     private static string FontDirectory => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
+
+    [Theory]
+    [InlineData("inv-145-1400x1000-transparent")]
+    [InlineData("group-alias")]
+    [InlineData("nested-opacity")]
+    [InlineData("mapped-strokes")]
+    [InlineData("forward-use")]
+    [InlineData("anonymous-and-siblings")]
+    public async Task Supplied_mask_document_and_controls_preserve_their_declared_native_outcomes(string identity)
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "mask-group-documents");
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+        JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(item, "input")));
+        byte[] unchanged = input.ToArray();
+        SvgViewport viewport = new(item.GetProperty("width").GetInt32(), item.GetProperty("height").GetInt32());
+        if (Required(item, "rendererOutcome") == "unsupported")
+        {
+            SvgException error = await Assert.ThrowsAsync<SvgException>(async () =>
+            {
+                using SvgPreparedDocument pending = await SvgPreparedDocument.CreateAsync(input, Catalog(directory), Provider(), new(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None);
+                pending.ConvertToPng(CancellationToken.None);
+            });
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
+        }
+        else
+        {
+            using SvgPreparedDocument prepared = await SvgPreparedDocument.CreateAsync(input, Catalog(directory), Provider(), new(viewport, 1, SvgColor.Transparent, SvgRenderLimits.Default, null), CancellationToken.None);
+            ReadOnlyMemory<byte> png = prepared.ConvertToPng(CancellationToken.None);
+            byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
+            PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216));
+            if (Required(item, "rendererOutcome") == "exact") Assert.True(comparison.IsExact, identity + ": " + comparison);
+            else Assert.Equal(item.GetProperty(OperatingSystem.IsLinux() ? "linuxComparison" : "comparison").Deserialize<PixelComparison>(), comparison);
+        }
+        Assert.Equal(unchanged, input);
+    }
 
     private static ValueTask<SvgFontSnapshot> Prepare(byte[] input) => SvgFontSnapshot.CreateAsync(input, Catalog(), Provider(), CancellationToken.None);
 
@@ -450,28 +487,31 @@ public sealed class SvgCurvedFontDocumentTests
     [Fact]
     public void Missing_corrupt_and_substituted_image_fonts_have_distinct_frozen_native_pixels()
     {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
-        JsonElement intended = manifest.RootElement.GetProperty("cases")[0];
-        string proofDirectory = Path.Combine(DirectoryPath, "font-use-proof");
-        using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(proofDirectory, "qualification.json")));
-        Assert.Equal(2, proof.RootElement.GetProperty("platforms").GetArrayLength());
-        foreach (JsonElement platform in proof.RootElement.GetProperty("platforms").EnumerateArray())
+        foreach (string directory in new[] { DirectoryPath, Path.Combine(AppContext.BaseDirectory, "Research", "mask-group-documents") })
         {
-            bool linux = Required(platform, "platform") == "linux";
-            byte[] positive = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(intended, linux ? "linuxReference" : "reference")));
-            Assert.Equal(3, platform.GetProperty("cases").GetArrayLength());
-            foreach (JsonElement witness in platform.GetProperty("cases").EnumerateArray())
+            using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+            JsonElement intended = manifest.RootElement.GetProperty("cases")[0];
+            string proofDirectory = Path.Combine(directory, "font-use-proof");
+            using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(proofDirectory, "qualification.json")));
+            Assert.Equal(2, proof.RootElement.GetProperty("platforms").GetArrayLength());
+            foreach (JsonElement platform in proof.RootElement.GetProperty("platforms").EnumerateArray())
             {
-                byte[] negative = File.ReadAllBytes(Path.Combine(proofDirectory, Required(witness, "reference")));
-                PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(positive, 16_777_216), PngRgbaDecoder.Decode(negative, 16_777_216));
-                Assert.Equal(witness.GetProperty("changedPixelsFromIntendedFont").GetInt32(), comparison.ChangedPixelCount);
-                Assert.False(comparison.IsExact);
-                Assert.Equal(3, witness.GetProperty("captures").GetArrayLength());
-                foreach (JsonElement capture in witness.GetProperty("captures").EnumerateArray())
+                bool linux = Required(platform, "platform") == "linux";
+                byte[] positive = File.ReadAllBytes(Path.Combine(directory, Required(intended, linux ? "linuxReference" : "reference")));
+                Assert.Equal(3, platform.GetProperty("cases").GetArrayLength());
+                foreach (JsonElement witness in platform.GetProperty("cases").EnumerateArray())
                 {
-                    Assert.Equal(Required(capture, "pngSha256"), Convert.ToHexStringLower(SHA256.HashData(negative)));
-                    Assert.Equal("healthy", Required(capture, "startupHealth"));
-                    Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
+                    byte[] negative = File.ReadAllBytes(Path.Combine(proofDirectory, Required(witness, "reference")));
+                    PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(positive, 16_777_216), PngRgbaDecoder.Decode(negative, 16_777_216));
+                    Assert.Equal(witness.GetProperty("changedPixelsFromIntendedFont").GetInt32(), comparison.ChangedPixelCount);
+                    Assert.False(comparison.IsExact);
+                    Assert.Equal(3, witness.GetProperty("captures").GetArrayLength());
+                    foreach (JsonElement capture in witness.GetProperty("captures").EnumerateArray())
+                    {
+                        Assert.Equal(Required(capture, "pngSha256"), Convert.ToHexStringLower(SHA256.HashData(negative)));
+                        Assert.Equal("healthy", Required(capture, "startupHealth"));
+                        Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
+                    }
                 }
             }
         }

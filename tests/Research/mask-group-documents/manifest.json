@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One unchanged public-domain mask-unit/group-alias document and five separate CC0 mask-group controls. Healthy intended-font references precede implementation; complete finite G5/G9 promises remain open.",
+  "selectedAt": "e1052608",
+  "fontPack": "font-pack.json",
+  "fontProvenance": "font-provenance.json",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "cases": [
+    {
+      "id": "inv-145-1400x1000-transparent",
+      "document": "inv-145",
+      "input": "../../Fixtures/candidates/inv-145.svg",
+      "width": 1400,
+      "height": 1000,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "sourceSha256": "a1317e7006997f40ff2ef2b12bbf119846fcc2248ecbd8135cdcb69dbc992576",
+      "originalBytes": 2148,
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVGmask03.svg",
+      "sourceRevisionUrl": "https://commons.wikimedia.org/wiki/File:SVGmask03.svg?oldid=960736364",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/4/45/SVGmask03.svg",
+      "author": "Dr. Olaf Hoffmann",
+      "license": "Public domain",
+      "licenseEvidence": "Author releases the complete work into the public domain worldwide; pinned PD-self Commons metadata retained before evaluation.",
+      "selection": "Whole unchanged public-domain example of both mask region unit modes, stroke-bearing mask groups and their local use aliases, with all three original live labels. Fix source, output and face before capture or candidate screening; retain only a demonstrated in-scope whole-output gap.",
+      "rendererOutcome": "unsupported",
+      "initialSuppliedFontProbe": {
+        "Outcome": "UnsupportedFeature",
+        "Message": "This SVG child element is not implemented yet.",
+        "Requests": 1
+      },
+      "reference": "references/inv-145-1400x1000-transparent.png",
+      "referenceSha256": "62b055d284baee85d40eed44b899fb24f8fdaaa7d41eeb92daaeace8091d8936",
+      "captures": [
+        {
+          "pngSha256": "62b055d284baee85d40eed44b899fb24f8fdaaa7d41eeb92daaeace8091d8936",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "62b055d284baee85d40eed44b899fb24f8fdaaa7d41eeb92daaeace8091d8936",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "62b055d284baee85d40eed44b899fb24f8fdaaa7d41eeb92daaeace8091d8936",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/inv-145-1400x1000-transparent.png",
+      "linuxReferenceSha256": "312daa97492b080ba289ca1f43eed38e6b4d20ace795cd33697bb1397d307776",
+      "linuxCaptures": [
+        {
+          "pngSha256": "312daa97492b080ba289ca1f43eed38e6b4d20ace795cd33697bb1397d307776",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "312daa97492b080ba289ca1f43eed38e6b4d20ace795cd33697bb1397d307776",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "312daa97492b080ba289ca1f43eed38e6b4d20ace795cd33697bb1397d307776",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "group-alias",
+      "input": "group-alias.svg",
+      "width": 64,
+      "height": 64,
+      "background": "transparent",
+      "sourceSha256": "ef055ce8f560df19b424496971e95debed0c87f08fa85ca714ff589974b2b8bd",
+      "license": "CC0-1.0",
+      "selection": "Declared before production changes and captures; diagnoses shared retained mask groups, context inheritance, source aliases, ordered replay and forward references.",
+      "document": "inv-145-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/group-alias.png",
+      "referenceSha256": "a3fbaea30f58b6e8d22625f38d7ccde1b36a85944c9dab902cfff76d054edf43",
+      "captures": [
+        {
+          "pngSha256": "a3fbaea30f58b6e8d22625f38d7ccde1b36a85944c9dab902cfff76d054edf43",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3fbaea30f58b6e8d22625f38d7ccde1b36a85944c9dab902cfff76d054edf43",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3fbaea30f58b6e8d22625f38d7ccde1b36a85944c9dab902cfff76d054edf43",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/group-alias.png",
+      "linuxReferenceSha256": "a3fbaea30f58b6e8d22625f38d7ccde1b36a85944c9dab902cfff76d054edf43",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a3fbaea30f58b6e8d22625f38d7ccde1b36a85944c9dab902cfff76d054edf43",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3fbaea30f58b6e8d22625f38d7ccde1b36a85944c9dab902cfff76d054edf43",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3fbaea30f58b6e8d22625f38d7ccde1b36a85944c9dab902cfff76d054edf43",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "nested-opacity",
+      "input": "nested-opacity.svg",
+      "width": 64,
+      "height": 64,
+      "background": "transparent",
+      "sourceSha256": "0dc01721a3c57405854d6f0a49271341a84e2cf57e1bcab589625b5227530f9c",
+      "license": "CC0-1.0",
+      "selection": "Declared before production changes and captures; diagnoses shared retained mask groups, context inheritance, source aliases, ordered replay and forward references.",
+      "document": "inv-145-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/nested-opacity.png",
+      "referenceSha256": "d0a688f0d5606986bd94c3c2be7b1a73cda40134ca869ec35803d00bde7ccef1",
+      "captures": [
+        {
+          "pngSha256": "d0a688f0d5606986bd94c3c2be7b1a73cda40134ca869ec35803d00bde7ccef1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d0a688f0d5606986bd94c3c2be7b1a73cda40134ca869ec35803d00bde7ccef1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d0a688f0d5606986bd94c3c2be7b1a73cda40134ca869ec35803d00bde7ccef1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/nested-opacity.png",
+      "linuxReferenceSha256": "d0a688f0d5606986bd94c3c2be7b1a73cda40134ca869ec35803d00bde7ccef1",
+      "linuxCaptures": [
+        {
+          "pngSha256": "d0a688f0d5606986bd94c3c2be7b1a73cda40134ca869ec35803d00bde7ccef1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d0a688f0d5606986bd94c3c2be7b1a73cda40134ca869ec35803d00bde7ccef1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d0a688f0d5606986bd94c3c2be7b1a73cda40134ca869ec35803d00bde7ccef1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "mapped-strokes",
+      "input": "mapped-strokes.svg",
+      "width": 64,
+      "height": 64,
+      "background": "transparent",
+      "sourceSha256": "cb71b2e38bd9f8084826e1e567641821168ec36e8d00dfb4f751ed596bbdea8b",
+      "license": "CC0-1.0",
+      "selection": "Declared before production changes and captures; diagnoses shared retained mask groups, context inheritance, source aliases, ordered replay and forward references.",
+      "document": "inv-145-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/mapped-strokes.png",
+      "referenceSha256": "c2641cbb70f4f939bf2d285ab14e088461e0177d2eef416b09dabd197bbbb88a",
+      "captures": [
+        {
+          "pngSha256": "c2641cbb70f4f939bf2d285ab14e088461e0177d2eef416b09dabd197bbbb88a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c2641cbb70f4f939bf2d285ab14e088461e0177d2eef416b09dabd197bbbb88a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c2641cbb70f4f939bf2d285ab14e088461e0177d2eef416b09dabd197bbbb88a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/mapped-strokes.png",
+      "linuxReferenceSha256": "c2641cbb70f4f939bf2d285ab14e088461e0177d2eef416b09dabd197bbbb88a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "c2641cbb70f4f939bf2d285ab14e088461e0177d2eef416b09dabd197bbbb88a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c2641cbb70f4f939bf2d285ab14e088461e0177d2eef416b09dabd197bbbb88a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c2641cbb70f4f939bf2d285ab14e088461e0177d2eef416b09dabd197bbbb88a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "forward-use",
+      "input": "forward-use.svg",
+      "width": 64,
+      "height": 64,
+      "background": "transparent",
+      "sourceSha256": "6ae2612d93dfb036a8a26a4e729d599012b5585d398f051ca4070492bdccfd07",
+      "license": "CC0-1.0",
+      "selection": "Declared before production changes and captures; diagnoses shared retained mask groups, context inheritance, source aliases, ordered replay and forward references.",
+      "document": "inv-145-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/forward-use.png",
+      "referenceSha256": "cc2c2f4aea90f198a2a0750914d0da39e68c0e9d2999fd709229ac69ed2fe1e1",
+      "captures": [
+        {
+          "pngSha256": "cc2c2f4aea90f198a2a0750914d0da39e68c0e9d2999fd709229ac69ed2fe1e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cc2c2f4aea90f198a2a0750914d0da39e68c0e9d2999fd709229ac69ed2fe1e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cc2c2f4aea90f198a2a0750914d0da39e68c0e9d2999fd709229ac69ed2fe1e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/forward-use.png",
+      "linuxReferenceSha256": "cc2c2f4aea90f198a2a0750914d0da39e68c0e9d2999fd709229ac69ed2fe1e1",
+      "linuxCaptures": [
+        {
+          "pngSha256": "cc2c2f4aea90f198a2a0750914d0da39e68c0e9d2999fd709229ac69ed2fe1e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cc2c2f4aea90f198a2a0750914d0da39e68c0e9d2999fd709229ac69ed2fe1e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "cc2c2f4aea90f198a2a0750914d0da39e68c0e9d2999fd709229ac69ed2fe1e1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "anonymous-and-siblings",
+      "input": "anonymous-and-siblings.svg",
+      "width": 64,
+      "height": 64,
+      "background": "transparent",
+      "sourceSha256": "38da1af53573ef32335ee59900c7940f92467f9f421d864eb5dab3fff0ff8444",
+      "license": "CC0-1.0",
+      "selection": "Declared before production changes and captures; diagnoses shared retained mask groups, context inheritance, source aliases, ordered replay and forward references.",
+      "document": "inv-145-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/anonymous-and-siblings.png",
+      "referenceSha256": "7a3504fec278331a5a715429fdf2943a91fb2b5ea91ad4c0790b500a44814fff",
+      "captures": [
+        {
+          "pngSha256": "7a3504fec278331a5a715429fdf2943a91fb2b5ea91ad4c0790b500a44814fff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7a3504fec278331a5a715429fdf2943a91fb2b5ea91ad4c0790b500a44814fff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7a3504fec278331a5a715429fdf2943a91fb2b5ea91ad4c0790b500a44814fff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/anonymous-and-siblings.png",
+      "linuxReferenceSha256": "7a3504fec278331a5a715429fdf2943a91fb2b5ea91ad4c0790b500a44814fff",
+      "linuxCaptures": [
+        {
+          "pngSha256": "7a3504fec278331a5a715429fdf2943a91fb2b5ea91ad4c0790b500a44814fff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7a3504fec278331a5a715429fdf2943a91fb2b5ea91ad4c0790b500a44814fff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7a3504fec278331a5a715429fdf2943a91fb2b5ea91ad4c0790b500a44814fff",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ],
+  "oracles": [
+    {
+      "platform": "win64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+      "captureRecipeRevision": "3",
+      "freshProcessCaptures": 3,
+      "startupHealth": "healthy",
+      "profilesCleaned": true
+    },
+    {
+      "platform": "linux64",
+      "chromeVersion": "153.0.8010.52",
+      "chromiumRevision": "1681091",
+      "chromeExecutableSha256": "328fbee82d8e58b05a755b2343abfd192d92ca7066353cb357fad389bc7e3989",
+      "captureRecipeRevision": "3",
+      "freshProcessCaptures": 3,
+      "startupHealth": "healthy",
+      "profilesCleaned": true
+    }
+  ]
+}

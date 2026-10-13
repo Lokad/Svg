@@ -5,7 +5,7 @@ Updated 2026-10-13. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**48/48 retained development documents are complete.** The preceding 35 stay
+**48/49 retained development documents are complete.** The preceding 35 stay
 complete; the newly retained public-domain/CC0 batch is **10/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
 `inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker,
@@ -15,7 +15,9 @@ The newly retained public-domain exports (`inv-142`–`inv-144`) are **3/3
 complete**: `inv-142` at 512×266 and `inv-143`/`inv-144` at 512×341 transparent,
 through all twelve raw/prepared APIs on Windows/Linux. Their original bytes and
 cross-platform native references remain frozen; every preceding exact result is
-preserved. Finite G2–G9 and S17 work remains open.
+preserved. The next unchanged public-domain mask export (`inv-145`) is retained
+at 1400×1000 transparent with its declared supplied face; it remains rejected.
+Finite G2–G9 and S17 work remains open.
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
 separate ledgers; focused controls do not count as completed documents. The
@@ -755,10 +757,16 @@ Regular face 0 under the original `fantasy` alias. Keep both mask region unit
 modes, stroke-bearing mask groups, their local use aliases and all three labels.
 The 2,148-byte source, output and face were declared before capture or candidate
 screening. The supplied-font baseline rejects with UnsupportedFeature:
-"This SVG child element is not implemented yet." Qualify healthy native
-references and intended font use, then retain the demonstrated complete G5/G9
-failure before production correction. Private declaration and first probe:
-`artifacts/mask03-document-20261013/`. It is not yet a corpus addition.
+"This SVG child element is not implemented yet." The complete failure is now
+retained as `inv-145` in the [mask-group bank](tests/Research/mask-group-documents/README.md).
+Healthy Windows/Linux reference triples and missing/corrupt/substituted-face
+triples prove the declared font on both platforms before production correction.
+Five separate CC0 controls were declared and frozen first for group aliases,
+nested isolated opacity, mapped inherited strokes, forward uses and anonymous
+groups with ordered siblings. Keep their control ledger separate. The first
+rejection is a `g` directly inside a mask; extend the existing bounded group and
+instance replay rather than building another mask renderer. Private declaration,
+captures and first probe: `artifacts/mask03-document-20261013/`.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
 bytes, four labels and declared 750×500 transparent output. It is already exact
