@@ -909,6 +909,9 @@ remaining boundaries; every prior exact result stays protected. The corporate
 **27/27 documents / 258/258 variants** and the previous 49 development documents
 remain exact. Test-retention receipt:
 `artifacts/maintenance-review-20261012/text-strokes-qualified-results.json`.
+The text correction is pushed at `684194b9`; hosted Windows and Ubuntu CI are
+green at [run 38451531405](https://github.com/Lokad/Svg/actions/runs/38451531405).
+Continue ordered merge and native source-capture fidelity for this same document.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
 bytes, four labels and declared 750×500 transparent output. It is already exact
