@@ -748,15 +748,27 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** qualify the unchanged public-domain `SVGmask02.svg` whole
-document at explicit 750×500 transparent with the existing public Noto Sans
-Regular face 0 under its original `sans-serif` alias. All four labels, ordered
-mask content, focal/multi-stop paints and group uses stay intact. Source, output
-and face were declared before capture or candidate screening; the supplied-font
-baseline renders. Freeze healthy native references and prove intended font use
-before comparison. Retain it only if this whole output exposes an in-scope gap;
-then finish that document through every mismatch. Private declaration and first
-probe: `artifacts/mask-document-20261013/`. It is not yet a corpus addition.
+**Next deliverable:** take the unchanged public-domain `SVGmask03.svg` whole
+document through its child-element rejection and every later mismatch. Its
+explicit **1400×1000 transparent** output uses the existing public Noto Sans
+Regular face 0 under the original `fantasy` alias. Keep both mask region unit
+modes, stroke-bearing mask groups, their local use aliases and all three labels.
+The 2,148-byte source, output and face were declared before capture or candidate
+screening. The supplied-font baseline rejects with UnsupportedFeature:
+"This SVG child element is not implemented yet." Qualify healthy native
+references and intended font use, then retain the demonstrated complete G5/G9
+failure before production correction. Private declaration and first probe:
+`artifacts/mask03-document-20261013/`. It is not yet a corpus addition.
+
+The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
+bytes, four labels and declared 750×500 transparent output. It is already exact
+on Windows and Linux under the predeclared Noto Sans Regular / `sans-serif`
+contract, so it stays out of the failure queue. Both native triples are healthy,
+cleaned and stable; missing/corrupt/substituted-face triples on both platforms
+prove intended font use. Only oracle transport adds explicit matching dimensions,
+UTF-8 encoding and the declared font embedding; source geometry/text stay intact.
+Evidence stays in ignored `artifacts/mask-document-20261013/`. This screen adds
+no document to the completed-development denominator and expands no support scope.
 
 The scaled-nested-viewport use correction is qualified: **81/81 percentage
 controls** and six older nested-gradient controls are exact against unchanged
@@ -766,6 +778,8 @@ admission is qualified with zero-width, authored/cascaded ordering and
 paint-specific gates preserved. S10's unarmed probe path is qualified. The S07–S09
 renderer batch is pushed and hosted Windows/Linux CI is green at `57d1c44b`.
 The S10–S12 follow-up is pushed at `c15167af` with green hosted Windows/Linux CI.
+The subsequent scaled-use correction is pushed at `0cf0f37d`; its hosted
+Windows/Linux CI is also green.
 S09 reuses one matching tile across consecutive
 compatible rectangle fills, with bounded ownership and memory-pressure fallback;
 source/mapped inputs, native sampling and all exact references are preserved.
@@ -1726,6 +1740,13 @@ The subsequent S10–S12 maintenance batch is pushed at `c15167af`. Its
 is green, including build, tests, memory probes, healthy sandboxed Chrome/font
 captures, artifact validation and package smoke checks. This single batch run
 preserves the prior exact corpus; finite G2–G9 and S17 remain open.
+
+The scaled-viewport use and nested-definition correction is pushed at `0cf0f37d`.
+Its [Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38342311820)
+passes both complete hosted jobs, including the resource, native capture,
+artifact-validation and package checks. Delivery used one run for this finished
+renderer correction; documentation of its conclusion does not trigger another
+unchanged qualification.
 
 ## 4. Findings and stage ledger
 
