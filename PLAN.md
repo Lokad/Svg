@@ -748,10 +748,12 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S10's unarmed probe guard. The S07–S09
+**Next deliverable:** maintenance-review S11's shared axis-aligned paint-line
+stroke admission. Extract genuinely common parsed values while retaining the
+zero-width early return, authored/cascaded validation order and paint-specific
+opacity/capability gates. S10's unarmed probe path is qualified. The S07–S09
 renderer batch is pushed and hosted Windows/Linux CI is green at `57d1c44b`.
-Measure the unarmed path and preserve execution-context isolation and
-deterministic cancellation. S09 reuses one matching tile across consecutive
+S09 reuses one matching tile across consecutive
 compatible rectangle fills, with bounded ownership and memory-pressure fallback;
 source/mapped inputs, native sampling and all exact references are preserved.
 S08's fallback subdivision endpoints are prepared once per glyph, with unchanged
@@ -1712,9 +1714,9 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02/S04/S05/S06/S07/S08/S09; S03 is explicitly deferred on the measurements below.
+and S02/S04/S05/S06/S07/S08/S09/S10; S03 is explicitly deferred on the measurements below.
 The S07–S09 renderer batch is delivered with green hosted Windows/Linux CI at
-`57d1c44b`; take S10–S12 as small follow-ups.
+`57d1c44b`; S10 is locally qualified, then take S11/S12 as small follow-ups.
 S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1730,7 +1732,7 @@ changes when a demonstrated support blocker takes priority.
 | S07 | **Complete.** Prepare Windows dropout bounds and immutable sampling maps once per glyph; reuse horizontal directed crossing sets within a row. | Exact native thin-stroke, vertex, dropout, curve, mapped/composite and supplied-font references remain unchanged. Complete checks and existing memory probes pass on both platforms. Two public-label comparisons show a 30–34% local time reduction for about 16 KiB more allocation. Optional storage yields under memory pressure; vertical gathering remains per pixel. Vertical scan reuse is a conditional future investigation, not this item's exit requirement. |
 | S08 | **Complete.** Prepare the fallback glyph's identical eight quadratic subdivision endpoints once per glyph. | Verified Windows fallback conversion is 29–35% faster in two local comparisons for about 0.54 KiB more allocation. Sampling, winding, numeric rejection, cancellation and cleanup remain protected; optional preparation yields at the original tight work boundary and under memory pressure. Empty drawable regions do not prepare. Native-fitting throughput is outside this claim. |
 | S09 | **Complete bounded tranche.** Reuse one tile across consecutive compatible rectangle fills, including lowered stroke bands and repeated instances. | Content identity, source/mapped boxes, dimensions, viewBox, native maps and paint must match. Lookahead avoids cold retention; scope changes and other draws release the owner. Measured stroke/repeated-fill allocation falls 13%/37%, with local timing benefits; different-tile uncertainty is reported below. Fractional sampling, phase, alpha and exact references stay unchanged. Wider polygon/cross-boundary reuse remains conditional, beyond this within-operation exit. |
-| S10 | Make unarmed glyph/polygon/outline probes cheap using an established armed guard or operation-boundary hook. | Measure the unarmed path; preserve execution-context isolation and deterministic cancellation. No dummy work or different Release semantics. |
+| S10 | **Complete.** Avoid unarmed AsyncLocal lookup/write in glyph coverage, polygon fan and glyph-outline probes. | AsyncLocal context notifications synchronize a thread-local callback cache; inherited children, parallel scopes, awaits and suppressed flow retain isolation. Unarmed entry microbenchmarks improve without allocation; full checks pass on both platforms. Scope disposal is idempotent. No renderer arithmetic or Release-only behavior changes. |
 | S11 | Share common axis-aligned gradient/radial/pattern line-stroke admission and parsed values. | Existing cross-paint line/stroke cases pass; retain zero-width return, validation order, authored-versus-cascaded validation and paint-specific gates. No new generic renderer abstraction. |
 | S12 | Recheck and remove four unreferenced internal helpers. | Search all current sources for AppendStrippedContour, SvgRootLength.ToAbsoluteOrNull, SvgStyleSheet.GetIdentifierAttribute and SvgRoot.BeginOpacityScope before deletion. Release build and affected tests suffice; no absence tests or throughput claim. |
 | S13 | Conditional: broaden the one-glyph raw decode cache only if a realistic nonconsecutive label still benefits after S02. | Measure lookup/retained-memory cost first. If justified, use a small byte-bounded per-run/conversion cache keyed by prepared font and glyph index; preserve leases, immutable decoding and per-position contours. Otherwise leave deferred. |
@@ -2040,6 +2042,38 @@ font probing, artifact validation/self-tests and package checks. One hosted run
 qualified the complete batch; documentation-only checkpoint updates stay local
 until the next batch to avoid unnecessary runner use. Finite SVG support and S17
 remain open.
+
+**S10 complete (2026-10-13).** Glyph coverage, polygon fan and glyph-outline
+probes read a thread-local callback cache at their existing observation points.
+`AsyncLocal` value-change notifications synchronize that cache on assignments
+and execution-context entry/exit. A global armed-scope count was not used because
+an inherited child callback can remain valid after its parent scope is disposed.
+One-shot probes still consume their callback before invocation; fan callbacks
+continue on every evaluation. Nested scope restoration is retained, and repeated
+scope disposal no longer clears a restored callback. Rendering arithmetic, real
+work/cancellation checks and Release semantics are unchanged.
+
+Twelve focused controls protect all three probes across nested scopes, one-shot
+behavior, concurrent awaits, suppressed flow and child contexts outliving parent
+scope disposal. Complete Release checks pass on Windows and Linux: **7,372 tests
+per platform (5,094 core, 2,272 visual, six FontProbe)**, zero warnings/errors/skips.
+Every prior case remains, including deterministic renderer cancellation and
+frozen pixels. Material storage ownership/limits do not change; the useful memory
+qualification from the green `57d1c44b` batch remains closed and was not repeated
+merely for this probe correction. The approximate memory target is unchanged.
+
+Six existing-harness microbenchmarks execute actual unarmed entries, with setup
+outside timing and empty or unrelated populated execution contexts. At six
+warmups/12 iterations, coverage/fan/outline entries measured **1.849 / 1.540 /
+3.583 ns** in empty contexts and **4.113 / 3.231 / 9.895 ns** in populated ones.
+The finished entries measure **0.292–0.310 ns** across all six cases, near the
+loop overhead, with no measured allocation. Inlining/loop optimization can
+contribute to that floor; it is not a whole-conversion speedup claim. Detailed
+results remain under ignored `artifacts/maintenance-review-20261012/` using the
+existing BenchmarkDotNet harness. No new measurement framework or dummy work.
+S10 stays local for the next maintenance delivery batch. Frozen 27/27 documents,
+258/258 variants and the selected 48/48 queue remain complete; finite G2–G9/S17
+and representativeness stay open.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.
