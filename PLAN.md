@@ -748,11 +748,12 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S09's bounded reuse of identical pattern
-tile rasters. Measure a patterned rectangle stroke and repeated identical
-instances, with different-size/map instances as nonsharing controls. Reuse only
-matching content, source box, texture dimensions, viewBox, mapping and paint;
-keep ownership valid through the last borrower and yield under memory pressure.
+**Next deliverable:** deliver the qualified S07–S09 renderer batch, verify one
+hosted Windows/Linux CI run, then take maintenance-review S10's unarmed probe
+guard. Measure the unarmed path and preserve execution-context isolation and
+deterministic cancellation. S09 reuses one matching tile across consecutive
+compatible rectangle fills, with bounded ownership and memory-pressure fallback;
+source/mapped inputs, native sampling and all exact references are preserved.
 S08's fallback subdivision endpoints are prepared once per glyph, with unchanged
 sampling/winding and explicit memory/work fallback. Its verified Windows control
 shows a measured benefit; native font throughput is not inferred from it.
@@ -1710,9 +1711,9 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02/S04/S05/S06/S07/S08; S03 is explicitly deferred on the measurements below.
-Measure S09 before its larger
-raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
+and S02/S04/S05/S06/S07/S08/S09; S03 is explicitly deferred on the measurements below.
+Deliver this renderer batch once, then take S10–S12 as small follow-ups.
+S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
 
@@ -1726,7 +1727,7 @@ changes when a demonstrated support blocker takes priority.
 | S06 | **Complete.** Read CSS element identity once per cascade resolution when rules exist. | Existing stylesheet/combinator and frozen visual checks pass on both platforms. Styled parsing/conversion measurements show a small timing change within overlapping uncertainty ranges and unchanged allocation. Selector order, specificity, work/cancellation checks and the cheap no-rules route remain intact; no selector index/cache. |
 | S07 | **Complete.** Prepare Windows dropout bounds and immutable sampling maps once per glyph; reuse horizontal directed crossing sets within a row. | Exact native thin-stroke, vertex, dropout, curve, mapped/composite and supplied-font references remain unchanged. Complete checks and existing memory probes pass on both platforms. Two public-label comparisons show a 30–34% local time reduction for about 16 KiB more allocation. Optional storage yields under memory pressure; vertical gathering remains per pixel. Vertical scan reuse is a conditional future investigation, not this item's exit requirement. |
 | S08 | **Complete.** Prepare the fallback glyph's identical eight quadratic subdivision endpoints once per glyph. | Verified Windows fallback conversion is 29–35% faster in two local comparisons for about 0.54 KiB more allocation. Sampling, winding, numeric rejection, cancellation and cleanup remain protected; optional preparation yields at the original tight work boundary and under memory pressure. Empty drawable regions do not prepare. Native-fitting throughput is outside this claim. |
-| S09 | Reuse an identical rasterized pattern tile within a lowered paint operation or a small conversion-local owner. | Patterned rectangle stroke and repeated identical instances improve; differing size/map instances do not share. Preserve fractional sampling, phase and alpha. Key content, source box, dimensions, viewBox, mapping and paint inputs; bound retained surfaces and drop reuse under pressure. |
+| S09 | **Complete bounded tranche.** Reuse one tile across consecutive compatible rectangle fills, including lowered stroke bands and repeated instances. | Content identity, source/mapped boxes, dimensions, viewBox, native maps and paint must match. Lookahead avoids cold retention; scope changes and other draws release the owner. Measured stroke/repeated-fill allocation falls 13%/37%, with local timing benefits; different-tile uncertainty is reported below. Fractional sampling, phase, alpha and exact references stay unchanged. Wider polygon/cross-boundary reuse remains conditional, beyond this within-operation exit. |
 | S10 | Make unarmed glyph/polygon/outline probes cheap using an established armed guard or operation-boundary hook. | Measure the unarmed path; preserve execution-context isolation and deterministic cancellation. No dummy work or different Release semantics. |
 | S11 | Share common axis-aligned gradient/radial/pattern line-stroke admission and parsed values. | Existing cross-paint line/stroke cases pass; retain zero-width return, validation order, authored-versus-cascaded validation and paint-specific gates. No new generic renderer abstraction. |
 | S12 | Recheck and remove four unreferenced internal helpers. | Search all current sources for AppendStrippedContour, SvgRootLength.ToAbsoluteOrNull, SvgStyleSheet.GetIdentifierAttribute and SvgRoot.BeginOpacityScope before deletion. Release build and affected tests suffice; no absence tests or throughput claim. |
@@ -1984,6 +1985,53 @@ complete tests and both memory summaries remain in ignored
 `artifacts/maintenance-review-20261012/`; no new measurement framework or oracle
 capture was added. S07/S08 remain local for the next delivery batch; hosted CI is
 still verified at `35fc2cae`.
+
+**S09 bounded tranche complete (2026-10-13).** One optional conversion-local
+`SvgPatternTileCache` owns the raster between consecutive compatible rectangle
+fills. This includes a patterned rectangle stroke's four lowered bands and
+repeated identical fills. The source and effective mapped tile must agree in
+content/identity, grid dimensions, origins, viewBox/source box, placement, native
+image maps and paint. Destination fill rectangles do not define tile identity.
+The original tile preparation, premultiplied content, repeat sampling, fractional
+phase, bilinear lane order and final alpha behavior remain unchanged.
+
+Retention is attempted only when the next eligible draw has matching source
+inputs. Unrelated tiles take the original cold path. Noncompatible draws, scope
+changes and mask replay release the retained owner before further preparation.
+The single surface and one conservative aggregate metadata allowance remain
+budgeted; insufficient headroom declines retention and leaves the original
+surface owner with the caller. Borrowers finish before disposal. Replacement,
+failure, cancellation and final return release owners/references. Actual avoided
+tile work is not charged again. Polygon and cross-boundary reuse are conditional
+future work; all those existing rendering paths remain supported as before.
+No global cache, pool, hash key or measurement framework is introduced.
+
+Complete Release checks pass on Windows and Linux: **7,360 tests per platform
+(5,082 core, 2,272 visual, six FontProbe)**, zero warnings/errors/skips. Every
+preceding case remains. Eighteen controls protect cache matching/nonsharing,
+content identity, ownership/declined retention, low-memory pixel parity, actual
+work savings, alternating tiles, draw boundaries, cleanup and retry. The existing
+pattern cancellation, full-document and resource boundaries pass; existing
+normal/adversarial memory probes pass on both platforms. Frozen **27/27 documents
+/258/258 variants** and selected **48/48** development documents remain complete.
+References are unchanged. Finite G2–G9/S17 and representativeness stay open.
+
+Three complete-conversion benchmarks construct inputs outside timing: a vector
+patterned stroke, 16 repeated identical fills and alternating differently
+sized/mapped user-space tiles. The initial object-box candidate is unsupported
+today and produced no valid comparison; that existing G6 gap was not changed.
+Original stroke/fill measurements were **0.827–0.860 ms / 1.873–1.917 ms** and
+**236.25 / 415.88 KiB**. Finished measurements give **0.751 ms / 1.429 ms** and
+**205.90 / 263.65 KiB**: about **9–13% / 24–25%** less local time and **13% /37%**
+less allocation. These are measured controls, not corpus throughput claims.
+
+The first prototype slowed alternating tiles; next-draw lookahead and preserving
+the original cold branch address that cost. A longer 24-iteration control gives
+**2.284 → 2.236 ms**, essentially unchanged allocation (**504.74 → 504.80 KiB**),
+with overlapping uncertainty. Short comparisons remained variable, including a
+finished **2.342 ms** result. No universal speedup or precise no-regression
+guarantee is claimed. Detailed measurements, complete tests and both memory
+summaries stay under ignored `artifacts/maintenance-review-20261012/`.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.

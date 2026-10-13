@@ -268,6 +268,8 @@ public static class SvgConverter
         SvgAnalyticClipBounds? activeViewportBounds = null;
         SvgRecordedPaintValue activePaint = default;
         SvgRecordedPaintValue activeStrokePaint = default;
+        SvgPatternTileCache? patternTileCache = null;
+        SvgPatternGeometry? nextPatternTile = null;
         RenderBudget.BudgetReservation surface = budget.Reserve(surfaceByteCount, SvgMemoryCategory.Surface);
         try
         {
@@ -324,6 +326,7 @@ public static class SvgConverter
             surface.Dispose();
             throw;
         }
+        finally { patternTileCache?.Dispose(); }
 
         SvgPaintBounds FilterRegion(SvgFilterBinding binding, SvgFilterResource resource, ParserWorkCounter counter)
         {
@@ -804,6 +807,7 @@ public static class SvgConverter
             while (index < root.Commands.Length)
             {
                 SvgDrawCommand command = root.Commands[index++];
+                if (command.Kind != SvgDrawCommandKind.Geometry) ReleasePatternTile();
                 if (command.Kind == SvgDrawCommandKind.EndGroup)
                 {
                     if (!stopsAtGroupEnd) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
@@ -823,7 +827,11 @@ public static class SvgConverter
                         foldedOpacity *= command.SourceOpacity.Value;
                         try
                         {
-                            for (; index < paintEnd; index++) RasterizeGeometry(root.Geometries[root.Commands[index].GeometryIndex], destination);
+                            for (; index < paintEnd; index++)
+                            {
+                                nextPatternTile = NextPatternTile(index + 1, paintEnd);
+                                RasterizeGeometry(root.Geometries[root.Commands[index].GeometryIndex], destination);
+                            }
                         }
                         finally { foldedOpacity = previousOpacity; }
                         index++;
@@ -998,6 +1006,7 @@ public static class SvgConverter
                     continue;
                 }
                 if ((uint)command.GeometryIndex >= (uint)root.Geometries.Length) throw new SvgException(SvgErrorCode.MalformedInput, "SVG draw command references missing geometry.");
+                nextPatternTile = NextPatternTile(index, root.Commands.Length);
                 RasterizeGeometry(root.Geometries[command.GeometryIndex], destination);
             }
             if (stopsAtGroupEnd) throw new SvgException(SvgErrorCode.MalformedInput, "SVG group structure is unbalanced.");
@@ -1037,6 +1046,8 @@ public static class SvgConverter
         // Geometry traversal retains the existing work, cancellation and temporary-owner contracts.
         SvgCpuClipCoverage? RasterizeMaskContent(SvgMaskContent content, byte[] destination, bool viewport, SvgAnalyticClipBounds contentBounds)
         {
+            ReleasePatternTile();
+            nextPatternTile = null;
             byte[] previousClip = activeViewportClip, previousConstruction = activeConstructionClip;
             SvgAnalyticClipBounds? previousBounds = activeViewportBounds, previousConstructionBounds = activeConstructionBounds;
             SvgCpuClipCoverage? previousCollected = collectingClipCoverage, previousCoverage = activeViewportCoverage,
@@ -1159,11 +1170,14 @@ public static class SvgConverter
                 horizontalScale = previousScaleX; verticalScale = previousScaleY; horizontalOffset = previousOffsetX; verticalOffset = previousOffsetY;
                 layerBounds = previousLayer;
                 maskClipAntialiased = previousMaskClip;
+                ReleasePatternTile();
             }
         }
 
         void RasterizeGeometry(SvgGeometry geometry, byte[] destination)
         {
+            bool reusablePattern = geometry.Kind == SvgGeometryKind.PatternFill && geometry.Pattern.Stroke is null && geometry.LeafMask is null;
+            if (!reusablePattern || patternTileCache is {} retained && (!retained.MatchesSource(geometry.Pattern) || NeedsPatternMapping(geometry.Pattern) && budget.AvailableBytes < 512)) ReleasePatternTile();
             SvgRecordedPaintValue previousPaint = activePaint;
             SvgRecordedPaintValue previousStroke = activeStrokePaint;
             activePaint = GetRecordedPaintValue(geometry.RecordedPaint);
@@ -1921,8 +1935,8 @@ public static class SvgConverter
             using RenderBudget.BudgetReservation? mappedPatternOwner = NeedsPatternMapping(source) ? budget.Reserve(512, SvgMemoryCategory.Geometry) : null;
             if (!TryMapPatternTile(source, out SvgPatternGeometry? mappedTile)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills under viewBox or output scaling are not implemented.");
             SvgPatternGeometry tile = mappedTile ?? source;
-            using RasterizedSurface texture = PreparePatternTile(tile);
-            byte[] blitted = texture.Pixels;
+            using SvgPatternTileLease texture = BorrowPatternTile(source, tile, false);
+            byte[] blitted = texture.Surface.Pixels;
             SvgShaderCoordinates imageCoordinates = tile.NativeImageMap is {} imageMap ? SvgShaderCoordinates.CreateImage(imageMap, tile.NativeImageLocal ?? throw new InvalidOperationException("Image sampling requires its local matrix.")) : default;
             ReadOnlySpan<int> contourEnds = raster.ContourEnds;
             ReadOnlySpan<int> nestingSigns = raster.Signs is int[] signs ? signs : Array.Empty<int>();
@@ -2059,10 +2073,48 @@ public static class SvgConverter
             SvgPatternGeometry source = mapped ?? pattern;
             if (pass != SvgPaintPass.Stroke && source.Fill.HasFill)
             {
-                using RasterizedSurface texture = PreparePatternTile(source);
-                StampPatternFill(source, texture.Pixels, destination);
+                bool retain = source.Stroke is null && nextPatternTile is {} next && SvgPatternTileCache.SameTile(pattern, next);
+                if (!retain && patternTileCache is null)
+                {
+                    using RasterizedSurface texture = PreparePatternTile(source);
+                    StampPatternFill(source, texture.Pixels, destination);
+                }
+                else
+                {
+                    using SvgPatternTileLease texture = BorrowPatternTile(pattern, source, retain);
+                    StampPatternFill(source, texture.Surface.Pixels, destination);
+                }
             }
             if (pass != SvgPaintPass.Fill && source.Stroke is SvgStroke stroke) RasterizePatternStroke(source, stroke, destination);
+        }
+
+        void ReleasePatternTile()
+        {
+            patternTileCache?.Dispose();
+            patternTileCache = null;
+        }
+
+        SvgPatternGeometry? NextPatternTile(int index, int end)
+        {
+            if (index >= end) return null;
+            SvgDrawCommand next = root.Commands[index];
+            if (next.Kind != SvgDrawCommandKind.Geometry || (uint)next.GeometryIndex >= (uint)root.Geometries.Length) return null;
+            SvgGeometry geometry = root.Geometries[next.GeometryIndex];
+            return geometry.Kind == SvgGeometryKind.PatternFill && geometry.Pattern.Stroke is null && geometry.LeafMask is null ? geometry.Pattern : null;
+        }
+
+        SvgPatternTileLease BorrowPatternTile(SvgPatternGeometry original, SvgPatternGeometry mapped, bool retain)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (patternTileCache is {} cached && cached.TryBorrow(mapped, out RasterizedSurface existing)) return new(existing, false);
+            ReleasePatternTile();
+            RasterizedSurface prepared = PreparePatternTile(mapped);
+            try
+            {
+                patternTileCache = retain ? SvgPatternTileCache.TryRetain(original, mapped, prepared, budget) : null;
+                return new(prepared, patternTileCache is null);
+            }
+            catch { prepared.Dispose(); throw; }
         }
 
         // Tile scenes borrow their parent-owned storage and use the same native geometry/paint
