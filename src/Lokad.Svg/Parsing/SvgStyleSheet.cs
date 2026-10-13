@@ -100,13 +100,6 @@ internal static class SvgStyleSheet
         return false;
     }
 
-    internal static string? GetIdentifierAttribute(XmlReader reader, string name)
-    {
-        string? value = reader.GetAttribute(name);
-        if (value is not null) ValidateIdentifierValue(value);
-        return value;
-    }
-
     private static OwnedStyleSheetText StripComments(string value, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         int sourceIndex = 0;

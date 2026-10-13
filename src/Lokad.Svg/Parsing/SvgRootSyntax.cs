@@ -15,9 +15,6 @@ internal readonly record struct SvgRootLength(double Value, bool IsPercentage)
         if (!double.IsFinite(resolved)) throw new SvgException(SvgErrorCode.LimitExceeded, "Percentage root dimensions exceed the admitted numeric range.");
         return resolved;
     }
-
-    /// <summary>Returns the absolute pixel value, or null for viewport-relative percentages.</summary>
-    internal double? ToAbsoluteOrNull() => IsPercentage ? null : Value;
 }
 
 internal readonly record struct SvgRootSyntax(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox)

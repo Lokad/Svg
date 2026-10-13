@@ -1556,8 +1556,6 @@ internal sealed class SvgSceneBuilder : IDisposable
         catch { for (int index = adopted; index < applied.Length; index++) applied[index].Dispose(); throw; }
     }
 
-    internal void BeginOpacityScope(byte opacity) => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, opacity, null, -1, 255));
-
     internal void EndOpacityScope() => _commands.Add(new SvgDrawCommand(SvgDrawCommandKind.EndGroup, -1, 255, null, -1, 255));
 
     /// <summary>Copies one mask content evaluation under scene ownership, returning its command index.</summary>

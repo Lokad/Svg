@@ -292,11 +292,6 @@ internal ref struct SvgOrthogonalGeometryLowering
         return (deviceMap, scaleX, scaleY);
     }
 
-    private static int AppendStrippedContour(BudgetedParserList<SvgDevicePoint> mapped, ReadOnlySpan<SvgDevicePoint> source, ParserWorkCounter workCounter, CancellationToken cancellationToken)
-    {
-        return AppendMappedContour(mapped, source, null, workCounter, cancellationToken);
-    }
-
     /// <summary>Appends one stripped contour while recording each source index surviving mapped index into indexMap, or -1 for dropped vertices.</summary>
     /// <remarks>Callers pass a map sized to the source slice only when translating retained spans; every other route passes null with identical stripping. The map lets span translation resolve endpoints without value matching.</remarks>
     private static int AppendMappedContour(BudgetedParserList<SvgDevicePoint> mapped, ReadOnlySpan<SvgDevicePoint> source, int[]? indexMap, ParserWorkCounter workCounter, CancellationToken cancellationToken)

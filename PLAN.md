@@ -748,9 +748,11 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S12's four unreferenced helper removals.
-Recheck their callers before deletion; use a Release build and affected existing
-tests, without absence tests or a throughput claim. S11's shared paint-line
+**Next deliverable:** remove the scaled-nested-viewport use gate through shared
+source replay and composed frame mapping. Start with the three frozen G2
+percentage controls, preserve clipping and paint coordinates, and select the next
+unchanged rights-clear whole document by the mechanism this advances. S12's four
+unreferenced helpers are removed and locally verified. S11's shared paint-line
 admission is qualified with zero-width, authored/cascaded ordering and
 paint-specific gates preserved. S10's unarmed probe path is qualified. The S07–S09
 renderer batch is pushed and hosted Windows/Linux CI is green at `57d1c44b`.
@@ -1715,9 +1717,9 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02/S04/S05/S06/S07/S08/S09/S10/S11; S03 is explicitly deferred on the measurements below.
+and S02/S04/S05/S06/S07/S08/S09/S10/S11/S12; S03 is explicitly deferred on the measurements below.
 The S07–S09 renderer batch is delivered with green hosted Windows/Linux CI at
-`57d1c44b`; S10/S11 are locally qualified, then take S12 as a small follow-up.
+`57d1c44b`; S10/S11/S12 are locally qualified for the next delivery batch.
 S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1735,7 +1737,7 @@ changes when a demonstrated support blocker takes priority.
 | S09 | **Complete bounded tranche.** Reuse one tile across consecutive compatible rectangle fills, including lowered stroke bands and repeated instances. | Content identity, source/mapped boxes, dimensions, viewBox, native maps and paint must match. Lookahead avoids cold retention; scope changes and other draws release the owner. Measured stroke/repeated-fill allocation falls 13%/37%, with local timing benefits; different-tile uncertainty is reported below. Fractional sampling, phase, alpha and exact references stay unchanged. Wider polygon/cross-boundary reuse remains conditional, beyond this within-operation exit. |
 | S10 | **Complete.** Avoid unarmed AsyncLocal lookup/write in glyph coverage, polygon fan and glyph-outline probes. | AsyncLocal context notifications synchronize a thread-local callback cache; inherited children, parallel scopes, awaits and suppressed flow retain isolation. Unarmed entry microbenchmarks improve without allocation; full checks pass on both platforms. Scope disposal is idempotent. No renderer arithmetic or Release-only behavior changes. |
 | S11 | **Complete.** Share axis-aligned gradient/radial/pattern line-stroke admission and effective parsed values in the existing stroke parsing layer. | Existing cross-paint line/stroke cases and complete platform checks pass. Zero width returns first; authored validation, radial dispatch, effective dash/cap/pathLength order and paint-specific gates are preserved. Width is parsed once per admission. No generic renderer abstraction or throughput claim. |
-| S12 | Recheck and remove four unreferenced internal helpers. | Search all current sources for AppendStrippedContour, SvgRootLength.ToAbsoluteOrNull, SvgStyleSheet.GetIdentifierAttribute and SvgRoot.BeginOpacityScope before deletion. Release build and affected tests suffice; no absence tests or throughput claim. |
+| S12 | **Complete.** Remove four unreferenced internal helpers after rechecking current tracked C# sources. | AppendStrippedContour, SvgRootLength.ToAbsoluteOrNull, SvgStyleSheet.GetIdentifierAttribute and SvgRoot.BeginOpacityScope had no callers. Release build and 1,040 affected existing tests pass; no absence tests or throughput claim. |
 | S13 | Conditional: broaden the one-glyph raw decode cache only if a realistic nonconsecutive label still benefits after S02. | Measure lookup/retained-memory cost first. If justified, use a small byte-bounded per-run/conversion cache keyed by prepared font and glyph index; preserve leases, immutable decoding and per-position contours. Otherwise leave deferred. |
 | S14 | Conditional: reuse immutable validated TrueType table/profile preparation; investigate reusable VM initialization separately. | Profile an existing supplied-font label, beyond the synthetic triangle-font benchmark. Preserve lazy validation, target/size/transform distinctions, mutable CVT/storage/graphics state and composite semantics. Do not share a live mutable VM across glyphs; defer unless a bounded change proves useful. |
 
@@ -2104,6 +2106,17 @@ qualification remains closed. Logs/results stay in ignored
 `artifacts/maintenance-review-20261012/`. S10/S11 remain local for the next
 maintenance batch. Frozen 27/27 documents, 258/258 variants and selected 48/48
 development documents remain complete; finite G2–G9/S17 remain open.
+
+**S12 complete.** A current tracked-source search found only the declarations of
+`AppendStrippedContour`, `SvgRootLength.ToAbsoluteOrNull`,
+`SvgStyleSheet.GetIdentifierAttribute` and `SvgRoot.BeginOpacityScope`. Their
+seventeen lines were removed; the live contour mapping, root-length resolution,
+identifier validation and opacity-scope completion remain intact. The Windows
+Release solution build has zero warnings/errors, and **1,040 existing geometry,
+root syntax/parser, stylesheet/selector, container and opacity tests pass**, with
+zero failures/skips. This is unused-code cleanup, without a throughput claim or
+new tests that merely assert absence. Full unchanged qualification was not
+repeated. Logs stay under ignored `artifacts/maintenance-review-20261012/`.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.
