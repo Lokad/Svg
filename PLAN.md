@@ -748,10 +748,14 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S08's fallback glyph preparation.
-Establish a workload that actually selects fallback, measure its complete
-conversion, then prepare the existing eight quadratic subdivision endpoints once
-per glyph. Preserve winding, endpoint arithmetic and empty-region behavior.
+**Next deliverable:** maintenance-review S09's bounded reuse of identical pattern
+tile rasters. Measure a patterned rectangle stroke and repeated identical
+instances, with different-size/map instances as nonsharing controls. Reuse only
+matching content, source box, texture dimensions, viewBox, mapping and paint;
+keep ownership valid through the last borrower and yield under memory pressure.
+S08's fallback subdivision endpoints are prepared once per glyph, with unchanged
+sampling/winding and explicit memory/work fallback. Its verified Windows control
+shows a measured benefit; native font throughput is not inferred from it.
 S07's Windows dropout bounds, immutable sampling maps and horizontal row scans
 are prepared once at their existing per-glyph/per-row boundaries, with exact
 references preserved and a measured public-label benefit.
@@ -1706,8 +1710,8 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02/S04/S05/S06/S07; S03 is explicitly deferred on the measurements below.
-Measure S08/S09 before their larger
+and S02/S04/S05/S06/S07/S08; S03 is explicitly deferred on the measurements below.
+Measure S09 before its larger
 raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1721,7 +1725,7 @@ changes when a demonstrated support blocker takes priority.
 | S05 | **Complete.** Reuse immutable definition/attribute strings and aggregate reservations with common ownership. | Definition/use-heavy and attribute-heavy parser allocations decrease; forward references, style replay, material denial and cleanup are preserved. Equal Name/LocalName and already-owned values share storage; span copies remain, without global interning or a new arena framework. |
 | S06 | **Complete.** Read CSS element identity once per cascade resolution when rules exist. | Existing stylesheet/combinator and frozen visual checks pass on both platforms. Styled parsing/conversion measurements show a small timing change within overlapping uncertainty ranges and unchanged allocation. Selector order, specificity, work/cancellation checks and the cheap no-rules route remain intact; no selector index/cache. |
 | S07 | **Complete.** Prepare Windows dropout bounds and immutable sampling maps once per glyph; reuse horizontal directed crossing sets within a row. | Exact native thin-stroke, vertex, dropout, curve, mapped/composite and supplied-font references remain unchanged. Complete checks and existing memory probes pass on both platforms. Two public-label comparisons show a 30–34% local time reduction for about 16 KiB more allocation. Optional storage yields under memory pressure; vertical gathering remains per pixel. Vertical scan reuse is a conditional future investigation, not this item's exit requirement. |
-| S08 | Flatten the fallback glyph's identical eight-point quadratic subdivisions once per glyph. | Benchmark a case that actually selects fallback; preserve winding, endpoint arithmetic, finite coordinates and cancellation. Bound/release temporary storage and retain empty-region behavior. Do not claim native-fitting text benefits from fallback measurements. |
+| S08 | **Complete.** Prepare the fallback glyph's identical eight quadratic subdivision endpoints once per glyph. | Verified Windows fallback conversion is 29–35% faster in two local comparisons for about 0.54 KiB more allocation. Sampling, winding, numeric rejection, cancellation and cleanup remain protected; optional preparation yields at the original tight work boundary and under memory pressure. Empty drawable regions do not prepare. Native-fitting throughput is outside this claim. |
 | S09 | Reuse an identical rasterized pattern tile within a lowered paint operation or a small conversion-local owner. | Patterned rectangle stroke and repeated identical instances improve; differing size/map instances do not share. Preserve fractional sampling, phase and alpha. Key content, source box, dimensions, viewBox, mapping and paint inputs; bound retained surfaces and drop reuse under pressure. |
 | S10 | Make unarmed glyph/polygon/outline probes cheap using an established armed guard or operation-boundary hook. | Measure the unarmed path; preserve execution-context isolation and deterministic cancellation. No dummy work or different Release semantics. |
 | S11 | Share common axis-aligned gradient/radial/pattern line-stroke admission and parsed values. | Existing cross-paint line/stroke cases pass; retain zero-width return, validation order, authored-versus-cascaded validation and paint-specific gates. No new generic renderer abstraction. |
@@ -1937,6 +1941,49 @@ Detailed measurements, complete test results and both memory-probe summaries
 remain in ignored `artifacts/maintenance-review-20261012/`. References were not
 recaptured or refreshed. Hosted CI remains verified at the preceding `35fc2cae`
 batch; include this locally qualified correction in the next delivery batch.
+
+**S08 complete (2026-10-13).** The fallback renderer retains each original
+segment start and its existing eight subdivision endpoints in one glyph-local
+`PreparedContours` owner. Endpoint arithmetic and ordering are unchanged;
+sampling and winding contributions use the same rules as the original route.
+Segments remain separate, preserving counters and disjoint contours. The
+dominant point array and conservative aggregate owner allowance reserve before
+allocation. Preparation observes cancellation and charges the eight evaluations
+per segment; failed preparation and disposal release storage and allowance.
+No font ownership transfers or process cache are introduced.
+
+The renderer returns before preparing an empty clipped region. Preparation yields
+when memory is unavailable or the remaining work allowance cannot cover it;
+the original route therefore still succeeds at its exact work boundary. Bounds,
+per-sample winding work, pixel dispatch, numeric checks, viewport/alpha handling
+and output integrity retain their existing protections. The approximate memory
+policy and completed ownership work remain closed; no small-object receipts or
+retirement proofs were added.
+
+Complete Release checks pass on Windows and Linux: **7,342 tests per platform
+(5,064 core, 2,272 visual, six FontProbe)**, zero warnings/errors/skips. Every
+preceding case remains. Ten added controls cover fractional/anisotropic sampling
+at 1/4/8 samples, curves and opposite winding, source immutability, material
+pressure, exact preparation work, numeric failures, cancellation/cleanup, the
+renderer’s original tight work boundary and empty-region behavior. Existing
+normal/adversarial memory probes pass on both platforms. Frozen references are
+unchanged; **27/27 documents / 258/258 variants** and the selected **48/48**
+development queue remain complete. Finite G2–G9/S17 and representativeness stay open.
+
+The existing text benchmarks now include a complete-conversion fallback control:
+the caller-owned instruction-free triangle font at a size giving a visible glyph
+within a 64×64 output. Font/input acquisition stays outside timing. Setup follows
+the renderer's actual dispatch and rejects measurement on a native route; this
+font selects fallback on Windows and native coverage on Linux, so the reported
+result is Windows-only. An initially overbroad setup guard produced no valid
+timing and is excluded. Six warmups and 12 measured iterations give original
+**205.9 / 206.7 µs** versus prepared **133.1 / 145.8 µs**, about **29–35%** faster
+for this synthetic control. Allocation rises **50.15 → 50.69 KiB**. This does not
+establish ordinary/native font throughput or corpus representativeness. Details,
+complete tests and both memory summaries remain in ignored
+`artifacts/maintenance-review-20261012/`; no new measurement framework or oracle
+capture was added. S07/S08 remain local for the next delivery batch; hosted CI is
+still verified at `35fc2cae`.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.

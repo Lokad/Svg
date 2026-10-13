@@ -65,6 +65,27 @@ public class SvgTextBenchmarks
     private const string TriangleFontBase64 = "AAEAAAAHAAAAAAAAaGVhZAAAAAAAAAB8AAAANm1heHAAAAAAAAAAsgAAAAZoaGVhAAAAAAAAALgAAAAkaG10eAAAAAAAAADcAAAACmNtYXAAAAAAAAAA5gAAACxsb2NhAAAAAAAAARIAAAAQZ2x5ZgAAAAAAAAEiAAAANAAAAAAAAAAAAAAAAAAAAAAAAAPoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgH0AAACWAAAAAAAAAABAAMAAQAAAAwABAAgAAAABAAAAAAAAABB//8AAABB////wAABAAAAAAAAAAAAAAAAAAAAIAAAADQAAQAAAAAAAAAAAAIAADczJwoKCgoKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     private readonly TextBenchmarkState _state = TextBenchmarkState.Create();
+    private readonly byte[] _fallbackSvg = "<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><text font-family='Example' font-size='800' x='8' y='48'>A</text></svg>"u8.ToArray();
+
+    [GlobalSetup(Target = nameof(ConvertFallbackLabel))]
+    public void VerifyFallbackRoute()
+    {
+        RenderBudget budget = new(long.MaxValue);
+        using SvgRoot root = SvgRootParser.Parse(_fallbackSvg, SvgRenderLimits.Default, budget, _state.Snapshot, CancellationToken.None);
+        SvgGeometry geometry = root.Geometries.Single();
+        SvgGlyphRasterSource source = geometry.Glyph.Source ?? throw new InvalidOperationException("Expected a supplied-font glyph source.");
+        ParserWorkCounter work = new(long.MaxValue);
+        bool fitted = source.HasGlyphMap || source.UsesDeviceFitting(budget, work, CancellationToken.None);
+        bool native = OperatingSystem.IsLinux() && fitted
+            || OperatingSystem.IsWindows() && fitted && (source.HasGlyphMap || source.HasTrueTypePrograms(budget, work, CancellationToken.None));
+        if (native)
+            throw new InvalidOperationException("This font selects native coverage on this platform; filter out ConvertFallbackLabel when measuring native routes.");
+    }
+
+    /// <summary>Measures complete conversion through the verified fallback path; source and caller-supplied font acquisition are outside timing.</summary>
+    [Benchmark]
+    public int ConvertFallbackLabel()
+        => SvgConverter.ConvertToPng(_fallbackSvg, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, _state.Snapshot), CancellationToken.None).Length;
 
     [Benchmark]
     public async Task<int> CreateSnapshotAsync()

@@ -2604,10 +2604,18 @@ public static class SvgConverter
             {
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph coverage coordinates exceed the admitted numeric range.");
             }
+            ParserWorkCounter fallbackPreparation = new(options.Limits.MaximumWorkUnits - workUnits);
+            // Optional preparation yields to both memory and the existing tight work boundary.
+            using SvgGlyphCoverage.PreparedContours? prepared = sampleWork <= options.Limits.MaximumWorkUnits - workUnits
+                ? SvgGlyphCoverage.PreparedContours.TryCreate(glyph.Contours, budget, fallbackPreparation, cancellationToken) : null;
+            workUnits += fallbackPreparation.Used;
             for (int y = startY; y < endY; y++)
             for (int x = startX; x < endX; x++)
             {
-                byte alpha = ViewportAlpha(SvgGlyphCoverage.GetCoverage(glyph.Contours, sourceLeft + (x - startX) * sourcePixelWidth, sourceTop + (y - startY) * sourcePixelHeight, sourcePixelWidth, sourcePixelHeight, GlyphSamplesPerAxis, cancellationToken), x, y);
+                byte coverageAlpha = prepared is null
+                    ? SvgGlyphCoverage.GetCoverage(glyph.Contours, sourceLeft + (x - startX) * sourcePixelWidth, sourceTop + (y - startY) * sourcePixelHeight, sourcePixelWidth, sourcePixelHeight, GlyphSamplesPerAxis, cancellationToken)
+                    : SvgGlyphCoverage.GetCoverage(prepared, sourceLeft + (x - startX) * sourcePixelWidth, sourceTop + (y - startY) * sourcePixelHeight, sourcePixelWidth, sourcePixelHeight, GlyphSamplesPerAxis, cancellationToken);
+                byte alpha = ViewportAlpha(coverageAlpha, x, y);
                 if (alpha == 0) continue;
                 BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(glyph.Color.Red, glyph.Color.Green, glyph.Color.Blue, MultiplyAlpha(glyph.Color.Alpha, alpha)));
             }

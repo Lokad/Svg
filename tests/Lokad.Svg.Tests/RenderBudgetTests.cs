@@ -140,6 +140,54 @@ public sealed class RenderBudgetTests
         Assert.Equal(4, budget.Snapshot().CurrentBytes);
     }
 
+    [Theory]
+    [InlineData(517, false)]
+    [InlineData(549, true)]
+    public void Optional_glyph_preparation_preserves_the_original_tight_work_boundary(int maximumWork, bool prepared)
+    {
+        RenderBudget budget = new(10_000);
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits(maximumWork)), budget, CancellationToken.None))
+        {
+            Assert.Equal(maximumWork, surface.WorkUnits);
+            Assert.Equal(new byte[] { 0, 0, 0, 255 }, surface.Pixels);
+            Assert.Equal(4, budget.Snapshot().CurrentBytes);
+            Assert.Equal(prepared, budget.Snapshot().PeakBytes > 4);
+        }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Clipped_fallback_glyph_does_not_allocate_prepared_endpoints()
+    {
+        using SvgRoot root = GlyphRoot();
+        // The fixture owns these borrowed input contours; the renderer owns only its surface/preparation.
+        foreach (SvgGlyphQuadraticContour contour in root.Geometries[0].Glyph.Contours)
+        for (int index = 0; index < contour.Segments.Length; index++)
+        {
+            SvgGlyphQuadraticSegment segment = contour.Segments[index];
+            contour.Segments[index] = new(new(segment.Start.X + 2, segment.Start.Y + 2), new(segment.Control.X + 2, segment.Control.Y + 2), new(segment.End.X + 2, segment.End.Y + 2));
+        }
+        RenderBudget budget = new(10_000);
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits(549)), budget, CancellationToken.None))
+        {
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, surface.Pixels);
+            Assert.Equal(4, budget.Snapshot().PeakBytes);
+        }
+        AssertBudgetReleased(budget);
+    }
+
+    [Fact]
+    public void Prepared_glyph_cancellation_at_coverage_releases_subdivision_storage()
+    {
+        RenderBudget budget = new(10_000);
+        using CancellationTokenSource cancellation = new();
+        bool started = false;
+        using IDisposable probe = GlyphCoverageProbe.Arm(() => { started = true; cancellation.Cancel(); });
+        Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.Rasterize(GlyphRoot(), new SvgRenderOptions(null, 1, SvgColor.Transparent, PreparedGlyphLimits(549)), budget, cancellation.Token));
+        Assert.True(started);
+        AssertBudgetReleased(budget);
+    }
+
     [Fact]
     public void Glyph_rasterization_denies_before_bounds_or_coverage_work_exceeds_the_limit()
     {
@@ -868,6 +916,8 @@ public sealed class RenderBudgetTests
     private static SvgRenderLimits Limits() => Limits(8);
 
     private static SvgRenderLimits Limits(int maximumWorkUnits) => new(8, 8, 1, 1, 8, 8, 8, maximumWorkUnits);
+
+    private static SvgRenderLimits PreparedGlyphLimits(int maximumWorkUnits) => new(8, 8, 1, 1, 10_000, 8, 8, maximumWorkUnits);
 
     private static void AssertBudgetReleased(RenderBudget budget)
     {
