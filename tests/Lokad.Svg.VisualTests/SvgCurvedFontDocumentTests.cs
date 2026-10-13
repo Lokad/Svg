@@ -106,6 +106,7 @@ public sealed class SvgCurvedFontDocumentTests
     [InlineData("curved-font-documents")]
     [InlineData("static-css-document")]
     [InlineData("mask-group-documents")]
+    [InlineData("offset-merge-document")]
     public void Public_font_bank_pins_evaluation_data_and_frozen_native_reference_triples(string family)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
@@ -147,8 +148,21 @@ public sealed class SvgCurvedFontDocumentTests
     [InlineData("forward-use")]
     [InlineData("anonymous-and-siblings")]
     public async Task Supplied_mask_document_and_controls_preserve_their_declared_native_outcomes(string identity)
+        => await AssertRetainedOutcome("mask-group-documents", identity);
+
+    [Theory]
+    [InlineData("inv-146-800x700-transparent")]
+    [InlineData("rotated-fill")]
+    [InlineData("rotated-stroke")]
+    [InlineData("reflected-composed")]
+    [InlineData("fractional-viewport")]
+    [InlineData("ordered-group")]
+    public async Task Supplied_offset_document_and_controls_preserve_their_declared_native_outcomes(string identity)
+        => await AssertRetainedOutcome("offset-merge-document", identity);
+
+    private static async Task AssertRetainedOutcome(string family, string identity)
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "mask-group-documents");
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
         using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement item = manifest.RootElement.GetProperty("cases").EnumerateArray().Single(c => Required(c, "id") == identity);
         byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(item, "input")));
@@ -489,7 +503,7 @@ public sealed class SvgCurvedFontDocumentTests
     [Fact]
     public void Missing_corrupt_and_substituted_image_fonts_have_distinct_frozen_native_pixels()
     {
-        foreach (string directory in new[] { DirectoryPath, Path.Combine(AppContext.BaseDirectory, "Research", "mask-group-documents") })
+        foreach (string directory in new[] { DirectoryPath, Path.Combine(AppContext.BaseDirectory, "Research", "mask-group-documents"), Path.Combine(AppContext.BaseDirectory, "Research", "offset-merge-document") })
         {
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
             JsonElement intended = manifest.RootElement.GetProperty("cases")[0];

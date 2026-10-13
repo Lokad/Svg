@@ -1,0 +1,146 @@
+{
+  "platforms": [
+    {
+      "platform": "windows",
+      "cases": [
+        {
+          "id": "missing",
+          "reference": "windows-missing.png",
+          "changedPixelsFromIntendedFont": 9093,
+          "captures": [
+            {
+              "pngSha256": "1ea2952e2cd58034ed48e6f4546e1ad57362f6cf0b360b1bd55e79b9fa69776b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ea2952e2cd58034ed48e6f4546e1ad57362f6cf0b360b1bd55e79b9fa69776b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ea2952e2cd58034ed48e6f4546e1ad57362f6cf0b360b1bd55e79b9fa69776b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        {
+          "id": "corrupt",
+          "reference": "windows-corrupt.png",
+          "changedPixelsFromIntendedFont": 9093,
+          "captures": [
+            {
+              "pngSha256": "1ea2952e2cd58034ed48e6f4546e1ad57362f6cf0b360b1bd55e79b9fa69776b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ea2952e2cd58034ed48e6f4546e1ad57362f6cf0b360b1bd55e79b9fa69776b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "1ea2952e2cd58034ed48e6f4546e1ad57362f6cf0b360b1bd55e79b9fa69776b",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        {
+          "id": "substituted",
+          "reference": "windows-substituted.png",
+          "changedPixelsFromIntendedFont": 9716,
+          "captures": [
+            {
+              "pngSha256": "abe36ad5d4249296962d7cb1eb8f992c4e98676c6483ba1cd19f1f091f1a90b0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "abe36ad5d4249296962d7cb1eb8f992c4e98676c6483ba1cd19f1f091f1a90b0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "abe36ad5d4249296962d7cb1eb8f992c4e98676c6483ba1cd19f1f091f1a90b0",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "platform": "linux",
+      "cases": [
+        {
+          "id": "missing",
+          "reference": "linux-missing.png",
+          "changedPixelsFromIntendedFont": 7763,
+          "captures": [
+            {
+              "pngSha256": "be4005bb940860f33ec6d5e4c612bc8ef35a924340afc15cbf535f67dc5ef91f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "be4005bb940860f33ec6d5e4c612bc8ef35a924340afc15cbf535f67dc5ef91f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "be4005bb940860f33ec6d5e4c612bc8ef35a924340afc15cbf535f67dc5ef91f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        {
+          "id": "corrupt",
+          "reference": "linux-corrupt.png",
+          "changedPixelsFromIntendedFont": 7763,
+          "captures": [
+            {
+              "pngSha256": "be4005bb940860f33ec6d5e4c612bc8ef35a924340afc15cbf535f67dc5ef91f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "be4005bb940860f33ec6d5e4c612bc8ef35a924340afc15cbf535f67dc5ef91f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "be4005bb940860f33ec6d5e4c612bc8ef35a924340afc15cbf535f67dc5ef91f",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        },
+        {
+          "id": "substituted",
+          "reference": "linux-substituted.png",
+          "changedPixelsFromIntendedFont": 8841,
+          "captures": [
+            {
+              "pngSha256": "86b9c8975d8edfde9384054aad60b129f64861db63dfdf2c3dbac4f339783b34",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "86b9c8975d8edfde9384054aad60b129f64861db63dfdf2c3dbac4f339783b34",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            },
+            {
+              "pngSha256": "86b9c8975d8edfde9384054aad60b129f64861db63dfdf2c3dbac4f339783b34",
+              "startupHealth": "healthy",
+              "profileCleaned": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

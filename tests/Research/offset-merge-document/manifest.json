@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One unchanged public-domain offset/merge document with original transformed stroked text and five separate CC0 rotated-oval controls. Complete finite G3/G8/G9 promises remain open.",
+  "selectedAt": "e353b330",
+  "fontPack": "font-pack.json",
+  "fontProvenance": "font-provenance.json",
+  "fontProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+  "fontLicense": "../supplied-font-labels/fonts/OFL.txt",
+  "fontProgramSha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "cases": [
+    {
+      "id": "inv-146-800x700-transparent",
+      "document": "inv-146",
+      "input": "../../Fixtures/candidates/inv-146.svg",
+      "width": 800,
+      "height": 700,
+      "explicitViewport": true,
+      "scale": 1,
+      "background": "transparent",
+      "role": "document-output",
+      "sourceSha256": "a1a3658bbf81743bb2bce1102269692ba81b6a7b3125d23f450ccf5b569fd89b",
+      "originalBytes": 1589,
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:SVGfeOffset01.svg",
+      "sourceRevisionUrl": "https://commons.wikimedia.org/wiki/File:SVGfeOffset01.svg?oldid=963514598",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a2/SVGfeOffset01.svg",
+      "author": "Dr. Olaf Hoffmann",
+      "license": "Public domain",
+      "licenseEvidence": "PD-self: author releases the complete work into the public domain worldwide; pinned Commons metadata is retained alongside the original bytes.",
+      "selection": "Whole static source exercises the finite G8 earlier-local-result/default-input and feMerge promises, composed grouped geometry and G9 transformed fill/stroke text. Output and supplied face are declared before native capture or renderer screening. Retain only after healthy stable platform references and intended-font proof establish a complete in-scope output gap.",
+      "rendererOutcome": "unsupported",
+      "initialSuppliedFontProbe": {
+        "Id": "SVGfeOffset01-800x700-transparent",
+        "Outcome": "UnsupportedFeature",
+        "Message": "Rotated ellipse transforms are not implemented."
+      },
+      "reference": "references/inv-146-800x700-transparent.png",
+      "referenceSha256": "a3027e59159765c395e49d2cc0e900f62b0feff638e2ec7d70d3cf8ae76f6ad3",
+      "captures": [
+        {
+          "pngSha256": "a3027e59159765c395e49d2cc0e900f62b0feff638e2ec7d70d3cf8ae76f6ad3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3027e59159765c395e49d2cc0e900f62b0feff638e2ec7d70d3cf8ae76f6ad3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a3027e59159765c395e49d2cc0e900f62b0feff638e2ec7d70d3cf8ae76f6ad3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/inv-146-800x700-transparent.png",
+      "linuxReferenceSha256": "ec9d26b3d306f6678ae326bc2ab707e295899d56af4b09cc22c2c0eae7807b76",
+      "linuxCaptures": [
+        {
+          "pngSha256": "ec9d26b3d306f6678ae326bc2ab707e295899d56af4b09cc22c2c0eae7807b76",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ec9d26b3d306f6678ae326bc2ab707e295899d56af4b09cc22c2c0eae7807b76",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ec9d26b3d306f6678ae326bc2ab707e295899d56af4b09cc22c2c0eae7807b76",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "rotated-fill",
+      "input": "rotated-fill.svg",
+      "width": 96,
+      "height": 96,
+      "background": "transparent",
+      "sourceSha256": "37a6255f9026d66c346e3842a30f2ead20ea82a0cec14b641e6c5d972f20ac9a",
+      "license": "CC0-1.0",
+      "selection": "Declared before production edits and native captures; shared rotated oval fill/stroke, reflection, composition, fractional viewport and ordered group diagnostics.",
+      "document": "inv-146-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/rotated-fill.png",
+      "referenceSha256": "f3a6542842a39f58558ecae2c03e45718672a35699f44fe0bec7929ff0b846c3",
+      "captures": [
+        {
+          "pngSha256": "f3a6542842a39f58558ecae2c03e45718672a35699f44fe0bec7929ff0b846c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f3a6542842a39f58558ecae2c03e45718672a35699f44fe0bec7929ff0b846c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f3a6542842a39f58558ecae2c03e45718672a35699f44fe0bec7929ff0b846c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/rotated-fill.png",
+      "linuxReferenceSha256": "f3a6542842a39f58558ecae2c03e45718672a35699f44fe0bec7929ff0b846c3",
+      "linuxCaptures": [
+        {
+          "pngSha256": "f3a6542842a39f58558ecae2c03e45718672a35699f44fe0bec7929ff0b846c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f3a6542842a39f58558ecae2c03e45718672a35699f44fe0bec7929ff0b846c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f3a6542842a39f58558ecae2c03e45718672a35699f44fe0bec7929ff0b846c3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "rotated-stroke",
+      "input": "rotated-stroke.svg",
+      "width": 96,
+      "height": 96,
+      "background": "transparent",
+      "sourceSha256": "c57bf939334d8fa4938698eed64ddf41038d3f6374437105e439d12664632d3e",
+      "license": "CC0-1.0",
+      "selection": "Declared before production edits and native captures; shared rotated oval fill/stroke, reflection, composition, fractional viewport and ordered group diagnostics.",
+      "document": "inv-146-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/rotated-stroke.png",
+      "referenceSha256": "a1afc2c83fcae8582555de6c114bf00cdae73250c76df3dbdc3b9689529bdd7e",
+      "captures": [
+        {
+          "pngSha256": "a1afc2c83fcae8582555de6c114bf00cdae73250c76df3dbdc3b9689529bdd7e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a1afc2c83fcae8582555de6c114bf00cdae73250c76df3dbdc3b9689529bdd7e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a1afc2c83fcae8582555de6c114bf00cdae73250c76df3dbdc3b9689529bdd7e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/rotated-stroke.png",
+      "linuxReferenceSha256": "a1afc2c83fcae8582555de6c114bf00cdae73250c76df3dbdc3b9689529bdd7e",
+      "linuxCaptures": [
+        {
+          "pngSha256": "a1afc2c83fcae8582555de6c114bf00cdae73250c76df3dbdc3b9689529bdd7e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a1afc2c83fcae8582555de6c114bf00cdae73250c76df3dbdc3b9689529bdd7e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a1afc2c83fcae8582555de6c114bf00cdae73250c76df3dbdc3b9689529bdd7e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "reflected-composed",
+      "input": "reflected-composed.svg",
+      "width": 96,
+      "height": 96,
+      "background": "transparent",
+      "sourceSha256": "903cd9cf0edc69e8921c4e5d7cb31669e88c5c4014bc355525c2709006311cb1",
+      "license": "CC0-1.0",
+      "selection": "Declared before production edits and native captures; shared rotated oval fill/stroke, reflection, composition, fractional viewport and ordered group diagnostics.",
+      "document": "inv-146-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/reflected-composed.png",
+      "referenceSha256": "5c0d5962b1269292d0aba146b9790f45b300267b5c22a00a2e3289dddd7c627d",
+      "captures": [
+        {
+          "pngSha256": "5c0d5962b1269292d0aba146b9790f45b300267b5c22a00a2e3289dddd7c627d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5c0d5962b1269292d0aba146b9790f45b300267b5c22a00a2e3289dddd7c627d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5c0d5962b1269292d0aba146b9790f45b300267b5c22a00a2e3289dddd7c627d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/reflected-composed.png",
+      "linuxReferenceSha256": "5c0d5962b1269292d0aba146b9790f45b300267b5c22a00a2e3289dddd7c627d",
+      "linuxCaptures": [
+        {
+          "pngSha256": "5c0d5962b1269292d0aba146b9790f45b300267b5c22a00a2e3289dddd7c627d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5c0d5962b1269292d0aba146b9790f45b300267b5c22a00a2e3289dddd7c627d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5c0d5962b1269292d0aba146b9790f45b300267b5c22a00a2e3289dddd7c627d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "fractional-viewport",
+      "input": "fractional-viewport.svg",
+      "width": 96,
+      "height": 96,
+      "background": "transparent",
+      "sourceSha256": "6d3cdbc4299e77b267782f087304ff7d2cd7fd6c6653184dc7d2374a0cf00de2",
+      "license": "CC0-1.0",
+      "selection": "Declared before production edits and native captures; shared rotated oval fill/stroke, reflection, composition, fractional viewport and ordered group diagnostics.",
+      "document": "inv-146-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/fractional-viewport.png",
+      "referenceSha256": "b224b04ca5fd8ccf887bc268c6d26ddac6ac5709e174cf6eb43bd446079efabd",
+      "captures": [
+        {
+          "pngSha256": "b224b04ca5fd8ccf887bc268c6d26ddac6ac5709e174cf6eb43bd446079efabd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b224b04ca5fd8ccf887bc268c6d26ddac6ac5709e174cf6eb43bd446079efabd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b224b04ca5fd8ccf887bc268c6d26ddac6ac5709e174cf6eb43bd446079efabd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/fractional-viewport.png",
+      "linuxReferenceSha256": "b224b04ca5fd8ccf887bc268c6d26ddac6ac5709e174cf6eb43bd446079efabd",
+      "linuxCaptures": [
+        {
+          "pngSha256": "b224b04ca5fd8ccf887bc268c6d26ddac6ac5709e174cf6eb43bd446079efabd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b224b04ca5fd8ccf887bc268c6d26ddac6ac5709e174cf6eb43bd446079efabd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b224b04ca5fd8ccf887bc268c6d26ddac6ac5709e174cf6eb43bd446079efabd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "ordered-group",
+      "input": "ordered-group.svg",
+      "width": 96,
+      "height": 96,
+      "background": "transparent",
+      "sourceSha256": "724099d5e3a3f28ba603677e8ab9bc5e5ea1ca10e4758ee340b12aaf820ce4df",
+      "license": "CC0-1.0",
+      "selection": "Declared before production edits and native captures; shared rotated oval fill/stroke, reflection, composition, fractional viewport and ordered group diagnostics.",
+      "document": "inv-146-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/ordered-group.png",
+      "referenceSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
+      "captures": [
+        {
+          "pngSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/ordered-group.png",
+      "linuxReferenceSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
+      "linuxCaptures": [
+        {
+          "pngSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}

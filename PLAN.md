@@ -5,7 +5,7 @@ Updated 2026-10-13. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**49/49 retained development documents are complete.** The preceding 35 stay
+**49/50 retained development documents are complete.** The preceding 35 stay
 complete; the newly retained public-domain/CC0 batch is **10/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
 `inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker,
@@ -846,12 +846,17 @@ unchanged source and declaration: `artifacts/offset-document-20261013/`.
 This advances finite G8/G9 dependencies without deferring other group promises
 or making exhaustive G2 combinations prerequisites.
 The predeclared whole lead now has healthy, cleaned, stable reference triples
-and missing/corrupt/substituted-face triples on both platforms. Windows rejects
-its rotated ellipse transform before reaching the remaining filter/text gates.
-Retain this complete source and the small controls needed for that shared G3
-correction next; keep it outside the retained-document denominator until its
-source, font contract and references are committed. No production correction
-for the lead has begun.
+and missing/corrupt/substituted-face triples on both platforms. Both platforms
+reject its rotated ellipse transform before reaching the remaining filter/text
+gates. The unchanged whole source, supplied-font contract, platform references
+and five separate predeclared CC0 oval controls are retained as
+[inv-146](tests/Research/offset-merge-document/README.md). The selected ledger is
+now **49/50**; this document is **0/1 complete**, with five controls still rejected.
+Advance shared G3 conic placement first, then continue the same complete document
+through its G8/G9 gates. No production correction for it has begun.
+The existing public-font document test family passes **83 cases on Windows and
+Linux**, including seven new outcome/reference cases and the new bank's complete
+font-use proof. Retention changes no production code or preceding references.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
 bytes, four labels and declared 750×500 transparent output. It is already exact

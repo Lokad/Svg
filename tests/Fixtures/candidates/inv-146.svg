@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="iso-8859-1" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg viewBox="0 0 800 700"
+version="1.1"
+xmlns="http://www.w3.org/2000/svg"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xml:lang="de">
+
+<title>Beispiel Filter feOffset</title>
+<desc>
+Eine Vorlage aus zwei Ellipsen und den Buchstaben 'SVG'
+wird mehrfach an verschiedene Positionen versetzt.
+</desc>
+
+<defs>
+
+
+
+<filter id="filter"
+filterUnits="userSpaceOnUse"
+x="0" y="0" width="800" height="700">
+  <feOffset dy="50" dx="5" result="f1"/>
+  <feOffset dy="60" dx="10" result="f2"/>
+  <feOffset dy="70" dx="20" result="f3"/>
+  <feOffset dy="80" dx="40" result="f4"/>
+  <feOffset dy="90" dx="80" result="f5"/>
+  <feOffset dy="100" dx="160" result="f6"/>
+  <feOffset dy="110" dx="320" result="f7"/>
+<feMerge>
+    <feMergeNode in="f1" />
+    <feMergeNode in="f2" />
+    <feMergeNode in="f3" />
+    <feMergeNode in="f4" />
+    <feMergeNode in="f5" />
+    <feMergeNode in="f6" />
+    <feMergeNode in="f7" />
+</feMerge>
+
+</filter>
+</defs>
+
+<g filter="url(#filter)">
+<g transform="scale(0.1) rotate(30 500,480)">
+<ellipse cx="480" cy="480" rx="450" ry="280"
+  fill="none"
+  stroke="#04a"
+  stroke-width="20" />
+<ellipse cx="480" cy="480" rx="420" ry="200"
+  fill="none"
+  stroke="#039"
+  stroke-width="10" />
+
+ <text x="480" y="590" text-anchor="middle"
+       font-size="336" font-family="serif"
+       stroke-linecap="round" stroke-linejoin="round"
+       stroke-width="15" stroke="#035"
+       fill="#004" fill-opacity="0.2">SVG</text>
+</g>
+</g>
+
+
+</svg>
