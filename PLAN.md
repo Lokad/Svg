@@ -748,10 +748,11 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S11's shared axis-aligned paint-line
-stroke admission. Extract genuinely common parsed values while retaining the
-zero-width early return, authored/cascaded validation order and paint-specific
-opacity/capability gates. S10's unarmed probe path is qualified. The S07–S09
+**Next deliverable:** maintenance-review S12's four unreferenced helper removals.
+Recheck their callers before deletion; use a Release build and affected existing
+tests, without absence tests or a throughput claim. S11's shared paint-line
+admission is qualified with zero-width, authored/cascaded ordering and
+paint-specific gates preserved. S10's unarmed probe path is qualified. The S07–S09
 renderer batch is pushed and hosted Windows/Linux CI is green at `57d1c44b`.
 S09 reuses one matching tile across consecutive
 compatible rectangle fills, with bounded ownership and memory-pressure fallback;
@@ -1714,9 +1715,9 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02/S04/S05/S06/S07/S08/S09/S10; S03 is explicitly deferred on the measurements below.
+and S02/S04/S05/S06/S07/S08/S09/S10/S11; S03 is explicitly deferred on the measurements below.
 The S07–S09 renderer batch is delivered with green hosted Windows/Linux CI at
-`57d1c44b`; S10 is locally qualified, then take S11/S12 as small follow-ups.
+`57d1c44b`; S10/S11 are locally qualified, then take S12 as a small follow-up.
 S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1733,7 +1734,7 @@ changes when a demonstrated support blocker takes priority.
 | S08 | **Complete.** Prepare the fallback glyph's identical eight quadratic subdivision endpoints once per glyph. | Verified Windows fallback conversion is 29–35% faster in two local comparisons for about 0.54 KiB more allocation. Sampling, winding, numeric rejection, cancellation and cleanup remain protected; optional preparation yields at the original tight work boundary and under memory pressure. Empty drawable regions do not prepare. Native-fitting throughput is outside this claim. |
 | S09 | **Complete bounded tranche.** Reuse one tile across consecutive compatible rectangle fills, including lowered stroke bands and repeated instances. | Content identity, source/mapped boxes, dimensions, viewBox, native maps and paint must match. Lookahead avoids cold retention; scope changes and other draws release the owner. Measured stroke/repeated-fill allocation falls 13%/37%, with local timing benefits; different-tile uncertainty is reported below. Fractional sampling, phase, alpha and exact references stay unchanged. Wider polygon/cross-boundary reuse remains conditional, beyond this within-operation exit. |
 | S10 | **Complete.** Avoid unarmed AsyncLocal lookup/write in glyph coverage, polygon fan and glyph-outline probes. | AsyncLocal context notifications synchronize a thread-local callback cache; inherited children, parallel scopes, awaits and suppressed flow retain isolation. Unarmed entry microbenchmarks improve without allocation; full checks pass on both platforms. Scope disposal is idempotent. No renderer arithmetic or Release-only behavior changes. |
-| S11 | Share common axis-aligned gradient/radial/pattern line-stroke admission and parsed values. | Existing cross-paint line/stroke cases pass; retain zero-width return, validation order, authored-versus-cascaded validation and paint-specific gates. No new generic renderer abstraction. |
+| S11 | **Complete.** Share axis-aligned gradient/radial/pattern line-stroke admission and effective parsed values in the existing stroke parsing layer. | Existing cross-paint line/stroke cases and complete platform checks pass. Zero width returns first; authored validation, radial dispatch, effective dash/cap/pathLength order and paint-specific gates are preserved. Width is parsed once per admission. No generic renderer abstraction or throughput claim. |
 | S12 | Recheck and remove four unreferenced internal helpers. | Search all current sources for AppendStrippedContour, SvgRootLength.ToAbsoluteOrNull, SvgStyleSheet.GetIdentifierAttribute and SvgRoot.BeginOpacityScope before deletion. Release build and affected tests suffice; no absence tests or throughput claim. |
 | S13 | Conditional: broaden the one-glyph raw decode cache only if a realistic nonconsecutive label still benefits after S02. | Measure lookup/retained-memory cost first. If justified, use a small byte-bounded per-run/conversion cache keyed by prepared font and glyph index; preserve leases, immutable decoding and per-position contours. Otherwise leave deferred. |
 | S14 | Conditional: reuse immutable validated TrueType table/profile preparation; investigate reusable VM initialization separately. | Profile an existing supplied-font label, beyond the synthetic triangle-font benchmark. Preserve lazy validation, target/size/transform distinctions, mutable CVT/storage/graphics state and composite semantics. Do not share a live mutable VM across glyphs; defer unless a bounded change proves useful. |
@@ -2074,6 +2075,35 @@ existing BenchmarkDotNet harness. No new measurement framework or dummy work.
 S10 stays local for the next maintenance delivery batch. Frozen 27/27 documents,
 258/258 variants and the selected 48/48 queue remain complete; finite G2–G9/S17
 and representativeness stay open.
+
+**S11 complete (2026-10-13).** `SvgStrokeStyleSyntax` now returns typed common
+geometry admission (width/transform) and effective line style (adjusted syntax,
+dash entries, cap and pathLength). Linear, radial and pattern line lowering use
+both stages. Width is parsed once per admission rather than once for zero and
+again for its value. A zero width still returns before authored dash/cap checks,
+transform/viewport/axis validation and paint binding. Nonzero admission retains
+authored attribute checks before transform, scaled-viewport, axis and even-width
+checks. Effective dash/cap/pathLength preparation remains at its old position;
+linear-to-radial dispatch still occurs between the two stages.
+
+Authored and cascaded values are not treated as interchangeable. Paint binding,
+user-space requirements, opacity, translucent cap gates and final round/dashed
+lowering remain in their existing paint-specific paths. Helper result structs
+add no retained owner or new array; dash storage and work/cancellation behavior
+are unchanged. This prevents maintenance drift across three implementations;
+no end-to-end performance claim or new rendering abstraction follows.
+
+The existing **1,096 focused parser/stroke/pattern cases** pass. Complete Release
+checks pass on Windows and Linux: **7,372 tests per platform (5,094 core, 2,272
+visual, six FontProbe)**, zero warnings/errors/skips. Every preceding case
+remains; zero-width, missing-paint, authored/style dash/cap, pathLength,
+gradient/pattern capability, resource and exact-pixel controls stay protected.
+No implementation-mirroring tests were added for this refactor. Material
+ownership and the approximate memory policy are unchanged; completed memory
+qualification remains closed. Logs/results stay in ignored
+`artifacts/maintenance-review-20261012/`. S10/S11 remain local for the next
+maintenance batch. Frozen 27/27 documents, 258/258 variants and selected 48/48
+development documents remain complete; finite G2–G9/S17 remain open.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.

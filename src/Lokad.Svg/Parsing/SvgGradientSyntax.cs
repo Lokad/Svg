@@ -1207,25 +1207,20 @@ internal static class SvgGradientSyntax
 
     internal static SvgParsedGeometry LowerGradientStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
-        // A zero width paints nothing for any paint, so it returns empty before dash, cap, and paint handling like the solid line kernel.
-        if (SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1") == 0)
+        SvgPaintLineStrokeAdmission admission = SvgStrokeStyleSyntax.PreparePaintLineGeometry(reader, context, style, syntax, frame);
+        if (admission.Width == 0)
         {
             using BudgetedGeometryBuilder none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             return new SvgParsedGeometry(none.Detach(), 0);
         }
-        // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
-        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
-        SvgAffineTransform transform = context.ResolveTransform(reader);
-        if (transform != SvgAffineTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
-        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
-        if ((syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
-        int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
-        if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
+        int strokeWidth = admission.Width;
+        SvgAffineTransform transform = admission.Transform;
         if (style.Stroke is not null && state.RadialGradients.TryGetValue(ParseGradientId(style.Stroke), out _)) return LowerRadialStrokeLine(reader, context, style, syntax, state, frame);
-        double[]? dashEntries = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
-        SvgStrokeCap dashLinecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
-        if (dashLinecap == SvgStrokeCap.Square && dashEntries is null) syntax = syntax.WithSquareCaps(strokeWidth);
-        double? pathLength = dashEntries is null ? null : SvgStrokeStyleSyntax.ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
+        SvgPaintLineStrokeStyle prepared = SvgStrokeStyleSyntax.PreparePaintLineStyle(reader, style, syntax, strokeWidth);
+        double[]? dashEntries = prepared.DashEntries;
+        SvgStrokeCap dashLinecap = prepared.Linecap;
+        syntax = prepared.Syntax;
+        double? pathLength = prepared.PathLength;
         if (!state.Gradients.TryGetValue(ParseGradientId(style.Stroke), out SvgLinearGradient gradient)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         gradient = MapUserSpaceVector(transform, gradient, frame);
         if (!gradient.IsUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse gradient strokes on lines are implemented.");
@@ -1312,24 +1307,19 @@ internal static class SvgGradientSyntax
     /// <summary>Lowers one radial-gradient-stroked axis-aligned line into a radial-evaluated stroke band.</summary>
     internal static SvgParsedGeometry LowerRadialStrokeLine(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle style, SvgLineSyntax syntax, SvgDocumentState state, SvgViewportFrame? frame)
     {
-        // A zero width paints nothing for any paint, so it returns empty before dash, cap, and paint handling like the solid line kernel.
-        if (SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1") == 0)
+        SvgPaintLineStrokeAdmission admission = SvgStrokeStyleSyntax.PreparePaintLineGeometry(reader, context, style, syntax, frame);
+        if (admission.Width == 0)
         {
             using BudgetedGeometryBuilder none = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             return new SvgParsedGeometry(none.Detach(), 0);
         }
-        // Round caps without dashes lower through the paint-specific round-cap path below; everything else keeps the band gate.
-        if (SvgStrokeStyleSyntax.ParseDasharray(reader.GetAttribute("stroke-dasharray")) is not null || SvgStrokeStyleSyntax.ParseLinecap(reader.GetAttribute("stroke-linecap")) != SvgStrokeCap.Round) SvgStrokeStyleSyntax.RequireButtOrSquareCapJoin(reader, "line", context.WorkCounter, context.CancellationToken);
-        SvgAffineTransform transform = context.ResolveTransform(reader);
-        if (transform != SvgAffineTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
-        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes in scaled viewports are not implemented.");
-        if ((syntax.X1 != syntax.X2 && syntax.Y1 != syntax.Y2) || (syntax.X1 == syntax.X2 && syntax.Y1 == syntax.Y2)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only untransformed horizontal or vertical lines are implemented.");
-        int strokeWidth = SvgGeometrySyntax.ParseInteger(style.Width ?? syntax.StrokeWidth ?? "1");
-        if (strokeWidth <= 0 || strokeWidth % 2 != 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only even-width line strokes are implemented.");
-        double[]? dashEntries = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
-        SvgStrokeCap dashLinecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
-        if (dashLinecap == SvgStrokeCap.Square && dashEntries is null) syntax = syntax.WithSquareCaps(strokeWidth);
-        double? pathLength = dashEntries is null ? null : SvgStrokeStyleSyntax.ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
+        int strokeWidth = admission.Width;
+        SvgAffineTransform transform = admission.Transform;
+        SvgPaintLineStrokeStyle prepared = SvgStrokeStyleSyntax.PreparePaintLineStyle(reader, style, syntax, strokeWidth);
+        double[]? dashEntries = prepared.DashEntries;
+        SvgStrokeCap dashLinecap = prepared.Linecap;
+        syntax = prepared.Syntax;
+        double? pathLength = prepared.PathLength;
         if (state.Patterns.TryGetValue(ParseGradientId(style.Stroke), out _)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern strokes are not implemented.");
         if (!state.RadialGradients.TryGetValue(ParseGradientId(style.Stroke), out SvgRadialGradient circle)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local gradient references are implemented.");
         circle = MapUserSpaceRadial(transform, circle, frame);
