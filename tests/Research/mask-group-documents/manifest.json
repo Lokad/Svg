@@ -33,7 +33,7 @@
       "license": "Public domain",
       "licenseEvidence": "Author releases the complete work into the public domain worldwide; pinned PD-self Commons metadata retained before evaluation.",
       "selection": "Whole unchanged public-domain example of both mask region unit modes, stroke-bearing mask groups and their local use aliases, with all three original live labels. Fix source, output and face before capture or candidate screening; retain only a demonstrated in-scope whole-output gap.",
-      "rendererOutcome": "known-difference",
+      "rendererOutcome": "exact",
       "linuxRendererOutcome": "exact",
       "initialSuppliedFontProbe": {
         "Outcome": "UnsupportedFeature",
@@ -80,17 +80,17 @@
       ],
       "comparison": {
         "DimensionsMatch": true,
-        "ChangedPixelCount": 16,
-        "MaximumChannelError": 11,
-        "MeanAbsoluteError": 4.982142857142857e-05,
-        "RootMeanSquareError": 0.018472953201911165,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
         "MaximumAlphaError": 0,
         "AlphaChangedPixelCount": 0,
-        "MinimumMismatchX": 101,
-        "MinimumMismatchY": 47,
-        "MaximumMismatchX": 566,
-        "MaximumMismatchY": 81,
-        "IsExact": false
+        "MinimumMismatchX": 1400,
+        "MinimumMismatchY": 1000,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
       },
       "linuxComparison": {
         "DimensionsMatch": true,

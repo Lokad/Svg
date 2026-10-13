@@ -5,7 +5,7 @@ Updated 2026-10-13. Complete Windows/Linux qualification preserves
 frozen browser references. Marks are 13/13; outlined wordmarks are 14/14.
 Membership, input bytes, options and references stay frozen.
 
-**48/49 retained development documents are complete.** The preceding 35 stay
+**49/49 retained development documents are complete.** The preceding 35 stay
 complete; the newly retained public-domain/CC0 batch is **10/10 complete**
 (`inv-132` matrix, `inv-133` rotation, `inv-134` skewX, `inv-135` skewY,
 `inv-138` honeycomb, `inv-139` phased columns, `inv-140` rainbow checker,
@@ -16,8 +16,8 @@ complete**: `inv-142` at 512×266 and `inv-143`/`inv-144` at 512×341 transparen
 through all twelve raw/prepared APIs on Windows/Linux. Their original bytes and
 cross-platform native references remain frozen; every preceding exact result is
 preserved. The next unchanged public-domain mask export (`inv-145`) is retained
-at 1400×1000 transparent with its declared supplied face; it now matches the
-Linux reference exactly, with 16 Windows label pixels still differing.
+at 1400×1000 transparent with its declared supplied face; it now matches both
+platform references exactly through all twelve output APIs.
 Finite G2–G9 and S17 work remains open.
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
@@ -751,16 +751,17 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** finish the unchanged public-domain `SVGmask03.svg` whole
-document's remaining label differences against frozen references. Its
+**Completed deliverable:** the unchanged public-domain `SVGmask03.svg` whole
+document matches both frozen platform references. Its
 explicit **1400×1000 transparent** output uses the existing public Noto Sans
 Regular face 0 under the original `fantasy` alias. Keep both mask region unit
 modes, stroke-bearing mask groups, their local use aliases and all three labels.
 The 2,148-byte source, output and face were declared before capture or candidate
 screening. The supplied-font baseline rejected a child element; shared mask-group
 replay and placed custom-region mapping now remove both successive gates. The whole
-document renders with **16 Windows /10 Linux differing pixels**, all in labels;
-its masking geometry is exact. Complete-document acceptance remains **0/1**.
+document first rendered with 16 Windows /10 Linux differing label pixels;
+shared light-outline rounding and native curve subdivision now remove those
+residuals. Complete-document acceptance is **1/1** through twelve APIs on both platforms.
 The complete failure is
 retained as `inv-145` in the [mask-group bank](tests/Research/mask-group-documents/README.md).
 Healthy Windows/Linux reference triples and missing/corrupt/substituted-face
@@ -768,9 +769,9 @@ triples prove the declared font on both platforms before production correction.
 Five separate CC0 controls were declared and frozen first for group aliases,
 nested isolated opacity, mapped inherited strokes, forward uses and anonymous
 groups with ordered siblings. These five controls are **5/5 exact on both
-platforms**, separate from document completion. Continue with shared glyph
-geometry/position/coverage diagnostics: complete independent native textures for
-the document's size-50 `g`, `b` and phased `j` are frozen before text correction.
+platforms**, separate from document completion. Complete independent native
+textures for the document's size-50 `g`, `b` and phased `j` were frozen before
+text correction and now protect exact shared coverage.
 Preserve source bytes, all labels, font and both declared references. Private
 declaration, captures and current comparisons: `artifacts/mask03-document-20261013/`.
 
@@ -801,16 +802,47 @@ negative coordinates. Its complete size-50 `j` outline is stable through three
 fresh native processes and is retained in the existing geometry bank. The whole
 unchanged `inv-145` Linux output is now exact against its frozen reference; all
 five mask controls remain exact. Windows keeps its measured 16-pixel residual.
-The document remains **0/1 complete across both platforms**, and the selected
-ledger stays **48/49**. Continue the same document's Windows normal-coverage
-correction; native contours and bounded implicit coefficients already agree,
-and disabling dropouts leaves the same residual. Do not widen tolerances or
-replace the references.
+At this intermediate checkpoint the document remained 0/1 complete across both
+platforms and the selected ledger stayed 48/49. Native contours and bounded
+implicit coefficients agreed; disabling dropouts left the same residual.
 Complete Release builds and **7,400 tests per platform (5,114 core /2,280
 visual /six FontProbe)** pass without warnings, failures or skips. Every
 preceding case is retained; the complete native outline adds one visual case.
 The frozen 27/27 corporate documents and 258/258 variants remain exact. Receipt:
 `artifacts/maintenance-review-20261012/mask-light-results.json`.
+That correction is pushed at `0a8bf9bf`; hosted Windows/Linux
+[CI is green](https://github.com/Lokad/Svg/actions/runs/38351471747).
+
+The following Windows correction subdivides monotonic curves spanning more
+than fifty sampling cells before reducing implicit coefficients, matching the
+independent native rule. Signed half-points round down in upward font coordinates;
+each subdivision consumes work, checks cancellation and retains no storage.
+Only the child crossing the queried scan is evaluated, with a fixed depth bound.
+Complete native `g`/`b`/phased-`j` textures and the unchanged whole document
+are exact. The whole document also exercises all six raw and six independently
+prepared APIs. The selected ledger is now **49/49**, with no tolerance or
+reference changes. Finite G2–G9 and S17 remain open.
+Complete Release builds and **7,404 tests per platform (5,114 core /2,284
+visual /six FontProbe)** pass without warnings, failures or skips. Every
+preceding case remains, with three complete native-texture cases and one whole
+twelve-API document case added. Frozen 27/27 corporate documents and 258/258
+variants remain exact. Qualification and case-retention comparison:
+`artifacts/maintenance-review-20261012/mask-complete-results.json`.
+
+**Next deliverable:** qualify the complete public-domain
+[SVGfeOffset01.svg](https://commons.wikimedia.org/wiki/File:SVGfeOffset01.svg?oldid=963514598)
+as the next retained gap. Its unchanged 1,589-byte original, explicit 800×700
+transparent output and caller-supplied public Noto Sans Regular face 0 under the
+authored `serif` alias are declared before capture or renderer screening.
+The source exercises G8's earlier local/default filter inputs and `feMerge`,
+plus composed grouped geometry and G9's transformed fill/stroke text. Preserve
+all seven offsets, both ellipses, original `SVG` label and its rotation/paint.
+Obtain healthy stable Windows/Linux references and intended-font proof first;
+retain it only if the whole output demonstrates an in-scope gap. Already exact
+outputs stay outside the failure-selected corpus. Private rights evidence,
+unchanged source and declaration: `artifacts/offset-document-20261013/`.
+This advances finite G8/G9 dependencies without deferring other group promises
+or making exhaustive G2 combinations prerequisites.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
 bytes, four labels and declared 750×500 transparent output. It is already exact
@@ -852,7 +884,7 @@ allocation/preparation items in that order. Rendering
 correctness keeps precedence: select the next complete rights-clear static SVG
 by the remaining finite G2–G9 mechanisms it exercises, without making exhaustive
 instance combinations prerequisites. Use the standing numerical controls to
-diagnose shared corrections. The selected development queue is now 48/48; finite
+diagnose shared corrections. The selected development queue is now 49/49; finite
 SVG support and S17 remain open. Expand the queue only with unchanged, licensed
 whole sources and frozen declared outputs that demonstrate remaining gaps.
 
@@ -873,8 +905,9 @@ This qualifies the vector-effect lead previously excluded on image-decode failur
 No reference, membership or previous complete result is rebased.
 
 The other leads remain explicit: animated SVGclipPath06 is outside the static
-scope; static SVGmask02/03 need caller-supplied/browser-matched font contracts
-before retention. Their G5/G9 support stays in scope. No feature deferral follows
+scope; static SVGmask02 is already exact under its declared supplied-font contract
+and stays out of the failure queue. SVGmask03 is retained and complete as `inv-145`.
+Their wider G5/G9 support stays in scope. No feature deferral follows
 from this batch selection. Use existing inventory/comparison tools, preserve every
 finite G2–G9/S17 exit, and keep already exact downloads out of the failure queue.
 

@@ -28,5 +28,7 @@ bounded source/instance replay. Finite G5/G9 exits remain open.
 
 Shared group/region replay makes all five controls exact on Windows and Linux.
 Signed implied-point rounding in light-hinted outlines also makes the entire
-Linux document exact. The Windows document retains a 16-pixel label difference;
-whole-document completion requires both unchanged platform references.
+Linux document exact. Native large-curve subdivision removes the remaining
+Windows label difference. The whole document matches both unchanged platform
+references through all twelve output APIs. Complete native glyph textures in
+`diagnostics/windows-glyph-masks.json` protect the shared coverage correction.

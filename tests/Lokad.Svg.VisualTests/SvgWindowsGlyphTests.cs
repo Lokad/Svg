@@ -11,6 +11,27 @@ public sealed class SvgWindowsGlyphTests
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "supplied-font-labels");
 
     [Theory]
+    [InlineData("74-50-0")]
+    [InlineData("69-50-0")]
+    [InlineData("77-50-0.75")]
+    public async Task Large_windows_curves_match_complete_native_textures_after_bounded_subdivision(string identity)
+    {
+        using JsonDocument native = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "mask-group-documents", "diagnostics", "windows-glyph-masks.json")));
+        JsonElement item = native.RootElement.GetProperty("cases").EnumerateArray().Single(candidate => candidate.GetProperty("id").GetString() == identity);
+        Assert.Equal(3, item.GetProperty("freshProcessCaptures").GetInt32());
+        using SvgFontSnapshot snapshot = await Prepare();
+        SvgPreparedFont font = Assert.Single(snapshot.Fonts);
+        byte[] original = font.Bytes.ToArray();
+        RenderBudget budget = new(long.MaxValue);
+        JsonElement origin = item.GetProperty("origin");
+        using (SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, new(item.GetProperty("glyph").GetUInt16(), origin[0].GetDouble(), origin[1].GetDouble(), 0), item.GetProperty("deviceSize").GetDouble(), budget))
+        using (OpenTypeGlyphContourStorage contours = source.CreateWindowsContours(1, 0, 1, 0, budget, new(long.MaxValue), CancellationToken.None))
+            AssertTexture(item, contours.Segments, contours.SmartDropouts);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(original, font.Bytes.ToArray());
+    }
+
+    [Theory]
     [InlineData("f-0")]
     [InlineData("f-1")]
     [InlineData("f-2")]

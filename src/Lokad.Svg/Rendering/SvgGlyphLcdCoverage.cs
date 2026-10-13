@@ -400,7 +400,25 @@ internal static class SvgGlyphLcdCoverage
                 if (ax == cx || ay == cy || bx < Math.Min(ax, cx) || bx > Math.Max(ax, cx) || by < Math.Min(ay, cy) || by > Math.Max(ay, cy)) return crossing;
                 int sx = cx > ax ? 1 : -1, sy = cy > ay ? 1 : -1;
                 long dx = (long)((bx - ax) * sx), dy = (long)((by - ay) * sy), tx = (long)((cx - ax) * sx), ty = (long)((cy - ay) * sy);
-                if (Math.Max(tx, ty) > 3200) return crossing;
+                // Native monotonic curves split spans over fifty sampling
+                // cells before coefficient reduction. Each signed midpoint
+                // rounds down in the upward font coordinate system.
+                for (int depth = 0; Math.Max(tx, ty) > 3200; depth++)
+                {
+                    if (depth == 32) return crossing;
+                    work.Consume(token);
+                    double abx = Math.Floor((ax + bx) / 2), aby = Math.Floor((ay + by) / 2);
+                    double bcx = Math.Floor((bx + cx) / 2), bcy = Math.Floor((by + cy) / 2);
+                    double mx = Math.Floor((abx + bcx) / 2), my = Math.Floor((aby + bcy) / 2);
+                    double target = horizontal ? sample * 64 : -sample * 64;
+                    double middle = horizontal ? mx : my, start = horizontal ? ax : ay, end = horizontal ? cx : cy;
+                    bool firstHalf = end > start ? target <= middle : target >= middle;
+                    if (firstHalf) { bx = abx; by = aby; cx = mx; cy = my; }
+                    else { ax = mx; ay = my; bx = bcx; by = bcy; }
+                    sx = cx > ax ? 1 : -1; sy = cy > ay ? 1 : -1;
+                    dx = (long)((bx - ax) * sx); dy = (long)((by - ay) * sy);
+                    tx = (long)((cx - ax) * sx); ty = (long)((cy - ay) * sy);
+                }
                 double firstX = Math.Floor((ax + (sx > 0 ? 32 : -33)) / 64) * 64 + 32;
                 double firstY = Math.Floor((ay + (sy > 0 ? 32 : -33)) / 64) * 64 + 32;
                 long u = (long)((firstX - ax) * sx), v = (long)((firstY - ay) * sy), determinant = 2 * (dx * ty - tx * dy);
