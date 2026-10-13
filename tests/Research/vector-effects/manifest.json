@@ -8,7 +8,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Eight frozen controls for complete inv-142 correction: all exact. Root legacy declarations, non-scaling viewport widths, explicit instance inheritance/source precedence and ordinary stroke preservation. Controls stay separate from documents.",
+  "purpose": "Ten exact vector-effect controls: preserve the eight original inv-142 width/inheritance/presentation witnesses; add rotated and dashed forward-use native inverse placement. All original document and reference bytes remain unchanged; numerical controls stay separate from document completion.",
   "cases": [
     {
       "id": "legacy-viewport-presentation",
@@ -129,6 +129,104 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "role": "fidelity"
+    },
+    {
+      "id": "rotated-host-inverse",
+      "input": "rotated-host-inverse.svg",
+      "width": 640,
+      "height": 520,
+      "sourceSha256": "641880784d3d7dec5bcef13b4fbec7c3df608f80e5fd9233488ee8f90b138bcb",
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared during the identified non-scaling inverse correction before new native captures and follow-up implementation: distinguishes rotated source construction and dashed forward-use replay. Controls remain separate from complete documents.",
+      "reference": "references/rotated-host-inverse.png",
+      "referenceSha256": "6dcf67a4b219f9d0bcd485e06de38e758f2d436c897487987f7c385a8534423b",
+      "captures": [
+        {
+          "pngSha256": "6dcf67a4b219f9d0bcd485e06de38e758f2d436c897487987f7c385a8534423b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6dcf67a4b219f9d0bcd485e06de38e758f2d436c897487987f7c385a8534423b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6dcf67a4b219f9d0bcd485e06de38e758f2d436c897487987f7c385a8534423b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "6dcf67a4b219f9d0bcd485e06de38e758f2d436c897487987f7c385a8534423b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6dcf67a4b219f9d0bcd485e06de38e758f2d436c897487987f7c385a8534423b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6dcf67a4b219f9d0bcd485e06de38e758f2d436c897487987f7c385a8534423b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "dashed-use-host-inverse",
+      "input": "dashed-use-host-inverse.svg",
+      "width": 640,
+      "height": 520,
+      "sourceSha256": "a989b88bc8a2d00f362159cb0cfddb08dacda2f41f51a47bff5bf72f304cfbc0",
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
+      "selection": "Declared during the identified non-scaling inverse correction before new native captures and follow-up implementation: distinguishes rotated source construction and dashed forward-use replay. Controls remain separate from complete documents.",
+      "reference": "references/dashed-use-host-inverse.png",
+      "referenceSha256": "917947f0abee44fd1364fdda539db94081ccb4806ed793588bd0fe7ccee4fea9",
+      "captures": [
+        {
+          "pngSha256": "917947f0abee44fd1364fdda539db94081ccb4806ed793588bd0fe7ccee4fea9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "917947f0abee44fd1364fdda539db94081ccb4806ed793588bd0fe7ccee4fea9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "917947f0abee44fd1364fdda539db94081ccb4806ed793588bd0fe7ccee4fea9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "917947f0abee44fd1364fdda539db94081ccb4806ed793588bd0fe7ccee4fea9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "917947f0abee44fd1364fdda539db94081ccb4806ed793588bd0fe7ccee4fea9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "917947f0abee44fd1364fdda539db94081ccb4806ed793588bd0fe7ccee4fea9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     }
   ],
   "linuxReferenceQualification": {

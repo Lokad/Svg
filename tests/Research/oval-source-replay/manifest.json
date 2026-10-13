@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Eight focused oval source/tile controls: seven exact and one measured non-scaling viewBox gap retained under G3. Complete documents and corporate/original denominators remain separate.",
+  "purpose": "Eight exact focused oval source/tile controls. The non-scaling viewBox width map and native float inverse composition are repaired. Complete documents and corporate/original denominators remain separate.",
   "cases": [
     {
       "id": "ring-only",
@@ -108,20 +108,6 @@
       "height": 520,
       "background": "transparent",
       "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 98,
-        "MaximumChannelError": 85,
-        "MeanAbsoluteError": 0.0007204026442307692,
-        "RootMeanSquareError": 0.14330774359747628,
-        "MaximumAlphaError": 7,
-        "AlphaChangedPixelCount": 98,
-        "MinimumMismatchX": 255,
-        "MinimumMismatchY": 131,
-        "MaximumMismatchX": 417,
-        "MaximumMismatchY": 397,
-        "IsExact": false
-      },
       "remainingGap": "Root viewBox width enlargement is repaired by the inv-142 host-coordinate stroke change. A separate native conic coverage discrepancy remains at 98 pixels, maximum alpha error 7, against the unchanged 640x520 reference; retain under G3/G4."
     },
     {

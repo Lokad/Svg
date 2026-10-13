@@ -7,11 +7,15 @@ internal enum SvgAuthoredPathVerb { Move, Line, Quadratic, Cubic, Arc, Conic, En
 /// <summary>Identifies the native draw operation whose coverage must survive source replay.</summary>
 internal enum SvgAuthoredStrokeShape { Path, Rectangle }
 
+/// <summary>Keeps native paint placement separate from the transform already applied to non-scaling source commands.</summary>
+internal readonly record struct SvgNonScalingStrokeMap(SvgAffineTransform SourceMap, SvgAffineTransform StrokeTransform);
+
 /// <summary>Retains stroke width, its independent scene map, cap semantics and source operation beside the centerline.</summary>
 internal readonly record struct SvgAuthoredStrokeStyle(double Width, SvgAffineTransform WidthMap, SvgStrokeCap Cap, SvgAuthoredStrokeShape Shape)
 {
     /// <summary>Retains undashed geometry bounds when filtering replaces the source verbs.</summary>
     internal SvgRectangle? SourceBounds { get; init; }
+    internal SvgNonScalingStrokeMap? NonScalingMap { get; init; }
 }
 
 [Flags]
@@ -236,7 +240,12 @@ internal sealed class SvgAuthoredPath : IDisposable
                 double width = style.Width * Math.Max(Math.Sqrt(widthMap.A * widthMap.A + widthMap.B * widthMap.B), Math.Sqrt(widthMap.C * widthMap.C + widthMap.D * widthMap.D));
                 if (!double.IsFinite(width) || width > int.MaxValue)
                     throw new SvgException(SvgErrorCode.UnsupportedFeature, "Placed native stroke widths exceed the supported numeric range.");
-                copiedStyle = style with { WidthMap = widthMap };
+                copiedStyle = style with
+                {
+                    WidthMap = widthMap,
+                    NonScalingMap = style.NonScalingMap is {} nonScaling
+                        ? nonScaling with { SourceMap = placement.ComposeChecked(nonScaling.SourceMap) } : null
+                };
             }
             copiedOutline = _strokeOutline?.Copy(placement, budget, workCounter, cancellationToken);
             return Create(owned, placement.ComposeChecked(SceneMap), copiedStyle, copiedOutline, IsKnownConvex, budget);

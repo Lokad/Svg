@@ -1390,6 +1390,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         {
             SvgAffineTransform retainedMap = deviceMap;
             SvgAffineTransform constructionMap = nonScaling ? hostMap.ComposeChecked(deviceMap) : SvgAffineTransform.Identity;
+            SvgNonScalingStrokeMap? nonScalingMap = nonScaling ? new(deviceMap, constructionMap) : null;
             SvgAffineTransform outlineMap = deviceMap;
             if (nonScaling && !hostMap.TryInvert(out outlineMap))
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-scaling stroke host mapping must be invertible.");
@@ -1411,7 +1412,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             {
                 if (stroked.Geometries.Length == 1)
                 {
-                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new SvgAuthoredStrokeStyle(nonScaling ? deviceWidth : width, nonScaling ? outlineMap : deviceMap, cap, shape) { SourceBounds = sourceBounds }, stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Missing native stroke outline."), budget) };
+                    stroked.Storage.Items[0] = stroked.Storage.Items[0] with { AuthoredPath = SvgAuthoredPath.CreateStroke(commands, retainedMap, new SvgAuthoredStrokeStyle(nonScaling ? deviceWidth : width, nonScaling ? outlineMap : deviceMap, cap, shape) { SourceBounds = sourceBounds, NonScalingMap = nonScalingMap }, stroked.Geometries[0].AuthoredPath ?? throw new InvalidOperationException("Missing native stroke outline."), budget) };
                     commands = new([], null);
                 }
                 return stroked;

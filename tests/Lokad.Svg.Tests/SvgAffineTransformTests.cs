@@ -213,4 +213,42 @@ public sealed class SvgAffineTransformTests
         Assert.False(SvgAffineTransform.FromScale(0, 5).TryInvert(out _));
         Assert.False(SvgAffineTransform.FromScale(1e308, 1e308).TryInvert(out _));
     }
+
+    [Fact]
+    public void Native_inverse_composition_preserves_the_compiled_float_scale()
+    {
+        SvgAffineTransform root = new(80, 0, 0, 80, 80, 160);
+        SvgAffineTransform shape = new(1.1f, 0, 0, 1.1f, 0.3500000238418579f, 0.20000000298023224f);
+        Assert.True(root.Compose(shape).TryInvert(out SvgAffineTransform inverse));
+        SvgAffineTransform actual = root.ComposeNative(shape).ComposeNative(inverse);
+        // Independently evaluated with pinned SkM44::setConcat and skvx::float4.
+        Assert.Equal(new(0.99999994039535522, 0, 0, 0.99999994039535522, 0, 0), actual);
+        Assert.NotEqual(SvgAffineTransform.Identity, actual);
+    }
+
+    [Fact]
+    public void Native_composition_preserves_skew_and_translation_column_order()
+    {
+        SvgAffineTransform outer = new(2.000000119, -.75, .35, 1.25, 32767.3, -4095.75);
+        SvgAffineTransform inner = new(.99999994, .2, -.125, .9, -16383.25, 4095.9);
+        Assert.Equal(new(2.0699999332427979, -0.49999994039535522, 0.064999997615814209, 1.21875, 1434.3671875, 13311.5625), outer.ComposeNative(inner));
+    }
+
+    [Fact]
+    public void Native_composition_preserves_reflected_fractional_coefficients()
+    {
+        SvgAffineTransform outer = new(-3.125, .2, .0625, 1.5, 12.3, -40.2);
+        SvgAffineTransform inner = new(.32, 0, 0, .6666666667, -3.936, 26.8);
+        Assert.Equal(new(-1, 0.064000003039836884, 0.041666667908430099, 1, 26.275001525878906, -0.78720384836196899), outer.ComposeNative(inner));
+    }
+
+    [Theory]
+    [InlineData(double.MaxValue, 1)]
+    [InlineData(float.MaxValue, 2)]
+    public void Native_composition_rejects_float_overflow(double scale, double innerScale)
+    {
+        SvgAffineTransform outer = new(scale, 0, 0, 1, 0, 0);
+        SvgAffineTransform inner = new(innerScale, 0, 0, 1, 0, 0);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => outer.ComposeNative(inner)).ErrorCode);
+    }
 }

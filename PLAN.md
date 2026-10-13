@@ -20,13 +20,15 @@ limit; completed work stays separate from the required exits below.
 | Shared rendering mechanisms | Completed heart/I Ching, patterns, curved and outlined marks, native strokes, static paint order, finite masks/clips and existing filter documents stay exact. Their remaining combinations are identified below; completed source replay, hinting, winding, preblend and layer fixes are not prerequisites to requalify. See the [design record](docs/RASTERIZATION_DESIGN.md) and existing research manifests. |
 | Supplied-font work | SVG Translate, `inv-127`, `inv-145`, both original acceptance documents and their useful glyph/layout/mask controls are complete. Preserve original fonts, aliases, options, intended-font proof and independent Windows/Linux references. See [supplied-font documents](tests/Research/supplied-font-documents/README.md), [curved labels](tests/Research/curved-font-documents/README.md) and [group masks](tests/Research/mask-group-documents/README.md). |
 | Qualified merge correction | Complete `inv-146`, all eight preceding oval/text controls and four [canonical merge controls](tests/Research/filter-merges/README.md) are exact on both platforms. Complete Release checks pass **7,459 tests/platform** (5,146 core / 2,307 visual / six FontProbe), zero warnings/failures/skips; all preceding cases are retained, with the existing graph-limit test expanded to two inputs. [Qualification receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json). The merge delivery at 82dc9206 has [green hosted Windows/Linux CI](https://github.com/Lokad/Svg/actions/runs/38464311300), including memory, browser/font, package and installed-consumer gates. Two GitHub status reads established the terminal result; no further polling or unchanged qualification is needed. |
+| Qualified non-scaling correction | The original 98-pixel oval discrepancy is closed against its unchanged reference. Shared native inverse composition preserves rounded canvas coefficients, source copies and dashed host commands. The [oval bank](tests/Research/oval-source-replay/manifest.json) is **8/8 exact** and [vector-effect bank](tests/Research/vector-effects/manifest.json) **10/10 exact**. Three compiled native matrix witnesses, float overflow and existing resource/cancellation/retry controls protect the correction. Complete Windows/Linux Release checks pass **7,466 tests/platform** (5,151 core / 2,309 visual / six FontProbe), zero warnings/failures/skips; every preceding case is retained. [Qualification receipt](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json). |
 | Resource/API/package protections | Keep bounded preparation/raster/encoding, denied work/allocation, during-phase cancellation, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks remain applicable while unchanged. Final release evidence must match the finished revision. |
 
 Previously stated blockers for completed library/heart/pattern documents,
 scaled nested uses, inert outlined typography, rotated solid ovals and direct
 uniformly mapped solid glyph strokes are retired. The non-scaling root-viewBox
-**width map** is repaired; its remaining oval **coverage** discrepancy is still
-required work. Earlier claims that hosted CI is missing for delivered corrections
+**width map and oval coverage** are repaired. The two retained gradient-line
+fill-none controls already match unchanged references; they are regression
+witnesses, not remaining blockers. Earlier claims that hosted CI is missing for delivered corrections
 are stale; final-release CI is a separate gate.
 
 ## Delivery order
@@ -46,7 +48,7 @@ is progress, not completion of its item or support group.
 
 | Required remaining item | Missing behavior and dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| 2. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Non-scaling curved coverage, remaining fractional effective instance widths, nonuniform curve/stroke/paint maps and shader-painted source strokes. Depends on existing source contours/stroker and composed paint maps; share one stroke route across paints. | Close [non-scaling oval](tests/Research/oval-source-replay/manifest.json) (98 differing pixels, max alpha 7 at the qualified baseline), retained zero-area shader strokes, gradient-line and fractional-use-width cases on unchanged references. Use rotated-symbol gradient and nonuniform curve twins to protect admission/map semantics. A complete retained export demonstrating any remaining mechanism is declared before editing. Item exits when these gaps, G3/G4 and G2 width/map behavior have positive exact witnesses, with no prior exact regression; remaining G2 scope/composition follows item 3. No Cartesian combination quota. |
+| 2. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Remaining fractional effective instance widths, nonuniform curve/stroke/paint maps and shader-painted source strokes. Depends on existing source contours/stroker and composed paint maps; share one stroke route across paints. | Close the nine retained mixed open/closed zero-area shader strokes and fractional-use-width cases on unchanged references. Preserve the completed non-scaling oval and both exact gradient-line controls. Use rotated-symbol gradient and nonuniform curve twins to protect admission/map semantics. A complete retained export demonstrating any remaining mechanism is declared before editing. Item exits when these gaps, G3/G4 and G2 width/map behavior have positive exact witnesses, with no prior exact regression; remaining G2 scope/composition follows item 3. No Cartesian combination quota. |
 | 3. Finish scoped clip/mask composition (G2/G5) | Overlapping clip children, remaining transformed/unit clip maps, nested definition scopes, custom mask regions, mask-container opacity and remaining leaf/group/use composition. Depends on item 2 only where its maps are actually needed; reuse existing bounded scene/layer ownership. | Close [composed cubic clip](tests/Research/curved-path-clips/composed-group-cubic.svg), object-box clip witnesses, retained nested-viewport paint and `mask-region-half-translated` cases. Declare one licensed complete export combining an identified remaining mask/clip gap with ordered group/use content. Exact original outputs plus focused overlap/unit/scope/opacity controls and bounded cleanup close the finite G5 exit below. Completed `inv-136/137/141/145` stay regression witnesses. |
 | 4. Finish finite static effects and marker gaps (G8) | Small/anisotropic blur, fractional offsets, flood/composite/blend and remaining result/region/color-space graphs; remaining marker directions/containers. Depends on the completed `inv-146` source bounds and items 2–3 only for affected geometry/composition. | Close [translated rectangle source](tests/Research/filter-regions/translated-rectangle-source.svg) (85 pixels, max channel 1) and [transparent displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg) (six pixels, max channel 14 / alpha 1). Freeze a colored alpha composition with `over`/`in` and normal/multiply/screen, and an arc/polyline marker example. Finish retained complete exports exercising each missing mechanism; exact positive witnesses for the finite G8 subset and bounded graph/surface/work regressions close this item. |
 | 5. Finish static CSS and embedded images (G7) | Remaining selectors/cascade locations, presentation propagation and enumerated PNG/sampling/maps. Depends on shared G2/G5 scopes and G3 maps; preserve completed late rules, inert geometry typography and paint order. | Existing image/compound-selector cases plus a multicolor translucent PNG edge under fractional meet/slice and a root/nested/late-rule export affecting referenced content match frozen outputs. Authored override, CRC/decode denial and corrupt/missing image outcomes pass. The G7 subset below has representative positive witnesses and explicit unsupported boundaries. |
@@ -91,7 +93,10 @@ Keep an unverified behavior open; completed document counts do not prove it.
   shape distinctions; paint-specific geometry kernels are not the delivery plan.
 - Remaining witnesses: nonuniform root curve and rotated-symbol gradient gates,
   reflected/magnified pattern instances, fractional use width, mixed closed/open
-  zero-area shader strokes, gradient lines and non-scaling oval coverage.
+  zero-area shader strokes and fractional effective instance widths. Non-scaling
+  oval coverage and the two retained gradient-line cases are complete. The next
+  shared paint correction is selected by the nine mixed-path shader rejections,
+  using the existing native source stroker and paint mapping.
   Existing [use paints](tests/Research/use-paint-properties/manifest.json),
   [native replay](tests/Research/native-path-replay/manifest.json),
   [paint recording](tests/Research/paint-recording/manifest.json) and
@@ -270,9 +275,15 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  The latest finished suite measured about **128s Windows / 160s Linux**;
-  the preceding measured Linux build was 5m06s. See the current qualification
-  receipt and build log for this delivery; builds are included in the routine target. These are measurements,
+  The latest finished suite measured about **91s Windows / 262s Linux**;
+  the forced-cold Linux checkpoint took 5m58s to build plus about 4m22s in
+  tests (**10m20s total**, slightly over target). Routine verification uses normal
+  incremental build behavior; do not force compiler shutdown between checkpoints.
+  The normal Linux build then measured **3m22s**; with the qualified test intervals
+  this is about **7m44s**, within target. This local comparison supports the
+  ordinary build policy, not a renderer speedup or fixed timing guarantee.
+  Existing evidence remains valid; no test rerun is required merely to refresh
+  timing. Keep the ten-minute target and distinct visual/API protections. These are measurements,
   not a fixed timing guarantee. Record one existing before/after timing when
   materially changing routine cost. If it exceeds the target, remove redundant
   API permutation work while preserving distinct visuals/semantics. Fresh browser

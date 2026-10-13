@@ -12503,3 +12503,29 @@ changing established blur behavior or raising default resource limits. Focused
 tests protect source immutability, denied work/storage, partial-owner cleanup,
 during-source cancellation and retry. Full platform qualification is recorded
 in PLAN.md; the wider finite G8/G9 exits remain open.
+
+## Non-scaling source transforms and native inverse composition (2026-10-13)
+
+The retained `oval-source-replay/non-scaling-circle-tiled` had 98 differing pixels
+with maximum alpha error 7 after its width map was repaired. Its SVG and native
+reference remain unchanged. A compiled evaluation of pinned
+[SkM44::setConcat](https://github.com/google/skia/blob/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkM44.cpp#L48)
+shows why mathematical cancellation was insufficient: composing the rounded
+paint CTM with the inverse non-scaling transform leaves a scale of
+0.99999994039535522 rather than one. Applying that independently calculated map
+in the diagnostic removes all 98 differences.
+
+Shared source replay now retains the original shape placement and transform
+already applied to non-scaling commands. It composes rounded canvas coefficients
+with the inverse in native column-product order. This state survives source
+copies and remains independent of dashed commands already mapped to host space.
+Ordinary strokes retain their existing mapping. Native inverse validation/work
+occurs before allocating replay contours, preserving failure cleanup.
+
+The original oval is exact; the [vector-effect bank](../tests/Research/vector-effects/manifest.json)
+adds two original CC0 controls for rotation and dashed forward-use replay, each
+with healthy stable Windows/Linux triples. Both controls are exact, as are the
+eight previous vector-effect witnesses. Three independent compiled matrix vectors
+and float-overflow boundaries protect the shared arithmetic; existing host-stroke
+work, memory, cancellation/retry and owner tests remain applicable. This closes
+the measured oval defect, not the remaining finite G2–G4 map/paint combinations.

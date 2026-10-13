@@ -84,6 +84,21 @@ internal readonly record struct SvgAffineTransform(double A, double B, double C,
             B * inner.E + D * inner.F + F);
     }
 
+    /// <summary>Composes rounded native canvas coefficients in SkM44 column-product order.</summary>
+    /// <remarks>Pure bounded arithmetic with no storage ownership. Callers charge preparation work
+    /// and observe cancellation. Preserve the translation addition order and separate float products.</remarks>
+    internal SvgAffineTransform ComposeNative(SvgAffineTransform inner)
+    {
+        float a = (float)A, b = (float)B, c = (float)C, d = (float)D, e = (float)E, f = (float)F;
+        float ia = (float)inner.A, ib = (float)inner.B, ic = (float)inner.C, id = (float)inner.D, ie = (float)inner.E, inf = (float)inner.F;
+        SvgAffineTransform result = new(a * ia + c * ib, b * ia + d * ib,
+            a * ic + c * id, b * ic + d * id, a * ie + (c * inf + e), b * ie + (d * inf + f));
+        if (!double.IsFinite(result.A) || !double.IsFinite(result.B) || !double.IsFinite(result.C)
+            || !double.IsFinite(result.D) || !double.IsFinite(result.E) || !double.IsFinite(result.F))
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Native canvas composition exceeds the finite float range.");
+        return result;
+    }
+
     internal double Determinant => A * D - B * C;
 
     /// <summary>Inverts this transform when its determinant is nonzero, reporting singular or overflowing maps as missing.</summary>

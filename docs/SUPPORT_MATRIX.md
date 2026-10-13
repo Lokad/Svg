@@ -1068,3 +1068,14 @@ statements that every painted text stroke or merge rejects are superseded by
 these qualified slices. Dashed/non-scaling/stroke-before-fill/path text strokes,
 fractional offsets, mixed primitive color spaces, remaining finite effects and
 other promised container/paint/map combinations stay open under PLAN.md.
+
+## Non-scaling curved coverage (2026-10-13)
+
+Non-scaling native source strokes preserve the rounded paint CTM and inverse
+composition separately from source construction, including copied and dashed
+content. The original non-scaling root-viewBox circle now matches its unchanged
+reference exactly; all eight oval source controls are exact. Two further rotated
+and dashed forward-use controls preserve native pixels, bringing the vector-effect
+bank to ten exact controls. Existing width, inheritance and ordinary-stroke
+witnesses remain unchanged. Wider affine geometry/paint and instance combinations
+remain the finite G2–G4 work listed in PLAN.md.

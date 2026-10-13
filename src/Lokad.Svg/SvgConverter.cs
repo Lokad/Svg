@@ -1469,9 +1469,14 @@ public static class SvgConverter
                 SvgAffineTransform outputMap = coordinateSpace == PathCoordinateSpace.Device ? SvgAffineTransform.Identity : binaryViewport
                     ? SvgAffineTransform.FromScaleOffset((float)horizontalScale, (float)verticalScale, (float)horizontalOffset, (float)verticalOffset)
                     : SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
-                authored = replay.PrepareSource(outputMap, isEvenOdd, budget, preparationWork, cancellationToken);
-                workUnits += preparationWork.Used;
                 authoredMap = outputMap.ComposeChecked(replay.SceneMap);
+                if (authoredPath?.StrokeStyle?.NonScalingMap is {} nonScaling)
+                {
+                    preparationWork.Consume(cancellationToken);
+                    if (!nonScaling.StrokeTransform.TryInvert(out SvgAffineTransform inverse))
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-scaling stroke transform must be invertible.");
+                    authoredMap = outputMap.ComposeNative(nonScaling.SourceMap).ComposeNative(inverse);
+                }
                 if (frame is { ParentOrigin: {} parent } sourceFrame)
                 {
                     // SkDevice::setGlobalCTM rounds in the parent bitmap before
@@ -1481,6 +1486,8 @@ public static class SvgConverter
                     float ty = (float)(authoredMap.F + sourceFrame.CaptureOrigin.Y) - parent.Y;
                     authoredMap = authoredMap with { E = tx + (parent.X - sourceFrame.CaptureOrigin.X), F = ty + (parent.Y - sourceFrame.CaptureOrigin.Y) };
                 }
+                authored = replay.PrepareSource(outputMap, isEvenOdd, budget, preparationWork, cancellationToken);
+                workUnits += preparationWork.Used;
                 points = authored.Points; contourEnds = authored.ContourEnds; signs = authored.Signs;
                 mapping = authoredPath?.StrokeStyle is null ? SvgPolygonMapping.NativeFillEdges : SvgPolygonMapping.NativeStrokeEdges;
                 quadSpans = authored.QuadSpans; cubicSpans = authored.CubicSpans;
