@@ -878,10 +878,14 @@ test results preserves every preceding case, reconciling the renamed obsolete
 core rejection, and adds exactly five core resource cases and seven visual
 retention cases. Frozen 27/27 corporate documents and 258/258 variants stay exact.
 Receipt: `artifacts/maintenance-review-20261012/rotated-ovals-results.json`.
+The retention and geometry commits are pushed at `d747ff31`; hosted
+[Windows/Linux CI is green](https://github.com/Lokad/Svg/actions/runs/38356593117).
 The next three supplied-face text controls are declared before text edits:
 fill/stroke opacity, stroke-only winding and the whole document's original
-scale/rotation/anchor/paint combination. Freeze their platform references before
-extending shared text admission and glyph/source stroke replay; do not substitute
+scale/rotation/anchor/paint combination. Healthy cleaned reference triples for
+all three are now stable on both platforms, with the declared face embedded and
+the source XML tree unchanged. Retain these controls before extending shared
+direct-text transforms and glyph/source stroke replay; do not substitute
 an outlined or simplified document for `inv-146`.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
