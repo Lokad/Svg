@@ -6,7 +6,11 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Retains one ordered mask child with its validated attributes and inherited context.</summary>
 /// <remarks>The document owns copied attributes and list storage. Replay is parser-thread confined;
 /// each child lowers through the existing geometry/reference machinery after definitions resolve.</remarks>
-internal readonly record struct SvgMaskReplayChild(SvgDefinitionLeafSource Source, SvgPaintableElementContext Context);
+internal readonly record struct SvgMaskReplayChild(SvgDefinitionLeafSource Source, SvgPaintableElementContext Context)
+{
+    /// <summary>Borrows the sealed group from its document definition owner; mask replay never disposes it.</summary>
+    internal SvgSymbolContentRange? GroupContent { get; init; }
+}
 
 internal readonly record struct SvgDeferredMaskContent(string Id, int FirstChild, int ChildCount, bool IsAlpha);
 
@@ -19,9 +23,11 @@ internal static class SvgMaskContentReplay
     internal static bool Retain(XmlReader reader, SvgRootAttributes root, SvgDocumentState state,
         IReadOnlyDictionary<string, SvgColor> colors, ParserWorkCounter work, CancellationToken token)
     {
-        if (reader.LocalName != "use" && !SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)) return false;
+        bool group = reader.LocalName == "g";
+        if (!group && reader.LocalName != "use" && !SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName)) return false;
         switch (reader.LocalName)
         {
+            case "g": SvgElementAttributePolicy.ValidateGroup(reader, work, token); break;
             case "use": SvgElementAttributePolicy.ValidateUse(reader, work, token); break;
             case "rect": SvgElementAttributePolicy.ValidateRectangle(reader, work, token); break;
             case "circle": case "ellipse": SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, work, token); break;
@@ -37,7 +43,16 @@ internal static class SvgMaskContentReplay
         if (state.MaskReplayChildCount == 0) state.MaskReplayChildStart = state.MaskReplayChildren.Count;
         state.MaskReplayChildren.Add(new(source, context with { AuthoredStyle = source.AuthoredStyle, StyleSheet = default }));
         state.MaskReplayChildCount++;
-        if (state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
+        if (group)
+        {
+            state.MaskGroupChildIndex = state.MaskReplayChildren.Count - 1;
+            state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, work, token,
+                new(SvgPaint.Default, default, null, false, null, null, SvgPaintOpacity.Opaque));
+            _ = SvgSymbolContentParser.TryParse(reader, root, state, colors, work, token, true);
+            if (reader.IsEmptyElement) SvgDefinitionParser.RegisterSymbol(state, work, token);
+            else state.SymbolDepth = reader.Depth;
+        }
+        if (!group && state.MaskReplayChildCount == 1 && (reader.LocalName is "use" or "rect" or "circle"
             || SvgGradientSyntax.IsGradientFill(context.ResolveStyle(reader).Fill))) return false;
         if (!state.MaskHasReplayContent)
         {
@@ -50,7 +65,7 @@ internal static class SvgMaskContentReplay
             state.MaskUse = null;
             state.MaskHasReplayContent = true;
         }
-        state.HasUnsupportedContent |= !reader.IsEmptyElement;
+        state.HasUnsupportedContent |= !group && !reader.IsEmptyElement;
         return true;
     }
 
@@ -76,7 +91,32 @@ internal static class SvgMaskContentReplay
             {
                 work.Consume(token);
                 SvgMaskReplayChild child = state.MaskReplayChildren[childIndex];
-                if (child.Source.LocalName == "use")
+                if (child.GroupContent is {} group)
+                {
+                    SvgPaintableElementContext context = child.Context;
+                    SvgUseReference reference = new(string.Empty, 0, 0, null, null,
+                        context.InheritedPresentation.Transform, SvgAffineTransform.Identity, 255,
+                        context.InheritedPresentation.IsDisplayed && context.InheritedPresentation.IsVisible, null, null, null)
+                    {
+                        InheritedFill = context.InheritedPresentation.Paint,
+                        PaintServerFill = context.InheritedPresentation.PaintServerFill,
+                        PaintServerId = context.InheritedPresentation.PaintServerFill is {} fill ? SvgGradientSyntax.ParsePaintId(fill) : null,
+                        InheritedStroke = context.InheritedStroke,
+                        InheritedStrokeOpacity = context.InheritedStroke.StrokeOpacity is {} strokeOpacity ? SvgColorParser.ParsePaintOpacity(strokeOpacity) : SvgPaintOpacity.Opaque,
+                        InheritedFillRule = context.InheritedFillRule,
+                        InheritedPaintOrder = context.InheritedPresentation.PaintOrder,
+                        InheritedMarkers = context.InheritedPresentation.Markers,
+                        ParentElementOpacity = context.InheritedPresentation.ElementOpacity,
+                        NonScalingStroke = context.InheritedPresentation.NonScalingStroke,
+                        RecordingScope = state.NewRecordingScope(),
+                        AllowsSolidPaintAnalysis = true,
+                        IsDisplayed = context.InheritedPresentation.IsDisplayed,
+                        IsVisible = context.InheritedPresentation.IsVisible
+                    };
+                    SvgGeometry[] mapped = SvgReferenceResolver.Apply(new([], false, null, null) { SymbolContent = group }, reference, null, state, work, token);
+                    SvgPaintRecording.AdoptLeafScene(new(mapped, false, null, null), builder, state);
+                }
+                else if (child.Source.LocalName == "use")
                 {
                     SvgResourceUse reference = SvgResourceUseReplay.Retain(child.Source, child.Context, root, state);
                     SvgResourceUseReplay.AppendMaskUse(reference, builder, state, work, token);

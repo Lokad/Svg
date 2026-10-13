@@ -1589,6 +1589,15 @@ internal static class SvgDefinitionParser
                 if (!state.Definitions.TryAdd(id, definition)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG definition ids must be unique.");
             }
             else state.RetainAnonymousSymbol(definition, work, token);
+            if (state.MaskGroupChildIndex >= 0)
+            {
+                SvgMaskReplayChild child = state.MaskReplayChildren[state.MaskGroupChildIndex];
+                state.MaskReplayChildren[state.MaskGroupChildIndex] = child with
+                {
+                    GroupContent = definition.SymbolContent ?? throw new InvalidOperationException("Mask groups require sealed source content.")
+                };
+                state.MaskGroupChildIndex = -1;
+            }
             retained = true;
         }
         finally

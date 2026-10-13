@@ -16,7 +16,8 @@ complete**: `inv-142` at 512×266 and `inv-143`/`inv-144` at 512×341 transparen
 through all twelve raw/prepared APIs on Windows/Linux. Their original bytes and
 cross-platform native references remain frozen; every preceding exact result is
 preserved. The next unchanged public-domain mask export (`inv-145`) is retained
-at 1400×1000 transparent with its declared supplied face; it remains rejected.
+at 1400×1000 transparent with its declared supplied face; it now renders, with
+16 Windows /10 Linux label pixels still differing from the frozen references.
 Finite G2–G9 and S17 work remains open.
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
@@ -750,23 +751,47 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** take the unchanged public-domain `SVGmask03.svg` whole
-document through its child-element rejection and every later mismatch. Its
+**Next deliverable:** finish the unchanged public-domain `SVGmask03.svg` whole
+document's remaining label differences against frozen references. Its
 explicit **1400×1000 transparent** output uses the existing public Noto Sans
 Regular face 0 under the original `fantasy` alias. Keep both mask region unit
 modes, stroke-bearing mask groups, their local use aliases and all three labels.
 The 2,148-byte source, output and face were declared before capture or candidate
-screening. The supplied-font baseline rejects with UnsupportedFeature:
-"This SVG child element is not implemented yet." The complete failure is now
+screening. The supplied-font baseline rejected a child element; shared mask-group
+replay and placed custom-region mapping now remove both successive gates. The whole
+document renders with **16 Windows /10 Linux differing pixels**, all in labels;
+its masking geometry is exact. Complete-document acceptance remains **0/1**.
+The complete failure is
 retained as `inv-145` in the [mask-group bank](tests/Research/mask-group-documents/README.md).
 Healthy Windows/Linux reference triples and missing/corrupt/substituted-face
 triples prove the declared font on both platforms before production correction.
 Five separate CC0 controls were declared and frozen first for group aliases,
 nested isolated opacity, mapped inherited strokes, forward uses and anonymous
-groups with ordered siblings. Keep their control ledger separate. The first
-rejection is a `g` directly inside a mask; extend the existing bounded group and
-instance replay rather than building another mask renderer. Private declaration,
-captures and first probe: `artifacts/mask03-document-20261013/`.
+groups with ordered siblings. These five controls are **5/5 exact on both
+platforms**, separate from document completion. Continue with shared glyph
+geometry/position/coverage diagnostics: complete independent native textures for
+the document's size-50 `g`, `b` and phased `j` are frozen before text correction.
+Preserve source bytes, all labels, font and both declared references. Private
+declaration, captures and current comparisons: `artifacts/mask03-document-20261013/`.
+
+Mask groups borrow the existing sealed symbol/group source ranges and use the
+same iterative reference renderer. Their IDs remain local-use targets; anonymous
+groups retain document ownership. Mask scenes preserve ordered paints, inherited
+strokes, transforms and isolated opacity. Region mapping now places user-space
+custom boxes with their target transform; bounding-box fractions use the recorded
+object box. Other paint/clip/mask boundaries retain their explicit admission.
+The older `gradient-masks/transformed-leaf-boundary` control also becomes exact
+against its unchanged reference. Material work/memory denial, cancellation/retry,
+cycle/duplicate-ID cleanup and both region unit modes are protected without a
+new accounting framework. The approximate memory policy remains unchanged.
+Complete Release builds have zero warnings/errors; **7,399 tests pass per
+platform (5,114 core, 2,279 visual, six FontProbe)**. Every preceding case remains,
+with nine core resource/region/graph additions and seven visual corpus additions.
+The obsolete nested-mask-group rejection is now a positive ordered-pixel check.
+Frozen 27/27 corporate documents and 258/258 variants remain exact; the preceding
+48 development documents stay complete. The selected ledger remains 48/49 until
+the whole new document is exact. Qualification and case-retention comparison:
+`artifacts/maintenance-review-20261012/mask-groups-results.json`.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
 bytes, four labels and declared 750×500 transparent output. It is already exact

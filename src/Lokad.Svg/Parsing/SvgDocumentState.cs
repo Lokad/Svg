@@ -103,6 +103,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal BudgetedParserList<SvgDeferredPatternContent> DeferredPatternContents { get; }
     internal int MaskReplayChildStart { get; set; }
     internal int MaskReplayChildCount { get; set; }
+    internal int MaskGroupChildIndex { get; set; } = -1;
     internal bool MaskHasReplayContent { get; set; }
     internal SvgResourceUse? MaskUse { get; set; }
     internal SvgResourceUse? ClipUse { get; set; }

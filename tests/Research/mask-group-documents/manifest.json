@@ -33,7 +33,7 @@
       "license": "Public domain",
       "licenseEvidence": "Author releases the complete work into the public domain worldwide; pinned PD-self Commons metadata retained before evaluation.",
       "selection": "Whole unchanged public-domain example of both mask region unit modes, stroke-bearing mask groups and their local use aliases, with all three original live labels. Fix source, output and face before capture or candidate screening; retain only a demonstrated in-scope whole-output gap.",
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "known-difference",
       "initialSuppliedFontProbe": {
         "Outcome": "UnsupportedFeature",
         "Message": "This SVG child element is not implemented yet.",
@@ -76,7 +76,35 @@
           "startupHealth": "healthy",
           "profileCleaned": true
         }
-      ]
+      ],
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 16,
+        "MaximumChannelError": 11,
+        "MeanAbsoluteError": 4.982142857142857e-05,
+        "RootMeanSquareError": 0.018472953201911165,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 101,
+        "MinimumMismatchY": 47,
+        "MaximumMismatchX": 566,
+        "MaximumMismatchY": 81,
+        "IsExact": false
+      },
+      "linuxComparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 10,
+        "MaximumChannelError": 67,
+        "MeanAbsoluteError": 0.00016214285714285715,
+        "RootMeanSquareError": 0.08245128431816139,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 571,
+        "MinimumMismatchY": 77,
+        "MaximumMismatchX": 577,
+        "MaximumMismatchY": 81,
+        "IsExact": false
+      }
     },
     {
       "id": "group-alias",
@@ -91,7 +119,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/group-alias.png",
       "referenceSha256": "a3fbaea30f58b6e8d22625f38d7ccde1b36a85944c9dab902cfff76d054edf43",
       "captures": [
@@ -144,7 +172,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/nested-opacity.png",
       "referenceSha256": "d0a688f0d5606986bd94c3c2be7b1a73cda40134ca869ec35803d00bde7ccef1",
       "captures": [
@@ -197,7 +225,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/mapped-strokes.png",
       "referenceSha256": "c2641cbb70f4f939bf2d285ab14e088461e0177d2eef416b09dabd197bbbb88a",
       "captures": [
@@ -250,7 +278,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/forward-use.png",
       "referenceSha256": "cc2c2f4aea90f198a2a0750914d0da39e68c0e9d2999fd709229ac69ed2fe1e1",
       "captures": [
@@ -303,7 +331,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/anonymous-and-siblings.png",
       "referenceSha256": "7a3504fec278331a5a715429fdf2943a91fb2b5ea91ad4c0790b500a44814fff",
       "captures": [

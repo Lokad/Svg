@@ -141,9 +141,6 @@ internal static class SvgMaskSyntax
             SvgGeometry first = state.Scene.GeometryAt(pending.FirstGeometryIndex);
             SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
                 ? RecordedObjectBox(first, state) : fallback;
-            if (pending.Operation.ContentIndex >= 0 && pending.Transform != SvgAffineTransform.Identity
-                && (state.MaskRegions.TryGetValue(pending.MaskId, out _) || state.MaskFractionRegions.TryGetValue(pending.MaskId, out _)))
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom regions on placed spatial mask targets are not implemented.");
             SvgClipBox region = ResolveDeferredRegion(state, pending, objectBox);
             pending.Operation.Region = region;
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
@@ -177,7 +174,7 @@ internal static class SvgMaskSyntax
             if (state.MaskRegions.TryGetValue(pending.MaskId, out SvgClipBox custom))
             {
                 if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
-                return custom;
+                return pending.Transform.Apply(custom);
             }
             if (state.MaskFractionRegions.TryGetValue(pending.MaskId, out SvgClipBox fractions))
             {

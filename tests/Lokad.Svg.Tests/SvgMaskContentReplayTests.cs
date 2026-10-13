@@ -87,13 +87,99 @@ public sealed class SvgMaskContentReplayTests
     }
 
     [Fact]
-    public void Nested_mask_groups_keep_the_public_unsupported_outcome_and_release_retained_children()
+    public void Nested_mask_groups_replay_in_order_and_release_retained_children()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect width='8' height='8' fill='white'/><path d='M0 0H2V8H0Z' fill='black'/><g><path d='M0 0H4V8H0Z' fill='black'/></g></mask></defs><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>");
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
         RenderBudget budget = new(1_000_000);
         using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
-            Assert.True(root.HasUnsupportedChild);
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.False(root.HasUnsupportedChild);
+            for (int y = 0; y < 8; y++)
+                for (int x = 0; x < 8; x++)
+                {
+                    int offset = (y * 8 + x) * 4;
+                    Assert.Equal(x < 4 ? (byte)0 : (byte)255, surface.Pixels[offset]);
+                    Assert.Equal(x < 4 ? (byte)0 : (byte)255, surface.Pixels[offset + 3]);
+                }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData("group-alias")]
+    [InlineData("nested-opacity")]
+    [InlineData("mapped-strokes")]
+    [InlineData("forward-use")]
+    [InlineData("anonymous-and-siblings")]
+    public void Retained_mask_groups_release_material_storage_on_denial_and_cancellation(string identity)
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "mask-group-documents", identity + ".svg"));
+        byte[] unchanged = input.ToArray();
+        RenderBudget measured = new(8_000_000);
+        ParserWorkCounter work = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, measured, null, work, CancellationToken.None, 1, 1, null))
+        {
+            long retained = measured.Snapshot().CurrentBytes;
+            byte[] pixels;
+            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None)) pixels = surface.Pixels.ToArray();
+            using CancellationTokenSource cancellation = new();
+            cancellation.Cancel();
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
+            {
+                using SvgConverter.RasterizedSurface denied = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, cancellation.Token);
+            }).CancellationToken);
+            Assert.Equal(retained, measured.Snapshot().CurrentBytes);
+            using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(root, SvgRenderOptions.Default, measured, CancellationToken.None);
+            Assert.Equal(pixels, retry.Pixels);
+        }
+        Assert.Equal(0, measured.Snapshot().CurrentBytes);
+        foreach (long limit in new[] { 0, work.Used / 2, work.Used - 1 })
+        {
+            RenderBudget denied = new(8_000_000);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, null, new(limit), CancellationToken.None, 1, 1, null)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        foreach (long limit in new[] { 16_383, measured.Snapshot().PeakBytes / 2 })
+        {
+            RenderBudget denied = new(limit);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            {
+                using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None);
+                using SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, denied, CancellationToken.None);
+            }).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(unchanged, input);
+    }
+
+    [Theory]
+    [InlineData("<g id='p'><use href='#p'/></g>")]
+    [InlineData("<g id='p'/><g id='p'/>")]
+    public void Invalid_mask_group_reference_graphs_release_partial_source_owners(string children)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'>" + children + "</mask></defs></svg>");
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData("maskUnits='userSpaceOnUse' x='2' y='2' width='8' height='8'")]
+    [InlineData("maskUnits='objectBoundingBox' x='.125' y='.125' width='.5' height='.5'")]
+    public void Placed_spatial_mask_regions_map_their_authored_unit_mode(string region)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><mask id='m' " + region + "><g><rect width='16' height='16' fill='white'/></g></mask></defs><g transform='translate(5 7)'><rect width='16' height='16' fill='red' mask='url(#m)'/></g></svg>");
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+            for (int y = 0; y < 32; y++)
+                for (int x = 0; x < 32; x++)
+                {
+                    byte alpha = x >= 7 && x < 15 && y >= 9 && y < 17 ? (byte)255 : (byte)0;
+                    Assert.Equal(alpha, surface.Pixels[(y * 32 + x) * 4]);
+                    Assert.Equal(alpha, surface.Pixels[(y * 32 + x) * 4 + 3]);
+                }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 }
