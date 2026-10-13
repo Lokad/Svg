@@ -6,9 +6,9 @@ Updated 2026-10-13. This plan owns remaining work and completion decisions;
 [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) owns mechanisms and diagnostic
 history, and [BENCHMARKS](docs/BENCHMARKS.md) owns performance evidence.
 Historical checkpoints remain in those records and Git rather than forming a
-second execution queue here. The finite-plan revision is retained. The subsequent qualified `inv-146`
-correction preserves every original SVG/font/reference byte and default resource
-limit; completed work stays separate from the required exits below.
+second execution queue here. The qualified `inv-146` correction preserves every
+original SVG/font/reference byte and default resource limit; completed work stays
+separate from the required exits below.
 
 ## Qualified work to preserve
 
@@ -19,8 +19,10 @@ limit; completed work stays separate from the required exits below.
 | Original acceptance documents | Original marker and drop-shadow fixtures **2/2 complete**. Original supplied-font live-label and text-path fixtures **2/2 complete** under their declared public-font contracts. See the [marker bank](tests/Research/marker-instance-content/manifest.json), [filter bank](tests/Research/filter-documents/manifest.json), [label bank](tests/Research/supplied-font-labels/README.md) and [text-path bank](tests/Research/supplied-font-text-paths/README.md). |
 | Shared rendering mechanisms | Completed heart/I Ching, patterns, curved and outlined marks, native strokes, static paint order, finite masks/clips and existing filter documents stay exact. Their remaining combinations are identified below; completed source replay, hinting, winding, preblend and layer fixes are not prerequisites to requalify. See the [design record](docs/RASTERIZATION_DESIGN.md) and existing research manifests. |
 | Supplied-font work | SVG Translate, `inv-127`, `inv-145`, both original acceptance documents and their useful glyph/layout/mask controls are complete. Preserve original fonts, aliases, options, intended-font proof and independent Windows/Linux references. See [supplied-font documents](tests/Research/supplied-font-documents/README.md), [curved labels](tests/Research/curved-font-documents/README.md) and [group masks](tests/Research/mask-group-documents/README.md). |
-| Qualified merge correction | Complete `inv-146`, all eight preceding oval/text controls and four [canonical merge controls](tests/Research/filter-merges/README.md) are exact on both platforms. Complete Release checks pass **7,459 tests/platform** (5,146 core / 2,307 visual / six FontProbe), zero warnings/failures/skips; all preceding cases are retained, with the existing graph-limit test expanded to two inputs. [Qualification receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json). The merge delivery at 82dc9206 has [green hosted Windows/Linux CI](https://github.com/Lokad/Svg/actions/runs/38464311300), including memory, browser/font, package and installed-consumer gates. Two GitHub status reads established the terminal result; no further polling or unchanged qualification is needed. |
-| Qualified non-scaling correction | The original 98-pixel oval discrepancy is closed against its unchanged reference. Shared native inverse composition preserves rounded canvas coefficients, source copies and dashed host commands. The [oval bank](tests/Research/oval-source-replay/manifest.json) is **8/8 exact** and [vector-effect bank](tests/Research/vector-effects/manifest.json) **10/10 exact**. Three compiled native matrix witnesses, float overflow and existing resource/cancellation/retry controls protect the correction. Complete Windows/Linux Release checks pass **7,466 tests/platform** (5,151 core / 2,309 visual / six FontProbe), zero warnings/failures/skips; every preceding case is retained. [Qualification receipt](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json); [hosted Windows/Linux CI is green for ab097ebc](https://github.com/Lokad/Svg/actions/runs/38471124264), including resource and package/consumer gates. Two status reads established completion. |
+| Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md) implements bounded nonseekable SVG input, selected-program acquisition, concurrent HTTP coalescing, bounded cache, retry and cancellation recovery. Preserve its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared-document ownership. Private deployment validation is a separate obligation below; general shaping remains outside scope. |
+| Qualified merge correction | Unchanged whole `inv-146`, eight oval/text controls and four [canonical merge controls](tests/Research/filter-merges/README.md) are exact on both platforms. Preserve ordered source-device placement and bounded graph/surface handling. [Qualification receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json); [green hosted Windows/Linux delivery at 82dc9206](https://github.com/Lokad/Svg/actions/runs/38464311300). |
+| Qualified non-scaling correction | Original oval discrepancy resolved; [oval bank](tests/Research/oval-source-replay/manifest.json) **8/8 exact**, [vector-effect bank](tests/Research/vector-effects/manifest.json) **10/10 exact**. Preserve native inverse composition, compiled matrix witnesses, overflow and resource/cancellation/retry regressions. [Qualification receipt](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json); [green hosted Windows/Linux delivery at ab097ebc](https://github.com/Lokad/Svg/actions/runs/38471124264). |
+| Qualified mixed shader strokes | Nine retained direct/translated/scaled mixed-subpath linear/radial/pattern controls match unchanged references on both platforms. [Paint-recording bank](tests/Research/paint-recording/manifest.json): **143 exact / six explicit boundaries**. Source-box, invalid-style, denial/cancellation/cleanup/retry regressions remain. Complete Windows/Linux Release checks: **7,473 tests/platform** (5,158 core / 2,309 visual / six FontProbe), zero warnings/failures/skips; every preceding case retained. [Qualification receipt](artifacts/maintenance-review-20261012/shader-strokes-qualified-results.json). |
 | Resource/API/package protections | Keep bounded preparation/raster/encoding, denied work/allocation, during-phase cancellation, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks remain applicable while unchanged. Final release evidence must match the finished revision. |
 
 Previously stated blockers for completed library/heart/pattern documents,
@@ -28,8 +30,8 @@ scaled nested uses, inert outlined typography, rotated solid ovals and direct
 uniformly mapped solid glyph strokes are retired. The non-scaling root-viewBox
 **width map and oval coverage** are repaired. The two retained gradient-line
 fill-none controls already match unchanged references; they are regression
-witnesses, not remaining blockers. Earlier claims that hosted CI is missing for delivered corrections
-are stale; final-release CI is a separate gate.
+witnesses, not remaining blockers. The nine mixed open/closed shader-stroke
+rejections are also retired. Final-release CI remains a separate gate.
 
 ## Delivery order
 
@@ -41,19 +43,22 @@ and bounded layers; preserve the native distinctions required for exact pixels.
 Group IDs identify responsibilities, not serial implementation prerequisites.
 Exhaustive G2 combinations do not block G3–G9 or the next document.
 
-The **next three deliverables are items 2–4**: shared stroke/paint maps,
-clip/mask composition, then remaining static effects/markers, in that order. Each can use small
-buildable commits with its affected tests/documentation; a partial mechanism fix
+The **next three deliverables are items 1–3**: shared stroke/paint maps,
+clip/mask composition, then remaining static effects/markers, in that order.
+The first targets the retained fractional use-width case and the nonuniform
+curve/rotated-symbol paint gates; the next two have their retained acceptance
+cases named in the checklist. Each can use small buildable commits with its
+affected tests/documentation; a partial mechanism fix
 is progress, not completion of its item or support group.
 
 | Required remaining item | Missing behavior and dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| 2. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Remaining fractional effective instance widths, nonuniform curve/stroke/paint maps and shader-painted source strokes. Depends on existing source contours/stroker and composed paint maps; share one stroke route across paints. | Close the nine retained mixed open/closed zero-area shader strokes and fractional-use-width cases on unchanged references. Preserve the completed non-scaling oval and both exact gradient-line controls. Use rotated-symbol gradient and nonuniform curve twins to protect admission/map semantics. A complete retained export demonstrating any remaining mechanism is declared before editing. Item exits when these gaps, G3/G4 and G2 width/map behavior have positive exact witnesses, with no prior exact regression; remaining G2 scope/composition follows item 3. No Cartesian combination quota. |
-| 3. Finish scoped clip/mask composition (G2/G5) | Overlapping clip children, remaining transformed/unit clip maps, nested definition scopes, custom mask regions, mask-container opacity and remaining leaf/group/use composition. Depends on item 2 only where its maps are actually needed; reuse existing bounded scene/layer ownership. | Close [composed cubic clip](tests/Research/curved-path-clips/composed-group-cubic.svg), object-box clip witnesses, retained nested-viewport paint and `mask-region-half-translated` cases. Declare one licensed complete export combining an identified remaining mask/clip gap with ordered group/use content. Exact original outputs plus focused overlap/unit/scope/opacity controls and bounded cleanup close the finite G5 exit below. Completed `inv-136/137/141/145` stay regression witnesses. |
-| 4. Finish finite static effects and marker gaps (G8) | Small/anisotropic blur, fractional offsets, flood/composite/blend and remaining result/region/color-space graphs; remaining marker directions/containers. Depends on the completed `inv-146` source bounds and items 2–3 only for affected geometry/composition. | Close [translated rectangle source](tests/Research/filter-regions/translated-rectangle-source.svg) (85 pixels, max channel 1) and [transparent displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg) (six pixels, max channel 14 / alpha 1). Freeze a colored alpha composition with `over`/`in` and normal/multiply/screen, and an arc/polyline marker example. Finish retained complete exports exercising each missing mechanism; exact positive witnesses for the finite G8 subset and bounded graph/surface/work regressions close this item. |
-| 5. Finish static CSS and embedded images (G7) | Remaining selectors/cascade locations, presentation propagation and enumerated PNG/sampling/maps. Depends on shared G2/G5 scopes and G3 maps; preserve completed late rules, inert geometry typography and paint order. | Existing image/compound-selector cases plus a multicolor translucent PNG edge under fractional meet/slice and a root/nested/late-rule export affecting referenced content match frozen outputs. Authored override, CRC/decode denial and corrupt/missing image outcomes pass. The G7 subset below has representative positive witnesses and explicit unsupported boundaries. |
-| 6. Finish supplied-font label/path gaps (G9) | Lists, length adjustment, spacing/baselines/decorations, remaining affine/paint/stroke/path combinations and queued composite semantics. Depends on existing font pipeline and G3/G4/G5 maps/paint; no host-font discovery. | A supplied-font label diagram covers mixed spans/fallback, position/rotate lists, lengths and baselines; an open/closed transformed curved-path example protects offset/anchor/out-of-range semantics. Retain AV/space/accent/composite and stroke/decoration controls. Existing intended-font proof and independent metrics/pixels apply. Exact finite G9 witnesses plus bounded preparation/layout/stroke failure cases close the item. |
-| 7. Finish pattern dependencies and release (G6/S17) | Remaining pattern unit/map/opacity and image/text/filter content dependencies, then finished-revision delivery evidence. Vector improvements can land earlier when they advance a document; image/text/filter tiles follow the needed G7–G9 slices. | Original eight completed pattern documents remain exact. A retained transformed tile export exercises fractional phase, group/use opacity and the missing dependent content; border/alpha/inheritance/recursion controls close G6. Then satisfy every release condition below, update actual support contracts and publish categorized residuals. Document counts alone cannot close this item. |
+| 1. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Fractional effective instance widths and remaining nonuniform curve/stroke/paint maps. Depends on existing source contours/stroker and composed paint maps; share one stroke route across paints. | Close [inherited use width](tests/Research/fractional-rectangle-widths/instance-inherited-width.svg), `original-curve-root-quad-none`, `group-clip-reflected-pattern` and `iching-library/rotated-symbol-gradient` against unchanged references. Preserve completed non-scaling, gradient-line and mixed shader-stroke witnesses. Declare a complete retained export for any mechanism lacking one. Exact positive witnesses for the finite G3/G4 and G2 width/map behavior, with no prior regression, close this item; remaining G2 scopes/composition follow item 2. No Cartesian quota. |
+| 2. Finish scoped clip/mask composition (G2/G5) | Overlapping clip children, remaining transformed/unit clip maps, nested definition scopes, custom mask regions, mask-container opacity and remaining leaf/group/use composition. Depends on item 1 only where its maps are needed; reuse existing bounded scene/layer ownership. | Close [composed cubic clip](tests/Research/curved-path-clips/composed-group-cubic.svg), object-box clip witnesses, retained nested-viewport paint and `mask-region-half-translated` cases. Declare one licensed complete export combining an identified remaining mask/clip gap with ordered group/use content. Exact original outputs plus focused overlap/unit/scope/opacity controls and bounded cleanup close the finite G5 exit. Completed `inv-136/137/141/145` stay regression witnesses. |
+| 3. Finish finite static effects and marker gaps (G8) | Small/anisotropic blur, fractional offsets, flood/composite/blend and remaining result/region/color-space graphs; remaining marker directions/containers. Depends on completed `inv-146` source bounds and items 1–2 only for affected geometry/composition. | Close [translated rectangle source](tests/Research/filter-regions/translated-rectangle-source.svg) (85 pixels, max channel 1) and [transparent displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg) (six pixels, max channel 14 / alpha 1). Freeze a colored alpha composition with `over`/`in` and normal/multiply/screen, and an arc/polyline marker example. Exact complete exports and positive witnesses for the finite G8 subset, plus bounded graph/surface/work regressions, close this item. |
+| 4. Finish static CSS and embedded images (G7) | Remaining selectors/cascade locations, presentation propagation and enumerated PNG/sampling/maps. Depends on shared G2/G5 scopes and G3 maps; preserve completed late rules, inert geometry typography and paint order. | Existing image/compound-selector cases plus a multicolor translucent PNG edge under fractional meet/slice and a root/nested/late-rule export affecting referenced content match frozen outputs. Authored override, CRC/decode denial and corrupt/missing image outcomes pass. Representative exact witnesses and explicit unsupported boundaries for the finite G7 subset close this item. |
+| 5. Finish supplied-font label/path gaps (G9) | Lists, length adjustment, spacing/baselines/decorations, remaining affine/paint/stroke/path combinations and queued composite semantics. Depends on existing font pipeline and G3/G4/G5 maps/paint; no host-font discovery. | A supplied-font label diagram covers mixed spans/fallback, position/rotate lists, lengths and baselines; an open/closed transformed curved-path example protects offset/anchor/out-of-range semantics. Retain AV/space/accent/composite and stroke/decoration controls. Existing intended-font proof and independent metrics/pixels apply. Exact finite G9 witnesses, bounded failure checks and the separate finite private validation below close the item. |
+| 6. Finish pattern dependencies and release (G6/S17) | Remaining pattern unit/map/opacity and image/text/filter content dependencies, then finished-revision delivery evidence. Vector improvements can land earlier when they advance a document; dependent tiles follow the needed G7–G9 slices. | Original eight completed pattern documents remain exact. A retained transformed tile export exercises fractional phase, group/use opacity and missing dependent content; border/alpha/inheritance/recursion controls close G6. Then satisfy every release condition below, update actual support contracts and publish categorized residuals. Document counts alone cannot close this item. |
 
 For an acceptance example not yet retained, acquire only a document that
 demonstrates the named missing behavior. Declare original bytes, license, output,
@@ -92,11 +97,9 @@ Keep an unverified behavior open; completed document counts do not prove it.
   nonuniform placement. Shared stroke-to-paint routing must preserve native
   shape distinctions; paint-specific geometry kernels are not the delivery plan.
 - Remaining witnesses: nonuniform root curve and rotated-symbol gradient gates,
-  reflected/magnified pattern instances, fractional use width, mixed closed/open
-  zero-area shader strokes and fractional effective instance widths. Non-scaling
-  oval coverage and the two retained gradient-line cases are complete. The next
-  shared paint correction is selected by the nine mixed-path shader rejections,
-  using the existing native source stroker and paint mapping.
+  reflected/magnified pattern instances and fractional effective use widths.
+  Non-scaling oval coverage, both gradient-line cases and all nine mixed shader
+  strokes are complete; their unchanged references remain regression protection.
   Existing [use paints](tests/Research/use-paint-properties/manifest.json),
   [native replay](tests/Research/native-path-replay/manifest.json),
   [paint recording](tests/Research/paint-recording/manifest.json) and
@@ -275,16 +278,14 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  The latest finished suite measured about **91s Windows / 262s Linux**;
-  the forced-cold Linux checkpoint took 5m58s to build plus about 4m22s in
-  tests (**10m20s total**, slightly over target). Routine verification uses normal
-  incremental build behavior; do not force compiler shutdown between checkpoints.
-  The normal Linux build then measured **3m22s**; with the qualified test intervals
-  this is about **7m44s**, within target. This local comparison supports the
-  ordinary build policy, not a renderer speedup or fixed timing guarantee.
-  Existing evidence remains valid; no test rerun is required merely to refresh
-  timing. Keep the ten-minute target and distinct visual/API protections. These are measurements,
-  not a fixed timing guarantee. Record one existing before/after timing when
+  Latest finished checkpoint: about **1m41s Windows / 5m42s Linux**, comprising
+  7s/201s builds and 94s/141s test-suite intervals, respectively. See the existing
+  shader-stroke receipt above and build logs in the same artifact directory.
+  These local measurements establish no renderer speedup or fixed timing guarantee.
+  Routine verification uses normal incremental builds; avoid forced compiler
+  shutdown between checkpoints. The prior forced-cold Linux overrun and ordinary
+  build comparison remain in existing evidence/Git, not another execution task.
+  No rerun is needed merely to refresh timing. Record one before/after timing when
   materially changing routine cost. If it exceeds the target, remove redundant
   API permutation work while preserving distinct visuals/semantics. Fresh browser
   captures, optional benchmarks and final release/package work are separate
@@ -457,7 +458,7 @@ upstream tests is not a claim that those tests were executed here:
 | --- | --- |
 | Manifest first; font bytes fetched lazily for selected files and checked by length/SHA-256. | Keep `SvgFontPackCatalog` metadata-only and acquire through caller-owned sources during async preparation. Verify the unchanged private manifest with Svg itself before claiming end-to-end compatibility. |
 | Case-insensitive requested/resolved family matching; italic match, closest 400/700 weight, then deterministic family/path/face tie-breaks; ordered configured fallback. | Existing Svg selection follows that order and accepts numeric SVG weights. Independent conformance vectors cover aliases, four real styles, fallback (`b0d4d5d`), plus unused collection entries that parse and select without poisoning the catalog while snapshots reject selected collection faces before acquisition. OoxPdf's bold request maps to 700; preserve SVG's numeric weight semantics. |
-| Shared per-file sources coalesce concurrent downloads, cache successful bytes and use at most three attempts for transient transport failures. Manifest reads cap at 1 MiB; font reads cap at the smaller of the declared size and 64 MiB. | Put transport, bounded caching and retry in an opt-in test host/provider. Test concurrent reuse, cancellation and recovery with synthetic transport responses. Keep Svg's existing 32 MiB aggregate borrowed-program and 256-face caps explicit; the source's per-file cap does not replace them. |
+| Shared per-file sources coalesce concurrent downloads, cache successful bytes and use at most three attempts for transient transport failures. Manifest reads cap at 1 MiB; font reads cap at the smaller of the declared size and 64 MiB. | Implemented in the opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), with synthetic transport regressions. Preserve Svg's separate 32 MiB aggregate borrowed-program and 256-face caps; the source's per-file cap does not replace them. |
 | Font loading can select collection faces; the inspected loader synchronously waits for bytes, copies them and can return no font for certain failures. | Retain Svg's async acquisition, immutable borrowed bytes and categorized required-font failures. Current face-0 standalone TrueType admission remains explicit; packs may contain unused TTC or other unsupported entries without rejecting the whole catalog. |
 | Private validation keeps manifests, inputs and reports ignored and commits anonymized findings. Download exceptions can contain source URIs. | Apply the private workflow below and redact transport errors before they reach repository reports or shared logs. Do not propagate private source identities through diagnostic `StableId` values. |
 
@@ -475,45 +476,22 @@ before use. Follow OoxPdf's private-validation approach with Svg's existing igno
 layout. Ordinary builds/tests and public CI must remain offline and independent of
 the private source and sibling checkouts; do not upload private test artifacts.
 
-Historical assessment (2026-09-20; not repeated in this review): read the
-configured source without printing its location; streamed the unchanged manifest
-under 1 MiB and checked the requested
-identifier; fetched one selected regular face-0 program under its declared size
-and Svg's aggregate limit; verified exact length and SHA-256. It has the standalone
-TrueType signature and `head/maxp/hhea/hmtx/cmap/loca/glyf` table entries, plus
-`kern` and `GPOS`, and no `fvar` entry. These are initial format observations, not
-table validation, shaping support or a whole-pack inventory. All downloaded bytes
-stayed in memory. No Svg catalog/snapshot conversion, OoxPdf test run, browser
-capture or pixel comparison was performed in that assessment. No new private source access was needed for the 2026-09-21
-review.
+The earlier one-program format inspection establishes no whole-pack or rendering
+qualification; its historical detail stays in Git. The host and catalog are
+implemented. Preserve them rather than rebuilding them as another S7 queue.
 
-Execute S7 through the following concrete steps:
-
-1. Retain the implemented opt-in generic local test host accepting a supplied manifest/byte source
-   or externally configured endpoint and pack identifier, with no real defaults
-   or platform configuration discovery in tracked code. Reuse unchanged assets;
-   retain private hashes/provenance locally. Share selection and source behavior
-   with the public OoxPdf contract without importing platform implementation.
-2. Parse the actual manifest with Svg, prepare only requested programs, and build
-   a private inventory of formats, faces/styles, coverage, composite flags and
-   positioning tables. Compare catalog selection with OoxPdf for representative
-   requests. Report unsupported semantics explicitly; do not rewrite the pack or
-   silently substitute a machine font. Turn reproducible defects into synthetic
-   tracked tests and fix them under S3–S6 before admitting wider text behavior.
-3. Generate small synthetic label inputs covering curves, counters, composites,
-   AV pairs, spaces, real styles and fractional origins/sizes. Feed identical
-   verified font bytes to Svg and an SVG-image-local browser font embedding.
-   Use missing/corrupt/substitution
-   controls to prove intended-font use. Retain three fresh-process captures,
-   independent layout metrics and exact RGBA comparisons in private artifacts.
-4. Record sanitized failure categories, feature gaps and measured outcomes here.
-   A private mismatch must remain visible even if public tests pass. Private
-   success may support local investigation, but public corpus/package admission
-   needs independently redistributable fixtures and reproducible public evidence.
-
-The requirements below mix implemented foundations and remaining targets. A
-single-use retained prepared document exists (R21's lifetime defect is repaired);
-general family/coverage fallback and shaping are not thereby implemented.
+**Required private validation, attached to item 5:** use the unchanged deployed
+manifest to prepare only representative requested regular/bold/italic and fallback
+programs; inventory their relevant formats, coverage, composites and positioning
+tables, and compare selection with the public OoxPdf contract. For those requests,
+compare curves/counters/composites, AV/space and fractional labels using identical
+verified bytes in Svg and an SVG-image-local browser font embedding. Existing
+intended-font controls, three stable captures and independent metrics/pixels apply.
+Completion is a sanitized outcome for every selected request, with private gaps
+categorized and reproducible in-scope defects converted to public synthetic cases
+and resolved under G9. Unsupported formats retain explicit outcomes; no whole-pack
+combination quota or new host is required. Private success cannot replace public
+acceptance. The security/retention rules above remain mandatory.
 
 Hosts own locations, credentials, I/O/retry/concurrency and bounded shared caches;
 the library owns SVG analysis, ordered family/generic mapping, face selection,
@@ -536,41 +514,24 @@ redistributable public test fonts separately, retaining their asset licenses.
 
 ### Retained text foundation
 
-Horizontal LTR Latin labels, initially ASCII/tested precomposed Latin, using supplied
-static standalone TrueType face 0. Validate SFNT/ranges, `head`, `maxp`,
-`hhea`/`hmtx`, `cmap` 4/12, `loca`/`glyf`, plus optional `name`/`OS/2` metadata
-structures.
-Include simple curves, implied points and bounded composite placement; gate
-unsupported formats/flags.
-
-Preserve text/CDATA/span order and admitted whitespace across boundaries. Support
-inherited font/paint/visibility, scalar x/y/dx/dy, alphabetic baseline,
-start/middle/end anchors, advances, bounded default Latin standard ligatures and
-required pair positioning (`kern` and explicit bounded GPOS pairs). Test AV,
-spaces/punctuation, accents/composites,
-supplementary scalars, mixed faces/sizes/colors and fallback boundaries.
-Implement or reject features affecting output. Add styled/positioned `tspan`, spacing and
-explicit line positioning for labels.
-
-Position/rotate lists, `textLength`/`lengthAdjust`, the enumerated extra baselines,
-remaining affine/paint text combinations, decorations and
-closed/transformed text-path combinations remain G9 work. Direct uniformly mapped
-solid fill/stroke labels and retained curved paths are qualified; do not reopen
-them. The finite G9 exit above identifies the remaining behavior.
-The original positive horizontal local text path is complete. The remaining items'
-initial exclusion does not remove them from the final queue. Automatic wrapping,
-bidi/joining/complex scripts, unadmitted mark positioning, general GSUB/GPOS,
-vertical text, variable/color/bitmap fonts, CFF/CFF2 and WOFF/WOFF2 remain outside
-that intended text subset.
+The finite G9 boundary above is the single text completion checklist. Preserve
+SFNT/range and `head/maxp/hhea/hmtx/cmap/loca/glyf` validation, optional name/OS/2
+metadata, simple curves/implied points, bounded composites, supplied coverage
+fallback, pair positioning and admitted ligatures. Their evidence is in the
+[font tests](tests/Lokad.Svg.Tests/OpenTypeFontTests.cs),
+[catalog tests](tests/Lokad.Svg.Tests/SvgFontPackCatalogTests.cs) and qualified
+supplied-font document banks. Existing fallback/preparation is implemented;
+general shaping is outside scope. Remaining positioned lists, lengths, baselines,
+decorations, stroke/path maps and queued composite semantics stay required in G9.
 
 ### Host/oracle/corpus acceptance
 
-Demonstrate a standalone host with async bounded nonseekable stream intake,
-preserved XML/BOM bytes and growth-time input limits; a public stream-input overload
-is not initially required. Host buffers/shared caches are separate budgets. Bound
-concurrent loads, isolate caller cancellation and allow retry. Output awaits
-backpressure, propagates failures and leaves streams open; hosts own partial-output
-cleanup/transactional publication. Include real labels, not only transport tests.
+Preserve the implemented [FontProbe host](tools/Lokad.Svg.FontProbe/README.md),
+including bounded nonseekable input with preserved XML/BOM bytes and growth-time
+limits. A new public stream-input overload is not a release requirement. Host
+buffers/caches are separate budgets; concurrency, cancellation isolation, retry,
+backpressure and partial-output publication keep their existing contracts. Public
+supplied-font documents provide real-label evidence alongside transport tests.
 
 Retain SVG and font hashes, face index, materialized oracle-input hash, browser/
 platform/version, recipe, scale, locale/background and font/raster policy. Verify
