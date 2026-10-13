@@ -34,6 +34,7 @@
       "licenseEvidence": "Author releases the complete work into the public domain worldwide; pinned PD-self Commons metadata retained before evaluation.",
       "selection": "Whole unchanged public-domain example of both mask region unit modes, stroke-bearing mask groups and their local use aliases, with all three original live labels. Fix source, output and face before capture or candidate screening; retain only a demonstrated in-scope whole-output gap.",
       "rendererOutcome": "known-difference",
+      "linuxRendererOutcome": "exact",
       "initialSuppliedFontProbe": {
         "Outcome": "UnsupportedFeature",
         "Message": "This SVG child element is not implemented yet.",
@@ -93,17 +94,17 @@
       },
       "linuxComparison": {
         "DimensionsMatch": true,
-        "ChangedPixelCount": 10,
-        "MaximumChannelError": 67,
-        "MeanAbsoluteError": 0.00016214285714285715,
-        "RootMeanSquareError": 0.08245128431816139,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
         "MaximumAlphaError": 0,
         "AlphaChangedPixelCount": 0,
-        "MinimumMismatchX": 571,
-        "MinimumMismatchY": 77,
-        "MaximumMismatchX": 577,
-        "MaximumMismatchY": 81,
-        "IsExact": false
+        "MinimumMismatchX": 1400,
+        "MinimumMismatchY": 1000,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
       }
     },
     {

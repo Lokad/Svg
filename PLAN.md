@@ -16,8 +16,8 @@ complete**: `inv-142` at 512×266 and `inv-143`/`inv-144` at 512×341 transparen
 through all twelve raw/prepared APIs on Windows/Linux. Their original bytes and
 cross-platform native references remain frozen; every preceding exact result is
 preserved. The next unchanged public-domain mask export (`inv-145`) is retained
-at 1400×1000 transparent with its declared supplied face; it now renders, with
-16 Windows /10 Linux label pixels still differing from the frozen references.
+at 1400×1000 transparent with its declared supplied face; it now matches the
+Linux reference exactly, with 16 Windows label pixels still differing.
 Finite G2–G9 and S17 work remains open.
 Both original marker/drop-shadow acceptance fixtures (2/2) are complete.
 Completed cases match all six outputs on both platforms. These are
@@ -792,6 +792,25 @@ Frozen 27/27 corporate documents and 258/258 variants remain exact; the precedin
 48 development documents stay complete. The selected ledger remains 48/49 until
 the whole new document is exact. Qualification and case-retention comparison:
 `artifacts/maintenance-review-20261012/mask-groups-results.json`.
+
+The mask-group checkpoint `0b83d432` is pushed; hosted Windows/Linux
+[CI is green](https://github.com/Lokad/Svg/actions/runs/38349560709).
+The next shared text correction averages signed light-hinted implied points
+toward zero, matching the independent native outline rather than flooring
+negative coordinates. Its complete size-50 `j` outline is stable through three
+fresh native processes and is retained in the existing geometry bank. The whole
+unchanged `inv-145` Linux output is now exact against its frozen reference; all
+five mask controls remain exact. Windows keeps its measured 16-pixel residual.
+The document remains **0/1 complete across both platforms**, and the selected
+ledger stays **48/49**. Continue the same document's Windows normal-coverage
+correction; native contours and bounded implicit coefficients already agree,
+and disabling dropouts leaves the same residual. Do not widen tolerances or
+replace the references.
+Complete Release builds and **7,400 tests per platform (5,114 core /2,280
+visual /six FontProbe)** pass without warnings, failures or skips. Every
+preceding case is retained; the complete native outline adds one visual case.
+The frozen 27/27 corporate documents and 258/258 variants remain exact. Receipt:
+`artifacts/maintenance-review-20261012/mask-light-results.json`.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
 bytes, four labels and declared 750×500 transparent output. It is already exact

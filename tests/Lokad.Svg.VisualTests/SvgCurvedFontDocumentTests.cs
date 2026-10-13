@@ -168,7 +168,8 @@ public sealed class SvgCurvedFontDocumentTests
             ReadOnlyMemory<byte> png = prepared.ConvertToPng(CancellationToken.None);
             byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(item, OperatingSystem.IsLinux() ? "linuxReference" : "reference")));
             PixelComparison comparison = PixelComparer.Compare(PngRgbaDecoder.Decode(reference, 16_777_216), PngRgbaDecoder.Decode(png, 16_777_216));
-            if (Required(item, "rendererOutcome") == "exact") Assert.True(comparison.IsExact, identity + ": " + comparison);
+            bool completed = Required(item, "rendererOutcome") == "exact" || OperatingSystem.IsLinux() && item.TryGetProperty("linuxRendererOutcome", out JsonElement linuxOutcome) && linuxOutcome.GetString() == "exact";
+            if (completed) Assert.True(comparison.IsExact, identity + ": " + comparison);
             else Assert.Equal(item.GetProperty(OperatingSystem.IsLinux() ? "linuxComparison" : "comparison").Deserialize<PixelComparison>(), comparison);
         }
         Assert.Equal(unchanged, input);

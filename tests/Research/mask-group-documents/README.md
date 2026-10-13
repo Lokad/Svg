@@ -25,3 +25,8 @@ group aliases, nested isolated opacity, mapped inherited strokes, forward local
 uses and anonymous groups with ordered siblings. They do not count as documents.
 Complete this entire document against frozen references; shared fixes reuse
 bounded source/instance replay. Finite G5/G9 exits remain open.
+
+Shared group/region replay makes all five controls exact on Windows and Linux.
+Signed implied-point rounding in light-hinted outlines also makes the entire
+Linux document exact. The Windows document retains a 16-pixel label difference;
+whole-document completion requires both unchanged platform references.

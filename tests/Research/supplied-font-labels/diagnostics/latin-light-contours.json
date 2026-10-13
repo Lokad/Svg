@@ -4,7 +4,7 @@
   "fontProvenance": "../font-provenance.json",
   "sourcePin": {"skrifaVersion": "0.43.2", "readFontsVersion": "0.40.1", "fontTypesVersion": "0.12.0"},
   "extraction": "Unchanged caller-named face 0; Engine::Auto, SmoothMode::Light, symmetric_rendering=true, preserve_linear_metrics=false; native glyph styles from the supplied program.",
-  "coordinates": "Signed 26.6 device units, positive font Y, no origin translation; native implied quadratic midpoints are rounded down.",
+  "coordinates": "Signed 26.6 device units, positive font Y, no origin translation; native signed implied quadratic midpoints truncate toward zero.",
   "cases": [
     {
       "id": "A-48",
@@ -292,6 +292,39 @@
         ["Q", 600, 1142, 588, 1105],
         ["L", 422, 640],
         ["L", 885, 640],
+        ["Z"]
+      ]
+    },
+    {
+      "id": "j-50",
+      "glyphIndex": 77,
+      "deviceSize": 50,
+      "freshProcessCaptures": 3,
+      "nativeGeometryStability": "identical",
+      "commands": [
+        ["M", 250, 2161],
+        ["Q", 250, 2253, 298, 2296],
+        ["Q", 346, 2339, 416, 2339],
+        ["Q", 480, 2339, 529, 2296],
+        ["Q", 579, 2253, 579, 2161],
+        ["Q", 579, 2073, 529, 2028],
+        ["Q", 480, 1984, 416, 1984],
+        ["Q", 346, 1984, 298, 2028],
+        ["Q", 250, 2073, 250, 2161],
+        ["Z"],
+        ["M", 70, -768],
+        ["Q", -10, -768, -70, -756],
+        ["Q", -131, -745, -176, -730],
+        ["L", -176, -505],
+        ["Q", -128, -518, -77, -527],
+        ["Q", -26, -537, 35, -537],
+        ["Q", 138, -537, 205, -480],
+        ["Q", 272, -424, 272, -266],
+        ["L", 272, 1728],
+        ["L", 554, 1728],
+        ["L", 554, -253],
+        ["Q", 554, -495, 438, -631],
+        ["Q", 323, -768, 70, -768],
         ["Z"]
       ]
     }
