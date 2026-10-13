@@ -91,7 +91,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/rotated-fill.png",
       "referenceSha256": "f3a6542842a39f58558ecae2c03e45718672a35699f44fe0bec7929ff0b846c3",
       "captures": [
@@ -144,7 +144,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/rotated-stroke.png",
       "referenceSha256": "a1afc2c83fcae8582555de6c114bf00cdae73250c76df3dbdc3b9689529bdd7e",
       "captures": [
@@ -197,7 +197,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/reflected-composed.png",
       "referenceSha256": "5c0d5962b1269292d0aba146b9790f45b300267b5c22a00a2e3289dddd7c627d",
       "captures": [
@@ -250,7 +250,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/fractional-viewport.png",
       "referenceSha256": "b224b04ca5fd8ccf887bc268c6d26ddac6ac5709e174cf6eb43bd446079efabd",
       "captures": [
@@ -303,7 +303,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/ordered-group.png",
       "referenceSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
       "captures": [

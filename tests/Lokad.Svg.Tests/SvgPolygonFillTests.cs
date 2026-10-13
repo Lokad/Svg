@@ -1347,13 +1347,13 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Rotated_ellipse_stays_unsupported()
+    public void Rotated_ellipse_paints_its_mapped_interior()
     {
-        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='red' transform='rotate(30)'/></svg>");
-
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><ellipse cx='8' cy='8' rx='6' ry='4' fill='red' transform='rotate(30)'/></svg>", out int width, out int height);
+        Assert.Equal(16, width);
+        Assert.Equal(16, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 3, 11));
+        Assert.Equal(SvgColor.Transparent, Pixel(pixels, width, 0, 0));
     }
 
     [Fact]

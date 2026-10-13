@@ -25,3 +25,8 @@ viewport map and ordered grouped strokes. They are separate from document
 completion. Finish the entire document through subsequent filter/text gates and
 pixel differences against unchanged references, using bounded shared geometry
 and source replay. Finite G3/G8/G9 exits remain open.
+
+Composed native conic placement and the shared source stroke route now make all
+five oval controls exact on Windows and Linux. The complete document advances
+to the stroke-cap admission on its original live-text label. Its source, text,
+filter chain and both references remain unchanged; it is still incomplete.

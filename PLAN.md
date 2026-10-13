@@ -831,9 +831,9 @@ variants remain exact. Qualification and case-retention comparison:
 The finished correction is pushed at `7a49c41f`; hosted Windows/Linux
 [CI is green](https://github.com/Lokad/Svg/actions/runs/38353145524).
 
-**Next deliverable:** qualify the complete public-domain
+**Current deliverable:** finish the complete public-domain
 [SVGfeOffset01.svg](https://commons.wikimedia.org/wiki/File:SVGfeOffset01.svg?oldid=963514598)
-as the next retained gap. Its unchanged 1,589-byte original, explicit 800×700
+as retained gap `inv-146`. Its unchanged 1,589-byte original, explicit 800×700
 transparent output and caller-supplied public Noto Sans Regular face 0 under the
 authored `serif` alias are declared before capture or renderer screening.
 The source exercises G8's earlier local/default filter inputs and `feMerge`,
@@ -851,12 +851,38 @@ reject its rotated ellipse transform before reaching the remaining filter/text
 gates. The unchanged whole source, supplied-font contract, platform references
 and five separate predeclared CC0 oval controls are retained as
 [inv-146](tests/Research/offset-merge-document/README.md). The selected ledger is
-now **49/50**; this document is **0/1 complete**, with five controls still rejected.
+now **49/50**; this document is **0/1 complete**. At retention, five controls were rejected.
 Advance shared G3 conic placement first, then continue the same complete document
-through its G8/G9 gates. No production correction for it has begun.
+through its G8/G9 gates. At retention, no production correction for it had begun.
 The existing public-font document test family passes **83 cases on Windows and
 Linux**, including seven new outcome/reference cases and the new bank's complete
 font-use proof. Retention changes no production code or preceding references.
+
+The next shared G3 correction maps the existing original oval conics for rotated
+fill geometry and bounds, and admits their ordinary uniform composed stroke map
+through the existing native source constructor. Axis-aligned rendering retains
+its route; no shape-specific rasterizer or bitmap patch is introduced. All five
+oval controls are **5/5 exact on Windows and Linux** against frozen references.
+Five core resource cases protect original bytes, sampled work/memory denials,
+cancellation/retry and cleanup. The complete `inv-146` now reaches the original
+text label's stroke-cap rejection; it remains **0/1 complete** and the selected
+ledger stays **49/50**. Continue the same document through its G9 text paint and
+G8 local filter/merge requirements after this geometry checkpoint.
+The older `affine-radial-paints/rotated-ellipse-boundary` also becomes exact
+against its unchanged reference through existing paint-coordinate mapping. Its
+obsolete rejection and the older core rotated-ellipse rejection become positive
+checks; no previous exact output is changed.
+Complete Release builds and **7,416 tests per platform (5,119 core /2,291
+visual /six FontProbe)** pass without warnings, failures or skips. Comparing
+test results preserves every preceding case, reconciling the renamed obsolete
+core rejection, and adds exactly five core resource cases and seven visual
+retention cases. Frozen 27/27 corporate documents and 258/258 variants stay exact.
+Receipt: `artifacts/maintenance-review-20261012/rotated-ovals-results.json`.
+The next three supplied-face text controls are declared before text edits:
+fill/stroke opacity, stroke-only winding and the whole document's original
+scale/rotation/anchor/paint combination. Freeze their platform references before
+extending shared text admission and glyph/source stroke replay; do not substitute
+an outlined or simplified document for `inv-146`.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
 bytes, four labels and declared 750×500 transparent output. It is already exact
@@ -898,7 +924,8 @@ allocation/preparation items in that order. Rendering
 correctness keeps precedence: select the next complete rights-clear static SVG
 by the remaining finite G2–G9 mechanisms it exercises, without making exhaustive
 instance combinations prerequisites. Use the standing numerical controls to
-diagnose shared corrections. The selected development queue is now 49/49; finite
+diagnose shared corrections. The mask checkpoint completed 49/49; the retained
+offset/merge document now keeps the selected ledger at 49/50. Finite
 SVG support and S17 remain open. Expand the queue only with unchanged, licensed
 whole sources and frozen declared outputs that demonstrate remaining gaps.
 

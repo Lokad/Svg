@@ -174,8 +174,7 @@
       "licenseEvidence": "Repository-authored CC0 focused control; the dome and focal percentages derive from the retained CC0 Wikifoods logo.",
       "selection": "Declared at 70c349ca before affine paint edits: source object bounds, composed referencing maps, shader-local maps and the complete Wikifoods radial paint dependency.",
       "role": "mechanism-control",
-      "referenceSha256": "2b0f917e05f8c0002353099bbfc9dac7cd7c070679b99376df623538b1f76d0f",
-      "expectedError": "UnsupportedFeature"
+      "referenceSha256": "2b0f917e05f8c0002353099bbfc9dac7cd7c070679b99376df623538b1f76d0f"
     },
     {
       "id": "stroked-radial-boundary",

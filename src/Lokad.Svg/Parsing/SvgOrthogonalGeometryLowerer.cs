@@ -331,7 +331,6 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerEllipseFill(double centerX, double centerY, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        if (radiusX != radiusY && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rotated ellipse transforms are not implemented.");
         (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
@@ -351,7 +350,25 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
             SvgContourBuilder builder = new(SampledOutlineCapacity(1, ShapeSegmentsPerShape), 1);
             builder.EnableQuadSpanRetention();
-            builder.AddEllipse(center, mappedRadiusX, mappedRadiusY, 0, flattenPolicy, _cancellationToken);
+            if (radiusX != radiusY && !deviceMap.IsAxisAligned)
+            {
+                using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
+                AppendNativeEllipseCommands(source, centerX, centerY, radiusX, radiusY);
+                foreach (SvgAuthoredPathCommand command in source.AsSpan())
+                {
+                    _workCounter.Consume(_cancellationToken);
+                    switch (command.Verb)
+                    {
+                        case SvgAuthoredPathVerb.Move: builder.BeginContour(SvgNativePathStroke.MapPoint(deviceMap, command.First)); break;
+                        case SvgAuthoredPathVerb.Conic:
+                            builder.AddConic(SvgNativePathStroke.MapPoint(deviceMap, command.First), SvgNativePathStroke.MapPoint(deviceMap, command.Second), (float)command.Third.X, 8, _cancellationToken);
+                            break;
+                        case SvgAuthoredPathVerb.Close: builder.EndContour(); break;
+                        default: throw new InvalidOperationException("Native oval source contains an unexpected verb.");
+                    }
+                }
+            }
+            else builder.AddEllipse(center, mappedRadiusX, mappedRadiusY, 0, flattenPolicy, _cancellationToken);
             conics = builder.GetQuadSpans();
             ends = new int[builder.ContourCount];
             for (int contour = 0; contour < builder.ContourCount; contour++)
@@ -430,7 +447,6 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerEllipseStrokeFill(double centerX, double centerY, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgStroke stroke, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        if (radiusX != radiusY && !element.Transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Rotated ellipse transforms are not implemented.");
         (SvgAffineTransform _, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
         if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Oval strokes under non-uniform polygon transforms stay unsupported.");
         return LowerNativeEllipseStroke(centerX, centerY, radiusX, radiusY, element, stroke, null, 0, null, 4, nonScaling, frame, budget);

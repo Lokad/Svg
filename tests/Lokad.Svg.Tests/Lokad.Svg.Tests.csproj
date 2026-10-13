@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <None Include="../Research/offset-merge-document/*.svg" Link="TestData/offset-merge-document/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/mask-group-documents/*.svg" Link="TestData/mask-group-documents/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/group-mask-crop/*.svg" Link="TestData/group-mask-crop/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/clip-intersections/*.svg" Link="TestData/clip-intersections/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
