@@ -4059,8 +4059,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": true,
       "purpose": "Original native stroke zero-signed-area inner contour control with direct placement and linear paint, declared before model edits/captures/comparison.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 24,
+        "MinimumMismatchY": 20,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "zero-area-stroke-direct-radial",
@@ -4077,8 +4090,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": true,
       "purpose": "Original native stroke zero-signed-area inner contour control with direct placement and radial paint, declared before model edits/captures/comparison.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 24,
+        "MinimumMismatchY": 20,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "zero-area-stroke-direct-pattern",
@@ -4095,8 +4121,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": true,
       "purpose": "Original native stroke zero-signed-area inner contour control with direct placement and pattern paint, declared before model edits/captures/comparison.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 24,
+        "MinimumMismatchY": 20,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "zero-area-stroke-translated-solid",
@@ -4144,8 +4183,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": true,
       "purpose": "Original native stroke zero-signed-area inner contour control with translated placement and linear paint, declared before model edits/captures/comparison.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 24,
+        "MinimumMismatchY": 20,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "zero-area-stroke-translated-radial",
@@ -4162,8 +4214,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": true,
       "purpose": "Original native stroke zero-signed-area inner contour control with translated placement and radial paint, declared before model edits/captures/comparison.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 24,
+        "MinimumMismatchY": 20,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "zero-area-stroke-translated-pattern",
@@ -4180,8 +4245,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": true,
       "purpose": "Original native stroke zero-signed-area inner contour control with translated placement and pattern paint, declared before model edits/captures/comparison.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 24,
+        "MinimumMismatchY": 20,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "zero-area-stroke-scaled-solid",
@@ -4229,8 +4307,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": true,
       "purpose": "Original native stroke zero-signed-area inner contour control with scaled placement and linear paint, declared before model edits/captures/comparison.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 48,
+        "MinimumMismatchY": 40,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "zero-area-stroke-scaled-radial",
@@ -4247,8 +4338,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": true,
       "purpose": "Original native stroke zero-signed-area inner contour control with scaled placement and radial paint, declared before model edits/captures/comparison.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 48,
+        "MinimumMismatchY": 40,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "zero-area-stroke-scaled-pattern",
@@ -4265,8 +4369,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": true,
       "purpose": "Original native stroke zero-signed-area inner contour control with scaled placement and pattern paint, declared before model edits/captures/comparison.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 48,
+        "MinimumMismatchY": 40,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     }
   ]
 }

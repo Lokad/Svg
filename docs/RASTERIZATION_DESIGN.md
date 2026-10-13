@@ -12529,3 +12529,21 @@ eight previous vector-effect witnesses. Three independent compiled matrix vector
 and float-overflow boundaries protect the shared arithmetic; existing host-stroke
 work, memory, cancellation/retry and owner tests remain applicable. This closes
 the measured oval defect, not the remaining finite G2–G4 map/paint combinations.
+
+## Mixed shader strokes and unpainted fill admission (2026-10-13)
+
+The nine retained `zero-area-stroke-{direct,translated,scaled}-{linear,radial,pattern}`
+controls reached legacy fill contour validation despite `fill="none"`. Their native
+source stroker and paint replay already support the mixed closed rings and open
+diagonal. Unpainted paths now skip unused fill validation when stroke paint needs
+no source box and no mask/clip/retained-instance boundary requires filled geometry.
+Bounding-box linear/radial paints still retain that geometry for their source box.
+
+All nine existing SVGs now match their unchanged references. Three solid twins
+and both already exact fill-none gradient-line witnesses remain exact. No new
+visual corpus or native captures are required. Focused source-box tests compare
+unpainted and transparent curved fills; material memory/work denial, during-raster
+cancellation, cleanup, retry and invalid stroke styles protect the shared change.
+The large resource control deliberately uses the existing direct-operation probe;
+small accumulated masks do not execute that callback. Broader paint/instance/map
+combinations remain required in PLAN.md, independently from these completed cases.

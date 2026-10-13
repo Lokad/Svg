@@ -36,10 +36,11 @@ internal static class SvgOrthogonalShapeParser
         SvgResolvedPaintableElement shape;
         SvgParsedGeometry filled;
         shape = context.ResolveShape(fillStyle, reader, true);
-        if (d.Length == 0 || !shape.Presentation.HasFill && !context.RetainInstanceStrokePath && !paintOutline && !paintRadialOutline && !paintPatternOutline && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
+        bool retainPaintBox = paintOutline && !outlineCandidate.IsUserSpace || paintRadialOutline && !outlineRadialCandidate.IsUserSpace;
+        if (d.Length == 0 || !shape.Presentation.HasFill && !retainPaintBox && !context.RetainInstanceStrokePath && reader.GetAttribute("mask") is null && reader.GetAttribute("clip-path") is null && state.MaskScopes.Count == 0)
         {
-            // Unpainted fills contribute no area and feed no paint-server boxes, masks or clips here, so degenerate
-            // subpaths skip fill validation while stroke lowering still outlines every subpath below.
+            // Unpainted fills contribute no area here. Stroke paint resolves its
+            // required source box below; native stroking retains every subpath.
             using BudgetedParserList<SvgGeometry> empty = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             filled = new SvgParsedGeometry(empty.Detach(), commandCount + 1);
         }

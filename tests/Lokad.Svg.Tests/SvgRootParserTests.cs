@@ -6816,10 +6816,9 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#g)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.True(root.Geometries.Length >= 2);
-        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
-        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(SvgGeometryKind.GradientPolygon, outline.Kind));
-        Assert.All(root.Geometries.Skip(1), outline => Assert.True(outline.GradientPolygon.HasFill));
+        Assert.NotEmpty(root.Geometries);
+        Assert.All(root.Geometries, outline => Assert.Equal(SvgGeometryKind.GradientPolygon, outline.Kind));
+        Assert.All(root.Geometries, outline => Assert.True(outline.GradientPolygon.HasFill));
     }
 
     [Fact]
@@ -6873,10 +6872,9 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><path d='M0,0 L8,0 L0,8 Z' fill='none' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(2, root.Geometries.Length);
-        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
-        Assert.Equal(SvgGeometryKind.PatternPolygon, root.Geometries[1].Kind);
-        Assert.True(root.Geometries[1].PatternPolygon.HasFill);
+        SvgGeometry outline = Assert.Single(root.Geometries);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, outline.Kind);
+        Assert.True(outline.PatternPolygon.HasFill);
     }
 
     [Fact]
@@ -6884,10 +6882,9 @@ public sealed class SvgRootParserTests
     {
         SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><path d='M0,8 Q4,-4 8,8' fill='none' stroke='url(#p)' stroke-width='2'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.True(root.Geometries.Length >= 2);
-        Assert.Equal(SvgGeometryKind.PolygonFill, root.Geometries[0].Kind);
-        Assert.All(root.Geometries.Skip(1), outline => Assert.Equal(SvgGeometryKind.PatternPolygon, outline.Kind));
-        Assert.All(root.Geometries.Skip(1), outline => Assert.True(outline.PatternPolygon.HasFill));
+        Assert.NotEmpty(root.Geometries);
+        Assert.All(root.Geometries, outline => Assert.Equal(SvgGeometryKind.PatternPolygon, outline.Kind));
+        Assert.All(root.Geometries, outline => Assert.True(outline.PatternPolygon.HasFill));
     }
 
     [Fact]
