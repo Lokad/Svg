@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='4' height='4' fill='red'/></pattern></defs><g transform='translate(16 0) scale(-1 1)'><polygon points='0,0 8,8 8,0 0,8' fill='url(#p)'/></g></svg>

@@ -319,9 +319,7 @@
       "width": 64,
       "height": 64,
       "background": "transparent",
-      "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only axis-aligned rectangle transforms are implemented."
+      "role": "fidelity"
     },
     {
       "id": "nested-rotated-opacity",

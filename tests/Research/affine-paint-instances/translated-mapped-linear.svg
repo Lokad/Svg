@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x2='24' gradientTransform='matrix(1 .2 .3 2 0 0)'><stop/><stop offset='1' stop-color='white'/></linearGradient></defs><defs><path id='s' d='M2 3L20 1 22 20 3 22Z' fill='url(#p)'/></defs><use href='#s' x='1'/></svg>

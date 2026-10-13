@@ -58,7 +58,7 @@ internal static class SvgPatternReferenceResolver
                         if (parent.VectorContent is null && source.Tile.VectorContent is not null) parent = source.Tile;
                         if (parent.VectorContent is null && source.RectangleSource is {} rectangle)
                         {
-                            SvgVectorContent content = PromoteRectangle(rectangle, source.RectangleContext);
+                            SvgVectorContent content = PromoteRectangle(rectangle, source.RectangleContext, state, work, token);
                             parent = parent with { Content = null, VectorContent = content };
                             state.PatternDefinitions.Replace(target, source with { Tile = parent });
                         }
@@ -72,18 +72,40 @@ internal static class SvgPatternReferenceResolver
                 path.RemoveLast();
             }
         }
+    }
 
-        SvgVectorContent PromoteRectangle(SvgDefinitionLeafSource source, SvgPaintableElementContext context)
+    /// <summary>Borrows native tile replay for affine placement while preserving the ordinary legacy tile.</summary>
+    /// <remarks>The definition caches a parent-owned scene using the existing template promotion route.
+    /// Creation charges work/storage and observes cancellation; aliases borrow the same owner. Positive
+    /// axis placement keeps established legacy pixels. Failed promotion disposes every new owner.</remarks>
+    internal static SvgPatternTile ForPlacement(string id, SvgPatternTile tile, SvgAffineTransform placement,
+        SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        if (tile.VectorContent is not null || tile.Content is null || placement.IsAxisAligned && placement.A >= 0 && placement.D >= 0) return tile;
+        work.Consume(token);
+        if (!state.PatternDefinitions.TryGetValue(id, out SvgPatternDefinition definition)) throw new InvalidOperationException("Pattern replay requires retained definition content.");
+        SvgVectorContent content;
+        if (definition.Tile.VectorContent is {} retained) content = retained;
+        else
         {
-            using SvgSceneBuilder builder = new(state.Budget, work, token);
-            SvgDefinition lowered = source.Lower(context.InheritedStroke, context.InheritedPresentation.Paint,
-                context.InheritedFillRule, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder, context.InheritedPresentation.Markers, context.InheritedPresentation.ElementOpacity, context.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, false, state);
-            SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
-            SvgLeafMaskComposition.Emit(state, builder, work, token);
-            SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
-            try { state.Scene.AdoptVectorContent(content); }
-            catch { content.Dispose(); throw; }
-            return content;
+            SvgDefinitionLeafSource source = definition.RectangleSource ?? throw new InvalidOperationException("Pattern promotion requires retained rectangle attributes.");
+            content = PromoteRectangle(source, definition.RectangleContext, state, work, token);
+            state.PatternDefinitions.Replace(id, definition with { Tile = definition.Tile with { Content = null, VectorContent = content } });
         }
+        return tile with { Content = null, VectorContent = content };
+    }
+
+    private static SvgVectorContent PromoteRectangle(SvgDefinitionLeafSource source, SvgPaintableElementContext context,
+        SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        using SvgSceneBuilder builder = new(state.Budget, work, token);
+        SvgDefinition lowered = source.Lower(context.InheritedStroke, context.InheritedPresentation.Paint,
+            context.InheritedFillRule, context.InheritedPresentation.PaintServerFill, context.InheritedPresentation.PaintOrder, context.InheritedPresentation.Markers, context.InheritedPresentation.ElementOpacity, context.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, false, state);
+        SvgPaintRecording.AdoptLeafScene(lowered, builder, state);
+        SvgLeafMaskComposition.Emit(state, builder, work, token);
+        SvgVectorContent content = SvgVectorContent.Create(builder.Build(), state.Budget);
+        try { state.Scene.AdoptVectorContent(content); }
+        catch { content.Dispose(); throw; }
+        return content;
     }
 }

@@ -26,18 +26,6 @@ public sealed class SvgIntegerPointListTests
             byte[] input = System.Text.Encoding.UTF8.GetBytes(Document(points, definitions, placement));
             byte[] equivalent = System.Text.Encoding.UTF8.GetBytes(Document(path, definitions, placement));
             RenderBudget budget = new(1_000_000);
-            if (paint == "pattern" && placement == "group")
-            {
-                // Reflected pattern groups retain their existing admission gate.
-                SvgException error = Assert.Throws<SvgException>(() =>
-                {
-                    using SvgRoot rejected = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None);
-                });
-                Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-                Assert.Equal(0, budget.Snapshot().CurrentBytes);
-                Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(equivalent, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
-                continue;
-            }
             using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
             {
                 SvgAuthoredPath source = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries).AuthoredPath);

@@ -24,7 +24,8 @@ separate from the required exits below.
 | Qualified non-scaling correction | Original oval discrepancy resolved; [oval bank](tests/Research/oval-source-replay/manifest.json) **8/8 exact**, [vector-effect bank](tests/Research/vector-effects/manifest.json) **10/10 exact**. Preserve native inverse composition, compiled matrix witnesses, overflow and resource/cancellation/retry regressions. [Qualification receipt](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json); [green hosted Windows/Linux delivery at ab097ebc](https://github.com/Lokad/Svg/actions/runs/38471124264). |
 | Qualified mixed shader strokes | Nine retained direct/translated/scaled mixed-subpath linear/radial/pattern controls match unchanged references on both platforms. [Paint-recording bank](tests/Research/paint-recording/manifest.json): **143 exact / six explicit boundaries**. Source-box, invalid-style, denial/cancellation/cleanup/retry regressions remain. Complete Windows/Linux Release checks: **7,473 tests/platform** (5,158 core / 2,309 visual / six FontProbe), zero warnings/failures/skips; every preceding case retained. [Qualification receipt](artifacts/maintenance-review-20261012/shader-strokes-qualified-results.json); [green hosted Windows/Linux delivery at c7e772b9](https://github.com/Lokad/Svg/actions/runs/38474575655). |
 | Qualified fractional use widths | Ordinary rectangle instances preserve finite fractional widths through uniform scaling/reflection; all **10/10** [fractional-width controls](tests/Research/fractional-rectangle-widths/manifest.json) are exact on both platforms. Existing numeric/nonuniform bounds and focused forward-inheritance, opacity, denial/cleanup/retry checks remain. Complete Windows/Linux Release checks: **7,480 tests/platform** (5,165 core / 2,309 visual / six FontProbe), zero warnings/failures/skips; every preceding case retained. [Qualification receipt](artifacts/maintenance-review-20261012/fractional-use-qualified-results.json); [green hosted delivery at 8188425f](https://github.com/Lokad/Svg/actions/runs/38476636781). The separate symbol-held band-expansion gate remains required work. |
-| Qualified nonuniform root curves | Three unchanged original quadratic-root background references and two [linear/radial circle controls](tests/Research/nonuniform-curve-paints/README.md) are exact on both platforms. Ordinary output reuses retained native commands; internal curves without commands keep an explicit boundary and ownership regression. Complete Windows/Linux Release checks: **7,483 tests/platform** (5,166 core / 2,311 visual / six FontProbe), zero warnings/failures/skips. Every prior case remains, including three renamed core cases with unchanged SVG bodies; only two distinct visuals are added. [Qualification receipt](artifacts/maintenance-review-20261012/nonuniform-curves-qualified-results.json). |
+| Qualified nonuniform root curves | Three unchanged original quadratic-root background references and two [linear/radial circle controls](tests/Research/nonuniform-curve-paints/README.md) are exact on both platforms. Ordinary output reuses retained native commands; internal curves without commands keep an explicit boundary and ownership regression. Complete Windows/Linux Release checks: **7,483 tests/platform** (5,166 core / 2,311 visual / six FontProbe), zero warnings/failures/skips. Every prior case remains, including three renamed core cases with unchanged SVG bodies; only two distinct visuals are added. [Qualification receipt](artifacts/maintenance-review-20261012/nonuniform-curves-qualified-results.json); [green hosted delivery at d446dac3](https://github.com/Lokad/Svg/actions/runs/38479213829). |
+| Qualified affine paint replay | The unchanged reflected group-pattern and rotated I Ching gradient references, three existing first-payload references and eight [focused controls](tests/Research/affine-paint-instances/README.md) are exact on both platforms. Existing tile promotion, source paint maps and bounded vector content close these gates without new kernels. Paint recording is **147 exact / two remaining gates**; I Ching is **24 exact / one animation boundary**. Complete checks pass **7,494 tests/platform** (5,169 core / 2,319 visual / six FontProbe), zero warnings/failures/skips. Every prior input/case remains, with explicit assertion/name updates for newly admitted behavior. Denial sweeps, cancellation/retry, shared promotion and trial-geometry cleanup remain protected. [Qualification receipt](artifacts/maintenance-review-20261012/affine-paints-qualified-results.json). |
 | Resource/API/package protections | Keep bounded preparation/raster/encoding, denied work/allocation, during-phase cancellation, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks remain applicable while unchanged. Final release evidence must match the finished revision. |
 
 Previously stated blockers for completed library/heart/pattern documents,
@@ -47,15 +48,15 @@ Exhaustive G2 combinations do not block G3–G9 or the next document.
 
 The **next three deliverables are items 1–3**: shared stroke/paint maps,
 clip/mask composition, then remaining static effects/markers, in that order.
-The first targets the reflected-pattern/rotated-symbol paint gates and remaining
-symbol-held fractional widths; the next two have their retained acceptance
+The first targets remaining symbol-held fractional widths and wider instance/stroke
+paint maps; the next two have their retained acceptance
 cases named in the checklist. Each can use small buildable commits with its
 affected tests/documentation; a partial mechanism fix
 is progress, not completion of its item or support group.
 
 | Required remaining item | Missing behavior and dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| 1. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Fractional symbol-held effective widths and remaining nonuniform instance/stroke/paint maps. Depends on existing source contours/stroker and composed paint maps; share one stroke route across paints. | Close `group-clip-reflected-pattern` and `iching-library/rotated-symbol-gradient` against unchanged references, plus a declared fractional symbol-frame witness. Preserve completed nonuniform root fills, ordinary fractional use widths, non-scaling, gradient-line and mixed shader strokes. Declare a complete retained export for any mechanism lacking one. Exact positive witnesses for the finite G3/G4 and G2 width/map behavior, with no prior regression, close this item; remaining G2 scopes/composition follow item 2. No Cartesian quota. |
+| 1. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Fractional symbol-held effective widths and remaining nonuniform instance/stroke/paint maps. Depends on existing source contours/stroker and composed paint maps; share one stroke route across paints. | Close a declared fractional symbol-frame witness and retained exports for the remaining affine instance/stroke/paint mechanisms. Preserve completed reflected pattern and rotated symbol-gradient cases, nonuniform root fills, ordinary fractional use widths, non-scaling, gradient-line and mixed shader strokes. Declare a complete retained export for any mechanism lacking one. Exact positive witnesses for the finite G3/G4 and G2 width/map behavior, with no prior regression, close this item; remaining G2 scopes/composition follow item 2. No Cartesian quota. |
 | 2. Finish scoped clip/mask composition (G2/G5) | Overlapping clip children, remaining transformed/unit clip maps, nested definition scopes, custom mask regions, mask-container opacity and remaining leaf/group/use composition. Depends on item 1 only where its maps are needed; reuse existing bounded scene/layer ownership. | Close [composed cubic clip](tests/Research/curved-path-clips/composed-group-cubic.svg), object-box clip witnesses, retained nested-viewport paint and `mask-region-half-translated` cases. Declare one licensed complete export combining an identified remaining mask/clip gap with ordered group/use content. Exact original outputs plus focused overlap/unit/scope/opacity controls and bounded cleanup close the finite G5 exit. Completed `inv-136/137/141/145` stay regression witnesses. |
 | 3. Finish finite static effects and marker gaps (G8) | Small/anisotropic blur, fractional offsets, flood/composite/blend and remaining result/region/color-space graphs; remaining marker directions/containers. Depends on completed `inv-146` source bounds and items 1–2 only for affected geometry/composition. | Close [translated rectangle source](tests/Research/filter-regions/translated-rectangle-source.svg) (85 pixels, max channel 1) and [transparent displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg) (six pixels, max channel 14 / alpha 1). Freeze a colored alpha composition with `over`/`in` and normal/multiply/screen, and an arc/polyline marker example. Exact complete exports and positive witnesses for the finite G8 subset, plus bounded graph/surface/work regressions, close this item. |
 | 4. Finish static CSS and embedded images (G7) | Remaining selectors/cascade locations, presentation propagation and enumerated PNG/sampling/maps. Depends on shared G2/G5 scopes and G3 maps; preserve completed late rules, inert geometry typography and paint order. | Existing image/compound-selector cases plus a multicolor translucent PNG edge under fractional meet/slice and a root/nested/late-rule export affecting referenced content match frozen outputs. Authored override, CRC/decode denial and corrupt/missing image outcomes pass. Representative exact witnesses and explicit unsupported boundaries for the finite G7 subset close this item. |
@@ -98,8 +99,9 @@ Keep an unverified behavior open; completed document counts do not prove it.
   and offsets, independent fill/stroke opacity. Include dashed curved paints and
   nonuniform placement. Shared stroke-to-paint routing must preserve native
   shape distinctions; paint-specific geometry kernels are not the delivery plan.
-- Remaining witnesses: rotated-symbol gradient and other instance map gates,
-  reflected/magnified pattern instances and fractional symbol-held effective widths.
+- Remaining witnesses: wider instance/stroke/paint maps, reflected/magnified
+  pattern instances and fractional symbol-held effective widths. The retained
+  rotated symbol gradient and reflected group-pattern gates are complete.
   Non-scaling oval coverage, both gradient-line cases and all nine mixed shader
   strokes are complete. Ordinary fractional rectangle use widths also match
   unchanged references; their separate symbol band-expansion route stays open.
@@ -134,7 +136,9 @@ finite tile origins/sizes and composed affine transforms. Embedded images and
 filtered/text content are required G7–G9 dependencies. Preserve tile-border,
 phase, alpha, transformed fill/stroke and inheritance behavior without unbounded
 repeat-count work. Recursive pattern/paint dependencies reject explicitly.
-The [vector content](tests/Research/pattern-vector-content/manifest.json),
+Native first linear/radial/rounded payloads, fractional phase and border clipping
+are qualified; `paint-recording/pattern-tile-tile-fill-stroke-element` remains an
+explicit required combined-opacity gate. The [vector content](tests/Research/pattern-vector-content/manifest.json),
 [viewBox](tests/Research/pattern-viewbox/manifest.json) and
 [instance](tests/Research/pattern-instance-content/manifest.json) banks protect
 completed work; their exact cases do not close dependent tile content.
@@ -285,9 +289,11 @@ representativeness quota delays this finite release.
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
   Latest finished checkpoint, including orchestration/test-host startup: about
-  **1m29s Windows / 4m55s Linux**. Builds take 4s/166s and test-suite intervals
-  80s/98s, respectively. See the nonuniform-curve receipt above and logs in the
-  same directory.
+  **6m36s for the complete Linux run**, with a 253s build and 107s suite
+  intervals. Windows reuses its unchanged green core result after visual-only
+  metadata correction; valid build plus suite components total about **1m25s**
+  (4s build / 81s suite intervals), rather than an end-to-end rerun claim. See
+  the affine-paint receipt above and logs in the same directory.
   These local measurements establish no renderer speedup or fixed timing guarantee.
   Routine verification uses normal incremental builds; avoid forced compiler
   shutdown between checkpoints. The prior forced-cold Linux overrun and ordinary

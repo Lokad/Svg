@@ -2300,14 +2300,14 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_fractional_pattern_tiles_under_viewBox_scaling()
+    public void Renders_fractional_pattern_phase_under_viewBox_scaling()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 16 16'><defs><pattern id='p' x='1' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='#ff0000'/></pattern></defs><rect x='0' y='0' width='16' height='16' fill='url(#p)'/></svg>"u8.ToArray();
 
-        SvgException exception = Assert.Throws<SvgException>(() => Lokad.Svg.SvgConverter.ConvertToPng(svg, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(svg, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.False(png.IsEmpty);
     }
+
     [Fact]
     public void Rejects_pattern_content_strokes_under_viewBox_scaling()
     {
@@ -2842,11 +2842,11 @@ public sealed class SvgRootParserTests
 
     [Theory]
     [InlineData("<path d='M1,1 H7 V7 H1 Z' fill='url(#p)' transform='translate(8,0) scale(-1,1)'/>")]
-    public void Rejects_unsupported_pattern_path_forms(string body)
+    public void Replays_reflected_pattern_paths(string body)
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot scene = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern></defs>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.NotNull(Assert.Single(scene.Geometries).PatternPolygon.VectorContent);
     }
     [Fact]
     public void Retains_gradient_fill_opacity_separately_from_element_opacity()
@@ -6643,19 +6643,17 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_pattern_content_shifted_outside_its_tile()
+    public void Replays_shifted_pattern_content_on_its_native_grid()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse' patternTransform='translate(3,0)'><rect width='2' height='2' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot scene = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse' patternTransform='translate(3,0)'><rect width='2' height='2' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.NotNull(Assert.Single(scene.Geometries).Pattern.VectorContent);
     }
 
     [Fact]
-    public void Rejects_pattern_content_strokes_overflowing_their_tile()
+    public void Clips_pattern_content_strokes_to_the_native_tile()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' stroke='blue' stroke-width='2'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot scene = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' stroke='blue' stroke-width='2'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.NotNull(Assert.Single(scene.Geometries).Pattern.VectorContent);
     }
 
     [Fact]

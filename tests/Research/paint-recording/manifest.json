@@ -1241,7 +1241,21 @@
       "license": "MIT",
       "licenseEvidence": "Repository LICENSE.txt; unchanged unit input or original contributor control.",
       "purpose": "Supplemental after tile payload opacity repair: verify resolved tile paint and rejected temporary owner cleanup.",
-      "outcome": "UnsupportedFeature"
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 8,
+        "MinimumMismatchY": 8,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "pattern-tile-tile-radial-rejection",
@@ -1255,7 +1269,21 @@
       "license": "MIT",
       "licenseEvidence": "Repository LICENSE.txt; unchanged unit input or original contributor control.",
       "purpose": "Supplemental after tile payload opacity repair: verify resolved tile paint and rejected temporary owner cleanup.",
-      "outcome": "UnsupportedFeature"
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 8,
+        "MinimumMismatchY": 8,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "pattern-tile-tile-rounded-rejection",
@@ -1269,7 +1297,21 @@
       "license": "MIT",
       "licenseEvidence": "Repository LICENSE.txt; unchanged unit input or original contributor control.",
       "purpose": "Supplemental after tile payload opacity repair: verify resolved tile paint and rejected temporary owner cleanup.",
-      "outcome": "UnsupportedFeature"
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 8,
+        "MinimumMismatchY": 8,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "constant-coverage-linear-fractional-constant-transparent",
@@ -3638,8 +3680,21 @@
       "retrievalDate": "2026-10-08",
       "declaredBeforeImplementation": false,
       "purpose": "Independent original quadratic fill with a reflected group rectangle clip and pattern paint, declared after production integration and before these captures; the initial drafts used unsupported multi-rectangle pattern definitions.",
-      "outcome": "UnsupportedFeature",
-      "comparison": null
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 48,
+        "MinimumMismatchY": 40,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "oval-dash-circle-periodic",

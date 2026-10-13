@@ -33,10 +33,18 @@ public sealed class SvgResourceUseReplayTests
     [Theory]
     [InlineData("<rect width='24' height='24' fill='none' stroke='url(#p)' stroke-width='2'/>", "source-bound fill geometry")]
     [InlineData("<defs><path id='s' d='M2 3L20 1 22 20 3 22Z' fill='url(#p)'/></defs><use href='#s' x='1'/>", "placed geometry references")]
-    public void General_linear_paint_combinations_keep_explicit_unqualified_boundaries(string target, string message)
+    public void General_linear_paint_combinations_preserve_admission_and_cleanup(string target, string message)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><defs><linearGradient id='p' gradientUnits='userSpaceOnUse' x2='24' gradientTransform='matrix(1 .2 .3 2 0 0)'><stop/><stop offset='1' stop-color='white'/></linearGradient></defs>" + target + "</svg>");
         RenderBudget budget = new(1_000_000);
+        if (message == "placed geometry references")
+        {
+            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+            using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
+                Assert.Contains(surface.Pixels, value => value != 0);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            return;
+        }
         SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None));
         Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
         Assert.Contains(message, error.Message);

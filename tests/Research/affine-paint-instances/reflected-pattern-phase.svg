@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'><defs><pattern id='p' patternUnits='userSpaceOnUse' x='1' y='0' width='6' height='4'><rect x='1.25' y='.75' width='2.5' height='2.5' fill='#65b6d6' fill-opacity='.625'/></pattern><clipPath id='c'><rect x='6.5' y='4.25' width='24' height='24'/></clipPath></defs><g transform='translate(41.25 .625) scale(-1 1)' clip-path='url(#c)' opacity='.6875'><path d='M2 3Q14 -2 36 6L34 30Q8 36 2 3Z' fill='url(#p)' fill-opacity='.8125'/></g></svg>

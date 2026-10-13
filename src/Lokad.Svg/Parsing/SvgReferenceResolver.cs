@@ -134,7 +134,7 @@ internal static class SvgReferenceResolver
             {
                 workCounter.Consume(cancellationToken);
                 bool generalLinear = geometry.Kind == SvgGeometryKind.GradientFill && geometry.Gradient.Gradient.RequiresSourceMap
-                    || geometry.Kind == SvgGeometryKind.GradientPolygon && geometry.GradientPolygon.Gradient.RequiresSourceMap;
+                    || geometry.Kind == SvgGeometryKind.GradientPolygon && geometry.GradientPolygon.Gradient.RequiresSourceMap && geometry.AuthoredPath is null;
                 if (generalLinear) throw new SvgException(SvgErrorCode.UnsupportedFeature, "General linear paint maps on placed geometry references are not implemented.");
             }
         }
@@ -532,17 +532,36 @@ internal static class SvgReferenceResolver
             mapped[index] = placed;
         }
         SvgLinearGradient vector = outline.Gradient;
-        if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 + reference.X, Y1 = vector.Y1 + reference.Y, X2 = vector.X2 + reference.X, Y2 = vector.Y2 + reference.Y };
-        SvgRectangle box = InstanceBox(outline.Box, reference, frame);
-        vector = SvgGradientSyntax.MapUserSpaceVector(reference.Transform, vector, frame);
-        vector = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, vector);
+        SvgAffineTransform placement = PlainInstancePlacement(reference, frame);
+        SvgRectangle box;
+        if (!reference.Transform.IsAxisAligned || vector.SourcePaint?.Data.IsMapped == true)
+        {
+            SvgAuthoredPath path = source.AuthoredPath ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine linear paint instances require retained source commands.");
+            if (vector.SourcePaint?.Data is { IsMapped: true } data)
+            {
+                if (placement != SvgAffineTransform.Identity) vector = vector with { SourcePaint = state.Scene.RetainLinearPaintMap(data with { Referencing = placement.ComposeChecked(data.Referencing) }) };
+            }
+            else
+            {
+                SvgRectangle sourceBox = vector.IsUserSpace ? default : SvgPathBounds.Compute(path.Commands, workCounter, cancellationToken);
+                vector = SvgGradientSyntax.BindLinearSourceMap(vector, sourceBox, placement.ComposeChecked(path.SceneMap), state, workCounter, cancellationToken);
+            }
+            box = default;
+        }
+        else
+        {
+            if (vector.IsUserSpace) vector = vector with { X1 = vector.X1 + reference.X, Y1 = vector.Y1 + reference.Y, X2 = vector.X2 + reference.X, Y2 = vector.Y2 + reference.Y };
+            box = InstanceBox(outline.Box, reference, frame);
+            vector = SvgGradientSyntax.MapUserSpaceVector(reference.Transform, vector, frame);
+            vector = SvgGradientSyntax.MirrorBoundingBoxVector(reference.Transform, vector);
+        }
         SvgClipBox? clip = outline.Clip;
         if (frame is not null) clip = clip is null ? frame.Value.Clip : clip.Value.Intersect(frame.Value.Clip);
         byte opacity = MultiplyAlpha(outline.Opacity, reference.Opacity);
         SvgQuadSpan[] quadSpans = MapUseQuadSpans(outline.QuadSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
         SvgCubicSpan[] cubicSpans = MapUseCubicSpans(outline.CubicSpans, instanceMap, reference.X, reference.Y, frame, workCounter, cancellationToken);
         SvgGeometry result = SvgGeometry.FromGradientPolygon(SvgGradientPolygon.Create(mapped, outline.ContourEnds, outline.Signs, quadSpans, cubicSpans, vector, box, outline.HasFill && reference.IsPainted, outline.IsEvenOdd, opacity, outline.Mapping, clip, null, state.Budget));
-        return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
+        return source.CopyAuthoredPathTo(result, placement, state.Budget, workCounter, cancellationToken);
     }
 
     private static SvgGeometry ApplyRadialPolygon(SvgGeometry source, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)

@@ -8037,7 +8037,7 @@ pathLength, rectangle clipping and fill/stroke. They join the existing six-outpu
 inventory, now 137 pairs = 129 exact + eight valid-input rejections. Existing
 SVGs, reference PNGs and oracle capture metadata stay unchanged.
 
-Eleven focused tests fail on the preceding renderer and pass after the repair:
+Eight focused tests fail on the preceding renderer and pass after the repair:
 eight cut-conic/outline ownership cases across both shapes, widths and scaling
 policies, through direct/scaled-group/translated-use placement; three zero-radius
 cases verify empty pixels and owner cleanup. Magnified use instances still hit a
@@ -12529,6 +12529,35 @@ eight previous vector-effect witnesses. Three independent compiled matrix vector
 and float-overflow boundaries protect the shared arithmetic; existing host-stroke
 work, memory, cancellation/retry and owner tests remain applicable. This closes
 the measured oval defect, not the remaining finite G2–G4 map/paint combinations.
+
+## Affine paint instances and native tile promotion (2026-10-14)
+
+The retained reflected group-pattern and rotated I Ching gradient controls were
+blocked before existing native replay could render them. Pattern placement now
+reuses the template resolver's source rectangle promotion and caches its borrowed
+vector content on the definition. Compatible ordinary tiles retain their legacy
+route. First rectangle payloads outside that route's type/integer/border limits
+use the existing bounded vector scene; recursive pattern-paint validation is
+shared with the ordinary vector-content branch. No new shape or paint kernel is
+introduced. Native picture sampling carries reflected/rotated phase and opacity.
+
+General linear path instances bind the original command bounds through the
+existing linear source-map machinery. Already-bound maps compose the instance
+reference with their existing reference matrix, without rebinding the object box.
+Axis legacy instances retain their established path. Native source copies and
+existing symbol viewport/leaf clip replay remain shared.
+
+Both original inputs/references are unchanged and exact on Windows/Linux. Eight
+focused controls have independent healthy triples and preserve phase, opacity,
+bound-map composition, clipped instances, first painted/rounded payloads,
+shifted grids, border clipping and reflected winding. The old rejection tests
+retain their original inputs as positive checks. Existing parser work/memory
+sweeps exposed unused radial/rounded trial geometry that survived successful
+fallback; those untransferred owners now release before native content replay.
+The same sweeps pass unchanged. Focused controls verify cached promotion while
+ordinary tile routing stays intact, material denial, during-raster cancellation,
+token identity, retry and immutable caller bytes. Wider support-group exits remain
+open; no source fingerprints or new measurement/ownership framework is added.
 
 ## Native source curves under nonuniform root maps (2026-10-14)
 
