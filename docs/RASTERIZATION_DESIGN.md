@@ -12530,6 +12530,27 @@ and float-overflow boundaries protect the shared arithmetic; existing host-strok
 work, memory, cancellation/retry and owner tests remain applicable. This closes
 the measured oval defect, not the remaining finite G2–G4 map/paint combinations.
 
+## Native source curves under nonuniform root maps (2026-10-14)
+
+The original `curve-root-quad-none` input was rejected by a raster admission
+guard even though parsing retained its native source commands and the common
+replay/paint machinery already carried the composed output map. The guard had
+allowed this route only for premultiplied pattern surfaces. Ordinary output now
+uses it too when native commands exist; source-less internal flattened curves
+still reject before surface allocation. No new geometry kernel or owner is added.
+
+The original SVG and three frozen background captures are unchanged. Independent
+healthy Linux triples are byte-identical to the retained Windows references, and
+all three outputs match exactly. Two focused historical linear/radial circle
+inputs expose the same admission guard; their references were frozen on both
+platforms while that guard was restored after the diagnostic prototype. They are
+exact through the existing native oval and paint-coordinate routes. The ordinary
+visual harness retains these two independent paint cases without expanding API
+permutations. The three historical core rejection cases become positive checks;
+their original SVG bodies stay unchanged. A source-less internal scene verifies
+the fallback boundary, retained ownership, successful original-scene replay and
+unchanged caller bytes. Wider affine instances/strokes and paint gaps remain open.
+
 ## Fractional effective rectangle widths on local uses (2026-10-14)
 
 The retained `fractional-rectangle-widths/instance-inherited-width` was rejected

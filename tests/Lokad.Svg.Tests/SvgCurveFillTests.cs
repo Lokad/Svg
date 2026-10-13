@@ -1,5 +1,7 @@
 using System.Buffers.Binary;
 using System.IO.Compression;
+using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
@@ -105,14 +107,36 @@ public sealed class SvgCurveFillTests
     }
 
     [Fact]
-    public void Curve_under_nonuniform_output_mapping_stays_unsupported()
+    public void Curve_under_nonuniform_output_mapping_renders_from_retained_source()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out int height);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("non-uniform viewBox or output scaling", rejected.Message);
+        Assert.Equal(width * height * 4, pixels.Length);
+        Assert.NotEqual(0, AlphaSum(pixels));
+    }
+
+    [Fact]
+    public void Nonuniform_curve_fallback_requires_source_commands_and_preserves_scene_ownership()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='M0,8 Q4,0 8,8 Z' fill='red'/></svg>"u8.ToArray();
+        byte[] unchanged = input.ToArray();
+        RenderBudget budget = new(4_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            long retained = budget.Snapshot().CurrentBytes;
+            SvgRoot withoutSource = scene with { Geometries = scene.Geometries.Select(geometry => geometry with { AuthoredPath = null }).ToArray() };
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+            {
+                using SvgConverter.RasterizedSurface denied = SvgConverter.Rasterize(withoutSource, SvgRenderOptions.Default, budget, CancellationToken.None);
+            }).ErrorCode);
+            Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            using SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.Contains(output.Pixels, value => value != 0);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, input);
     }
 
     [Fact]
@@ -253,25 +277,25 @@ public sealed class SvgCurveFillTests
         Assert.Equal(direct, scaled);
     }
     [Fact]
-    public void Gradient_circle_fill_under_nonuniform_output_mapping_stays_unsupported()
+    public void Gradient_circle_fill_under_nonuniform_output_mapping_renders_from_retained_source()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 32 64' preserveAspectRatio='none'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><circle cx='16' cy='32' r='12' fill='url(#g)'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out int height);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("non-uniform viewBox or output scaling", rejected.Message);
+        Assert.Equal(width * height * 4, pixels.Length);
+        Assert.NotEqual(0, AlphaSum(pixels));
     }
 
     [Fact]
-    public void Radial_circle_fill_under_nonuniform_output_mapping_stays_unsupported()
+    public void Radial_circle_fill_under_nonuniform_output_mapping_renders_from_retained_source()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 32 64' preserveAspectRatio='none'><defs><radialGradient id='g' cx='0.5' cy='0.5' r='0.5'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><circle cx='16' cy='32' r='12' fill='url(#g)'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out int height);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("non-uniform viewBox or output scaling", rejected.Message);
+        Assert.Equal(width * height * 4, pixels.Length);
+        Assert.NotEqual(0, AlphaSum(pixels));
     }
 
     [Fact]

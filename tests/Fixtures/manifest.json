@@ -10002,10 +10002,10 @@
       "height": 31,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "rejects:UnsupportedFeature",
-      "unsupportedReason": "Existing non-uniform viewBox/output curve-fill gate remains UnsupportedFeature. All three browser captures are stable and healthy; capture evidence stays in ignored artifacts/corporate-curve-events-20261006/."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-curve-root-quad-none-transparent.json",
+      "referenceSha256": "6154d3bf01bf823917ad3a8efe943641664af05163acaae76cdcf04b74a62595"
     },
     {
       "id": "original-curve-root-quad-none-white",
@@ -10027,11 +10027,11 @@
       "height": 31,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "rejects:UnsupportedFeature",
-      "unsupportedReason": "Existing non-uniform viewBox/output curve-fill gate remains UnsupportedFeature. All three browser captures are stable and healthy; capture evidence stays in ignored artifacts/corporate-curve-events-20261006/.",
-      "variantOf": "original-curve-root-quad-none-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-curve-root-quad-none-transparent",
+      "oracleIdentity": "tests/References/original-curve-root-quad-none-white.json",
+      "referenceSha256": "7ac527cbbfdf0dba67eeef6a93bd5bd4b425061a4061860a292ebf51b2276ca0"
     },
     {
       "id": "original-curve-root-quad-none-black",
@@ -10053,11 +10053,11 @@
       "height": 31,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "rejects:UnsupportedFeature",
-      "unsupportedReason": "Existing non-uniform viewBox/output curve-fill gate remains UnsupportedFeature. All three browser captures are stable and healthy; capture evidence stays in ignored artifacts/corporate-curve-events-20261006/.",
-      "variantOf": "original-curve-root-quad-none-transparent"
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "variantOf": "original-curve-root-quad-none-transparent",
+      "oracleIdentity": "tests/References/original-curve-root-quad-none-black.json",
+      "referenceSha256": "42d2edd317f9b9f655146831632a830d04f25b333efa4f4c9a643975f7a7cf7f"
     },
     {
       "id": "original-curve-root-cubic-slice-transparent",

@@ -259,7 +259,7 @@ public static class SvgConverter
                 bool isCurveFill = (geometry.Kind == SvgGeometryKind.PolygonFill && geometry.Polygon.Mapping == SvgPolygonMapping.FlattenedCurves)
                     || (geometry.Kind == SvgGeometryKind.GradientPolygon && geometry.GradientPolygon.Mapping == SvgPolygonMapping.FlattenedCurves)
                     || (geometry.Kind == SvgGeometryKind.RadialPolygon && geometry.RadialPolygon.Mapping == SvgPolygonMapping.FlattenedCurves);
-                if (horizontalScale != verticalScale && isCurveFill && (surfaceMode != RasterSurfaceMode.PremultipliedPattern || geometry.AuthoredPath is null)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Curve fills under non-uniform viewBox or output scaling are not implemented.");
+                if (horizontalScale != verticalScale && isCurveFill && geometry.AuthoredPath is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Curve fills under non-uniform viewBox or output scaling require retained source commands.");
             }
         }
         SvgCpuClipCoverage? layerClipCoverage = null;
