@@ -828,6 +828,8 @@ preceding case remains, with three complete native-texture cases and one whole
 twelve-API document case added. Frozen 27/27 corporate documents and 258/258
 variants remain exact. Qualification and case-retention comparison:
 `artifacts/maintenance-review-20261012/mask-complete-results.json`.
+The finished correction is pushed at `7a49c41f`; hosted Windows/Linux
+[CI is green](https://github.com/Lokad/Svg/actions/runs/38353145524).
 
 **Next deliverable:** qualify the complete public-domain
 [SVGfeOffset01.svg](https://commons.wikimedia.org/wiki/File:SVGfeOffset01.svg?oldid=963514598)
@@ -835,7 +837,7 @@ as the next retained gap. Its unchanged 1,589-byte original, explicit 800×700
 transparent output and caller-supplied public Noto Sans Regular face 0 under the
 authored `serif` alias are declared before capture or renderer screening.
 The source exercises G8's earlier local/default filter inputs and `feMerge`,
-plus composed grouped geometry and G9's transformed fill/stroke text. Preserve
+plus G3's composed rotated ellipses and G9's transformed fill/stroke text. Preserve
 all seven offsets, both ellipses, original `SVG` label and its rotation/paint.
 Obtain healthy stable Windows/Linux references and intended-font proof first;
 retain it only if the whole output demonstrates an in-scope gap. Already exact
@@ -843,6 +845,13 @@ outputs stay outside the failure-selected corpus. Private rights evidence,
 unchanged source and declaration: `artifacts/offset-document-20261013/`.
 This advances finite G8/G9 dependencies without deferring other group promises
 or making exhaustive G2 combinations prerequisites.
+The predeclared whole lead now has healthy, cleaned, stable reference triples
+and missing/corrupt/substituted-face triples on both platforms. Windows rejects
+its rotated ellipse transform before reaching the remaining filter/text gates.
+Retain this complete source and the small controls needed for that shared G3
+correction next; keep it outside the retained-document denominator until its
+source, font contract and references are committed. No production correction
+for the lead has begun.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
 bytes, four labels and declared 750×500 transparent output. It is already exact
