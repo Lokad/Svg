@@ -1523,10 +1523,9 @@ internal static class SvgReferenceResolver
             if (stroke is null) return null;
             if (!reference.Transform.IsUniformScale()) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled rectangle strokes on use instances are implemented.");
             double scaledWidth = stroke.Value.Width * Math.Abs(UniformFactor(reference.Transform));
-            if (!double.IsFinite(scaledWidth) || scaledWidth != Math.Truncate(scaledWidth) || scaledWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only integer effective rectangle stroke widths on use instances are implemented.");
-            int width = checked((int)scaledWidth);
+            if (!double.IsFinite(scaledWidth) || scaledWidth > int.MaxValue) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only finite effective rectangle stroke widths within the supported range on use instances are implemented.");
             SvgColor color = stroke.Value.Color;
-            return new SvgStroke(new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, reference.Opacity)), width);
+            return new SvgStroke(new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, reference.Opacity)), scaledWidth);
         }
     }
 

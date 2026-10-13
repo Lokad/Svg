@@ -12530,6 +12530,25 @@ and float-overflow boundaries protect the shared arithmetic; existing host-strok
 work, memory, cancellation/retry and owner tests remain applicable. This closes
 the measured oval defect, not the remaining finite G2–G4 map/paint combinations.
 
+## Fractional effective rectangle widths on local uses (2026-10-14)
+
+The retained `fractional-rectangle-widths/instance-inherited-width` was rejected
+before rasterization by an integer-width guard in `ApplyRectangle` instance
+mapping. `SvgStroke.Width` and the shared rectangle-frame coverage already retain
+finite doubles. Instance mapping now preserves that value through the existing
+uniform scale factor, removing the integer narrowing while retaining finite/range
+validation and the existing nonuniform placement boundary. No new stroke kernel,
+owner, paint implementation or allocation-accounting mechanism is introduced.
+
+The original input and independent frozen reference are unchanged and exact on
+both platforms. All ten preceding fractional-width controls remain in the bank.
+Focused controls compare forward inherited thin, scaled, reflected and magnified
+instances with explicitly mapped direct geometry, including opacity. Parser work
+denial releases owners and a retry matches normal output; effective-width overflow
+and nonuniform maps fail before stream output. Symbol-held rectangle band expansion
+is a separate remaining admission route; its fractional-width/native-frame work
+stays open rather than relaxing that guard without a rendering witness.
+
 ## Mixed shader strokes and unpainted fill admission (2026-10-13)
 
 The nine retained `zero-area-stroke-{direct,translated,scaled}-{linear,radial,pattern}`

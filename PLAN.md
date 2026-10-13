@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-13. This plan owns remaining work and completion decisions;
+Updated 2026-10-14. This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md) owns admission,
 [INVENTORY](docs/INVENTORY.md) owns document evidence,
 [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) owns mechanisms and diagnostic
@@ -22,7 +22,8 @@ separate from the required exits below.
 | Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md) implements bounded nonseekable SVG input, selected-program acquisition, concurrent HTTP coalescing, bounded cache, retry and cancellation recovery. Preserve its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared-document ownership. Private deployment validation is a separate obligation below; general shaping remains outside scope. |
 | Qualified merge correction | Unchanged whole `inv-146`, eight oval/text controls and four [canonical merge controls](tests/Research/filter-merges/README.md) are exact on both platforms. Preserve ordered source-device placement and bounded graph/surface handling. [Qualification receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json); [green hosted Windows/Linux delivery at 82dc9206](https://github.com/Lokad/Svg/actions/runs/38464311300). |
 | Qualified non-scaling correction | Original oval discrepancy resolved; [oval bank](tests/Research/oval-source-replay/manifest.json) **8/8 exact**, [vector-effect bank](tests/Research/vector-effects/manifest.json) **10/10 exact**. Preserve native inverse composition, compiled matrix witnesses, overflow and resource/cancellation/retry regressions. [Qualification receipt](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json); [green hosted Windows/Linux delivery at ab097ebc](https://github.com/Lokad/Svg/actions/runs/38471124264). |
-| Qualified mixed shader strokes | Nine retained direct/translated/scaled mixed-subpath linear/radial/pattern controls match unchanged references on both platforms. [Paint-recording bank](tests/Research/paint-recording/manifest.json): **143 exact / six explicit boundaries**. Source-box, invalid-style, denial/cancellation/cleanup/retry regressions remain. Complete Windows/Linux Release checks: **7,473 tests/platform** (5,158 core / 2,309 visual / six FontProbe), zero warnings/failures/skips; every preceding case retained. [Qualification receipt](artifacts/maintenance-review-20261012/shader-strokes-qualified-results.json). |
+| Qualified mixed shader strokes | Nine retained direct/translated/scaled mixed-subpath linear/radial/pattern controls match unchanged references on both platforms. [Paint-recording bank](tests/Research/paint-recording/manifest.json): **143 exact / six explicit boundaries**. Source-box, invalid-style, denial/cancellation/cleanup/retry regressions remain. Complete Windows/Linux Release checks: **7,473 tests/platform** (5,158 core / 2,309 visual / six FontProbe), zero warnings/failures/skips; every preceding case retained. [Qualification receipt](artifacts/maintenance-review-20261012/shader-strokes-qualified-results.json); [green hosted Windows/Linux delivery at c7e772b9](https://github.com/Lokad/Svg/actions/runs/38474575655). |
+| Qualified fractional use widths | Ordinary rectangle instances preserve finite fractional widths through uniform scaling/reflection; all **10/10** [fractional-width controls](tests/Research/fractional-rectangle-widths/manifest.json) are exact on both platforms. Existing numeric/nonuniform bounds and focused forward-inheritance, opacity, denial/cleanup/retry checks remain. Complete Windows/Linux Release checks: **7,480 tests/platform** (5,165 core / 2,309 visual / six FontProbe), zero warnings/failures/skips; every preceding case retained. [Qualification receipt](artifacts/maintenance-review-20261012/fractional-use-qualified-results.json). The separate symbol-held band-expansion gate remains required work. |
 | Resource/API/package protections | Keep bounded preparation/raster/encoding, denied work/allocation, during-phase cancellation, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks remain applicable while unchanged. Final release evidence must match the finished revision. |
 
 Previously stated blockers for completed library/heart/pattern documents,
@@ -45,15 +46,15 @@ Exhaustive G2 combinations do not block G3–G9 or the next document.
 
 The **next three deliverables are items 1–3**: shared stroke/paint maps,
 clip/mask composition, then remaining static effects/markers, in that order.
-The first targets the retained fractional use-width case and the nonuniform
-curve/rotated-symbol paint gates; the next two have their retained acceptance
+The first targets the nonuniform root-curve/rotated-symbol paint gates and
+remaining symbol-held fractional widths; the next two have their retained acceptance
 cases named in the checklist. Each can use small buildable commits with its
 affected tests/documentation; a partial mechanism fix
 is progress, not completion of its item or support group.
 
 | Required remaining item | Missing behavior and dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| 1. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Fractional effective instance widths and remaining nonuniform curve/stroke/paint maps. Depends on existing source contours/stroker and composed paint maps; share one stroke route across paints. | Close [inherited use width](tests/Research/fractional-rectangle-widths/instance-inherited-width.svg), `original-curve-root-quad-none`, `group-clip-reflected-pattern` and `iching-library/rotated-symbol-gradient` against unchanged references. Preserve completed non-scaling, gradient-line and mixed shader-stroke witnesses. Declare a complete retained export for any mechanism lacking one. Exact positive witnesses for the finite G3/G4 and G2 width/map behavior, with no prior regression, close this item; remaining G2 scopes/composition follow item 2. No Cartesian quota. |
+| 1. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Fractional symbol-held effective widths and remaining nonuniform curve/stroke/paint maps. Depends on existing source contours/stroker and composed paint maps; share one stroke route across paints. | Close `original-curve-root-quad-none`, `group-clip-reflected-pattern` and `iching-library/rotated-symbol-gradient` against unchanged references, plus a declared fractional symbol-frame witness. Preserve completed ordinary fractional use widths, non-scaling, gradient-line and mixed shader strokes. Declare a complete retained export for any mechanism lacking one. Exact positive witnesses for the finite G3/G4 and G2 width/map behavior, with no prior regression, close this item; remaining G2 scopes/composition follow item 2. No Cartesian quota. |
 | 2. Finish scoped clip/mask composition (G2/G5) | Overlapping clip children, remaining transformed/unit clip maps, nested definition scopes, custom mask regions, mask-container opacity and remaining leaf/group/use composition. Depends on item 1 only where its maps are needed; reuse existing bounded scene/layer ownership. | Close [composed cubic clip](tests/Research/curved-path-clips/composed-group-cubic.svg), object-box clip witnesses, retained nested-viewport paint and `mask-region-half-translated` cases. Declare one licensed complete export combining an identified remaining mask/clip gap with ordered group/use content. Exact original outputs plus focused overlap/unit/scope/opacity controls and bounded cleanup close the finite G5 exit. Completed `inv-136/137/141/145` stay regression witnesses. |
 | 3. Finish finite static effects and marker gaps (G8) | Small/anisotropic blur, fractional offsets, flood/composite/blend and remaining result/region/color-space graphs; remaining marker directions/containers. Depends on completed `inv-146` source bounds and items 1–2 only for affected geometry/composition. | Close [translated rectangle source](tests/Research/filter-regions/translated-rectangle-source.svg) (85 pixels, max channel 1) and [transparent displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg) (six pixels, max channel 14 / alpha 1). Freeze a colored alpha composition with `over`/`in` and normal/multiply/screen, and an arc/polyline marker example. Exact complete exports and positive witnesses for the finite G8 subset, plus bounded graph/surface/work regressions, close this item. |
 | 4. Finish static CSS and embedded images (G7) | Remaining selectors/cascade locations, presentation propagation and enumerated PNG/sampling/maps. Depends on shared G2/G5 scopes and G3 maps; preserve completed late rules, inert geometry typography and paint order. | Existing image/compound-selector cases plus a multicolor translucent PNG edge under fractional meet/slice and a root/nested/late-rule export affecting referenced content match frozen outputs. Authored override, CRC/decode denial and corrupt/missing image outcomes pass. Representative exact witnesses and explicit unsupported boundaries for the finite G7 subset close this item. |
@@ -97,9 +98,11 @@ Keep an unverified behavior open; completed document counts do not prove it.
   nonuniform placement. Shared stroke-to-paint routing must preserve native
   shape distinctions; paint-specific geometry kernels are not the delivery plan.
 - Remaining witnesses: nonuniform root curve and rotated-symbol gradient gates,
-  reflected/magnified pattern instances and fractional effective use widths.
+  reflected/magnified pattern instances and fractional symbol-held effective widths.
   Non-scaling oval coverage, both gradient-line cases and all nine mixed shader
-  strokes are complete; their unchanged references remain regression protection.
+  strokes are complete. Ordinary fractional rectangle use widths also match
+  unchanged references; their separate symbol band-expansion route stays open.
+  Completed cases retain their unchanged references as regression protection.
   Existing [use paints](tests/Research/use-paint-properties/manifest.json),
   [native replay](tests/Research/native-path-replay/manifest.json),
   [paint recording](tests/Research/paint-recording/manifest.json) and
@@ -278,9 +281,10 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  Latest finished checkpoint: about **1m41s Windows / 5m42s Linux**, comprising
-  7s/201s builds and 94s/141s test-suite intervals, respectively. See the existing
-  shader-stroke receipt above and build logs in the same artifact directory.
+  Latest finished checkpoint, including orchestration/test-host startup: about
+  **1m34s Windows / 5m26s Linux**. Builds take 5s/193s and test-suite intervals
+  84s/103s, respectively. See the fractional-use receipt above and logs in the
+  same directory.
   These local measurements establish no renderer speedup or fixed timing guarantee.
   Routine verification uses normal incremental builds; avoid forced compiler
   shutdown between checkpoints. The prior forced-cold Linux overrun and ordinary

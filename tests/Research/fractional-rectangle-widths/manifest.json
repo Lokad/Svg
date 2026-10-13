@@ -143,10 +143,8 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "selection": "Declared at f5a7018c before production changes; isolates fractional rectangle widths, native frames, collapsed interiors, inherited stroke and shader fills needed by complete inv-115.",
-      "role": "admission-boundary",
-      "referenceSha256": "6c38cfe1b877bb6f72a977bf7d1b305a86fb283fdb288c7eefbf30db0d34e8cd",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only integer effective rectangle stroke widths on use instances are implemented."
+      "role": "fidelity",
+      "referenceSha256": "6c38cfe1b877bb6f72a977bf7d1b305a86fb283fdb288c7eefbf30db0d34e8cd"
     },
     {
       "id": "fractional-width-stroke-opacity",
