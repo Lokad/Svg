@@ -748,9 +748,9 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** deliver the qualified S07–S09 renderer batch, verify one
-hosted Windows/Linux CI run, then take maintenance-review S10's unarmed probe
-guard. Measure the unarmed path and preserve execution-context isolation and
+**Next deliverable:** maintenance-review S10's unarmed probe guard. The S07–S09
+renderer batch is pushed and hosted Windows/Linux CI is green at `57d1c44b`.
+Measure the unarmed path and preserve execution-context isolation and
 deterministic cancellation. S09 reuses one matching tile across consecutive
 compatible rectangle fills, with bounded ownership and memory-pressure fallback;
 source/mapped inputs, native sampling and all exact references are preserved.
@@ -1674,8 +1674,9 @@ representative success rate. Future representative cohorts must be selected
 before comparison.
 
 Remote Windows/Linux build/test/package/resource CI evidence is verified by the
-[Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38324471537) at
-`35fc2cae`, including the completed S01/S02/S04/S05/S06 maintenance batch and
+[Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38335339332) at
+`57d1c44b`, including the completed S01/S02/S04/S05/S06/S07/S08 maintenance and
+the bounded S09 pattern-tile tranche, plus
 S03's measurement/defer decision. Both hosted jobs pass, including
 healthy sandboxed Chrome captures and forced-timeout storage cleanup. The frozen
 corporate matrix stays exact on both platforms. Remaining S17 release requirements
@@ -1688,11 +1689,11 @@ claim follows from the failure-selected development corpus.
 
 | ID | Remaining work |
 | --- | --- |
-| R26 | Preserve the complete frozen first cohort; broader representativeness remains open. Remote Windows/Linux CI is verified at `35fc2cae`. Failure-selected additions are development inputs. |
+| R26 | Preserve the complete frozen first cohort; broader representativeness remains open. Remote Windows/Linux CI is verified at `57d1c44b`. Failure-selected additions are development inputs. |
 | R27 | Execute every declared case and retain admission separately from fidelity. Original fixture/research rendering differences are resolved; newly admitted support gaps require their own unchanged-reference comparison. |
 | R28 | Preserve inverse paint maps; remaining pattern/coordinate combinations are G3/G5/G6. |
 | R30 | Keep shared contour preparation and coverage across four paints. Reuse invariant preparation and consolidate repeated stroke admission through the maintenance backlog; preserve intentional paint-rounding distinctions. |
-| R31 | Existing capture/transport/cleanup and CI artifact validation are retained; Windows/Linux remote CI is verified at `35fc2cae`. Git identifies implementation, asset hashes protect inputs/oracles/tool downloads. |
+| R31 | Existing capture/transport/cleanup and CI artifact validation are retained; Windows/Linux remote CI is verified at `57d1c44b`. Git identifies implementation, asset hashes protect inputs/oracles/tool downloads. |
 | R33 | Preserve clipping, path/control bounds and AA paint-clip provenance; broader clip/mask combinations are G5. |
 | R34 | Preserve exact analytic contact/winding, density and zero-area native stroke contours. New stroke combinations are G4; general browser fidelity needs new cases. |
 | R35 | Preserve source curves and bitmap-local float mapping; general affine/instance admissions are G2/G3. |
@@ -1712,7 +1713,8 @@ S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
 and S02/S04/S05/S06/S07/S08/S09; S03 is explicitly deferred on the measurements below.
-Deliver this renderer batch once, then take S10–S12 as small follow-ups.
+The S07–S09 renderer batch is delivered with green hosted Windows/Linux CI at
+`57d1c44b`; take S10–S12 as small follow-ups.
 S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1940,8 +1942,7 @@ for the bounded preparation. Row reuse alone measured **6.281 / 6.265 ms**;
 retaining the invariant mapped points adds the larger demonstrated benefit.
 Detailed measurements, complete test results and both memory-probe summaries
 remain in ignored `artifacts/maintenance-review-20261012/`. References were not
-recaptured or refreshed. Hosted CI remains verified at the preceding `35fc2cae`
-batch; include this locally qualified correction in the next delivery batch.
+recaptured or refreshed. S07 is included in the green hosted `57d1c44b` batch.
 
 **S08 complete (2026-10-13).** The fallback renderer retains each original
 segment start and its existing eight subdivision endpoints in one glyph-local
@@ -1983,8 +1984,7 @@ for this synthetic control. Allocation rises **50.15 → 50.69 KiB**. This does 
 establish ordinary/native font throughput or corpus representativeness. Details,
 complete tests and both memory summaries remain in ignored
 `artifacts/maintenance-review-20261012/`; no new measurement framework or oracle
-capture was added. S07/S08 remain local for the next delivery batch; hosted CI is
-still verified at `35fc2cae`.
+capture was added. S07/S08 are included in the green hosted `57d1c44b` batch.
 
 **S09 bounded tranche complete (2026-10-13).** One optional conversion-local
 `SvgPatternTileCache` owns the raster between consecutive compatible rectangle
@@ -2032,6 +2032,14 @@ with overlapping uncertainty. Short comparisons remained variable, including a
 finished **2.342 ms** result. No universal speedup or precise no-regression
 guarantee is claimed. Detailed measurements, complete tests and both memory
 summaries stay under ignored `artifacts/maintenance-review-20261012/`.
+
+The S07–S09 delivery batch is pushed at `57d1c44b` and verified by
+[CI run 38335339332](https://github.com/Lokad/Svg/actions/runs/38335339332).
+Both hosted jobs pass build/test, memory probes, sandboxed Chrome capture/setup,
+font probing, artifact validation/self-tests and package checks. One hosted run
+qualified the complete batch; documentation-only checkpoint updates stay local
+until the next batch to avoid unnecessary runner use. Finite SVG support and S17
+remain open.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.
