@@ -2801,10 +2801,10 @@
       "height": 80,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "rejects:UnsupportedFeature",
-      "unsupportedReason": "Only defined local gradient references are implemented."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-aa-clip-shader-transparent.json",
+      "referenceSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1"
     },
     {
       "id": "original-aa-clip-shader-white",
@@ -2825,11 +2825,11 @@
       "height": 80,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
       "variantOf": "original-aa-clip-shader-transparent",
-      "observedBehavior": "rejects:UnsupportedFeature",
-      "unsupportedReason": "Only defined local gradient references are implemented."
+      "oracleIdentity": "tests/References/original-aa-clip-shader-white.json",
+      "referenceSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3"
     },
     {
       "id": "original-aa-clip-shader-black",
@@ -2850,11 +2850,11 @@
       "height": 80,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
       "variantOf": "original-aa-clip-shader-transparent",
-      "observedBehavior": "rejects:UnsupportedFeature",
-      "unsupportedReason": "Only defined local gradient references are implemented."
+      "oracleIdentity": "tests/References/original-aa-clip-shader-black.json",
+      "referenceSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c"
     },
     {
       "id": "original-aa-clip-opacity-transparent",
@@ -3097,10 +3097,10 @@
       "height": 80,
       "scale": 1,
       "background": "transparent",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
-      "observedBehavior": "rejects:UnsupportedFeature",
-      "unsupportedReason": "Only defined local gradient references are implemented."
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
+      "oracleIdentity": "tests/References/original-aa-clip-admitted-shader-transparent.json",
+      "referenceSha256": "ff7371fa0b48680051e22e30d8a59826394c8a45446089d2e57d2fe86a5e3eb1"
     },
     {
       "id": "original-aa-clip-admitted-shader-white",
@@ -3121,11 +3121,11 @@
       "height": 80,
       "scale": 1,
       "background": "white",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
       "variantOf": "original-aa-clip-admitted-shader-transparent",
-      "observedBehavior": "rejects:UnsupportedFeature",
-      "unsupportedReason": "Only defined local gradient references are implemented."
+      "oracleIdentity": "tests/References/original-aa-clip-admitted-shader-white.json",
+      "referenceSha256": "b1e1448005ba5b41733ed8584cbb1fd107844e1dd24d3feb45970676f54f14e3"
     },
     {
       "id": "original-aa-clip-admitted-shader-black",
@@ -3146,11 +3146,11 @@
       "height": 80,
       "scale": 1,
       "background": "black",
-      "expectedSupport": "unsupported",
-      "expectedFidelity": "unsupported",
+      "expectedSupport": "exact",
+      "expectedFidelity": "exact",
       "variantOf": "original-aa-clip-admitted-shader-transparent",
-      "observedBehavior": "rejects:UnsupportedFeature",
-      "unsupportedReason": "Only defined local gradient references are implemented."
+      "oracleIdentity": "tests/References/original-aa-clip-admitted-shader-black.json",
+      "referenceSha256": "8cf43d8540836e00c2028fcd8764b07c9dfbce3b373eaf80d780e176d73e3c5c"
     },
     {
       "id": "original-aa-clip-material-pairs-transparent",

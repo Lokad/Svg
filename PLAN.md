@@ -748,14 +748,24 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** remove the scaled-nested-viewport use gate through shared
-source replay and composed frame mapping. Start with the three frozen G2
-percentage controls, preserve clipping and paint coordinates, and select the next
-unchanged rights-clear whole document by the mechanism this advances. S12's four
-unreferenced helpers are removed and locally verified. S11's shared paint-line
+**Next deliverable:** qualify the unchanged public-domain `SVGmask02.svg` whole
+document at explicit 750×500 transparent with the existing public Noto Sans
+Regular face 0 under its original `sans-serif` alias. All four labels, ordered
+mask content, focal/multi-stop paints and group uses stay intact. Source, output
+and face were declared before capture or candidate screening; the supplied-font
+baseline renders. Freeze healthy native references and prove intended font use
+before comparison. Retain it only if this whole output exposes an in-scope gap;
+then finish that document through every mismatch. Private declaration and first
+probe: `artifacts/mask-document-20261013/`. It is not yet a corpus addition.
+
+The scaled-nested-viewport use correction is qualified: **81/81 percentage
+controls** and six older nested-gradient controls are exact against unchanged
+references on both platforms. G2/G5/G7 stay open. S12's four unreferenced helpers
+are removed and verified. S11's shared paint-line
 admission is qualified with zero-width, authored/cascaded ordering and
 paint-specific gates preserved. S10's unarmed probe path is qualified. The S07–S09
 renderer batch is pushed and hosted Windows/Linux CI is green at `57d1c44b`.
+The S10–S12 follow-up is pushed at `c15167af` with green hosted Windows/Linux CI.
 S09 reuses one matching tile across consecutive
 compatible rectangle fills, with bounded ownership and memory-pressure fallback;
 source/mapped inputs, native sampling and all exact references are preserved.
@@ -828,7 +838,7 @@ landed mechanisms remain regression requirements.
 | Priority | Work | Failure class | Dependencies / stages |
 | --- | --- | --- | --- |
 | G1 | **Declaration validation landed.** Inert exporter presentation values share one validator. | Original syntax-location inconsistency resolved; the heart is now complete | Remaining nested style/root selector gates stay G5/G7; S9 |
-| G2 | **Solid/shader use and container paint, stroke inheritance and rendered-group styling implemented.** Complete remaining practical symbol/instance combinations. | User-space percentage bases repaired; scaled nested viewport uses, other locations and affine combinations remain open | Definition ownership, expansion and bounded reference graph; S9/S10 |
+| G2 | **Solid/shader use, container paint, stroke inheritance, rendered-group styling and scaled nested viewport uses implemented.** Complete remaining practical symbol/instance combinations. | User-space percentage bases and composed viewport use maps repaired; remaining locations and affine/clip/mask combinations stay open | Definition ownership, expansion and bounded reference graph; S9/S10 |
 | G3 | **Heart, I Ching, radiation, tiger, Malta, Portugal and Bhutan and South Africa documents complete.** Complete remaining curved geometry and static maps | Non-uniform curve maps, transformed strokes/paints and remaining affine gates | Source-curve replay and paint-coordinate maps; S10/S11 |
 | G4 | **Fractional rectangle placement and direct width admission repaired.** Complete paint-server strokes on ordinary geometry | Three retained rectangle comparisons and twelve new frame controls are exact; broader paints retain admission gates | G3 where transformed; shared source stroke construction and paint bounds; S12/S13 |
 | G5 | **Fractional viewport clipping and native symbol stroke fidelity repaired.** Complete nested viewport paints, general clips and masks | Retained native-stroke comparisons are exact; clip-crossing and further reference/coordinate/composition gates remain | G2/G3, bounded layers and reference scopes; S9/S14 |
@@ -992,8 +1002,9 @@ fill alpha survives storage and replay. Fifteen resource inputs and two retained
 placement gates protect discovery, lowering, mapping and retry.
 
 The [81-case percentage-base bank](tests/Research/viewport-percentage-bases/manifest.json)
-has 78 exact controls and three retained scaled-viewport use rejections through six
-outputs on both platforms. Root and nested viewBox dimensions supply user-space
+has **81/81 exact controls** on both platforms. Its first 78 were historically
+qualified through six outputs; routine checks now use the S01 canonical API and
+existing representative output contracts. Root and nested viewBox dimensions supply user-space
 percentage bases to local uses, nested viewports and admitted images. Percentage
 roots use their explicit containing viewport or existing intrinsic defaults when
 there is no viewBox. Sibling scopes restore the previous base. Discovery retains
@@ -1004,10 +1015,32 @@ full-image captures are healthy, cleaned and byte-stable. Nine cropped captures
 remain diagnostic oracle failures; they are excluded from references. Eight
 resource inputs and four focused checks preserve the existing resource contracts.
 
+Scaled frames now compose into the instance map before geometry-specific replay;
+their device clip remains a separate identity frame. Stroke construction, curve
+magnification admission and paint mapping therefore see the full source scale.
+Native oval strokes share the path replay scale preparation, avoiding the newly
+diagnosed one-step alpha difference. Nested viewport `defs` register through the
+existing dormant-definition route; later clones exclude the definition location's
+map. This also makes both original nested-gradient controls exact on transparent,
+white and black: **six more unchanged references**, separate from document counts.
+Historical rejection receipts stay recorded; current expectations graduate.
+
+Complete Release builds have zero warnings/errors and **7,383 tests pass per
+platform (5,105 core, 2,272 visual, six FontProbe)**. Every preceding case remains,
+with eleven focused additions for forward/backward paint and stroke mapping,
+definition-location exclusion, preserved non-uniform paint-outline gates and
+scaled-use denial/cancellation/retry. Two obsolete core rejection checks now
+assert positive geometry/pixels. Size/work limits and material cleanup stay
+protected; no new memory-accounting framework or completed-memory requalification
+was introduced. Frozen 27/27 corporate documents, 258/258 variants and selected
+48/48 development documents stay complete; finite G2–G9/S17 remain open.
+Logs and case-retention comparison: `artifacts/maintenance-review-20261012/scaled-use-results.json`.
+
 Remaining G2 completion checklist, independent of the next document:
 
-- [ ] Admit local uses in scaled nested viewports; the three retained percentage
-  controls establish the gate. Preserve viewBox bases, clipping and source replay.
+- [x] Admit local uses in scaled nested viewports through composed source maps;
+  all three retained percentage controls are exact. ViewBox bases, device clipping
+  and source replay are protected; remaining paint/clip/mask subsets follow G3–G6.
 - [ ] Share references and authored/inherited styles across root, `defs`,
   rendered groups, symbols and nested SVG locations, including ordinary leaves,
   group/symbol/use targets, backward/forward references and child aliases.
@@ -1688,6 +1721,12 @@ corporate matrix stays exact on both platforms. Remaining S17 release requiremen
 and the finite support queue stay open. No release or general SVG compatibility
 claim follows from the failure-selected development corpus.
 
+The subsequent S10–S12 maintenance batch is pushed at `c15167af`. Its
+[Windows/Linux CI run](https://github.com/Lokad/Svg/actions/runs/38340100763)
+is green, including build, tests, memory probes, healthy sandboxed Chrome/font
+captures, artifact validation and package smoke checks. This single batch run
+preserves the prior exact corpus; finite G2–G9 and S17 remain open.
+
 ## 4. Findings and stage ledger
 
 ### Active findings
@@ -1719,7 +1758,7 @@ S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 Order: preserve the qualified rendering correction, completed first S01 tranche
 and S02/S04/S05/S06/S07/S08/S09/S10/S11/S12; S03 is explicitly deferred on the measurements below.
 The S07–S09 renderer batch is delivered with green hosted Windows/Linux CI at
-`57d1c44b`; S10/S11/S12 are locally qualified for the next delivery batch.
+`57d1c44b`; S10/S11/S12 are delivered at `c15167af` with green hosted Windows/Linux CI.
 S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -2074,7 +2113,7 @@ loop overhead, with no measured allocation. Inlining/loop optimization can
 contribute to that floor; it is not a whole-conversion speedup claim. Detailed
 results remain under ignored `artifacts/maintenance-review-20261012/` using the
 existing BenchmarkDotNet harness. No new measurement framework or dummy work.
-S10 stays local for the next maintenance delivery batch. Frozen 27/27 documents,
+S10 is delivered in the `c15167af` maintenance batch with green hosted CI. Frozen 27/27 documents,
 258/258 variants and the selected 48/48 queue remain complete; finite G2–G9/S17
 and representativeness stay open.
 
@@ -2103,8 +2142,8 @@ gradient/pattern capability, resource and exact-pixel controls stay protected.
 No implementation-mirroring tests were added for this refactor. Material
 ownership and the approximate memory policy are unchanged; completed memory
 qualification remains closed. Logs/results stay in ignored
-`artifacts/maintenance-review-20261012/`. S10/S11 remain local for the next
-maintenance batch. Frozen 27/27 documents, 258/258 variants and selected 48/48
+`artifacts/maintenance-review-20261012/`. S10/S11 are delivered in the green
+`c15167af` maintenance batch. Frozen 27/27 documents, 258/258 variants and selected 48/48
 development documents remain complete; finite G2–G9/S17 remain open.
 
 **S12 complete.** A current tracked-source search found only the declarations of

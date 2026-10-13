@@ -57,6 +57,18 @@ internal static class SvgReferenceResolver
     internal static SvgGeometry[] Apply(SvgDefinition definition, SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(workCounter);
+        if (frame is { IsScaled: true } viewport)
+        {
+            // Construction and curve admission must see the complete source map.
+            // Keep the device clip as a separate, unmapped frame for every replay.
+            SvgAffineTransform map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY);
+            reference = reference with
+            {
+                Transform = map.ComposeChecked(reference.Transform),
+                InheritedTransform = map.ComposeChecked(reference.InheritedTransform)
+            };
+            frame = viewport with { OffsetX = 0, OffsetY = 0, ScaleX = 1, ScaleY = 1 };
+        }
         if (definition.Marker is not null && !reference.IsMarker)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Marker definitions cannot be ordinary use targets.");
         if (definition.StrokeContent is {} strokeContent && (reference.InheritedMarkers.HasMarkers || strokeContent.Content.Nodes[0].Style.Markers.HasMarkers || reference.InheritedStroke != default || strokeContent.Content.Nodes[0].Style.Stroke != default || strokeContent.Content.Nodes[0].Style.PaintOrder is not null || reference.InheritedPaintOrder != SvgPaintOrder.FillStrokeMarkers || reference.PaintServerId is not null || !reference.Transform.IsAxisAligned))
@@ -70,10 +82,10 @@ internal static class SvgReferenceResolver
                 foreach (SvgSymbolFillBinding binding in authoredBindings) { workCounter.Consume(cancellationToken); inheritsFill |= binding.IsInherited; }
                 if (!inheritsFill) reference = reference with { PaintServerId = null, PaintServerFill = null };
             }
-            // An instanced path is one native draw. Replaying generated integer
-            // bands as separate rectangles changes fractional AA and paint order.
+            // Native strokes need construction at the complete instance scale.
+            // Path bands also retain one native draw for fractional AA and paint order.
             bool placedNativeStroke = false;
-            if (source.LocalName == "path" && !PlainInstancePlacement(reference, frame).IsTranslation)
+            if (source.LocalName is "path" or "circle" or "ellipse" && !PlainInstancePlacement(reference, frame).IsTranslation)
                 foreach (SvgGeometry geometry in definition.Geometries)
                 {
                     workCounter.Consume(cancellationToken);
@@ -1551,7 +1563,6 @@ internal static class SvgReferenceResolver
             ? clipContent : null;
         if (pendingUse.DeferredClip is SvgDeferredClip deferred)
             frame = boundingClip is null ? ResolveDeferredClipFrame(definition, pendingUse.Reference, deferred, state) : deferred.Parent;
-        if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
         byte? mask = pendingUse.Mask;
         if (pendingUse.MaskReference is not null && mask is null && !state.MaskContents.TryGetValue(SvgMaskSyntax.ParseMaskId(pendingUse.MaskReference), out _)) mask = ResolveDeferredMaskValue(pendingUse.MaskReference, state);
         SvgGeometry[] applied = ApplyInstanceMask(definition, pendingUse.Reference, frame, mask, pendingUse.MaskReference, state, workCounter, cancellationToken);

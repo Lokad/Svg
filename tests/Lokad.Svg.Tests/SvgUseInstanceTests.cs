@@ -149,17 +149,54 @@ public sealed class SvgUseInstanceTests
     }
 
     [Fact]
-    public void Curve_use_in_scaled_viewport_stays_unsupported()
+    public void Curve_use_in_scaled_viewport_replays_at_the_complete_source_scale()
     {
-        // R35: the pre-existing scaled-viewport use gate also covers
-        // tolerance-flattened curve content, closing the frame-magnification
-        // hole independently of the instance-scale gates.
+        // The viewport map participates in authored curve replay rather than
+        // magnifying a contour flattened at the definition's original scale.
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"128\" height=\"128\"><svg x=\"0\" y=\"0\" width=\"128\" height=\"128\" viewBox=\"0 0 16 16\"><defs><path id=\"q\" d=\"M0,8 Q4,0 8,8 Z\" fill=\"red\"/></defs><use href=\"#q\"/></svg></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        byte[] instanced = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        byte[] direct = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><path d='M0,64 Q32,0 64,64 Z' fill='red'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        Assert.Equal(direct, instanced);
+    }
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Contains("Use instances in scaled viewports are not implemented.", rejected.Message);
+    [Theory]
+    [InlineData("<rect id='p' x='4' y='3' width='8' height='6' fill='#297fb3' stroke='red' stroke-width='2'/>")]
+    [InlineData("<path id='p' d='M4,12 Q10,1 16,12 Z' fill='#297fb3' stroke='red' stroke-width='1.5'/>")]
+    [InlineData("<circle id='p' cx='10' cy='8' r='4' fill='#297fb3' stroke='red' stroke-width='2'/>")]
+    [InlineData("<rect id='p' x='4' y='3' width='8' height='6' fill='url(#g)'/>")]
+    [InlineData("<rect id='p' x='4' y='3' width='8' height='6' fill='url(#r)'/>")]
+    [InlineData("<rect id='p' x='4' y='3' width='8' height='6' fill='url(#t)'/>")]
+    public void Scaled_viewport_uses_preserve_source_strokes_and_paint_coordinates(string source)
+    {
+        const string paints = "<defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='4' y1='0' x2='12' y2='0'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient><radialGradient id='r' gradientUnits='userSpaceOnUse' cx='8' cy='6' r='6'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient><pattern id='t' patternUnits='userSpaceOnUse' width='4' height='4'><rect width='2' height='2' fill='red'/></pattern></defs>";
+        const string root = "<svg xmlns='http://www.w3.org/2000/svg' width='128' height='96'>";
+        byte[] direct = RenderPixels(root + paints + "<g transform='translate(8 6) scale(3) translate(2 1)'>" + source + "</g></svg>", out _, out _);
+        foreach (bool forward in new[] { false, true })
+        {
+            string definition = "<defs>" + source + "</defs>";
+            string use = "<svg x='8' y='6' width='96' height='72' viewBox='0 0 32 24'><use href='#p' x='2' y='1'/></svg>";
+            byte[] instanced = RenderPixels(root + paints + (forward ? use + definition : definition + use) + "</svg>", out _, out _);
+            Assert.Equal(direct, instanced);
+        }
+    }
+
+    [Fact]
+    public void Definitions_in_scaled_viewports_exclude_the_definition_location_map()
+    {
+        byte[] instanced = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><svg x='8' y='6' width='48' height='36' viewBox='0 0 16 12'><defs><rect id='p' x='2' y='1' width='4' height='3' fill='red'/></defs></svg><use href='#p' x='1' y='2'/></svg>", out _, out _);
+        byte[] direct = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><rect x='3' y='3' width='4' height='3' fill='red'/></svg>", out _, out _);
+        Assert.Equal(direct, instanced);
+    }
+
+    [Theory]
+    [InlineData("<linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient>")]
+    [InlineData("<radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient>")]
+    [InlineData("<pattern id='g' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern>")]
+    public void Non_uniform_viewport_maps_keep_the_painted_outline_boundary(string paint)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><defs>" + paint + "<polygon id='p' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><svg width='48' height='24' viewBox='0 0 16 12' preserveAspectRatio='none'><use href='#p'/></svg></svg>");
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
     }
 
     [Fact]

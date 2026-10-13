@@ -36,7 +36,9 @@ public sealed class AntialiasedPaintClipReferenceTests
             SvgColor background = Required(fixture, "background") switch { "transparent" => SvgColor.Transparent, "white" => new(255, 255, 255, 255), "black" => new(0, 0, 0, 255), _ => throw new InvalidDataException("Invalid background.") };
             int width = fixture.GetProperty("width").GetInt32(), height = fixture.GetProperty("height").GetInt32();
             SvgRenderOptions options = new(new SvgViewport(width, height), 1, background, SvgRenderLimits.Default);
-            if (Required(control, "outcome") != "renders")
+            // Historical rejection receipts stay frozen; current fixture admission
+            // can graduate when its original reference becomes exact.
+            if (Required(control, "outcome") != "renders" && Required(fixture, "expectedSupport") != "exact")
             {
                 SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, options, CancellationToken.None));
                 Assert.Equal(Required(control, "outcome"), exception.ErrorCode.ToString());
@@ -55,7 +57,7 @@ public sealed class AntialiasedPaintClipReferenceTests
             Assert.Equal(after.GetProperty("changedPixelCount").GetInt64(), comparison.ChangedPixelCount);
             if (comparison.IsExact) exact++; else known++;
         }
-        Assert.Equal((32, 0, 9), (exact, known, rejected));
+        Assert.Equal((38, 0, 3), (exact, known, rejected));
     }
 
     [Fact]

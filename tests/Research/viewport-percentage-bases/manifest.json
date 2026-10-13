@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Viewport percentage bases: 81 development controls = 78 exact and three retained scaled-viewport use rejections. Root/nested viewBox extents, use positions/default dimensions, supplied image sizes, aspect modes, percentage roots and sibling restoration. Explicit matching-aspect viewports avoid intrinsic image cropping. Separate from the original and corporate denominators.",
+  "purpose": "Viewport percentage bases: 81 exact development controls. Root/nested viewBox extents, scaled-viewport uses, positions/default dimensions, supplied image sizes, aspect modes, percentage roots and sibling restoration. Explicit matching-aspect viewports avoid intrinsic image cropping. Separate from the original and corporate denominators.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -1013,9 +1013,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Use instances in scaled viewports are not implemented."
+      "role": "fidelity"
     },
     {
       "id": "nested-use-scaled-white",
@@ -1029,9 +1027,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Use instances in scaled viewports are not implemented."
+      "role": "fidelity"
     },
     {
       "id": "nested-use-scaled-black",
@@ -1045,9 +1041,7 @@
       "width": 128,
       "height": 96,
       "background": "transparent",
-      "role": "admission-gate",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Use instances in scaled viewports are not implemented."
+      "role": "fidelity"
     },
     {
       "id": "nested-use-unscaled-transparent",

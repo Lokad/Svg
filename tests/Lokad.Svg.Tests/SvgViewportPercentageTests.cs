@@ -41,6 +41,7 @@ public sealed class SvgViewportPercentageTests
     [InlineData("root-symbol-default-transparent")]
     [InlineData("root-native-percent-transparent")]
     [InlineData("nested-match-transparent")]
+    [InlineData("nested-use-scaled-transparent")]
     [InlineData("deep-nested-percent-transparent")]
     [InlineData("root-percent-no-viewbox-transparent")]
     [InlineData("nested-image-percent-transparent")]

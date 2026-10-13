@@ -4595,11 +4595,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_use_instances_in_scaled_viewports()
+    public void Maps_use_instances_through_scaled_viewports()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><use href='#tile'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='tile' width='8' height='8' fill='red'/></defs><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><use href='#tile'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        SvgRectangle rectangle = Assert.Single(root.Rectangles);
+        Assert.Equal((8d, 8d, 16d, 16d), (rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height));
+        Assert.Equal(new SvgColor(255, 0, 0, 255), rectangle.Color);
     }
 
     [Fact]

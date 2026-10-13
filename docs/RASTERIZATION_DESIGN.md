@@ -12430,3 +12430,39 @@ accounted storage. Approximate memory accounting remains an engineering target.
 The 24 separate controls have 22 exact outcomes; the 85-pixel rectangle fringe
 and six transparent restoration rounding pixels remain explicit. Receipt:
 artifacts/filter-regions-20261012/final-qualification.json.
+
+## Scaled nested viewport uses and dormant definitions (2026-10-13)
+
+The use rejection is removed at immediate and deferred admission. A scaled
+viewport composes into the reference's source and inherited transforms before
+shared instance replay. Its already mapped device clip survives as a separate
+identity frame, retaining user-space percentage bases and source opacity.
+Geometry, stroke width, paint maps and flattened-curve magnification checks now
+see the same complete placement. Existing unsupported shape/paint/clip/mask
+combinations keep their own categorized boundaries.
+
+Native oval strokes, like path strokes, reconstruct at the complete instance
+scale before mapping. Reusing a stroke prepared at its original smaller scale
+changed native subdivision enough to lose one alpha step in a new circle twin.
+The correction shares immutable source replay and existing owned arrays, work,
+cancellation and cleanup; no separate viewport renderer or accounting machinery
+is introduced. Forward/backward twins cover solid rectangle/path/circle strokes
+and user-space linear/radial/pattern coordinates. Non-uniform painted outlines
+retain their existing explicit unsupported outcome.
+
+Nested viewport definition containers enter the existing dormant-definition
+route. Source locations do not paint or bake their viewport map into clones.
+This also admits the two original nested-gradient fixtures, previously rejected
+as missing paint references. Their six background outputs match unchanged browser
+images; historical rejection receipts remain beside their current exact result.
+
+All 81 percentage controls are exact on Windows and Linux. Complete Release
+qualification passes 7,383 tests per platform (5,105 core, 2,272 visual and six
+FontProbe), preserving every preceding case with eleven focused additions and
+two rejection checks converted to positive regressions. Builds have zero
+warnings/errors and no tests are skipped. Corporate 27/27 documents /258/258
+variants and selected 48/48 development documents remain exact. Native references
+and SVG bytes were not changed. The finite G2–G9/S17 exits remain open; this is a
+bounded support correction, without a performance or general SVG claim.
+Private logs and case-retention summary are under
+artifacts/maintenance-review-20261012/scaled-use-results.json.

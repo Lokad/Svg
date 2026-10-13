@@ -548,7 +548,7 @@ internal static class SvgDefinitionParser
             state.HasUnsupportedContent = true;
             return true;
         }
-        if (state.DefinitionsDepth < 0 && (directChild || state.GroupDepth > 0) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
+        if (state.DefinitionsDepth < 0 && (directChild || state.GroupDepth > 0 || state.Viewports.Count > 0) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader, workCounter, cancellationToken);
             SvgStyleSheet.ThrowIfTargetsUnstyledContainer(reader, state.StyleRules, state.CssAncestors, workCounter, cancellationToken);
@@ -569,7 +569,6 @@ internal static class SvgDefinitionParser
             if (deferredClip is null)
             {
                 useFrame = ResolveUseClipFrame(reader, reference, state);
-                if (useFrame is not null && useFrame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Use instances in scaled viewports are not implemented.");
             }
             else useFrame = deferredClip.Value.Parent;
             string? maskAttribute = reader.GetAttribute("mask");
