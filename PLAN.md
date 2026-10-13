@@ -884,8 +884,11 @@ The next three supplied-face text controls are declared before text edits:
 fill/stroke opacity, stroke-only winding and the whole document's original
 scale/rotation/anchor/paint combination. Healthy cleaned reference triples for
 all three are now stable on both platforms, with the declared face embedded and
-the source XML tree unchanged. Retain these controls before extending shared
-direct-text transforms and glyph/source stroke replay; do not substitute
+the source XML tree unchanged. These three controls are retained in the existing
+offset/merge bank before text edits; its eight controls remain separate from the
+whole document. All **19 affected retention/provenance/outcome cases pass on
+Windows and Linux**. Extend shared direct-text transforms and glyph/source stroke
+replay next; do not substitute
 an outlined or simplified document for `inv-146`.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600

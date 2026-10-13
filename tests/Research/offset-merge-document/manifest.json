@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One unchanged public-domain offset/merge document with original transformed stroked text and five separate CC0 rotated-oval controls. Complete finite G3/G8/G9 promises remain open.",
+  "purpose": "One unchanged public-domain offset/merge document, five exact CC0 rotated-oval controls and three predeclared supplied-font text paint controls. Complete finite G3/G8/G9 promises remain open.",
   "selectedAt": "e353b330",
   "fontPack": "font-pack.json",
   "fontProvenance": "font-provenance.json",
@@ -338,6 +338,168 @@
         },
         {
           "pngSha256": "c909838966b79f46348f5981e47613696ac3ac53c548db7ad7177ca258b19905",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "text-fill-stroke",
+      "input": "text-fill-stroke.svg",
+      "width": 160,
+      "height": 96,
+      "background": "transparent",
+      "sourceSha256": "7ce08b159acee16ed233937007faa44f6f8e0a8fa9021863867f0977a8a55e7b",
+      "license": "CC0-1.0",
+      "fontContract": "font-pack.json",
+      "selection": "Declared before text admission/paint implementation and native capture; complete supplied-face glyph fill/stroke opacity, stroke-only winding and original document map/anchor/paint diagnostics.",
+      "document": "inv-146-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/text-fill-stroke.png",
+      "referenceSha256": "bdaef202fe6d25de05e16478723553e9c184d042310af70f8bd973c2240b33d9",
+      "captures": [
+        {
+          "pngSha256": "bdaef202fe6d25de05e16478723553e9c184d042310af70f8bd973c2240b33d9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bdaef202fe6d25de05e16478723553e9c184d042310af70f8bd973c2240b33d9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "bdaef202fe6d25de05e16478723553e9c184d042310af70f8bd973c2240b33d9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/text-fill-stroke.png",
+      "linuxReferenceSha256": "d5e1a7cae20ea6f63db25961978231632746c8532313b16cc4b7ec3d48db1c92",
+      "linuxCaptures": [
+        {
+          "pngSha256": "d5e1a7cae20ea6f63db25961978231632746c8532313b16cc4b7ec3d48db1c92",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5e1a7cae20ea6f63db25961978231632746c8532313b16cc4b7ec3d48db1c92",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "d5e1a7cae20ea6f63db25961978231632746c8532313b16cc4b7ec3d48db1c92",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "text-stroke-only",
+      "input": "text-stroke-only.svg",
+      "width": 160,
+      "height": 96,
+      "background": "transparent",
+      "sourceSha256": "af937eb4fd177aecc46a0a5ee1003b1491f5aaf5138d9dce1d5ca320b617917a",
+      "license": "CC0-1.0",
+      "fontContract": "font-pack.json",
+      "selection": "Declared before text admission/paint implementation and native capture; complete supplied-face glyph fill/stroke opacity, stroke-only winding and original document map/anchor/paint diagnostics.",
+      "document": "inv-146-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/text-stroke-only.png",
+      "referenceSha256": "695e238dd724a8d718968e83f0fc23f84c541028c7d6e0611a45ab913b0ef13f",
+      "captures": [
+        {
+          "pngSha256": "695e238dd724a8d718968e83f0fc23f84c541028c7d6e0611a45ab913b0ef13f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "695e238dd724a8d718968e83f0fc23f84c541028c7d6e0611a45ab913b0ef13f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "695e238dd724a8d718968e83f0fc23f84c541028c7d6e0611a45ab913b0ef13f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/text-stroke-only.png",
+      "linuxReferenceSha256": "27188440a5b950d83ce05498a0696e2d28d86128f6dc224050196827d95dfaa0",
+      "linuxCaptures": [
+        {
+          "pngSha256": "27188440a5b950d83ce05498a0696e2d28d86128f6dc224050196827d95dfaa0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "27188440a5b950d83ce05498a0696e2d28d86128f6dc224050196827d95dfaa0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "27188440a5b950d83ce05498a0696e2d28d86128f6dc224050196827d95dfaa0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "text-mapped-paint",
+      "input": "text-mapped-paint.svg",
+      "width": 96,
+      "height": 96,
+      "background": "transparent",
+      "sourceSha256": "f84d94464081e98e557ed6766517e79b2ba40a63f5024fe1f7a33a802a7d6d50",
+      "license": "CC0-1.0",
+      "fontContract": "font-pack.json",
+      "selection": "Declared before text admission/paint implementation and native capture; complete supplied-face glyph fill/stroke opacity, stroke-only winding and original document map/anchor/paint diagnostics.",
+      "document": "inv-146-control",
+      "role": "mechanism-control",
+      "explicitViewport": true,
+      "scale": 1,
+      "rendererOutcome": "unsupported",
+      "reference": "references/text-mapped-paint.png",
+      "referenceSha256": "fbcd38262cda84f933b1299a7eb2602334457539c3984a45280fff883a34f992",
+      "captures": [
+        {
+          "pngSha256": "fbcd38262cda84f933b1299a7eb2602334457539c3984a45280fff883a34f992",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fbcd38262cda84f933b1299a7eb2602334457539c3984a45280fff883a34f992",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fbcd38262cda84f933b1299a7eb2602334457539c3984a45280fff883a34f992",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/text-mapped-paint.png",
+      "linuxReferenceSha256": "37168c28a2576054652c44eeabbdaaff2d6c693f0b9c171ebe76829492f99617",
+      "linuxCaptures": [
+        {
+          "pngSha256": "37168c28a2576054652c44eeabbdaaff2d6c693f0b9c171ebe76829492f99617",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37168c28a2576054652c44eeabbdaaff2d6c693f0b9c171ebe76829492f99617",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37168c28a2576054652c44eeabbdaaff2d6c693f0b9c171ebe76829492f99617",
           "startupHealth": "healthy",
           "profileCleaned": true
         }
