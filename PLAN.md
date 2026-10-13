@@ -748,10 +748,13 @@ two-workload resource probe passes normal/tight denial with zero retained
 accounted storage. The approximate memory policy remains unchanged. Receipt:
 `artifacts/filter-regions-20261012/final-qualification.json`.
 
-**Next deliverable:** maintenance-review S07's first bounded Windows glyph scan
-preparation change, measured against the supplied-font baseline below. Start with
-invariant dropout bounds, then bounded horizontal crossing reuse if the
-measurements justify it; preserve native cell classification and rounding.
+**Next deliverable:** maintenance-review S08's fallback glyph preparation.
+Establish a workload that actually selects fallback, measure its complete
+conversion, then prepare the existing eight quadratic subdivision endpoints once
+per glyph. Preserve winding, endpoint arithmetic and empty-region behavior.
+S07's Windows dropout bounds, immutable sampling maps and horizontal row scans
+are prepared once at their existing per-glyph/per-row boundaries, with exact
+references preserved and a measured public-label benefit.
 S06's CSS element identity is read once per cascade resolution and qualified;
 S05's immutable string retention and aggregate allowances are qualified; S04's
 gradient coefficients are prepared outside pixel sampling with exact references
@@ -1703,8 +1706,8 @@ R30/R38/R39 using existing tests, benchmarks and resource scenarios. The review'
 S01–S14 identifiers below are local review IDs, separate from stages S1–S17.
 
 Order: preserve the qualified rendering correction, completed first S01 tranche
-and S02/S04/S05/S06; S03 is explicitly deferred on the measurements below.
-Measure S07–S09 before their larger
+and S02/S04/S05/S06/S07; S03 is explicitly deferred on the measurements below.
+Measure S08/S09 before their larger
 raster changes. S10–S12 are small follow-ups. S13/S14 remain conditional and are
 not release requirements. Advance complete retained documents between maintenance
 changes when a demonstrated support blocker takes priority.
@@ -1717,7 +1720,7 @@ changes when a demonstrated support blocker takes priority.
 | S04 | **Complete.** Prepare immutable gradient segment coefficients once per effective replay. | Arbitrary/repeated-stop, alpha, spread, scale, linear/radial references remain exact. The retained rainbow checker improves in the measured end-to-end comparison; binary search, endpoints, float/FMA/division order and dithering are preserved. |
 | S05 | **Complete.** Reuse immutable definition/attribute strings and aggregate reservations with common ownership. | Definition/use-heavy and attribute-heavy parser allocations decrease; forward references, style replay, material denial and cleanup are preserved. Equal Name/LocalName and already-owned values share storage; span copies remain, without global interning or a new arena framework. |
 | S06 | **Complete.** Read CSS element identity once per cascade resolution when rules exist. | Existing stylesheet/combinator and frozen visual checks pass on both platforms. Styled parsing/conversion measurements show a small timing change within overlapping uncertainty ranges and unchanged allocation. Selector order, specificity, work/cancellation checks and the cheap no-rules route remain intact; no selector index/cache. |
-| S07 | Hoist Windows glyph dropout bounds and reuse horizontal scan crossings within a row. | Measure first; exact thin-stroke, vertex, dropout, mapped/composite and supplied-font cases on Windows, relevant Linux checks. Preserve classification/rounding; bound scratch storage. Consider vertical reuse only after measurement, without a width-by-height-by-segment cache. |
+| S07 | **Complete.** Prepare Windows dropout bounds and immutable sampling maps once per glyph; reuse horizontal directed crossing sets within a row. | Exact native thin-stroke, vertex, dropout, curve, mapped/composite and supplied-font references remain unchanged. Complete checks and existing memory probes pass on both platforms. Two public-label comparisons show a 30–34% local time reduction for about 16 KiB more allocation. Optional storage yields under memory pressure; vertical gathering remains per pixel. Vertical scan reuse is a conditional future investigation, not this item's exit requirement. |
 | S08 | Flatten the fallback glyph's identical eight-point quadratic subdivisions once per glyph. | Benchmark a case that actually selects fallback; preserve winding, endpoint arithmetic, finite coordinates and cancellation. Bound/release temporary storage and retain empty-region behavior. Do not claim native-fitting text benefits from fallback measurements. |
 | S09 | Reuse an identical rasterized pattern tile within a lowered paint operation or a small conversion-local owner. | Patterned rectangle stroke and repeated identical instances improve; differing size/map instances do not share. Preserve fractional sampling, phase and alpha. Key content, source box, dimensions, viewBox, mapping and paint inputs; bound retained surfaces and drop reuse under pressure. |
 | S10 | Make unarmed glyph/polygon/outline probes cheap using an established armed guard or operation-boundary hook. | Measure the unarmed path; preserve execution-context isolation and deterministic cancellation. No dummy work or different Release semantics. |
@@ -1889,19 +1892,51 @@ strong general speedup claim. Allocation stays **576.92 KiB / 609.80 KiB**
 respectively. Detailed comparisons and test results remain in ignored
 `artifacts/maintenance-review-20261012/`; frozen inputs and references are unchanged.
 
-**S07 baseline started (2026-10-13); implementation remains open.** The existing
-public Noto Sans `AV A` complete-conversion benchmark at `35fc2cae`, with font
-acquisition outside timing, gives **7.007 ms / 142.22 KiB** across six warmups and
-12 measured iterations on Windows. Timing is variable (0.492 ms standard
-deviation); this is a before measurement, not an improvement or completion claim.
-The production path still computes enabled dropout bounds per pixel and gathers
-the same horizontal scans for each pixel across a row. Prepare those invariants
-within the existing per-glyph owner, preserving mapped/implied-point arithmetic,
-cell classification, work and cancellation; measure the finished correction
-against this label before claiming benefit. Use the existing exact thin-stroke,
-vertex, dropout, mapped/composite and supplied-font controls. No width-by-height
-scan cache or new measurement framework is required. Private baseline details:
-`artifacts/maintenance-review-20261012/s07-before/`.
+**S07 complete (2026-10-13).** Windows glyph coverage prepares enabled native
+dropout bounds once per glyph. Its optional `ScanStorage` owns immutable rounded
+sampling-grid points and ten directed horizontal crossing slots, reused across
+each pixel row. The five ordinary scans and only their required upper endpoint
+limits are gathered/sorted once per row; vertical scans and pixel classification
+remain unchanged. Point mapping retains the original arithmetic and implied-point
+rounding. The source line/curve flag is retained separately, so rounded coincident
+control/end points do not turn a quadratic into a line. Sorting, directed limits,
+winding, dropout selection, preblend and final channel rounding retain their
+existing behavior.
+
+Both dominant arrays reserve one conservative aggregate allowance before
+allocation. Storage is local to one glyph and declines preparation when available
+memory is insufficient; the existing per-pixel gather route remains available
+with the prepared bounds. There is no frame-sized scan cache or process cache.
+Preparation, gathering/sorting and classification charge actual remaining work
+and observe cancellation. Failed preparation and disposal release both array
+references and the allowance; the caller keeps the owner alive for borrowed rows.
+The approximate memory policy is unchanged; no metadata receipts or retirement
+proofs were added.
+
+Complete Release checks pass on Windows and Linux: **7,332 tests per platform
+(5,054 core, 2,272 visual, six FontProbe)**, zero warnings/errors/skips. Every
+preceding test case remains. Five added controls cover endpoint/curve row reuse,
+reduced actual work, borrowed storage bounds, the exact work boundary,
+cancellation, material-pressure fallback and owner cleanup. The existing native
+texture checks now exercise both prepared mappings and rows against unchanged
+thin-stroke, directed-boundary, translated-curve, implied-point, mapped-glyph and
+supplied-font references. Existing conversion cancellation/resource controls and
+memory probes pass on both platforms, including normal/adversarial workloads,
+cleanup and output integrity. The frozen **27/27 documents / 258/258 variants**
+and the selected **48/48** development documents stay complete; finite G2–G9/S17
+and broader representativeness remain open.
+
+The retained public Noto Sans `AV A` complete-conversion benchmark, with acquisition
+outside timing, measures the original `35fc2cae` path at **7.007 / 7.290 ms** and
+the finished correction at **4.890 / 4.788 ms**, using six warmups and 12 measured
+iterations per comparison. The local reduction is about **30–34%**; this does not
+establish general SVG or font throughput. Allocation rises **142.22 → 158.32 KiB**
+for the bounded preparation. Row reuse alone measured **6.281 / 6.265 ms**;
+retaining the invariant mapped points adds the larger demonstrated benefit.
+Detailed measurements, complete test results and both memory-probe summaries
+remain in ignored `artifacts/maintenance-review-20261012/`. References were not
+recaptured or refreshed. Hosted CI remains verified at the preceding `35fc2cae`
+batch; include this locally qualified correction in the next delivery batch.
 
 For implemented allocation/preparation changes, report elapsed time and allocated
 bytes separately using an existing focused benchmark or one representative case.

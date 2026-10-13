@@ -144,6 +144,92 @@ public sealed class SvgGlyphLcdCoverageTests
     private static SvgGlyphRgbCoverage Coverage(OpenTypeQuadraticSegment[] segments, int x, int y)
         => SvgGlyphLcdCoverage.GetCoverage(segments, x, y, new SvgGlyphLcdCoverage.Crossing[segments.Length * 2], false, new(long.MaxValue), CancellationToken.None);
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Prepared_rows_preserve_curve_endpoints_and_reduce_actual_gathering_work(bool dropouts)
+    {
+        OpenTypeQuadraticSegment[] segments =
+        [
+            new(new(0, .5), new(1, 0), new(2, 0)),
+            new(new(2, 0), new(2, 1), new(2, 1)),
+            new(new(2, 1), new(0, 1), new(0, 1)),
+            new(new(0, 1), new(0, .5), new(0, .5)),
+            .. Rectangle(3, -1d / 64, 6, 0)
+        ];
+        ParserWorkCounter originalWork = new(long.MaxValue), preparedWork = new(long.MaxValue);
+        SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, dropouts, preparedWork, CancellationToken.None);
+        SvgGlyphLcdCoverage.Crossing[] originalScratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
+        SvgGlyphLcdCoverage.Crossing[] preparedScratch = new SvgGlyphLcdCoverage.Crossing[segments.Length * 2];
+        using SvgGlyphLcdCoverage.ScanStorage rowStorage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, new RenderBudget(long.MaxValue), preparedWork, CancellationToken.None) ?? throw new InvalidOperationException("Row preparation should fit.");
+        int[] counts = new int[10];
+        for (int y = -1; y <= 1; y++)
+        {
+            SvgGlyphLcdCoverage.ScanRow row = rowStorage.PrepareRow(segments, y, counts, preparedWork, CancellationToken.None);
+            for (int x = -1; x <= 7; x++)
+                Assert.Equal(
+                    SvgGlyphLcdCoverage.GetCoverage(segments, x, y, originalScratch, dropouts, originalWork, CancellationToken.None),
+                    SvgGlyphLcdCoverage.GetCoverage(row, x, preparedScratch, bounds, preparedWork, CancellationToken.None));
+        }
+        Assert.True(preparedWork.Used < originalWork.Used);
+    }
+
+    [Fact]
+    public void Row_preparation_checks_borrowed_storage_work_boundary_and_cancellation()
+    {
+        OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 6);
+        SvgGlyphLcdCoverage.Crossing[] storage = new SvgGlyphLcdCoverage.Crossing[80];
+        int[] counts = new int[10];
+        Assert.Throws<ArgumentException>(() => { SvgGlyphLcdCoverage.PrepareRow(segments, 0, storage.AsSpan(0, 79), counts, new(long.MaxValue), CancellationToken.None); });
+        Assert.Throws<ArgumentException>(() => { SvgGlyphLcdCoverage.PrepareRow(segments, 0, storage, counts.AsSpan(0, 9), new(long.MaxValue), CancellationToken.None); });
+        ParserWorkCounter measured = new(long.MaxValue);
+        SvgGlyphLcdCoverage.PrepareRow(segments, 0, storage, counts, measured, CancellationToken.None);
+        SvgGlyphLcdCoverage.PrepareRow(segments, 0, storage, counts, new(measured.Used), CancellationToken.None);
+        SvgException error = Assert.Throws<SvgException>(() => { SvgGlyphLcdCoverage.PrepareRow(segments, 0, storage, counts, new(measured.Used - 1), CancellationToken.None); });
+        Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
+        using CancellationTokenSource cancelled = new(); cancelled.Cancel();
+        Assert.ThrowsAny<OperationCanceledException>(() => { SvgGlyphLcdCoverage.PrepareRow(segments, 0, storage, counts, new(long.MaxValue), cancelled.Token); });
+    }
+
+    [Fact]
+    public void Optional_row_storage_yields_to_memory_pressure_and_releases_its_aggregate_allowance()
+    {
+        RenderBudget budget = new(10_000);
+        OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 6);
+        using (SvgGlyphLcdCoverage.ScanStorage storage = SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, budget, new(long.MaxValue), CancellationToken.None) ?? throw new InvalidOperationException("Row preparation should fit."))
+        {
+            Assert.Equal(80, storage.Crossings.Length);
+            Assert.True(budget.Snapshot().CurrentBytes > 0);
+            Assert.Null(SvgGlyphLcdCoverage.ScanStorage.TryCreate(new OpenTypeQuadraticSegment[100], budget, new(long.MaxValue), CancellationToken.None));
+            Assert.Equal(0, budget.Snapshot().DeniedReservationCount);
+            storage.Dispose();
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            Assert.Throws<ObjectDisposedException>(() => { _ = storage.Crossings.Length; });
+            Assert.Throws<ObjectDisposedException>(() => { _ = storage.MappedSegments.Length; });
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Null(SvgGlyphLcdCoverage.ScanStorage.TryCreate([], budget, new(long.MaxValue), CancellationToken.None));
+        SvgException error = Assert.Throws<SvgException>(() => SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, budget, new(0), CancellationToken.None));
+        Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        using CancellationTokenSource cancelled = new(); cancelled.Cancel();
+        Assert.ThrowsAny<OperationCanceledException>(() => SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, budget, new(long.MaxValue), cancelled.Token));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Unprepared_pressure_route_keeps_independent_native_dropout_coverage()
+    {
+        RenderBudget budget = new(1_000);
+        OpenTypeQuadraticSegment[] segments = Rectangle(0, 0, 6, 1d / 64);
+        Assert.Null(SvgGlyphLcdCoverage.ScanStorage.TryCreate(segments, budget, new(long.MaxValue), CancellationToken.None));
+        SvgGlyphLcdCoverage.DropoutBounds bounds = SvgGlyphLcdCoverage.PrepareBounds(segments, true, new(long.MaxValue), CancellationToken.None);
+        // Same unchanged independent native thin-stroke result as above.
+        Assert.Equal(new SvgGlyphRgbCoverage(28, 28, 28), SvgGlyphLcdCoverage.GetCoverage(segments, 2, 0, new SvgGlyphLcdCoverage.Crossing[8], bounds, new(long.MaxValue), CancellationToken.None));
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(0, budget.Snapshot().DeniedReservationCount);
+    }
+
     private static OpenTypeQuadraticSegment[] Rectangle(double left, double top, double right, double bottom)
     {
         OpenTypeOutlinePoint[] points = [new(left, top), new(right, top), new(right, bottom), new(left, bottom)];

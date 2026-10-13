@@ -2508,13 +2508,23 @@ public static class SvgConverter
                         {
                             int lcdStartX = ClampFloor(lcdMinimumX - 1d / 3, outputWidth), lcdEndX = ClampCeiling(lcdMaximumX + 1d / 3, outputWidth);
                             int lcdStartY = ClampFloor(lcdMinimumY, outputHeight), lcdEndY = ClampCeiling(lcdMaximumY, outputHeight);
+                            SvgGlyphLcdCoverage.DropoutBounds dropoutBounds = SvgGlyphLcdCoverage.PrepareBounds(contours.Segments, contours.SmartDropouts, preparationWork, cancellationToken);
+                            // Ten horizontal directed scans are reused across one row. This
+                            // optional preparation yields to the existing low-memory path.
+                            using SvgGlyphLcdCoverage.ScanStorage? rowStorage = lcdStartX < lcdEndX && lcdStartY < lcdEndY ? SvgGlyphLcdCoverage.ScanStorage.TryCreate(contours.Segments, budget, preparationWork, cancellationToken) : null;
+                            Span<int> rowCounts = stackalloc int[10];
                             for (int y = lcdStartY; y < lcdEndY; y++)
-                            for (int x = lcdStartX; x < lcdEndX; x++)
                             {
-                                preparationWork.Consume(cancellationToken);
-                                SvgGlyphRgbCoverage lcdCoverage = SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, crossings, contours.SmartDropouts, preparationWork, cancellationToken);
-                                byte alpha = ViewportAlpha(preblend[lcdCoverage.Mean], x, y);
-                                if (alpha != 0) BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, alpha)));
+                                SvgGlyphLcdCoverage.ScanRow scans = rowStorage is null ? default : rowStorage.PrepareRow(contours.Segments, y, rowCounts, preparationWork, cancellationToken);
+                                for (int x = lcdStartX; x < lcdEndX; x++)
+                                {
+                                    preparationWork.Consume(cancellationToken);
+                                    SvgGlyphRgbCoverage lcdCoverage = scans.IsPrepared
+                                        ? SvgGlyphLcdCoverage.GetCoverage(scans, x, crossings, dropoutBounds, preparationWork, cancellationToken)
+                                        : SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, crossings, dropoutBounds, preparationWork, cancellationToken);
+                                    byte alpha = ViewportAlpha(preblend[lcdCoverage.Mean], x, y);
+                                    if (alpha != 0) BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, alpha)));
+                                }
                             }
                         }
                         workUnits += preparationWork.Used;

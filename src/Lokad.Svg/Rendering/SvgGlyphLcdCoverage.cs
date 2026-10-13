@@ -10,7 +10,8 @@ internal readonly record struct SvgGlyphRgbCoverage(byte Red, byte Green, byte B
 
 /// <summary>Samples positioned quadratic outlines with the measured symmetric LCD filter.</summary>
 /// <remarks>Borrows closed device contours and exclusive caller-owned crossing scratch;
-/// retains no storage. Crossings are shared across sample rows and columns in the
+/// owns no storage. Prepared rows borrow bounded horizontal crossing sets across
+/// pixel columns; vertical gathering remains per pixel. Crossings are shared across sample rows and columns in the
 /// six by five cell grid, with separate directed limits at exact vertices. Contours own center boundaries according
 /// to the independently measured Windows convention; quadratic evaluation preserves
 /// constant coordinates. Monotonic quadratic scans use bounded implicit conic
@@ -28,14 +29,66 @@ internal static class SvgGlyphLcdCoverage
     /// <summary>One directed scan crossing in borrowed scratch; never retained.</summary>
     internal readonly record struct Crossing(double Position, int Direction);
 
+    internal readonly record struct MappedSegment(OpenTypeOutlinePoint Start, OpenTypeOutlinePoint Control, OpenTypeOutlinePoint End, bool IsLine);
+
+    /// <summary>Owns optional immutable contour maps and horizontal crossing storage for one glyph; declines reuse when the allowance is unavailable.</summary>
+    /// <remarks>Conversion-thread ownership only. The caller keeps this owner alive while row scans borrow its storage;
+    /// disposal releases both array references and the aggregate allowance after the last borrower finishes.
+    /// Source contours remain immutable for all row calls; mapped line flags preserve the authored line/curve distinction.</remarks>
+    internal sealed class ScanStorage : IDisposable
+    {
+        private Crossing[]? _crossings;
+        private MappedSegment[]? _mapped;
+        private readonly RenderBudget.BudgetReservation _reservation;
+
+        private ScanStorage(ReadOnlySpan<OpenTypeQuadraticSegment> segments, RenderBudget.BudgetReservation reservation, ParserWorkCounter work, CancellationToken token)
+        {
+            _crossings = new Crossing[segments.Length * 20];
+            _mapped = new MappedSegment[segments.Length];
+            for (int index = 0; index < segments.Length; index++)
+            {
+                work.Consume(token);
+                OpenTypeQuadraticSegment segment = segments[index];
+                _mapped[index] = new(Map(segment.Start, false), Map(segment.Control, false), Map(segment.End, false), segment.Control == segment.End);
+            }
+            _reservation = reservation;
+        }
+
+        internal Span<Crossing> Crossings => _crossings ?? throw new ObjectDisposedException(nameof(ScanStorage));
+        internal ReadOnlySpan<MappedSegment> MappedSegments => _mapped ?? throw new ObjectDisposedException(nameof(ScanStorage));
+
+        internal ScanRow PrepareRow(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelY, Span<int> counts, ParserWorkCounter work, CancellationToken token)
+            => PrepareRowCore(segments, MappedSegments, pixelY, Crossings, counts, work, token);
+
+        internal static ScanStorage? TryCreate(ReadOnlySpan<OpenTypeQuadraticSegment> segments, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            int segmentCount = segments.Length;
+            if (segmentCount == 0 || segmentCount > int.MaxValue / 20) return null;
+            int count = segmentCount * 20;
+            // Dominant crossing/mapping arrays plus a conservative aggregate owner/reservation allowance.
+            long bytes = ParserCollectionMemory.GetArrayByteCount<Crossing>(count) + ParserCollectionMemory.GetArrayByteCount<MappedSegment>(segmentCount) + 96;
+            if (bytes > budget.AvailableBytes) return null;
+            RenderBudget.BudgetReservation reservation = budget.Reserve(bytes, SvgMemoryCategory.Temporary);
+            try { return new(segments, reservation, work, token); }
+            catch { reservation.Dispose(); throw; }
+        }
+
+        public void Dispose()
+        {
+            _crossings = null;
+            _mapped = null;
+            _reservation.Dispose();
+        }
+    }
+
     [Flags]
     private enum CellCoverage : byte { None = 0, Interior = 1, Boundary = 2, Dropout = 4, Closed = 8 }
 
-    internal static SvgGlyphRgbCoverage GetCoverage(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelX, int pixelY, Span<Crossing> scratch, bool dropouts, ParserWorkCounter work, CancellationToken token)
+    /// <summary>Prepares immutable native dropout bounds once; borrows contours and retains no storage.</summary>
+    internal static DropoutBounds PrepareBounds(ReadOnlySpan<OpenTypeQuadraticSegment> segments, bool dropouts, ParserWorkCounter work, CancellationToken token)
     {
-        GlyphCoverageProbe.Started();
-        work.Consume(token);
-        if (scratch.Length < (long)segments.Length * 2) throw new ArgumentException("Coverage scratch must hold two crossings per segment.", nameof(scratch));
+        token.ThrowIfCancellationRequested();
         double minX = double.PositiveInfinity, minY = double.PositiveInfinity, maxX = double.NegativeInfinity, maxY = double.NegativeInfinity;
         if (dropouts)
         {
@@ -50,23 +103,135 @@ internal static class SvgGlyphLcdCoverage
         double leftBound = Math.Floor(minX + .5), topBound = Math.Floor(minY + .5), rightBound = Math.Floor(maxX + .5), bottomBound = Math.Floor(maxY + .5);
         if (leftBound == rightBound) { leftBound = Math.Floor(minX); rightBound = Math.Ceiling(maxX); }
         if (topBound == bottomBound) { topBound = Math.Floor(minY); bottomBound = Math.Ceiling(maxY); }
+        return new(dropouts, leftBound, topBound, rightBound, bottomBound);
+
+        void Bound(OpenTypeOutlinePoint point)
+        {
+            OpenTypeOutlinePoint mapped = Map(point, false);
+            minX = Math.Min(minX, mapped.X); maxX = Math.Max(maxX, mapped.X);
+            minY = Math.Min(minY, mapped.Y); maxY = Math.Max(maxY, mapped.Y);
+        }
+    }
+
+    internal readonly record struct DropoutBounds(bool Enabled, double Left, double Top, double Right, double Bottom);
+
+    /// <summary>Prepares the five horizontal scans and their directed endpoint limits once per pixel row.</summary>
+    /// <remarks>Caller reserves and owns crossing storage, count scratch and contours. All are borrowed;
+    /// they must remain unchanged until every pixel in this row has finished. Preparation charges actual
+    /// gathering/sorting work and observes cancellation. No vertical scans or per-pixel cells are retained.</remarks>
+    internal static ScanRow PrepareRow(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelY, Span<Crossing> crossings, Span<int> counts, ParserWorkCounter work, CancellationToken token)
+        => PrepareRowCore(segments, [], pixelY, crossings, counts, work, token);
+
+    private static ScanRow PrepareRowCore(ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, int pixelY, Span<Crossing> crossings, Span<int> counts, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        int capacity = checked(segments.Length * 2);
+        if (crossings.Length < (long)capacity * 10) throw new ArgumentException("Row storage must hold ten directed crossing sets.", nameof(crossings));
+        if (counts.Length < 10) throw new ArgumentException("Row count scratch must hold ten scan lengths.", nameof(counts));
+        for (int row = 0; row < 5; row++)
+        {
+            work.Consume(token);
+            double sample = pixelY * 5d + row + .5;
+            int lower = row * 2, upper = lower + 1;
+            counts[lower] = Gather(segments, mapped, sample, false, false, crossings.Slice(lower * capacity, capacity), work, token, out bool endpoint);
+            counts[upper] = endpoint ? Gather(segments, mapped, sample, false, true, crossings.Slice(upper * capacity, capacity), work, token, out _) : -1;
+        }
+        return new(segments, mapped, pixelY, crossings, counts, capacity);
+    }
+
+    /// <summary>Borrowed row preparation; caller keeps its exclusive storage and immutable contours alive during all coverage calls.</summary>
+    internal readonly ref struct ScanRow
+    {
+        private readonly ReadOnlySpan<Crossing> _crossings;
+        private readonly ReadOnlySpan<int> _counts;
+        private readonly int _capacity;
+
+        internal ScanRow(ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, int pixelY, ReadOnlySpan<Crossing> crossings, ReadOnlySpan<int> counts, int capacity)
+        {
+            Segments = segments;
+            MappedSegments = mapped;
+            PixelY = pixelY;
+            _crossings = crossings;
+            _counts = counts;
+            _capacity = capacity;
+        }
+
+        internal ReadOnlySpan<OpenTypeQuadraticSegment> Segments { get; }
+        internal ReadOnlySpan<MappedSegment> MappedSegments { get; }
+        internal int PixelY { get; }
+        internal bool IsPrepared => !_counts.IsEmpty;
+        internal bool HasEndpoint(int row) => _counts[row * 2 + 1] >= 0;
+        internal ReadOnlySpan<Crossing> GetCrossings(int row, bool upper)
+        {
+            int index = row * 2 + (upper ? 1 : 0);
+            return _crossings.Slice(index * _capacity, _counts[index]);
+        }
+    }
+
+    internal static SvgGlyphRgbCoverage GetCoverage(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelX, int pixelY, Span<Crossing> scratch, bool dropouts, ParserWorkCounter work, CancellationToken token)
+    {
+        GlyphCoverageProbe.Started();
+        work.Consume(token);
+        if (scratch.Length < (long)segments.Length * 2) throw new ArgumentException("Coverage scratch must hold two crossings per segment.", nameof(scratch));
+        DropoutBounds bounds = PrepareBounds(segments, dropouts, work, token);
+        return GetCoverageCore(segments, pixelX, pixelY, scratch, bounds, default, work, token);
+    }
+
+    internal static SvgGlyphRgbCoverage GetCoverage(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelX, int pixelY, Span<Crossing> scratch, DropoutBounds bounds, ParserWorkCounter work, CancellationToken token)
+    {
+        GlyphCoverageProbe.Started();
+        work.Consume(token);
+        if (scratch.Length < (long)segments.Length * 2) throw new ArgumentException("Coverage scratch must hold two crossings per segment.", nameof(scratch));
+        return GetCoverageCore(segments, pixelX, pixelY, scratch, bounds, default, work, token);
+    }
+
+    internal static SvgGlyphRgbCoverage GetCoverage(ScanRow scans, int pixelX, Span<Crossing> scratch, DropoutBounds bounds, ParserWorkCounter work, CancellationToken token)
+    {
+        GlyphCoverageProbe.Started();
+        work.Consume(token);
+        if (!scans.IsPrepared) throw new ArgumentException("Horizontal scans must be prepared for this row.", nameof(scans));
+        if (scratch.Length < (long)scans.Segments.Length * 2) throw new ArgumentException("Coverage scratch must hold two crossings per segment.", nameof(scratch));
+        return GetCoverageCore(scans.Segments, pixelX, scans.PixelY, scratch, bounds, scans, work, token);
+    }
+
+    private static SvgGlyphRgbCoverage GetCoverageCore(ReadOnlySpan<OpenTypeQuadraticSegment> segments, int pixelX, int pixelY, Span<Crossing> scratch, DropoutBounds bounds, ScanRow scans, ParserWorkCounter work, CancellationToken token)
+    {
+        bool dropouts = bounds.Enabled;
+        double leftBound = bounds.Left, rightBound = bounds.Right, topBound = bounds.Top, bottomBound = bounds.Bottom;
         Span<CellCoverage> cells = stackalloc CellCoverage[50]; cells.Clear();
         for (int row = 0; row < 5; row++)
         {
             double sample = pixelY * 5d + row + .5;
-            int count = Gather(segments, sample, false, false, scratch, work, token, out bool endpoint);
+            bool endpoint;
+            ReadOnlySpan<Crossing> lowerScans;
+            if (scans.IsPrepared)
+            {
+                lowerScans = scans.GetCrossings(row, false);
+                endpoint = scans.HasEndpoint(row);
+            }
+            else
+            {
+                int count = Gather(segments, scans.MappedSegments, sample, false, false, scratch, work, token, out endpoint);
+                lowerScans = scratch[..count];
+            }
             for (int column = -2; column < 8; column++)
-                cells[row * 10 + column + 2] = Classify(scratch[..count], pixelX * 6d + column + .5, false, dropouts, leftBound, rightBound, work, token);
+                cells[row * 10 + column + 2] = Classify(lowerScans, pixelX * 6d + column + .5, false, dropouts, leftBound, rightBound, work, token);
             if (endpoint)
             {
                 // Compare the two directed limits only when the scan meets a
                 // vertex. This owns horizontal borders and their corners without
                 // counting a shared monotonic vertex twice in a single scan.
-                count = Gather(segments, sample, false, true, scratch, work, token, out _);
+                ReadOnlySpan<Crossing> upperScans;
+                if (scans.IsPrepared) upperScans = scans.GetCrossings(row, true);
+                else
+                {
+                    int count = Gather(segments, scans.MappedSegments, sample, false, true, scratch, work, token, out _);
+                    upperScans = scratch[..count];
+                }
                 for (int column = -2; column < 8; column++)
                 {
                     int index = row * 10 + column + 2;
-                    CellCoverage lower = cells[index], upper = Classify(scratch[..count], pixelX * 6d + column + .5, false, dropouts, leftBound, rightBound, work, token);
+                    CellCoverage lower = cells[index], upper = Classify(upperScans, pixelX * 6d + column + .5, false, dropouts, leftBound, rightBound, work, token);
                     if ((lower & CellCoverage.Interior) != (upper & CellCoverage.Interior))
                     {
                         CellCoverage normal = ((lower | upper) & CellCoverage.Closed) != 0 ? CellCoverage.Interior : CellCoverage.None;
@@ -79,7 +244,7 @@ internal static class SvgGlyphLcdCoverage
         for (int column = -2; column < 8; column++)
         {
             double sample = pixelX * 6d + column + .5;
-            int count = Gather(segments, sample, true, false, scratch, work, token, out bool endpoint);
+            int count = Gather(segments, scans.MappedSegments, sample, true, false, scratch, work, token, out bool endpoint);
             for (int row = 0; row < 5; row++)
             {
                 CellCoverage value = Classify(scratch[..count], pixelY * 5d + row + .5, true, dropouts, topBound, bottomBound, work, token);
@@ -91,7 +256,7 @@ internal static class SvgGlyphLcdCoverage
             }
             if (dropouts && endpoint)
             {
-                count = Gather(segments, sample, true, true, scratch, work, token, out _);
+                count = Gather(segments, scans.MappedSegments, sample, true, true, scratch, work, token, out _);
                 for (int row = 0; row < 5; row++)
                     cells[row * 10 + column + 2] |= Classify(scratch[..count], pixelY * 5d + row + .5, true, true, topBound, bottomBound, work, token) & CellCoverage.Dropout;
             }
@@ -110,13 +275,6 @@ internal static class SvgGlyphLcdCoverage
             }
         }
         return new((byte)((red * 255 + 108) / 216), (byte)((green * 255 + 108) / 216), (byte)((blue * 255 + 108) / 216));
-
-        void Bound(OpenTypeOutlinePoint point)
-        {
-            OpenTypeOutlinePoint mapped = Map(point, false);
-            minX = Math.Min(minX, mapped.X); maxX = Math.Max(maxX, mapped.X);
-            minY = Math.Min(minY, mapped.Y); maxY = Math.Max(maxY, mapped.Y);
-        }
 
         static CellCoverage Classify(ReadOnlySpan<Crossing> crossings, double sample, bool horizontal, bool dropouts, double lowerBound, double upperBound, ParserWorkCounter work, CancellationToken token)
         {
@@ -162,137 +320,152 @@ internal static class SvgGlyphLcdCoverage
             }
         }
 
-        static int Gather(ReadOnlySpan<OpenTypeQuadraticSegment> segments, double sample, bool horizontal, bool upper, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, out bool endpoint)
+    }
+
+    private static int Gather(ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, double sample, bool horizontal, bool upper, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, out bool endpoint)
+    {
+        int count = 0; endpoint = false;
+        for (int index = 0; index < segments.Length; index++)
         {
-            int count = 0; endpoint = false;
-            foreach (OpenTypeQuadraticSegment segment in segments)
+            work.Consume(token);
+            MappedSegment segment = GetMappedSegment(segments, mapped, index, horizontal);
+            OpenTypeOutlinePoint a = segment.Start, b = segment.Control, c = segment.End;
+            endpoint |= a.Y == sample || c.Y == sample;
+            if (segment.IsLine)
             {
-                work.Consume(token);
-                OpenTypeOutlinePoint a = Map(segment.Start, horizontal), b = Map(segment.Control, horizontal), c = Map(segment.End, horizontal);
-                endpoint |= a.Y == sample || c.Y == sample;
-                if (segment.Control == segment.End)
-                {
-                    if (upper ? a.Y < sample && sample <= c.Y || c.Y < sample && sample <= a.Y : a.Y <= sample && sample < c.Y || c.Y <= sample && sample < a.Y)
-                        scratch[count++] = new(a.X + (c.X - a.X) * (sample - a.Y) / (c.Y - a.Y), c.Y > a.Y ? 1 : -1);
-                    continue;
-                }
-                double A = a.Y - 2 * b.Y + c.Y, B = 2 * (b.Y - a.Y), C = a.Y - sample;
-                if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, sample, horizontal, upper, segments, scratch, work, token, ref count); continue; }
-                double discriminant = B * B - 4 * A * C; if (discriminant < 0) continue;
-                double root = Math.Sqrt(discriminant);
-                Include((-B + root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, segments, scratch, work, token, ref count);
-                if (root != 0) Include((-B - root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, segments, scratch, work, token, ref count);
+                if (upper ? a.Y < sample && sample <= c.Y || c.Y < sample && sample <= a.Y : a.Y <= sample && sample < c.Y || c.Y <= sample && sample < a.Y)
+                    scratch[count++] = new(a.X + (c.X - a.X) * (sample - a.Y) / (c.Y - a.Y), c.Y > a.Y ? 1 : -1);
+                continue;
             }
-            for (int i = 1; i < count; i++)
-            {
-                work.Consume(token); Crossing item = scratch[i]; int j = i;
-                // Framework comparer sorts wrap budget/cancellation failures;
-                // every comparison and shift here keeps their original category.
-                while (j > 0) { work.Consume(token); if (scratch[j - 1].Position <= item.Position) break; scratch[j] = scratch[j - 1]; j--; }
-                scratch[j] = item;
-            }
-            return count;
-            static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, ReadOnlySpan<OpenTypeQuadraticSegment> segments, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
-            {
-                if (t is < 0 or > 1) return;
-                double derivative = B + 2 * A * t;
-                if (upper ? t == 0 && derivative > 0 || t == 1 && derivative < 0 : t == 0 && derivative < 0 || t == 1 && derivative > 0) return;
-                // A monotonic axis edge owns its smooth continuation into a
-                // curve. Curved extrema and isolated tangencies still retain dropouts.
-                if (derivative == 0 && (t == 0 || t == 1) && AxisEdgeContinues(t == 0 ? a : c, b, t == 0 ? c : a, segments, horizontal, work, token)) return;
-                // Horner evaluation leaves a constant coordinate exact. A
-                // Bernstein sum can drift across a center on a straight stem.
-                double crossing = a.X + t * (2 * (b.X - a.X) + t * (a.X - 2 * b.X + c.X));
-                if (t is > 0 and < 1 && derivative != 0) crossing = Adjust(crossing, sample, a, b, c, horizontal, work, token);
-                scratch[count++] = new(crossing, Math.Sign(derivative));
+            double A = a.Y - 2 * b.Y + c.Y, B = 2 * (b.Y - a.Y), C = a.Y - sample;
+            if (A == 0) { if (B != 0) Include(-C / B, a, b, c, A, B, sample, horizontal, upper, segments, mapped, scratch, work, token, ref count); continue; }
+            double discriminant = B * B - 4 * A * C; if (discriminant < 0) continue;
+            double root = Math.Sqrt(discriminant);
+            Include((-B + root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, segments, mapped, scratch, work, token, ref count);
+            if (root != 0) Include((-B - root) / (2 * A), a, b, c, A, B, sample, horizontal, upper, segments, mapped, scratch, work, token, ref count);
+        }
+        for (int i = 1; i < count; i++)
+        {
+            work.Consume(token); Crossing item = scratch[i]; int j = i;
+            // Framework comparer sorts wrap budget/cancellation failures;
+            // every comparison and shift here keeps their original category.
+            while (j > 0) { work.Consume(token); if (scratch[j - 1].Position <= item.Position) break; scratch[j] = scratch[j - 1]; j--; }
+            scratch[j] = item;
+        }
+        return count;
+        static void Include(double t, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, double A, double B, double sample, bool horizontal, bool upper, ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, Span<Crossing> scratch, ParserWorkCounter work, CancellationToken token, ref int count)
+        {
+            if (t is < 0 or > 1) return;
+            double derivative = B + 2 * A * t;
+            if (upper ? t == 0 && derivative > 0 || t == 1 && derivative < 0 : t == 0 && derivative < 0 || t == 1 && derivative > 0) return;
+            // A monotonic axis edge owns its smooth continuation into a
+            // curve. Curved extrema and isolated tangencies still retain dropouts.
+            if (derivative == 0 && (t == 0 || t == 1) && AxisEdgeContinues(t == 0 ? a : c, b, t == 0 ? c : a, segments, mapped, horizontal, work, token)) return;
+            // Horner evaluation leaves a constant coordinate exact. A
+            // Bernstein sum can drift across a center on a straight stem.
+            double crossing = a.X + t * (2 * (b.X - a.X) + t * (a.X - 2 * b.X + c.X));
+            if (t is > 0 and < 1 && derivative != 0) crossing = Adjust(crossing, sample, a, b, c, horizontal, work, token);
+            scratch[count++] = new(crossing, Math.Sign(derivative));
 
-                static bool AxisEdgeContinues(OpenTypeOutlinePoint endpoint, OpenTypeOutlinePoint control, OpenTypeOutlinePoint other, ReadOnlySpan<OpenTypeQuadraticSegment> segments, bool horizontal, ParserWorkCounter work, CancellationToken token)
-                {
-                    double direction = control.X - endpoint.X;
-                    if (direction == 0) direction = other.X - endpoint.X;
-                    if (direction == 0) return false;
-                    foreach (OpenTypeQuadraticSegment segment in segments)
-                    {
-                        work.Consume(token);
-                        OpenTypeOutlinePoint start = Map(segment.Start, horizontal), end = Map(segment.End, horizontal);
-                        if (start.Y != endpoint.Y || end.Y != endpoint.Y || start != endpoint && end != endpoint) continue;
-                        OpenTypeOutlinePoint middle = Map(segment.Control, horizontal);
-                        if (middle.Y != endpoint.Y || middle.X < Math.Min(start.X, end.X) || middle.X > Math.Max(start.X, end.X)) continue;
-                        OpenTypeOutlinePoint neighbor = start == endpoint ? end : start;
-                        if (direction > 0 ? neighbor.X < endpoint.X : neighbor.X > endpoint.X) return true;
-                    }
-                    return false;
-                }
-
-                static double Adjust(double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ParserWorkCounter work, CancellationToken token)
+            static bool AxisEdgeContinues(OpenTypeOutlinePoint endpoint, OpenTypeOutlinePoint control, OpenTypeOutlinePoint other, ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, bool horizontal, ParserWorkCounter work, CancellationToken token)
+            {
+                double direction = control.X - endpoint.X;
+                if (direction == 0) direction = other.X - endpoint.X;
+                if (direction == 0) return false;
+                for (int index = 0; index < segments.Length; index++)
                 {
                     work.Consume(token);
-                    // An implicit quadratic is (Ay*x-Ax*y)^2 +
-                    // D*(By*x-Bx*y)=0, relative to its start. Normalize both
-                    // directions first, with upward font Y. Bounded integer
-                    // coefficient precision determines the scan equation;
-                    // subdivision changes these coefficients, not its tolerance.
-                    double ax = (horizontal ? a.Y : a.X) * 64, ay = -(horizontal ? a.X : a.Y) * 64;
-                    double bx = (horizontal ? b.Y : b.X) * 64, by = -(horizontal ? b.X : b.Y) * 64;
-                    double cx = (horizontal ? c.Y : c.X) * 64, cy = -(horizontal ? c.X : c.Y) * 64;
-                    if (ax == cx || ay == cy || bx < Math.Min(ax, cx) || bx > Math.Max(ax, cx) || by < Math.Min(ay, cy) || by > Math.Max(ay, cy)) return crossing;
-                    int sx = cx > ax ? 1 : -1, sy = cy > ay ? 1 : -1;
-                    long dx = (long)((bx - ax) * sx), dy = (long)((by - ay) * sy), tx = (long)((cx - ax) * sx), ty = (long)((cy - ay) * sy);
-                    if (Math.Max(tx, ty) > 3200) return crossing;
-                    double firstX = Math.Floor((ax + (sx > 0 ? 32 : -33)) / 64) * 64 + 32;
-                    double firstY = Math.Floor((ay + (sy > 0 ? 32 : -33)) / 64) * 64 + 32;
-                    long u = (long)((firstX - ax) * sx), v = (long)((firstY - ay) * sy), determinant = 2 * (dx * ty - tx * dy);
-                    if (determinant == 0) return crossing;
-                    int magnitude = Bits(Math.Max(tx, ty)), shift = Math.Max(0, (Bits(Math.Abs(determinant)) + magnitude - 27) / 3);
-                    if (shift != 0)
-                    {
-                        long half = 1L << (shift - 1);
-                        dx = (dx + half) >> shift; dy = (dy + half) >> shift; tx = (tx + half) >> shift; ty = (ty + half) >> shift;
-                        u = (u + half) >> shift; v = (v + half) >> shift;
-                        determinant = 2 * (dx * ty - tx * dy);
-                    }
-                    long step = 1L << (6 - shift), x2 = tx - 2 * dx, y2 = ty - 2 * dy;
-                    long P = y2 * y2, Q = x2 * x2, R = -x2 * y2, Lx = determinant * dy, Ly = -determinant * dx;
-                    long ownership = sx > 0 ? (sy < 0 ? 1 : 0) : (sy < 0 ? 0 : 1);
-                    double f, fx, fy, p, q, r;
-                    if (magnitude <= 7)
-                    {
-                        f = P * u * u + Q * v * v + 2 * R * u * v + 2 * Lx * u + 2 * Ly * v + ownership;
-                        fx = (P * (step + 2 * u) + 2 * R * v + 2 * Lx) * step;
-                        fy = (Q * (step + 2 * v) + 2 * R * u + 2 * Ly) * step;
-                        p = 2 * P * step * step; q = 2 * Q * step * step; r = 2 * R * step * step;
-                    }
-                    else
-                    {
-                        // Evaluate the initial half-polynomial in two bounded
-                        // products. Its mixed term occurs once. First and second
-                        // differences then give a continuous scan equation at
-                        // every sample center without a per-cell curve walk.
-                        f = (((P >> 1) * u + R * v + Lx) >> (6 - shift)) * u + (((Q >> 1) * v + Ly) >> (6 - shift)) * v + ownership;
-                        fx = P * (u + step / 2) + R * v + Lx; fy = Q * (v + step / 2) + R * u + Ly;
-                        p = P * step; q = Q * step; r = R * step;
-                    }
-                    double k = horizontal ? (sample * 64 - firstX) / 64 * sx : (-sample * 64 - firstY) / 64 * sy;
-                    double qa = (horizontal ? q : p) / 2, qb = (horizontal ? fy : fx) - qa + r * k;
-                    double qc = f + (horizontal ? fx : fy) * k + (horizontal ? p : q) * k * (k - 1) / 2;
-                    double origin = horizontal ? -firstY / 64 : firstX / 64, direction = horizontal ? -sy : sx;
-                    if (qa == 0) return qb == 0 ? crossing : origin - direction * qc / qb;
-                    double discriminant = qb * qb - 4 * qa * qc;
-                    if (discriminant < 0) return crossing;
-                    double root = Math.Sqrt(discriminant), first = origin + direction * (-qb + root) / (2 * qa), second = origin + direction * (-qb - root) / (2 * qa);
-                    return Math.Abs(first - crossing) <= Math.Abs(second - crossing) ? first : second;
-
-                    static int Bits(long value) => value == 0 ? 0 : System.Numerics.BitOperations.Log2((ulong)value) + 1;
+                    MappedSegment segment = GetMappedSegment(segments, mapped, index, horizontal);
+                    OpenTypeOutlinePoint start = segment.Start, end = segment.End;
+                    if (start.Y != endpoint.Y || end.Y != endpoint.Y || start != endpoint && end != endpoint) continue;
+                    OpenTypeOutlinePoint middle = segment.Control;
+                    if (middle.Y != endpoint.Y || middle.X < Math.Min(start.X, end.X) || middle.X > Math.Max(start.X, end.X)) continue;
+                    OpenTypeOutlinePoint neighbor = start == endpoint ? end : start;
+                    if (direction > 0 ? neighbor.X < endpoint.X : neighbor.X > endpoint.X) return true;
                 }
+                return false;
+            }
+
+            static double Adjust(double crossing, double sample, OpenTypeOutlinePoint a, OpenTypeOutlinePoint b, OpenTypeOutlinePoint c, bool horizontal, ParserWorkCounter work, CancellationToken token)
+            {
+                work.Consume(token);
+                // An implicit quadratic is (Ay*x-Ax*y)^2 +
+                // D*(By*x-Bx*y)=0, relative to its start. Normalize both
+                // directions first, with upward font Y. Bounded integer
+                // coefficient precision determines the scan equation;
+                // subdivision changes these coefficients, not its tolerance.
+                double ax = (horizontal ? a.Y : a.X) * 64, ay = -(horizontal ? a.X : a.Y) * 64;
+                double bx = (horizontal ? b.Y : b.X) * 64, by = -(horizontal ? b.X : b.Y) * 64;
+                double cx = (horizontal ? c.Y : c.X) * 64, cy = -(horizontal ? c.X : c.Y) * 64;
+                if (ax == cx || ay == cy || bx < Math.Min(ax, cx) || bx > Math.Max(ax, cx) || by < Math.Min(ay, cy) || by > Math.Max(ay, cy)) return crossing;
+                int sx = cx > ax ? 1 : -1, sy = cy > ay ? 1 : -1;
+                long dx = (long)((bx - ax) * sx), dy = (long)((by - ay) * sy), tx = (long)((cx - ax) * sx), ty = (long)((cy - ay) * sy);
+                if (Math.Max(tx, ty) > 3200) return crossing;
+                double firstX = Math.Floor((ax + (sx > 0 ? 32 : -33)) / 64) * 64 + 32;
+                double firstY = Math.Floor((ay + (sy > 0 ? 32 : -33)) / 64) * 64 + 32;
+                long u = (long)((firstX - ax) * sx), v = (long)((firstY - ay) * sy), determinant = 2 * (dx * ty - tx * dy);
+                if (determinant == 0) return crossing;
+                int magnitude = Bits(Math.Max(tx, ty)), shift = Math.Max(0, (Bits(Math.Abs(determinant)) + magnitude - 27) / 3);
+                if (shift != 0)
+                {
+                    long half = 1L << (shift - 1);
+                    dx = (dx + half) >> shift; dy = (dy + half) >> shift; tx = (tx + half) >> shift; ty = (ty + half) >> shift;
+                    u = (u + half) >> shift; v = (v + half) >> shift;
+                    determinant = 2 * (dx * ty - tx * dy);
+                }
+                long step = 1L << (6 - shift), x2 = tx - 2 * dx, y2 = ty - 2 * dy;
+                long P = y2 * y2, Q = x2 * x2, R = -x2 * y2, Lx = determinant * dy, Ly = -determinant * dx;
+                long ownership = sx > 0 ? (sy < 0 ? 1 : 0) : (sy < 0 ? 0 : 1);
+                double f, fx, fy, p, q, r;
+                if (magnitude <= 7)
+                {
+                    f = P * u * u + Q * v * v + 2 * R * u * v + 2 * Lx * u + 2 * Ly * v + ownership;
+                    fx = (P * (step + 2 * u) + 2 * R * v + 2 * Lx) * step;
+                    fy = (Q * (step + 2 * v) + 2 * R * u + 2 * Ly) * step;
+                    p = 2 * P * step * step; q = 2 * Q * step * step; r = 2 * R * step * step;
+                }
+                else
+                {
+                    // Evaluate the initial half-polynomial in two bounded
+                    // products. Its mixed term occurs once. First and second
+                    // differences then give a continuous scan equation at
+                    // every sample center without a per-cell curve walk.
+                    f = (((P >> 1) * u + R * v + Lx) >> (6 - shift)) * u + (((Q >> 1) * v + Ly) >> (6 - shift)) * v + ownership;
+                    fx = P * (u + step / 2) + R * v + Lx; fy = Q * (v + step / 2) + R * u + Ly;
+                    p = P * step; q = Q * step; r = R * step;
+                }
+                double k = horizontal ? (sample * 64 - firstX) / 64 * sx : (-sample * 64 - firstY) / 64 * sy;
+                double qa = (horizontal ? q : p) / 2, qb = (horizontal ? fy : fx) - qa + r * k;
+                double qc = f + (horizontal ? fx : fy) * k + (horizontal ? p : q) * k * (k - 1) / 2;
+                double origin = horizontal ? -firstY / 64 : firstX / 64, direction = horizontal ? -sy : sx;
+                if (qa == 0) return qb == 0 ? crossing : origin - direction * qc / qb;
+                double discriminant = qb * qb - 4 * qa * qc;
+                if (discriminant < 0) return crossing;
+                double root = Math.Sqrt(discriminant), first = origin + direction * (-qb + root) / (2 * qa), second = origin + direction * (-qb - root) / (2 * qa);
+                return Math.Abs(first - crossing) <= Math.Abs(second - crossing) ? first : second;
+
+                static int Bits(long value) => value == 0 ? 0 : System.Numerics.BitOperations.Log2((ulong)value) + 1;
             }
         }
+    }
 
-        static OpenTypeOutlinePoint Map(OpenTypeOutlinePoint p, bool horizontal)
+    private static MappedSegment GetMappedSegment(ReadOnlySpan<OpenTypeQuadraticSegment> segments, ReadOnlySpan<MappedSegment> mapped, int index, bool horizontal)
+    {
+        MappedSegment value;
+        if (mapped.IsEmpty)
         {
-            // Implied points round only after the six by five map, with a half
-            // F26 unit rounding upward in the font's upward Y axis.
-            double x = Math.Floor(p.X * 384 + .5) / 64, y = Math.Floor(p.Y * 320 + .25) / 64;
-            return horizontal ? new(y, x) : new(x, y);
+            OpenTypeQuadraticSegment source = segments[index];
+            value = new(Map(source.Start, false), Map(source.Control, false), Map(source.End, false), source.Control == source.End);
         }
+        else value = mapped[index];
+        return horizontal ? new(new(value.Start.Y, value.Start.X), new(value.Control.Y, value.Control.X), new(value.End.Y, value.End.X), value.IsLine) : value;
+    }
+
+    private static OpenTypeOutlinePoint Map(OpenTypeOutlinePoint p, bool horizontal)
+    {
+        // Implied points round only after the six by five map, with a half
+        // F26 unit rounding upward in the font's upward Y axis.
+        double x = Math.Floor(p.X * 384 + .5) / 64, y = Math.Floor(p.Y * 320 + .25) / 64;
+        return horizontal ? new(y, x) : new(x, y);
     }
 }

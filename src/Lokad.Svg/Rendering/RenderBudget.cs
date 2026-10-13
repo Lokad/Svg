@@ -28,6 +28,9 @@ internal sealed class RenderBudget
         return new BudgetReservation(this, bytes, category);
     }
 
+    /// <summary>Unreserved allowance on the conversion thread; optional preparation may decline storage before allocating.</summary>
+    internal long AvailableBytes => _maximumBytes - _currentBytes;
+
     private void Charge(long bytes, SvgMemoryCategory category)
     {
         if (bytes <= 0)
