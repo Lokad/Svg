@@ -31,12 +31,13 @@ public sealed class SvgCurvedFontDocumentTests
 
     public static IEnumerable<object[]> Cases()
     {
-        foreach (string family in new[] { "curved-font-documents", "static-css-document", "mask-group-documents" })
+        foreach (string family in new[] { "curved-font-documents", "static-css-document", "mask-group-documents", "offset-merge-document" })
         {
             string directory = Path.Combine(AppContext.BaseDirectory, "Research", family);
             using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
             foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
-                if (family != "mask-group-documents" || Required(item, "role") == "document-output") yield return new object[] { family, Required(item, "id") };
+                if ((family != "mask-group-documents" || Required(item, "role") == "document-output")
+                    && (family != "offset-merge-document" || Required(item, "rendererOutcome") == "exact")) yield return new object[] { family, Required(item, "id") };
         }
     }
 

@@ -1,4 +1,5 @@
 using System.Xml;
+using Lokad.Svg.Fonts;
 using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
@@ -56,6 +57,34 @@ internal readonly record struct SvgRecordedPaintStyle(SvgPaintOpacity ElementOpa
 // Retains source paint and recording state until playback; parser budgets own staging and scene values.
 internal static class SvgPaintRecording
 {
+    /// <summary>Retains material glyph bounds for filtered source groups; glyph color/opacity remains baked once in its existing paint.</summary>
+    internal static SvgGeometry RecordGlyph(SvgGlyphGeometry glyph, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        SvgGeometry geometry = SvgGeometry.FromGlyphContours(glyph);
+        if (state.FilterGroupDepth <= 0) return geometry;
+        float left = float.PositiveInfinity, top = float.PositiveInfinity;
+        float right = float.NegativeInfinity, bottom = float.NegativeInfinity;
+        foreach (SvgGlyphQuadraticContour contour in glyph.Contours)
+        foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
+        {
+            work.Consume(token);
+            Include(segment.Start); Include(segment.Control); Include(segment.End);
+        }
+        SvgPaintBounds bounds = float.IsPositiveInfinity(left) ? default : new(left, top, right, bottom);
+        float inflation = (float)Math.Max(2, glyph.StrokeBoundsInflation);
+        SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), glyph.Color.Alpha / 255f, false, new SvgRecordingScope(1), SvgPaintOpacity.Opaque, new SvgRecordingScope(1))
+        {
+            ObjectBounds = bounds,
+            VisualBounds = new(bounds.Left - inflation, bounds.Top - inflation, bounds.Right + inflation, bounds.Bottom + inflation)
+        };
+        return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) };
+
+        void Include(SvgGlyphOutlinePoint point)
+        {
+            left = MathF.Min(left, (float)point.X); top = MathF.Min(top, (float)point.Y);
+            right = MathF.Max(right, (float)point.X); bottom = MathF.Max(bottom, (float)point.Y);
+        }
+    }
     internal static SvgRecordedPaintStyle Resolve(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewportFrame? frame)
     {
         SvgComputedStyle style = context.ResolveStyle(reader);

@@ -719,9 +719,19 @@ public static class SvgConverter
                         foreach (SvgGlyphQuadraticContour contour in geometry.Glyph.Contours)
                         foreach (SvgGlyphQuadraticSegment segment in contour.Segments)
                         {
-                            Include(new(segment.Start.X, segment.Start.Y), outputMap);
-                            Include(new(segment.Control.X, segment.Control.Y), outputMap);
-                            Include(new(segment.End.X, segment.End.Y), outputMap);
+                            if (geometry.Glyph.StrokeBoundsInflation > 0)
+                            {
+                                double inflation = geometry.Glyph.StrokeBoundsInflation;
+                                IncludeBox(new(segment.Start.X, segment.Start.Y, 0, 0, default, false, null), outputMap, inflation);
+                                IncludeBox(new(segment.Control.X, segment.Control.Y, 0, 0, default, false, null), outputMap, inflation);
+                                IncludeBox(new(segment.End.X, segment.End.Y, 0, 0, default, false, null), outputMap, inflation);
+                            }
+                            else
+                            {
+                                Include(new(segment.Start.X, segment.Start.Y), outputMap);
+                                Include(new(segment.Control.X, segment.Control.Y), outputMap);
+                                Include(new(segment.End.X, segment.End.Y), outputMap);
+                            }
                         }
                         break;
                     default:
@@ -2530,6 +2540,16 @@ public static class SvgConverter
             if (glyph.Source is SvgGlyphRasterSource source && (OperatingSystem.IsLinux() || OperatingSystem.IsWindows()))
             {
                 ParserWorkCounter preparationWork = new(options.Limits.MaximumWorkUnits - workUnits);
+                if (glyph.StrokePaint is {} strokePaint)
+                {
+                    using SvgAuthoredPath path = source.CreateStrokePath(strokePaint, horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
+                    Span<byte> preblend = stackalloc byte[256];
+                    SvgColor color = ResolveSolidColor(glyph.Color);
+                    if (OperatingSystem.IsWindows()) SvgFontMaskPreblend.BuildWindowsGrayTable(preblend, color, preparationWork, cancellationToken);
+                    else SvgFontMaskPreblend.BuildLinuxGrayTable(preblend, color, preparationWork, cancellationToken);
+                    RasterizeMappedBitmap(path, preblend, preparationWork);
+                    return;
+                }
                 if (source.HasGlyphMap && OperatingSystem.IsLinux())
                 {
                     using SvgAuthoredPath path = source.CreateMappedPath(horizontalScale, horizontalOffset, verticalScale, verticalOffset, budget, preparationWork, cancellationToken);
@@ -2575,7 +2595,7 @@ public static class SvgConverter
                                         ? SvgGlyphLcdCoverage.GetCoverage(scans, x, crossings, dropoutBounds, preparationWork, cancellationToken)
                                         : SvgGlyphLcdCoverage.GetCoverage(contours.Segments, x, y, crossings, dropoutBounds, preparationWork, cancellationToken);
                                     byte alpha = ViewportAlpha(preblend[lcdCoverage.Mean], x, y);
-                                    if (alpha != 0) BlendSourceOver(destination.AsSpan((y * outputWidth + x) * 4, 4), new SvgColor(color.Red, color.Green, color.Blue, MultiplyAlpha(color.Alpha, alpha)));
+                                    if (alpha != 0) ResolveSolidPaint(glyph.Color).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), alpha, SvgAnalyticPaintKind.Mask);
                                 }
                             }
                         }
@@ -2687,6 +2707,8 @@ public static class SvgConverter
             // to the parent SVG viewport/opacity scope. No font ownership transfers.
             void RasterizeMappedBitmap(SvgAuthoredPath sourcePath, ReadOnlySpan<byte> preblend, ParserWorkCounter preparationWork)
             {
+                bool horizontalStrokeFilter = glyph.StrokePaint is not null && OperatingSystem.IsWindows();
+                int sampleScale = horizontalStrokeFilter ? 4 : 1;
                 SvgAffineTransform map = sourcePath.SceneMap;
                 double originX = Math.Floor(map.E), originY = Math.Floor(map.F);
                 float phaseX = (float)(map.E - originX), phaseY = (float)(map.F - originY);
@@ -2700,29 +2722,32 @@ public static class SvgConverter
                     {
                         SvgAuthoredPathVerb.Move or SvgAuthoredPathVerb.Line => command with { First = MapLocal(command.First) },
                         SvgAuthoredPathVerb.Quadratic => command with { First = MapLocal(command.First), Second = MapLocal(command.Second) },
+                        SvgAuthoredPathVerb.Cubic => command with { First = MapLocal(command.First), Second = MapLocal(command.Second), Third = MapLocal(command.Third) },
+                        SvgAuthoredPathVerb.Conic => command with { First = MapLocal(command.First), Second = MapLocal(command.Second) },
                         SvgAuthoredPathVerb.Close => command,
-                        _ => throw new InvalidOperationException("A TrueType mask requires line and quadratic commands."),
+                        _ => throw new InvalidOperationException("A glyph mask contains an unexpected outline verb."),
                     });
                 }
                 workUnits += preparationWork.Used;
                 if (commands.Count == 0) return;
                 left = Math.Floor(left); top = Math.Floor(top);
                 right = Math.Ceiling(right); bottom = Math.Ceiling(bottom);
+                if (horizontalStrokeFilter) { left--; right++; }
                 double bitmapWidth = right - left, bitmapHeight = bottom - top;
                 if (!double.IsFinite(bitmapWidth) || !double.IsFinite(bitmapHeight))
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph bitmap bounds exceed the device range.");
                 if (bitmapWidth <= 0 || bitmapHeight <= 0 || originX + right <= 0 || originY + bottom <= 0
                     || originX + left >= outputWidth || originY + top >= outputHeight) return;
                 SvgRenderLimits limits = options.Limits;
-                if (bitmapWidth > limits.MaximumDimension || bitmapHeight > limits.MaximumDimension
-                    || bitmapWidth * bitmapHeight > limits.MaximumPixels || bitmapWidth * bitmapHeight > int.MaxValue / 4)
+                if (bitmapWidth * sampleScale > limits.MaximumDimension || bitmapHeight > limits.MaximumDimension
+                    || bitmapWidth * bitmapHeight * sampleScale > limits.MaximumPixels || bitmapWidth * bitmapHeight * sampleScale > int.MaxValue / 4)
                     throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph bitmap exceeds the configured surface limits.");
-                int width = (int)bitmapWidth, height = (int)bitmapHeight;
+                int width = (int)bitmapWidth * sampleScale, height = (int)bitmapHeight;
                 long remaining = limits.MaximumWorkUnits - workUnits;
                 if (remaining <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph bitmap exceeds the configured work limit.");
                 OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
                 SvgAuthoredPath localPath;
-                try { localPath = SvgAuthoredPath.Create(owned, SvgAffineTransform.FromScaleOffset(1, 1, -left, -top), budget); }
+                try { localPath = SvgAuthoredPath.Create(owned, SvgAffineTransform.FromScaleOffset(sampleScale, 1, -left * sampleScale, -top), budget); }
                 catch { owned.Dispose(); throw; }
                 using (localPath)
                 using (SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, new SvgColor(0, 0, 0, 255), true, false, SvgPolygonMapping.NativeFillEdges, null, null, budget))
@@ -2739,9 +2764,9 @@ public static class SvgConverter
                     double deviceLeft = originX + left, deviceTop = originY + top;
                     int startX = Math.Max(layerBounds.Left, ClampFloor(deviceLeft, outputWidth));
                     int startY = Math.Max(layerBounds.Top, ClampFloor(deviceTop, outputHeight));
-                    int endX = Math.Min(layerBounds.Right, ClampCeiling(deviceLeft + width, outputWidth));
+                    int endX = Math.Min(layerBounds.Right, ClampCeiling(deviceLeft + bitmapWidth, outputWidth));
                     int endY = Math.Min(layerBounds.Bottom, ClampCeiling(deviceTop + height, outputHeight));
-                    long paintWork = (long)Math.Max(0, endX - startX) * Math.Max(0, endY - startY);
+                    long paintWork = (long)Math.Max(0, endX - startX) * Math.Max(0, endY - startY) * (horizontalStrokeFilter ? 37 : 1);
                     if (paintWork > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Glyph mask painting exceeds the configured work limit.");
                     workUnits += paintWork;
                     SvgAnalyticPaint paint = ResolveSolidPaint(glyph.Color);
@@ -2751,8 +2776,10 @@ public static class SvgConverter
                         for (int x = startX; x < endX; x++)
                         {
                             if ((x & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
-                            int offset = ((int)(y - deviceTop) * width + (int)(x - deviceLeft)) * 4;
-                            byte alpha = ViewportAlpha(preblend[bitmap.Pixels[offset + 3]], x, y);
+                            int row = (int)(y - deviceTop) * width * 4;
+                            int sampleX = (int)(x - deviceLeft) * sampleScale;
+                            byte coverage = horizontalStrokeFilter ? FilterStroke(bitmap.Pixels.AsSpan(row, width * 4), sampleX) : bitmap.Pixels[row + sampleX * 4 + 3];
+                            byte alpha = ViewportAlpha(preblend[coverage], x, y);
                             paint.Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), alpha, SvgAnalyticPaintKind.Mask);
                         }
                     }
@@ -2768,6 +2795,24 @@ public static class SvgConverter
                     left = Math.Min(left, x); top = Math.Min(top, y);
                     right = Math.Max(right, x); bottom = Math.Max(bottom, y);
                     return new(x, y);
+                }
+
+                // Pinned Skia SkScalerContext.cpp pack4xHToMask; Copyright 2012 Google Inc.
+                // See THIRD_PARTY_NOTICES.txt. The caller charges the bounded 36 filter products.
+                static byte FilterStroke(ReadOnlySpan<byte> row, int center)
+                {
+                    ReadOnlySpan<byte> red = [3, 11, 28, 51, 64, 57, 36, 16, 5, 1, 0, 0];
+                    ReadOnlySpan<byte> green = [0, 2, 8, 22, 43, 61, 61, 43, 22, 8, 2, 0];
+                    ReadOnlySpan<byte> blue = [0, 0, 1, 5, 16, 36, 57, 64, 51, 28, 11, 3];
+                    int r = 0, g = 0, b = 0;
+                    for (int index = 0; index < 12; index++)
+                    {
+                        int offset = (center - 4 + index) * 4 + 3;
+                        if (offset < 0 || offset >= row.Length) continue;
+                        int alpha = row[offset];
+                        r += alpha * red[index]; g += alpha * green[index]; b += alpha * blue[index];
+                    }
+                    return (byte)((Math.Min(r >> 8, 255) + Math.Min(g >> 8, 255) + Math.Min(b >> 8, 255)) / 3);
                 }
             }
         }

@@ -56,14 +56,14 @@ internal static class SvgTextRunBuilder
             for (int index = 0; index < run.Glyphs.Length; index++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                SvgPositionedGlyph glyph = run.Glyphs[index].Translate(placement);
+                SvgPositionedGlyph glyph = placement.IsTranslation ? run.Glyphs[index].Translate(placement) : run.Glyphs[index];
                 if (decoded is null || decodedGlyphIndex != glyph.GlyphIndex)
                 {
                     decoded?.Dispose();
                     decoded = OpenTypeFont.GetGlyphContours(run.Font.Bytes, glyph.GlyphIndex, run.Font.Metrics, budget, workCounter, cancellationToken);
                     decodedGlyphIndex = glyph.GlyphIndex;
                 }
-                yield return SvgGlyphOutline.GetContourStorage(run.Font, glyph, run.Style.FontSize, decoded, budget, workCounter, cancellationToken);
+                yield return SvgGlyphOutline.GetContourStorage(run.Font, glyph, run.Style.FontSize, placement.IsTranslation ? SvgAffineTransform.Identity : placement, decoded, budget, workCounter, cancellationToken);
             }
         }
         finally { decoded?.Dispose(); }

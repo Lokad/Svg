@@ -28,11 +28,15 @@ and source replay. Finite G3/G8/G9 exits remain open.
 
 Composed native conic placement and the shared source stroke route now make all
 five oval controls exact on Windows and Linux. The complete document advances
-to the stroke-cap admission on its original live-text label. Its source, text,
+through its original live-text label to the ordered merge requirement. Its source, text,
 filter chain and both references remain unchanged; it is still incomplete.
 
 Three predeclared CC0 supplied-font controls retain fill plus stroke opacity,
 stroke-only winding and the document's exact scale/rotation/anchor/paint context.
 Their healthy cleaned platform triples are stable before text production edits;
 oracle embedding alone supplies the unchanged face. They remain separate from
-the complete document and initially reject through the existing text gates.
+the complete document and now match unchanged references on both platforms.
+The shared direct-text route retains native glyph masks and stroke construction,
+including translucent fill/stroke paint and uniform scale/rotation placement.
+Dashed, non-scaling and stroke-before-fill text remain explicit unsupported
+combinations in finite G9; the complete offset/merge document stays open.

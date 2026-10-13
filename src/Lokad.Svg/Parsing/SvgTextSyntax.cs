@@ -409,7 +409,8 @@ internal static class SvgTextSyntax
                 continue;
             }
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
-            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "color" or "fill" or "fill-opacity" or "stroke" or "fill-rule" or "display" or "visibility") continue;
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "color" or "fill" or "fill-opacity" or "stroke" or "fill-rule" or "display" or "visibility"
+                or "stroke-width" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-miterlimit" or "stroke-dasharray" or "stroke-dashoffset" or "paint-order" or "vector-effect") continue;
             reader.MoveToElement();
             style = inherited;
             return false;
@@ -423,10 +424,11 @@ internal static class SvgTextSyntax
         return true;
 
         static bool HasUnsupportedProperties(InlineStyle style)
-            => style.Opacity is not null || style.TextFont.Family is not null || style.TextFont.Weight is not null || style.TextFont.Style is not null || style.TextFont.Size is not null || style.Filter is not null || style.Width is not null || style.StrokeOpacity is not null || style.GeometryWidth is not null || style.GeometryHeight is not null;
+            => style.Opacity is not null || style.TextFont.Family is not null || style.TextFont.Weight is not null || style.TextFont.Style is not null || style.TextFont.Size is not null || style.Filter is not null || style.GeometryWidth is not null || style.GeometryHeight is not null;
 
         static bool HasPaintProperties(InlineStyle style)
-            => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.FillRule is not null;
+            => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.FillRule is not null
+                || style.Width is not null || style.StrokeOpacity is not null || style.Linecap is not null || style.Linejoin is not null || style.Miterlimit is not null || style.Dasharray is not null || style.Dashoffset is not null || style.PaintOrder is not null;
     }
 
     /// <summary>Recognizes admitted nested text spans while returning only the inherited whitespace mode needed by font discovery.</summary>

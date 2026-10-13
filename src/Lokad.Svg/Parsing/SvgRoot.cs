@@ -892,6 +892,19 @@ internal sealed class SvgGlyphGeometry : IDisposable
     internal SvgColor Color { get; }
 
     internal SvgGlyphRasterSource? Source { get; }
+    internal SvgTextStrokePaint? StrokePaint { get; private set; }
+    internal double StrokeBoundsInflation { get; private set; }
+
+    internal static SvgGlyphGeometry CreateStroke(SvgGlyphContourStorage contours, SvgTextStrokePaint paint,
+        SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget)
+    {
+        SvgColor color = paint.Resolve()?.Color ?? throw new InvalidOperationException("A painted text stroke requires a color.");
+        SvgGlyphGeometry geometry = Create(contours, color, font, position, fontSize, glyphMap, budget);
+        geometry.StrokePaint = paint;
+        double scale = Math.Max(Math.Sqrt(glyphMap.A * glyphMap.A + glyphMap.B * glyphMap.B), Math.Sqrt(glyphMap.C * glyphMap.C + glyphMap.D * glyphMap.D));
+        geometry.StrokeBoundsInflation = 2 + (paint.Resolve()?.Width ?? 0) * .5 * scale * Math.Max(1, SvgStrokeStyleSyntax.ParseMiterLimit(paint.Style.Miterlimit));
+        return geometry;
+    }
 
     internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color)
     {

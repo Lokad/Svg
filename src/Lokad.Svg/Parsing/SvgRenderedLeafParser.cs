@@ -50,10 +50,10 @@ internal static class SvgRenderedLeafParser
         ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-        if (state.FilterGroupDepth > 0 && (reader.LocalName is "text" or "image" || reader.GetAttribute("clip-path") is not null
+        if (state.FilterGroupDepth > 0 && (reader.LocalName is "image" || reader.GetAttribute("clip-path") is not null
             || reader.GetAttribute("mask") is not null || state.EffectiveFrame is not null
             || SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filtered group descendants with clips, masks, viewports, markers, text or images are not implemented.");
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filtered group descendants with clips, masks, viewports, markers or images are not implemented.");
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
@@ -268,11 +268,11 @@ internal static class SvgRenderedLeafParser
                 if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on text are not implemented.");
                 SvgResolvedDirectTextElement resolvedText = context.ResolveTextShape(reader);
                 SvgResolvedPaintableElement textElement = resolvedText.PaintableElement;
-                if (!textElement.Transform.IsTranslation) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only text translations are implemented.");
                 // ResolveTextShape validates fill-rule syntax; SVG text keeps glyph winding independent of that property.
                 SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
                 SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke);
+                textPaint = textPaint with { StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
                 using BudgetedParserList<SvgExtractedTextRun> textRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
                 try
                 {
@@ -285,18 +285,22 @@ internal static class SvgRenderedLeafParser
                         SvgTextPathReference? textPath = extracted.Path;
                         if (text.Value.Length == 0) continue;
                         bool hasFill = extracted.PaintSpans.Items.Length == 0 && textPaint.GlyphPaint.HasFill;
+                        bool hasStroke = extracted.PaintSpans.Items.Length == 0 && textPaint.GlyphPaint.HasStroke;
                         foreach (SvgTextPaintSpan span in extracted.PaintSpans.Items)
                         {
                             workCounter.Consume(cancellationToken);
                             hasFill |= span.Paint.HasFill;
+                            hasStroke |= span.Paint.HasStroke;
                         }
-                        if (!hasFill) continue;
+                        if (!hasFill && !hasStroke) continue;
+                        if (textPath is not null && hasStroke) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes on retained text paths are not implemented.");
                         if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
                         SvgTextStyle runStyle = textPath is {} anchoredPath ? textStyle with { Y = 0, Anchor = anchoredPath.Anchor ?? textStyle.Anchor } : textStyle;
                         RenderBudget.BudgetReservation? pendingTextOwner = textPath is null ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
                         SvgTextRun run;
-                        SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(state.OutputTextScale, SvgGlyphMetricTarget.Windows, textPath is not null)
-                            : OperatingSystem.IsLinux() ? new(state.OutputTextScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
+                        double textMetricScale = state.OutputTextScale * (textElement.Transform.TryGetUniformScale(out double uniformTextScale) ? uniformTextScale : 1);
+                        SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(textMetricScale, SvgGlyphMetricTarget.Windows, textPath is not null)
+                            : OperatingSystem.IsLinux() ? new(textMetricScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
                         try { run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, extracted.PaintSpans.Items, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
                         catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)
                         {
@@ -323,12 +327,34 @@ internal static class SvgRenderedLeafParser
                                     using (contours)
                                     {
                                         SvgTextGlyphPaint glyphPaint = run.GetGlyphPaint(glyphIndex, textElement.Presentation.Color);
-                                        SvgPositionedGlyph positionedGlyph = run.Glyphs[glyphIndex++].Translate(textElement.Transform);
+                                        SvgPositionedGlyph positionedGlyph = textElement.Transform.IsTranslation ? run.Glyphs[glyphIndex++].Translate(textElement.Transform) : run.Glyphs[glyphIndex++];
                                         if (!glyphPaint.HasFill) continue;
-                                        SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, glyphPaint.Color, run.Font, positionedGlyph, run.Style.FontSize, budget);
-                                        try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(glyph)); }
+                                        double sourceFontSize = run.Style.FontSize;
+                                        SvgAffineTransform sourceMap = textElement.Transform.IsTranslation ? SvgAffineTransform.Identity : textElement.Transform;
+                                        if (!textElement.Transform.IsTranslation && sourceMap.TryGetUniformScale(out double sourceScale) && sourceScale > 0)
+                                        {
+                                            positionedGlyph = positionedGlyph with { X = positionedGlyph.X * sourceScale, Y = positionedGlyph.Y * sourceScale };
+                                            sourceFontSize *= sourceScale;
+                                            sourceMap = SvgAffineTransform.FromMatrix(sourceMap.A / sourceScale, sourceMap.B / sourceScale, sourceMap.C / sourceScale, sourceMap.D / sourceScale, sourceMap.E, sourceMap.F);
+                                        }
+                                        SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, glyphPaint.Color, run.Font, positionedGlyph, sourceFontSize, sourceMap, budget);
+                                        try { state.Scene.AddGeometry(SvgPaintRecording.RecordGlyph(glyph, state, workCounter, cancellationToken)); }
                                         catch { glyph.Dispose(); throw; }
                                     }
+                                }
+                            }
+                            if (hasStroke)
+                            {
+                                for (int glyphIndex = 0; glyphIndex < run.Glyphs.Length; glyphIndex++)
+                                {
+                                    workCounter.Consume(cancellationToken);
+                                    SvgTextGlyphPaint paint = run.GetGlyphPaint(glyphIndex, textElement.Presentation.Color);
+                                    if (paint.Stroke is not {} strokePaint || !paint.HasStroke) continue;
+                                    SvgPositionedGlyph position = run.Glyphs[glyphIndex];
+                                    using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(run.Font, position, run.Style.FontSize, textElement.Transform, budget, workCounter, cancellationToken);
+                                    SvgGlyphGeometry geometry = SvgGlyphGeometry.CreateStroke(contours, strokePaint, run.Font, position, run.Style.FontSize, textElement.Transform, budget);
+                                    try { state.Scene.AddGeometry(SvgPaintRecording.RecordGlyph(geometry, state, workCounter, cancellationToken)); }
+                                    catch { geometry.Dispose(); throw; }
                                 }
                             }
                         }

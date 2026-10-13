@@ -5,7 +5,7 @@ using Lokad.Svg.Rendering;
 
 /// <summary>Retains one positioned glyph while borrowing the caller's prepared face for device-size fitting.</summary>
 /// <remarks>The scene owns this metadata reservation. The font snapshot remains caller-owned and is never disposed here. Path construction charges discovery, hinting and copied commands to the conversion and returns an exclusive owner. Readers and disposal belong to one single-threaded conversion.</remarks>
-internal sealed class SvgGlyphRasterSource : IDisposable
+internal sealed partial class SvgGlyphRasterSource : IDisposable
 {
     private SvgPreparedFont? _font;
     private RenderBudget.BudgetReservation? _reservation;
@@ -51,7 +51,7 @@ internal sealed class SvgGlyphRasterSource : IDisposable
             ? SvgGlyphStrikeTransform.Create(_fontSize * scaleY, new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0))
             : default;
         OpenTypeGlyphContourStorage contours = HasGlyphMap
-            ? strike.RelaxedMap.B == 0 && strike.RelaxedMap.C == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0
+            ? HasTrueTypePrograms(budget, work, token) && (strike.RelaxedMap.B == 0 && strike.RelaxedMap.C == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0)
                 ? OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, target, TrueTypeImpliedPointRounding.None, OpenTypeWindowsGlyphTransform.Create(new(1, strike.RemainingMap, strike.RelaxedMap), 1), budget, work, token)
                 : OpenTypeFont.GetWindowsUnhintedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike, budget, work, token)
             : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, _fontSize * scaleY, target, TrueTypeImpliedPointRounding.None, budget, work, token);

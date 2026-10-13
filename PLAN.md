@@ -880,16 +880,35 @@ retention cases. Frozen 27/27 corporate documents and 258/258 variants stay exac
 Receipt: `artifacts/maintenance-review-20261012/rotated-ovals-results.json`.
 The retention and geometry commits are pushed at `d747ff31`; hosted
 [Windows/Linux CI is green](https://github.com/Lokad/Svg/actions/runs/38356593117).
-The next three supplied-face text controls are declared before text edits:
+The three supplied-face text controls were declared before text edits:
 fill/stroke opacity, stroke-only winding and the whole document's original
 scale/rotation/anchor/paint combination. Healthy cleaned reference triples for
 all three are now stable on both platforms, with the declared face embedded and
 the source XML tree unchanged. These three controls are retained in the existing
 offset/merge bank before text edits; its eight controls remain separate from the
-whole document. All **19 affected retention/provenance/outcome cases pass on
-Windows and Linux**. Extend shared direct-text transforms and glyph/source stroke
-replay next; do not substitute
-an outlined or simplified document for `inv-146`.
+whole document. Their retention checkpoint passed all **19 affected
+retention/provenance/outcome cases on Windows and Linux**. Shared direct-text
+placement and glyph-local source stroking now make all **eight controls exact
+on both platforms**, including the original scale/rotation/anchor/paint context.
+They preserve their frozen pixels through all twelve output APIs. Windows keeps
+its native horizontal stroke-mask filtering and both platforms retain their
+distinct font preblend. Translucent fill uses the shared mask compositor.
+Root/span stroke inheritance, zero-width discovery, group stroke bounds,
+transparent filtered glyph paint, denial, cancellation and cleanup are protected.
+Dashed, non-scaling, stroke-before-fill and text-path strokes remain explicit
+unsupported combinations within the open G9 promises. `inv-146` now reaches
+ordered merge admission; it remains **0/1 complete**, with the selected-document
+ledger at **49/50**. Continue this same document through its G8 merge/source
+capture mismatches against unchanged references; do not substitute outlines or
+simplify its source.
+
+Complete Release checks pass **7,440 tests/platform**: **5,132 Core / 2,302
+Visual / six FontProbe**, with zero warnings, failures or skips. Obsolete
+transform/stroke rejection cases become positive supplied-font checks or focused
+remaining boundaries; every prior exact result stays protected. The corporate
+**27/27 documents / 258/258 variants** and the previous 49 development documents
+remain exact. Test-retention receipt:
+`artifacts/maintenance-review-20261012/text-strokes-qualified-results.json`.
 
 The preceding rights-pinned `SVGmask02.svg` screen keeps its unchanged 3,600
 bytes, four labels and declared 750×500 transparent output. It is already exact
@@ -1672,6 +1691,12 @@ the complex-script scope.
   method `align`, spacing `exact`. Curved and transformed paths must use the
   shared geometry, not substituted outlines. Out-of-range placement and zero
   path length need explicit measured outcomes.
+- [x] Shared direct-label solid fill/stroke replay with uniform scale/rotation,
+  native glyph-local stroke masks and translucent paint. Three frozen supplied-face
+  text controls advance `inv-146`, separately from document completion. Inherited
+  root/span stroke style, zero widths, group bounds and transparent filtered paint
+  are protected. Dashed, non-scaling, stroke-before-fill and text-path strokes
+  remain explicit pending combinations; this slice does not close the label exit.
 - **Acceptance:** finish `original-logo-live-text` and
   `original-logo-text-path` with an explicitly supplied, redistributable face
   matching the browser embedding. Retain a complete label diagram and curved

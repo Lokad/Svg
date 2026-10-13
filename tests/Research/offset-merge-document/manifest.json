@@ -357,7 +357,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/text-fill-stroke.png",
       "referenceSha256": "bdaef202fe6d25de05e16478723553e9c184d042310af70f8bd973c2240b33d9",
       "captures": [
@@ -411,7 +411,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/text-stroke-only.png",
       "referenceSha256": "695e238dd724a8d718968e83f0fc23f84c541028c7d6e0611a45ab913b0ef13f",
       "captures": [
@@ -465,7 +465,7 @@
       "role": "mechanism-control",
       "explicitViewport": true,
       "scale": 1,
-      "rendererOutcome": "unsupported",
+      "rendererOutcome": "exact",
       "reference": "references/text-mapped-paint.png",
       "referenceSha256": "fbcd38262cda84f933b1299a7eb2602334457539c3984a45280fff883a34f992",
       "captures": [

@@ -109,14 +109,15 @@ public sealed partial class OpenTypeFontTests
     [InlineData("A<tspan stroke='none'>A</tspan>")]
     [InlineData("<tspan stroke='none'>A</tspan>A")]
     [InlineData("<tspan stroke='none'><tspan stroke='red'>A</tspan></tspan>")]
-    public async Task Actually_painted_text_strokes_still_reject_before_font_acquisition(string content)
+    public async Task Actually_painted_text_strokes_acquire_the_supplied_face(string content)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Example' stroke='red'>" + content + "</text></svg>");
         (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
-        SvgException failure = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, failure.ErrorCode);
-        Assert.Equal(0, provider.RequestCount);
-        Assert.Equal(0, source.RequestCount);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        Assert.Single(snapshot.Fonts);
+        Assert.True(SvgConverter.ConvertToPng(input, new(new SvgViewport(96, 96), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None).Length > 0);
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
     }
 
     [Fact]

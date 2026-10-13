@@ -54,18 +54,16 @@ public sealed partial class OpenTypeFontTests
     [InlineData("scale(2)")]
     [InlineData("rotate(5)")]
     [InlineData("skewX(10)")]
-    public async Task Translation_admission_keeps_other_text_maps_rejected_before_font_acquisition(string transform)
+    public async Task Affine_text_maps_acquire_the_supplied_face_and_render(string transform)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><g transform='" + transform + "'><text font-family='Example'>A</text></g></svg>");
         (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
-        SvgException failure = await Assert.ThrowsAsync<SvgException>(async () =>
-        {
-            using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, SvgRenderOptions.Default, CancellationToken.None);
-            document.ConvertToPng(CancellationToken.None);
-        });
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, failure.ErrorCode);
-        Assert.Equal(0, provider.RequestCount);
-        Assert.Equal(0, source.RequestCount);
+        byte[] unchanged = (byte[])input.Clone();
+        using SvgPreparedDocument document = await SvgPreparedDocument.CreateAsync(input, catalog, provider, new(new SvgViewport(96, 96), 1, SvgColor.Transparent, SvgRenderLimits.Default), CancellationToken.None);
+        Assert.True(document.ConvertToPng(CancellationToken.None).Length > 0);
+        Assert.Equal(unchanged, input);
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
     }
 }
 

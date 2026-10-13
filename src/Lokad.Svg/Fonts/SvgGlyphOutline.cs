@@ -27,10 +27,14 @@ internal static class SvgGlyphOutline
 
     /// <summary>Converts one glyph while borrowing decoded storage that remains owned and disposed by the caller.</summary>
     internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, OpenTypeGlyphContourStorage decoded, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => GetContourStorage(font, glyph, fontSize, SvgAffineTransform.Identity, decoded, budget, workCounter, cancellationToken);
+
+    /// <summary>Maps one glyph while borrowing immutable decoded contours; the returned owner reserves its final arrays and observes shared work/cancellation.</summary>
+    internal static SvgGlyphContourStorage GetContourStorage(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, OpenTypeGlyphContourStorage decoded, RenderBudget budget, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(decoded);
         double scale = Validate(font, glyph, fontSize, budget);
-        return TransformDecodedContours(glyph, scale, SvgAffineTransform.Identity, decoded, budget, workCounter, cancellationToken);
+        return TransformDecodedContours(glyph, scale, glyphMap, decoded, budget, workCounter, cancellationToken);
     }
 
     private static double Validate(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget)
