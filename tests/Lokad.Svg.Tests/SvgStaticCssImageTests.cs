@@ -8,6 +8,10 @@ public sealed class SvgStaticCssImageTests
     [Theory]
     [InlineData("gray-alpha-solid")]
     [InlineData("late-nested-cascade")]
+    [InlineData("rgba-fractional-meet")]
+    [InlineData("css-image-card")]
+    [InlineData("varied-integral-phase")]
+    [InlineData("varied-clipped-opacity")]
     public void Image_and_nested_styles_preserve_input_and_release_owners_after_denial_and_retry(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "static-css-images", identity + ".svg"));
@@ -39,5 +43,23 @@ public sealed class SvgStaticCssImageTests
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, input);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Decoded_image_owners_release_after_placement_or_later_document_failure(bool laterFailure)
+    {
+        string original = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "static-css-images", "rgba-fractional-meet.svg"));
+        string invalid = laterFailure
+            ? original.Replace("</svg>", "<rect width='invalid'/></svg>", StringComparison.Ordinal)
+            : original.Replace("xMidYMid meet", "invalid", StringComparison.Ordinal);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(invalid);
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() =>
+        {
+            using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
+        }).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 }

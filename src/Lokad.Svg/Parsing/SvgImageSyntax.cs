@@ -1,5 +1,6 @@
 using System.Xml;
 using Lokad.Svg.Encoding;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
@@ -67,5 +68,23 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
         if (Math.Abs(top - Math.Round(top, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
         if (Math.Abs(right - Math.Round(right, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
         if (Math.Abs(bottom - Math.Round(bottom, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
+    }
+
+    /// <summary>Retains the full pixel map separately from the meet/slice drawable box.</summary>
+    internal static (SvgRectangle Box, SvgShaderMatrix Local) MapRasterPlacement(string? preserveAspectRatio,
+        SvgImageSyntax syntax, int pixelWidth, int pixelHeight, double width, double height)
+    {
+        (SvgViewBoxAlignment horizontal, SvgViewBoxAlignment vertical, SvgViewBoxFit fit) = ParsePlacementAspectRatio(preserveAspectRatio);
+        (double sx, double sy, double tx, double ty) = SvgGeometrySyntax.MapViewBox(
+            new SvgViewBox(0, 0, pixelWidth, pixelHeight, horizontal, vertical, fit), width, height);
+        double left = syntax.X + tx, top = syntax.Y + ty;
+        double right = left + pixelWidth * sx, bottom = top + pixelHeight * sy;
+        SvgShaderMatrix local = new((float)sx, 0, (float)left, 0, (float)sy, (float)top);
+        if (fit == SvgViewBoxFit.Slice)
+        {
+            left = Math.Max(left, syntax.X); top = Math.Max(top, syntax.Y);
+            right = Math.Min(right, syntax.X + width); bottom = Math.Min(bottom, syntax.Y + height);
+        }
+        return (new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null), local);
     }
 }

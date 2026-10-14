@@ -404,6 +404,7 @@ internal static class SvgMaskSyntax
         return geometry.Kind switch
         {
             SvgGeometryKind.Rectangle => geometry.Rectangle,
+            SvgGeometryKind.EmbeddedImage => geometry.Image.Box,
             SvgGeometryKind.AxisAlignedLine => geometry.AxisAlignedLine.ToStrokeBand(),
             SvgGeometryKind.OrthogonalBand => geometry.Rectangle,
             SvgGeometryKind.PatternFill => geometry.Pattern.Fill,

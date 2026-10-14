@@ -41,7 +41,7 @@ internal readonly record struct SvgAxisAlignedLine(double X1, double Y1, double 
     }
 }
 
-internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill, GradientStroke, PolygonFill, RadialGradient, GradientPolygon, RadialPolygon, PatternPolygon }
+internal enum SvgGeometryKind { Invalid, Rectangle, AxisAlignedLine, OrthogonalBand, GlyphContours, PatternFill, GradientFill, GradientStroke, PolygonFill, RadialGradient, GradientPolygon, RadialPolygon, PatternPolygon, EmbeddedImage }
 
 /// <summary>Represents retained scene geometry independently from its raster fast path.</summary>
 internal readonly struct SvgGeometry
@@ -65,6 +65,13 @@ internal readonly struct SvgGeometry
     private readonly SvgGradientPolygon? _gradientPolygon;
     private readonly SvgRadialPolygon? _radialPolygon;
     private readonly SvgPatternPolygon? _patternPolygon;
+    private readonly SvgImageGeometry? _image;
+
+    private SvgGeometry(SvgImageGeometry image)
+    {
+        _kind = SvgGeometryKind.EmbeddedImage;
+        _image = image;
+    }
 
     private SvgGeometry(SvgGeometryKind kind, SvgRectangle rectangle)
     {
@@ -290,6 +297,12 @@ internal readonly struct SvgGeometry
 
     internal static SvgGeometry FromRectangle(SvgRectangle rectangle) => new(SvgGeometryKind.Rectangle, rectangle);
 
+    internal static SvgGeometry FromImage(SvgImageGeometry image) => new(image);
+
+    internal SvgImageGeometry Image => _kind == SvgGeometryKind.EmbeddedImage
+        ? _image ?? throw new InvalidOperationException("This SVG geometry does not contain decoded image pixels.")
+        : throw new InvalidOperationException("This SVG geometry does not contain decoded image pixels.");
+
     internal static SvgGeometry FromAxisAlignedLine(SvgAxisAlignedLine line) => new(line);
 
     internal static SvgGeometry FromOrthogonalBand(SvgRectangle band) => new(SvgGeometryKind.OrthogonalBand, band);
@@ -354,6 +367,7 @@ internal readonly struct SvgGeometry
 
     internal void Dispose()
     {
+        if (_kind == SvgGeometryKind.EmbeddedImage) _image?.Dispose();
         AuthoredPath?.Dispose();
         if (_kind == SvgGeometryKind.GlyphContours) _glyph?.Dispose();
         if (_kind == SvgGeometryKind.PatternFill) _pattern?.Dispose();

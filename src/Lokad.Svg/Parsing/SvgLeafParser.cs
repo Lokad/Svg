@@ -127,15 +127,34 @@ internal static class SvgLeafParser
         SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
         double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
         double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
-        DecodedSolidImage image = DecodeImage(syntax.Href, element, limits, budget, context.WorkCounter, context.CancellationToken);
-        string? aspect = reader.GetAttribute("preserveAspectRatio");
-        SvgRectangle placement = SvgImageSyntax.MapPlacement(aspect, syntax, image, width, height);
-        SvgRectangle rectangle = element.Transform.Apply(placement with { Color = image.Color, HasFill = element.Presentation.HasFill });
-        if (frame is not null) rectangle = frame.Value.Clip.ClipRectangle(frame.Value.Shift(rectangle));
-        return SvgGeometry.FromRectangle(rectangle);
+        DecodedPngImage image = DecodeImage(syntax.Href, limits, budget, context.WorkCounter, context.CancellationToken);
+        try
+        {
+            string? aspect = reader.GetAttribute("preserveAspectRatio");
+            if (image.Raster is null)
+            {
+                DecodedSolidImage solid = new(StampOpacity(image.Color, element.Presentation.Opacity), image.Width, image.Height);
+                SvgRectangle placement = SvgImageSyntax.MapPlacement(aspect, syntax, solid, width, height);
+                SvgRectangle rectangle = element.Transform.Apply(placement with { Color = solid.Color, HasFill = element.Presentation.HasFill });
+                if (frame is not null) rectangle = frame.Value.Clip.ClipRectangle(frame.Value.Shift(rectangle));
+                return SvgGeometry.FromRectangle(rectangle);
+            }
+            (SvgRectangle box, SvgShaderMatrix local) = SvgImageSyntax.MapRasterPlacement(aspect, syntax, image.Width, image.Height, width, height);
+            box = element.Transform.Apply(box with { HasFill = element.Presentation.HasFill });
+            SvgAffineTransform reference = element.Transform;
+            if (frame is { } viewport)
+            {
+                box = viewport.Clip.ClipRectangle(viewport.Shift(box));
+                reference = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(reference);
+            }
+            SvgShaderMatrix referenceMap = new((float)reference.A, (float)reference.C, (float)reference.E,
+                (float)reference.B, (float)reference.D, (float)reference.F);
+            return SvgGeometry.FromImage(new(image.Raster, image.Width, image.Height, box, referenceMap, local, element.Presentation.Opacity));
+        }
+        catch { image.Raster?.Dispose(); throw; }
     }
 
-    private static DecodedSolidImage DecodeImage(string href, SvgResolvedPaintableElement element, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static DecodedPngImage DecodeImage(string href, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         const string Prefix = "data:image/png;base64,";
         if (!href.StartsWith(Prefix, StringComparison.Ordinal)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only base64 PNG data-URI embedded images are implemented.");
@@ -150,8 +169,7 @@ internal static class SvgLeafParser
         workCounter.ConsumeBytes(encoded.Length, cancellationToken);
         byte[] decoded = new byte[(int)maxDecoded];
         if (!Convert.TryFromBase64Chars(encoded, decoded, out int written)) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded image data is not valid base64.");
-        DecodedSolidImage image = PngImageDecoder.DecodeSolidColor(decoded.AsMemory(0, written), limits, budget, workCounter, cancellationToken);
-        return new DecodedSolidImage(StampOpacity(image.Color, element.Presentation.Opacity), image.Width, image.Height);
+        return PngImageDecoder.Decode(decoded.AsMemory(0, written), limits, budget, workCounter, cancellationToken);
     }
 
     private static SvgColor StampOpacity(SvgColor color, byte opacity)

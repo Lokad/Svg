@@ -262,3 +262,11 @@ grouped geometric source capture complete the retained development queue at
 residuals. Qualification passes 7,308 tests/platform, preserves all 2,856 prior
 rendered PNGs and the corporate 27/27 documents /258/258 variants. Remaining finite
 SVG support and release work stays in [PLAN.md](PLAN.md).
+
+The additional authored [CSS/image card](tests/Research/static-css-images/README.md)
+is complete against its unchanged Windows/Linux reference, with three original
+controls and two focused bitmap phase/clip controls separately exact. Shared
+bounded PNG decoding now retains varied pixels, with native fractional image
+sampling and opacity. The selected development queue remains 50/50 and the
+corporate cohort 27/27 documents/258/258 variants. Wider promised SVG behavior
+remains explicit in PLAN.md; this document does not close all image/CSS support.

@@ -8,7 +8,7 @@ shared filled/stroked-path rectangle recognition, native closed-rectangle stroke
 contours and float fringe coverage, and line-segment
 dash endpoint interpolation, isolated image-layer source-over, high-precision shader pixel storage,
 constant shader construction and low-precision pixel replay, bilinear repeat
-image-shader sampling, and
+image-shader sampling, four-bit clamped bitmap sampling and covered bitmap blending, and
 linear/radial gradient coordinate construction and straight open-stroke
 normalization and join construction, clipped image-shader layer restoration,
 rational round caps/joins, SVG endpoint-arc construction and conic subdivision,
@@ -39,6 +39,7 @@ src/core/SkBezierCurves.cpp, src/core/SkFloatingPoint.cpp, src/core/SkEdge.cpp, 
 src/core/SkStrokerPriv.cpp, src/core/SkStroke.cpp, src/core/SkPathBuilder.cpp,
 src/core/SkPathMakers.h, src/core/SkPathRawShapes.cpp, src/core/SkRRect.cpp,
 src/core/SkBlitter.h, src/core/SkBlitter.cpp, src/core/SkBlitter_ARGB32.cpp, src/core/SkBitmapProcState.cpp,
+src/core/SkBitmapProcState_matrixProcs.cpp, src/core/SkBitmapProcState.h,
 src/core/SkBlitRow_D32.cpp, src/core/SkColorData.h, src/core/SkMatrix.cpp, src/core/SkPoint.cpp, src/core/SkPathPriv.cpp,
 src/core/SkRasterClip.cpp, src/core/SkAAClip.cpp, src/core/SkScan_AAAPath.cpp,
 src/core/SkScan_AntiPath.cpp, src/core/SkScan_Antihair.cpp, src/core/SkScan_Hairline.cpp, src/core/SkDraw.cpp,

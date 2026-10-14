@@ -840,6 +840,9 @@ public static class SvgConverter
                 }
                 switch (geometry.Kind)
                 {
+                    case SvgGeometryKind.EmbeddedImage:
+                        if (geometry.Image.Box.HasFill) IncludeBox(geometry.Image.Box, outputMap, 0);
+                        break;
                     case SvgGeometryKind.Rectangle:
                     case SvgGeometryKind.OrthogonalBand:
                         SvgRectangle rect = geometry.Rectangle;
@@ -1398,6 +1401,9 @@ public static class SvgConverter
             }
             switch (geometry.Kind)
             {
+                case SvgGeometryKind.EmbeddedImage:
+                    RasterizeImage(geometry.Image, destination);
+                    return;
                 case SvgGeometryKind.Rectangle:
                     RasterizeRectangle(geometry.Rectangle, destination, pass);
                     return;
@@ -1442,6 +1448,97 @@ public static class SvgConverter
         void RasterizeAxisAlignedLine(SvgAxisAlignedLine line, byte[] destination)
         {
             if (line.IsPainted) RasterizeSolidRectangle(line.ToStrokeBand(), destination);
+        }
+
+        // Bitmap span mapping/interpolation and covered blending adapt Skia at
+        // f8b66b7597c4cc859d3ed190e9c6872241e6721c. Copyright 2008, 2011 Google Inc.
+        // See THIRD_PARTY_NOTICES.txt; existing shader matrix preparation is shared.
+        void RasterizeImage(SvgImageGeometry image, byte[] destination)
+        {
+            if (!image.Box.HasFill || image.Opacity == 0 || image.Box.Width == 0 || image.Box.Height == 0) return;
+            SvgRectangleRaster raster = PrepareRectangle(image.Box);
+            long sampleWork = (long)(raster.Right - raster.Left) * (raster.Bottom - raster.Top) * 4;
+            if (sampleWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image sampling exceeds the configured work limit.");
+            workUnits += sampleWork;
+            SvgShaderMatrix output = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
+            SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateImage(SvgShaderMatrix.Concat(output, image.ReferenceMap), image.LocalMap);
+            byte[] source = image.Pixels;
+            for (int y = raster.Top; y < raster.Bottom; y++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                SvgCpuBitmapOrigin previousOrigin = default;
+                byte previousCoverage = 0;
+                bool seeded = false, filtering = true;
+                long fixedX = 0, fixedY = 0, stepX = 0;
+                for (int x = raster.Left; x < raster.Right; x++)
+                {
+                    byte coverage = ViewportAlpha(raster.GetAlpha(x, y), x, y);
+                    if (coverage == 0) { seeded = false; continue; }
+                    SvgCpuBitmapOrigin origin = ShaderBitmapOrigin(x, y);
+                    if (!seeded || origin != previousOrigin || coverage != previousCoverage)
+                    {
+                        if (!coordinates.TryGetMatrix(origin, out SvgShaderMatrix inverse))
+                            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Embedded image coordinates are not finite and invertible.");
+                        // The legacy bitmap route normalizes nearly-translation
+                        // maps and selects nearest sampling for integral phase.
+                        if (inverse.ScaleX != 1 || inverse.ScaleY != 1)
+                            if (inverse.TryInvert(out SvgShaderMatrix forward) && MathF.Abs(forward.ScaleX - 1) <= 1f / 32768f
+                                && MathF.Abs(forward.ScaleY - 1) <= 1f / 32768f)
+                                inverse = new(1, 0, -forward.TranslateX, 0, 1, -forward.TranslateY);
+                        filtering = image.Width < 16384 && image.Height < 16384
+                            && !(inverse.ScaleX == 1 && inverse.ScaleY == 1
+                                && MathF.Abs(inverse.TranslateX - MathF.Floor(inverse.TranslateX + .5f)) <= 1f / 256f
+                                && MathF.Abs(inverse.TranslateY - MathF.Floor(inverse.TranslateY + .5f)) <= 1f / 256f);
+                        float pointX = (x - origin.X + .5f) * inverse.ScaleX + inverse.TranslateX;
+                        float pointY = (y - origin.Y + .5f) * inverse.ScaleY + inverse.TranslateY;
+                        fixedX = (long)((double)pointX * 4294967296d);
+                        fixedY = (long)((double)pointY * 4294967296d);
+                        stepX = (long)((double)inverse.ScaleX * 4294967296d);
+                        previousOrigin = origin; previousCoverage = coverage; seeded = true;
+                    }
+                    SvgConstantShaderPaint sample = Sample(fixedX, fixedY, filtering);
+                    Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), sample, coverage);
+                    fixedX += stepX;
+                }
+            }
+
+            // SkBlitRow_D32 keeps covered source and destination products together
+            // until the final shift; quantizing covered source first loses a unit.
+            static void Blend(Span<byte> destination, SvgConstantShaderPaint sample, byte coverage)
+            {
+                if (coverage == 255)
+                {
+                    BlendPremultipliedOver(destination, sample.Red, sample.Green, sample.Blue, sample.Alpha);
+                    return;
+                }
+                int sourceScale = coverage + 1;
+                int inverse = 65535 - sample.Alpha * sourceScale;
+                int destinationScale = (inverse + (inverse >> 8)) >> 8;
+                destination[0] = (byte)((sample.Red * sourceScale + destination[0] * destinationScale) >> 8);
+                destination[1] = (byte)((sample.Green * sourceScale + destination[1] * destinationScale) >> 8);
+                destination[2] = (byte)((sample.Blue * sourceScale + destination[2] * destinationScale) >> 8);
+                destination[3] = (byte)((sample.Alpha * sourceScale + destination[3] * destinationScale) >> 8);
+            }
+
+            // Native bitmap interpolation retains four-bit fractions and truncates
+            // the bilerp before independent packed paint alpha is applied.
+            SvgConstantShaderPaint Sample(long x, long y, bool filtering)
+            {
+                long bias = filtering ? 2147483648L : 65536L;
+                x -= bias; y -= bias;
+                int left = (int)Math.Clamp(x >> 32, -1, image.Width), top = (int)Math.Clamp(y >> 32, -1, image.Height);
+                int fx = filtering ? (int)(x >> 28 & 15) : 0, fy = filtering ? (int)(y >> 28 & 15) : 0;
+                int x0 = Math.Clamp(left, 0, image.Width - 1), x1 = Math.Clamp(left + 1, 0, image.Width - 1);
+                int y0 = Math.Clamp(top, 0, image.Height - 1), y1 = Math.Clamp(top + 1, 0, image.Height - 1);
+                int a = (y0 * image.Width + x0) * 4, b = (y0 * image.Width + x1) * 4;
+                int c = (y1 * image.Width + x0) * 4, d = (y1 * image.Width + x1) * 4;
+                int wa = (16 - fx) * (16 - fy), wb = fx * (16 - fy), wc = (16 - fx) * fy, wd = fx * fy;
+                int opacityScale = image.Opacity + 1;
+                return new(Lane(0), Lane(1), Lane(2), Lane(3));
+
+                byte Lane(int channel) => (byte)(((source[a + channel] * wa + source[b + channel] * wb
+                    + source[c + channel] * wc + source[d + channel] * wd) >> 8) * opacityScale >> 8);
+            }
         }
 
         void RasterizeOrthogonalBand(SvgRectangle band, byte[] destination)

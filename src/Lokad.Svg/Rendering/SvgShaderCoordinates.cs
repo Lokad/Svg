@@ -156,6 +156,15 @@ internal struct SvgShaderCoordinates
     internal bool TryMap(int x, int y, SvgCpuBitmapOrigin origin, out (float X, float Y) point)
     {
         point = default;
+        if (!TryGetMatrix(origin, out SvgShaderMatrix matrix)) return false;
+        point = matrix.Map(x - origin.X + .5f, y - origin.Y + .5f);
+        return float.IsFinite(point.X) && float.IsFinite(point.Y);
+    }
+
+    /// <summary>Returns the existing bitmap-local inverse for samplers with a distinct native coordinate discipline.</summary>
+    internal bool TryGetMatrix(SvgCpuBitmapOrigin origin, out SvgShaderMatrix matrix)
+    {
+        matrix = default;
         if (!_enabled) return false;
         if (!_hasPrepared || origin != _origin)
         {
@@ -171,7 +180,7 @@ internal struct SvgShaderCoordinates
             }
         }
         if (!_canSample) return false;
-        point = _prepared.Map(x - origin.X + .5f, y - origin.Y + .5f);
-        return float.IsFinite(point.X) && float.IsFinite(point.Y);
+        matrix = _prepared;
+        return true;
     }
 }

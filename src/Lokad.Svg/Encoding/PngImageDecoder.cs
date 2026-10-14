@@ -5,10 +5,45 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Encoding;
 
-/// <summary>Decodes solid-color 8-bit PNG data URIs into a single color without retaining pixels.</summary>
 /// <summary>Retains one decoded solid-color image with its intrinsic dimensions.</summary>
 internal readonly record struct DecodedSolidImage(SvgColor Color, int Width, int Height);
 
+/// <summary>Transfers decoded raster ownership to the caller; uniform images retain only their color.</summary>
+internal readonly record struct DecodedPngImage(SvgColor Color, int Width, int Height, DecodedPngRaster? Raster);
+
+/// <summary>Owns bounded premultiplied RGBA pixels until the scene releases them.</summary>
+/// <remarks>Pixels are immutable after decoding. Borrowers must finish before disposal;
+/// disposal is idempotent and releases the aggregate allowance and pixel reference.</remarks>
+internal sealed class DecodedPngRaster : IDisposable
+{
+    private RenderBudget.BudgetReservation? _reservation;
+
+    private DecodedPngRaster(byte[] pixels, RenderBudget.BudgetReservation reservation)
+    {
+        Pixels = pixels;
+        _reservation = reservation;
+    }
+
+    internal byte[] Pixels { get; private set; }
+
+    internal static DecodedPngRaster Create(int width, int height, RenderBudget budget)
+    {
+        long bytes = checked((long)width * height * 4);
+        if (bytes > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG raster exceeds the contiguous pixel storage limit.");
+        RenderBudget.BudgetReservation reservation = budget.Reserve(bytes + 64, SvgMemoryCategory.Scene);
+        try { return new(new byte[(int)bytes], reservation); }
+        catch { reservation.Dispose(); throw; }
+    }
+
+    public void Dispose()
+    {
+        Pixels = Array.Empty<byte>();
+        _reservation?.Dispose();
+        _reservation = null;
+    }
+}
+
+/// <summary>Decodes validated 8-bit PNGs through one bounded unfiltering path.</summary>
 internal static class PngImageDecoder
 {
     private static readonly byte[] PngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
@@ -16,6 +51,16 @@ internal static class PngImageDecoder
     private static uint[]? _crcTable;
 
     internal static DecodedSolidImage DecodeSolidColor(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        DecodedPngImage image = Decode(png, limits, budget, workCounter, cancellationToken, false);
+        return new(image.Color, image.Width, image.Height);
+    }
+
+    /// <summary>Returns uniform color or adopts a premultiplied raster; the caller releases any returned raster on every exit.</summary>
+    internal static DecodedPngImage Decode(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => Decode(png, limits, budget, workCounter, cancellationToken, true);
+
+    private static DecodedPngImage Decode(ReadOnlyMemory<byte> png, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool retainRaster)
     {
         ArgumentNullException.ThrowIfNull(limits);
         ArgumentNullException.ThrowIfNull(budget);
@@ -149,10 +194,10 @@ internal static class PngImageDecoder
         {
             throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data carries corrupt compressed pixel data.");
         }
-        return new DecodedSolidImage(ScanSolidColor(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, workCounter, cancellationToken), width, height);
+        return ScanPixels(pixels, width, height, channels, transparent, palette, isPaletteType, (int)rowBytes, budget, workCounter, cancellationToken, retainRaster);
     }
 
-    private static SvgColor ScanSolidColor(byte[] pixels, int width, int height, int channels, byte[]? transparent, byte[]? palette, bool isPaletteType, int rowBytes, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static DecodedPngImage ScanPixels(byte[] pixels, int width, int height, int channels, byte[]? transparent, byte[]? palette, bool isPaletteType, int rowBytes, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, bool retainRaster)
     {
         if (isPaletteType && palette is null) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data is missing its palette chunk.");
         if (isPaletteType && transparent is not null && transparent.Length > 256) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data has a malformed transparency chunk.");
@@ -163,55 +208,80 @@ internal static class PngImageDecoder
         int blue = -1;
         int alpha = -1;
         int position = 0;
-        for (int y = 0; y < height; y++)
+        DecodedPngRaster? raster = null;
+        try
         {
-            workCounter.Consume(cancellationToken);
-            workCounter.ConsumeBytes(rowBytes, cancellationToken);
-            int filter = pixels[position];
-            if (filter > 4) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data uses an unsupported row filter.");
-            Buffer.BlockCopy(pixels, position + 1, current, 0, current.Length);
-            UnfilterRow(filter, current, previous, channels, cancellationToken);
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
             {
-                if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
-                int offset = x * channels;
-                int pixelRed;
-                int pixelGreen;
-                int pixelBlue;
-                int pixelAlpha;
-                if (isPaletteType)
+                workCounter.Consume(cancellationToken);
+                workCounter.ConsumeBytes(rowBytes, cancellationToken);
+                int filter = pixels[position];
+                if (filter > 4) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data uses an unsupported row filter.");
+                Buffer.BlockCopy(pixels, position + 1, current, 0, current.Length);
+                UnfilterRow(filter, current, previous, channels, cancellationToken);
+                for (int x = 0; x < width; x++)
                 {
-                    int index = current[offset];
-                    if (palette is null || index * 3 + 2 >= palette.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data references a missing palette entry.");
-                    pixelRed = palette[index * 3];
-                    pixelGreen = palette[index * 3 + 1];
-                    pixelBlue = palette[index * 3 + 2];
-                    pixelAlpha = transparent is not null && index < transparent.Length ? transparent[index] : 255;
+                    if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                    int offset = x * channels;
+                    int pixelRed;
+                    int pixelGreen;
+                    int pixelBlue;
+                    int pixelAlpha;
+                    if (isPaletteType)
+                    {
+                        int index = current[offset];
+                        if (palette is null || index * 3 + 2 >= palette.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data references a missing palette entry.");
+                        pixelRed = palette[index * 3];
+                        pixelGreen = palette[index * 3 + 1];
+                        pixelBlue = palette[index * 3 + 2];
+                        pixelAlpha = transparent is not null && index < transparent.Length ? transparent[index] : 255;
+                    }
+                    else
+                    {
+                        pixelRed = current[offset];
+                        pixelGreen = channels <= 2 ? current[offset] : current[offset + 1];
+                        pixelBlue = channels <= 2 ? current[offset] : current[offset + 2];
+                        pixelAlpha = channels == 2 ? current[offset + 1] : channels == 4 ? current[offset + 3] : 255;
+                        if (transparent is not null) pixelAlpha = ApplyTransparency(pixelRed, pixelGreen, pixelBlue, pixelAlpha, channels, transparent);
+                    }
+                    if (red < 0)
+                    {
+                        red = pixelRed;
+                        green = pixelGreen;
+                        blue = pixelBlue;
+                        alpha = pixelAlpha;
+                    }
+                    else if (pixelRed != red || pixelGreen != green || pixelBlue != blue || pixelAlpha != alpha)
+                    {
+                        if (!retainRaster) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid-color embedded PNG data are implemented.");
+                        if (raster is null)
+                        {
+                            raster = DecodedPngRaster.Create(width, height, budget);
+                            int preceding = y * width + x;
+                            workCounter.ConsumeBytes(preceding, cancellationToken);
+                            for (int previousPixel = 0; previousPixel < preceding; previousPixel++)
+                            {
+                                if ((previousPixel & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                                Store(raster.Pixels, previousPixel * 4, red, green, blue, alpha);
+                            }
+                        }
+                    }
+                    if (raster is not null) Store(raster.Pixels, (y * width + x) * 4, pixelRed, pixelGreen, pixelBlue, pixelAlpha);
                 }
-                else
-                {
-                    pixelRed = current[offset];
-                    pixelGreen = channels <= 2 ? current[offset] : current[offset + 1];
-                    pixelBlue = channels <= 2 ? current[offset] : current[offset + 2];
-                    pixelAlpha = channels == 2 ? current[offset + 1] : channels == 4 ? current[offset + 3] : 255;
-                    if (transparent is not null) pixelAlpha = ApplyTransparency(pixelRed, pixelGreen, pixelBlue, pixelAlpha, channels, transparent);
-                }
-                if (red < 0)
-                {
-                    red = pixelRed;
-                    green = pixelGreen;
-                    blue = pixelBlue;
-                    alpha = pixelAlpha;
-                }
-                else if (pixelRed != red || pixelGreen != green || pixelBlue != blue || pixelAlpha != alpha)
-                {
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only solid-color embedded PNG data are implemented.");
-                }
+                (previous, current) = (current, previous);
+                position += current.Length + 1;
             }
-            (previous, current) = (current, previous);
-            position += current.Length + 1;
+            return new(new SvgColor((byte)red, (byte)green, (byte)blue, (byte)alpha), width, height, raster);
         }
-        return new SvgColor((byte)red, (byte)green, (byte)blue, (byte)alpha);
+        catch { raster?.Dispose(); throw; }
+
+        static void Store(byte[] destination, int offset, int red, int green, int blue, int alpha)
+        {
+            destination[offset] = (byte)((red * alpha + 127) / 255);
+            destination[offset + 1] = (byte)((green * alpha + 127) / 255);
+            destination[offset + 2] = (byte)((blue * alpha + 127) / 255);
+            destination[offset + 3] = (byte)alpha;
+        }
     }
 
     private static int ApplyTransparency(int red, int green, int blue, int alpha, int channels, byte[] transparent)

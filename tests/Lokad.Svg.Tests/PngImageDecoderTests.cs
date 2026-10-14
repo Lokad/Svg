@@ -8,6 +8,94 @@ public sealed class PngImageDecoderTests
 {
     [Theory]
     [InlineData(0)]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    [InlineData(6)]
+    public void Varied_png_formats_retain_independent_premultiplied_pixels(int colorType)
+    {
+        byte[] row = colorType switch
+        {
+            0 => [0, 120, 240],
+            2 => [0, 255, 0, 0, 0, 0, 255],
+            3 => [0, 0, 1],
+            4 => [0, 120, 128, 240, 64],
+            6 => [0, 255, 0, 0, 128, 0, 0, 255, 64],
+            _ => throw new ArgumentOutOfRangeException(nameof(colorType)),
+        };
+        byte[] expected = colorType switch
+        {
+            0 => [120, 120, 120, 255, 240, 240, 240, 255],
+            2 => [255, 0, 0, 255, 0, 0, 255, 255],
+            3 => [128, 0, 0, 128, 0, 0, 0, 0],
+            4 => [60, 60, 60, 128, 60, 60, 60, 64],
+            6 => [128, 0, 0, 128, 0, 0, 64, 64],
+            _ => throw new ArgumentOutOfRangeException(nameof(colorType)),
+        };
+        List<TestChunk> chunks = [new("IHDR", TestIhdr(2, 1, (byte)colorType))];
+        if (colorType == 3) { chunks.Add(new("PLTE", [255, 0, 0, 0, 255, 0])); chunks.Add(new("tRNS", [128, 0])); }
+        chunks.Add(new("IDAT", ZlibCompress(row))); chunks.Add(new("IEND", []));
+        byte[] png = BuildPng(chunks), unchanged = png.ToArray();
+        RenderBudget budget = new(100_000);
+        DecodedPngImage image = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, new(10_000), CancellationToken.None);
+        using (DecodedPngRaster raster = Assert.IsType<DecodedPngRaster>(image.Raster))
+        {
+            Assert.Equal(2, image.Width); Assert.Equal(1, image.Height);
+            Assert.Equal(expected, raster.Pixels);
+            Assert.True(budget.Snapshot().CurrentBytes >= expected.Length);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, png);
+    }
+
+    [Fact]
+    public void Uniform_png_does_not_retain_a_pixel_surface()
+    {
+        RenderBudget budget = new(100_000);
+        DecodedPngImage image = PngImageDecoder.Decode(Convert.FromBase64String(RedPixel), SvgRenderLimits.Default, budget, new(10_000), CancellationToken.None);
+        Assert.Null(image.Raster);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), image.Color);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void A_later_bad_row_releases_the_already_decoded_raster()
+    {
+        byte[] png = BuildPng([
+            new("IHDR", TestIhdr(2, 2, 6)),
+            new("IDAT", ZlibCompress([0, 255, 0, 0, 128, 0, 0, 255, 64, 5, 0, 0, 0, 0, 0, 0, 0, 0])),
+            new("IEND", []),
+        ]);
+        RenderBudget budget = new(100_000);
+        Assert.Equal(SvgErrorCode.MalformedInput, Assert.Throws<SvgException>(() =>
+            PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, new(10_000), CancellationToken.None)).ErrorCode);
+        Assert.True(budget.Snapshot().PeakBytes >= 4 * 2 * 2);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Later_work_denial_releases_pixels_and_allows_an_unchanged_retry()
+    {
+        byte[] png = BuildPng([
+            new("IHDR", TestIhdr(2, 2, 6)),
+            new("IDAT", ZlibCompress([0, 255, 0, 0, 128, 0, 0, 255, 64, 0, 0, 255, 0, 255, 0, 0, 0, 0])),
+            new("IEND", []),
+        ]);
+        RenderBudget budget = new(100_000);
+        ParserWorkCounter measured = new(10_000);
+        DecodedPngImage first = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, measured, CancellationToken.None);
+        byte[] expected;
+        using (DecodedPngRaster raster = Assert.IsType<DecodedPngRaster>(first.Raster)) expected = raster.Pixels.ToArray();
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, new(measured.Used - 1), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        DecodedPngImage retry = PngImageDecoder.Decode(png, SvgRenderLimits.Default, budget, new(10_000), CancellationToken.None);
+        using (DecodedPngRaster raster = Assert.IsType<DecodedPngRaster>(retry.Raster)) Assert.Equal(expected, raster.Pixels);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData(0)]
     [InlineData(1)]
     [InlineData(128)]
     [InlineData(255)]

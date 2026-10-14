@@ -1,3 +1,24 @@
+## Complete CSS/image card and bounded bitmap replay (2026-10-14)
+
+The retained CC0 card is **1/1 exact** on Windows/Linux at its unchanged 320×200
+output. Original controls are separately **3/3 exact**; two focused phase/clip
+controls are **2/2**. The corporate and selected development cohorts are unchanged.
+Shared PNG unfiltering retains varied premultiplied grayscale/grayscale-alpha,
+palette, RGB and RGBA pixels, while uniform images retain their previous fast path.
+Fractional axis-aligned meet/slice/none image maps keep source coordinates distinct
+from the clipped drawable box. Native 32.32 span stepping, four-bit interpolation,
+integral-phase nearest selection, packed alpha and covered-image composition
+preserve exact pixels. Scene owners release retained decoded pixels on every exit;
+clipped successors transfer that ownership without remapping the source.
+
+[Document/control bank](../tests/Research/static-css-images/README.md),
+[qualification receipt](../artifacts/maintenance-review-20261012/css-image-card-qualified-results.json).
+Fresh Release builds pass **7,583 tests/platform**, retaining every preceding case.
+This supersedes the preceding varied-pixel rejection. Wider finite G7 uniform
+placement/opacity, general affine/resource/clip/mask maps and container stylesheet
+locations remain required; the uniform fast path still gates fractional aspect
+edges. No G7 completion or scope deferral is implied.
+
 ## Grayscale-alpha PNGs and late nested styles (2026-10-14)
 
 The existing bounded decoder admits non-interlaced 8-bit grayscale-alpha PNGs

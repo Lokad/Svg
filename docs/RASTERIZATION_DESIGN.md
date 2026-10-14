@@ -1,3 +1,34 @@
+## Complete CSS/image card and clamped bitmap sampling (2026-10-14)
+
+The unchanged [CC0 card](../tests/Research/static-css-images/README.md) advances
+through varied-PNG rejection to 1/1 exact on Windows/Linux. Its original controls
+are separately 3/3 exact; two new phase/clip witnesses are 2/2. Independent healthy
+platform triples retain the original pixels and declared options throughout.
+
+One validated decoder preserves the preceding uniform fast path. On the first
+pixel variation it reserves a bounded RGBA owner, backfills earlier uniform
+pixels and retains premultiplied channels through the existing unfilter loop.
+Corrupt later rows and work denial release both temporary and retained owners.
+The scene owns decoded rasters; a clipped successor transfers ownership while
+preserving independent source and reference maps.
+
+The ordinary software bitmap route differs from the existing repeat-pattern
+shader. Native float inverses seed 32.32 spans; four-bit bilinear fractions clamp
+each source coordinate. Near-integral translations select nearest sampling under
+the pinned bitmap policy, rather than creating a new pixel tolerance. The phase
+witness exposed 14 differences under unconditional interpolation; native selection
+removes them. Existing shader matrix preparation stays shared, with the bitmap's
+distinct coordinate discipline applied after preparation.
+
+The first whole-card rendering trial left 247 one-unit color differences at AA
+edges. SkBlitRow_D32 combines covered source and destination products before the
+final shift; independently quantizing covered source then compositing loses a
+unit. Retaining this native image distinction removes every difference. Paint
+opacity still applies after sampling, and the existing capture unpremultiplication
+runs once at final output. No shape/pixel/document predicate, epsilon or changed
+reference is used. Uniform-image fractional aspect/opacity, wider affine maps,
+resource/clip/mask locations and the separate rescaled blur remain required work.
+
 ## Grayscale-alpha and nested stylesheet dependencies (2026-10-14)
 
 The retained [CSS/image card](../tests/Research/static-css-images/README.md)

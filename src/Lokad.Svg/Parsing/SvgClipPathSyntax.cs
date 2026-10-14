@@ -689,6 +689,7 @@ internal static class SvgClipPathSyntax
         }
         SvgGeometry result = geometry.Kind switch
         {
+            SvgGeometryKind.EmbeddedImage => SvgGeometry.FromImage(geometry.Image.ClipTo(clip)),
             SvgGeometryKind.OrthogonalBand => SvgGeometry.FromOrthogonalBand(clip.ClipRectangle(geometry.Rectangle)),
             SvgGeometryKind.AxisAlignedLine => clip.ClipLine(geometry.AxisAlignedLine),
             SvgGeometryKind.PolygonFill => SvgGeometry.FromPolygonFill(geometry.Polygon.Stamped(255, clip)),

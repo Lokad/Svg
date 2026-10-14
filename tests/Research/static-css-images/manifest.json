@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One retained complete CC0 CSS/image card (currently rejected) and three orthogonal controls: gray-alpha solid and nested cascade exact; fractional multicolor PNG remains rejected. Frozen original inputs/reference bytes; no complete-document credit yet.",
+  "purpose": "One complete CC0 CSS/image card and three orthogonal controls, exact against frozen independent platform references. Document and control denominators remain separate.",
   "cases": [
     {
       "id": "css-image-card",
@@ -58,9 +58,7 @@
           "startupHealth": "healthy",
           "profileCleaned": true
         }
-      ],
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only solid-color embedded PNG data are implemented."
+      ]
     },
     {
       "id": "gray-alpha-solid",
@@ -158,9 +156,7 @@
           "startupHealth": "healthy",
           "profileCleaned": true
         }
-      ],
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only solid-color embedded PNG data are implemented."
+      ]
     },
     {
       "id": "late-nested-cascade",
@@ -206,6 +202,104 @@
         },
         {
           "pngSha256": "cd0fa246bce8dc601a60da0322dacf70593a7f30fd4a4eb224e7aa48fdf47c63",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "varied-integral-phase",
+      "input": "varied-integral-phase.svg",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "sourceSha256": "bd6c7ce714a9be3cb3066aa3346b5bd847b6c27e6257f5ca6aaba1588dcddda2",
+      "license": "CC0-1.0",
+      "selection": "Retained bitmap phase and clipped-ownership controls before correcting newly admitted pixel semantics; native captures freeze original inputs.",
+      "role": "mechanism-control",
+      "reference": "references/varied-integral-phase.png",
+      "referenceSha256": "36868361d537761a8c38f446b1cf0fb5cb8183073e886a3b941ab7eaed82348f",
+      "licenseEvidence": "Original contributor work dedicated through the leading SPDX CC0-1.0 declaration.",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "36868361d537761a8c38f446b1cf0fb5cb8183073e886a3b941ab7eaed82348f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "36868361d537761a8c38f446b1cf0fb5cb8183073e886a3b941ab7eaed82348f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "36868361d537761a8c38f446b1cf0fb5cb8183073e886a3b941ab7eaed82348f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "36868361d537761a8c38f446b1cf0fb5cb8183073e886a3b941ab7eaed82348f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "36868361d537761a8c38f446b1cf0fb5cb8183073e886a3b941ab7eaed82348f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "36868361d537761a8c38f446b1cf0fb5cb8183073e886a3b941ab7eaed82348f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "varied-clipped-opacity",
+      "input": "varied-clipped-opacity.svg",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "sourceSha256": "866bec982064c235cb30a83a3aedbfbc394586183829b2f58653b191eafd29f9",
+      "license": "CC0-1.0",
+      "selection": "Retained bitmap phase and clipped-ownership controls before correcting newly admitted pixel semantics; native captures freeze original inputs.",
+      "role": "mechanism-control",
+      "reference": "references/varied-clipped-opacity.png",
+      "referenceSha256": "3a55a49b7679722f03f9e7d0cb74fbee610d8ce5a4c54ce6e21341c7b2c514c5",
+      "licenseEvidence": "Original contributor work dedicated through the leading SPDX CC0-1.0 declaration.",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "3a55a49b7679722f03f9e7d0cb74fbee610d8ce5a4c54ce6e21341c7b2c514c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a55a49b7679722f03f9e7d0cb74fbee610d8ce5a4c54ce6e21341c7b2c514c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a55a49b7679722f03f9e7d0cb74fbee610d8ce5a4c54ce6e21341c7b2c514c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "3a55a49b7679722f03f9e7d0cb74fbee610d8ce5a4c54ce6e21341c7b2c514c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a55a49b7679722f03f9e7d0cb74fbee610d8ce5a4c54ce6e21341c7b2c514c5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3a55a49b7679722f03f9e7d0cb74fbee610d8ce5a4c54ce6e21341c7b2c514c5",
           "startupHealth": "healthy",
           "profileCleaned": true
         }
