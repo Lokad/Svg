@@ -174,7 +174,7 @@ internal static class SvgElementAttributePolicy
             SvgElementKind.RadialGradient => reader.LocalName is "id" or "href" or "cx" or "cy" or "r" or "fx" or "fy" or "fr" or "gradientUnits" or "spreadMethod" or "gradientTransform",
             SvgElementKind.GradientStop => reader.LocalName is "offset" or "stop-color" or "stop-opacity" or "style",
             SvgElementKind.Image => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "href" or "preserveAspectRatio" or "opacity" or "display" or "visibility" or "style" or "transform" or "clip-path" or "clip-rule" or "mask" or "stroke-linecap" or "stroke-linejoin" or "stroke-dasharray" or "stroke-dashoffset" or "pathLength" or "color-interpolation",
-            SvgElementKind.NestedViewport => reader.LocalName is "x" or "y" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "overflow" or "opacity",
+            SvgElementKind.NestedViewport => reader.LocalName is "id" or "class" or "x" or "y" or "width" or "height" or "viewBox" or "preserveAspectRatio" or "overflow" or "opacity",
             _ => false
         };
         if (allowed && reader.LocalName is ("id" or "class") && reader.Value.Length > SvgSyntaxLimits.MaximumIdentifierCharacters) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG identifiers and class values exceed the configured syntax limit.");

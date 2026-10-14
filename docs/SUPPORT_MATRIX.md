@@ -1,3 +1,24 @@
+## Grayscale-alpha PNGs and late nested styles (2026-10-14)
+
+The existing bounded decoder admits non-interlaced 8-bit grayscale-alpha PNGs
+with separate gray and alpha channels. Redundant tRNS metadata remains malformed.
+Image rendering still reduces PNG data to a solid color; varied pixel rasters,
+fractional aspect maps and wider finite G7 image promises remain required.
+
+Nested SVG id/class attributes participate in the existing ancestor selectors.
+Static SVG stylesheets are collected in source order before discovery/lowering,
+including nested and rendered-group locations. Supported traversal consumes these
+rules without losing late source styles or inline precedence. Descriptive active
+content, unsupported CSS syntax and rules targeting unstyled containers retain
+their explicit boundaries; wider retained-tree/presentation locations stay open.
+
+Two controls are exact on Windows/Linux, with healthy independent reference
+triples. The complete new CC0 CSS/image card remains rejected (**0/1 complete**)
+at varied PNG data. Its fractional multicolor control also remains rejected.
+[Frozen document/control bank](../tests/Research/static-css-images/README.md).
+Fresh Release qualification passes **7,567 tests/platform**, preserving every
+preceding input/case: [receipt](../artifacts/maintenance-review-20261012/css-image-foundation-qualified-results.json).
+
 ## Fractional filter image bounds (2026-10-14)
 
 The retained fractional SourceGraphic offset now matches its unchanged reference

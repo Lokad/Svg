@@ -160,7 +160,9 @@ internal static class SvgFontRequestDiscovery
                         style = new TextStyle(root.InheritedTextStyle, root.InheritedPresentation.Paint, root.InheritedPresentation.IsDisplayed, root.InheritedPresentation.IsVisible, root.InheritedPresentation.Transform, null, root.InheritedStroke.Stroke, root.Opacity != 255) { OwnOpacity = root.InheritedPresentation.ElementOpacity, PaintServerFill = root.InheritedPresentation.PaintServerFill, StrokeStyle = root.InheritedStroke, PaintOrder = root.InheritedPresentation.PaintOrder };
                     }
                     else style = inheritedLevels[inheritedLevels.Count - 1];
-                    bool collectedStyleElement = isSvgElement && reader.LocalName == "style" && (directChild || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1);
+                    bool collectedStyleElement = isSvgElement && reader.LocalName == "style"
+                        && (directChild || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1
+                            || !sterile && !insideDirectText && inertDepth < 0 && (hasGroupAncestor || viewportSizes.Count > 0));
                     if (!sterile && !insideDirectText && !rootElement && isSvgElement && reader.LocalName is ("svg" or "defs"))
                         SvgStyleSheet.ThrowIfTargetsUnstyledContainer(reader, styleRules, ancestors, workCounter, cancellationToken);
                     if (collectedStyleElement)

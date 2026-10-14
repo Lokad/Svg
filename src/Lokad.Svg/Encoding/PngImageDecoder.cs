@@ -58,7 +58,7 @@ internal static class PngImageDecoder
                 long pixelCount = (long)width * height;
                 if (pixelCount > limits.MaximumPixels) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded PNG pixel count exceeds the configured pixel limit.");
                 isPaletteType = colorType == 3;
-                channels = colorType switch { 0 => 1, 2 => 3, 3 => 1, 6 => 4, _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only grayscale, palette, RGB, and RGBA embedded PNG data are implemented.") };
+                channels = colorType switch { 0 => 1, 2 => 3, 3 => 1, 4 => 2, 6 => 4, _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only grayscale, grayscale-alpha, palette, RGB, and RGBA embedded PNG data are implemented.") };
                 if (bitDepth != 8) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only 8-bit embedded PNG data are implemented.");
                 if (data[10] != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data uses an unsupported compression method.");
                 if (data[11] != 0) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded PNG data uses an unsupported filter method.");
@@ -191,9 +191,9 @@ internal static class PngImageDecoder
                 else
                 {
                     pixelRed = current[offset];
-                    pixelGreen = channels == 1 ? current[offset] : current[offset + 1];
-                    pixelBlue = channels == 1 ? current[offset] : current[offset + 2];
-                    pixelAlpha = channels == 4 ? current[offset + 3] : 255;
+                    pixelGreen = channels <= 2 ? current[offset] : current[offset + 1];
+                    pixelBlue = channels <= 2 ? current[offset] : current[offset + 2];
+                    pixelAlpha = channels == 2 ? current[offset + 1] : channels == 4 ? current[offset + 3] : 255;
                     if (transparent is not null) pixelAlpha = ApplyTransparency(pixelRed, pixelGreen, pixelBlue, pixelAlpha, channels, transparent);
                 }
                 if (red < 0)

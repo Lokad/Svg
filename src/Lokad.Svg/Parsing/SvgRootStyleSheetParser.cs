@@ -3,7 +3,7 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Collects embedded root and definition stylesheets in source order before discovery or lowering.</summary>
+/// <summary>Collects static embedded SVG stylesheets in source order before discovery or lowering.</summary>
 internal static class SvgRootStyleSheetParser
 {
     /// <summary>Scans bounded XML without a DOM; the caller owns the rules and copied declaration strings.</summary>
@@ -16,13 +16,12 @@ internal static class SvgRootStyleSheetParser
         if (!bytes.Contains((byte)0) && bytes.IndexOf("<style"u8) < 0 && bytes.IndexOf(":style"u8) < 0) return;
         using ReadOnlyMemoryStream stream = new(svg);
         using XmlReader reader = XmlReader.Create(stream, settings);
-        int rootDepth = -1, definitionsDepth = -1, descriptionDepth = -1, nodes = 0;
+        int rootDepth = -1, descriptionDepth = -1, nodes = 0;
         while (reader.Read())
         {
             workCounter.Consume(cancellationToken);
             if (reader.NodeType == XmlNodeType.EndElement)
             {
-                if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                 if (reader.Depth == descriptionDepth) descriptionDepth = -1;
                 continue;
             }
@@ -41,8 +40,7 @@ internal static class SvgRootStyleSheetParser
                 if (!reader.IsEmptyElement) descriptionDepth = reader.Depth;
                 continue;
             }
-            if (reader.LocalName == "defs" && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
-            if (reader.LocalName != "style" || reader.Depth != rootDepth + 1 && reader.Depth != definitionsDepth + 1) continue;
+            if (reader.LocalName != "style") continue;
             ThrowIfAttributed(reader);
             using OwnedStyleSheetText text = SvgStyleSheet.ReadElementText(reader, budget, workCounter, cancellationToken);
             SvgStyleSheet.Parse(text.Value, limits.MaximumNodes, rules, strings, budget, workCounter, cancellationToken);

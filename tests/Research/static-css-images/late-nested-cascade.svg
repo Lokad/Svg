@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'><defs><rect id='r' class='badge' width='15' height='12' fill='red'/></defs><svg class='card' x='4' y='4' width='40' height='32'><use href='#r' x='2' y='3'/><rect class='badge' x='22' y='3' width='15' height='12' style='fill:blue'/><style>.badge {fill:#c89c35;} .card > rect.badge {opacity:.625;}</style></svg></svg>

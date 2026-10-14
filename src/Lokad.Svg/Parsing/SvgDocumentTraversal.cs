@@ -227,7 +227,7 @@ internal static class SvgDocumentTraversal
                         }
                     }
                 }
-                else if (directChild && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
+                else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "style")
                 {
                     SvgRootStyleSheetParser.Consume(reader, budget, workCounter, cancellationToken);
                 }

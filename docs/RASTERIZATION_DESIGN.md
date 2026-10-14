@@ -1,3 +1,25 @@
+## Grayscale-alpha and nested stylesheet dependencies (2026-10-14)
+
+The retained [CSS/image card](../tests/Research/static-css-images/README.md)
+declares one complete output and three distinct controls before implementation.
+Independent healthy Windows/Linux triples freeze the original inputs and pixels.
+The solid grayscale-alpha and late nested-cascade controls become exact; varied
+PNG pixels still reject, leaving the whole document 0/1 complete.
+
+The existing PNG unfilter/validation path reads gray and alpha independently;
+redundant tRNS remains malformed. Nested viewport id/class values join the existing
+bounded identity/ancestor matching. The shared stylesheet prepass collects static
+rules in source order outside descriptive content. Rendering and font discovery
+consume admitted group/viewport styles consistently, preserving font acquisition
+after supported content and suppression after unsupported content. Original
+discovery SVG inputs remain unchanged as the two stylesheet rejection cases
+graduate to positive expectations; inline equivalent text protects the result.
+
+No raster storage or sampling implementation is claimed by this dependency fix.
+The card's nonuniform decode, fractional meet/slice and opacity remain required,
+alongside the separate six-pixel rescaled-blur defect. Resource checks retain
+bounded denial, canceled retry, owner cleanup and input integrity.
+
 ## Whole colored signal diagram and bitmap-local frame fringe (2026-10-14)
 
 The unchanged authored diagram is 1/1 exact on Windows/Linux, with its seven

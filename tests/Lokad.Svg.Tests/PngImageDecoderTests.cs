@@ -6,6 +6,35 @@ namespace Lokad.Svg.Tests;
 
 public sealed class PngImageDecoderTests
 {
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(128)]
+    [InlineData(255)]
+    public void Decodes_gray_and_alpha_as_independent_png_channels(int alpha)
+    {
+        byte[] png = BuildPng(
+        [
+            new TestChunk("IHDR", TestIhdr(2, 1, 4)),
+            new TestChunk("IDAT", ZlibCompress([0, 120, (byte)alpha, 120, (byte)alpha])),
+            new TestChunk("IEND", []),
+        ]);
+        Assert.Equal(new SvgColor(120, 120, 120, (byte)alpha), DecodeBuilt(png));
+    }
+
+    [Fact]
+    public void Grayscale_alpha_rejects_redundant_transparency_metadata()
+    {
+        byte[] png = BuildPng(
+        [
+            new TestChunk("IHDR", TestIhdr(1, 1, 4)),
+            new TestChunk("tRNS", [0, 120]),
+            new TestChunk("IDAT", ZlibCompress([0, 120, 128])),
+            new TestChunk("IEND", []),
+        ]);
+        Assert.Equal(SvgErrorCode.MalformedInput, DecodeBuiltError(png));
+    }
+
     private const string RedPixel = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==";
     private const string Wide16384 = "iVBORw0KGgoAAAANSUhEUgAAQAAAAAABCAYAAAAmn7ZYAAABVklEQVR4nO3SMQ0AAACDMPyb3oz0wABpq8kDBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYIABBhhggAEGGGCAAQYYYICBAzvUh3LqxPMyAAAAAElFTkSuQmCC";
     private const string RgbaWithTransparency = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAnRSTlMAAHaTzTgAAAANSURBVHicY/jPwPAfAAUAAf+JmT0dAAAAAElFTkSuQmCC";
