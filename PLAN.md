@@ -52,7 +52,7 @@ remain closed; they are regressions, not a document to complete again.
 | Next deliverable | Missing behavior / dependencies | Concrete acceptance and stop condition |
 | --- | --- | --- |
 | 1. Rescaled blur precision | Fractional SourceGraphic bounds/AA is complete; finish the numerical rescaling residual through existing bounded capture and sampling. | The unchanged [displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg), currently six differing pixels (maximum channel 14 / alpha 1), becomes exact on both platforms. Preserve the repaired [fractional offset](tests/Research/colored-effects-markers/fractional-offset-only.svg), its four new controls, colored-signal **1/1**, original controls **7/7** and the repaired rectangle source; pass affected denial/cancellation/cleanup checks and full checkpoint qualification. This closes the named numerical defect, not all G8. |
-| 2. Supplied-font label/path diagram | Position/rotate lists, textLength and baseline layout; reuse supplied advances, span layout and glyph/path maps. Needed G3/G4/G5 maps land with the document. | Planned complete diagram: mixed styled/fallback spans, x/dx/rotate lists, paired spacing/spacingAndGlyphs lengths and alphabetic/middle/hanging labels, plus a transformed curved-path label with percentage startOffset and an out-of-range glyph. All declared outputs exact on both platforms, with intended-font proof and independent layout metrics. Preserve existing label/path banks; wider finite G9 work and private validation remain visible below. |
+| 2. Supplied-font label/path diagram | Position/rotate lists, textLength, baselines and font changes within spans; reuse supplied advances, span layout and glyph/path maps. Needed G3/G4/G5 maps land with the document. | The retained [CC0 layout guide](tests/Research/font-layout-diagram/README.md) is **0/1 complete** at its declared 432×320 output, with four separate controls **0/4 admitted**. Its mixed/fallback spans, x/dx/rotate lists, spacing/spacingAndGlyphs lengths, alphabetic/middle/hanging baselines and transformed percentage curved label/out-of-range run have frozen original platform references. Both existing public programs have independent intended-font proof. Finish all declared outputs exactly, with independent layout metrics; preserve existing label/path banks and wider finite G9/private requirements. |
 | 3. Root/resource cascade sheet | Remaining root/nested viewport/definition/symbol presentation locations; reuse the late prepass, selector matcher and inherited style machinery. Needed G2/G5 source/instance propagation lands with the document. | Planned complete sheet: root id/class rules supply inherited fill/font; nested viewport, defs and symbol rules style referenced children; descendant/child selectors, inline and !important precedence remain distinct. Freeze a complete export or CC0 sheet before correction, then make every declared output exact on both platforms with intended-font proof and categorized unsupported CSS outcomes. The completed CSS/image card remains a regression. |
 
 All checklist items below are **required and open**. One exact diagram advances
@@ -329,9 +329,11 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/css-image-card-qualified-results.json)
-  records fresh complete build/suite runs of approximately **1m40s Windows** and
-  **4m58s Linux**. Compiler duration plus first-suite start to final completion
+  The [latest receipt](artifacts/maintenance-review-20261012/font-layout-declaration-qualified-results.json)
+  records fresh complete build/suite runs of approximately **1m51s Windows** and
+  **5m18s Linux**. All **7,588 tests/platform** pass, preserving prior membership;
+  the new font-layout document remains 0/1 with four required rejection controls.
+  Compiler duration plus first-suite start to final completion
   excludes initial build-host startup; all three suites ran afresh. These are
   local qualification costs, not renderer speedups or fixed timing guarantees.
   Routine verification uses normal incremental builds; avoid forced compiler

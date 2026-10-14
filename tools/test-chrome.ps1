@@ -35,6 +35,7 @@ New-Item -ItemType Directory -Force -Path $ResultsDirectory | Out-Null
 function Invoke-ChromeCapture {
     param(
         [Parameter(Mandatory = $true)] [string] $Candidate,
+        [Parameter(Mandatory = $true)] [string] $SvgSource,
         [Parameter(Mandatory = $true)] [int] $TimeoutMilliseconds
     )
 
@@ -56,7 +57,7 @@ function Invoke-ChromeCapture {
         $output = [System.IO.File]::Create($Candidate)
         try {
             $outputTask = $process.StandardOutput.BaseStream.CopyToAsync($output)
-            $input = [System.IO.File]::OpenRead($fixture)
+            $input = [System.IO.File]::OpenRead($SvgSource)
             try { $input.CopyTo($process.StandardInput.BaseStream) }
             finally { $input.Dispose(); $process.StandardInput.Close() }
             if (-not $process.WaitForExit($TimeoutMilliseconds))
@@ -99,13 +100,28 @@ $captureRootsBefore = [Collections.Generic.HashSet[string]]::new([string[]][IO.D
 for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
 {
     $candidate = Join-Path $ResultsDirectory "pinned-chrome-smoke-$captureId-$attempt.png"
-    $captureDiagnostics.Add((Invoke-ChromeCapture -Candidate $candidate -TimeoutMilliseconds $CaptureTimeoutMilliseconds))
+    $captureDiagnostics.Add((Invoke-ChromeCapture -Candidate $candidate -SvgSource $fixture -TimeoutMilliseconds $CaptureTimeoutMilliseconds))
     & dotnet $diffTool $reference $candidate
     if ($LASTEXITCODE -ne 0) { throw "Pinned Chrome smoke capture $attempt differs from its reference." }
     $candidateHash = (Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash.ToLowerInvariant()
     if ($candidateHashes.Count -gt 0 -and $candidateHash -ne $candidateHashes[0]) { throw "Pinned Chrome smoke capture $attempt is not byte-identical to the first fresh-process capture." }
     $candidates.Add($candidate)
     $candidateHashes.Add($candidateHash)
+}
+
+# An inert comment keeps the exact red pixels while exceeding Chromium's 2 MiB
+# navigation URL once the SVG and HTML are base64-encoded. The capture tool must
+# deliver the same image through its bounded Blob transport, with fresh profiles.
+$largeSource = Join-Path $ResultsDirectory "large-svg-$captureId.svg"
+$largeSvg = [IO.File]::ReadAllText($fixture).Replace('</svg>', ('<!--' + [string]::new('x', 1200000) + '--></svg>'), [StringComparison]::Ordinal)
+[IO.File]::WriteAllText($largeSource, $largeSvg, [Text.UTF8Encoding]::new($false))
+for ($attempt = 1; $attempt -le $CaptureRuns; $attempt++)
+{
+    $candidate = Join-Path $ResultsDirectory "large-svg-$captureId-$attempt.png"
+    [void](Invoke-ChromeCapture -Candidate $candidate -SvgSource $largeSource -TimeoutMilliseconds $CaptureTimeoutMilliseconds)
+    & dotnet $diffTool $reference $candidate
+    if ($LASTEXITCODE -ne 0) { throw "Large SVG capture $attempt differs from its unchanged red reference." }
+    if ((Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash.ToLowerInvariant() -cne $candidateHashes[0]) { throw 'Large SVG Blob capture changed the established image recipe pixels.' }
 }
 
 $fingerprint = [ordered]@{

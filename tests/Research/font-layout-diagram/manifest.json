@@ -1,0 +1,294 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One retained complete CC0 supplied-font layout guide and four distinct missing-semantic controls; platform references freeze before correction.",
+  "fontPack": "font-pack.json",
+  "fontPrograms": [
+    {
+      "relativePath": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+      "license": "../supplied-font-labels/fonts/OFL.txt",
+      "provenance": "../supplied-font-labels/font-provenance.json",
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    },
+    {
+      "relativePath": "../supplied-font-documents/fonts/NotoSansMono-Bold.ttf",
+      "license": "../supplied-font-documents/fonts/OFL.txt",
+      "provenance": "../supplied-font-documents/font-provenance.json",
+      "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc"
+    }
+  ],
+  "cases": [
+    {
+      "id": "baseline-layout",
+      "input": "baseline-layout.svg",
+      "width": 120,
+      "height": 48,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "0363dea05c3a668196ae22eac63a1d0e628290b6fd73c45718bd92196d1fba4c",
+      "oracleInputSha256": "14108823558980990149e8ebc5e6ea93180d674af863f98ea2746f8dc4093003",
+      "selection": "Declared complete layout guide and four orthogonal controls before production correction; original source/options and both supplied public static TrueType face-0 programs freeze.",
+      "reference": "references/baseline-layout.png",
+      "referenceSha256": "5cacbbfd7c7649b7a2d4e0765e74363a9a9a2c00c964cf4589aa5a4205013b13",
+      "captures": [
+        {
+          "pngSha256": "5cacbbfd7c7649b7a2d4e0765e74363a9a9a2c00c964cf4589aa5a4205013b13",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5cacbbfd7c7649b7a2d4e0765e74363a9a9a2c00c964cf4589aa5a4205013b13",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5cacbbfd7c7649b7a2d4e0765e74363a9a9a2c00c964cf4589aa5a4205013b13",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/baseline-layout.png",
+      "linuxReferenceSha256": "5afa3ca21b0e0f7694247f11d1900a9282b17372a40945ce75de9dfda56ed4b1",
+      "linuxCaptures": [
+        {
+          "pngSha256": "5afa3ca21b0e0f7694247f11d1900a9282b17372a40945ce75de9dfda56ed4b1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5afa3ca21b0e0f7694247f11d1900a9282b17372a40945ce75de9dfda56ed4b1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5afa3ca21b0e0f7694247f11d1900a9282b17372a40945ce75de9dfda56ed4b1",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "expectedError": "UnsupportedFeature",
+      "captureTransport": "data-url-image"
+    },
+    {
+      "id": "font-layout-diagram",
+      "input": "font-layout-diagram.svg",
+      "width": 432,
+      "height": 320,
+      "background": "transparent",
+      "role": "document",
+      "license": "CC0-1.0",
+      "sourceSha256": "bac2066817a635360a43c6af789dbda35e3e0b6a3010efb7e031fb7234a733b3",
+      "oracleInputSha256": "c008ece06a5fa3ab2b5cd68e1f732db2120aca4dc3a96a8ae5544f814f582b22",
+      "selection": "Declared complete layout guide and four orthogonal controls before production correction; original source/options and both supplied public static TrueType face-0 programs freeze.",
+      "reference": "references/font-layout-diagram.png",
+      "referenceSha256": "c81a67e230c9c492db6e0482649f0d8a6ba780c758041071bb3d79548888f3c2",
+      "captures": [
+        {
+          "pngSha256": "c81a67e230c9c492db6e0482649f0d8a6ba780c758041071bb3d79548888f3c2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c81a67e230c9c492db6e0482649f0d8a6ba780c758041071bb3d79548888f3c2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c81a67e230c9c492db6e0482649f0d8a6ba780c758041071bb3d79548888f3c2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/font-layout-diagram.png",
+      "linuxReferenceSha256": "f2bb5bdb188d8b440a25ff12f925720a7adef9aaa6359cf757a84b21fb646715",
+      "linuxCaptures": [
+        {
+          "pngSha256": "f2bb5bdb188d8b440a25ff12f925720a7adef9aaa6359cf757a84b21fb646715",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f2bb5bdb188d8b440a25ff12f925720a7adef9aaa6359cf757a84b21fb646715",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f2bb5bdb188d8b440a25ff12f925720a7adef9aaa6359cf757a84b21fb646715",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "expectedError": "UnsupportedFeature",
+      "captureTransport": "blob-image"
+    },
+    {
+      "id": "position-rotate-lists",
+      "input": "position-rotate-lists.svg",
+      "width": 80,
+      "height": 48,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "fa997eeac6f9652d898b72417fe06832a50d3412c0adfbca86df239cf5813485",
+      "oracleInputSha256": "b108b5ac8e41c7f9bc0f8859753d345387b8b977fb7a0ff9876b5e843023cdd2",
+      "selection": "Declared complete layout guide and four orthogonal controls before production correction; original source/options and both supplied public static TrueType face-0 programs freeze.",
+      "reference": "references/position-rotate-lists.png",
+      "referenceSha256": "c6ca87d291992cf9972169e37a8d37368230a8e0f292b4aba4ba08d323ac9770",
+      "captures": [
+        {
+          "pngSha256": "c6ca87d291992cf9972169e37a8d37368230a8e0f292b4aba4ba08d323ac9770",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c6ca87d291992cf9972169e37a8d37368230a8e0f292b4aba4ba08d323ac9770",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c6ca87d291992cf9972169e37a8d37368230a8e0f292b4aba4ba08d323ac9770",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/position-rotate-lists.png",
+      "linuxReferenceSha256": "2ba3b5dac3c7e850e8df6b06ae64863d0d8043a9c1447aec5eded02f0daa887a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "2ba3b5dac3c7e850e8df6b06ae64863d0d8043a9c1447aec5eded02f0daa887a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ba3b5dac3c7e850e8df6b06ae64863d0d8043a9c1447aec5eded02f0daa887a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2ba3b5dac3c7e850e8df6b06ae64863d0d8043a9c1447aec5eded02f0daa887a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "expectedError": "UnsupportedFeature",
+      "captureTransport": "data-url-image"
+    },
+    {
+      "id": "span-font-fallback",
+      "input": "span-font-fallback.svg",
+      "width": 144,
+      "height": 48,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "8a5320c56a0800764d6f86707f17d4c0ff147067c3f7098f868ab4cc2aa857e3",
+      "oracleInputSha256": "acc330bf0410b4985bac419cd32e32a5b4011aaab653e1e8d9b5fa0ad65eb5cb",
+      "selection": "Declared complete layout guide and four orthogonal controls before production correction; original source/options and both supplied public static TrueType face-0 programs freeze.",
+      "reference": "references/span-font-fallback.png",
+      "referenceSha256": "362cbb66fa2c1b24b93dc97be48bdda3f6d825c6691d4d6a068c5610535c1e67",
+      "captures": [
+        {
+          "pngSha256": "362cbb66fa2c1b24b93dc97be48bdda3f6d825c6691d4d6a068c5610535c1e67",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "362cbb66fa2c1b24b93dc97be48bdda3f6d825c6691d4d6a068c5610535c1e67",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "362cbb66fa2c1b24b93dc97be48bdda3f6d825c6691d4d6a068c5610535c1e67",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/span-font-fallback.png",
+      "linuxReferenceSha256": "48e0d9d4e24f16fee8504195dcc1e46e5fa6bc518b7a2d5cdcb84749c77250cd",
+      "linuxCaptures": [
+        {
+          "pngSha256": "48e0d9d4e24f16fee8504195dcc1e46e5fa6bc518b7a2d5cdcb84749c77250cd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "48e0d9d4e24f16fee8504195dcc1e46e5fa6bc518b7a2d5cdcb84749c77250cd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "48e0d9d4e24f16fee8504195dcc1e46e5fa6bc518b7a2d5cdcb84749c77250cd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "expectedError": "UnsupportedFeature",
+      "captureTransport": "blob-image"
+    },
+    {
+      "id": "text-length-adjustments",
+      "input": "text-length-adjustments.svg",
+      "width": 144,
+      "height": 64,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "796aa135b461c463d74f5ee18d8b02d02287196d69ea04b361a067520be3f8a4",
+      "oracleInputSha256": "a8d0dd920b31e9595ca697a30b083d72cd3bbe3f8186b53ae9ebfbfc90e33e0c",
+      "selection": "Declared complete layout guide and four orthogonal controls before production correction; original source/options and both supplied public static TrueType face-0 programs freeze.",
+      "reference": "references/text-length-adjustments.png",
+      "referenceSha256": "777207131f0a3e81dc722a1cbf701649d2ada994689e674164f800a5f1c8c252",
+      "captures": [
+        {
+          "pngSha256": "777207131f0a3e81dc722a1cbf701649d2ada994689e674164f800a5f1c8c252",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "777207131f0a3e81dc722a1cbf701649d2ada994689e674164f800a5f1c8c252",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "777207131f0a3e81dc722a1cbf701649d2ada994689e674164f800a5f1c8c252",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/text-length-adjustments.png",
+      "linuxReferenceSha256": "b7c8f72bd3800c7b0d3ec1eaf1696f5ca85255293515eeb266a42262727be814",
+      "linuxCaptures": [
+        {
+          "pngSha256": "b7c8f72bd3800c7b0d3ec1eaf1696f5ca85255293515eeb266a42262727be814",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b7c8f72bd3800c7b0d3ec1eaf1696f5ca85255293515eeb266a42262727be814",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b7c8f72bd3800c7b0d3ec1eaf1696f5ca85255293515eeb266a42262727be814",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false,
+      "expectedError": "UnsupportedFeature",
+      "captureTransport": "data-url-image"
+    }
+  ],
+  "browserFontEmbedding": "Exact supplied TTF programs embedded under Example/Mono, with native Missing alias mapped to Example to match the declared catalog fallback; fonts remain inside the SVG image.",
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "captureRecipeRevision": "4-large-blob",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true
+}

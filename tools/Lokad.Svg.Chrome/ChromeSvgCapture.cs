@@ -16,6 +16,7 @@ internal static class ChromeSvgCapture
     internal const int MaximumSvgBytes = 8 * 1024 * 1024;
     internal const int MaximumCapturePixels = 8_388_608;
     internal const int MaximumCaptureDimension = 16_384;
+    private const int MaximumNavigationUrlCharacters = 2 * 1024 * 1024;
 
     internal static async Task<byte[]> CaptureAsync(string executable, ReadOnlyMemory<byte> svg, int width, int height, CaptureBackground background, CancellationToken cancellationToken)
     {
@@ -24,9 +25,17 @@ internal static class ChromeSvgCapture
         if (width > MaximumCaptureDimension || height > MaximumCaptureDimension) throw new InvalidDataException("Chrome capture dimensions exceed the 16,384-pixel side limit.");
         if (svg.Length > MaximumSvgBytes) throw new InvalidDataException("SVG input exceeds the Chrome capture limit of 8 MiB.");
         if ((long)width * height > MaximumCapturePixels) throw new InvalidDataException("Chrome capture dimensions exceed the 8,388,608-pixel transport limit.");
-        string svgDataUrl = "data:image/svg+xml;base64," + Convert.ToBase64String(svg.Span);
+        string svgBase64 = Convert.ToBase64String(svg.Span);
         string pageBackground = background == CaptureBackground.White ? "#ffffff" : background == CaptureBackground.Black ? "#000000" : "transparent";
-        string html = "<style>html,body{margin:0;overflow:hidden;background:" + pageBackground + "}</style><img id=svg src='" + svgDataUrl + "' style='display:block'>";
+        string pageStyle = "<style>html,body{margin:0;overflow:hidden;background:" + pageBackground + "}</style>";
+        string imagePrefix = "<img id=svg src='data:image/svg+xml;base64,";
+        string imageSuffix = "' style='display:block'>";
+        int htmlBytes = Encoding.UTF8.GetByteCount(pageStyle + imagePrefix + imageSuffix) + svgBase64.Length;
+        // Chromium caps navigation URLs at 2 MiB. Keep the established small-input
+        // image recipe; large inputs transport the same SVG bytes in a Blob inside
+        // the same image element. Commands retain the existing 16 MiB bound.
+        bool useBlob = "data:text/html;base64,".Length + 4L * ((htmlBytes + 2) / 3) > MaximumNavigationUrlCharacters;
+        string html = pageStyle + (useBlob ? "<img id=svg style='display:block'>" : imagePrefix + svgBase64 + imageSuffix);
         string pageUrl = "data:text/html;base64," + Convert.ToBase64String(Encoding.UTF8.GetBytes(html));
         await using ChromeProcess chrome = await ChromeProcess.LaunchAsync(executable, cancellationToken);
         byte[] screenshot;
@@ -44,7 +53,10 @@ internal static class ChromeSvgCapture
                 await page.SendAsync("Emulation.setDefaultBackgroundColorOverride", backgroundOverride, cancellationToken);
                 await page.SendAsync("Page.navigate", JsonSerializer.Serialize(new { url = pageUrl }), cancellationToken);
                 await page.WaitForEventAsync("Page.loadEventFired", cancellationToken);
-                await page.SendAsync("Runtime.evaluate", JsonSerializer.Serialize(new { expression = "document.getElementById('svg').decode().then(()=>new Promise(requestAnimationFrame))", awaitPromise = true, returnByValue = true }), cancellationToken);
+                string expression = useBlob
+                    ? "(()=>{const bytes=Uint8Array.from(atob(" + JsonSerializer.Serialize(svgBase64) + "),c=>c.charCodeAt(0));const url=URL.createObjectURL(new Blob([bytes],{type:'image/svg+xml'}));const image=document.getElementById('svg');image.src=url;return image.decode().then(()=>new Promise(requestAnimationFrame)).finally(()=>URL.revokeObjectURL(url));})()"
+                    : "document.getElementById('svg').decode().then(()=>new Promise(requestAnimationFrame))";
+                await page.SendAsync("Runtime.evaluate", JsonSerializer.Serialize(new { expression, awaitPromise = true, returnByValue = true }), cancellationToken);
                 using JsonDocument capture = JsonDocument.Parse(await page.SendAsync("Page.captureScreenshot", JsonSerializer.Serialize(new { format = "png", fromSurface = true, captureBeyondViewport = false, clip = new { x = 0, y = 0, width, height, scale = 1 } }), cancellationToken));
                 screenshot = Convert.FromBase64String(capture.RootElement.GetProperty("result").GetProperty("data").GetString() ?? throw new InvalidDataException("Chrome returned no screenshot bytes."));
             }

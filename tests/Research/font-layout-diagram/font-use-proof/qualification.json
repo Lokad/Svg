@@ -1,0 +1,61 @@
+{
+  "purpose": "Each unchanged supplied public program must affect the whole document inside the SVG image; missing-face witnesses retain the same Blob transport.",
+  "platforms": {
+    "windows": [
+      {
+        "id": "missing-example",
+        "reference": "font-use-proof/windows/missing-example.png",
+        "changedPixelsFromIntendedFont": 6725,
+        "captures": {
+          "id": "missing-example",
+          "pngSha256": "44eebffdb574b9fcfe3d402d06525cb156d383c69771a8ef67fbd5ed2f737627",
+          "freshProcessCaptures": 3,
+          "stability": "identical",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      },
+      {
+        "id": "missing-mono",
+        "reference": "font-use-proof/windows/missing-mono.png",
+        "changedPixelsFromIntendedFont": 999,
+        "captures": {
+          "id": "missing-mono",
+          "pngSha256": "ace845e548f3d8cc4e3120e35a3df6c688b575a9a3dc7f139e3553d25a927c3e",
+          "freshProcessCaptures": 3,
+          "stability": "identical",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      }
+    ],
+    "linux": [
+      {
+        "id": "missing-example",
+        "reference": "font-use-proof/linux/missing-example.png",
+        "changedPixelsFromIntendedFont": 6120,
+        "captures": {
+          "id": "missing-example",
+          "pngSha256": "3a37b685cf12cf8f257572dbe00ac802a82223cc5ff926ef41cbf3b0ec1d2a23",
+          "freshProcessCaptures": 3,
+          "stability": "identical",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      },
+      {
+        "id": "missing-mono",
+        "reference": "font-use-proof/linux/missing-mono.png",
+        "changedPixelsFromIntendedFont": 918,
+        "captures": {
+          "id": "missing-mono",
+          "pngSha256": "d7b231aeb0c8b77899e2dafce0fbffcf06e87da0dad1a99a75dc0c5ae78396d0",
+          "freshProcessCaptures": 3,
+          "stability": "identical",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      }
+    ]
+  }
+}

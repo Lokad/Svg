@@ -1,3 +1,22 @@
+## Retained font layout guide and bounded large-input capture (2026-10-14)
+
+The [new CC0 guide](../tests/Research/font-layout-diagram/README.md) retains one
+complete output and four distinct controls before production layout correction.
+All currently reject at the named position/rotation, textLength, baseline or
+span-font gates. Healthy independent Windows/Linux triples freeze original SVGs,
+options and per-platform pixels. Missing either supplied unchanged public font
+program changes the whole image; this proves both programs are used inside it.
+
+The first capture timed out before producing any accepted reference. Nested
+base64 encoding of two TTF programs exceeded Chromium's navigation URL limit.
+The existing tool now keeps the small-input recipe and loads larger SVG bytes
+through a Blob in the same image element. Existing 8 MiB input, 16 MiB command,
+64 MiB screenshot, sandbox, external-resource blocks and profile cleanup remain.
+Inert-padding baseline controls establish identical glyph pixels across transports
+on both platforms, and three large-input native smoke captures preserve the
+unchanged red reference. No renderer pixels, font programs or preceding reference
+bytes are changed by this transport correction. Actual layout work remains open.
+
 ## Complete CSS/image card and clamped bitmap sampling (2026-10-14)
 
 The unchanged [CC0 card](../tests/Research/static-css-images/README.md) advances
