@@ -55,3 +55,6 @@ tests/References/inventory/capture-inputs/inv-14[01]-*.svg -text whitespace=cr-a
 
 # Preserve the unchanged Latin-1 offset/merge document and its authored whitespace.
 tests/Fixtures/candidates/inv-146.svg -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof
+
+# Preserve the frozen cascade controls, including their original CRLF bytes.
+tests/Research/root-resource-cascade/*.svg -text whitespace=cr-at-eol
