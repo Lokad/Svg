@@ -1,3 +1,28 @@
+## Parent-bitmap restoration of rescaled linearRGB blur (2026-10-15)
+
+The original six-pixel transparent blur defect is closed; the unchanged
+[filter-region bank](../tests/Research/filter-regions/manifest.json) is **26/26 exact**
+on Windows/Linux. Source and kernel replays were exact independently. A whole
+native picture replay differed from compositor output, isolating the destination
+bitmap coordinates rather than Gaussian weights or RGB transfer arithmetic.
+
+Restore the requested crop separately in each existing bordered raster context.
+Compose the reduced source image placement before its blur subset, invert in
+parent-bitmap coordinates, and retain native `fract(coordinate + 0.5)` shader
+fractions. Sampling may read the initialized backing border beyond the inset
+subset. The complete blur input remains available: clipping its allocation to
+the requested output would drop source contributions. Intermediate graph nodes
+restore to their own frame, preserving offscreen pixels consumed by later offsets;
+only the final result uses parent viewport crops. Packed sRGB restoration retains
+its separate bitmap sampler and paint-alpha semantics.
+
+No document, coordinate or failure-pixel predicate is introduced. Existing
+bounded owners/work/cancellation remain; focused controls protect stale-sample
+clearing, clipped parent restoration and offscreen graph dependencies. The
+[finished-correction receipt](../artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json)
+retains full platform qualification. This entry supersedes historical six-pixel
+blur gates below; wider finite G8 support remains required.
+
 ## Retained font layout guide and bounded large-input capture (2026-10-14)
 
 The [new CC0 guide](../tests/Research/font-layout-diagram/README.md) retains one

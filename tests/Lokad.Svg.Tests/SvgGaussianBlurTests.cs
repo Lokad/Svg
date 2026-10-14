@@ -10,21 +10,31 @@ public sealed class SvgGaussianBlurTests
     [InlineData(144f)]
     [InlineData(532f)]
     public void Placed_large_blurs_release_denied_owners_preserve_source_and_retry_identically(float sigma)
-        => ValidatePlacedBlur(sigma, SvgFilterColorSpace.LinearRgb);
+        => ValidatePlacedBlur(sigma, SvgFilterColorSpace.LinearRgb, false);
 
     [Fact]
     public void Packed_large_blur_releases_denied_owners_preserves_source_and_retries_identically()
-        => ValidatePlacedBlur(204.6f, SvgFilterColorSpace.Srgb);
+        => ValidatePlacedBlur(204.6f, SvgFilterColorSpace.Srgb, false);
 
-    private static void ValidatePlacedBlur(float sigma, SvgFilterColorSpace colorSpace)
+    [Fact]
+    public void Cropped_parent_bitmap_restoration_clears_samples_and_releases_denied_owners_before_retry()
+        => ValidatePlacedBlur(204.6f, SvgFilterColorSpace.LinearRgb, true);
+
+    private static void ValidatePlacedBlur(float sigma, SvgFilterColorSpace colorSpace, bool cropped)
     {
         const int width = 128, height = 96;
         byte[] source = new byte[width * height * 4];
         for (int offset = 0; offset < source.Length; offset += 4) source[offset + 2] = source[offset + 3] = 255;
         byte[] before = (byte[])source.Clone(), expected = new byte[source.Length];
         SvgShaderPaint[] samples = new SvgShaderPaint[width * height];
+        if (cropped) samples.AsSpan().Fill(new(1, 1, 1, 1));
         RenderBudget accepted = new(1_000_000);
         long work = Run(expected, samples, accepted, long.MaxValue, CancellationToken.None);
+        if (cropped)
+        {
+            Assert.Equal(default, samples[0]);
+            Assert.Contains(samples, sample => sample.Alpha > 0);
+        }
         long peak = accepted.Snapshot().PeakBytes;
         Assert.Contains(expected, value => value > 0);
         Assert.Contains(samples, value => value.Alpha > 0);
@@ -53,7 +63,10 @@ public sealed class SvgGaussianBlurTests
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
 
         long Run(byte[] destination, SvgShaderPaint[] outputSamples, RenderBudget budget, long availableWork, CancellationToken token)
-            => SvgGaussianBlur.ApplyRescaled(source, destination, width, height, new(sigma, sigma), new(0, 0, width, height), new(0, 0),
+            => SvgGaussianBlur.ApplyRescaled(source, destination, width, height, new(sigma, sigma), new(0, 0, width, height),
+                cropped ? new(10, 8, 125, 90) : new(0, 0, width, height),
+                cropped ? new(new(200, 210), new(512, 512), new(240, 220, 318, 288))
+                    : new(new(0, 0), new(width, height, true), new(0, 0, width, height)),
                 false, colorSpace, outputSamples, budget, availableWork, token);
     }
 

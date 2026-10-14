@@ -7,6 +7,32 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterPlaybackTests
 {
     [Fact]
+    public void Rescaled_blur_keeps_offscreen_intermediate_pixels_needed_by_a_later_offset()
+    {
+        const int width = 128, height = 96;
+        RenderBudget parserBudget = new(1_000_000);
+        byte[] input = Document("<defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='128' height='96'>"
+            + "<feGaussianBlur stdDeviation='144'/><feOffset dx='-64'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
+        using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parserBudget, CancellationToken.None);
+        SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+        SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+        byte[] source = new byte[width * height * 4];
+        for (int pixel = 0; pixel < width * height; pixel++) source[pixel * 4 + 2] = source[pixel * 4 + 3] = 255;
+        SvgFilterDeviceMap map = new(1, 1)
+        {
+            Regions = new(SvgAffineTransform.FromScaleOffset(1, 1, 0, 0), new(width, height), new(0, 0, width, height))
+            {
+                SourceBounds = new(0, 0, width, height),
+                RasterPlacement = new(new(0, 0), new(32, height), new(0, 0, 32, height))
+            }
+        };
+        RenderBudget rasterBudget = new(1_000_000);
+        using (SvgFilterResult result = SvgFilterPlayback.Apply(source, width, height, resource, map, rasterBudget, long.MaxValue, CancellationToken.None))
+            Assert.True(result.Pixels[(48 * width) * 4 + 3] > 0);
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Extreme_finite_gaussian_deviations_use_the_bounded_native_device_cap()
     {
         byte[] capped = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='532'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");

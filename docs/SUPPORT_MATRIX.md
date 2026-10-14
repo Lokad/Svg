@@ -1,3 +1,18 @@
+## Parent-bitmap linearRGB blur restoration (2026-10-15)
+
+The unchanged displaced transparent blur is exact on Windows/Linux against its
+frozen platform references. All **26/26 filter-region controls** are exact. The
+six-pixel alpha defect is closed by restoring each cropped result in the existing
+bordered parent bitmap, retaining composed float placement, native shader
+fractions and the initialized image border. Intermediate graph nodes keep
+pixels outside the parent viewport when later offsets need them.
+
+The sRGB packed path and its opacity control remain exact. Bounded owners,
+work denial, cancellation, retry and sample clearing remain protected; no new
+runtime dependency or reference change is involved. See the
+[qualification receipt](../artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json).
+This closes the named residual, without claiming wider G8 or another document.
+
 ## Rescaled sRGB filter bitmap restoration (2026-10-14)
 
 Two focused retained controls are exact on Windows/Linux against their frozen
@@ -9,8 +24,8 @@ placement keeps the bitmap origin, float inverse and 32.32 horizontal stepping.
 The sRGB graph does not allocate an unnecessary float sample plane.
 
 The [filter-region bank](../tests/Research/filter-regions/manifest.json) is now
-**25 exact / one required known difference**. The original six-pixel linearRGB
-case remains required and unchanged. These two controls do not close wider G8,
+**26/26 exact**, following the separately qualified linearRGB correction above.
+These two sRGB controls do not close wider G8,
 G2–G9/S17 or establish another complete document. See the [qualification receipt](../artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json).
 
 ## Complete root/resource cascade sheet (2026-10-14)

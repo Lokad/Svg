@@ -8,7 +8,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Twenty-six frozen finite filter controls: 25 exact and the required six-pixel linearRGB resampling residual. The two sRGB controls qualify packed bitmap restoration and paint opacity separately from complete documents; original sources and references remain unchanged.",
+  "purpose": "Twenty-six frozen finite filter controls, all exact. The original displaced linearRGB blur now preserves parent-bitmap crop, placement and shader fractions; packed sRGB restoration and paint opacity remain separately protected. Original sources, references and options are unchanged; controls remain separate from complete documents.",
   "cases": [
     {
       "id": "primitive-region-identity",
@@ -324,22 +324,7 @@
       "reference": "references/displaced-blur-transparent.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 6,
-        "MaximumChannelError": 14,
-        "MeanAbsoluteError": 0.0001718291788856305,
-        "RootMeanSquareError": 0.04367269038690539,
-        "MaximumAlphaError": 1,
-        "AlphaChangedPixelCount": 6,
-        "MinimumMismatchX": 437,
-        "MinimumMismatchY": 259,
-        "MaximumMismatchX": 437,
-        "MaximumMismatchY": 272,
-        "IsExact": false
-      },
-      "remainingGap": "Six remaining shader/alpha rounding pixels in transparent displaced large-blur restoration; retain under finite G8. Complete inv-143/144 opaque-background outputs are exact separately."
+      "role": "fidelity"
     },
     {
       "id": "shifted-filter-source",

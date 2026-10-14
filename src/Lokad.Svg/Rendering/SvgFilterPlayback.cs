@@ -13,12 +13,15 @@ internal readonly record struct SvgFilterDeviceMap(double ScaleX, double ScaleY)
 /// <summary>Retains one integer-offset source branch and its composed intermediate crop.</summary>
 internal readonly record struct SvgOffsetFilterPlacement(double X, double Y, bool AlphaOnly, SvgPaintBounds Clip);
 
+/// <summary>Places a filter source in the bounded parent bitmaps used for restoration.</summary>
+internal readonly record struct SvgFilterRasterPlacement(SvgCpuBitmapOrigin SourceOrigin, SvgCpuRasterGrid Grid, SvgAnalyticClipBounds Clip);
+
 /// <summary>Maps primitive coordinates to the bounded source grid, separately from Gaussian distances.</summary>
 internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordinates, SvgViewportLengthBases LengthBases, SvgPaintBounds FilterRegion)
 {
     internal SvgPaintBounds? SourceBounds { get; init; }
     /// <summary>Places this cropped source grid in its destination bitmap for native image sampling.</summary>
-    internal SvgCpuBitmapOrigin SourceOrigin { get; init; }
+    internal SvgFilterRasterPlacement? RasterPlacement { get; init; }
 }
 
 /// <summary>Owns the graph output and optional unquantized final shader samples until composition.</summary>
@@ -137,7 +140,11 @@ internal static class SvgFilterPlayback
                                 Math.Max(inputBounds.Right, Math.Min(width, requested.Right)),
                                 Math.Max(inputBounds.Bottom, Math.Min(height, requested.Bottom)));
                         }
-                        work += SvgGaussianBlur.ApplyRescaled(input, output, width, height, deviation, inputBounds, map.Regions?.SourceOrigin ?? new(0, 0),
+                        // Only the final result is restored to the parent bitmap.
+                        // Earlier nodes retain pixels that later offsets may bring onscreen.
+                        SvgFilterRasterPlacement placement = (index == finalIndex ? map.Regions?.RasterPlacement : null)
+                            ?? new(new(0, 0), new(width, height, true), new(0, 0, width, height));
+                        work += SvgGaussianBlur.ApplyRescaled(input, output, width, height, deviation, inputBounds, regions[index], placement,
                             inputLinear, resource.ColorSpace, index == finalIndex && resource.ColorSpace == SvgFilterColorSpace.LinearRgb ? AllocateSamples() : Span<SvgShaderPaint>.Empty,
                             budget, availableWork - work, token);
                         if (map.Regions is not null) Clip(output, regions[index], CropRounding.Outward);

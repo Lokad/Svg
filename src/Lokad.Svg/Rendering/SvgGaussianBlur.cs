@@ -33,7 +33,7 @@ internal static class SvgGaussianBlur
     /// <remarks>All temporary frames are budget-owned and released on every exit. Source and destination are borrowed;
     /// work is admitted before each pixel phase, and cancellation is checked per row. Color transfer is deferred to sampling.</remarks>
     internal static long ApplyRescaled(ReadOnlySpan<byte> source, Span<byte> destination, int width, int height,
-        SvgGaussianDeviation deviation, SvgPaintBounds sourceBounds, SvgCpuBitmapOrigin sourceOrigin, bool inputLinear, SvgFilterColorSpace space,
+        SvgGaussianDeviation deviation, SvgPaintBounds sourceBounds, SvgPaintBounds requestedBounds, SvgFilterRasterPlacement placement, bool inputLinear, SvgFilterColorSpace space,
         Span<SvgShaderPaint> samples, RenderBudget budget, long availableWork, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(budget);
@@ -93,8 +93,8 @@ internal static class SvgGaussianBlur
                         {
                             float sampleX = MathF.FusedMultiplyAdd(lowLeft + x + .5f, 1 / sx, first ? cx - srcLeft : cx - (float)Math.Floor(logical.Left));
                             float sampleY = MathF.FusedMultiplyAdd(lowTop + y + .5f, 1 / sy, first ? cy - srcTop : cy - (float)Math.Floor(logical.Top));
-                            SvgShaderPaint sample = first ? Sample(source, width, height, srcLeft, srcTop, srcWidth, srcHeight, sampleX, sampleY)
-                                : Sample(current.Pixels, current.Width, current.Height, 0, 0, current.Width, current.Height, sampleX, sampleY);
+                            SvgShaderPaint sample = first ? Sample(source, width, height, srcLeft, srcTop, srcWidth, srcHeight, sampleX, sampleY, false)
+                                : Sample(current.Pixels, current.Width, current.Height, 0, 0, current.Width, current.Height, sampleX, sampleY, false);
                             if (first && !inputLinear && space == SvgFilterColorSpace.LinearRgb) sample = SvgFilterColorTransfer.Convert(sample, SvgFilterColorSpace.LinearRgb);
                             sample.Blend(down.Pixels.AsSpan((y * lowWidth + x) * 4, 4), 255);
                         }
@@ -131,50 +131,81 @@ internal static class SvgGaussianBlur
                 new(Math.Min(sigmaX / scaleBackX, 135), Math.Min(sigmaY / scaleBackY, 135)), budget, availableWork - work, token);
             Charge((long)width * height);
             destination.Clear();
-            bool packed = space == SvgFilterColorSpace.Srgb;
-            SvgShaderMatrix restoreInverse = default;
-            long bitmapStep = 0, bitmapStart = 0;
-            if (packed)
+            SvgCpuBitmapOrigin sourceOrigin = placement.SourceOrigin;
+            if (space == SvgFilterColorSpace.LinearRgb)
             {
-                // The native blur result insets its padded image before placement.
-                // Keep the source-grid origin and float matrix separate from texel stepping.
-                SvgShaderMatrix restore = new(scaleBackX, 0, scaleBackX * (outputLeft + 1) + (offsetX + sourceOrigin.X),
-                    0, scaleBackY, scaleBackY * (outputTop + 1) + (offsetY + sourceOrigin.Y));
-                if (!restore.TryInvert(out restoreInverse))
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Restored bitmap coordinates are not invertible.");
-                bitmapStep = (long)((double)restoreInverse.ScaleX * 4294967296d);
-                bitmapStart = (long)((double)((sourceOrigin.X + .5f) * restoreInverse.ScaleX + restoreInverse.TranslateX) * 4294967296d) + 4294967296L;
+                Charge(samples.Length);
+                samples.Clear();
+                SvgAnalyticClipBounds clip = placement.Clip;
+                SvgAnalyticClipBounds parent = new(Math.Max(clip.Left, sourceOrigin.X), Math.Max(clip.Top, sourceOrigin.Y),
+                    (int)Math.Min(clip.Right, (long)sourceOrigin.X + width), (int)Math.Min(clip.Bottom, (long)sourceOrigin.Y + height));
+                if (parent.Right <= parent.Left || parent.Bottom <= parent.Top) return work;
+                int requestedLeft = (int)Math.Clamp(Math.Floor((double)sourceOrigin.X + requestedBounds.Left), parent.Left, parent.Right);
+                int requestedTop = (int)Math.Clamp(Math.Floor((double)sourceOrigin.Y + requestedBounds.Top), parent.Top, parent.Bottom);
+                int requestedRight = (int)Math.Clamp(Math.Ceiling((double)sourceOrigin.X + requestedBounds.Right), parent.Left, parent.Right);
+                int requestedBottom = (int)Math.Clamp(Math.Ceiling((double)sourceOrigin.Y + requestedBounds.Bottom), parent.Top, parent.Bottom);
+                foreach (SvgCpuRasterContext tile in placement.Grid.GetContexts(new(requestedLeft, requestedTop, requestedRight, requestedBottom)))
+                {
+                    token.ThrowIfCancellationRequested();
+                    Charge(1);
+                    SvgCpuBitmapOrigin origin = new(Math.Max(tile.Origin.X, clip.Left), Math.Max(tile.Origin.Y, clip.Top));
+                    int cropLeft = Math.Max(requestedLeft, tile.BitmapClip.Left), cropTop = Math.Max(requestedTop, tile.BitmapClip.Top);
+                    int cropRight = Math.Min(requestedRight, tile.BitmapClip.Right), cropBottom = Math.Min(requestedBottom, tile.BitmapClip.Bottom);
+                    int restoreLeft = (int)Math.Floor((cropLeft - (offsetX + sourceOrigin.X)) / scaleBackX) - 1;
+                    int restoreTop = (int)Math.Floor((cropTop - (offsetY + sourceOrigin.Y)) / scaleBackY) - 1;
+                    // The reduced source image is placed first. The blur subset is
+                    // concatenated afterwards, in the parent's bitmap coordinates.
+                    float translateX = scaleBackX * (restoreLeft + 1 - imageLeft)
+                        + (scaleBackX * imageLeft + (offsetX + sourceOrigin.X - origin.X));
+                    float translateY = scaleBackY * (restoreTop + 1 - imageTop)
+                        + (scaleBackY * imageTop + (offsetY + sourceOrigin.Y - origin.Y));
+                    SvgShaderMatrix restore = new(scaleBackX, 0, translateX, 0, scaleBackY, translateY);
+                    if (!restore.TryInvert(out SvgShaderMatrix inverse))
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Restored bitmap coordinates are not invertible.");
+                    int firstX = Math.Max(cropLeft, tile.Interior.Left), lastX = Math.Min(cropRight, tile.Interior.Right);
+                    int firstY = Math.Max(cropTop, tile.Interior.Top), lastY = Math.Min(cropBottom, tile.Interior.Bottom);
+                    for (int y = firstY; y < lastY; y++)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        float sampleY = MathF.FusedMultiplyAdd(y - origin.Y + .5f, inverse.ScaleY, inverse.TranslateY);
+                        for (int x = firstX; x < lastX; x++)
+                        {
+                            float sampleX = MathF.FusedMultiplyAdd(x - origin.X + .5f, inverse.ScaleX, inverse.TranslateX);
+                            SvgShaderPaint sample = Sample(blurred.Pixels, blurred.Width, blurred.Height,
+                                restoreLeft + 1 - outputLeft, restoreTop + 1 - outputTop,
+                                blurred.Width, blurred.Height, sampleX, sampleY, true);
+                            sample = SvgFilterColorTransfer.Convert(sample, SvgFilterColorSpace.Srgb);
+                            int index = (y - sourceOrigin.Y) * width + x - sourceOrigin.X;
+                            if (!samples.IsEmpty) samples[index] = sample;
+                            sample.Blend(destination.Slice(index * 4, 4), 255);
+                        }
+                    }
+                }
+                return work;
             }
+            // Packed restoration retains the qualified bitmap sampler and paint-alpha path.
+            SvgShaderMatrix bitmapRestore = new(scaleBackX, 0, scaleBackX * (outputLeft + 1) + (offsetX + sourceOrigin.X),
+                0, scaleBackY, scaleBackY * (outputTop + 1) + (offsetY + sourceOrigin.Y));
+            if (!bitmapRestore.TryInvert(out SvgShaderMatrix restoreInverse))
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Restored bitmap coordinates are not invertible.");
+            long bitmapStep = (long)((double)restoreInverse.ScaleX * 4294967296d);
+            long bitmapStart = (long)((double)((sourceOrigin.X + .5f) * restoreInverse.ScaleX + restoreInverse.TranslateX) * 4294967296d) + 4294967296L;
             for (int y = 0; y < height; y++)
             {
                 token.ThrowIfCancellationRequested();
                 long bitmapX = bitmapStart;
-                long bitmapY = packed ? (long)((double)((y + sourceOrigin.Y + .5f) * restoreInverse.ScaleY + restoreInverse.TranslateY) * 4294967296d) + 4294967296L : 0;
+                long bitmapY = (long)((double)((y + sourceOrigin.Y + .5f) * restoreInverse.ScaleY + restoreInverse.TranslateY) * 4294967296d) + 4294967296L;
                 for (int x = 0; x < width; x++)
                 {
-                    SvgShaderPaint sample;
-                    if (packed)
+                    SvgConstantShaderPaint value = SampleBitmap(blurred.Pixels, blurred.Width, blurred.Height, bitmapX, bitmapY);
+                    Span<byte> pixel = destination.Slice((y * width + x) * 4, 4);
+                    pixel[0] = value.Red; pixel[1] = value.Green; pixel[2] = value.Blue; pixel[3] = value.Alpha;
+                    if (!samples.IsEmpty)
                     {
-                        SvgConstantShaderPaint value = SampleBitmap(blurred.Pixels, blurred.Width, blurred.Height, bitmapX, bitmapY);
-                        Span<byte> pixel = destination.Slice((y * width + x) * 4, 4);
-                        pixel[0] = value.Red; pixel[1] = value.Green; pixel[2] = value.Blue; pixel[3] = value.Alpha;
-                        if (!samples.IsEmpty)
-                        {
-                            const float scale = 1f / 255f;
-                            samples[y * width + x] = new(value.Red * scale, value.Green * scale, value.Blue * scale, value.Alpha * scale);
-                        }
-                        bitmapX += bitmapStep;
-                        continue;
+                        const float scale = 1f / 255f;
+                        samples[y * width + x] = new(value.Red * scale, value.Green * scale, value.Blue * scale, value.Alpha * scale);
                     }
-                    else
-                    {
-                        float sampleX = MathF.FusedMultiplyAdd(x + .5f, 1 / scaleBackX, -offsetX / scaleBackX - outputLeft);
-                        float sampleY = MathF.FusedMultiplyAdd(y + .5f, 1 / scaleBackY, -offsetY / scaleBackY - outputTop);
-                        sample = Sample(blurred.Pixels, blurred.Width, blurred.Height, 0, 0, blurred.Width, blurred.Height, sampleX, sampleY);
-                        sample = SvgFilterColorTransfer.Convert(sample, SvgFilterColorSpace.Srgb);
-                    }
-                    if (!samples.IsEmpty) samples[y * width + x] = sample;
-                    sample.Blend(destination.Slice((y * width + x) * 4, 4), 255);
+                    bitmapX += bitmapStep;
                 }
             }
             return work;
@@ -217,20 +248,22 @@ internal static class SvgGaussianBlur
                 return new(pixels[at], pixels[at + 1], pixels[at + 2], pixels[at + 3]);
             }
         }
-        static SvgShaderPaint Sample(ReadOnlySpan<byte> data, int w, int h, int ox, int oy, int sw, int sh, float x, float y)
+        static SvgShaderPaint Sample(ReadOnlySpan<byte> data, int w, int h, int ox, int oy, int sw, int sh, float x, float y, bool backingBorder)
         {
             float px = x - .5f, py = y - .5f;
             int left = (int)MathF.Floor(px), top = (int)MathF.Floor(py);
-            float fx = px - left, fy = py - top;
-            SvgShaderPaint a = Pixel(data, w, h, ox, oy, sw, sh, left, top), b = Pixel(data, w, h, ox, oy, sw, sh, left + 1, top);
-            SvgShaderPaint c = Pixel(data, w, h, ox, oy, sw, sh, left, top + 1), d = Pixel(data, w, h, ox, oy, sw, sh, left + 1, top + 1);
+            // Match native save_xy before gathering either the source subset or
+            // the blur result's initialized backing border.
+            float fx = x + .5f - MathF.Floor(x + .5f), fy = y + .5f - MathF.Floor(y + .5f);
+            SvgShaderPaint a = Pixel(data, w, h, ox, oy, sw, sh, left, top, backingBorder), b = Pixel(data, w, h, ox, oy, sw, sh, left + 1, top, backingBorder);
+            SvgShaderPaint c = Pixel(data, w, h, ox, oy, sw, sh, left, top + 1, backingBorder), d = Pixel(data, w, h, ox, oy, sw, sh, left + 1, top + 1, backingBorder);
             float wa = (1 - fx) * (1 - fy), wb = fx * (1 - fy), wc = (1 - fx) * fy, wd = fx * fy;
             return new(Weighted(a.Red, b.Red, c.Red, d.Red, wa, wb, wc, wd), Weighted(a.Green, b.Green, c.Green, d.Green, wa, wb, wc, wd),
                 Weighted(a.Blue, b.Blue, c.Blue, d.Blue, wa, wb, wc, wd), Weighted(a.Alpha, b.Alpha, c.Alpha, d.Alpha, wa, wb, wc, wd));
             static float Weighted(float a, float b, float c, float d, float wa, float wb, float wc, float wd) => ((a * wa + b * wb) + c * wc) + d * wd;
-            static SvgShaderPaint Pixel(ReadOnlySpan<byte> data, int w, int h, int ox, int oy, int sw, int sh, int x, int y)
+            static SvgShaderPaint Pixel(ReadOnlySpan<byte> data, int w, int h, int ox, int oy, int sw, int sh, int x, int y, bool backingBorder)
             {
-                if ((uint)x >= (uint)sw || (uint)y >= (uint)sh || (uint)(x + ox) >= (uint)w || (uint)(y + oy) >= (uint)h) return default;
+                if ((!backingBorder && ((uint)x >= (uint)sw || (uint)y >= (uint)sh)) || (uint)(x + ox) >= (uint)w || (uint)(y + oy) >= (uint)h) return default;
                 int offset = ((y + oy) * w + x + ox) * 4;
                 const float scale = 1f / 255f;
                 return new(data[offset] * scale, data[offset + 1] * scale, data[offset + 2] * scale, data[offset + 3] * scale);
