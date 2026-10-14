@@ -42,16 +42,16 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The decoration correction is locally qualified: **7,656 tests/platform**
+The decoration correction is qualified: **7,656 tests/platform**
 (5,272 core / 2,378 visual / six FontProbe). The
 [receipt](artifacts/maintenance-review-20261012/decorations-qualified-results.json)
 records unchanged prior SVG/font/reference bytes and options, preserved exact
 outputs and explicit migration of four obsolete valid-input rejections to positive
 assertions, retaining four wavy-decoration boundaries. The complete sheet remains
-open. Hosted CI for this correction is pending; the preceding
-[Windows/Linux run is terminal green](https://github.com/Lokad/Svg/actions/runs/38652590027)
-for `ddc52075`, including package/consumer, memory, browser, font and validator
-checks. Do not repoll that completed run. G2–G9/S17 stay open.
+open. [Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38656434558)
+for exact implementation revision `87dc9c3e`, including package/consumer, memory,
+browser, font and validator checks. Reuse this completed run for unchanged
+documentation; do not poll it again. G2–G9/S17 stay open.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -375,8 +375,8 @@ representativeness quota delays this finite release.
   The [latest receipt](artifacts/maintenance-review-20261012/decorations-qualified-results.json)
   records complete qualification of **7,656 tests/platform** in **73.2s Windows**
   and **233.7s Linux**, including normal incremental build and command startup.
-  Both meet the target. The preceding word-spacing revision's hosted build plus complete test steps
-  are **2m02s Windows / 1m51s Linux**; separate environments imply no speedup claim.
+  Both meet the target. The exact-revision hosted build plus complete test steps
+  are **2m19s Windows / 1m55s Linux**; separate environments imply no speedup claim.
   Prior hosted observations and the local Linux compiler
   overrun remain in the [preceding receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json),
   with their distinct timing definitions; they are not a new execution task.
