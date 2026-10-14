@@ -10,6 +10,13 @@ public sealed class SvgGaussianBlurTests
     [InlineData(144f)]
     [InlineData(532f)]
     public void Placed_large_blurs_release_denied_owners_preserve_source_and_retry_identically(float sigma)
+        => ValidatePlacedBlur(sigma, SvgFilterColorSpace.LinearRgb);
+
+    [Fact]
+    public void Packed_large_blur_releases_denied_owners_preserves_source_and_retries_identically()
+        => ValidatePlacedBlur(204.6f, SvgFilterColorSpace.Srgb);
+
+    private static void ValidatePlacedBlur(float sigma, SvgFilterColorSpace colorSpace)
     {
         const int width = 128, height = 96;
         byte[] source = new byte[width * height * 4];
@@ -46,8 +53,8 @@ public sealed class SvgGaussianBlurTests
         Assert.Equal(0, accepted.Snapshot().CurrentBytes);
 
         long Run(byte[] destination, SvgShaderPaint[] outputSamples, RenderBudget budget, long availableWork, CancellationToken token)
-            => SvgGaussianBlur.ApplyRescaled(source, destination, width, height, new(sigma, sigma), new(0, 0, width, height),
-                false, SvgFilterColorSpace.LinearRgb, outputSamples, budget, availableWork, token);
+            => SvgGaussianBlur.ApplyRescaled(source, destination, width, height, new(sigma, sigma), new(0, 0, width, height), new(0, 0),
+                false, colorSpace, outputSamples, budget, availableWork, token);
     }
 
     [Fact]

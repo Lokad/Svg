@@ -11,6 +11,20 @@ namespace Lokad.Svg.Rendering;
 /// <remarks>Immutable and allocation-free. The caller owns pixels, charges raster work and checks row cancellation.</remarks>
 internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byte Blue, byte Alpha)
 {
+    /// <summary>Interpolates four premultiplied pixels with native four-bit bitmap fractions.</summary>
+    /// <remarks>Fractions are in [0,15]. Allocation-free bounded arithmetic; callers own samples,
+    /// charge pixel work and observe cancellation. Opacity and coverage are applied after interpolation.</remarks>
+    internal static SvgConstantShaderPaint Interpolate(SvgConstantShaderPaint a, SvgConstantShaderPaint b,
+        SvgConstantShaderPaint c, SvgConstantShaderPaint d, int fractionX, int fractionY)
+    {
+        int wa = (16 - fractionX) * (16 - fractionY), wb = fractionX * (16 - fractionY);
+        int wc = (16 - fractionX) * fractionY, wd = fractionX * fractionY;
+        return new(Lane(a.Red, b.Red, c.Red, d.Red, wa, wb, wc, wd), Lane(a.Green, b.Green, c.Green, d.Green, wa, wb, wc, wd),
+            Lane(a.Blue, b.Blue, c.Blue, d.Blue, wa, wb, wc, wd), Lane(a.Alpha, b.Alpha, c.Alpha, d.Alpha, wa, wb, wc, wd));
+        static byte Lane(byte a, byte b, byte c, byte d, int wa, int wb, int wc, int wd)
+            => (byte)((a * wa + b * wb + c * wc + d * wd) >> 8);
+    }
+
     internal void Blend(Span<byte> destination, byte coverage)
         => Blend(destination, coverage, false);
 

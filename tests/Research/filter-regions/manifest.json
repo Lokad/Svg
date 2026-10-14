@@ -8,7 +8,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "Twenty-four frozen finite filter controls: 22 exact, two measured numerical residuals. Shared primitive regions, object-box coordinates, linearRGB color transfer, bounded large blur and grouped overlapping SourceGraphic complete unchanged inv-143/144. Controls stay separate from complete documents; full qualification is required before closing the checkpoint.",
+  "purpose": "Twenty-six frozen finite filter controls: 25 exact and the required six-pixel linearRGB resampling residual. The two sRGB controls qualify packed bitmap restoration and paint opacity separately from complete documents; original sources and references remain unchanged.",
   "cases": [
     {
       "id": "primitive-region-identity",
@@ -385,6 +385,104 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "role": "fidelity"
+    },
+    {
+      "id": "rescaled-blur-srgb",
+      "width": 512,
+      "height": 341,
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "af37b38349117625fff70e4183af59dfd9426eefb37a5522bb05107852e13450",
+      "referenceSha256": "a8918646bc0bd186e762c3375c04e9983101e6f1644ffdd2a4b3e8a8a0745ac9",
+      "selection": "The retained large-blur geometry with explicit sRGB isolates native packed bitmap rescaling from the required linearRGB float residual. Declared and captured on both platforms before its correction; controls remain separate from complete documents.",
+      "input": "rescaled-blur-srgb.svg",
+      "reference": "references/rescaled-blur-srgb.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original focused derivative of the retained authored CC0 mechanism fixture; SPDX declaration preserved.",
+      "role": "fidelity",
+      "captures": [
+        {
+          "pngSha256": "a8918646bc0bd186e762c3375c04e9983101e6f1644ffdd2a4b3e8a8a0745ac9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a8918646bc0bd186e762c3375c04e9983101e6f1644ffdd2a4b3e8a8a0745ac9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a8918646bc0bd186e762c3375c04e9983101e6f1644ffdd2a4b3e8a8a0745ac9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "a8918646bc0bd186e762c3375c04e9983101e6f1644ffdd2a4b3e8a8a0745ac9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a8918646bc0bd186e762c3375c04e9983101e6f1644ffdd2a4b3e8a8a0745ac9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a8918646bc0bd186e762c3375c04e9983101e6f1644ffdd2a4b3e8a8a0745ac9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "rescaled-blur-srgb-opacity",
+      "width": 512,
+      "height": 341,
+      "scale": 1,
+      "background": "transparent",
+      "sourceSha256": "a07d2df8c2a4f573adf8ad318a860fd3ee8be48f4a2004ed65ade944c469bb2a",
+      "referenceSha256": "c364dd2a7b38aa8b9b0ecd7d28f1aadba28f069cfdb0f5b9b5aa57c96062e3b4",
+      "selection": "Focused 0.625 element-opacity control for the retained sRGB rescaled blur. Freezes native packed interpolation followed by paint-alpha modulation before correcting typed output routing.",
+      "input": "rescaled-blur-srgb-opacity.svg",
+      "reference": "references/rescaled-blur-srgb-opacity.png",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Authored CC0 derivative retaining the original SPDX declaration.",
+      "role": "fidelity",
+      "captures": [
+        {
+          "pngSha256": "c364dd2a7b38aa8b9b0ecd7d28f1aadba28f069cfdb0f5b9b5aa57c96062e3b4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c364dd2a7b38aa8b9b0ecd7d28f1aadba28f069cfdb0f5b9b5aa57c96062e3b4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c364dd2a7b38aa8b9b0ecd7d28f1aadba28f069cfdb0f5b9b5aa57c96062e3b4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "c364dd2a7b38aa8b9b0ecd7d28f1aadba28f069cfdb0f5b9b5aa57c96062e3b4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c364dd2a7b38aa8b9b0ecd7d28f1aadba28f069cfdb0f5b9b5aa57c96062e3b4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c364dd2a7b38aa8b9b0ecd7d28f1aadba28f069cfdb0f5b9b5aa57c96062e3b4",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     }
   ],
   "linuxReferenceQualification": {

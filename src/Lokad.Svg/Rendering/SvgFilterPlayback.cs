@@ -17,6 +17,8 @@ internal readonly record struct SvgOffsetFilterPlacement(double X, double Y, boo
 internal readonly record struct SvgFilterRegionContext(SvgAffineTransform Coordinates, SvgViewportLengthBases LengthBases, SvgPaintBounds FilterRegion)
 {
     internal SvgPaintBounds? SourceBounds { get; init; }
+    /// <summary>Places this cropped source grid in its destination bitmap for native image sampling.</summary>
+    internal SvgCpuBitmapOrigin SourceOrigin { get; init; }
 }
 
 /// <summary>Owns the graph output and optional unquantized final shader samples until composition.</summary>
@@ -135,8 +137,8 @@ internal static class SvgFilterPlayback
                                 Math.Max(inputBounds.Right, Math.Min(width, requested.Right)),
                                 Math.Max(inputBounds.Bottom, Math.Min(height, requested.Bottom)));
                         }
-                        work += SvgGaussianBlur.ApplyRescaled(input, output, width, height, deviation, inputBounds,
-                            inputLinear, resource.ColorSpace, index == finalIndex ? AllocateSamples() : Span<SvgShaderPaint>.Empty,
+                        work += SvgGaussianBlur.ApplyRescaled(input, output, width, height, deviation, inputBounds, map.Regions?.SourceOrigin ?? new(0, 0),
+                            inputLinear, resource.ColorSpace, index == finalIndex && resource.ColorSpace == SvgFilterColorSpace.LinearRgb ? AllocateSamples() : Span<SvgShaderPaint>.Empty,
                             budget, availableWork - work, token);
                         if (map.Regions is not null) Clip(output, regions[index], CropRounding.Outward);
                         continue;

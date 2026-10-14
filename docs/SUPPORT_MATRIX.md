@@ -1,3 +1,18 @@
+## Rescaled sRGB filter bitmap restoration (2026-10-14)
+
+Two focused retained controls are exact on Windows/Linux against their frozen
+healthy capture triples: the explicit sRGB large blur and its independent 0.625
+paint-opacity case. Shader reduction remains distinct from packed bitmap
+restoration; final sRGB output retains four-bit interpolation and native paint
+alpha. The shared packed lane arithmetic also serves embedded images. Source-grid
+placement keeps the bitmap origin, float inverse and 32.32 horizontal stepping.
+The sRGB graph does not allocate an unnecessary float sample plane.
+
+The [filter-region bank](../tests/Research/filter-regions/manifest.json) is now
+**25 exact / one required known difference**. The original six-pixel linearRGB
+case remains required and unchanged. These two controls do not close wider G8,
+G2–G9/S17 or establish another complete document. See the [qualification receipt](../artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json).
+
 ## Complete root/resource cascade sheet (2026-10-14)
 
 The CC0 sheet is **1/1 exact**, with four distinct controls **4/4 exact** on

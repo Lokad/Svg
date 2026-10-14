@@ -12998,3 +12998,46 @@ contour equivalence is not asserted to imply identical fitting routes. Broader
 G7 image/resource maps and finite G2–G9/S17 promises stay open. See the
 [bank](../tests/Research/root-resource-cascade/README.md) and
 [qualification receipt](../artifacts/maintenance-review-20261012/root-resource-cascade-qualified-results.json).
+
+
+### Rescaled sRGB bitmap restoration and paint alpha (2026-10-14)
+
+The explicit sRGB derivative of the retained large-blur control initially differed
+at 202 pixels, including 108 alpha values. The opacity control differed at 6,889
+pixels when packed samples still traveled through the float result plane. Both
+now match unchanged Windows/Linux references. Every new reference has three
+healthy fresh-process captures on each platform, frozen before its correction;
+failed capture attempts remain separate diagnostics.
+
+A fresh reduced-grid trace agrees byte for byte with the prior diagnostic. An
+independent native blur of that same 100×98 input grid is also exact. This checks
+the existing bounded integer kernel without claiming that the original document's
+entire image pipeline is thereby qualified. Native replay of the reduced grid
+through an ordinary image uses a different path and cannot substitute for the
+original filtered reference. Matrix-only and interpolation-reassociation trials
+provided no correction to the original six-pixel linearRGB residual and were
+removed. Private stage diagnostics remain under
+`artifacts/effects-delivery-20261014/rescaled-sampling/`.
+
+Native `FilterResult::Builder::blur` insets the padded image before placement.
+`SkBitmapDevice::drawSpecial` draws that bitmap; when sRGB requires no color
+filter, the packed bitmap route retains four-bit fractions and truncates the lane
+interpolation. The reduction still uses shader sampling. Applying packed
+interpolation at both stages left 91 differences; preserving reduction's float
+route and correcting restoration closes the explicit sRGB control.
+
+The existing shader matrix handles float placement/inversion, separately from
+32.32 horizontal texel stepping. A typed source-grid origin carries the cropped
+buffer's position. `SvgConstantShaderPaint.Interpolate` now owns the common packed
+lane arithmetic for embedded images and filtered bitmaps. Opacity remains after
+interpolation. The filter graph retains sRGB output as packed pixels so ordinary
+paint alpha uses the established integer restore route; linearRGB retains the
+unquantized transfer/sample route. No sRGB float-plane allocation is needed.
+
+The original linearRGB case still has exactly six differences and remains a
+required G8 gate. New controls are separate from completed document counts.
+The existing Gaussian resource checks cover a representative packed case alongside
+prior float cases: denied work/storage, cancellation, retry, cleanup and unchanged
+borrowed input. Shared packed interpolation retains existing image regressions.
+See the [bank](../tests/Research/filter-regions/manifest.json) and
+[qualification receipt](../artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json).

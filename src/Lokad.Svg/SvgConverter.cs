@@ -427,7 +427,7 @@ public static class SvgConverter
                 (float)(region.Right - frameLeft), (float)(region.Bottom - frameTop));
             primitiveMap = primitiveMap with { Regions = new(primitiveCoordinates,
                 objectPrimitiveUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), gridRegion)
-                { SourceBounds = new((float)(left - frameLeft), (float)(top - frameTop), (float)(right - frameLeft), (float)(bottom - frameTop)) } };
+                { SourceOrigin = new((int)frameLeft, (int)frameTop), SourceBounds = new((float)(left - frameLeft), (float)(top - frameTop), (float)(right - frameLeft), (float)(bottom - frameTop)) } };
             long copyWork = (long)sw * sh * 4 + end - first;
             if (copyWork >= options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source capture exceeds the work limit.");
             workUnits += copyWork;
@@ -1532,12 +1532,12 @@ public static class SvgConverter
                 int y0 = Math.Clamp(top, 0, image.Height - 1), y1 = Math.Clamp(top + 1, 0, image.Height - 1);
                 int a = (y0 * image.Width + x0) * 4, b = (y0 * image.Width + x1) * 4;
                 int c = (y1 * image.Width + x0) * 4, d = (y1 * image.Width + x1) * 4;
-                int wa = (16 - fx) * (16 - fy), wb = fx * (16 - fy), wc = (16 - fx) * fy, wd = fx * fy;
+                SvgConstantShaderPaint sample = SvgConstantShaderPaint.Interpolate(Pixel(source, a), Pixel(source, b), Pixel(source, c), Pixel(source, d), fx, fy);
                 int opacityScale = image.Opacity + 1;
-                return new(Lane(0), Lane(1), Lane(2), Lane(3));
-
-                byte Lane(int channel) => (byte)(((source[a + channel] * wa + source[b + channel] * wb
-                    + source[c + channel] * wc + source[d + channel] * wd) >> 8) * opacityScale >> 8);
+                return new((byte)(sample.Red * opacityScale >> 8), (byte)(sample.Green * opacityScale >> 8),
+                    (byte)(sample.Blue * opacityScale >> 8), (byte)(sample.Alpha * opacityScale >> 8));
+                static SvgConstantShaderPaint Pixel(ReadOnlySpan<byte> pixels, int at)
+                    => new(pixels[at], pixels[at + 1], pixels[at + 2], pixels[at + 3]);
             }
         }
 
