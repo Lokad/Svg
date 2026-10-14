@@ -11,6 +11,8 @@ public sealed class SvgColoredFilterTests
     [InlineData("small-anisotropic-fractional-offset")]
     [InlineData("arc-polyline-markers")]
     [InlineData("colored-signal-diagram")]
+    [InlineData("fractional-offset-only")]
+    [InlineData("offset-identity-result")]
     public void Colored_filter_source_capture_releases_owners_after_denial_cancellation_and_retry(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "colored-effects-markers", identity + ".svg"));
@@ -43,6 +45,19 @@ public sealed class SvgColoredFilterTests
         }
         Assert.Equal(0, measured.Snapshot().CurrentBytes);
         Assert.Equal(unchanged, input);
+    }
+
+    [Fact]
+    public void Identity_windows_retain_source_image_bounds_before_fractional_displacement()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "colored-effects-markers", "fractional-offset-only.svg"));
+        byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+        string source = System.Text.Encoding.UTF8.GetString(input);
+        foreach (string sigma in new[] { "0", ".4" })
+        {
+            byte[] identity = System.Text.Encoding.UTF8.GetBytes(source.Replace("<feOffset", "<feGaussianBlur stdDeviation='" + sigma + "'/><feOffset", StringComparison.Ordinal));
+            Assert.Equal(expected, SvgConverter.ConvertToPng(identity, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        }
     }
 
     [Theory]

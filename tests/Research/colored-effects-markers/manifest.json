@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One complete original CC0 colored-signal diagram, seven original exact controls and one discovered fractional-offset image-boundary defect. Separate document, original-control and discovered-defect denominators.",
+  "purpose": "One complete original CC0 colored-signal diagram, seven original exact controls, one repaired fractional-offset control and four focused captured-image bounds controls. Document and control denominators remain separate.",
   "cases": [
     {
       "id": "flood-composite-in",
@@ -135,21 +135,203 @@
       "role": "mechanism-control",
       "license": "CC0-1.0",
       "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration.",
-      "selection": "Isolated before the follow-up correction to diagnose nearest-sampled SourceGraphic bounds and image AA under a fractional offset. Independent healthy platform triples are frozen.",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 22,
-        "MaximumChannelError": 139,
-        "MeanAbsoluteError": 0.40716145833333334,
-        "RootMeanSquareError": 6.0635845249874,
-        "MaximumAlphaError": 75,
-        "AlphaChangedPixelCount": 22,
-        "MinimumMismatchX": 10,
-        "MinimumMismatchY": 11,
-        "MaximumMismatchX": 32,
-        "MaximumMismatchY": 25,
-        "IsExact": false
-      }
+      "selection": "Isolated before the follow-up correction to diagnose nearest-sampled SourceGraphic bounds and image AA under a fractional offset. Independent healthy platform triples are frozen."
+    },
+    {
+      "id": "offset-negative-offset",
+      "input": "offset-negative-offset.svg",
+      "sourceSha256": "ac3a9e60cefebc843c9593aaf28c3912982af396f8d0a8857a4e0790701c7228",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "selection": "Diagnose captured image extents and packed AA before outer opacity for the retained fractional-offset defect; original renderer and references stay frozen.",
+      "reference": "references/offset-negative-offset.png",
+      "referenceSha256": "08975e76dc2e786fd7c519a7033087e62b4f4410ee9878a05e15239948133a2b",
+      "licenseEvidence": "Contributor-authored focused CC0 case dedicated through its source SPDX declaration.",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "08975e76dc2e786fd7c519a7033087e62b4f4410ee9878a05e15239948133a2b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "08975e76dc2e786fd7c519a7033087e62b4f4410ee9878a05e15239948133a2b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "08975e76dc2e786fd7c519a7033087e62b4f4410ee9878a05e15239948133a2b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "08975e76dc2e786fd7c519a7033087e62b4f4410ee9878a05e15239948133a2b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "08975e76dc2e786fd7c519a7033087e62b4f4410ee9878a05e15239948133a2b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "08975e76dc2e786fd7c519a7033087e62b4f4410ee9878a05e15239948133a2b",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "offset-subpixel-offset",
+      "input": "offset-subpixel-offset.svg",
+      "sourceSha256": "2fc23deb8e8a94159858467b7a686fc5fe432cd879254e4190e5cc5d70a2c2dc",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "selection": "Diagnose captured image extents and packed AA before outer opacity for the retained fractional-offset defect; original renderer and references stay frozen.",
+      "reference": "references/offset-subpixel-offset.png",
+      "referenceSha256": "a91b147860e5444a605485fcab95c331440fe8d4ba025dceabad37919cd234ab",
+      "licenseEvidence": "Contributor-authored focused CC0 case dedicated through its source SPDX declaration.",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "a91b147860e5444a605485fcab95c331440fe8d4ba025dceabad37919cd234ab",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a91b147860e5444a605485fcab95c331440fe8d4ba025dceabad37919cd234ab",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a91b147860e5444a605485fcab95c331440fe8d4ba025dceabad37919cd234ab",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "a91b147860e5444a605485fcab95c331440fe8d4ba025dceabad37919cd234ab",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a91b147860e5444a605485fcab95c331440fe8d4ba025dceabad37919cd234ab",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a91b147860e5444a605485fcab95c331440fe8d4ba025dceabad37919cd234ab",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "offset-fractional-source",
+      "input": "offset-fractional-source.svg",
+      "sourceSha256": "cbea195c85786a16e9f37db8c4d466bcd8820d417f8bff486a780720737e9097",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "selection": "Diagnose captured image extents and packed AA before outer opacity for the retained fractional-offset defect; original renderer and references stay frozen.",
+      "reference": "references/offset-fractional-source.png",
+      "referenceSha256": "b97fe90adab5621ec7dec265900ac292a223c5cb43f00ca325f22cccb9a78d26",
+      "licenseEvidence": "Contributor-authored focused CC0 case dedicated through its source SPDX declaration.",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "b97fe90adab5621ec7dec265900ac292a223c5cb43f00ca325f22cccb9a78d26",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b97fe90adab5621ec7dec265900ac292a223c5cb43f00ca325f22cccb9a78d26",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b97fe90adab5621ec7dec265900ac292a223c5cb43f00ca325f22cccb9a78d26",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "b97fe90adab5621ec7dec265900ac292a223c5cb43f00ca325f22cccb9a78d26",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b97fe90adab5621ec7dec265900ac292a223c5cb43f00ca325f22cccb9a78d26",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b97fe90adab5621ec7dec265900ac292a223c5cb43f00ca325f22cccb9a78d26",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "offset-identity-result",
+      "input": "offset-identity-result.svg",
+      "sourceSha256": "f716e183a0d724396939ee0f456f514ea12b35900f2f41394e77ecb5df73d9df",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "selection": "Diagnose captured image extents and packed AA before outer opacity for the retained fractional-offset defect; original renderer and references stay frozen.",
+      "reference": "references/offset-identity-result.png",
+      "referenceSha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+      "licenseEvidence": "Contributor-authored focused CC0 case dedicated through its source SPDX declaration.",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e172fb3ac7276f9cffc8e64b13c5c77394a128c5e8cb853d996b5bfc29541b73",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     }
   ],
   "linuxReferenceQualification": {

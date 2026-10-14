@@ -236,18 +236,6 @@ internal static class SvgGaussianBlur
         token.ThrowIfCancellationRequested();
         return work;
 
-        static BoxKernel Kernel(float sigma)
-        {
-            if (sigma <= 0.03f) return default;
-            if (sigma > 135) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gaussian filter rescaling requires the placed image path.");
-            int window = (int)MathF.Floor(sigma * 3f * MathF.Sqrt(2f * MathF.PI) / 4f + 0.5f);
-            if (window <= 1) return default;
-            int third = (window & 1) == 0 ? window + 1 : window;
-            uint divisor = checked((uint)(window * window * third));
-            uint factor = checked((uint)Math.Round(4294967296d / divisor, MidpointRounding.AwayFromZero));
-            return new(window, third, (2 * (window - 1) + third - 1) / 2, factor, (divisor + 1) / 2);
-        }
-
         static long AxisWork(BoxKernel kernel, int extent, int lines)
             => kernel.Identity ? 0 : checked(((long)extent + kernel.Border + kernel.RingLength) * lines * 4);
 
@@ -295,6 +283,23 @@ internal static class SvgGaussianBlur
                 completedScanline?.Invoke(++scanlines);
             }
         }
+    }
+
+    /// <summary>Identifies a native no-op window so graph playback can retain the borrowed image bounds.</summary>
+    internal static bool IsIdentity(SvgGaussianDeviation deviation)
+        => deviation.Horizontal <= 135 && deviation.Vertical <= 135
+            && Kernel(deviation.Horizontal).Identity && Kernel(deviation.Vertical).Identity;
+
+    private static BoxKernel Kernel(float sigma)
+    {
+        if (sigma <= 0.03f) return default;
+        if (sigma > 135) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gaussian filter rescaling requires the placed image path.");
+        int window = (int)MathF.Floor(sigma * 3f * MathF.Sqrt(2f * MathF.PI) / 4f + 0.5f);
+        if (window <= 1) return default;
+        int third = (window & 1) == 0 ? window + 1 : window;
+        uint divisor = checked((uint)(window * window * third));
+        uint factor = checked((uint)Math.Round(4294967296d / divisor, MidpointRounding.AwayFromZero));
+        return new(window, third, (2 * (window - 1) + third - 1) / 2, factor, (divisor + 1) / 2);
     }
 
     private readonly record struct BoxKernel(int Window, int ThirdWindow, int Border, uint Factor, uint Half)

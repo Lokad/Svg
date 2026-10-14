@@ -1,3 +1,21 @@
+## Fractional filter image bounds (2026-10-14)
+
+The retained fractional SourceGraphic offset now matches its unchanged reference
+exactly on Windows/Linux: 22 differing pixels become zero. Shared nearest replay
+preserves the captured source/displaced drawable union, transparent padding and
+packed rectangle AA before the enclosing opacity layer. Identity blur results
+retain their input image bounds, including native one-pixel box windows.
+Four focused negative/subpixel/fractional-geometry/named-result controls are exact
+against healthy independent platform triples. The complete colored-signal document
+and original seven controls remain exact. See the
+[existing bank](../tests/Research/colored-effects-markers/README.md).
+Fresh Release qualification passes **7,556 tests/platform**, every preceding case
+retained: [receipt](../artifacts/maintenance-review-20261012/offset-image-bounds-qualified-results.json).
+
+The six-pixel rescaled blur defect and the wider finite G8 region, graph,
+color-space, map and interaction promises remain required. This supersedes the
+fractional-offset defect statements below without closing G8.
+
 ## Completed colored effects/marker diagram (2026-10-14)
 
 The original CC0 colored-signal diagram and seven original controls are exact

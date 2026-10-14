@@ -45,9 +45,10 @@ internal static class SvgFilterPlayback
         int bytes = source.Length;
         int count = resource.Primitives.Items.Length;
         using RenderBudget.BudgetReservation tableOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgConverter.RasterizedSurface>(count + 2)
-            + ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count) + ParserCollectionMemory.GetArrayByteCount<bool>(count), SvgMemoryCategory.Surface);
+            + 2 * ParserCollectionMemory.GetArrayByteCount<SvgPaintBounds>(count) + ParserCollectionMemory.GetArrayByteCount<bool>(count), SvgMemoryCategory.Surface);
         SvgConverter.RasterizedSurface[] outputs = new SvgConverter.RasterizedSurface[count + 2];
         SvgPaintBounds[] regions = new SvgPaintBounds[count];
+        SvgPaintBounds[] imageBounds = new SvgPaintBounds[count];
         bool[] linear = new bool[count];
         long work = 0;
         bool returned = false;
@@ -74,6 +75,7 @@ internal static class SvgFilterPlayback
                 ReadOnlySpan<byte> input = ReadInput(primitive.Input, index, graphic);
                 outputs[index] = Allocate();
                 Span<byte> output = outputs[index].Pixels;
+                imageBounds[index] = new(0, 0, width, height);
                 if (map.Regions is {} coordinates)
                 {
                     SvgPaintBounds defaults = primitive.Input.Index >= 0 ? regions[primitive.Input.Index] : coordinates.FilterRegion;
@@ -100,6 +102,7 @@ internal static class SvgFilterPlayback
                         }
                     }
                     regions[index] = ResolveRegion(primitive.Region, defaults, coordinates);
+                    imageBounds[index] = regions[index];
                     if (regions[index].Right <= regions[index].Left || regions[index].Bottom <= regions[index].Top) continue;
                 }
                 else if (primitive.Region is not null)
@@ -117,6 +120,9 @@ internal static class SvgFilterPlayback
                 SvgGaussianDeviation deviation = new((float)sigmaX, (float)sigmaY);
                 if (primitive.Kind == SvgFilterPrimitiveKind.GaussianBlur)
                 {
+                    if (SvgGaussianBlur.IsIdentity(deviation))
+                        imageBounds[index] = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index]
+                            : map.Regions?.SourceBounds ?? new(0, 0, width, height);
                     if (deviation.Horizontal > 135 || deviation.Vertical > 135)
                     {
                         SvgPaintBounds inputBounds = primitive.Input.Index >= 0 ? regions[primitive.Input.Index]
@@ -198,7 +204,8 @@ internal static class SvgFilterPlayback
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Offset)
                 {
-                    Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY);
+                    SvgPaintBounds? inputBounds = primitive.Input.Index >= 0 ? imageBounds[primitive.Input.Index] : map.Regions?.SourceBounds;
+                    Offset(input, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, inputBounds);
                     linear[index] = inputLinear;
                 }
                 else if (primitive.Kind == SvgFilterPrimitiveKind.Merge)
@@ -256,7 +263,7 @@ internal static class SvgFilterPlayback
                         blurred.Pixels[offset + 2] = (byte)((primitive.Flood.Blue * a + 127) / 255);
                         blurred.Pixels[offset + 3] = (byte)a;
                     }
-                    Offset(blurred.Pixels, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY);
+                    Offset(blurred.Pixels, output, primitive.OffsetX * map.ScaleX, primitive.OffsetY * map.ScaleY, null);
                     Charge(pixels);
                     for (int offset = 0; offset < bytes; offset += 4)
                     {
@@ -455,9 +462,26 @@ internal static class SvgFilterPlayback
                     ? (int)Math.Floor(value + .5) : upper ? (int)Math.Ceiling(value) : (int)Math.Floor(value);
         }
 
-        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy)
+        void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy, SvgPaintBounds? imageBounds)
         {
             ValidateOffset(dx, dy);
+            bool fractional = dx != Math.Truncate(dx) || dy != Math.Truncate(dy);
+            SvgPaintBounds bounds = imageBounds ?? new(0, 0, width, height);
+            // The SVG filter scope retains the union of source and displaced
+            // drawable bounds. Its transparent padding must stay in the image;
+            // nearest sampling clamps to this capture, not to painted geometry.
+            bounds = new(MathF.Min(bounds.Left, MathF.Floor(bounds.Left + (float)dx)),
+                MathF.Min(bounds.Top, MathF.Floor(bounds.Top + (float)dy)),
+                MathF.Max(bounds.Right, MathF.Ceiling(bounds.Right + (float)dx)),
+                MathF.Max(bounds.Bottom, MathF.Ceiling(bounds.Bottom + (float)dy)));
+            SvgRectangleCoverage coverage = SvgRectangleCoverage.Create(bounds.Left + (float)dx,
+                bounds.Top + (float)dy, bounds.Right + (float)dx, bounds.Bottom + (float)dy, width, height);
+            int imageLeft = (int)MathF.Floor(Math.Clamp(bounds.Left, 0, width));
+            int imageTop = (int)MathF.Floor(Math.Clamp(bounds.Top, 0, height));
+            int imageRight = (int)MathF.Ceiling(Math.Clamp(bounds.Right, 0, width));
+            int imageBottom = (int)MathF.Ceiling(Math.Clamp(bounds.Bottom, 0, height));
+            if (imageRight <= imageLeft || imageBottom <= imageTop) return;
+            if (fractional) Charge(16);
             // SkImageFilters::Offset uses nearest sampling, retaining the legacy
             // layer-space pixel displacement rather than bilinear interpolation.
             if (dx != Math.Truncate(dx)) dx = Math.Floor((float)dx + .5f);
@@ -472,6 +496,23 @@ internal static class SvgFilterPlayback
                 {
                     token.ThrowIfCancellationRequested();
                     long sx = (long)x - (int)dx;
+                    if (fractional)
+                    {
+                        byte alpha = coverage.GetAlpha(x, y);
+                        if (alpha == 0) continue;
+                        int sampleX = (int)Math.Clamp(sx, imageLeft, imageRight - 1);
+                        int sampleY = (int)Math.Clamp(sy, imageTop, imageBottom - 1);
+                        int at = (sampleY * width + sampleX) * 4;
+                        Span<byte> pixel = output.Slice((y * width + x) * 4, 4);
+                        // Stored-image AA uses packed alpha modulation before
+                        // the enclosing opacity layer, retaining both roundings.
+                        int scale = alpha + 1;
+                        pixel[0] = (byte)(input[at] * scale >> 8);
+                        pixel[1] = (byte)(input[at + 1] * scale >> 8);
+                        pixel[2] = (byte)(input[at + 2] * scale >> 8);
+                        pixel[3] = (byte)(input[at + 3] * scale >> 8);
+                        continue;
+                    }
                     if (sx >= 0 && sx < width && sy >= 0 && sy < height)
                         input.Slice((int)(sy * width + sx) * 4, 4).CopyTo(output.Slice((y * width + x) * 4, 4));
                 }

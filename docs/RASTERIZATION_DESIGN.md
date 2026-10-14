@@ -12787,3 +12787,33 @@ cancellation, cleanup, retry and invalid stroke styles protect the shared change
 The large resource control deliberately uses the existing direct-operation probe;
 small accumulated masks do not execute that callback. Broader paint/instance/map
 combinations remain required in PLAN.md, independently from these completed cases.
+
+
+### Fractional filter images: capture bounds and packed AA (2026-10-14)
+
+The unchanged `fractional-offset-only` output improves from 22 differing pixels
+(maximum channel139 / alpha75) to exact on Windows/Linux. Source capture and
+nearest sampling have separate bounds: the filter scope includes both source
+and displaced drawable extents, retaining transparent padding. Rectangle AA
+modulates packed image lanes before the outer opacity layer. Rounding coverage
+after opacity, shader-style coverage, and a fixed extra border were diagnostic
+trials; none defines the final mechanism.
+
+Four declared CC0 controls isolate negative and subpixel offsets, fractional
+source geometry and a named identity-filter input. Each has three healthy stable
+fresh-process captures on both platforms and exact output. They live in the
+[existing colored-effects bank](../tests/Research/colored-effects-markers/README.md).
+The original seven controls and complete document remain exact. Identity windows
+reuse the unchanged Gaussian kernel selection to preserve input image bounds;
+per-node metadata is charged to the existing bounded surface owner. Focused
+regressions retain storage/work denial, cancellation, retry and source integrity.
+
+Native operation order is recorded in the pinned `SkImageFilterTypes.cpp`
+(`FilterResult::draw`), `SkBitmapProcState.cpp` and `SkBlitRow_D32.cpp`; capture-scope
+inspection uses Chromium's existing `paint_chunks_to_cc_layer.cc`. Source reads
+and rejected pixel comparisons remain under ignored effects-delivery artifacts.
+No new runtime dependency or qualification framework is introduced.
+
+The displaced rescaled blur still has its original six-pixel numerical residual
+on both platforms. Wider finite G8 graphs, color spaces and composition remain
+required; these witnesses do not establish all fractional filter chains.

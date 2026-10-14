@@ -18,11 +18,20 @@ native frame insets in the owning bitmap before fixed-edge conversion. Native
 paint arithmetic is unchanged. The preceding displaced-blur six-pixel residual
 remains required.
 
-A separately discovered control, `fractional-offset-only`, remains a
-**known difference: 22 pixels / maximum channel139 / alpha75**, on both platforms.
-It isolates SourceGraphic image bounds/AA under nearest fractional placement.
-Its original SVG and healthy platform triples are retained. It is additional
-required G8 work, not another complete document or an approved scope deferral.
+The separately discovered `fractional-offset-only` control is now **exact on
+Windows/Linux**, improving 22 pixels / maximum channel139 / alpha75 to zero
+against its unchanged SVG and healthy platform triples. Captured image extents
+include the source/displaced drawable union; nearest sampling preserves its
+transparent padding and rectangle AA. Packed image coverage precedes the outer
+opacity layer. Identity blur windows retain the same source-image bounds.
+
+Four additional focused controls are **4/4 exact on both platforms**: negative
+displacement, subpixel displacement, fractional source geometry and a named
+identity-filter result. Independent healthy three-process references were frozen
+before the shared correction. These protect identified bounds/rounding semantics,
+with original **7/7**, repaired **1/1** and additional **4/4** control counts
+separate from the complete document. Resource checks protect denial, cancellation,
+retry, borrowed input integrity and identity-window propagation.
 
 LinearRGB/mixed-space fidelity and wider finite G8 region/container/graph
 interactions remain required. Completing this document and its seven controls
@@ -36,6 +45,6 @@ Native source evidence is the pinned `SkBlurEngine.cpp`,
 No new runtime dependency, source-code fingerprint or measurement framework is
 introduced.
 
-Complete fresh Windows/Linux Release checks pass **7,549 tests/platform**
-(5,197 core / 2,346 visual / six FontProbe), with every preceding case retained
-and explicit admission-name updates. [Qualification receipt](../../../artifacts/maintenance-review-20261012/effects-marker-document-qualified-results.json).
+Complete fresh Windows/Linux Release checks pass **7,556 tests/platform**
+(5,200 core / 2,350 visual / six FontProbe), with every preceding case retained.
+[Qualification receipt](../../../artifacts/maintenance-review-20261012/offset-image-bounds-qualified-results.json).
