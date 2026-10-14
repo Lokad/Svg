@@ -1,3 +1,43 @@
+## Word spacing over shared normalized intervals (2026-10-15)
+
+The retained 300×130 control is exact on Windows/Linux against healthy stable
+native triples captured before production changes. It covers inherited and zero
+span spacing, inline CSS lengths, anchors, collapsed/preserved spaces and letter
+spacing. Original SVG/font/reference bytes and options remain frozen.
+
+Word spacing extends existing inherited styles, per-property CSS ranks and the
+same bounded normalized spacing intervals. Supplied separator advances receive
+the additional width; no second glyph-layout route or per-character owner is
+introduced. Existing fragment-width rounding also applies when word spacing
+changes. A same-face spacing fragment otherwise selected an adjacent glyph
+strike in the retained control. Nonzero letter spacing and positioned boundaries
+keep their prior shaping semantics; word spacing alone preserves ordinary Latin
+ligatures. Space and no-break-space are protected independently from fixed-width
+Unicode spaces. The separator rule follows
+[CSS Text word spacing](https://www.w3.org/TR/css-text-3/#word-spacing-property).
+
+The control also exposed discarded leading span spaces. Collapsible separators
+now enter the shared output while their style/position owner is active; duplicate
+and leading separators are suppressed across all scopes. Final transfer trims
+only the last collapsed separator and its material spacing/paint/font intervals.
+Preserved whitespace remains unchanged. Normalized positioning still resolves
+Unicode scalars after the final trim. Discovery retains one pending separator
+request until later content proves that its metrics are needed; standalone or
+discarded edge whitespace cannot force an unused face acquisition.
+
+Focused tests protect ownership, span coordinates, zero override, inheritance,
+importance, ligatures, separator categories and disposal. The existing denial /
+cancellation / retry regression now also owns varying word-spacing intervals.
+One obsolete valid-input rejection becomes positive; percentage spacing remains
+explicitly unsupported. The former synthetic assertion that trimmed every span's
+edges now checks correct sibling spacing with a face covering both A and space
+and a viewport wide enough to distinguish the outputs.
+
+The unchanged whole label/path sheet advances to solid text decorations and
+remains incomplete. No G9 closure or completed document is claimed. See the
+[bank](../tests/Research/remaining-label-path-sheet/README.md) and
+[complete platform qualification](../artifacts/maintenance-review-20261012/word-spacing-qualified-results.json).
+
 ## Nested direct-text positioning over normalized scalars (2026-10-15)
 
 The retained nested-list/rotation control matches unchanged Windows/Linux

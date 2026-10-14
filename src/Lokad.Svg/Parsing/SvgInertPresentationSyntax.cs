@@ -38,7 +38,7 @@ internal static class SvgInertPresentationSyntax
     /// charge work and observe cancellation. Text/container callers retain their separate font rules.</remarks>
     internal static bool TryValidateTypography(ReadOnlySpan<char> property, ReadOnlySpan<char> value, ParserWorkCounter? work, CancellationToken token)
     {
-        const string properties = "font-family font-size font-style font-weight font-stretch font-variant text-align line-height writing-mode text-anchor letter-spacing white-space -inkscape-font-specification";
+        const string properties = "font-family font-size font-style font-weight font-stretch font-variant text-align line-height writing-mode text-anchor letter-spacing word-spacing white-space -inkscape-font-specification";
         bool recognized = false;
         foreach (Range range in properties.AsSpan().Split(' '))
             if (property.Equals(properties.AsSpan()[range], StringComparison.OrdinalIgnoreCase)) { recognized = true; break; }
@@ -69,7 +69,7 @@ internal static class SvgInertPresentationSyntax
         }
         if (property.Equals("line-height", StringComparison.OrdinalIgnoreCase))
         { if (!Keyword(value, "normal")) Length(value, false); return true; }
-        if (property.Equals("letter-spacing", StringComparison.OrdinalIgnoreCase))
+        if (property.Equals("letter-spacing", StringComparison.OrdinalIgnoreCase) || property.Equals("word-spacing", StringComparison.OrdinalIgnoreCase))
         { if (!Keyword(value, "normal")) Length(value, true); return true; }
         if (property.Equals("font-weight", StringComparison.OrdinalIgnoreCase))
         {

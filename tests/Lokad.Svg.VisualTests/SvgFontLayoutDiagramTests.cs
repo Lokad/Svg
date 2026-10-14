@@ -13,6 +13,28 @@ public sealed class SvgFontLayoutDiagramTests
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "font-layout-diagram");
 
     [Fact]
+    public async Task Word_spacing_expands_only_separator_advances_and_preserves_ordinary_ligatures()
+    {
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false)], new Provider(), CancellationToken.None);
+        SvgTextStyle style = new(new("Example", 400, false), 18, 0, 24, 0, 0, 0, SvgTextAnchor.Start, string.Empty);
+        RenderBudget budget = new(100_000);
+        using (SvgTextRun ordinary = SvgTextRunBuilder.Create(style, "fi A\u00a0B\u2002C", snapshot, budget, CancellationToken.None))
+        using (SvgTextRun spaced = SvgTextRunBuilder.Create(style with { WordSpacing = 5 }, "fi A\u00a0B\u2002C", snapshot, budget, CancellationToken.None))
+        {
+            Assert.Equal(7, spaced.Glyphs.Length);
+            Assert.Equal(1652, spaced.Glyphs[0].GlyphIndex);
+            for (int index = 0; index < spaced.Glyphs.Length; index++)
+            {
+                Assert.Equal(ordinary.Glyphs[index].GlyphIndex, spaced.Glyphs[index].GlyphIndex);
+                Assert.Equal(index < 2 ? 0 : index < 4 ? 5 : 10, spaced.Glyphs[index].X - ordinary.Glyphs[index].X, 10);
+                Assert.Equal(index is 1 or 3 ? 5 : 0, spaced.Glyphs[index].Advance - ordinary.Glyphs[index].Advance, 10);
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public async Task Scoped_rotation_keeps_ligatures_outside_the_positioned_span_and_maps_angles_to_glyphs()
     {
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
@@ -102,6 +124,7 @@ public sealed class SvgFontLayoutDiagramTests
     [Theory]
     [InlineData("remaining-label-path-sheet")]
     [InlineData("nested-list-rotation")]
+    [InlineData("word-spacing")]
     public async Task Remaining_label_path_outputs_preserve_frozen_inputs_and_platform_references(string identity)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet");

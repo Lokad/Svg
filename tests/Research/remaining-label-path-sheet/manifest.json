@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Retained whole CC0 label/path sheet plus one focused nested-list/rotation control for the finite G9 exit. References precede production correction; current rejections remain required gaps.",
+  "purpose": "Retained whole CC0 label/path sheet plus focused nested-list/rotation and word-spacing controls for the finite G9 exit. References precede each production correction; whole-sheet rejections remain required gaps.",
   "fontPack": "../font-layout-diagram/font-pack.json",
   "fontPrograms": [
     {
@@ -111,6 +111,55 @@
         },
         {
           "pngSha256": "fae1ed90e414211031160288d579d260cd11638b2a64c04e43a6232b295500d5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "word-spacing",
+      "input": "word-spacing.svg",
+      "width": 300,
+      "height": 130,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "2b9445eda2698cbd070c52e5a20c4a2d2b3696c8d9ed23813d10561bc0cbc292",
+      "selection": "Focused control for the retained whole sheet word-spacing gate: inherited and explicit-zero span values, CSS lengths, anchors, preserved and collapsed spaces, and independent letter spacing. References precede production correction.",
+      "reference": "references/word-spacing.png",
+      "referenceSha256": "a75f3046dab1a9df157f37de6501b991c4c91fdc050fc711621acf23611f022a",
+      "captures": [
+        {
+          "pngSha256": "a75f3046dab1a9df157f37de6501b991c4c91fdc050fc711621acf23611f022a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a75f3046dab1a9df157f37de6501b991c4c91fdc050fc711621acf23611f022a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a75f3046dab1a9df157f37de6501b991c4c91fdc050fc711621acf23611f022a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/word-spacing.png",
+      "linuxReferenceSha256": "5aa036ebda7069664e3e7b135cb6f1775b7754f238da7a5aba838356694132eb",
+      "linuxCaptures": [
+        {
+          "pngSha256": "5aa036ebda7069664e3e7b135cb6f1775b7754f238da7a5aba838356694132eb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5aa036ebda7069664e3e7b135cb6f1775b7754f238da7a5aba838356694132eb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "5aa036ebda7069664e3e7b135cb6f1775b7754f238da7a5aba838356694132eb",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

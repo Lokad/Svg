@@ -276,14 +276,14 @@ internal static class SvgRenderedLeafParser
                     textPlacement = textFrame.MapText(textPlacement);
                 }
                 // ResolveTextShape validates fill-rule syntax; SVG text keeps glyph winding independent of that property.
-                SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing);
+                SvgTextStyle textStyle = SvgTextSyntax.Parse(reader, resolvedText.InlineFont, context.InheritedTextStyle, resolvedText.LetterSpacing, resolvedText.WordSpacing);
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
                 SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke);
                 textPaint = textPaint with { StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
                 using BudgetedParserList<SvgExtractedTextRun> textRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
                 try
                 {
-                    SvgInheritedTextStyle rootTextFont = new(textStyle.Font.Family, textStyle.Font.Weight, textStyle.Font.Italic, textStyle.FontSize, whitespaceMode, textStyle.LetterSpacing, textStyle.Anchor);
+                    SvgInheritedTextStyle rootTextFont = new(textStyle.Font.Family, textStyle.Font.Weight, textStyle.Font.Italic, textStyle.FontSize, whitespaceMode, textStyle.LetterSpacing, textStyle.Anchor) { WordSpacing = textStyle.WordSpacing };
                     ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, textPaint, rootTextFont, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, textRuns, out int sourceCharacterCount, out int childNodeCount);
                     state.TextCharacterCount += sourceCharacterCount;
                     state.NodeCount += childNodeCount;
@@ -554,7 +554,7 @@ internal static class SvgRenderedLeafParser
                                 for (int ancestorScope = 0; ancestorScope < currentScope; ancestorScope++)
                                 {
                                     SvgTextWhitespaceNormalizer ancestor = whitespaceNormalizers[ancestorScope];
-                                    ancestor.ObserveChildContent(text, maximumCharacters, workCounter, cancellationToken);
+                                    ancestor.ObserveChildContent();
                                     whitespaceNormalizers[ancestorScope] = ancestor;
                                 }
                             }
@@ -607,7 +607,6 @@ internal static class SvgRenderedLeafParser
                 if (subtree.NodeType == XmlNodeType.EndElement && subtree.Depth != 0)
                 {
                     SvgTextWhitespaceNormalizer current = whitespaceNormalizers[^1];
-                    current.CompleteElement();
                     if (current.OwnsPositioningSpan) text.ExitPositioningSpan(current.ScopeDepth);
                     whitespaceNormalizers.RemoveLast();
                     text.ExitPaintSpan();

@@ -31,7 +31,7 @@ internal sealed class SvgInheritedTextStyle
     internal SvgInheritedTextStyle WithWhitespaceMode(SvgTextWhitespaceMode whitespaceMode)
     {
         if (whitespaceMode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(whitespaceMode));
-        return new SvgInheritedTextStyle(Family, Weight, Italic, FontSize, whitespaceMode, LetterSpacing, Anchor);
+        return new SvgInheritedTextStyle(Family, Weight, Italic, FontSize, whitespaceMode, LetterSpacing, Anchor) { WordSpacing = WordSpacing };
     }
 
     internal string? Family { get; }
@@ -40,6 +40,7 @@ internal sealed class SvgInheritedTextStyle
     internal double FontSize { get; }
     internal SvgTextWhitespaceMode WhitespaceMode { get; }
     internal double LetterSpacing { get; }
+    internal double WordSpacing { get; init; }
     internal SvgTextAnchor Anchor { get; }
 }
 
@@ -55,6 +56,9 @@ internal static class SvgTextInheritance
     }
 
     internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace, string? letterSpacing)
+        => Resolve(reader, inherited, inline, whiteSpace, letterSpacing, null);
+
+    internal static SvgInheritedTextStyle Resolve(XmlReader reader, SvgInheritedTextStyle inherited, SvgTextInlineFontProperties inline, string? whiteSpace, string? letterSpacing, string? wordSpacing)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string? family = inline.Family ?? reader.GetAttribute("font-family") ?? inherited.Family;
@@ -71,6 +75,8 @@ internal static class SvgTextInheritance
         SvgTextWhitespaceMode whitespaceMode = whiteSpace is null ? xmlMode : SvgTextSyntax.ParseCssWhitespaceMode(whiteSpace);
         string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
         double resolvedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
-        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor));
+        string? wordSpacingValue = wordSpacing ?? reader.GetAttribute("word-spacing");
+        double resolvedWordSpacing = wordSpacingValue is null ? inherited.WordSpacing : SvgTextSyntax.ParseWordSpacing(wordSpacingValue);
+        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor)) { WordSpacing = resolvedWordSpacing };
     }
 }

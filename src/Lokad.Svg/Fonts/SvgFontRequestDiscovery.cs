@@ -70,6 +70,8 @@ internal static class SvgFontRequestDiscovery
             int groupDepth = 0;
             int skipDepth = -1;
             int activeCandidateLevel = -1;
+            bool hasPriorText = false;
+            DiscoveryCandidate? pendingWhitespace = null;
             bool activeTextPainted = false;
             int textPathDepth = -1;
             double? rootWidth = null;
@@ -268,12 +270,12 @@ internal static class SvgFontRequestDiscovery
                         bool group = isSvgElement && SvgStructuralVocabulary.IsGroupContainer(reader.LocalName);
                         groupLevels.Add(group);
                         if (group) groupDepth++;
-                        if (candidateState.HasRequest) { activeCandidateLevel = directTextLevels.Count - 1; activeTextPainted = false; }
+                        if (candidateState.HasRequest) { activeCandidateLevel = directTextLevels.Count - 1; activeTextPainted = false; hasPriorText = false; pendingWhitespace = null; }
                     }
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
                 {
-                    if (reader.Depth == textPathDepth) textPathDepth = -1;
+                    if (reader.Depth == textPathDepth) { textPathDepth = -1; hasPriorText = false; pendingWhitespace = null; }
                     if (reader.Depth == skipDepth) skipDepth = -1;
                     if (switchScopes.Count > 0 && switchScopes[switchScopes.Count - 1].Depth == reader.Depth) switchScopes.RemoveLast();
                     if (reader.Depth == inertDepth) inertDepth = -1;
@@ -307,30 +309,28 @@ internal static class SvgFontRequestDiscovery
                     if (activeCandidateLevel >= 0)
                     {
                         SvgTextWhitespaceMode activeWhitespace = whitespaceLevels[whitespaceLevels.Count - 1];
-                        bool hasRenderable = HasRenderableText(reader, GetTextChunk(), activeWhitespace, workCounter, cancellationToken);
+                        bool hasRenderable = HasRenderableText(reader, GetTextChunk(), activeWhitespace, workCounter, cancellationToken, out bool hasCharacters, out bool endsWithCollapsible);
+                        SvgTextPaintStyle paint = inheritedLevels[^1].TextPaint;
+                        SvgInheritedTextStyle currentFont = inheritedLevels[^1].Text;
+                        if (hasRenderable && paint.IsDisplayed && pendingWhitespace is {} separator)
+                        {
+                            ObserveFont(separator);
+                            pendingWhitespace = null;
+                        }
                         if (hasRenderable)
                         {
-                            SvgTextPaintStyle paint = inheritedLevels[^1].TextPaint;
                             paint.ValidateEmission();
                             if (textPathDepth >= 0 && paint.GlyphPaint.HasStroke)
                                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes on retained text paths are not implemented.");
-                            DiscoveryCandidate active = directTextLevels[activeCandidateLevel];
-                            SvgInheritedTextStyle currentFont = inheritedLevels[^1].Text;
                             activeTextPainted |= paint.GlyphPaint.IsPainted;
-                            bool sameRequest = string.Equals(currentFont.Family, active.Family, StringComparison.OrdinalIgnoreCase) && currentFont.Weight == active.Weight && currentFont.Italic == active.Italic;
                             // Displayed hidden/unpainted glyphs still advance later
                             // painted spans. Acquire their metrics only when the
                             // containing run actually has painted output.
-                            if (paint.IsDisplayed && active.HasRequest && sameRequest && !active.HasRenderableTextContent)
-                            {
-                                directTextLevels[activeCandidateLevel] = active with { HasRenderableTextContent = true };
-                            }
-                            else if (paint.IsDisplayed && active.HasRequest && !sameRequest)
-                            {
-                                DiscoveryCandidate span = new(true, currentFont.Family, currentFont.Weight, currentFont.Italic, activeWhitespace, false, true);
-                                if (spanCandidates.Count == 0 || spanCandidates[^1] != span) spanCandidates.Add(span);
-                            }
+                            if (paint.IsDisplayed) ObserveFont(new(true, currentFont.Family, currentFont.Weight, currentFont.Italic, activeWhitespace, false, true));
+                            hasPriorText |= paint.IsDisplayed;
                         }
+                        if (paint.IsDisplayed && hasCharacters && hasPriorText && endsWithCollapsible && activeWhitespace == SvgTextWhitespaceMode.Default)
+                            pendingWhitespace ??= new(true, currentFont.Family, currentFont.Weight, currentFont.Italic, activeWhitespace, false, true);
                     }
                 }
             }
@@ -347,6 +347,15 @@ internal static class SvgFontRequestDiscovery
                 result[index] = new SvgFontFaceRequest(family, key.Weight, key.Italic);
             }
             return result;
+
+            void ObserveFont(DiscoveryCandidate candidate)
+            {
+                DiscoveryCandidate active = directTextLevels[activeCandidateLevel];
+                if (!active.HasRequest) return;
+                bool sameRequest = string.Equals(candidate.Family, active.Family, StringComparison.OrdinalIgnoreCase) && candidate.Weight == active.Weight && candidate.Italic == active.Italic;
+                if (sameRequest) directTextLevels[activeCandidateLevel] = active with { HasRenderableTextContent = true };
+                else if (spanCandidates.Count == 0 || spanCandidates[^1] != candidate) spanCandidates.Add(candidate);
+            }
         }
         catch (XmlException exception)
         {
@@ -401,16 +410,23 @@ internal static class SvgFontRequestDiscovery
         requests.Add(new TextRequestKey(family, candidate.Weight, candidate.Italic));
     }
 
-    private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    private static bool HasRenderableText(XmlReader reader, char[] chunk, SvgTextWhitespaceMode whitespaceMode, ParserWorkCounter workCounter, CancellationToken cancellationToken, out bool hasCharacters, out bool endsWithCollapsible)
     {
         bool hasRenderableText = false;
+        hasCharacters = false;
+        endsWithCollapsible = false;
         int read;
         do
         {
             read = reader.ReadValueChunk(chunk, 0, chunk.Length);
-            if (read != 0) hasRenderableText |= whitespaceMode == SvgTextWhitespaceMode.Preserve
-                ? SvgTextWhitespaceNormalizer.HasText(chunk.AsSpan(0, read), workCounter, cancellationToken)
-                : SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken);
+            if (read != 0)
+            {
+                hasCharacters = true;
+                endsWithCollapsible = chunk[read - 1] is ' ' or '\t' or '\r' or '\n';
+                hasRenderableText |= whitespaceMode == SvgTextWhitespaceMode.Preserve
+                    ? SvgTextWhitespaceNormalizer.HasText(chunk.AsSpan(0, read), workCounter, cancellationToken)
+                    : SvgTextWhitespaceNormalizer.HasNonWhitespaceText(chunk.AsSpan(0, read), workCounter, cancellationToken);
+            }
         } while (read != 0);
         return hasRenderableText;
     }
@@ -425,7 +441,7 @@ internal static class SvgFontRequestDiscovery
             SvgInheritedContainer resolved = SvgContainerInheritance.Resolve(reader, inlineStyle, computedStyle, styleSheet, new SvgInheritedPresentation(inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, inherited.Transform) { OwnOpacity = inherited.ElementOpacity, PaintServerFill = inherited.PaintServerFill }, inherited.FillRule, inherited.Text, SvgInheritedStrokeStyle.Default, inherited.HasOpacityScope, SvgRootParser.CssNamedColors, workCounter, cancellationToken);
             return new TextStyle(resolved.TextStyle, resolved.Presentation.Paint, resolved.Presentation.IsDisplayed, resolved.Presentation.IsVisible, resolved.Presentation.Transform, resolved.FillRule, computedStyle.Stroke ?? inherited.Stroke, resolved.HasOpacityScope) { StrokeStyle = inherited.StrokeStyle.ResolveChild(computedStyle), OwnOpacity = resolved.Presentation.ElementOpacity, PaintServerFill = resolved.Presentation.PaintServerFill, PaintOrder = computedStyle.PaintOrder ?? inherited.PaintOrder };
         }
-        SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), specifiedWhiteSpace, SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important));
+        SvgInheritedTextStyle text = SvgTextInheritance.Resolve(reader, inherited.Text, SvgInlineStyleParser.MergeFont(inlineStyle.TextFont, inlineStyle.Important, styleSheet.TextFont, styleSheet.Important), specifiedWhiteSpace, SvgInlineStyleParser.MergeWithImportance(inlineStyle.LetterSpacing, inlineStyle.Important, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important), SvgInlineStyleParser.MergeWithImportance(inlineStyle.WordSpacing, inlineStyle.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important));
         SvgAffineTransform transform = inherited.Transform.ComposeChecked(SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken));
         if (computedStyle.Fill is null && inherited.PaintServerFill is string fill) computedStyle = computedStyle with { Fill = fill };
         SvgResolvedShapePresentation textPresentation = SvgShapePresentationResolver.Resolve(computedStyle with { Stroke = "none", Linecap = null, Linejoin = null, Dasharray = null, Dashoffset = null, Width = null, Miterlimit = null, StrokeOpacity = null }, inherited.Paint, inherited.IsDisplayed, inherited.IsVisible, false, SvgRootParser.CssNamedColors);

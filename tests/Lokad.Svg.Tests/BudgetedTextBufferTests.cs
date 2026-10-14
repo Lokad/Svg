@@ -6,6 +6,34 @@ namespace Lokad.Svg.Tests;
 public sealed class BudgetedTextBufferTests
 {
     [Fact]
+    public void Collapsed_spaces_keep_the_first_span_owner_and_trim_only_the_final_separator()
+    {
+        RenderBudget budget = new(20_000);
+        ParserWorkCounter work = new(1_000);
+        SvgInheritedTextStyle font = new("Example", 400, false, 18, SvgTextWhitespaceMode.Default, 1, SvgTextAnchor.Start) { WordSpacing = 5 };
+        using (SvgTextPaintOutput output = new(budget, 1, SvgTextPaintStyle.Default, font, work, CancellationToken.None))
+        {
+            SvgTextWhitespaceNormalizer parent = new(SvgTextWhitespaceMode.Default, 1, 0, false);
+            parent.Append("A ", output, 20, work, CancellationToken.None);
+            output.EnterStyleSpan(SvgTextPaintStyle.Default, new("Example", 400, false, 18, SvgTextWhitespaceMode.Default, 1, SvgTextAnchor.Start));
+            output.EnterPositioningSpan(new SvgTextPositionLists("20 30", null, null, null, null), 1, work, CancellationToken.None);
+            SvgTextWhitespaceNormalizer child = new(SvgTextWhitespaceMode.Default, 1, 1, true);
+            child.Append(" B ", output, 20, work, CancellationToken.None);
+            output.ExitPositioningSpan(1);
+            output.ExitPaintSpan();
+            parent.Append("C ", output, 20, work, CancellationToken.None);
+            using SvgExtractedTextRun run = output.Detach(null);
+            Assert.Equal("A B C", run.Layout.Value);
+            Assert.Equal([
+                new SvgTextLetterSpacingSpan(0, 2, 1) { WordSpacing = 5 },
+                new SvgTextLetterSpacingSpan(2, 4, 1),
+                new SvgTextLetterSpacingSpan(4, 5, 1) { WordSpacing = 5 }], run.Layout.LetterSpacingSpans);
+            Assert.Equal([new SvgTextPositionAdjustment(2, 20, null, 0, 0), new SvgTextPositionAdjustment(3, 30, null, 0, 0)], run.Layout.PositionAdjustments);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Nested_lists_count_normalized_scalars_across_chunks_and_resume_ancestor_values()
     {
         RenderBudget budget = new(20_000);
@@ -59,7 +87,7 @@ public sealed class BudgetedTextBufferTests
         {
             using SvgTextLayoutBuffer buffer = new(budget, 0, work, token);
             buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30", null, null, null, "0 10"), 1, work, token);
-            buffer.Append("ABC", 0, 1, 20, work, token);
+            buffer.Append("ABC", 0, 4, 1, 20, work, token);
             buffer.ExitPositioningSpan(1);
             cancelBeforeDetach?.Cancel();
             using BudgetedTextLayout text = buffer.Detach();

@@ -54,6 +54,10 @@ internal static class SvgGlyphLayout
 
     /// <summary>Shares continuous positions and anchoring across bounded supplied-face and size intervals; material glyph-font storage borrows snapshot faces.</summary>
     internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextResolvedFontSpan> fontSpans, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => CreateStorage(font, text, fontSize, originX, originY, letterSpacing, 0, letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, anchor, deviceMetrics, budget, sourceElementId, workCounter, cancellationToken);
+
+    /// <summary>Applies word spacing to retained separator advances using the existing normalized spacing intervals and glyph owner.</summary>
+    internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, double wordSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextResolvedFontSpan> fontSpans, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(text);
@@ -61,6 +65,7 @@ internal static class SvgGlyphLayout
         ArgumentNullException.ThrowIfNull(sourceElementId);
         if (!double.IsFinite(fontSize) || fontSize <= 0) throw new ArgumentOutOfRangeException(nameof(fontSize));
         if (!double.IsFinite(originX) || !double.IsFinite(originY) || !double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(originX));
+        if (!double.IsFinite(wordSpacing)) throw new ArgumentOutOfRangeException(nameof(wordSpacing));
         ValidateLetterSpacingSpans(text, letterSpacingSpans);
         ValidatePositionAdjustments(text, positionAdjustments);
         int paintEnd = 0;
@@ -215,6 +220,8 @@ internal static class SvgGlyphLayout
                 }
                 if (sourceLengths is not null) sourceLengths[glyphPosition] = sourceLength;
                 double scaledAdvance = deviceMetrics is SvgGlyphDeviceMetrics metrics ? metrics.GetAdvance(advance, font.UnitsPerEm, fontSize) : advance * scale;
+                if (advance != 0 && scalar.Value is 0x20 or 0xa0 or 0x1361 or 0x10100 or 0x10101 or 0x1039f or 0x1091f)
+                    scaledAdvance += letterSpacingSpans.IsEmpty ? wordSpacing : letterSpacingSpans[mappedSpacingIndex].WordSpacing;
                 if (!double.IsFinite(scaledAdvance)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
                 glyphs[glyphPosition++] = new SvgPositionedGlyph(glyphIndex, 0, originY, scaledAdvance);
                 mappedSourceOffset += sourceLength;
@@ -238,6 +245,9 @@ internal static class SvgGlyphLayout
                 while (positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start < sourceOffset) positionBoundaryIndex++;
                 bool chunkEnds = index + 1 == positionedGlyphCount || positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start == sourceOffset && positionAdjustments[positionBoundaryIndex].HasAbsolutePosition;
                 bool sameFont = glyphFonts.Length == 0 || index + 1 < positionedGlyphCount && glyphFonts[index] == glyphFonts[index + 1];
+                bool sameWordSpacing = letterSpacingSpans.IsEmpty || spacingSpanIndex + 1 == letterSpacingSpans.Length
+                    || letterSpacingSpans[spacingSpanIndex].End != sourceOffset
+                    || letterSpacingSpans[spacingSpanIndex].WordSpacing == letterSpacingSpans[spacingSpanIndex + 1].WordSpacing;
                 int pairAdjustment = chunkEnds || !sameFont ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken);
                 double kerning = pairAdjustment * scale;
                 if (pairAdjustment != 0 && deviceMetrics is { IsTextPath: true } pathMetrics)
@@ -247,10 +257,10 @@ internal static class SvgGlyphLayout
                     kerning = 0;
                 }
                 double nextX = chunkEnds ? x + glyph.Advance : x + glyph.Advance + kerning + currentLetterSpacing;
-                if (!chunkEnds && !sameFont && deviceMetrics is { } fragmentMetrics)
+                if (!chunkEnds && (!sameFont || !sameWordSpacing) && deviceMetrics is { } fragmentMetrics)
                 {
                     // Native shaping fragments round their total inline width
-                    // before the next face/size fragment begins.
+                    // before the next face/size/word-spacing fragment begins.
                     nextX = fontFragmentOrigin + fragmentMetrics.RoundWidth(nextX - fontFragmentOrigin);
                     fontFragmentOrigin = nextX;
                 }
@@ -358,7 +368,7 @@ internal static class SvgGlyphLayout
             for (int index = 0; index < letterSpacingSpans.Length; index++)
             {
                 SvgTextLetterSpacingSpan span = letterSpacingSpans[index];
-                if (!double.IsFinite(span.LetterSpacing) || span.Start != expectedStart || span.End <= span.Start || span.End > text.Length) throw new ArgumentException("The text letter-spacing spans are invalid.", nameof(letterSpacingSpans));
+                if (!double.IsFinite(span.LetterSpacing) || !double.IsFinite(span.WordSpacing) || span.Start != expectedStart || span.End <= span.Start || span.End > text.Length) throw new ArgumentException("The text spacing spans are invalid.", nameof(letterSpacingSpans));
                 if (span.Start != 0 && char.IsLowSurrogate(text[span.Start]) || span.End != text.Length && char.IsLowSurrogate(text[span.End])) throw new ArgumentException("The text letter-spacing spans split a Unicode scalar.", nameof(letterSpacingSpans));
                 expectedStart = span.End;
             }

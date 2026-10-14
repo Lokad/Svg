@@ -215,6 +215,17 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal(-1.5, SvgTextSyntax.Parse(inline).LetterSpacing);
     }
 
+    [Theory]
+    [InlineData("word-spacing='2.5'", 2.5)]
+    [InlineData("word-spacing='2' style='word-spacing:-1.5px'", -1.5)]
+    [InlineData("word-spacing='2' style='word-spacing:normal'", 0)]
+    public void Parses_finite_word_spacing_and_normal(string attributes, double expected)
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader("<text font-family='Example' " + attributes + "/>"));
+        reader.Read();
+        Assert.Equal(expected, SvgTextSyntax.Parse(reader).WordSpacing);
+    }
+
     [Fact]
     public void Parses_finite_text_coordinates_without_rectangle_quantization()
     {

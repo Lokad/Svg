@@ -76,6 +76,7 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
     private char[] _characters = [];
     private RenderBudget.BudgetReservation? _reservation;
     private int _length;
+    private bool _trailingCollapsedWhitespace;
 
     internal BudgetedTextBuffer(RenderBudget budget)
     {
@@ -105,10 +106,24 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
             value.Slice(offset, count).CopyTo(_characters.AsSpan(_length + offset));
         }
         _length += value.Length;
+        if (!value.IsEmpty) _trailingCollapsedWhitespace = false;
     }
 
     void ISvgTextOutput.Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => Append(value, maximumLength, workCounter, cancellationToken);
+
+    void ISvgTextOutput.AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (_length == 0 || _trailingCollapsedWhitespace) return;
+        Append(" ", maximumLength, workCounter, cancellationToken);
+        _trailingCollapsedWhitespace = true;
+    }
+
+    internal void TrimLastCharacter()
+    {
+        if (_length == 0) throw new InvalidOperationException("No retained character is available to trim.");
+        _characters[--_length] = default;
+    }
 
     void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken) { }
     void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken) { }
@@ -118,6 +133,7 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
     /// <summary>Transfers ownership of the exact final string reservation; the caller must dispose the returned value after layout.</summary>
     internal BudgetedText Detach()
     {
+        if (_trailingCollapsedWhitespace) TrimLastCharacter();
         if (_length == 0)
         {
             Dispose();
@@ -141,6 +157,7 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
     {
         _characters = [];
         _length = 0;
+        _trailingCollapsedWhitespace = false;
         _reservation?.Dispose();
         _reservation = null;
     }
@@ -194,30 +211,43 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
     private readonly double _defaultLetterSpacing;
+    private readonly double _defaultWordSpacing;
+    private bool _trailingCollapsedWhitespace;
     private BudgetedParserList<SvgTextLetterSpacingSpan>? _letterSpacingSpans;
     private BudgetedParserList<SvgTextPositionScope>? _positioningScopes;
     private BudgetedParserList<SvgTextPositionSpan>? _positionSpans;
 
     internal SvgTextLayoutBuffer(RenderBudget budget, double defaultLetterSpacing, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        : this(budget, defaultLetterSpacing, 0, workCounter, cancellationToken) { }
+
+    internal SvgTextLayoutBuffer(RenderBudget budget, double defaultLetterSpacing, double defaultWordSpacing, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(budget);
         ArgumentNullException.ThrowIfNull(workCounter);
         if (!double.IsFinite(defaultLetterSpacing)) throw new ArgumentOutOfRangeException(nameof(defaultLetterSpacing));
+        if (!double.IsFinite(defaultWordSpacing)) throw new ArgumentOutOfRangeException(nameof(defaultWordSpacing));
         _text = new BudgetedTextBuffer(budget);
         _budget = budget;
         _workCounter = workCounter;
         _cancellationToken = cancellationToken;
         _defaultLetterSpacing = defaultLetterSpacing;
+        _defaultWordSpacing = defaultWordSpacing;
     }
 
     /// <summary>Appends one normalized interval and records eligible span starts before resolving whole Unicode scalars.</summary>
     public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => Append(value, letterSpacing, _defaultWordSpacing, scopeDepth, maximumLength, workCounter, cancellationToken);
+
+    /// <summary>Retains inherited letter/word spacing in the same bounded normalized intervals.</summary>
+    internal void Append(ReadOnlySpan<char> value, double letterSpacing, double wordSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
+        if (!double.IsFinite(wordSpacing)) throw new ArgumentOutOfRangeException(nameof(wordSpacing));
         if (scopeDepth < 0) throw new ArgumentOutOfRangeException(nameof(scopeDepth));
         if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction work context.");
         int start = _text.Length;
         _text.Append(value, maximumLength, workCounter, cancellationToken);
+        if (!value.IsEmpty) _trailingCollapsedWhitespace = false;
         if (!value.IsEmpty && _positioningScopes is {} scopes)
         {
             for (int index = 0; index < scopes.Count; index++)
@@ -230,19 +260,29 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
                 positionSpans.Add(new(start, 0, scope.Lists, scope.Offset));
             }
         }
-        if (value.Length == 0 || _letterSpacingSpans is null && letterSpacing.Equals(_defaultLetterSpacing)) return;
+        if (value.Length == 0 || _letterSpacingSpans is null && letterSpacing.Equals(_defaultLetterSpacing) && wordSpacing.Equals(_defaultWordSpacing)) return;
         BudgetedParserList<SvgTextLetterSpacingSpan> spans = _letterSpacingSpans ??= CreateLetterSpacingSpans(start);
         int end = checked(start + value.Length);
         if (spans.Count != 0)
         {
             SvgTextLetterSpacingSpan previous = spans[^1];
-            if (previous.End == start && previous.LetterSpacing.Equals(letterSpacing))
+            if (previous.End == start && previous.LetterSpacing.Equals(letterSpacing) && previous.WordSpacing.Equals(wordSpacing))
             {
                 spans[^1] = previous with { End = end };
                 return;
             }
         }
-        spans.Add(new SvgTextLetterSpacingSpan(start, end, letterSpacing));
+        spans.Add(new SvgTextLetterSpacingSpan(start, end, letterSpacing) { WordSpacing = wordSpacing });
+    }
+
+    internal bool AcceptsCollapsedWhitespace => _text.Length != 0 && !_trailingCollapsedWhitespace;
+    internal void MarkCollapsedWhitespace() => _trailingCollapsedWhitespace = true;
+
+    public void AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (!AcceptsCollapsedWhitespace) return;
+        Append(" ", letterSpacing, scopeDepth, maximumLength, workCounter, cancellationToken);
+        MarkCollapsedWhitespace();
     }
 
     /// <summary>Begins an explicit scalar scope; normalized output determines when it is consumed.</summary>
@@ -275,6 +315,16 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     /// <summary>Transfers normalized text and any exact spacing-span storage to the layout consumer.</summary>
     internal BudgetedTextLayout Detach()
     {
+        if (_trailingCollapsedWhitespace)
+        {
+            _text.TrimLastCharacter();
+            _trailingCollapsedWhitespace = false;
+            if (_letterSpacingSpans is {} spacing)
+            {
+                if (spacing[^1].Start == _text.Length) spacing.RemoveLast();
+                else spacing[^1] = spacing[^1] with { End = _text.Length };
+            }
+        }
         if (_positioningScopes is { Count: not 0 }) throw new InvalidOperationException("Text positioning scopes must be closed before layout transfer.");
         _positioningScopes?.Dispose();
         _positioningScopes = null;
@@ -312,7 +362,11 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
             {
                 work.Consume(token);
                 while (active.Count != 0 && active[^1].End <= source) active.RemoveLast();
-                while (next < spans.Length && spans[next].Start <= source) active.Add(new(spans[next++]));
+                while (next < spans.Length && spans[next].Start <= source)
+                {
+                    SvgTextPositionSpan span = spans[next++];
+                    if (span.End > source) active.Add(new(span));
+                }
                 double? x = null, y = null, dx = null, dy = null, rotation = null;
                 bool overridesDx = false, overridesDy = false;
                 for (int index = 0; index < active.Count; index++)
@@ -348,7 +402,7 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     private BudgetedParserList<SvgTextLetterSpacingSpan> CreateLetterSpacingSpans(int start)
     {
         var spans = new BudgetedParserList<SvgTextLetterSpacingSpan>(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
-        if (start != 0) spans.Add(new SvgTextLetterSpacingSpan(0, start, _defaultLetterSpacing));
+        if (start != 0) spans.Add(new SvgTextLetterSpacingSpan(0, start, _defaultLetterSpacing) { WordSpacing = _defaultWordSpacing });
         return spans;
     }
 }

@@ -1861,7 +1861,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' style='white-space: pre-line'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-variant='small-caps' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text text-decoration='underline' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
-[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text word-spacing='5' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text word-spacing='5%' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text style='text-decoration: underline' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { font-variant: small-caps; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { text-decoration: underline; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", SvgErrorCode.UnsupportedFeature)]
@@ -2056,6 +2056,7 @@ public sealed partial class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><linearGradient id='g'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><line x1='0' y1='1' x2='4' y2='1' stroke='url(#g)' stroke-width='2'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect x='1' y='1' width='3' height='3' fill='#ffffff'/></mask></defs><style>rect { fill: red; }</style><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><mask id='m'><rect width='5' height='5' fill='white'/></mask></defs><g mask='url(#m)'><text font-family='Unused'>x</text></g><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "Example", 1, 1)]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text word-spacing='5' font-family='Example' font-size='100' y='3'>A</text></svg>", null, "Example", 1, 1)]
     public async Task Discovery_and_lowering_agree_on_text_admission(string svg, SvgErrorCode? code, string expectedRequests, int expectedProviderCalls, int expectedSourceCalls)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
@@ -3233,15 +3234,41 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Nested_default_xml_space_trims_its_own_visible_text_edges()
+    public async Task Nested_default_xml_space_collapses_with_siblings_and_preserves_span_edge_spaces()
     {
-        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleAAndSpaceFont())], CancellationToken.None);
         SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
 
-        ReadOnlyMemory<byte> nested = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>A<tspan xml:space='default'> A </tspan>A</text></svg>"u8.ToArray(), options, CancellationToken.None);
-        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>AAA</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> nested = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='400' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>A<tspan xml:space='default'> A </tspan>A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='400' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>A A A</text></svg>"u8.ToArray(), options, CancellationToken.None);
+        ReadOnlyMemory<byte> unspaced = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='400' height='5'><text font-family='Example' font-size='100' y='3' xml:space='preserve'>AAA</text></svg>"u8.ToArray(), options, CancellationToken.None);
 
         Assert.Equal(expected.ToArray(), nested.ToArray());
+        Assert.NotEqual(unspaced.ToArray(), nested.ToArray());
+    }
+
+    [Theory]
+    [InlineData("<tspan font-family='Example'>A</tspan><tspan font-family='Spacer'> </tspan><tspan font-family='Example'>A</tspan>", "Example,Spacer")]
+    [InlineData("<tspan font-family='Example'>A</tspan><tspan font-family='Spacer'> </tspan>", "Example")]
+    [InlineData("<tspan font-family='Spacer'> </tspan><tspan font-family='Example'>A</tspan>", "Example")]
+    public void Discovery_acquires_a_separator_only_face_only_when_its_space_survives(string content, string expected)
+    {
+        byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'><text font-family='Unused'>" + content + "</text></svg>");
+        Assert.Equal(expected, string.Join(',', SvgFontRequestDiscovery.Discover(svg, CancellationToken.None).Select(request => request.Family)));
+    }
+
+    [Fact]
+    public async Task Word_spacing_cascade_keeps_root_inheritance_importance_and_span_zero_distinct()
+    {
+        const string actual = "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='40' class='owner' word-spacing='30' style='word-spacing:20px'><style>.owner{word-spacing:7px!important}.label{word-spacing:9px!important}.zero{word-spacing:normal}</style><g><text font-family='Example' font-size='10' y='12'>A A</text><text class='label' font-family='Example' font-size='10' y='30' style='word-spacing:3px'>A A<tspan class='zero'> A A</tspan> A</text></g></svg>";
+        const string expected = "<svg xmlns='http://www.w3.org/2000/svg' width='400' height='40' word-spacing='7'><g><text font-family='Example' font-size='10' y='12'>A A</text><text font-family='Example' font-size='10' y='30' word-spacing='9'>A A<tspan word-spacing='0'> A A</tspan> A</text></g></svg>";
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleAAndSpaceFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(actual);
+        byte[] unchanged = input.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(expected), options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+        Assert.Equal(unchanged, input);
+        Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).Family);
     }
 
     [Fact]

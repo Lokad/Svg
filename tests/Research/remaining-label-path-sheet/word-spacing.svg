@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="130">
+<rect width="300" height="130" fill="white"/>
+<g font-family="Example" font-size="18" fill="#234567">
+<text x="12" y="30" word-spacing="5" letter-spacing="1">A B<tspan word-spacing="0"> C D</tspan> E</text>
+<text x="288" y="66" text-anchor="end" style="word-spacing:4px">AV  é<tspan style="word-spacing:-1px"> A V</tspan></text>
+<text x="12" y="102" xml:space="preserve" word-spacing="3"> A  B <tspan letter-spacing="2"> C D</tspan> </text>
+</g></svg>

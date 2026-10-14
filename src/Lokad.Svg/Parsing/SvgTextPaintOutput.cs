@@ -27,7 +27,7 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         _cancellationToken = cancellationToken;
         _defaultPaint = paint.GlyphPaint;
         _defaultFont = font;
-        _layout = new(budget, letterSpacing, workCounter, cancellationToken);
+        _layout = new(budget, letterSpacing, font.WordSpacing, workCounter, cancellationToken);
         _scopes = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         try { _scopes.Add((paint, font)); }
         catch { _scopes.Dispose(); _layout.Dispose(); throw; }
@@ -47,11 +47,11 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         SvgTextPaintStyle style = GetPaint(scopeDepth);
         if (!style.IsDisplayed) return;
         style.ValidateEmission();
-        _layout.Append(value, letterSpacing, scopeDepth, maximumLength, workCounter, cancellationToken);
+        SvgInheritedTextStyle font = GetFont(scopeDepth);
+        _layout.Append(value, letterSpacing, font.WordSpacing, scopeDepth, maximumLength, workCounter, cancellationToken);
         SvgTextGlyphPaint paint = style.GlyphPaint;
         int start = _length;
         _length = checked(start + value.Length);
-        SvgInheritedTextStyle font = GetFont(scopeDepth);
         if (_fontSpans is not null || !SameFont(font, _defaultFont))
         {
             if (_fontSpans is null)
@@ -82,10 +82,27 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         => _layout.EnterPositioningSpan(lists, scopeDepth, workCounter, cancellationToken);
     public void ExitPositioningSpan(int scopeDepth) => _layout.ExitPositioningSpan(scopeDepth);
 
+    public void AppendCollapsedWhitespace(double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
+        if (!_layout.AcceptsCollapsedWhitespace || !GetPaint(scopeDepth).IsDisplayed) return;
+        Append(" ", letterSpacing, scopeDepth, maximumLength, workCounter, cancellationToken);
+        _layout.MarkCollapsedWhitespace();
+    }
+
     internal SvgExtractedTextRun Detach(SvgTextPathReference? path)
     {
         if (_scopes.Count != 1) throw new InvalidOperationException("Text paint scopes must be closed before layout transfer.");
         BudgetedTextLayout layout = _layout.Detach();
+        if (_spans is {} paints && paints.Count != 0)
+        {
+            if (paints[^1].Start == layout.Value.Length) paints.RemoveLast();
+            else paints[^1] = paints[^1] with { End = layout.Value.Length };
+        }
+        if (_fontSpans is {} faces && faces.Count != 0)
+        {
+            if (faces[^1].Start == layout.Value.Length) faces.RemoveLast();
+            else faces[^1] = faces[^1] with { End = layout.Value.Length };
+        }
         OwnedParserArray<SvgTextPaintSpan> spans = new([], null);
         OwnedParserArray<SvgTextFontSpan> fonts = new([], null);
         try
@@ -98,6 +115,7 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
             return new(layout, path, spans, fonts);
         }
         catch { fonts.Dispose(); spans.Dispose(); layout.Dispose(); throw; }
+
     }
 
     public void Dispose()

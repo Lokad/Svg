@@ -1,3 +1,24 @@
+## Word spacing and cross-span whitespace (2026-10-15)
+
+The retained word-spacing control is exact on Windows/Linux against unchanged
+healthy native capture triples. Normal/finite user-space and px values inherit
+through root/container/text/span presentation and the existing CSS cascade.
+Explicit zero overrides inherited spacing. Normalized intervals share letter and
+word spacing; retained separator advances include the extra word spacing while
+ordinary ligatures remain available outside positioning/style boundaries.
+
+Whitespace collapses across span boundaries, retaining the first separator's
+style and positioning owner. Only the whole run's final collapsed separator is
+trimmed; preserved spaces remain. Discovery acquires a separator-only face when
+that space survives between content, without requesting discarded edge faces.
+
+The [remaining label/path bank](../tests/Research/remaining-label-path-sheet/README.md)
+has **2/2 exact controls**. Its unchanged whole sheet next rejects at solid text
+decorations and remains required. Path/length propagation, remaining strokes,
+closed paths, fitting and composite acceptance still leave G9 open. Complete
+Windows/Linux results and assertion migrations are in the
+[qualification receipt](../artifacts/maintenance-review-20261012/word-spacing-qualified-results.json).
+
 ## Nested direct-text coordinate and rotation lists (2026-10-15)
 
 The retained nested-list/rotation control is **1/1 exact** on Windows/Linux.
@@ -7,7 +28,7 @@ their span ends. Shared layout assigns angles to emitted glyphs, preserving
 ligatures outside positioned spans and existing ownership/denial protections.
 
 The unchanged [whole label/path sheet](../tests/Research/remaining-label-path-sheet/README.md)
-now rejects at word-spacing and remains incomplete. Nested/path length and path
+has advanced through word spacing to decorations and remains incomplete. Nested/path length and path
 rotation propagation, decorations, remaining strokes and finite G9 acceptance
 stay required. This supersedes direct nested-list/rotation rejection wording;
 it does not close G9 or add a completed document. See the
@@ -86,7 +107,7 @@ segment links. Shared denial/cancellation/cleanup protections remain in place.
 
 Earlier direct-text list/baseline/textLength and span-font rejection wording is
 superseded by these witnesses and the nested-list correction above. Nested-span length propagation,
-path length/rotation propagation, word spacing/decorations, remaining strokes,
+path length/rotation propagation, decorations, remaining strokes,
 closed paths and composite flags still require their finite G9 acceptance.
 The new stretched-accent diagnostic has one unresolved native-mask pixel;
 no broader composite completion or feature deferral is implied.

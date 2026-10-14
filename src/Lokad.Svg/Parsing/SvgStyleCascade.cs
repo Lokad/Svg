@@ -24,6 +24,7 @@ internal struct SvgStyleCascade
     private string? _fontSize;
     private string? _whiteSpace;
     private string? _letterSpacing;
+    private string? _wordSpacing;
     private string? _linecap;
     private string? _linejoin;
     private string? _dasharray;
@@ -54,6 +55,7 @@ internal struct SvgStyleCascade
     private CssDeclarationRank _fontSizeRank;
     private CssDeclarationRank _whiteSpaceRank;
     private CssDeclarationRank _letterSpacingRank;
+    private CssDeclarationRank _wordSpacingRank;
     private CssDeclarationRank _linecapRank;
     private CssDeclarationRank _linejoinRank;
     private CssDeclarationRank _dasharrayRank;
@@ -90,6 +92,7 @@ internal struct SvgStyleCascade
         Apply(ref _fontSize, ref _fontSizeRank, style.TextFont.Size, (style.Important & InlineImportantProperties.FontSize) != 0, specificity);
         Apply(ref _whiteSpace, ref _whiteSpaceRank, style.WhiteSpace, (style.Important & InlineImportantProperties.WhiteSpace) != 0, specificity);
         Apply(ref _letterSpacing, ref _letterSpacingRank, style.LetterSpacing, (style.Important & InlineImportantProperties.LetterSpacing) != 0, specificity);
+        Apply(ref _wordSpacing, ref _wordSpacingRank, style.WordSpacing, (style.Important & InlineImportantProperties.WordSpacing) != 0, specificity);
         Apply(ref _linecap, ref _linecapRank, style.Linecap, (style.Important & InlineImportantProperties.Linecap) != 0, specificity);
         Apply(ref _linejoin, ref _linejoinRank, style.Linejoin, (style.Important & InlineImportantProperties.Linejoin) != 0, specificity);
         Apply(ref _dasharray, ref _dasharrayRank, style.Dasharray, (style.Important & InlineImportantProperties.Dasharray) != 0, specificity);
@@ -123,6 +126,7 @@ internal struct SvgStyleCascade
         if (_fontSizeRank.Important) important |= InlineImportantProperties.FontSize;
         if (_whiteSpaceRank.Important) important |= InlineImportantProperties.WhiteSpace;
         if (_letterSpacingRank.Important) important |= InlineImportantProperties.LetterSpacing;
+        if (_wordSpacingRank.Important) important |= InlineImportantProperties.WordSpacing;
         if (_linecapRank.Important) important |= InlineImportantProperties.Linecap;
         if (_linejoinRank.Important) important |= InlineImportantProperties.Linejoin;
         if (_dasharrayRank.Important) important |= InlineImportantProperties.Dasharray;
@@ -133,7 +137,7 @@ internal struct SvgStyleCascade
         if (_pathLengthRank.Important) important |= InlineImportantProperties.PathLength;
         if (_geometryWidthRank.Important) important |= InlineImportantProperties.GeometryWidth;
         if (_geometryHeightRank.Important) important |= InlineImportantProperties.GeometryHeight;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, HasVisibleOverflow = _hasVisibleOverflow, GeometryWidth = _geometryWidth, GeometryHeight = _geometryHeight, Important = important };
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, WordSpacing = _wordSpacing, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, HasVisibleOverflow = _hasVisibleOverflow, GeometryWidth = _geometryWidth, GeometryHeight = _geometryHeight, Important = important };
     }
 
     private static void Apply(ref string? value, ref CssDeclarationRank currentRank, string? candidate, bool candidateImportant, CssSpecificity specificity)

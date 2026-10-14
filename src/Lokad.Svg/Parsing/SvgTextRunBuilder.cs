@@ -53,7 +53,7 @@ internal static class SvgTextRunBuilder
 
         if (style.PositionLists.IsEmpty)
         {
-            SvgPositionedGlyphStorage ordinary = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.LetterSpacing, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
+            SvgPositionedGlyphStorage ordinary = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.LetterSpacing, style.WordSpacing, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
             try { return new SvgTextRun(style, font, ordinary, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, deviceMetrics)
                 { GlyphStretch = AdjustGlyphs(ordinary, font, style, deviceMetrics, workCounter, cancellationToken) }; }
             catch { ordinary.Dispose(); throw; }
@@ -62,7 +62,7 @@ internal static class SvgTextRunBuilder
         SvgPositionedGlyphStorage? glyphs = null;
         try
         {
-            glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, 0, 0, style.LetterSpacing, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
+            glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, 0, 0, style.LetterSpacing, style.WordSpacing, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
             return new SvgTextRun(style, font, glyphs, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, deviceMetrics)
             { GlyphStretch = AdjustGlyphs(glyphs, font, style, deviceMetrics, workCounter, cancellationToken) };
         }
