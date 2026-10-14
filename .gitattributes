@@ -58,3 +58,6 @@ tests/Fixtures/candidates/inv-146.svg -text whitespace=cr-at-eol,-blank-at-eol,-
 
 # Preserve the frozen cascade controls, including their original CRLF bytes.
 tests/Research/root-resource-cascade/*.svg -text whitespace=cr-at-eol
+
+# Frozen supplied-font sheet source bytes, including the original line endings.
+tests/Research/remaining-label-path-sheet/*.svg -text

@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="210" height="90"><rect width="210" height="90" fill="white"/><text font-family="Example" font-size="18" fill="#19334c" x="12 32 52 72 92 112 132" y="40" dx="1 2 3 4 5 6 7" rotate="0 5 -5 10 -10 0 15">A<tspan x="40 64 84" dx="0 2" rotate="-12 12">BC<tspan dy="4 0">DE</tspan>F</tspan>G</text></svg>

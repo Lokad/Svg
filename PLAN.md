@@ -64,15 +64,16 @@ position; exhaustive G2 or shape/paint/instance combinations are not prerequisit
 
 The **next three deliverables**, in order, are below. Their completion advances
 the owning support group; a group closes only at its finite exit below. No group
-must be exhaustively complete before the next document advances. Planned sheets
-are acceptance recipes, not captured fixtures or new feature promises. Before
+must be exhaustively complete before the next document advances. The label/path
+sheet is retained below; other planned sheets are acceptance recipes until their
+inputs and references are frozen, without adding feature promises. Before
 production changes, retain a rejected/different in-scope output and freeze its
 licensed bytes, options, supplied programs and healthy platform references.
 Prefer a suitable redistributable export; an authored CC0 sheet is permitted.
 
 | Next deliverable | Missing behavior / available dependencies | Acceptance and completion condition |
 | --- | --- | --- |
-| 1. Remaining label/path sheet | Nested-span lists/rotation/length, path propagation and the stretched-accent fitting residual. Reuse the completed [layout guide](tests/Research/font-layout-diagram/README.md), shared face/size intervals and source maps. | Freeze a sheet with mixed-font positioned spans, both length policies, a closed curved path with anchors, word spacing, solid decorations and required path stroke modes. Include the 18px doubled-width eacute from [native diagnostics](artifacts/font-layout-diagram-20261014/NATIVE-MASK-CHECK.md). Every declared output must be exact on both platforms with intended-font proof and affected bounded failures. The G9 checklist also owns composite flags and private validation. |
+| 1. Remaining label/path sheet | The retained whole sheet and one focused control currently reject at valid nested-span coordinate lists; rotation/length propagation and the other declared G9 gaps remain required. Reuse the completed [layout guide](tests/Research/font-layout-diagram/README.md), shared face/size intervals and source maps. | Finish the unchanged [sheet and control](tests/Research/remaining-label-path-sheet/README.md) against their frozen healthy Windows/Linux triples, with both supplied programs proven in use. The sheet includes both length policies, closed-path anchors, word spacing, solid decorations, required path stroke modes and the 18px doubled-width eacute from [native diagnostics](artifacts/font-layout-diagram-20261014/NATIVE-MASK-CHECK.md). Every declared output must become exact, with affected bounded failures protected. The G9 checklist also owns composite flags and private validation. |
 | 2. Affine image-map sheet | Uniform fractional placement/opacity and remaining affine/resource/clip/mask image maps. Reuse completed varied-pixel decode, CSS cascade, meet/slice/none sampling and G2/G5 replay. | Freeze a sheet placing the same small PNG with fractional meet/slice/none, rotation/skew/reflection, local use, clip and partial mask. Include uniform content where its separate fast path exposes a gap; use alignment controls only for independent missing map behavior. Make all outputs exact on both platforms, preserve decode/resource failures and finish qualification. Wider G7 closes only at its finite exit. |
 | 3. Effects/marker sheet | Remaining finite G8 graph/region/color-space/maps, marker units, CSS overflow and closure. Reuse qualified rescaling, graph composition, G5 scopes and only the G7/G9 slices needed by this document. | Freeze a sheet demonstrating listed mechanisms without existing acceptance, including [CSS marker overflow](tests/Research/path-marker-content/marker-css-overflow-boundary.svg). Make every declared output exact on both platforms and preserve graph/resource failures. Close only the covered mechanisms; the finite G8 exit still applies. |
 

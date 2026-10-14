@@ -1,0 +1,57 @@
+{
+  "purpose": "Both unchanged supplied public programs affect the whole sheet inside the SVG image.",
+  "platforms": {
+    "windows": [
+      {
+        "id": "missing-example",
+        "reference": "font-use-proof/windows/missing-example.png",
+        "changedPixelsFromIntendedFont": 13499,
+        "captures": {
+          "pngSha256": "56013afab21ecfcb9c4d60b6f55f602e329d7b785a11ab55e0347aa46bad7803",
+          "freshProcessCaptures": 3,
+          "stability": "identical",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      },
+      {
+        "id": "missing-mono",
+        "reference": "font-use-proof/windows/missing-mono.png",
+        "changedPixelsFromIntendedFont": 3946,
+        "captures": {
+          "pngSha256": "1d9b3fbbe3b57b8d611f19acfa5f370c509c1226fcad1b14c2ea08c5f95bd47d",
+          "freshProcessCaptures": 3,
+          "stability": "identical",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      }
+    ],
+    "linux": [
+      {
+        "id": "missing-example",
+        "reference": "font-use-proof/linux/missing-example.png",
+        "changedPixelsFromIntendedFont": 12201,
+        "captures": {
+          "pngSha256": "c8093a3d1ad3c3d3ae034cfc373dabf6ca4a2538a7a82882f56593ec5407f479",
+          "freshProcessCaptures": 3,
+          "stability": "identical",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      },
+      {
+        "id": "missing-mono",
+        "reference": "font-use-proof/linux/missing-mono.png",
+        "changedPixelsFromIntendedFont": 3742,
+        "captures": {
+          "pngSha256": "ce64d5d9d09c1ba2f3842a1714f5b6577f6adf74bcc4bd3419bf5cdd602502ab",
+          "freshProcessCaptures": 3,
+          "stability": "identical",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      }
+    ]
+  }
+}

@@ -81,6 +81,33 @@ public sealed class SvgFontLayoutDiagramTests
     }
 
     [Theory]
+    [InlineData("remaining-label-path-sheet")]
+    [InlineData("nested-list-rotation")]
+    public async Task Remaining_label_path_outputs_preserve_frozen_inputs_and_platform_references(string identity)
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet");
+        await ValidateDeclared(directory, identity, [new("Example", 400, false), new("Mono", 700, false)]);
+        if (identity != "remaining-label-path-sheet") return;
+        using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "font-use-proof", "qualification.json")));
+        string platform = OperatingSystem.IsLinux() ? "linux" : "windows";
+        string referencePath = OperatingSystem.IsLinux() ? "references/linux64/remaining-label-path-sheet.png" : "references/remaining-label-path-sheet.png";
+        RgbaImage reference = PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(directory, referencePath)), SvgRenderLimits.Default.MaximumPixels);
+        foreach (JsonElement missing in proof.RootElement.GetProperty("platforms").GetProperty(platform).EnumerateArray())
+        {
+            JsonElement captures = missing.GetProperty("captures");
+            Assert.Equal(3, captures.GetProperty("freshProcessCaptures").GetInt32());
+            Assert.Equal("identical", Required(captures, "stability"));
+            Assert.Equal("healthy", Required(captures, "startupHealth"));
+            Assert.True(captures.GetProperty("profileCleaned").GetBoolean());
+            byte[] png = File.ReadAllBytes(Path.Combine(directory, Required(missing, "reference")));
+            Assert.Equal(Required(captures, "pngSha256"), Convert.ToHexStringLower(SHA256.HashData(png)));
+            PixelComparison difference = PixelComparer.Compare(reference, PngRgbaDecoder.Decode(png, SvgRenderLimits.Default.MaximumPixels));
+            Assert.Equal(missing.GetProperty("changedPixelsFromIntendedFont").GetInt64(), difference.ChangedPixelCount);
+            Assert.False(difference.IsExact);
+        }
+    }
+
+    [Theory]
     [MemberData(nameof(CascadeCases))]
     public async Task Declared_cascade_outputs_preserve_original_sources_and_platform_references(string identity)
     {

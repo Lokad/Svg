@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Retained whole CC0 label/path sheet plus one focused nested-list/rotation control for the finite G9 exit. References precede production correction; current rejections remain required gaps.",
+  "fontPack": "../font-layout-diagram/font-pack.json",
+  "fontPrograms": [
+    {
+      "relativePath": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+      "license": "../supplied-font-labels/fonts/OFL.txt",
+      "provenance": "../supplied-font-labels/font-provenance.json",
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    },
+    {
+      "relativePath": "../supplied-font-documents/fonts/NotoSansMono-Bold.ttf",
+      "license": "../supplied-font-documents/fonts/OFL.txt",
+      "provenance": "../supplied-font-documents/font-provenance.json",
+      "sha256": "beb857bd799a114de7d5d90cc75cc69f4b6ee8d401f4ab20697e6f9719a66dfc"
+    }
+  ],
+  "cases": [
+    {
+      "id": "remaining-label-path-sheet",
+      "input": "remaining-label-path-sheet.svg",
+      "width": 432,
+      "height": 372,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "e80afc08a4462fef2c6abbc395ab38cfa586ce6a36fcf704c3e05632fbf7bff2",
+      "selection": "Declared before shared nested-list/rotation correction; every retained byte, program, option and platform reference stays frozen. The whole sheet owns remaining finite G9 semantics; this control only diagnoses inherited character positioning.",
+      "expectedError": "UnsupportedFeature",
+      "reference": "references/remaining-label-path-sheet.png",
+      "referenceSha256": "e848f3d4cdaf509e64cac165f3cf15eeb238cfe1391bbc60c711bfe1d5b6619f",
+      "captures": [
+        {
+          "pngSha256": "e848f3d4cdaf509e64cac165f3cf15eeb238cfe1391bbc60c711bfe1d5b6619f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e848f3d4cdaf509e64cac165f3cf15eeb238cfe1391bbc60c711bfe1d5b6619f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "e848f3d4cdaf509e64cac165f3cf15eeb238cfe1391bbc60c711bfe1d5b6619f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/remaining-label-path-sheet.png",
+      "linuxReferenceSha256": "69ebcedef2f9faf162c5cd1579da0771a26526e21365e6127b297c3a311fb5d9",
+      "linuxCaptures": [
+        {
+          "pngSha256": "69ebcedef2f9faf162c5cd1579da0771a26526e21365e6127b297c3a311fb5d9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "69ebcedef2f9faf162c5cd1579da0771a26526e21365e6127b297c3a311fb5d9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "69ebcedef2f9faf162c5cd1579da0771a26526e21365e6127b297c3a311fb5d9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "nested-list-rotation",
+      "input": "nested-list-rotation.svg",
+      "width": 210,
+      "height": 90,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "04ce754d5dffcc523390f42e27bf34a7d2cc93f3a3f190af4a326a9e66734196",
+      "selection": "Declared before shared nested-list/rotation correction; every retained byte, program, option and platform reference stays frozen. The whole sheet owns remaining finite G9 semantics; this control only diagnoses inherited character positioning.",
+      "expectedError": "UnsupportedFeature",
+      "reference": "references/nested-list-rotation.png",
+      "referenceSha256": "2d5948239a8b789149584f769e299f92f5c4800c7efd7cdd4c4869916d62dd0e",
+      "captures": [
+        {
+          "pngSha256": "2d5948239a8b789149584f769e299f92f5c4800c7efd7cdd4c4869916d62dd0e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2d5948239a8b789149584f769e299f92f5c4800c7efd7cdd4c4869916d62dd0e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "2d5948239a8b789149584f769e299f92f5c4800c7efd7cdd4c4869916d62dd0e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/nested-list-rotation.png",
+      "linuxReferenceSha256": "fae1ed90e414211031160288d579d260cd11638b2a64c04e43a6232b295500d5",
+      "linuxCaptures": [
+        {
+          "pngSha256": "fae1ed90e414211031160288d579d260cd11638b2a64c04e43a6232b295500d5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fae1ed90e414211031160288d579d260cd11638b2a64c04e43a6232b295500d5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "fae1ed90e414211031160288d579d260cd11638b2a64c04e43a6232b295500d5",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    }
+  ]
+}
