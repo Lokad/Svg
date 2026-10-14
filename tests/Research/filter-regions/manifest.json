@@ -189,20 +189,6 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original numeric mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "role": "fidelity",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 85,
-        "MaximumChannelError": 1,
-        "MeanAbsoluteError": 0.00012171233504398827,
-        "RootMeanSquareError": 0.011032331351259727,
-        "MaximumAlphaError": 0,
-        "AlphaChangedPixelCount": 0,
-        "MinimumMismatchX": 43,
-        "MinimumMismatchY": 298,
-        "MaximumMismatchX": 127,
-        "MaximumMismatchY": 298,
-        "IsExact": false
-      },
       "remainingGap": "Retain the existing 85-pixel native rectangle-fringe difference under G3/G4."
     },
     {

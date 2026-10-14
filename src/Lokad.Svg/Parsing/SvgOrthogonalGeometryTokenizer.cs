@@ -211,6 +211,9 @@ internal static class SvgOrthogonalGeometryTokenizer
     }
 
     internal static BudgetedParserList<SvgFractionalPoint> ParseFractionalPointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => ParseFractionalPointList(value, elementName, maximumGeometryElements, budget, workCounter, cancellationToken, 3);
+
+    internal static BudgetedParserList<SvgFractionalPoint> ParseFractionalPointList(string value, string elementName, int maximumGeometryElements, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, int minimumPoints)
     {
         ValidatePointListVertexCount(value, maximumGeometryElements, workCounter, cancellationToken);
         BudgetedParserList<SvgFractionalPoint> points = new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken);
@@ -226,7 +229,7 @@ internal static class SvgOrthogonalGeometryTokenizer
                 points.Add(new SvgFractionalPoint(ParseFractionalCoordinate(x, elementName), ParseFractionalCoordinate(y, elementName)));
                 vertexCount++;
             }
-            if (points.Count < 3) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only closed fractional " + elementName + " contours are implemented.");
+            if (points.Count < minimumPoints) throw new SvgException(SvgErrorCode.UnsupportedFeature, "The " + elementName + " has too few vertices for its geometry consumer.");
             return points;
         }
         catch

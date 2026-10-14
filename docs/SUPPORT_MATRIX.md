@@ -1,3 +1,19 @@
+## Completed colored effects/marker diagram (2026-10-14)
+
+The original CC0 colored-signal diagram and seven original controls are exact
+on Windows/Linux. Small/anisotropic Gaussian and identity windows reuse the
+qualified box pass selected by Chromium's pinned configuration. Fractional
+offsets use native nearest sampling. Arc endpoint directions reuse source conics;
+polygon/polyline vertices share ordinary marker placement and paint order,
+including admitted instance lowering.
+
+Original direct/instance arc and point-list longhand controls match unchanged
+references. The old plain rectangle-source fringe also matches exactly: frame
+insets now use bitmap-local float coordinates. The displaced-blur six-pixel
+residual and discovered fractional SourceGraphic image-boundary mismatch remain
+required. See the [document/control bank](../tests/Research/colored-effects-markers/README.md).
+Finite G8 units, CSS/container/graph/color-space interactions remain open.
+
 ## Colored sRGB filter composition (2026-10-14)
 
 Local `feFlood`, `feComposite` over/in and `feBlend` normal/multiply/screen reuse

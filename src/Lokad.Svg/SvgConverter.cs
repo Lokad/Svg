@@ -498,6 +498,9 @@ public static class SvgConverter
                 for (int index = 0; index < primitives.Length; index++)
                 {
                     SvgFilterPrimitive primitive = primitives[index];
+                    if (primitive.Kind == SvgFilterPrimitiveKind.Offset
+                        && (primitive.OffsetX * primitiveMap.ScaleX != Math.Truncate(primitive.OffsetX * primitiveMap.ScaleX)
+                            || primitive.OffsetY * primitiveMap.ScaleY != Math.Truncate(primitive.OffsetY * primitiveMap.ScaleY))) return false;
                     if (primitive.Region is not null || (primitive.Kind != SvgFilterPrimitiveKind.Offset
                         && (index != primitives.Length - 1 || primitive.Kind != SvgFilterPrimitiveKind.Merge))) return false;
                 }
@@ -3062,34 +3065,61 @@ public static class SvgConverter
                 left = Math.Max(left, ClampFloor(bounds.X, outputWidth)); right = Math.Max(left, Math.Min(right, ClampCeiling(bounds.Right, outputWidth)));
                 top = Math.Max(top, ClampFloor(bounds.Y, outputHeight)); bottom = Math.Max(top, Math.Min(bottom, ClampCeiling(bounds.Bottom, outputHeight)));
             }
-            long rows = 2L * (bottom - top);
-            if (rows > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame rows exceed the configured work limit.");
-            workUnits += rows;
-            long pixels = 0;
-            for (int y = top; y < bottom; y++)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                (int end, int start) = frame.GetRowSpans(y, left, right);
-                pixels += end - left + right - Math.Max(end, start);
-            }
-            long rasterWork = 5 * pixels;
-            if (rasterWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame raster exceeds the configured work limit.");
-            workUnits += rasterWork;
             SvgAnalyticPaint paint = ResolveSolidPaint(stroke.Color);
             Span<byte> alphas = stackalloc byte[4];
-            for (int y = top; y < bottom; y++)
+            foreach (SvgCpuRasterContext cpuTile in rasterGrid.GetContexts(new(left, top, right, bottom)))
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                (int end, int start) = frame.GetRowSpans(y, left, right);
-                int second = Math.Max(end, start);
-                int visited = end - left + right - second;
-                for (int index = 0; index < visited; index++)
+                SvgCpuRasterContext context = LayerRasterContext(cpuTile);
+                SvgCpuBitmapOrigin origin = context.Origin;
+                // Native frame insets are evaluated in the owning bitmap before
+                // fixed-edge conversion; global insets lose float fringe precision.
+                SvgRectangleFrameCoverage local = frame;
+                if (origin != default)
                 {
-                    int x = index < end - left ? left + index : second + index - (end - left);
-                    int count = frame.GetOperations(x, y, alphas);
-                    SvgAnalyticClipCoverage coverage = clip is {} paintClip ? SvgAnalyticRectangleClip.GetCoverage((paintClip.X, paintClip.Y, paintClip.Right, paintClip.Bottom), paintClip.Antialiasing, x, y) : SvgAnalyticClipCoverage.Full;
-                    Span<byte> pixel = destination.AsSpan((y * outputWidth + x) * 4, 4);
-                    for (int operation = 0; operation < count; operation++) paint.Blend(pixel, ViewportAlpha(coverage.Apply(alphas[operation]), x, y), SvgAnalyticPaintKind.Direct);
+                    if (8 > options.Limits.MaximumWorkUnits - workUnits)
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle bitmap-frame preparation exceeds the configured work limit.");
+                    workUnits += 8;
+                    local = SvgRectangleFrameCoverage.Create(
+                        MapRectangleEdge(rectangle.X, horizontalScale, (float)horizontalOffset - origin.X),
+                        MapRectangleEdge(rectangle.Y, verticalScale, (float)verticalOffset - origin.Y),
+                        MapRectangleEdge(rectangle.X + rectangle.Width, horizontalScale, (float)horizontalOffset - origin.X),
+                        MapRectangleEdge(rectangle.Y + rectangle.Height, verticalScale, (float)verticalOffset - origin.Y),
+                        MapEdge(stroke.Width, horizontalScale, 0), MapEdge(stroke.Width, verticalScale, 0));
+                }
+                int x1 = Math.Max(left, context.Interior.Left), x2 = Math.Min(right, context.Interior.Right);
+                int y1 = Math.Max(top, context.Interior.Top), y2 = Math.Min(bottom, context.Interior.Bottom);
+                if (x2 <= x1 || y2 <= y1) continue;
+                long rows = 2L * (y2 - y1);
+                if (rows > options.Limits.MaximumWorkUnits - workUnits)
+                    throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame rows exceed the configured work limit.");
+                workUnits += rows;
+                long pixels = 0;
+                for (int y = y1; y < y2; y++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    (int end, int start) = local.GetRowSpans(y - origin.Y, x1 - origin.X, x2 - origin.X);
+                    pixels += end - (x1 - origin.X) + (x2 - origin.X) - Math.Max(end, start);
+                }
+                long rasterWork = 5 * pixels;
+                if (rasterWork > options.Limits.MaximumWorkUnits - workUnits)
+                    throw new SvgException(SvgErrorCode.LimitExceeded, "Rectangle frame raster exceeds the configured work limit.");
+                workUnits += rasterWork;
+                for (int y = y1; y < y2; y++)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    (int localEnd, int localStart) = local.GetRowSpans(y - origin.Y, x1 - origin.X, x2 - origin.X);
+                    int end = localEnd + origin.X, start = localStart + origin.X;
+                    int second = Math.Max(end, start), visited = end - x1 + x2 - second;
+                    for (int index = 0; index < visited; index++)
+                    {
+                        int x = index < end - x1 ? x1 + index : second + index - (end - x1);
+                        int count = local.GetOperations(x - origin.X, y - origin.Y, alphas);
+                        SvgAnalyticClipCoverage coverage = clip is {} paintClip ? SvgAnalyticRectangleClip.GetCoverage((paintClip.X, paintClip.Y, paintClip.Right, paintClip.Bottom), paintClip.Antialiasing, x, y) : SvgAnalyticClipCoverage.Full;
+                        Span<byte> pixel = destination.AsSpan((y * outputWidth + x) * 4, 4);
+                        for (int operation = 0; operation < count; operation++)
+                            paint.Blend(pixel, ViewportAlpha(coverage.Apply(alphas[operation]), x, y), SvgAnalyticPaintKind.Direct);
+                    }
                 }
             }
         }

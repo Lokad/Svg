@@ -118,12 +118,12 @@ internal static class SvgMarkerRenderer
         return Attach(body, positions, markers, reader, context, paint, frame, state);
     }
 
-    internal static SvgParsedGeometry AttachPath(SvgParsedGeometry body, XmlReader reader, SvgPaintableElementContext context,
+    internal static SvgParsedGeometry AttachVertices(SvgParsedGeometry body, XmlReader reader, SvgPaintableElementContext context,
         SvgRecordedPaintStyle paint, SvgViewportFrame? frame, SvgDocumentState state, SvgMarkerStyle markers, int maximumCommands)
     {
         if (!markers.HasMarkers) return body;
         BudgetedParserList<SvgMarkerPosition> positions;
-        try { positions = SvgMarkerVertices.ReadPath(reader, maximumCommands, state, context.WorkCounter, context.CancellationToken); }
+        try { positions = SvgMarkerVertices.Read(reader, maximumCommands, state, context.WorkCounter, context.CancellationToken); }
         catch { body.Discard(); throw; }
         using (positions) return Attach(body, positions.AsSpan(), markers, reader, context, paint, frame, state);
     }

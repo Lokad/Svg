@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 internal enum SvgMarkerVertexRole { Start, Mid, End }
 internal readonly record struct SvgMarkerPosition(SvgMarkerVertexRole Role, SvgDevicePoint Point, double Angle);
 
-/// <summary>Reads authored path vertices and their directions before stroke dashing or fill closure.</summary>
+/// <summary>Reads authored path and point-list vertices before stroke dashing or fill closure.</summary>
 /// <remarks>Command, corner and output lists charge caller-owned bounded parser storage. Every command,
 /// derivative and vertex consumes work and observes cancellation; no curve flattening is required.</remarks>
 internal static class SvgMarkerVertices
@@ -14,15 +14,33 @@ internal static class SvgMarkerVertices
     private readonly record struct Corner(SvgDevicePoint Point, SvgDevicePoint Incoming, SvgDevicePoint Outgoing,
         bool StartsSubpath, bool EndsSubpath, bool Closed);
 
-    internal static BudgetedParserList<SvgMarkerPosition> ReadPath(XmlReader reader, int maximumCommands,
+    internal static BudgetedParserList<SvgMarkerPosition> Read(XmlReader reader, int maximumCommands,
         SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
-        using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, work, token);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Parser, work, token);
-        SvgPathDataParser.ParseCommands(data.Value, maximumCommands, work, token, commands);
+        if (reader.LocalName is "polygon" or "polyline")
+        {
+            string values = reader.GetAttribute("points") ?? throw new SvgException(SvgErrorCode.MalformedInput, "Marker point-list coordinates are required.");
+            using BudgetedParserList<SvgFractionalPoint> points = SvgOrthogonalGeometryTokenizer.ParseFractionalPointList(values,
+                reader.LocalName, maximumCommands, state.Budget, work, token, 2);
+            for (int index = 0; index < points.Count; index++)
+            {
+                work.Consume(token);
+                commands.Add(new(index == 0 ? SvgAuthoredPathVerb.Move : SvgAuthoredPathVerb.Line,
+                    SvgAuthoredArcFlags.None, new(points[index].X, points[index].Y), default, default));
+            }
+            if (reader.LocalName == "polygon") commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+            commands.Add(new(SvgAuthoredPathVerb.End, SvgAuthoredArcFlags.None, default, default, default));
+        }
+        else
+        {
+            using SvgRenderablePathData data = SvgRenderablePathData.Read(reader.GetAttribute("d"), maximumCommands, state.Budget, work, token);
+            SvgPathDataParser.ParseCommands(data.Value, maximumCommands, work, token, commands);
+        }
         using BudgetedParserList<Corner> corners = new(state.Budget, SvgMemoryCategory.Parser, work, token);
         int subpathStart = -1;
         SvgDevicePoint current = default;
+        Span<SvgEndpointConic> arcs = stackalloc SvgEndpointConic[SvgEndpointArc.MaximumConicCount];
         foreach (SvgAuthoredPathCommand command in commands.AsSpan())
         {
             work.Consume(token);
@@ -73,7 +91,14 @@ internal static class SvgMarkerVertices
                     if (corners.Count != 0) corners[^1] = corners[^1] with { EndsSubpath = true };
                     break;
                 case SvgAuthoredPathVerb.Arc:
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on arc paths are not implemented.");
+                    for (int phase = 0; phase <= SvgEndpointArc.MaximumConicCount; phase++) work.Consume(token);
+                    int count = SvgEndpointArc.Convert(current, command.First.X, command.First.Y, command.Second.X,
+                        (command.ArcFlags & SvgAuthoredArcFlags.Large) != 0, (command.ArcFlags & SvgAuthoredArcFlags.Sweep) != 0,
+                        command.Third, arcs, token);
+                    SvgDevicePoint arcStart = count == 0 ? Difference(command.Third, current) : Difference(arcs[0].Control, current);
+                    SvgDevicePoint arcEnd = count == 0 ? arcStart : Difference(arcs[count - 1].End, arcs[count - 1].Control);
+                    Append(command.Third, arcStart, arcEnd);
+                    break;
                 default:
                     throw new InvalidOperationException("Unexpected authored marker path command.");
             }

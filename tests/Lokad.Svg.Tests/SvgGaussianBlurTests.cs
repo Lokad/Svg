@@ -147,14 +147,24 @@ public sealed class SvgGaussianBlurTests
     [InlineData(1.999f)]
     [InlineData(135.001f)]
     [InlineData(float.MaxValue)]
-    public void Pending_kernel_and_rescaling_admissions_reject_before_allocating(float sigma)
+    public void Kernel_and_rescaling_admissions_preserve_output_and_resource_boundaries(float sigma)
     {
         byte[] source = Source(), target = new byte[source.Length];
         RenderBudget budget = new(1_000_000);
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(sigma, 3), budget, long.MaxValue, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
-        Assert.Equal(0, budget.Snapshot().PeakBytes);
-        Assert.All(target, value => Assert.Equal(0, value));
+        if (sigma < 2)
+        {
+            long work = SvgGaussianBlur.Apply(source, target, 13, 9, new(sigma, 3), budget, long.MaxValue, CancellationToken.None);
+            Assert.True(work > 0);
+            Assert.Contains(target, value => value > 0);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+        else
+        {
+            SvgException rejected = Assert.Throws<SvgException>(() => SvgGaussianBlur.Apply(source, target, 13, 9, new(sigma, 3), budget, long.MaxValue, CancellationToken.None));
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+            Assert.Equal(0, budget.Snapshot().PeakBytes);
+            Assert.All(target, value => Assert.Equal(0, value));
+        }
     }
 
     [Fact]

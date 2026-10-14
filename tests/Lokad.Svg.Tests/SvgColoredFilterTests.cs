@@ -8,6 +8,9 @@ public sealed class SvgColoredFilterTests
     [Theory]
     [InlineData("flood-composite-in")]
     [InlineData("colored-blend-multiply")]
+    [InlineData("small-anisotropic-fractional-offset")]
+    [InlineData("arc-polyline-markers")]
+    [InlineData("colored-signal-diagram")]
     public void Colored_filter_source_capture_releases_owners_after_denial_cancellation_and_retry(string identity)
     {
         byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "colored-effects-markers", identity + ".svg"));

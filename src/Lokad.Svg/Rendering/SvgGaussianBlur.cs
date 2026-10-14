@@ -24,7 +24,8 @@ internal readonly record struct SvgGaussianDeviation
 /// allocation or execution. Independent invocations share no mutable state.
 /// The fused three-box passes and scaled division follow the pinned Skia CPU blur arithmetic
 /// (Copyright 2024 Google LLC; see THIRD_PARTY_NOTICES.txt). Color-space conversion belongs to
-/// the filter graph. Large deviations use the placed rescaling path; small kernels remain gated.
+/// the filter graph. Small deviations retain Chromium's box-kernel selection, including
+/// identity windows; large deviations use the placed rescaling path.
 /// </remarks>
 internal static class SvgGaussianBlur
 {
@@ -238,9 +239,9 @@ internal static class SvgGaussianBlur
         static BoxKernel Kernel(float sigma)
         {
             if (sigma <= 0.03f) return default;
-            if (sigma < 2) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Small Gaussian filter kernels are not implemented.");
             if (sigma > 135) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Gaussian filter rescaling requires the placed image path.");
             int window = (int)MathF.Floor(sigma * 3f * MathF.Sqrt(2f * MathF.PI) / 4f + 0.5f);
+            if (window <= 1) return default;
             int third = (window & 1) == 0 ? window + 1 : window;
             uint divisor = checked((uint)(window * window * third));
             uint factor = checked((uint)Math.Round(4294967296d / divisor, MidpointRounding.AwayFromZero));

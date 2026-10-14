@@ -458,6 +458,11 @@ internal static class SvgFilterPlayback
         void Offset(ReadOnlySpan<byte> input, Span<byte> output, double dx, double dy)
         {
             ValidateOffset(dx, dy);
+            // SkImageFilters::Offset uses nearest sampling, retaining the legacy
+            // layer-space pixel displacement rather than bilinear interpolation.
+            if (dx != Math.Truncate(dx)) dx = Math.Floor((float)dx + .5f);
+            if (dy != Math.Truncate(dy)) dy = Math.Floor((float)dy + .5f);
+            ValidateOffset(dx, dy);
             Charge(pixels);
             for (int y = 0; y < height; y++)
             {
@@ -477,8 +482,6 @@ internal static class SvgFilterPlayback
         {
             if (!double.IsFinite(dx) || !double.IsFinite(dy) || dx < int.MinValue || dx > int.MaxValue || dy < int.MinValue || dy > int.MaxValue)
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Filter offset exceeds the numeric range.");
-            if (dx != Math.Truncate(dx) || dy != Math.Truncate(dy))
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Fractional filter offsets are not implemented.");
         }
     }
 }

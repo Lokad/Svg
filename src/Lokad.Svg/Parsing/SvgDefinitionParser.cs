@@ -1639,7 +1639,7 @@ internal static class SvgDefinitionParser
     /// native geometry and every lowerer observes the supplied work, cancellation and memory bounds.</remarks>
     internal static SvgDefinition LowerInstanceSource(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
     {
-        if (reader.LocalName is not ("line" or "path") && SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers).HasMarkers)
+        if (reader.LocalName is not ("line" or "path" or "polygon" or "polyline") && SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers).HasMarkers)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on shapes other than lines and paths are not implemented.");
         if (reader.LocalName == "rect")
         {

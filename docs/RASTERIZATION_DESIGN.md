@@ -1,3 +1,37 @@
+## Whole colored signal diagram and bitmap-local frame fringe (2026-10-14)
+
+The unchanged authored diagram is 1/1 exact on Windows/Linux, with its seven
+original controls 7/7 exact. Shared conics yield arc endpoint directions without
+inserting subdivision markers. Point-list syntax lowers to the same authored
+corner tape and marker replay, retaining ordinary body paint order and outer
+opacity. Four preceding direct/instance arc and longhand point-list controls
+also graduate against their unchanged references.
+
+The initial true-Gaussian small-kernel trial differed from the independent
+axis captures and was discarded. The pinned Chromium SkUserConfig.h defines
+SK_AVOID_SLOW_RASTER_PIPELINE_BLURS; its RGBA path uses the existing box pass,
+including width-one identity windows. The original anisotropic/fractional-offset
+control becomes exact by admitting those windows and retaining nearest sampling
+from SkImageFilters::Offset. The bilinear trial was discarded as well.
+
+The original unfiltered rectangle-source residual is a frame-construction
+precision defect. Native bitmap-local insets preserve the inner-bottom fringe
+fraction before fixed conversion; constructing the inset globally lost one
+coverage unit. Per-context frame construction resolves all 85 pixels without
+changing paint arithmetic or using document/pixel predicates. Zero-origin
+frames reuse their preceding preparation; additional construction and visited
+row/pixel work are admitted before painting.
+
+A new isolated SourceGraphic fractional-offset input exposes 22 differing pixels,
+maximum channel139/alpha75, under native image bounds/AA. Healthy independent
+Windows/Linux triples agree byte-for-byte and are retained as required fidelity
+work in the [bank](../tests/Research/colored-effects-markers/README.md).
+The old displaced-blur residual remains six pixels/maxchannel14/alpha1. A trial
+using the native alternative bilerp fractional-coordinate expression did not
+affect it and was removed; there is no tolerance or reference replacement.
+
+The diagram is complete; finite G8/S17 are not. Preserve the original seven-control
+denominator separately from the newly discovered defect and the frozen cohorts.
 ## Bounded colored filter graph and source capture (2026-10-14)
 
 The frozen colored-signal diagram and seven controls were declared before

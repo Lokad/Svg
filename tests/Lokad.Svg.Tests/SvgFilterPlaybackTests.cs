@@ -141,12 +141,21 @@ public sealed class SvgFilterPlaybackTests
     [InlineData("<feOffset dx='.5'/>")]
     [InlineData("<feGaussianBlur stdDeviation='.5'/>")]
     [InlineData("<feDropShadow stdDeviation='1e300'/>")]
-    public void Pending_pixel_semantics_fail_before_any_stream_output(string primitive)
+    public void Primitive_pixel_admissions_preserve_output_and_explicit_boundaries(string primitive)
     {
         byte[] input = Document("<defs><filter id='f'>" + primitive + "</filter></defs><rect width='4' height='4' fill='red' filter='url(#f)'/>");
         using MemoryStream stream = new();
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, stream.Length);
+        if (primitive.Contains("1e300", StringComparison.Ordinal))
+        {
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, stream.Length);
+        }
+        else
+        {
+            byte[] expected = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray();
+            Assert.True(SvgConverter.ConvertToPng(input, stream, SvgRenderOptions.Default, CancellationToken.None) > 0);
+            Assert.Equal(expected, stream.ToArray());
+        }
     }
 
     [Fact]

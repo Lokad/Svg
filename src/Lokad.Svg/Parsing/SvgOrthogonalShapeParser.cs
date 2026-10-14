@@ -14,7 +14,7 @@ internal static class SvgOrthogonalShapeParser
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParsePathCore(reader, context, maximumGeometryElements, budget, frame, state);
         SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers.HasMarkers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
-        return SvgMarkerRenderer.AttachPath(recorded, reader, context, source, frame, state, markers, maximumGeometryElements);
+        return SvgMarkerRenderer.AttachVertices(recorded, reader, context, source, frame, state, markers, maximumGeometryElements);
     }
 
     internal static SvgParsedGeometry ParsePathCore(XmlReader reader, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
@@ -221,9 +221,12 @@ internal static class SvgOrthogonalShapeParser
     internal static SvgParsedGeometry ParsePointList(XmlReader reader, string elementName, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)
     {
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        SvgMarkerStyle markers = SvgMarkerStyle.Resolve(context.ResolveStyle(reader), context.InheritedPresentation.Markers);
         context = context with { DeferPaintOpacity = true };
         SvgParsedGeometry parsed = ParsePointListCore(reader, elementName, context, maximumGeometryElements, budget, frame, state);
-        return SvgPaintRecording.Attach(parsed, source, reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+        SvgParsedGeometry recorded = SvgPaintRecording.Attach(parsed, markers.HasMarkers ? source with { ElementOpacity = SvgPaintOpacity.Opaque } : source,
+            reader.LocalName, state, context.WorkCounter, context.CancellationToken);
+        return SvgMarkerRenderer.AttachVertices(recorded, reader, context, source, frame, state, markers, maximumGeometryElements);
     }
 
     internal static SvgParsedGeometry ParsePointListCore(XmlReader reader, string elementName, SvgPaintableElementContext context, int maximumGeometryElements, RenderBudget budget, SvgViewportFrame? frame, SvgDocumentState state)

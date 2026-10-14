@@ -415,12 +415,10 @@
       "height": 130,
       "scale": 1,
       "background": "transparent",
-      "role": "boundary",
+      "role": "fidelity",
       "sourceSha256": "c96fedacaf353d6f1779d5a36a2e10a635111c689c793d13d04d2d88ccd57ded",
       "license": "CC0-1.0",
       "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Markers on arc paths are not implemented.",
       "referenceSha256": "cd5719eac2c45b353d9dd50c657e1b17e30da1cb167e18eef074eac927fd56a4",
       "captures": [
         {
@@ -448,12 +446,10 @@
       "height": 130,
       "scale": 1,
       "background": "transparent",
-      "role": "boundary",
+      "role": "fidelity",
       "sourceSha256": "a52cfeb32ca29435a24a1778d6f4d57d6623ff74f50be5e01c04b78896a82285",
       "license": "CC0-1.0",
       "selection": "Declared before capture and implementation; diagnoses shared retained marker presentation, source paint or an explicit instance boundary.",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Markers on shapes other than lines and paths are not implemented.",
       "referenceSha256": "3646885ea0c03c060ad0b5ded3084879b700f7566338d611ea1ad161d081405d",
       "captures": [
         {

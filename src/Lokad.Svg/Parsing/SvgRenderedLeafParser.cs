@@ -77,7 +77,7 @@ internal static class SvgRenderedLeafParser
         SvgDocumentState state, SvgRenderLimits limits, RenderBudget budget, SvgFontSnapshot? fontSnapshot,
         ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (reader.LocalName is not ("line" or "path") && SvgMarkerStyle.Resolve(context.ResolveStyle(reader, reader.LocalName == "text"), context.InheritedPresentation.Markers).HasMarkers)
+        if (reader.LocalName is not ("line" or "path" or "polygon" or "polyline") && SvgMarkerStyle.Resolve(context.ResolveStyle(reader, reader.LocalName == "text"), context.InheritedPresentation.Markers).HasMarkers)
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Markers on shapes other than lines and paths are not implemented.");
         switch (reader.LocalName)
         {
