@@ -1,8 +1,8 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-14 after completing the colored effects/marker diagram.
-The preceding hosted filter checkpoint `41f8f1e7` remains protected. This plan owns
-remaining work and completion decisions; [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
+Updated 2026-10-14 at the qualified `04663d92` rendering checkpoint.
+This plan owns remaining work and completion decisions;
+[SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
 owns admission, [INVENTORY](docs/INVENTORY.md) owns document evidence,
 [RASTERIZATION_DESIGN](docs/RASTERIZATION_DESIGN.md) owns mechanisms and diagnostic
 history, and [BENCHMARKS](docs/BENCHMARKS.md) owns performance evidence.
@@ -20,10 +20,9 @@ decisions. Implementation history stays in the linked records and Git.
 | Frozen corporate cohort | **27/27 documents / 258/258 variants exact on Windows and Linux**, including 13/13 marks and 14/14 outlined wordmarks. Membership, bytes, options, backgrounds and references are frozen in the [cohort manifest](tests/References/inventory/corporate-cohort-v1.json) and [current measurement](tests/References/inventory/corporate-cohort-current.json). |
 | Selected development documents | **50/50 complete**, including unchanged whole `inv-146`. Preserve every preceding declared output in the [gap ledger](tests/References/inventory/svg-gap-cases.json) and [supplied-font document banks](tests/Research/offset-merge-document/README.md). Failure-selected inputs establish no representative success rate; controls have separate denominators. |
 | Original acceptance and supplied-font work | Original marker/drop-shadow fixtures **2/2**, original supplied-font label/path fixtures **2/2**, SVG Translate, `inv-127` and `inv-145` are complete. Preserve intended-font proof, original programs/aliases and metrics/pixels. Evidence: [markers](tests/Research/marker-instance-content/manifest.json), [filters](tests/Research/filter-documents/manifest.json), [labels](tests/Research/supplied-font-labels/README.md), [text paths](tests/Research/supplied-font-text-paths/README.md), [supplied-font documents](tests/Research/supplied-font-documents/README.md), [curved labels](tests/Research/curved-font-documents/README.md) and [group masks](tests/Research/mask-group-documents/README.md). |
-| `inv-146` and shared rendering corrections | Whole `inv-146`, eight oval/text controls and four [merge controls](tests/Research/filter-merges/README.md) are exact. Completed source replay, stroke maps, heart/I Ching, paints, masks/clips, hinting, winding and layers remain protected. [Merge receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json); [design record](docs/RASTERIZATION_DESIGN.md); [support record](docs/SUPPORT_MATRIX.md), including later entries that supersede historical gates. Paint recording is **148 exact / one required pattern-opacity gate**; I Ching is **24 exact / one out-of-scope animation boundary**. |
+| `inv-146` and shared rendering corrections | Whole `inv-146`, eight oval/text controls and four [merge controls](tests/Research/filter-merges/README.md) are exact. Preserve completed mechanisms in the [merge receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json), [design record](docs/RASTERIZATION_DESIGN.md) and [support record](docs/SUPPORT_MATRIX.md); later qualified entries supersede historical gates. Paint recording is **148 exact / one required pattern-opacity gate**; I Ching is **24 exact / one out-of-scope animation boundary**. |
 | Additional complete authored documents | Four CC0 diagrams, each **1/1**, separate from both frozen cohorts: [symbol card](tests/Research/symbol-fractional-frames/README.md), [affine orbit](tests/Research/affine-oval-strokes/README.md), [scoped card](tests/Research/scoped-clips-masks/README.md) and [colored signal](tests/Research/colored-effects-markers/README.md). Original control sets remain separately **4/4, 6/6, 5/5 and 7/7 exact**. Wider promises below remain open. |
-| Preceding hosted filter revision | `41f8f1e7`: **7,545 tests/platform**, all preceding cases retained. [Qualification receipt](artifacts/maintenance-review-20261012/colored-effects-graph-qualified-results.json); [green hosted Windows/Linux delivery](https://github.com/Lokad/Svg/actions/runs/38542568175). Earlier mechanism checkpoints remain in the linked support/design records. |
-| Effects/marker document checkpoint | Complete colored-signal output and seven original controls are exact on Windows/Linux; four original arc/point-list marker gates graduate unchanged. The plain rectangle-source **85-pixel defect is resolved** through bitmap-local frame construction. Fresh Release checks pass **7,549 tests/platform** (5,197 core / 2,346 visual / six FontProbe), every preceding case retained with explicit admission-name updates. [Bank](tests/Research/colored-effects-markers/README.md); [qualification receipt](artifacts/maintenance-review-20261012/effects-marker-document-qualified-results.json). Displaced blur remains six pixels; the additional discovered offset boundary remains 22 pixels. Neither is a feature deferral. |
+| Current rendering/delivery checkpoint | `04663d92`: colored-signal output and seven original controls exact; four original arc/point-list gates and the rectangle-source defect resolved. **7,549 tests/platform** (5,197 core / 2,346 visual / six FontProbe), every preceding case retained. [Bank](tests/Research/colored-effects-markers/README.md), [qualification receipt](artifacts/maintenance-review-20261012/effects-marker-document-qualified-results.json), [green hosted Windows/Linux CI](https://github.com/Lokad/Svg/actions/runs/38553027397). The two remaining numerical defects are item 1 below. |
 | Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared ownership are implemented. Private deployment validation below remains required; general shaping remains outside scope. |
 | Resource/API/package protections | Preserve bounded preparation/raster/encoding, allocation/work denial, cancellation/retry, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks apply; final release evidence must cover the finished revision. |
 
@@ -40,42 +39,43 @@ distinctions. No document IDs, source coordinates or observed failure pixels may
 become renderer predicates. Dependencies may land earlier than their checklist
 position; exhaustive G2 or shape/paint/instance combinations are not prerequisites.
 
-**Next three deliverables:** (1) close the displaced-blur numerical residual and
-the discovered fractional SourceGraphic image-boundary defect around the completed
-colored-signal diagram; (2) a static CSS/image export with a missing cascade location
-and fractional translucent PNG mapping; (3) a supplied-font label/path diagram
-with remaining positioning/length/baseline semantics.
+The next three deliverables have these acceptance cases. Planned cases describe
+what to select or author; they are not captured fixtures or completed evidence.
+Before changing production code, retain an actual rejected/different in-scope
+output and freeze its licensed bytes, options and healthy platform references.
+Prefer a redistributable complete export; an authored CC0 document is permitted
+when no suitable export demonstrates the named gap. Existing complete `inv-129`
+and its [static CSS controls](tests/Research/static-css-document/manifest.json)
+remain closed; they are regressions, not a document to complete again.
 
-The [colored-signal diagram and seven original controls](tests/Research/colored-effects-markers/README.md)
-are complete against unchanged healthy Windows/Linux references. Preserve their
-separate 1/1 and 7/7 denominators. Its additional discovered control has a 22-pixel
-known difference; the prior displaced-blur case has six. The plain rectangle-source
-defect is resolved. G8 remains open for these defects and the finite semantics below.
-
-The CSS/image and supplied-font acceptance documents are not yet selected.
-Declare an actual in-scope rejected/different output and freeze its licensed bytes,
-options and references before production changes. Authored CC0 diagrams remain
-permitted when no redistributable complete export fits the identified gap.
+| Next deliverable | Missing behavior / dependencies | Concrete acceptance and stop condition |
+| --- | --- | --- |
+| 1. Filter image placement and rescaling | Fractional SourceGraphic image-boundary coverage and rescaled blur precision; extend the existing bounded source capture and sampling. | The unchanged [displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg), currently six differing pixels (maximum channel 14 / alpha 1), and [fractional offset](tests/Research/colored-effects-markers/fractional-offset-only.svg), currently 22 (maximum channel 139 / alpha 75), become exact on both platforms. Preserve colored-signal **1/1**, original controls **7/7** and the repaired rectangle source; pass affected denial/cancellation/cleanup checks and full checkpoint qualification. This closes these defects, not all G8. |
+| 2. Static CSS/image card | PNG grayscale-alpha decoding and remaining stylesheet/resource-tree propagation; reuse the cascade and shared image maps. Needed G2/G5 scope fixes land with the document. | Planned complete card: a base64 8-bit grayscale-alpha image plus a multicolor RGBA image, fractional meet/slice placement in nested SVG, and a late descendant/child rule styling a referenced leaf with an inline override. All declared outputs exact on both platforms; focused controls distinguish decoding, precedence and image mapping, with corrupt/CRC/size failures protected. Qualify only missing behavior; selector matching and late-rule collection already work. |
+| 3. Supplied-font label/path diagram | Position/rotate lists, textLength and baseline layout; reuse supplied advances, span layout and glyph/path maps. Needed G3/G4/G5 maps land with the document. | Planned complete diagram: mixed styled/fallback spans, x/dx/rotate lists, paired spacing/spacingAndGlyphs lengths and alphabetic/middle/hanging labels, plus a transformed curved-path label with percentage startOffset and an out-of-range glyph. All declared outputs exact on both platforms, with intended-font proof and independent layout metrics. Preserve existing label/path banks; wider finite G9 work and private validation remain visible below. |
 
 All checklist items below are **required and open**. One exact diagram advances
 an item; it closes a group only when its remaining finite mechanisms also have
 acceptance evidence. Update status and link witnesses here and in existing
 manifests; do not create a second tracking framework.
 
-| Order / owner | Missing behavior and dependencies | Acceptance / completion condition |
+| Order / support groups | Missing behavior and dependencies | Acceptance / completion condition |
 | --- | --- | --- |
-| 1. Effects and markers (G8) | Finish remaining image-boundary sampling, rescaled blur precision, graph/default/result/region/color-space/map/container handling and marker unit/CSS/closure semantics. Existing colored graph, small/anisotropic box windows, nearest offsets and arc/polyline replay are qualified witnesses; extend their shared source capture, surfaces and geometry. | Close [displaced transparent blur](tests/Research/filter-regions/displaced-blur-transparent.svg) (six pixels, maximum channel14 / alpha1) and [fractional SourceGraphic offset](tests/Research/colored-effects-markers/fractional-offset-only.svg) (22 pixels, maximum channel139 / alpha75) on unchanged references. Preserve the complete colored-signal diagram, seven original controls and repaired rectangle source. Every remaining finite G8 mechanism needs an exact positive witness and categorized graph/resource failures before closure. |
-| 2. Static CSS and images (G7) | Finish remaining cascade/tree locations and presentation propagation, grayscale-alpha PNG decoding and unverified fractional/affine sampling/maps. Compound/descendant/child selector matching and grayscale/palette/RGB/RGBA decoding are already implemented. Depends on existing stylesheet prepass, decoder and G2/G3/G5 scopes/maps; retain completed late-rule and paint-order behavior. | Freeze a complete root/nested/late-rule export affecting referenced content, with a multicolor translucent PNG edge under fractional meet/slice. Reuse [CSS selector tests](tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs) and [PNG decoder tests](tests/Lokad.Svg.Tests/PngImageDecoderTests.cs); cover authored precedence, CRC/corrupt/missing input and bounded decode failure. Exact witnesses for remaining G7 semantics and explicit outside-scope outcomes close the item. |
-| 3. Supplied-font labels and paths (G9) | Finish position/rotate lists, length/spacing/baseline/decorations, required affine/paint/stroke/path behavior and queued composites. Depends on the existing supplied-font pipeline and needed G3/G4/G5 maps; keep acquisition and general-shaping boundaries. | Freeze a complete supplied-font diagram with mixed spans/fallback, position lists and length/baseline behavior, plus an open/closed transformed curved-path witness for offsets, anchors and out-of-range behavior. Preserve AV/space/accent/composite controls and independent intended-font metrics/pixels. All finite G9 semantics, bounded failures and the separate private validation below close the item. |
-| 4. Remaining shared maps and composition (G2–G5) | Finish unverified instance viewport/percentage bases, source paint/stroke maps, dashed shader cap/translucency behavior, overlapping straight/curved clips, region/content units, nested definition scopes and leaf/group/use composition. Existing native source replay and bounded layers are dependencies, not replacement targets. Fix any blocker here when it advances items 1–3. | Graduate [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg) and the partial-mask ordinary-use input in [group-mask tests](tests/Lokad.Svg.Tests/SvgGroupMaskCropTests.cs). Bind remaining mechanisms to complete exports and focused controls, including round/square dashed shader caps, translucent strokes and overlapping clip children. Exact representative witnesses for every still-unverified G2–G5 mechanism, categorized boundaries and affected denial/cleanup checks close the item. |
-| 5. Dependent patterns (G6) | Finish unit/map/combined-opacity behavior and image/text/filter tile content. Depends on only the G7–G9 slices needed by each tile; vector fixes may land earlier. Reuse existing bounded tile replay without exhaustive content combinations. | Graduate [combined tile/fill/stroke/element opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg). Freeze a complete transformed tile export covering a missing dependent content type, fractional phase and group/use opacity; reuse original eight completed pattern documents and border/alpha/inheritance/recursion controls. Exact remaining G6 witnesses and bounded failure outcomes close the item. |
+| 1. Effects and markers (G8) | First deliverable above, then the enumerated G8 graph/input/region/color-space/map/container and marker unit/CSS/closure exits. Reuse source capture, surfaces and geometry. | Start with the two frozen defects. Use the retained [CSS marker overflow](tests/Research/path-marker-content/marker-css-overflow-boundary.svg) for that admission gap; add polygon closure/unit and colored linearRGB/default-input controls only where existing witnesses are absent. Close when every finite G8 mechanism has an exact positive witness and applicable categorized graph/resource failures. |
+| 2. Static CSS and images (G7) | Second deliverable above, then remaining G7 image placement and cascade locations. Depends on shared G2/G3/G5 scopes/maps. | Complete the card; reuse [selector tests](tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs), [PNG tests](tests/Lokad.Svg.Tests/PngImageDecoderTests.cs) and static CSS controls for already covered semantics. Close with exact witnesses for every remaining G7 mechanism and explicit outside-scope outcomes. |
+| 3. Supplied-font labels and paths (G9) | Third deliverable above, then per-span fonts/paints, word spacing/decorations, affine strokes/path behavior and the named composite flags. Depends on supplied-font preparation and required G3/G4/G5 maps. | Complete the diagram; add closed-path/anchor and stroke controls for missing path semantics. Resolve the named composite flags with public synthetic fonts; preserve already qualified metric-dependent parent hints. Close with exact finite G9 witnesses, bounded failures and the separate required private validation below. |
+| 4. Shared maps and composition (G2–G5) | Remaining instance viewport/percentage bases, source paint/stroke maps, dashed shader caps/translucency, clip child unions, mask region/content units, definition scopes and leaf/group/use composition. Fix dependencies when they advance items 1–3; reuse source replay and bounded layers. | Graduate [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg), partial-mask ordinary use in [group-mask tests](tests/Lokad.Svg.Tests/SvgGroupMaskCropTests.cs), and retained [opposite-winding children](tests/Research/compound-clip-content/overlapping-opposite-children.svg) / [overlapping clip children](tests/Research/clip-intersections/overlapping-path-child-union.svg). Preserve the exact single-child [compound cubic overlap](tests/Research/compound-clip-content/overlapping-cubic-union.svg); add curved sibling-union, round/square dashed shader and translucent-stroke controls only for missing semantics. Close with exact witnesses for the finite G2–G5 remainder and affected denial/cleanup checks. |
+| 5. Dependent patterns (G6) | Remaining unit/map/combined-opacity behavior and image/text/filter tile content. Depends only on the G7–G9 slices needed by each tile; vector fixes can land earlier. Reuse bounded tile replay. | Graduate [combined tile/fill/stroke/element opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg). Planned complete tile sheet combines fractional transformed phase and group/use opacity with image, label and filtered vector tiles; diagnose missing content separately. Close with exact remaining G6 witnesses and bounded failure outcomes; preserve the original eight complete pattern documents. |
 | 6. Release qualification (S17) | Finish implementation-aligned support contracts and finished-revision delivery evidence after items 1–5. No optimization, corpus-size target or new infrastructure is a dependency. | Satisfy every release condition below, retain all established exact outputs and publish categorized out-of-scope residuals. Document counts alone cannot close release. |
 
 Acquire corpus cases only for the named missing behavior, boundary or defect.
 Declare original bytes, license, outputs, options and supplied face before
 screening/capture; freeze healthy references before production edits. One complete
 document may cover several requirements. No corpus quota or exhaustive product
-of feature combinations is an exit.
+of feature combinations is an exit. An admitted implementation without a pixel
+witness remains unverified; a qualified mechanism needs no duplicate case to
+prove a different checklist label. Record each remaining mechanism's witness
+once in its existing bank, linking it from the owning item when closing that item.
 
 ## Required support boundaries and finite exits
 
@@ -237,9 +237,13 @@ completed work; their exact cases do not close dependent tile content.
   combinations; uniformly mapped direct solid strokes are already qualified.
 - Finish queued valid composite flags: OVERLAP_COMPOUND,
   SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET, using bounded public
-  synthetic component fixtures for overlap and transformed offsets. Keep the
-  retained metric-dependent composite parent horizontal-hint discrepancy as a
-  separate required acceptance defect in [composite raster tests](tests/Lokad.Svg.Tests/OpenTypeFontCompositeRasterTests.cs). Admitted USE_MY_METRICS, nested accents,
+  synthetic component fixtures for overlap and transformed offsets. The former
+  metric-dependent parent-hint blocker is closed: four own/child/transformed/nested
+  metric fixtures assert exact independent contours in
+  [composite metrics tests](tests/Lokad.Svg.VisualTests/SvgCompositeMetricsTests.cs)
+  and their [frozen native witnesses](tests/Research/curved-font-documents/diagnostics/composite-metrics-contours.json).
+  Preserve these and the [composite ownership regressions](tests/Lokad.Svg.Tests/OpenTypeFontCompositeRasterTests.cs).
+  Admitted USE_MY_METRICS, nested accents,
   Windows LCD/dropout/contour and Linux light fitting remain protected. Implement
   the finite admitted font semantics needed by these labels; executed unsupported
   opcodes/formats reject explicitly, without making a general VM grid an exit.
@@ -275,6 +279,8 @@ paragraph alone.
    Hosted Windows/Linux CI is green for the finished substantive release
    revision. Inspect its terminal result and reuse it for unchanged documentation;
    do not trigger builds or poll repeatedly to refresh plan status.
+   Historical "remote CI pending" statements in linked checkpoint records do not
+   reopen their green deliveries; final-release CI applies to the finished code.
 4. Existing normal/adversarial resource scenarios verify meaningful size/work
    limits, cancellation/retry, cleanup and output integrity. Approximate memory
    accounting below holds directionally; completed ownership work stays closed.
