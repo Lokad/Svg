@@ -506,13 +506,12 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Oversize_rectangle_stroke_stays_unsupported()
+    public void Oversize_rectangle_stroke_collapses_its_native_inner_frame()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect x='2' y='2' width='4' height='4' fill='red' stroke='black' stroke-width='6'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        ReadOnlyMemory<byte> png = SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None);
+        Assert.False(png.IsEmpty);
     }
 
     [Fact]

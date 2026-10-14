@@ -1080,6 +1080,20 @@ bank to ten exact controls. Existing width, inheritance and ordinary-stroke
 witnesses remain unchanged. Wider affine geometry/paint and instance combinations
 remain the finite G2–G4 work listed in PLAN.md.
 
+## Fractional and nonuniform native symbol frames (2026-10-14)
+
+Rectangle-stroke symbols retain their content for existing source construction
+instead of relying on integer/even-width band expansion. Fractional authored and
+inherited widths, nonuniform symbol viewBox maps and collapsed viewport-crossing
+borders match the frozen native controls. The complete CC0 card diagram also
+matches its unchanged declared output. See the
+[document and controls](../tests/Research/symbol-fractional-frames/README.md).
+Native rectangle stroke frames and symbol clipping remain shared with ordinary
+rendering. Contained translated rectangles retain their established coverage;
+native reconstruction applies to scaled construction and viewport crossings.
+This supersedes earlier statements that symbol-held fractional frames remain
+blocked. Real curve mapping and wider stroke/paint requirements remain open.
+
 ## Affine pattern and linear instance replay (2026-10-14)
 
 Retained patterned paths use native vector tile replay under reflection and
@@ -1096,7 +1110,7 @@ rotated I Ching gradient reference are exact on both platforms. Eight focused
 [paint/tile controls](../tests/Research/affine-paint-instances/README.md) protect
 the shared admission, phase, composition, border and winding semantics. Existing
 ownership sweeps and focused denial/cancellation/retry checks remain. Wider
-radial/instance/stroke maps, symbol-held fractional frames, and G5–G9 dependent
+radial/instance/stroke maps and G5–G9 dependent
 content remain required work; these cases do not close the support groups.
 
 ## Native curves under nonuniform root maps (2026-10-14)
@@ -1119,8 +1133,8 @@ The unchanged inherited-width reference is exact on Windows and Linux; all ten
 fractional rectangle-width controls now render exactly. Forward inheritance,
 thin/scaled/reflected output, denial cleanup and retry have focused regressions.
 Existing effective-width numeric bounds and nonuniform placement gates remain.
-The separate symbol-held rectangle band-expansion gate is still required G2/G4
-work; this correction does not close the wider affine stroke/paint group.
+The later native symbol-frame checkpoint closes the separate band-expansion
+gate; the wider affine stroke/paint group remains open.
 
 ## Mixed open/closed shader strokes (2026-10-13)
 

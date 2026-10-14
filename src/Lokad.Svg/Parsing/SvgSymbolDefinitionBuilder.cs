@@ -64,6 +64,18 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
     /// <summary>Transfers a complete child's geometries on success; the caller retains ownership if growth fails.</summary>
     internal void Add(SvgDefinition definition)
     {
+        if (_content is null && definition.LeafSource?.LocalName == "rect")
+            foreach (SvgGeometry geometry in definition.Geometries)
+            {
+                _work.Consume(_token);
+                if (geometry.Kind == SvgGeometryKind.Rectangle && geometry.Rectangle.Stroke is not null
+                    || geometry.AuthoredPath?.StrokeStyle?.Shape == SvgAuthoredStrokeShape.Rectangle
+                    || geometry.AuthoredPath?.StrokeOutline?.StrokeStyle?.Shape == SvgAuthoredStrokeShape.Rectangle)
+                {
+                    _ = EnableContent();
+                    break;
+                }
+            }
         if (_content is null) _children.Add(definition);
         else _content.AddLeaf(definition, definition.SourceDisplayed, definition.SourceVisible);
     }

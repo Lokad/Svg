@@ -12530,6 +12530,37 @@ and float-overflow boundaries protect the shared arithmetic; existing host-strok
 work, memory, cancellation/retry and owner tests remain applicable. This closes
 the measured oval defect, not the remaining finite G2–G4 map/paint combinations.
 
+## Retained rectangle symbol frames (2026-10-14)
+
+The complete original CC0 symbol-card diagram and four controls were declared and
+independently frozen before edits. Authored fractional strokes first rejected in
+integer/even-width symbol band expansion; nonuniform viewBox maps and collapsed
+borders exposed additional legacy rectangle routes. The inherited thin-width
+control was already exact and remains a regression witness.
+
+Rectangle-stroke definitions now enable the existing retained symbol-content
+route. Instance source construction includes rectangles and retains their native
+contours; oversized sharp rectangle definitions use ordinary native lowerers.
+No separate symbol frame kernel is added. Native stroke construction preserves
+the original source rectangle and carries independent output scales to replay;
+existing symbol viewport clips retain source order and opacity.
+
+Native source reconstruction is limited to scaled strokes and rectangle borders
+crossing a viewport. Contained translated rectangles keep their established
+frame coverage: replaying all such strokes natively produced a seven-pixel,
+one-alpha-level regression in an existing inherited-opacity symbol case.
+Those original references remain unchanged and exact. The rounded-fill
+translucency boundary applies to real rounded corners, not sharp native frames.
+
+A sharp rectangle's unused fill had been labeled as tolerance-flattened curves,
+which triggered the magnification gate despite having only straight edges.
+Zero-radius fills now record finite edges; actual rounded/curved geometry keeps
+its existing mapping and native source requirements. The declared diagram and
+all four controls match unchanged Windows/Linux references. Focused work/memory
+denial, released ownership, retry, caller-byte integrity and forward binding
+protect the shared route. This closes the named fractional symbol-frame witness,
+with wider G2–G9 scope still required by PLAN.md.
+
 ## Affine paint instances and native tile promotion (2026-10-14)
 
 The retained reflected group-pattern and rotated I Ching gradient controls were
@@ -12595,9 +12626,9 @@ both platforms. All ten preceding fractional-width controls remain in the bank.
 Focused controls compare forward inherited thin, scaled, reflected and magnified
 instances with explicitly mapped direct geometry, including opacity. Parser work
 denial releases owners and a retry matches normal output; effective-width overflow
-and nonuniform maps fail before stream output. Symbol-held rectangle band expansion
-is a separate remaining admission route; its fractional-width/native-frame work
-stays open rather than relaxing that guard without a rendering witness.
+and nonuniform maps fail before stream output. The later native symbol-frame
+checkpoint resolves the separate symbol-held band-expansion route against the
+complete card diagram and focused frozen references.
 
 ## Mixed shader strokes and unpainted fill admission (2026-10-13)
 

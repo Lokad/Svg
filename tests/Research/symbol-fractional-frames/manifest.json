@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "One complete authored CC0 symbol-card document and four focused fractional/native frame controls; separate document and control counts.",
+  "cases": [
+    {
+      "id": "fractional-authored",
+      "input": "fractional-authored.svg",
+      "sourceSha256": "13ef4c7e5ab2d72f5585b40874e4e875fad689596e73be8ef0e293df664e2801",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "reference": "references/fractional-authored.png",
+      "referenceSha256": "ef130a478380ffd658831b6c2e5d26ff42a6223e7fab4a1bd57f6871520e3647",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration.",
+      "selection": "Declared complete card diagram and isolated symbol-width/map/collapse cases before implementation; independently frozen healthy references on both platforms.",
+      "role": "fidelity"
+    },
+    {
+      "id": "fractional-inherited",
+      "input": "fractional-inherited.svg",
+      "sourceSha256": "a1a7363a6254a19e63932cc21680a20840a3e81e09f72941c0b0f49d4e9ff41b",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "reference": "references/fractional-inherited.png",
+      "referenceSha256": "831be9632e45a68cb29cc9efd11a8385dafa4d2a0680740af4199b62f0ff9b89",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration.",
+      "selection": "Declared complete card diagram and isolated symbol-width/map/collapse cases before implementation; independently frozen healthy references on both platforms.",
+      "role": "fidelity"
+    },
+    {
+      "id": "nonuniform-symbol-frame",
+      "input": "nonuniform-symbol-frame.svg",
+      "sourceSha256": "192ad916bbc729fccd1cc6a73f4476995a9507c7ef2534053e2b5778104283ea",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "reference": "references/nonuniform-symbol-frame.png",
+      "referenceSha256": "07d1902c872741b4e72ce1043b887f4d409c5ff8fa6f5c3150ada1ee3880c7da",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration.",
+      "selection": "Declared complete card diagram and isolated symbol-width/map/collapse cases before implementation; independently frozen healthy references on both platforms.",
+      "role": "fidelity"
+    },
+    {
+      "id": "collapsed-clipped-frame",
+      "input": "collapsed-clipped-frame.svg",
+      "sourceSha256": "c229f73b0ae80c50d5aafcf6ec8bbc2171db49c8990d8793f37c22644f16347a",
+      "width": 48,
+      "height": 40,
+      "background": "transparent",
+      "reference": "references/collapsed-clipped-frame.png",
+      "referenceSha256": "3dcf4b27ec2f414277131cc65d53042f216ffaa0416beb0cd57a61f42ba9df47",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration.",
+      "selection": "Declared complete card diagram and isolated symbol-width/map/collapse cases before implementation; independently frozen healthy references on both platforms.",
+      "role": "fidelity"
+    },
+    {
+      "id": "symbol-card-diagram",
+      "input": "symbol-card-diagram.svg",
+      "sourceSha256": "6873d14475cdc8a472381226bda766eefb5af13cfb9f4750867bebf7f2cb8b4f",
+      "width": 96,
+      "height": 80,
+      "background": "transparent",
+      "reference": "references/symbol-card-diagram.png",
+      "referenceSha256": "dc0ec6c9662cbd2e85ded430ee4f58da7fcd4ed66dc5c49dc72b69e0007afb39",
+      "license": "CC0-1.0",
+      "licenseEvidence": "Original contributor work dedicated through its leading SPDX CC0-1.0 declaration.",
+      "selection": "Declared complete card diagram and isolated symbol-width/map/collapse cases before implementation; independently frozen healthy references on both platforms.",
+      "role": "document"
+    }
+  ],
+  "linuxReferenceQualification": {
+    "date": "2026-10-14",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  }
+}

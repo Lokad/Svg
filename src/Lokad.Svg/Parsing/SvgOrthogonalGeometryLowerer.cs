@@ -503,7 +503,8 @@ internal ref struct SvgOrthogonalGeometryLowering
             cubicCursor = cubicRunEnd;
         }
 
-        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, Array.Empty<SvgQuadSpan>(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill, SvgPolygonMapping.FlattenedCurves, frame, budget);
+        SvgParsedGeometry result = FinishPolygonFill(mapped, ends, Array.Empty<SvgQuadSpan>(), keptCubicSpans.ToArray(), element.Presentation.Color, element.Presentation.HasFill,
+            radiusX == 0 && radiusY == 0 ? SvgPolygonMapping.FiniteEdges : SvgPolygonMapping.FlattenedCurves, frame, budget);
         OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
         try
         {

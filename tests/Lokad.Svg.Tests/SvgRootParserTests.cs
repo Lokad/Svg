@@ -1150,13 +1150,20 @@ public sealed class SvgRootParserTests
     [InlineData("<rect width='1' height='1' fill='red' stroke='blue' stroke-width='2' stroke-linejoin='round'/>")]
     [InlineData("<rect width='1' height='1' fill='red' stroke='blue' stroke-width='2' stroke-dasharray='2,2'/>")]
 
-    public void Rejects_effectful_stroke_styles(string leaf)
+    public void Preserves_effectful_stroke_style_admission(string leaf)
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + leaf + "</svg>");
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        if (leaf.Contains("stroke-linecap='round'", StringComparison.Ordinal))
+        {
+            using SvgRoot admitted = SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None);
+            Assert.NotEmpty(admitted.Geometries);
+        }
+        else
+        {
+            SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None));
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        }
     }
 
     [Fact]
@@ -4199,17 +4206,39 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Keeps_a_stroked_rect_use_fully_inside_its_nested_viewport()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='10' y='10' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></defs><svg x='8' y='8' width='32' height='32'><use href='#r'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
-
-        Assert.Equal(new SvgRectangle(18, 18, 4, 4, new SvgColor(255, 0, 0, 255), true, new SvgStroke(new SvgColor(0, 0, 255, 255), 2)), Assert.Single(root.Rectangles));
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='10' y='10' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></defs><svg x='8' y='8' width='32' height='32'><use href='#r'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(32, 32), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            for (int y = 0; y < 32; y++)
+                for (int x = 0; x < 32; x++)
+                {
+                    byte[] expected = x >= 19 && x < 21 && y >= 19 && y < 21
+                        ? [255, 0, 0, 255]
+                        : x >= 17 && x < 23 && y >= 17 && y < 23 ? [0, 0, 255, 255] : [0, 0, 0, 0];
+                    Assert.Equal(expected, surface.Pixels.AsSpan((y * 32 + x) * 4, 4).ToArray());
+                }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]
-    public void Rejects_a_stroked_rect_use_crossing_a_nested_viewport_boundary()
+    public void Clips_a_stroked_rect_use_crossing_a_nested_viewport_boundary()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></defs><svg x='8' y='8' width='4' height='4'><use href='#r'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></defs><svg x='8' y='8' width='4' height='4'><use href='#r'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, new(new SvgViewport(16, 16), 1, SvgColor.Transparent, SvgRenderLimits.Default), budget, CancellationToken.None))
+        {
+            for (int y = 0; y < 16; y++)
+                for (int x = 0; x < 16; x++)
+                {
+                    byte[] expected = x >= 8 && x < 12 && y >= 8 && y < 12
+                        ? x == 8 || y == 8 ? [0, 0, 255, 255] : [255, 0, 0, 255]
+                        : [0, 0, 0, 0];
+                    Assert.Equal(expected, surface.Pixels.AsSpan((y * 16 + x) * 4, 4).ToArray());
+                }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

@@ -35,10 +35,14 @@ internal static class SvgLeafParser
         }
         SvgRectangle earlyPlacement = earlyTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
         SvgViewportFrame? effectiveFrame = SvgClipPathSyntax.ResolveLeafClipOrPlacement(reader, state, frame, earlyPlacement);
-        if (!rounded && !earlyTransform.IsTranslation && patternStyle.Stroke is string mappedStroke
+        if (!rounded && patternStyle.Stroke is string mappedStroke
             && !mappedStroke.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase)
             && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth))
-            return LowerRoundedRect(reader, context, syntax, 0, 0, effectiveFrame, state);
+        {
+            double nativeWidth = SvgStrokeStyleSyntax.ParseStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth, "rectangle");
+            if (context.RetainInstanceStrokePath || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height)
+                return LowerRoundedRect(reader, context, syntax, 0, 0, effectiveFrame, state);
+        }
         // A zero width paints no stroke bands, so paint strokes fall through to the fill-only solid path below.
         if (SvgPatternSyntax.IsPatternStroke(patternStyle.Stroke, state) && !rounded && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width)) return SvgPatternSyntax.LowerPatternStrokeRect(reader, context, patternStyle, state, effectiveFrame);
         if (SvgGradientSyntax.IsGradientStrokeUrl(patternStyle.Stroke) && SvgGradientSyntax.IsGradientFill(patternStyle.Fill) && !rounded && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width))
@@ -227,7 +231,7 @@ internal static class SvgLeafParser
             }
             if (paintStrokeLinear || paintStrokeRadial || paintStrokePattern)
                 return LowerPaintedRoundedStroke(reader, context, syntax, cornerX, cornerY, element, parsed, strokeGradient, strokeCircle, strokeTile, paintStrokeLinear, paintStrokeRadial, frame, state);
-            SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = ResolveRoundedStroke(reader, element, parsed.Geometries[0]);
+            SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = ResolveRoundedStroke(reader, element, parsed.Geometries[0], cornerX != 0 || cornerY != 0);
             if (stroke is null) return parsed;
             SvgParsedGeometry stroked = LowerRoundedStroke(reader, context, syntax, cornerX, cornerY, element, stroke.Value, frame, state);
             return SvgOrthogonalShapeParser.ConcatParsedGeometries(parsed, stroked, state.Budget, context.WorkCounter, context.CancellationToken);
@@ -292,7 +296,7 @@ internal static class SvgLeafParser
                 throw;
             }
         }
-        static SvgStrokeStyleSyntax.SvgAdmittedStroke? ResolveRoundedStroke(XmlReader reader, SvgResolvedPaintableElement element, SvgGeometry fill)
+        static SvgStrokeStyleSyntax.SvgAdmittedStroke? ResolveRoundedStroke(XmlReader reader, SvgResolvedPaintableElement element, SvgGeometry fill, bool rounded)
         {
             SvgStrokeStyleSyntax.SvgAdmittedStroke? stroke = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, element.Style, element, "rect", true);
             if (stroke is null) return null;
@@ -307,7 +311,7 @@ internal static class SvgLeafParser
                 SvgGeometryKind.PatternPolygon => fill.PatternPolygon.HasFill,
                 _ => throw new InvalidOperationException("Unexpected rectangle fill geometry."),
             };
-            if (hasFill && stroke.Value.Color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent strokes on filled rounded rectangles are not implemented.");
+            if (rounded && hasFill && stroke.Value.Color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent strokes on filled rounded rectangles are not implemented.");
             return stroke;
         }
 

@@ -1868,10 +1868,18 @@ internal static class SvgDefinitionParser
         SvgStrokeStyleSyntax.RequireButtCapJoin(reader, "rectangle", context.WorkCounter, context.CancellationToken);
         SvgRectangleSyntax roundedSyntax = SvgRectangleSyntax.Parse(reader, context.LengthBases);
         if ((roundedSyntax.CornerX ?? roundedSyntax.CornerY ?? 0) != 0 || (roundedSyntax.CornerY ?? roundedSyntax.CornerX ?? 0) != 0) return ParseShapeDefinition(reader, context, state, symbolViewBox, true);
+        SvgComputedStyle style = context.ResolveStyle(reader);
+        bool nativeRectangle = context.RetainInstanceStrokePath;
+        if (!nativeRectangle && style.Stroke is string nativeStroke && !nativeStroke.AsSpan().Trim().Equals("none", StringComparison.OrdinalIgnoreCase))
+        {
+            double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width ?? roundedSyntax.StrokeWidth, "rectangle");
+            nativeRectangle = width > roundedSyntax.Width || width > roundedSyntax.Height;
+        }
+        if (nativeRectangle)
+            return ParseShapeDefinition(reader, context, state, symbolViewBox, true);
         context = context with { InheritedPresentation = context.InheritedPresentation with { Transform = SvgAffineTransform.Identity }, RecordingScope = new(1) };
         SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, null);
         context = context with { DeferPaintOpacity = true };
-        SvgComputedStyle style = context.ResolveStyle(reader);
         SvgParsedGeometry geometry;
         bool allowsOverride = false;
         if (SvgPatternSyntax.IsPatternFill(style.Fill)) geometry = SvgLeafParser.ParseRectangleCore(reader, context, null, state);

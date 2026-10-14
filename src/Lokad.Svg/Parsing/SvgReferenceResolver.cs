@@ -85,11 +85,23 @@ internal static class SvgReferenceResolver
             // Native strokes need construction at the complete instance scale.
             // Path bands also retain one native draw for fractional AA and paint order.
             bool placedNativeStroke = false;
-            if (source.LocalName is "path" or "circle" or "ellipse" && !PlainInstancePlacement(reference, frame).IsTranslation)
+            SvgAffineTransform strokePlacement = PlainInstancePlacement(reference, frame);
+            if (source.LocalName is "path" or "circle" or "ellipse" or "rect"
+                && (!strokePlacement.IsTranslation || source.LocalName == "rect" && frame is not null))
                 foreach (SvgGeometry geometry in definition.Geometries)
                 {
                     workCounter.Consume(cancellationToken);
-                    placedNativeStroke |= geometry.AuthoredPath?.StrokeStyle is not null;
+                    if (!strokePlacement.IsTranslation)
+                        placedNativeStroke |= geometry.AuthoredPath?.StrokeStyle is not null
+                            || geometry.Kind == SvgGeometryKind.Rectangle && geometry.Rectangle.Stroke is not null;
+                    else if (frame is {} strokeFrame && geometry.Kind == SvgGeometryKind.Rectangle && geometry.Rectangle.Stroke is {} stroke)
+                    {
+                        // Contained translated frames retain their established coverage.
+                        SvgRectangle rectangle = strokePlacement.Apply(geometry.Rectangle);
+                        double halfWidth = stroke.Width / 2;
+                        placedNativeStroke |= !strokeFrame.Clip.Contains(rectangle.X - halfWidth, rectangle.Y - halfWidth,
+                            rectangle.X + rectangle.Width + halfWidth, rectangle.Y + rectangle.Height + halfWidth);
+                    }
                 }
             bool retainMappedContour = source.LocalName == "path" && definition.Geometries.Length > 0
                 && (definition.Geometries[0].Kind is SvgGeometryKind.OrthogonalBand or SvgGeometryKind.Rectangle
