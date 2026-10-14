@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-14 at the qualified root/resource cascade checkpoint.
+Updated 2026-10-14 at the qualified sRGB rescaling correction checkpoint.
 This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
 owns admission, [INVENTORY](docs/INVENTORY.md) owns document evidence,
@@ -24,6 +24,7 @@ decisions. Implementation history stays in the linked records and Git.
 | Additional authored documents | **Seven complete CC0 documents**, each **1/1 exact** on Windows/Linux, separate from both frozen cohorts. Preserve their separately counted controls: [symbol card](tests/Research/symbol-fractional-frames/README.md) **4/4**, [affine orbit](tests/Research/affine-oval-strokes/README.md) **6/6**, [scoped card](tests/Research/scoped-clips-masks/README.md) **5/5**, [colored signal](tests/Research/colored-effects-markers/README.md) original **7/7** plus repaired **1/1** and bounds **4/4**, [CSS/image card](tests/Research/static-css-images/README.md) original **3/3** plus phase/clip **2/2**, [layout guide](tests/Research/font-layout-diagram/README.md) **4/4**, and [cascade sheet](tests/Research/root-resource-cascade/README.md) **4/4**. Banks link immutable inputs, native witnesses and finished-correction receipts; wider groups stay open. |
 | Qualified G2–G5 mechanisms | Fractional ordinary-use stroke widths, fractional/nonuniform symbol frames, nonuniform root curve fills and affine oval strokes, the non-scaling conic defect, composed cubic clips, translated custom mask regions and mask-container opacity have qualified witnesses. Preserve [use widths](artifacts/maintenance-review-20261012/fractional-use-qualified-results.json), [symbol frames](artifacts/maintenance-review-20261012/symbol-frames-final-results.json), [root curves](artifacts/maintenance-review-20261012/nonuniform-curves-qualified-results.json), [non-scaling strokes](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json), [ovals](tests/Research/affine-oval-strokes/manifest.json) and [scopes](tests/Research/scoped-clips-masks/manifest.json). These completed mechanisms are dependencies already available, not work to repeat for wider maps or locations. |
 | Fractional filter image bounds | The original offset defect is exact on Windows/Linux; four bounds/identity controls are separately **4/4 exact**. Preserve original controls **7/7**, repaired control **1/1** and complete document **1/1** in the [existing bank](tests/Research/colored-effects-markers/README.md) and [qualification receipt](artifacts/maintenance-review-20261012/offset-image-bounds-qualified-results.json). The six-pixel displaced blur remains required. |
+| Rescaled sRGB bitmap and paint opacity | Two [focused filter controls](tests/Research/filter-regions/manifest.json) are **2/2 exact** on Windows/Linux. Shared packed interpolation preserves native bitmap placement and paint alpha; shader reduction stays distinct. The bank is **25 exact / one required linearRGB six-pixel gate**. Preserve every prior declaration and the [finished-correction receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json); no new completed document or wider G8 closure is claimed. |
 | Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared ownership are implemented. Private deployment validation below remains required; general shaping remains outside scope. |
 | Resource/API/package protections | Preserve bounded preparation/raster/encoding, allocation/work denial, cancellation/retry, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks apply; final release evidence must cover the finished revision. |
 
@@ -31,15 +32,13 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The root/resource cascade correction at `1cba57c3` is qualified: **7,619 tests/platform**
-(5,245 core / 2,368 visual / six FontProbe), preserving every preceding visual
-case and explicitly auditing original-input assertion migrations in
-[the existing receipt](artifacts/maintenance-review-20261012/root-resource-cascade-qualified-results.json).
-The seventh additional authored CC0 sheet is **1/1 exact**, with four controls
-separately **4/4 exact** on Windows/Linux. Root/nested viewport/defs/symbol
-cascade, intrinsic CSS dimensions and nested-viewport text placement/clipping
-have qualified witnesses; they are no longer blockers. Wider G2–G9/S17 remain
-open. [Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38627495024)
+The sRGB rescaling correction at `ff58f21e` is qualified: **7,622 tests/platform**
+(5,246 core / 2,370 visual / six FontProbe). Every prior case identity remains,
+with no assertion migrations; the [receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json)
+records two new native visual controls and one representative packed-path resource
+check. All seven complete authored documents, selected 50 and corporate 27/258
+outputs remain exact. The original six-pixel linearRGB restoration residual stays
+required; G2–G9/S17 remain open. [Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38636857878)
 for that exact revision, including package/consumer, memory, browser and font
 checks. Reuse this evidence for unchanged documentation; do not poll the completed
 run again.
@@ -66,7 +65,7 @@ Prefer a suitable redistributable export; an authored CC0 sheet is permitted.
 
 | Next deliverable | Missing behavior / available dependencies | Acceptance and completion condition |
 | --- | --- | --- |
-| 1. Rescaled blur precision | Six-pixel numerical rescaling residual. Reuse completed fractional source bounds, bounded capture/sampling and recorded failed models. | Make the unchanged [displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg) exact on both platforms. Preserve every existing filter/offset witness and affected denial/cancellation/cleanup checks; finish with full qualification. Wider G8 remains required. |
+| 1. Rescaled blur precision | Six-pixel linearRGB restoration residual. Fractional source bounds and sRGB bitmap/paint-opacity restoration are qualified; reuse bounded capture/sampling and recorded failed models. | Make the unchanged [displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg) exact on both platforms. Preserve the two new sRGB controls, every existing filter/offset witness and affected denial/cancellation/cleanup checks; finish with full qualification. Wider G8 remains required. |
 | 2. Remaining label/path sheet | Nested-span lists/rotation/length, path propagation and the stretched-accent fitting residual. Reuse the completed [layout guide](tests/Research/font-layout-diagram/README.md), shared face/size intervals and source maps. | Freeze a sheet with mixed-font positioned spans, both length policies, a closed curved path with anchors, word spacing, solid decorations and required path stroke modes. Include the 18px doubled-width eacute from [native diagnostics](artifacts/font-layout-diagram-20261014/NATIVE-MASK-CHECK.md). Every declared output must be exact on both platforms with intended-font proof and affected bounded failures. The G9 checklist also owns composite flags and private validation. |
 | 3. Affine image-map sheet | Uniform fractional placement/opacity and remaining affine/resource/clip/mask image maps. Reuse completed varied-pixel decode, CSS cascade, meet/slice/none sampling and G2/G5 replay. | Freeze a sheet placing the same small PNG with fractional meet/slice/none, rotation/skew/reflection, local use, clip and partial mask. Include uniform content where its separate fast path exposes a gap; use alignment controls only for independent missing map behavior. Make all outputs exact on both platforms, preserve decode/resource failures and finish qualification. Wider G7 closes only at its finite exit. |
 
@@ -241,7 +240,8 @@ completed work; their exact cases do not close dependent tile content.
   [merges](tests/Research/filter-merges/manifest.json),
   [kernels](tests/Research/filter-blur-kernel/manifest.json) and
   [colored/bounds witnesses](tests/Research/colored-effects-markers/manifest.json).
-  Finish the rescaled precision defect, unverified color-space/shadow behavior,
+  Preserve the qualified sRGB rescaling/opacity controls. Finish the linearRGB
+  precision defect, unverified color-space/shadow behavior,
   graph/default/result handling,
   clipped halos, rotated/skewed filter maps, other containers/instances, nested
   filters and clip/mask/marker/text/image interactions. These are required
@@ -358,13 +358,18 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/root-resource-cascade-qualified-results.json)
-  records fresh complete build/suite runs of approximately **2m27s Windows** and
-  **7m04s Linux**. All **7,619 tests/platform** pass, preserving prior cases with
-  explicitly audited original-input assertion migrations.
-  Compiler duration plus first-suite start to final completion
-  excludes initial build-host startup; all three suites ran afresh. These are
-  local qualification costs, not renderer speedups or fixed timing guarantees.
+  The [latest receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json)
+  records exact-revision hosted build plus complete test steps of **1m27s Windows**
+  and **1m54s Linux**, meeting that target. All **7,622 tests/platform** also pass
+  in fresh local qualification; every prior case identity remains, without
+  assertion migrations. The local Windows observation is **2m53s**. The local
+  Linux observation is **17m08s**, including a **13m16s compiler** run in which a
+  Windows filesystem RPC wait and concurrent host workloads were observed. That
+  local run exceeds the target; retain it separately instead of presenting it as
+  an under-ten-minute result. No renderer speedup or regression is inferred.
+  Hosted step times include command startup; local timing is successful compiler
+  duration plus the first-suite/final-suite interval, excluding initial build-host
+  startup. These different environments establish no fixed timing guarantee.
   Routine verification uses normal incremental builds; avoid forced compiler
   shutdown between checkpoints. The prior forced-cold Linux overrun and ordinary
   build comparison remain in existing evidence/Git, not another execution task.
