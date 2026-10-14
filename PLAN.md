@@ -40,15 +40,16 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The nested text-positioning correction is locally qualified: **7,629 tests/platform**
+The nested text-positioning correction is qualified: **7,629 tests/platform**
 (5,250 core / 2,373 visual / six FontProbe). The
 [receipt](artifacts/maintenance-review-20261012/nested-text-lists-qualified-results.json)
 records unchanged SVG/font/reference bytes and options, preserved exact outputs,
 the newly exact control and explicit migrations from obsolete valid-input
-rejections to positive assertions. The complete sheet remains open. Hosted CI for
-this correction is pending; the preceding [Windows/Linux run is terminal green](https://github.com/Lokad/Svg/actions/runs/38644638512)
-for `274cd45f`, including package/consumer, memory, browser and font checks.
-Do not repoll that completed run. G2–G9/S17 stay open.
+rejections to positive assertions. The complete sheet remains open.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38649693861)
+for exact implementation revision `55627058`, including package/consumer, memory,
+browser, font and validator checks. Reuse this completed run for unchanged
+documentation; do not poll it again. G2–G9/S17 stay open.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -369,8 +370,8 @@ representativeness quota delays this finite release.
   The [latest receipt](artifacts/maintenance-review-20261012/nested-text-lists-qualified-results.json)
   records complete qualification of **7,629 tests/platform** in **94.8s Windows**
   and **303.6s Linux**, including normal incremental build and command startup.
-  Both meet the target. The preceding blur revision's hosted build plus complete test steps
-  are **2m11s Windows / 1m33s Linux**; separate environments imply no speedup claim.
+  Both meet the target. The exact-revision hosted build plus complete test steps
+  are **2m17s Windows / 1m22s Linux**; separate environments imply no speedup claim.
   Prior hosted observations and the local Linux compiler
   overrun remain in the [preceding receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json),
   with their distinct timing definitions; they are not a new execution task.
