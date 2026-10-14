@@ -848,13 +848,13 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Non_uniform_ellipse_stroke_stays_unsupported()
+    public void Non_uniform_ellipse_stroke_retains_native_source()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='scale(2,1)'><ellipse cx='8' cy='8' rx='6' ry='4' fill='none' stroke='red' stroke-width='2'/></g></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Contains(scene.Geometries, geometry => geometry.AuthoredPath?.StrokeStyle is not null);
+        Assert.False(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).IsEmpty);
     }
 
     [Fact]
@@ -903,13 +903,13 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Non_uniform_dashed_ellipse_stroke_stays_unsupported()
+    public void Non_uniform_dashed_ellipse_stroke_retains_native_source()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><g transform='scale(2,1)'><ellipse cx='8' cy='8' rx='6' ry='4' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2'/></g></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Contains(scene.Geometries, geometry => geometry.AuthoredPath?.StrokeStyle is not null);
+        Assert.False(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).IsEmpty);
     }
 
     [Fact]
@@ -925,13 +925,13 @@ public sealed class SvgShapeElementsTests
     }
 
     [Fact]
-    public void Non_uniform_circle_stroke_stays_unsupported()
+    public void Non_uniform_circle_stroke_retains_native_source()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><circle cx='8' cy='8' r='6' fill='red' stroke='blue' stroke-width='2' transform='scale(2,1)'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Contains(scene.Geometries, geometry => geometry.AuthoredPath?.StrokeStyle is not null);
+        Assert.False(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).IsEmpty);
     }
 
     [Fact]

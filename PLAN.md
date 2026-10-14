@@ -23,7 +23,8 @@ separate from the required exits below.
 | Qualified merge correction | Unchanged whole `inv-146`, eight oval/text controls and four [canonical merge controls](tests/Research/filter-merges/README.md) are exact on both platforms. Preserve ordered source-device placement and bounded graph/surface handling. [Qualification receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json); [green hosted Windows/Linux delivery at 82dc9206](https://github.com/Lokad/Svg/actions/runs/38464311300). |
 | Qualified geometry/stroke maps | Native non-scaling coverage, ordinary fractional use widths and nonuniform root fills are complete. Preserve their independent references, compiled matrix witnesses, numeric boundaries and ownership/cancellation checks. Evidence: [oval/vector effects](tests/Research/vector-effects/manifest.json), [fractional widths](tests/Research/fractional-rectangle-widths/manifest.json), [root curve paints](tests/Research/nonuniform-curve-paints/README.md) and the linked design record. |
 | Qualified paint replay | Mixed open/closed shader strokes, reflected group-pattern and rotated I Ching gradient cases, first native tile payloads and eight focused paint controls are complete. Paint recording is **147 exact / two required gates**; I Ching is **24 exact / one out-of-scope animation boundary**. Preserve source boxes, native paint distinctions and denial/cleanup/retry. [Paint bank](tests/Research/paint-recording/manifest.json), [affine controls](tests/Research/affine-paint-instances/README.md), [qualification receipt](artifacts/maintenance-review-20261012/affine-paints-qualified-results.json), [green hosted delivery at ea29164d](https://github.com/Lokad/Svg/actions/runs/38484957809). |
-| Native symbol-frame checkpoint | One complete authored CC0 card diagram **1/1**, tracked separately from the selected 50 and corporate cohort; four controls **4/4 exact** against frozen Windows/Linux references. Fractional widths, nonuniform viewBox maps and collapsed/clipped sharp frames use existing source replay. Preserve contained translated rectangle coverage and original opacity references. Complete Release qualification: **7,504 tests/platform** (5,174 core / 2,324 visual / six FontProbe), zero warnings/failures/skips; every previous case retained with explicit updates for newly admitted behavior. [Document/control bank](tests/Research/symbol-fractional-frames/README.md); [qualification receipt](artifacts/maintenance-review-20261012/symbol-frames-final-results.json). |
+| Native symbol-frame checkpoint | One complete authored CC0 card diagram **1/1**, tracked separately from the selected 50 and corporate cohort; four controls **4/4 exact** against frozen Windows/Linux references. Fractional widths, nonuniform viewBox maps and collapsed/clipped sharp frames use existing source replay. Preserve contained translated rectangle coverage and original opacity references. [Document/control bank](tests/Research/symbol-fractional-frames/README.md); [qualification receipt](artifacts/maintenance-review-20261012/symbol-frames-final-results.json). |
+| Affine oval stroke checkpoint | Complete original CC0 orbit diagram **1/1** and six controls **6/6 exact** on both platforms, separate from the selected 50, corporate cohort and preceding authored card diagram. Nonuniform source conics, butt-capped shader dashes and native-backed instance paint maps share existing construction/replay. The original percentage-oval composed-map reference also graduates to exact. Complete qualification passes **7,517 tests/platform** (5,180 core / 2,331 visual / six FontProbe), zero warnings/failures/skips; every preceding case remains, including twelve original core admissions with updated assertions. [Document/control bank](tests/Research/affine-oval-strokes/README.md); [qualification receipt](artifacts/maintenance-review-20261012/affine-ovals-qualified-results.json). |
 | Resource/API/package protections | Keep bounded preparation/raster/encoding, denied work/allocation, during-phase cancellation, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks remain applicable while unchanged. Final release evidence must match the finished revision. |
 
 Completed scaled nested uses, inert outlined typography, rotated solid ovals,
@@ -42,19 +43,22 @@ and bounded layers; preserve the native distinctions required for exact pixels.
 Group IDs identify responsibilities, not serial implementation prerequisites.
 Exhaustive G2 combinations do not block G3–G9 or the next document.
 
-The **next three deliverables** are:
+The declared affine orbit diagram is complete. Wider item 1 requirements stay
+open; implement their shared dependencies when they block a next document rather
+than requiring exhaustive stroke/paint combinations first. The **next three
+document deliverables** are:
 
-1. A complete affine stroke/paint diagram covering the remaining dashed curved
-   shader and nonuniform instance maps. Declare its actual rejected/different
-   outputs before edits; use an original CC0 diagram if no licensed export fits.
-   Reuse the completed symbol-frame and source-paint machinery (item 1).
-2. A complete scoped clip/mask diagram, closing the retained composed cubic clip
+1. A complete scoped clip/mask diagram, closing the retained composed cubic clip
    and translated custom mask-region cases against their unchanged references.
    Resolve remaining overlapping children and opacity/scope dependencies
    only as needed, then close the finite G5 witnesses (item 2).
-3. A complete colored effects/marker diagram plus the two retained filter-region
+2. A complete colored effects/marker diagram plus the two retained filter-region
    numerical defects. Use the enumerated composite/blend modes and arc/polyline
    markers, with bounded intermediates and graph failure checks (item 3).
+3. A complete static CSS/image export demonstrating a missing selector/cascade
+   location and a multicolor translucent PNG under fractional meet/slice mapping.
+   Preserve late-rule/source-order behavior and bounded decode failure checks
+   (item 4). Declare actual rejected/different outputs before edits.
 
 Each delivery must make every declared output exact on both platforms, preserve
 prior results and document which finite requirements it closes. A diagram is not
@@ -64,7 +68,7 @@ remaining witnesses. Required G7–G9 and dependent pattern work stay on the que
 
 | Required remaining item | Missing behavior and dependencies | Concrete acceptance and completion condition |
 | --- | --- | --- |
-| 1. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Remaining affine instance/stroke/paint maps, dashed curved shader strokes and ordinary/non-scaling construction. Depends on existing source contours/stroker and composed paint maps; share stroke routing across paints. | The next affine diagram must demonstrate its identified missing maps/dash behavior against frozen outputs. Preserve completed fractional/nonuniform symbol frames, reflected pattern and rotated symbol gradients, nonuniform root fills, ordinary fractional use widths, non-scaling, gradient-line and mixed shader strokes. Exact positive witnesses for every still-unverified finite G3/G4 and G2 width/map mechanism, categorized boundaries and affected cleanup/denial checks close this item; remaining G2 scopes/composition follow item 2. No Cartesian quota. |
+| 1. Finish shared stroke and paint-coordinate gaps (G2/G3/G4) | Remaining direct path/point-list and instance affine stroke/paint maps, dashed cap forms, translucent/mixed paints and unverified ordinary/non-scaling construction. Depends on existing source contours/stroker and composed paint maps; share stroke routing across paints. | The complete affine orbit diagram and its six controls are delivered; preserve them alongside symbol frames, reflected pattern/rotated symbol gradients, root fills, ordinary fractional use widths, non-scaling, gradient-line and mixed shader strokes. Dashed oval shader round/square caps and translucency still have required positive exits. Bind remaining mechanisms to a retained complete export when they block the next document. Exact positive witnesses for every still-unverified finite G3/G4 and G2 width/map mechanism, categorized boundaries and affected cleanup/denial checks close this item; remaining G2 scopes/composition follow item 2. No Cartesian quota. |
 | 2. Finish scoped clip/mask composition (G2/G5) | Remaining overlapping straight/curved clip children, composed clip maps, nested definition scopes, custom mask regions, mask-container opacity and remaining leaf/group/use composition. Depends on item 1 only where its maps are needed; reuse existing bounded scene/layer ownership. | Close [composed cubic clip](tests/Research/curved-path-clips/composed-group-cubic.svg) and [translated custom mask region](tests/Research/paint-recording/mask-region-half-translated.svg). Declare a complete export combining an identified mask/clip gap with ordered group/use content. Exact original outputs plus representative overlap/unit/scope/opacity witnesses and bounded cleanup close G5. The already exact [object-box clip bank](tests/Research/object-bounding-clips/manifest.json), scaled nested viewports and completed `inv-136/137/141/145` stay regressions. |
 | 3. Finish finite static effects and marker gaps (G8) | Small/anisotropic blur, fractional offsets, flood/composite/blend and remaining result/region/color-space graphs; remaining marker directions/containers. Depends on completed `inv-146` source bounds and items 1–2 only for affected geometry/composition. | Close [translated rectangle source](tests/Research/filter-regions/translated-rectangle-source.svg) (85 pixels, max channel 1) and [transparent displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg) (six pixels, max channel 14 / alpha 1). Freeze a colored alpha composition with `over`/`in` and normal/multiply/screen, and an arc/polyline marker example. Exact complete exports and positive witnesses for the finite G8 subset, plus bounded graph/surface/work regressions, close this item. |
 | 4. Finish static CSS and embedded images (G7) | Remaining selectors/cascade locations, presentation propagation and enumerated PNG/sampling/maps. Depends on shared G2/G5 scopes and G3 maps; preserve completed late rules, inert geometry typography and paint order. | Existing image/compound-selector cases plus a multicolor translucent PNG edge under fractional meet/slice and a root/nested/late-rule export affecting referenced content match frozen outputs. Authored override, CRC/decode denial and corrupt/missing image outcomes pass. Representative exact witnesses and explicit unsupported boundaries for the finite G7 subset close this item. |
@@ -113,7 +117,13 @@ combination census or separate tracking framework is required.
   nonuniform placement. Shared stroke-to-paint routing must preserve native
   shape distinctions; paint-specific geometry kernels are not the delivery plan.
 - Remaining witnesses: wider instance/stroke/paint maps, dashed curved shader
-  strokes and reflected/magnified pattern interactions not yet qualified. The retained
+  cap/translucency combinations and reflected/magnified pattern interactions not
+  yet qualified. Nonuniform native oval construction, butt-capped linear/radial/
+  pattern oval dashes and native-backed nonuniform shader instances are complete
+  in the [orbit diagram and controls](tests/Research/affine-oval-strokes/README.md).
+  The original percentage-oval composed-group fill is also exact. The
+  [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg)
+  remains a required instance-coordinate witness, not a scope deferral. The
   rotated symbol gradient and reflected group-pattern gates are complete.
   Non-scaling oval coverage, both gradient-line cases and all nine mixed shader
   strokes are complete. Ordinary fractional rectangle use widths also match
@@ -304,12 +314,13 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  Latest finished checkpoint: approximately **1m43s Windows / 5m01s Linux**
-  for each complete successful build-and-test run, including test-host/orchestration
-  time after build startup. Compiler intervals are 10s / 170s; suite intervals
-  are 88s / 103s. The existing receipt states the timestamp method and excludes
-  initial build-host startup; failed developmental attempts are not routine
-  timings. See the symbol-frame receipt above and its existing logs.
+  Latest finished checkpoint: approximately **5m00s for the complete Linux
+  build/test run**, with 171s compiler and 100s suite intervals. Windows reuses
+  its unchanged green core after a visual-metadata-only graduation; valid build
+  plus suite components total **1m27s** (4s compiler / 83s suite intervals),
+  without claiming an end-to-end rerun. The existing affine-oval receipt states
+  the timestamp method, excluding initial build-host startup and failed
+  developmental attempts from routine timing. See its logs in the same directory.
   These local measurements establish no renderer speedup or fixed timing guarantee.
   Routine verification uses normal incremental builds; avoid forced compiler
   shutdown between checkpoints. The prior forced-cold Linux overrun and ordinary

@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'><defs><radialGradient id='r' cx='.35' cy='.45' r='.75'><stop stop-color='#c89c35'/><stop offset='1' stop-color='#24658c'/></radialGradient></defs><ellipse cx='24' cy='20' rx='17' ry='12' fill='none' stroke='url(#r)' stroke-width='3' stroke-dasharray='5,2' stroke-dashoffset='1.25'/></svg>

@@ -331,7 +331,7 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerEllipseFill(double centerX, double centerY, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
+        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, false);
         double mappedRadiusX = radiusX * Math.Abs(scaleX);
         double mappedRadiusY = radiusY * Math.Abs(scaleY);
         using BudgetedParserList<SvgDevicePoint> mapped = new(budget, SvgMemoryCategory.Geometry, _workCounter, _cancellationToken);
@@ -350,7 +350,7 @@ internal ref struct SvgOrthogonalGeometryLowering
             SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, ShapeSegmentsPerShape);
             SvgContourBuilder builder = new(SampledOutlineCapacity(1, ShapeSegmentsPerShape), 1);
             builder.EnableQuadSpanRetention();
-            if (radiusX != radiusY && !deviceMap.IsAxisAligned)
+            if (!deviceMap.IsAxisAligned && (radiusX != radiusY || !deviceMap.IsUniformScale()))
             {
                 using BudgetedParserList<SvgAuthoredPathCommand> source = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
                 AppendNativeEllipseCommands(source, centerX, centerY, radiusX, radiusY);
@@ -383,7 +383,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         OwnedParserArray<SvgAuthoredPathCommand> owned = new([], null);
         try
         {
-            if (element.Presentation.HasFill && result.Geometries.Length == 1)
+            if (result.Geometries.Length == 1)
             {
                 using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
                 AppendNativeEllipseCommands(commands, centerX, centerY, radiusX, radiusY);
@@ -398,13 +398,23 @@ internal ref struct SvgOrthogonalGeometryLowering
     }
 
     /// <summary>Measures, cuts and strokes original oval conics through the shared native source route.</summary>
-    /// <remarks>Caller admission supplies positive uniform placement and butt caps. Commands, dash measurements, cuts and generated outlines share bounded work/cancellation and owned storage; empty native bounds paint nothing.</remarks>
+    /// <remarks>Caller admission supplies finite affine placement and butt caps. Commands, dash measurements, cuts and generated outlines share bounded work/cancellation and owned storage; empty native bounds paint nothing.</remarks>
     internal SvgParsedGeometry LowerNativeEllipseStroke(double centerX, double centerY, double radiusX, double radiusY,
         SvgResolvedPaintableElement element, SvgStroke stroke, double[]? dashes, double dashOffset, double? pathLength,
         double miterLimit, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
-        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, true);
-        double deviceWidth = StrokeDeviceWidth(stroke.Width, element.Transform, frame, nonScaling);
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
+        double deviceWidth;
+        if (element.Transform.IsUniformScale() && Math.Abs(frame?.ScaleX ?? 1) == Math.Abs(frame?.ScaleY ?? 1))
+            deviceWidth = StrokeDeviceWidth(stroke.Width, element.Transform, frame, nonScaling);
+        else
+        {
+            // Native construction keeps source width separate from affine placement.
+            double extentScale = Math.Max(Math.Sqrt(deviceMap.A * deviceMap.A + deviceMap.B * deviceMap.B), Math.Sqrt(deviceMap.C * deviceMap.C + deviceMap.D * deviceMap.D));
+            deviceWidth = nonScaling ? stroke.Width : stroke.Width * extentScale;
+            if (!double.IsFinite(deviceWidth) || deviceWidth <= 0 || deviceWidth > int.MaxValue)
+                throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
+        }
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
         if (!AppendNativeEllipseCommands(commands, centerX, centerY, radiusX, radiusY))
         {
@@ -447,8 +457,6 @@ internal ref struct SvgOrthogonalGeometryLowering
     internal SvgParsedGeometry LowerEllipseStrokeFill(double centerX, double centerY, double radiusX, double radiusY, SvgResolvedPaintableElement element, SvgStroke stroke, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
-        (SvgAffineTransform _, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
-        if (scaleX != scaleY || scaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Oval strokes under non-uniform polygon transforms stay unsupported.");
         return LowerNativeEllipseStroke(centerX, centerY, radiusX, radiusY, element, stroke, null, 0, null, 4, nonScaling, frame, budget);
     }
 

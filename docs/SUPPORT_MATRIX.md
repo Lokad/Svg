@@ -1080,6 +1080,24 @@ bank to ten exact controls. Existing width, inheritance and ordinary-stroke
 witnesses remain unchanged. Wider affine geometry/paint and instance combinations
 remain the finite G2–G4 work listed in PLAN.md.
 
+## Affine oval strokes and native shader dashes (2026-10-14)
+
+Ordinary circle/ellipse strokes retain source conics through nonuniform and
+composed affine placement. Butt-capped oval shader dashes now use the existing
+native dash/stroke constructor. Linear/radial source maps and vector-pattern
+placement preserve paint coordinates separately from the outline. Native-backed
+shader instances admit nonuniform maps; outlines without native stroke commands
+keep the existing boundary.
+
+The complete original CC0 orbit diagram and six focused controls match unchanged
+independent Windows/Linux references. See the
+[affine oval bank](../tests/Research/affine-oval-strokes/README.md). The original
+nonuniform oval and nine ordinary/symbol/viewport shader-instance core inputs
+remain, with positive native-map/output checks. Existing dash/curve ownership and
+native stroke regressions remain protected. Dashed oval shader round/square caps,
+translucent shader strokes and wider stroke/paint maps remain required G4 work;
+current unsupported outcomes do not close those promises.
+
 ## Fractional and nonuniform native symbol frames (2026-10-14)
 
 Rectangle-stroke symbols retain their content for existing source construction

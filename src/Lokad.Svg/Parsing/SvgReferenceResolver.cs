@@ -638,13 +638,15 @@ internal static class SvgReferenceResolver
         return source.CopyAuthoredPathTo(result, PlainInstancePlacement(reference, frame), state.Budget, workCounter, cancellationToken);
     }
 
-    /// <summary>Rejects non-uniformly scaled outline strokes on use instances, whose pre-scale miters would silently distort.</summary>
+    /// <summary>Rejects nonuniform shader-outline instances without native source strokes; retained native commands preserve source construction through placement.</summary>
     private static void RequireUniformOutlineScales(SvgDefinition definition, SvgUseReference reference)
     {
         if (reference.Transform.IsUniformScale()) return;
         foreach (SvgGeometry source in definition.Geometries)
         {
-            if (source.Kind is SvgGeometryKind.GradientPolygon or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled outline strokes on use instances are implemented.");
+            if (source.Kind is SvgGeometryKind.GradientPolygon or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon
+                && source.AuthoredPath?.StrokeStyle is null)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only uniformly scaled outline strokes without native source commands on use instances are implemented.");
         }
     }
 

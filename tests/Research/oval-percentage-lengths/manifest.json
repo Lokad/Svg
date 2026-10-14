@@ -98,9 +98,7 @@
       "licenseEvidence": "Repository-authored focused control dedicated to CC0-1.0 in its source header.",
       "selection": "Declared before the Wikifoods percentage-oval correction; independently captured complete input. Diagnoses axis/diagonal bases, native length precision, geometry/paint agreement and retained boundaries.",
       "role": "mechanism-control",
-      "referenceSha256": "cd916930531eb26eef115b8daedf8685c14747da359e5d33d05efa27e322fa87",
-      "expectedError": "UnsupportedFeature",
-      "boundary": "Rotated ellipse transforms are not implemented."
+      "referenceSha256": "cd916930531eb26eef115b8daedf8685c14747da359e5d33d05efa27e322fa87"
     },
     {
       "id": "nested-user-bases",

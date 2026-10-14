@@ -193,10 +193,14 @@ public sealed class SvgUseInstanceTests
     [InlineData("<linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></linearGradient>")]
     [InlineData("<radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop stop-color='red'/><stop offset='1' stop-color='blue'/></radialGradient>")]
     [InlineData("<pattern id='g' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern>")]
-    public void Non_uniform_viewport_maps_keep_the_painted_outline_boundary(string paint)
+    public void Non_uniform_viewport_maps_retain_native_painted_outlines(string paint)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><defs>" + paint + "<polygon id='p' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><svg width='48' height='24' viewBox='0 0 16 12' preserveAspectRatio='none'><use href='#p'/></svg></svg>");
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, CancellationToken.None);
+        SvgAuthoredPath stroke = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries, geometry => geometry.AuthoredPath?.StrokeStyle is not null).AuthoredPath);
+        Assert.Equal(3, stroke.SceneMap.A);
+        Assert.Equal(2, stroke.SceneMap.D);
+        Assert.False(SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).IsEmpty);
     }
 
     [Fact]
@@ -944,22 +948,26 @@ public sealed class SvgUseInstanceTests
     [InlineData("<defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' transform='scale(2,1)'/>")]
     [InlineData("<defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></defs><use href='#q' transform='scale(2,1)'/>")]
     [InlineData("<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><polygon id='q' points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></defs><use href='#q' transform='scale(2,1)'/>")]
-    public void Non_uniformly_scaled_outline_uses_stay_unsupported(string body)
+    public void Non_uniformly_scaled_outline_uses_retain_native_strokes(string body)
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        using SvgRoot scene = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None);
+        SvgAuthoredPath stroke = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries, geometry => geometry.AuthoredPath?.StrokeStyle is not null).AuthoredPath);
+        Assert.Equal(2, stroke.SceneMap.A);
+        Assert.Equal(1, stroke.SceneMap.D);
+        Assert.Contains(RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='16'>" + body + "</svg>", out _, out _), value => value != 0);
     }
 
     [Theory]
     [InlineData("<defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='8' y2='0'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></linearGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/>")]
     [InlineData("<defs><radialGradient id='g' gradientUnits='userSpaceOnUse' cx='4' cy='4' r='4'><stop offset='0' stop-color='#ff0000'/><stop offset='1' stop-color='#0000ff'/></radialGradient></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#g)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/>")]
     [InlineData("<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><defs><symbol id='s' viewBox='0 0 8 8'><polygon points='0,0 8,0 0,8' fill='none' stroke='url(#p)' stroke-width='2'/></symbol></defs><use href='#s' width='8' height='8' transform='scale(2,1)'/>")]
-    public void Non_uniformly_scaled_symbol_outline_uses_stay_unsupported(string body)
+    public void Non_uniformly_scaled_symbol_outline_uses_retain_native_strokes(string body)
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        using SvgRoot scene = SvgRootParser.Parse(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + body + "</svg>"), SvgRenderLimits.Default, CancellationToken.None);
+        SvgAuthoredPath stroke = Assert.IsType<SvgAuthoredPath>(Assert.Single(scene.Geometries, geometry => geometry.AuthoredPath?.StrokeStyle is not null).AuthoredPath);
+        Assert.Equal(2, stroke.SceneMap.A);
+        Assert.Equal(1, stroke.SceneMap.D);
+        Assert.Contains(RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='16'>" + body + "</svg>", out _, out _), value => value != 0);
     }
 
     [Fact]

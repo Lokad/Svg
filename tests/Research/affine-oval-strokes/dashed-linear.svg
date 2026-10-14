@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'><defs><linearGradient id='g' gradientUnits='userSpaceOnUse' x1='4' y1='2' x2='44' y2='32'><stop stop-color='#24658c'/><stop offset='1' stop-color='#c89c35'/></linearGradient></defs><ellipse cx='24' cy='20' rx='17' ry='12' fill='none' stroke='url(#g)' stroke-width='2.5' stroke-dasharray='4,2' stroke-dashoffset='.75'/></svg>

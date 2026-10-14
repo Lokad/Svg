@@ -12530,6 +12530,41 @@ and float-overflow boundaries protect the shared arithmetic; existing host-strok
 work, memory, cancellation/retry and owner tests remain applicable. This closes
 the measured oval defect, not the remaining finite G2–G4 map/paint combinations.
 
+## Affine oval source construction and shader dashes (2026-10-14)
+
+One complete original CC0 orbit diagram and six controls were declared and frozen
+before production edits. All seven rejected at baseline; independent healthy
+triples on Windows/Linux produced identical reference bytes. Nonuniform solid
+and dashed ovals reached older scalar-width/uniform-map guards despite already
+retaining a native source constructor. Oval shader strokes rejected dash syntax
+before the ordinary native dash machinery. Native-backed instance shaders also
+reached a blanket nonuniform-outline guard.
+
+Source conics now retain finite affine placement, while the ordinary stroke is
+constructed with source width and then mapped. The non-scaling route keeps its
+existing host-map/inverse distinctions. Native magnitude checks continue bounding
+effective stroke extent. Unpainted oval channels retain source commands for
+source bounds and subsequent instance replay. Actual circle/ellipse conics remain
+native; the change does not approximate nonuniform strokes with a scalar width.
+
+Oval shader dashes use the existing native cutter/stroker and original full source
+bounds. Composed linear/radial source and vector-tile paint maps stay separate
+from geometry placement. A first pattern trial had exact alpha but 200 incorrect
+colored pixels; applying the existing shader-placement map removed all differences.
+Native-backed shader instances reuse that source replay; fallback outlines remain
+guarded. The complete diagram and all six controls are exact against unchanged
+references on both platforms. The preceding percentage-oval `composed-group-map`
+control also graduates from rejection to exact rendering on both platforms with
+its original SVG/reference bytes; its native fill conics already supported the
+composed map. No new paint or shape stroker is introduced.
+
+Focused regressions retain immutable input, material work/memory denial, cleanup,
+retry and explicit unsupported cap outcomes before stream output. Earlier native
+source/dash, curve-owner and glyph/oval inverse protections stay closed. Wider
+G2–G9 exits, dashed oval shader round/square caps and translucent paint combinations
+remain required; this complete document advances the shared mechanisms without
+making an exhaustive shape/paint/instance product a prerequisite.
+
 ## Retained rectangle symbol frames (2026-10-14)
 
 The complete original CC0 symbol-card diagram and four controls were declared and

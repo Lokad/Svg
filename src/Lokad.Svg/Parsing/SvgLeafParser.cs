@@ -511,22 +511,6 @@ internal static class SvgLeafParser
 
         static SvgParsedGeometry LowerNativeEllipseStroke(SvgPaintableElementContext context, SvgEllipseSyntax syntax, SvgResolvedPaintableElement shape, SvgParsedGeometry fill, SvgStroke ringStroke, double[] dashes, double dashOffset, double? pathLength, double miterLimit, bool nonScaling, string shapeName, SvgViewportFrame? frame, SvgDocumentState state)
         {
-            double userScaleX;
-            double userScaleY;
-            if (shape.Transform.IsAxisAligned)
-            {
-                userScaleX = shape.Transform.A;
-                userScaleY = shape.Transform.D;
-            }
-            else if (!shape.Transform.TryGetUniformScale(out double uniformUserScale)) throw new SvgException(SvgErrorCode.UnsupportedFeature, shapeName == "circle" ? "Circle strokes under non-uniform polygon transforms stay unsupported." : "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
-            else
-            {
-                userScaleX = uniformUserScale;
-                userScaleY = uniformUserScale;
-            }
-            double composedScaleX = userScaleX * (frame?.ScaleX ?? 1);
-            double composedScaleY = userScaleY * (frame?.ScaleY ?? 1);
-            if (composedScaleX != composedScaleY || composedScaleX <= 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, shapeName == "circle" ? "Circle strokes under non-uniform polygon transforms stay unsupported." : "Ellipse strokes under non-uniform polygon transforms stay unsupported.");
             using BudgetedParserList<SvgPoint> noStrokePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using BudgetedParserList<int> noStrokeEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, shapeName, false, shape.Style.FillRule is not null && shape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
@@ -537,12 +521,14 @@ internal static class SvgLeafParser
         }
         static SvgParsedGeometry LowerPaintedCircleStroke(XmlReader reader, SvgPaintableElementContext context, SvgEllipseSyntax syntax, string shapeName, bool isCircle, SvgResolvedPaintableElement fillElement, SvgParsedGeometry fill, SvgLinearGradient outlineGradient, SvgRadialGradient outlineCircle, SvgPatternTile outlineTile, bool useLinear, bool useRadial, bool nonScaling, SvgViewportFrame? frame, SvgDocumentState state)
         {
-            string? paintDashes = reader.GetAttribute("stroke-dasharray");
-            if (paintDashes is not null && !paintDashes.AsSpan().Trim().Equals("none".AsSpan(), StringComparison.OrdinalIgnoreCase) && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(fillElement.Style.Width)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed " + shapeName + " strokes are not implemented.");
+            string? paintDashes = fillElement.Style.Dasharray;
+            double[]? dashPattern = SvgStrokeStyleSyntax.ParseDasharray(paintDashes);
             SvgComputedStyle whiteStyle = fillElement.Style with { Stroke = "#ffffff" };
             SvgResolvedPaintableElement whiteShape = context.ResolveShape(whiteStyle, reader, true);
             SvgStroke? admitted = ParseCircleStroke(whiteShape, reader);
             if (admitted is null || !whiteShape.Presentation.IsPainted) return fill;
+            if (dashPattern is not null && SvgStrokeStyleSyntax.ParseLinecap(whiteShape.Style.Linecap) != SvgStrokeCap.Butt)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only butt caps on dashed oval paint strokes are implemented.");
             byte strokeOpacity = SvgReferenceResolver.MultiplyAlpha(whiteShape.Presentation.Opacity, SvgColorParser.ParseOpacity(whiteShape.Style.StrokeOpacity));
             if (strokeOpacity != 255
                 || (useLinear && !SvgGradientSyntax.IsOpaqueGradientStroke(outlineGradient, 255))
@@ -550,21 +536,32 @@ internal static class SvgLeafParser
                 || (!useLinear && !useRadial && outlineTile.Content is SvgGeometry paintContent && paintContent.Rectangle.Color.Alpha != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent paint strokes on " + shapeName + " elements are not implemented.");
             SvgLinearGradient mappedLinear = default;
             SvgRadialGradient mappedCircle = default;
-            if (useLinear)
+            bool sourceMapped = !whiteShape.Transform.IsAxisAligned || useLinear && outlineGradient.RequiresSourceMap;
+            if (useLinear && !sourceMapped)
             {
                 mappedLinear = SvgGradientSyntax.MapUserSpaceVector(whiteShape.Transform, outlineGradient, frame);
                 mappedLinear = SvgGradientSyntax.MirrorBoundingBoxVector(whiteShape.Transform, mappedLinear);
             }
-            else if (useRadial)
+            else if (useRadial && !sourceMapped)
             {
                 mappedCircle = SvgGradientSyntax.MapUserSpaceRadial(whiteShape.Transform, outlineCircle, frame);
             }
             bool needsStrokeBox = (useLinear && !outlineGradient.IsUserSpace) || (useRadial && !outlineCircle.IsUserSpace);
             SvgRectangle strokeBox = default;
+            SvgAffineTransform strokePlacement = frame is {} strokeViewport
+                ? SvgAffineTransform.FromScaleOffset(strokeViewport.ScaleX, strokeViewport.ScaleY, strokeViewport.OffsetX, strokeViewport.OffsetY).ComposeChecked(whiteShape.Transform)
+                : whiteShape.Transform;
+            if (sourceMapped)
+            {
+                SvgRectangle sourceBox = new(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, false, null);
+                if (useLinear) mappedLinear = SvgGradientSyntax.BindLinearSourceMap(outlineGradient, sourceBox, strokePlacement, state, context.WorkCounter, context.CancellationToken);
+                else if (useRadial) mappedCircle = SvgGradientSyntax.BindRadialSourceMap(outlineCircle, sourceBox, strokePlacement, context.WorkCounter, context.CancellationToken);
+                needsStrokeBox = false;
+            }
             if (needsStrokeBox)
             {
-                SvgRectangle strokePlacement = whiteShape.Transform.Apply(new SvgRectangle(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, true, null));
-                strokeBox = frame is null ? strokePlacement : frame.Value.Shift(strokePlacement);
+                SvgRectangle placedBox = whiteShape.Transform.Apply(new SvgRectangle(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, true, null));
+                strokeBox = frame is null ? placedBox : frame.Value.Shift(placedBox);
             }
             SvgParsedGeometry white;
             try
@@ -572,7 +569,10 @@ internal static class SvgLeafParser
                 using BudgetedParserList<SvgPoint> noStrokePoints = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 using BudgetedParserList<int> noStrokeEnds = new(state.Budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
                 using SvgOrthogonalGeometryLowering strokeLowering = new(noStrokePoints, noStrokeEnds, shapeName, false, whiteShape.Style.FillRule is not null && whiteShape.Style.FillRule.Equals("evenodd", StringComparison.OrdinalIgnoreCase), int.MaxValue, state.Budget, context.WorkCounter, context.CancellationToken);
-                white = isCircle
+                white = dashPattern is not null
+                    ? strokeLowering.LowerNativeEllipseStroke(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, whiteShape, admitted.Value, dashPattern,
+                        SvgStrokeStyleSyntax.ParseDashoffset(whiteShape.Style.Dashoffset), SvgStrokeStyleSyntax.ParsePathLength(whiteShape.Style.PathLength ?? reader.GetAttribute("pathLength")), SvgStrokeStyleSyntax.ParseMiterLimit(whiteShape.Style.Miterlimit ?? reader.GetAttribute("stroke-miterlimit")), nonScaling, frame, state.Budget)
+                    : isCircle
                     ? strokeLowering.LowerCircleStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, whiteShape, admitted.Value, nonScaling, frame, state.Budget)
                     : strokeLowering.LowerEllipseStrokeFill(syntax.CenterX, syntax.CenterY, syntax.RadiusX, syntax.RadiusY, whiteShape, admitted.Value, nonScaling, frame, state.Budget);
             }
@@ -585,7 +585,7 @@ internal static class SvgLeafParser
                 {
                     if (useLinear) repaintList.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, mappedLinear, strokeBox, strokeOpacity, state.Budget)));
                     else if (useRadial) repaintList.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, mappedCircle, strokeBox, strokeOpacity, state.Budget)));
-                    else repaintList.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, state.Budget)));
+                    else repaintList.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, strokePlacement, state.Budget)));
                 }
                 int whiteCount = white.ElementCount;
                 white.Dispose();
