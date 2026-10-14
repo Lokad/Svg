@@ -1,3 +1,18 @@
+## Colored sRGB filter composition (2026-10-14)
+
+Local `feFlood`, `feComposite` over/in and `feBlend` normal/multiply/screen reuse
+the bounded filter graph and ordered source/earlier-result inputs. Flood uses the
+filter region; binary default subregions include both inputs. Stored filter images
+use packed opacity modulation, while existing unquantized results retain shader
+composition. Source capture preserves bordered bitmap coordinates.
+
+Five focused controls in the [colored-effects bank](../tests/Research/colored-effects-markers/README.md)
+are exact on Windows/Linux. The complete colored-signal diagram remains rejected
+at arc markers, with small anisotropic blur/fractional offset still required.
+LinearRGB/mixed-space qualification and wider finite G8 interactions stay open,
+as do both original filter-region numerical defects. This checkpoint closes no
+support group or document denominator.
+
 # Supplied text defaults and late embedded rules (2026-10-11)
 
 Omitting `font-family` requests the initial `serif` family through the caller's

@@ -111,6 +111,9 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
                 "feOffset" => SvgFilterPrimitiveKind.Offset,
                 "feDropShadow" => SvgFilterPrimitiveKind.DropShadow,
                 "feMerge" => SvgFilterPrimitiveKind.Merge,
+                "feFlood" => SvgFilterPrimitiveKind.Flood,
+                "feComposite" => SvgFilterPrimitiveKind.Composite,
+                "feBlend" => SvgFilterPrimitiveKind.Blend,
                 _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter primitive '" + reader.LocalName + "' is not implemented.")
             };
             ValidateAttributes(reader, kind switch
@@ -118,6 +121,9 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
                 SvgFilterPrimitiveKind.GaussianBlur => "id in result stdDeviation color-interpolation-filters x y width height",
                 SvgFilterPrimitiveKind.Offset => "id in result dx dy color-interpolation-filters x y width height",
                 SvgFilterPrimitiveKind.Merge => "id result color-interpolation-filters x y width height",
+                SvgFilterPrimitiveKind.Flood => "id result flood-color flood-opacity color-interpolation-filters x y width height",
+                SvgFilterPrimitiveKind.Composite => "id in in2 result operator color-interpolation-filters x y width height",
+                SvgFilterPrimitiveKind.Blend => "id in in2 result mode color-interpolation-filters x y width height",
                 _ => "id in result dx dy stdDeviation flood-color flood-opacity color-interpolation-filters x y width height"
             });
             if (reader.GetAttribute("color-interpolation-filters") is string space && space != (_colorSpace == SvgFilterColorSpace.Srgb ? "sRGB" : "linearRGB"))
@@ -137,7 +143,26 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
             float opacity = SvgColorParser.ParsePaintOpacity(reader.GetAttribute("flood-opacity")).Value;
             primitive = new(kind, Input(reader.GetAttribute("in"), _primitives.Count), sigmaX, sigmaY, dx, dy, flood, opacity)
             {
-                Region = ReadRegion(reader), MergeFirst = _mergeInputs.Count
+                Region = ReadRegion(reader), MergeFirst = _mergeInputs.Count,
+                SecondInput = kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend
+                    ? Input(reader.GetAttribute("in2"), _primitives.Count) : SvgFilterInput.SourceGraphic,
+                Composition = kind switch
+                {
+                    SvgFilterPrimitiveKind.Composite => reader.GetAttribute("operator") switch
+                    {
+                        null or "over" => SvgFilterComposition.Over,
+                        "in" => SvgFilterComposition.In,
+                        _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only over and in filter composition are implemented.")
+                    },
+                    SvgFilterPrimitiveKind.Blend => reader.GetAttribute("mode") switch
+                    {
+                        null or "normal" => SvgFilterComposition.Over,
+                        "multiply" => SvgFilterComposition.Multiply,
+                        "screen" => SvgFilterComposition.Screen,
+                        _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only normal, multiply and screen filter blending are implemented.")
+                    },
+                    _ => SvgFilterComposition.Over
+                }
             };
             if (kind == SvgFilterPrimitiveKind.Merge && !reader.IsEmptyElement)
             { _mergeDepth = reader.Depth; _mergeIndex = _primitives.Count; }

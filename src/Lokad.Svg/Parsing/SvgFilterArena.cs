@@ -2,7 +2,8 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-internal enum SvgFilterPrimitiveKind : byte { GaussianBlur, Offset, DropShadow, Merge, Unsupported }
+internal enum SvgFilterPrimitiveKind : byte { GaussianBlur, Offset, DropShadow, Merge, Flood, Composite, Blend, Unsupported }
+internal enum SvgFilterComposition : byte { Over, In, Multiply, Screen }
 internal enum SvgFilterUnits : byte { ObjectBoundingBox, UserSpace }
 internal enum SvgFilterColorSpace : byte { LinearRgb, Srgb }
 internal readonly record struct SvgFilterInput(int Index)
@@ -17,6 +18,8 @@ internal readonly record struct SvgFilterPrimitiveRegion(SvgFilterLength? X, Svg
 internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, SvgFilterInput Input, double SigmaX, double SigmaY, double OffsetX, double OffsetY, SvgColor Flood, float FloodOpacity)
 {
     internal SvgFilterPrimitiveRegion? Region { get; init; }
+    internal SvgFilterInput SecondInput { get; init; }
+    internal SvgFilterComposition Composition { get; init; }
     internal int MergeFirst { get; init; }
     internal int MergeCount { get; init; }
 }

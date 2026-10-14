@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='48' height='40'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='48' height='40' color-interpolation-filters='sRGB'><feFlood flood-color='#c89c35' flood-opacity='.5' result='tint'/><feComposite in='tint' in2='SourceGraphic' operator='over'/></filter></defs><ellipse cx='24' cy='20' rx='15' ry='11' fill='#24658c' opacity='.625' filter='url(#f)'/></svg>

@@ -1,3 +1,35 @@
+## Bounded colored filter graph and source capture (2026-10-14)
+
+The frozen colored-signal diagram and seven controls were declared before
+production edits, with healthy independent Windows/Linux capture triples.
+Adding flood, a second graph input and finite composite/blend modes advances five
+controls through rejection to exact pixels on both platforms.
+
+Initial arithmetic left widespread differences under element opacity. Isolated
+flood witnesses establish that stored-image alpha modulation uses packed lanes:
+round the paint opacity to a byte, add one, then multiply/shift each premultiplied
+lane. The existing unquantized final-sample route remains separate. Native x64
+low-precision multiply combines its numerator before the /256 approximation;
+the pinned `SkRasterPipeline_opts.h` retains its BSD attribution/notices.
+
+The remaining four ellipse-edge pixels were common to all five modes. Reusing
+bordered source bitmap construction, an independent content clip and parent/source
+origin rounding resolves them without document/coordinate predicates. Existing
+straight geometry and source replay remain shared. All preceding 2,337 Windows
+visual checks pass before adding the eight new declared outcomes.
+
+Binary nodes borrow immutable inputs and own any color-conversion scratch only
+through their evaluation. The existing graph/surface reservations, work admission,
+cancellation and final transfer remain in force. New core checks cover second-
+input errors, unsupported operators/modes, work/storage denial, retry and output
+integrity; prior during-phase cancellation checks remain.
+
+The [retained bank](../tests/Research/colored-effects-markers/README.md) has five
+exact controls, two required rejections and one incomplete whole diagram.
+LinearRGB/mixed-space fidelity, small kernels, fractional offsets, arc/polyline
+markers and both original filter-region defects remain required work. No reference
+or established exact result is replaced.
+
 # Late embedded stylesheet collection (2026-10-11)
 
 The retained public-domain static CSS comparison diagram supplies rules after

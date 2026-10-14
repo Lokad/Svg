@@ -440,7 +440,8 @@ public static class SvgConverter
             SvgRenderOptions sourceOptions = new(options.Viewport, options.OutputScale, SvgColor.Transparent, sourceLimits, options.FontSnapshot);
             SvgRoot borrowed = root with { Commands = sourceCommands, ParserWorkUnits = 0 };
             using RasterizedSurface captured = Rasterize(borrowed, sourceOptions, budget, RasterSurfaceMode.PremultipliedFilter,
-                new(sw, sh, horizontalScale, horizontalOffset - left, verticalScale, verticalOffset - top), cancellationToken);
+                new RasterFrame(sw + 2, sh + 2, horizontalScale, horizontalOffset - left + 1, verticalScale, verticalOffset - top + 1)
+                { SingleBitmap = true, ContentClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1) }, cancellationToken);
             workUnits += captured.WorkUnits;
             int frameBytes = fw * fh * 4;
             using RenderBudget.BudgetReservation frameOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(frameBytes), SvgMemoryCategory.Surface);
@@ -449,7 +450,7 @@ public static class SvgConverter
             for (int row = 0; row < sh; row++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                captured.Pixels.AsSpan(row * sw * 4, sw * 4).CopyTo(source.AsSpan(((row + py) * fw + px) * 4, sw * 4));
+                captured.Pixels.AsSpan(((row + 1) * (sw + 2) + 1) * 4, sw * 4).CopyTo(source.AsSpan(((row + py) * fw + px) * 4, sw * 4));
             }
             using SvgFilterResult filtered = SvgFilterPlayback.Apply(source, fw, fh, resource, primitiveMap, budget, limits.MaximumWorkUnits - workUnits, cancellationToken);
             workUnits += filtered.WorkUnits;
@@ -475,8 +476,11 @@ public static class SvgConverter
                             .Blend(destination.AsSpan(target, 4), activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[target + 3]);
                         continue;
                     }
-                    int red = (int)MathF.Floor(filtered.Pixels[origin] * opacity + .5f), green = (int)MathF.Floor(filtered.Pixels[origin + 1] * opacity + .5f);
-                    int blue = (int)MathF.Floor(filtered.Pixels[origin + 2] * opacity + .5f), alpha = (int)MathF.Floor(filtered.Pixels[origin + 3] * opacity + .5f);
+                    // A stored filter image uses native packed-lane alpha modulation;
+                    // unquantized shader results above retain their separate float route.
+                    int opacityScale = Math.Clamp((int)MathF.Floor(opacity * 255 + .5f), 0, 255) + 1;
+                    int red = filtered.Pixels[origin] * opacityScale >> 8, green = filtered.Pixels[origin + 1] * opacityScale >> 8;
+                    int blue = filtered.Pixels[origin + 2] * opacityScale >> 8, alpha = filtered.Pixels[origin + 3] * opacityScale >> 8;
                     if (activeViewportClip.Length != 0)
                     {
                         int clip = activeViewportClip[target + 3];
