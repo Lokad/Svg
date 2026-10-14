@@ -13,6 +13,25 @@ public sealed class SvgFontLayoutDiagramTests
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "font-layout-diagram");
 
     [Fact]
+    public async Task Scoped_rotation_keeps_ligatures_outside_the_positioned_span_and_maps_angles_to_glyphs()
+    {
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false)], new Provider(), CancellationToken.None);
+        SvgTextStyle style = new(new("Example", 400, false), 18, 0, 24, 0, 0, 0, SvgTextAnchor.Start, string.Empty);
+        SvgTextPositionAdjustment[] positions = [new(2, null, null, 0, 0) { Rotation = 10 }, new(3, null, null, 0, 0) { Rotation = 20 }];
+        RenderBudget budget = new(100_000);
+        using (SvgTextRun run = SvgTextRunBuilder.Create(style, "fiAB", [], positions, snapshot, budget, new(1_000_000), CancellationToken.None))
+        {
+            Assert.Equal(3, run.Glyphs.Length);
+            Assert.Equal(1652, run.Glyphs[0].GlyphIndex);
+            Assert.Equal(SvgAffineTransform.Identity, run.GetGlyphPlacement(0, SvgAffineTransform.Identity).Map);
+            Assert.Equal(SvgAffineTransform.FromRotationDegrees(10).A, run.GetGlyphPlacement(1, SvgAffineTransform.Identity).Map.A);
+            Assert.Equal(SvgAffineTransform.FromRotationDegrees(20).B, run.GetGlyphPlacement(2, SvgAffineTransform.Identity).Map.B);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Reduced_quadratic_crossings_preserve_the_complete_native_curved_counter_mask()
     {
         using JsonDocument vector = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "diagnostics", "windows-curve-span.json")));

@@ -163,9 +163,9 @@ public sealed class SvgTextSyntaxTests
         RenderBudget budget = new(10_000);
         using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("A😀B", [new(3, 50, null, 2, -1)], budget, new(1_000), CancellationToken.None))
         {
-            Assert.Equal(new SvgTextPositionAdjustment(0, 8, 28, 0, 0), positions.Items[0]);
-            Assert.Equal(new SvgTextPositionAdjustment(1, 24, null, 1, 0), positions.Items[1]);
-            Assert.Equal(new SvgTextPositionAdjustment(3, 50, null, 2, -1), positions.Items[2]);
+            Assert.Equal(new SvgTextPositionAdjustment(0, 8, 28, 0, 0) { Rotation = 0 }, positions.Items[0]);
+            Assert.Equal(new SvgTextPositionAdjustment(1, 24, null, 1, 0) { Rotation = 10 }, positions.Items[1]);
+            Assert.Equal(new SvgTextPositionAdjustment(3, 50, null, 2, -1) { Rotation = -10 }, positions.Items[2]);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
@@ -310,11 +310,21 @@ public sealed class SvgTextSyntaxTests
     [Theory]
     [InlineData("x", "1 2")]
     [InlineData("y", "0,0")]
+    public void Admits_valid_absolute_span_lists(string axis, string value)
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader($"<tspan {axis}='{value}'/>"));
+        reader.Read();
+        Assert.True(SvgTextSyntax.TryParseTspanStyle(reader, new(SvgTextWhitespaceMode.Default, 0), default,
+            new ParserWorkCounter(100), CancellationToken.None, out SvgTextSpanStyle style));
+        Assert.Equal(value, axis == "x" ? style.PositionLists.X : style.PositionLists.Y);
+    }
+
+    [Theory]
     [InlineData("x", "20%")]
     [InlineData("y", "1em")]
     [InlineData("x", "NaN")]
     [InlineData("y", "1e309")]
-    public void Rejects_unqualified_absolute_span_lists_units_and_nonfinite_values(string axis, string value)
+    public void Rejects_absolute_span_units_and_nonfinite_values(string axis, string value)
     {
         using XmlReader reader = XmlReader.Create(new StringReader($"<tspan {axis}='{value}'/>"));
         reader.Read();

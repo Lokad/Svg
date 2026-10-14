@@ -30,7 +30,7 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
     internal static double ReadToken(ReadOnlySpan<char> token)
         => ReadToken(token, true);
 
-    private static double ReadToken(ReadOnlySpan<char> token, bool allowPixels)
+    internal static double ReadToken(ReadOnlySpan<char> token, bool allowPixels)
     {
         if (allowPixels && token.EndsWith("px", StringComparison.OrdinalIgnoreCase)) token = token[..^2];
         if (!double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double value) || !double.IsFinite(value))
@@ -45,6 +45,8 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
         using BudgetedParserList<SvgTextPositionAdjustment> positions = new(budget, SvgMemoryCategory.Parser, work, token);
         SvgGeometrySyntax.DelimitedTokenReader xs = new(X.AsSpan()), ys = new(Y.AsSpan());
         SvgGeometrySyntax.DelimitedTokenReader dxs = new(Dx.AsSpan()), dys = new(Dy.AsSpan());
+        SvgGeometrySyntax.DelimitedTokenReader rotations = new(Rotate.AsSpan());
+        double? lastRotation = null;
         int sourceOffset = 0, descendantIndex = 0;
         foreach (System.Text.Rune scalar in text.EnumerateRunes())
         {
@@ -53,27 +55,23 @@ internal readonly record struct SvgTextPositionLists(string? X, string? Y, strin
             double? y = ys.TryReadValue(out ReadOnlySpan<char> yv) ? ReadToken(yv) : null;
             double dx = dxs.TryReadValue(out ReadOnlySpan<char> dxv) ? ReadToken(dxv) : 0;
             double dy = dys.TryReadValue(out ReadOnlySpan<char> dyv) ? ReadToken(dyv) : 0;
+            if (rotations.TryReadValue(out ReadOnlySpan<char> rotation)) lastRotation = ReadToken(rotation, false);
+            double? angle = lastRotation;
             if (descendantIndex < descendants.Length && descendants[descendantIndex].Start == sourceOffset)
             {
                 SvgTextPositionAdjustment child = descendants[descendantIndex++];
                 x = child.X ?? x; y = child.Y ?? y;
-                dx += child.Dx; dy += child.Dy;
+                dx = child.OverridesDx ? child.Dx : dx + child.Dx;
+                dy = child.OverridesDy ? child.Dy : dy + child.Dy;
+                angle = child.Rotation ?? angle;
             }
             // Retain a character boundary under rotation, including zero offsets,
             // so optional ligatures cannot merge differently oriented characters.
-            if (x is not null || y is not null || dx != 0 || dy != 0 || Rotate is not null)
-                positions.Add(new(sourceOffset, x, y, dx, dy));
+            if (x is not null || y is not null || dx != 0 || dy != 0 || angle is not null)
+                positions.Add(new(sourceOffset, x, y, dx, dy) { Rotation = angle });
             sourceOffset += scalar.Utf16SequenceLength;
         }
         return positions.Detach();
     }
 
-    /// <summary>Retains authored rotations, with the final value applying to remaining characters.</summary>
-    internal OwnedParserArray<double> ReadRotations(RenderBudget budget, ParserWorkCounter? work, CancellationToken token)
-    {
-        using BudgetedParserList<double> rotations = new(budget, SvgMemoryCategory.Parser, work, token);
-        SvgGeometrySyntax.DelimitedTokenReader reader = new(Rotate.AsSpan());
-        while (reader.TryReadValue(out ReadOnlySpan<char> value)) rotations.Add(ReadToken(value, false));
-        return rotations.Detach();
-    }
 }

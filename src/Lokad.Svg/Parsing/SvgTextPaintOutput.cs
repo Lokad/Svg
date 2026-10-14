@@ -78,6 +78,8 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
 
     public void EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         => _layout.EnterPositioningSpan(offset, scopeDepth, workCounter, cancellationToken);
+    public void EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => _layout.EnterPositioningSpan(lists, scopeDepth, workCounter, cancellationToken);
     public void ExitPositioningSpan(int scopeDepth) => _layout.ExitPositioningSpan(scopeDepth);
 
     internal SvgExtractedTextRun Detach(SvgTextPathReference? path)

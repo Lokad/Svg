@@ -1,3 +1,18 @@
+## Nested direct-text coordinate and rotation lists (2026-10-15)
+
+The retained nested-list/rotation control is **1/1 exact** on Windows/Linux.
+Ancestor lists count normalized Unicode scalars through descendants; nearest
+specified axes win, including explicit zero, and final rotations repeat until
+their span ends. Shared layout assigns angles to emitted glyphs, preserving
+ligatures outside positioned spans and existing ownership/denial protections.
+
+The unchanged [whole label/path sheet](../tests/Research/remaining-label-path-sheet/README.md)
+now rejects at word-spacing and remains incomplete. Nested/path length and path
+rotation propagation, decorations, remaining strokes and finite G9 acceptance
+stay required. This supersedes direct nested-list/rotation rejection wording;
+it does not close G9 or add a completed document. See the
+[qualification receipt](../artifacts/maintenance-review-20261012/nested-text-lists-qualified-results.json).
+
 ## Parent-bitmap linearRGB blur restoration (2026-10-15)
 
 The unchanged displaced transparent blur is exact on Windows/Linux against its
@@ -70,7 +85,7 @@ segment links. Shared denial/cancellation/cleanup protections remain in place.
 [qualification receipt](../artifacts/maintenance-review-20261012/font-layout-guide-qualified-results.json).
 
 Earlier direct-text list/baseline/textLength and span-font rejection wording is
-superseded by these witnesses. Nested-span list/rotation/length propagation,
+superseded by these witnesses and the nested-list correction above. Nested-span length propagation,
 path length/rotation propagation, word spacing/decorations, remaining strokes,
 closed paths and composite flags still require their finite G9 acceptance.
 The new stretched-accent diagnostic has one unresolved native-mask pixel;

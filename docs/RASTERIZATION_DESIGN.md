@@ -1,3 +1,25 @@
+## Nested direct-text positioning over normalized scalars (2026-10-15)
+
+The retained nested-list/rotation control matches unchanged Windows/Linux
+references. Layout records normalized UTF-16 span ranges, then resolves their
+lists over Unicode scalars after normalization is complete. Ancestor cursors
+advance through descendants, while the nearest specified axis or rotation wins.
+This preserves split surrogate pairs, ancestor pending whitespace, explicit zero
+offsets and resumed parent rotations without a separate text renderer.
+
+The existing scalar-to-glyph layout maps resolved rotations into one bounded
+owned angle array; ligatures outside positioned spans retain their usual glyph
+indices. Existing aggregate collection allowances, work/cancellation checks and
+owner transfers cover active scopes, detached storage and failures. Focused
+regressions verify split chunks, denial/cancellation cleanup and ligature mapping.
+
+The unchanged whole label/path sheet next rejects at word-spacing. Path rotation
+and length propagation remain required; no support-group closure or complete
+document is claimed. The [bank](../tests/Research/remaining-label-path-sheet/README.md)
+and [qualification receipt](../artifacts/maintenance-review-20261012/nested-text-lists-qualified-results.json)
+record the exact control, explicit obsolete-rejection migrations and preserved
+platform results. Original programs, sources, references and options are unchanged.
+
 ## Parent-bitmap restoration of rescaled linearRGB blur (2026-10-15)
 
 The original six-pixel transparent blur defect is closed; the unchanged

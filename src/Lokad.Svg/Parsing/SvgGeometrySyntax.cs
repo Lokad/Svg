@@ -324,6 +324,7 @@ internal static class SvgGeometrySyntax
         private int _position;
 
         internal DelimitedTokenReader(ReadOnlySpan<char> value) => _value = value;
+        internal int Consumed => _position;
 
         internal bool TryReadValue(out ReadOnlySpan<char> value)
         {

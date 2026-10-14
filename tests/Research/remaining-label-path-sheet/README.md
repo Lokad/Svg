@@ -2,7 +2,9 @@
 
 One complete CC0 document and one separate mechanism control retain unchanged
 sources, options and healthy stable native capture triples on Windows/Linux.
-Both currently reject at the nested-span positioning gate; neither is complete.
+The focused control is now 1/1 exact on both platforms. The whole sheet advances
+through nested lists/rotation and currently rejects at word-spacing; it remains
+incomplete.
 All listed G9 requirements remain required.
 
 The whole sheet covers nested coordinate/rotation lists, mixed supplied faces,

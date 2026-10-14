@@ -111,6 +111,7 @@ internal sealed class BudgetedTextBuffer : IDisposable, ISvgTextOutput
         => Append(value, maximumLength, workCounter, cancellationToken);
 
     void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken) { }
+    void ISvgTextOutput.EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken) { }
 
     void ISvgTextOutput.ExitPositioningSpan(int scopeDepth) { }
 
@@ -185,7 +186,7 @@ internal readonly record struct BudgetedText(string Value, RenderBudget.BudgetRe
     public void Dispose() => Reservation?.Dispose();
 }
 
-/// <summary>Builds normalized direct text and lazily retains only letter-spacing intervals and resolved scalar span offsets that affect layout.</summary>
+/// <summary>Builds normalized direct text and lazily retains spacing intervals and normalized positioning scopes that affect layout.</summary>
 internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
 {
     private readonly BudgetedTextBuffer _text;
@@ -195,7 +196,7 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
     private readonly double _defaultLetterSpacing;
     private BudgetedParserList<SvgTextLetterSpacingSpan>? _letterSpacingSpans;
     private BudgetedParserList<SvgTextPositionScope>? _positioningScopes;
-    private BudgetedParserList<SvgTextPositionAdjustment>? _positionAdjustments;
+    private BudgetedParserList<SvgTextPositionSpan>? _positionSpans;
 
     internal SvgTextLayoutBuffer(RenderBudget budget, double defaultLetterSpacing, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
@@ -209,7 +210,7 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         _defaultLetterSpacing = defaultLetterSpacing;
     }
 
-    /// <summary>Appends one normalized interval, resolving any active scalar span adjustment at the interval's first retained character.</summary>
+    /// <summary>Appends one normalized interval and records eligible span starts before resolving whole Unicode scalars.</summary>
     public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (!double.IsFinite(letterSpacing)) throw new ArgumentOutOfRangeException(nameof(letterSpacing));
@@ -217,7 +218,18 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction work context.");
         int start = _text.Length;
         _text.Append(value, maximumLength, workCounter, cancellationToken);
-        if (value.Length != 0 && ResolvePositionAdjustment(scopeDepth, start) is SvgTextPositionAdjustment adjustment && (adjustment.HasAbsolutePosition || adjustment.Dx != 0 || adjustment.Dy != 0)) (_positionAdjustments ??= new BudgetedParserList<SvgTextPositionAdjustment>(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken)).Add(adjustment);
+        if (!value.IsEmpty && _positioningScopes is {} scopes)
+        {
+            for (int index = 0; index < scopes.Count; index++)
+            {
+                _workCounter.Consume(_cancellationToken);
+                SvgTextPositionScope scope = scopes[index];
+                if (scope.ScopeDepth > scopeDepth || scope.SpanIndex >= 0) continue;
+                BudgetedParserList<SvgTextPositionSpan> positionSpans = _positionSpans ??= new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+                scopes[index] = scope with { SpanIndex = positionSpans.Count };
+                positionSpans.Add(new(start, 0, scope.Lists, scope.Offset));
+            }
+        }
         if (value.Length == 0 || _letterSpacingSpans is null && letterSpacing.Equals(_defaultLetterSpacing)) return;
         BudgetedParserList<SvgTextLetterSpacingSpan> spans = _letterSpacingSpans ??= CreateLetterSpacingSpans(start);
         int end = checked(start + value.Length);
@@ -233,21 +245,30 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         spans.Add(new SvgTextLetterSpacingSpan(start, end, letterSpacing));
     }
 
-    /// <summary>Begins a nested explicit scalar positioning scope that remains active until its matching exit.</summary>
+    /// <summary>Begins an explicit scalar scope; normalized output determines when it is consumed.</summary>
     public void EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => EnterPositioningScope(new(scopeDepth, offset, default, -1), workCounter, cancellationToken);
+
+    /// <summary>Begins validated lists over the span's normalized scalar subtree.</summary>
+    public void EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        => EnterPositioningScope(new(scopeDepth, null, lists, -1), workCounter, cancellationToken);
+
+    private void EnterPositioningScope(SvgTextPositionScope scope, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
-        if (scopeDepth <= 0) throw new ArgumentOutOfRangeException(nameof(scopeDepth));
+        if (scope.ScopeDepth <= 0) throw new ArgumentOutOfRangeException(nameof(scope));
         if (!ReferenceEquals(workCounter, _workCounter) || cancellationToken != _cancellationToken) throw new InvalidOperationException("Text layout buffer calls must retain their construction work context.");
-        BudgetedParserList<SvgTextPositionScope> scopes = _positioningScopes ??= new BudgetedParserList<SvgTextPositionScope>(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
-        if (scopes.Count != 0 && scopes[^1].ScopeDepth >= scopeDepth) throw new InvalidOperationException("Text positioning scopes must be entered in increasing span depth.");
-        scopes.Add(new SvgTextPositionScope(scopeDepth, offset, false));
+        BudgetedParserList<SvgTextPositionScope> scopes = _positioningScopes ??= new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+        if (scopes.Count != 0 && scopes[^1].ScopeDepth >= scope.ScopeDepth) throw new InvalidOperationException("Text positioning scopes must be entered in increasing span depth.");
+        scopes.Add(scope);
     }
 
-    /// <summary>Ends the current nested explicit scalar positioning scope.</summary>
+    /// <summary>Ends the current nested positioning scope at its last normalized character.</summary>
     public void ExitPositioningSpan(int scopeDepth)
     {
         if (scopeDepth <= 0) throw new ArgumentOutOfRangeException(nameof(scopeDepth));
         if (_positioningScopes is null || _positioningScopes.Count == 0 || _positioningScopes[^1].ScopeDepth != scopeDepth) throw new InvalidOperationException("Text positioning scopes must exit in nesting order.");
+        SvgTextPositionScope scope = _positioningScopes[^1];
+        if (scope.SpanIndex >= 0 && _positionSpans is {} spans) spans[scope.SpanIndex] = spans[scope.SpanIndex] with { End = _text.Length };
         _positioningScopes.RemoveLast();
     }
 
@@ -264,8 +285,7 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
             _letterSpacingSpans = null;
             try
             {
-                OwnedParserArray<SvgTextPositionAdjustment> adjustments = _positionAdjustments is null ? new OwnedParserArray<SvgTextPositionAdjustment>([], null) : _positionAdjustments.Detach();
-                _positionAdjustments = null;
+                OwnedParserArray<SvgTextPositionAdjustment> adjustments = ResolvePositions(text.Value, _positionSpans is {} intervals ? intervals.AsSpan() : [], _budget, _workCounter, _cancellationToken);
                 return new BudgetedTextLayout(text.Value, spans.Items, adjustments.Items, text.Reservation, spans.Reservation, adjustments.Reservation);
             }
             catch
@@ -279,6 +299,39 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
             text.Dispose();
             throw;
         }
+        finally { _positionSpans?.Dispose(); _positionSpans = null; }
+
+        static OwnedParserArray<SvgTextPositionAdjustment> ResolvePositions(string value, ReadOnlySpan<SvgTextPositionSpan> spans,
+            RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        {
+            if (spans.IsEmpty) return new([], null);
+            using BudgetedParserList<SvgTextPositionAdjustment> positions = new(budget, SvgMemoryCategory.Parser, work, token);
+            using BudgetedParserList<SvgTextPositionSpanCursor> active = new(budget, SvgMemoryCategory.Parser, work, token);
+            int next = 0, source = 0;
+            foreach (System.Text.Rune scalar in value.EnumerateRunes())
+            {
+                work.Consume(token);
+                while (active.Count != 0 && active[^1].End <= source) active.RemoveLast();
+                while (next < spans.Length && spans[next].Start <= source) active.Add(new(spans[next++]));
+                double? x = null, y = null, dx = null, dy = null, rotation = null;
+                bool overridesDx = false, overridesDy = false;
+                for (int index = 0; index < active.Count; index++)
+                {
+                    work.Consume(token);
+                    SvgTextPositionSpanCursor cursor = active[index];
+                    SvgTextPositionValue position = cursor.Next();
+                    active[index] = cursor;
+                    x = position.X ?? x; y = position.Y ?? y;
+                    if (position.Dx is not null) { dx = position.Dx; overridesDx = position.ExplicitRelativeAxes; }
+                    if (position.Dy is not null) { dy = position.Dy; overridesDy = position.ExplicitRelativeAxes; }
+                    rotation = position.Rotation ?? rotation;
+                }
+                if (x is not null || y is not null || dx is not null && dx != 0 || dy is not null && dy != 0 || rotation is not null || overridesDx || overridesDy)
+                    positions.Add(new(source, x, y, dx ?? 0, dy ?? 0) { Rotation = rotation, OverridesDx = overridesDx, OverridesDy = overridesDy });
+                source += scalar.Utf16SequenceLength;
+            }
+            return positions.Detach();
+        }
     }
 
     public void Dispose()
@@ -288,8 +341,8 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         _letterSpacingSpans = null;
         _positioningScopes?.Dispose();
         _positioningScopes = null;
-        _positionAdjustments?.Dispose();
-        _positionAdjustments = null;
+        _positionSpans?.Dispose();
+        _positionSpans = null;
     }
 
     private BudgetedParserList<SvgTextLetterSpacingSpan> CreateLetterSpacingSpans(int start)
@@ -298,37 +351,12 @@ internal sealed class SvgTextLayoutBuffer : IDisposable, ISvgTextOutput
         if (start != 0) spans.Add(new SvgTextLetterSpacingSpan(0, start, _defaultLetterSpacing));
         return spans;
     }
-
-    private SvgTextPositionAdjustment? ResolvePositionAdjustment(int scopeDepth, int start)
-    {
-        if (_positioningScopes is null) return null;
-        double? x = null;
-        double? y = null;
-        double? dx = null;
-        double? dy = null;
-        for (int index = _positioningScopes.Count - 1; index >= 0; index--)
-        {
-            SvgTextPositionScope scope = _positioningScopes[index];
-            if (scope.ScopeDepth > scopeDepth || scope.HasApplied) continue;
-            if (x is null) x = scope.Offset.X;
-            if (y is null) y = scope.Offset.Y;
-            if (dx is null) dx = scope.Offset.Dx;
-            if (dy is null) dy = scope.Offset.Dy;
-            if (x is not null && y is not null && dx is not null && dy is not null) break;
-        }
-        for (int index = 0; index < _positioningScopes.Count; index++)
-        {
-            SvgTextPositionScope scope = _positioningScopes[index];
-            if (scope.ScopeDepth <= scopeDepth && !scope.HasApplied) _positioningScopes[index] = scope with { HasApplied = true };
-        }
-        return x is null && y is null && dx is null && dy is null ? null : new SvgTextPositionAdjustment(start, x, y, dx ?? 0, dy ?? 0);
-    }
 }
 
-/// <summary>Tracks one active scalar position declaration until the first retained character in its span subtree consumes it.</summary>
-internal readonly record struct SvgTextPositionScope(int ScopeDepth, SvgTextPositionOffset Offset, bool HasApplied);
+/// <summary>Tracks one active positioning declaration and the interval first emitted by its subtree.</summary>
+internal readonly record struct SvgTextPositionScope(int ScopeDepth, SvgTextPositionOffset? Offset, SvgTextPositionLists Lists, int SpanIndex);
 
-/// <summary>Owns normalized text and optional exact letter-spacing and scalar position storage until text layout completes.</summary>
+/// <summary>Owns normalized text and optional spacing, coordinate and rotation storage until text layout completes.</summary>
 internal readonly record struct BudgetedTextLayout(string Value, SvgTextLetterSpacingSpan[] LetterSpacingSpans, SvgTextPositionAdjustment[] PositionAdjustments, RenderBudget.BudgetReservation? TextReservation, RenderBudget.BudgetReservation? LetterSpacingReservation, RenderBudget.BudgetReservation? PositionAdjustmentReservation) : IDisposable
 {
     public void Dispose()

@@ -77,7 +77,6 @@
       "license": "CC0-1.0",
       "sourceSha256": "04ce754d5dffcc523390f42e27bf34a7d2cc93f3a3f190af4a326a9e66734196",
       "selection": "Declared before shared nested-list/rotation correction; every retained byte, program, option and platform reference stays frozen. The whole sheet owns remaining finite G9 semantics; this control only diagnoses inherited character positioning.",
-      "expectedError": "UnsupportedFeature",
       "reference": "references/nested-list-rotation.png",
       "referenceSha256": "2d5948239a8b789149584f769e299f92f5c4800c7efd7cdd4c4869916d62dd0e",
       "captures": [

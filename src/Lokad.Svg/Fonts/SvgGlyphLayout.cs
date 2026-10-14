@@ -98,11 +98,20 @@ internal static class SvgGlyphLayout
         RenderBudget.BudgetReservation? clusterReservation = null;
         RenderBudget.BudgetReservation? paintReservation = null;
         RenderBudget.BudgetReservation? fontReservation = null;
+        RenderBudget.BudgetReservation? rotationReservation = null;
         try
         {
             var glyphs = new SvgPositionedGlyph[glyphCount];
             SvgTextGlyphPaint[] glyphPaints = [];
             SvgGlyphFontStyle[] glyphFonts = [];
+            double[] glyphRotations = [];
+            foreach (SvgTextPositionAdjustment adjustment in positionAdjustments)
+            {
+                if (adjustment.Rotation is null) continue;
+                rotationReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<double>(glyphCount), SvgMemoryCategory.Geometry);
+                glyphRotations = new double[glyphCount];
+                break;
+            }
             if (!fontSpans.IsEmpty)
             {
                 fontReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphFontStyle>(glyphCount), SvgMemoryCategory.Geometry);
@@ -165,7 +174,11 @@ internal static class SvgGlyphLayout
                 }
                 int sourceLength = scalar.Utf16SequenceLength;
                 double spacing = GetLetterSpacing(mappedSourceOffset, letterSpacing, letterSpacingSpans, ref mappedSpacingIndex);
-                while (mappedPositionIndex < positionAdjustments.Length && positionAdjustments[mappedPositionIndex].Start <= mappedSourceOffset) mappedPositionIndex++;
+                while (mappedPositionIndex < positionAdjustments.Length && positionAdjustments[mappedPositionIndex].Start <= mappedSourceOffset)
+                {
+                    SvgTextPositionAdjustment adjustment = positionAdjustments[mappedPositionIndex++];
+                    if (glyphRotations.Length != 0 && adjustment.Start == mappedSourceOffset) glyphRotations[glyphPosition] = adjustment.Rotation ?? 0;
+                }
                 int sourceEnd = letterSpacingSpans.IsEmpty ? text.Length : letterSpacingSpans[mappedSpacingIndex].End;
                 if (!fontSpans.IsEmpty) sourceEnd = Math.Min(sourceEnd, fontSpans[mappedFontIndex].End);
                 if (!paintSpans.IsEmpty)
@@ -305,10 +318,11 @@ internal static class SvgGlyphLayout
                 chunkStart = chunkEnd;
                 chunkShift += chunkWidth - width;
             }
-            SvgPositionedGlyphStorage result = new(glyphs, positionedGlyphCount, reservation, glyphPaints, paintReservation, glyphFonts, fontReservation)
+            SvgPositionedGlyphStorage result = new(glyphs, positionedGlyphCount, reservation, glyphPaints, paintReservation, glyphFonts, fontReservation, glyphRotations, rotationReservation)
             { NaturalWidth = deviceMetrics is { } naturalMetrics ? naturalMetrics.RoundWidth(x - originX) : x - originX };
             paintReservation = null;
             fontReservation = null;
+            rotationReservation = null;
             return result;
         }
         catch
@@ -316,6 +330,7 @@ internal static class SvgGlyphLayout
             reservation.Dispose();
             paintReservation?.Dispose();
             fontReservation?.Dispose();
+            rotationReservation?.Dispose();
             throw;
         }
         finally { clusterReservation?.Dispose(); }
@@ -356,7 +371,7 @@ internal static class SvgGlyphLayout
             for (int index = 0; index < positionAdjustments.Length; index++)
             {
                 SvgTextPositionAdjustment adjustment = positionAdjustments[index];
-                if (adjustment.X is double absoluteX && !double.IsFinite(absoluteX) || adjustment.Y is double absoluteY && !double.IsFinite(absoluteY) || !double.IsFinite(adjustment.Dx) || !double.IsFinite(adjustment.Dy) || adjustment.Start <= previousStart || adjustment.Start < 0 || adjustment.Start >= text.Length || char.IsLowSurrogate(text[adjustment.Start])) throw new ArgumentException("The text position adjustments are invalid.", nameof(positionAdjustments));
+                if (adjustment.X is double absoluteX && !double.IsFinite(absoluteX) || adjustment.Y is double absoluteY && !double.IsFinite(absoluteY) || !double.IsFinite(adjustment.Dx) || !double.IsFinite(adjustment.Dy) || adjustment.Rotation is double angle && !double.IsFinite(angle) || adjustment.Start <= previousStart || adjustment.Start < 0 || adjustment.Start >= text.Length || char.IsLowSurrogate(text[adjustment.Start])) throw new ArgumentException("The text position adjustments are invalid.", nameof(positionAdjustments));
                 previousStart = adjustment.Start;
             }
         }
@@ -376,6 +391,8 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
     private RenderBudget.BudgetReservation? _paintReservation;
     private readonly SvgGlyphFontStyle[] _glyphFonts;
     private RenderBudget.BudgetReservation? _fontReservation;
+    private readonly double[] _glyphRotations;
+    private RenderBudget.BudgetReservation? _rotationReservation;
 
     internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation)
         : this(glyphs, count, reservation, [], null) { }
@@ -384,6 +401,9 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
         : this(glyphs, count, reservation, glyphPaints, paintReservation, [], null) { }
 
     internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation, SvgTextGlyphPaint[] glyphPaints, RenderBudget.BudgetReservation? paintReservation, SvgGlyphFontStyle[] glyphFonts, RenderBudget.BudgetReservation? fontReservation)
+        : this(glyphs, count, reservation, glyphPaints, paintReservation, glyphFonts, fontReservation, [], null) { }
+
+    internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation, SvgTextGlyphPaint[] glyphPaints, RenderBudget.BudgetReservation? paintReservation, SvgGlyphFontStyle[] glyphFonts, RenderBudget.BudgetReservation? fontReservation, double[] glyphRotations, RenderBudget.BudgetReservation? rotationReservation)
     {
         _glyphs = glyphs;
         _count = count;
@@ -391,10 +411,12 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
         _glyphPaints = glyphPaints;
         _paintReservation = paintReservation;
         _glyphFonts = glyphFonts; _fontReservation = fontReservation;
+        _glyphRotations = glyphRotations; _rotationReservation = rotationReservation;
     }
 
     internal ReadOnlySpan<SvgPositionedGlyph> Glyphs => _glyphs.AsSpan(0, _count);
     internal double NaturalWidth { get; init; }
+    internal ReadOnlySpan<double> GlyphRotations => _glyphRotations.Length == 0 ? [] : _glyphRotations.AsSpan(0, _count);
     /// <summary>Available only during owning run preparation, before scene borrowers exist.</summary>
     internal Span<SvgPositionedGlyph> MutableGlyphs => _glyphs.AsSpan(0, _count);
     internal ReadOnlySpan<SvgTextGlyphPaint> GlyphPaints => _glyphPaints.Length == 0 ? [] : _glyphPaints.AsSpan(0, _count);
@@ -406,6 +428,7 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
         Interlocked.Exchange(ref _paintReservation, null)?.Dispose();
         Array.Clear(_glyphFonts);
         Interlocked.Exchange(ref _fontReservation, null)?.Dispose();
+        Interlocked.Exchange(ref _rotationReservation, null)?.Dispose();
     }
 }
 

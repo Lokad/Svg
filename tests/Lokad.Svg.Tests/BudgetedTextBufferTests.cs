@@ -6,6 +6,67 @@ namespace Lokad.Svg.Tests;
 public sealed class BudgetedTextBufferTests
 {
     [Fact]
+    public void Nested_lists_count_normalized_scalars_across_chunks_and_resume_ancestor_values()
+    {
+        RenderBudget budget = new(20_000);
+        ParserWorkCounter work = new(1_000);
+        using SvgTextLayoutBuffer buffer = new(budget, 0, work, CancellationToken.None);
+        buffer.Append("A", 0, 0, 20, work, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30 40", null, null, null, "5 10"), 1, work, CancellationToken.None);
+        buffer.Append(" ", 0, 0, 20, work, CancellationToken.None);
+        buffer.Append("\ud83d", 0, 1, 20, work, CancellationToken.None);
+        buffer.Append("\ude00", 0, 1, 20, work, CancellationToken.None);
+        buffer.EnterPositioningSpan(new SvgTextPositionLists(null, null, "0 2", null, "0"), 2, work, CancellationToken.None);
+        buffer.Append("BC", 0, 2, 20, work, CancellationToken.None);
+        buffer.ExitPositioningSpan(2);
+        buffer.Append("D", 0, 1, 20, work, CancellationToken.None);
+        buffer.ExitPositioningSpan(1);
+        using (BudgetedTextLayout text = buffer.Detach())
+        {
+            Assert.Equal("A 😀BCD", text.Value);
+            Assert.Equal(new SvgTextPositionAdjustment(2, 10, null, 0, 0) { Rotation = 5 }, text.PositionAdjustments[0]);
+            Assert.Equal(new SvgTextPositionAdjustment(4, 20, null, 0, 0) { Rotation = 0, OverridesDx = true }, text.PositionAdjustments[1]);
+            Assert.Equal(new SvgTextPositionAdjustment(5, 30, null, 2, 0) { Rotation = 0, OverridesDx = true }, text.PositionAdjustments[2]);
+            Assert.Equal(new SvgTextPositionAdjustment(6, 40, null, 0, 0) { Rotation = 10 }, text.PositionAdjustments[3]);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Scoped_list_denial_and_cancellation_release_active_and_detached_storage()
+    {
+        RenderBudget accepted = new(100_000);
+        ParserWorkCounter work = new(10_000);
+        Run(accepted, work, CancellationToken.None, null);
+        long peak = accepted.Snapshot().PeakBytes;
+        foreach (long limit in new[] { 1, peak / 2, peak - 1 })
+        {
+            RenderBudget denied = new(limit);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(denied, new(10_000), CancellationToken.None, null)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        }
+        RenderBudget workDenied = new(100_000);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(workDenied, new(work.Used - 1), CancellationToken.None, null)).ErrorCode);
+        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
+        using CancellationTokenSource cancellation = new();
+        OperationCanceledException cancelled = Assert.Throws<OperationCanceledException>(() => Run(accepted, new(10_000), cancellation.Token, cancellation));
+        Assert.Equal(cancellation.Token, cancelled.CancellationToken);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        Run(accepted, new(10_000), CancellationToken.None, null);
+        Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+
+        static void Run(RenderBudget budget, ParserWorkCounter work, CancellationToken token, CancellationTokenSource? cancelBeforeDetach)
+        {
+            using SvgTextLayoutBuffer buffer = new(budget, 0, work, token);
+            buffer.EnterPositioningSpan(new SvgTextPositionLists("10 20 30", null, null, null, "0 10"), 1, work, token);
+            buffer.Append("ABC", 0, 1, 20, work, token);
+            buffer.ExitPositioningSpan(1);
+            cancelBeforeDetach?.Cancel();
+            using BudgetedTextLayout text = buffer.Detach();
+        }
+    }
+
+    [Fact]
     public void Transfers_the_final_string_charge_and_releases_it_with_the_consumer()
     {
         RenderBudget budget = new(1_000);

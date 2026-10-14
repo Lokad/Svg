@@ -54,20 +54,19 @@ internal static class SvgTextRunBuilder
         if (style.PositionLists.IsEmpty)
         {
             SvgPositionedGlyphStorage ordinary = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.LetterSpacing, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
-            try { return new SvgTextRun(style, font, ordinary, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, new([], null), deviceMetrics)
+            try { return new SvgTextRun(style, font, ordinary, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, deviceMetrics)
                 { GlyphStretch = AdjustGlyphs(ordinary, font, style, deviceMetrics, workCounter, cancellationToken) }; }
             catch { ordinary.Dispose(); throw; }
         }
         using OwnedParserArray<SvgTextPositionAdjustment> positions = style.PositionLists.Build(text, positionAdjustments, budget, workCounter, cancellationToken);
-        OwnedParserArray<double> rotations = style.PositionLists.ReadRotations(budget, workCounter, cancellationToken);
         SvgPositionedGlyphStorage? glyphs = null;
         try
         {
             glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, 0, 0, style.LetterSpacing, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
-            return new SvgTextRun(style, font, glyphs, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, rotations, deviceMetrics)
+            return new SvgTextRun(style, font, glyphs, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, deviceMetrics)
             { GlyphStretch = AdjustGlyphs(glyphs, font, style, deviceMetrics, workCounter, cancellationToken) };
         }
-        catch { glyphs?.Dispose(); rotations.Dispose(); throw; }
+        catch { glyphs?.Dispose(); throw; }
 
         static double AdjustGlyphs(SvgPositionedGlyphStorage storage, SvgPreparedFont font, SvgTextStyle style, SvgGlyphDeviceMetrics? metrics,
             ParserWorkCounter? work, CancellationToken token)
@@ -174,23 +173,21 @@ internal sealed class SvgTextRun : IDisposable
 {
     private readonly SvgPositionedGlyphStorage _glyphs;
     private readonly SvgTextGlyphPaint? _defaultPaint;
-    private readonly OwnedParserArray<double> _rotations;
     private readonly SvgGlyphDeviceMetrics? _deviceMetrics;
 
     internal SvgTextRun(SvgTextStyle style, SvgPreparedFont font, SvgPositionedGlyphStorage glyphs)
         : this(style, font, glyphs, null) { }
 
     internal SvgTextRun(SvgTextStyle style, SvgPreparedFont font, SvgPositionedGlyphStorage glyphs, SvgTextGlyphPaint? defaultPaint)
-        : this(style, font, glyphs, defaultPaint, new([], null), null) { }
+        : this(style, font, glyphs, defaultPaint, null) { }
 
     internal SvgTextRun(SvgTextStyle style, SvgPreparedFont font, SvgPositionedGlyphStorage glyphs, SvgTextGlyphPaint? defaultPaint,
-        OwnedParserArray<double> rotations, SvgGlyphDeviceMetrics? deviceMetrics)
+        SvgGlyphDeviceMetrics? deviceMetrics)
     {
         Style = style;
         Font = font;
         _glyphs = glyphs;
         _defaultPaint = defaultPaint;
-        _rotations = rotations;
         _deviceMetrics = deviceMetrics;
     }
 
@@ -207,7 +204,7 @@ internal sealed class SvgTextRun : IDisposable
     internal (SvgPositionedGlyph Position, SvgAffineTransform Map) GetGlyphPlacement(int index, SvgAffineTransform placement)
     {
         SvgPositionedGlyph glyph = Glyphs[index];
-        double angle = _rotations.Items.Length == 0 ? 0 : _rotations.Items[Math.Min(index, _rotations.Items.Length - 1)];
+        double angle = _glyphs.GlyphRotations.IsEmpty ? 0 : _glyphs.GlyphRotations[index];
         if (angle == 0 && GlyphStretch == 1) return placement.IsTranslation ? (glyph.Translate(placement), SvgAffineTransform.Identity) : (glyph, placement);
         SvgAffineTransform map = SvgAffineTransform.FromTranslation(glyph.X, glyph.Y)
             .ComposeChecked(SvgAffineTransform.FromRotationDegrees(angle)).ComposeChecked(SvgAffineTransform.FromScale(GlyphStretch, 1));
@@ -219,5 +216,5 @@ internal sealed class SvgTextRun : IDisposable
         return (glyph with { X = 0, Y = 0 }, placement.ComposeChecked(map));
     }
 
-    public void Dispose() { _glyphs.Dispose(); _rotations.Dispose(); }
+    public void Dispose() => _glyphs.Dispose();
 }

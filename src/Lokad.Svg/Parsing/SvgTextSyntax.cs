@@ -23,6 +23,9 @@ internal interface ISvgTextOutput
     /// <summary>Begins an explicitly positioned text span; a matching exit at the same depth is required, and implementations retain no caller-owned data.</summary>
     void EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken);
 
+    /// <summary>Begins validated coordinate/rotation lists over this span's normalized scalar subtree; token strings remain borrowed under the parser allowance.</summary>
+    void EnterPositioningSpan(SvgTextPositionLists lists, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken);
+
     /// <summary>Ends the most recently entered explicitly positioned text span at <paramref name="scopeDepth"/>.</summary>
     void ExitPositioningSpan(int scopeDepth);
 }
@@ -48,6 +51,7 @@ internal readonly record struct SvgTextSpanStyle
 
     /// <summary>Gets the scalar position adjustment explicitly declared by this span, if any; it is not inherited as a style value.</summary>
     internal SvgTextPositionOffset? PositionOffset { get; }
+    internal SvgTextPositionLists PositionLists { get; init; }
     internal SvgTextPaintStyle Paint { get; init; }
     internal SvgInheritedTextStyle Font { get; init; } = SvgInheritedTextStyle.Default;
 }
@@ -104,6 +108,9 @@ internal readonly record struct SvgTextPositionAdjustment(int Start, double? X, 
     internal SvgTextPositionAdjustment(int start, double dx, double dy) : this(start, null, null, dx, dy) { }
 
     internal bool HasAbsolutePosition => X is not null || Y is not null;
+    internal bool OverridesDx { get; init; }
+    internal bool OverridesDy { get; init; }
+    internal double? Rotation { get; init; }
 }
 
 /// <summary>Normalizes direct-text whitespace while preserving the source character limit across reader chunks.</summary>
@@ -378,6 +385,7 @@ internal static class SvgTextSyntax
         string? y = null;
         string? dx = null;
         string? dy = null;
+        string? rotate = null;
         if (!reader.HasAttributes)
         {
             style = new SvgTextSpanStyle(styleSheet.WhiteSpace is string styleSheetWhiteSpace ? ParseCssWhitespaceMode(styleSheetWhiteSpace) : inherited.WhitespaceMode, styleSheet.LetterSpacing is string styleSheetLetterSpacing ? SvgGeometrySyntax.ParseTextCoordinate(styleSheetLetterSpacing) : inherited.LetterSpacing, null)
@@ -434,6 +442,11 @@ internal static class SvgTextSyntax
                 dy = reader.Value;
                 continue;
             }
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "rotate")
+            {
+                rotate = reader.Value;
+                continue;
+            }
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "font-family" or "font-weight" or "font-style" or "font-size") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "color" or "fill" or "fill-opacity" or "stroke" or "fill-rule" or "display" or "visibility"
@@ -446,9 +459,15 @@ internal static class SvgTextSyntax
         SvgTextWhitespaceMode mode = xmlSpace is null ? inherited.WhitespaceMode : ParseXmlWhitespaceMode(xmlSpace);
         if (SvgInlineStyleParser.MergeWithImportance(whiteSpace, inlineImportant, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
         string? letterSpacing = SvgInlineStyleParser.MergeWithImportance(inlineLetterSpacing, inlineImportant, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important) ?? presentationLetterSpacing;
-        SvgTextPositionOffset? positionOffset = x is null && y is null && dx is null && dy is null ? null : new SvgTextPositionOffset(x is null ? null : SvgGeometrySyntax.ParseTextCoordinate(x), y is null ? null : SvgGeometrySyntax.ParseTextCoordinate(y), dx is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dx), dy is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dy));
+        double? firstX = x is null ? null : SvgTextPositionLists.ReadFirst(x, out _);
+        double? firstY = y is null ? null : SvgTextPositionLists.ReadFirst(y, out _);
+        double? firstDx = dx is null ? null : SvgTextPositionLists.ReadFirst(dx, out _);
+        double? firstDy = dy is null ? null : SvgTextPositionLists.ReadFirst(dy, out _);
+        if (rotate is not null) _ = SvgTextPositionLists.ReadFirst(rotate, false, out _);
+        SvgTextPositionOffset? positionOffset = x is null && y is null && dx is null && dy is null ? null : new(firstX, firstY, firstDx, firstDy);
         style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset)
-        { Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint),
+        { PositionLists = new(x, y, dx, dy, rotate),
+            Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint),
             Font = SvgTextInheritance.Resolve(reader, inherited.Font, SvgInlineStyleParser.MergeFont(parsedInline.TextFont, parsedInline.Important, styleSheet.TextFont, styleSheet.Important), null, null) };
         return true;
 
