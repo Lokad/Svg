@@ -33,16 +33,18 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The preceding fully qualified revision `05c3ca16` passed **7,588 tests/platform**
-with [terminal Windows/Linux CI success](https://github.com/Lokad/Svg/actions/runs/38591128736)
-and its [declaration receipt](artifacts/maintenance-review-20261012/font-layout-declaration-qualified-results.json).
-The finished layout correction makes the guide and all four controls exact on
-Windows/Linux. Fresh Release qualification passes **7,608 tests/platform**
-(5,239 core / 2,363 visual / six FontProbe), with every preceding case retained
-and original-input assertion migrations explicitly audited in
-[the existing receipt](artifacts/maintenance-review-20261012/font-layout-guide-qualified-results.json).
-Hosted CI must identify the substantive delivery revision; it is pending for this
-local checkpoint. G2–G9/S17 remain open.
+The latest fully qualified substantive revision is `db1343a2`: the layout guide
+and all four controls are exact on Windows/Linux. Fresh Release qualification
+passes **7,608 tests/platform** (5,239 core / 2,363 visual / six FontProbe), with
+every preceding case retained and original-input assertion migrations explicitly
+audited in [the existing receipt](artifacts/maintenance-review-20261012/font-layout-guide-qualified-results.json).
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38615246736),
+including package/consumer, memory, browser and font checks. Reuse this exact-SHA
+evidence for unchanged documentation; do not poll the completed run again.
+The next root/resource cascade sheet has a rejected CC0 prototype in
+[existing diagnostics](artifacts/root-resource-css-20261014/cascade-sheet.svg):
+root-target stylesheet admission is the first gate. Its public declaration and
+healthy references must freeze before production edits. G2–G9/S17 remain open.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
