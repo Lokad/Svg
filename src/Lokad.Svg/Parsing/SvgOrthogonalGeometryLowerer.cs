@@ -404,17 +404,7 @@ internal ref struct SvgOrthogonalGeometryLowering
         double miterLimit, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
-        double deviceWidth;
-        if (element.Transform.IsUniformScale() && Math.Abs(frame?.ScaleX ?? 1) == Math.Abs(frame?.ScaleY ?? 1))
-            deviceWidth = StrokeDeviceWidth(stroke.Width, element.Transform, frame, nonScaling);
-        else
-        {
-            // Native construction keeps source width separate from affine placement.
-            double extentScale = Math.Max(Math.Sqrt(deviceMap.A * deviceMap.A + deviceMap.B * deviceMap.B), Math.Sqrt(deviceMap.C * deviceMap.C + deviceMap.D * deviceMap.D));
-            deviceWidth = nonScaling ? stroke.Width : stroke.Width * extentScale;
-            if (!double.IsFinite(deviceWidth) || deviceWidth <= 0 || deviceWidth > int.MaxValue)
-                throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
-        }
+        double deviceWidth = NativeStrokeDeviceWidth(stroke.Width, element.Transform, deviceMap, frame, nonScaling);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, _workCounter, _cancellationToken);
         if (!AppendNativeEllipseCommands(commands, centerX, centerY, radiusX, radiusY))
         {
@@ -1353,15 +1343,29 @@ internal ref struct SvgOrthogonalGeometryLowering
         return deviceWidth;
     }
 
+    /// <summary>Bounds effective native stroke extent while keeping source width independent from affine placement.</summary>
+    /// <remarks>Uniform placements retain the established scalar validation. Native constructors apply
+    /// source width before mapping; non-scaling construction retains host/inverse maps separately.</remarks>
+    private double NativeStrokeDeviceWidth(double width, SvgAffineTransform transform, SvgAffineTransform deviceMap, SvgViewportFrame? frame, bool nonScaling)
+    {
+        if (transform.IsUniformScale() && Math.Abs(frame?.ScaleX ?? 1) == Math.Abs(frame?.ScaleY ?? 1))
+            return StrokeDeviceWidth(width, transform, frame, nonScaling);
+        double extentScale = Math.Max(Math.Sqrt(deviceMap.A * deviceMap.A + deviceMap.B * deviceMap.B), Math.Sqrt(deviceMap.C * deviceMap.C + deviceMap.D * deviceMap.D));
+        double deviceWidth = nonScaling ? width : width * extentScale;
+        if (!double.IsFinite(deviceWidth) || deviceWidth <= 0 || deviceWidth > int.MaxValue)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "Stroke outline exceeds the admitted numeric range.");
+        return deviceWidth;
+    }
+
     /// <summary>Strokes path data with the caller cap and join styles into one nonzero outline fill, tracking explicit closepath seals.</summary>
     internal SvgParsedGeometry LowerStrokePath(string d, int commandCount, bool hasArc, bool hasCurves, SvgResolvedPaintableElement element, SvgColor color, bool hasFill, double width, double miterLimit, SvgStrokeCap cap, SvgStrokeJoin join, double[]? dashes, double dashOffset, double? pathLength, bool nonScaling, SvgViewportFrame? frame, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(budget);
         if (commandCount >= _maximumGeometryElements) throw new SvgException(SvgErrorCode.LimitExceeded, "Path stroke command count exceeds the configured path-command limit.");
-        (SvgAffineTransform deviceMap, double scaleX, double scaleY) = BuildDeviceMap(element.Transform, frame, true);
-        // Retained endpoint arcs construct their native outline in source space.
-        // The shared width resolver keeps uniform/numeric stroke admission intact.
-        double deviceWidth = StrokeDeviceWidth(width, element.Transform, frame, nonScaling);
+        (SvgAffineTransform deviceMap, double _, double _) = BuildDeviceMap(element.Transform, frame, false);
+        // Retained paths construct their native outline in source space.
+        // Shared extent validation keeps source width independent from placement.
+        double deviceWidth = NativeStrokeDeviceWidth(width, element.Transform, deviceMap, frame, nonScaling);
         SvgFlattenPolicy flattenPolicy = new(ScaledFlatness(element.OutputMagnification), FlattenMaxDepth, CurveSegmentsPerCommand);
         long wantedPoints = hasCurves
             ? (long)commandCount * (CurveSegmentsPerCommand + 1)

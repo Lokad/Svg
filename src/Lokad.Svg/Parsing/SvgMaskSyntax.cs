@@ -270,24 +270,23 @@ internal static class SvgMaskSyntax
                 if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent content)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
                 if (pending.Parent is not null && !pending.Parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
                 ValidateNoGlyphText(state, pending, workCounter, cancellationToken);
-                int contentIndex = state.Scene.AddMaskContent(content);
+                int contentIndex = state.Scene.AddMaskContent(content with { CoordinateMap = pending.Transform.ComposeChecked(content.CoordinateMap) });
                 RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
                 continue;
             }
             if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox contentBox))
             {
-                if (HasUniformSource(state, pending.MaskId) && !GroupCovered(state, pending, contentBox, workCounter, cancellationToken))
+                SvgClipBox placedContent = pending.Transform.IsAxisAligned ? pending.Transform.Apply(contentBox) : contentBox;
+                if (HasUniformSource(state, pending.MaskId) && (!pending.Transform.IsAxisAligned || !GroupCovered(state, pending, placedContent, workCounter, cancellationToken)))
                 {
-                    if (pending.Transform != SvgAffineTransform.Identity)
-                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Partial uniform masks on placed groups are not implemented.");
                     if (pending.Parent is not null && !pending.Parent.Value.IsTrivial)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
-                    SvgMaskContent content = SvgMaskContentReplay.ResolveUniformSource(pending.MaskId, SvgAffineTransform.Identity, state, workCounter, cancellationToken);
+                    SvgMaskContent content = SvgMaskContentReplay.ResolveUniformSource(pending.MaskId, pending.Transform, state, workCounter, cancellationToken);
                     int contentIndex = state.Scene.AddMaskContent(content);
                     RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
                     continue;
                 }
-                ValidateGroupMaskCoverage(state, pending, contentBox, workCounter, cancellationToken);
+                ValidateGroupMaskCoverage(state, pending, placedContent, workCounter, cancellationToken);
             }
             // Bind the authored group's own layer. Equal child/parent boundaries and
             // adjacent empty/sibling ranges must never decide which mask owns a scope.
@@ -349,7 +348,7 @@ internal static class SvgMaskSyntax
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(workCounter);
         SvgClipBox region;
-        if (hasExplicitRegion) region = customRegion;
+        if (hasExplicitRegion) region = pending.Transform.Apply(customRegion);
         else
         {
             SvgRectangle union = GroupChildrenUnion(state, pending, workCounter, cancellationToken);

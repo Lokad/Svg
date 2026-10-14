@@ -12530,6 +12530,45 @@ and float-overflow boundaries protect the shared arithmetic; existing host-strok
 work, memory, cancellation/retry and owner tests remain applicable. This closes
 the measured oval defect, not the remaining finite G2–G4 map/paint combinations.
 
+## Scoped curve clips, custom mask regions and resource opacity (2026-10-14)
+
+One complete original CC0 scoped-card diagram and three controls were declared
+and independently frozen before production edits. The clip and opacity cases
+rejected; the translated local-use mask rendered with 348 changed pixels (maximum
+channel 199 / alpha 128). References and original inputs remain unchanged.
+
+The clip document needs an ordinary nonuniform path stroke. Native path
+construction now shares the oval route's finite extent validation while keeping
+source width separate from placement. Source-backed curve clips already retain
+their path and independent enclosing resource rectangle; the older nonuniform
+group guard no longer blocks that existing replay. The new quadratic and original
+composed cubic controls are exact without a new clip/stroke kernel.
+
+Custom group-mask regions previously omitted the group's own map. They now apply
+it before the captured parent frame. Spatial content carries the same map, and
+scalar coverage uses placed bounds; partial/non-axis-aligned uniform content
+uses existing native source replay. The new translated-use control and original
+half-pixel mask-region control both match unchanged references exactly.
+
+An initial opacity trial added a resource-container layer and changed 720 control
+pixels (maximum alpha 96) and 1,280 whole-document pixels. That model was removed.
+Chromium's [mask recording](https://raw.githubusercontent.com/chromium/chromium/main/third_party/blink/renderer/core/layout/svg/layout_svg_resource_masker.cc)
+paints child resource subtrees; the frozen native references likewise show no
+extra container opacity layer. Mask opacity now passes ordinary style validation
+and supplies inherited presentation. A child with `opacity="inherit"` paints the
+authored value; an ordinary child keeps its own opacity. No external code was
+adapted for this distinction.
+
+The complete diagram, its three original controls and two verbatim preceding core
+inputs are exact on Windows/Linux. The two core inputs keep their MIT notice;
+independent healthy triples were captured after their admission was discovered,
+before any follow-up rendering correction. Both original composed-clip/mask-region
+cases and the preceding sheared/equal-column affine arc-stroke gates also match
+their unchanged references. Focused source integrity, material memory/work denial,
+cleanup, retry and inheritance checks protect shared mechanisms. Approximate
+memory, existing cancellation/output protections and wider finite G2–G5 promises
+remain unchanged; these exact cases do not establish group completion.
+
 ## Affine oval source construction and shader dashes (2026-10-14)
 
 One complete original CC0 orbit diagram and six controls were declared and frozen

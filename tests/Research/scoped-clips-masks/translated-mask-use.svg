@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><defs><mask id='m' maskUnits='userSpaceOnUse' x='6' y='7' width='30' height='24'><rect width='64' height='48' fill='#808080'/></mask><rect id='card' width='48' height='40' fill='#24658c'/></defs><g mask='url(#m)' transform='translate(3.5 2.5)'><use href='#card'/><path d='M0 20H48' stroke='#c89c35' stroke-width='3'/></g></svg>

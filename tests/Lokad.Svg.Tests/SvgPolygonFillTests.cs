@@ -1442,13 +1442,13 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Non_uniform_rotated_stroke_stays_unsupported()
+    public void Non_uniform_rotated_stroke_preserves_native_source_width()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><path d='M2,8 H14' stroke='red' stroke-width='2' fill='none' transform='rotate(30) scale(2,1)'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out _);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 5, 12));
+        Assert.Equal(SvgColor.Transparent, Pixel(pixels, width, 15, 0));
     }
 
     [Fact]

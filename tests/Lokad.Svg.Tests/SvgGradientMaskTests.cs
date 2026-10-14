@@ -108,13 +108,20 @@ public sealed class SvgGradientMaskTests
     [InlineData("fill-opacity='NaN'", SvgErrorCode.MalformedInput)]
     [InlineData("style='fill-opacity:2'", SvgErrorCode.MalformedInput)]
     [InlineData("fill-rule='bogus'", SvgErrorCode.UnsupportedFeature)]
-    [InlineData("style='opacity:.5'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("style='opacity:.5'", null)]
     [InlineData("style='bogus-property:1'", SvgErrorCode.UnsupportedFeature)]
-    public void Mask_presentation_rejects_invalid_or_unsupported_values_without_retaining_owners(string attributes, SvgErrorCode expected)
+    public void Mask_presentation_preserves_value_admission_and_cleanup(string attributes, SvgErrorCode? expected)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><mask id='m' " + attributes + "><rect width='8' height='8'/></mask><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>");
         RenderBudget budget = new(1_000_000);
-        Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        if (expected is null)
+        {
+            using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
+            using SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.All(output.Pixels, value => Assert.Equal((byte)0, value));
+        }
+        else
+            Assert.Equal(expected.Value, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

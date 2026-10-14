@@ -1080,6 +1080,24 @@ bank to ten exact controls. Existing width, inheritance and ordinary-stroke
 witnesses remain unchanged. Wider affine geometry/paint and instance combinations
 remain the finite G2–G4 work listed in PLAN.md.
 
+## Composed curve clips and placed mask regions (2026-10-14)
+
+Native path strokes preserve source width through composed nonuniform maps;
+native curve clips reuse source commands and independent enclosing resource
+rectangles under those maps. Custom group-mask regions and spatial mask content
+apply the captured placement. Scalar rectangle-mask coverage uses target-space
+bounds, with existing native replay for partial or non-axis-aligned content.
+
+The complete original CC0 scoped-card document and three controls match frozen
+Windows/Linux references. The original composed cubic clip and translated
+half-pixel mask region also graduate to exact on both platforms. See the
+[scoped bank](../tests/Research/scoped-clips-masks/README.md). Mask-container
+opacity is admitted and validated as resource presentation: children paint
+without an extra container opacity layer, while explicit child inheritance
+retains the authored value. Existing native geometry, mask and ownership cases
+remain protected. Wider unit/scope/opacity/clip/mask combinations stay required
+in PLAN.md; these documents do not close G2–G5.
+
 ## Affine oval strokes and native shader dashes (2026-10-14)
 
 Ordinary circle/ellipse strokes retain source conics through nonuniform and

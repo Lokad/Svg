@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='64' height='48'><defs><clipPath id='c'><path d='M6 36Q28 2 50 36'/></clipPath></defs><g clip-path='url(#c)' transform='translate(3.25 1.5) rotate(9 28 24) scale(1.05 .85)'><rect width='56' height='48' fill='#24658c'/><path d='M0 22H56' stroke='#c89c35' stroke-width='3'/></g></svg>

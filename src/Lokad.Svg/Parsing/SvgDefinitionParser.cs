@@ -288,8 +288,8 @@ internal static class SvgDefinitionParser
             SvgPaintableElementContext maskContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
             SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, maskContext.StyleSheet).ResolveOpacity(maskContext.InheritedPresentation.ElementOpacity);
-            if (style.GetOpacity().Value != 1)
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Opacity on mask containers is not implemented.");
+            // The resource container supplies inherited style; its children paint
+            // the mask without an extra opacity layer around the resource itself.
             SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, maskContext.StyleSheet,
                 maskContext.InheritedPresentation, maskContext.InheritedFillRule, maskContext.InheritedTextStyle,
                 maskContext.InheritedStroke, false, namedColors, workCounter, cancellationToken);

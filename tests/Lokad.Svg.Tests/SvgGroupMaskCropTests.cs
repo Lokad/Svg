@@ -107,11 +107,18 @@ public sealed class SvgGroupMaskCropTests
     [InlineData("<g transform='translate(1)' mask='url(#m)'><rect width='8' height='8'/></g>")]
     [InlineData("<use href='#r' mask='url(#m)'/>")]
     [InlineData("<path d='M0 0A4 2 0 0 1 8 4' fill='none' stroke='red' transform='matrix(1 .2 .1 1 0 0)'/>")]
-    public void Remaining_instance_and_width_boundaries_reject_honestly(string geometry)
+    public void Instance_and_width_admission_preserves_output_and_cleanup(string geometry)
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect width='4' height='8' fill='white'/></mask><rect id='r' width='8' height='8'/></defs>" + geometry + "</svg>");
         RenderBudget budget = new(1_000_000);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        if (geometry.StartsWith("<use", StringComparison.Ordinal))
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        else
+        {
+            using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
+            using SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.Contains(output.Pixels, value => value != 0);
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

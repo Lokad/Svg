@@ -1773,8 +1773,21 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Independent original dedicated through its leading SPDX declaration.",
       "purpose": "Independent hard mask-region boundary control declared before the rounding repair; translated placement.",
-      "outcome": "UnsupportedFeature",
-      "unsupportedReason": "Only mask content covering masked group children is implemented."
+      "outcome": "renders",
+      "comparison": {
+        "DimensionsMatch": true,
+        "ChangedPixelCount": 0,
+        "MaximumChannelError": 0,
+        "MeanAbsoluteError": 0,
+        "RootMeanSquareError": 0,
+        "MaximumAlphaError": 0,
+        "AlphaChangedPixelCount": 0,
+        "MinimumMismatchX": 16,
+        "MinimumMismatchY": 16,
+        "MaximumMismatchX": -1,
+        "MaximumMismatchY": -1,
+        "IsExact": true
+      }
     },
     {
       "id": "mask-region-half-scaled-root",

@@ -114,8 +114,7 @@
       "licenseEvidence": "Repository-authored CC0 focused control, including simple arc geometry from the retained CC0 Wikifoods logo.",
       "selection": "Declared at 4797ffc6 before clip-content correction: native curve commands, radius correction, group placement, independent paints and root scales required by the complete Wikifoods document.",
       "role": "mechanism-control",
-      "referenceSha256": "8a0f276766dcd415103bac6f4ffc325c30f8a573c96c37f7ab537111d8391497",
-      "expectedError": "UnsupportedFeature"
+      "referenceSha256": "8a0f276766dcd415103bac6f4ffc325c30f8a573c96c37f7ab537111d8391497"
     },
     {
       "id": "clipped-radial-circle",

@@ -122,8 +122,7 @@
       "width": 64,
       "height": 64,
       "background": "transparent",
-      "role": "control",
-      "expectedError": "UnsupportedFeature"
+      "role": "control"
     },
     {
       "id": "equal-columns-stroke",
@@ -137,8 +136,7 @@
       "width": 64,
       "height": 64,
       "background": "transparent",
-      "role": "control",
-      "expectedError": "UnsupportedFeature"
+      "role": "control"
     },
     {
       "id": "tiger-outer-stroke",

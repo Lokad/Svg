@@ -26,8 +26,6 @@ internal readonly record struct SvgAffineViewportClip(SvgClipBox Box, SvgAffineT
     {
         if (source.Length < 3) throw new ArgumentOutOfRangeException(nameof(source));
         if (sourceEnds.IsEmpty || sourceEnds[^1] != source.Length) throw new ArgumentOutOfRangeException(nameof(sourceEnds));
-        if (sourcePath is not null && !map.IsAxisAligned && !map.IsUniformScale())
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Curved clip paths under nonuniform group transforms are not implemented.");
         RenderBudget budget = state.Budget;
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, work, token);
         using RenderBudget.BudgetReservation reservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(source.Length) + (isEvenOdd ? 2 : 1) * ParserCollectionMemory.GetArrayByteCount<int>(sourceEnds.Length), SvgMemoryCategory.Scene);
