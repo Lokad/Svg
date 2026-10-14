@@ -13,6 +13,73 @@ public sealed class SvgFontLayoutDiagramTests
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "font-layout-diagram");
 
     [Fact]
+    public async Task Decoration_fragments_follow_glyph_clusters_and_position_boundaries()
+    {
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false)], new Provider(), CancellationToken.None);
+        SvgTextStyle style = new(new("Example", 400, false), 18, 0, 24, 0, 0, 0, SvgTextAnchor.Start, string.Empty);
+        SvgTextGlyphPaint paint = new(new(20, 40, 80, 255), true);
+        paint = paint with { Decoration = new(SvgTextDecorationLine.Underline, paint) };
+        SvgTextPositionAdjustment[] positions = [new(2, 40, null, 0, 0), new(3, 70, null, 0, 0)];
+        RenderBudget budget = new(100_000);
+        using (SvgTextRun run = SvgTextRunBuilder.Create(style, "fiAB", [], positions, [], paint, null, snapshot, budget, new(100_000), CancellationToken.None))
+        {
+            Assert.Equal(3, run.Glyphs.Length);
+            Assert.Equal(1652, run.Glyphs[0].GlyphIndex);
+            Assert.Equal(3, run.DecorationFragments.Length);
+            for (int index = 0; index < 3; index++)
+            {
+                Assert.Equal(index, run.DecorationFragments[index].Start);
+                Assert.Equal(index + 1, run.DecorationFragments[index].End);
+                Assert.Equal(run.Glyphs[index].Advance, run.DecorationFragments[index].Width, 10);
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public async Task Decoration_ink_clips_and_affine_fragments_release_on_denial_cancellation_and_retry()
+    {
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog, [new("Example", 400, false), new("Mono", 700, false)], new Provider(), CancellationToken.None);
+        byte[] original = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet", "solid-decorations.svg"));
+        byte[] unchanged = original.ToArray();
+        byte[] affine = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("<g font-family", "<g transform='rotate(7 160 80)' font-family", StringComparison.Ordinal));
+        foreach (byte[] input in new[] { original, affine })
+        {
+            RenderBudget accepted = new(32_000_000);
+            ParserWorkCounter work = new(100_000_000);
+            Run(input, snapshot, accepted, work, CancellationToken.None);
+            long peak = accepted.Snapshot().PeakBytes;
+            foreach (long limit in new[] { 1, peak / 2 })
+            {
+                RenderBudget denied = new(limit);
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(input, snapshot, denied, new(100_000_000), CancellationToken.None)).ErrorCode);
+                Assert.Equal(0, denied.Snapshot().CurrentBytes);
+            }
+            RenderBudget workDenied = new(32_000_000);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => Run(input, snapshot, workDenied, new(work.Used - 1), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
+            using CancellationTokenSource cancellation = new();
+            using (GlyphExpansionProbe.Observe(cancellation.Cancel))
+            {
+                OperationCanceledException cancelled = Assert.Throws<OperationCanceledException>(() => Run(input, snapshot, accepted, new(100_000_000), cancellation.Token));
+                Assert.Equal(cancellation.Token, cancelled.CancellationToken);
+            }
+            Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+            Run(input, snapshot, accepted, new(100_000_000), CancellationToken.None);
+            Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(unchanged, original);
+
+        static void Run(byte[] input, SvgFontSnapshot snapshot, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        {
+            using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, snapshot, work, token);
+            Assert.True(scene.Geometries.Length > 0);
+        }
+    }
+
+    [Fact]
     public async Task Word_spacing_expands_only_separator_advances_and_preserves_ordinary_ligatures()
     {
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
@@ -125,6 +192,7 @@ public sealed class SvgFontLayoutDiagramTests
     [InlineData("remaining-label-path-sheet")]
     [InlineData("nested-list-rotation")]
     [InlineData("word-spacing")]
+    [InlineData("solid-decorations")]
     public async Task Remaining_label_path_outputs_preserve_frozen_inputs_and_platform_references(string identity)
     {
         string directory = Path.Combine(AppContext.BaseDirectory, "Research", "remaining-label-path-sheet");

@@ -14,6 +14,7 @@ internal readonly record struct InlineStyle(string? Color, string? Fill, string?
     /// <summary>Gets the specified scalar CSS letter-spacing declaration when direct text admits it.</summary>
     internal string? LetterSpacing { get; init; }
     internal string? WordSpacing { get; init; }
+    internal string? TextDecoration { get; init; }
     internal string? Linecap { get; init; }
     internal string? Linejoin { get; init; }
     internal string? Dasharray { get; init; }
@@ -71,6 +72,7 @@ internal enum InlineImportantProperties
     MarkerEnd = 1 << 28,
     Filter = 1 << 29,
     WordSpacing = 1 << 30,
+    TextDecoration = unchecked((int)0x80000000),
 }
 
 /// <summary>Parses the bounded inline declaration subset shared by element and stylesheet rules.</summary>
@@ -108,7 +110,7 @@ internal static class SvgInlineStyleParser
     {
         bool allowsDirectTextFontProperties = target == Target.DirectText;
         string? color = null, fill = null, fillOpacity = null, stroke = null, display = null, visibility = null, opacity = null, fillRule = null, clipRule = null, paintOrder = null;
-        string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null, wordSpacing = null;
+        string? family = null, weight = null, fontStyle = null, size = null, whiteSpace = null, letterSpacing = null, wordSpacing = null, textDecoration = null;
         string? linecap = null, linejoin = null, dasharray = null, dashoffset = null, width = null, miterlimit = null, strokeOpacity = null, pathLength = null, geometryWidth = null, geometryHeight = null;
         string? markerStart = null, markerMid = null, markerEnd = null, filter = null;
         InlineImportantProperties important = InlineImportantProperties.None;
@@ -192,10 +194,11 @@ internal static class SvgInlineStyleParser
             else if (allowsDirectTextFontProperties && property.Equals("white-space", StringComparison.OrdinalIgnoreCase)) Set(ref whiteSpace, InlineImportantProperties.WhiteSpace, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("letter-spacing", StringComparison.OrdinalIgnoreCase)) Set(ref letterSpacing, InlineImportantProperties.LetterSpacing, property, propertyValue, strings, ref important, false);
             else if (allowsDirectTextFontProperties && property.Equals("word-spacing", StringComparison.OrdinalIgnoreCase)) Set(ref wordSpacing, InlineImportantProperties.WordSpacing, property, propertyValue, strings, ref important, false);
+            else if (allowsDirectTextFontProperties && property.Equals("text-decoration", StringComparison.OrdinalIgnoreCase)) Set(ref textDecoration, InlineImportantProperties.TextDecoration, property, propertyValue, strings, ref important, false);
             else if (property.Equals("pointer-events", StringComparison.OrdinalIgnoreCase) || property.Equals("cursor", StringComparison.OrdinalIgnoreCase)) { } // UI behavior never affects static pixels.
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Inline style property '" + property.ToString() + "' is not implemented.");
         }
-        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, WordSpacing = wordSpacing, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, PathLength = pathLength, ClipRule = clipRule, PaintOrder = paintOrder, MarkerStart = markerStart, MarkerMid = markerMid, MarkerEnd = markerEnd, Filter = filter, HasVisibleOverflow = hasVisibleOverflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
+        return new InlineStyle(color, fill, fillOpacity, stroke, display, visibility, opacity, fillRule) { TextFont = new SvgTextInlineFontProperties(family, weight, fontStyle, size), WhiteSpace = whiteSpace, LetterSpacing = letterSpacing, WordSpacing = wordSpacing, TextDecoration = textDecoration, Linecap = linecap, Linejoin = linejoin, Dasharray = dasharray, Dashoffset = dashoffset, Width = width, Miterlimit = miterlimit, StrokeOpacity = strokeOpacity, PathLength = pathLength, ClipRule = clipRule, PaintOrder = paintOrder, MarkerStart = markerStart, MarkerMid = markerMid, MarkerEnd = markerEnd, Filter = filter, HasVisibleOverflow = hasVisibleOverflow, GeometryWidth = geometryWidth, GeometryHeight = geometryHeight, Important = important };
 
         static void Set(ref string? slot, InlineImportantProperties flag, ReadOnlySpan<char> property, ReadOnlySpan<char> rawValue, BudgetedParserStringStore? strings, ref InlineImportantProperties important, bool mapKeywords)
         {

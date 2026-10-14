@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Retained whole CC0 label/path sheet plus focused nested-list/rotation and word-spacing controls for the finite G9 exit. References precede each production correction; whole-sheet rejections remain required gaps.",
+  "purpose": "Retained whole CC0 label/path sheet plus focused nested-list/rotation, word-spacing and solid-decoration controls for the finite G9 exit. References precede each production correction; whole-sheet gates remain required gaps.",
   "fontPack": "../font-layout-diagram/font-pack.json",
   "fontPrograms": [
     {
@@ -160,6 +160,55 @@
         },
         {
           "pngSha256": "5aa036ebda7069664e3e7b135cb6f1775b7754f238da7a5aba838356694132eb",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "solid-decorations",
+      "input": "solid-decorations.svg",
+      "width": 330,
+      "height": 160,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "67553b26e34c771270df3ad7d4e20eddb51645da1aa00f005cf0962c5c1d10a1",
+      "selection": "Focused control for the retained whole sheet solid text-decoration gate: inherited underline and child overline with distinct paint, combined lines, supplied Mono strike-through and inline CSS. References precede production correction.",
+      "reference": "references/solid-decorations.png",
+      "referenceSha256": "607e80a19f4969f65da417cfc3b9dd33b362549c6f7a4aff09fe60f65d7b0ec9",
+      "captures": [
+        {
+          "pngSha256": "607e80a19f4969f65da417cfc3b9dd33b362549c6f7a4aff09fe60f65d7b0ec9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "607e80a19f4969f65da417cfc3b9dd33b362549c6f7a4aff09fe60f65d7b0ec9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "607e80a19f4969f65da417cfc3b9dd33b362549c6f7a4aff09fe60f65d7b0ec9",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/solid-decorations.png",
+      "linuxReferenceSha256": "16d10d35bb0a3893f3f760cc24ae6ff14eba4bc88183018c90f6ecc4ef9a9215",
+      "linuxCaptures": [
+        {
+          "pngSha256": "16d10d35bb0a3893f3f760cc24ae6ff14eba4bc88183018c90f6ecc4ef9a9215",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "16d10d35bb0a3893f3f760cc24ae6ff14eba4bc88183018c90f6ecc4ef9a9215",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "16d10d35bb0a3893f3f760cc24ae6ff14eba4bc88183018c90f6ecc4ef9a9215",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

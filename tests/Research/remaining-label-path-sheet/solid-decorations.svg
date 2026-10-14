@@ -1,0 +1,9 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="330" height="160">
+<rect width="330" height="160" fill="white"/>
+<g font-family="Example" font-size="18" fill="#19334c">
+<text x="12" y="30" word-spacing="5" text-decoration="underline">word space <tspan text-decoration="overline" fill="#b34d36">and lines</tspan></text>
+<text x="12" y="72" text-decoration="underline overline">Both lines</text>
+<text x="12" y="112" font-family="Mono" font-weight="700" font-size="14" text-decoration="line-through">finite supplied-font subset</text>
+<text x="12" y="146" style="text-decoration:line-through" fill="#244774">Solid CSS line</text>
+</g></svg>

@@ -1,3 +1,48 @@
+## Solid label decorations over native glyph fragments (2026-10-15)
+
+The original 330×160 control matches unchanged healthy Windows/Linux triples.
+It exercises underline, overline, line-through, combined lines, declaring-paint
+propagation, two supplied faces and inline CSS. No SVG/font/reference bytes,
+options or default limits change. The complete label/path sheet remains open.
+
+Decoration declarations extend the existing property cascade and inherited text
+state. Glyph paints borrow immutable declaring styles; only decorated runs retain
+a bounded fragment array over the existing scalar-to-glyph mapping. Fragment
+boundaries follow fonts, paints, spacing and explicit positions without splitting
+ligatures outside those boundaries. Width is retained before character-offset
+truncation, then participates in existing textLength adjustment. A decoration
+change rounds the preceding fragment's metric width before its successor starts.
+
+Pinned Blink uses automatic thickness equal to font size / 10, ordinary ascent
+metrics and distinct underline/overline/strike placement. The supplied `post` and
+OS/2 values were inspected, but default automatic decoration does not require new
+font-table fields. Solid SVG lines use unsnapped rectangles. The ordinary rectangle
+route preserves their alpha; the retained source path remains available for
+general maps. A path-only prototype had 1,195 differences; preserving the existing
+rectangle distinction and fragment widths reduced that to ten ink-gap pixels.
+
+Unhinted quadratic glyph stripes supply bounded ink intercepts, including control
+points between the stripe edges. Under/overlines use the shared binary affine
+clip route around those gaps. The line's own antialiasing survives at fragment
+ends: the clip extends two device pixels beyond outer paint boundaries through
+the inverse map. Clipping at the paint boundary had removed two legitimate fringe
+pixels. Line-through does not skip ink and paints after glyphs. Every allocation
+uses existing geometry/scene owners, aggregate allowances and work/cancellation;
+ordinary and rotated denial/cancel/retry regressions protect partial cleanup.
+
+This is managed source adaptation under the existing notices, without a runtime
+dependency. Native diagnostics and pinned source remain under
+`artifacts/remaining-label-path-20261015/native-decoration-source/`; the public
+[bank](../tests/Research/remaining-label-path-sheet/README.md) owns unchanged assets.
+Four obsolete solid-decoration rejections become positive tests; four wavy
+decoration boundaries remain negative. Stroked decorations and decorated text
+paths still reject explicitly. The unchanged whole sheet next rejects its
+stroke-before-fill path label; rotation/length/stroke/fitting/composite promises
+remain required. No support-group or additional complete-document closure follows.
+The [finished-correction receipt](../artifacts/maintenance-review-20261012/decorations-qualified-results.json)
+records complete platform results, unchanged assets and categorized assertion
+migrations. Existing approximate memory and API/resource protections remain.
+
 ## Word spacing over shared normalized intervals (2026-10-15)
 
 The retained 300×130 control is exact on Windows/Linux against healthy stable

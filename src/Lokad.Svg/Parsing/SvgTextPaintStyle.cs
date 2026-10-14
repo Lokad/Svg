@@ -9,8 +9,10 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
     internal SvgInheritedStrokeStyle StrokeStyle { get; init; }
     internal SvgPaintOrder PaintOrder { get; init; }
     internal bool NonScalingStroke { get; init; }
+    internal SvgTextDecorationStyle? Decoration { get; init; }
     internal SvgTextGlyphPaint GlyphPaint => new(SvgPaintResolver.ResolveFillColor(Paint, TextOpacity), IsDisplayed && IsVisible && Paint.HasFill)
     {
+        Decoration = IsDisplayed && IsVisible ? Decoration : null,
         Stroke = IsDisplayed && IsVisible && Stroke is not null && !Stroke.Equals("none", StringComparison.OrdinalIgnoreCase)
             ? new(StrokeStyle with { Stroke = Stroke }, Paint, TextOpacity) { PaintOrder = PaintOrder, NonScaling = NonScalingStroke } : null
     };
@@ -34,6 +36,7 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
     internal void ValidateEmission()
     {
         _ = GlyphPaint.Stroke?.Resolve();
+        if (Decoration?.Paint.HasStroke == true) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroked text decorations are not implemented.");
     }
 
     private static void ValidateStyle(SvgComputedStyle style)
@@ -47,9 +50,10 @@ internal readonly record struct SvgTextPaintStyle(SvgPaint Paint, bool IsDisplay
 /// <summary>Pairs a glyph's resolved fill color with whether its span paints a fill.</summary>
 internal readonly record struct SvgTextGlyphPaint(SvgColor Color, bool HasFill)
 {
+    internal SvgTextDecorationStyle? Decoration { get; init; }
     internal SvgTextStrokePaint? Stroke { get; init; }
     internal bool HasStroke => Stroke?.Resolve() is {};
-    internal bool IsPainted => HasFill || HasStroke;
+    internal bool IsPainted => HasFill || HasStroke || Decoration?.Paint.IsPainted == true;
 }
 
 /// <summary>Borrows immutable inherited stroke strings until actual emitted text selects them; no storage or host font access is owned.</summary>

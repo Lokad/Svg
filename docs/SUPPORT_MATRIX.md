@@ -1,3 +1,27 @@
+## Solid filled-label decorations (2026-10-15)
+
+The retained underline/overline/line-through control is exact on Windows/Linux
+against unchanged native capture triples, including combined lines, a child's
+declaring paint, both supplied faces and inline CSS. Presentation and stylesheet
+declarations share the existing cascade. Inherited lines remain applied through
+`none`; a new non-none declaration selects its own paint for the applied lines.
+
+Existing glyph layout now retains bounded decoration fragments only when needed,
+with width before per-glyph position rounding. Ordinary rectangle rendering keeps
+thin-line alpha; unhinted stripe intercepts and the existing binary clip route
+preserve ink gaps and outer antialiasing. Under/overlines precede glyph paint;
+line-through follows it. Ownership, work denial, cancellation and retry have
+ordinary/rotated controls.
+
+The [label/path bank](../tests/Research/remaining-label-path-sheet/README.md) has
+**3/3 exact controls**. Its unchanged whole sheet next rejects at the existing
+stroke-before-fill path label. Rotation/length propagation and the other finite
+G9 gates remain independently open. Stroked decorations and decorated text paths
+still reject explicitly; the filled-label witness claims no wider G9 closure or
+feature deferral.
+See the [complete platform qualification](../artifacts/maintenance-review-20261012/decorations-qualified-results.json)
+for preserved cases, explicit admission migrations and resource regressions.
+
 ## Word spacing and cross-span whitespace (2026-10-15)
 
 The retained word-spacing control is exact on Windows/Linux against unchanged
@@ -13,8 +37,8 @@ trimmed; preserved spaces remain. Discovery acquires a separator-only face when
 that space survives between content, without requesting discarded edge faces.
 
 The [remaining label/path bank](../tests/Research/remaining-label-path-sheet/README.md)
-has **2/2 exact controls**. Its unchanged whole sheet next rejects at solid text
-decorations and remains required. Path/length propagation, remaining strokes,
+has **3/3 exact controls** after the decoration correction above. Its unchanged
+whole sheet remains required. Path/length propagation, remaining strokes,
 closed paths, fitting and composite acceptance still leave G9 open. Complete
 Windows/Linux results and assertion migrations are in the
 [qualification receipt](../artifacts/maintenance-review-20261012/word-spacing-qualified-results.json).

@@ -382,12 +382,6 @@ internal static class SvgTextSyntax
         string? dx = null;
         string? dy = null;
         string? rotate = null;
-        if (!reader.HasAttributes)
-        {
-            style = new SvgTextSpanStyle(styleSheet.WhiteSpace is string styleSheetWhiteSpace ? ParseCssWhitespaceMode(styleSheetWhiteSpace) : inherited.WhitespaceMode, styleSheet.LetterSpacing is string styleSheetLetterSpacing ? SvgGeometrySyntax.ParseTextCoordinate(styleSheetLetterSpacing) : inherited.LetterSpacing, null)
-            { Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, default, styleSheet), inherited.Paint), Font = SvgTextInheritance.Resolve(reader, inherited.Font, styleSheet.TextFont, null, null, styleSheet.WordSpacing) };
-            return true;
-        }
         while (reader.MoveToNextAttribute())
         {
             workCounter.Consume(cancellationToken);
@@ -446,6 +440,7 @@ internal static class SvgTextSyntax
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "font-family" or "font-weight" or "font-style" or "font-size") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName == "word-spacing") continue;
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName == "text-decoration") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "color" or "fill" or "fill-opacity" or "stroke" or "fill-rule" or "display" or "visibility"
                 or "stroke-width" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-miterlimit" or "stroke-dasharray" or "stroke-dashoffset" or "paint-order" or "vector-effect") continue;
             reader.MoveToElement();
@@ -467,6 +462,9 @@ internal static class SvgTextSyntax
             Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint),
             Font = SvgTextInheritance.Resolve(reader, inherited.Font, SvgInlineStyleParser.MergeFont(parsedInline.TextFont, parsedInline.Important, styleSheet.TextFont, styleSheet.Important), null, null,
                 SvgInlineStyleParser.MergeWithImportance(parsedInline.WordSpacing, parsedInline.Important, InlineImportantProperties.WordSpacing, styleSheet.WordSpacing, styleSheet.Important)) };
+        SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, parsedInline, styleSheet, inherited.Font.Decoration, (style.Paint with { IsDisplayed = true, IsVisible = true }).GlyphPaint);
+        if (decoration != style.Font.Decoration) style = style with { Font = style.Font.WithDecoration(decoration) };
+        style = style with { Paint = style.Paint with { Decoration = decoration } };
         return true;
 
         static bool HasUnsupportedProperties(InlineStyle style)

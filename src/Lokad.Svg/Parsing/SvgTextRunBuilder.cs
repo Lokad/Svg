@@ -44,6 +44,8 @@ internal static class SvgTextRunBuilder
         }
         SvgPreparedFont font = resolvedFonts.Count != 0 ? resolvedFonts[0].Style.Font
             : workCounter is null ? snapshot.GetFont(style.Font, style.SourceElementId) : snapshot.GetFont(style.Font, style.SourceElementId, workCounter, cancellationToken);
+        bool hasDecorations = defaultPaint?.Decoration is not null;
+        foreach (SvgTextPaintSpan span in paintSpans) hasDecorations |= span.Paint.Decoration is not null;
         double originX = style.X + style.Dx;
         double originY = style.Y + style.Dy;
         if (!double.IsFinite(originX) || !double.IsFinite(originY))
@@ -53,7 +55,7 @@ internal static class SvgTextRunBuilder
 
         if (style.PositionLists.IsEmpty)
         {
-            SvgPositionedGlyphStorage ordinary = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.LetterSpacing, style.WordSpacing, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
+            SvgPositionedGlyphStorage ordinary = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, originX, originY, style.LetterSpacing, style.WordSpacing, hasDecorations, letterSpacingSpans, positionAdjustments, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
             try { return new SvgTextRun(style, font, ordinary, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, deviceMetrics)
                 { GlyphStretch = AdjustGlyphs(ordinary, font, style, deviceMetrics, workCounter, cancellationToken) }; }
             catch { ordinary.Dispose(); throw; }
@@ -62,7 +64,7 @@ internal static class SvgTextRunBuilder
         SvgPositionedGlyphStorage? glyphs = null;
         try
         {
-            glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, 0, 0, style.LetterSpacing, style.WordSpacing, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
+            glyphs = SvgGlyphLayout.CreateStorage(font, text, style.FontSize, 0, 0, style.LetterSpacing, style.WordSpacing, hasDecorations, letterSpacingSpans, positions.Items, paintSpans, resolvedFonts.AsSpan(), style.Anchor, deviceMetrics, budget, style.SourceElementId, workCounter, cancellationToken);
             return new SvgTextRun(style, font, glyphs, paintSpans.IsEmpty ? defaultPaint : paintSpans[0].Paint, deviceMetrics)
             { GlyphStretch = AdjustGlyphs(glyphs, font, style, deviceMetrics, workCounter, cancellationToken) };
         }
@@ -98,6 +100,13 @@ internal static class SvgTextRunBuilder
             double scale = style.LengthAdjust == SvgTextLengthAdjust.SpacingAndGlyphs ? (float)desired / (float)natural : 1;
             double spacing = style.LengthAdjust == SvgTextLengthAdjust.Spacing && glyphs.Length > 1 ? (desired - natural) / (glyphs.Length - 1) : 0;
             double anchorShift = style.Anchor switch { SvgTextAnchor.Middle => (natural - desired) / 2, SvgTextAnchor.End => natural - desired, _ => 0 };
+            Span<SvgTextDecorationFragment> fragments = storage.MutableDecorationFragments;
+            for (int index = 0; index < fragments.Length; index++)
+            {
+                if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
+                SvgTextDecorationFragment fragment = fragments[index];
+                fragments[index] = fragment with { Width = fragment.Width * scale + spacing * (fragment.End - fragment.Start - 1) };
+            }
             for (int index = 0; index < glyphs.Length; index++)
             {
                 if (work is null) token.ThrowIfCancellationRequested(); else work.Consume(token);
@@ -197,17 +206,26 @@ internal sealed class SvgTextRun : IDisposable
     internal double GlyphStretch { get; init; } = 1;
 
     internal ReadOnlySpan<SvgPositionedGlyph> Glyphs => _glyphs.Glyphs;
+    internal ReadOnlySpan<SvgTextDecorationFragment> DecorationFragments => _glyphs.DecorationFragments;
+    internal SvgGlyphDeviceMetrics? DeviceMetrics => _deviceMetrics;
     internal SvgGlyphFontStyle GetGlyphFont(int index) => _glyphs.GlyphFonts.IsEmpty ? new(Font, Style.FontSize) : _glyphs.GlyphFonts[index];
     internal SvgTextGlyphPaint GetGlyphPaint(int index, SvgColor fallbackColor) => _glyphs.GlyphPaints.IsEmpty ? _defaultPaint ?? new(fallbackColor, true) : _glyphs.GlyphPaints[index];
 
     /// <summary>Composes character-local rotation with the existing glyph and element placement.</summary>
     internal (SvgPositionedGlyph Position, SvgAffineTransform Map) GetGlyphPlacement(int index, SvgAffineTransform placement)
+        => GetPlacement(index, placement, true);
+
+    internal (SvgPositionedGlyph Position, SvgAffineTransform Map) GetDecorationPlacement(int index, SvgAffineTransform placement)
+        => GetPlacement(index, placement, false);
+
+    private (SvgPositionedGlyph Position, SvgAffineTransform Map) GetPlacement(int index, SvgAffineTransform placement, bool stretch)
     {
         SvgPositionedGlyph glyph = Glyphs[index];
         double angle = _glyphs.GlyphRotations.IsEmpty ? 0 : _glyphs.GlyphRotations[index];
-        if (angle == 0 && GlyphStretch == 1) return placement.IsTranslation ? (glyph.Translate(placement), SvgAffineTransform.Identity) : (glyph, placement);
+        double glyphStretch = stretch ? GlyphStretch : 1;
+        if (angle == 0 && glyphStretch == 1) return placement.IsTranslation ? (glyph.Translate(placement), SvgAffineTransform.Identity) : (glyph, placement);
         SvgAffineTransform map = SvgAffineTransform.FromTranslation(glyph.X, glyph.Y)
-            .ComposeChecked(SvgAffineTransform.FromRotationDegrees(angle)).ComposeChecked(SvgAffineTransform.FromScale(GlyphStretch, 1));
+            .ComposeChecked(SvgAffineTransform.FromRotationDegrees(angle)).ComposeChecked(SvgAffineTransform.FromScale(glyphStretch, 1));
         if (angle != 0 && _deviceMetrics is { } metrics)
         {
             SvgGlyphFontStyle font = GetGlyphFont(index);

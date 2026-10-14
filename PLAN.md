@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15 at the qualified word-spacing correction checkpoint.
+Updated 2026-10-15 at the qualified filled-label decoration checkpoint.
 This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
 owns admission, [INVENTORY](docs/INVENTORY.md) owns document evidence,
@@ -33,7 +33,8 @@ accepted. A proposed deferral of an existing promise stays required until decide
 | Rescaled sRGB bitmap and paint opacity | Two [focused filter controls](tests/Research/filter-regions/manifest.json) are **2/2 exact** on Windows/Linux. Shared packed interpolation preserves native bitmap placement and paint alpha; shader reduction stays distinct. The bank is now **26/26 exact**, including the later linearRGB restoration correction. Preserve every prior declaration and the [finished-correction receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json); no new completed document or wider G8 closure is claimed. |
 | Parent-bitmap linearRGB restoration | The unchanged [displaced blur](tests/Research/filter-regions/displaced-blur-transparent.svg) is exact on Windows/Linux: the six-pixel defect is closed, and the retained filter-region bank is **26/26 exact**. Preserve cropped restoration in the existing bordered raster grid, initialized image borders, offscreen intermediate results and the [finished-correction receipt](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json). No new complete document or wider G8 closure is claimed. |
 | Nested direct-text positioning | The [nested-list/rotation control](tests/Research/remaining-label-path-sheet/README.md) is **1/1 exact** on Windows/Linux. Shared normalized-scalar ranges resolve ancestor lists and per-glyph rotations, preserving ligatures outside positioned spans. Preserve its [qualification receipt](artifacts/maintenance-review-20261012/nested-text-lists-qualified-results.json) and the later word-spacing correction below; path propagation and the remaining G9 promises stay required. |
-| Word spacing and span whitespace | The [word-spacing control](tests/Research/remaining-label-path-sheet/README.md) is exact on Windows/Linux against frozen native triples. Shared spacing intervals preserve zero/inherited values, CSS importance, separator advances and first-separator ownership across spans; ordinary ligatures remain protected. The bank now has **2/2 exact controls**. The unchanged whole sheet next rejects at solid text decorations and remains incomplete. Preserve the [qualification receipt](artifacts/maintenance-review-20261012/word-spacing-qualified-results.json); no G9 closure or new completed document is claimed. |
+| Word spacing and span whitespace | The [word-spacing control](tests/Research/remaining-label-path-sheet/README.md) is exact on Windows/Linux against frozen native triples. Shared spacing intervals preserve zero/inherited values, CSS importance, separator advances and first-separator ownership across spans; ordinary ligatures remain protected. Preserve the [qualification receipt](artifacts/maintenance-review-20261012/word-spacing-qualified-results.json) and the later decoration correction below. |
+| Solid filled-label decorations | The [decoration control](tests/Research/remaining-label-path-sheet/README.md) is exact on Windows/Linux: combined and inherited underline/overline/line-through, declaring paint, supplied faces, CSS, fragment widths and ink gaps. Preserve bounded fragment storage, ordinary rectangle rendering, shared binary clips and the [qualification receipt](artifacts/maintenance-review-20261012/decorations-qualified-results.json). The bank has **3/3 exact controls**; the unchanged whole sheet remains incomplete at text-stroke admission. No G9 closure, feature deferral or new completed document is claimed. |
 | Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared ownership are implemented. Private deployment validation below remains required; general shaping remains outside scope. |
 | Resource/API/package protections | Preserve bounded preparation/raster/encoding, allocation/work denial, cancellation/retry, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks apply; final release evidence must cover the finished revision. |
 
@@ -41,16 +42,16 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The word-spacing correction is qualified: **7,640 tests/platform**
-(5,259 core / 2,375 visual / six FontProbe). The
-[receipt](artifacts/maintenance-review-20261012/word-spacing-qualified-results.json)
+The decoration correction is locally qualified: **7,656 tests/platform**
+(5,272 core / 2,378 visual / six FontProbe). The
+[receipt](artifacts/maintenance-review-20261012/decorations-qualified-results.json)
 records unchanged prior SVG/font/reference bytes and options, preserved exact
-outputs and explicit obsolete-admission/normalization assertion migrations.
-The complete sheet remains open.
-[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38652590027)
-for exact implementation revision `ddc52075`, including package/consumer, memory,
-browser, font and validator checks. Reuse this completed run for unchanged
-documentation; do not poll it again. G2–G9/S17 stay open.
+outputs and explicit migration of four obsolete valid-input rejections to positive
+assertions, retaining four wavy-decoration boundaries. The complete sheet remains
+open. Hosted CI for this correction is pending; the preceding
+[Windows/Linux run is terminal green](https://github.com/Lokad/Svg/actions/runs/38652590027)
+for `ddc52075`, including package/consumer, memory, browser, font and validator
+checks. Do not repoll that completed run. G2–G9/S17 stay open.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -75,7 +76,7 @@ Prefer a suitable redistributable export; an authored CC0 sheet is permitted.
 
 | Next deliverable | Missing behavior / available dependencies | Acceptance and completion condition |
 | --- | --- | --- |
-| 1. Remaining label/path sheet | Direct nested coordinate/rotation lists and word spacing now have exact focused witnesses. The unchanged whole sheet next rejects at solid text decorations; span/path length and rotation propagation and the other declared G9 gaps remain required. Reuse the completed [layout guide](tests/Research/font-layout-diagram/README.md), shared face/size intervals and source maps. | Finish the unchanged [sheet](tests/Research/remaining-label-path-sheet/README.md) against its frozen healthy Windows/Linux triples, preserving both exact controls and supplied-program use proofs. The sheet includes both length policies, closed-path anchors, word spacing, solid decorations, required path stroke modes and the 18px doubled-width eacute from [native diagnostics](artifacts/font-layout-diagram-20261014/NATIVE-MASK-CHECK.md). Every declared output must become exact, with affected bounded failures protected. The G9 checklist also owns composite flags and private validation. |
+| 1. Remaining label/path sheet | Direct nested coordinate/rotation lists, word spacing and filled-label decorations now have exact witnesses. Discovery next rejects the sheet's stroke-before-fill path label; path strokes, span/path length and rotation propagation, closed anchors and fitting remain independent required gaps. Reuse the completed [layout guide](tests/Research/font-layout-diagram/README.md), shared glyph fragments, face/size intervals and source maps. | Finish the unchanged [sheet](tests/Research/remaining-label-path-sheet/README.md) against its frozen healthy Windows/Linux triples, preserving all three exact controls and supplied-program use proofs. The sheet includes both length policies, closed-path anchors, word spacing, solid decorations, required path stroke modes and the 18px doubled-width eacute from [native diagnostics](artifacts/font-layout-diagram-20261014/NATIVE-MASK-CHECK.md). Every declared output must become exact, with affected bounded failures protected. The G9 checklist also owns composite flags and private validation. |
 | 2. Affine image-map sheet | Uniform fractional placement/opacity and remaining affine/resource/clip/mask image maps. Reuse completed varied-pixel decode, CSS cascade, meet/slice/none sampling and G2/G5 replay. | Freeze a sheet placing the same small PNG with fractional meet/slice/none, rotation/skew/reflection, local use, clip and partial mask. Include uniform content where its separate fast path exposes a gap; use alignment controls only for independent missing map behavior. Make all outputs exact on both platforms, preserve decode/resource failures and finish qualification. Wider G7 closes only at its finite exit. |
 | 3. Effects/marker sheet | Remaining finite G8 graph/region/color-space/maps, marker units, CSS overflow and closure. Reuse qualified rescaling, graph composition, G5 scopes and only the G7/G9 slices needed by this document. | Freeze a sheet demonstrating listed mechanisms without existing acceptance, including [CSS marker overflow](tests/Research/path-marker-content/marker-css-overflow-boundary.svg). Make every declared output exact on both platforms and preserve graph/resource failures. Close only the covered mechanisms; the finite G8 exit still applies. |
 
@@ -281,6 +282,9 @@ completed work; their exact cases do not close dependent tile content.
   start/middle/end anchors, letter/word spacing, explicit lines, textLength with
   spacing/spacingAndGlyphs, alphabetic/middle/hanging baselines; affine glyph maps,
   ordinary fill/stroke paints and solid underline/overline/line-through.
+  Filled-label decoration has the retained witness above; decorated strokes remain
+  required. The current decorated-text-path rejection supplies no path-decoration
+  acceptance or feature deferral. Keep unverified admitted maps visible at this exit.
 - Paths: one local retained open/closed G3 path per run, supplied advances/kerning,
   length/percentage startOffset, anchors/tangents, method align, spacing exact;
   curved/transformed source paths, measured out-of-range/zero-length outcomes.
@@ -368,10 +372,10 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/word-spacing-qualified-results.json)
-  records complete qualification of **7,640 tests/platform** in **69.7s Windows**
-  and **292.9s Linux**, including normal incremental build and command startup.
-  Both meet the target. The exact-revision hosted build plus complete test steps
+  The [latest receipt](artifacts/maintenance-review-20261012/decorations-qualified-results.json)
+  records complete qualification of **7,656 tests/platform** in **73.2s Windows**
+  and **233.7s Linux**, including normal incremental build and command startup.
+  Both meet the target. The preceding word-spacing revision's hosted build plus complete test steps
   are **2m02s Windows / 1m51s Linux**; separate environments imply no speedup claim.
   Prior hosted observations and the local Linux compiler
   overrun remain in the [preceding receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json),

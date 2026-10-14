@@ -280,10 +280,11 @@ internal static class SvgRenderedLeafParser
                 SvgTextWhitespaceMode whitespaceMode = SvgTextSyntax.ParseWhitespaceMode(reader, resolvedText.WhiteSpace, context.InheritedTextStyle.WhitespaceMode);
                 SvgTextPaintStyle textPaint = SvgTextPaintStyle.ResolveElement(textElement.Style, context.InheritedPresentation.Paint, context.InheritedPresentation.IsDisplayed, context.InheritedPresentation.IsVisible, context.InheritedStroke.Stroke);
                 textPaint = textPaint with { StrokeStyle = context.InheritedStroke.ResolveChild(textElement.Style), PaintOrder = textElement.Style.PaintOrder ?? context.InheritedPresentation.PaintOrder };
+                textPaint = textPaint with { Decoration = SvgTextDecorationSyntax.Resolve(resolvedText.TextDecoration ?? reader.GetAttribute("text-decoration"), context.InheritedTextStyle.Decoration, (textPaint with { IsDisplayed = true, IsVisible = true }).GlyphPaint) };
                 using BudgetedParserList<SvgExtractedTextRun> textRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
                 try
                 {
-                    SvgInheritedTextStyle rootTextFont = new(textStyle.Font.Family, textStyle.Font.Weight, textStyle.Font.Italic, textStyle.FontSize, whitespaceMode, textStyle.LetterSpacing, textStyle.Anchor) { WordSpacing = textStyle.WordSpacing };
+                    SvgInheritedTextStyle rootTextFont = new(textStyle.Font.Family, textStyle.Font.Weight, textStyle.Font.Italic, textStyle.FontSize, whitespaceMode, textStyle.LetterSpacing, textStyle.Anchor) { WordSpacing = textStyle.WordSpacing, Decoration = textPaint.Decoration };
                     ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, textPaint, rootTextFont, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, textRuns, out int sourceCharacterCount, out int childNodeCount);
                     state.TextCharacterCount += sourceCharacterCount;
                     state.NodeCount += childNodeCount;
@@ -294,13 +295,16 @@ internal static class SvgRenderedLeafParser
                         if (text.Value.Length == 0) continue;
                         bool hasFill = extracted.PaintSpans.Items.Length == 0 && textPaint.GlyphPaint.HasFill;
                         bool hasStroke = extracted.PaintSpans.Items.Length == 0 && textPaint.GlyphPaint.HasStroke;
+                        bool hasDecoration = extracted.PaintSpans.Items.Length == 0 && textPaint.GlyphPaint.Decoration is not null;
                         foreach (SvgTextPaintSpan span in extracted.PaintSpans.Items)
                         {
                             workCounter.Consume(cancellationToken);
                             hasFill |= span.Paint.HasFill;
                             hasStroke |= span.Paint.HasStroke;
+                            hasDecoration |= span.Paint.Decoration is not null;
                         }
-                        if (!hasFill && !hasStroke) continue;
+                        if (!hasFill && !hasStroke && !hasDecoration) continue;
+                        if (textPath is not null && hasDecoration) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Decorations on retained text paths are not implemented.");
                         if (textPath is not null && hasStroke) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes on retained text paths are not implemented.");
                         if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
                         SvgTextStyle runStyle = textPath is {} anchoredPath ? textStyle with { Y = 0, Anchor = anchoredPath.Anchor ?? textStyle.Anchor } : textStyle;
@@ -327,6 +331,7 @@ internal static class SvgRenderedLeafParser
                         }
                         using (run)
                         {
+                            SvgTextDecorationRenderer.Emit(run, textPlacement, state, textElement.Presentation.Color, false, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
                             if (hasFill)
                             {
                                 int glyphIndex = 0;
@@ -373,6 +378,7 @@ internal static class SvgRenderedLeafParser
                                     catch { geometry.Dispose(); throw; }
                                 }
                             }
+                            SvgTextDecorationRenderer.Emit(run, textPlacement, state, textElement.Presentation.Color, true, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
                         }
                     }
                     return true;

@@ -44,6 +44,10 @@ internal readonly record struct SvgRootAttributes(SvgInheritedPresentation Inher
             SvgInlineStyleParser.MergeWithImportance(inline.LetterSpacing, inline.Important, InlineImportantProperties.LetterSpacing, sheet.LetterSpacing, sheet.Important),
             SvgInlineStyleParser.MergeWithImportance(inline.WordSpacing, inline.Important, InlineImportantProperties.WordSpacing, sheet.WordSpacing, sheet.Important));
         string? width = SvgInlineStyleParser.MergeWithImportance(inline.GeometryWidth, inline.Important, InlineImportantProperties.GeometryWidth, sheet.GeometryWidth, sheet.Important);
+        SvgTextPaintStyle decorationPaint = new(presentation.Paint, true, true, style.Stroke, 255)
+        { StrokeStyle = SvgInheritedStrokeStyle.Default.ResolveChild(style), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers };
+        SvgTextDecorationStyle? decoration = SvgTextDecorationSyntax.Resolve(reader, inline, sheet, null, decorationPaint.GlyphPaint);
+        if (decoration is not null) text = text.WithDecoration(decoration);
         string? height = SvgInlineStyleParser.MergeWithImportance(inline.GeometryHeight, inline.Important, InlineImportantProperties.GeometryHeight, sheet.GeometryHeight, sheet.Important);
         return new SvgRootAttributes(new SvgInheritedPresentation(presentation.Paint, presentation.IsDisplayed, presentation.IsVisible, SvgAffineTransform.Identity) { OwnOpacity = style.GetOpacity(), PaintServerFill = presentation.PaintServerFill, Markers = SvgMarkerStyle.Resolve(style, default), PaintOrder = style.PaintOrder ?? SvgPaintOrder.FillStrokeMarkers }, text, new SvgInheritedStrokeStyle(style.Linecap, style.Linejoin, style.Dasharray, style.Dashoffset, style.Width, style.Miterlimit, style.StrokeOpacity, style.Stroke), reader.GetAttribute("id"), reader.GetAttribute("class"), presentation.Opacity, ParseRootStyleLength(width) ?? syntax.Width, ParseRootStyleLength(height) ?? syntax.Height, syntax.ViewBox, style.FillRule) { SourceOpacity = style.GetOpacity(), ClipRule = style.ClipRule };
         static SvgRootLength? ParseRootStyleLength(string? value)

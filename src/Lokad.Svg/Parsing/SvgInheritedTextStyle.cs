@@ -31,8 +31,11 @@ internal sealed class SvgInheritedTextStyle
     internal SvgInheritedTextStyle WithWhitespaceMode(SvgTextWhitespaceMode whitespaceMode)
     {
         if (whitespaceMode is not (SvgTextWhitespaceMode.Default or SvgTextWhitespaceMode.Preserve)) throw new ArgumentOutOfRangeException(nameof(whitespaceMode));
-        return new SvgInheritedTextStyle(Family, Weight, Italic, FontSize, whitespaceMode, LetterSpacing, Anchor) { WordSpacing = WordSpacing };
+        return new SvgInheritedTextStyle(Family, Weight, Italic, FontSize, whitespaceMode, LetterSpacing, Anchor) { WordSpacing = WordSpacing, Decoration = Decoration };
     }
+
+    internal SvgInheritedTextStyle WithDecoration(SvgTextDecorationStyle? decoration)
+        => new(Family, Weight, Italic, FontSize, WhitespaceMode, LetterSpacing, Anchor) { WordSpacing = WordSpacing, Decoration = decoration };
 
     internal string? Family { get; }
     internal int Weight { get; }
@@ -41,6 +44,7 @@ internal sealed class SvgInheritedTextStyle
     internal SvgTextWhitespaceMode WhitespaceMode { get; }
     internal double LetterSpacing { get; }
     internal double WordSpacing { get; init; }
+    internal SvgTextDecorationStyle? Decoration { get; init; }
     internal SvgTextAnchor Anchor { get; }
 }
 
@@ -77,6 +81,6 @@ internal static class SvgTextInheritance
         double resolvedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
         string? wordSpacingValue = wordSpacing ?? reader.GetAttribute("word-spacing");
         double resolvedWordSpacing = wordSpacingValue is null ? inherited.WordSpacing : SvgTextSyntax.ParseWordSpacing(wordSpacingValue);
-        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor)) { WordSpacing = resolvedWordSpacing };
+        return new SvgInheritedTextStyle(family, weight, italic, fontSize, whitespaceMode, resolvedLetterSpacing, SvgTextSyntax.ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor)) { WordSpacing = resolvedWordSpacing, Decoration = inherited.Decoration };
     }
 }

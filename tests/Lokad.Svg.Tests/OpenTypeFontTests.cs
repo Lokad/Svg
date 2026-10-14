@@ -1860,13 +1860,13 @@ public sealed partial class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' fill-rule='positive'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3' style='white-space: pre-line'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-variant='small-caps' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
-[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text text-decoration='underline' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text text-decoration='wavy' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text word-spacing='5%' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
-[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text style='text-decoration: underline' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text style='text-decoration: wavy' font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { font-variant: small-caps; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", SvgErrorCode.UnsupportedFeature)]
-[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { text-decoration: underline; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", SvgErrorCode.UnsupportedFeature)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { text-decoration: wavy; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.gg { font-variant: small-caps; }</style><g class='gg'><text font-family='Example' font-size='100' y='3'>A</text></g></svg>", SvgErrorCode.UnsupportedFeature)]
-[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.gg { text-decoration: underline; }</style><g class='gg'><text font-family='Example' font-size='100' y='3'>A</text></g></svg>", SvgErrorCode.UnsupportedFeature)]
+[InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.gg { text-decoration: wavy; }</style><g class='gg'><text font-family='Example' font-size='100' y='3'>A</text></g></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5' font-variant='small-caps'><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
 [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='1' height='1'/></defs><style>.u { font-variant: small-caps; }</style><use href='#r' class='u'/><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg'><svg><text font-family='Example'>A</text></svg></svg>", SvgErrorCode.UnsupportedFeature)]
@@ -4897,6 +4897,25 @@ public sealed partial class OpenTypeFontTests
     {
         public ValueTask<ISvgFontProgramSource?> GetSourceAsync(SvgFontPackFile file, CancellationToken cancellationToken)
             => ValueTask.FromResult<ISvgFontProgramSource?>(null);
+    }
+
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text text-decoration='underline' font-family='Example' font-size='100' y='3'>A</text></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text style='text-decoration: underline' font-family='Example' font-size='100' y='3'>A</text></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.l { text-decoration: underline; }</style><a class='l'><text font-family='Example' font-size='100' y='3'>A</text></a></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><style>.gg { text-decoration: underline; }</style><g class='gg'><text font-family='Example' font-size='100' y='3'>A</text></g></svg>")]
+    public async Task Discovery_and_lowering_admit_original_solid_decoration_inputs(string svg)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        byte[] unchanged = input.ToArray();
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] baseline = "<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A</text></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(baseline, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+        Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).Family);
+        Assert.Equal(1, provider.RequestCount); Assert.Equal(1, source.RequestCount);
+        Assert.Equal(unchanged, input);
     }
 
 }
