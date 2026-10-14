@@ -13,6 +13,12 @@ original SVG/font/reference byte, option and default resource limit. Current
 unsupported outcomes within the promised subset are remaining work, not scope
 decisions. Implementation history stays in the linked records and Git.
 
+The required release scope is the enumerated G2–G9 subset and the S17 contracts
+below. A new case must demonstrate a listed missing mechanism or a regression;
+it does not add a new feature promise or an exhaustive combination requirement.
+Additional features and speculative improvements are optional unless explicitly
+accepted. A proposed deferral of an existing promise stays required until decided.
+
 ## Qualified work to preserve
 
 | Commitment | Qualified state and evidence |
@@ -32,16 +38,13 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The sRGB rescaling correction at `ff58f21e` is qualified: **7,622 tests/platform**
-(5,246 core / 2,370 visual / six FontProbe). Every prior case identity remains,
-with no assertion migrations; the [receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json)
-records two new native visual controls and one representative packed-path resource
-check. All seven complete authored documents, selected 50 and corporate 27/258
-outputs remain exact. The original six-pixel linearRGB restoration residual stays
-required; G2–G9/S17 remain open. [Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38636857878)
-for that exact revision, including package/consumer, memory, browser and font
-checks. Reuse this evidence for unchanged documentation; do not poll the completed
-run again.
+The latest finished correction is `ff58f21e`: **7,622 tests/platform**
+(5,246 core / 2,370 visual / six FontProbe), with all preceding case identities
+and assertions retained. The [qualification receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json)
+and [terminal-green Windows/Linux CI](https://github.com/Lokad/Svg/actions/runs/38636857878)
+cover that exact revision, including package/consumer, memory, browser and font
+checks. The six-pixel linearRGB residual remains required; G2–G9/S17 stay open.
+Reuse this evidence for unchanged documentation without another run or CI poll.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -362,14 +365,12 @@ representativeness quota delays this finite release.
   records exact-revision hosted build plus complete test steps of **1m27s Windows**
   and **1m54s Linux**, meeting that target. All **7,622 tests/platform** also pass
   in fresh local qualification; every prior case identity remains, without
-  assertion migrations. The local Windows observation is **2m53s**. The local
-  Linux observation is **17m08s**, including a **13m16s compiler** run in which a
-  Windows filesystem RPC wait and concurrent host workloads were observed. That
-  local run exceeds the target; retain it separately instead of presenting it as
-  an under-ten-minute result. No renderer speedup or regression is inferred.
-  Hosted step times include command startup; local timing is successful compiler
-  duration plus the first-suite/final-suite interval, excluding initial build-host
-  startup. These different environments establish no fixed timing guarantee.
+  assertion migrations. Local observations were **2m53s Windows / 17m08s Linux**.
+  The Linux run exceeds the target, including **13m16s compilation** with an
+  observed filesystem wait and concurrent host load. Keep that overrun distinct
+  from the hosted result; neither establishes a renderer speedup or regression.
+  Environment and timing definitions belong in the receipt rather than a new
+  qualification task.
   Routine verification uses normal incremental builds; avoid forced compiler
   shutdown between checkpoints. The prior forced-cold Linux overrun and ordinary
   build comparison remain in existing evidence/Git, not another execution task.
@@ -401,8 +402,8 @@ representativeness quota delays this finite release.
 Integrated review: [REVIEW.md](artifacts/maintenance-review-20261012/REVIEW.md).
 These S01–S14 review IDs are separate from stages S1–S17. Rendering correctness
 has priority; maintenance does not add prerequisites to support-group exits.
-S01's completed tranche and S02/S04–S12 remain closed. S07–S09 shipped at
-`57d1c44b`; S10–S12 at `c15167af`, with green hosted Windows/Linux evidence.
+Completed maintenance remains closed; the table owns its status and the linked
+records own implementation and qualification history.
 
 | Maintenance status | Decision / retained evidence |
 | --- | --- |
