@@ -45,9 +45,10 @@ established exact assertions remain. The former six-pixel known difference is
 promoted to exact; two focused resource/graph regressions are added. The
 [qualification receipt](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json)
 records unchanged SVG/font/reference bytes and options, all retained document
-outputs and complete platform results. Hosted CI for this correction will be
-recorded after push; the preceding [green run](https://github.com/Lokad/Svg/actions/runs/38636857878)
-remains evidence for its own revision. G2–G9/S17 stay open.
+outputs and complete platform results. [Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38644638512)
+for exact implementation revision `274cd45f`, including package/consumer, memory,
+browser and font checks. Reuse that completed run for unchanged documentation;
+do not poll it again. G2–G9/S17 stay open.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -367,7 +368,9 @@ representativeness quota delays this finite release.
   The [latest receipt](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json)
   records fresh complete qualification of **7,624 tests/platform** in **108.5s Windows**
   and **491.7s Linux**, including normal incremental build and command startup.
-  Both meet the target. Prior hosted observations and the local Linux compiler
+  Both meet the target. The exact-revision hosted build plus complete test steps
+  are **2m11s Windows / 1m33s Linux**; separate environments imply no speedup claim.
+  Prior hosted observations and the local Linux compiler
   overrun remain in the [preceding receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json),
   with their distinct timing definitions; they are not a new execution task.
   Routine verification uses normal incremental builds; avoid forced compiler
