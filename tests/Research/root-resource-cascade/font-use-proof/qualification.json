@@ -1,0 +1,18 @@
+{
+  "windows": {
+    "startupHealth": "healthy",
+    "profileCleaned": true,
+    "removedProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "missingFaceReference": "windows-missing-face.png",
+    "missingFaceSha256": "287b7ad0aa3a5a489bdc6189a7375e79af2c376db1db03126d193f8a309dd5d0",
+    "intendedFontPixelsChanged": true
+  },
+  "linux": {
+    "startupHealth": "healthy",
+    "profileCleaned": true,
+    "removedProgram": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+    "missingFaceReference": "linux-missing-face.png",
+    "missingFaceSha256": "76fc7ea3ceae2065d4fc5f8cf42d97a8bed0a987de86105c44bee3e828ad584a",
+    "intendedFontPixelsChanged": true
+  }
+}

@@ -89,25 +89,32 @@ public sealed class SvgCssSelectorTests
     [InlineData("svg")]
     [InlineData("svg.root")]
     [InlineData("svg#root[id='root']")]
-    public void Matching_root_rules_remain_explicitly_unsupported(string selector)
+    public void Matching_root_rules_supply_inherited_paint(string selector)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' id='root' class='root' width='12' height='12'><style>" + selector + "{fill:red}</style><rect width='7' height='7'/></svg>");
 
-        SvgException error = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
+        Assert.Equal(Render("<rect width='7' height='7' fill='red'/>"), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-        Assert.Contains("root", error.Message);
+    [Fact]
+    public void Root_stylesheet_dimensions_and_font_device_map_share_the_same_cascade()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' id='root' width='10' height='10' viewBox='0 0 10 10' style='width:30px'><rect width='10' height='10' fill='red'/><style>#root{width:20px!important;height:40px}</style></svg>"u8.ToArray();
+        byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg' width='20' height='40' viewBox='0 0 10 10'><rect width='10' height='10' fill='red'/></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(expected, SvgRenderOptions.Default, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+        RenderBudget budget = new(long.MaxValue);
+        SvgAffineTransform map = SvgConverter.TryResolveOutputMap(input, SvgRenderOptions.Default, budget, CancellationToken.None);
+        Assert.Equal(SvgAffineTransform.FromScaleOffset(2, 2, 0, 10), map);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Theory]
     [InlineData("svg>svg", "<svg width='12' height='12'><rect width='7' height='7'/></svg>")]
     [InlineData("svg>defs", "<defs><symbol id='shapes'><rect width='7' height='7'/></symbol></defs><use href='#shapes'/>")]
-    public void Unimplemented_container_cascades_are_explicit(string selector, string content)
+    public void Container_cascades_preserve_source_ancestor_exclusion(string selector, string content)
     {
-        SvgException error = Assert.Throws<SvgException>(() => Render(content + "<style>" + selector + "{fill:red}</style>"));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-        Assert.Contains("containers", error.Message);
+        string fill = selector == "svg>svg" ? "red" : "black";
+        Assert.Equal(Render("<rect width='7' height='7' fill='" + fill + "'/>"), Render(content + "<style>" + selector + "{fill:red}</style>"));
     }
 
     [Theory]

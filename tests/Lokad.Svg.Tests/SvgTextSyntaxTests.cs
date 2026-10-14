@@ -6,6 +6,16 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgTextSyntaxTests
 {
+    [Theory]
+    [InlineData("font-size:14px;font-size:18")]
+    [InlineData("font-size:18!important;font-size:14px")]
+    [InlineData("font-size:14px!important;font-size:18")]
+    public void Invalid_unitless_css_font_size_preserves_the_valid_declaration(string declarations)
+    {
+        InlineStyle style = SvgInlineStyleParser.Parse(declarations, new ParserWorkCounter(100), CancellationToken.None, true);
+        Assert.Equal("14px", style.TextFont.Size);
+    }
+
     [Fact]
     public void Inherited_text_style_requires_a_positive_weight_and_font_size()
     {
@@ -59,7 +69,7 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal("Inline", style.Font.Family);
         Assert.Equal(700, style.Font.Weight);
         Assert.True(style.Font.Italic);
-        Assert.Equal(12, style.FontSize);
+        Assert.Equal(16, style.FontSize);
     }
 
     [Fact]
@@ -235,7 +245,7 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal("Inline", resolved.Family);
         Assert.Equal(400, resolved.Weight);
         Assert.True(resolved.Italic);
-        Assert.Equal(14, resolved.FontSize);
+        Assert.Equal(12, resolved.FontSize);
     }
 
     [Theory]
@@ -281,7 +291,7 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal(3, style.LetterSpacing);
         Assert.Equal(new SvgTextPositionOffset(0, 12, 2, -4), style.PositionOffset);
         Assert.True(SvgTextSyntax.TryParseTspanStyle(rejected, new(SvgTextWhitespaceMode.Default, 0), default, new ParserWorkCounter(100), CancellationToken.None, out SvgTextSpanStyle fontStyle));
-        Assert.Equal(12, fontStyle.Font.FontSize);
+        Assert.Equal(16, fontStyle.Font.FontSize);
         Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
     }
 

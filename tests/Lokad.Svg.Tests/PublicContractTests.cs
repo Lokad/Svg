@@ -511,11 +511,12 @@ public sealed class PublicContractTests
     }
 
     [Fact]
-    public void Root_identifiers_that_a_stylesheet_could_target_are_rejected()
+    public void Root_identifier_stylesheet_supplies_inherited_fill()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' id='root'><style>#root { fill: red; }</style><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None));
+        ReadOnlyMemory<byte> actual = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1' id='root'><style>#root { fill: red; }</style><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
+        ReadOnlyMemory<byte> expected = SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='1' height='1'><rect width='1' height='1' fill='red'/></svg>"u8.ToArray(), SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.True(expected.Span.SequenceEqual(actual.Span));
     }
 
     [Fact]

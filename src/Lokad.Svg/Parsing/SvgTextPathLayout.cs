@@ -5,7 +5,11 @@ namespace Lokad.Svg.Parsing;
 
 /// <summary>Retains a bounded glyph run at its original paint position until local definitions are available.</summary>
 /// <remarks>The document owns the run and identifier; the run borrows the prepared font. Parser-thread confined.</remarks>
-internal readonly record struct SvgPendingTextPath(SvgTextRun Run, SvgTextPathReference Reference, SvgAffineTransform Placement, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner);
+internal readonly record struct SvgPendingTextPath(SvgTextRun Run, SvgTextPathReference Reference, SvgAffineTransform Placement, SvgColor Color, int CommandIndex, RenderBudget.BudgetReservation Owner)
+{
+    /// <summary>Borrows the originating viewport clip chain until deferred glyph command emission.</summary>
+    internal SvgLeafMaskBinding? ViewportClip { get; init; }
+}
 
 /// <summary>Describes a measured open baseline and its authored offset calibration.</summary>
 internal readonly record struct SvgTextPathBaseline(double X, double Y, double Length)
@@ -94,7 +98,7 @@ internal static class SvgTextPathLayout
                 }
                 using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(glyphFont.Font, placed, glyphFont.FontSize, glyphMap, state.Budget, work, token);
                 SvgGlyphGeometry geometry = SvgGlyphGeometry.Create(contours, paint.Color, glyphFont.Font, placed, glyphFont.FontSize, glyphMap, state.Budget);
-                try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(geometry)); }
+                try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(geometry) with { LeafMask = pending.ViewportClip }); }
                 catch { geometry.Dispose(); throw; }
             }
             int inserted = state.Scene.ResolvePaintPlaceholder(pending.CommandIndex, tail);

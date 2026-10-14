@@ -47,13 +47,18 @@ internal static class SvgRootStyleSheetParser
         }
     }
 
-    internal static void ThrowIfTargetsRoot(string? id, string? classes, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    /// <summary>Resolves root selectors through the ordinary bounded cascade, without a parent selector context.</summary>
+    /// <remarks>Declarations borrow the caller's stylesheet store until parsing completes. Matching consumes shared work and observes cancellation; the immutable result owns no storage.</remarks>
+    internal static InlineStyle ResolveRoot(string? id, string? classes, BudgetedParserList<CssRule> rules, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
+        SvgStyleCascade cascade = new();
         for (int index = 0; index < rules.Count; index++)
         {
             workCounter.Consume(cancellationToken);
-            if (rules[index].MatchesRoot(id, classes, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stylesheet rules targeting the SVG root are not implemented.");
+            CssRule rule = rules[index];
+            if (rule.MatchesRoot(id, classes, workCounter, cancellationToken)) cascade.Apply(rule.Style, rule.Specificity);
         }
+        return cascade.ToInlineStyle();
     }
 
     /// <summary>Rejects stylesheet element attributes except the inert type and identifier declarations exporters emit.</summary>

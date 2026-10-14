@@ -3398,6 +3398,9 @@ public static class SvgConverter
             using RenderBudget.BudgetReservation workspace = budget.Reserve(SvgRootParser.GetXmlReaderWorkspaceBytes(svg.Length, options.Limits.MaximumAttributesPerElement), SvgMemoryCategory.Parser);
             ParserWorkCounter probe = new(options.Limits.MaximumWorkUnits);
             XmlReaderSettings settings = SvgXmlReaderPolicy.Create(svg, options.Limits, budget, probe, cancellationToken);
+            using BudgetedParserList<CssRule> rules = new(budget, SvgMemoryCategory.Parser, probe, cancellationToken);
+            using BudgetedParserStringStore strings = new(budget);
+            SvgRootStyleSheetParser.Collect(svg, settings, options.Limits, rules, strings, budget, probe, cancellationToken);
             using ReadOnlyMemoryStream stream = new(svg);
             using XmlReader reader = XmlReader.Create(stream, settings);
             while (reader.Read())
@@ -3405,7 +3408,7 @@ public static class SvgConverter
                 probe.Consume(cancellationToken);
                 if (reader.NodeType != XmlNodeType.Element) continue;
                 if (!reader.LocalName.Equals("svg", StringComparison.Ordinal)) return SvgAffineTransform.Identity;
-                SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, probe, cancellationToken);
+                SvgRootAttributes root = SvgRootAttributes.Parse(reader, SvgRootParser.CssNamedColors, rules, probe, cancellationToken);
                 (double width, double height) = ResolveOutputDimensions(options.Viewport, root.Width, root.Height, root.ViewBox);
                 (double horizontalScale, double offsetX, double verticalScale, double offsetY) = GetViewBoxTransform(root.ViewBox, width, height, options.OutputScale);
                 if (!double.IsFinite(horizontalScale) || !double.IsFinite(verticalScale) || horizontalScale <= 0 || verticalScale <= 0) return SvgAffineTransform.Identity;

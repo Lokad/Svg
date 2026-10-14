@@ -397,7 +397,7 @@ internal static class SvgTextSyntax
             {
                 if (whiteSpace is not null || inlineLetterSpacing is not null) { reader.MoveToElement(); style = inherited; return false; }
                 InlineStyle inline = SvgInlineStyleParser.Parse(reader.Value, workCounter, cancellationToken, true);
-                if ((inline.WhiteSpace is null && inline.LetterSpacing is null && !HasPaintProperties(inline) && inline.TextFont == default) || HasUnsupportedProperties(inline)) { reader.MoveToElement(); style = inherited; return false; }
+                if (HasUnsupportedProperties(inline)) { reader.MoveToElement(); style = inherited; return false; }
                 parsedInline = inline;
                 whiteSpace = inline.WhiteSpace;
                 inlineImportant = inline.Important;
@@ -455,9 +455,6 @@ internal static class SvgTextSyntax
         static bool HasUnsupportedProperties(InlineStyle style)
             => style.Opacity is not null || style.Filter is not null || style.GeometryWidth is not null || style.GeometryHeight is not null;
 
-        static bool HasPaintProperties(InlineStyle style)
-            => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.FillRule is not null
-                || style.Width is not null || style.StrokeOpacity is not null || style.Linecap is not null || style.Linejoin is not null || style.Miterlimit is not null || style.Dasharray is not null || style.Dashoffset is not null || style.PaintOrder is not null;
     }
 
     /// <summary>Recognizes admitted nested text spans while returning only the inherited whitespace mode needed by font discovery.</summary>

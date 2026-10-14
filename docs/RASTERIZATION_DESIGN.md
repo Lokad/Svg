@@ -12945,3 +12945,56 @@ at one pixel. It remains required G9 fitting work under the original useful subs
 its ignored native evidence neither changes a frozen reference nor reopens the
 completed guide. Current diagnostics are under
 `artifacts/font-layout-diagram-20261014/`.
+
+
+### Complete root/resource cascade sheet (2026-10-14)
+
+The retained 300×180 sheet and four controls match unchanged Windows/Linux
+references. The original three controls isolate root paint/font inheritance,
+nested viewport styling and defs/symbol source/instance presentation. A fourth
+independent control exercises scaled text and fractional viewport edges. Each
+reference has three healthy fresh-process captures; removing the original supplied
+program changes whole-document glyph pixels on both platforms.
+
+Root matching now uses the existing bounded per-property cascade. Lowering,
+discovery and the font device-map prepass share root presentation and dimensions.
+Root width/height declaration ranks survive specificity, source order and important
+merging. Nested viewport and defs presentation are retained separately from group
+state and selected by tree depth, then cleared at their matching end elements.
+Definitions remain nonpainting; original source ancestry does not override instance
+inheritance. A stylesheet-styled symbol uses existing retained source replay so
+its authored paint survives placement rather than being replaced by use paint.
+
+The original sheet also exposes invalid CSS lengths: its nonzero unitless font
+sizes are ignored by the browser. Applying them produced a different root label;
+a diagnostic at the native default 16px matched every reference pixel. CSS parsing
+now ignores those invalid declarations, including important ones, without clearing
+a preceding valid value. SVG presentation attributes retain their unitless length
+semantics. No-op span styles remain admitted. Original test SVGs are retained;
+assertion migrations distinguish this correction from lost regression coverage.
+
+Viewport glyph placement composes each viewport map between its source ancestor
+map and intervening group maps. Existing glyph replay and independently fitted
+font sizes are reused; an axial scale normalized into font size leaves the
+ordinary horizontal strike, preserving baseline snapping. Retained text paths
+borrow the same originating clip chain until deferred command emission.
+
+Fractional viewport clipping must act on glyph coverage before color is painted.
+Isolating a glyph in a generic viewport layer rounded premultiplied channels twice;
+the extra witness differed at 16 edge pixels after baseline placement was fixed.
+The existing native affine-viewport clip tape, also for axis-aligned rectangles,
+makes every pixel exact. One registry-owned clip chain is shared per visited
+viewport and created only when glyphs need it. Existing scope emission, native
+clip content, bounded surfaces and work/cancellation contracts own its lifetime.
+Viewport style/maps borrow one registry-owned aggregate metadata allowance instead
+of enlarging every deferred instance frame; the original low-budget forward-use
+control remains unchanged.
+This adds no per-shape kernel, bitmap editor, native dependency or global cache.
+
+Focused synthetic cases verify ancestor/group placement, root dimensions and
+meaningful work/memory denial, cancellation, retry and unchanged inputs. Native
+rendering distinctions remain protected by independent pixel cases; logical
+contour equivalence is not asserted to imply identical fitting routes. Broader
+G7 image/resource maps and finite G2–G9/S17 promises stay open. See the
+[bank](../tests/Research/root-resource-cascade/README.md) and
+[qualification receipt](../artifacts/maintenance-review-20261012/root-resource-cascade-qualified-results.json).

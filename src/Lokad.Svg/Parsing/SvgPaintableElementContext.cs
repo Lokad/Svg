@@ -30,6 +30,22 @@ internal readonly record struct SvgPaintableElementContext(SvgInheritedPresentat
         SvgInheritedTextStyle inheritedTextStyle = state.Groups.Count == 0 ? root.InheritedTextStyle : state.Groups[^1].InheritedTextStyle;
         SvgInheritedStrokeStyle inheritedStroke = state.Groups.Count == 0 ? root.InheritedStroke : state.Groups[^1].InheritedStroke;
         string? inheritedFillRule = state.Groups.Count == 0 ? root.FillRule : state.Groups[^1].FillRule;
+        int styleParentDepth = state.Groups.Count == 0 ? -1 : state.Groups[^1].Depth;
+        if (state.EffectiveFrame is SvgViewportFrame viewport && viewport.Depth > styleParentDepth && viewport.TextContext?.Inheritance is {} viewportStyle)
+        {
+            inheritedPresentation = viewportStyle.Presentation;
+            inheritedTextStyle = viewportStyle.TextStyle;
+            inheritedStroke = viewportStyle.Stroke;
+            inheritedFillRule = viewportStyle.FillRule;
+            styleParentDepth = viewport.Depth;
+        }
+        if (state.DefinitionsDepth > styleParentDepth && state.DefinitionInheritance is {} definitionStyle)
+        {
+            inheritedPresentation = definitionStyle.Presentation;
+            inheritedTextStyle = definitionStyle.TextStyle;
+            inheritedStroke = definitionStyle.Stroke;
+            inheritedFillRule = definitionStyle.FillRule;
+        }
         SvgViewportLengthBases lengthBases = new(state.EffectiveFrame?.ViewportWidth ?? state.SymbolViewBox?.Width ?? root.UserViewportWidth,
             state.EffectiveFrame?.ViewportHeight ?? state.SymbolViewBox?.Height ?? root.UserViewportHeight);
         return new SvgPaintableElementContext(inheritedPresentation, inheritedTextStyle, inheritedStroke, SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken), namedColors, workCounter, cancellationToken, state.OutputMagnification, inheritedFillRule) { StrokeHostMap = state.OutputMap, InheritedClipRule = state.Groups.Count == 0 ? root.ClipRule : state.Groups[^1].ClipRule, RecordingScope = state.Groups.Count == 0 ? new(1) : state.Groups[^1].RecordingScope, LengthBases = lengthBases };

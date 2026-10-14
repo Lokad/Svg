@@ -7622,11 +7622,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_class_stylesheet_targeting_root_class()
+    public void Root_class_stylesheet_supplies_inherited_fill()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' class='external-icon'><style>.external-icon{fill:blue}</style><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' class='external-icon'><style>.external-icon{fill:blue}</style><rect width='1' height='1'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.Equal(new SvgColor(0, 0, 255, 255), Assert.Single(root.Rectangles).Color);
+        Assert.False(root.HasUnsupportedChild);
     }
 
     [Fact]

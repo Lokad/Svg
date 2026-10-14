@@ -228,6 +228,8 @@ internal sealed class SvgDocumentState : IDisposable
 
 
     internal int DefinitionsDepth { get; set; } = -1;
+    /// <summary>Borrows the current nonpainting definition container presentation until its matching end element.</summary>
+    internal SvgInheritedContainer? DefinitionInheritance { get; set; }
 
     internal int SymbolDepth { get; set; } = -1;
 

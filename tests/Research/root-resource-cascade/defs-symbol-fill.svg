@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='128' height='64'><style>defs{fill:#df843e} symbol{fill:#705cac} symbol>path{stroke:#17324c;stroke-width:2}</style><defs><rect id='box' width='28' height='28'/><symbol id='badge' viewBox='0 0 32 32'><path d='M16 2L30 9V23L16 30L2 23V9Z'/></symbol></defs><use href='#box' x='8' y='17'/><use href='#badge' x='48' y='15' width='32' height='32'/><use href='#badge' x='85' y='15' width='36' height='32' fill='#217a73'/></svg>

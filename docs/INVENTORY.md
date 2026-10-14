@@ -9,14 +9,14 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. Six additional authored CC0 documents are complete and counted
-separately. The latest is the [supplied-font layout guide](../tests/Research/font-layout-diagram/README.md),
+variants**. Seven additional authored CC0 documents are complete and counted
+separately. The latest is the [root/resource cascade sheet](../tests/Research/root-resource-cascade/README.md),
 **1/1 exact** with controls separately **4/4 exact** on Windows/Linux against
-unchanged sources, options, fonts and platform references. The five preceding
+unchanged sources, options, fonts and platform references. The six preceding
 authored documents and their controls remain protected in their existing banks.
 These failure-selected cases establish their declared outcomes, not a general
 SVG success rate. [PLAN](../PLAN.md#ordered-delivery-checklist) owns the finite
-remaining queue and [the qualification receipt](../artifacts/maintenance-review-20261012/font-layout-guide-qualified-results.json)
+remaining queue and [the qualification receipt](../artifacts/maintenance-review-20261012/root-resource-cascade-qualified-results.json)
 owns finished-correction evidence. Dated sections below are checkpoint history;
 completed gates are superseded by later qualified witnesses.
 

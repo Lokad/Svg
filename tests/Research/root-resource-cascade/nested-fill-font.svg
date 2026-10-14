@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns='http://www.w3.org/2000/svg' width='96' height='64' font-family='Example' font-size='14'><style>#viewport{fill:#217a73;font-size:11} #viewport>rect{stroke:#17324c;stroke-width:2}</style><svg id='viewport' x='8' y='4' width='80' height='56' viewBox='0 0 80 56'><rect x='5' y='5' width='30' height='20'/><text x='5' y='45'>Nested</text></svg></svg>

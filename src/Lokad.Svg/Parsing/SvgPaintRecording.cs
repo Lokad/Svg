@@ -61,6 +61,7 @@ internal static class SvgPaintRecording
     internal static SvgGeometry RecordGlyph(SvgGlyphGeometry glyph, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         SvgGeometry geometry = SvgGeometry.FromGlyphContours(glyph);
+        if (state.Viewports.Count != 0) geometry = geometry with { LeafMask = SvgViewportFrame.ResolveGlyphClip(state, work, token) };
         if (state.FilterGroupDepth <= 0) return geometry;
         float left = float.PositiveInfinity, top = float.PositiveInfinity;
         float right = float.NegativeInfinity, bottom = float.NegativeInfinity;

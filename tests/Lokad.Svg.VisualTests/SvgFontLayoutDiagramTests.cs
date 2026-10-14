@@ -72,19 +72,46 @@ public sealed class SvgFontLayoutDiagramTests
             yield return [item.GetProperty("id").GetString() ?? throw new InvalidDataException()];
     }
 
+    public static IEnumerable<object[]> CascadeCases()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "root-resource-cascade");
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
+        foreach (JsonElement item in manifest.RootElement.GetProperty("cases").EnumerateArray())
+            yield return [item.GetProperty("id").GetString() ?? throw new InvalidDataException()];
+    }
+
+    [Theory]
+    [MemberData(nameof(CascadeCases))]
+    public async Task Declared_cascade_outputs_preserve_original_sources_and_platform_references(string identity)
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "root-resource-cascade");
+        await ValidateDeclared(directory, identity, [new("Example", 400, false)]);
+        if (identity != "cascade-sheet") return;
+        using JsonDocument proof = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "font-use-proof", "qualification.json")));
+        JsonElement result = proof.RootElement.GetProperty(OperatingSystem.IsLinux() ? "linux" : "windows");
+        Assert.Equal("healthy", Required(result, "startupHealth")); Assert.True(result.GetProperty("profileCleaned").GetBoolean());
+        byte[] missing = File.ReadAllBytes(Path.Combine(directory, "font-use-proof", Required(result, "missingFaceReference")));
+        Assert.Equal(Required(result, "missingFaceSha256"), Convert.ToHexStringLower(SHA256.HashData(missing)));
+        string reference = OperatingSystem.IsLinux() ? "references/linux64/cascade-sheet.png" : "references/cascade-sheet.png";
+        Assert.False(PixelComparer.Compare(PngRgbaDecoder.Decode(File.ReadAllBytes(Path.Combine(directory, reference)), SvgRenderLimits.Default.MaximumPixels), PngRgbaDecoder.Decode(missing, SvgRenderLimits.Default.MaximumPixels)).IsExact);
+    }
+
     [Theory]
     [MemberData(nameof(Cases))]
-    public async Task Declared_layout_outputs_preserve_original_sources_and_platform_references(string identity)
+    public Task Declared_layout_outputs_preserve_original_sources_and_platform_references(string identity)
+        => ValidateDeclared(DirectoryPath, identity, [new("Example", 400, false), new("Mono", 700, false), new("Missing", 400, false)]);
+
+    private static async Task ValidateDeclared(string directory, string identity, SvgFontFaceRequest[] requests)
     {
-        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "manifest.json")));
+        using JsonDocument manifest = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(directory, "manifest.json")));
         JsonElement root = manifest.RootElement;
         JsonElement item = root.GetProperty("cases").EnumerateArray().Single(c => c.GetProperty("id").GetString() == identity);
-        byte[] input = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, "input")));
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, Required(item, "input")));
         byte[] unchanged = input.ToArray();
         Assert.Equal(Required(item, "sourceSha256"), Convert.ToHexStringLower(SHA256.HashData(input)));
         Assert.Equal("CC0-1.0", Required(item, "license"));
         string referenceKey = OperatingSystem.IsLinux() ? "linuxReference" : "reference";
-        byte[] reference = File.ReadAllBytes(Path.Combine(DirectoryPath, Required(item, referenceKey)));
+        byte[] reference = File.ReadAllBytes(Path.Combine(directory, Required(item, referenceKey)));
         Assert.Equal(Required(item, referenceKey + "Sha256"), Convert.ToHexStringLower(SHA256.HashData(reference)));
         JsonElement captures = item.GetProperty(OperatingSystem.IsLinux() ? "linuxCaptures" : "captures");
         Assert.Equal(3, captures.GetArrayLength());
@@ -94,9 +121,9 @@ public sealed class SvgFontLayoutDiagramTests
             Assert.True(capture.GetProperty("profileCleaned").GetBoolean());
             Assert.Equal(Required(item, referenceKey + "Sha256"), Required(capture, "pngSha256"));
         }
-        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, Required(root, "fontPack"))), "public-noto-layout");
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(directory, Required(root, "fontPack"))), "public-noto-layout");
         using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(catalog,
-            [new("Example", 400, false), new("Mono", 700, false), new("Missing", 400, false)], new Provider(), CancellationToken.None);
+            requests, new Provider(), CancellationToken.None);
         SvgRenderOptions options = new(new SvgViewport(item.GetProperty("width").GetInt32(), item.GetProperty("height").GetInt32()), 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
         if (item.TryGetProperty("expectedError", out JsonElement error))
             Assert.Equal(Enum.Parse<SvgErrorCode>(error.GetString() ?? throw new InvalidDataException()),

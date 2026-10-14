@@ -16,7 +16,7 @@ internal static class SvgDocumentTraversal
             if (reader.NodeType != XmlNodeType.Element) continue;
             SvgStructuralAdmission.ValidateElementStructure(reader, limits);
             SvgStructuralAdmission.ThrowIfNotSvgRoot(reader);
-            SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, workCounter, cancellationToken);
+            SvgRootAttributes root = SvgRootAttributes.Parse(reader, namedColors, styleRules, workCounter, cancellationToken);
             return TraverseRoot(reader, limits, budget, namedColors, fontSnapshot, cancellationToken, workCounter, root, outputMap, explicitViewport, styleRules, styleStrings);
         }
         throw new SvgException(SvgErrorCode.MalformedInput, "SVG input has no root element.");
@@ -34,7 +34,6 @@ internal static class SvgDocumentTraversal
         int rootDepth = reader.Depth;
         root = root with { ContainingViewport = explicitViewport };
         using SvgDocumentState state = new(budget, workCounter, cancellationToken, styleRules, styleStrings, false);
-        SvgRootStyleSheetParser.ThrowIfTargetsRoot(root.Id, root.Class, state.StyleRules, workCounter, cancellationToken);
         state.CssAncestors.Observe(reader, 0);
         // The root element consumes one node, matching font-request discovery's uniform per-element count.
         state.NodeCount = 1;
@@ -94,11 +93,10 @@ internal static class SvgDocumentTraversal
                 }
                 else if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, limits, namedColors, workCounter, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
-                else if ((directChild || inViewport) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "svg")
+                else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "svg")
                 {
                     state.RenderedGroupContent?.AddUnsupported();
                     SvgElementAttributePolicy.ValidateNestedViewport(reader, workCounter, cancellationToken);
-                    SvgStyleSheet.ThrowIfTargetsUnstyledContainer(reader, state.StyleRules, state.CssAncestors, workCounter, cancellationToken);
                     SvgViewportFrame? parentFrame = state.EffectiveFrame;
                     SvgNestedViewportSyntax viewport = SvgNestedViewportSyntax.Parse(reader, parentFrame?.ViewportWidth ?? root.UserViewportWidth, parentFrame?.ViewportHeight ?? root.UserViewportHeight);
                     SvgViewBox? nestedViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
@@ -138,8 +136,15 @@ internal static class SvgDocumentTraversal
                     if (parentClip is not null) box = box.Intersect(parentClip.Value);
                     if (!reader.IsEmptyElement && (composedScaleX != 1 || composedScaleY != 1)) state.ScaledViewportPushes++;
                     SvgPaintableElementContext viewportContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-                    SvgPaintOpacity sourceViewportOpacity = SvgComputedStyle.Resolve(reader, default).ResolveOpacity(viewportContext.InheritedPresentation.ElementOpacity).GetOpacity();
-                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth) { OwnOpacity = sourceViewportOpacity });
+                    InlineStyle viewportInline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+                    SvgComputedStyle viewportStyle = SvgComputedStyle.Resolve(reader, viewportInline, viewportContext.StyleSheet);
+                    SvgInheritedContainer inheritedViewport = SvgContainerInheritance.Resolve(reader, viewportInline, viewportStyle, viewportContext.StyleSheet, viewportContext.InheritedPresentation,
+                        viewportContext.InheritedFillRule, viewportContext.InheritedTextStyle, viewportContext.InheritedStroke, false, namedColors, workCounter, cancellationToken);
+                    SvgPaintOpacity sourceViewportOpacity = inheritedViewport.Presentation.ElementOpacity;
+                    SvgAffineTransform textParent = parentFrame is {} textFrame ? textFrame.MapText(viewportContext.InheritedPresentation.Transform) : viewportContext.InheritedPresentation.Transform;
+                    SvgAffineTransform textPlacement = textParent.ComposeChecked(SvgAffineTransform.FromScaleOffset(localScaleX, localScaleY, viewport.X + viewOffsetX, viewport.Y + viewOffsetY));
+                    SvgAffineViewportClip textClip = new(new(viewport.X, viewport.Y, viewport.Width, viewport.Height), textParent);
+                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth) { OwnOpacity = sourceViewportOpacity, TextContext = SvgViewportTextContext.Create(state, inheritedViewport, textPlacement, textClip) });
                     byte viewportOpacity = sourceViewportOpacity.Alpha;
                     if (viewportOpacity != 255)
                     {
@@ -152,7 +157,6 @@ internal static class SvgDocumentTraversal
                         }
                     }
                 }
-                else if (inViewport && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside nested viewports is not implemented.");
                 else if (state.ClipDepths.Count > 0 && textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside clipped groups is not implemented.");
                 else if (textElement && reader.NamespaceURI == "http://www.w3.org/2000/svg" && HasMaskedGroup(state, workCounter, cancellationToken)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text inside masked groups is not implemented.");
                 else if (SvgRenderedLeafParser.TryParse(reader, directChild, inScope, root, state, limits, budget, namedColors, fontSnapshot, workCounter, cancellationToken))
@@ -254,7 +258,7 @@ internal static class SvgDocumentTraversal
                     SvgDefinitionParser.DrainPendingGradientHrefs(state, workCounter, cancellationToken);
                     SvgPatternReferenceResolver.Resolve(state, false, workCounter, cancellationToken);
                 }
-                if (reader.Depth == state.DefinitionsDepth) state.DefinitionsDepth = -1;
+                if (reader.Depth == state.DefinitionsDepth) { state.DefinitionsDepth = -1; state.DefinitionInheritance = null; }
                 if (reader.Depth == state.GradientDepth)
                 {
                     if (state.GradientId is not null) SvgDefinitionParser.RegisterGradient(state, workCounter, cancellationToken);

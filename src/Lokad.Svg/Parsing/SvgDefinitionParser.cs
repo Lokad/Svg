@@ -137,7 +137,7 @@ internal static class SvgDefinitionParser
             state.SymbolId = id is null ? null : state.Strings.Copy(id);
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
-            if (shaderFill is not null || marker || presentation.Markers.HasMarkers || presentation.InheritsOpacity)
+            if (shaderFill is not null || marker || presentation.Markers.HasMarkers || presentation.InheritsOpacity || sheet != default)
             {
                 state.SymbolDefinition.EnableContent();
                 state.HasRetainedSymbolContent = true;
@@ -567,7 +567,12 @@ internal static class SvgDefinitionParser
         if (state.DefinitionsDepth < 0 && (directChild || state.GroupDepth > 0 || state.Viewports.Count > 0) && reader.NamespaceURI == "http://www.w3.org/2000/svg" && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName))
         {
             SvgElementAttributePolicy.ValidateDefinitionContainer(reader, workCounter, cancellationToken);
-            SvgStyleSheet.ThrowIfTargetsUnstyledContainer(reader, state.StyleRules, state.CssAncestors, workCounter, cancellationToken);
+            SvgPaintableElementContext definitionContext = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+            InlineStyle inline = SvgInlineStyleParser.Parse(reader.GetAttribute("style"), workCounter, cancellationToken, true);
+            SvgComputedStyle style = SvgComputedStyle.Resolve(reader, inline, definitionContext.StyleSheet);
+            SvgInheritedContainer inherited = SvgContainerInheritance.Resolve(reader, inline, style, definitionContext.StyleSheet, definitionContext.InheritedPresentation,
+                definitionContext.InheritedFillRule, definitionContext.InheritedTextStyle, definitionContext.InheritedStroke, false, namedColors, workCounter, cancellationToken);
+            if (!reader.IsEmptyElement) state.DefinitionInheritance = inherited;
             if (!reader.IsEmptyElement) state.DefinitionsDepth = reader.Depth;
             return true;
         }

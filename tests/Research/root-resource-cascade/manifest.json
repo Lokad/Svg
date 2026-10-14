@@ -1,0 +1,287 @@
+{
+  "schemaVersion": 1,
+  "purpose": "One complete CC0 static root/resource cascade sheet and three original controls declared before correction; the fourth control freezes the discovered scaled-glyph viewport clipping defect before its correction.",
+  "fontPack": "../font-layout-diagram/font-pack.json",
+  "fontPrograms": [
+    {
+      "relativePath": "../supplied-font-labels/fonts/NotoSans-Regular.ttf",
+      "license": "../supplied-font-labels/fonts/OFL.txt",
+      "provenance": "../supplied-font-labels/font-provenance.json",
+      "sha256": "b85c38ecea8a7cfb39c24e395a4007474fa5a4fc864f6ee33309eb4948d232d5"
+    }
+  ],
+  "cases": [
+    {
+      "id": "cascade-sheet",
+      "input": "cascade-sheet.svg",
+      "width": 300,
+      "height": 180,
+      "background": "transparent",
+      "role": "document",
+      "license": "CC0-1.0",
+      "sourceSha256": "e004b34d94865c7023a345719d1847c9ab319cdeb318ad58fd40a4dc33037e96",
+      "oracleInputSha256": "9d3aaf9e27366c8d1f39ec150db4d73347ef654230d0e081a84b2b27b5ea1a26",
+      "selection": "Declared at 50fa1022 before production correction; root/nested viewport/defs/symbol cascade, inherited supplied-font metrics, child selectors and inline/important precedence.",
+      "reference": "references/cascade-sheet.png",
+      "linuxReference": "references/linux64/cascade-sheet.png",
+      "referenceSha256": "c3cd217bf9fb3c0eba9c314fe4306839c2e4390be21c9c23378eb9faa7c02bd2",
+      "captures": [
+        {
+          "pngSha256": "c3cd217bf9fb3c0eba9c314fe4306839c2e4390be21c9c23378eb9faa7c02bd2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c3cd217bf9fb3c0eba9c314fe4306839c2e4390be21c9c23378eb9faa7c02bd2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "c3cd217bf9fb3c0eba9c314fe4306839c2e4390be21c9c23378eb9faa7c02bd2",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "0621220a497ef3e113c42f479294c29b464f5f90f37428d9167dfe6d64f046ae",
+      "linuxCaptures": [
+        {
+          "pngSha256": "0621220a497ef3e113c42f479294c29b464f5f90f37428d9167dfe6d64f046ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0621220a497ef3e113c42f479294c29b464f5f90f37428d9167dfe6d64f046ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0621220a497ef3e113c42f479294c29b464f5f90f37428d9167dfe6d64f046ae",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "root-fill-font",
+      "input": "root-fill-font.svg",
+      "width": 96,
+      "height": 64,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "5dbe0e22bf00a67839a9c0b6ce8302537fed783d7e81da8d4b6ad18d5c26dc6a",
+      "oracleInputSha256": "b8f3dfa5acfbf77ca493bf6982253edc933919055057873b9936713e894bf242",
+      "selection": "Declared at 50fa1022 before production correction; root/nested viewport/defs/symbol cascade, inherited supplied-font metrics, child selectors and inline/important precedence.",
+      "reference": "references/root-fill-font.png",
+      "linuxReference": "references/linux64/root-fill-font.png",
+      "referenceSha256": "0b820c449e4bbda7a54ac59dc7499f55586782b2785e8c70f831157dc8dfd306",
+      "captures": [
+        {
+          "pngSha256": "0b820c449e4bbda7a54ac59dc7499f55586782b2785e8c70f831157dc8dfd306",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0b820c449e4bbda7a54ac59dc7499f55586782b2785e8c70f831157dc8dfd306",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "0b820c449e4bbda7a54ac59dc7499f55586782b2785e8c70f831157dc8dfd306",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "1d610fb8fb2371fc7a52aedd214d418345460e26a0f2448c50802d9bd8f50cf0",
+      "linuxCaptures": [
+        {
+          "pngSha256": "1d610fb8fb2371fc7a52aedd214d418345460e26a0f2448c50802d9bd8f50cf0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1d610fb8fb2371fc7a52aedd214d418345460e26a0f2448c50802d9bd8f50cf0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1d610fb8fb2371fc7a52aedd214d418345460e26a0f2448c50802d9bd8f50cf0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "nested-fill-font",
+      "input": "nested-fill-font.svg",
+      "width": 96,
+      "height": 64,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "895e95b56d338a3bdb002c145c8ad6d892ec417cf82496e3a39b751587cc50d8",
+      "oracleInputSha256": "f3868413543cb6c959cc748f83599f40f0067dd41d9ca519f0b0da7b0742424a",
+      "selection": "Declared at 50fa1022 before production correction; root/nested viewport/defs/symbol cascade, inherited supplied-font metrics, child selectors and inline/important precedence.",
+      "reference": "references/nested-fill-font.png",
+      "linuxReference": "references/linux64/nested-fill-font.png",
+      "referenceSha256": "a82726290e98d43fa90bf6a76d464b329c0db26aecb6f0171bd70e796c19a342",
+      "captures": [
+        {
+          "pngSha256": "a82726290e98d43fa90bf6a76d464b329c0db26aecb6f0171bd70e796c19a342",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a82726290e98d43fa90bf6a76d464b329c0db26aecb6f0171bd70e796c19a342",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "a82726290e98d43fa90bf6a76d464b329c0db26aecb6f0171bd70e796c19a342",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "37bbfd22efc0782bdef7eb31dbfa60d0bc217612604963e0dd4c315d20986925",
+      "linuxCaptures": [
+        {
+          "pngSha256": "37bbfd22efc0782bdef7eb31dbfa60d0bc217612604963e0dd4c315d20986925",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37bbfd22efc0782bdef7eb31dbfa60d0bc217612604963e0dd4c315d20986925",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37bbfd22efc0782bdef7eb31dbfa60d0bc217612604963e0dd4c315d20986925",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "defs-symbol-fill",
+      "input": "defs-symbol-fill.svg",
+      "width": 128,
+      "height": 64,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d83da71e57da71dad73f6539b2ca622c33675da5433ebe7b917f7f1cca5cb193",
+      "oracleInputSha256": "d72fde2a693f2a932fecb0664f5dcb7d7a9a04c62a4c44ad7db1c709ed39abc7",
+      "selection": "Declared at 50fa1022 before production correction; root/nested viewport/defs/symbol cascade, inherited supplied-font metrics, child selectors and inline/important precedence.",
+      "reference": "references/defs-symbol-fill.png",
+      "linuxReference": "references/linux64/defs-symbol-fill.png",
+      "referenceSha256": "37d532676f687d545e270f41874f979660e5354595cdcf403f8acaff391a68df",
+      "captures": [
+        {
+          "pngSha256": "37d532676f687d545e270f41874f979660e5354595cdcf403f8acaff391a68df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37d532676f687d545e270f41874f979660e5354595cdcf403f8acaff391a68df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37d532676f687d545e270f41874f979660e5354595cdcf403f8acaff391a68df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "37d532676f687d545e270f41874f979660e5354595cdcf403f8acaff391a68df",
+      "linuxCaptures": [
+        {
+          "pngSha256": "37d532676f687d545e270f41874f979660e5354595cdcf403f8acaff391a68df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37d532676f687d545e270f41874f979660e5354595cdcf403f8acaff391a68df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "37d532676f687d545e270f41874f979660e5354595cdcf403f8acaff391a68df",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "scaled-viewport-label-clip",
+      "input": "scaled-viewport-label-clip.svg",
+      "width": 96,
+      "height": 72,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "b0e6cb39369f83fba5ade50065234b0d945d6f956f99525e521cc3d756d44b11",
+      "oracleInputSha256": "b9d058a852171c6e0112ee3aa99510b5c2205b99daa3a6693047bfaacce0916b",
+      "selection": "Independent viewport glyph-map and partial-clip witness declared before correcting any residual in this output; exercises intervening groups, device-size fitting and fractional clip restore needed by new viewport text.",
+      "reference": "references/scaled-viewport-label-clip.png",
+      "linuxReference": "references/linux64/scaled-viewport-label-clip.png",
+      "referenceSha256": "6aff009d5d5153b10c66177910c317e9c6bbbd179372b2bef634efef0a9ea270",
+      "captures": [
+        {
+          "pngSha256": "6aff009d5d5153b10c66177910c317e9c6bbbd179372b2bef634efef0a9ea270",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6aff009d5d5153b10c66177910c317e9c6bbbd179372b2bef634efef0a9ea270",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "6aff009d5d5153b10c66177910c317e9c6bbbd179372b2bef634efef0a9ea270",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReferenceSha256": "18e053e8b87e36ededd6d1732b1717466c42d3049f77a1f532363a2ae2694ee3",
+      "linuxCaptures": [
+        {
+          "pngSha256": "18e053e8b87e36ededd6d1732b1717466c42d3049f77a1f532363a2ae2694ee3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "18e053e8b87e36ededd6d1732b1717466c42d3049f77a1f532363a2ae2694ee3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "18e053e8b87e36ededd6d1732b1717466c42d3049f77a1f532363a2ae2694ee3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "platformReferencesByteIdentical": false
+    }
+  ],
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "linuxReferenceQualification": {
+    "date": "2026-10-14",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": false
+  }
+}

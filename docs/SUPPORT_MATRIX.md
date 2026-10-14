@@ -1,3 +1,25 @@
+## Complete root/resource cascade sheet (2026-10-14)
+
+The CC0 sheet is **1/1 exact**, with four distinct controls **4/4 exact** on
+Windows/Linux against unchanged platform references. Root selectors apply the
+existing property cascade before inherited paint/font state and root dimensions;
+font discovery and device-map probing share that state. Nested viewport and defs
+presentation retain tree-depth inheritance. Source ancestors remain excluded from
+ordinary use inheritance; symbol-authored stylesheet paint survives instancing
+through the existing retained source route.
+
+Text in nested viewports uses composed ancestor/group maps, device fitting and
+shared native clip tapes. The focused scaled-label control protects fractional
+partial clipping; wider combinations still require their finite G5/G9 witnesses.
+Invalid nonzero unitless CSS font-size declarations are ignored without replacing
+an earlier valid value; unitless SVG presentation attributes remain valid.
+[Bank](../tests/Research/root-resource-cascade/README.md),
+[qualification receipt](../artifacts/maintenance-review-20261012/root-resource-cascade-qualified-results.json).
+
+This supersedes earlier root/nested/defs cascade and nested-text rejection gates.
+It does not close G7 image maps or every remaining resource/style location, nor
+G2–G9/S17. No feature promise is deferred.
+
 ## Complete supplied-font layout guide (2026-10-14)
 
 The retained guide is **1/1 exact**, with four distinct controls separately

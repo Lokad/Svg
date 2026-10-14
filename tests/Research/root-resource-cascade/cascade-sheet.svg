@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="sheet" class="sheet" width="300" height="180" viewBox="0 0 300 180">
+  <!-- SPDX-License-Identifier: CC0-1.0 -->
+  <title>Static cascade sheet</title>
+  <style>
+    #sheet { fill: #17324c; font-family: Example; font-size: 14; }
+    .canvas { fill: white; }
+    .panel { fill: #eef3f7; }
+    #nested { fill: #217a73; }
+    defs { fill: #df843e; }
+    symbol { fill: #705cac; }
+    .priority > rect { fill: #e29d36; }
+    #important { fill: #217a73 !important; }
+    .caption { font-size: 11; }
+  </style>
+  <defs>
+    <rect id="resource" width="28" height="28" rx="4"/>
+    <symbol id="badge" viewBox="0 0 32 32">
+      <path d="M16 2L30 9V23L16 30L2 23V9Z"/>
+    </symbol>
+  </defs>
+  <rect class="canvas" width="300" height="180"/>
+  <text x="16" y="26">Static cascade</text>
+  <rect class="panel" x="12" y="38" width="86" height="126" rx="6"/>
+  <rect class="panel" x="107" y="38" width="86" height="126" rx="6"/>
+  <rect class="panel" x="202" y="38" width="86" height="126" rx="6"/>
+  <rect x="36" y="53" width="36" height="28" rx="4"/>
+  <text class="caption" x="24" y="99">Inherited</text>
+  <g class="priority">
+    <rect id="important" x="27" y="115" width="25" height="25" fill="red" style="fill:blue"/>
+    <rect x="61" y="115" width="25" height="25" fill="red" style="fill:#df843e"/>
+  </g>
+  <svg id="nested" x="116" y="48" width="68" height="100" viewBox="0 0 68 100">
+    <rect x="16" y="5" width="36" height="28" rx="4"/>
+    <text class="caption" x="7" y="51">Viewport</text>
+    <rect x="10" y="67" width="48" height="25" rx="4"/>
+  </svg>
+  <use href="#resource" x="214" y="53"/>
+  <use href="#badge" x="250" y="51" width="32" height="32"/>
+  <text class="caption" x="212" y="99">Resources</text>
+  <use href="#badge" x="222" y="115" width="48" height="25"/>
+</svg>

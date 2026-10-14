@@ -49,13 +49,6 @@ internal static class SvgStyleSheet
         return cascade.ToInlineStyle();
     }
 
-    /// <summary>Keeps unimplemented container cascades explicit while allowing selectors to use those containers as ancestors.</summary>
-    internal static void ThrowIfTargetsUnstyledContainer(XmlReader reader, BudgetedParserList<CssRule> rules, SvgCssAncestorContext ancestors, ParserWorkCounter work, CancellationToken token)
-    {
-        if (Resolve(reader, rules, ancestors, work, token) != default)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, $"Stylesheet rules targeting '{reader.LocalName}' containers are not implemented.");
-    }
-
     internal static OwnedStyleSheetText ReadElementText(XmlReader reader, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         using XmlReader subtree = reader.ReadSubtree();
