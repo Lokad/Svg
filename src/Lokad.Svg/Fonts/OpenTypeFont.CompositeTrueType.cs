@@ -11,7 +11,8 @@ internal static partial class OpenTypeFont
     {
         private readonly ReadOnlyMemory<byte> _bytes;
         private readonly OpenTypeFontMetrics _metrics;
-        private readonly int _scale;
+        private readonly TrueTypeHintDeviceScale _scale;
+        internal double HorizontalRatio => _target.HorizontalRatio;
         private readonly TrueTypeHintTarget _target;
         private readonly RenderBudget _budget;
         private readonly ParserWorkCounter _work;
@@ -19,7 +20,7 @@ internal static partial class OpenTypeFont
         private readonly TrueTypeHinting _machine;
         private readonly RenderBudget.BudgetReservation _reservation;
 
-        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, int ppem, int scale, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        internal CompositeTrueTypeHinting(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, TrueTypeHintProfile profile, OpenTypeTableRange cvtRange, OpenTypeTableRange fontProgram, OpenTypeTableRange preparation, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
             _bytes = bytes; _metrics = metrics; _scale = scale; _target = target; _budget = budget; _work = work; _token = token;
             _reservation = budget.Reserve(192, SvgMemoryCategory.Geometry);
@@ -28,7 +29,7 @@ internal static partial class OpenTypeFont
                 int count = cvtRange.Length / 2;
                 using RenderBudget.BudgetReservation? scratch = count == 0 ? null : budget.Reserve(ParserCollectionMemory.GetArrayByteCount<int>(count), SvgMemoryCategory.Geometry);
                 int[] cvt = new int[count];
-                int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (scale >> 6) << 6 : scale;
+                int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (scale.Vertical >> 6) << 6 : scale.Vertical;
                 for (int i = 0; i < count; i++) { work.Consume(token); cvt[i] = Scale(ReadInt16(bytes.Span, cvtRange.Offset + i * 2), controlScale); }
                 _machine = TrueTypeHinting.Create(profile, cvt, [], [], ppem, scale, target, budget, work, token);
                 try
@@ -46,7 +47,7 @@ internal static partial class OpenTypeFont
         internal int ScaleOffset(int value, bool round, bool horizontal)
         {
             _work.Consume(_token);
-            int scaled = Scale(value, _scale);
+            int scaled = horizontal ? ScaleHorizontal(value) : Scale(value, _scale.Vertical);
             // ROUND_XY_TO_GRID uses sixteenth-pixel X placement in the
             // Windows subpixel profile, separately from whole-pixel Y fitting.
             if (round && horizontal && (_target.QueryFlags & (TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned)) == (TrueTypeHintQueryFlags.ClearType | TrueTypeHintQueryFlags.SubpixelPositioned))
@@ -73,7 +74,7 @@ internal static partial class OpenTypeFont
             {
                 _work.Consume(_token);
                 OpenTypeGlyphPoint point = outline[i];
-                points[i] = composite ? new(point.X, point.Y, point.X, point.Y) : new(Scale(point.X, _scale), Scale(point.Y, _scale), point.X, point.Y);
+                points[i] = composite ? new(point.X, point.Y, point.X, point.Y) : new(ScaleHorizontal(point.X), Scale(point.Y, _scale.Vertical), point.X, point.Y);
             }
             OpenTypeGlyphHeader? header = ParseGlyphHeader(_bytes, range);
             int advanceIndex = Math.Min(glyph, _metrics.NumberOfHMetrics - 1);
@@ -81,7 +82,7 @@ internal static partial class OpenTypeFont
             int bearingOffset = glyph < _metrics.NumberOfHMetrics ? _metrics.Hmtx.Offset + glyph * 4 + 2 : _metrics.Hmtx.Offset + _metrics.NumberOfHMetrics * 4 + (glyph - _metrics.NumberOfHMetrics) * 2;
             int origin = (header?.XMinimum ?? 0) - ReadInt16(_bytes.Span, bearingOffset);
             int firstPhantom = outline.Length;
-            int scaledOrigin = Scale(origin, _scale), scaledAdvance = Scale(origin + advance, _scale);
+            int scaledOrigin = ScaleHorizontal(origin), scaledAdvance = ScaleHorizontal(origin + advance);
             OpenTypeHorizontalPhantoms initial = selectedMetrics ?? new(scaledOrigin, 0, scaledAdvance, 0);
             points[firstPhantom] = new(initial.LeftX, initial.LeftY, composite ? initial.LeftX : origin, composite ? initial.LeftY : 0);
             points[firstPhantom + 1] = new(initial.RightX, initial.RightY, composite ? initial.RightX : origin + advance, composite ? initial.RightY : 0);
@@ -101,6 +102,7 @@ internal static partial class OpenTypeFont
             return (int)rounded;
         }
 
+        private int ScaleHorizontal(int value) => Scale(value, _scale.Horizontal);
         private static int Scale(int value, int factor)
         {
             long product = (long)value * factor;

@@ -33,8 +33,16 @@ internal enum TrueTypeHintQueryFlags
 /// <summary>Declares bounded interpreter storage from a validated TrueType maxp table.</summary>
 internal readonly record struct TrueTypeHintProfile(int Stack, int Storage, int Functions, int Twilight);
 
+/// <summary>Retains independently rounded horizontal and vertical 16.16 font-to-device scales.</summary>
+/// <remarks>Immutable and storage-free. Axial distances select their own scale; neither scale is derived from the rounded other axis.</remarks>
+internal readonly record struct TrueTypeHintDeviceScale(int Vertical, int Horizontal);
+
 /// <summary>Supplies explicit rasterizer queries without acquiring a native rasterizer.</summary>
-internal readonly record struct TrueTypeHintTarget(int Version, TrueTypeHintQueryFlags QueryFlags, TrueTypeHintControlScale ControlScale, TrueTypeHintPreparation Preparation);
+internal readonly record struct TrueTypeHintTarget(int Version, TrueTypeHintQueryFlags QueryFlags, TrueTypeHintControlScale ControlScale, TrueTypeHintPreparation Preparation)
+{
+    /// <summary>Positive X/Y device-size ratio; immutable and storage-free, preserved across preparation and component calls.</summary>
+    internal double HorizontalRatio { get; init; } = 1;
+}
 
 internal struct TrueTypeHintPoint
 {
@@ -66,7 +74,10 @@ internal sealed class TrueTypeHinting : IDisposable
     private readonly ParserWorkCounter _work;
     private readonly CancellationToken _token;
     private TrueTypeHintTarget _target;
-    private readonly int _ppem, _scale;
+    private readonly int _ppem;
+    private readonly TrueTypeHintDeviceScale _scale;
+    private int AxisScale => _axis == TrueTypeHintAxis.X ? _scale.Horizontal : _scale.Vertical;
+    private int AxisPpem => _axis == TrueTypeHintAxis.X ? ScaleHorizontal(_ppem) : _ppem;
     private int _count, _depth, _loop = 1, _rp0, _rp1, _rp2;
     private int _deltaBase = 9, _deltaShift = 3, _cutIn = 68, _instructionControl;
     private int _scanControl, _scanType;
@@ -74,7 +85,7 @@ internal sealed class TrueTypeHinting : IDisposable
     private TrueTypeHintRound _round = TrueTypeHintRound.Grid;
     private TrueTypeHintZone _zp0 = TrueTypeHintZone.Glyph, _zp1 = TrueTypeHintZone.Glyph, _zp2 = TrueTypeHintZone.Glyph;
 
-    private TrueTypeHinting(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, int scale, TrueTypeHintTarget target, RenderBudget.BudgetReservation reservation, ParserWorkCounter work, CancellationToken token)
+    private TrueTypeHinting(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget.BudgetReservation reservation, ParserWorkCounter work, CancellationToken token)
     {
         _stack = new int[profile.Stack]; _storage = new int[profile.Storage];
         _functions = new TrueTypeHintFunction[profile.Functions]; _twilight = new TrueTypeHintPoint[profile.Twilight];
@@ -84,12 +95,12 @@ internal sealed class TrueTypeHinting : IDisposable
         _reservation = reservation; _work = work; _token = token;
     }
 
-    internal static TrueTypeHinting Create(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, int scale, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    internal static TrueTypeHinting Create(TrueTypeHintProfile profile, int[] cvt, TrueTypeHintPoint[] glyph, ushort[] ends, int ppem, TrueTypeHintDeviceScale scale, TrueTypeHintTarget target, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
         if (profile.Stack is < 0 or > 4096 || profile.Storage is < 0 or > 4096 || profile.Functions is < 0 or > 1024 || profile.Twilight is < 0 or > 4096 || cvt.Length > 4096 || glyph.Length > 32772)
             throw new SvgException(SvgErrorCode.LimitExceeded, "TrueType interpreter storage exceeds the supported bounds.");
-        if (ppem is < 0 or > 32767 || scale < 0) throw Invalid("The TrueType device scale is invalid.");
+        if (ppem is < 0 or > 32767 || scale.Vertical < 0 || scale.Horizontal < 0) throw Invalid("The TrueType device scale is invalid.");
         ValidateTarget(target);
         int previous = -1;
         foreach (ushort end in ends)
@@ -152,7 +163,7 @@ internal sealed class TrueTypeHinting : IDisposable
     {
         if (_reservation is null) throw new InvalidOperationException("The TrueType interpreter is disposed.");
         ValidateTarget(target);
-        if (target.ControlScale != _target.ControlScale || target.Preparation != _target.Preparation)
+        if (target.ControlScale != _target.ControlScale || target.Preparation != _target.Preparation || target.HorizontalRatio != _target.HorizontalRatio)
             throw Invalid("A TrueType mode transition cannot change its CVT scale or preparation policy.");
         for (int i = 0; i < _cvt.Length; i++) { _work.Consume(_token); _cvt[i] = _initialCvt[i]; }
         _target = target;
@@ -269,7 +280,7 @@ internal sealed class TrueTypeHinting : IDisposable
                 case 0x3D: _round = TrueTypeHintRound.DoubleGrid; break;
                 case 0x3E: case 0x3F:
                 {
-                    int value = _cvt[Index(Pop(), _cvt.Length)], p = Pop(); ref TrueTypeHintPoint point = ref Point(_zp0, p);
+                    int value = ReadControl(Index(Pop(), _cvt.Length)), p = Pop(); ref TrueTypeHintPoint point = ref Point(_zp0, p);
                     if (_zp0 == TrueTypeHintZone.Twilight)
                     {
                         if (_axis == TrueTypeHintAxis.X) point.OriginalX = value; else point.OriginalY = value;
@@ -281,8 +292,8 @@ internal sealed class TrueTypeHinting : IDisposable
                 }
                 case 0x42: { int value = Pop(); _storage[Index(Pop(), _storage.Length)] = value; break; }
                 case 0x43: Push(_storage[Index(Pop(), _storage.Length)]); break;
-                case 0x44: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = value; break; }
-                case 0x45: Push(_cvt[Index(Pop(), _cvt.Length)]); break;
+                case 0x44: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = StoreControl(value); break; }
+                case 0x45: Push(ReadControl(Index(Pop(), _cvt.Length))); break;
                 case 0x46: case 0x47: Push(Coordinate(Point(_zp2, Pop()), opcode == 0x47)); break;
                 case 0x49: case 0x4A:
                 {
@@ -290,11 +301,11 @@ internal sealed class TrueTypeHinting : IDisposable
                     // MD[0] (0x4A) measures the original distance; MD[1]
                     // (0x49) the fitted distance. Scale the font-unit difference once.
                     int distance = opcode == 0x4A && !_compositeGlyph && _zp0 == TrueTypeHintZone.Glyph && _zp1 == TrueTypeHintZone.Glyph
-                        ? Divide(checked((_axis == TrueTypeHintAxis.X ? p.UnscaledX - q.UnscaledX : p.UnscaledY - q.UnscaledY)), 65536, _scale)
+                        ? Divide(checked((_axis == TrueTypeHintAxis.X ? p.UnscaledX - q.UnscaledX : p.UnscaledY - q.UnscaledY)), 65536, AxisScale)
                         : checked(Coordinate(p, opcode == 0x4A) - Coordinate(q, opcode == 0x4A));
                     Push(distance); break;
                 }
-                case 0x4B: Push(_ppem); break;
+                case 0x4B: Push(AxisPpem); break;
                 case 0x50: case 0x51: case 0x52: case 0x53: case 0x54: case 0x55:
                 case 0x5A: case 0x5B: case 0x60: case 0x61: case 0x62: case 0x63:
                 {
@@ -346,7 +357,7 @@ internal sealed class TrueTypeHinting : IDisposable
                     if (kind != TrueTypeHintProgramKind.Glyph || selector == 3) _instructionControl = (_instructionControl & ~(1 << (selector - 1))) | value;
                     break;
                 }
-                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = _compositeGlyph ? value : Divide(value, 65536, _scale); break; }
+                case 0x70: { int value = Pop(); _cvt[Index(Pop(), _cvt.Length)] = _compositeGlyph ? StoreControl(value) : Divide(value, 65536, AxisScale); break; }
                 default: throw new SvgException(SvgErrorCode.UnsupportedFeature, $"TrueType hint opcode 0x{opcode:X2} is not implemented.");
             }
 
@@ -399,7 +410,7 @@ internal sealed class TrueTypeHinting : IDisposable
                     if (argument is < 0 or > 255) throw Invalid("A TrueType delta argument is invalid.");
                     int ppem = checked(_deltaBase + (op == 0x71 ? 16 : op == 0x72 ? 32 : 0) + (argument >> 4));
                     ref TrueTypeHintPoint point = ref Point(_zp0, p);
-                    if (ppem == _ppem) { int step = (argument & 15) - 8; if (step >= 0) step++; Move(ref point, step * (64 >> _deltaShift), true); }
+                    if (ppem == AxisPpem) { int step = (argument & 15) - 8; if (step >= 0) step++; Move(ref point, step * (64 >> _deltaShift), true); }
                 }
             }
             void InterpolateUntouched(TrueTypeHintAxis axis)
@@ -472,8 +483,19 @@ internal sealed class TrueTypeHinting : IDisposable
     }
     internal static void ValidateTarget(TrueTypeHintTarget target)
     {
-        if (target.Version is < 0 or > 255 || (target.QueryFlags & ~TrueTypeHintQueryFlags.All) != 0 || target.ControlScale is not TrueTypeHintControlScale.FullPrecision and not TrueTypeHintControlScale.FractionalFontUnits || target.Preparation is not TrueTypeHintPreparation.Single and not TrueTypeHintPreparation.DefaultThenTarget)
+        if (target.Version is < 0 or > 255 || (target.QueryFlags & ~TrueTypeHintQueryFlags.All) != 0 || target.ControlScale is not TrueTypeHintControlScale.FullPrecision and not TrueTypeHintControlScale.FractionalFontUnits || target.Preparation is not TrueTypeHintPreparation.Single and not TrueTypeHintPreparation.DefaultThenTarget || !double.IsFinite(target.HorizontalRatio) || target.HorizontalRatio <= 0)
             throw Invalid("The TrueType hint target is invalid.");
+    }
+    private int ReadControl(int index) => _axis == TrueTypeHintAxis.X ? ScaleHorizontal(_cvt[index]) : _cvt[index];
+    private int StoreControl(int value) => _axis == TrueTypeHintAxis.X ? ScaleRatio(value, 1 / _target.HorizontalRatio) : value;
+    private int ScaleHorizontal(int value) => ScaleRatio(value, _target.HorizontalRatio);
+    private static int ScaleRatio(int value, double ratio)
+    {
+        if (ratio == 1) return value;
+        double scaled = Math.Round(value * ratio, MidpointRounding.AwayFromZero);
+        if (!double.IsFinite(scaled) || scaled < int.MinValue || scaled > int.MaxValue)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "An anisotropic hint coordinate exceeds its signed bound.");
+        return (int)scaled;
     }
     private static TrueTypeHintZone Zone(int value) => value is 0 or 1 ? (TrueTypeHintZone)value : throw Invalid("A TrueType zone pointer is invalid.");
     private static int Index(int value, int length) => (uint)value < (uint)length ? value : throw Invalid("A TrueType index is outside its declared range.");

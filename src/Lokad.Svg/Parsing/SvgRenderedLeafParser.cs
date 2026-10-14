@@ -277,7 +277,8 @@ internal static class SvgRenderedLeafParser
                 using BudgetedParserList<SvgExtractedTextRun> textRuns = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
                 try
                 {
-                    ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, textPaint, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, textRuns, out int sourceCharacterCount, out int childNodeCount);
+                    SvgInheritedTextStyle rootTextFont = new(textStyle.Font.Family, textStyle.Font.Weight, textStyle.Font.Italic, textStyle.FontSize, whitespaceMode, textStyle.LetterSpacing, textStyle.Anchor);
+                    ReadDirectTextContent(reader, state, whitespaceMode, textStyle.LetterSpacing, textPaint, rootTextFont, SvgTextLimits.MaximumCharacters - state.TextCharacterCount, limits.MaximumNodes - state.NodeCount, limits.MaximumXmlDepth, limits.MaximumAttributesPerElement, budget, workCounter, cancellationToken, textRuns, out int sourceCharacterCount, out int childNodeCount);
                     state.TextCharacterCount += sourceCharacterCount;
                     state.NodeCount += childNodeCount;
                     foreach (SvgExtractedTextRun extracted in textRuns.AsSpan())
@@ -302,7 +303,7 @@ internal static class SvgRenderedLeafParser
                         double textMetricScale = state.OutputTextScale * (textElement.Transform.TryGetUniformScale(out double uniformTextScale) ? uniformTextScale : 1);
                         SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(textMetricScale, SvgGlyphMetricTarget.Windows, textPath is not null)
                             : OperatingSystem.IsLinux() ? new(textMetricScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
-                        try { run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, extracted.PaintSpans.Items, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
+                        try { run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, extracted.PaintSpans.Items, extracted.FontSpans.Items, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
                         catch (SvgException exception) when (exception.ErrorCode == SvgErrorCode.UnresolvedResource && state.DeferredPaintLeaves.Count > 0)
                         {
                             pendingTextOwner?.Dispose();
@@ -328,17 +329,17 @@ internal static class SvgRenderedLeafParser
                                     using (contours)
                                     {
                                         SvgTextGlyphPaint glyphPaint = run.GetGlyphPaint(glyphIndex, textElement.Presentation.Color);
-                                        SvgPositionedGlyph positionedGlyph = textElement.Transform.IsTranslation ? run.Glyphs[glyphIndex++].Translate(textElement.Transform) : run.Glyphs[glyphIndex++];
+                                        SvgGlyphFontStyle glyphFont = run.GetGlyphFont(glyphIndex);
+                                        (SvgPositionedGlyph positionedGlyph, SvgAffineTransform sourceMap) = run.GetGlyphPlacement(glyphIndex++, textElement.Transform);
                                         if (!glyphPaint.HasFill) continue;
-                                        double sourceFontSize = run.Style.FontSize;
-                                        SvgAffineTransform sourceMap = textElement.Transform.IsTranslation ? SvgAffineTransform.Identity : textElement.Transform;
-                                        if (!textElement.Transform.IsTranslation && sourceMap.TryGetUniformScale(out double sourceScale) && sourceScale > 0)
+                                        double sourceFontSize = glyphFont.FontSize;
+                                        if (sourceMap != SvgAffineTransform.Identity && sourceMap.TryGetUniformScale(out double sourceScale) && sourceScale > 0)
                                         {
                                             positionedGlyph = positionedGlyph with { X = positionedGlyph.X * sourceScale, Y = positionedGlyph.Y * sourceScale };
                                             sourceFontSize *= sourceScale;
                                             sourceMap = SvgAffineTransform.FromMatrix(sourceMap.A / sourceScale, sourceMap.B / sourceScale, sourceMap.C / sourceScale, sourceMap.D / sourceScale, sourceMap.E, sourceMap.F);
                                         }
-                                        SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, glyphPaint.Color, run.Font, positionedGlyph, sourceFontSize, sourceMap, budget);
+                                        SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, glyphPaint.Color, glyphFont.Font, positionedGlyph, sourceFontSize, sourceMap, budget);
                                         try { state.Scene.AddGeometry(SvgPaintRecording.RecordGlyph(glyph, state, workCounter, cancellationToken)); }
                                         catch { glyph.Dispose(); throw; }
                                     }
@@ -351,9 +352,10 @@ internal static class SvgRenderedLeafParser
                                     workCounter.Consume(cancellationToken);
                                     SvgTextGlyphPaint paint = run.GetGlyphPaint(glyphIndex, textElement.Presentation.Color);
                                     if (paint.Stroke is not {} strokePaint || !paint.HasStroke) continue;
-                                    SvgPositionedGlyph position = run.Glyphs[glyphIndex];
-                                    using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(run.Font, position, run.Style.FontSize, textElement.Transform, budget, workCounter, cancellationToken);
-                                    SvgGlyphGeometry geometry = SvgGlyphGeometry.CreateStroke(contours, strokePaint, run.Font, position, run.Style.FontSize, textElement.Transform, budget);
+                                    (SvgPositionedGlyph position, SvgAffineTransform glyphMap) = run.GetGlyphPlacement(glyphIndex, textElement.Transform);
+                                    SvgGlyphFontStyle glyphFont = run.GetGlyphFont(glyphIndex);
+                                    using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(glyphFont.Font, position, glyphFont.FontSize, glyphMap, budget, workCounter, cancellationToken);
+                                    SvgGlyphGeometry geometry = SvgGlyphGeometry.CreateStroke(contours, strokePaint, glyphFont.Font, position, glyphFont.FontSize, glyphMap, budget);
                                     try { state.Scene.AddGeometry(SvgPaintRecording.RecordGlyph(geometry, state, workCounter, cancellationToken)); }
                                     catch { geometry.Dispose(); throw; }
                                 }
@@ -493,11 +495,11 @@ internal static class SvgRenderedLeafParser
             }
         }
 
-        static void ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, SvgTextPaintStyle paint, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgExtractedTextRun> runs, out int sourceCharacterCount, out int childNodeCount)
+        static void ReadDirectTextContent(XmlReader element, SvgDocumentState state, SvgTextWhitespaceMode whitespaceMode, double letterSpacing, SvgTextPaintStyle paint, SvgInheritedTextStyle font, int maximumCharacters, int remainingNodeCount, int maximumXmlDepth, int maximumAttributesPerElement, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<SvgExtractedTextRun> runs, out int sourceCharacterCount, out int childNodeCount)
         {
             SvgTextPathReference? textPath = null;
             bool hasTextPaths = false;
-            using var text = new SvgTextPaintOutput(budget, letterSpacing, paint, workCounter, cancellationToken);
+            using var text = new SvgTextPaintOutput(budget, letterSpacing, paint, font, workCounter, cancellationToken);
             var normalizer = new SvgTextWhitespaceNormalizer(whitespaceMode, letterSpacing, 0, false);
             if (element.IsEmptyElement)
             {
@@ -556,7 +558,7 @@ internal static class SvgRenderedLeafParser
                     childNodeCount++;
                     if (subtree.AttributeCount > maximumAttributesPerElement) throw new SvgException(SvgErrorCode.LimitExceeded, "SVG element attributes exceed the configured limit.");
                     SvgTextWhitespaceNormalizer inheritedNormalizer = whitespaceNormalizers[^1];
-                    SvgTextSpanStyle inheritedStyle = new(inheritedNormalizer.Mode, inheritedNormalizer.LetterSpacing) { Paint = text.GetPaint(whitespaceNormalizers.Count - 1) };
+                    SvgTextSpanStyle inheritedStyle = new(inheritedNormalizer.Mode, inheritedNormalizer.LetterSpacing) { Paint = text.GetPaint(whitespaceNormalizers.Count - 1), Font = text.GetFont(whitespaceNormalizers.Count - 1) };
                     if (subtree.NamespaceURI != "http://www.w3.org/2000/svg") throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only bounded SVG text children are implemented.");
                     SvgTextSpanStyle childStyle;
                     if (subtree.LocalName == "textPath")
@@ -567,7 +569,7 @@ internal static class SvgRenderedLeafParser
                         hasTextPaths = true;
                         InlineStyle pathStyle = SvgDocumentStyleResolver.Resolve(subtree, false, state, workCounter, cancellationToken);
                         if (!pathStyle.Equals(default(InlineStyle))) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Styles on text-path children are not implemented.");
-                        childStyle = new(SvgTextSyntax.ParseWhitespaceMode(subtree, null, inheritedStyle.WhitespaceMode), inheritedStyle.LetterSpacing) { Paint = inheritedStyle.Paint };
+                        childStyle = new(SvgTextSyntax.ParseWhitespaceMode(subtree, null, inheritedStyle.WhitespaceMode), inheritedStyle.LetterSpacing) { Paint = inheritedStyle.Paint, Font = inheritedStyle.Font };
                     }
                     else
                     {
@@ -584,7 +586,7 @@ internal static class SvgRenderedLeafParser
                         bool ownsPositioningSpan = positionOffset.HasValue;
                         if (positionOffset is SvgTextPositionOffset offset) text.EnterPositioningSpan(offset, childScopeDepth, workCounter, cancellationToken);
                         whitespaceNormalizers.Add(new SvgTextWhitespaceNormalizer(childStyle.WhitespaceMode, childStyle.LetterSpacing, childScopeDepth, ownsPositioningSpan));
-                        text.EnterPaintSpan(childStyle.Paint);
+                        text.EnterStyleSpan(childStyle.Paint, childStyle.Font);
                     }
                     else if (subtree.LocalName == "textPath") textPath = null;
                     continue;

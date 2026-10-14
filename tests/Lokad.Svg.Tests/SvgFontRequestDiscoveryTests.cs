@@ -176,7 +176,7 @@ public sealed class SvgFontRequestDiscoveryTests
     }
 
     [Fact]
-    public void Does_not_discover_fonts_from_text_with_unrenderable_span_children()
+    public void Discovers_both_styles_for_the_original_italic_span()
     {
         SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover("""
             <svg xmlns="http://www.w3.org/2000/svg" font-family="Root">
@@ -184,7 +184,7 @@ public sealed class SvgFontRequestDiscoveryTests
             </svg>
             """u8.ToArray(), CancellationToken.None);
 
-        Assert.Empty(requests);
+        Assert.Equal(new[] { ("Example", 700, false), ("Example", 700, true) }, requests.Select(request => (request.Family, request.Weight, request.Italic)));
     }
 
     [Fact]

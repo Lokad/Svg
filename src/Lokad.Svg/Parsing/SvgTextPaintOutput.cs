@@ -7,28 +7,36 @@ using Lokad.Svg.Rendering;
 internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
 {
     private readonly SvgTextLayoutBuffer _layout;
-    private readonly BudgetedParserList<SvgTextPaintStyle> _scopes;
+    private readonly BudgetedParserList<(SvgTextPaintStyle Paint, SvgInheritedTextStyle Font)> _scopes;
     private readonly RenderBudget _budget;
     private readonly ParserWorkCounter _workCounter;
     private readonly CancellationToken _cancellationToken;
     private readonly SvgTextGlyphPaint _defaultPaint;
     private BudgetedParserList<SvgTextPaintSpan>? _spans;
+    private BudgetedParserList<SvgTextFontSpan>? _fontSpans;
+    private readonly SvgInheritedTextStyle _defaultFont;
     private int _length;
 
     internal SvgTextPaintOutput(RenderBudget budget, double letterSpacing, SvgTextPaintStyle paint, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+        : this(budget, letterSpacing, paint, SvgInheritedTextStyle.Default, workCounter, cancellationToken) { }
+
+    internal SvgTextPaintOutput(RenderBudget budget, double letterSpacing, SvgTextPaintStyle paint, SvgInheritedTextStyle font, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         _budget = budget;
         _workCounter = workCounter;
         _cancellationToken = cancellationToken;
         _defaultPaint = paint.GlyphPaint;
+        _defaultFont = font;
         _layout = new(budget, letterSpacing, workCounter, cancellationToken);
         _scopes = new(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-        try { _scopes.Add(paint); }
+        try { _scopes.Add((paint, font)); }
         catch { _scopes.Dispose(); _layout.Dispose(); throw; }
     }
 
-    internal SvgTextPaintStyle GetPaint(int scopeDepth) => _scopes[scopeDepth];
-    internal void EnterPaintSpan(SvgTextPaintStyle paint) => _scopes.Add(paint);
+    internal SvgTextPaintStyle GetPaint(int scopeDepth) => _scopes[scopeDepth].Paint;
+    internal SvgInheritedTextStyle GetFont(int scopeDepth) => _scopes[scopeDepth].Font;
+    internal void EnterPaintSpan(SvgTextPaintStyle paint) => EnterStyleSpan(paint, _scopes[^1].Font);
+    internal void EnterStyleSpan(SvgTextPaintStyle paint, SvgInheritedTextStyle font) => _scopes.Add((paint, font));
     internal void ExitPaintSpan() => _scopes.RemoveLast();
 
     public void Append(ReadOnlySpan<char> value, double letterSpacing, int scopeDepth, int maximumLength, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -43,6 +51,17 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         SvgTextGlyphPaint paint = style.GlyphPaint;
         int start = _length;
         _length = checked(start + value.Length);
+        SvgInheritedTextStyle font = GetFont(scopeDepth);
+        if (_fontSpans is not null || !SameFont(font, _defaultFont))
+        {
+            if (_fontSpans is null)
+            {
+                _fontSpans = new(_budget, SvgMemoryCategory.Parser, _workCounter, _cancellationToken);
+                if (start != 0) _fontSpans.Add(new(0, start, _defaultFont));
+            }
+            if (_fontSpans.Count != 0 && SameFont(_fontSpans[^1].Font, font)) _fontSpans[^1] = _fontSpans[^1] with { End = _length };
+            else _fontSpans.Add(new(start, _length, font));
+        }
         if (_spans is null && paint == _defaultPaint) return;
         if (_spans is null)
         {
@@ -52,6 +71,9 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
         if (_spans.Count != 0 && _spans[^1].Paint == paint)
             _spans[^1] = _spans[^1] with { End = _length };
         else _spans.Add(new(start, _length, paint));
+
+        static bool SameFont(SvgInheritedTextStyle left, SvgInheritedTextStyle right)
+            => string.Equals(left.Family, right.Family, StringComparison.OrdinalIgnoreCase) && left.Weight == right.Weight && left.Italic == right.Italic && left.FontSize == right.FontSize;
     }
 
     public void EnterPositioningSpan(SvgTextPositionOffset offset, int scopeDepth, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -62,20 +84,25 @@ internal sealed class SvgTextPaintOutput : IDisposable, ISvgTextOutput
     {
         if (_scopes.Count != 1) throw new InvalidOperationException("Text paint scopes must be closed before layout transfer.");
         BudgetedTextLayout layout = _layout.Detach();
+        OwnedParserArray<SvgTextPaintSpan> spans = new([], null);
+        OwnedParserArray<SvgTextFontSpan> fonts = new([], null);
         try
         {
-            OwnedParserArray<SvgTextPaintSpan> spans = _spans is null ? new([], null) : _spans.Detach();
+            spans = _spans is null ? new([], null) : _spans.Detach();
+            fonts = _fontSpans is null ? new([], null) : _fontSpans.Detach();
             _spans = null;
+            _fontSpans = null;
             _length = 0;
-            return new(layout, path, spans);
+            return new(layout, path, spans, fonts);
         }
-        catch { layout.Dispose(); throw; }
+        catch { fonts.Dispose(); spans.Dispose(); layout.Dispose(); throw; }
     }
 
     public void Dispose()
     {
         _spans?.Dispose();
         _spans = null;
+        _fontSpans?.Dispose(); _fontSpans = null;
         _scopes.Dispose();
         _layout.Dispose();
     }

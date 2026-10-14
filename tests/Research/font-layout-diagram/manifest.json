@@ -67,7 +67,6 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "expectedError": "UnsupportedFeature",
       "captureTransport": "data-url-image"
     },
     {
@@ -120,7 +119,6 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "expectedError": "UnsupportedFeature",
       "captureTransport": "blob-image"
     },
     {
@@ -173,7 +171,6 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "expectedError": "UnsupportedFeature",
       "captureTransport": "data-url-image"
     },
     {
@@ -226,7 +223,6 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "expectedError": "UnsupportedFeature",
       "captureTransport": "blob-image"
     },
     {
@@ -279,7 +275,6 @@
         }
       ],
       "platformReferencesByteIdentical": false,
-      "expectedError": "UnsupportedFeature",
       "captureTransport": "data-url-image"
     }
   ],

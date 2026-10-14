@@ -60,6 +60,7 @@ internal static class SvgTextPathLayout
             foreach (SvgPositionedGlyph glyph in pending.Run.Glyphs)
             {
                 work.Consume(token);
+                SvgGlyphFontStyle glyphFont = pending.Run.GetGlyphFont(glyphIndex);
                 SvgTextGlyphPaint paint = pending.Run.GetGlyphPaint(glyphIndex++, pending.Color);
                 if (!paint.HasFill) continue;
                 double distance = offset + glyph.X;
@@ -84,15 +85,15 @@ internal static class SvgTextPathLayout
                 else if (!measured.IsHorizontal && (OperatingSystem.IsWindows() || OperatingSystem.IsLinux()))
                 {
                     SvgGlyphDeviceMetrics metrics = new(state.OutputTextScale, OperatingSystem.IsWindows() ? SvgGlyphMetricTarget.Windows : SvgGlyphMetricTarget.Linux, true);
-                    glyphMap = metrics.PlaceTextPathPaint(glyphMap, glyph.Advance / 2, glyph.Y, pending.Run.Style.FontSize, pending.Run.Font.Metrics);
+                    glyphMap = metrics.PlaceTextPathPaint(glyphMap, glyph.Advance / 2, glyph.Y, glyphFont.FontSize, glyphFont.Font.Metrics);
                 }
                 if (pending.Placement != SvgAffineTransform.Identity)
                 {
                     if (glyphMap == SvgAffineTransform.Identity) placed = placed.Translate(pending.Placement);
                     else glyphMap = pending.Placement.ComposeChecked(glyphMap);
                 }
-                using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(pending.Run.Font, placed, pending.Run.Style.FontSize, glyphMap, state.Budget, work, token);
-                SvgGlyphGeometry geometry = SvgGlyphGeometry.Create(contours, paint.Color, pending.Run.Font, placed, pending.Run.Style.FontSize, glyphMap, state.Budget);
+                using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(glyphFont.Font, placed, glyphFont.FontSize, glyphMap, state.Budget, work, token);
+                SvgGlyphGeometry geometry = SvgGlyphGeometry.Create(contours, paint.Color, glyphFont.Font, placed, glyphFont.FontSize, glyphMap, state.Budget);
                 try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(geometry)); }
                 catch { geometry.Dispose(); throw; }
             }

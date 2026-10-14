@@ -456,11 +456,14 @@ internal static class SvgGlyphLcdCoverage
                 double qa = (horizontal ? q : p) / 2, qb = (horizontal ? fy : fx) - qa + r * k;
                 double qc = f + (horizontal ? fx : fy) * k + (horizontal ? p : q) * k * (k - 1) / 2;
                 double origin = horizontal ? -firstY / 64 : firstX / 64, direction = horizontal ? -sy : sx;
-                if (qa == 0) return qb == 0 ? crossing : origin - direction * qc / qb;
+                if (qa == 0) return qb == 0 ? crossing : Math.Clamp(origin - direction * qc / qb, Math.Min(a.X, c.X), Math.Max(a.X, c.X));
                 double discriminant = qb * qb - 4 * qa * qc;
                 if (discriminant < 0) return crossing;
                 double root = Math.Sqrt(discriminant), first = origin + direction * (-qb + root) / (2 * qa), second = origin + direction * (-qb - root) / (2 * qa);
-                return Math.Abs(first - crossing) <= Math.Abs(second - crossing) ? first : second;
+                // Coefficient reduction must not extend a monotonic leaf past
+                // its endpoint. The native scan bounds the reduced equation by
+                // that span, including an exact center beside a curved counter.
+                return Math.Clamp(Math.Abs(first - crossing) <= Math.Abs(second - crossing) ? first : second, Math.Min(a.X, c.X), Math.Max(a.X, c.X));
 
                 static int Bits(long value) => value == 0 ? 0 : System.Numerics.BitOperations.Log2((ulong)value) + 1;
             }

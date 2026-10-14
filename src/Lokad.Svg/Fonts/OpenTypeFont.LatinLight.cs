@@ -19,7 +19,7 @@ internal static partial class OpenTypeFont
             using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, null, null, budget, work, cancellationToken);
             Span<LatinAlignmentZone> compositeZones = stackalloc LatinAlignmentZone[6];
             int compositeZoneCount = GetLatinAlignmentZones(bytes, metrics, compositeZones, budget, work, cancellationToken);
-            LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, budget, work, cancellationToken);
+            LatinLightHinting.Hint(outline.Points, outline.Ends, compositeZones[..compositeZoneCount], metrics.UnitsPerEm, deviceSize, GetMaximumStemWidth(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, cancellationToken);
             BuildQuadraticContours(outline.Points, outline.Ends, compositeSegments, true, TrueTypeImpliedPointRounding.TowardZero, work, cancellationToken);
             return compositeSegments.Detach();
@@ -28,10 +28,23 @@ internal static partial class OpenTypeFont
         using OpenTypeGlyphPointStorage points = GetSimpleGlyphPoints(bytes, structure.Value, budget, work, cancellationToken);
         Span<LatinAlignmentZone> zones = stackalloc LatinAlignmentZone[6];
         int zoneCount = GetLatinAlignmentZones(bytes, metrics, zones, budget, work, cancellationToken);
-        LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, budget, work, cancellationToken);
+        LatinLightHinting.Hint(points.Points, structure.Value.ContourEndpoints, zones[..zoneCount], metrics.UnitsPerEm, deviceSize, GetMaximumStemWidth(bytes, metrics, budget, work, cancellationToken), budget, work, cancellationToken);
         using var segments = new OpenTypeSegmentAccumulator(budget, GlyphDecoderBudgetPhase.SimpleSegmentCapacity, GlyphDecoderBudgetPhase.SimpleSegmentExact, GlyphDecoderBudgetPhase.SimpleContourBoundaryCapacity, GlyphDecoderBudgetPhase.SimpleContourBoundaryExact, work, cancellationToken);
         BuildQuadraticContours(points.Points, structure.Value.ContourEndpoints, segments, true, TrueTypeImpliedPointRounding.TowardZero, work, cancellationToken);
         return segments.Detach();
+    }
+
+    /// <summary>Measures the largest quantized horizontal stem of the first available Latin standard glyph under existing point/work bounds.</summary>
+    private static int GetMaximumStemWidth(ReadOnlyMemory<byte> bytes, OpenTypeFontMetrics metrics, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        foreach (char scalar in "oO0")
+        {
+            ushort index = GetGlyphIndex(bytes, scalar, metrics, work, token);
+            if (index == 0) continue;
+            using OpenTypeGlyphPointOutline sample = GetGlyphPointOutline(bytes, index, metrics, null, null, budget, work, token);
+            return LatinLightHinting.MeasureStemWidth(sample.Points, sample.Ends, metrics.UnitsPerEm, budget, work, token);
+        }
+        return 0;
     }
 
     /// <summary>Samples at most six Latin alignment zones into caller-owned storage, borrowing one face and charging each decoded glyph.</summary>
@@ -123,6 +136,9 @@ internal static class LatinLightHinting
     }
 
     internal static void Hint(Span<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, ReadOnlySpan<LatinAlignmentZone> zones, int unitsPerEm, double size, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        => Hint(source, ends, zones, unitsPerEm, size, 0, budget, work, token);
+
+    internal static void Hint(Span<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, ReadOnlySpan<LatinAlignmentZone> zones, int unitsPerEm, double size, int maximumStemWidth, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         if (!double.IsFinite(size) || size <= 0 || size > 32767) throw Limit("The hinted font size exceeds the native coordinate range.");
         work.Consume(token);
@@ -169,7 +185,7 @@ internal static class LatinLightHinting
             using BudgetedParserList<HintSegment> segments = new(budget, SvgMemoryCategory.Geometry, work, token);
             BuildSegments(points, ends, segments, unitsPerEm, work, token);
             int major = Orientation(points, ends, work, token) > 0 ? 1 : -1;
-            LinkSegments(segments, major, unitsPerEm, work, token);
+            LinkSegments(segments, major, unitsPerEm, maximumStemWidth, work, token);
             using BudgetedParserList<HintEdge> edges = new(budget, SvgMemoryCategory.Geometry, work, token);
             BuildEdges(segments, edges, yScale, work, token);
             FitEdges(edges, zones, yScale, unitsPerEm, major, work, token);
@@ -186,150 +202,6 @@ internal static class LatinLightHinting
             int combined = Hypot(inX + outX, inY + outY);
             return Hypot(inX, inY) + Hypot(outX, outY) - combined < (combined >> 4);
             static int Hypot(int x, int y) { x = Math.Abs(x); y = Math.Abs(y); return x > y ? x + (3 * y >> 3) : y + (3 * x >> 3); }
-        }
-
-        // Near points contribute to one directional vector and keep their
-        // original contour links for interpolation and outline replay.
-        static void ComputeDirections(HintPoint[] points, ReadOnlySpan<ushort> ends, int unitsPerEm, ParserWorkCounter work, CancellationToken token)
-        {
-            int nearLimit = 20 * unitsPerEm / 2048, first = 0;
-            foreach (ushort last in ends)
-            {
-                int start = first, current = start, previous = points[start].Previous;
-                while (previous != first)
-                {
-                    work.Consume(token);
-                    if (Math.Abs(points[current].FontX - points[previous].FontX) + Math.Abs(points[current].FontY - points[previous].FontY) >= 2 * nearLimit - 1) break;
-                    current = previous; previous = points[current].Previous;
-                }
-                start = current;
-                int anchor = start, next = start, dx = 0, dy = 0;
-                points[start].PreviousNonNear = points[start].NextNonNear = start;
-                do
-                {
-                    work.Consume(token);
-                    current = next; next = points[current].Next;
-                    dx += points[next].FontX - points[current].FontX; dy += points[next].FontY - points[current].FontY;
-                    if (Math.Abs(dx) + Math.Abs(dy) < nearLimit)
-                    {
-                        points[next].Weak = true;
-                        continue;
-                    }
-                    int direction = Direction(dx, dy);
-                    points[next].In = direction; points[next].PreviousNonNear = anchor;
-                    points[anchor].Out = direction; points[anchor].NextNonNear = next;
-                    for (int i = points[anchor].Next; i != next; i = points[i].Next)
-                    {
-                        work.Consume(token);
-                        points[i].In = points[i].Out = direction;
-                    }
-                    anchor = next; points[anchor].NextNonNear = start; points[start].PreviousNonNear = anchor;
-                    dx = dy = 0;
-                } while (next != start);
-                first = last + 1;
-            }
-            for (int i = 0; i < points.Length; i++)
-            {
-                work.Consume(token);
-                ref HintPoint point = ref points[i];
-                if (point.Weak || point.In != 0 || point.Out != 0) continue;
-                HintPoint before = points[point.PreviousNonNear], after = points[point.NextNonNear];
-                int inX = point.FontX - before.FontX, inY = point.FontY - before.FontY;
-                int outX = after.FontX - point.FontX, outY = after.FontY - point.FontY;
-                if ((inX ^ outX) >= 0 && (inY ^ outY) >= 0)
-                {
-                    point.Weak = true;
-                    points[point.PreviousNonNear].NextNonNear = point.NextNonNear;
-                    points[point.NextNonNear].PreviousNonNear = point.PreviousNonNear;
-                }
-            }
-        }
-
-
-        static void BuildSegments(HintPoint[] points, ReadOnlySpan<ushort> ends, BudgetedParserList<HintSegment> segments, int unitsPerEm, ParserWorkCounter work, CancellationToken token)
-        {
-            int first = 0;
-            foreach (ushort last in ends)
-            {
-                int start = first;
-                if (Math.Abs(points[first].Out) == 1 && Math.Abs(points[last].Out) == 1)
-                {
-                    do
-                    {
-                        work.Consume(token);
-                        start = points[start].Previous;
-                        if (Math.Abs(points[start].Out) != 1) { start = points[start].Next; break; }
-                    } while (start != first);
-                }
-                int index = start;
-                do
-                {
-                    work.Consume(token);
-                    int direction = points[index].Out;
-                    if (Math.Abs(direction) != 1) { index = points[index].Next; continue; }
-                    if (segments.Count == 1000) throw Limit("The Latin hint segment count exceeds the supported limit.");
-                    int begin = index, minY = points[index].FontY, maxY = minY, minX = points[index].FontX, maxX = minX;
-                    int minPoint = index, maxPoint = index, minOn = int.MaxValue, maxOn = int.MinValue;
-                    if (points[index].OnCurve) minOn = maxOn = points[index].FontX;
-                    do
-                    {
-                        work.Consume(token);
-                        index = points[index].Next;
-                        HintPoint point = points[index];
-                        minY = Math.Min(minY, point.FontY); maxY = Math.Max(maxY, point.FontY);
-                        if (point.FontX < minX) { minX = point.FontX; minPoint = index; }
-                        if (point.FontX > maxX) { maxX = point.FontX; maxPoint = index; }
-                        if (point.OnCurve) { minOn = Math.Min(minOn, point.FontX); maxOn = Math.Max(maxOn, point.FontX); }
-                    } while (index != start && points[index].Out == direction);
-                    segments.Add(new(begin, index, direction, (minY + maxY) >> 1, (maxY - minY) >> 1, minX, maxX,
-                        !(minOn != int.MaxValue && maxOn - minOn > unitsPerEm / 14) && (!points[minPoint].OnCurve || !points[maxPoint].OnCurve)));
-                } while (index != start);
-                first = last + 1;
-            }
-        }
-
-        static long Orientation(HintPoint[] points, ReadOnlySpan<ushort> ends, ParserWorkCounter work, CancellationToken token)
-        {
-            long area = 0;
-            int first = 0;
-            foreach (ushort last in ends)
-            {
-                HintPoint previous = points[last];
-                for (int i = first; i <= last; i++)
-                {
-                    work.Consume(token);
-                    HintPoint point = points[i];
-                    area = checked(area + (long)(point.FontY - previous.FontY) * (point.FontX + previous.FontX));
-                    previous = point;
-                }
-                first = last + 1;
-            }
-            return area;
-        }
-
-        static void LinkSegments(BudgetedParserList<HintSegment> segments, int major, int unitsPerEm, ParserWorkCounter work, CancellationToken token)
-        {
-            int threshold = 8 * unitsPerEm / 2048, lengthScore = 6000 * unitsPerEm / 2048;
-            for (int i = 0; i < segments.Count; i++)
-            {
-                if (segments[i].Direction != major) continue;
-                for (int j = 0; j < segments.Count; j++)
-                {
-                    work.Consume(token);
-                    HintSegment first = segments[i], second = segments[j];
-                    int length = Math.Min(first.MaxX, second.MaxX) - Math.Max(first.MinX, second.MinX);
-                    if (first.Direction != -second.Direction || second.Position <= first.Position || length < Math.Max(1, threshold)) continue;
-                    int score = second.Position - first.Position + lengthScore / length;
-                    if (score < first.Score) { first.Score = score; first.Link = j; segments[i] = first; }
-                    if (score < second.Score) { second.Score = score; second.Link = i; segments[j] = second; }
-                }
-            }
-            for (int i = 0; i < segments.Count; i++)
-            {
-                work.Consume(token);
-                HintSegment segment = segments[i];
-                if (segment.Link >= 0 && segments[segment.Link].Link != i) { segment.Serif = segments[segment.Link].Link; segment.Link = -1; segments[i] = segment; }
-            }
         }
 
         static void BuildEdges(BudgetedParserList<HintSegment> segments, BudgetedParserList<HintEdge> edges, int scale, ParserWorkCounter work, CancellationToken token)
@@ -530,6 +402,209 @@ internal static class LatinLightHinting
             }
         }
 
+    }
+
+    /// <summary>Measures at most sixteen unscaled linked widths; scratch ownership, work and cancellation match glyph fitting.</summary>
+    internal static int MeasureStemWidth(ReadOnlySpan<OpenTypeGlyphPoint> source, ReadOnlySpan<ushort> ends, int unitsPerEm, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        using RenderBudget.BudgetReservation owner = budget.Reserve(checked(32L + source.Length * 64L), SvgMemoryCategory.Geometry);
+        HintPoint[] points = new HintPoint[source.Length];
+        int first = 0;
+        foreach (ushort last in ends)
+        {
+            for (int i = first; i <= last; i++)
+            {
+                work.Consume(token);
+                OpenTypeGlyphPoint point = source[i];
+                if (point.X is < short.MinValue or > short.MaxValue || point.Y is < short.MinValue or > short.MaxValue) throw Limit("The stem outline exceeds the native font-unit range.");
+                points[i] = new(point.X, point.Y, point.X, point.Y, i == first ? last : i - 1, i == last ? first : i + 1, point.IsOnCurve);
+            }
+            first = last + 1;
+        }
+        ComputeDirections(points, ends, unitsPerEm, work, token);
+        using BudgetedParserList<HintSegment> segments = new(budget, SvgMemoryCategory.Geometry, work, token);
+        BuildSegments(points, ends, segments, unitsPerEm, work, token);
+        int major = Orientation(points, ends, work, token) > 0 ? 1 : -1;
+        LinkSegments(segments, major, unitsPerEm, 0, work, token);
+        Span<int> widths = stackalloc int[16];
+        int count = 0;
+        for (int i = 0; i < segments.Count && count < widths.Length; i++)
+        {
+            work.Consume(token);
+            int link = segments[i].Link;
+            if (link > i && segments[link].Link == i) widths[count++] = Math.Abs(segments[link].Position - segments[i].Position);
+        }
+        if (count == 0) return 0;
+        Span<int> measured = widths[..count];
+        measured.Sort();
+        // Retain the pinned native clustering arithmetic, including its absolute
+        // end-index divisor, before selecting the largest surviving width.
+        int current = 0, value = measured[0], lastIndex = count - 1;
+        for (int index = 1; index < count; index++)
+        {
+            work.Consume(token);
+            if (measured[index] - value <= unitsPerEm / 100 && index != lastIndex) continue;
+            if (measured[index] - value <= unitsPerEm / 100 && index == lastIndex) index++;
+            int sum = 0;
+            for (int at = current; at < index; at++) { sum += measured[at]; measured[at] = 0; }
+            measured[current] = sum / index;
+            if (index < lastIndex) { current = index + 1; value = measured[current]; }
+        }
+        int maximum = 0;
+        foreach (int width in measured) maximum = Math.Max(maximum, width);
+        return maximum;
+
+    }
+
+    private static long Orientation(HintPoint[] points, ReadOnlySpan<ushort> ends, ParserWorkCounter work, CancellationToken token)
+    {
+        long area = 0;
+        int first = 0;
+        foreach (ushort last in ends)
+        {
+            HintPoint previous = points[last];
+            for (int i = first; i <= last; i++)
+            {
+                work.Consume(token);
+                HintPoint point = points[i];
+                area = checked(area + (long)(point.FontY - previous.FontY) * (point.FontX + previous.FontX));
+                previous = point;
+            }
+            first = last + 1;
+        }
+        return area;
+    }
+
+    // Near points share directional vectors while contour links remain available
+    // for interpolation and outline replay.
+    private static void ComputeDirections(HintPoint[] points, ReadOnlySpan<ushort> ends, int unitsPerEm, ParserWorkCounter work, CancellationToken token)
+    {
+        int nearLimit = 20 * unitsPerEm / 2048, first = 0;
+        foreach (ushort last in ends)
+        {
+            int start = first, current = start, previous = points[start].Previous;
+            while (previous != first)
+            {
+                work.Consume(token);
+                if (Math.Abs(points[current].FontX - points[previous].FontX) + Math.Abs(points[current].FontY - points[previous].FontY) >= 2 * nearLimit - 1) break;
+                current = previous; previous = points[current].Previous;
+            }
+            start = current;
+            int anchor = start, next = start, dx = 0, dy = 0;
+            points[start].PreviousNonNear = points[start].NextNonNear = start;
+            do
+            {
+                work.Consume(token);
+                current = next; next = points[current].Next;
+                dx += points[next].FontX - points[current].FontX; dy += points[next].FontY - points[current].FontY;
+                if (Math.Abs(dx) + Math.Abs(dy) < nearLimit)
+                {
+                    points[next].Weak = true;
+                    continue;
+                }
+                int direction = Direction(dx, dy);
+                points[next].In = direction; points[next].PreviousNonNear = anchor;
+                points[anchor].Out = direction; points[anchor].NextNonNear = next;
+                for (int i = points[anchor].Next; i != next; i = points[i].Next)
+                {
+                    work.Consume(token);
+                    points[i].In = points[i].Out = direction;
+                }
+                anchor = next; points[anchor].NextNonNear = start; points[start].PreviousNonNear = anchor;
+                dx = dy = 0;
+            } while (next != start);
+            first = last + 1;
+        }
+        for (int i = 0; i < points.Length; i++)
+        {
+            work.Consume(token);
+            ref HintPoint point = ref points[i];
+            if (point.Weak || point.In != 0 || point.Out != 0) continue;
+            HintPoint before = points[point.PreviousNonNear], after = points[point.NextNonNear];
+            int inX = point.FontX - before.FontX, inY = point.FontY - before.FontY;
+            int outX = after.FontX - point.FontX, outY = after.FontY - point.FontY;
+            if ((inX ^ outX) >= 0 && (inY ^ outY) >= 0)
+            {
+                point.Weak = true;
+                points[point.PreviousNonNear].NextNonNear = point.NextNonNear;
+                points[point.NextNonNear].PreviousNonNear = point.PreviousNonNear;
+            }
+        }
+    }
+
+    private static void BuildSegments(HintPoint[] points, ReadOnlySpan<ushort> ends, BudgetedParserList<HintSegment> segments, int unitsPerEm, ParserWorkCounter work, CancellationToken token)
+    {
+        int first = 0;
+        foreach (ushort last in ends)
+        {
+            int start = first;
+            if (Math.Abs(points[first].Out) == 1 && Math.Abs(points[last].Out) == 1)
+            {
+                do
+                {
+                    work.Consume(token);
+                    start = points[start].Previous;
+                    if (Math.Abs(points[start].Out) != 1) { start = points[start].Next; break; }
+                } while (start != first);
+            }
+            int index = start;
+            do
+            {
+                work.Consume(token);
+                int direction = points[index].Out;
+                if (Math.Abs(direction) != 1) { index = points[index].Next; continue; }
+                if (segments.Count == 1000) throw Limit("The Latin hint segment count exceeds the supported limit.");
+                int begin = index, minY = points[index].FontY, maxY = minY, minX = points[index].FontX, maxX = minX;
+                int minPoint = index, maxPoint = index, minOn = int.MaxValue, maxOn = int.MinValue;
+                if (points[index].OnCurve) minOn = maxOn = points[index].FontX;
+                do
+                {
+                    work.Consume(token);
+                    index = points[index].Next;
+                    HintPoint point = points[index];
+                    minY = Math.Min(minY, point.FontY); maxY = Math.Max(maxY, point.FontY);
+                    if (point.FontX < minX) { minX = point.FontX; minPoint = index; }
+                    if (point.FontX > maxX) { maxX = point.FontX; maxPoint = index; }
+                    if (point.OnCurve) { minOn = Math.Min(minOn, point.FontX); maxOn = Math.Max(maxOn, point.FontX); }
+                } while (index != start && points[index].Out == direction);
+                segments.Add(new(begin, index, direction, (minY + maxY) >> 1, (maxY - minY) >> 1, minX, maxX,
+                    !(minOn != int.MaxValue && maxOn - minOn > unitsPerEm / 14) && (!points[minPoint].OnCurve || !points[maxPoint].OnCurve)));
+            } while (index != start);
+            first = last + 1;
+        }
+    }
+
+    private static void LinkSegments(BudgetedParserList<HintSegment> segments, int major, int unitsPerEm, int maximumStemWidth, ParserWorkCounter work, CancellationToken token)
+    {
+        int threshold = 8 * unitsPerEm / 2048, lengthScore = 6000 * unitsPerEm / 2048;
+        for (int i = 0; i < segments.Count; i++)
+        {
+            if (segments[i].Direction != major) continue;
+            for (int j = 0; j < segments.Count; j++)
+            {
+                work.Consume(token);
+                HintSegment first = segments[i], second = segments[j];
+                int length = Math.Min(first.MaxX, second.MaxX) - Math.Max(first.MinX, second.MinX);
+                if (first.Direction != -second.Direction || second.Position <= first.Position || length < Math.Max(1, threshold)) continue;
+                int distance = second.Position - first.Position;
+                int demerit = distance;
+                if (maximumStemWidth > 0)
+                {
+                    int delta = (distance << 10) / maximumStemWidth - 1024;
+                    demerit = delta > 10000 ? 32000 : delta > 0 ? delta * delta / 3000 : 0;
+                }
+                int score = demerit + lengthScore / length;
+                if (score < first.Score) { first.Score = score; first.Link = j; segments[i] = first; }
+                if (score < second.Score) { second.Score = score; second.Link = i; segments[j] = second; }
+            }
+        }
+        for (int i = 0; i < segments.Count; i++)
+        {
+            work.Consume(token);
+            HintSegment segment = segments[i];
+            if (segment.Link >= 0 && segments[segment.Link].Link != i) { segment.Serif = segments[segment.Link].Link; segment.Link = -1; segments[i] = segment; }
+        }
     }
 
     private static int Direction(int x, int y) => Math.Abs(x) > 14 * Math.Abs(y) ? Math.Sign(x) : Math.Abs(y) > 14 * Math.Abs(x) ? 2 * Math.Sign(y) : 0;

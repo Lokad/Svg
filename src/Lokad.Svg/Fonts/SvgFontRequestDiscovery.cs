@@ -43,6 +43,7 @@ internal static class SvgFontRequestDiscovery
         using var requestKeys = new BudgetedParserList<TextRequestKey>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var inheritedLevels = new BudgetedParserList<TextStyle>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var directTextLevels = new BudgetedParserList<DiscoveryCandidate>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+        using var spanCandidates = new BudgetedParserList<DiscoveryCandidate>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var whitespaceLevels = new BudgetedParserList<SvgTextWhitespaceMode>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var eligibleLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
         using var groupLevels = new BudgetedParserList<bool>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -69,6 +70,7 @@ internal static class SvgFontRequestDiscovery
             int groupDepth = 0;
             int skipDepth = -1;
             int activeCandidateLevel = -1;
+            bool activeTextPainted = false;
             int textPathDepth = -1;
             double? rootWidth = null;
             double? rootHeight = null;
@@ -96,7 +98,7 @@ internal static class SvgFontRequestDiscovery
                     InlineStyle tspanStyleSheet = insideDirectText && isSvgElement && reader.LocalName == "tspan" ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
                     bool admittedTextSpan = false;
                     SvgTextSpanStyle? parsedTextSpan = null;
-                    if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0) { Paint = inheritedLevels[^1].TextPaint }, tspanStyleSheet, workCounter, cancellationToken, out SvgTextSpanStyle spanStyle))
+                    if (insideDirectText && isSvgElement && reader.LocalName == "tspan" && SvgTextSyntax.TryParseTspanStyle(reader, new SvgTextSpanStyle(inheritedWhitespaceMode, 0) { Paint = inheritedLevels[^1].TextPaint, Font = inheritedLevels[^1].Text }, tspanStyleSheet, workCounter, cancellationToken, out SvgTextSpanStyle spanStyle))
                     {
                         childWhitespaceMode = spanStyle.WhitespaceMode;
                         admittedTextSpan = textPathDepth < 0 || spanStyle.PositionOffset is not SvgTextPositionOffset offset || offset.X is null && offset.Y is null;
@@ -227,7 +229,7 @@ internal static class SvgFontRequestDiscovery
                     if (!sterile && parsedTextSpan is SvgTextSpanStyle parsedSpan)
                     {
                         SvgTextPaintStyle paint = parsedSpan.Paint;
-                        style = style with { Paint = paint.Paint, IsDisplayed = paint.IsDisplayed, IsVisible = paint.IsVisible, Stroke = paint.Stroke,
+                        style = style with { Text = parsedSpan.Font, Paint = paint.Paint, IsDisplayed = paint.IsDisplayed, IsVisible = paint.IsVisible, Stroke = paint.Stroke,
                             StrokeStyle = paint.StrokeStyle, PaintOrder = paint.PaintOrder, NonScalingStroke = paint.NonScalingStroke };
                     }
                     if (!sterile && inertDepth < 0 && isSvgElement && (SvgStructuralVocabulary.IsInertContainer(reader.LocalName) || symbolDefinition) && !reader.IsEmptyElement) inertDepth = reader.Depth;
@@ -268,7 +270,7 @@ internal static class SvgFontRequestDiscovery
                         bool group = isSvgElement && SvgStructuralVocabulary.IsGroupContainer(reader.LocalName);
                         groupLevels.Add(group);
                         if (group) groupDepth++;
-                        if (candidateState.HasRequest) activeCandidateLevel = directTextLevels.Count - 1;
+                        if (candidateState.HasRequest) { activeCandidateLevel = directTextLevels.Count - 1; activeTextPainted = false; }
                     }
                 }
                 else if (reader.NodeType == XmlNodeType.EndElement)
@@ -294,7 +296,10 @@ internal static class SvgFontRequestDiscovery
                         if (wasGroup) groupDepth--;
                         if (candidateState.HasRequest)
                         {
-                            AddCandidate(candidateState, requestKeys, workCounter, cancellationToken);
+                            if (activeTextPainted) AddCandidate(candidateState, requestKeys, workCounter, cancellationToken);
+                            if (activeTextPainted && !candidateState.HasChildElement)
+                                foreach (DiscoveryCandidate span in spanCandidates.AsSpan()) AddCandidate(span, requestKeys, workCounter, cancellationToken);
+                            while (spanCandidates.Count != 0) spanCandidates.RemoveLast();
                             activeCandidateLevel = -1;
                         }
                     }
@@ -312,9 +317,20 @@ internal static class SvgFontRequestDiscovery
                             if (textPathDepth >= 0 && paint.GlyphPaint.HasStroke)
                                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes on retained text paths are not implemented.");
                             DiscoveryCandidate active = directTextLevels[activeCandidateLevel];
-                            if (paint.GlyphPaint.IsPainted && active.HasRequest && !active.HasRenderableTextContent)
+                            SvgInheritedTextStyle currentFont = inheritedLevels[^1].Text;
+                            activeTextPainted |= paint.GlyphPaint.IsPainted;
+                            bool sameRequest = string.Equals(currentFont.Family, active.Family, StringComparison.OrdinalIgnoreCase) && currentFont.Weight == active.Weight && currentFont.Italic == active.Italic;
+                            // Displayed hidden/unpainted glyphs still advance later
+                            // painted spans. Acquire their metrics only when the
+                            // containing run actually has painted output.
+                            if (paint.IsDisplayed && active.HasRequest && sameRequest && !active.HasRenderableTextContent)
                             {
                                 directTextLevels[activeCandidateLevel] = active with { HasRenderableTextContent = true };
+                            }
+                            else if (paint.IsDisplayed && active.HasRequest && !sameRequest)
+                            {
+                                DiscoveryCandidate span = new(true, currentFont.Family, currentFont.Weight, currentFont.Italic, activeWhitespace, false, true);
+                                if (spanCandidates.Count == 0 || spanCandidates[^1] != span) spanCandidates.Add(span);
                             }
                         }
                     }

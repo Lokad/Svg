@@ -5,9 +5,24 @@ It records the selection rules, record schema, legal handling, and coverage acco
 so that document sourcing can proceed without changing the rules midstream.
 The frozen selection and measured outcomes are recorded below.
 
-## Current development documents (2026-10-12)
+## Current document evidence (2026-10-14)
 
-The current development queue is **39 complete / 45 selected**. The prior 35
+The selected development queue is **50/50 complete**, including unchanged
+`inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
+variants**. Six additional authored CC0 documents are complete and counted
+separately. The latest is the [supplied-font layout guide](../tests/Research/font-layout-diagram/README.md),
+**1/1 exact** with controls separately **4/4 exact** on Windows/Linux against
+unchanged sources, options, fonts and platform references. The five preceding
+authored documents and their controls remain protected in their existing banks.
+These failure-selected cases establish their declared outcomes, not a general
+SVG success rate. [PLAN](../PLAN.md#ordered-delivery-checklist) owns the finite
+remaining queue and [the qualification receipt](../artifacts/maintenance-review-20261012/font-layout-guide-qualified-results.json)
+owns finished-correction evidence. Dated sections below are checkpoint history;
+completed gates are superseded by later qualified witnesses.
+
+## Development checkpoint (2026-10-12)
+
+At this checkpoint the development queue was **39 complete / 45 selected**. The prior 35
 completed documents stay protected, separately from corporate **27/27 documents
 / 258/258 variants** and the original acceptance fixtures. The new bounded batch
 retains ten unchanged public-domain/CC0 SVGs with declared outputs and frozen

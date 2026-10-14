@@ -1,10 +1,10 @@
 # Supplied-font layout guide
 
 This retained CC0 document has one declared 432×320 transparent output, with a
-white background painted by its original SVG. It is **0/1 complete**. Its four
-separate position/rotation, textLength, baseline and span-font controls are
-**0/4 admitted**. Current categorized gates are in [the manifest](manifest.json).
-Neither rejection nor reference capture counts as document completion.
+white background painted by its original SVG. It is **1/1 exact** on Windows and
+Linux. Its four distinct position/rotation, textLength, baseline and span-font
+controls are separately **4/4 exact** against the unchanged platform references
+in [the manifest](manifest.json).
 
 Original SVGs, options and healthy independent Windows/Linux capture triples
 freeze before layout correction. Each platform keeps its own native pixels.
@@ -27,15 +27,31 @@ data-URL recipe is unchanged. Independent baseline captures with inert padding
 prove identical glyph pixels across both transports; the existing native smoke
 also checks three large-input captures against its unchanged red reference.
 
-Complete every rejection and pixel mismatch against these frozen references.
-Use the four controls to diagnose shared layout fixes; the transformed curved
-label and out-of-range run remain part of the whole document. Existing curved
-path witnesses protect already supported semantics. Keep the corporate cohort,
-selected development documents and five completed authored documents unchanged.
-Wider finite G9 and the separate six-pixel blur correction stay required.
+The shared correction retains scalar-aware root position/rotation lists, both
+textLength adjustments, supplied-height baselines and inherited per-span faces
+and sizes. Normalized text intervals share one continuous run and anchor width;
+font discovery acquires only the metrics needed by painted containing runs.
+Windows fits stretched glyphs with independently rounded horizontal/vertical
+scales; reduced quadratic scans stay within their monotonic endpoint span.
+Linux light fitting uses the supplied standard stem widths for its segment links.
+The [stem vector](diagnostics/mono-stem-contours.json) and
+[complete curved-counter mask](diagnostics/windows-curve-span.json) protect the
+independent native observations without a native dependency in tests or product.
 
-The capture/declaration checkpoint passes **7,588 tests/platform**, preserving
-every preceding case. Routine qualification takes about **1m51s Windows / 5m18s
-Linux**; the [existing receipt](../../../artifacts/maintenance-review-20261012/font-layout-declaration-qualified-results.json)
-records the pending document/control outcomes separately. Native captures and
-intended-font witnesses do not count as passing renderer outputs.
+The transformed curved label and out-of-range run are exact in the whole guide.
+A synthetic repeated text-path regression protects per-glyph mixed sizes.
+This sixth completed authored document is separate from the frozen corporate
+cohort and selected 50 documents. No SVG, option, font or reference byte changes.
+Nested-span list/rotation/length propagation, length adjustment on paths,
+word spacing/decorations and remaining composite/stroke/path semantics remain
+finite G9 work; this diagram does not close that group. The independent stretched
+accent diagnostic retains a one-pixel native-mask difference to investigate in
+that remaining work, without waiving any established document result.
+
+Finished-correction Release qualification passes **7,608 tests/platform**
+(5,239 core / 2,363 visual / six FontProbe), with every prior case retained and
+original-input assertion migrations explicitly audited. Routine build/suite
+cost is approximately **1m40s Windows / 5m36s Linux**. Evidence is recorded in the
+[existing receipt](../../../artifacts/maintenance-review-20261012/font-layout-guide-qualified-results.json).
+The preceding declaration/capture receipt remains historical evidence; intended-font
+witnesses alone do not count as passing renderer outputs.

@@ -50,9 +50,21 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         SvgGlyphStrikeTransform strike = HasGlyphMap
             ? SvgGlyphStrikeTransform.Create(_fontSize * scaleY, new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0))
             : default;
+        bool mappedFitting = HasGlyphMap && HasTrueTypePrograms(budget, work, token) &&
+            (strike.RelaxedMap.B == 0 && strike.RelaxedMap.C == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0);
+        SvgAffineTransform fittedMap = strike.RemainingMap;
+        if (mappedFitting)
+        {
+            double ratio = Math.Sqrt(fittedMap.A * fittedMap.A + fittedMap.B * fittedMap.B);
+            if (ratio > 0)
+            {
+                target = target with { HorizontalRatio = ratio };
+                fittedMap = fittedMap with { A = fittedMap.A / ratio, B = fittedMap.B / ratio };
+            }
+        }
         OpenTypeGlyphContourStorage contours = HasGlyphMap
-            ? HasTrueTypePrograms(budget, work, token) && (strike.RelaxedMap.B == 0 && strike.RelaxedMap.C == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0)
-                ? OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, target, TrueTypeImpliedPointRounding.None, OpenTypeWindowsGlyphTransform.Create(new(1, strike.RemainingMap, strike.RelaxedMap), 1), budget, work, token)
+            ? mappedFitting
+                ? OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, target, TrueTypeImpliedPointRounding.None, OpenTypeWindowsGlyphTransform.Create(new(1, fittedMap, strike.RelaxedMap), 1), budget, work, token)
                 : OpenTypeFont.GetWindowsUnhintedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike, budget, work, token)
             : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, _fontSize * scaleY, target, TrueTypeImpliedPointRounding.None, budget, work, token);
         try
@@ -112,7 +124,12 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
         SvgAffineTransform normalized = new(_glyphMap.A * scaleX / scaleY, _glyphMap.B, _glyphMap.C * scaleX / scaleY, _glyphMap.D, 0, 0);
         SvgGlyphStrikeTransform strike = SvgGlyphStrikeTransform.Create(_fontSize * scaleY, normalized);
-        using OpenTypeGlyphContourStorage contours = OpenTypeFont.GetUnhintedDeviceContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token);
+        // Skia keeps FreeType light fitting for axis-aligned maps, including
+        // quarter turns; other rotations and skew use unhinted contours.
+        bool axisAligned = strike.RelaxedMap.B == 0 && strike.RelaxedMap.C == 0 || strike.RelaxedMap.A == 0 && strike.RelaxedMap.D == 0;
+        using OpenTypeGlyphContourStorage contours = axisAligned
+            ? OpenTypeFont.GetLatinLightContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token)
+            : OpenTypeFont.GetUnhintedDeviceContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, budget, work, token);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Geometry, work, token);
         int first = 0;
         foreach (int end in contours.ContourEnds)

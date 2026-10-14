@@ -1,5 +1,6 @@
 using System.Xml;
 using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Tests;
 
@@ -146,6 +147,53 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
+    public void Root_lists_follow_normalized_scalar_boundaries_and_descendant_precedence()
+    {
+        SvgTextPositionLists lists = new("8 24 40", "28", "0 1", null, "0 10 -10");
+        RenderBudget budget = new(10_000);
+        using (OwnedParserArray<SvgTextPositionAdjustment> positions = lists.Build("A😀B", [new(3, 50, null, 2, -1)], budget, new(1_000), CancellationToken.None))
+        {
+            Assert.Equal(new SvgTextPositionAdjustment(0, 8, 28, 0, 0), positions.Items[0]);
+            Assert.Equal(new SvgTextPositionAdjustment(1, 24, null, 1, 0), positions.Items[1]);
+            Assert.Equal(new SvgTextPositionAdjustment(3, 50, null, 2, -1), positions.Items[2]);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData("1 NaN")]
+    [InlineData("1 2em")]
+    [InlineData("1 20%")]
+    [InlineData("1 1e309")]
+    public void Root_lists_validate_every_value_before_layout(string value)
+    {
+        using XmlReader reader = XmlReader.Create(new StringReader($"<text x='{value}'/>"));
+        reader.Read();
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgTextSyntax.Parse(reader)).ErrorCode);
+    }
+
+    [Fact]
+    public void Rotation_length_units_reject_before_text_layout()
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><text font-family='Missing' rotate='0 10px'>AB</text></svg>");
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
+    public void Denied_or_cancelled_list_preparation_releases_partial_storage()
+    {
+        SvgTextPositionLists lists = new("1 2 3 4 5", null, null, null, "0 10");
+        RenderBudget denied = new(1);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => lists.Build("ABCDE", [], denied, new(100), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        RenderBudget workDenied = new(10_000);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => lists.Build("ABCDE", [], workDenied, new(1), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
+        Assert.Throws<OperationCanceledException>(() => lists.Build("ABCDE", [], workDenied, new(100), new CancellationToken(true)));
+        Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Parses_scalar_letter_spacing_from_attributes_and_inline_style()
     {
         using XmlReader attribute = XmlReader.Create(new StringReader("<text font-family='Example' letter-spacing='2.5'/>"));
@@ -219,7 +267,7 @@ public sealed class SvgTextSyntaxTests
     }
 
     [Fact]
-    public void Admits_only_whitespace_letter_spacing_and_scalar_position_tspan_styles()
+    public void Admits_whitespace_font_spacing_and_scalar_position_tspan_styles()
     {
         using XmlReader accepted = XmlReader.Create(new StringReader("<tspan xml:space='preserve' x='0' y='12px' dx='2' dy='-4' letter-spacing='2' style='white-space: normal; letter-spacing: 3'/>"));
         accepted.Read();
@@ -232,7 +280,8 @@ public sealed class SvgTextSyntaxTests
         Assert.Equal(SvgTextWhitespaceMode.Default, style.WhitespaceMode);
         Assert.Equal(3, style.LetterSpacing);
         Assert.Equal(new SvgTextPositionOffset(0, 12, 2, -4), style.PositionOffset);
-        Assert.False(SvgTextSyntax.TryParseTspanWhitespaceMode(rejected, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
+        Assert.True(SvgTextSyntax.TryParseTspanStyle(rejected, new(SvgTextWhitespaceMode.Default, 0), default, new ParserWorkCounter(100), CancellationToken.None, out SvgTextSpanStyle fontStyle));
+        Assert.Equal(12, fontStyle.Font.FontSize);
         Assert.True(SvgTextSyntax.TryParseTspanWhitespaceMode(rejectedSpacing, SvgTextWhitespaceMode.Default, default, new ParserWorkCounter(100), CancellationToken.None, out _));
     }
 

@@ -51,11 +51,17 @@ internal static partial class OpenTypeFont
         double requestedScale = Math.Floor(deviceSize * 64 * 65536 / metrics.UnitsPerEm + .5);
         if (requestedScale > int.MaxValue) throw new SvgException(SvgErrorCode.LimitExceeded, "The TrueType device scale exceeds its fixed-point bound.");
         int scale = checked((int)requestedScale);
+        double horizontalSize = deviceSize * target.HorizontalRatio;
+        double requestedHorizontalScale = Math.Floor(horizontalSize * 64 * 65536 / metrics.UnitsPerEm + .5);
+        if (!double.IsFinite(horizontalSize) || horizontalSize > 32767 || requestedHorizontalScale > int.MaxValue)
+            throw new SvgException(SvgErrorCode.LimitExceeded, "The horizontal TrueType device scale exceeds its coordinate bound.");
+        int horizontalScale = checked((int)requestedHorizontalScale);
+        TrueTypeHintDeviceScale deviceScale = new(scale, horizontalScale);
         using OpenTypeSimpleGlyphStructureStorage structure = GetGlyphStructure(bytes, glyphIndex, metrics, budget, work, token, true);
         if (structure.CompositeHeader is not null)
         {
             (TrueTypeHintProfile compositeProfile, OpenTypeTableRange compositeCvt, OpenTypeTableRange compositeFont, OpenTypeTableRange compositePrep) = ReadHintTables();
-            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), scale, target, budget, work, token);
+            using CompositeTrueTypeHinting fitting = new(bytes, metrics, compositeProfile, compositeCvt, compositeFont, compositePrep, checked((int)Math.Floor(deviceSize + .5)), deviceScale, target, budget, work, token);
             using OpenTypeGlyphPointOutline outline = GetGlyphPointOutline(bytes, glyphIndex, metrics, fitting, null, budget, work, token);
             MapPoints(outline.Points);
             using OpenTypeSegmentAccumulator compositeSegments = new(budget, GlyphDecoderBudgetPhase.ExpandedSegmentCapacity, GlyphDecoderBudgetPhase.ExpandedSegmentExact, GlyphDecoderBudgetPhase.ExpandedContourBoundaryCapacity, GlyphDecoderBudgetPhase.ExpandedContourBoundaryExact, work, token);
@@ -75,18 +81,18 @@ internal static partial class OpenTypeFont
         int[] cvt = new int[cvtCount];
         int controlScale = target.ControlScale == TrueTypeHintControlScale.FractionalFontUnits ? (scale >> 6) << 6 : scale;
         for (int i = 0; i < cvt.Length; i++) { work.Consume(token); cvt[i] = ScaleWith(ReadInt16(bytes.Span, cvtRange.Offset + i * 2), controlScale); }
-        for (int i = 0; i < pointCount; i++) { work.Consume(token); points[i] = new(Scale(decoded.Points[i].X), Scale(decoded.Points[i].Y), decoded.Points[i].X, decoded.Points[i].Y); }
+        for (int i = 0; i < pointCount; i++) { work.Consume(token); points[i] = new(ScaleHorizontal(decoded.Points[i].X), Scale(decoded.Points[i].Y), decoded.Points[i].X, decoded.Points[i].Y); }
         OpenTypeGlyphHeader header = ParseGlyphHeader(bytes, structure.Value.GlyphRange) ?? throw InvalidFont("A nonempty glyph has no header.");
         int advanceIndex = Math.Min(glyphIndex, metrics.NumberOfHMetrics - 1);
         int advance = ReadUInt16(bytes.Span, metrics.Hmtx.Offset + advanceIndex * 4);
         int bearingOffset = glyphIndex < metrics.NumberOfHMetrics ? metrics.Hmtx.Offset + glyphIndex * 4 + 2 : metrics.Hmtx.Offset + metrics.NumberOfHMetrics * 4 + (glyphIndex - metrics.NumberOfHMetrics) * 2;
         int origin = header.XMinimum - ReadInt16(bytes.Span, bearingOffset);
-        points[pointCount] = new(Scale(origin), 0, origin, 0); points[pointCount + 1] = new(Scale(origin + advance), 0, origin + advance, 0);
+        points[pointCount] = new(ScaleHorizontal(origin), 0, origin, 0); points[pointCount + 1] = new(ScaleHorizontal(origin + advance), 0, origin + advance, 0);
         // Preserve indices without inventing vertical metrics. Executed access
         // to either vertical phantom point is an explicit unsupported outcome.
         points[pointCount + 2].Unavailable = points[pointCount + 3].Unavailable = true;
         bool smartDropouts;
-        using (TrueTypeHinting machine = TrueTypeHinting.Create(profile, cvt, points, structure.Value.ContourEndpoints, ppem, scale, target, budget, work, token))
+        using (TrueTypeHinting machine = TrueTypeHinting.Create(profile, cvt, points, structure.Value.ContourEndpoints, ppem, deviceScale, target, budget, work, token))
         {
             machine.Run(bytes.Slice(fontProgram.Offset, fontProgram.Length), TrueTypeHintProgramKind.Font);
             ReadOnlyMemory<byte> prep = bytes.Slice(preparation.Offset, preparation.Length);
@@ -117,6 +123,7 @@ internal static partial class OpenTypeFont
         }
 
         int Scale(int value) => ScaleWith(value, scale);
+        int ScaleHorizontal(int value) => ScaleWith(value, horizontalScale);
         int ScaleWith(int value, int factor)
         {
             long product = (long)value * factor;

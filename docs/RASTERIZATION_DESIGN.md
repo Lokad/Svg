@@ -12889,3 +12889,59 @@ No new runtime dependency or qualification framework is introduced.
 The displaced rescaled blur still has its original six-pixel numerical residual
 on both platforms. Wider finite G8 graphs, color spaces and composition remain
 required; these witnesses do not establish all fractional filter chains.
+
+
+### Complete supplied-font layout guide (2026-10-14)
+
+The retained 432×320 guide and four distinct controls are exact on Windows/Linux
+against their unchanged platform references. Per-span font intervals retain
+normalized text boundaries, face/size/paint inheritance and one continuous layout
+run. Adjacent equal-face/size glyphs preserve their existing pairing; changes
+resolve their supplied metrics separately. Paint replay selects each glyph's
+font, including repeated text-path runs. Display/visibility discovery stages span
+requests until the containing run is admitted and has painted output; hidden
+advances can still be required by a later painted glyph. Borrowed programs and
+font snapshots stay caller-owned; font/paint interval owners clear and release
+on denial, cancellation and disposal.
+
+Root position lists consume Unicode scalars, validate unused tokens and retain
+last-angle repetition. Both textLength policies retain natural advances before
+rounded device positioning; stretching affects the glyph map. Baselines use
+supplied OS/2 x-height where valid and existing conservative fallbacks otherwise.
+Each glyph uses its supplied face/size rather than the enclosing run's first face.
+Nested-span lists and text-path length/rotation propagation remain separate G9
+requirements; this correction does not claim general shaping or close that group.
+
+Windows stretches original points and axial fitting before painting. Independent
+DirectWrite mask observations showed that post-fitting stretch alone misses native
+hint behavior. Horizontal and vertical 16.16 scales must each be rounded from the
+requested device size: deriving X from already-rounded Y made original point 554
+round to 1466 rather than 1467 at the retained 18px stretch. An independently
+scanned fitted-point font isolates this geometry error from scan coverage; using
+the independent X scale makes the entire original B texture exact.
+
+The other two Windows guide pixels came from an inner curved-counter leaf. Its
+reduced implicit equation crossed slightly beyond its monotonic endpoint. The
+native scanner bounds that equation by the leaf span. Clamping the reduced
+crossing to its endpoints makes the complete independently captured D texture
+exact. A second independently scanned font with the same mapped points confirms
+that this is scan coverage rather than transform arithmetic. No pixel location,
+document identity or source coordinate is a production predicate. Three complete
+native captures agree, and a portable regression verifies every RGB mask byte.
+
+Linux light fitting measures the bounded supplied o/O/0 standard stem widths and
+uses native segment-link demerits, preserving the existing direction/contour
+machinery. The independent FreeType bold-M contour vector protects the shared
+arithmetic. Existing ownership/work limits bound point/segment traversal and all
+partial allocations; scalar fitting and preceding exact documents remain protected.
+
+The complete guide is the sixth additional authored document, separate from the
+selected 50 and corporate 27/258. Focused cases protect scalar boundaries, baseline
+fallbacks, per-span discovery/layout, mixed-size paths, axis CVT/ppem and independent
+scales. Full qualification and case migration evidence are in the
+[existing receipt](../artifacts/maintenance-review-20261012/font-layout-guide-qualified-results.json).
+A newly isolated 18px doubled-width eacute native-mask diagnostic still differs
+at one pixel. It remains required G9 fitting work under the original useful subset;
+its ignored native evidence neither changes a frozen reference nor reopens the
+completed guide. Current diagnostics are under
+`artifacts/font-layout-diagram-20261014/`.

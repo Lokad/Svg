@@ -141,6 +141,59 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
+    public async Task Hidden_font_spans_acquire_advance_metrics_only_for_a_painted_containing_run()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='125' height='5'><text font-family='Example' font-size='100' y='3'><tspan font-weight='700' visibility='hidden'>A</tspan>A</text></svg>"u8.ToArray();
+        SvgFontFaceRequest[] requests = SvgFontRequestDiscovery.Discover(input, CancellationToken.None);
+        Assert.Equal(new[] { 400, 700 }, requests.Select(request => request.Weight));
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        Assert.Equal(1, provider.RequestCount); Assert.Equal(1, source.RequestCount);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg' width='125' height='5'><text font-family='Example' font-size='100' x='60' y='3'>A</text></svg>"u8.ToArray();
+        Assert.Equal(SvgConverter.ConvertToPng(expected, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+        byte[] unpainted = "<svg xmlns='http://www.w3.org/2000/svg' width='125' height='5'><text font-family='Example' font-size='100' y='3'><tspan font-weight='700' visibility='hidden'>A</tspan></text></svg>"u8.ToArray();
+        Assert.Empty(SvgFontRequestDiscovery.Discover(unpainted, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task Font_size_spans_share_continuous_positions_and_release_owned_font_arrays_on_denial()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgTextStyle style = new(new SvgFontFaceRequest("Example", 400, false), 100, 0, 3, 0, 0, 0, SvgTextAnchor.Start, "")
+        { Baseline = SvgTextBaseline.Middle };
+        SvgInheritedTextStyle large = new("Example", 400, false, 100, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start);
+        SvgInheritedTextStyle small = new("Example", 400, false, 50, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start);
+        SvgTextFontSpan[] fonts = [new(0, 1, large), new(1, 2, small), new(2, 3, large)];
+        RenderBudget budget = new(1_000_000); ParserWorkCounter work = new(long.MaxValue);
+        using (SvgTextRun run = SvgTextRunBuilder.Create(style, "AAA", [], [], [], fonts, null, null, snapshot, budget, work, CancellationToken.None))
+        {
+            Assert.Equal(new[] { 0d, 60, 90 }, run.Glyphs.ToArray().Select(glyph => glyph.X));
+            Assert.Equal(new[] { 28d, 15.5, 28 }, run.Glyphs.ToArray().Select(glyph => glyph.Y));
+            Assert.Equal(new[] { 100d, 50, 100 }, Enumerable.Range(0, 3).Select(index => run.GetGlyphFont(index).FontSize));
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        RenderBudget denied = new(1_000_000);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgTextRunBuilder.Create(style, "AAA", [], [], [], fonts, null, null, snapshot, denied, new ParserWorkCounter(work.Used - 1), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, denied.Snapshot().CurrentBytes);
+        RenderBudget memory = new(budget.Snapshot().PeakBytes - 1);
+        Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+            SvgTextRunBuilder.Create(style, "AAA", [], [], [], fonts, null, null, snapshot, memory, new ParserWorkCounter(long.MaxValue), CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, memory.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public async Task Each_text_path_glyph_keeps_its_span_font_size_across_multiple_runs()
+    {
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='250'><defs><path id='p' d='M0 105H200'/><path id='q' d='M0 230H200'/></defs><text font-family='Example' font-size='100'><textPath href='#p'>A<tspan font-size='50'>A</tspan>A</textPath></text><text font-family='Example' font-size='100'><textPath href='#q'><tspan font-size='50'>AA</tspan>A</textPath></text></svg>"u8.ToArray();
+        byte[] expected = "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='250'><text font-family='Example' font-size='100' y='105'>A<tspan font-size='50'>A</tspan>A</text><text font-family='Example' font-size='100' y='230'><tspan font-size='50'>AA</tspan>A</text></svg>"u8.ToArray();
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        Assert.Equal(SvgConverter.ConvertToPng(expected, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+    }
+
+    [Fact]
     public void Paint_interval_cancellation_releases_partial_layout_and_scopes()
     {
         RenderBudget budget = new(100_000);
@@ -150,7 +203,7 @@ public sealed partial class OpenTypeFontTests
         {
             output.Append("A", 0, 0, 128, work, cancellation.Token);
             SvgTextPaintStyle blue = SvgTextPaintStyle.Default with { Paint = SvgPaint.Default with { FillColor = new SvgColor(0, 0, 255, 255) } };
-            output.EnterPaintSpan(blue);
+            output.EnterStyleSpan(blue, new("Other", 400, false, 18, SvgTextWhitespaceMode.Default, 0, SvgTextAnchor.Start));
             output.Append("A", 0, 1, 128, work, cancellation.Token);
             cancellation.Cancel();
             Assert.ThrowsAny<OperationCanceledException>(() => output.Append("A", 0, 1, 128, work, cancellation.Token));

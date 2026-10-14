@@ -172,7 +172,7 @@ placement and implied-point construction. It has no Fontations or native runtime
 
 Source version: skrifa 0.43.2
 Source files: src/outline/autohint/outline.rs, metrics/blues.rs, metrics/scale.rs,
-topo/segments.rs, topo/edges.rs, hint/edges.rs, hint/outline.rs,
+topo/segments.rs, topo/edges.rs, hint/edges.rs, hint/outline.rs, metrics/widths.rs, metrics/mod.rs,
 src/outline/glyf/mod.rs, src/outline/glyf/outline.rs, src/outline/pen.rs and src/metrics.rs.
 The implied-point iterator also follows read-fonts 0.40.1 src/tables/glyf.rs.
 

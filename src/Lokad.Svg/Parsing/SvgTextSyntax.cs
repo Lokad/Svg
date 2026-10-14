@@ -49,16 +49,20 @@ internal readonly record struct SvgTextSpanStyle
     /// <summary>Gets the scalar position adjustment explicitly declared by this span, if any; it is not inherited as a style value.</summary>
     internal SvgTextPositionOffset? PositionOffset { get; }
     internal SvgTextPaintStyle Paint { get; init; }
+    internal SvgInheritedTextStyle Font { get; init; } = SvgInheritedTextStyle.Default;
 }
 
 /// <summary>Identifies one contiguous UTF-16 interval emitted with a non-default scalar letter spacing.</summary>
 internal readonly record struct SvgTextLetterSpacingSpan(int Start, int End, double LetterSpacing);
 
 /// <summary>Owns one extracted layout until its consumer disposes it; sibling path runs have independent whitespace and anchoring boundaries.</summary>
-internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path, OwnedParserArray<SvgTextPaintSpan> PaintSpans) : IDisposable
+internal readonly record struct SvgExtractedTextRun(BudgetedTextLayout Layout, SvgTextPathReference? Path, OwnedParserArray<SvgTextPaintSpan> PaintSpans, OwnedParserArray<SvgTextFontSpan> FontSpans) : IDisposable
 {
-    public void Dispose() { Layout.Dispose(); PaintSpans.Dispose(); }
+    public void Dispose() { Layout.Dispose(); PaintSpans.Dispose(); FontSpans.Dispose(); }
 }
+
+/// <summary>Retains inherited font declarations over one normalized UTF-16 interval.</summary>
+internal readonly record struct SvgTextFontSpan(int Start, int End, SvgInheritedTextStyle Font);
 
 /// <summary>Represents explicit scalar coordinates and offsets before the first retained character in a text span.</summary>
 internal readonly record struct SvgTextPositionOffset
@@ -303,7 +307,28 @@ internal static class SvgTextSyntax
         string? letterSpacingValue = letterSpacing ?? reader.GetAttribute("letter-spacing");
         double parsedLetterSpacing = letterSpacingValue is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacingValue);
         SvgTextAnchor anchor = ParseAnchor(reader.GetAttribute("text-anchor"), inherited.Anchor);
-        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("x") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("y") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dx") ?? "0"), SvgGeometrySyntax.ParseTextCoordinate(reader.GetAttribute("dy") ?? "0"), parsedLetterSpacing, anchor, reader.GetAttribute("id") ?? string.Empty);
+        string? x = reader.GetAttribute("x"), y = reader.GetAttribute("y"), dx = reader.GetAttribute("dx"), dy = reader.GetAttribute("dy"), rotate = reader.GetAttribute("rotate");
+        double firstX = SvgTextPositionLists.ReadFirst(x, out bool manyX), firstY = SvgTextPositionLists.ReadFirst(y, out bool manyY);
+        double firstDx = SvgTextPositionLists.ReadFirst(dx, out bool manyDx), firstDy = SvgTextPositionLists.ReadFirst(dy, out bool manyDy);
+        if (rotate is not null) _ = SvgTextPositionLists.ReadFirst(rotate, false, out _);
+        SvgTextPositionLists lists = manyX || manyY || manyDx || manyDy || rotate is not null ? new(x, y, dx, dy, rotate) : default;
+        double? textLength = reader.GetAttribute("textLength") is string authoredLength ? SvgGeometrySyntax.ParseTextCoordinate(authoredLength) : null;
+        if (textLength < 0) throw new SvgException(SvgErrorCode.MalformedInput, "textLength must be nonnegative.");
+        SvgTextLengthAdjust lengthAdjust = reader.GetAttribute("lengthAdjust") switch
+        {
+            null or "spacing" => SvgTextLengthAdjust.Spacing,
+            "spacingAndGlyphs" => SvgTextLengthAdjust.SpacingAndGlyphs,
+            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "This text length adjustment is not implemented."),
+        };
+        SvgTextBaseline baseline = reader.GetAttribute("dominant-baseline") switch
+        {
+            null or "auto" or "alphabetic" => SvgTextBaseline.Alphabetic,
+            "middle" => SvgTextBaseline.Middle,
+            "hanging" => SvgTextBaseline.Hanging,
+            _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "This dominant text baseline is not implemented."),
+        };
+        return new SvgTextStyle(new SvgFontFaceRequest(family, weight, italic), fontSize, firstX, firstY, firstDx, firstDy, parsedLetterSpacing, anchor, reader.GetAttribute("id") ?? string.Empty)
+        { PositionLists = lists, TextLength = textLength, LengthAdjust = lengthAdjust, Baseline = baseline };
     }
 
     /// <summary>Resolves CSS and XML direct-text whitespace declarations over the inherited CSS mode.</summary>
@@ -355,7 +380,8 @@ internal static class SvgTextSyntax
         string? dy = null;
         if (!reader.HasAttributes)
         {
-            style = new SvgTextSpanStyle(styleSheet.WhiteSpace is string styleSheetWhiteSpace ? ParseCssWhitespaceMode(styleSheetWhiteSpace) : inherited.WhitespaceMode, styleSheet.LetterSpacing is string styleSheetLetterSpacing ? SvgGeometrySyntax.ParseTextCoordinate(styleSheetLetterSpacing) : inherited.LetterSpacing, null) { Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, default, styleSheet), inherited.Paint) };
+            style = new SvgTextSpanStyle(styleSheet.WhiteSpace is string styleSheetWhiteSpace ? ParseCssWhitespaceMode(styleSheetWhiteSpace) : inherited.WhitespaceMode, styleSheet.LetterSpacing is string styleSheetLetterSpacing ? SvgGeometrySyntax.ParseTextCoordinate(styleSheetLetterSpacing) : inherited.LetterSpacing, null)
+            { Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, default, styleSheet), inherited.Paint), Font = SvgTextInheritance.Resolve(reader, inherited.Font, styleSheet.TextFont, null, null) };
             return true;
         }
         while (reader.MoveToNextAttribute())
@@ -371,7 +397,7 @@ internal static class SvgTextSyntax
             {
                 if (whiteSpace is not null || inlineLetterSpacing is not null) { reader.MoveToElement(); style = inherited; return false; }
                 InlineStyle inline = SvgInlineStyleParser.Parse(reader.Value, workCounter, cancellationToken, true);
-                if ((inline.WhiteSpace is null && inline.LetterSpacing is null && !HasPaintProperties(inline)) || HasUnsupportedProperties(inline)) { reader.MoveToElement(); style = inherited; return false; }
+                if ((inline.WhiteSpace is null && inline.LetterSpacing is null && !HasPaintProperties(inline) && inline.TextFont == default) || HasUnsupportedProperties(inline)) { reader.MoveToElement(); style = inherited; return false; }
                 parsedInline = inline;
                 whiteSpace = inline.WhiteSpace;
                 inlineImportant = inline.Important;
@@ -409,6 +435,7 @@ internal static class SvgTextSyntax
                 continue;
             }
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "id" or "class") continue;
+            if (reader.NamespaceURI.Length == 0 && reader.LocalName is "font-family" or "font-weight" or "font-style" or "font-size") continue;
             if (reader.NamespaceURI.Length == 0 && reader.LocalName is "color" or "fill" or "fill-opacity" or "stroke" or "fill-rule" or "display" or "visibility"
                 or "stroke-width" or "stroke-opacity" or "stroke-linecap" or "stroke-linejoin" or "stroke-miterlimit" or "stroke-dasharray" or "stroke-dashoffset" or "paint-order" or "vector-effect") continue;
             reader.MoveToElement();
@@ -420,11 +447,13 @@ internal static class SvgTextSyntax
         if (SvgInlineStyleParser.MergeWithImportance(whiteSpace, inlineImportant, InlineImportantProperties.WhiteSpace, styleSheet.WhiteSpace, styleSheet.Important) is string specifiedWhiteSpace) mode = ParseCssWhitespaceMode(specifiedWhiteSpace);
         string? letterSpacing = SvgInlineStyleParser.MergeWithImportance(inlineLetterSpacing, inlineImportant, InlineImportantProperties.LetterSpacing, styleSheet.LetterSpacing, styleSheet.Important) ?? presentationLetterSpacing;
         SvgTextPositionOffset? positionOffset = x is null && y is null && dx is null && dy is null ? null : new SvgTextPositionOffset(x is null ? null : SvgGeometrySyntax.ParseTextCoordinate(x), y is null ? null : SvgGeometrySyntax.ParseTextCoordinate(y), dx is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dx), dy is null ? null : SvgGeometrySyntax.ParseTextCoordinate(dy));
-        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset) { Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint) };
+        style = new SvgTextSpanStyle(mode, letterSpacing is null ? inherited.LetterSpacing : SvgGeometrySyntax.ParseTextCoordinate(letterSpacing), positionOffset)
+        { Paint = SvgTextPaintStyle.ResolveSpan(SvgComputedStyle.Resolve(reader, parsedInline, styleSheet), inherited.Paint),
+            Font = SvgTextInheritance.Resolve(reader, inherited.Font, SvgInlineStyleParser.MergeFont(parsedInline.TextFont, parsedInline.Important, styleSheet.TextFont, styleSheet.Important), null, null) };
         return true;
 
         static bool HasUnsupportedProperties(InlineStyle style)
-            => style.Opacity is not null || style.TextFont.Family is not null || style.TextFont.Weight is not null || style.TextFont.Style is not null || style.TextFont.Size is not null || style.Filter is not null || style.GeometryWidth is not null || style.GeometryHeight is not null;
+            => style.Opacity is not null || style.Filter is not null || style.GeometryWidth is not null || style.GeometryHeight is not null;
 
         static bool HasPaintProperties(InlineStyle style)
             => style.Color is not null || style.Fill is not null || style.FillOpacity is not null || style.Stroke is not null || style.Display is not null || style.Visibility is not null || style.FillRule is not null
@@ -497,7 +526,16 @@ internal static class SvgTextFontSyntax
 internal readonly record struct SvgTextInlineFontProperties(string? Family, string? Weight, string? Style, string? Size);
 
 /// <summary>Represents the explicit single-font style and baseline origin of one initial text run.</summary>
-internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, double Dx, double Dy, double LetterSpacing, SvgTextAnchor Anchor, string SourceElementId);
+internal readonly record struct SvgTextStyle(SvgFontFaceRequest Font, double FontSize, double X, double Y, double Dx, double Dy, double LetterSpacing, SvgTextAnchor Anchor, string SourceElementId)
+{
+    internal SvgTextPositionLists PositionLists { get; init; }
+    internal double? TextLength { get; init; }
+    internal SvgTextLengthAdjust LengthAdjust { get; init; }
+    internal SvgTextBaseline Baseline { get; init; }
+}
+
+internal enum SvgTextLengthAdjust { Spacing, SpacingAndGlyphs }
+internal enum SvgTextBaseline { Alphabetic, Middle, Hanging }
 
 /// <summary>Identifies the admitted horizontal anchor for one direct text run.</summary>
 internal enum SvgTextAnchor { Start, Middle, End }

@@ -1,3 +1,29 @@
+## Complete supplied-font layout guide (2026-10-14)
+
+The retained guide is **1/1 exact**, with four distinct controls separately
+**4/4 exact** on Windows/Linux against unchanged references. Direct text admits
+scalar/list x/y/dx/dy and repeated final rotate values, textLength with spacing
+or spacingAndGlyphs, and alphabetic/middle/hanging baselines. Nested tspan font
+family/size/weight/style inherits through admitted presentation/inline/static CSS;
+per-glyph faces and sizes share continuous layout, anchors and discovery.
+Required programs remain caller-supplied, and regular substitution is explicit;
+no machine fonts or synthetic styles are introduced.
+
+Mapped Windows axial fitting uses independent X/Y scales, axial CVT/ppem and
+bounded composite assembly. Reduced quadratic crossings stay within their
+monotonic endpoint span. Linux supplied standard-stem widths improve light-fit
+segment links. Shared denial/cancellation/cleanup protections remain in place.
+[Whole document and controls](../tests/Research/font-layout-diagram/README.md),
+[independent native vectors](../tests/Research/font-layout-diagram/diagnostics/),
+[qualification receipt](../artifacts/maintenance-review-20261012/font-layout-guide-qualified-results.json).
+
+Earlier direct-text list/baseline/textLength and span-font rejection wording is
+superseded by these witnesses. Nested-span list/rotation/length propagation,
+path length/rotation propagation, word spacing/decorations, remaining strokes,
+closed paths and composite flags still require their finite G9 acceptance.
+The new stretched-accent diagnostic has one unresolved native-mask pixel;
+no broader composite completion or feature deferral is implied.
+
 ## Complete CSS/image card and bounded bitmap replay (2026-10-14)
 
 The retained CC0 card is **1/1 exact** on Windows/Linux at its unchanged 320×200

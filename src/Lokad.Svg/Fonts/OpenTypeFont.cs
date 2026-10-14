@@ -106,7 +106,9 @@ internal static partial class OpenTypeFont
                 }
                 if (useTypo) { windowsAscent = typoAscent; windowsDescent = -typoDescent; }
             }
-            return new(ascent, descent, windowsAscent, windowsDescent);
+            int xHeight = os2 is { Length: >= 88 } heightTable && ReadUInt16(data, heightTable.Offset) >= 2
+                ? Math.Max(0, (int)ReadInt16(data, heightTable.Offset + 86)) : 0;
+            return new(ascent, descent, windowsAscent, windowsDescent) { XHeight = xHeight };
         }
     }
 
@@ -1021,7 +1023,10 @@ internal static partial class OpenTypeFont
 internal readonly record struct OpenTypeFontMetrics(ushort UnitsPerEm, ushort GlyphCount, ushort NumberOfHMetrics, short IndexToLocFormat, OpenTypeTableRange Hmtx, OpenTypeTableRange? Cmap, OpenTypeKernTable? Kern, OpenTypeGposPairTable? Gpos, OpenTypeTableRange? Gsub, OpenTypeTableRange? Loca, OpenTypeTableRange? Glyf, bool ForceIntegerHintingSize, OpenTypeFontLineMetrics LineMetrics);
 
 /// <summary>Retains bounded alphabetic line metrics in font units without owning additional font storage.</summary>
-internal readonly record struct OpenTypeFontLineMetrics(int Ascender, int Descender, int WindowsAscender, int WindowsDescender);
+internal readonly record struct OpenTypeFontLineMetrics(int Ascender, int Descender, int WindowsAscender, int WindowsDescender)
+{
+    internal int XHeight { get; init; }
+}
 
 internal readonly record struct OpenTypeTableRange(int Offset, int Length);
 

@@ -94,8 +94,9 @@ internal static partial class OpenTypeFont
                     foreach (OpenTypeGlyphPoint point in child.Points)
                     {
                         work.Consume(token);
-                        int x = Transform(point.X, component.Transform.XX, point.Y, component.Transform.XY, dx);
-                        int y = Transform(point.X, component.Transform.YX, point.Y, component.Transform.YY, dy);
+                        double ratio = fitting?.HorizontalRatio ?? 1;
+                        int x = Transform(point.X, component.Transform.XX, point.Y, component.Transform.XY * ratio, dx);
+                        int y = Transform(point.X, component.Transform.YX / ratio, point.Y, component.Transform.YY, dy);
                         points.Add(new(x, y, point.IsOnCurve));
                     }
                     foreach (ushort end in child.Ends) { work.Consume(token); ends.Add(checked((ushort)(basePoint + end))); }

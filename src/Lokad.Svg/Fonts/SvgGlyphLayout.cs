@@ -50,6 +50,10 @@ internal static class SvgGlyphLayout
 
     /// <summary>Retains effective glyph paints only for varying normalized intervals, sharing layout, cancellation and owned geometry storage with the ordinary run.</summary>
     internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+        => CreateStorage(font, text, fontSize, originX, originY, letterSpacing, letterSpacingSpans, positionAdjustments, paintSpans, [], anchor, deviceMetrics, budget, sourceElementId, workCounter, cancellationToken);
+
+    /// <summary>Shares continuous positions and anchoring across bounded supplied-face and size intervals; material glyph-font storage borrows snapshot faces.</summary>
+    internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextResolvedFontSpan> fontSpans, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(text);
@@ -69,6 +73,16 @@ internal static class SvgGlyphLayout
             paintEnd = paint.End;
         }
         if (!paintSpans.IsEmpty && paintEnd != text.Length) throw new ArgumentException("Text paint intervals must cover normalized text.", nameof(paintSpans));
+        int fontEnd = 0;
+        foreach (SvgTextResolvedFontSpan span in fontSpans)
+        {
+            cancellationToken.ThrowIfCancellationRequested(); workCounter?.Consume(cancellationToken);
+            if (span.Start != fontEnd || span.End <= span.Start || span.End > text.Length || span.Style.Font is null || !double.IsFinite(span.Style.FontSize) || span.Style.FontSize <= 0)
+                throw new ArgumentException("Text font intervals must partition normalized text with valid supplied faces and sizes.", nameof(fontSpans));
+            if (span.End < text.Length && char.IsSurrogatePair(text, span.End - 1)) throw new ArgumentException("Text font intervals cannot divide a Unicode scalar.", nameof(fontSpans));
+            fontEnd = span.End;
+        }
+        if (!fontSpans.IsEmpty && fontEnd != text.Length) throw new ArgumentException("Text font intervals must cover normalized text.", nameof(fontSpans));
         double scale = fontSize / font.UnitsPerEm;
         if (!double.IsFinite(scale)) throw new ArgumentOutOfRangeException(nameof(fontSize));
         int glyphCount = 0;
@@ -83,10 +97,17 @@ internal static class SvgGlyphLayout
         RenderBudget.BudgetReservation reservation = budget.Reserve(checked(32L + glyphCount * 32L), SvgMemoryCategory.Geometry);
         RenderBudget.BudgetReservation? clusterReservation = null;
         RenderBudget.BudgetReservation? paintReservation = null;
+        RenderBudget.BudgetReservation? fontReservation = null;
         try
         {
             var glyphs = new SvgPositionedGlyph[glyphCount];
             SvgTextGlyphPaint[] glyphPaints = [];
+            SvgGlyphFontStyle[] glyphFonts = [];
+            if (!fontSpans.IsEmpty)
+            {
+                fontReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgGlyphFontStyle>(glyphCount), SvgMemoryCategory.Geometry);
+                glyphFonts = new SvgGlyphFontStyle[glyphCount];
+            }
             if (paintSpans.Length > 1)
             {
                 paintReservation = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgTextGlyphPaint>(glyphCount), SvgMemoryCategory.Geometry);
@@ -101,12 +122,27 @@ internal static class SvgGlyphLayout
             int mappedSpacingIndex = 0;
             int mappedPositionIndex = 0;
             int mappedPaintIndex = 0;
+            int mappedFontIndex = 0;
             var mappedScalars = text.EnumerateRunes();
             while (mappedScalars.MoveNext())
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 workCounter?.Consume(cancellationToken);
                 Rune scalar = mappedScalars.Current;
+                if (!fontSpans.IsEmpty)
+                {
+                    while (fontSpans[mappedFontIndex].End <= mappedSourceOffset) mappedFontIndex++;
+                    SvgGlyphFontStyle currentFont = fontSpans[mappedFontIndex].Style;
+                    if (!ReferenceEquals(font, currentFont.Font))
+                    {
+                        font = currentFont.Font;
+                        cachedLookupCount = 0;
+                        ligatures = OpenTypeFont.GetLatinLigatures(font.Bytes, font.Metrics, workCounter, cancellationToken);
+                    }
+                    fontSize = currentFont.FontSize;
+                    scale = fontSize / font.UnitsPerEm;
+                    glyphFonts[glyphPosition] = currentFont;
+                }
                 uint scalarValue = (uint)scalar.Value;
                 ushort glyphIndex = 0;
                 ushort advance = 0;
@@ -131,6 +167,7 @@ internal static class SvgGlyphLayout
                 double spacing = GetLetterSpacing(mappedSourceOffset, letterSpacing, letterSpacingSpans, ref mappedSpacingIndex);
                 while (mappedPositionIndex < positionAdjustments.Length && positionAdjustments[mappedPositionIndex].Start <= mappedSourceOffset) mappedPositionIndex++;
                 int sourceEnd = letterSpacingSpans.IsEmpty ? text.Length : letterSpacingSpans[mappedSpacingIndex].End;
+                if (!fontSpans.IsEmpty) sourceEnd = Math.Min(sourceEnd, fontSpans[mappedFontIndex].End);
                 if (!paintSpans.IsEmpty)
                 {
                     while (paintSpans[mappedPaintIndex].End <= mappedSourceOffset) mappedPaintIndex++;
@@ -171,6 +208,7 @@ internal static class SvgGlyphLayout
             }
             int positionedGlyphCount = glyphPosition;
             double x = originX;
+            double fontFragmentOrigin = originX;
             int spacingSpanIndex = 0;
             int positionBoundaryIndex = 0;
             int sourceOffset = 0;
@@ -178,11 +216,16 @@ internal static class SvgGlyphLayout
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgPositionedGlyph glyph = glyphs[index];
+                if (glyphFonts.Length != 0)
+                {
+                    font = glyphFonts[index].Font; fontSize = glyphFonts[index].FontSize; scale = fontSize / font.UnitsPerEm;
+                }
                 double currentLetterSpacing = GetLetterSpacing(sourceOffset, letterSpacing, letterSpacingSpans, ref spacingSpanIndex);
                 sourceOffset += sourceLengths is null ? char.IsSurrogatePair(text, sourceOffset) ? 2 : 1 : sourceLengths[index];
                 while (positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start < sourceOffset) positionBoundaryIndex++;
                 bool chunkEnds = index + 1 == positionedGlyphCount || positionBoundaryIndex < positionAdjustments.Length && positionAdjustments[positionBoundaryIndex].Start == sourceOffset && positionAdjustments[positionBoundaryIndex].HasAbsolutePosition;
-                int pairAdjustment = chunkEnds ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken);
+                bool sameFont = glyphFonts.Length == 0 || index + 1 < positionedGlyphCount && glyphFonts[index] == glyphFonts[index + 1];
+                int pairAdjustment = chunkEnds || !sameFont ? 0 : OpenTypeFont.GetPairAdjustment(font.Bytes, glyph.GlyphIndex, glyphs[index + 1].GlyphIndex, font.Metrics, workCounter, cancellationToken);
                 double kerning = pairAdjustment * scale;
                 if (pairAdjustment != 0 && deviceMetrics is { IsTextPath: true } pathMetrics)
                 {
@@ -191,6 +234,14 @@ internal static class SvgGlyphLayout
                     kerning = 0;
                 }
                 double nextX = chunkEnds ? x + glyph.Advance : x + glyph.Advance + kerning + currentLetterSpacing;
+                if (!chunkEnds && !sameFont && deviceMetrics is { } fragmentMetrics)
+                {
+                    // Native shaping fragments round their total inline width
+                    // before the next face/size fragment begins.
+                    nextX = fontFragmentOrigin + fragmentMetrics.RoundWidth(nextX - fontFragmentOrigin);
+                    fontFragmentOrigin = nextX;
+                }
+                else if (chunkEnds) fontFragmentOrigin = nextX;
                 if (!double.IsFinite(kerning) || !double.IsFinite(nextX)) throw new SvgException(SvgErrorCode.LimitExceeded, "The positioned text coordinates exceed the admitted numeric range.");
                 glyphs[index] = glyph with { X = x };
                 x = nextX;
@@ -254,14 +305,17 @@ internal static class SvgGlyphLayout
                 chunkStart = chunkEnd;
                 chunkShift += chunkWidth - width;
             }
-            SvgPositionedGlyphStorage result = new(glyphs, positionedGlyphCount, reservation, glyphPaints, paintReservation);
+            SvgPositionedGlyphStorage result = new(glyphs, positionedGlyphCount, reservation, glyphPaints, paintReservation, glyphFonts, fontReservation)
+            { NaturalWidth = deviceMetrics is { } naturalMetrics ? naturalMetrics.RoundWidth(x - originX) : x - originX };
             paintReservation = null;
+            fontReservation = null;
             return result;
         }
         catch
         {
             reservation.Dispose();
             paintReservation?.Dispose();
+            fontReservation?.Dispose();
             throw;
         }
         finally { clusterReservation?.Dispose(); }
@@ -320,28 +374,44 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
     private readonly int _count;
     private readonly SvgTextGlyphPaint[] _glyphPaints;
     private RenderBudget.BudgetReservation? _paintReservation;
+    private readonly SvgGlyphFontStyle[] _glyphFonts;
+    private RenderBudget.BudgetReservation? _fontReservation;
 
     internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation)
         : this(glyphs, count, reservation, [], null) { }
 
     internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation, SvgTextGlyphPaint[] glyphPaints, RenderBudget.BudgetReservation? paintReservation)
+        : this(glyphs, count, reservation, glyphPaints, paintReservation, [], null) { }
+
+    internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation, SvgTextGlyphPaint[] glyphPaints, RenderBudget.BudgetReservation? paintReservation, SvgGlyphFontStyle[] glyphFonts, RenderBudget.BudgetReservation? fontReservation)
     {
         _glyphs = glyphs;
         _count = count;
         _reservation = reservation;
         _glyphPaints = glyphPaints;
         _paintReservation = paintReservation;
+        _glyphFonts = glyphFonts; _fontReservation = fontReservation;
     }
 
     internal ReadOnlySpan<SvgPositionedGlyph> Glyphs => _glyphs.AsSpan(0, _count);
+    internal double NaturalWidth { get; init; }
+    /// <summary>Available only during owning run preparation, before scene borrowers exist.</summary>
+    internal Span<SvgPositionedGlyph> MutableGlyphs => _glyphs.AsSpan(0, _count);
     internal ReadOnlySpan<SvgTextGlyphPaint> GlyphPaints => _glyphPaints.Length == 0 ? [] : _glyphPaints.AsSpan(0, _count);
+    internal ReadOnlySpan<SvgGlyphFontStyle> GlyphFonts => _glyphFonts.Length == 0 ? [] : _glyphFonts.AsSpan(0, _count);
 
     public void Dispose()
     {
         Interlocked.Exchange(ref _reservation, null)?.Dispose();
         Interlocked.Exchange(ref _paintReservation, null)?.Dispose();
+        Array.Clear(_glyphFonts);
+        Interlocked.Exchange(ref _fontReservation, null)?.Dispose();
     }
 }
+
+/// <summary>Borrows a prepared face and its effective user-space size for one glyph.</summary>
+internal readonly record struct SvgGlyphFontStyle(SvgPreparedFont Font, double FontSize);
+internal readonly record struct SvgTextResolvedFontSpan(int Start, int End, SvgGlyphFontStyle Style);
 
 /// <summary>Represents one glyph index, origin and horizontal advance in SVG user units.</summary>
 internal readonly record struct SvgPositionedGlyph(ushort GlyphIndex, double X, double Y, double Advance)
