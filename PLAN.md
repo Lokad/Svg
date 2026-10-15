@@ -46,8 +46,13 @@ every other preceding displayed row is preserved. The
 [receipt](artifacts/maintenance-review-20261012/nested-source-qualified-results.json)
 owns complete platform checks, preservation, bounded failures and timings. The
 effects bank remains **0/1 complete document / 7/8 exact controls**. Original
-inputs/options/references remain unchanged. Hosted exact-revision CI will be
-recorded after this substantive batch is pushed; preceding green CI stays closed.
+inputs/options/references remain unchanged.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38693090280)
+for exact implementation revision `ab3ddb7d`, including memory, browser/setup,
+font, validator, package and installed-consumer checks. Hosted build plus complete
+tests took **133s Windows / 109s Linux**, separate from local routine timings.
+Reuse this terminal evidence for unchanged documentation; do not repoll this or
+preceding completed runs.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -82,7 +87,11 @@ affine regions against the same unchanged reference. The [bank](tests/Research/e
 links original declarations, healthy platform triples and the two now-exact
 nested-source controls. Identity/zero-offset colored-source diagnostics and
 wider mask/viewport/text/instance boundaries remain required G8 work. No source,
-reference, option or promise is changed.
+reference, option or promise is changed. The reduced
+[mixed-space witness](artifacts/effects-marker-sheet-20261015/mixed-filter-spaces-declaration.json)
+is frozen at `ab3ddb7d`, with six healthy stable captures, identical platform
+references and retained Windows/Linux primitive-space rejections. It isolates
+the inner graph; its unchanged whole-panel integration remains required.
 
 The image/effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
