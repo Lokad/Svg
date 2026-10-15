@@ -1,3 +1,26 @@
+## Basic pattern, viewport and non-scaling map exits (2026-10-15)
+
+The [shared map exit bank](../tests/Research/shared-map-exit-sheet/README.md) is
+**1/1 complete document / 5/5 exact controls** on Windows/Linux. Visible reflected
+basic rectangle/use fills, scaled viewport rectangle strokes, stroked tile content
+under root scaling and nonuniform dashed non-scaling strokes are exact.
+
+Basic tiles borrow existing parent-owned vector replay for reflected maps and
+stroked content. The complete host/output map includes reconstructed instances;
+strokes retain replay before a later raster map is known. Scaled viewport targets
+use existing native rectangle strokes and non-scaling dashes use the existing
+stroke-space measurement/construction path. Established legacy fill pixels stay
+protected.
+
+The [receipt](../artifacts/maintenance-review-20261012/shared-map-exits-qualified-results.json)
+records **7,839 passing tests/platform**, unchanged assets/options/default limits,
+all preceding test semantics, thirty-six healthy frozen captures and affected
+source/raster denial, cancellation, cleanup and retry. Original offscreen singly/
+doubly reflected inputs paint nothing; visible phase and device width have distinct
+witnesses. This supersedes the five older map gates below and closes ordered item
+2. Remaining composition/resource/font/effect exits keep G2-G9/S17 open; no
+feature deferral is claimed.
+
 ## Remaining cap, join and shader-alpha routes (2026-10-15)
 
 The [stroke/style exit bank](../tests/Research/stroke-style-exit-sheet/README.md)

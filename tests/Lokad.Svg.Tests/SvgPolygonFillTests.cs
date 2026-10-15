@@ -1407,13 +1407,14 @@ public sealed class SvgPolygonFillTests
     }
 
     [Fact]
-    public void Doubly_reflected_pattern_stays_unsupported()
+    public void Offscreen_doubly_reflected_pattern_paints_nothing()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs><rect width='8' height='8' fill='url(#p)' transform='scale(-1,-1)'/></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out int height);
+        Assert.Equal(8, width);
+        Assert.Equal(8, height);
+        Assert.All(pixels, component => Assert.Equal((byte)0, component));
     }
 
     [Fact]

@@ -41,7 +41,7 @@ internal static class SvgLeafParser
             && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth))
         {
             double nativeWidth = SvgStrokeStyleSyntax.ParseStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth, "rectangle");
-            if (context.RetainInstanceStrokePath || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height
+            if (context.RetainInstanceStrokePath || effectiveFrame is { IsScaled: true } || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height
                 || SvgStrokeStyleSyntax.ParseLinejoin(patternStyle.Linejoin, true) != SvgStrokeJoin.Miter)
                 return LowerRoundedRect(reader, context, syntax, 0, 0, effectiveFrame, state);
         }
@@ -249,7 +249,7 @@ internal static class SvgLeafParser
         }
         if (paintPattern)
         {
-            tile = SvgPatternReferenceResolver.ForPlacement(SvgPatternSyntax.ParsePatternId(style.Fill), tile, transform,
+            tile = SvgPatternReferenceResolver.ForPlacement(SvgPatternSyntax.ParsePatternId(style.Fill), tile, context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame)),
                 state, context.WorkCounter, context.CancellationToken);
         }
         SvgLinearGradient linear = default;
@@ -425,7 +425,7 @@ internal static class SvgLeafParser
         SvgAffineTransform transform = element.Transform;
         if (paintPattern)
         {
-            tile = SvgPatternReferenceResolver.ForPlacement(SvgPatternSyntax.ParsePatternId(style.Fill), tile, transform,
+            tile = SvgPatternReferenceResolver.ForPlacement(SvgPatternSyntax.ParsePatternId(style.Fill), tile, context.StrokeHostMap.ComposeChecked(SvgViewportFrame.MapGeometry(transform, frame)),
                 state, context.WorkCounter, context.CancellationToken);
         }
         SvgLinearGradient linear = default;
@@ -791,7 +791,7 @@ internal static class SvgLeafParser
             bool useRadial = state.RadialGradients.TryGetValue(id, out radial);
             if (useLinear) linear = SvgGradientSyntax.BindLinearSourceMap(linear, box, map, state, context.WorkCounter, context.CancellationToken);
             else if (useRadial) radial = SvgGradientSyntax.BindRadialSourceMap(radial, box, map, context.WorkCounter, context.CancellationToken);
-            else if (state.Patterns.TryGetValue(id, out tile)) tile = SvgPatternReferenceResolver.ForPlacement(id, tile, map, state, context.WorkCounter, context.CancellationToken);
+            else if (state.Patterns.TryGetValue(id, out tile)) tile = SvgPatternReferenceResolver.ForPlacement(id, tile, context.StrokeHostMap.ComposeChecked(map), state, context.WorkCounter, context.CancellationToken);
             else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local line paints are implemented.");
             using RenderBudget.BudgetReservation textOwner = state.Budget.Reserve(256, SvgMemoryCategory.Parser);
             string path = FormattableString.Invariant($"M{syntax.X1} {syntax.Y1} L{syntax.X2} {syntax.Y2}");

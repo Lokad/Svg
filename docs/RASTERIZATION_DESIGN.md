@@ -13906,3 +13906,32 @@ Windows / 314.9s Linux**, including normal incremental builds. These workload
 measurements establish no general throughput claim. R1-R3 close; the original
 nonuniform dashed non-scaling gate joins the four existing legacy map routes in
 the next finite delivery. Wider G2-G9/S17 remain open.
+
+## Complete basic map exits through existing tile and stroke replay (2026-10-15)
+
+The unchanged [shared map exit sheet](../tests/Research/shared-map-exit-sheet/README.md)
+and five controls are exact on Windows/Linux. The [receipt](../artifacts/maintenance-review-20261012/shared-map-exits-qualified-results.json)
+retains all original inputs/options/default limits, thirty-six healthy captures,
+every preceding test semantic and full platform qualification.
+
+Basic pattern rectangles now use existing definition-owned native tile promotion
+for reflection and stroked content. Callers supply the complete host/output map;
+source-reconstructed uses include their instance map during promotion selection.
+The drawing/shader-local matrices stay separate. Positive-axis unstroked content
+keeps its established legacy route. Stroked content always retains replay: the
+resource check exposed that internal scene parsing can precede output-map
+selection, so scale-one admission alone cannot choose its later raster path.
+
+Scaled viewport rectangle strokes use the existing native rounded/sharp source
+constructor. The native dash filter already measures and cuts through the stroke
+map for nonuniform non-scaling construction; removing the parser gate exposes that
+shared mechanism. The direct-instance paint helper stays local and static.
+
+Original Core inputs now measure device width and singly/doubly reflected
+offscreen nonpainting; the visible reflected controls separately establish phase.
+An old tile-storage assertion now checks exact blue coverage and released raster
+storage. Source/raster denial, cancellation, retry and borrowed-input integrity
+pass. Complete qualification is **7,839 tests/platform** in **80.6s Windows /
+385.8s Linux**, including normal incremental builds. These are workload timings,
+not general throughput claims. Item 2 closes; composition/resource/font/effect
+exits and S17 remain required.

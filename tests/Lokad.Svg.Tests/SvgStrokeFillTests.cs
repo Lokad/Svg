@@ -1090,13 +1090,18 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Nonuniform_dashed_nonscaling_stroke_stays_unsupported()
+    public void Nonuniform_dashed_nonscaling_stroke_preserves_device_width()
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><g transform='scale(2,1)'><polygon points='0,0 8,0 8,8 0,8' fill='none' stroke='red' stroke-width='2' stroke-dasharray='2,2' vector-effect='non-scaling-stroke'/></g></svg>");
 
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = RenderPixels(System.Text.Encoding.UTF8.GetString(input), out int width, out int height);
+        Assert.Equal(32, width);
+        Assert.Equal(32, height);
+        Assert.True(Pixel(pixels, width, 0, 0).Alpha > 0);
+        Assert.Equal(0, Pixel(pixels, width, 14, 4).Alpha);
+        Assert.Equal(255, Pixel(pixels, width, 15, 4).Alpha);
+        Assert.Equal(0, Pixel(pixels, width, 8, 4).Alpha);
+        Assert.Equal(0, Pixel(pixels, width, 8, 12).Alpha);
     }
 
     [Fact]

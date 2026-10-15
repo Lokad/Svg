@@ -1816,11 +1816,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_pattern_fills_on_reflected_use_instances()
+    public void Renders_pattern_fills_on_reflected_use_instances()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern><rect id='r' x='0' y='0' width='4' height='8'/></defs><use href='#r' x='0' y='0' transform='translate(8,0) scale(-1,1)' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red'/></pattern><rect id='r' x='0' y='0' width='4' height='8'/></defs><use href='#r' x='0' y='0' transform='translate(8,0) scale(-1,1)' fill='url(#p)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
     }
 
     [Fact]
@@ -2349,13 +2350,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_pattern_content_strokes_under_viewBox_scaling()
+    public void Renders_pattern_content_strokes_under_viewBox_scaling()
     {
         byte[] svg = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 4 4'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect x='2' y='2' width='4' height='4' fill='red' stroke='blue' stroke-width='2'/></pattern></defs><rect x='0' y='0' width='4' height='4' fill='url(#p)'/></svg>"u8.ToArray();
 
-        SvgException exception = Assert.Throws<SvgException>(() => Lokad.Svg.SvgConverter.ConvertToPng(svg, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None));
+        ReadOnlyMemory<byte> png = Lokad.Svg.SvgConverter.ConvertToPng(svg, Lokad.Svg.SvgRenderOptions.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(png.IsEmpty);
     }
 
     [Fact]
@@ -2479,11 +2480,16 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_reflected_pattern_fills()
+    public void Offscreen_reflected_pattern_rectangles_paint_nothing()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='2' height='2' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red'/></pattern></defs><rect width='4' height='4' fill='url(#p)' transform='scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='2' height='2' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red'/></pattern></defs><rect width='4' height='4' fill='url(#p)' transform='scale(-1,1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        RenderBudget rasterBudget = new(1_000_000);
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root,
+            new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), rasterBudget, CancellationToken.None))
+            Assert.All(surface.Pixels, component => Assert.Equal((byte)0, component));
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
     }
 
     [Fact]
@@ -4641,11 +4647,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_strokes_in_scaled_viewports()
+    public void Renders_strokes_in_scaled_viewports()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><rect x='0' y='0' width='8' height='8' fill='red' stroke='blue' stroke-width='2'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
     }
 
     [Fact]
@@ -6699,20 +6706,24 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Admits_opacity_scale_and_stroke_on_pattern_tile_content()
     {
-        SvgRoot faded = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' opacity='0.5'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot faded = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' opacity='0.5'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry fadedGeometry = Assert.Single(faded.Geometries);
         Assert.Equal(new SvgColor(255, 0, 0, 128), fadedGeometry.Pattern.Content.Color);
 
-        SvgRoot scaled = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red' transform='scale(2)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot scaled = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='1' height='1' fill='red' transform='scale(2)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
         SvgGeometry scaledGeometry = Assert.Single(scaled.Geometries);
         Assert.Equal(new SvgRectangle(0, 0, 2, 2, new SvgColor(255, 0, 0, 255), true, null), scaledGeometry.Pattern.Content);
 
-        SvgRoot stroked = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect x='1' y='1' width='2' height='2' fill='red' stroke='blue' stroke-width='2'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot stroked = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect x='1' y='1' width='2' height='2' fill='red' stroke='blue' stroke-width='2'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        SvgGeometry strokedGeometry = Assert.Single(stroked.Geometries);
-        Assert.Equal(new SvgStroke(new SvgColor(0, 0, 255, 255), 2), strokedGeometry.Pattern.Content.Stroke);
+        RenderBudget rasterBudget = new(1_000_000);
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(stroked,
+            new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), rasterBudget, CancellationToken.None))
+            for (int at = 0; at < surface.Pixels.Length; at += 4)
+                Assert.Equal(new byte[] { 0, 0, 255, 255 }, surface.Pixels.AsSpan(at, 4).ToArray());
+        Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
     }
 
     [Fact]
