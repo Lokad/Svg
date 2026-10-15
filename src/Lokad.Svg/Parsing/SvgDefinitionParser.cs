@@ -117,11 +117,11 @@ internal static class SvgDefinitionParser
             && SvgStructuralVocabulary.IsSymbolDefinitionLocation(directChild, isEligible && state.GroupDepth > 0, state.DefinitionsDepth, state.SymbolDepth, reader.Depth))
         {
             bool marker = reader.LocalName == "marker";
-            state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), workCounter, cancellationToken) : null;
             if (!marker) SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
             InlineStyle sheet = SvgDocumentStyleResolver.Resolve(reader, directChild, state, workCounter, cancellationToken);
             SvgPaintableElementContext markerContext = marker ? SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken) : default;
             SvgComputedStyle style = marker ? markerContext.ResolveStyle(reader) : SvgComputedStyleResolver.Resolve(reader, sheet, workCounter, cancellationToken);
+            state.MarkerDefinition = marker ? SvgMarkerSyntax.Parse(reader, style, new(state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth, state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight), workCounter, cancellationToken) : null;
             SvgPaint inheritedPaint = marker ? markerContext.InheritedPresentation.Paint : SvgPaint.Default;
             if (style.Display is not null || style.Visibility is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Display and visibility on symbol containers are not implemented.");
             bool shader = SvgPatternSyntax.IsPatternFill(style.Fill);

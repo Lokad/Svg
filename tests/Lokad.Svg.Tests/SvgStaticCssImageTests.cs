@@ -23,6 +23,12 @@ public sealed class SvgStaticCssImageTests
     public void Affine_images_preserve_input_and_release_owners_after_denial_and_retry(string identity)
         => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "affine-image-maps", identity + ".svg")));
 
+    [Theory]
+    [InlineData("marker-overflow-cascade")]
+    [InlineData("marker-length-angle-units")]
+    public void Marker_units_and_cascade_release_owners_after_denial_and_retry(string identity)
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
+
     private static void AssertResourceLifecycle(byte[] input)
     {
         byte[] unchanged = input.ToArray();

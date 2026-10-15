@@ -7,6 +7,26 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStyleSheetTests
 {
     [Fact]
+    public void Overflow_and_decoration_keep_independent_priority()
+    {
+        ParserWorkCounter work = new(10_000);
+        SvgStyleCascade cascade = new();
+        cascade.Apply(SvgInlineStyleParser.Parse("text-decoration:underline!important;overflow:visible", work, CancellationToken.None, true), new(0, 1, 0));
+        cascade.Apply(SvgInlineStyleParser.Parse("overflow:hidden", work, CancellationToken.None), new(1, 0, 0));
+        InlineStyle style = cascade.ToInlineStyle();
+        Assert.Equal("hidden", style.Overflow);
+        Assert.Equal("underline", style.TextDecoration);
+        Assert.Equal(InlineImportantProperties.TextDecoration, style.Important);
+    }
+
+    [Theory]
+    [InlineData("overflow:visible!important;overflow:hidden", "visible")]
+    [InlineData("overflow:visible;overflow:hidden", "hidden")]
+    [InlineData("overflow:hidden!important;overflow:visible", "hidden")]
+    public void Overflow_duplicates_follow_declaration_priority(string declarations, string expected)
+        => Assert.Equal(expected, SvgInlineStyleParser.Parse(declarations, new ParserWorkCounter(1000), CancellationToken.None).Overflow);
+
+    [Fact]
     public void Cascades_each_presentation_property_by_specificity_then_source_order()
     {
         SvgStyleCascade cascade = new();

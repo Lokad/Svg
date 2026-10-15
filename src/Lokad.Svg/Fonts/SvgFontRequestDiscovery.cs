@@ -176,7 +176,7 @@ internal static class SvgFontRequestDiscovery
                         && SvgStructuralVocabulary.IsSymbolDefinitionLocation(directChild, parentAllowsText && hasGroupAncestor, definitionsDepth, symbolDepth, reader.Depth);
                     if (symbolDefinition)
                     {
-                        if (reader.LocalName == "marker") _ = SvgMarkerSyntax.Parse(reader, new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height), workCounter, cancellationToken);
+                        if (reader.LocalName == "marker") _ = SvgMarkerSyntax.Parse(reader, SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken), workCounter, cancellationToken), new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height), workCounter, cancellationToken);
                         else SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
                         if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
                     }
@@ -219,7 +219,7 @@ internal static class SvgFontRequestDiscovery
                         if (reader.LocalName == "rect") SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
                         else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
                         else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
-                        else if (reader.LocalName == "marker") _ = SvgMarkerSyntax.Parse(reader, new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height), workCounter, cancellationToken);
+                        else if (reader.LocalName == "marker") _ = SvgMarkerSyntax.Parse(reader, SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken), workCounter, cancellationToken), new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height), workCounter, cancellationToken);
                     }
                     InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;

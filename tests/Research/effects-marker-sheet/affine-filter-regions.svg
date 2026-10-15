@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="108">
+<defs><filter id="affine" filterUnits="userSpaceOnUse" x="7.5" y="6.25" width="92.5" height="75.25" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="1.25 .75" result="b"/><feOffset in="b" dx="2.25" dy="1.5" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g transform="matrix(1 .15 .2 1 8.25 1.5)"><path d="M13 19Q38 2 70 15L88 58Q48 83 16 62Z" fill="#4b8ab8" fill-opacity=".625" filter="url(#affine)"/></g>
+</svg>

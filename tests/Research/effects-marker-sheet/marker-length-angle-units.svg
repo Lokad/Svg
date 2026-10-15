@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="108">
+<defs><marker id="units" markerUnits="userSpaceOnUse" markerWidth="12px" markerHeight="10px" refX="6px" refY="5px" viewBox="0 0 12 10" orient="45deg" overflow="visible"><path d="M0 0L12 5L0 10Z" fill="#c64c48"/></marker><marker id="turn" markerUnits="userSpaceOnUse" markerWidth="9pt" markerHeight="7.5pt" refX="6px" refY="5px" viewBox="0 0 12 10" orient=".125turn" overflow="visible"><path d="M0 0L12 5L0 10Z" fill="#428365"/></marker></defs><polyline points="22,27 68,17 114,32" fill="none" stroke="#35485c" stroke-width="3" marker-start="url(#units)" marker-end="url(#units)"/><polygon points="29,58 93,58 105,88 37,88" fill="#e2d1a8" stroke="#35485c" stroke-width="2.5" marker-start="url(#turn)" marker-mid="url(#turn)" marker-end="url(#turn)"/>
+</svg>

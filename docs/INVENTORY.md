@@ -21,6 +21,12 @@ remaining queue and [the qualification receipt](../artifacts/maintenance-review-
 owns finished-correction evidence. Dated sections below are checkpoint history;
 completed gates are superseded by later qualified witnesses.
 
+The next [effects/marker bank](../tests/Research/effects-marker-sheet/README.md)
+remains **0/1 completed document / 2/3 exact controls**. The two marker controls and
+the original CSS-overflow fixture are exact on Windows/Linux; image-filter and
+affine-filter gates remain required. The [marker receipt](../artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json)
+records preserved preceding outputs. This adds no completed document to the nine.
+
 ## Development checkpoint (2026-10-12)
 
 At this checkpoint the development queue was **39 complete / 45 selected**. The prior 35

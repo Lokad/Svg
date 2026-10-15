@@ -8,6 +8,16 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFontRequestDiscoveryTests
 {
     [Theory]
+    [InlineData("marker-length-angle-units")]
+    [InlineData("marker-overflow-cascade")]
+    public void Admitted_marker_controls_do_not_suppress_a_later_required_face(string identity)
+    {
+        string control = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg"));
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(control.Replace("</svg>", "<text font-family='Example' x='4' y='100'>A</text></svg>", StringComparison.Ordinal));
+        Assert.Equal("Example", Assert.Single(SvgFontRequestDiscovery.Discover(input, CancellationToken.None)).Family);
+    }
+
+    [Theory]
     [InlineData("<text>A</text>", "serif")]
     [InlineData("<g font-family='Example'><text>A</text></g>", "Example")]
     [InlineData("<text> </text>", "")]

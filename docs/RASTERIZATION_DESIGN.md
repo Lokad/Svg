@@ -1,3 +1,36 @@
+## Marker units through retained numeric and CSS state (2026-10-15)
+
+The frozen [effects/marker sheet](../tests/Research/effects-marker-sheet/README.md)
+advances through its unit and CSS gates. Both marker controls and the original
+CSS-overflow fixture match unchanged Windows/Linux references. The whole document
+and affine-filter control remain required; no additional completed document is
+counted. The [qualification receipt](../artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json)
+owns full platform checks and preservation of preceding rows.
+
+Marker coordinates parse absolute CSS lengths before existing viewport/map
+machinery. Angles retain the existing SVG float-number precision before conversion
+to degrees; CSS lengths retain their distinct numeric parsing. For example, the
+pinned browser's specified radian value produces 44.999996185302734 degrees, rather
+than rounding a double-parsed pi/4 directly to 45. Numeric vectors and meaningful
+syntax/range/token boundaries protect these distinctions without a visual grid.
+The conversion factors follow [CSS Values and Units](https://www.w3.org/TR/css-values-4/)
+and the [SVG angle contract](https://www.w3.org/TR/SVG/types).
+
+Overflow is now a specified value with ordinary per-property cascade rank rather
+than an OR-ed visibility flag. Marker playback consumes the resolved property;
+font discovery shares validation. Important flags have sufficient independent
+storage so overflow cannot alias decoration priority. Existing source replay
+and viewport clipping render overhanging ink; no new marker geometry kernel is
+introduced. The first generic gate also read bare pattern attributes and rejected
+three established outputs. Restricting that gate to resolved CSS retains the
+qualified element-specific pattern route. All three originals remain exact.
+
+Focused resource denial/canceled retry and font-discovery checks use existing
+infrastructure. Original declarations, numeric observations, discarded arithmetic
+and full logs stay in the ignored [study](../artifacts/effects-marker-sheet-20261015/).
+The next shared dependency is ordinary filter source capture for images, followed
+by the unchanged whole document's remaining graph/maps and mismatches.
+
 ## Complete affine images through shared replay and painting (2026-10-15)
 
 The unchanged [whole image sheet](../tests/Research/affine-image-maps/README.md)

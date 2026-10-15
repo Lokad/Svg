@@ -1,3 +1,25 @@
+## Marker units and cascaded overflow (2026-10-15)
+
+The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) has
+**2/3 exact controls** on Windows/Linux. Absolute marker lengths, unit-bearing
+angles and overhanging hidden/visible overflow follow existing source replay and
+CSS cascade. The original contained-ink CSS-overflow fixture is also exact
+against its unchanged reference; every previous marker/pattern result is retained.
+
+Absolute lengths admit number/px/in/cm/mm/Q/pt/pc and existing known-viewport
+percentages. Orientation admits unitless degrees and deg/grad/rad/turn with native
+specified precision. Bounds, invalid/range outcomes, work/cancellation and ownership
+checks remain. CSS source order, specificity, important and inline priority keep
+hidden/visible declarations independent of decoration priority. Existing bare
+pattern overflow attributes retain their established consumer.
+
+The whole sheet remains **0/1 complete**: image-filter admission is its next gate,
+and the affine-filter control still rejects rotated/skewed placement. Mixed-color
+and nested graph behavior, broader units/container semantics and the finite G8
+exit remain required. The [qualified receipt](../artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json)
+owns complete platform preservation and explicit admission changes. Older CSS
+marker-overflow rejection wording below is superseded, without a G8/S17 closure.
+
 ## Complete affine image-map sheet (2026-10-15)
 
 The unchanged [whole sheet](../tests/Research/affine-image-maps/README.md) is

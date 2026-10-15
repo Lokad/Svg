@@ -36,7 +36,8 @@ internal struct SvgStyleCascade
     private string? _pathLength;
     private string? _geometryWidth;
     private string? _geometryHeight;
-    private bool _hasVisibleOverflow;
+    private string? _overflow;
+    private CssDeclarationRank _overflowRank;
     private CssDeclarationRank _colorRank;
     private CssDeclarationRank _fillRank;
     private CssDeclarationRank _fillOpacityRank;
@@ -71,7 +72,7 @@ internal struct SvgStyleCascade
 
     internal void Apply(InlineStyle style, CssSpecificity specificity)
     {
-        _hasVisibleOverflow |= style.HasVisibleOverflow;
+        Apply(ref _overflow, ref _overflowRank, style.Overflow, (style.Important & InlineImportantProperties.Overflow) != 0, specificity);
         Apply(ref _geometryWidth, ref _geometryWidthRank, style.GeometryWidth, (style.Important & InlineImportantProperties.GeometryWidth) != 0, specificity);
         Apply(ref _geometryHeight, ref _geometryHeightRank, style.GeometryHeight, (style.Important & InlineImportantProperties.GeometryHeight) != 0, specificity);
         Apply(ref _filter, ref _filterRank, style.Filter, (style.Important & InlineImportantProperties.Filter) != 0, specificity);
@@ -109,6 +110,7 @@ internal struct SvgStyleCascade
     internal InlineStyle ToInlineStyle()
     {
         InlineImportantProperties important = InlineImportantProperties.None;
+        if (_overflowRank.Important) important |= InlineImportantProperties.Overflow;
         if (_filterRank.Important) important |= InlineImportantProperties.Filter;
         if (_markerEndRank.Important) important |= InlineImportantProperties.MarkerEnd;
         if (_markerMidRank.Important) important |= InlineImportantProperties.MarkerMid;
@@ -141,7 +143,7 @@ internal struct SvgStyleCascade
         if (_pathLengthRank.Important) important |= InlineImportantProperties.PathLength;
         if (_geometryWidthRank.Important) important |= InlineImportantProperties.GeometryWidth;
         if (_geometryHeightRank.Important) important |= InlineImportantProperties.GeometryHeight;
-        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, WordSpacing = _wordSpacing, TextDecoration = _textDecoration, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, HasVisibleOverflow = _hasVisibleOverflow, GeometryWidth = _geometryWidth, GeometryHeight = _geometryHeight, Important = important };
+        return new InlineStyle(_color, _fill, _fillOpacity, _stroke, _display, _visibility, _opacity, _fillRule) { TextFont = new SvgTextInlineFontProperties(_family, _weight, _fontStyle, _fontSize), WhiteSpace = _whiteSpace, LetterSpacing = _letterSpacing, WordSpacing = _wordSpacing, TextDecoration = _textDecoration, Linecap = _linecap, Linejoin = _linejoin, Dasharray = _dasharray, Dashoffset = _dashoffset, Width = _width, Miterlimit = _miterlimit, StrokeOpacity = _strokeOpacity, PathLength = _pathLength, ClipRule = _clipRule, PaintOrder = _paintOrder, Filter = _filter, MarkerEnd = _markerEnd, MarkerMid = _markerMid, MarkerStart = _markerStart, Overflow = _overflow, GeometryWidth = _geometryWidth, GeometryHeight = _geometryHeight, Important = important };
     }
 
     private static void Apply(ref string? value, ref CssDeclarationRank currentRank, string? candidate, bool candidateImportant, CssSpecificity specificity)

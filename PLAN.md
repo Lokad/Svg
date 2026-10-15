@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15 at the qualified complete affine image-map checkpoint.
+Updated 2026-10-15 at the qualified marker-unit/CSS checkpoint; the effects sheet remains incomplete.
 This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
 owns admission, [INVENTORY](docs/INVENTORY.md) owns document evidence,
@@ -30,6 +30,7 @@ accepted. A proposed deferral of an existing promise stays required until decide
 | Additional authored documents | **Nine complete CC0 documents**, each **1/1 exact** on Windows/Linux, separate from both frozen cohorts. Preserve their separately counted controls: [symbol card](tests/Research/symbol-fractional-frames/README.md) **4/4**, [affine orbit](tests/Research/affine-oval-strokes/README.md) **6/6**, [scoped card](tests/Research/scoped-clips-masks/README.md) **5/5**, [colored signal](tests/Research/colored-effects-markers/README.md) original **7/7** plus repaired **1/1** and bounds **4/4**, [CSS/image card](tests/Research/static-css-images/README.md) original **3/3** plus phase/clip **2/2**, [layout guide](tests/Research/font-layout-diagram/README.md) **4/4**, [cascade sheet](tests/Research/root-resource-cascade/README.md) **4/4**, [label/path sheet](tests/Research/remaining-label-path-sheet/README.md) **8/8**, and [affine image sheet](tests/Research/affine-image-maps/README.md) **3/3**. Banks link immutable inputs, native witnesses and finished-correction receipts; wider groups stay open. |
 | Qualified G2–G5 mechanisms | Fractional ordinary-use stroke widths, fractional/nonuniform symbol frames, nonuniform root curve fills and affine oval strokes, the non-scaling conic defect, composed cubic clips, translated custom mask regions and mask-container opacity have qualified witnesses. Preserve [use widths](artifacts/maintenance-review-20261012/fractional-use-qualified-results.json), [symbol frames](artifacts/maintenance-review-20261012/symbol-frames-final-results.json), [root curves](artifacts/maintenance-review-20261012/nonuniform-curves-qualified-results.json), [non-scaling strokes](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json), [ovals](tests/Research/affine-oval-strokes/manifest.json) and [scopes](tests/Research/scoped-clips-masks/manifest.json). These completed mechanisms are dependencies already available, not work to repeat for wider maps or locations. |
 | Filter bounds, rescaling and restoration | The [colored-effects bank](tests/Research/colored-effects-markers/README.md) preserves original controls **7/7**, repaired control **1/1**, bounds **4/4** and whole document **1/1**. The [filter-region bank](tests/Research/filter-regions/manifest.json) is **26/26 exact**, including sRGB rescaling/opacity and the unchanged displaced linearRGB blur. Preserve the [bounds](artifacts/maintenance-review-20261012/offset-image-bounds-qualified-results.json), [rescaling](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json) and [restoration receipts](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json). Wider G8 stays open. |
+| Qualified marker mechanisms | The [effects/marker bank](tests/Research/effects-marker-sheet/README.md) has **2/3 exact controls**: absolute marker lengths/angles and overhanging CSS overflow with ordinary priority. The original [CSS overflow case](tests/Research/path-marker-content/marker-css-overflow-boundary.svg) is also exact against unchanged references. Existing marker and pattern outputs remain protected; the whole effects sheet and affine-filter control remain required gaps. No new document or G8 closure is counted. |
 | Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared ownership are implemented. Private deployment validation below remains required; general shaping remains outside scope. |
 | Resource/API/package protections | Preserve bounded preparation/raster/encoding, allocation/work denial, cancellation/retry, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks apply; final release evidence must cover the finished revision. |
 
@@ -37,16 +38,15 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The complete image correction is locally qualified: **7,686 tests/platform**
-(5,291 core / 2,389 visual / six FontProbe), the whole image sheet **1/1** and
-**3/3 separate controls** exact on Windows/Linux. The
-[receipt](artifacts/maintenance-review-20261012/affine-image-qualified-results.json)
-owns preservation, assertion migrations, bounded-failure evidence and timings.
-[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38677568140)
-for exact implementation revision `4c4b4a22`, including package/consumer, memory,
-browser/setup, font and validator checks. Its build plus complete tests took
-**119s Windows / 114s Linux**, separately from local timings. Reuse this completed
-evidence for unchanged documentation; do not poll this or preceding green runs.
+The marker correction is locally qualified: **7,724 tests/platform**
+(5,325 core / 2,393 visual / six FontProbe), with no preceding test rows removed.
+The effects bank remains **0/1 complete document / 2/3 exact controls**; the
+original CSS marker-overflow control is also exact against unchanged references.
+The [receipt](artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json)
+owns admission changes, preservation, bounded-failure checks and timings.
+Hosted qualification follows the substantive commit/push. The preceding
+[terminal green image CI](https://github.com/Lokad/Svg/actions/runs/38677568140)
+for `4c4b4a22` stays closed; do not poll it to qualify new marker code.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -69,7 +69,7 @@ IDs, source coordinates or observed failure pixels may become renderer predicate
 | Order / required item | Missing behavior and dependencies | Acceptance case and completion condition |
 | --- | --- | --- |
 | 1. Remaining G7 acceptance | The whole image-map correction is complete. Reconcile independent alignment axes and the enumerated resource/style locations against existing witnesses; dependent image content remains required with G6/G8. Dependencies: qualified decoder, crop/sampling, cascade, replay and G5 layers. | Preserve the [complete affine image sheet and three controls](tests/Research/affine-image-maps/README.md). Reuse [selector](tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs), [PNG](tests/Lokad.Svg.Tests/PngImageDecoderTests.cs), static-image and cascade witnesses; add a case only for an uncovered independent alignment or listed location. Close G7 when every finite mechanism has acceptance and affected decode/resource/error checks pass. No new alignment document or Cartesian census is required. |
-| 2. Effects and markers (G8) | Remaining graph/default/result, region/color-space/shadow and affine filter behavior; marker units, CSS overflow and closure. Reuse qualified rescaling, bounded capture/composition and G5 scopes, with only the G7/G9 slices a case needs. | Freeze an **effects/marker sheet** for mechanisms lacking acceptance, including [CSS marker overflow](tests/Research/path-marker-content/marker-css-overflow-boundary.svg), polygon closure and mapped filter regions. Make every output exact on both platforms, preserving the completed displaced blur. Complete when all finite G8 mechanisms have exact witnesses, measured zero-length outcomes and affected graph/resource checks. |
+| 2. Effects and markers (G8), active | Image/filter source admission, graph/default/result and mixed-color behavior, region/shadow/affine maps and remaining interactions; font-relative marker lengths, container presentation and degenerate/closure evidence. Reuse qualified units/CSS overflow, bounded capture/composition and G5 scopes; bring in only needed G7/G9 slices. | Finish the unchanged [effects/marker sheet and remaining affine control](tests/Research/effects-marker-sheet/README.md). Two marker controls and the original CSS-overflow fixture are already exact. Extend existing filter source capture to images first, then advance this document through graph/map gates. Close G8 only when all finite mechanisms have witnesses, measured zero-length outcomes and affected graph/resource checks. |
 | 3. Shared maps/composition (G2–G5) | Remaining percentage/instance/paint/stroke maps, dashed shader caps/translucency, clip child unions, mask units/scopes and nested leaf/group/use boundaries. Land shared dependencies with items 1–2 and the dependent tile/text cases. | Graduate [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg), partial-mask use in [group-mask tests](tests/Lokad.Svg.Tests/SvgGroupMaskCropTests.cs), [opposite-winding children](tests/Research/compound-clip-content/overlapping-opposite-children.svg) and [clip child union](tests/Research/clip-intersections/overlapping-path-child-union.svg). Bind other missing independent semantics to one composition sheet or focused stroke/degenerate-map controls. Complete when finite G2–G5 mechanisms have qualified witnesses; reuse completed single-child overlap, curve, symbol and scope evidence. |
 | 4. Patterns (G6) | Remaining unit/map/combined and grouped opacity; image/text/filter tile content. Reuse bounded replay and only the G7–G9 slices each tile needs. | Graduate [combined tile opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg) and [group opacity](tests/Research/pattern-vector-content/group-opacity-promotion.svg), then use a tile sheet for missing unit/viewBox/phase/reflection and dependent content. Complete when finite G6 mechanisms are qualified with recursive/size/work cleanup outcomes; preserve the eight complete pattern documents. |
 | 5. Remaining labels and paths (G9) | Stroked decorations, decorated paths, affine glyph/paint-map qualification, the three named composite flags and private validation. Dependencies: qualified layout/fragment painting, supplied-font preparation and G3–G5 maps. | Freeze a stroked/decorated direct-and-curved-path witness and bounded synthetic overlap/scaled-offset composites; reuse existing witnesses for rotation/skew/reflection/nonuniform glyph maps. Record measured degenerate-path outcomes and the sanitized private request set below. Close G9 when every finite mechanism has linked acceptance and affected bounded-failure checks. The completed sheet, eight controls and intended-program proofs stay closed. |
@@ -81,6 +81,13 @@ remain diagnostic history; current acceptance belongs to the public bank and
 qualified receipt above. The same unchanged document now matches through source
 cropping, shared coverage, recorded opacity and clip/mask replay. It adds one
 completed document, not a G7 closure or a replacement for preceding controls.
+
+The [effects declaration](artifacts/effects-marker-sheet-20261015/declaration.json)
+now binds the next document to frozen inputs/options and healthy platform triples.
+Its first unit and CSS gates are resolved. Current whole-sheet rejection is image
+filter admission; the separate affine control rejects rotated/skewed filtering.
+Keep mixed-color/nested graph and other declared interactions required as this
+same sheet advances. Original baselines remain evidence, not work to repeat.
 
 The image/effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
@@ -226,8 +233,13 @@ completed work; their exact cases do not close dependent tile content.
   overflow attributes/CSS and container presentation. Preserve the qualified
   [path](tests/Research/path-marker-content/manifest.json) and
   [instance](tests/Research/marker-instance-content/manifest.json) witnesses.
-  Polygon closure/vertex witnesses, remaining units and CSS overflow/container
-  combinations still need qualification.
+  Absolute number/px/in/cm/mm/Q/pt/pc lengths, known-viewport percentages and
+  unitless/deg/grad/rad/turn orientation have retained marker witnesses and
+  numeric/range controls. Literal hidden/visible CSS overflow now follows source
+  order, specificity and important/inline priority. Preserve the existing pattern
+  attribute route. Font-relative marker lengths, other container presentation and
+  unverified auto closure/tangent semantics remain required; the two exact controls
+  do not close G8 or create an exhaustive combination prerequisite.
   Measure zero-length/closed-path outcomes;
   missing/recursive marker references have explicit errors.
 - Effects: `feGaussianBlur`, `feOffset`, `feFlood`, `feComposite` over/in,
@@ -364,14 +376,12 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/affine-image-qualified-results.json)
-  records **7,686 tests/platform** in **137.3s Windows / 234.3s Linux**. Windows
-  conservatively includes the normal full build/test attempt and a complete core
-  rerun after migrating one obsolete rejection; unchanged green visual/font
-  results were reused. Linux includes normal build/startup and complete tests.
-  Both meet the target. Earlier local/hosted timings stay in the
-  [preceding receipt](artifacts/maintenance-review-20261012/path-sheet-qualified-results.json),
-  with separate workload/environment definitions; these are no speedup claims.
+  The [latest receipt](artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json)
+  records **7,724 tests/platform** in **84.3s Windows / 261.8s Linux**, including
+  normal build/startup and complete tests of the finished correction. Both meet
+  the target. Development attempts remain in that receipt; earlier timings
+  stay in the [image receipt](artifacts/maintenance-review-20261012/affine-image-qualified-results.json),
+  with distinct workload/environment definitions; these are no speedup claims.
   Use normal incremental builds without forced compiler shutdown. No rerun is
   needed merely to refresh timing. Record one before/after timing when
   materially changing routine cost. If it exceeds the target, remove redundant

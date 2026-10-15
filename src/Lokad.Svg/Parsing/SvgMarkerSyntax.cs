@@ -58,10 +58,10 @@ internal static class SvgMarkerSyntax
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only none or local marker references are implemented.");
     }
 
-    internal static SvgMarkerDefinition Parse(XmlReader reader, SvgViewportLengthBases bases, ParserWorkCounter work, CancellationToken token)
+    internal static SvgMarkerDefinition Parse(XmlReader reader, SvgComputedStyle style, SvgViewportLengthBases bases, ParserWorkCounter work, CancellationToken token)
     {
         SvgElementAttributePolicy.ValidateMarker(reader, work, token);
-        string overflow = reader.GetAttribute("overflow") ?? "hidden";
+        string overflow = style.Overflow ?? "hidden";
         bool visibleOverflow = overflow.AsSpan().Trim().Equals("visible", StringComparison.OrdinalIgnoreCase);
         if (!visibleOverflow) SvgNestedViewportSyntax.ValidateOverflow(overflow);
         _ = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), work, token);
@@ -70,29 +70,64 @@ internal static class SvgMarkerSyntax
         string units = reader.GetAttribute("markerUnits") ?? "strokeWidth";
         if (units is not ("strokeWidth" or "userSpaceOnUse"))
             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only strokeWidth and userSpaceOnUse marker units are implemented.");
-        string orient = reader.GetAttribute("orient") ?? "0";
+        string orient = (reader.GetAttribute("orient") ?? "0").Trim();
         SvgMarkerOrientation orientation = orient == "auto" ? SvgMarkerOrientation.Auto
             : orient == "auto-start-reverse" ? SvgMarkerOrientation.AutoStartReverse : SvgMarkerOrientation.Angle;
-        double angle = orientation == SvgMarkerOrientation.Angle ? Number(orient, 0) : 0;
+        double angle = orientation == SvgMarkerOrientation.Angle ? Angle(orient) : 0;
         double refX = Coordinate(reader.GetAttribute("refX"), bases.Width, 0), refY = Coordinate(reader.GetAttribute("refY"), bases.Height, 0);
         return new(width, height, refX, refY, units == "strokeWidth", orientation, angle) { ClipsViewport = !visibleOverflow };
 
-        static double Coordinate(string? value, double? basis, double fallback)
-        {
-            if (value is not null && value.EndsWith('%'))
-            {
-                if (basis is not {} extent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage marker coordinates require a known enclosing viewport.");
-                return (float)(Number(value[..^1], 0) * (float)extent / 100);
-            }
-            return Number(value, fallback);
-        }
-        static double Number(string? value, double fallback)
+        double Coordinate(string? value, double? basis, double fallback)
         {
             if (value is null) return fallback;
+            ValidateLength(value);
+            ReadOnlySpan<char> input = value.AsSpan().Trim();
+            if (input.EndsWith('%'))
+            {
+                if (basis is not {} extent) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage marker coordinates require a known enclosing viewport.");
+                return Finite(Number(input[..^1], false) * (float)extent / 100);
+            }
+            double scale = 1;
+            int suffix = 2;
+            if (input.EndsWith("px", StringComparison.OrdinalIgnoreCase)) { }
+            else if (input.EndsWith("in", StringComparison.OrdinalIgnoreCase)) scale = 96;
+            else if (input.EndsWith("cm", StringComparison.OrdinalIgnoreCase)) scale = 96d / 2.54d;
+            else if (input.EndsWith("mm", StringComparison.OrdinalIgnoreCase)) scale = 96d / 25.4d;
+            else if (input.EndsWith("pt", StringComparison.OrdinalIgnoreCase)) scale = 96d / 72d;
+            else if (input.EndsWith("pc", StringComparison.OrdinalIgnoreCase)) scale = 16;
+            else if (input.EndsWith("q", StringComparison.OrdinalIgnoreCase)) { scale = 96d / 101.6d; suffix = 1; }
+            else suffix = 0;
+            return Finite(Number(suffix == 0 ? input : input[..^suffix], false) * scale);
+        }
+
+        double Angle(string value)
+        {
+            ValidateLength(value);
+            ReadOnlySpan<char> input = value.AsSpan().Trim();
+            double scale = 1;
+            int suffix = 3;
+            if (input.EndsWith("deg", StringComparison.Ordinal)) { }
+            else if (input.EndsWith("grad", StringComparison.Ordinal)) { scale = .9; suffix = 4; }
+            else if (input.EndsWith("rad", StringComparison.Ordinal)) scale = 180 / Math.PI;
+            else if (input.EndsWith("turn", StringComparison.Ordinal)) { scale = 360; suffix = 4; }
+            else suffix = 0;
+            return Finite(Number(suffix == 0 ? input : input[..^suffix], true) * scale);
+        }
+
+        void ValidateLength(string value)
+        {
             if (value.Length > SvgSyntaxLimits.MaximumValueTokenCharacters)
                 throw new SvgException(SvgErrorCode.LimitExceeded, "Marker values exceed the configured syntax limit.");
-            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number))
+            work.ConsumeBytes(value.Length, token);
+        }
+        double Number(ReadOnlySpan<char> value, bool svgAngle)
+        {
+            if (value.Trim().Length != value.Length || !double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double number) || !double.IsFinite(number))
                 throw new SvgException(SvgErrorCode.MalformedInput, "Marker values must be finite numbers.");
+            return Finite(svgAngle ? SvgFloatNumber.ReadValidated(value, work, token) : number);
+        }
+        static float Finite(double number)
+        {
             if (!float.IsFinite((float)number)) throw new SvgException(SvgErrorCode.LimitExceeded, "Marker values exceed the finite float range.");
             return (float)number;
         }

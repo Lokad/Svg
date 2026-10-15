@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "One required whole CC0 effects/marker sheet and three orthogonal controls declared against 4c4b4a22. Two marker controls are exact; image-filter and affine-filter gates remain required. No new completed document or G8 closure is claimed.",
+  "cases": [
+    {
+      "id": "effects-marker-sheet",
+      "input": "effects-marker-sheet.svg",
+      "width": 432,
+      "height": 300,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "d29cfc595c96040a372a4388868d6bf3669bccd1ce6ef550e37bf61c0a86d437",
+      "selection": "Whole finite G8 sheet: CSS marker overflow/cascade and closure, angle/length units, affine regions, mixed graph color spaces, nested effects and clipped image shadow.",
+      "captures": [
+        {
+          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/effects-marker-sheet.png",
+      "referenceSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Image attribute 'filter' is not implemented.",
+      "remainingRequiredBehavior": "Filtered images, mixed graph color spaces, nested effects and affine filter placement remain required; this whole output is not complete."
+    },
+    {
+      "id": "marker-overflow-cascade",
+      "input": "marker-overflow-cascade.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "b39e1b69e8648ac1a2acac21cf02179d65f913477eaf7f9b375906c49e27acbf",
+      "selection": "An overhanging marker proves visible/hidden CSS cascade and important precedence, beyond the existing contained-ink rejection fixture.",
+      "captures": [
+        {
+          "pngSha256": "ecb492e1a3b5a0ed57abc55c2df98e102b1cf06e3338b149c0649c8ff43c2e6e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ecb492e1a3b5a0ed57abc55c2df98e102b1cf06e3338b149c0649c8ff43c2e6e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ecb492e1a3b5a0ed57abc55c2df98e102b1cf06e3338b149c0649c8ff43c2e6e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "ecb492e1a3b5a0ed57abc55c2df98e102b1cf06e3338b149c0649c8ff43c2e6e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ecb492e1a3b5a0ed57abc55c2df98e102b1cf06e3338b149c0649c8ff43c2e6e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ecb492e1a3b5a0ed57abc55c2df98e102b1cf06e3338b149c0649c8ff43c2e6e",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/marker-overflow-cascade.png",
+      "referenceSha256": "ecb492e1a3b5a0ed57abc55c2df98e102b1cf06e3338b149c0649c8ff43c2e6e",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "marker-length-angle-units",
+      "input": "marker-length-angle-units.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "2f439c121b1531ae5590e9634cc1c6b914679c3ade710e431235186e587f6796",
+      "selection": "Separate marker length/angle units and polygon start/mid/end closure without a filter dependency.",
+      "captures": [
+        {
+          "pngSha256": "b90ad725a1841929f22eb2beeed3edd92c0b7a163e5ab926834fb21ea7c2a2ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b90ad725a1841929f22eb2beeed3edd92c0b7a163e5ab926834fb21ea7c2a2ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b90ad725a1841929f22eb2beeed3edd92c0b7a163e5ab926834fb21ea7c2a2ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "b90ad725a1841929f22eb2beeed3edd92c0b7a163e5ab926834fb21ea7c2a2ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b90ad725a1841929f22eb2beeed3edd92c0b7a163e5ab926834fb21ea7c2a2ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "b90ad725a1841929f22eb2beeed3edd92c0b7a163e5ab926834fb21ea7c2a2ad",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/marker-length-angle-units.png",
+      "referenceSha256": "b90ad725a1841929f22eb2beeed3edd92c0b7a163e5ab926834fb21ea7c2a2ad",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true
+    },
+    {
+      "id": "affine-filter-regions",
+      "input": "affine-filter-regions.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "f08bf0987a8958bc70703099d58cda224b58f6a91f79260ee316f6b4c360b1eb",
+      "selection": "A composed affine owner with finite user-space filter region and offset/blur/merge graph isolates mapped region capture.",
+      "captures": [
+        {
+          "pngSha256": "4f66794ad36ee46c27d8a7215378b630a3265ab2c715b1c4220f57e69ceadf17",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4f66794ad36ee46c27d8a7215378b630a3265ab2c715b1c4220f57e69ceadf17",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4f66794ad36ee46c27d8a7215378b630a3265ab2c715b1c4220f57e69ceadf17",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "4f66794ad36ee46c27d8a7215378b630a3265ab2c715b1c4220f57e69ceadf17",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4f66794ad36ee46c27d8a7215378b630a3265ab2c715b1c4220f57e69ceadf17",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4f66794ad36ee46c27d8a7215378b630a3265ab2c715b1c4220f57e69ceadf17",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/affine-filter-regions.png",
+      "referenceSha256": "4f66794ad36ee46c27d8a7215378b630a3265ab2c715b1c4220f57e69ceadf17",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "expectedError": "UnsupportedFeature",
+      "expectedMessage": "Filters under rotated or skewed placement are not implemented.",
+      "remainingRequiredBehavior": "Rotated/skewed filter placement remains required; this is a retained acceptance gap, not a scope boundary."
+    }
+  ],
+  "linuxReferenceQualification": {
+    "date": "2026-10-15",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  }
+}
