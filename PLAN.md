@@ -48,11 +48,12 @@ The tile bank remains **0/1 complete document / 7/10 exact controls**; image,
 filtered and supplied-font content remain required. The additional affine/unit
 control protects a discovered ordering defect; the original template control
 stays in its original bank. A diagnostic of the first five whole-sheet panels
-is exact, but does not count as document acceptance. The
-[preceding opacity receipt](artifacts/maintenance-review-20261012/pattern-opacity-qualified-results.json)
-and its [terminal CI](https://github.com/Lokad/Svg/actions/runs/38721429867)
-remain valid historical evidence; do not repoll completed runs. Current-revision
-CI is pending. G2–G9 and S17 remain open.
+is exact, but does not count as document acceptance.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38729031543)
+for `98fee3a5`, first attempt, including memory, browser/setup, font, validator,
+package and installed-consumer checks. The receipt owns the exact-revision step
+audit. Reuse terminal evidence for unchanged documentation; do not repoll this
+or preceding completed runs. G2–G9 and S17 remain open.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>

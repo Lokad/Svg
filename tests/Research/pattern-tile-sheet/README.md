@@ -23,7 +23,7 @@ font through SVG-image-local @font-face; parsed source trees remain equal after
 removing that declared insertion. Missing/corrupt/substituted font controls use
 healthy stable triples for both font-bearing outputs on each platform.
 
-The whole document retains the repository's [MIT license](../../../LICENSE)
+The whole document retains the repository's [MIT license](../../../LICENSE.txt)
 because its first panel reuses an original MIT fixture. The seven new standalone
 controls are repository-authored CC0-1.0, dedicated in their source headers.
 The embedded PNG reuses unchanged generated CC0 pixels from the
