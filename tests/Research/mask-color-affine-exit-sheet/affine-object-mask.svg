@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><defs><mask id="box-m" maskContentUnits="objectBoundingBox"><rect x=".05" y=".1" width=".55" height=".75" fill="white"/><ellipse cx=".65" cy=".5" rx=".25" ry=".35" fill="#808080"/></mask></defs><g transform="translate(6 4) rotate(13 76 72) skewX(5)"><rect x="24" y="24" width="104" height="96" fill="#285a93" mask="url(#box-m)"/></g><rect x="136" y="144" width="16" height="8" fill="#a44f32"/></svg>

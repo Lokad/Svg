@@ -59,12 +59,13 @@ cross-checks of the original mask boundary and all prior test semantics. The nam
 mask-unit/restoration, active xMin and mixed tile-local clip acceptances are complete.
 
 **Next selected document within item 3:** the 480 by 160
-[mask color/affine sheet](artifacts/mask-color-affine-exits-20261015/mask-color-affine-sheet.svg),
+[mask color/affine sheet](tests/Research/mask-color-affine-exit-sheet/README.md),
 with three finite C3 controls: colored luminance, a general affine user-space mask,
 and general affine object-box content. These retain the promised G5 color/transform
 boundary before item 3 closes; completing the current document does not prove them.
-Declare/measure and freeze healthy references before correction; no additional
-shape, map or API combination quota applies.
+Its original assets/options and twenty-four healthy stable captures are frozen
+before correction: **0/1 document / 0/3 exact controls**, with measured grayscale/
+axis-map rejections on both platforms. No additional combination quota applies.
 
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |

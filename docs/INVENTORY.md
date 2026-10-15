@@ -48,6 +48,12 @@ native cross-checks of the original mask-content boundary. This is the nineteent
 authored document (eighteenth CC0), separate from both cohorts and W3C.
 Remaining colored/general affine masks, font/effect and S17 exits stay required.
 
+The frozen [mask color/affine sheet](../tests/Research/mask-color-affine-exit-sheet/README.md)
+starts at **0/1 document / 0/3 exact controls** on both platforms. Grayscale-only
+luminance and axis-only spatial target maps are measured original G5/C3 blockers.
+Twenty-four healthy stable captures and original sources/options predate correction.
+This adds no completed-document count or combination quota.
+
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
 both cohorts and the nineteen authored documents. All **4/4 controls** are exact,
