@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Instance stroke paint, width and mechanics across rectangles, circles, ellipses, paths, points, lines, forward definitions, symbols, groups and aliases; source precedence, CSS, rgba, dashes and uniform magnification. Ninety-six cases are exact; three translucent shader circle cases retain an explicit paint gate. Development cases are separate from the original and corporate denominators.",
+  "purpose": "Instance stroke paint, width and mechanics across rectangles, circles, ellipses, paths, points, lines, forward definitions, symbols, groups and aliases; source precedence, CSS, rgba, dashes and uniform magnification. All ninety-nine cases are exact, including the three inherited translucent shader circle controls. Development cases are separate from the original and corporate denominators.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
@@ -1325,8 +1325,7 @@
       "width": 96,
       "height": 64,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "shader-parent-white",
@@ -1340,8 +1339,7 @@
       "width": 96,
       "height": 64,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "shader-parent-black",
@@ -1355,8 +1353,7 @@
       "width": 96,
       "height": 64,
       "background": "transparent",
-      "role": "unsupported",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "magnified-symbol-transparent",

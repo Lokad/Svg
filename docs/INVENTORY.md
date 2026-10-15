@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Fourteen additional authored documents** (thirteen CC0 and the MIT
+variants**. **Fifteen additional authored documents** (fourteen CC0 and the MIT
 tile sheet) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -20,7 +20,7 @@ These failure-selected cases establish declared outcomes, not a general SVG succ
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the fourteen authored documents. All **4/4 controls** are exact,
+both cohorts and the fifteen authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
@@ -44,8 +44,18 @@ The [primitive-stroke bank](../tests/Research/primitive-stroke-sheet/README.md) 
 caps, rounded dashes with independent alpha, translucent line shaders and a
 nonuniform radial point-list stroke. The [receipt](../artifacts/maintenance-review-20261012/primitive-strokes-qualified-results.json)
 records **7,826 passing tests/platform**, unchanged assets/options/default limits
-and all preceding results. It is included in the fourteen authored documents;
+and all preceding results. It is included in the fifteen authored documents;
 remaining G4 boundaries and G2–G9/S17 stay open.
+
+The [stroke/style exit bank](../tests/Research/stroke-style-exit-sheet/README.md)
+adds **1/1 complete CC0 document / 4/4 exact controls** on both platforms, closing
+R1-R3 against unchanged references. Three retained inherited shader controls also
+graduate, making [use-stroke-style](../tests/Research/use-stroke-style/manifest.json)
+**99/99 exact**. The [receipt](../artifacts/maintenance-review-20261012/stroke-style-exits-qualified-results.json)
+records **7,832 passing tests/platform**, thirty unchanged sheet captures plus nine
+healthy Linux cross-checks of the old shader references, and preservation of all
+preceding results. This is included in the fifteen authored documents; shared
+pattern/non-scaling maps, wider G2-G9 and S17 remain open.
 
 ## Development checkpoint (2026-10-12)
 

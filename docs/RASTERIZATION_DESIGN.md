@@ -13874,3 +13874,35 @@ cancellation, retry, borrowed-input integrity and output publication. Full
 qualification passes **7,826 tests/platform** in **70.9s Windows / 236.5s Linux**,
 including normal incremental builds. R1–R3 and the basic pattern routes in PLAN
 remain required; this document does not close wider G4 or release.
+
+## Complete stroke/style exits through source-coordinate paint binding (2026-10-15)
+
+The unchanged [stroke/style sheet](../tests/Research/stroke-style-exit-sheet/README.md)
+and four controls are exact on Windows/Linux. Three retained inherited shader
+controls also match their original references, making that bank 99/99 exact.
+The [receipt](../artifacts/maintenance-review-20261012/stroke-style-exits-qualified-results.json)
+preserves thirty original sheet captures, nine healthy Linux shader cross-checks,
+all original inputs/options/default limits and every preceding test semantic.
+
+Solid lines select existing native source strokes for round dashes, capped zero
+intervals and translucent capped coverage. The native dash engine already emits
+degenerate line verbs for cap dots; removing the parser gate exposes that bounded
+constructor. Existing opaque axis-line arithmetic stays in place. Sharp rectangle
+bevel/round joins select the existing native rectangle/path stroke route; shader
+rectangles use the same admitted join styles.
+
+Rounded/oval shader strokes use the shared source object box and composed viewport
+map for linear/radial binding. Recorded stroke alpha applies once, as on paths and
+lines. All controls first became exact while the integrated sheet retained eighteen
+alpha-fringe differences in the translated rounded panel. Binding original paint
+coordinates through the native matrix stages resolved those differences without
+changing conic/dash construction or references. The obsolete opaque-paint admission
+helpers are removed.
+
+Original Core inputs now protect dash extents and separated zero-dash dots;
+affected source/raster denial, cancellation, cleanup, immutable borrowed inputs
+and retry pass. Complete qualification is **7,832 tests/platform** in **94.7s
+Windows / 314.9s Linux**, including normal incremental builds. These workload
+measurements establish no general throughput claim. R1-R3 close; the original
+nonuniform dashed non-scaling gate joins the four existing legacy map routes in
+the next finite delivery. Wider G2-G9/S17 remain open.

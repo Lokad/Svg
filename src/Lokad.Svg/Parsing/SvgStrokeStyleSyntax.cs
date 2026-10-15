@@ -194,7 +194,7 @@ internal static class SvgStrokeStyleSyntax
     /// <summary>Resolves one admitted solid stroke, or nothing when the element carries no stroke paint.</summary>
     internal readonly record struct SvgAdmittedStroke(SvgColor Color, double Width, double MiterLimit, SvgStrokeCap Cap, SvgStrokeJoin Join, double[]? DashPattern, double DashOffset, double? PathLength, bool NonScalingStroke);
 
-    /// <summary>Validates the stroke subset shared by stroked shapes, rejecting paint servers, non-positive widths, small limits and unsupported dash combinations.</summary>
+    /// <summary>Validates the stroke subset shared by stroked shapes, rejecting paint servers, invalid widths/limits and unbounded stroke mappings.</summary>
     internal static SvgAdmittedStroke? ResolveAdmittedStroke(XmlReader reader, SvgComputedStyle style, SvgResolvedPaintableElement shape, string elementName, bool allowBevelJoin)
     {
         ArgumentNullException.ThrowIfNull(reader);
@@ -211,14 +211,11 @@ internal static class SvgStrokeStyleSyntax
         if (dashes is not null)
         {
             bool hasPositive = false;
-            bool hasZero = false;
             foreach (double entry in dashes)
             {
-                if (entry == 0) hasZero = true;
-                else hasPositive = true;
+                if (entry > 0) hasPositive = true;
             }
             if (!hasPositive) return null;
-            if (hasZero && cap != SvgStrokeCap.Butt) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Zero-length dashes with round or square caps are not implemented.");
         }
         bool nonScaling = shape.Style.NonScalingStroke;
         double? pathLength = ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));

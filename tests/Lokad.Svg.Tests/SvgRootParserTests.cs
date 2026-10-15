@@ -495,11 +495,13 @@ public sealed class SvgRootParserTests
         Assert.Contains(root.Commands, command => command.Kind == SvgDrawCommandKind.BeginGroup && command.SourceOpacity.Value == 0.5f);
     }
     [Fact]
-    public void Rejects_zero_length_square_capped_dashes()
+    public void Renders_zero_length_square_capped_dashes()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='0 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='0 4' stroke-linecap='square'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        AssertStrokeContourBounds(geometry, [new(-1, 3, 2, 2, default, true, null), new(3, 3, 2, 2, default, true, null), new(7, 3, 2, 2, default, true, null), new(11, 3, 2, 2, default, true, null)]);
     }
 
     [Fact]
@@ -1098,11 +1100,12 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_bevel_joins_on_sharp_rectangles()
+    public void Renders_bevel_joins_on_sharp_rectangles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"bevel\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"0\" y=\"0\" width=\"8\" height=\"8\" fill=\"red\" stroke=\"blue\" stroke-width=\"2\" stroke-linejoin=\"bevel\"/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        Assert.NotEmpty(root.Geometries);
     }
 
     [Fact]
@@ -5662,11 +5665,13 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_round_caps_with_dashed_lines()
+    public void Renders_round_caps_with_dashed_lines()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><line x1='0' y1='4' x2='16' y2='4' stroke='red' stroke-width='2' stroke-dasharray='4 4' stroke-linecap='round'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        Assert.False(root.HasUnsupportedChild);
+        SvgGeometry geometry = Assert.Single(root.Geometries);
+        AssertStrokeContourBounds(geometry, [new(-1, 3, 6, 2, default, true, null), new(7, 3, 6, 2, default, true, null)]);
     }
 
     [Fact]

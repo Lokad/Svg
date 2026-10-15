@@ -1042,11 +1042,14 @@ public sealed class SvgStrokeFillTests
     }
 
     [Fact]
-    public void Rejects_zero_dashes_with_round_caps()
+    public void Zero_dashes_with_round_caps_paint_separated_dots()
     {
-        SvgException rejected = Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' stroke-linecap='round' stroke-dasharray='0,4'/></svg>"), SvgRenderOptions.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
+        byte[] pixels = RenderPixels("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><polyline points='0,4 8,4' fill='none' stroke='red' stroke-width='2' stroke-linecap='round' stroke-dasharray='0,4'/></svg>", out int width, out int height);
+        Assert.Equal(8, width);
+        Assert.Equal(8, height);
+        Assert.True(Pixel(pixels, width, 0, 4).Alpha > 0);
+        Assert.Equal(0, Pixel(pixels, width, 2, 4).Alpha);
+        Assert.True(Pixel(pixels, width, 4, 4).Alpha > 0);
     }
 
     [Fact]

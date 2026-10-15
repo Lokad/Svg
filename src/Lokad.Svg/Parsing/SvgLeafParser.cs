@@ -41,7 +41,8 @@ internal static class SvgLeafParser
             && !SvgStrokeStyleSyntax.IsZeroStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth))
         {
             double nativeWidth = SvgStrokeStyleSyntax.ParseStrokeWidth(patternStyle.Width ?? syntax.StrokeWidth, "rectangle");
-            if (context.RetainInstanceStrokePath || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height)
+            if (context.RetainInstanceStrokePath || !earlyTransform.IsTranslation || nativeWidth > syntax.Width || nativeWidth > syntax.Height
+                || SvgStrokeStyleSyntax.ParseLinejoin(patternStyle.Linejoin, true) != SvgStrokeJoin.Miter)
                 return LowerRoundedRect(reader, context, syntax, 0, 0, effectiveFrame, state);
         }
         // A zero width paints no stroke bands, so paint strokes fall through to the fill-only solid path below.
@@ -300,32 +301,16 @@ internal static class SvgLeafParser
         {
             SvgComputedStyle whiteStyle = fillElement.Style with { Stroke = "#ffffff" };
             SvgResolvedPaintableElement whiteShape = context.ResolveShape(whiteStyle, reader, true);
-            SvgStrokeStyleSyntax.SvgAdmittedStroke? admitted = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, whiteStyle, whiteShape, "rect", false);
+            SvgStrokeStyleSyntax.SvgAdmittedStroke? admitted = SvgStrokeStyleSyntax.ResolveAdmittedStroke(reader, whiteStyle, whiteShape, "rect", true);
             if (admitted is null) return filled;
-            if (admitted.Value.Join != SvgStrokeJoin.Miter && admitted.Value.Join != SvgStrokeJoin.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only miter and round stroke linejoins are implemented on rectangle strokes.");
-            byte strokeOpacity = SvgReferenceResolver.MultiplyAlpha(whiteShape.Presentation.Opacity, SvgColorParser.ParseOpacity(whiteShape.Style.StrokeOpacity));
-            if (strokeOpacity != 255
-                || (useLinear && !SvgGradientSyntax.IsOpaqueGradientStroke(outlineGradient, 255))
-                || (useRadial && !SvgGradientSyntax.IsOpaqueRadialStroke(outlineCircle, 255))
-                || (!useLinear && !useRadial && outlineTile.Content is SvgGeometry paintContent && paintContent.Rectangle.Color.Alpha != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent paint strokes on rounded rectangles are not implemented.");
-            SvgLinearGradient mappedLinear = default;
-            SvgRadialGradient mappedCircle = default;
-            if (useLinear)
-            {
-                mappedLinear = SvgGradientSyntax.MapUserSpaceVector(whiteShape.Transform, outlineGradient, frame);
-                mappedLinear = SvgGradientSyntax.MirrorBoundingBoxVector(whiteShape.Transform, mappedLinear);
-            }
-            else if (useRadial)
-            {
-                mappedCircle = SvgGradientSyntax.MapUserSpaceRadial(whiteShape.Transform, outlineCircle, frame);
-            }
-            bool needsStrokeBox = (useLinear && !outlineGradient.IsUserSpace) || (useRadial && !outlineCircle.IsUserSpace);
-            SvgRectangle strokeBox = default;
-            if (needsStrokeBox)
-            {
-                SvgRectangle strokePlacement = whiteShape.Transform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, true, null));
-                strokeBox = frame is null ? strokePlacement : frame.Value.Shift(strokePlacement);
-            }
+            // Source stroke recording applies independent stroke alpha once, as for path/line paints.
+            byte strokeOpacity = whiteShape.Presentation.Opacity;
+            SvgAffineTransform strokePlacement = SvgViewportFrame.MapGeometry(whiteShape.Transform, frame);
+            SvgRectangle strokeBox = new(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null);
+            SvgLinearGradient mappedLinear = useLinear
+                ? SvgGradientSyntax.BindLinearSourceMap(outlineGradient, strokeBox, strokePlacement, state, context.WorkCounter, context.CancellationToken) : default;
+            SvgRadialGradient mappedCircle = useRadial
+                ? SvgGradientSyntax.BindRadialSourceMap(outlineCircle, strokeBox, strokePlacement, context.WorkCounter, context.CancellationToken) : default;
             SvgParsedGeometry white;
             try { white = LowerRoundedStroke(reader, context, syntax, cornerX, cornerY, whiteShape, admitted.Value, frame, state); }
             catch { filled.Dispose(); throw; }
@@ -557,40 +542,14 @@ internal static class SvgLeafParser
             SvgResolvedPaintableElement whiteShape = context.ResolveShape(whiteStyle, reader, true);
             SvgStroke? admitted = ParseCircleStroke(whiteShape, reader);
             if (admitted is null || !whiteShape.Presentation.IsPainted) return fill;
-            byte strokeOpacity = SvgReferenceResolver.MultiplyAlpha(whiteShape.Presentation.Opacity, SvgColorParser.ParseOpacity(whiteShape.Style.StrokeOpacity));
-            if (strokeOpacity != 255
-                || (useLinear && !SvgGradientSyntax.IsOpaqueGradientStroke(outlineGradient, 255))
-                || (useRadial && !SvgGradientSyntax.IsOpaqueRadialStroke(outlineCircle, 255))
-                || (!useLinear && !useRadial && outlineTile.Content is SvgGeometry paintContent && paintContent.Rectangle.Color.Alpha != 255)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent paint strokes on " + shapeName + " elements are not implemented.");
-            SvgLinearGradient mappedLinear = default;
-            SvgRadialGradient mappedCircle = default;
-            bool sourceMapped = !whiteShape.Transform.IsAxisAligned || useLinear && outlineGradient.RequiresSourceMap;
-            if (useLinear && !sourceMapped)
-            {
-                mappedLinear = SvgGradientSyntax.MapUserSpaceVector(whiteShape.Transform, outlineGradient, frame);
-                mappedLinear = SvgGradientSyntax.MirrorBoundingBoxVector(whiteShape.Transform, mappedLinear);
-            }
-            else if (useRadial && !sourceMapped)
-            {
-                mappedCircle = SvgGradientSyntax.MapUserSpaceRadial(whiteShape.Transform, outlineCircle, frame);
-            }
-            bool needsStrokeBox = (useLinear && !outlineGradient.IsUserSpace) || (useRadial && !outlineCircle.IsUserSpace);
-            SvgRectangle strokeBox = default;
-            SvgAffineTransform strokePlacement = frame is {} strokeViewport
-                ? SvgAffineTransform.FromScaleOffset(strokeViewport.ScaleX, strokeViewport.ScaleY, strokeViewport.OffsetX, strokeViewport.OffsetY).ComposeChecked(whiteShape.Transform)
-                : whiteShape.Transform;
-            if (sourceMapped)
-            {
-                SvgRectangle sourceBox = new(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, false, null);
-                if (useLinear) mappedLinear = SvgGradientSyntax.BindLinearSourceMap(outlineGradient, sourceBox, strokePlacement, state, context.WorkCounter, context.CancellationToken);
-                else if (useRadial) mappedCircle = SvgGradientSyntax.BindRadialSourceMap(outlineCircle, sourceBox, strokePlacement, context.WorkCounter, context.CancellationToken);
-                needsStrokeBox = false;
-            }
-            if (needsStrokeBox)
-            {
-                SvgRectangle placedBox = whiteShape.Transform.Apply(new SvgRectangle(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, true, null));
-                strokeBox = frame is null ? placedBox : frame.Value.Shift(placedBox);
-            }
+            // Source stroke recording applies independent stroke alpha once, as for path/line paints.
+            byte strokeOpacity = whiteShape.Presentation.Opacity;
+            SvgAffineTransform strokePlacement = SvgViewportFrame.MapGeometry(whiteShape.Transform, frame);
+            SvgRectangle strokeBox = new(syntax.CenterX - syntax.RadiusX, syntax.CenterY - syntax.RadiusY, 2 * syntax.RadiusX, 2 * syntax.RadiusY, default, false, null);
+            SvgLinearGradient mappedLinear = useLinear
+                ? SvgGradientSyntax.BindLinearSourceMap(outlineGradient, strokeBox, strokePlacement, state, context.WorkCounter, context.CancellationToken) : default;
+            SvgRadialGradient mappedCircle = useRadial
+                ? SvgGradientSyntax.BindRadialSourceMap(outlineCircle, strokeBox, strokePlacement, context.WorkCounter, context.CancellationToken) : default;
             SvgParsedGeometry white;
             try
             {
@@ -720,23 +679,24 @@ internal static class SvgLeafParser
         if (strokeWidth < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only positive line stroke widths are implemented.");
         SvgStrokeCap linecap = SvgStrokeStyleSyntax.ParseLinecap(style.Linecap);
         double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(style.Dasharray);
-        if (linecap == SvgStrokeCap.Square && dashes is null) syntax = syntax.WithSquareCaps(strokeWidth);
         SvgColor color = SvgPaintResolver.ApplyOpacity(strokeColor.Value, element.Presentation.Opacity);
         bool painted = element.Presentation.IsPainted;
+        // Native source strokes combine capped dash coverage before applying translucent paint.
+        if (linecap == SvgStrokeCap.Round && (dashes is not null || color.Alpha != 255)
+            || linecap == SvgStrokeCap.Square && dashes is not null && (color.Alpha != 255 || Array.IndexOf(dashes, 0d) >= 0))
+            return LowerNativeLine();
+        if (linecap == SvgStrokeCap.Square && dashes is null) syntax = syntax.WithSquareCaps(strokeWidth);
         if (dashes is null)
         {
             if (linecap == SvgStrokeCap.Round)
             {
-                if (color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent round-capped lines are not implemented.");
                 return LowerRoundCapLine();
             }
             SvgAxisAlignedLine line = new(syntax.X1, syntax.Y1, syntax.X2, syntax.Y2, color, painted, strokeWidth);
             return RetainSingleGeometry(frame is null ? SvgGeometry.FromAxisAlignedLine(line) : frame.Value.ClipShifted(line), state, context);
         }
-        if (linecap == SvgStrokeCap.Round) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Round caps with dashed lines are not implemented.");
         double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(style.Dashoffset);
         double? pathLength = SvgStrokeStyleSyntax.ParsePathLength(style.PathLength ?? reader.GetAttribute("pathLength"));
-        if (linecap == SvgStrokeCap.Square && color.Alpha != 255) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Translucent square-capped dashed lines are not implemented.");
         return LowerDashedLine();
 
         bool NeedsSourceBounds()

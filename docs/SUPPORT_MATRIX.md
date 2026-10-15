@@ -1,3 +1,25 @@
+## Remaining cap, join and shader-alpha routes (2026-10-15)
+
+The [stroke/style exit bank](../tests/Research/stroke-style-exit-sheet/README.md)
+is **1/1 complete document / 4/4 exact controls** on Windows/Linux. Solid-line
+round dashes, zero-length square/round cap dots and independent stroke alpha use
+existing native strokes; sharp bevel/round rectangle joins retain their geometry.
+Rounded/oval shaders bind original object coordinates through composed maps and
+apply recorded stroke alpha once. Whole-sheet translation is exact.
+
+The shared correction also graduates the three original inherited translucent
+shader controls: [use-stroke-style](../tests/Research/use-stroke-style/manifest.json)
+is **99/99 exact**. Original SVGs/options/references/default limits are unchanged;
+nine fresh healthy Linux native captures match the old shader references byte for
+byte. The [receipt](../artifacts/maintenance-review-20261012/stroke-style-exits-qualified-results.json)
+records **7,832 passing tests/platform**, cap/dash/dot assertions, source/raster
+limits, cancellation, cleanup and retry, with every preceding result preserved.
+
+R1-R3 and ordered item 1 in PLAN are complete. The four basic pattern/viewport
+routes and original nonuniform dashed non-scaling rejection remain required in
+[item 2](../PLAN.md#g2g4-instances-geometry-maps-and-strokes). This supersedes the
+older cap/bevel/curved-alpha gates below without G2-G9/S17 closure or a deferral.
+
 ## Native primitive stroke/style replay (2026-10-15)
 
 The [primitive-stroke bank](../tests/Research/primitive-stroke-sheet/README.md) is

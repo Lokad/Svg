@@ -1206,23 +1206,6 @@ internal static class SvgGradientSyntax
         return new SvgParsedGeometry(stroked.Detach(), 0);
     }
 
-    /// <summary>Reports whether one linear-gradient line stroke paints fully opaque runs.</summary>
-    internal static bool IsOpaqueGradientStroke(SvgLinearGradient gradient, byte opacity)
-    {
-        if (opacity != 255 || gradient.Start.Alpha != 255 || gradient.End.Alpha != 255) return false;
-        foreach (SvgGradientStop stop in gradient.Stops) if (stop.Color.Alpha != 255) return false;
-        return true;
-    }
-
-    /// <summary>Reports whether one radial-gradient line stroke paints fully opaque runs.</summary>
-    internal static bool IsOpaqueRadialStroke(SvgRadialGradient circle, byte opacity)
-    {
-        if (opacity != 255 || circle.Start.Alpha != 255 || circle.End.Alpha != 255) return false;
-        foreach (SvgGradientStop stop in circle.Stops) if (stop.Color.Alpha != 255) return false;
-        return true;
-    }
-
-
     /// <summary>Lowers one linear gradient fill rectangle shared by combined fill-and-stroke lowerings, mirroring the fill-only lowering.</summary>
     internal static SvgGeometry LowerLinearFillGeometry(SvgLinearGradient fillGradient, SvgRectangle box, SvgRectangle fill, bool fillHasFill, byte fillOpacity)
     {
