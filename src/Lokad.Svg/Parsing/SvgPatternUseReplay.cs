@@ -4,10 +4,10 @@ using Lokad.Svg.Rendering;
 namespace Lokad.Svg.Parsing;
 
 internal readonly record struct SvgPatternContentUse(SvgResourceUse Use, int CommandIndex);
-internal readonly record struct SvgPatternContentClip(string Id, SvgAffineTransform Map, SvgRecordingScope Scope, bool HasOpacity);
+internal readonly record struct SvgPatternContentScope(string? ClipId, string? MaskId, SvgAffineTransform Map, SvgRecordingScope Scope, bool HasOpacity);
 
 /// <summary>The document owns the staging builder; the parent scene owns content borrowed by pattern paints.</summary>
-internal readonly record struct SvgDeferredPatternContent(SvgSceneBuilder Builder, SvgVectorContent Content, int FirstUse, int UseCount, int FirstClip, int ClipCount);
+internal readonly record struct SvgDeferredPatternContent(SvgSceneBuilder Builder, SvgVectorContent Content, int FirstUse, int UseCount, int FirstScope, int ScopeCount);
 
 /// <summary>Resolves ordered local tile instances through existing reference and premultiplied scene machinery.</summary>
 /// <remarks>References borrow document-owned strings and definitions. The staging builder retains all mapped
@@ -40,15 +40,19 @@ internal static class SvgPatternUseReplay
                 SvgResourceUseReplay.AppendPatternUse(use.Use, pending.Builder, state, work, token);
                 pending.Builder.ResolvePaintPlaceholder(use.CommandIndex, tail);
             }
-            for (int index = pending.FirstClip; index < pending.FirstClip + pending.ClipCount; index++)
-                ApplyClip(state.PatternClips?[index] ?? throw new InvalidOperationException("Retained pattern clips require their source registry."), pending.Builder, state, work, token);
-            SvgLeafMaskComposition.Emit(state, pending.Builder, work, token);
-            pending.Content.Complete(pending.Builder.Build());
+            for (int index = pending.FirstScope; index < pending.FirstScope + pending.ScopeCount; index++)
+                ApplyScope(state.PatternScopes?[index] ?? throw new InvalidOperationException("Retained pattern scopes require their source registry."), pending.Builder, state, false, work, token);
+            // Clip-only marker removal changes command positions. Record mask ranges only afterwards.
+            for (int index = pending.FirstScope; index < pending.FirstScope + pending.ScopeCount; index++)
+            {
+                SvgPatternContentScope scope = state.PatternScopes?[index] ?? throw new InvalidOperationException("Retained pattern scopes require their source registry.");
+                if (scope.MaskId is not null) ApplyScope(scope, pending.Builder, state, true, work, token);
+            }
         }
 
         // Scope identities survive use expansion, unlike absolute command offsets.
         // Bind through the ordinary resource clip machinery before the scene seals.
-        static void ApplyClip(SvgPatternContentClip clip, SvgSceneBuilder builder, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+        static void ApplyScope(SvgPatternContentScope clip, SvgSceneBuilder builder, SvgDocumentState state, bool bindMask, ParserWorkCounter work, CancellationToken token)
         {
             int depth = 0;
             int first = -1;
@@ -65,7 +69,12 @@ internal static class SvgPatternUseReplay
                 if (command.Kind == SvgDrawCommandKind.BeginGroup) depth++;
                 else if (command.Kind == SvgDrawCommandKind.EndGroup && --depth == 0)
                 {
-                    if (!clip.HasOpacity)
+                    if (bindMask && clip.MaskId is {} maskId)
+                    {
+                        state.PendingGroupMasks.Add(new(maskId, first, index, 0, null, clip.Map, builder));
+                        return;
+                    }
+                    if (!clip.HasOpacity && clip.MaskId is null)
                     {
                         // Clip-only groups do not create an isolated color surface.
                         // Their stable markers were needed only until uses expanded.
@@ -85,16 +94,27 @@ internal static class SvgPatternUseReplay
                     }
                     return;
                 }
-                if (command.Kind != SvgDrawCommandKind.Geometry) continue;
+                if (bindMask || command.Kind != SvgDrawCommandKind.Geometry || clip.ClipId is not {} clipId) continue;
                 SvgLeafMaskBinding? inner = builder.GeometryAt(command.GeometryIndex).LeafMask;
                 if (lastBinding is null || !ReferenceEquals(lastInner, inner))
                 {
                     lastInner = inner;
-                    lastBinding = SvgClipPathSyntax.BindResourceClip(clip.Id, clip.Map, inner, state, work, token);
+                    lastBinding = SvgClipPathSyntax.BindResourceClip(clipId, clip.Map, inner, state, work, token);
                 }
                 builder.AssignLeafMask(command.GeometryIndex, lastBinding);
             }
-            throw new InvalidOperationException("A retained pattern clip requires a balanced source group.");
+            throw new InvalidOperationException("A retained pattern scope requires a balanced source group.");
+        }
+    }
+
+    /// <summary>Seals tile scenes after all deferred masks and clips have bound to their owning builder.</summary>
+    internal static void Complete(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        foreach (SvgDeferredPatternContent pending in state.DeferredPatternContents.AsSpan())
+        {
+            work.Consume(token);
+            SvgLeafMaskComposition.Emit(state, pending.Builder, work, token);
+            pending.Content.Complete(pending.Builder.Build());
         }
     }
 }

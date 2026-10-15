@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Twenty-three additional authored documents** (nineteen CC0 and four MIT
+variants**. **Twenty-four additional authored documents** (nineteen CC0 and five MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -67,7 +67,7 @@ references/default limits and thirty-six healthy stable captures remain unchange
 The [receipt](../artifacts/maintenance-review-20261012/mask-viewport-qualified-results.json)
 owns complete checks, original-input pixel/cleanup migrations and preservation.
 This is the twenty-first authored document (second MIT). C3b is complete; C6a is
-qualified below. C5b tile masks, C6c affine user-space clips, glyph/font/effect and S17 remain required.
+qualified below. C6c affine user-space clips, glyph/font/effect and S17 remain required.
 
 The [viewport clip/opacity sheet](../tests/Research/viewport-clip-opacity-exit-sheet/README.md)
 is **1/1 complete document / 6/6 exact controls** on both platforms, from
@@ -79,7 +79,7 @@ owns complete qualification and original-input migrations. Three retained
 fractional clipped-frame backgrounds and nested cropped opacity also match
 unchanged references; twelve healthy Linux captures cross-check their bytes.
 Six further native overlap captures protect quantized RGB and sibling scopes.
-C6a/C6b are complete. C5b, C6c, glyph/font/effect and S17 remain required.
+C6a/C6b are complete. C6c, glyph/font/effect and S17 remain required.
 
 The [forward/object-box clip sheet](../tests/Research/forward-bbox-clip-exit-sheet/README.md)
 is **1/1 complete document / 6/6 exact controls** on both platforms, from
@@ -91,9 +91,19 @@ owns qualification and preservation. One original rotated-stroke object-box
 control is also exact against six healthy native captures; its user-space clip
 remains a named required boundary in PLAN.md rather than a hidden deferral.
 
+The [tile-mask sheet](../tests/Research/tile-mask-exit-sheet/README.md) is
+**1/1 complete document / 2/2 exact controls** on both platforms, from
+**0/1 / 0/2** at declaration. The original rejected leaf SVG, spatially masked
+group/local-use control and complete document retain eighteen healthy captures,
+all source/reference bytes/options/default limits and sibling outputs. This is
+the twenty-fourth authored document (fifth MIT), separate from both cohorts and
+W3C. The [receipt](../artifacts/maintenance-review-20261012/tile-mask-qualified-results.json)
+owns full qualification, the original-input migration and resource preservation.
+C5b is complete; C6c, glyph/font/effect and S17 stay required in PLAN.md.
+
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the twenty-three authored documents. All **4/4 controls** are exact,
+both cohorts and the twenty-four authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)

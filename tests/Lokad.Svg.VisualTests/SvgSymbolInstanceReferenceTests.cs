@@ -144,7 +144,10 @@ public sealed class SvgSymbolInstanceReferenceTests
             ("forward-bbox-clip-exit-sheet", "forward-group-box"),
             ("forward-bbox-clip-exit-sheet", "zero-height-line-box"),
             ("forward-bbox-clip-exit-sheet", "forward-circle-box"),
-            ("forward-bbox-clip-exit-sheet", "transformed-box-content")
+            ("forward-bbox-clip-exit-sheet", "transformed-box-content"),
+            ("tile-mask-exit-sheet", "tile-mask-sheet"),
+            ("tile-mask-exit-sheet", "original-masked-tile"),
+            ("tile-mask-exit-sheet", "spatial-masked-group")
         })
         {
             byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", sample.Family, sample.Name + ".svg"));

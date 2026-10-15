@@ -9,6 +9,50 @@ public sealed class SvgPatternContentTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public void Tile_masks_bind_after_nested_clip_markers_and_keep_siblings(bool nestedMask)
+    {
+        const string resources = "<clipPath id='c'><rect width='4' height='8'/></clipPath><mask id='m' maskContentUnits='objectBoundingBox'><rect width='1' height='1' fill='#808080'/></mask>";
+        string child = "<g clip-path='url(#c)'><rect width='8' height='8' fill='red'/></g>";
+        if (nestedMask) child = "<g mask='url(#m)'>" + child + "</g>";
+        string actual = "<pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><g mask='url(#m)'>" + child + "</g><rect x='6' width='2' height='8' fill='blue'/></pattern>" + resources;
+        string expected = "<pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='8' fill='red' opacity='" + (nestedMask ? ".25" : ".5") + "'/><rect x='6' width='2' height='8' fill='blue'/></pattern>";
+        Assert.Equal(RenderTile(expected), RenderTile(actual));
+    }
+
+    [Fact]
+    public void Forward_tile_leaf_mask_and_clip_bind_to_the_tile_scene()
+    {
+        const string actual = "<pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red' mask='url(#m)' clip-path='url(#c)'/><rect x='6' width='2' height='8' fill='blue'/></pattern><clipPath id='c'><rect width='4' height='8'/></clipPath><mask id='m'><rect width='8' height='8' fill='#808080'/></mask>";
+        const string expected = "<pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='8' fill='red' opacity='.5'/><rect x='6' width='2' height='8' fill='blue'/></pattern>";
+        Assert.Equal(RenderTile(expected), RenderTile(actual));
+    }
+
+    private static byte[] RenderTile(string definitions)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs>" + definitions + "</defs><rect width='16' height='16' fill='url(#p)'/><rect y='14' width='16' height='2' fill='blue'/></svg>");
+        RenderBudget budget = new(1_000_000);
+        byte[] result;
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+            result = SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None).ToArray();
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        return result;
+    }
+
+    [Fact]
+    public void Anonymous_masked_tile_releases_deferred_bindings()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' mask='url(#m)' clip-path='url(#c)'/></pattern><mask id='m'><rect width='8' height='8' fill='white'/></mask><clipPath id='c'><rect width='8' height='8'/></clipPath></defs><rect width='8' height='8' fill='blue'/></svg>"u8.ToArray();
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+            for (int offset = 0; offset < surface.Pixels.Length; offset += 4)
+                Assert.Equal(new byte[] { 0, 0, 255, 255 }, surface.Pixels.AsSpan(offset, 4).ToArray());
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public void Pattern_container_cascade_preserves_inline_priority_and_child_override(bool important)
     {
         string priority = important ? "!important" : "";

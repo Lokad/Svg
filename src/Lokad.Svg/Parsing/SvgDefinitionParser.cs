@@ -437,7 +437,7 @@ internal static class SvgDefinitionParser
                 workCounter.ConsumeText(fill.Length, cancellationToken);
                 inherited = inherited with { Presentation = inherited.Presentation with { PaintServerFill = state.Strings.Copy(fill) } };
             }
-            state.PatternClipStart = state.PatternClips?.Count ?? 0;
+            state.PatternScopeStart = state.PatternScopes?.Count ?? 0;
             state.Groups.Add(new(reader.Depth, SvgGroupKind.Pattern, inherited.Presentation with { Transform = SvgAffineTransform.Identity }, inherited.TextStyle, false, false, inherited.Stroke, inherited.FillRule)
                 { RecordingScope = patternContext.RecordingScope, ClipRule = style.ClipRule ?? patternContext.InheritedClipRule });
             if (!reader.IsEmptyElement) state.PatternDepth = reader.Depth;
@@ -461,20 +461,21 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName == "g")
             {
-                if (reader.GetAttribute("mask") is not null || reader.GetAttribute("filter") is not null)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks and filters on pattern groups are not implemented.");
+                if (reader.GetAttribute("filter") is not null)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters on pattern groups are not implemented.");
                 SvgParsedGroup group = SvgGroupParser.Parse(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 if (!reader.IsEmptyElement)
                 {
                     SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
                     bool clip = group.Scope.ClipPathId is not null;
-                    if (group.Scope.IsolatesOpacity || clip) builder.BeginSourceOpacityScope(group.SourceOpacity, group.RecordingScope);
-                    if (group.Scope.ClipPathId is {} id)
+                    bool mask = group.DeferredMask is not null;
+                    if (group.Scope.IsolatesOpacity || clip || mask) builder.BeginSourceOpacityScope(group.SourceOpacity, group.RecordingScope);
+                    if (clip || mask)
                     {
-                        state.PatternClips ??= new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
-                        state.PatternClips.Add(new(id, group.Scope.InheritedPresentation.Transform, group.RecordingScope, group.Scope.IsolatesOpacity));
+                        state.PatternScopes ??= new(state.Budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
+                        state.PatternScopes.Add(new(group.Scope.ClipPathId, group.DeferredMask, group.Scope.InheritedPresentation.Transform, group.RecordingScope, group.Scope.IsolatesOpacity));
                     }
-                    state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup, IsolatesOpacity = group.Scope.IsolatesOpacity || clip });
+                    state.Groups.Add(group.Scope with { Kind = SvgGroupKind.PatternGroup, IsolatesOpacity = group.Scope.IsolatesOpacity || clip || mask });
                     state.GroupDepth++;
                 }
                 return true;
@@ -483,13 +484,11 @@ internal static class SvgDefinitionParser
             {
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-                if (reader.LocalName is "image" or "text" || style.Filter is {} filter && filter.Trim() != "none")
+                if (reader.LocalName is "image" or "text" || reader.GetAttribute("mask") is not null || style.Filter is {} filter && filter.Trim() != "none")
                 {
                     if (!SvgRenderedLeafParser.ValidateLeafAttributes(reader, workCounter, cancellationToken))
                         throw new InvalidOperationException("Pattern replay requires a supported leaf.");
                     RejectPatternContentPaint(style, state);
-                    if (reader.GetAttribute("mask") is not null || reader.GetAttribute("clip-path") is not null)
-                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips and masks on extended pattern content are not implemented.");
                     SvgPatternTemplate template = state.PatternTemplate;
                     if (template.Width == 0 || template.Height == 0 || template.Href is null && (template.Width is null || template.Height is null))
                         context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = false } };
@@ -518,7 +517,6 @@ internal static class SvgDefinitionParser
             if (reader.LocalName == "rect" && KeepsLegacyRectanglePaint() && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
             {
                 SvgElementAttributePolicy.ValidateRectangle(reader, workCounter, cancellationToken);
-                if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
                 SvgPaintableElementContext tileContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 tileContext = tileContext with { InheritedPresentation = tileContext.InheritedPresentation with { Transform = SvgAffineTransform.Identity } };
                 // The tile payload retains a resolved rectangle, so its paint must be resolved before storing it.
@@ -570,7 +568,6 @@ internal static class SvgDefinitionParser
                     case "line": SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken); break;
                     default: SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken); break;
                 }
-                if (reader.GetAttribute("mask") is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Masks on pattern tile content are not implemented.");
                 SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgComputedStyle style = context.ResolveStyle(reader);
@@ -1615,22 +1612,12 @@ internal static class SvgDefinitionParser
         if (state.PatternDefinitions.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG pattern ids must be unique.");
         if (state.PatternContentBuilder is {} builder)
         {
-            SvgVectorContent content;
-            int clipCount = (state.PatternClips?.Count ?? 0) - state.PatternClipStart;
-            bool deferred = state.PatternUseCount != 0 || clipCount != 0;
-            if (!deferred)
-            {
-                SvgLeafMaskComposition.Emit(state, builder, workCounter, cancellationToken);
-                content = SvgVectorContent.Create(builder.Build(), state.Budget);
-            }
-            else content = SvgVectorContent.CreatePending(state.Budget);
+            int scopeCount = (state.PatternScopes?.Count ?? 0) - state.PatternScopeStart;
+            SvgVectorContent content = SvgVectorContent.CreatePending(state.Budget);
             try { state.Scene.AdoptVectorContent(content); }
             catch { content.Dispose(); throw; }
-            if (deferred)
-            {
-                state.DeferredPatternContents.Add(new(builder, content, state.PatternUseStart, state.PatternUseCount, state.PatternClipStart, clipCount));
-                state.PatternContentBuilder = null;
-            }
+            state.DeferredPatternContents.Add(new(builder, content, state.PatternUseStart, state.PatternUseCount, state.PatternScopeStart, scopeCount));
+            state.PatternContentBuilder = null;
             tile = tile with { Content = null, VectorContent = content };
         }
         SvgPatternDefinition definition = new(retainedId, state.PatternTemplate, tile, state.PatternRectangleSource, state.PatternRectangleContext, false);

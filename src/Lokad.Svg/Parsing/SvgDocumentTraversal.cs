@@ -221,7 +221,7 @@ internal static class SvgDocumentTraversal
                         if (parsedGroup.Scope.HasFilter) state.FilterGroupDepth++;
                         if (parsedGroup.DeferredMask is not null)
                         {
-                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame, parsedGroup.Scope.InheritedPresentation.Transform));
+                            state.PendingGroupMasks.Add(new PendingGroupMask(parsedGroup.DeferredMask, state.Scene.CommandCount, -1, reader.Depth, state.EffectiveFrame, parsedGroup.Scope.InheritedPresentation.Transform, state.Scene));
                         }
                         if (parsedGroup.Scope.IsolatesOpacity || parsedGroup.Scope.HasDeferredMask || parsedGroup.Scope.HasFilter)
                         {
@@ -287,13 +287,27 @@ internal static class SvgDocumentTraversal
                         throw new InvalidOperationException("Pattern presentation scope is unbalanced.");
                     state.Groups.RemoveLast();
                     if (state.PatternId is not null) SvgDefinitionParser.RegisterPattern(state, workCounter, cancellationToken);
-                    state.PatternContentBuilder?.Dispose();
+                    if (state.PatternContentBuilder is {} unused)
+                    {
+                        // Anonymous resources own no deferred scene. Drop borrowed ranges before disposal.
+                        while (state.PendingLeafMasks.Count > 0 && ReferenceEquals(state.PendingLeafMasks[^1].Scene, unused))
+                        {
+                            workCounter.Consume(cancellationToken);
+                            state.PendingLeafMasks.RemoveLast();
+                        }
+                        while (state.PendingLeafClips.Count > 0 && ReferenceEquals(state.PendingLeafClips[^1].Scene, unused))
+                        {
+                            workCounter.Consume(cancellationToken);
+                            state.PendingLeafClips.RemoveLast();
+                        }
+                        unused.Dispose();
+                    }
                     state.PatternContentBuilder = null;
                     state.PatternRectangleSource = null;
                     state.PatternRectangleContext = default;
                     state.PatternUseStart = 0;
                     state.PatternUseCount = 0;
-                    state.PatternClipStart = 0;
+                    state.PatternScopeStart = 0;
                     state.PatternTemplate = default;
                     state.PatternDepth = -1;
                     state.PatternId = null;
@@ -362,6 +376,7 @@ internal static class SvgDocumentTraversal
                 if (state.ClipDepths.Count > 0 && state.ClipDepths[^1] == reader.Depth) state.ClipDepths.RemoveLast();
                 if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth && state.Groups[^1].Kind == SvgGroupKind.PatternGroup)
                 {
+                    if (state.Groups[^1].HasMaskScope) state.MaskScopes.RemoveLast();
                     if (state.Groups[^1].IsolatesOpacity)
                         (state.PatternContentBuilder ?? throw new InvalidOperationException("An isolated pattern group requires its replay builder.")).EndOpacityScope();
                     state.Groups.RemoveLast();
@@ -431,6 +446,7 @@ internal static class SvgDocumentTraversal
                     SvgClipPathSyntax.ResolvePendingGroupClips(state, workCounter, cancellationToken);
                     SvgMaskSyntax.ResolvePendingLeafMasks(state, workCounter, cancellationToken);
                     SvgMaskSyntax.ResolvePendingGroupMasks(state, workCounter, cancellationToken);
+                    SvgPatternUseReplay.Complete(state, workCounter, cancellationToken);
                     if (root.SourceOpacity.Value != 1) state.Scene.EndOpacityScope();
                     SvgLeafMaskComposition.Emit(state, workCounter, cancellationToken);
                     SvgSceneStorage sceneStorage = state.Scene.Build();

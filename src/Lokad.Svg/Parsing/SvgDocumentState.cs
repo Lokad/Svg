@@ -93,8 +93,8 @@ internal sealed class SvgDocumentState : IDisposable
     private readonly SvgSceneBuilder _documentScene;
     internal SvgSceneBuilder Scene => DefinitionReplayScene ?? _documentScene;
 
-    /// <summary>Borrows an existing definition builder only during synchronous leaf lowering.</summary>
-    /// <remarks>Callers restore it in finally; the existing pattern owner disposes it. Resources remain
+    /// <summary>Borrows an existing definition builder during synchronous lowering and deferred binding.</summary>
+    /// <remarks>Callers restore it in finally; the conversion owns every borrowed builder. Resources remain
     /// document-owned, and the definition's local coordinates exclude enclosing rendered viewports.</remarks>
     internal SvgSceneBuilder? DefinitionReplayScene { get; set; }
     internal SvgFilterArena DocumentFilters => _documentScene.Filters;
@@ -281,8 +281,8 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgPaintableElementContext PatternRectangleContext { get; set; }
     internal int PatternUseStart { get; set; }
     internal int PatternUseCount { get; set; }
-    internal int PatternClipStart { get; set; }
-    internal BudgetedParserList<SvgPatternContentClip>? PatternClips { get; set; }
+    internal int PatternScopeStart { get; set; }
+    internal BudgetedParserList<SvgPatternContentScope>? PatternScopes { get; set; }
 
     internal string? MaskId { get; set; }
 
@@ -432,7 +432,7 @@ internal sealed class SvgDocumentState : IDisposable
         PatternContentBuilder?.Dispose();
         foreach (SvgDeferredPatternContent content in DeferredPatternContents.AsSpan()) content.Builder.Dispose();
         DeferredPatternContents.Dispose();
-        PatternClips?.Dispose();
+        PatternScopes?.Dispose();
         PatternUses.Dispose();
         Patterns.Dispose();
         PatternDefinitions.Dispose();

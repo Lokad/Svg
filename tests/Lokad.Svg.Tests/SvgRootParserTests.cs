@@ -6683,11 +6683,22 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_masks_on_pattern_tile_content()
+    public void Original_pattern_tile_mask_renders_and_releases_sources()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect width='8' height='8' fill='#808080'/></mask><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' mask='url(#m)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m'><rect width='8' height='8' fill='#808080'/></mask><pattern id='tiles' width='4' height='4' patternUnits='userSpaceOnUse'><rect width='2' height='2' fill='red' mask='url(#m)'/></pattern></defs><rect width='8' height='8' fill='url(#tiles)'/></svg>"u8.ToArray();
+        RenderBudget budget = new(8_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal(300, surface.Width); Assert.Equal(150, surface.Height);
+            for (int y = 0; y < surface.Height; y++) for (int x = 0; x < surface.Width; x++)
+            {
+                SvgColor expected = x < 8 && y < 8 && x % 4 < 2 && y % 4 < 2 ? new(255, 0, 0, 128) : SvgColor.Transparent;
+                int offset = (y * surface.Width + x) * 4;
+                Assert.Equal(expected, new SvgColor(surface.Pixels[offset], surface.Pixels[offset + 1], surface.Pixels[offset + 2], surface.Pixels[offset + 3]));
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

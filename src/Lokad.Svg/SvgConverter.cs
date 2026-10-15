@@ -1407,10 +1407,11 @@ public static class SvgConverter
                         // fractional clip coverage requires the separate shader path.
                         if (surfaceMode == RasterSurfaceMode.PremultipliedPattern)
                         {
-                            // Picture-backed tiles apply layer alpha through the
-                            // packed shader's coverage stage before source-over.
-                            SvgConstantShaderPaint sample = new(groupPixels[offset], groupPixels[offset + 1], groupPixels[offset + 2], groupPixels[offset + 3]);
-                            sample.Blend(destination.AsSpan(offset, 4), MultiplyAlpha(extra, MultiplyAlpha(maskAlpha, clipAlpha)));
+                            // Masks modify the isolated surface before the picture-backed
+                            // tile applies outer opacity through packed shader coverage.
+                            SvgConstantShaderPaint sample = new(MultiplyAlpha(groupPixels[offset], maskAlpha), MultiplyAlpha(groupPixels[offset + 1], maskAlpha),
+                                MultiplyAlpha(groupPixels[offset + 2], maskAlpha), MultiplyAlpha(groupPixels[offset + 3], maskAlpha));
+                            sample.Blend(destination.AsSpan(offset, 4), MultiplyAlpha(extra, clipAlpha));
                         }
                         else if (shaderRestore || parentViewportClip.Length != 0 && !activeViewportIsBinary) BlendClippedLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha, clipAlpha);
                         else BlendLayerPixel(destination.AsSpan(offset, 4), groupPixels.AsSpan(offset, 4), extra, maskAlpha);

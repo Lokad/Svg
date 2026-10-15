@@ -1,3 +1,24 @@
+## Tile-owned resource binding and native mask restoration (2026-10-16)
+
+Deferred leaf clips/masks and group masks borrow the builder that owns their
+geometry. Binding restores the active scene in `finally`; source/resource replay
+and bounds stay shared. Vector tile scenes remain mutable through local-use
+expansion and clip/mask binding, then emit and seal before root rasterization.
+Stable scope IDs survive use expansion; clip-only markers are removed before
+capturing masked group ranges. Anonymous tiles drop borrowed ranges before their
+staging owner is disposed.
+
+Picture-backed restoration applies a mask to isolated premultiplied lanes before
+the separate outer-opacity coverage stage. Combining the two factors gave exact
+alpha but RGB differences up to three values; the unchanged references require
+the separate stages. Unmasked and ordinary saved-layer consumers retain their
+qualified arithmetic. No new raster implementation or dependency is introduced.
+
+The [document and two controls](../tests/Research/tile-mask-exit-sheet/README.md)
+are exact on both platforms. The [qualification](../artifacts/maintenance-review-20261012/tile-mask-qualified-results.json)
+owns captures, prior-result preservation and affected scope/resource checks.
+C6c, glyph/font/effect and S17 remain required; no feature scope is deferred.
+
 ## Shared geometric bounds and normalized clip binding (2026-10-16)
 
 Normalized rectangular clips reuse the same deferred target-bound collector as
@@ -15,7 +36,7 @@ pixels and cleanup instead of cropped storage layout. Mask ordering, geometric
 bounds before physical clipping and siblings are protected. The
 [qualification](../artifacts/maintenance-review-20261012/forward-bbox-qualified-results.json)
 owns captures, preservation and resource checks. The existing affine user-space
-rectangle-stroke clip gate remains C6c, alongside C5b tile masking and the
+rectangle-stroke clip gate remains C6c, alongside the
 font/effect/S17 work; no extra combination quota or scope deferral applies.
 
 ## Shared viewport clips and owning opacity layers (2026-10-16)
@@ -38,7 +59,7 @@ native captures: red 82 at alpha 96 preserves native saved-layer quantization;
 independently rounding every lane to predict 85 was rejected. Production blend
 arithmetic is unchanged. The [qualification](../artifacts/maintenance-review-20261012/viewport-composition-qualified-results.json)
 owns preservation, original-input migrations and resource/sibling checks.
-C5b/C6c, font/effect and S17 remain required in PLAN.md.
+C6c, font/effect and S17 remain required in PLAN.md.
 
 ## Viewport mask targets and partial region defaults (2026-10-15)
 

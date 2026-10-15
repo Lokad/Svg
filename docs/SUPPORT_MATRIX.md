@@ -1,3 +1,15 @@
+## Bounded tile masks (2026-10-16)
+
+The unchanged [tile-mask bank](../tests/Research/tile-mask-exit-sheet/README.md) is
+**1/1 complete document / 2/2 exact controls** on Windows/Linux. The original
+masked leaf and a spatially masked tile group with a forward local use are exact.
+Tile and root siblings, nested mask/clip scopes and anonymous resource cleanup
+are protected. The [qualification](../artifacts/maintenance-review-20261012/tile-mask-qualified-results.json)
+preserves original bytes/options/default limits, all earlier exact outputs and
+affected resource checks. C5b is complete; earlier tile-mask gates below are
+superseded for these routes. C6c affine user-space rectangle-stroke clipping,
+glyph/font/effect and S17 remain required in PLAN.md; no feature scope is deferred.
+
 ## Forward and object-box clip binding (2026-10-16)
 
 The unchanged [bank](../tests/Research/forward-bbox-clip-exit-sheet/README.md) is
@@ -9,8 +21,7 @@ masked groups retain mask bounds/order. Original inputs, pre-viewport bounds,
 following siblings and affected ownership checks are preserved in the
 [qualification](../artifacts/maintenance-review-20261012/forward-bbox-qualified-results.json).
 The existing rotated-stroke object-box input also passes; its user-space unit
-rectangle clip still rejects and remains required as C6c. C5b tile masking,
-glyph/font/effect and S17 remain required in PLAN.md; no feature scope is deferred.
+rectangle clip still rejects and remains required as C6c. glyph/font/effect and S17 remain required in PLAN.md; no feature scope is deferred.
 
 ## Viewport clips, nested opacity and crossing strokes (2026-10-16)
 
@@ -26,7 +37,7 @@ opacity control also match unchanged references, with twelve healthy Linux nativ
 cross-checks. An overlapping-opacity control preserves native quantized RGB.
 [Qualification](../artifacts/maintenance-review-20261012/viewport-composition-qualified-results.json)
 retains original sources/options/references/limits and affected ownership checks.
-C6a/C6b are complete; C5b tile masks, C6c affine user-space clips, glyph/font/effect
+C6a/C6b are complete; C6c affine user-space clips, glyph/font/effect
 and S17 remain required in PLAN.md. No feature scope is deferred.
 
 ## Mask viewport maps and region defaults (2026-10-15)
@@ -42,7 +53,7 @@ physical clipping, source cleanup and following siblings.
 The [qualification](../artifacts/maintenance-review-20261012/mask-viewport-qualified-results.json)
 retains original SVG/reference bytes/options/default limits and all earlier exact
 results. Former custom-region/scaled-group gates below are superseded for these
-routes. C6a/C6b are qualified above; C5b tile masks, C6c affine user-space clips, glyph/font/effect and S17 remain required
+routes. C6a/C6b are qualified above; C6c affine user-space clips, glyph/font/effect and S17 remain required
 in PLAN.md; no feature scope is deferred.
 
 ## Colored and general affine masks (2026-10-15)
