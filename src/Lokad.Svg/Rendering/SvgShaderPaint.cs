@@ -133,6 +133,27 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
 /// charge raster work and check cancellation between rows. Samples retain no input storage.</remarks>
 internal readonly record struct SvgShaderPaint(float Red, float Green, float Blue, float Alpha)
 {
+    /// <summary>Interpolates premultiplied picture pixels before paint alpha and the floating store.</summary>
+    /// <remarks>Allocation-free shared image/repeat sampling. Callers own pixels, sampling work and cancellation.</remarks>
+    internal static SvgShaderPaint InterpolatePremultiplied(SvgConstantShaderPaint a, SvgConstantShaderPaint b,
+        SvgConstantShaderPaint c, SvgConstantShaderPaint d, float fx, float fy, float opacity)
+    {
+        float wa = (1 - fx) * (1 - fy), wb = fx * (1 - fy), wc = (1 - fx) * fy, wd = fx * fy;
+        return new(Lane(a.Red, b.Red, c.Red, d.Red, wa, wb, wc, wd) * opacity,
+            Lane(a.Green, b.Green, c.Green, d.Green, wa, wb, wc, wd) * opacity,
+            Lane(a.Blue, b.Blue, c.Blue, d.Blue, wa, wb, wc, wd) * opacity,
+            Lane(a.Alpha, b.Alpha, c.Alpha, d.Alpha, wa, wb, wc, wd) * opacity);
+
+        static float Lane(byte a, byte b, byte c, byte d, float wa, float wb, float wc, float wd)
+        {
+            const float scale = 1f / 255f;
+            float value = MathF.FusedMultiplyAdd(wa, a * scale, 0);
+            value = MathF.FusedMultiplyAdd(wb, b * scale, value);
+            value = MathF.FusedMultiplyAdd(wc, c * scale, value);
+            return MathF.FusedMultiplyAdd(wd, d * scale, value);
+        }
+    }
+
     internal static SvgConstantShaderPaint ConstantGradient(SvgGradientStop stop, float opacity)
     {
         float alpha = stop.Alpha * opacity;

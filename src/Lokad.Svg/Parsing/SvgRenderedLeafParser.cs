@@ -11,6 +11,17 @@ internal static class SvgRenderedLeafParser
     {
         if (!isEligible || reader.NamespaceURI != "http://www.w3.org/2000/svg") return false;
         if (state.DefinitionsDepth >= 0) return false;
+        if (!ValidateLeafAttributes(reader, workCounter, cancellationToken)) return false;
+        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
+
+        SvgRenderedGroupSourceParser.CaptureLeaf(reader, context, state);
+        if (SvgDeferredPaintLeaves.TryRetain(reader, context, state)) return true;
+        return ParseResolved(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
+    }
+
+    /// <summary>Applies the same bounded attribute policy to rendered and definition-content leaves.</summary>
+    internal static bool ValidateLeafAttributes(XmlReader reader, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    {
         switch (reader.LocalName)
         {
             case "rect":
@@ -37,11 +48,7 @@ internal static class SvgRenderedLeafParser
             default:
                 return false;
         }
-        SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
-
-        SvgRenderedGroupSourceParser.CaptureLeaf(reader, context, state);
-        if (SvgDeferredPaintLeaves.TryRetain(reader, context, state)) return true;
-        return ParseResolved(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
+        return true;
     }
 
     /// <summary>Lowers one validated live or retained leaf with its original inherited context.</summary>
@@ -74,7 +81,7 @@ internal static class SvgRenderedLeafParser
         if (state.Scene.GeometryCount == firstGeometry) return parsed;
         SvgRecordedPaintValue paint = state.Scene.GetRecordedPaintValue(state.Scene.GeometryAt(firstGeometry).RecordedPaint);
         if (paint.ObjectBounds is not {} objectBounds) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter source requires retained object bounds.");
-        int binding = state.Scene.Filters.AddBinding(id, objectBounds, paint.VisualBounds ?? objectBounds, context.ResolveTransform(reader), context.LengthBases, false, clip);
+        int binding = state.DocumentFilters.AddBinding(id, objectBounds, paint.VisualBounds ?? objectBounds, context.ResolveTransform(reader), context.LengthBases, false, clip);
         SvgDrawCommand begin = new(SvgDrawCommandKind.BeginGroup, 0, style.GetOpacity(), null, binding, 255) { RegionKind = SvgLayerRegionKind.Filter };
         state.Scene.InsertCommands(state.Scene.CommandCount, [new(SvgDrawCommandKind.EndGroup, 0, 255, null, -1, 255)]);
         state.Scene.InsertCommands(start, [begin]);

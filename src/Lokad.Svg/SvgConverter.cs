@@ -364,7 +364,7 @@ public static class SvgConverter
 
         int RenderFilter(int first, SvgDrawCommand command, byte[] destination)
         {
-            SvgFilterArena arena = root.SceneStorage?.Filters ?? throw new SvgException(SvgErrorCode.MalformedInput, "Filter resources are missing.");
+            SvgFilterArena arena = root.FilterResources ?? throw new SvgException(SvgErrorCode.MalformedInput, "Filter resources are missing.");
             SvgFilterBinding binding = frame?.FilterBinding is {} replay && replay.Index == command.MaskContentIndex
                 ? replay.Binding : arena.BindingAt(command.MaskContentIndex);
             SvgFilterResource resource = arena.ResourceAt(binding.ResourceIndex);
@@ -1023,7 +1023,7 @@ public static class SvgConverter
                 SvgDrawCommand value = root.Commands[cursor];
                 if (value.Kind == SvgDrawCommandKind.BeginGroup)
                 {
-                    if (value.RegionKind == SvgLayerRegionKind.Filter && root.SceneStorage?.Filters is {} filters)
+                    if (value.RegionKind == SvgLayerRegionKind.Filter && root.FilterResources is {} filters)
                     {
                         SvgFilterBinding binding = frame?.FilterBinding is {} replay && replay.Index == value.MaskContentIndex
                             ? replay.Binding : filters.BindingAt(value.MaskContentIndex);
@@ -1715,7 +1715,7 @@ public static class SvgConverter
                         : raster.GetAlpha(x, y), x, y);
                     if (coverage == 0) { seeded = false; continue; }
                     SvgCpuBitmapOrigin origin = capturedImageOrigin ?? ShaderBitmapOrigin(x, y);
-                    if (authoredPath is not null)
+                    if (authoredPath is not null || surfaceMode == RasterSurfaceMode.PremultipliedPattern)
                     {
                         if (!coordinates.TryGetMatrix(origin, out SvgShaderMatrix affineInverse))
                             throw new SvgException(SvgErrorCode.UnsupportedFeature, "Embedded image coordinates are not finite and invertible.");
@@ -1723,7 +1723,12 @@ public static class SvgConverter
                         // Low-precision pipeline matrix stages round products separately.
                         float sampleX = pixelX * affineInverse.ScaleX + (pixelY * affineInverse.SkewX + affineInverse.TranslateX);
                         float sampleY = pixelX * affineInverse.SkewY + (pixelY * affineInverse.ScaleY + affineInverse.TranslateY);
-                        SampleAffine(sampleX, sampleY).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
+                        if (surfaceMode == RasterSurfaceMode.PremultipliedPattern)
+                        {
+                            (sampleX, sampleY) = affineInverse.Map(pixelX, pixelY);
+                            SamplePicture(sampleX, sampleY).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
+                        }
+                        else SampleAffine(sampleX, sampleY).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
                         continue;
                     }
                     if (!seeded || origin != previousOrigin || coverage != previousCoverage)
@@ -1781,6 +1786,29 @@ public static class SvgConverter
                 int opacityScale = opacity + 1;
                 return new((byte)(sample.Red * opacityScale >> 8), (byte)(sample.Green * opacityScale >> 8),
                     (byte)(sample.Blue * opacityScale >> 8), (byte)(sample.Alpha * opacityScale >> 8));
+            }
+
+            // Picture-backed image draws retain interpolated premultiplied lanes and
+            // paint alpha until the existing floating shader store. Packed document
+            // bitmap and affine low-precision consumers keep their native routes.
+            SvgShaderPaint SamplePicture(float x, float y)
+            {
+                float alpha = ShaderAlpha(image.Opacity);
+                if (image.UniformSample is {} uniform)
+                    return SvgShaderPaint.Pattern(uniform.Red, uniform.Green, uniform.Blue, uniform.Alpha, alpha);
+                x = Math.Clamp(x, -1, image.Width) - .5f;
+                y = Math.Clamp(y, -1, image.Height) - .5f;
+                int left = (int)MathF.Floor(x), top = (int)MathF.Floor(y);
+                float fx = x - left, fy = y - top;
+                int a = (Math.Clamp(top, 0, image.Height - 1) * image.Width + Math.Clamp(left, 0, image.Width - 1)) * 4;
+                int b = (Math.Clamp(top, 0, image.Height - 1) * image.Width + Math.Clamp(left + 1, 0, image.Width - 1)) * 4;
+                int c = (Math.Clamp(top + 1, 0, image.Height - 1) * image.Width + Math.Clamp(left, 0, image.Width - 1)) * 4;
+                int d = (Math.Clamp(top + 1, 0, image.Height - 1) * image.Width + Math.Clamp(left + 1, 0, image.Width - 1)) * 4;
+                return SvgShaderPaint.InterpolatePremultiplied(
+                    new(source[a], source[a + 1], source[a + 2], source[a + 3]),
+                    new(source[b], source[b + 1], source[b + 2], source[b + 3]),
+                    new(source[c], source[c + 1], source[c + 2], source[c + 3]),
+                    new(source[d], source[d + 1], source[d + 2], source[d + 3]), fx, fy, alpha);
             }
 
             // Pinned raster-pipeline bilerp_clamp_8888 retains Q15 intermediate
@@ -2716,7 +2744,7 @@ public static class SvgConverter
                 SvgRenderLimits tileLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)remaining), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
                 SvgRenderOptions tileOptions = new(new SvgViewport(pattern.TextureWidth, pattern.TextureHeight), 1, SvgColor.Transparent, tileLimits);
                 SvgSceneStorage scene = content.Scene;
-                SvgRoot tileRoot = new(null, null, pattern.RasterSourceBox ?? throw new InvalidOperationException("Vector tile replay requires a mapped source grid."), scene.Geometries, scene.Commands, false, 0, scene);
+                SvgRoot tileRoot = new(null, null, pattern.RasterSourceBox ?? throw new InvalidOperationException("Vector tile replay requires a mapped source grid."), scene.Geometries, scene.Commands, false, 0, scene) { BorrowedFilters = root.FilterResources };
                 RasterFrame? contentFrame = null;
                 if (pattern.ContentViewBox is {} contentViewBox && pattern.RasterSourceBox is {} sourceBox)
                 {
@@ -2845,22 +2873,13 @@ public static class SvgConverter
             workUnits += 4;
             int nextX = tileX + 1 == pattern.TextureWidth ? 0 : tileX + 1;
             int nextY = tileY + 1 == pattern.TextureHeight ? 0 : tileY + 1;
-            float red = 0, green = 0, blue = 0, alpha = 0;
-            Add(tileX, tileY, (1 - fx) * (1 - fy));
-            Add(nextX, tileY, fx * (1 - fy));
-            Add(tileX, nextY, (1 - fx) * fy);
-            Add(nextX, nextY, fx * fy);
-            return new(red * opacity, green * opacity, blue * opacity, alpha * opacity);
-
-            void Add(int column, int row, float weight)
-            {
-                int offset = (row * pattern.TextureWidth + column) * 4;
-                const float scale = 1f / 255f;
-                red = MathF.FusedMultiplyAdd(weight, tile[offset] * scale, red);
-                green = MathF.FusedMultiplyAdd(weight, tile[offset + 1] * scale, green);
-                blue = MathF.FusedMultiplyAdd(weight, tile[offset + 2] * scale, blue);
-                alpha = MathF.FusedMultiplyAdd(weight, tile[offset + 3] * scale, alpha);
-            }
+            int a = (tileY * pattern.TextureWidth + tileX) * 4, b = (tileY * pattern.TextureWidth + nextX) * 4;
+            int c = (nextY * pattern.TextureWidth + tileX) * 4, d = (nextY * pattern.TextureWidth + nextX) * 4;
+            return SvgShaderPaint.InterpolatePremultiplied(
+                new(tile[a], tile[a + 1], tile[a + 2], tile[a + 3]),
+                new(tile[b], tile[b + 1], tile[b + 2], tile[b + 3]),
+                new(tile[c], tile[c + 1], tile[c + 2], tile[c + 3]),
+                new(tile[d], tile[d + 1], tile[d + 2], tile[d + 3]), fx, fy, opacity);
         }
 
         void RasterizePatternStroke(SvgPatternGeometry pattern, SvgStroke stroke, byte[] destination)

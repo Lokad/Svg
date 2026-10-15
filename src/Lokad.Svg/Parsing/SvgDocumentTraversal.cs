@@ -91,7 +91,7 @@ internal static class SvgDocumentTraversal
                 {
                     if (!reader.IsEmptyElement) state.DescriptionDepth = reader.Depth;
                 }
-                else if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, limits, namedColors, workCounter, cancellationToken)) { }
+                else if (SvgDefinitionParser.TryParse(reader, directChild, inScope, root, state, limits, namedColors, fontSnapshot, workCounter, cancellationToken)) { }
                 else if (state.SymbolDepth >= 0 && reader.Depth > state.SymbolDepth) state.HasUnsupportedContent = true;
                 else if (inScope && reader.NamespaceURI == "http://www.w3.org/2000/svg" && reader.LocalName == "svg")
                 {

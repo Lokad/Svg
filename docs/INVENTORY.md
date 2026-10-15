@@ -3488,3 +3488,16 @@ visual retains its original MIT core input. Source/options and healthy platform
 triples were frozen before correction. Counts and wider finite group completion
 remain separate. The [receipt](../artifacts/maintenance-review-20261012/composition-qualified-results.json)
 records preservation and full checks; PLAN.md owns remaining release obligations.
+
+
+## Complete retained pattern tile sheet (2026-10-15)
+
+The unchanged MIT [pattern tile sheet](../tests/Research/pattern-tile-sheet/README.md)
+is **1/1 exact complete document / 10/10 exact controls** on Windows/Linux. It is
+the twelfth additional authored document (eleven CC0 plus this MIT document),
+separate from frozen corporate **27/27 / 258/258** and selected development
+**50/50**. Three original controls remain in their original banks. Original
+source/options, font programs, healthy native platform triples and intended-font
+proof are preserved. No new acceptance assets or references were added for the
+content correction. The [receipt](../artifacts/maintenance-review-20261012/pattern-content-qualified-results.json)
+owns full checks; remaining finite G6/G2–G9/S17 exits stay open in PLAN.md.

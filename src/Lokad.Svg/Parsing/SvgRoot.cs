@@ -8,6 +8,11 @@ using System.Runtime.CompilerServices;
 /// <summary>Represents the parsed root viewport dimensions before scene construction.</summary>
 internal readonly record struct SvgRoot(SvgRootLength? Width, SvgRootLength? Height, SvgViewBox? ViewBox, SvgGeometry[] Geometries, SvgDrawCommand[] Commands, bool HasUnsupportedChild, long ParserWorkUnits, SvgSceneStorage? SceneStorage) : IDisposable
 {
+    /// <summary>Borrows the parent document's sealed filter registry during bounded definition replay.</summary>
+    /// <remarks>The parent scene outlives replay and owns disposal. No resource arrays are copied or adopted.</remarks>
+    internal SvgFilterArena? BorrowedFilters { get; init; }
+    internal SvgFilterArena? FilterResources => BorrowedFilters ?? SceneStorage?.Filters;
+
     /// <summary>Materializes visible rectangle bounds only for parser characterization tests.</summary>
     internal SvgRectangle[] Rectangles => SvgGeometry.ToRectangles(Geometries);
 
@@ -923,7 +928,7 @@ internal sealed class SvgGlyphGeometry : IDisposable
         SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget)
     {
         SvgColor color = paint.Resolve()?.Color ?? throw new InvalidOperationException("A painted text stroke requires a color.");
-        SvgGlyphGeometry geometry = Create(contours, color, font, position, fontSize, glyphMap, budget);
+        SvgGlyphGeometry geometry = Create(contours, color, font, position, fontSize, glyphMap, null, budget);
         geometry.StrokePaint = paint;
         double scale = Math.Max(Math.Sqrt(glyphMap.A * glyphMap.A + glyphMap.B * glyphMap.B), Math.Sqrt(glyphMap.C * glyphMap.C + glyphMap.D * glyphMap.D));
         double strokeScale = paint.NonScaling ? 1 / paint.FontScale : 1;
@@ -945,12 +950,12 @@ internal sealed class SvgGlyphGeometry : IDisposable
 
     /// <summary>Adopts contours and positioned source metadata, releasing both on failed ownership transfer.</summary>
     internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, RenderBudget budget)
-        => Create(contours, color, font, position, fontSize, SvgAffineTransform.Identity, budget);
+        => Create(contours, color, font, position, fontSize, SvgAffineTransform.Identity, null, budget);
 
-    internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget)
+    internal static SvgGlyphGeometry Create(SvgGlyphContourStorage contours, SvgColor color, SvgPreparedFont font, SvgPositionedGlyph position, double fontSize, SvgAffineTransform glyphMap, double? pictureFontScale, RenderBudget budget)
     {
         if (contours.Contours.Length == 0) return Create(contours, color);
-        SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, position, fontSize, glyphMap, budget);
+        SvgGlyphRasterSource source = SvgGlyphRasterSource.Create(font, position, fontSize, glyphMap, pictureFontScale, budget);
         try
         {
             SvgGlyphContourTransfer transfer = contours.TransferOwnership();
@@ -1504,10 +1509,6 @@ internal sealed class SvgSceneBuilder : IDisposable
 
     /// <summary>Resolves filter-owned output clips before the shared command emitter consumes their borrowed operations.</summary>
     internal void ResolveFilterOutputClips(SvgDocumentState state) => _filters?.ResolveOutputClips(state);
-
-    /// <summary>Borrows one filter's resolved output clip during single-threaded scene command emission.</summary>
-    internal SvgLeafMaskBinding? FilterOutputClipAt(int index)
-        => (_filters ?? throw new InvalidOperationException("Filter resources are missing.")).OutputClipAt(index);
 
     /// <summary>Adopts reserved replacement commands, releasing the former array; the caller must stop disposing the replacement.</summary>
     internal void AdoptCommands(BudgetedSceneList<SvgDrawCommand> commands)

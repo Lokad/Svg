@@ -13662,3 +13662,52 @@ clipping/stroke independence, empty boxes, meaningful texture/work/memory denial
 active cancellation, cleanup, input immutability and exact retry. Remaining
 image/filter/font tile content and finite target/stroke/instance maps stay open
 in PLAN.md. Historical named gates are superseded only as qualified here.
+
+
+## Complete pattern tile content (2026-10-15)
+
+The original MIT [whole tile sheet](../tests/Research/pattern-tile-sheet/README.md)
+and all ten controls are exact on Windows/Linux. The twelve authored complete
+documents now comprise eleven CC0 documents and this MIT sheet, separate from
+corporate 27/27 / 258/258 and selected development 50/50. Native captures and
+font-use triples were frozen before correction; no acceptance bytes change.
+The [content receipt](../artifacts/maintenance-review-20261012/pattern-content-qualified-results.json)
+owns preservation, full qualification and its limits.
+
+New image/text/filtered leaves use ordinary validated lowering into the existing
+pattern builder. A synchronous parser scene override restores in finally and
+excludes enclosing rendered viewport placement/clips from local content. Parent
+filter resources remain singly owned and resolve forward references at the normal
+document seal. Tile playback borrows that sealed registry, including filter bounds
+queries; source commands and resource lifetime are not duplicated. Existing
+vector/opacity routes remain intact. Body admission, bounded nodes/work, recursive
+paint rejection, cancellation, partial cleanup and retry retain their contracts.
+Zero-size grids suppress painting and unused font acquisition while validating
+text syntax. Their original rejection input now protects positive nonpainting.
+
+Picture-image draws need floating premultiplied interpolation and paint alpha
+through the existing floating store. Reusing the document bitmap route differed
+in 2,360 image-control pixels; low-precision Q15 left 1,705. Floating sampling is
+exact at integral source scale. Non-fused coordinate evaluation left two scaled
+tile pixels and 35 whole-sheet pixels; the existing fused matrix map is exact.
+Image and repeat sampling now share the same floating interpolation arithmetic;
+qualified bitmap and affine low-precision consumers keep their native distinctions.
+
+The font panel exposed two separate mechanisms. Enclosing viewport clips wrongly
+suppressed local glyphs; removing them left 90 Windows / 500 Linux whole-sheet
+pixels. Isolated 27-pixel font-source diagnostics are exact, but substituting those
+native bitmap sources back into the native whole reproduces the same 90/500
+changes. This separates recorded-font fitting from repeat sampling. Retain the
+screen-scaled font and relax the remaining picture matrix to the existing scaler
+precision before choosing device size. Keep original glyph placement/subpixel
+origin discipline. Shared Windows TrueType and Linux light-fitting consumers then
+match the unchanged whole. No coordinates, case IDs or observed pixel deltas are
+renderer predicates. Single healthy source/bitmap diagnostics and sizing probes
+remain private diagnostic evidence, not acceptance rows or tolerance rules.
+
+Focused tests protect forward filter binding, invalid images/missing resources,
+unsupported leaf children, pattern font discovery through root/nested definitions,
+zero-grid unused fonts, active cancellation during filtered curve replay, meaningful
+memory/work denial, borrowed-byte immutability and cleanup/retry. The whole-sheet
+font/resource check reuses the existing provider and representative APIs. Wider
+G6 maps/presentation and G9 obligations remain required in PLAN.md.

@@ -7,6 +7,39 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgPatternContentTests
 {
     [Fact]
+    public void Tile_filter_references_bind_forward_without_copying_resource_owners()
+    {
+        const string filter = "<filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><feGaussianBlur stdDeviation='.7'/></filter>";
+        const string pattern = "<pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect x='2' y='2' width='4' height='4' fill='red' filter='url(#f)'/></pattern>";
+        byte[] before = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs>" + filter + pattern + "</defs><rect width='16' height='16' fill='url(#p)'/></svg>");
+        byte[] after = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs>" + pattern + filter + "</defs><rect width='16' height='16' fill='url(#p)'/></svg>");
+        Assert.Equal(SvgConverter.ConvertToPng(before, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(after, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
+
+    [Theory]
+    [InlineData("<image width='4' height='4' href='data:image/png;base64,!!!'/>", SvgErrorCode.MalformedInput)]
+    [InlineData("<rect width='4' height='4' filter='url(#missing)'/>", SvgErrorCode.UnsupportedFeature)]
+    public void Extended_tile_failures_release_partial_scenes(string leaf, SvgErrorCode expected)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><circle cx='4' cy='4' r='3'/>" + leaf + "</pattern></defs><rect width='16' height='16' fill='url(#p)'/></svg>");
+        RenderBudget budget = new(1_000_000);
+        Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Extended_pattern_leaves_preserve_unsupported_child_admission()
+    {
+        byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><filter id='f'><feGaussianBlur stdDeviation='1'/></filter><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' filter='url(#f)'><animate attributeName='x'/></rect></pattern></defs><rect width='16' height='16' fill='url(#p)'/></svg>"u8.ToArray();
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+            Assert.True(root.HasUnsupportedChild);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+    }
+
+    [Fact]
     public void Nested_tile_opacity_ends_before_siblings_and_empty_groups()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><g opacity='.5'><g opacity='.5'><rect width='4' height='4' fill='red'/></g><rect x='4' width='4' height='4' fill='blue'/></g><g opacity='0'/><rect y='4' width='8' height='4' fill='#00ff00'/></pattern></defs><rect width='8' height='8' fill='url(#p)'/></svg>"u8.ToArray();

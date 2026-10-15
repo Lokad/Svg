@@ -228,7 +228,7 @@ internal static class SvgLeafMaskComposition
                 if (index < count && command.Kind == SvgDrawCommandKind.BeginGroup)
                 {
                     depth++;
-                    if (command.RegionKind == SvgLayerRegionKind.Filter && scene.FilterOutputClipAt(command.MaskContentIndex) is {} clip)
+                    if (command.RegionKind == SvgLayerRegionKind.Filter && state.DocumentFilters.OutputClipAt(command.MaskContentIndex) is {} clip)
                     {
                         filterClips ??= new(state.Budget, SvgMemoryCategory.Parser, work, token);
                         filterClips.Add(new(depth, clip));

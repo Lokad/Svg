@@ -23,6 +23,7 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
     /// <remarks>Frames and metadata belong to one conversion. Each ancestor consumes work and observes cancellation; registry teardown releases partial reservations on failure. The returned chain is borrowed until final command emission.</remarks>
     internal static SvgLeafMaskBinding? ResolveGlyphClip(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
+        if (state.DefinitionReplayScene is not null) return null;
         SvgLeafMaskBinding? parent = null;
         for (int index = 0; index < state.Viewports.Count; index++)
         {

@@ -67,6 +67,8 @@ internal static class SvgFontRequestDiscovery
             int descriptionDepth = -1;
             int definitionsDepth = -1;
             int symbolDepth = -1;
+            int patternDepth = -1;
+            int patternInheritedInertDepth = -1;
             int groupDepth = 0;
             int skipDepth = -1;
             int activeCandidateLevel = -1;
@@ -171,7 +173,7 @@ internal static class SvgFontRequestDiscovery
                         SvgRootStyleSheetParser.Consume(reader, budget, workCounter, cancellationToken);
                         continue;
                     }
-                    if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && (directChild || hasGroupAncestor) && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
+                    if (!sterile && isSvgElement && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName) && (directChild || hasGroupAncestor || viewportSizes.Count > 0) && definitionsDepth < 0 && !reader.IsEmptyElement) definitionsDepth = reader.Depth;
                     bool symbolDefinition = !sterile && isSvgElement && reader.LocalName is ("symbol" or "marker")
                         && SvgStructuralVocabulary.IsSymbolDefinitionLocation(directChild, parentAllowsText && hasGroupAncestor, definitionsDepth, symbolDepth, reader.Depth);
                     if (symbolDefinition)
@@ -181,9 +183,27 @@ internal static class SvgFontRequestDiscovery
                         if (!reader.IsEmptyElement) symbolDepth = reader.Depth;
                     }
                     if (!sterile && isSvgElement && SvgStructuralVocabulary.IsStyleScriptOrAnimationElement(reader.LocalName)) hasUnsupportedContent = true;
+                    bool patternDefinition = !sterile && isSvgElement && reader.LocalName == "pattern" && patternDepth < 0
+                        && (definitionsDepth >= 0 ? reader.Depth == definitionsDepth + 1 : directChild || parentAllowsText && hasGroupAncestor);
+                    if (patternDefinition)
+                    {
+                        SvgElementAttributePolicy.ValidatePattern(reader, workCounter, cancellationToken);
+                        parentAllowsText = true;
+                        double? patternWidth = reader.GetAttribute("width") is {} width ? SvgGeometrySyntax.ParseRectangleCoordinate(width) : null;
+                        double? patternHeight = reader.GetAttribute("height") is {} height ? SvgGeometrySyntax.ParseRectangleCoordinate(height) : null;
+                        bool noTemplate = reader.GetAttribute("href") is null && reader.GetAttribute("href", "http://www.w3.org/1999/xlink") is null;
+                        if (patternWidth == 0 || patternHeight == 0 || noTemplate && (patternWidth is null || patternHeight is null))
+                            style = style with { IsDisplayed = false };
+                        if (!reader.IsEmptyElement)
+                        {
+                            patternDepth = reader.Depth;
+                            patternInheritedInertDepth = inertDepth;
+                            inertDepth = -1;
+                        }
+                    }
                     bool textElement = isSvgElement && reader.LocalName == "text";
                     bool isTextEligible = !sterile && parentAllowsText && textElement;
-                    bool childAllowsText = !sterile && parentAllowsText && isSvgElement && clipDepths.Count == 0 && reader.GetAttribute("mask") is null && (reader.Depth == rootDepth || reader.LocalName == "svg" || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
+                    bool childAllowsText = !sterile && parentAllowsText && isSvgElement && clipDepths.Count == 0 && reader.GetAttribute("mask") is null && (reader.Depth == rootDepth || reader.LocalName == "svg" || patternDefinition || SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName));
                     bool plainViewport = false;
                     if (!sterile && inertDepth < 0 && !insideDirectText && parentAllowsText && isSvgElement && !rootElement && (directChild || hasGroupAncestor || viewportSizes.Count > 0) && reader.LocalName == "svg")
                     {
@@ -199,7 +219,7 @@ internal static class SvgFontRequestDiscovery
                     if (!sterile && !insideDirectText && isSvgElement && reader.LocalName == "switch" && (parentAllowsText || viewportSizes.Count > 0 || clipDepths.Count > 0) && !reader.IsEmptyElement) switchScopes.Add(new SwitchScope(reader.Depth, false));
                     bool isKnownContent = isSvgElement && (SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) || reader.LocalName is ("svg" or "g" or "a" or "switch" or "text" or "use" or "style" or "defs" or "title" or "desc" or "metadata" or "symbol" or "marker" or "clipPath" or "mask" or "image" or "pattern" or "linearGradient" or "radialGradient" or "stop"));
                     bool isInertForeignElement = !isSvgElement && reader.IsEmptyElement;
-                    bool unsupportedContainer = (!rootElement && (reader.LocalName == "style" || (reader.LocalName == "symbol" && !symbolDefinition))) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && !hasGroupAncestor && reader.LocalName == "defs");
+                    bool unsupportedContainer = (!rootElement && (reader.LocalName == "style" || (reader.LocalName == "symbol" && !symbolDefinition))) || (!rootElement && reader.LocalName == "svg" && !plainViewport) || (!directChild && !hasGroupAncestor && viewportSizes.Count == 0 && reader.LocalName == "defs");
                     bool nonemptyUnsupportedLeaf = !reader.IsEmptyElement && reader.LocalName is ("use" or "image");
                     bool rendererRejectsKnownContent = isSvgElement && (unsupportedContainer || nonemptyUnsupportedLeaf);
                     bool consumeGeometryBody = !sterile && !insideDirectText && isSvgElement && SvgStructuralVocabulary.IsDefinitionLeaf(reader.LocalName) && !reader.IsEmptyElement && (parentAllowsText || definitionsDepth >= 0 && reader.Depth == definitionsDepth + 1);
@@ -212,7 +232,7 @@ internal static class SvgFontRequestDiscovery
                     {
                         if (!rootElement && reader.LocalName == "switch") SvgElementAttributePolicy.ValidateSwitch(reader, workCounter, cancellationToken);
                         else if (!rootElement && SvgStructuralVocabulary.IsGroupOrLinkContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateGroup(reader, workCounter, cancellationToken);
-                        else if ((directChild || hasGroupAncestor) && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateDefinitionContainer(reader, workCounter, cancellationToken);
+                        else if ((directChild || hasGroupAncestor || viewportSizes.Count > 0) && SvgStructuralVocabulary.IsDefinitionsContainer(reader.LocalName)) SvgElementAttributePolicy.ValidateDefinitionContainer(reader, workCounter, cancellationToken);
                     }
                     if (!sterile && inertDepth >= 0 && reader.Depth == inertDepth + 1 && isSvgElement)
                     {
@@ -221,10 +241,10 @@ internal static class SvgFontRequestDiscovery
                         else if (reader.LocalName == "symbol") SvgElementAttributePolicy.ValidateSymbol(reader, workCounter, cancellationToken);
                         else if (reader.LocalName == "marker") _ = SvgMarkerSyntax.Parse(reader, SvgComputedStyleResolver.Resolve(reader, SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken), workCounter, cancellationToken), new(viewportSizes.Count == 0 ? rootWidth : viewportSizes[^1].Width, viewportSizes.Count == 0 ? rootHeight : viewportSizes[^1].Height), workCounter, cancellationToken);
                     }
-                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
+                    InlineStyle styleSheet = isSvgElement && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text") ? SvgStyleSheet.Resolve(reader, styleRules, ancestors, workCounter, cancellationToken) : default;
                     SvgTextWhitespaceMode inheritedTextWhitespaceMode = style.Text.WhitespaceMode;
                     string? specifiedWhiteSpace = null;
-                    if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken, out specifiedWhiteSpace);
+                    if (!sterile && isSvgElement && !rootElement && !insideDirectText && parentAllowsText && reader.LocalName is ("svg" or "defs" or "g" or "a" or "switch" or "pattern" or "text")) style = ApplyAttributes(reader, style, styleSheet, workCounter, cancellationToken, out specifiedWhiteSpace);
                     if (!sterile && parsedTextSpan is SvgTextSpanStyle parsedSpan)
                     {
                         SvgTextPaintStyle paint = parsedSpan.Paint;
@@ -281,6 +301,7 @@ internal static class SvgFontRequestDiscovery
                     if (reader.Depth == descriptionDepth) descriptionDepth = -1;
                     if (reader.Depth == definitionsDepth) definitionsDepth = -1;
                     if (reader.Depth == symbolDepth) symbolDepth = -1;
+                    if (reader.Depth == patternDepth) { patternDepth = -1; inertDepth = patternInheritedInertDepth; patternInheritedInertDepth = -1; }
                     if (viewportSizes.Count > 0 && viewportSizes[^1].Depth == reader.Depth) viewportSizes.RemoveLast();
                     if (clipDepths.Count > 0 && clipDepths[^1] == reader.Depth) clipDepths.RemoveLast();
                     if (inheritedLevels.Count != 0)

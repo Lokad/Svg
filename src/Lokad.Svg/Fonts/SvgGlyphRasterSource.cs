@@ -11,13 +11,14 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
     private RenderBudget.BudgetReservation? _reservation;
     private readonly SvgPositionedGlyph _glyph;
     private readonly double _fontSize;
+    private readonly double? _pictureFontScale;
     private readonly SvgAffineTransform _glyphMap;
 
     internal bool HasGlyphMap => _glyphMap != SvgAffineTransform.Identity;
 
-    private SvgGlyphRasterSource(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, RenderBudget.BudgetReservation reservation)
+    private SvgGlyphRasterSource(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, double? pictureFontScale, RenderBudget.BudgetReservation reservation)
     {
-        _font = font; _glyph = glyph; _fontSize = fontSize; _glyphMap = glyphMap; _reservation = reservation;
+        _font = font; _glyph = glyph; _fontSize = fontSize; _glyphMap = glyphMap; _pictureFontScale = pictureFontScale; _reservation = reservation;
     }
 
     /// <summary>Identifies the admitted simple-outline stage without changing existing composite admission.</summary>
@@ -66,7 +67,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
             ? mappedFitting
                 ? OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike.DeviceSize, target, TrueTypeImpliedPointRounding.None, OpenTypeWindowsGlyphTransform.Create(new(1, fittedMap, strike.RelaxedMap), 1), budget, work, token)
                 : OpenTypeFont.GetWindowsUnhintedContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, strike, budget, work, token)
-            : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, _fontSize * scaleY, target, TrueTypeImpliedPointRounding.None, budget, work, token);
+            : OpenTypeFont.GetTrueTypeContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, DeviceFontSize(scaleY), target, TrueTypeImpliedPointRounding.None, budget, work, token);
         try
         {
             SvgDevicePoint origin = _glyphMap.Apply(_glyph.X, _glyph.Y);
@@ -105,14 +106,28 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
     }
 
     internal static SvgGlyphRasterSource Create(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, RenderBudget budget)
-        => Create(font, glyph, fontSize, SvgAffineTransform.Identity, budget);
+        => Create(font, glyph, fontSize, SvgAffineTransform.Identity, null, budget);
 
     internal static SvgGlyphRasterSource Create(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, RenderBudget budget)
+        => Create(font, glyph, fontSize, glyphMap, null, budget);
+
+    internal static SvgGlyphRasterSource Create(SvgPreparedFont font, SvgPositionedGlyph glyph, double fontSize, SvgAffineTransform glyphMap, double? pictureFontScale, RenderBudget budget)
     {
         ArgumentNullException.ThrowIfNull(font);
         RenderBudget.BudgetReservation reservation = budget.Reserve(192, SvgMemoryCategory.Scene);
-        try { return new(font, glyph, fontSize, glyphMap, reservation); }
+        try { return new(font, glyph, fontSize, glyphMap, pictureFontScale, reservation); }
         catch { reservation.Dispose(); throw; }
+    }
+
+    // SVG picture text records a screen-scaled font and its inverse layout scale.
+    // Relax the remaining picture matrix before fitting, while retaining the
+    // original placement for subpixel origin selection. Ordinary glyphs keep
+    // their qualified device-size route.
+    private double DeviceFontSize(double scale)
+    {
+        if (_pictureFontScale is not {} host) return _fontSize * scale;
+        float recordedSize = SvgGlyphDeviceMetrics.GetEffectiveFontSize(_fontSize * host);
+        return recordedSize * SvgGlyphStrikeTransform.RelaxCoefficient(scale / host);
     }
 
     /// <summary>Replays a mapped outline at the native two-axis subpixel strike origin, preserving its tangent transform.</summary>
@@ -166,7 +181,7 @@ internal sealed partial class SvgGlyphRasterSource : IDisposable
     internal SvgAuthoredPath CreateLatinLightPath(double scaleX, double offsetX, double scaleY, double offsetY, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
-        double size = _fontSize * scaleY;
+        double size = DeviceFontSize(scaleY);
         using OpenTypeGlyphContourStorage contours = OpenTypeFont.GetLatinLightContours(font.Bytes, _glyph.GlyphIndex, font.Metrics, size, budget, work, token);
         using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Geometry, work, token);
         float originX = (float)(_glyph.X * scaleX + offsetX), originY = (float)(_glyph.Y * scaleY + offsetY);

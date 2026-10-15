@@ -12,6 +12,16 @@ public sealed class SvgStaticCssImageTests
     public void Pattern_unit_replay_preserves_sources_and_releases_owners_after_denial_and_retry(string identity)
         => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "pattern-tile-sheet", identity + ".svg")));
 
+    [Theory]
+    [InlineData("image-tile")]
+    [InlineData("filtered-tile")]
+    public void Pattern_content_replay_releases_image_filter_owners_on_denial_and_retry(string identity)
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "pattern-tile-sheet", identity + ".svg")));
+
+    [Fact]
+    public void Filtered_tile_capture_cancellation_and_work_denial_release_temporary_owners()
+        => AssertActiveRasterLifecycle("<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'><defs><filter id='f' filterUnits='userSpaceOnUse' x='0' y='0' width='64' height='64'><feGaussianBlur stdDeviation='1'/></filter><pattern id='p' width='64' height='64' patternUnits='userSpaceOnUse'><circle cx='32' cy='32' r='24' fill='#025bc7' filter='url(#f)'/></pattern></defs><rect width='128' height='128' fill='url(#p)'/></svg>"u8.ToArray());
+
     [Fact]
     public void Object_relative_tile_replay_cancellation_and_work_denial_release_temporary_owners()
         => AssertActiveRasterLifecycle("<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><defs><pattern id='p' width='.5' height='.5' patternUnits='objectBoundingBox' patternContentUnits='objectBoundingBox'><circle cx='.33' cy='.33' r='.25' fill='#025bc7'/></pattern></defs><rect width='256' height='256' fill='url(#p)'/></svg>"u8.ToArray());

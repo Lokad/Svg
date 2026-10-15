@@ -71,8 +71,6 @@
       "linuxReferenceSha256": "d963ef2d6901625350bca9b0b5828763a70207a578e6d7fe6f8c51af325464ce",
       "oracleInputSha256": "bddf3b97f8826e71673307f56d3eb1f59bfb10fbd66bc317d74b7023f12b9039",
       "platformReferencesByteIdentical": false,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Filters on retained definition content are not implemented.",
       "fontUseProof": {
         "windows": [
           {
@@ -349,9 +347,7 @@
       ],
       "linuxReference": "references/linux64/image-tile.png",
       "linuxReferenceSha256": "c74169377e5d65b6b8fc2d8236bce417aa40fdc9a02602f66680aca3dfddcf6d",
-      "platformReferencesByteIdentical": true,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "This SVG child element is not implemented yet."
+      "platformReferencesByteIdentical": true
     },
     {
       "id": "filtered-tile",
@@ -402,9 +398,7 @@
       ],
       "linuxReference": "references/linux64/filtered-tile.png",
       "linuxReferenceSha256": "bfbe10a4d9d79aa920f009198711855f96555c2624916a6bd7277007e9c39733",
-      "platformReferencesByteIdentical": true,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Filters on retained definition content are not implemented."
+      "platformReferencesByteIdentical": true
     },
     {
       "id": "supplied-font-tile",
@@ -457,8 +451,6 @@
       "linuxReferenceSha256": "fe445cb068eaabc193424d182457b31bf21a4bfee37fc81ed642ae6f77318b6a",
       "oracleInputSha256": "1258fde08da2fbdd7fd5cad1d45f508cb78e579020a23839e4382dc84886cc5d",
       "platformReferencesByteIdentical": false,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "This SVG child element is not implemented yet.",
       "fontUseProof": {
         "windows": [
           {

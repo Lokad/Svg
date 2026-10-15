@@ -1,10 +1,11 @@
 # Retained pattern tile sheet
 
-The required whole document is **0/1 complete**; **7/10 controls are exact** on
-Windows/Linux, with a separate denominator. Opacity, object-box tile/content
-units, the retained reflected map, the discovered affine/unit interaction and
-inherited default units are exact. Image/filter/supplied-font controls still
-reject. The three reused controls remain in their original banks:
+The unchanged whole document is **1/1 complete**; **10/10 controls are exact** on
+Windows/Linux, with a separate denominator. Opacity, viewport/unit and reflected
+maps, embedded image/filter content and the supplied-font label retain their
+original references. This is the twelfth additional authored document, separate
+from the frozen corporate and selected development cohorts.
+The three reused controls remain in their original banks:
 [combined element opacity](../paint-recording/pattern-tile-tile-fill-stroke-element.svg),
 [nested group opacity](../pattern-vector-content/group-opacity-promotion.svg) and
 [inherited object units](../pattern-inheritance/object-units-template-boundary.svg).
@@ -38,7 +39,10 @@ reuses ordinary recorded element layers, bounded group scopes and native packed
 shader coverage. The
 [coordinate correction](../../../artifacts/maintenance-review-20261012/pattern-units-qualified-results.json)
 shares original local bounds, bounded content maps and distinct native drawing/
-shader-local stages. The first five panels are exact in a derived diagnostic;
-the unchanged whole is still rejected at filtered definition content. Complete
-its image/filter/font dependencies and remaining finite G6 maps. [PLAN.md](../../../PLAN.md#ordered-delivery-checklist) owns wider
+shader-local stages. The
+[content correction](../../../artifacts/maintenance-review-20261012/pattern-content-qualified-results.json)
+reuses ordinary leaf lowering into the bounded tile builder, borrows parent-owned
+sealed filter resources, preserves floating picture-image sampling and records
+the host font scale for native fitting. Original sources, options, programs and
+all platform references are unchanged. [PLAN.md](../../../PLAN.md#ordered-delivery-checklist) owns wider
 finite support exits; a document milestone alone does not close G6 or release.

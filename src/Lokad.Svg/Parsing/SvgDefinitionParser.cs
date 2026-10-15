@@ -6,7 +6,7 @@ namespace Lokad.Svg.Parsing;
 /// <summary>Routes bounded definitions, symbols and local instances while preserving streaming order.</summary>
 internal static class SvgDefinitionParser
 {
-    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, IReadOnlyDictionary<string, SvgColor> namedColors, ParserWorkCounter workCounter, CancellationToken cancellationToken)
+    internal static bool TryParse(XmlReader reader, bool directChild, bool isEligible, SvgRootAttributes root, SvgDocumentState state, SvgRenderLimits limits, IReadOnlyDictionary<string, SvgColor> namedColors, Lokad.Svg.Fonts.SvgFontSnapshot? fontSnapshot, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if (state.FilterDefinition is {} activeFilter && reader.Depth > state.FilterDepth)
         {
@@ -474,6 +474,42 @@ internal static class SvgDefinitionParser
                     state.GroupDepth++;
                 }
                 return true;
+            }
+            if (reader.LocalName is "rect" or "circle" or "ellipse" or "path" or "polygon" or "polyline" or "line" or "image" or "text")
+            {
+                SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
+                SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
+                if (reader.LocalName is "image" or "text" || style.Filter is {} filter && filter.Trim() != "none")
+                {
+                    if (!SvgRenderedLeafParser.ValidateLeafAttributes(reader, workCounter, cancellationToken))
+                        throw new InvalidOperationException("Pattern replay requires a supported leaf.");
+                    RejectPatternContentPaint(style, state);
+                    if (reader.GetAttribute("mask") is not null || reader.GetAttribute("clip-path") is not null)
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clips and masks on extended pattern content are not implemented.");
+                    SvgPatternTemplate template = state.PatternTemplate;
+                    if (template.Width == 0 || template.Height == 0 || template.Href is null && (template.Width is null || template.Height is null))
+                        context = context with { InheritedPresentation = context.InheritedPresentation with { IsDisplayed = false } };
+                    SvgSceneBuilder builder = GetPatternContentBuilder(state, workCounter, cancellationToken);
+                    if (state.DefinitionReplayScene is not null) throw new InvalidOperationException("Definition leaf replay cannot nest.");
+                    double previousTextScale = state.OutputTextScale;
+                    if (state.EffectiveFrame is {} textHost)
+                        state.OutputTextScale *= Lokad.Svg.Fonts.SvgGlyphDeviceMetrics.GetScreenScale(
+                            SvgAffineTransform.FromScaleOffset(textHost.ScaleX, textHost.ScaleY, 0, 0));
+                    bool textContent = reader.LocalName == "text";
+                    state.DefinitionReplayScene = builder;
+                    try
+                    {
+                        _ = SvgRenderedLeafParser.ParseResolved(reader, context, root, state, limits, state.Budget, fontSnapshot, workCounter, cancellationToken);
+                    }
+                    finally { state.DefinitionReplayScene = null; state.OutputTextScale = previousTextScale; }
+                    if (!textContent && !reader.IsEmptyElement)
+                    {
+                        SvgLeafSubtree subtree = SvgStructuralAdmission.ConsumeLeafSubtree(reader, limits, state.NodeCount, workCounter, cancellationToken);
+                        state.NodeCount = subtree.NodeCount;
+                        state.HasUnsupportedContent |= subtree.HasElements;
+                    }
+                    return true;
+                }
             }
             if (reader.LocalName == "rect" && KeepsLegacyRectanglePaint() && state.PatternTemplate.KeepsLegacyRectangle && state.PatternContentBuilder is null && state.PatternTile?.Content is null)
             {

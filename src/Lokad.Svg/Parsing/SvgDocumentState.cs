@@ -43,7 +43,7 @@ internal sealed class SvgDocumentState : IDisposable
     internal SvgDocumentState(RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken, BudgetedParserList<CssRule> styleRules, BudgetedParserStringStore strings, bool ownsStyleStorage)
     {
         Budget = budget;
-        Scene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
+        _documentScene = new SvgSceneBuilder(budget, workCounter, cancellationToken);
         Strings = strings;
         _ownsStyleStorage = ownsStyleStorage;
         Groups = new BudgetedParserList<SvgGroupScope>(budget, SvgMemoryCategory.Parser, workCounter, cancellationToken);
@@ -90,7 +90,14 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal RenderBudget Budget { get; }
 
-    internal SvgSceneBuilder Scene { get; }
+    private readonly SvgSceneBuilder _documentScene;
+    internal SvgSceneBuilder Scene => DefinitionReplayScene ?? _documentScene;
+
+    /// <summary>Borrows an existing definition builder only during synchronous leaf lowering.</summary>
+    /// <remarks>Callers restore it in finally; the existing pattern owner disposes it. Resources remain
+    /// document-owned, and the definition's local coordinates exclude enclosing rendered viewports.</remarks>
+    internal SvgSceneBuilder? DefinitionReplayScene { get; set; }
+    internal SvgFilterArena DocumentFilters => _documentScene.Filters;
 
     internal SvgFilterDefinitionBuilder? FilterDefinition { get; set; }
     internal int FilterDepth { get; set; } = -1;
@@ -126,7 +133,7 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserList<SvgViewportFrame> Viewports { get; }
 
-    internal SvgViewportFrame? EffectiveFrame => Viewports.Count == 0 ? null : Viewports[^1];
+    internal SvgViewportFrame? EffectiveFrame => DefinitionReplayScene is not null || Viewports.Count == 0 ? null : Viewports[^1];
 
     internal BudgetedParserList<CssRule> StyleRules { get; }
 

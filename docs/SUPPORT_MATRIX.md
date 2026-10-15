@@ -1669,3 +1669,24 @@ under scaled viewports and skewed oval targets retain explicit boundaries and
 remain required G4/G6 work. No G6/release closure or feature deferral is claimed.
 The [receipt](../artifacts/maintenance-review-20261012/pattern-units-qualified-results.json)
 owns full regression, asset preservation, resource and timing evidence.
+
+
+## Complete pattern tile content (2026-10-15)
+
+The unchanged [tile sheet](../tests/Research/pattern-tile-sheet/README.md) is
+**1/1 complete document / 10/10 exact controls** on Windows/Linux. Embedded PNG,
+filtered vector leaves and supplied static TrueType text use ordinary bounded
+leaf lowering into the existing tile scene. Tile filters borrow the parent
+scene's sealed resources, including forward references; the parent owns disposal.
+Glyph construction excludes enclosing rendered viewport clips while retaining
+the screen-font scale needed for native picture fitting. Empty pattern grids
+paint nothing and do not acquire unused font programs.
+
+Picture images retain floating interpolation/alpha and fused coordinate mapping.
+Recorded fonts retain the screen scale through existing matrix relaxation before
+fitting. Original source/font/reference bytes and options are unchanged. The
+[receipt](../artifacts/maintenance-review-20261012/pattern-content-qualified-results.json)
+owns finished platform/resource checks. Prior named content gates are superseded.
+Remaining G6 target/stroke/instance maps, applicable container presentation and
+clip/mask interactions remain explicit required work; no G6/release closure or
+feature deferral is claimed. No exhaustive content/shape/API product is required.

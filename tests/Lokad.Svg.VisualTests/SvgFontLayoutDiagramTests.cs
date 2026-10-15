@@ -13,6 +13,35 @@ public sealed class SvgFontLayoutDiagramTests
     private static string DirectoryPath => Path.Combine(AppContext.BaseDirectory, "Research", "font-layout-diagram");
 
     [Fact]
+    public async Task Whole_pattern_content_releases_borrowed_font_filter_and_image_resources_on_denial_and_retry()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "pattern-tile-sheet");
+        byte[] input = File.ReadAllBytes(Path.Combine(directory, "pattern-tile-sheet.svg"));
+        byte[] unchanged = input.ToArray();
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new Provider(), CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        RenderBudget sceneBudget = new(16_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, snapshot, CancellationToken.None))
+        {
+            RenderBudget accepted = new(16_000_000);
+            byte[] expected = SvgConverter.ConvertToPng(scene, options, accepted, CancellationToken.None).ToArray();
+            Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+            RenderBudget denied = new(Math.Max(1024, accepted.Snapshot().PeakBytes / 2));
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(scene, options, denied, CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, denied.Snapshot().CurrentBytes);
+            using CancellationTokenSource cancellation = new();
+            cancellation.Cancel();
+            Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() => SvgConverter.ConvertToPng(scene, options, accepted, cancellation.Token)).CancellationToken);
+            Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+            Assert.Equal(expected, SvgConverter.ConvertToPng(scene, options, accepted, CancellationToken.None).ToArray());
+            Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes);
+        Assert.Equal(unchanged, input);
+    }
+
+    [Fact]
     public async Task Dashed_and_non_scaling_glyph_sources_release_on_denial_cancellation_and_retry()
     {
         SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(File.ReadAllBytes(Path.Combine(DirectoryPath, "font-pack.json")), "public-noto-layout");

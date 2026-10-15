@@ -2023,7 +2023,6 @@ public sealed partial class OpenTypeFontTests
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan transform='translate(1)'>A</tspan></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A<tspan style='font-size: 13'>A</tspan></text></svg>", null, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><foreignObject width='5' height='5'><text font-family='Unused'>x</text></foreignObject><text font-family='Example' font-size='100' y='3'>A</text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><pattern id='p'><text font-family='Unused'>x</text></pattern><rect width='5' height='5' fill='url(#p)'/></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><defs><rect id='r' width='5' height='5' fill='red'/></defs><use id='u' href='#r'/><use href='#u'/></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'>A😀</text></svg>", SvgErrorCode.UnresolvedResource, "Example", 1, 1)]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><text font-family='Example' font-size='100' y='3'><a href='#x'>A</a></text></svg>", SvgErrorCode.UnsupportedFeature, "", 0, 0)]
@@ -2077,6 +2076,40 @@ public sealed partial class OpenTypeFontTests
             Assert.Equal(SvgConverter.ConvertToPng(inline, options, CancellationToken.None).ToArray(),
                 SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
         }
+    }
+
+    [Theory]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><pattern id='p'><text font-family='Unused'>x</text></pattern><rect width='5' height='5' fill='url(#p)'/></svg>")]
+    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'><pattern id='p' width='0' height='8'><text font-family='Unused'><tspan>x</tspan></text></pattern><rect width='5' height='5' fill='url(#p)'/></svg>")]
+    public async Task Empty_pattern_text_does_not_request_font_programs(string svg)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);
+        Assert.Empty(SvgFontRequestDiscovery.Discover(input, CancellationToken.None));
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        Assert.Equal(0, provider.RequestCount);
+        Assert.Equal(0, source.RequestCount);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        Assert.Equal(SvgConverter.ConvertToPng("<svg xmlns='http://www.w3.org/2000/svg' width='5' height='5'/>"u8.ToArray(), options, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Pattern_text_discovery_matches_lowering_through_definition_and_viewport_scopes(bool nestedViewport)
+    {
+        const string content = "<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><g font-family='Example'><text font-size='4' y='4'>A</text></g></pattern></defs><rect width='8' height='8' fill='url(#p)'/>";
+        string body = nestedViewport ? "<svg width='8' height='8' viewBox='0 0 6 6'>" + content + "</svg>" : content;
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + body + "</svg>");
+        byte[] unchanged = input.ToArray();
+        Assert.Equal(new[] { "Example" }, SvgFontRequestDiscovery.Discover(input, CancellationToken.None).Select(static request => request.Family));
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
+        Assert.NotEmpty(SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None).ToArray());
+        Assert.Equal(unchanged, input);
     }
 
     [Fact]
