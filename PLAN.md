@@ -165,6 +165,14 @@ and [template tests](tests/Lokad.Svg.Tests/SvgPatternTemplateTests.cs). Those fi
 boundary outcomes stay closed. The two legacy rows above remain required; a
 completed document does not close G4/G6 while these actual gates remain.
 
+The next [primitive stroke sheet](tests/Research/primitive-stroke-sheet/README.md)
+binds the stroke/style correction to one complete document and four controls:
+**0/1 complete document / 0/4 exact controls** before production changes.
+Frozen outputs cover dashed oval caps, rounded dashes with independent alpha,
+translucent line shaders and the nonuniform radial point-list route. Finish all
+five original outputs through their gates and mismatches, preserving the completed
+map sheet. The existing basic pattern cases remain the following item-2 exit.
+
 <a id="g5-viewports-clips-masks-and-composition"></a>
 
 ### G5: viewports, clips, masks and composition — item 3
