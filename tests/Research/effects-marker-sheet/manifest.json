@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One required whole effects/marker sheet remains incomplete; ten of eleven controls are exact. Original sources/options/references remain frozen while shared color-space and image-source replay advance the document.",
+  "purpose": "One complete whole effects/marker sheet and eleven exact controls against unchanged Windows/Linux references. Wider finite G8 semantics remain required.",
   "cases": [
     {
       "id": "effects-marker-sheet",
@@ -58,10 +58,7 @@
       "reference": "references/effects-marker-sheet.png",
       "referenceSha256": "857d022345bdf0de019d6e9d11ff778e2feef89dee12b58ed0f6ae35ea9f2cc3",
       "licenseEvidence": "README.md",
-      "platformReferencesByteIdentical": true,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Filters under rotated or skewed placement are not implemented.",
-      "remainingRequiredBehavior": "Nested source, flood override and genuine mixed-space branch/consumer controls are exact separately. The unchanged whole document still needs affine regions and complete-panel integration against its original reference."
+      "platformReferencesByteIdentical": true
     },
     {
       "id": "marker-overflow-cascade",
@@ -208,10 +205,7 @@
       "reference": "references/affine-filter-regions.png",
       "referenceSha256": "4f66794ad36ee46c27d8a7215378b630a3265ab2c715b1c4220f57e69ceadf17",
       "licenseEvidence": "README.md",
-      "platformReferencesByteIdentical": true,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Filters under rotated or skewed placement are not implemented.",
-      "remainingRequiredBehavior": "Rotated/skewed filter placement remains required; this is a retained acceptance gap, not a scope boundary."
+      "platformReferencesByteIdentical": true
     },
     {
       "id": "image-filter-source",

@@ -223,7 +223,11 @@ public static class SvgConverter
         internal SvgCpuBitmapOrigin CaptureOrigin { get; init; }
         /// <summary>Retains the native padded image-shader bitmap origin in the parent's device coordinates.</summary>
         internal SvgCpuBitmapOrigin? ImageShaderOrigin { get; init; }
+        /// <summary>Substitutes the one outer binding of a borrowed layer-space source scene.</summary>
+        internal SvgFilterReplayBinding? FilterBinding { get; init; }
     }
+
+    private readonly record struct SvgFilterReplayBinding(int Index, SvgFilterBinding Binding);
 
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, RasterFrame? frame, CancellationToken cancellationToken)
     {
@@ -339,7 +343,7 @@ public static class SvgConverter
         }
         finally { patternTileCache?.Dispose(); }
 
-        SvgPaintBounds FilterRegion(SvgFilterBinding binding, SvgFilterResource resource, ParserWorkCounter counter)
+        SvgPaintBounds FilterRegion(SvgFilterBinding binding, SvgFilterResource resource, ParserWorkCounter counter, SvgAffineTransform output)
         {
             SvgFilterRegion region = resource.Region;
             SvgPaintBounds box = binding.ObjectBounds;
@@ -349,7 +353,7 @@ public static class SvgConverter
             double x = Length(region.X, basisX), y = Length(region.Y, basisY);
             double w = Length(region.Width, basisX), h = Length(region.Height, basisY);
             if (w <= 0 || h <= 0) return default;
-            SvgAffineTransform map = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset);
+            SvgAffineTransform map = output;
             if (objectUnits) { x += box.Left; y += box.Top; }
             else map = map.ComposeChecked(binding.Transform);
             SvgPaintBounds bounds = new SvgPaintBounds((float)x, (float)y, (float)(x + w), (float)(y + h)).Map(map, counter, cancellationToken);
@@ -361,10 +365,9 @@ public static class SvgConverter
         int RenderFilter(int first, SvgDrawCommand command, byte[] destination)
         {
             SvgFilterArena arena = root.SceneStorage?.Filters ?? throw new SvgException(SvgErrorCode.MalformedInput, "Filter resources are missing.");
-            SvgFilterBinding binding = arena.BindingAt(command.MaskContentIndex);
+            SvgFilterBinding binding = frame?.FilterBinding is {} replay && replay.Index == command.MaskContentIndex
+                ? replay.Binding : arena.BindingAt(command.MaskContentIndex);
             SvgFilterResource resource = arena.ResourceAt(binding.ResourceIndex);
-            if (binding.Transform.B != 0 || binding.Transform.C != 0)
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters under rotated or skewed placement are not implemented.");
             int end = first, depth = 0, nestedDepth = -1;
             bool hasSourceImages = false;
             SvgPaintBounds? nestedSourceBounds = null;
@@ -390,7 +393,8 @@ public static class SvgConverter
                         // final filter region. Keep object bounds independent of effects.
                         SvgFilterBinding child = arena.BindingAt(item.MaskContentIndex);
                         ParserWorkCounter childRegionWork = new(options.Limits.MaximumWorkUnits - workUnits);
-                        SvgPaintBounds childRegion = FilterRegion(child, arena.ResourceAt(child.ResourceIndex), childRegionWork);
+                        SvgPaintBounds childRegion = FilterRegion(child, arena.ResourceAt(child.ResourceIndex), childRegionWork,
+                            SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset));
                         workUnits += childRegionWork.Used;
                         if (childRegion.Right > childRegion.Left && childRegion.Bottom > childRegion.Top)
                             nestedSourceBounds = nestedSourceBounds is {} previous
@@ -402,8 +406,11 @@ public static class SvgConverter
                 }
             }
             if (end == root.Commands.Length) throw new SvgException(SvgErrorCode.MalformedInput, "Filter source scope is unbalanced.");
+            if (binding.Transform.B != 0 || binding.Transform.C != 0)
+                return RenderAffineFilter();
             ParserWorkCounter regionWork = new(options.Limits.MaximumWorkUnits - workUnits);
-            SvgPaintBounds region = FilterRegion(binding, resource, regionWork);
+            SvgPaintBounds region = FilterRegion(binding, resource, regionWork,
+                SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset));
             workUnits += regionWork.Used;
             if (region.Right <= region.Left || region.Bottom <= region.Top) return end + 1;
             double primitiveScaleX = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox ? binding.ObjectBounds.Right - binding.ObjectBounds.Left : binding.Transform.A;
@@ -495,7 +502,7 @@ public static class SvgConverter
                 (float)(region.Right - frameLeft), (float)(region.Bottom - frameTop));
             primitiveMap = primitiveMap with { Regions = new(primitiveCoordinates,
                 objectPrimitiveUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), gridRegion)
-                { RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(left - frameLeft), (float)(top - frameTop), (float)(right - frameLeft), (float)(bottom - frameTop)), IntermediateOutput = surfaceMode == RasterSurfaceMode.PremultipliedFilter } };
+                { RasterPlacement = new(new((int)frameLeft, (int)frameTop), rasterGrid, layerBounds), SourceBounds = new((float)(left - frameLeft), (float)(top - frameTop), (float)(right - frameLeft), (float)(bottom - frameTop)), IntermediateOutput = surfaceMode == RasterSurfaceMode.PremultipliedFilter && frame?.FilterBinding is null } };
             long copyWork = (long)sw * sh * 4 + end - first;
             if (copyWork >= options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source capture exceeds the work limit.");
             workUnits += copyWork;
@@ -559,6 +566,151 @@ public static class SvgConverter
                 }
             }
             return end + 1;
+
+            // Filter-layer mapping adapts pinned SkCanvas.cpp and SkImageFilterTypes.cpp.
+            // Copyright 2008 The Android Open Source Project; 2019 Google LLC.
+            // See THIRD_PARTY_NOTICES.txt for the BSD license and source revision.
+            int RenderAffineFilter()
+            {
+                // Filter kernels require scale/translate coordinates. Keep their
+                // layer raster separate from the residual rotation/skew, just as
+                // native source construction is separate from final image sampling.
+                if (!binding.Transform.TryInvert(out SvgAffineTransform inverseSource)) return end + 1;
+                SvgAffineTransform ctm = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset)
+                    .ComposeNative(binding.Transform);
+                SvgShaderMatrix native = new((float)ctm.A, (float)ctm.C, (float)ctm.E, (float)ctm.B, (float)ctm.D, (float)ctm.F);
+                (float scaleX, float scaleY) = native.GetPictureScale();
+                SvgShaderMatrix remainder = new(native.ScaleX * (1f / scaleX), native.SkewX * (1f / scaleY), native.TranslateX,
+                    native.SkewY * (1f / scaleX), native.ScaleY * (1f / scaleY), native.TranslateY);
+                if (!remainder.TryInvert(out SvgShaderMatrix inverse)) return end + 1;
+                SvgAffineTransform layerMap = SvgAffineTransform.FromScale(scaleX, scaleY);
+                SvgAffineTransform placement = layerMap.ComposeChecked(inverseSource);
+                ParserWorkCounter preparation = new(options.Limits.MaximumWorkUnits - workUnits);
+                int count = end - first;
+                using RenderBudget.BudgetReservation replayOwner = budget.Reserve(
+                    checked(ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(count + 2)
+                        + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(count)), SvgMemoryCategory.Scene);
+                SvgDrawCommand[] commands = new SvgDrawCommand[count + 2];
+                SvgGeometry[] geometries = new SvgGeometry[count];
+                int geometryCount = 0;
+                bool preparationCharged = false;
+                SvgPaintBounds? objectBounds = null, visualBounds = null;
+                try
+                {
+                    commands[0] = command with { SourceOpacity = SvgPaintOpacity.Opaque };
+                    for (int index = first; index < end; index++)
+                    {
+                        preparation.Consume(cancellationToken);
+                        SvgDrawCommand item = root.Commands[index];
+                        if (item.Kind == SvgDrawCommandKind.Geometry)
+                        {
+                            SvgGeometry geometry = root.Geometries[item.GeometryIndex];
+                            if (geometry.Kind != SvgGeometryKind.PolygonFill || geometry.AuthoredPath is not {} source || geometry.Polygon.Clip is not null)
+                                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter sources require retained solid geometry without a source clip.");
+                            SvgAuthoredPath copied = source.Copy(placement, budget, preparation, cancellationToken);
+                            geometries[geometryCount] = geometry with { AuthoredPath = copied };
+                            item = item with { GeometryIndex = geometryCount++ };
+                            SvgRectangle box = SvgPathBounds.Compute(copied.Commands, preparation, cancellationToken);
+                            SvgPaintBounds bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
+                                .Map(copied.SceneMap, preparation, cancellationToken);
+                            objectBounds = Union(objectBounds, bounds);
+                            SvgAuthoredPath outline = copied.StrokeOutline ?? copied;
+                            box = SvgPathBounds.Compute(outline.Commands, preparation, cancellationToken);
+                            visualBounds = Union(visualBounds, new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
+                                .Map(outline.SceneMap, preparation, cancellationToken));
+                        }
+                        else if (item.Kind == SvgDrawCommandKind.BeginGroup && (item.MaskContentIndex >= 0 || item.MaskRegion is not null))
+                            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Affine filter sources crossing nested resource boundaries are not implemented.");
+                        commands[index - first + 1] = item;
+                    }
+                    commands[^1] = root.Commands[end];
+                    if (objectBounds is not {} objects || visualBounds is not {} visual) return end + 1;
+                    SvgFilterBinding local = binding with { Transform = layerMap, ObjectBounds = objects, VisualBounds = visual };
+                    SvgPaintBounds layerRegion = FilterRegion(local, resource, preparation, SvgAffineTransform.Identity);
+                    bool objectUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
+                    SvgFilterDeviceMap distances = objectUnits ? new(objects.Right - objects.Left, objects.Bottom - objects.Top) : new(scaleX, scaleY);
+                    SvgFilterRegionContext context = new(objectUnits
+                        ? SvgAffineTransform.FromScaleOffset(distances.ScaleX, distances.ScaleY, objects.Left, objects.Top) : layerMap,
+                        objectUnits ? new(1, 1) : new(binding.LengthBases.Width ?? width, binding.LengthBases.Height ?? height), layerRegion);
+                    SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, distances, context, visual, budget, preparation, cancellationToken);
+                    SvgPaintBounds nativeSource = new(MathF.Floor(hint.Left), MathF.Floor(hint.Top), MathF.Ceiling(hint.Right), MathF.Ceiling(hint.Bottom));
+                    SvgPaintBounds nativeImage = SvgFilterPlayback.SourceLayerBounds(resource, distances, context, nativeSource,
+                        SvgFilterBoundsKind.StoredImage, budget, preparation, cancellationToken);
+                    if (nativeImage.Right <= nativeImage.Left || nativeImage.Bottom <= nativeImage.Top) return end + 1;
+                    SvgPaintBounds desired = new(layerBounds.Left, layerBounds.Top, layerBounds.Right, layerBounds.Bottom);
+                    if (activeViewportBounds is {} clip)
+                        desired = new(MathF.Max(desired.Left, clip.Left), MathF.Max(desired.Top, clip.Top), MathF.Min(desired.Right, clip.Right), MathF.Min(desired.Bottom, clip.Bottom));
+                    desired = desired.Map(new(inverse.ScaleX, inverse.SkewY, inverse.SkewX, inverse.ScaleY, inverse.TranslateX, inverse.TranslateY), preparation, cancellationToken);
+                    double left = Math.Floor(MathF.Max(MathF.Max(layerRegion.Left, hint.Left), desired.Left)), top = Math.Floor(MathF.Max(MathF.Max(layerRegion.Top, hint.Top), desired.Top));
+                    double right = Math.Ceiling(MathF.Min(MathF.Min(layerRegion.Right, hint.Right), desired.Right)), bottom = Math.Ceiling(MathF.Min(MathF.Min(layerRegion.Bottom, hint.Bottom), desired.Bottom));
+                    if (right <= left || bottom <= top) return end + 1;
+                    double frameWidth = right - left, frameHeight = bottom - top;
+                    SvgRenderLimits limits = options.Limits;
+                    if (!double.IsFinite(frameWidth) || !double.IsFinite(frameHeight) || left < int.MinValue || top < int.MinValue || right > int.MaxValue || bottom > int.MaxValue
+                        || frameWidth > limits.MaximumDimension || frameHeight > limits.MaximumDimension || frameWidth * frameHeight > limits.MaximumPixels || frameWidth * frameHeight > int.MaxValue / 4)
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Affine filter layer exceeds the configured surface limits.");
+                    SvgPaintBounds restoreBounds = new SvgPaintBounds((float)left - 1, (float)top - 1, (float)right + 1, (float)bottom + 1)
+                        .Map(new(remainder.ScaleX, remainder.SkewY, remainder.SkewX, remainder.ScaleY, remainder.TranslateX, remainder.TranslateY), preparation, cancellationToken);
+                    int restoreLeft = Math.Max(layerBounds.Left, ClampFloor(restoreBounds.Left, outputWidth));
+                    int restoreTop = Math.Max(layerBounds.Top, ClampFloor(restoreBounds.Top, outputHeight));
+                    int restoreRight = Math.Min(layerBounds.Right, ClampCeiling(restoreBounds.Right, outputWidth));
+                    int restoreBottom = Math.Min(layerBounds.Bottom, ClampCeiling(restoreBounds.Bottom, outputHeight));
+                    workUnits += preparation.Used;
+                    preparationCharged = true;
+                    SvgRenderLimits layerLimits = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes,
+                        limits.MaximumNodes, limits.MaximumPathCommands, checked((int)(limits.MaximumWorkUnits - workUnits)), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+                    SvgRoot borrowed = root with { Geometries = geometries, Commands = commands, ParserWorkUnits = 0 };
+                    using RasterizedSurface image = Rasterize(borrowed, new(options.Viewport, options.OutputScale, SvgColor.Transparent, layerLimits, options.FontSnapshot),
+                        budget, RasterSurfaceMode.PremultipliedFilter,
+                        new RasterFrame((int)frameWidth, (int)frameHeight, 1, -left, 1, -top)
+                        { SingleBitmap = true, FilterBinding = new(command.MaskContentIndex, local) }, cancellationToken);
+                    workUnits += image.WorkUnits;
+                    // Native drawSpecial composes the stored image origin and
+                    // transparent one-pixel outset before inverting its matrix.
+                    // Subtracting that origin after inverse mapping changes phase.
+                    SvgAffineTransform sourceDevice = new SvgAffineTransform(remainder.ScaleX, remainder.SkewY, remainder.SkewX, remainder.ScaleY, remainder.TranslateX, remainder.TranslateY)
+                        .ComposeNative(SvgAffineTransform.FromTranslation(nativeSource.Left - 1, nativeSource.Top - 1));
+                    SvgShaderMatrix imageToDevice = SvgShaderMatrix.Concat(
+                        new((float)sourceDevice.A, (float)sourceDevice.C, (float)sourceDevice.E, (float)sourceDevice.B, (float)sourceDevice.D, (float)sourceDevice.F),
+                        new(1, 0, nativeImage.Left - (nativeSource.Left - 1), 0, 1, nativeImage.Top - (nativeSource.Top - 1)));
+                    imageToDevice = imageToDevice with
+                    {
+                        TranslateX = imageToDevice.TranslateX + (-imageToDevice.ScaleX - imageToDevice.SkewX),
+                        TranslateY = imageToDevice.TranslateY + (-imageToDevice.SkewY - imageToDevice.ScaleY)
+                    };
+                    if (!imageToDevice.TryInvert(out SvgShaderMatrix imageInverse)) return end + 1;
+                    long restoreWork = (long)Math.Max(0, restoreRight - restoreLeft) * Math.Max(0, restoreBottom - restoreTop) * 4;
+                    if (restoreWork > limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Affine filter restoration exceeds the configured work limit.");
+                    workUnits += restoreWork;
+                    int opacity = Math.Clamp((int)MathF.Floor(command.SourceOpacity.Value * foldedOpacity * 255 + .5f), 0, 255);
+                    for (int y = restoreTop; y < restoreBottom; y++)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        for (int x = restoreLeft; x < restoreRight; x++)
+                        {
+                            if ((x & 4095) == 0) cancellationToken.ThrowIfCancellationRequested();
+                            float px = x + .5f, py = y + .5f;
+                            float u = px * imageInverse.ScaleX + (py * imageInverse.SkewX + imageInverse.TranslateX);
+                            float v = px * imageInverse.SkewY + (py * imageInverse.ScaleY + imageInverse.TranslateY);
+                            SvgConstantShaderPaint sample = SvgConstantShaderPaint.SampleAffine(image.Pixels, image.Width, image.Height, u, v, true,
+                                new((int)nativeImage.Left - 1 - (int)left, (int)nativeImage.Top - 1 - (int)top));
+                            sample = new((byte)((sample.Red * opacity + 255) >> 8), (byte)((sample.Green * opacity + 255) >> 8),
+                                (byte)((sample.Blue * opacity + 255) >> 8), (byte)((sample.Alpha * opacity + 255) >> 8));
+                            int target = (y * outputWidth + x) * 4;
+                            sample.Blend(destination.AsSpan(target, 4), activeViewportClip.Length == 0 ? (byte)255 : activeViewportClip[target + 3]);
+                        }
+                    }
+                    return end + 1;
+                }
+                finally
+                {
+                    if (!preparationCharged) workUnits += preparation.Used;
+                    for (int index = 0; index < geometryCount; index++) geometries[index].AuthoredPath?.Dispose();
+                }
+
+                static SvgPaintBounds Union(SvgPaintBounds? prior, SvgPaintBounds next)
+                    => prior is {} box ? new(MathF.Min(box.Left, next.Left), MathF.Min(box.Top, next.Top), MathF.Max(box.Right, next.Right), MathF.Max(box.Bottom, next.Bottom)) : next;
+            }
 
             bool TryRenderOffsetSources()
             {
@@ -873,8 +1025,10 @@ public static class SvgConverter
                 {
                     if (value.RegionKind == SvgLayerRegionKind.Filter && root.SceneStorage?.Filters is {} filters)
                     {
-                        SvgFilterBinding binding = filters.BindingAt(value.MaskContentIndex);
-                        SvgPaintBounds filtered = FilterRegion(binding, filters.ResourceAt(binding.ResourceIndex), boundsWork);
+                        SvgFilterBinding binding = frame?.FilterBinding is {} replay && replay.Index == value.MaskContentIndex
+                            ? replay.Binding : filters.BindingAt(value.MaskContentIndex);
+                        SvgPaintBounds filtered = FilterRegion(binding, filters.ResourceAt(binding.ResourceIndex), boundsWork,
+                            SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale, horizontalOffset, verticalOffset));
                         left = Math.Min(left, filtered.Left); top = Math.Min(top, filtered.Top);
                         right = Math.Max(right, filtered.Right); bottom = Math.Max(bottom, filtered.Bottom);
                     }
@@ -1587,27 +1741,9 @@ public static class SvgConverter
                         previousOrigin = origin; previousCoverage = coverage; seeded = true;
                     }
                     SvgConstantShaderPaint sample = Sample(fixedX, fixedY, filtering);
-                    Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), sample, coverage);
+                    sample.BlendBitmap(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
                     fixedX += stepX;
                 }
-            }
-
-            // SkBlitRow_D32 keeps covered source and destination products together
-            // until the final shift; quantizing covered source first loses a unit.
-            static void Blend(Span<byte> destination, SvgConstantShaderPaint sample, byte coverage)
-            {
-                if (coverage == 255)
-                {
-                    BlendPremultipliedOver(destination, sample.Red, sample.Green, sample.Blue, sample.Alpha);
-                    return;
-                }
-                int sourceScale = coverage + 1;
-                int inverse = 65535 - sample.Alpha * sourceScale;
-                int destinationScale = (inverse + (inverse >> 8)) >> 8;
-                destination[0] = (byte)((sample.Red * sourceScale + destination[0] * destinationScale) >> 8);
-                destination[1] = (byte)((sample.Green * sourceScale + destination[1] * destinationScale) >> 8);
-                destination[2] = (byte)((sample.Blue * sourceScale + destination[2] * destinationScale) >> 8);
-                destination[3] = (byte)((sample.Alpha * sourceScale + destination[3] * destinationScale) >> 8);
             }
 
             // Native bitmap interpolation retains four-bit fractions and truncates
@@ -1647,17 +1783,7 @@ public static class SvgConverter
             SvgConstantShaderPaint SampleAffine(float x, float y)
             {
                 if (image.UniformSample is {} uniform) return ApplyOpacity(uniform, true);
-                long qx = (long)MathF.Floor(65536f * Math.Clamp(x, -1, image.Width) + .5f) - 32768;
-                long qy = (long)MathF.Floor(65536f * Math.Clamp(y, -1, image.Height) + .5f) - 32768;
-                int tx = unchecked((short)(qx ^ 0x8000)), ty = unchecked((short)(qy ^ 0x8000));
-                int left = (int)(qx >> 16), top = (int)(qy >> 16);
-                int x0 = Math.Clamp(left, 0, image.Width - 1), x1 = Math.Clamp(left + 1, 0, image.Width - 1);
-                int y0 = Math.Clamp(top, 0, image.Height - 1), y1 = Math.Clamp(top + 1, 0, image.Height - 1);
-                int a = (y0 * image.Width + x0) * 4, b = (y0 * image.Width + x1) * 4;
-                int c = (y1 * image.Width + x0) * 4, d = (y1 * image.Width + x1) * 4;
-                return ApplyOpacity(SvgConstantShaderPaint.InterpolatePipeline(Pixel(a), Pixel(b), Pixel(c), Pixel(d), tx, ty), true);
-
-                SvgConstantShaderPaint Pixel(int at) => new(source[at], source[at + 1], source[at + 2], source[at + 3]);
+                return ApplyOpacity(SvgConstantShaderPaint.SampleAffine(source, image.Width, image.Height, x, y, false), true);
             }
 
             // Borrow the retained source rectangle into the existing bounded path rasterizer.

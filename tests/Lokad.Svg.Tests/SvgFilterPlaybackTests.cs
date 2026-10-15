@@ -7,6 +7,14 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterPlaybackTests
 {
     [Fact]
+    public void Stored_merge_inputs_preserve_native_packed_image_composition()
+    {
+        byte[] source = [47, 86, 115, 159];
+        Assert.Equal(new byte[] { 64, 118, 158, 219 }, Apply("<feMerge><feMergeNode in='SourceGraphic'/><feMergeNode in='SourceGraphic'/></feMerge>", source, 1));
+        Assert.Equal(new byte[] { 47, 86, 115, 159 }, source);
+    }
+
+    [Fact]
     public void Source_layer_bounds_match_the_native_two_blur_hint_and_release_temporary_owners()
     {
         byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1.125'/><feGaussianBlur stdDeviation='1.125'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");

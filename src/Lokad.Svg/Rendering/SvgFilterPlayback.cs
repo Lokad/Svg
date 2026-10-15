@@ -10,6 +10,8 @@ internal readonly record struct SvgFilterDeviceMap(double ScaleX, double ScaleY)
     internal SvgFilterRegionContext? Regions { get; init; }
 }
 
+internal enum SvgFilterBoundsKind : byte { Visual, StoredImage }
+
 /// <summary>Retains one integer-offset source branch and its composed intermediate crop.</summary>
 internal readonly record struct SvgOffsetFilterPlacement(double X, double Y, bool AlphaOnly, SvgPaintBounds Clip);
 
@@ -46,6 +48,15 @@ internal static class SvgFilterPlayback
     /// arrays share the conversion budget, release on every exit and charge bounded graph visits.</remarks>
     internal static SvgPaintBounds SourceLayerBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
         SvgFilterRegionContext context, SvgPaintBounds source, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+        => SourceLayerBounds(resource, map, context, source, SvgFilterBoundsKind.Visual, budget, work, token);
+
+    /// <summary>Propagates visual hints or integer stored-image bounds through the same finite graph.</summary>
+    /// <remarks>Stored bounds retain native kernel outsets and materialization rounding independently
+    /// of compact pixel storage. Resources are borrowed; temporary ownership, work and cancellation
+    /// follow the visual-bounds overload.</remarks>
+    internal static SvgPaintBounds SourceLayerBounds(SvgFilterResource resource, SvgFilterDeviceMap map,
+        SvgFilterRegionContext context, SvgPaintBounds source, SvgFilterBoundsKind kind,
+        RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         int count = resource.Primitives.Items.Length;
@@ -82,12 +93,17 @@ internal static class SvgFilterPlayback
                 if (!float.IsFinite(dx) || !float.IsFinite(dy)) throw new SvgException(SvgErrorCode.LimitExceeded, "Filter source bounds exceed the coordinate range.");
                 float rx = 3f * (float)Math.Min(532, Math.Abs(primitive.SigmaX * map.ScaleX));
                 float ry = 3f * (float)Math.Min(532, Math.Abs(primitive.SigmaY * map.ScaleY));
+                if (kind == SvgFilterBoundsKind.StoredImage) { rx = MathF.Ceiling(rx); ry = MathF.Ceiling(ry); }
                 output = new(input.Left + dx - rx, input.Top + dy - ry, input.Right + dx + rx, input.Bottom + dy + ry);
                 if (primitive.Kind == SvgFilterPrimitiveKind.DropShadow) output = Union(input, output);
             }
-            bounds[index] = Intersect(output, regions[index]);
+            bounds[index] = kind == SvgFilterBoundsKind.StoredImage
+                ? Intersect(RoundOut(output), RoundOut(regions[index])) : Intersect(output, regions[index]);
         }
-        return Union(source, bounds[^1]);
+        return kind == SvgFilterBoundsKind.StoredImage ? bounds[^1] : Union(source, bounds[^1]);
+
+        static SvgPaintBounds RoundOut(SvgPaintBounds value)
+            => new(MathF.Floor(value.Left), MathF.Floor(value.Top), MathF.Ceiling(value.Right), MathF.Ceiling(value.Bottom));
 
         static SvgPaintBounds Intersect(SvgPaintBounds first, SvgPaintBounds second)
             => new(MathF.Max(first.Left, second.Left), MathF.Max(first.Top, second.Top), MathF.Min(first.Right, second.Right), MathF.Min(first.Bottom, second.Bottom));
@@ -538,7 +554,12 @@ internal static class SvgFilterPlayback
             for (int offset = 0; offset < bytes; offset += 4)
             {
                 token.ThrowIfCancellationRequested();
-                ReadPaint(input, offset, inputLinear, colorSpace).Blend(output.Slice(offset, 4), 255);
+                // A merge draws stored inputs into a bitmap. Without a transfer,
+                // native direct image draws retain packed source-over rounding.
+                // Color-filter inputs still use their unquantized shader route.
+                if (inputLinear == (colorSpace == SvgFilterColorSpace.LinearRgb))
+                    SvgConverter.BlendPremultipliedOver(output.Slice(offset, 4), input[offset], input[offset + 1], input[offset + 2], input[offset + 3]);
+                else ReadPaint(input, offset, inputLinear, colorSpace).Blend(output.Slice(offset, 4), 255);
             }
         }
 

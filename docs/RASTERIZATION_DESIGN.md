@@ -13494,3 +13494,65 @@ asset identities and explicit assertion migrations are in the
 [qualification receipt](../artifacts/maintenance-review-20261012/path-sheet-qualified-results.json).
 This is the eighth additional authored document, separate from the selected and
 corporate cohorts; wider G9 and S17 remain open.
+
+
+## Complete effects sheet through bounded affine filtering (2026-10-15)
+
+The unchanged [whole effects/marker sheet](../tests/Research/effects-marker-sheet/README.md)
+and original affine control now match their frozen Windows/Linux references.
+The bank is 1/1 complete document and 11/11 controls; this is the tenth additional
+authored document, separate from the 50 selected and 27 corporate documents.
+All original source/options/reference declarations remain frozen.
+
+A scale-translate filter layer and its residual device placement are different
+coordinate spaces. The retained source commands replay through the existing
+geometry/raster path into a bounded layer. One borrowed binding carries layer-space
+object/visual bounds and primitive coordinates; original scene resources remain
+immutable. Temporary command/geometry arrays and copied source paths share the
+conversion budget and release on every exit. Ordinary image sampling and general
+filter playback retain their native distinctions.
+
+Stored merge inputs draw into a bitmap with packed source-over. Applying shader
+rounding to those inputs leaves 3,493 affine-control differences, mostly a red unit
+in flat interiors. Inputs requiring a working-space transfer still use unquantized
+shader composition. A separate healthy native scale-only diagnostic reconstructs
+exactly the same premultiplied layer at every pixel, isolating final placement.
+It is diagnostic evidence, not a new public acceptance case.
+
+Filter visual hints are not stored-image extents. Both share graph/primitive-region
+propagation, while stored images retain integer materialization and ceiling kernel
+outsets. Native image phase stays separate from compact physical storage: integer
+sample-address offsets follow fixed-coordinate rounding. Embedded-image Q15
+interpolation and its preceding packed coverage arithmetic are shared without
+changing their calculations.
+
+The opaque whole sheet exposed the final distinction. Packed bitmap restoration
+left 3,551 RGB errors with alpha exact; the affine shader composition route reduced
+that to one green-channel error. Combining all translations into one matrix lost
+a native rounding boundary. Source-device placement composes in native 4×4 order,
+result-image placement follows native 3×3 concatenation, and the transparent
+one-pixel outset follows separately before inversion. Keeping those stages closes
+the last pixel without IDs, source-coordinate branches or pixel predicates.
+
+Fused sampling coordinates introduce another mismatch. Unquantized float bilinear
+restoration fixes the single inspected pixel but changes 753 whole-sheet pixels
+and 16 control pixels, including six alpha changes; it was rejected. Replacing
+native filtering with a separately embedded intermediate image also changes four
+pixels. None of these alternatives replaces a frozen source or reference.
+
+The native mechanisms are pinned in
+[SkCanvas.cpp](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkCanvas.cpp),
+[SkImageFilterTypes.cpp](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkImageFilterTypes.cpp)
+and [SkMatrix.cpp](https://skia.googlesource.com/skia/+/f8b66b7597c4cc859d3ed190e9c6872241e6721c/src/core/SkMatrix.cpp).
+The existing managed adaptations retain their notices. Native source, trace,
+intermediate-image and rejected-model diagnostics remain under the ignored
+`artifacts/effects-marker-sheet-20261015/` study; no native runtime dependency,
+reference regeneration or measurement framework is introduced.
+
+Positive whole/control regressions replace their obsolete rejection expectations.
+Focused lifecycle checks cover allocation denial, pre/active cancellation, work
+denial, immutable inputs and retry. The [qualification receipt](../artifacts/maintenance-review-20261012/affine-filters-qualified-results.json)
+owns complete platform checks and preserved prior results. Non-solid affine source
+paints and nested resource boundaries remain explicit gates inside promised G8;
+remaining shadow/restoration, object-box clip, source and marker semantics stay
+required. The composition sheet is the next document milestone; G2–G9/S17 remain open.

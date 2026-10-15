@@ -1,3 +1,26 @@
+## Complete affine effects/marker sheet (2026-10-15)
+
+The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) is now
+**1/1 complete document / 11/11 exact controls** on Windows/Linux, against original
+SVGs, options and references. This is the tenth additional authored document;
+corporate and selected-document denominators remain unchanged.
+
+Retained solid geometry under rotation/skew replays into a bounded scale-only
+filter layer through existing authored paths and graph playback. Existing shader
+sampling handles residual placement; source-device, result-image and border
+translations retain native rounding order. Visual hints and stored-image extents
+share region propagation but retain their different kernel/bounds rules. Stored
+merge inputs use packed image composition; color-transfer inputs keep their
+unquantized shader route. Embedded-image sampling retains its preceding arithmetic.
+
+Preserve all earlier marker/source/clip/nesting/color-space controls, bounded
+storage/work, cancellation, cleanup and retry. Non-solid affine source paints and
+nested resource boundaries still reject explicitly and remain promised G8 work.
+The finite remaining shadow/restoration, object-box clip, source and marker exits
+remain in [PLAN](../PLAN.md). No G8/S17 closure or scope deferral is claimed.
+[Qualification](../artifacts/maintenance-review-20261012/affine-filters-qualified-results.json).
+Earlier affine and whole-sheet gates below are superseded for these qualified paths.
+
 ## Primitive color spaces and image-source sampling (2026-10-15)
 
 The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) has

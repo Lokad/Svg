@@ -11,6 +11,40 @@ namespace Lokad.Svg.Rendering;
 /// <remarks>Immutable and allocation-free. The caller owns pixels, charges raster work and checks row cancellation.</remarks>
 internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byte Blue, byte Alpha)
 {
+    /// <summary>Samples a packed affine bitmap with native signed Q15 bilinear fractions.</summary>
+    /// <remarks>Pixels are borrowed and premultiplied. The caller validates dimensions, owns work
+    /// and cancellation, and applies paint opacity after sampling. Transparent borders serve
+    /// filtered layers; ordinary embedded images clamp their edge pixels.</remarks>
+    internal static SvgConstantShaderPaint SampleAffine(ReadOnlySpan<byte> pixels, int width, int height,
+        float x, float y, bool transparentBorder)
+        => SampleAffine(pixels, width, height, x, y, transparentBorder, new(0, 0));
+
+    /// <summary>Retains a native bitmap's sampling phase independently of compact pixel storage.</summary>
+    /// <remarks>Pixel offsets are applied after fixed-coordinate rounding. Pixels, work and
+    /// cancellation remain caller-owned; the offset allocates no storage.</remarks>
+    internal static SvgConstantShaderPaint SampleAffine(ReadOnlySpan<byte> pixels, int width, int height,
+        float x, float y, bool transparentBorder, SvgCpuBitmapOrigin pixelOffset)
+    {
+        if (transparentBorder && (x + pixelOffset.X < -1 || y + pixelOffset.Y < -1
+            || x + pixelOffset.X > width + 1 || y + pixelOffset.Y > height + 1)) return default;
+        if (!transparentBorder) { x = Math.Clamp(x, -1, width); y = Math.Clamp(y, -1, height); }
+        long qx = (long)MathF.Floor(65536f * x + .5f) - 32768 + ((long)pixelOffset.X << 16);
+        long qy = (long)MathF.Floor(65536f * y + .5f) - 32768 + ((long)pixelOffset.Y << 16);
+        int tx = unchecked((short)(qx ^ 0x8000)), ty = unchecked((short)(qy ^ 0x8000));
+        int left = (int)(qx >> 16), top = (int)(qy >> 16);
+        return InterpolatePipeline(Pixel(pixels, width, height, left, top, transparentBorder),
+            Pixel(pixels, width, height, left + 1, top, transparentBorder),
+            Pixel(pixels, width, height, left, top + 1, transparentBorder),
+            Pixel(pixels, width, height, left + 1, top + 1, transparentBorder), tx, ty);
+
+        static SvgConstantShaderPaint Pixel(ReadOnlySpan<byte> data, int w, int h, int px, int py, bool border)
+        {
+            if (border && ((uint)px >= (uint)w || (uint)py >= (uint)h)) return default;
+            int at = (Math.Clamp(py, 0, h - 1) * w + Math.Clamp(px, 0, w - 1)) * 4;
+            return new(data[at], data[at + 1], data[at + 2], data[at + 3]);
+        }
+    }
+
     /// <summary>Interpolates four premultiplied pixels with native four-bit bitmap fractions.</summary>
     /// <remarks>Fractions are in [0,15]. Allocation-free bounded arithmetic; callers own samples,
     /// charge pixel work and observe cancellation. Opacity and coverage are applied after interpolation.</remarks>
@@ -43,6 +77,25 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
                 => (Multiply(fraction, (right - left) << 7) + ((right + left) << 7) + 1) >> 1;
             static int Multiply(int first, int second) => (first * second + 16384) >> 15;
         }
+    }
+
+    /// <summary>Composites a bitmap sample with native packed row coverage arithmetic.</summary>
+    /// <remarks>Samples and destination are premultiplied. The caller owns storage, work and cancellation.
+    /// Covered source and destination products remain together until the final shift.</remarks>
+    internal void BlendBitmap(Span<byte> destination, byte coverage)
+    {
+        if (coverage == 255)
+        {
+            SvgConverter.BlendPremultipliedOver(destination, Red, Green, Blue, Alpha);
+            return;
+        }
+        int sourceScale = coverage + 1;
+        int inverse = 65535 - Alpha * sourceScale;
+        int destinationScale = (inverse + (inverse >> 8)) >> 8;
+        destination[0] = (byte)((Red * sourceScale + destination[0] * destinationScale) >> 8);
+        destination[1] = (byte)((Green * sourceScale + destination[1] * destinationScale) >> 8);
+        destination[2] = (byte)((Blue * sourceScale + destination[2] * destinationScale) >> 8);
+        destination[3] = (byte)((Alpha * sourceScale + destination[3] * destinationScale) >> 8);
     }
 
     internal void Blend(Span<byte> destination, byte coverage)

@@ -9,26 +9,20 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. Nine additional authored CC0 documents are complete and counted
-separately. The latest is the [affine image sheet](../tests/Research/affine-image-maps/README.md),
-**1/1 exact**, with controls separately **3/3 exact** on Windows/Linux against
-unchanged sources, options and platform references. The eight preceding
-completed documents and their controls, including the complete supplied-font
-label/path sheet, remain protected in their existing banks.
-These failure-selected cases establish their declared outcomes, not a general
-SVG success rate. [PLAN](../PLAN.md#ordered-delivery-checklist) owns the finite
-remaining queue and [the qualification receipt](../artifacts/maintenance-review-20261012/affine-image-qualified-results.json)
-owns finished-correction evidence. Dated sections below are checkpoint history;
-completed gates are superseded by later qualified witnesses.
+variants**. **Ten additional authored CC0 documents** are complete and counted
+separately. The latest is the [effects/marker sheet](../tests/Research/effects-marker-sheet/README.md),
+**1/1 exact** with controls separately **11/11 exact** on Windows/Linux against
+unchanged sources, options and platform references. The nine preceding completed
+documents and their useful controls remain protected in their existing banks.
+These failure-selected cases establish declared outcomes, not a general SVG success rate.
 
-The next [effects/marker bank](../tests/Research/effects-marker-sheet/README.md)
-remains **0/1 completed document / 10/11 exact controls**. The preceding seven
-controls and three separately frozen mixed-space controls are exact on Windows/Linux;
-the original CSS-overflow fixture stays exact. The whole sheet now reaches affine
-filter placement; unchanged whole-panel integration remains required. The
-[mixed-space receipt](../artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json)
-records preserved preceding outputs and unchanged assets. This adds no completed
-document to the nine.
+The [affine-filter receipt](../artifacts/maintenance-review-20261012/affine-filters-qualified-results.json)
+owns this correction's qualification and preservation evidence. The whole sheet's
+formerly rejected affine panel is exact, including its original opaque-background
+integration. No new public case or reference was added for this correction.
+[PLAN](../PLAN.md#ordered-delivery-checklist) advances to the composition sheet;
+wider finite G2–G9 and S17 remain open. Dated sections below are checkpoint history;
+completed gates are superseded by later qualified witnesses.
 
 ## Development checkpoint (2026-10-12)
 

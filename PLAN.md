@@ -1,7 +1,7 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15 at the qualified primitive-color-space checkpoint.
-The whole effects sheet remains required and incomplete.
+Updated 2026-10-15 at the affine effects-sheet checkpoint.
+The whole effects sheet is exact; wider G8 and the remaining delivery rows stay open.
 This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
 owns admission, [INVENTORY](docs/INVENTORY.md) owns document evidence,
@@ -29,10 +29,10 @@ There are **no proposed or newly approved feature deferrals** in this revision.
 | Selected development documents | **50/50 complete**, including unchanged whole `inv-146`. Preserve every preceding declared output in the [gap ledger](tests/References/inventory/svg-gap-cases.json) and [supplied-font document banks](tests/Research/offset-merge-document/README.md). Failure-selected inputs establish no representative success rate; controls have separate denominators. |
 | Original acceptance and supplied-font work | Original marker/drop-shadow fixtures **2/2**, original supplied-font label/path fixtures **2/2**, SVG Translate, `inv-127` and `inv-145` are complete. Preserve intended-font proof, original programs/aliases and metrics/pixels in the [document evidence](docs/INVENTORY.md), [supplied-font documents](tests/Research/supplied-font-documents/README.md) and [curved labels](tests/Research/curved-font-documents/README.md). |
 | `inv-146` and shared rendering corrections | Whole `inv-146`, eight oval/text controls and four [merge controls](tests/Research/filter-merges/README.md) are exact. Preserve the [merge receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json), [design record](docs/RASTERIZATION_DESIGN.md) and [support record](docs/SUPPORT_MATRIX.md). Paint recording is **148 exact / one required pattern-opacity gate**; I Ching is **24 exact / one out-of-scope animation boundary**. Later qualified evidence supersedes historical gates. |
-| Additional authored documents | **Nine complete CC0 documents**, each **1/1 exact** on Windows/Linux, separate from both frozen cohorts. Preserve their separately counted controls: [symbol card](tests/Research/symbol-fractional-frames/README.md) **4/4**, [affine orbit](tests/Research/affine-oval-strokes/README.md) **6/6**, [scoped card](tests/Research/scoped-clips-masks/README.md) **5/5**, [colored signal](tests/Research/colored-effects-markers/README.md) original **7/7** plus repaired **1/1** and bounds **4/4**, [CSS/image card](tests/Research/static-css-images/README.md) original **3/3** plus phase/clip **2/2**, [layout guide](tests/Research/font-layout-diagram/README.md) **4/4**, [cascade sheet](tests/Research/root-resource-cascade/README.md) **4/4**, [label/path sheet](tests/Research/remaining-label-path-sheet/README.md) **8/8**, and [affine image sheet](tests/Research/affine-image-maps/README.md) **3/3**. Banks link immutable inputs, native witnesses and finished-correction receipts; wider groups stay open. |
+| Additional authored documents | **Ten complete CC0 documents**, each **1/1 exact** on Windows/Linux, separate from both frozen cohorts. Preserve their separately counted controls: [symbol card](tests/Research/symbol-fractional-frames/README.md) **4/4**, [affine orbit](tests/Research/affine-oval-strokes/README.md) **6/6**, [scoped card](tests/Research/scoped-clips-masks/README.md) **5/5**, [colored signal](tests/Research/colored-effects-markers/README.md) original **7/7** plus repaired **1/1** and bounds **4/4**, [CSS/image card](tests/Research/static-css-images/README.md) original **3/3** plus phase/clip **2/2**, [layout guide](tests/Research/font-layout-diagram/README.md) **4/4**, [cascade sheet](tests/Research/root-resource-cascade/README.md) **4/4**, [label/path sheet](tests/Research/remaining-label-path-sheet/README.md) **8/8**, [affine image sheet](tests/Research/affine-image-maps/README.md) **3/3**. Banks link immutable inputs, native witnesses and finished-correction receipts; wider groups stay open. and [effects/marker sheet](tests/Research/effects-marker-sheet/README.md) **11/11**. |
 | Qualified G2–G5 mechanisms | Fractional ordinary-use stroke widths, fractional/nonuniform symbol frames, nonuniform root curve fills and affine oval strokes, the non-scaling conic defect, composed cubic clips, translated custom mask regions and mask-container opacity have qualified witnesses. Preserve [use widths](artifacts/maintenance-review-20261012/fractional-use-qualified-results.json), [symbol frames](artifacts/maintenance-review-20261012/symbol-frames-final-results.json), [root curves](artifacts/maintenance-review-20261012/nonuniform-curves-qualified-results.json), [non-scaling strokes](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json), [ovals](tests/Research/affine-oval-strokes/manifest.json) and [scopes](tests/Research/scoped-clips-masks/manifest.json). These completed mechanisms are dependencies already available, not work to repeat for wider maps or locations. |
 | Filter bounds, rescaling and restoration | The [colored-effects bank](tests/Research/colored-effects-markers/README.md) preserves original controls **7/7**, repaired control **1/1**, bounds **4/4** and whole document **1/1**. The [filter-region bank](tests/Research/filter-regions/manifest.json) is **26/26 exact**, including sRGB rescaling/opacity and the unchanged displaced linearRGB blur. Preserve the [bounds](artifacts/maintenance-review-20261012/offset-image-bounds-qualified-results.json), [rescaling](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json) and [restoration receipts](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json). Wider G8 stays open. |
-| Qualified marker and filter-source mechanisms | The [effects/marker bank](tests/Research/effects-marker-sheet/README.md) has **10/11 exact controls**: marker lengths/angles, overhanging CSS overflow, image-filter source with fractional colored shadow/opacity, image/circle and vector/group output clips, nested source/real-blur, flood override and mixed-space branch/consumer controls. The original [CSS overflow case](tests/Research/path-marker-content/marker-css-overflow-boundary.svg) is also exact. Preserve the [mixed-space receipt](artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json), existing source/clip results, sampling and nearest offsets. The whole sheet and affine-filter control remain required gaps; no new document or G8 closure is counted. |
+| Qualified marker and filter-source mechanisms | The [effects/marker bank](tests/Research/effects-marker-sheet/README.md) is **1/1 complete document / 11/11 exact controls** on Windows/Linux. Preserve marker units/overflow, image/shadow sources, leaf/group output clips, nested capture/halos, mixed spaces and affine solid-source replay. The unchanged whole sheet qualifies opaque-background integration; wider G8 remains open. [Affine receipt](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json), [design record](docs/RASTERIZATION_DESIGN.md#complete-effects-sheet-through-bounded-affine-filtering-2026-10-15). |
 | Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared ownership are implemented. Private deployment validation below remains required; general shaping remains outside scope. |
 | Resource/API/package protections | Preserve bounded preparation/raster/encoding, allocation/work denial, cancellation/retry, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks apply; final release evidence must cover the finished revision. |
 
@@ -40,32 +40,31 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-Current checkpoint: **7,750 tests/platform**
-(5,343 core / 2,401 visual / six FontProbe), with every preceding displayed row
-preserved. The [receipt](artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json)
-owns complete platform checks, preservation, bounded failures and timings. The
-effects bank remains **0/1 complete document / 10/11 exact controls**. Original
-inputs/options/references remain unchanged.
-[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38700354641/attempts/2)
-for implementation `2a1e723e`, including memory, browser/setup, font, validator,
-package and installed-consumer checks. The receipt owns retry/download history
-and hosted timings. Reuse this terminal evidence for unchanged documentation;
-do not repoll these completed attempts or preceding runs.
+The affine correction is locally qualified: **7,755 tests/platform** (5,348 core /
+2,401 visual / six FontProbe), with every preceding displayed test row preserved.
+Normal incremental Release build plus complete tests took **88.3s Windows /
+240.4s Linux**. The [receipt](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json)
+owns full checks, unchanged asset/options/default limits, 72 stable original
+captures and timings. The effects bank is **1/1 complete document / 11/11 exact
+controls** on both platforms. Hosted CI for the new substantive revision remains
+pending. Earlier terminal green evidence at `2a1e723e` stays in the
+[mixed-space receipt](artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json);
+do not repoll it or preceding completed runs.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
 
 ## Ordered delivery checklist
 
-The **next three deliverables**, in order, are the **effects/marker sheet,
-composition sheet and pattern tile sheet** in rows 1–3. Advance to the next
-document once every unchanged declared output of the current document is exact
-on Windows/Linux. **A document milestone permits that handoff; it does not close
-its support group.** Independent obligations absent from the document stay required
-in their owning row. After these three milestones, finish the outstanding row 1–4
-obligations in shared-dependency order before release. Bring a later dependency
-forward when it unblocks a document. All five rows remain **required and open**;
-this ordering defers no promised feature.
+The effects/marker document milestone is delivered. The **next three deliverables**
+are the **composition sheet, pattern tile sheet, and remaining label/path/composite
+acceptance with finite private font validation**, in rows 2–4. Advance after every
+unchanged declared document output is exact on Windows/Linux. **A document
+milestone permits that handoff; it does not close its support group.** Independent
+obligations absent from a document remain required in its owning row. Finish all
+outstanding row 1–4 obligations in shared-dependency order before release, bringing
+later dependencies forward only when they unblock a document. All five support/
+release rows remain **required and open**; this ordering defers no promised feature.
 
 Select shared fixes by the retained documents they advance. Extend existing
 geometry, source replay, paint maps and bounded layers, preserving native pixel
@@ -75,20 +74,20 @@ IDs, source coordinates or observed failure pixels may become renderer predicate
 
 | Required checklist | Missing behavior and dependencies | Acceptance milestone / completion condition |
 | --- | --- | --- |
-| [ ] 1. Effects/marker sheet (G8; active) | Affine filter coordinates and whole-panel integration. Reuse bounded source replay, graph regions and geometry/paint maps; source/clip/color-space routes are qualified dependencies. | **Next milestone:** unchanged [affine control and whole sheet](tests/Research/effects-marker-sheet/README.md) exact on both platforms, preserving all ten exact controls. Then advance to row 2. **Row complete:** every remaining finite G8 obligation below also has acceptance and affected graph/region/resource checks pass. |
-| [ ] 2. Composition sheet (G2–G5; remaining G7 placement/style evidence) | Percentage instance bases, stroke/paint maps, clip-child unions, mask boundaries and uncovered image-alignment/resource-presentation evidence. Reuse qualified geometry/source replay and row 1's capture/restore machinery where needed. | **Milestone:** freeze and complete a sheet joining [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg), [partial-mask use](tests/Lokad.Svg.Tests/SvgGroupMaskCropTests.cs), [opposite-winding children](tests/Research/compound-clip-content/overlapping-opposite-children.svg) and [clip-child union](tests/Research/clip-intersections/overlapping-path-child-union.svg), preserving each original control. Then advance to row 3. **Row complete:** finite G2–G5/G7 obligations below are witnessed, with affected cleanup and degenerate outcomes. |
+| [ ] 1. Remaining finite effects/markers (G8; document milestone complete) | Colored/translucent linearRGB shadows, identity/linear-image restoration, uncovered affine paint/source maps, object-box clips, source crossings and remaining marker semantics. Reuse the completed bounded affine/source/clip/color-space machinery. | **Delivered:** unchanged [whole sheet and affine control](tests/Research/effects-marker-sheet/README.md) exact on both platforms; all eleven controls preserved. Handoff to row 2 is complete. **Row complete:** each remaining finite G8 obligation below has acceptance and affected graph/region/resource checks pass. |
+| [ ] 2. Composition sheet (G2–G5; remaining G7 placement/style evidence; active) | Percentage instance bases, stroke/paint maps, clip-child unions, mask boundaries and uncovered image-alignment/resource-presentation evidence. Reuse qualified geometry/source replay and row 1's capture/restore machinery where needed. | **Milestone:** freeze and complete a sheet joining [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg), [partial-mask use](tests/Lokad.Svg.Tests/SvgGroupMaskCropTests.cs), [opposite-winding children](tests/Research/compound-clip-content/overlapping-opposite-children.svg) and [clip-child union](tests/Research/clip-intersections/overlapping-path-child-union.svg), preserving each original control. Then advance to row 3. **Row complete:** finite G2–G5/G7 obligations below are witnessed, with affected cleanup and degenerate outcomes. |
 | [ ] 3. Pattern tile sheet (G6; dependent G7–G9 content) | Combined opacity, remaining tile/content units and affine phase/maps, image/filter/supplied-font content. Dependencies: bounded replay/layers and only the row 1/2/4 slices needed by a tile. | **Milestone:** unchanged [combined opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg) and [group opacity](tests/Research/pattern-vector-content/group-opacity-promotion.svg) exact, plus a frozen sheet joining missing map/content semantics exact on both platforms. **Row complete:** every independent G6 obligation below and recursion/size/work/cancellation cleanup checks pass. Preserve the eight complete pattern documents. |
 | [ ] 4. Remaining labels, paths and font validation (G9) | Stroked decorations and decorated paths; unverified skew/reflection or stroke-paint/instance maps; OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET; private deployment validation. Reuse qualified layout, fitting, preparation and rows 1–2's maps. | Freeze direct and curved-path stroked decorations and bounded synthetic overlapping/transformed-offset composites. Reuse qualified affine glyph cases. Exit: each missing semantic exact on both platforms, valid degenerate paths have measured outcomes, affected failure checks pass and the finite private request set below has sanitized outcomes. Preserve the completed label/path sheet, eight controls and intended-font proofs. |
 | [ ] 5. Release (S17) | Finished-revision contracts and evidence after rows 1–4. | Close every finite G2–G9 obligation below, preserve established exact results, pass complete platform/API/resource/package/consumer checks and exact-revision CI, and report representative measurements. All [release conditions](#release-completion-s17) must hold; document counts alone cannot establish completion. |
 
-**Next correction:** carry the unchanged [affine-filter control and whole sheet](tests/Research/effects-marker-sheet/README.md)
-through their rotated/skewed filter placement using bounded source replay and
-shared geometry/paint maps. Their original sources/options/platform triples are
-already frozen; no new corpus case is needed to establish this gate. Finish all
-remaining whole-sheet pixel differences against those same references. Preserve
-the distinct shader/stored-pixel routes, native image seeding and exact mixed-space
-controls. Wider identity/zero-offset restoration, source boundaries and marker
-promises remain required G8 work; these controls establish no G8 or document closure.
+**Next correction:** freeze the composition sheet around the original percentage
+oval-use, partial-mask-use and overlapping clip-child controls in row 2. Diagnose
+its rejections and mismatches with those retained controls; choose shared geometry,
+instance-coordinate and resource-replay fixes by the panels they advance. The sheet
+is not yet captured or qualified. No exhaustive G2 completion precedes this delivery.
+The completed effects sheet and native shader/stored-pixel/source-origin distinctions
+stay protected; remaining G8 obligations stay visible below rather than delaying
+this document handoff.
 
 The effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
@@ -254,8 +253,8 @@ A flood override alone does not establish a color transition.
 
 | Required remaining behavior | Dependency / concrete acceptance / completion |
 | --- | --- |
-| Affine filter placement and whole-panel integration | Shared bounded geometry/source/paint maps. Unchanged affine control and whole effects sheet are the immediate milestone. Complete when all declared outputs are exact, preserving ten exact controls, nearest offsets, native image seeding and graph regions. |
-| Colored/translucent linearRGB shadows; identity/zero-offset colored-source and standalone linear-image/outer-opacity restoration | Existing transfer/restore routes. Reuse retained colored-source diagnostics; freeze a colored linearRGB shadow over a translucent source and identity/zero-offset controls only where not already qualified. The retained [single-linear-image/outer-opacity diagnostic](artifacts/effects-marker-sheet-20261015/mixed-consumer-single-blur.svg) still differs; one healthy native observation is not acceptance. Complete when each named shadow/restore semantic is exact, preserving region/opacity and mixed-space results. This remains required after the whole-sheet blocker. |
+| Uncovered affine paint/source maps | Solid-source affine filtering and whole-panel integration are qualified in the completed bank. Non-solid affine paints and nested resource boundaries retain explicit gates. Reuse the shared layer/source/paint maps and bind an uncovered route to its owning composition/tile/label panel or focused control. Complete when each remaining independent promised route is exact, preserving all eleven effects controls, nearest offsets and native image origins. |
+| Colored/translucent linearRGB shadows; identity/zero-offset colored-source and standalone linear-image/outer-opacity restoration | Existing transfer/restore routes. Reuse retained colored-source diagnostics; freeze a colored linearRGB shadow over a translucent source and identity/zero-offset controls only where not already qualified. The retained [single-linear-image/outer-opacity diagnostic](artifacts/effects-marker-sheet-20261015/mixed-consumer-single-blur.svg) still differs; one healthy native observation is not acceptance. Complete when each named shadow/restore semantic is exact, preserving region/opacity and mixed-space results. This remains required after the completed whole-sheet milestone. |
 | Object-box output clips and filtered sources crossing mask, nested viewport, marker, text and local-use boundaries | Reuse qualified image/vector/group output clips and nested source/halo replay. Freeze a filtered target with an object-box clip and one focused witness for each uncovered source boundary, bringing G2/G5/G9 dependencies forward as needed. Complete when each independent boundary is exact with source/output ordering, halos and scope termination protected. No content × graph × container census. |
 | Font-relative marker lengths, container presentation/inheritance, closure/tangent/degenerate behavior | Existing marker length/style/vertex replay. Freeze font-relative sizing and inherited container paint versus a child override, plus auto/auto-start-reverse open/closed/zero-length-path witnesses. Reuse exact angle/overflow controls. Complete when named semantics are exact or valid-degenerate outcomes measured; missing/recursive references remain explicit errors. |
 
@@ -370,11 +369,10 @@ representativeness quota delays this finite release.
   visual by every API or require all combinations before advancing a document.
 - Keep **routine incremental Release build plus complete tests below ten minutes
   per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json)
-  records **7,750 tests/platform** in **85.4s Windows / 247.9s Linux**, including
-  normal build/startup and complete tests of the finished correction. Both meet
-  the target. Methodology and preceding checkpoint timings stay in their receipts;
-  these are no speedup claims.
+  The [latest receipt](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json)
+  records **7,755 tests/platform** in **88.3s Windows / 240.4s Linux**, including
+  normal build/startup and complete tests. Both meet the target. Keep each
+  receipt's workload/methodology limits; these are no speedup claims.
   Use normal incremental builds without forced compiler shutdown. No rerun is
   needed merely to refresh timing. Record one before/after timing when
   materially changing routine cost. If it exceeds the target, remove redundant

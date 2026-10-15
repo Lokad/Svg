@@ -6,6 +6,12 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssImageTests
 {
     [Theory]
+    [InlineData("affine-filter-regions")]
+    [InlineData("effects-marker-sheet")]
+    public void Affine_filter_layers_preserve_sources_and_release_temporary_owners_after_denial_and_retry(string identity)
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
+
+    [Theory]
     [InlineData("gray-alpha-solid")]
     [InlineData("late-nested-cascade")]
     [InlineData("rgba-fractional-meet")]
@@ -144,8 +150,16 @@ public sealed class SvgStaticCssImageTests
 
     [Fact]
     public void Affine_coverage_cancellation_and_raster_work_denial_release_temporary_owners()
+        => AssertActiveRasterLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "affine-image-maps", "affine-varied-placement.svg")));
+
+    [Theory]
+    [InlineData("affine-filter-regions")]
+    [InlineData("effects-marker-sheet")]
+    public void Affine_filter_cancellation_and_raster_work_denial_release_temporary_owners(string identity)
+        => AssertActiveRasterLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
+
+    private static void AssertActiveRasterLifecycle(byte[] input)
     {
-        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "affine-image-maps", "affine-varied-placement.svg"));
         RenderBudget budget = new(8_000_000);
         using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
         {
