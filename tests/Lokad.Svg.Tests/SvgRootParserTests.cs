@@ -3092,13 +3092,24 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_partially_covering_mask_content_on_use_instances()
+    public void Partially_covering_use_masks_preserve_forward_binding_and_coverage()
     {
-        SvgException backward = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><use href='#r' mask='url(#m)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-        SvgException forward = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><use href='#r' mask='url(#m)'/><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, backward.ErrorCode);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, forward.ErrorCode);
+        byte[] backward = "<svg xmlns='http://www.w3.org/2000/svg'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs><use href='#r' mask='url(#m)'/></svg>"u8.ToArray();
+        byte[] forward = "<svg xmlns='http://www.w3.org/2000/svg'><use href='#r' mask='url(#m)'/><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m'><rect x='0' y='0' width='2' height='2' fill='#ffffff'/></mask></defs></svg>"u8.ToArray();
+        RenderBudget budget = new(1_000_000);
+        byte[] expected;
+        SvgRenderOptions options = new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default);
+        using (SvgRoot root = SvgRootParser.Parse(backward, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, budget, CancellationToken.None))
+        {
+            expected = surface.Pixels.ToArray();
+            Assert.Equal(new byte[] { 255, 0, 0, 255 }, expected.AsSpan(0, 4).ToArray());
+            Assert.Equal(new byte[] { 0, 0, 0, 0 }, expected.AsSpan((4 * 8 + 4) * 4, 4).ToArray());
+        }
+        using (SvgRoot root = SvgRootParser.Parse(forward, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, options, budget, CancellationToken.None))
+            Assert.Equal(expected, surface.Pixels);
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
     [Fact]

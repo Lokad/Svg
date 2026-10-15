@@ -1211,6 +1211,12 @@ internal readonly record struct SvgDefinition(SvgGeometry[] Geometries, bool All
     internal string? RenderedGroupId { get; init; }
     internal SvgSymbolContentRange? StrokeContent { get; init; }
     internal SvgMarkerDefinition? Marker { get; init; }
+    /// <summary>Distinguishes symbol/marker viewports from reusable groups without a viewBox.</summary>
+    internal bool EstablishesViewport { get; init; }
+
+    internal SvgViewportLengthBases InstanceLengthBases(SvgUseReference reference)
+        => SymbolViewBox is {} box ? new(box.Width, box.Height)
+            : EstablishesViewport ? new(reference.Width, reference.Height) : reference.LengthBases;
 }
 
 /// <summary>Retains a solid fill's independently inherited properties until a symbol or child alias is instanced.

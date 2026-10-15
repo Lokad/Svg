@@ -37,13 +37,20 @@ public sealed class SvgMaskContentTests
     [Theory]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='red'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only grayscale luminance mask content is implemented.")]
     [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='#888888' stroke='white'/></mask></defs><rect width='8' height='8' fill='red'/></svg>", "Only single-paint mask content is implemented.")]
-    [InlineData("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='white'/></mask></defs><defs><rect id='r' width='2' height='2' fill='red'/></defs><use href='#r' mask='url(#m)'/></svg>", "Only mask content covering the masked geometry is implemented.")]
     public void Spatial_mask_gates_reject_honestly(string svg, string message)
     {
         SvgException rejected = Assert.Throws<SvgException>(() => RenderPixels(svg, out _, out _));
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, rejected.ErrorCode);
         Assert.Contains(message, rejected.Message);
+    }
+
+    [Fact]
+    public void Partial_spatial_use_mask_matches_direct_leaf_coverage()
+    {
+        const string input = "<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><circle cx='4' cy='4' r='2' fill='none' stroke='white'/></mask></defs><defs><rect id='r' width='2' height='2' fill='red'/></defs><use href='#r' mask='url(#m)'/></svg>";
+        string direct = input.Replace("<use href='#r'", "<rect width='2' height='2' fill='red'", StringComparison.Ordinal);
+        Assert.Equal(RenderPixels(direct, out _, out _), RenderPixels(input, out _, out _));
     }
 
     private static byte[] RenderPixels(string svg, out int width, out int height)

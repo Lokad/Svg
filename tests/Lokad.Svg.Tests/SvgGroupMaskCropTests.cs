@@ -111,9 +111,6 @@ public sealed class SvgGroupMaskCropTests
     {
         byte[] input = TextEncoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><mask id='m'><rect width='4' height='8' fill='white'/></mask><rect id='r' width='8' height='8'/></defs>" + geometry + "</svg>");
         RenderBudget budget = new(1_000_000);
-        if (geometry.StartsWith("<use", StringComparison.Ordinal))
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
-        else
         {
             using SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
             using SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);

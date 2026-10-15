@@ -3475,3 +3475,16 @@ APIs. Eight focused oval/text controls and four [merge controls](../tests/Resear
 have separate denominators. This closes the selected document, not finite G2–G9
 or S17, and establishes no representative general SVG success rate. See PLAN.md
 for finished qualification and remaining deliverables.
+
+
+## Complete retained composition sheet (2026-10-15)
+
+The unchanged [composition sheet](../tests/Research/composition-sheet/README.md)
+is **1/1 exact complete document / 4/4 exact controls** on Windows/Linux. It is
+the eleventh additional authored document, separate from the frozen corporate
+**27/27 documents / 258/258 variants** and selected development **50/50**.
+The three old visual controls remain in their original banks; the partial-mask
+visual retains its original MIT core input. Source/options and healthy platform
+triples were frozen before correction. Counts and wider finite group completion
+remain separate. The [receipt](../artifacts/maintenance-review-20261012/composition-qualified-results.json)
+records preservation and full checks; PLAN.md owns remaining release obligations.

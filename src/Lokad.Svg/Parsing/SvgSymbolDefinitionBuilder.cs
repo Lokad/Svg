@@ -32,6 +32,7 @@ internal sealed class SvgSymbolDefinitionBuilder : IDisposable
     }
 
     internal SvgSymbolPresentation Presentation => _content?.Presentation ?? _presentation;
+    internal bool EstablishesViewport { get; set; }
     internal int ChildDepth(int symbolDepth) => _content?.ChildDepth(symbolDepth) ?? symbolDepth + 1;
     internal bool EndGroup(int depth, SvgDocumentState state) => _content?.EndGroup(depth, state) ?? false;
 

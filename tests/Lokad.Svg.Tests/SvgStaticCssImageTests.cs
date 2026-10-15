@@ -6,6 +6,16 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgStaticCssImageTests
 {
     [Theory]
+    [InlineData("composition-sheet")]
+    [InlineData("partial-mask-use")]
+    public void Composition_replay_preserves_sources_and_releases_owners_after_denial_and_retry(string identity)
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "composition-sheet", identity + ".svg")));
+
+    [Fact]
+    public void Composition_replay_cancellation_and_work_denial_release_temporary_owners()
+        => AssertActiveRasterLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "composition-sheet", "composition-sheet.svg")));
+
+    [Theory]
     [InlineData("affine-filter-regions")]
     [InlineData("effects-marker-sheet")]
     public void Affine_filter_layers_preserve_sources_and_release_temporary_owners_after_denial_and_retry(string identity)

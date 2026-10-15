@@ -13556,3 +13556,40 @@ owns complete platform checks and preserved prior results. Non-solid affine sour
 paints, source clips and nested resource boundaries remain explicit gates inside promised G8;
 remaining shadow/restoration, object-box clip, source and marker semantics stay
 required. The composition sheet is the next document milestone; G2–G9/S17 remain open.
+
+
+## Composition sheet through shared viewport, clip and mask replay (2026-10-15)
+
+The unchanged [composition sheet](../tests/Research/composition-sheet/README.md)
+is **1/1 complete document / 4/4 exact controls** on Windows/Linux. The original
+percentage-use, opposite-winding and overlapping-path controls remain in their
+existing banks; the original partial-mask core input has its own MIT visual.
+Inputs/options and 21 healthy stable new captures were frozen at `005b4876`
+before implementation. Original Windows references were reused; missing Linux
+triples were acquired once. All corresponding platform PNG bytes agree.
+
+Ordinary/group uses carry live viewport length bases independently of use
+width/height. Symbols establish a viewport from their viewBox or instance size.
+Percentage oval sources bind during bounded instance lowering, including repeated
+uses under different viewports; geometry and paint share the same source replay.
+
+Retain a first rectangular path's source until sibling content is known, then
+preserve the single-rectangle fast path if no sibling requires promotion.
+The existing bounded convex straight child combiner normalizes winding and uses
+nonzero replay for overlapping children; disjoint contours keep qualified parity,
+cyclic starts and ordering. Native contour masks compose the enclosing viewport
+map before replay. This is not general curved/compound sibling path union;
+heterogeneous children and larger multi-shape fallback remain required G5 work.
+
+Partial uniform instance masks reuse the same retained spatial source replay as
+ordinary leaves/groups. Scalar coverage is checked in the target frame against
+visual extents; default object-box regions use object bounds. Strokes, mask
+source placement and element opacity retain their separate ordering. Existing
+spatial instance masks no longer require full coverage where mapped replay exists.
+
+Original rejection inputs graduate to positive regressions without deleting their
+semantics. Tests cover forward/backward references, winding independence, live
+percentage rebinding, meaningful allocation/work denial, active cancellation,
+cleanup and exact retry. The [receipt](../artifacts/maintenance-review-20261012/composition-qualified-results.json)
+owns finished qualification. This supersedes earlier percentage-instance,
+overlapping-convex-child and partial-use-mask gates only; finite G2–G9/S17 remain open.

@@ -113,8 +113,7 @@
       "reference": "references/overlapping-path-child-union.png",
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
-      "role": "unsupported-boundary",
-      "expectedError": "UnsupportedFeature"
+      "role": "fidelity"
     },
     {
       "id": "forward-group-clip-use",

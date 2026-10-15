@@ -326,6 +326,7 @@ internal static class SvgDocumentTraversal
                     if (state.ClipPathId is not null)
                     {
                         if (state.ClipUse is not null) SvgResourceUseReplay.Register(state, SvgResourceUseKind.Clip, workCounter, cancellationToken);
+                        else if (state.ClipBox is not null) SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
                         else if (state.ClipPolygon is not null) SvgDefinitionParser.RegisterClipPolygon(state, workCounter, cancellationToken);
                         else SvgDefinitionParser.RegisterClipBox(state, workCounter, cancellationToken);
                     }

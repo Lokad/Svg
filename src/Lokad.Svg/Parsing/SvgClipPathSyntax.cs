@@ -102,6 +102,7 @@ internal static class SvgClipPathSyntax
         ArgumentNullException.ThrowIfNull(state);
         string? id = ResolveClipId(reader, state);
         if (id is null) return frame;
+        if (state.DeferringLeafClip && !state.Clips.TryGetValue(id, out _) && !state.ObjectClips.TryGetValue(id, out _)) return frame;
         if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
         if (state.ObjectClips.TryGetValue(id, out SvgClipBox fractions))
         {
@@ -136,15 +137,16 @@ internal static class SvgClipPathSyntax
             workCounter.Consume(cancellationToken);
             PendingLeafClip pending = state.PendingLeafClips[pendingIndex];
             SvgViewportFrame? parent = pending.Parent;
-            if (parent is not null && parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
             SvgClipBox clip;
             if (state.Clips.TryGetValue(pending.ClipId, out SvgClipBox box))
             {
+                if (parent is not null && parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
                 box = pending.Transform.Apply(box);
                 clip = parent is null ? box : parent.Value.Clip.Intersect(box);
             }
             else if (state.ObjectClips.TryGetValue(pending.ClipId, out SvgClipBox fractions))
             {
+                if (parent is not null && parent.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip paths in scaled viewports are not implemented.");
                 if (!pending.AdmitsBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox clip paths are only implemented on rectangles, bands and straight contours.");
                 if (pending.GeometryCount == 0) continue;
                 clip = BoundingBoxClip(state, pending, fractions, parent, workCounter, cancellationToken);
@@ -164,7 +166,8 @@ internal static class SvgClipPathSyntax
                     }
                     continue;
                 }
-                if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths in transformed viewports are not implemented.");
+                if (parent is not null && !parent.Value.IsTrivial && clipPolygon.ContourEnds.Length != 1 && !clipPolygon.UsesNativeReplay)
+                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths in transformed viewports are not implemented.");
                 if (state.GroupUseExpanded) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Polygon clip-paths with use instances are not implemented.");
                 if (pending.GeometryCount == 0) continue;
                 if (clipPolygon.ContourEnds.Length == 1 || clipPolygon.UsesNativeReplay)
@@ -172,10 +175,12 @@ internal static class SvgClipPathSyntax
                     // Native clip coverage multiplies each paint operation independently.
                     // Keep its source contours and shader coordinates intact instead of
                     // replacing them with a geometric intersection of flattened vertices.
+                    SvgAffineTransform map = pending.Transform;
+                    if (parent is {} viewport) map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
                     (SvgClipBox bounds, int contentIndex) = clipPolygon.NestedClipId is not null
-                        ? RegisterNestedResourceMask(pending.ClipId, clipPolygon, pending.Transform, state, workCounter, cancellationToken)
+                        ? RegisterNestedResourceMask(pending.ClipId, clipPolygon, map, state, workCounter, cancellationToken)
                         : SvgAffineViewportClip.RegisterContour(clipPolygon.Points, clipPolygon.ContourEnds,
-                            pending.Transform, clipPolygon.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath, clipPolygon.UsesNativeReplay ? clipPolygon.SourcePath : null, clipPolygon.ResourceBounds, clipPolygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
+                            map, clipPolygon.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath, clipPolygon.UsesNativeReplay ? clipPolygon.SourcePath : null, clipPolygon.ResourceBounds, clipPolygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;
                     operation.Value = 255;

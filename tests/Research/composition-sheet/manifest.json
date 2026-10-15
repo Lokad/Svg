@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One required composition document, one retained MIT core-input visual and three existing controls reused in their original banks. References frozen before composition changes; all five declared inputs currently reject.",
+  "purpose": "One exact required composition document, one retained MIT core-input visual and three exact controls reused in their original banks. References frozen before composition changes; all five unchanged inputs are exact on Windows/Linux.",
   "declarationBaseRevision": "005b4876039cd02f551aeec2ed68733e446d2c48",
   "cases": [
     {
@@ -59,9 +59,7 @@
           "profileCleaned": true
         }
       ],
-      "platformReferencesByteIdentical": true,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Percentage oval definitions require retained instance viewport bases."
+      "platformReferencesByteIdentical": true
     },
     {
       "id": "partial-mask-use",
@@ -110,9 +108,7 @@
           "profileCleaned": true
         }
       ],
-      "platformReferencesByteIdentical": true,
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only mask content covering the masked geometry is implemented."
+      "platformReferencesByteIdentical": true
     }
   ],
   "reusedControls": [

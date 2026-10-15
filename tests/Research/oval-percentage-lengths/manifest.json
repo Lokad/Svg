@@ -157,9 +157,7 @@
       "licenseEvidence": "Repository-authored focused control dedicated to CC0-1.0 in its source header.",
       "selection": "Declared before the Wikifoods percentage-oval correction; independently captured complete input. Diagnoses axis/diagonal bases, native length precision, geometry/paint agreement and retained boundaries.",
       "role": "mechanism-control",
-      "referenceSha256": "257b63bb637ed549f1bd9a4400ccda55f39601102a9dfaee506cedc3fb513c54",
-      "expectedError": "UnsupportedFeature",
-      "boundary": "Percentage oval definitions require retained instance viewport bases."
+      "referenceSha256": "257b63bb637ed549f1bd9a4400ccda55f39601102a9dfaee506cedc3fb513c54"
     },
     {
       "id": "nested-scaled-boundary",

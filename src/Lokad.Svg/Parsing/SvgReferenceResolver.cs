@@ -25,6 +25,8 @@ internal readonly record struct SvgUseReference(string Id, double X, double Y, d
     internal string? PaintServerFill { get; init; }
     internal bool IsDisplayed { get; init; } = true;
     internal bool IsVisible { get; init; } = true;
+    /// <summary>Retains the live host viewport in user units, independently of use width/height and placement.</summary>
+    internal SvgViewportLengthBases LengthBases { get; init; }
 }
 
 /// <summary>Retains one clip-path reference whose box needs a forward definition or clip-path definition.</summary>
@@ -120,8 +122,8 @@ internal static class SvgReferenceResolver
                     if (geometry.LeafMask is not null && source.GetAttribute("mask") is not null)
                         throw new SvgException(SvgErrorCode.UnsupportedFeature, "Instance stroke construction on masked definitions is not implemented.");
                 }
-                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.NonScalingStroke, PlainInstancePlacement(reference, frame), retainMappedContour, state);
-                try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
+                SvgDefinition constructed = source.Lower(reference.InheritedStroke, reference.FillOverride ?? reference.InheritedFill, reference.InheritedFillRule, reference.PaintServerFill, reference.InheritedPaintOrder, reference.InheritedMarkers, reference.ElementParentOpacity, reference.NonScalingStroke, PlainInstancePlacement(reference, frame), definition.InstanceLengthBases(reference), retainMappedContour, state);
+                try { return Apply(constructed with { SymbolViewBox = definition.SymbolViewBox, EstablishesViewport = definition.EstablishesViewport }, reference with { StrokeOverride = null, PaintServerId = null, PaintServerFill = null }, frame, state, workCounter, cancellationToken); }
                 finally { foreach (SvgGeometry geometry in constructed.Geometries) geometry.Dispose(); }
             }
             reference = reference with { StrokeOverride = null };
@@ -848,10 +850,11 @@ internal static class SvgReferenceResolver
         SvgAffineTransform placement, SvgDocumentState state, ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         if ((maskReference is null && mask is null) || geometries.IsEmpty) return;
+        string? maskId = maskReference is null ? null : SvgMaskSyntax.ParseMaskId(maskReference);
         int contentIndex = -1;
         if (mask is null)
         {
-            string id = SvgMaskSyntax.ParseMaskId(maskReference ?? throw new InvalidOperationException("An unresolved mask requires its source reference."));
+            string id = maskId ?? throw new InvalidOperationException("An unresolved mask requires its source reference.");
             if (!state.Masks.TryGetValue(id, out byte value))
             {
                 if (!state.MaskContents.TryGetValue(id, out SvgMaskContent spatial)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
@@ -863,15 +866,40 @@ internal static class SvgReferenceResolver
         }
         double left = double.PositiveInfinity, top = double.PositiveInfinity;
         double right = double.NegativeInfinity, bottom = double.NegativeInfinity;
+        double visualLeft = double.PositiveInfinity, visualTop = double.PositiveInfinity;
+        double visualRight = double.NegativeInfinity, visualBottom = double.NegativeInfinity;
         foreach (SvgGeometry geometry in geometries)
         {
             workCounter.Consume(cancellationToken);
-            if (maskReference is not null) SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, SvgMaskSyntax.BoundingBox(geometry));
+            SvgRectangle visual = SvgMaskSyntax.BoundingBox(geometry);
+            visualLeft = Math.Min(visualLeft, visual.X); visualTop = Math.Min(visualTop, visual.Y);
+            visualRight = Math.Max(visualRight, visual.X + visual.Width); visualBottom = Math.Max(visualBottom, visual.Y + visual.Height);
             SvgRectangle box = SvgMaskSyntax.RecordedObjectBox(geometry, state);
             left = Math.Min(left, box.X); top = Math.Min(top, box.Y);
             right = Math.Max(right, box.X + box.Width); bottom = Math.Max(bottom, box.Y + box.Height);
         }
         SvgRectangle fallback = new(left, top, right - left, bottom - top, default, false, null);
+        bool resolvedUniform = false;
+        if (contentIndex < 0 && maskId is not null && state.MaskContents.TryGetValue(maskId, out SvgMaskContent uniform)
+            && uniform.UniformSource is not null && state.MaskContentBoxes.TryGetValue(maskId, out SvgClipBox uniformBox))
+        {
+            resolvedUniform = true;
+            bool covers = placement.IsAxisAligned && placement.Apply(uniformBox).Contains(visualLeft, visualTop, visualRight, visualBottom);
+            if (!covers)
+            {
+                // A uniform value is only scalar when its source covers every
+                // painted part. Reuse ordinary spatial source replay otherwise.
+                SvgMaskContent spatial = SvgMaskContentReplay.ResolveUniformSource(maskId, placement, state, workCounter, cancellationToken);
+                contentIndex = state.Scene.AddMaskContent(spatial);
+                mask = 255;
+            }
+        }
+        if (contentIndex < 0 && !resolvedUniform && maskReference is not null)
+            foreach (SvgGeometry geometry in geometries)
+            {
+                workCounter.Consume(cancellationToken);
+                SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, SvgMaskSyntax.BoundingBox(geometry));
+            }
         SvgClipBox region = ResolveInstanceMaskRegion(maskReference, frame, state, fallback);
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Value = mask.Value; operation.Resolved = true;
@@ -903,7 +931,8 @@ internal static class SvgReferenceResolver
             {
                 if (frame is not null && !frame.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
                 SvgClipBox resolved = new(fallback.X + fractions.X * fallback.Width, fallback.Y + fractions.Y * fallback.Height, fractions.Width * fallback.Width, fractions.Height * fallback.Height);
-                if (document.MaskContentBoxes.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out SvgClipBox cover) && !cover.Contains(resolved.X, resolved.Y, resolved.X + resolved.Width, resolved.Y + resolved.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
+                if (!SvgMaskSyntax.HasUniformSource(document, SvgMaskSyntax.ParseMaskId(maskReference))
+                    && document.MaskContentBoxes.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out SvgClipBox cover) && !cover.Contains(resolved.X, resolved.Y, resolved.X + resolved.Width, resolved.Y + resolved.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
                 return resolved;
             }
             return SvgMaskSyntax.MaskRegion(fallback);

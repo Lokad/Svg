@@ -73,8 +73,14 @@ internal static class SvgDefinitionParser
                 InheritedPresentation = context.InheritedPresentation with { Markers = default }
             };
             SvgViewBox? symbolViewBox = null;
+            // Relative geometry binds in the live instance viewport, not its
+            // definition location. Keep the existing bounded source adapter.
+            bool deferredOval = reader.LocalName is "circle" or "ellipse"
+                && (IsPercentage("cx") || IsPercentage("cy") || IsPercentage("r") || IsPercentage("rx") || IsPercentage("ry"));
+            bool IsPercentage(string attribute)
+                => reader.GetAttribute(attribute) is {} value && value.AsSpan().Trim().EndsWith("%", StringComparison.Ordinal);
             if (retainedStyle.Filter is not null) dormant = dormant with { AuthoredStyle = (dormant.AuthoredStyle ?? retainedStyle) with { Filter = null } };
-            SvgDefinition definition = reader.LocalName == "image" ? new([], false, null, symbolViewBox)
+            SvgDefinition definition = reader.LocalName == "image" || deferredOval ? new([], false, null, symbolViewBox)
                 : reader.LocalName == "rect" ? ParseRectangleDefinition(reader, dormant, state, symbolViewBox)
                 : reader.LocalName == "line" ? ParseLineDefinition(reader, dormant, state)
                 : ParseShapeDefinition(reader, dormant, state, symbolViewBox, true);
@@ -82,10 +88,11 @@ internal static class SvgDefinitionParser
             try
             {
                 SvgPaintRecording.FinishDefinition(definition.Geometries, state, workCounter, cancellationToken);
-                SvgDefinition source = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false);
+                SvgDefinition source = deferredOval ? definition : BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false);
                 SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
                 definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = SvgPresentationResolver.ParseDisplay(sourceStyle.Display), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true), LeafSource = reader.LocalName == "image"
-                    ? SvgDefinitionLeafSource.CaptureImage(reader, context, state, limits) : SvgDefinitionLeafSource.Capture(reader, context, state) };
+                    ? SvgDefinitionLeafSource.CaptureImage(reader, context, state, limits) : deferredOval
+                        ? SvgDefinitionLeafSource.CaptureUnconstructed(reader, context, state) : SvgDefinitionLeafSource.Capture(reader, context, state) };
                 if (symbolChild)
                 {
                     definition = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, true);
@@ -141,6 +148,7 @@ internal static class SvgDefinitionParser
             state.SymbolId = id is null ? null : state.Strings.Copy(id);
             state.SymbolViewBox = SvgGeometrySyntax.ParseViewBox(reader.GetAttribute("viewBox"), reader.GetAttribute("preserveAspectRatio"), workCounter, cancellationToken);
             state.SymbolDefinition = SvgSymbolDefinitionBuilder.Create(state.Budget, workCounter, cancellationToken, presentation);
+            state.SymbolDefinition.EstablishesViewport = true;
             if (shaderFill is not null || marker || presentation.Markers.HasMarkers || presentation.InheritsOpacity || sheet != default)
             {
                 state.SymbolDefinition.EnableContent();
@@ -195,7 +203,14 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName == "path")
             {
-                if (state.ClipBox is not null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle clip paths are implemented.");
+                if (state.ClipBox is not null)
+                {
+                    if (state.ClipPolygon is not { Points.Length: >= 3 })
+                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-rectangle clip paths are implemented.");
+                    // Keep the first path's source until sibling content is known.
+                    // A single rectangle retains its established clip fast path.
+                    state.ClipBox = null;
+                }
                 SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
                 SvgPaintableElementContext clipContext = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 // A resource uses its own child map; ancestors place the referencing element.
@@ -233,8 +248,6 @@ internal static class SvgDefinitionParser
                 if (rectangleClip is {} rectangleBounds)
                 {
                     state.ClipBox = rectangleBounds;
-                    clipContent.SourcePath?.Dispose();
-                    state.ClipPolygon = null;
                 }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 return true;
@@ -736,7 +749,7 @@ internal static class SvgDefinitionParser
             if ((first.UsesNativeReplay && first.ChildCount == 1) || next.UsesNativeReplay
                 || (first.IsEvenOdd && first.ChildCount == 1) || next.IsEvenOdd || next.ContourEnds.Length != 1
                 || (first.ChildCount == 1 && first.ContourEnds.Length != 1))
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only disjoint straight single-contour clip children are implemented.");
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only straight single-contour clip children are implemented.");
             if (first.ChildCount >= 42)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip content requiring the browser's multi-shape mask fallback is not implemented.");
             SvgAuthoredPath firstPath = first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
@@ -745,12 +758,13 @@ internal static class SvgDefinitionParser
             using SvgPreparedPathContours right = nextPath.Prepare(SvgAffineTransform.Identity, false, state.Budget, work, token);
             RequireConvex(right);
             if (first.ChildCount == 1) RequireConvex(left);
+            bool needsWindingUnion = first.ChildCount > 1 && !first.IsEvenOdd;
             for (int contour = 0; contour < left.ContourEnds.Length; contour++)
             {
                 int start = contour == 0 ? 0 : left.ContourEnds[contour - 1];
                 ReadOnlySpan<SvgDevicePoint> ring = left.Points.AsSpan(start, left.ContourEnds[contour] - start);
                 if (!Separated(ring, right.Points) && !Separated(right.Points, ring))
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Overlapping clip children require native path union, which is not implemented.");
+                    needsWindingUnion = true;
             }
             int pointCount = checked(left.Points.Length + right.Points.Length);
             int contourCount = checked(left.ContourEnds.Length + right.ContourEnds.Length);
@@ -770,7 +784,7 @@ internal static class SvgDefinitionParser
             SvgAuthoredPath combined;
             try { combined = SvgAuthoredPath.Create(owned, SvgAffineTransform.Identity, state.Budget); }
             catch { owned.Dispose(); throw; }
-            return new(points, ends) { SourcePath = combined, UsesNativeReplay = true, ChildCount = first.ChildCount + 1, ResourceBounds = resourceBounds, IsEvenOdd = true };
+            return new(points, ends) { SourcePath = combined, UsesNativeReplay = true, ChildCount = first.ChildCount + 1, ResourceBounds = resourceBounds, IsEvenOdd = !needsWindingUnion };
 
             SvgPaintBounds ChildBounds(SvgClipPolygon polygon, SvgAuthoredPath path)
             {
@@ -1417,7 +1431,7 @@ internal static class SvgDefinitionParser
         {
             SvgDefinitionLeafSource first = state.PatternRectangleSource ?? throw new InvalidOperationException("Rectangle promotion requires retained source attributes.");
             SvgPaintableElementContext previous = state.PatternRectangleContext;
-            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, false, state), builder, state);
+            SvgPaintRecording.AdoptLeafScene(first.Lower(previous.InheritedStroke, previous.InheritedPresentation.Paint, previous.InheritedFillRule, previous.InheritedPresentation.PaintServerFill, previous.InheritedPresentation.PaintOrder, previous.InheritedPresentation.Markers, previous.InheritedPresentation.ElementOpacity, previous.InheritedPresentation.NonScalingStroke, SvgAffineTransform.Identity, previous.LengthBases, false, state), builder, state);
             state.PatternTile = tile with { Content = null };
         }
         return builder;
@@ -1501,10 +1515,9 @@ internal static class SvgDefinitionParser
         }
         if (state.Clips.TryGetValue(retainedId, out _) || state.ObjectClips.TryGetValue(retainedId, out _) || !state.ClipPolygons.TryAdd(retainedId, polygon)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
 
-        // The bounded disjoint convex subset needs no intersections. Adapt the
-        // native final Simplify pass: sort contour bounds, then traverse the first
-        // CCW segment from its end back to its start and retain the closing line.
-        // That cyclic start determines adjacent clipped-edge combination.
+        // Preserve the qualified contour ordering and cyclic starts. Same-directed
+        // nonzero contours represent the union of overlapping convex children;
+        // disjoint content retains its established parity replay.
         static SvgAuthoredPath NormalizeUnion(SvgClipPolygon polygon, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {
             int count = polygon.ContourEnds.Length;
@@ -1570,6 +1583,8 @@ internal static class SvgDefinitionParser
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip-path registration requires an identifier."));
         if (state.ClipPolygons.TryGetValue(retainedId, out _)) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
         if (state.ClipIsObjectBoundingBox) { if (state.Clips.TryGetValue(retainedId, out _) || !state.ObjectClips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique."); } else if (state.ObjectClips.TryGetValue(retainedId, out _) || !state.Clips.TryAdd(retainedId, state.ClipBox ?? new SvgClipBox(0, 0, 0, 0))) throw new SvgException(SvgErrorCode.MalformedInput, "SVG clip-path ids must be unique.");
+        state.ClipPolygon?.SourcePath?.Dispose();
+        state.ClipPolygon = null;
     }
 
     private static void RejectPatternContentPaint(SvgComputedStyle style, SvgDocumentState state)
@@ -1600,7 +1615,7 @@ internal static class SvgDefinitionParser
     internal static void RegisterSymbol(SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol registration requires an open builder.");
-        SvgDefinition definition = builder.Build(state.SymbolViewBox, state, work, token) with { Marker = state.MarkerDefinition };
+        SvgDefinition definition = builder.Build(state.SymbolViewBox, state, work, token) with { Marker = state.MarkerDefinition, EstablishesViewport = builder.EstablishesViewport };
         bool retained = false;
         try
         {
@@ -1747,10 +1762,6 @@ internal static class SvgDefinitionParser
 
     private static SvgDefinition ParseShapeDefinition(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgViewBox? symbolViewBox, bool excludeDefinitionAncestors)
     {
-        // Instance replay must retain the host viewport before relative oval lengths can be admitted here.
-        if (reader.LocalName is "circle" or "ellipse"
-            && (IsPercentage(reader, "cx") || IsPercentage(reader, "cy") || IsPercentage(reader, "r") || IsPercentage(reader, "rx") || IsPercentage(reader, "ry")))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Percentage oval definitions require retained instance viewport bases.");
         SvgComputedStyle style = context.ResolveStyle(reader);
         // Use clones exclude definition ancestors. Direct scene content keeps its container
         // map; ordinary shape lowerers compose the authored element map exactly once.
@@ -1813,9 +1824,6 @@ internal static class SvgDefinitionParser
             foreach (SvgGeometry geometry in geometries) geometry.Dispose();
             throw;
         }
-
-        static bool IsPercentage(XmlReader input, string attribute)
-            => input.GetAttribute(attribute) is {} value && value.AsSpan().Trim().EndsWith("%", StringComparison.Ordinal);
 
         static double? ResolveInstanceStrokeMiterLimit(SvgComputedStyle computed, SvgGeometry[] lowered, string? pathData, string? transformAttribute, string? vectorEffect, ParserWorkCounter workCounter, CancellationToken cancellationToken)
         {

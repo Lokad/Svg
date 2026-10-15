@@ -97,13 +97,20 @@ public sealed class SvgCompoundClipAdmissionTests
     }
 
     [Fact]
-    public void Overlapping_transformed_children_reject_before_owner_transfer()
+    public void Overlapping_transformed_children_preserve_coverage_and_release_owners()
     {
         byte[] input = "<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs><clipPath id='c'><path d='M3 3H22V22H3Z' transform='rotate(3 16 16)'/><path d='M12 12V29H29V12Z'/></clipPath></defs><rect width='32' height='32' clip-path='url(#c)'/></svg>"u8.ToArray();
         RenderBudget budget = new(1_000_000);
-        SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-        Assert.Contains("Overlapping clip children", error.Message);
+        byte[] expected;
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
+            expected = output.Pixels.ToArray();
+        Assert.Contains(expected, value => value != 0);
+        byte[] reversed = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(input)
+            .Replace("M12 12V29H29V12Z", "M12 12H29V29H12Z", StringComparison.Ordinal));
+        using (SvgRoot scene = SvgRootParser.Parse(reversed, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
+            Assert.Equal(expected, output.Pixels);
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 }

@@ -167,9 +167,7 @@
       "height": 32,
       "scale": 1,
       "background": "transparent",
-      "role": "fidelity",
-      "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Only single-rectangle clip paths are implemented."
+      "role": "fidelity"
     },
     {
       "id": "percentage-circle-clip",
