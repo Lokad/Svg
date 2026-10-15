@@ -1,5 +1,6 @@
 // Adapts Blink SVG fragment paint placement and alphabetic metric rounding.
-// Copyright 2017 The Chromium Authors. See THIRD_PARTY_NOTICES.txt.
+// Copyright 2017 The Chromium Authors. Effective font precision: Copyright 2007 Nicholas Shanks,
+// 2008 Apple Inc., 2013 Google Inc. See THIRD_PARTY_NOTICES.txt.
 namespace Lokad.Svg.Fonts;
 
 using Lokad.Svg.Rendering;
@@ -10,12 +11,24 @@ internal enum SvgGlyphMetricTarget { Windows, Linux }
 /// <summary>Maps bounded font advances and SVG fragments through the output grid without rounding authored origins.</summary>
 internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetricTarget Target, bool IsTextPath)
 {
+    /// <summary>Resolves the native element font scale before character-local maps.</summary>
+    internal static double GetScreenScale(SvgAffineTransform placement)
+    {
+        if (placement.TryGetUniformScale(out double scale)) return scale == 0 ? 1 : scale;
+        scale = (float)Math.Sqrt((placement.A * placement.A + placement.B * placement.B + placement.C * placement.C + placement.D * placement.D) / 2);
+        if (!double.IsFinite(scale)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text font scaling exceeds the device range.");
+        return scale == 0 ? 1 : scale;
+    }
+
+    /// <summary>Matches the native font-cache precision before shaping or scaler construction.</summary>
+    internal static float GetEffectiveFontSize(double size) => MathF.Floor((float)size * 100) / 100;
+
     internal double GetAdvance(ushort advance, ushort unitsPerEm, double fontSize)
         => GetAdvance(advance, 0, unitsPerEm, fontSize);
 
     internal double GetAdvance(ushort advance, int pairAdjustment, ushort unitsPerEm, double fontSize)
     {
-        float size = (float)(fontSize * Scale);
+        float size = GetEffectiveFontSize(fontSize * Scale);
         if (!double.IsFinite(fontSize) || fontSize <= 0 || !float.IsFinite(size) || size < 0 || unitsPerEm == 0 || !double.IsFinite(Scale) || Scale <= 0)
             throw new SvgException(SvgErrorCode.LimitExceeded, "The text metrics exceed the device range.");
         double deviceAdvance;
@@ -49,7 +62,7 @@ internal readonly record struct SvgGlyphDeviceMetrics(double Scale, SvgGlyphMetr
     /// <remarks>Operates on immutable borrowed metrics without allocating or owning storage. The caller charges one glyph step and checks cancellation. Semantic path measurement remains unchanged.</remarks>
     internal SvgAffineTransform PlaceTextPathPaint(SvgAffineTransform map, double halfAdvance, double baselineShift, double fontSize, OpenTypeFontMetrics font)
     {
-        float size = (float)(fontSize * Scale);
+        float size = GetEffectiveFontSize(fontSize * Scale);
         if (!double.IsFinite(fontSize) || fontSize <= 0 || !double.IsFinite(Scale) || Scale <= 0 || !float.IsFinite(size) || font.UnitsPerEm == 0)
             throw new SvgException(SvgErrorCode.LimitExceeded, "The text-path paint metrics exceed the device range.");
         if (Target is not (SvgGlyphMetricTarget.Windows or SvgGlyphMetricTarget.Linux)) throw new ArgumentOutOfRangeException(nameof(Target));

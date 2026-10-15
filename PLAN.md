@@ -1,7 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15: finite delivery review, preserving the qualified filled-label
-decoration checkpoint and the in-progress text-stroke correction.
+Updated 2026-10-15 at the qualified ordered/dashed/non-scaling text-stroke checkpoint.
 This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
 owns admission, [INVENTORY](docs/INVENTORY.md) owns document evidence,
@@ -32,6 +31,7 @@ accepted. A proposed deferral of an existing promise stays required until decide
 | Qualified G2–G5 mechanisms | Fractional ordinary-use stroke widths, fractional/nonuniform symbol frames, nonuniform root curve fills and affine oval strokes, the non-scaling conic defect, composed cubic clips, translated custom mask regions and mask-container opacity have qualified witnesses. Preserve [use widths](artifacts/maintenance-review-20261012/fractional-use-qualified-results.json), [symbol frames](artifacts/maintenance-review-20261012/symbol-frames-final-results.json), [root curves](artifacts/maintenance-review-20261012/nonuniform-curves-qualified-results.json), [non-scaling strokes](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json), [ovals](tests/Research/affine-oval-strokes/manifest.json) and [scopes](tests/Research/scoped-clips-masks/manifest.json). These completed mechanisms are dependencies already available, not work to repeat for wider maps or locations. |
 | Filter bounds, rescaling and restoration | The [colored-effects bank](tests/Research/colored-effects-markers/README.md) preserves original controls **7/7**, repaired control **1/1**, bounds **4/4** and whole document **1/1**. The [filter-region bank](tests/Research/filter-regions/manifest.json) is **26/26 exact**, including sRGB rescaling/opacity and the unchanged displaced linearRGB blur. Preserve the [bounds](artifacts/maintenance-review-20261012/offset-image-bounds-qualified-results.json), [rescaling](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json) and [restoration receipts](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json). Wider G8 stays open. |
 | Direct positioning, spacing and filled-label decorations | The [label/path bank](tests/Research/remaining-label-path-sheet/README.md) has **3/3 exact controls** for nested lists/rotation, word spacing/span whitespace and solid underline/overline/line-through. Preserve supplied-font/ligature behavior, declaration paint, fragment widths and ink gaps in the [positioning](artifacts/maintenance-review-20261012/nested-text-lists-qualified-results.json), [spacing](artifacts/maintenance-review-20261012/word-spacing-qualified-results.json) and [decoration receipts](artifacts/maintenance-review-20261012/decorations-qualified-results.json). The unchanged whole sheet and wider G9 remain open. |
+| Ordered, dashed and non-scaling text strokes | The [label/path bank](tests/Research/remaining-label-path-sheet/README.md) has **5/5 exact controls** on Windows/Linux. Shared fragment painting preserves direct-run and per-glyph path order; original quadratic dash curves, native font scale/precision and bounded stroke replay close the two new controls. Preserve the [qualification receipt](artifacts/maintenance-review-20261012/ordered-strokes-qualified-results.json), including empty-dash cleanup and original vector outcomes. The unchanged whole sheet now rejects span rotation on text paths; no G9 or complete-document closure is claimed. |
 | Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared ownership are implemented. Private deployment validation below remains required; general shaping remains outside scope. |
 | Resource/API/package protections | Preserve bounded preparation/raster/encoding, allocation/work denial, cancellation/retry, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks apply; final release evidence must cover the finished revision. |
 
@@ -39,20 +39,15 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The qualified baseline is `87dc9c3e`: **7,656 tests/platform** and
-[terminal green Windows/Linux CI](https://github.com/Lokad/Svg/actions/runs/38656434558),
-including package/consumer, memory, browser, font and validator checks.
-The [receipt](artifacts/maintenance-review-20261012/decorations-qualified-results.json)
-owns assertion migrations, preservation checks and timings. Reuse this completed
-evidence for unchanged documentation; do not poll the run again.
-
-**In progress, not qualified:** shared ordered glyph painting now advances the
-unchanged whole sheet to its dashed-stroke rejection. The frozen direct/path
-stroke-order control is exact on Linux and differs at one Windows pixel by one
-channel level. Finish that correction, dashed/non-scaling modes and affected
-regressions before checkpoint qualification. Keep the original whole-sheet bytes
-and references. This working result supersedes the old stroke-before-fill gate
-as the next diagnostic; it does not change the qualified baseline or close G9.
+The stroke correction is locally qualified: **7,668 tests/platform**
+(5,281 core / 2,381 visual / six FontProbe). The
+[receipt](artifacts/maintenance-review-20261012/ordered-strokes-qualified-results.json)
+owns preservation checks, timings and explicit migration of six obsolete
+valid-input rejections, with negative boundaries retained. The complete sheet
+remains open. Hosted Windows/Linux CI must be checked for this implementation
+batch after pushing. The preceding decoration run at `87dc9c3e` is
+[terminal green](https://github.com/Lokad/Svg/actions/runs/38656434558);
+reuse that historical evidence without polling it again.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -77,7 +72,7 @@ Prefer a suitable redistributable export; an authored CC0 sheet is permitted.
 
 | Next deliverable | Missing behavior / available dependencies | Acceptance and completion condition |
 | --- | --- | --- |
-| 1. Remaining label/path sheet | Finish shared ordered direct/path glyph painting, then dashed/non-scaling strokes; resolve span/path length and rotation propagation, closed anchors and fitting. Reuse qualified direct lists/rotation, word spacing and decorations, the completed [layout guide](tests/Research/font-layout-diagram/README.md), glyph fragments, face/size intervals and source maps. | Finish the unchanged [sheet](tests/Research/remaining-label-path-sheet/README.md) against its frozen healthy Windows/Linux triples, preserving all three exact controls and supplied-program use proofs. The sheet includes both length policies, closed-path anchors, word spacing, solid decorations, required path stroke modes and the 18px doubled-width eacute from [native diagnostics](artifacts/font-layout-diagram-20261014/NATIVE-MASK-CHECK.md). Every declared output must become exact, with affected bounded failures protected. The G9 checklist also owns composite flags and private validation. |
+| 1. Remaining label/path sheet | Resolve span/path length and rotation propagation, closed anchors and fitting. Reuse qualified ordered/dashed/non-scaling direct/path strokes, direct lists/rotation, word spacing and decorations, the completed [layout guide](tests/Research/font-layout-diagram/README.md), glyph fragments, face/size intervals and source maps. | Finish the unchanged [sheet](tests/Research/remaining-label-path-sheet/README.md) against its frozen healthy Windows/Linux triples, preserving all five exact controls and supplied-program use proofs. The sheet includes both length policies, closed-path anchors, word spacing, solid decorations, required path stroke modes and the 18px doubled-width eacute from [native diagnostics](artifacts/font-layout-diagram-20261014/NATIVE-MASK-CHECK.md). Every declared output must become exact, with affected bounded failures protected. The G9 checklist also owns composite flags and private validation. |
 | 2. Affine image-map sheet | Uniform fractional placement/opacity and remaining affine/resource/clip/mask image maps. Reuse completed varied-pixel decode, CSS cascade, meet/slice/none sampling and G2/G5 replay. | Freeze a sheet placing the same small PNG with fractional meet/slice/none, rotation/skew/reflection, local use, clip and partial mask. Include uniform content where its separate fast path exposes a gap; use alignment controls only for independent missing map behavior. Make all outputs exact on both platforms, preserve decode/resource failures and finish qualification. Wider G7 closes only at its finite exit. |
 | 3. Effects/marker sheet | Remaining finite G8 graph/region/color-space/maps, marker units, CSS overflow and closure. Reuse qualified rescaling, graph composition, G5 scopes and only the G7/G9 slices needed by this document. | Freeze a sheet demonstrating listed mechanisms without existing acceptance, including [CSS marker overflow](tests/Research/path-marker-content/marker-css-overflow-boundary.svg). Make every declared output exact on both platforms and preserve graph/resource failures. Close only the covered mechanisms; the finite G8 exit still applies. |
 
@@ -290,9 +285,9 @@ completed work; their exact cases do not close dependent tile content.
   length/percentage startOffset, anchors/tangents, method align, spacing exact;
   curved/transformed source paths, measured out-of-range/zero-length outcomes.
   Keep admitted curved labels and scalar positioned spans closed. Dashed,
-  non-scaling, stroke-before-fill and text-path strokes require finished exact
-  acceptance and qualification; ordered solid direct/path painting is in progress
-  above. Uniformly mapped direct solid strokes are already qualified.
+  non-scaling, stroke-before-fill and text-path strokes now have exact focused
+  witnesses above. Preserve their shared replay and preceding uniformly mapped
+  solid-stroke qualification; wider admitted maps remain subject to the finite exit.
 - Finish queued valid composite flags: OVERLAP_COMPOUND,
   SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET, using bounded public
   synthetic component fixtures for overlap and transformed offsets. Parent-hint
@@ -374,11 +369,12 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/decorations-qualified-results.json)
-  records complete qualification of **7,656 tests/platform** in **73.2s Windows**
-  and **233.7s Linux**, including normal incremental build and command startup.
-  Both meet the target. The exact-revision hosted build plus complete test steps
-  are **2m19s Windows / 1m55s Linux**; separate environments imply no speedup claim.
+  The [latest receipt](artifacts/maintenance-review-20261012/ordered-strokes-qualified-results.json)
+  records complete qualification of **7,668 tests/platform** in **73.3s Windows**
+  and **254.0s Linux**, including normal incremental build and command startup.
+  Both meet the target. The preceding decoration revision’s hosted build plus
+  complete test steps were **2m19s Windows / 1m55s Linux**; separate environments
+  imply no speedup claim. Record the new substantive revision’s terminal CI once.
   Prior hosted observations and the local Linux compiler
   overrun remain in the [preceding receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json),
   with their distinct timing definitions; they are not a new execution task.

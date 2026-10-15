@@ -13,7 +13,7 @@ internal readonly record struct SvgTextInkGap(double Left, double Right) : IComp
 /// <summary>Finds bounded unhinted glyph intercepts for a decoration stripe; callers own the aggregate gap list and reuse existing contour owners.</summary>
 internal static class SvgTextInkIntercepts
 {
-    internal static void Collect(SvgTextRun run, SvgTextDecorationFragment fragment, SvgPositionedGlyph first,
+    internal static void Collect(SvgTextRun run, SvgTextPaintFragment fragment, SvgPositionedGlyph first,
         double stripeTop, double stripeBottom, double dilation, BudgetedParserList<SvgTextInkGap> gaps,
         RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {

@@ -916,7 +916,8 @@ internal sealed class SvgGlyphGeometry : IDisposable
         SvgGlyphGeometry geometry = Create(contours, color, font, position, fontSize, glyphMap, budget);
         geometry.StrokePaint = paint;
         double scale = Math.Max(Math.Sqrt(glyphMap.A * glyphMap.A + glyphMap.B * glyphMap.B), Math.Sqrt(glyphMap.C * glyphMap.C + glyphMap.D * glyphMap.D));
-        geometry.StrokeBoundsInflation = 2 + (paint.Resolve()?.Width ?? 0) * .5 * scale * Math.Max(1, SvgStrokeStyleSyntax.ParseMiterLimit(paint.Style.Miterlimit));
+        double strokeScale = paint.NonScaling ? 1 / paint.FontScale : 1;
+        geometry.StrokeBoundsInflation = 2 + (paint.Resolve()?.Width ?? 0) * .5 * scale * strokeScale * Math.Max(1, SvgStrokeStyleSyntax.ParseMiterLimit(paint.Style.Miterlimit));
         return geometry;
     }
 

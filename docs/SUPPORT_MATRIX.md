@@ -1,3 +1,30 @@
+## Ordered, dashed and non-scaling label/path strokes (2026-10-15)
+
+The two new [label/path controls](../tests/Research/remaining-label-path-sheet/README.md)
+are exact against unchanged healthy Windows/Linux capture triples. Direct text
+shares fill/stroke passes over each normalized paint fragment; text paths paint
+each placed glyph in order. Existing compact fragments serve strokes and
+filled-label decorations, with no fragment array for ordinary fill-only labels.
+
+Solid supplied-font strokes now admit either paint order on direct labels and
+local text paths. Finite dash arrays/offsets and butt/round/square caps reuse the
+shared bounded dash/stroke machinery. Non-scaling text strokes use the native
+element screen-font scale, separate from character maps; nonuniform direct text
+also retains native effective font-size precision before shaping and raster work.
+The original quadratic source is retained for dash measurement. Solid Windows
+outline replay, Linux fitting and existing preblend/bitmap distinctions remain.
+Empty dashed glyphs paint nothing; an all-zero font dash effect falls back to a
+solid outline without changing established vector-stroke behavior.
+
+The bank is **5/5 exact controls**. The unchanged whole sheet next rejects span
+rotation on text paths; length propagation, closed anchors, fitting and remaining
+finite G9 work stay required. Stroked decorations and decorated text paths remain
+explicit unsupported outcomes and required gaps. This correction supersedes the
+older dashed/non-scaling/stroke-before-fill/path-stroke gates below, without a G9
+closure or a newly completed document. See the
+[checkpoint receipt](../artifacts/maintenance-review-20261012/ordered-strokes-qualified-results.json)
+for complete qualification and categorized assertion migrations.
+
 ## Solid filled-label decorations (2026-10-15)
 
 The retained underline/overline/line-through control is exact on Windows/Linux
@@ -14,8 +41,8 @@ line-through follows it. Ownership, work denial, cancellation and retry have
 ordinary/rotated controls.
 
 The [label/path bank](../tests/Research/remaining-label-path-sheet/README.md) has
-**3/3 exact controls**. Its unchanged whole sheet next rejects at the existing
-stroke-before-fill path label. Rotation/length propagation and the other finite
+**3/3 exact controls** at that checkpoint. The ordered-stroke correction above
+supersedes its whole-sheet admission gate. Rotation/length propagation and the other finite
 G9 gates remain independently open. Stroked decorations and decorated text paths
 still reject explicitly; the filled-label witness claims no wider G9 closure or
 feature deferral.
@@ -1294,8 +1321,8 @@ references; four additional canonical [merge controls](../tests/Research/filter-
 protect the new semantics. Direct uniformly mapped solid text fill/stroke and
 filtered source text retain the preceding qualified glyph route. Earlier broad
 statements that every painted text stroke or merge rejects are superseded by
-these qualified slices. Dashed/non-scaling/stroke-before-fill/path text strokes,
-fractional offsets, mixed primitive color spaces, remaining finite effects and
+these qualified slices. The later ordered-stroke correction above closes its
+named stroke gates; fractional offsets, mixed primitive color spaces, remaining finite effects and
 other promised container/paint/map combinations stay open under PLAN.md.
 
 ## Non-scaling curved coverage (2026-10-13)

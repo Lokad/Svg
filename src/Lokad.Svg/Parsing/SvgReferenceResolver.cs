@@ -277,7 +277,7 @@ internal static class SvgReferenceResolver
                 using SvgParsedGeometry native = lowering.LowerNativeStrokeCommands(commands, retained.SceneMap,
                     deviceWidth, deviceWidth, miterLimit, SvgStrokeCap.Butt, stroke.Join, null, 0, null,
                     true, nativeColor, reference.IsPainted, state.OutputMagnification, SvgAffineTransform.Identity, clipFrame, state.Budget,
-                    retained.StrokeStyle?.Shape ?? SvgAuthoredStrokeShape.Path);
+                    retained.StrokeStyle?.Shape ?? SvgAuthoredStrokeShape.Path, SvgNativeStrokeResolution.MappedPath);
                 try { return native.Geometries.ToArray(); }
                 catch { native.Discard(); throw; }
             }

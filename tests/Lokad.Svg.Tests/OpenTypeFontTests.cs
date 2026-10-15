@@ -2665,9 +2665,9 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Theory]
-    [InlineData("<g stroke='red' stroke-dasharray='1 1'><text font-family='Unused'>x</text></g>")]
+    [InlineData("<g stroke='red' stroke-dasharray='1% 1'><text font-family='Unused'>x</text></g>")]
     [InlineData("<g opacity='0.5'><g opacity='0.5'><text font-family='Unused'>x</text></g></g>")]
-    [InlineData("<text font-family='Unused' stroke='red' stroke-dasharray='1 1'>x</text>")]
+    [InlineData("<text font-family='Unused' stroke='red' stroke-dasharray='1% 1'>x</text>")]
     [InlineData("<text font-family='Unused' fill='not-a-color'>x</text>")]
     public async Task Svg_based_snapshot_matches_paint_and_opacity_admission_before_font_acquisition(string content)
     {
@@ -2681,6 +2681,28 @@ public sealed partial class OpenTypeFontTests
 
         Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
         Assert.Equal(0, source.RequestCount);
+    }
+
+    [Theory]
+    [InlineData("<g stroke='red' stroke-dasharray='1 1'><text font-family='Unused'>x</text></g>")]
+    [InlineData("<text font-family='Unused' stroke='red' stroke-dasharray='1 1'>x</text>")]
+    public async Task Original_dashed_text_inputs_acquire_the_selected_program_and_lower(string content)
+    {
+        byte[] bytes = CreateTriangleFont();
+        OpenTypeFontMetrics metrics = OpenTypeFont.ParseMetrics(bytes, CancellationToken.None);
+        int cmap = Assert.IsType<OpenTypeTableRange>(metrics.Cmap).Offset + 12;
+        WriteUInt16(bytes, cmap + 14, 'x');
+        WriteUInt16(bytes, cmap + 20, 'x');
+        WriteInt16(bytes, cmap + 24, 1 - 'x');
+        string hash = Convert.ToHexString(SHA256.HashData(bytes));
+        string manifest = "{ \"packId\": \"test-pack\", \"files\": [{ \"relativePath\": \"files/example.ttf\", \"byteSize\": " + bytes.Length + ", \"sha256\": \"" + hash + "\" }], \"families\": [{ \"requestedFamily\": \"Unused\", \"resolvedFamily\": \"Unused\", \"relativeFontFile\": \"files/example.ttf\" }] }";
+        SvgFontPackCatalog catalog = SvgFontPackCatalog.Parse(System.Text.Encoding.UTF8.GetBytes(manifest), "test-pack");
+        var source = new CountingFontSource(bytes);
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg'>" + content + "</svg>");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, new CountingFontProvider(source), CancellationToken.None);
+        Assert.Equal("Unused", Assert.Single(snapshot.Fonts).Resolution.Resolution.Request.Family);
+        Assert.True(SvgConverter.ConvertToPng(input, new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot), CancellationToken.None).Length > 0);
+        Assert.Equal(1, source.RequestCount);
     }
 
     [Fact]

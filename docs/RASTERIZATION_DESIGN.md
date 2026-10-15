@@ -1,3 +1,54 @@
+## Shared ordered glyph paint and retained dash curves (2026-10-15)
+
+The unchanged label/path sheet advances to span rotation on text paths. Two new
+controls, frozen before their production changes, are exact on Windows/Linux;
+the bank has five exact controls and no new completed whole document. Original
+SVG/font/reference bytes, options and limits stay unchanged. Qualification and
+assertion migrations are recorded in the
+[receipt](../artifacts/maintenance-review-20261012/ordered-strokes-qualified-results.json).
+
+`SvgTextPaintFragment` generalizes the existing bounded decoration fragment;
+`SvgTextGlyphPainter` shares direct/path fill and stroke replay. Direct runs
+paint a fragment's stroke and fill passes in declared order. Path glyphs each
+finish their ordered passes before the next glyph. Treating a path run as one
+paint fragment left a single one-level Windows pixel at neighboring ink, despite
+exact separate fill-only and stroke-only diagnostics. Per-glyph order closes it.
+Empty contours and out-of-range path glyphs retain source indexing without
+painting or indexing an absent stroke outline. Scene owners adopt completed
+geometry, while borrowed font bytes and temporary contours keep their lifetimes.
+
+Dashed glyphs retain their original quadratic curves for the existing native dash
+measurement/cutting and stroke constructor. Converting the Windows dash source
+to cubics left 73 differing pixels on the control's initial curved glyph; the
+original quadratic source closes the difference. This is a paint-stage source
+distinction, independent of character, document or observed pixel coordinates.
+Solid Windows strokes retain their established cubic route; conversion precedes
+mapping. Glyph stroke records use native unit construction resolution, distinct
+from ordinary path records derived from the canvas map. Caps, joins, dash phase,
+size/work limits and cleanup share existing kernels rather than per-shape code.
+
+Non-scaling font strokes adjust their width and dash lengths using the element's
+screen-font scale, excluding per-character rotations and textLength stretching.
+Nonuniform direct text exposed the native hundredth-pixel effective font-size
+rule: metrics and raster preparation must use the same truncated size. Resolving
+the element scale and font precision closes both platform differences. New source
+notices retain the original BSD terms; no native/runtime dependency is introduced.
+A healthy Windows zero-dash diagnostic is identical to solid font strokes; this
+fallback stays in font painting and preserves the established vector zero-dash
+regression. Completely empty dash output returns an empty owned path safely.
+
+Targeted mode errors fail before acquisition/output. Positive tests preserve the
+four original formerly rejected mode/path inputs, and both original dashed-font
+acquisition inputs now use an explicitly supplied synthetic x glyph. The latter
+negative rows retain unsupported percentage dash values. Material denial,
+cancellation/token propagation, release and retry use the retained public control.
+Private stage captures, DirectWrite diagnostics, discarded models and pinned
+source reads remain in `artifacts/remaining-label-path-20261015/`.
+
+G9 remains open for path rotation/length propagation, closed anchors, fitting,
+composites, decorated strokes/paths and private validation under PLAN.md. No
+reference refresh, tolerance or feature-scope deferral accompanies this change.
+
 ## Solid label decorations over native glyph fragments (2026-10-15)
 
 The original 330×160 control matches unchanged healthy Windows/Linux triples.

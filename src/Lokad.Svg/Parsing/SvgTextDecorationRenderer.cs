@@ -11,13 +11,13 @@ internal static class SvgTextDecorationRenderer
     internal static void Emit(SvgTextRun run, SvgAffineTransform placement, SvgDocumentState state, SvgColor fallbackColor,
         bool lineThrough, int maximumCommands, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
-        if (run.DecorationFragments.IsEmpty) return;
+        if (run.PaintFragments.IsEmpty) return;
         using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, work, token);
         using BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Geometry, work, token);
         SvgOrthogonalGeometryLowering lowering = new(points, ends, "text decoration", false, false, maximumCommands, budget, work, token);
         try
         {
-            foreach (SvgTextDecorationFragment fragment in run.DecorationFragments)
+            foreach (SvgTextPaintFragment fragment in run.PaintFragments)
             {
                 work.Consume(token);
                 SvgTextGlyphPaint glyphPaint = run.GetGlyphPaint(fragment.Start, fallbackColor);
@@ -52,7 +52,7 @@ internal static class SvgTextDecorationRenderer
         }
         finally { lowering.Dispose(); }
 
-        static void Line(ref SvgOrthogonalGeometryLowering lowering, SvgTextRun run, SvgTextDecorationFragment fragment, SvgPositionedGlyph first,
+        static void Line(ref SvgOrthogonalGeometryLowering lowering, SvgTextRun run, SvgTextPaintFragment fragment, SvgPositionedGlyph first,
             double x, double y, double width, double height, double scale, SvgAffineTransform map, SvgColor color,
             SvgDocumentState state, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
         {

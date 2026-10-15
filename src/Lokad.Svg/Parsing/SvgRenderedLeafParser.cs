@@ -305,12 +305,11 @@ internal static class SvgRenderedLeafParser
                         }
                         if (!hasFill && !hasStroke && !hasDecoration) continue;
                         if (textPath is not null && hasDecoration) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Decorations on retained text paths are not implemented.");
-                        if (textPath is not null && hasStroke) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes on retained text paths are not implemented.");
                         if (fontSnapshot is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "SVG text requires a prepared font snapshot.");
                         SvgTextStyle runStyle = textPath is {} anchoredPath ? textStyle with { Y = 0, Anchor = anchoredPath.Anchor ?? textStyle.Anchor } : textStyle;
                         RenderBudget.BudgetReservation? pendingTextOwner = textPath is null ? null : budget.Reserve(256, SvgMemoryCategory.Parser);
                         SvgTextRun run;
-                        double textMetricScale = state.OutputTextScale * (textPlacement.TryGetUniformScale(out double uniformTextScale) ? uniformTextScale : 1);
+                        double textMetricScale = state.OutputTextScale * SvgGlyphDeviceMetrics.GetScreenScale(textPlacement);
                         SvgGlyphDeviceMetrics? deviceMetrics = OperatingSystem.IsWindows() ? new(textMetricScale, SvgGlyphMetricTarget.Windows, textPath is not null)
                             : OperatingSystem.IsLinux() ? new(textMetricScale, SvgGlyphMetricTarget.Linux, textPath is not null) : null;
                         try { run = SvgTextRunBuilder.Create(runStyle, text.Value, text.LetterSpacingSpans, text.PositionAdjustments, extracted.PaintSpans.Items, extracted.FontSpans.Items, textPaint.GlyphPaint, deviceMetrics, fontSnapshot, budget, workCounter, cancellationToken); }
@@ -332,52 +331,7 @@ internal static class SvgRenderedLeafParser
                         using (run)
                         {
                             SvgTextDecorationRenderer.Emit(run, textPlacement, state, textElement.Presentation.Color, false, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
-                            if (hasFill)
-                            {
-                                int glyphIndex = 0;
-                                foreach (SvgGlyphContourStorage contours in SvgTextRunBuilder.GetGlyphContours(run, textPlacement, budget, workCounter, cancellationToken))
-                                {
-                                    using (contours)
-                                    {
-                                        SvgTextGlyphPaint glyphPaint = run.GetGlyphPaint(glyphIndex, textElement.Presentation.Color);
-                                        SvgGlyphFontStyle glyphFont = run.GetGlyphFont(glyphIndex);
-                                        (SvgPositionedGlyph positionedGlyph, SvgAffineTransform sourceMap) = run.GetGlyphPlacement(glyphIndex++, textPlacement);
-                                        if (!glyphPaint.HasFill) continue;
-                                        double sourceFontSize = glyphFont.FontSize;
-                                        if (sourceMap != SvgAffineTransform.Identity && sourceMap.TryGetUniformScale(out double sourceScale) && sourceScale > 0)
-                                        {
-                                            positionedGlyph = positionedGlyph with { X = positionedGlyph.X * sourceScale, Y = positionedGlyph.Y * sourceScale };
-                                            sourceFontSize *= sourceScale;
-                                            sourceMap = SvgAffineTransform.FromMatrix(sourceMap.A / sourceScale, sourceMap.B / sourceScale, sourceMap.C / sourceScale, sourceMap.D / sourceScale, sourceMap.E, sourceMap.F);
-                                            // An axial scale leaves an ordinary horizontal
-                                            // strike after its size is folded into the font.
-                                            if (sourceMap.IsTranslation)
-                                            {
-                                                positionedGlyph = positionedGlyph.Translate(sourceMap);
-                                                sourceMap = SvgAffineTransform.Identity;
-                                            }
-                                        }
-                                        SvgGlyphGeometry glyph = SvgGlyphGeometry.Create(contours, glyphPaint.Color, glyphFont.Font, positionedGlyph, sourceFontSize, sourceMap, budget);
-                                        try { state.Scene.AddGeometry(SvgPaintRecording.RecordGlyph(glyph, state, workCounter, cancellationToken)); }
-                                        catch { glyph.Dispose(); throw; }
-                                    }
-                                }
-                            }
-                            if (hasStroke)
-                            {
-                                for (int glyphIndex = 0; glyphIndex < run.Glyphs.Length; glyphIndex++)
-                                {
-                                    workCounter.Consume(cancellationToken);
-                                    SvgTextGlyphPaint paint = run.GetGlyphPaint(glyphIndex, textElement.Presentation.Color);
-                                    if (paint.Stroke is not {} strokePaint || !paint.HasStroke) continue;
-                                    (SvgPositionedGlyph position, SvgAffineTransform glyphMap) = run.GetGlyphPlacement(glyphIndex, textPlacement);
-                                    SvgGlyphFontStyle glyphFont = run.GetGlyphFont(glyphIndex);
-                                    using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(glyphFont.Font, position, glyphFont.FontSize, glyphMap, budget, workCounter, cancellationToken);
-                                    SvgGlyphGeometry geometry = SvgGlyphGeometry.CreateStroke(contours, strokePaint, glyphFont.Font, position, glyphFont.FontSize, glyphMap, budget);
-                                    try { state.Scene.AddGeometry(SvgPaintRecording.RecordGlyph(geometry, state, workCounter, cancellationToken)); }
-                                    catch { geometry.Dispose(); throw; }
-                                }
-                            }
+                            SvgTextGlyphPainter.Emit(run, textPlacement, [], null, textElement.Presentation.Color, state, budget, workCounter, cancellationToken);
                             SvgTextDecorationRenderer.Emit(run, textPlacement, state, textElement.Presentation.Color, true, limits.MaximumPathCommands, budget, workCounter, cancellationToken);
                         }
                     }

@@ -1,0 +1,8 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="108">
+<rect width="300" height="108" fill="white"/>
+<defs><path id="baseline" d="M12 82 H284"/></defs>
+<g font-family="Example" font-size="18" fill="#f6e7c5" stroke="#63558b" stroke-width=".7" paint-order="stroke fill">
+<text x="12" y="32">AV path label</text>
+<text><textPath href="#baseline">AV path label</textPath></text>
+</g></svg>

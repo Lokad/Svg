@@ -61,19 +61,18 @@ internal readonly record struct SvgTextStrokePaint(SvgInheritedStrokeStyle Style
 {
     internal SvgPaintOrder PaintOrder { get; init; }
     internal bool NonScaling { get; init; }
+    /// <summary>Borrows the element's native screen-font scale, excluding character rotations and textLength stretching.</summary>
+    internal double FontScale { get; init; } = 1;
     internal SvgStroke? Resolve()
     {
         double width = SvgStrokeStyleSyntax.ParseStrokeWidth(Style.Width, "text");
         if (width == 0) return null;
-        if (NonScaling) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Non-scaling direct text strokes are not implemented.");
-        if (PaintOrder is not SvgPaintOrder.FillStrokeMarkers and not SvgPaintOrder.FillMarkersStroke and not SvgPaintOrder.MarkersFillStroke)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Stroke-before-fill direct text paint is not implemented.");
         SvgStrokeStyleSyntax.RejectPaintServerStroke(Style.Stroke, "text");
         _ = SvgStrokeStyleSyntax.ParseLinecap(Style.Linecap);
         _ = SvgStrokeStyleSyntax.ParseLinejoin(Style.Linejoin, true);
         _ = SvgStrokeStyleSyntax.ParseMiterLimit(Style.Miterlimit);
-        if (Style.Dasharray is string dash && !dash.Trim().Equals("none", StringComparison.OrdinalIgnoreCase))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Dashed direct text strokes are not implemented.");
+        _ = SvgStrokeStyleSyntax.ParseDasharray(Style.Dasharray);
+        _ = SvgStrokeStyleSyntax.ParseDashoffset(Style.Dashoffset);
         SvgColor color = SvgPaintResolver.ResolveStrokeColor(Style.Stroke ?? "none", null, Paint, SvgRootParser.CssNamedColors);
         color = SvgPaintResolver.ApplyOpacity(color, Style.StrokeOpacity is null ? (byte)255 : SvgColorParser.ParseOpacity(Style.StrokeOpacity));
         return new(SvgPaintResolver.ApplyOpacity(color, Opacity), width);

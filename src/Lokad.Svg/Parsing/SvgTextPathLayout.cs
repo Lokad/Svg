@@ -60,13 +60,14 @@ internal static class SvgTextPathLayout
             double offset = pending.Reference.IsPercentage ? baseline.Length * (pending.Reference.StartOffset / 100) : pending.Reference.StartOffset * baseline.OffsetScale;
             if (!double.IsFinite(offset)) throw new SvgException(SvgErrorCode.LimitExceeded, "The resolved text-path offset is not finite.");
             int tail = state.Scene.CommandCount;
+            using BudgetedParserList<SvgPlacedTextGlyph> placements = new(state.Budget, SvgMemoryCategory.Geometry, work, token);
             int glyphIndex = 0;
             foreach (SvgPositionedGlyph glyph in pending.Run.Glyphs)
             {
                 work.Consume(token);
                 SvgGlyphFontStyle glyphFont = pending.Run.GetGlyphFont(glyphIndex);
                 SvgTextGlyphPaint paint = pending.Run.GetGlyphPaint(glyphIndex++, pending.Color);
-                if (!paint.HasFill) continue;
+                if (!paint.IsPainted) { placements.Add(default); continue; }
                 double distance = offset + glyph.X;
                 double midpoint = distance + glyph.Advance / 2;
                 if (!measured.IsHorizontal)
@@ -74,7 +75,7 @@ internal static class SvgTextPathLayout
                     // half-width before scalar division and the path offset.
                     midpoint = ((float)(glyph.X * state.OutputTextScale) + (float)(glyph.Advance * state.OutputTextScale) / 2) / (float)state.OutputTextScale + (float)offset;
                 if (!double.IsFinite(distance) || !double.IsFinite(midpoint)) throw new SvgException(SvgErrorCode.LimitExceeded, "Text-path placement exceeds the supported range.");
-                if (baseline.Length == 0 || midpoint < 0 || midpoint > baseline.Length) continue;
+                if (baseline.Length == 0 || midpoint < 0 || midpoint > baseline.Length) { placements.Add(default); continue; }
                 SvgPositionedGlyph placed = measured.IsHorizontal
                     ? glyph with { X = baseline.X + distance, Y = baseline.Y + glyph.Y }
                     : glyph with { X = 0, Y = 0 };
@@ -96,11 +97,9 @@ internal static class SvgTextPathLayout
                     if (glyphMap == SvgAffineTransform.Identity) placed = placed.Translate(pending.Placement);
                     else glyphMap = pending.Placement.ComposeChecked(glyphMap);
                 }
-                using SvgGlyphContourStorage contours = SvgGlyphOutline.GetContourStorage(glyphFont.Font, placed, glyphFont.FontSize, glyphMap, state.Budget, work, token);
-                SvgGlyphGeometry geometry = SvgGlyphGeometry.Create(contours, paint.Color, glyphFont.Font, placed, glyphFont.FontSize, glyphMap, state.Budget);
-                try { state.Scene.AddGeometry(SvgGeometry.FromGlyphContours(geometry) with { LeafMask = pending.ViewportClip }); }
-                catch { geometry.Dispose(); throw; }
+                placements.Add(new(placed, glyphMap, true));
             }
+            SvgTextGlyphPainter.Emit(pending.Run, pending.Placement, placements.AsSpan(), pending.ViewportClip, pending.Color, state, state.Budget, work, token);
             int inserted = state.Scene.ResolvePaintPlaceholder(pending.CommandIndex, tail);
             SvgReferenceResolver.ShiftPendingCommandRanges(state, pending.CommandIndex + 1, inserted, true, work, token);
             for (int useIndex = 0; inserted != 0 && useIndex < state.PendingUses.Count; useIndex++)

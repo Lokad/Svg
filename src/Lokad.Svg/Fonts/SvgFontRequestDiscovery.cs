@@ -320,8 +320,6 @@ internal static class SvgFontRequestDiscovery
                         if (hasRenderable)
                         {
                             paint.ValidateEmission();
-                            if (textPathDepth >= 0 && paint.GlyphPaint.HasStroke)
-                                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Strokes on retained text paths are not implemented.");
                             if (textPathDepth >= 0 && paint.Decoration is not null)
                                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Decorations on retained text paths are not implemented.");
                             activeTextPainted |= paint.GlyphPaint.IsPainted;

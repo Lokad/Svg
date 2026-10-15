@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Retained whole CC0 label/path sheet plus focused nested-list/rotation, word-spacing and solid-decoration controls for the finite G9 exit. References precede each production correction; whole-sheet gates remain required gaps.",
+  "purpose": "Retained whole CC0 label/path sheet plus orthogonal positioning, spacing, decoration and direct/path stroke controls for the finite G9 exit. References precede each production correction; whole-sheet gaps remain required.",
   "fontPack": "../font-layout-diagram/font-pack.json",
   "fontPrograms": [
     {
@@ -209,6 +209,104 @@
         },
         {
           "pngSha256": "16d10d35bb0a3893f3f760cc24ae6ff14eba4bc88183018c90f6ecc4ef9a9215",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "stroke-paint-order",
+      "input": "stroke-paint-order.svg",
+      "width": 300,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "d0d1083550b6dba87d5fbf2fc4eee5967639d5458afe9f37001c26a1ad27078a",
+      "selection": "Focused control for the retained whole sheet text-stroke gate: shared stroke-before-fill order on ordinary labels and local straight text paths with the unchanged supplied face. References precede production correction.",
+      "reference": "references/stroke-paint-order.png",
+      "referenceSha256": "ed4ce4c029b3d24da22f9a3f27c8d0fe42132ce1c86015eef7750fac56d8c43d",
+      "captures": [
+        {
+          "pngSha256": "ed4ce4c029b3d24da22f9a3f27c8d0fe42132ce1c86015eef7750fac56d8c43d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ed4ce4c029b3d24da22f9a3f27c8d0fe42132ce1c86015eef7750fac56d8c43d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ed4ce4c029b3d24da22f9a3f27c8d0fe42132ce1c86015eef7750fac56d8c43d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/stroke-paint-order.png",
+      "linuxReferenceSha256": "15c63878cfad4a8d047bc1849abcb58ab4766d4105a4e68c59567438cf73e52d",
+      "linuxCaptures": [
+        {
+          "pngSha256": "15c63878cfad4a8d047bc1849abcb58ab4766d4105a4e68c59567438cf73e52d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "15c63878cfad4a8d047bc1849abcb58ab4766d4105a4e68c59567438cf73e52d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "15c63878cfad4a8d047bc1849abcb58ab4766d4105a4e68c59567438cf73e52d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "stroke-modes",
+      "input": "stroke-modes.svg",
+      "width": 400,
+      "height": 224,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "cfeec768da21462482af571c2ce111130d34f6ea56ad14d8821075c44e9206f8",
+      "selection": "Focused control for required dashed and non-scaling direct/path strokes, including dash cap/offset and affine placement. Same supplied face; references precede production correction.",
+      "reference": "references/stroke-modes.png",
+      "referenceSha256": "240b2072c65ff2d84d7fbfc170d7469a932c429179ed491487b0b4bc0359e53d",
+      "captures": [
+        {
+          "pngSha256": "240b2072c65ff2d84d7fbfc170d7469a932c429179ed491487b0b4bc0359e53d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "240b2072c65ff2d84d7fbfc170d7469a932c429179ed491487b0b4bc0359e53d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "240b2072c65ff2d84d7fbfc170d7469a932c429179ed491487b0b4bc0359e53d",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxReference": "references/linux64/stroke-modes.png",
+      "linuxReferenceSha256": "1622b30c1fbe5fc3d2e186e1eaf28110c0cdd70bec746021b1d8f578b9cb9fb7",
+      "linuxCaptures": [
+        {
+          "pngSha256": "1622b30c1fbe5fc3d2e186e1eaf28110c0cdd70bec746021b1d8f578b9cb9fb7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1622b30c1fbe5fc3d2e186e1eaf28110c0cdd70bec746021b1d8f578b9cb9fb7",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1622b30c1fbe5fc3d2e186e1eaf28110c0cdd70bec746021b1d8f578b9cb9fb7",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

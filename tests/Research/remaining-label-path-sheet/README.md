@@ -1,12 +1,12 @@
 # Remaining supplied-font label/path sheet
 
-One complete CC0 document and three separate mechanism controls retain unchanged
+One complete CC0 document and five separate mechanism controls retain unchanged
 sources, options and healthy stable native capture triples on Windows/Linux.
-The focused controls are now 3/3 exact on both platforms. The whole sheet advances
-through nested lists/rotation, word spacing and filled-label decorations. Font
-discovery next rejects its stroke-before-fill path label; path rotation/length
-propagation and the other declared gates remain independently open. It remains
-incomplete.
+The focused controls are 5/5 exact on both platforms. The whole sheet advances
+through positioning, word spacing, filled-label decorations and text-stroke
+admission. Discovery next rejects span rotation on text paths; length propagation,
+closed anchors, fitting and the other declared G9 gaps remain open. The whole
+sheet remains incomplete.
 All listed G9 requirements remain required.
 
 The whole sheet covers nested coordinate/rotation lists, mixed supplied faces,
@@ -35,6 +35,23 @@ paths still reject explicitly; the filled-label witness supplies no wider G9
 closure or feature deferral.
 The [decoration qualification receipt](../../../artifacts/maintenance-review-20261012/decorations-qualified-results.json)
 records complete platform results and preserved prior exact cases.
+
+The stroke-order control distinguishes shared direct-run paint passes from ordered
+per-glyph path painting at neighboring ink. The stroke-modes control covers direct
+and curved-path dashes, round caps/offsets, nonuniform non-scaling direct text and
+non-scaling curved text. Both retain original references captured before their
+production changes. Shared source stroking keeps the platform's solid-outline
+route and measures dashes on the original quadratic curves. Element screen-font
+scale and hundredth-pixel effective font size apply before shaping and raster
+preparation; character rotation and textLength stretching remain separate.
+Zero/empty dash results, invalid mode errors and material denial/cancel/retry have
+focused regressions. The correction adds no support-group or completed-document
+claim; stroked decorations and decorated text paths remain required gaps.
+
+The [stroke qualification receipt](../../../artifacts/maintenance-review-20261012/ordered-strokes-qualified-results.json)
+records 7,668 passing tests per platform, unchanged prior cases and explicit
+migration of obsolete admission assertions. Normal build plus complete tests
+remain under ten minutes per platform.
 
 Programs reuse the unchanged standalone public Noto Sans Regular and Noto Sans
 Mono Bold face-0 assets, existing OFL notices and provenance. The catalog is shared

@@ -57,7 +57,7 @@ internal static class SvgGlyphLayout
         => CreateStorage(font, text, fontSize, originX, originY, letterSpacing, 0, false, letterSpacingSpans, positionAdjustments, paintSpans, fontSpans, anchor, deviceMetrics, budget, sourceElementId, workCounter, cancellationToken);
 
     /// <summary>Applies word spacing to retained separator advances using the existing normalized spacing intervals and glyph owner.</summary>
-    internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, double wordSpacing, bool retainDecorationFragments, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextResolvedFontSpan> fontSpans, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
+    internal static SvgPositionedGlyphStorage CreateStorage(SvgPreparedFont font, string text, double fontSize, double originX, double originY, double letterSpacing, double wordSpacing, bool retainPaintFragments, ReadOnlySpan<SvgTextLetterSpacingSpan> letterSpacingSpans, ReadOnlySpan<SvgTextPositionAdjustment> positionAdjustments, ReadOnlySpan<SvgTextPaintSpan> paintSpans, ReadOnlySpan<SvgTextResolvedFontSpan> fontSpans, SvgTextAnchor anchor, SvgGlyphDeviceMetrics? deviceMetrics, RenderBudget budget, string sourceElementId, ParserWorkCounter? workCounter, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(font);
         ArgumentNullException.ThrowIfNull(text);
@@ -107,7 +107,7 @@ internal static class SvgGlyphLayout
         RenderBudget.BudgetReservation? fragmentReservation = null;
         try
         {
-            using BudgetedParserList<SvgTextDecorationFragment>? fragments = retainDecorationFragments ? new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken) : null;
+            using BudgetedParserList<SvgTextPaintFragment>? fragments = retainPaintFragments ? new(budget, SvgMemoryCategory.Geometry, workCounter, cancellationToken) : null;
             var glyphs = new SvgPositionedGlyph[glyphCount];
             SvgTextGlyphPaint[] glyphPaints = [];
             SvgGlyphFontStyle[] glyphFonts = [];
@@ -346,7 +346,7 @@ internal static class SvgGlyphLayout
                 chunkStart = chunkEnd;
                 chunkShift += chunkWidth - width;
             }
-            OwnedParserArray<SvgTextDecorationFragment> retainedFragments = fragments is null ? new([], null) : fragments.Detach();
+            OwnedParserArray<SvgTextPaintFragment> retainedFragments = fragments is null ? new([], null) : fragments.Detach();
             fragmentReservation = retainedFragments.Reservation;
             SvgPositionedGlyphStorage result = new(glyphs, positionedGlyphCount, reservation, glyphPaints, paintReservation, glyphFonts, fontReservation, glyphRotations, rotationReservation, retainedFragments.Items, fragmentReservation)
             { NaturalWidth = deviceMetrics is { } naturalMetrics ? naturalMetrics.RoundWidth(x - originX) : x - originX };
@@ -425,7 +425,7 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
     private RenderBudget.BudgetReservation? _fontReservation;
     private readonly double[] _glyphRotations;
     private RenderBudget.BudgetReservation? _rotationReservation;
-    private readonly SvgTextDecorationFragment[] _decorationFragments;
+    private readonly SvgTextPaintFragment[] _paintFragments;
     private RenderBudget.BudgetReservation? _fragmentReservation;
 
     internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation)
@@ -440,7 +440,7 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
     internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation, SvgTextGlyphPaint[] glyphPaints, RenderBudget.BudgetReservation? paintReservation, SvgGlyphFontStyle[] glyphFonts, RenderBudget.BudgetReservation? fontReservation, double[] glyphRotations, RenderBudget.BudgetReservation? rotationReservation)
         : this(glyphs, count, reservation, glyphPaints, paintReservation, glyphFonts, fontReservation, glyphRotations, rotationReservation, [], null) { }
 
-    internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation, SvgTextGlyphPaint[] glyphPaints, RenderBudget.BudgetReservation? paintReservation, SvgGlyphFontStyle[] glyphFonts, RenderBudget.BudgetReservation? fontReservation, double[] glyphRotations, RenderBudget.BudgetReservation? rotationReservation, SvgTextDecorationFragment[] decorationFragments, RenderBudget.BudgetReservation? fragmentReservation)
+    internal SvgPositionedGlyphStorage(SvgPositionedGlyph[] glyphs, int count, RenderBudget.BudgetReservation? reservation, SvgTextGlyphPaint[] glyphPaints, RenderBudget.BudgetReservation? paintReservation, SvgGlyphFontStyle[] glyphFonts, RenderBudget.BudgetReservation? fontReservation, double[] glyphRotations, RenderBudget.BudgetReservation? rotationReservation, SvgTextPaintFragment[] paintFragments, RenderBudget.BudgetReservation? fragmentReservation)
     {
         _glyphs = glyphs;
         _count = count;
@@ -449,14 +449,14 @@ internal sealed class SvgPositionedGlyphStorage : IDisposable
         _paintReservation = paintReservation;
         _glyphFonts = glyphFonts; _fontReservation = fontReservation;
         _glyphRotations = glyphRotations; _rotationReservation = rotationReservation;
-        _decorationFragments = decorationFragments; _fragmentReservation = fragmentReservation;
+        _paintFragments = paintFragments; _fragmentReservation = fragmentReservation;
     }
 
     internal ReadOnlySpan<SvgPositionedGlyph> Glyphs => _glyphs.AsSpan(0, _count);
     internal double NaturalWidth { get; init; }
     internal ReadOnlySpan<double> GlyphRotations => _glyphRotations.Length == 0 ? [] : _glyphRotations.AsSpan(0, _count);
-    internal ReadOnlySpan<SvgTextDecorationFragment> DecorationFragments => _decorationFragments;
-    internal Span<SvgTextDecorationFragment> MutableDecorationFragments => _decorationFragments;
+    internal ReadOnlySpan<SvgTextPaintFragment> PaintFragments => _paintFragments;
+    internal Span<SvgTextPaintFragment> MutablePaintFragments => _paintFragments;
     /// <summary>Available only during owning run preparation, before scene borrowers exist.</summary>
     internal Span<SvgPositionedGlyph> MutableGlyphs => _glyphs.AsSpan(0, _count);
     internal ReadOnlySpan<SvgTextGlyphPaint> GlyphPaints => _glyphPaints.Length == 0 ? [] : _glyphPaints.AsSpan(0, _count);

@@ -13,10 +13,23 @@ internal sealed partial class SvgGlyphRasterSource
     {
         SvgPreparedFont font = _font ?? throw new InvalidOperationException("The glyph source is disposed.");
         SvgStroke strokePaint = paint.Resolve() ?? throw new InvalidOperationException("A glyph stroke requires nonzero width.");
+        using RenderBudget.BudgetReservation? dashOwner = paint.Style.Dasharray is null ? null : budget.Reserve(192, SvgMemoryCategory.Geometry);
+        double[]? dashes = SvgStrokeStyleSyntax.ParseDasharray(paint.Style.Dasharray);
+        if (dashes is not null)
+        {
+            bool hasLength = false;
+            foreach (double interval in dashes) { work.Consume(token); hasLength |= interval != 0; }
+            // The font paint's invalid empty dash effect falls back to its solid outline.
+            if (!hasLength) dashes = null;
+        }
+        double strokeScale = paint.NonScaling ? 1 / paint.FontScale : 1;
+        if (!double.IsFinite(strokeScale) || strokeScale <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Text stroke scaling exceeds the device range.");
         SvgAffineTransform linear = SvgAffineTransform.FromMatrix(_glyphMap.A * scaleX, _glyphMap.B * scaleY, _glyphMap.C * scaleX, _glyphMap.D * scaleY, 0, 0);
-        double fontScale = linear.TryGetUniformScale(out double uniform) ? uniform : 1;
+        double fontScale = paint.FontScale;
         linear = SvgAffineTransform.FromMatrix(linear.A / fontScale, linear.B / fontScale, linear.C / fontScale, linear.D / fontScale, 0, 0);
-        SvgGlyphStrikeTransform strike = SvgGlyphStrikeTransform.Create(_fontSize * fontScale, linear);
+        float effectiveSize = SvgGlyphDeviceMetrics.GetEffectiveFontSize(_fontSize * fontScale);
+        if (effectiveSize == 0) return SvgAuthoredPath.Create(new([], null), SvgAffineTransform.Identity, budget);
+        SvgGlyphStrikeTransform strike = SvgGlyphStrikeTransform.Create(effectiveSize, linear);
         linear = strike.RelaxedMap;
         if (!linear.TryInvert(out SvgAffineTransform inverse)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Text stroke placement must be invertible.");
         inverse = SvgAffineTransform.FromMatrix((float)inverse.A, (float)inverse.B, (float)inverse.C, (float)inverse.D, 0, 0);
@@ -45,13 +58,19 @@ internal sealed partial class SvgGlyphRasterSource
                 OpenTypeQuadraticSegment segment = decoded.Segments[index];
                 SvgDevicePoint target = Local(segment.End);
                 if (segment.Control == segment.End) source.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, target, default, default));
-                else if (windows)
+                // Measure dashes on retained TrueType quadratics; solid Windows
+                // stroke replay keeps its established cubic construction.
+                else if (windows && dashes is null)
                 {
                     const float twoThirds = 2f / 3;
                     const float oneThird = 1 - twoThirds;
-                    SvgDevicePoint a = Device(segment.Start), b = Device(segment.Control), c = Device(segment.End);
-                    SvgDevicePoint firstControl = Unmap(new((float)a.X * oneThird + (float)b.X * twoThirds, (float)a.Y * oneThird + (float)b.Y * twoThirds));
-                    SvgDevicePoint secondControl = Unmap(new((float)c.X * oneThird + (float)b.X * twoThirds, (float)c.Y * oneThird + (float)b.Y * twoThirds));
+                    // DirectWrite constructs cubics before Skia maps the outline.
+                    // Preserve that float order in solid outline construction.
+                    SvgDevicePoint a = Scaled(segment.Start), b = Scaled(segment.Control), c = Scaled(segment.End);
+                    SvgDevicePoint firstControl = Unmap(SvgNativePathStroke.MapPoint(strike.RemainingMap,
+                        new((float)a.X * oneThird + (float)b.X * twoThirds, (float)a.Y * oneThird + (float)b.Y * twoThirds)));
+                    SvgDevicePoint secondControl = Unmap(SvgNativePathStroke.MapPoint(strike.RemainingMap,
+                        new((float)c.X * oneThird + (float)b.X * twoThirds, (float)c.Y * oneThird + (float)b.Y * twoThirds)));
                     source.Add(new(SvgAuthoredPathVerb.Cubic, SvgAuthoredArcFlags.None, firstControl, secondControl, target));
                 }
                 else source.Add(new(SvgAuthoredPathVerb.Quadratic, SvgAuthoredArcFlags.None, Local(segment.Control), target, default));
@@ -62,12 +81,17 @@ internal sealed partial class SvgGlyphRasterSource
         using BudgetedParserList<SvgPoint> points = new(budget, SvgMemoryCategory.Geometry, work, token);
         using BudgetedParserList<int> ends = new(budget, SvgMemoryCategory.Geometry, work, token);
         using SvgOrthogonalGeometryLowering lowering = new(points, ends, "text", true, false, int.MaxValue, budget, work, token);
-        SvgParsedGeometry stroke = lowering.LowerNativeStrokeCommands(source, linear, strokePaint.Width * fontScale, strokePaint.Width * fontScale,
-            SvgStrokeStyleSyntax.ParseMiterLimit(paint.Style.Miterlimit), SvgStrokeCap.Butt,
-            SvgStrokeStyleSyntax.ParseLinejoin(paint.Style.Linejoin, true), null, 0, null, false, strokePaint.Color, true,
-            1, SvgAffineTransform.Identity, null, budget, SvgAuthoredStrokeShape.Path);
+        if (dashes is not null)
+            for (int index = 0; index < dashes.Length; index++) { work.Consume(token); dashes[index] *= fontScale * strokeScale; }
+        double width = strokePaint.Width * fontScale * strokeScale;
+        double dashOffset = SvgStrokeStyleSyntax.ParseDashoffset(paint.Style.Dashoffset) * fontScale * strokeScale;
+        SvgParsedGeometry stroke = lowering.LowerNativeStrokeCommands(source, linear, width, width,
+            SvgStrokeStyleSyntax.ParseMiterLimit(paint.Style.Miterlimit), SvgStrokeStyleSyntax.ParseLinecap(paint.Style.Linecap),
+            SvgStrokeStyleSyntax.ParseLinejoin(paint.Style.Linejoin, true), dashes, dashOffset, null, false, strokePaint.Color, true,
+            1, SvgAffineTransform.Identity, null, budget, SvgAuthoredStrokeShape.Path, SvgNativeStrokeResolution.GlyphStrike);
         try
         {
+            if (stroke.Geometries.Length == 0) return SvgAuthoredPath.Create(new([], null), SvgAffineTransform.Identity, budget);
             SvgAuthoredPath outline = stroke.Geometries[0].AuthoredPath?.StrokeOutline ?? throw new InvalidOperationException("A glyph stroke requires a retained outline.");
             using BudgetedParserList<SvgAuthoredPathCommand> retained = new(budget, SvgMemoryCategory.Scene, work, token);
             foreach (SvgAuthoredPathCommand command in outline.Commands) retained.Add(command);
@@ -77,7 +101,8 @@ internal sealed partial class SvgGlyphRasterSource
         }
         finally { stroke.Discard(); stroke.Dispose(); }
 
-        SvgDevicePoint Device(OpenTypeOutlinePoint point) => SvgNativePathStroke.MapPoint(strike.RemainingMap, new((float)point.X * pointScale, -(float)point.Y * pointScale));
+        SvgDevicePoint Scaled(OpenTypeOutlinePoint point) => new((float)point.X * pointScale, -(float)point.Y * pointScale);
+        SvgDevicePoint Device(OpenTypeOutlinePoint point) => SvgNativePathStroke.MapPoint(strike.RemainingMap, Scaled(point));
         SvgDevicePoint Unmap(SvgDevicePoint point) => SvgNativePathStroke.MapPoint(inverse, new((float)point.X + phaseX, (float)point.Y + phaseY));
         SvgDevicePoint Local(OpenTypeOutlinePoint point) => Unmap(Device(point));
     }

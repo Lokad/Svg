@@ -23,17 +23,17 @@ public sealed partial class OpenTypeFontTests
     [InlineData("stroke-dasharray='2 3'")]
     [InlineData("paint-order='stroke fill'")]
     [InlineData("vector-effect='non-scaling-stroke'")]
-    public async Task Pending_text_stroke_semantics_reject_before_acquisition_and_output(string attributes)
+    public async Task Ordered_dashed_and_non_scaling_text_acquire_and_paint_the_required_face(string attributes)
     {
         byte[] input = StrokeDocument("<text font-family='Example' font-size='48' x='8' y='64' stroke='red' " + attributes + ">A</text>");
         (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
-        SvgException discovery = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, discovery.ErrorCode);
-        using MemoryStream output = new();
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, output, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
-        Assert.Equal(0, output.Length);
-        Assert.Equal(0, provider.RequestCount);
-        Assert.Equal(0, source.RequestCount);
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] painted = SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray();
+        Assert.NotEqual(SvgConverter.ConvertToPng(StrokeDocument(string.Empty), options, CancellationToken.None).ToArray(), painted);
+        Assert.Single(snapshot.Fonts);
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
     }
 
     [Theory]
@@ -65,14 +65,47 @@ public sealed partial class OpenTypeFontTests
     }
 
     [Fact]
-    public async Task Pending_stroked_text_paths_reject_before_acquisition()
+    public async Task Stroked_text_paths_acquire_and_match_the_same_direct_baseline()
     {
         byte[] input = StrokeDocument("<defs><path id='p' d='M0 64H96'/></defs><text font-family='Example' stroke='red'><textPath href='#p'>A</textPath></text>");
         (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] direct = StrokeDocument("<text font-family='Example' stroke='red' y='64'>A</text>");
+        Assert.Equal(SvgConverter.ConvertToPng(direct, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
+        Assert.Equal(1, provider.RequestCount);
+        Assert.Equal(1, source.RequestCount);
+    }
+
+    [Theory]
+    [InlineData("stroke-dasharray='-1 2'", SvgErrorCode.MalformedInput)]
+    [InlineData("stroke-dasharray='1 2 3 4 5 6 7 8 9'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("stroke-dashoffset='10%'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("vector-effect='fixed-position'", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("paint-order='stroke stroke'", SvgErrorCode.UnsupportedFeature)]
+    public async Task Invalid_text_stroke_modes_fail_before_acquisition_and_publication(string attributes, SvgErrorCode expected)
+    {
+        byte[] input = StrokeDocument("<text font-family='Example' stroke='red' " + attributes + ">A</text>");
+        (SvgFontPackCatalog catalog, CountingFontProvider provider, CountingFontSource source) = CreateExamplePack(CreateTriangleFont());
         SvgException failure = await Assert.ThrowsAsync<SvgException>(async () => await SvgFontSnapshot.CreateAsync(input, catalog, provider, CancellationToken.None));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, failure.ErrorCode);
+        Assert.Equal(expected, failure.ErrorCode);
+        using MemoryStream output = new();
+        Assert.Equal(expected, Assert.Throws<SvgException>(() => SvgConverter.ConvertToPng(input, output, SvgRenderOptions.Default, CancellationToken.None)).ErrorCode);
+        Assert.Equal(0, output.Length);
         Assert.Equal(0, provider.RequestCount);
         Assert.Equal(0, source.RequestCount);
+    }
+
+    [Theory]
+    [InlineData("stroke-dasharray='0 0'", true)]
+    [InlineData("stroke-dasharray='0 1000'", false)]
+    public async Task Zero_and_empty_dash_results_preserve_solid_or_nonpainting_outcomes(string attributes, bool solid)
+    {
+        byte[] input = StrokeDocument("<text font-family='Example' font-size='48' x='8' y='64' fill='none' stroke='red' " + attributes + ">A</text>");
+        using SvgFontSnapshot snapshot = await SvgFontSnapshot.CreateAsync([CreateResolution(CreateTriangleFont())], CancellationToken.None);
+        SvgRenderOptions options = new(null, 1, SvgColor.Transparent, SvgRenderLimits.Default, snapshot);
+        byte[] expected = StrokeDocument(solid ? "<text font-family='Example' font-size='48' x='8' y='64' fill='none' stroke='red'>A</text>" : string.Empty);
+        Assert.Equal(SvgConverter.ConvertToPng(expected, options, CancellationToken.None).ToArray(), SvgConverter.ConvertToPng(input, options, CancellationToken.None).ToArray());
     }
 
     [Theory]

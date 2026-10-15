@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="224">
+<rect width="400" height="224" fill="white"/>
+<defs><path id="dash" d="M12 86 Q180 60 388 86"/><path id="fixed" d="M12 190 Q180 164 388 190"/></defs>
+<g font-family="Example" font-size="18" fill="#f6e7c5" stroke="#63558b" stroke-width=".7" paint-order="stroke fill">
+<text x="12" y="30" stroke-dasharray="2 1" stroke-linecap="round" stroke-dashoffset=".5">AV dash label</text>
+<text stroke-dasharray="2 1"><textPath href="#dash">Dashed path stroke</textPath></text>
+<g transform="translate(12 134) scale(1.4 1)"><text vector-effect="non-scaling-stroke">AV fixed label</text></g>
+<text vector-effect="non-scaling-stroke"><textPath href="#fixed">fixed path stroke</textPath></text>
+</g></svg>
