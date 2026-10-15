@@ -44,8 +44,15 @@ The mixed-space correction is locally qualified: **7,750 tests/platform**
 preserved. The [receipt](artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json)
 owns complete platform checks, preservation, bounded failures and timings. The
 effects bank remains **0/1 complete document / 10/11 exact controls**. Original
-inputs/options/references remain unchanged. Hosted exact-revision CI will be
-recorded after this substantive batch is pushed; preceding green CI stays closed.
+inputs/options/references remain unchanged.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38700354641/attempts/2)
+for exact implementation revision `2a1e723e`, including memory, browser/setup,
+font, validator, package and installed-consumer checks. An interrupted Chrome
+archive download ended the first Windows attempt; only that failed job was retried
+once, retaining Linux's green result. Hosted build plus complete tests took
+**119s Windows / 114s Linux** on the successful checks, separate from local routine
+timings. Reuse this terminal evidence for unchanged documentation; do not repoll
+these completed attempts or preceding runs.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
