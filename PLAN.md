@@ -47,10 +47,11 @@ default limits and test semantics are preserved. Two obsolete rejection cases
 retain their original SVG inputs as positive admission/ownership regressions.
 The original opacity controls are **2/2 exact**; the whole tile document remains
 **0/1**, with **3/8 exact controls** including its baseline reflected map.
-The preceding [composition CI](https://github.com/Lokad/Svg/actions/runs/38717065403)
-is terminal green for `c8bdf164`; it does not qualify new opacity code. Check the
-new substantive revision once pushed and terminal, then reuse its evidence for
-unchanged documentation without repolling completed runs.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38721429867)
+for `d720fa08`, first attempt, including memory, browser/setup, font, validator,
+package and installed-consumer checks. The receipt owns the exact-revision step
+audit. Reuse terminal evidence for unchanged documentation; do not repoll this or
+preceding completed runs. The document and remaining finite support exits stay open.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
