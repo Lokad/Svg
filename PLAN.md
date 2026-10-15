@@ -44,10 +44,10 @@ The stroke correction is locally qualified: **7,668 tests/platform**
 [receipt](artifacts/maintenance-review-20261012/ordered-strokes-qualified-results.json)
 owns preservation checks, timings and explicit migration of six obsolete
 valid-input rejections, with negative boundaries retained. The complete sheet
-remains open. Hosted Windows/Linux CI must be checked for this implementation
-batch after pushing. The preceding decoration run at `87dc9c3e` is
-[terminal green](https://github.com/Lokad/Svg/actions/runs/38656434558);
-reuse that historical evidence without polling it again.
+remains open. [Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38661188777)
+for exact implementation revision `6b3da6b8`, including package/consumer, memory,
+browser/setup, font and validator checks. Reuse this completed evidence for
+unchanged documentation; do not poll the run again.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -372,9 +372,9 @@ representativeness quota delays this finite release.
   The [latest receipt](artifacts/maintenance-review-20261012/ordered-strokes-qualified-results.json)
   records complete qualification of **7,668 tests/platform** in **73.3s Windows**
   and **254.0s Linux**, including normal incremental build and command startup.
-  Both meet the target. The preceding decoration revision’s hosted build plus
-  complete test steps were **2m19s Windows / 1m55s Linux**; separate environments
-  imply no speedup claim. Record the new substantive revision’s terminal CI once.
+  Both meet the target. The exact-revision hosted build plus complete test steps
+  are **2m12s Windows / 1m06s Linux**; separate environments imply no speedup claim.
+  The terminal CI result is recorded once above; no further polling is needed.
   Prior hosted observations and the local Linux compiler
   overrun remain in the [preceding receipt](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json),
   with their distinct timing definitions; they are not a new execution task.
