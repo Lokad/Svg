@@ -13970,3 +13970,44 @@ Curved intersections, independent compound winding and the native larger-child
 mask fallback remain required. The [qualification receipt](../artifacts/maintenance-review-20261012/clip-crossings-qualified-results.json)
 records the finished straight correction and preserves every preceding exact result;
 it does not close C1 or ordered item 3.
+
+
+## Native child clip unions and larger mask replay (2026-10-15)
+
+The unchanged [clip union sheet](../tests/Research/clip-union-exit-sheet/README.md)
+is **1/1 complete document / 5/5 exact controls** on Windows/Linux, the seventeenth
+authored complete document. All original SVGs/options/default limits and the first
+PNG from each healthy stable platform triple remain unchanged. The
+[receipt](../artifacts/maintenance-review-20261012/clip-native-unions-qualified-results.json)
+owns full qualification and every prior-result comparison.
+
+Native child commands retain independent winding and child maps. Mapped quadratic
+and rational-conic segments keep the float pre-intersection curvature split;
+conic subinterval controls/weights use the matched double path-ops construction
+before narrowing once for existing raster replay. Bounded root isolation, curve
+intersections, per-child winding and exterior boundary linking share budgeted
+storage, work and cancellation. Simple concave children use the same resolver;
+empty children preserve remaining coverage and release owners. The original
+quadratic/line rejection input now protects unchanged unreferenced paint and
+cleanup. Duplicate-id errors retain their original inputs and categories.
+
+Multi-child resources retain original child paths under document staging. Below
+the native count boundary, resolved paths keep existing AA clip consumption;
+larger content replays the original white paths through the existing bounded mask
+scene. Sealed scenes own independent command/geometry copies, so parser staging
+can release all originals. Leaf/group/resource/object-box registrations share this
+dispatch and preserve ordinary mask restoration versus native clip coverage.
+Original 42/43 inputs now verify both routes and nonempty rasters with cleanup.
+
+The bounded numerical adaptations retain Skia `f8b66b7597c4cc859d3ed190e9c6872241e6721c`
+`SkPathOpsConic.cpp` / `SkOpEdgeBuilder.cpp` and existing `SkGeometry.cpp` notices
+in source and packages. No production dependency or new measurement framework is
+introduced. The optional unmatched observer is numerical diagnostic evidence only;
+its direct conic constructor failed round-trip validation, while the generic
+constructor preserves controls. Frozen Chrome outputs remain acceptance authority.
+
+Cubic-segment pair intersection is still a required G3/G5 dependency. Its declared
+64×48 CC0 input currently rejects; acquire healthy native triples before correcting
+that solver. Completing the current sheet closes its declared outputs, not the
+remaining cubic, composition/resource, font/effect or S17 exits. No feature scope
+is deferred.

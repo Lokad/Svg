@@ -2,12 +2,8 @@ using Lokad.Svg.Rendering;
 
 namespace Lokad.Svg.Parsing;
 
-/// <summary>Resolves crossing boundaries of the admitted straight convex clip children before native replay.</summary>
-/// <remarks>Input contours borrow document staging and have the same normalized direction. Disjoint or
-/// touching-only inputs retain the established normalization route. Temporary edge/cut storage reserves
-/// before growth; all pair, winding and linking visits charge work and observe cancellation. A returned
-/// path owns its commands; failure releases temporary storage and leaves input owners untouched.</remarks>
-internal static class SvgClipUnion
+/// <summary>Resolves retained clip child boundaries before native path replay.</summary>
+internal static partial class SvgClipUnion
 {
     private readonly record struct Edge(SvgDevicePoint Start, SvgDevicePoint End, int Contour);
     private readonly record struct Cut(int Edge, double Parameter, SvgDevicePoint Point) : IComparable<Cut>
@@ -20,6 +16,10 @@ internal static class SvgClipUnion
     }
     private readonly record struct Boundary(SvgDevicePoint Start, SvgDevicePoint End, bool Emitted);
 
+    /// <summary>Resolves crossings of normalized straight convex children, retaining legacy disjoint replay.</summary>
+    /// <remarks>Input contours borrow staging and have the same direction. Scratch reserves before growth;
+    /// pair, winding and linking visits charge work/token. An owned result transfers to the caller;
+    /// null preserves the preceding route. Failure releases scratch and leaves input owners untouched.</remarks>
     internal static SvgAuthoredPath? ResolveCrossings(SvgClipPolygon polygon, RenderBudget budget, ParserWorkCounter work, CancellationToken token)
     {
         using BudgetedParserList<Edge> edges = new(budget, SvgMemoryCategory.Geometry, work, token);

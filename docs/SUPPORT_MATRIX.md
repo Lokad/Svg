@@ -1,20 +1,22 @@
-## Straight crossing clip boundaries (2026-10-15)
+## Native child clip unions and larger mask fallback (2026-10-15)
 
-The mixed rectangle/path control in the
-[clip union sheet](../tests/Research/clip-union-exit-sheet/README.md) is exact on
-Windows/Linux against unchanged references. Basic rectangles promote only when a
-sibling needs native union. Crossing straight convex boundaries resolve before
-native path replay, preserving source maps and resource bounds; single-rectangle
-and disjoint routes retain their established construction.
+The [clip union bank](../tests/Research/clip-union-exit-sheet/README.md) is
+**1/1 complete document / 5/5 exact controls** on Windows/Linux. Mixed basic/path,
+quadratic/conic and independent compound/concave boundaries share source replay
+and bounded native boundary construction. Clip-rule container style, inheritance
+and child stylesheet/inline priority are admitted. Original larger clips preserve
+the native 42-child path / 43-child ordered-mask distinction.
 
-The bank remains **0/1 complete document / 1/5 exact controls**. Overlapping curved
-children, independent compound/concave winding, clipPath container style and both
-larger-child mask fallback witnesses remain required C1/C5 work. Original
-multi-rectangle Core inputs now protect admitted pixels and font discovery.
-No feature scope is deferred and no complete document is added by this correction.
-The [receipt](../artifacts/maintenance-review-20261012/clip-crossings-qualified-results.json)
-records 7,847 passing tests/platform, frozen assets/options/default limits and
-affected ownership, denial, cancellation and retry checks.
+The [receipt](../artifacts/maintenance-review-20261012/clip-native-unions-qualified-results.json)
+records 7,852 passing tests/platform, unchanged assets/options/default limits,
+all preceding test semantics, original positive/rejection inputs and affected
+ownership, meaningful denial, cancellation and retry. Existing straight and single
+curve results stay exact; this supersedes their older multi-child gates below.
+
+The existing G3 cubic-segment pair intersection promise remains required and
+currently rejects; its named admission-only input needs frozen native acceptance
+before correction. [PLAN](../PLAN.md) retains that dependency, C2-C4, remaining C5,
+font/effect exits and S17. No feature scope is deferred.
 
 ## Basic pattern, viewport and non-scaling map exits (2026-10-15)
 

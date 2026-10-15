@@ -65,13 +65,11 @@ internal struct SvgObjectBoundingClip
             return operation;
         }
         SvgAffineTransform map = _map.ComposeChecked(SvgAffineTransform.FromScaleOffset(_right - _left, _bottom - _top, _left, _top));
-        (SvgClipBox region, int contentIndex) = SvgAffineViewportClip.RegisterContour(content.Points, content.ContourEnds, map,
-            content.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath,
-            content.SourcePath, content.ResourceBounds, content.IsEvenOdd, state, state.Scene, work, token);
+        (SvgClipBox region, int contentIndex) = content.Register(map, true, state, state.Scene, work, token);
         operation.Value = 255;
-        operation.Region = region;
+        operation.Region = content.UsesMaskFallback ? null : region;
         operation.ContentIndex = contentIndex;
-        operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+        operation.RegionKind = content.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
         return operation;
     }
 }

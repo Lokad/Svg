@@ -179,15 +179,14 @@ internal static class SvgClipPathSyntax
                     if (parent is {} viewport) map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
                     (SvgClipBox bounds, int contentIndex) = clipPolygon.NestedClipId is not null
                         ? RegisterNestedResourceMask(pending.ClipId, clipPolygon, map, state, workCounter, cancellationToken)
-                        : SvgAffineViewportClip.RegisterContour(clipPolygon.Points, clipPolygon.ContourEnds,
-                            map, clipPolygon.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath, clipPolygon.UsesNativeReplay ? clipPolygon.SourcePath : null, clipPolygon.ResourceBounds, clipPolygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
+                        : clipPolygon.Register(map, clipPolygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
                     SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                     operation.Resolved = true;
                     operation.Value = 255;
                     operation.Region = bounds;
                     operation.ContentIndex = contentIndex;
-                    operation.RegionKind = clipPolygon.NestedClipId is not null ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
-                    if (clipPolygon.NestedClipId is not null) operation.Region = null;
+                    operation.RegionKind = clipPolygon.NestedClipId is not null || clipPolygon.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
+                    if (clipPolygon.NestedClipId is not null || clipPolygon.UsesMaskFallback) operation.Region = null;
                     SvgLeafMaskOperation? contentBounds = null;
                     if (clipPolygon.NestedClipId is not null)
                     {
@@ -643,14 +642,13 @@ internal static class SvgClipPathSyntax
                 SvgAffineTransform map = pending.Transform;
                 if (parent is {} viewport)
                     map = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(map);
-                (SvgClipBox bounds, int contentIndex) = SvgAffineViewportClip.RegisterContour(polygon.Points, polygon.ContourEnds,
-                    map, polygon.IsOval ? SvgClipContentKind.OvalClipPath : SvgClipContentKind.ClipPath, polygon.UsesNativeReplay ? polygon.SourcePath : null, polygon.ResourceBounds, polygon.IsEvenOdd, state, state.Scene, workCounter, cancellationToken);
+                (SvgClipBox bounds, int contentIndex) = polygon.Register(map, polygon.UsesNativeReplay, state, state.Scene, workCounter, cancellationToken);
                 SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
                 operation.Resolved = true;
                 operation.Value = 255;
-                operation.Region = bounds;
+                operation.Region = polygon.UsesMaskFallback ? null : bounds;
                 operation.ContentIndex = contentIndex;
-                operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+                operation.RegionKind = polygon.UsesMaskFallback ? SvgLayerRegionKind.Mask : SvgLayerRegionKind.AffineViewport;
                 for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
                 {
                     workCounter.Consume(cancellationToken);

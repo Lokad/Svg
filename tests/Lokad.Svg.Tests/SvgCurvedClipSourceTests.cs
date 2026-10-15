@@ -123,10 +123,28 @@ public sealed class SvgCurvedClipSourceTests
             Assert.Equal(0, denied.Snapshot().CurrentBytes);
         }
     }
+    [Fact]
+    public void Unreferenced_mixed_curve_union_preserves_pixels_and_releases_sources()
+    {
+        const string content = "<clipPath id='c'><path d='M3 24 Q16 0 29 24'/><path d='M0 0H32V32Z'/></clipPath>";
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + content + "</defs><rect width='32' height='32'/></svg>");
+        RenderBudget budget = new(1_000_000), rasterBudget = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
+        {
+            Assert.Equal(32, surface.Width); Assert.Equal(32, surface.Height);
+            for (int offset = 0; offset < surface.Pixels.Length; offset += 4)
+            {
+                Assert.Equal(0, surface.Pixels[offset]); Assert.Equal(0, surface.Pixels[offset + 1]);
+                Assert.Equal(0, surface.Pixels[offset + 2]); Assert.Equal(255, surface.Pixels[offset + 3]);
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes); Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+
     [Theory]
     [InlineData("<clipPath id='c'><path d='M3 24 Q16 0 29 24'/></clipPath><clipPath id='c'><rect width='32' height='32'/></clipPath>", SvgErrorCode.MalformedInput)]
     [InlineData("<clipPath id='c'><rect width='32' height='32'/></clipPath><clipPath id='c'><path d='M3 24 Q16 0 29 24'/></clipPath>", SvgErrorCode.MalformedInput)]
-    [InlineData("<clipPath id='c'><path d='M3 24 Q16 0 29 24'/><path d='M0 0H32V32Z'/></clipPath>", SvgErrorCode.UnsupportedFeature)]
     public void Rejected_clip_definitions_release_pending_and_registered_commands(string content, SvgErrorCode error)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><defs>" + content + "</defs><rect width='32' height='32'/></svg>");

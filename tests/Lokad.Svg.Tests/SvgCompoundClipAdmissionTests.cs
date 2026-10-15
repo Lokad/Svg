@@ -44,7 +44,7 @@ public sealed class SvgCompoundClipAdmissionTests
     [Theory]
     [InlineData(42, false)]
     [InlineData(43, true)]
-    public void Disjoint_child_union_retains_the_native_path_count_boundary(int count, bool rejects)
+    public void Disjoint_child_union_preserves_native_path_and_mask_routes(int count, bool maskFallback)
     {
         StringBuilder input = new("<svg xmlns='http://www.w3.org/2000/svg' width='256' height='32'><defs><clipPath id='c'>");
         for (int index = 0; index < count; index++)
@@ -52,16 +52,19 @@ public sealed class SvgCompoundClipAdmissionTests
         input.Append("</clipPath></defs><rect width='256' height='32' clip-path='url(#c)'/></svg>");
         byte[] bytes = System.Text.Encoding.UTF8.GetBytes(input.ToString());
         RenderBudget budget = new(8_000_000);
-        if (rejects)
+        using (SvgRoot root = SvgRootParser.Parse(bytes, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None))
         {
-            SvgException error = Assert.Throws<SvgException>(() => SvgRootParser.Parse(bytes, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None));
-            Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-            Assert.Contains("multi-shape mask fallback", error.Message);
-        }
-        else
-        {
-            using SvgRoot root = SvgRootParser.Parse(bytes, SvgRenderLimits.Default, budget, null, new(1_000_000), CancellationToken.None);
             Assert.NotEmpty(root.Geometries.ToArray());
+            SvgSceneStorage storage = Assert.IsType<SvgSceneStorage>(root.SceneStorage);
+            Assert.Equal(maskFallback, storage.MaskContents.Any(content => content.VectorContent is not null));
+            RenderBudget rasterBudget = new(8_000_000);
+            using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(root, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
+            {
+                Assert.Equal(256, output.Width);
+                Assert.Equal(32, output.Height);
+                Assert.Contains(output.Pixels, value => value != 0);
+            }
+            Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
         }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }

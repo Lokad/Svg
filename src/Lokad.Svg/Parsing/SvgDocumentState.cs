@@ -150,6 +150,9 @@ internal sealed class SvgDocumentState : IDisposable
 
     internal BudgetedParserDictionary<string, SvgClipPolygon> ClipPolygons { get; }
 
+    /// <summary>Owns original multi-child clip paths until registered mask scenes have copied their sources.</summary>
+    internal BudgetedParserList<SvgClipChild>? ClipChildren { get; set; }
+
     internal BudgetedParserDictionary<string, byte> Masks { get; }
 
     internal BudgetedParserDictionary<string, SvgMaskContent> MaskContents { get; }
@@ -413,6 +416,9 @@ internal sealed class SvgDocumentState : IDisposable
         ClipPolygon?.SourcePath?.Dispose();
         foreach (SvgClipPolygon clip in ClipPolygons.Values) clip.SourcePath?.Dispose();
         ClipPolygons.Dispose();
+        if (ClipChildren is {} clipChildren)
+            foreach (SvgClipChild child in clipChildren.AsSpan()) child.Path.Dispose();
+        ClipChildren?.Dispose();
         ObjectClips.Dispose();
         Masks.Dispose();
         if (MaskContentGeometries is {} pendingMask) foreach (SvgGeometry geometry in pendingMask) geometry.Dispose();

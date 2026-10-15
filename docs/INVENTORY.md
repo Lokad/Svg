@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Sixteen additional authored documents** (fifteen CC0 and the MIT
+variants**. **Seventeen additional authored documents** (sixteen CC0 and the MIT
 tile sheet) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -18,17 +18,21 @@ tile sheet) are complete and counted separately. Preserve the delivered
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
 
-The next retained [clip union sheet](../tests/Research/clip-union-exit-sheet/README.md)
-has **0/1 complete document / 1/5 exact controls** on Windows/Linux. The mixed
-rectangle/path control is exact against unchanged references. Curved and compound
-unions, clip-rule container style and the larger-child mask fallback remain open;
-the whole document still rejects. Its thirty-six healthy captures and original
-43-child Core input were frozen before correction. It adds no completed authored
-document and changes neither cohort's membership or denominator.
+The [clip union sheet](../tests/Research/clip-union-exit-sheet/README.md) is
+**1/1 complete document / 5/5 exact controls** on Windows/Linux, including the
+original 43-child Core input. Mixed rectangle/path, native curved and compound
+unions, clip-rule cascade and the larger-child mask fallback match unchanged
+references. Thirty-six healthy stable captures were frozen before correction.
+The [receipt](../artifacts/maintenance-review-20261012/clip-native-unions-qualified-results.json)
+owns full qualification and prior-result preservation. This is the seventeenth
+authored document; both cohort memberships and denominators stay unchanged.
+Cubic-segment pair union remains required within the existing G3/G5 promise;
+its current evidence is admission-only. [PLAN](../PLAN.md) owns that finite next
+acceptance and the remaining resource/font/effect exits.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the sixteen authored documents. All **4/4 controls** are exact,
+both cohorts and the seventeen authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)

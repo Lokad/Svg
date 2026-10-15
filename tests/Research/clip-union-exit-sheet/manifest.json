@@ -24,9 +24,7 @@
       "reference": "references/clip-union-exit-sheet.png",
       "referenceSha256": "e7c59341a9dab9beecc57e40e761229b7f9a05edbceeefa8dd15c3c221b662f6",
       "linuxReference": "references/linux64/clip-union-exit-sheet.png",
-      "linuxReferenceSha256": "e7c59341a9dab9beecc57e40e761229b7f9a05edbceeefa8dd15c3c221b662f6",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only single-element curved clip content is implemented."
+      "linuxReferenceSha256": "e7c59341a9dab9beecc57e40e761229b7f9a05edbceeefa8dd15c3c221b662f6"
     },
     {
       "id": "mixed-rectangle-path",
@@ -60,9 +58,7 @@
       "reference": "references/overlapping-curved-children.png",
       "referenceSha256": "1ff2ae5d5f22dd35974dc987edb03dd7530973264407dc49031af07098bace33",
       "linuxReference": "references/linux64/overlapping-curved-children.png",
-      "linuxReferenceSha256": "1ff2ae5d5f22dd35974dc987edb03dd7530973264407dc49031af07098bace33",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only single-element curved clip content is implemented."
+      "linuxReferenceSha256": "1ff2ae5d5f22dd35974dc987edb03dd7530973264407dc49031af07098bace33"
     },
     {
       "id": "compound-concave-winding",
@@ -79,9 +75,7 @@
       "reference": "references/compound-concave-winding.png",
       "referenceSha256": "2c5d235b337535d30fdfb01b3532381637102686d16d2b671c0b53b96520c0cb",
       "linuxReference": "references/linux64/compound-concave-winding.png",
-      "linuxReferenceSha256": "2c5d235b337535d30fdfb01b3532381637102686d16d2b671c0b53b96520c0cb",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Clip path attribute 'style' is not implemented."
+      "linuxReferenceSha256": "2c5d235b337535d30fdfb01b3532381637102686d16d2b671c0b53b96520c0cb"
     },
     {
       "id": "many-child-mask-fallback",
@@ -98,9 +92,7 @@
       "reference": "references/many-child-mask-fallback.png",
       "referenceSha256": "6c18cb233561912a9ca7ce54968f1eceb65d9a71517632d3f46a88c3118d8e55",
       "linuxReference": "references/linux64/many-child-mask-fallback.png",
-      "linuxReferenceSha256": "6c18cb233561912a9ca7ce54968f1eceb65d9a71517632d3f46a88c3118d8e55",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Clip content requiring the browser's multi-shape mask fallback is not implemented."
+      "linuxReferenceSha256": "6c18cb233561912a9ca7ce54968f1eceb65d9a71517632d3f46a88c3118d8e55"
     },
     {
       "id": "original-43-child",
@@ -117,9 +109,7 @@
       "reference": "references/original-43-child.png",
       "referenceSha256": "d2acd1908dc7d7cc0d705f66160920cd7fcc9bb63786c8ee056abeecc0e54d5d",
       "linuxReference": "references/linux64/original-43-child.png",
-      "linuxReferenceSha256": "d2acd1908dc7d7cc0d705f66160920cd7fcc9bb63786c8ee056abeecc0e54d5d",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Clip content requiring the browser's multi-shape mask fallback is not implemented."
+      "linuxReferenceSha256": "d2acd1908dc7d7cc0d705f66160920cd7fcc9bb63786c8ee056abeecc0e54d5d"
     }
   ]
 }

@@ -111,7 +111,10 @@ public sealed class SvgSymbolInstanceReferenceTests
         {
             ("shared-paint-map-sheet", "pattern-viewport-stroke-use"),
             ("shared-paint-map-sheet", "pattern-skewed-oval"),
-            ("clip-union-exit-sheet", "mixed-rectangle-path")
+            ("clip-union-exit-sheet", "mixed-rectangle-path"),
+            ("clip-union-exit-sheet", "overlapping-curved-children"),
+            ("clip-union-exit-sheet", "compound-concave-winding"),
+            ("clip-union-exit-sheet", "many-child-mask-fallback")
         })
         {
             byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", sample.Family, sample.Name + ".svg"));

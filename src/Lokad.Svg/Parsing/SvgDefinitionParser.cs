@@ -238,8 +238,7 @@ internal static class SvgDefinitionParser
             }
             if (reader.LocalName is "circle" or "ellipse")
             {
-                if (state.ClipBox is not null || state.ClipPolygon is not null)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only single-element curved clip content is implemented.");
+                PromoteClipRectangle(state, workCounter, cancellationToken);
                 SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
                 SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, false, root, state, namedColors, workCounter, cancellationToken);
                 SvgViewportLengthBases clipBases = state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases;
@@ -257,8 +256,12 @@ internal static class SvgDefinitionParser
                 using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, workCounter, cancellationToken);
                 if (!SvgOrthogonalGeometryLowering.AppendNativeEllipseCommands(commands, oval.CenterX, oval.CenterY, oval.RadiusX, oval.RadiusY))
                 {
-                    if (state.ClipIsObjectBoundingBox) state.ClipPolygon = new([], []) { IsObjectBoundingBox = true };
-                    else state.ClipBox = new(0, 0, 0, 0);
+                    if (state.ClipPolygon is null)
+                    {
+                        if (state.ClipIsObjectBoundingBox) state.ClipPolygon = new([], []) { IsObjectBoundingBox = true };
+                        else state.ClipBox = new(0, 0, 0, 0);
+                    }
+                    else AppendClipChild(new([], []) { IsObjectBoundingBox = state.ClipIsObjectBoundingBox }, state, workCounter, cancellationToken);
                 }
                 else
                 {
@@ -266,16 +269,21 @@ internal static class SvgDefinitionParser
                     SvgAuthoredPath source;
                     try { source = SvgAuthoredPath.CreateConvexShape(owned, childMap, state.Budget); }
                     catch { owned.Dispose(); throw; }
-                    state.ClipPolygon = new([], []) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned, IsObjectBoundingBox = state.ClipIsObjectBoundingBox };
-                    using SvgPreparedPathContours prepared = source.Prepare(SvgAffineTransform.Identity, false, state.Budget, workCounter, cancellationToken);
-                    state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
-                        + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length), SvgMemoryCategory.Scene));
-                    SvgDevicePoint[] points = new SvgDevicePoint[prepared.Points.Length];
-                    int[] ends = new int[prepared.ContourEnds.Length];
-                    for (int index = 0; index < points.Length; index++) { workCounter.Consume(cancellationToken); points[index] = prepared.Points[index]; }
-                    for (int index = 0; index < ends.Length; index++) { workCounter.Consume(cancellationToken); ends[index] = prepared.ContourEnds[index]; }
-                    string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
-                    state.ClipPolygon = new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned, IsObjectBoundingBox = state.ClipIsObjectBoundingBox, NestedClipId = nestedClip is null ? null : state.Strings.Copy(nestedClip) };
+                    SvgClipPolygon content;
+                    try
+                    {
+                        using SvgPreparedPathContours prepared = source.Prepare(SvgAffineTransform.Identity, false, state.Budget, workCounter, cancellationToken);
+                        state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
+                            + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length), SvgMemoryCategory.Scene));
+                        SvgDevicePoint[] points = new SvgDevicePoint[prepared.Points.Length];
+                        int[] ends = new int[prepared.ContourEnds.Length];
+                        for (int index = 0; index < points.Length; index++) { workCounter.Consume(cancellationToken); points[index] = prepared.Points[index]; }
+                        for (int index = 0; index < ends.Length; index++) { workCounter.Consume(cancellationToken); ends[index] = prepared.ContourEnds[index]; }
+                        string? nestedClip = SvgClipPathSyntax.ResolveClipId(reader, state);
+                        content = new(points, ends) { SourcePath = source, UsesNativeReplay = true, IsOval = childMap.IsAxisAligned, IsObjectBoundingBox = state.ClipIsObjectBoundingBox, NestedClipId = nestedClip is null ? null : state.Strings.Copy(nestedClip) };
+                    }
+                    catch { source.Dispose(); throw; }
+                    AppendClipChild(content, state, workCounter, cancellationToken);
                 }
                 state.HasUnsupportedContent |= !reader.IsEmptyElement;
                 return true;
@@ -815,6 +823,17 @@ internal static class SvgDefinitionParser
         // and releases the incoming owner. Publish before cancellable classification.
         static void AppendClipChild(SvgClipPolygon child, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
         {
+            if (child.Points.Length == 0 && state.ClipPolygon is {} painted)
+            {
+                child.SourcePath?.Dispose();
+                if (!painted.UsesNativeReplay && painted.ContourEnds.Length == 1 && TryGetAxisClipBox(painted.Points, work, token, out SvgClipBox box))
+                    state.ClipBox = box;
+                return;
+            }
+            if (state.ClipPolygon is { Points.Length: 0 } empty)
+            {
+                empty.SourcePath?.Dispose(); state.ClipPolygon = null; state.ClipBox = null;
+            }
             if (state.ClipPolygon is {} first)
             {
                 SvgClipPolygon combined;
@@ -836,18 +855,39 @@ internal static class SvgDefinitionParser
         static SvgClipPolygon CombineClipChildren(SvgClipPolygon first, SvgClipPolygon next, SvgDocumentState state,
             ParserWorkCounter work, CancellationToken token)
         {
+            if (first.NestedClipId is not null || next.NestedClipId is not null)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Nested clips on union children are not implemented.");
+            SvgAuthoredPath nextPath = next.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
+            BudgetedParserList<SvgClipChild> originals = state.ClipChildren ??= new(state.Budget, SvgMemoryCategory.Scene, work, token);
+            SvgClipChildRange range;
+            if (first.Children is {} sourceRange) range = sourceRange;
+            else
+            {
+                range = new(originals.Count, 1);
+                Retain(first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands."), first.IsEvenOdd, originals, state.Budget, work, token);
+            }
+            if (range.First + range.Count != originals.Count) throw new InvalidOperationException("Clip child staging must remain contiguous.");
+            Retain(nextPath, next.IsEvenOdd, originals, state.Budget, work, token);
+            range = range with { Count = range.Count + 1 };
+            if (first.ChildCount >= 42)
+            {
+                SvgPaintBounds a = first.ResourceBounds ?? throw new InvalidOperationException("A clip union requires source bounds.");
+                SvgPaintBounds b = ChildBounds(next, nextPath, work, token);
+                return first with { SourcePath = null, Children = range, UsesMaskFallback = true, IsResolvedUnion = true,
+                    ChildCount = first.ChildCount + 1, IsOval = false,
+                    ResourceBounds = new(MathF.Min(a.Left, b.Left), MathF.Min(a.Top, b.Top), MathF.Max(a.Right, b.Right), MathF.Max(a.Bottom, b.Bottom)) };
+            }
+            SvgAuthoredPath firstPath = first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
             if ((first.UsesNativeReplay && first.ChildCount == 1) || next.UsesNativeReplay
                 || (first.IsEvenOdd && first.ChildCount == 1) || next.IsEvenOdd || next.ContourEnds.Length != 1
-                || (first.ChildCount == 1 && first.ContourEnds.Length != 1))
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only straight single-contour clip children are implemented.");
-            if (first.ChildCount >= 42)
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Clip content requiring the browser's multi-shape mask fallback is not implemented.");
-            SvgAuthoredPath firstPath = first.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
-            SvgAuthoredPath nextPath = next.SourcePath ?? throw new InvalidOperationException("Clip children require retained source commands.");
+                || (first.ChildCount == 1 && first.ContourEnds.Length != 1) || first.IsResolvedUnion)
+            {
+                return ResolveNative(first, next, firstPath, nextPath, range, state, work, token);
+            }
             using SvgPreparedPathContours left = firstPath.Prepare(SvgAffineTransform.Identity, false, state.Budget, work, token);
             using SvgPreparedPathContours right = nextPath.Prepare(SvgAffineTransform.Identity, false, state.Budget, work, token);
-            RequireConvex(right);
-            if (first.ChildCount == 1) RequireConvex(left);
+            if (!IsConvex(right) || first.ChildCount == 1 && !IsConvex(left))
+                return ResolveNative(first, next, firstPath, nextPath, range, state, work, token);
             bool needsWindingUnion = first.ChildCount > 1 && !first.IsEvenOdd;
             for (int contour = 0; contour < left.ContourEnds.Length; contour++)
             {
@@ -867,30 +907,58 @@ internal static class SvgDefinitionParser
             using BudgetedParserList<SvgAuthoredPathCommand> commands = new(state.Budget, SvgMemoryCategory.Scene, work, token);
             Append(left, 0, 0);
             Append(right, left.Points.Length, left.ContourEnds.Length);
-            SvgPaintBounds firstBounds = ChildBounds(first, firstPath), nextBounds = ChildBounds(next, nextPath);
+            SvgPaintBounds firstBounds = ChildBounds(first, firstPath, work, token), nextBounds = ChildBounds(next, nextPath, work, token);
             SvgPaintBounds resourceBounds = new(MathF.Min(firstBounds.Left, nextBounds.Left), MathF.Min(firstBounds.Top, nextBounds.Top),
                 MathF.Max(firstBounds.Right, nextBounds.Right), MathF.Max(firstBounds.Bottom, nextBounds.Bottom));
             OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
             SvgAuthoredPath combined;
             try { combined = SvgAuthoredPath.Create(owned, SvgAffineTransform.Identity, state.Budget); }
             catch { owned.Dispose(); throw; }
-            return new(points, ends) { SourcePath = combined, UsesNativeReplay = true, ChildCount = first.ChildCount + 1, ResourceBounds = resourceBounds, IsEvenOdd = !needsWindingUnion, IsObjectBoundingBox = first.IsObjectBoundingBox };
+            return new(points, ends) { SourcePath = combined, UsesNativeReplay = true, ChildCount = first.ChildCount + 1, ResourceBounds = resourceBounds, IsEvenOdd = !needsWindingUnion, IsObjectBoundingBox = first.IsObjectBoundingBox, Children = range };
 
-            SvgPaintBounds ChildBounds(SvgClipPolygon polygon, SvgAuthoredPath path)
+            static SvgClipPolygon ResolveNative(SvgClipPolygon first, SvgClipPolygon next, SvgAuthoredPath firstPath, SvgAuthoredPath nextPath,
+                SvgClipChildRange range, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+            {
+                SvgAuthoredPath united = SvgClipUnion.ResolveNativeUnion(firstPath, first.IsEvenOdd, nextPath, next.IsEvenOdd, state.Budget, work, token);
+                try
+                {
+                    using SvgPreparedPathContours prepared = united.Prepare(SvgAffineTransform.Identity, false, state.Budget, work, token);
+                    state.DefinitionReservations.Add(state.Budget.Reserve(ParserCollectionMemory.GetArrayByteCount<SvgDevicePoint>(prepared.Points.Length)
+                        + ParserCollectionMemory.GetArrayByteCount<int>(prepared.ContourEnds.Length), SvgMemoryCategory.Scene));
+                    SvgDevicePoint[] retainedPoints = new SvgDevicePoint[prepared.Points.Length];
+                    int[] retainedEnds = new int[prepared.ContourEnds.Length];
+                    for (int index = 0; index < retainedPoints.Length; index++) { work.Consume(token); retainedPoints[index] = prepared.Points[index]; }
+                    for (int index = 0; index < retainedEnds.Length; index++) { work.Consume(token); retainedEnds[index] = prepared.ContourEnds[index]; }
+                    SvgPaintBounds a = ChildBounds(first, firstPath, work, token), b = ChildBounds(next, nextPath, work, token);
+                    return new(retainedPoints, retainedEnds) { SourcePath = united, UsesNativeReplay = true, IsResolvedUnion = true, Children = range,
+                        ChildCount = first.ChildCount + 1, IsObjectBoundingBox = first.IsObjectBoundingBox,
+                        ResourceBounds = new(MathF.Min(a.Left, b.Left), MathF.Min(a.Top, b.Top), MathF.Max(a.Right, b.Right), MathF.Max(a.Bottom, b.Bottom)) };
+                }
+                catch { united.Dispose(); throw; }
+            }
+
+            static void Retain(SvgAuthoredPath path, bool isEvenOdd, BudgetedParserList<SvgClipChild> originals,
+                RenderBudget budget, ParserWorkCounter work, CancellationToken token)
+            {
+                SvgAuthoredPath copy = path.Copy(SvgAffineTransform.Identity, budget, work, token);
+                try { originals.Add(new(copy, isEvenOdd)); }
+                catch { copy.Dispose(); throw; }
+            }
+
+            static SvgPaintBounds ChildBounds(SvgClipPolygon polygon, SvgAuthoredPath path, ParserWorkCounter work, CancellationToken token)
             {
                 if (polygon.ResourceBounds is {} bounds) return bounds;
                 SvgRectangle tight = SvgPathBounds.Compute(path.Commands, work, token);
                 return new SvgPaintBounds((float)tight.X, (float)tight.Y, (float)(tight.X + tight.Width), (float)(tight.Y + tight.Height)).Map(path.SceneMap, work, token);
             }
 
-            void RequireConvex(SvgPreparedPathContours path)
+            bool IsConvex(SvgPreparedPathContours path)
             {
                 if (path.ContourEnds.Length != 1 || path.Points.Length < 3)
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only nondegenerate straight clip children are implemented.");
+                    return false;
                 long pairs = checked((long)path.Points.Length * path.Points.Length);
                 for (long visit = 0; visit < pairs; visit++) work.Consume(token);
-                if (!SvgRawContourConvexity.IsConvex(path.Points, [], [], token))
-                    throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only convex sibling clip children are implemented.");
+                return SvgRawContourConvexity.IsConvex(path.Points, [], [], token);
             }
 
             bool Separated(ReadOnlySpan<SvgDevicePoint> axisRing, ReadOnlySpan<SvgDevicePoint> other)
@@ -1593,7 +1661,7 @@ internal static class SvgDefinitionParser
         workCounter.Consume(cancellationToken);
         string retainedId = state.Strings.Copy(state.ClipPathId ?? throw new InvalidOperationException("Clip polygon registration requires an identifier."));
         SvgClipPolygon polygon = state.ClipPolygon ?? throw new InvalidOperationException("Clip polygon registration requires retained points.");
-        if (polygon.ChildCount > 1)
+        if (polygon.ChildCount > 1 && !polygon.IsResolvedUnion)
         {
             SvgAuthoredPath previous = polygon.SourcePath ?? throw new InvalidOperationException("A child union requires source commands.");
             SvgAuthoredPath normalized = NormalizeUnion(polygon, state.Budget, workCounter, cancellationToken);
