@@ -75,7 +75,11 @@ is complete against its frozen outputs, including supplied-font proof. The
 [receipt](artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
 records full platform qualification, affected cleanup checks and preservation;
 the [design record](docs/RASTERIZATION_DESIGN.md#decorated-paths-through-shared-binary-regions-2026-10-15)
-owns the mechanism and diagnostics. Hosted CI for this correction is pending.
+owns the mechanism and diagnostics.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38754459293)
+for `f36ad2ce`, first attempt, including resource, browser/setup, font, validator,
+package and installed-consumer checks. Reuse this exact-revision terminal audit
+for unchanged documentation; do not repoll completed runs.
 The completed `inv-146`, tile sheet and all preceding exact results remain closed.
 
 The finite tables below define the exits of these six items, rather than a second
