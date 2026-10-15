@@ -99,6 +99,13 @@ features require an explicit scope decision.
   fill/stroke opacity, dashed curved paints and nonuniform placement. Use shared
   stroke/paint machinery while preserving native geometry distinctions.
 
+The next retained [stroke/style exit sheet](tests/Research/stroke-style-exit-sheet/README.md)
+binds R1–R3 to one complete document and four controls. All five outputs currently
+reject on Windows/Linux (**0/1 document / 0/4 controls**); thirty healthy stable
+native captures and their first references are frozen before correction. Finish
+all five unchanged outputs through their gates and differences, using focused
+regressions for the shared fixes. This adds no support promise or combination quota.
+
 Item 1 owns R1–R3 below; item 2 owns the four basic pattern cases in the
 [current rejection audit](artifacts/primitive-stroke-sheet-20261015/remaining-map-boundaries.json).
 The completed primitive bank resolves the former oval/rounded dash and shader-line
@@ -109,9 +116,9 @@ records that distinction and preserves the unchanged test input.
 
 | Required residual stroke exit (item 1) | Concrete acceptance, dependency and completion |
 | --- | --- |
-| R1. Solid-line cap/dash/alpha routing | The original `Rejects_round_caps_with_dashed_lines` and `Rejects_zero_length_square_capped_dashes` assertions still pass in full qualification. Freeze their native outputs, plus round-solid and square-dashed solid lines with independent stroke alpha. Reuse ordinary native line/path strokes; complete when those cap/zero-dash/alpha semantics are exact, with meaningful work/cleanup boundaries. |
-| R2. Bevel joins on sharp rectangles | The original `Rejects_bevel_joins_on_sharp_rectangles` input still rejects. Freeze that output and extend the existing native rectangle stroke route. Complete with its bevel geometry exact on both platforms, preserving miter/round and rounded-rectangle results. |
-| R3. Curved shader-stroke alpha | Explicit alpha guards remain in [rounded/oval paint lowering](src/Lokad.Svg/Parsing/SvgLeafParser.cs). Freeze one translucent-stop shader stroke on a rounded rectangle and one on an oval before correction; these are planned acceptance, not qualified failures. Reuse shared stroke/paint replay and qualify independent fill/stroke alpha and affected cleanup, preserving native conic/rounded geometry. No shape × paint × style census. |
+| R1. Solid-line cap/dash/alpha routing | The original `Rejects_round_caps_with_dashed_lines` and `Rejects_zero_length_square_capped_dashes` assertions still pass in full qualification. Use the frozen solid-line control covering those semantics plus round-solid and square-dashed lines with independent stroke alpha; retain the original regression inputs. Reuse ordinary native line/path strokes; complete when those cap/zero-dash/alpha semantics are exact, with meaningful work/cleanup boundaries. |
+| R2. Bevel joins on sharp rectangles | The original `Rejects_bevel_joins_on_sharp_rectangles` input still rejects. Use the frozen sharp-bevel control and original regression input to extend the existing native rectangle stroke route. Complete with its bevel geometry exact on both platforms, preserving miter/round and rounded-rectangle results. |
+| R3. Curved shader-stroke alpha | Explicit alpha guards remain in [rounded/oval paint lowering](src/Lokad.Svg/Parsing/SvgLeafParser.cs). The frozen rounded and oval shader controls both reject on Windows/Linux; finish them against their unchanged native references. Reuse shared stroke/paint replay and qualify independent fill/stroke alpha and affected cleanup, preserving native conic/rounded geometry. No shape × paint × style census. |
 
 Completed inherited-symbol, reflected-phase, curved-target and viewport-map
 witnesses remain closed. Zero-size oval/object-box nonpainting and categorized

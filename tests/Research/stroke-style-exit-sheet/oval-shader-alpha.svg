@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="168">
+<defs><radialGradient id="r" gradientUnits="userSpaceOnUse" cx="76" cy="68" r="95"><stop stop-color="#75c8ab" stop-opacity="0.625"/><stop offset="1" stop-color="#763b7d" stop-opacity="0.75"/></radialGradient></defs>
+<ellipse cx="90" cy="84" rx="59" ry="43" transform="rotate(13 90 84)" fill="none" stroke="url(#r)" stroke-width="7.5" stroke-opacity="0.68" stroke-dasharray="16 7 3 7" stroke-dashoffset="2.5" stroke-linecap="square"/>
+</svg>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="168">
+<defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="16" y1="0" x2="164" y2="0"><stop stop-color="#e57e36" stop-opacity="0.5"/><stop offset="1" stop-color="#285a93"/></linearGradient></defs>
+<rect x="16" y="22" width="148" height="122" rx="19" ry="14" fill="#dbe7ed" fill-opacity="0.42" stroke="url(#g)" stroke-width="6.5" stroke-opacity="0.72" stroke-dasharray="18 7 3 7" stroke-dashoffset="2.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
