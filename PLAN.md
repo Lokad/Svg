@@ -45,10 +45,12 @@ The [receipt](artifacts/maintenance-review-20261012/image-filter-source-qualifie
 owns complete platform checks, preservation, bounded failures and timings. The
 effects bank remains **0/1 complete document / 3/4 exact controls**. Original
 inputs/options/references remain unchanged.
-The preceding [marker CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38681043665)
-for `5e46a158`; it is historical evidence, not CI for this correction. Do not
-repoll completed runs. Inspect this substantive correction's exact-revision CI
-once delivered, then reuse its terminal result for unchanged documentation.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38684365594)
+for exact implementation revision `5024d044`, including memory, browser/setup,
+font, validator, package and installed-consumer checks. Hosted build plus complete
+tests took **129s Windows / 116s Linux**, separate from local routine timings.
+Reuse this terminal evidence for unchanged documentation; do not repoll this or
+preceding completed runs.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -84,6 +86,10 @@ required for this same document. The [original declaration](artifacts/effects-ma
 and separate image-source declaration own immutable inputs/options and healthy
 platform triples. Identity/zero-offset colored-source diagnostics remain unqualified
 G8 restoration work; the new source control does not silently close them.
+The [reduced clip control](artifacts/effects-marker-sheet-20261015/image-filter-clip-declaration.json)
+is frozen at `5024d044` before the next correction, with six healthy stable
+captures and identical platform reference bytes. Its retained Windows/Linux
+baselines reject the same outer clip/filter boundary; no acceptance is yet claimed.
 
 The image/effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
