@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="160">
+<g transform="translate(0 0)">
+<defs><pattern id="c0p" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#285a93"/></pattern></defs>
+<rect x="16" y="24" width="144" height="112" fill="url(#c0p)" transform="translate(180 0) scale(-1 1)"/>
+</g>
+<g transform="translate(180 0)">
+<defs><pattern id="c1p" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#a44f32"/></pattern><rect id="c1shape" x="16" y="24" width="144" height="112"/></defs>
+<use href="#c1shape" transform="translate(180 0) scale(-1 1)" fill="url(#c1p)"/>
+</g>
+<g transform="translate(360 0)">
+<svg x="12" y="16" width="156" height="128" viewBox="0 0 78 64"><rect x="0" y="0" width="66" height="52" fill="#dbe7ed" stroke="#285a93" stroke-width="4"/></svg>
+</g>
+<svg x="540" y="0" width="180" height="160" viewBox="0 0 90 80">
+<defs><pattern id="c3p" width="12" height="12" patternUnits="userSpaceOnUse"><rect x="3" y="3" width="6" height="6" fill="#dbe7ed" stroke="#a44f32" stroke-width="2"/></pattern></defs>
+<rect x="8" y="10" width="74" height="60" fill="url(#c3p)"/>
+</svg>
+<g transform="translate(720 0)">
+<g transform="translate(16 18) scale(2 1)"><polygon points="0,0 70,0 70,124 0,124" fill="none" stroke="#285a93" stroke-width="4" stroke-dasharray="10 6" vector-effect="non-scaling-stroke"/></g>
+</g>
+</svg>

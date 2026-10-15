@@ -111,6 +111,12 @@ The 18-pixel translated-panel difference was resolved by shared source-coordinat
 paint binding; native conic/rectangle construction stays shared.
 
 Item 2 owns the finite [five remaining map cases](artifacts/stroke-style-exits-20261015/remaining-map-boundaries.json).
+The next [shared map exit sheet](tests/Research/shared-map-exit-sheet/README.md)
+binds these five routes to one complete document and five controls. All six outputs
+currently reject on Windows/Linux (**0/1 document / 0/5 controls**); thirty-six
+healthy stable native captures and their first references are frozen before
+correction. Complete every declared output through its gates and differences.
+
 The nonuniform dashed non-scaling gate is an existing valid-input regression in
 [SvgStrokeFillTests](tests/Lokad.Svg.Tests/SvgStrokeFillTests.cs), not a new feature
 promise or scope deferral. Freeze one focused host-map witness alongside the four
