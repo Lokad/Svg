@@ -13935,3 +13935,38 @@ pass. Complete qualification is **7,839 tests/platform** in **80.6s Windows /
 385.8s Linux**, including normal incremental builds. These are workload timings,
 not general throughput claims. Item 2 closes; composition/resource/font/effect
 exits and S17 remain required.
+
+
+## Straight clip-union boundaries (2026-10-15)
+
+The frozen [clip union sheet](../tests/Research/clip-union-exit-sheet/README.md)
+owns four independent C1 semantics and the unchanged original 43-child Core SVG.
+Its thirty-six healthy stable native captures were retained before correction at
+`e947ec8d`. The mixed rectangle/path control is exact on both platforms; the whole
+sheet remains rejected at its overlapping curved children. This is **0/1 complete
+document / 1/5 exact controls**, with no new completed-document credit.
+
+A basic rectangle retains its source box/map until sibling content requires
+promotion. Paths and rectangles then share the existing child combiner. Merely
+retaining overlapping contours admitted the mixed control but left 160 differing
+edge pixels per platform: the native union splits its visible diagonal at the
+rectangle intersections. The shared straight resolver now splits crossing edges,
+discards interior spans and links the directed exterior boundary with native
+float endpoints and explicit closure. Native resource/layout bounds stay separate.
+Disjoint/touching-only inputs retain the preceding normalization route.
+
+The bounded temporary edge, cut and boundary collections use existing budgeted
+storage, work charging, cancellation and cleanup. An independently observed native
+boundary vector protects both float intersections. Existing parser/raster denial,
+cancellation and retry checks now also cover the mixed control. Original obsolete
+multi-rectangle rejections retain their exact SVGs and become positive pixel and
+font-discovery/provider-call checks. No production dependency was added.
+
+Read-only reference sources are the matched Skia `f8b66b7597c4cc859d3ed190e9c6872241e6721c`
+union builder/path writer and Blink 153.0.8010.52 clipper, retained in the preceding
+compound-clip study. The optional ignored `skia-pathops 0.9.2` observer is an
+unmatched numerical diagnostic; it cannot replace frozen Chrome acceptance.
+Curved intersections, independent compound winding and the native larger-child
+mask fallback remain required. The [qualification receipt](../artifacts/maintenance-review-20261012/clip-crossings-qualified-results.json)
+records the finished straight correction and preserves every preceding exact result;
+it does not close C1 or ordered item 3.

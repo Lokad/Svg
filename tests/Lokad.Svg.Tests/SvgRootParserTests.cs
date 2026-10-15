@@ -5147,11 +5147,24 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_multi_rectangle_clip_paths()
+    public void Renders_multi_rectangle_clip_paths()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window'><rect x='4' y='4' width='4' height='4'/><rect x='8' y='8' width='4' height='4'/></clipPath></defs><g clip-path='url(#window)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><clipPath id='window'><rect x='4' y='4' width='4' height='4'/><rect x='8' y='8' width='4' height='4'/></clipPath></defs><g clip-path='url(#window)'><rect width='8' height='8' fill='red'/></g></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        Assert.False(root.HasUnsupportedChild);
+        using SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(root,
+            new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), new(1_000_000), CancellationToken.None);
+        Assert.Equal(8, raster.Width);
+        Assert.Equal(8, raster.Height);
+        for (int y = 0; y < 8; y++)
+            for (int x = 0; x < 8; x++)
+            {
+                byte red = x >= 4 && y >= 4 ? (byte)255 : (byte)0;
+                int offset = (y * 8 + x) * 4;
+                Assert.Equal(red, raster.Pixels[offset]);
+                Assert.Equal(0, raster.Pixels[offset + 1]);
+                Assert.Equal(0, raster.Pixels[offset + 2]);
+                Assert.Equal(red, raster.Pixels[offset + 3]);
+            }
     }
 
     [Fact]

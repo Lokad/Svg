@@ -1,3 +1,21 @@
+## Straight crossing clip boundaries (2026-10-15)
+
+The mixed rectangle/path control in the
+[clip union sheet](../tests/Research/clip-union-exit-sheet/README.md) is exact on
+Windows/Linux against unchanged references. Basic rectangles promote only when a
+sibling needs native union. Crossing straight convex boundaries resolve before
+native path replay, preserving source maps and resource bounds; single-rectangle
+and disjoint routes retain their established construction.
+
+The bank remains **0/1 complete document / 1/5 exact controls**. Overlapping curved
+children, independent compound/concave winding, clipPath container style and both
+larger-child mask fallback witnesses remain required C1/C5 work. Original
+multi-rectangle Core inputs now protect admitted pixels and font discovery.
+No feature scope is deferred and no complete document is added by this correction.
+The [receipt](../artifacts/maintenance-review-20261012/clip-crossings-qualified-results.json)
+records 7,847 passing tests/platform, frozen assets/options/default limits and
+affected ownership, denial, cancellation and retry checks.
+
 ## Basic pattern, viewport and non-scaling map exits (2026-10-15)
 
 The [shared map exit bank](../tests/Research/shared-map-exit-sheet/README.md) is

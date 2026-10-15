@@ -105,12 +105,16 @@ public sealed class SvgSymbolInstanceReferenceTests
     }
 
     [Fact]
-    public void Shared_pattern_maps_release_promoted_sources_and_rasters_on_denial_cancellation_and_retry()
+    public void Shared_maps_and_clip_unions_release_sources_and_rasters_on_denial_cancellation_and_retry()
     {
-        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "shared-paint-map-sheet");
-        foreach (string name in new[] { "pattern-viewport-stroke-use", "pattern-skewed-oval" })
+        foreach ((string Family, string Name) sample in new[]
         {
-            byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
+            ("shared-paint-map-sheet", "pattern-viewport-stroke-use"),
+            ("shared-paint-map-sheet", "pattern-skewed-oval"),
+            ("clip-union-exit-sheet", "mixed-rectangle-path")
+        })
+        {
+            byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "Research", sample.Family, sample.Name + ".svg"));
             byte[] unchanged = input.ToArray();
             RenderBudget sceneBudget = new(16_000_000);
             ParserWorkCounter work = new(100_000_000);

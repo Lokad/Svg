@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15 at the completed shared-map-exit-sheet checkpoint.
+Updated 2026-10-15 at the straight clip-union boundary checkpoint.
 Preserve the current implementation work, qualified `inv-146` correction and every
 established exact result, original SVG/font/reference bytes, options and default
 resource limits. This file owns delivery order, required exits and scope
@@ -27,12 +27,12 @@ Optional maintenance below adds no feature-completion prerequisite.
 | Filters and font infrastructure | Preserve [filter-region results](tests/Research/filter-regions/manifest.json) **26/26**, [colored-effects bounds/restoration](tests/Research/colored-effects-markers/README.md), [affine effect qualification](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json), intended-font/metrics proof, catalog conformance and the implemented [FontProbe host](tools/Lokad.Svg.FontProbe/README.md) with six transport/input regressions. Private deployment validation remains required. |
 | API/resource/package contracts | Preserve bounded preparation/raster/encoding, size/work denial, cancellation/retry, partial cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contracts](docs/API_CONTRACT.md), package and installed-consumer protections remain required. |
 
-The latest complete local [qualification](artifacts/maintenance-review-20261012/shared-map-exits-qualified-results.json)
-is **7,839 tests/platform**, normal incremental Release build plus full tests in
-**80.6s Windows / 385.8s Linux**. Exact-revision [hosted CI](https://github.com/Lokad/Svg/actions/runs/38781325677)
-is terminal green for `d0bac550`, first attempt, with all ten required checks
-passing on both platforms. Hosted build plus complete tests took **116s Windows /
-113s Linux**. Reuse this closed audit without repolling.
+The latest complete local [qualification](artifacts/maintenance-review-20261012/clip-crossings-qualified-results.json)
+is **7,847 tests/platform**, normal incremental Release build plus full tests in
+**78.3s Windows / 271.2s Linux**. Exact-revision hosted CI for this straight
+clip-boundary correction follows its substantive push. The preceding
+[shared-map CI](https://github.com/Lokad/Svg/actions/runs/38781325677) is terminal
+green for `d0bac550`; reuse that closed audit without repolling.
 Completed work stays closed under the existing coverage/accounting policy.
 
 The [shared map exit bank](tests/Research/shared-map-exit-sheet/README.md) is
@@ -146,7 +146,7 @@ and [template](tests/Lokad.Svg.Tests/SvgPatternTemplateTests.cs) tests need no n
 
 | Required exit (item 3) | Concrete acceptance, dependency and completion |
 | --- | --- |
-| C1. Heterogeneous/curved/compound clip unions and larger fallback | The next retained [clip union sheet](tests/Research/clip-union-exit-sheet/README.md) freezes all four semantics and the original 43-child Core input, currently **0/1 document / 0/5 controls admitted** on both platforms. Finish every unchanged output exactly, reusing native clip/source replay and completed convex overlaps, with bounded work/cleanup. The compound panel also owns applicable C5 clip-rule cascade acceptance. Keep path unions distinct from the larger-child mask fallback; no child-count grid. |
+| C1. Heterogeneous/curved/compound clip unions and larger fallback | The retained [clip union sheet](tests/Research/clip-union-exit-sheet/README.md) is **0/1 complete document / 1/5 exact controls** on both platforms: mixed rectangle/path union is exact; overlapping curved children, compound/concave independent winding and both 43-child fallback witnesses still reject. Finish every unchanged output exactly through shared clip/source replay, with bounded work/cleanup. The compound panel also owns applicable C5 clip-rule cascade acceptance. Keep path unions distinct from the larger-child mask fallback; no child-count grid. |
 | C2. Affine ancestor at a nested viewport | Axis ancestry is qualified. One rotated or skewed ancestor containing a scaled viewport and an unaffected sibling must be exact, with physical clipping and scope termination protected. Reuse viewport placement/affine clip machinery. |
 | C3. Mask units and restoration | Reuse [local-reference](tests/Research/mask-local-references/manifest.json), [group-mask](tests/Research/mask-group-documents/README.md) and custom-region/container-opacity witnesses. Exact two-panel object-box region/user-space content and user-space region/object-box content; nested leaf/group/use mask followed by an unmasked sibling. Reuse covered panels; qualify only missing unit/restoration semantics and affected cleanup. |
 | C4. Independent image alignment offsets | The [existing qualified active-axis witnesses](artifacts/shared-map-exits-20261015/existing-image-alignments.json) cover xMid/xMax and yMin/yMid/yMax through portrait/landscape meet/slice images. All nine spellings, `none` and omitted-meet equivalence are implemented in [aspect tests](tests/Lokad.Svg.Tests/SvgAspectRatioTests.cs). Add only one active horizontal xMin witness (portrait image in a wider meet viewport, or equivalent slice crop); preserve existing PNG/resource checks. Inactive axes establish no offset coverage. No alignment × placement census. |
@@ -269,7 +269,7 @@ open-ended representativeness quota delays this release.
   failure/publication and cleanup in [PublicContractTests](tests/Lokad.Svg.Tests/PublicContractTests.cs)
   and [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs).
 - **Routine incremental Release build plus complete tests must stay below ten
-  minutes per platform.** The qualified 80.6s/385.8s checkpoint above meets this.
+  minutes per platform.** The qualified 78.3s/271.2s checkpoint above meets this.
   Include normal build/startup; avoid forced compiler shutdown. Measure before/
   after only when routine cost materially changes. Remove redundant API work if
   needed while preserving distinct semantics. Browser captures, optional benchmarks

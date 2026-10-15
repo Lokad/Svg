@@ -346,6 +346,7 @@ internal static class SvgDocumentTraversal
                     state.ClipPathDepth = -1;
                     state.ClipPathId = null;
                     state.ClipBox = null;
+                    state.ClipRectangleSource = null;
                     state.ClipPolygon = null;
                     state.ClipIsObjectBoundingBox = false;
                 }

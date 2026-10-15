@@ -18,6 +18,14 @@ tile sheet) are complete and counted separately. Preserve the delivered
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
 
+The next retained [clip union sheet](../tests/Research/clip-union-exit-sheet/README.md)
+has **0/1 complete document / 1/5 exact controls** on Windows/Linux. The mixed
+rectangle/path control is exact against unchanged references. Curved and compound
+unions, clip-rule container style and the larger-child mask fallback remain open;
+the whole document still rejects. Its thirty-six healthy captures and original
+43-child Core input were frozen before correction. It adds no completed authored
+document and changes neither cohort's membership or denominator.
+
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
 both cohorts and the sixteen authored documents. All **4/4 controls** are exact,

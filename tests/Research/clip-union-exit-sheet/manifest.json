@@ -26,7 +26,7 @@
       "linuxReference": "references/linux64/clip-union-exit-sheet.png",
       "linuxReferenceSha256": "e7c59341a9dab9beecc57e40e761229b7f9a05edbceeefa8dd15c3c221b662f6",
       "expectedError": "UnsupportedFeature",
-      "observedGate": "Only single-rectangle clip paths are implemented."
+      "observedGate": "Only single-element curved clip content is implemented."
     },
     {
       "id": "mixed-rectangle-path",
@@ -43,9 +43,7 @@
       "reference": "references/mixed-rectangle-path.png",
       "referenceSha256": "ffefc95933140a6f84e7e7deff3f0620b3125f98593f17c48a1db804467cdba7",
       "linuxReference": "references/linux64/mixed-rectangle-path.png",
-      "linuxReferenceSha256": "ffefc95933140a6f84e7e7deff3f0620b3125f98593f17c48a1db804467cdba7",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only single-rectangle clip paths are implemented."
+      "linuxReferenceSha256": "ffefc95933140a6f84e7e7deff3f0620b3125f98593f17c48a1db804467cdba7"
     },
     {
       "id": "overlapping-curved-children",
