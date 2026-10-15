@@ -29,9 +29,10 @@ Optional maintenance below adds no feature-completion prerequisite.
 
 The latest complete local [qualification](artifacts/maintenance-review-20261012/shared-map-exits-qualified-results.json)
 is **7,839 tests/platform**, normal incremental Release build plus full tests in
-**80.6s Windows / 385.8s Linux**. Exact-revision hosted CI for this correction is
-pending push. The preceding [stroke/style CI](https://github.com/Lokad/Svg/actions/runs/38774729533)
-is terminal green for `19324557`; reuse that closed audit without repolling.
+**80.6s Windows / 385.8s Linux**. Exact-revision [hosted CI](https://github.com/Lokad/Svg/actions/runs/38781325677)
+is terminal green for `d0bac550`, first attempt, with all ten required checks
+passing on both platforms. Hosted build plus complete tests took **116s Windows /
+113s Linux**. Reuse this closed audit without repolling.
 Completed work stays closed under the existing coverage/accounting policy.
 
 The [shared map exit bank](tests/Research/shared-map-exit-sheet/README.md) is
@@ -57,7 +58,7 @@ exhaustive G2 or shape × paint × instance prerequisite applies.
 
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
-| [x] 1. Cap/dash/join/alpha routes R1–R3 (G2–G4) | Completed through existing native stroke constructors, source-coordinate paint binding and recorded stroke alpha. | Unchanged [document and four controls](tests/Research/stroke-style-exit-sheet/manifest.json) exact on Windows/Linux, plus three retained inherited shader controls. Original cap/dash/dot inputs and affected denial/cancellation/cleanup/retry pass; [full qualification](artifacts/maintenance-review-20261012/stroke-style-exits-qualified-results.json). Wider G4 stays open for shared maps. |
+| [x] 1. Cap/dash/join/alpha routes R1–R3 (G2–G4) | Completed through existing native stroke constructors, source-coordinate paint binding and recorded stroke alpha. | Unchanged [document and four controls](tests/Research/stroke-style-exit-sheet/manifest.json) exact on Windows/Linux, plus three retained inherited shader controls. Original cap/dash/dot inputs and affected denial/cancellation/cleanup/retry pass; [full qualification](artifacts/maintenance-review-20261012/stroke-style-exits-qualified-results.json). Item 2 records the completed shared-map exits. |
 | [x] 2. Shared pattern and non-scaling maps (G2–G4/G6) | Completed reflected basic rectangle/use fills, scaled viewport rectangle strokes, stroked tile content under root scaling and nonuniform dashed non-scaling strokes through shared host maps and native replay. | Unchanged [document and five controls](tests/Research/shared-map-exit-sheet/manifest.json) exact on both platforms. Original inputs, offscreen nonpainting/device-width checks and affected denial/cancellation/cleanup/retry pass; [full qualification](artifacts/maintenance-review-20261012/shared-map-exits-qualified-results.json). Wider resource/scoping exits remain required. |
 | [ ] 3. Composition and resource presentation (G5–G7) | The finite C1–C5 cases below: clip unions/affine ancestry, mask units/restoration, independent image offsets and resource cascade/content scopes. Reuse completed composition, clip/mask and item-2 maps. | Finish a complete retained document using these mechanisms; every C1–C5 independent semantic has exact platform acceptance or a linked existing witness, plus affected scope/cleanup checks. The completed composition sheet stays exact. |
 | [ ] 4. Glyph maps, composites and private validation (G9) | Finite T1–T3 below: remaining glyph maps, three component flags and four private requests. Reuse qualified layout/fitting/decorations and shared maps from items 1–3 where needed. | Exact public map/component witnesses on both platforms, measured degenerate outcomes and affected ownership checks; sanitized outcomes for the fixed private request set, with public reproductions of in-scope defects resolved. |
