@@ -1,3 +1,38 @@
+## Image SourceGraphic and fractional shadow sampling (2026-10-15)
+
+The separately frozen `image-filter-source` control is exact on Windows/Linux
+against its original healthy platform triples. It advances the unchanged effects
+sheet without counting another complete document. Image attribute/inline/static
+CSS filter admission reuses the existing source wrapper, resource arena and
+bounded premultiplied capture. Recorded image bounds describe the authored
+viewport before meet/slice placement; enclosing opacity restores after filtering.
+[Bank](../tests/Research/effects-marker-sheet/README.md),
+[qualified receipt](../artifacts/maintenance-review-20261012/image-filter-source-qualified-results.json).
+
+The initial control differed in 4,468 pixels, with maximum alpha error 21.
+Unfiltered image and SourceAlpha-blur diagnostics were exact. The pinned
+`SkDropShadowImageFilter.cpp` composes a linearly sampled matrix translation,
+whereas `feOffset` deliberately selects nearest sampling. Replacing nearest
+shadow displacement reduced maximum alpha error to one but left quantization
+differences. Tinting before interpolation and retaining unquantized flood/sample
+floats were both rejected by the unchanged reference.
+
+The accepted fractional route shares the image raster pipeline's signed Q15
+interpolation. Independently quantized premultiplied flood lanes follow the
+sampled alpha through rounded source-in multiplication; ordinary packed source
+restoration and outer opacity retain their existing order. Moving the existing
+Q15 lane arithmetic into `SvgConstantShaderPaint` changes no image arithmetic.
+Transparent halo sampling remains bounded, work is admitted before the loop,
+rows/pixels observe cancellation and existing owners release partial results.
+
+The original whole sheet now reaches its outer clip/filter gate; affine region,
+mixed primitive space and nested-filter requirements stay open. Unpromoted
+identity/zero-offset colored-shadow diagnostics also retain known differences;
+this control does not establish every source/restoration route or close G8.
+Their native observations and rejected models remain in the existing ignored
+[study](../artifacts/effects-marker-sheet-20261015/). No references, options,
+limits or pixel predicates changed.
+
 ## Marker units through retained numeric and CSS state (2026-10-15)
 
 The frozen [effects/marker sheet](../tests/Research/effects-marker-sheet/README.md)

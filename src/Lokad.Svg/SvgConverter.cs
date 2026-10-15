@@ -1583,17 +1583,9 @@ public static class SvgConverter
                 int y0 = Math.Clamp(top, 0, image.Height - 1), y1 = Math.Clamp(top + 1, 0, image.Height - 1);
                 int a = (y0 * image.Width + x0) * 4, b = (y0 * image.Width + x1) * 4;
                 int c = (y1 * image.Width + x0) * 4, d = (y1 * image.Width + x1) * 4;
-                return ApplyOpacity(new(Lane(0), Lane(1), Lane(2), Lane(3)), true);
+                return ApplyOpacity(SvgConstantShaderPaint.InterpolatePipeline(Pixel(a), Pixel(b), Pixel(c), Pixel(d), tx, ty), true);
 
-                byte Lane(int channel)
-                {
-                    int upper = Horizontal(source[a + channel], source[b + channel], tx);
-                    int lower = Horizontal(source[c + channel], source[d + channel], tx);
-                    return (byte)((Multiply(ty, lower - upper) + lower + upper + 128) >> 8);
-                }
-                static int Horizontal(int left, int right, int fraction)
-                    => (Multiply(fraction, (right - left) << 7) + ((right + left) << 7) + 1) >> 1;
-                static int Multiply(int first, int second) => (first * second + 16384) >> 15;
+                SvgConstantShaderPaint Pixel(int at) => new(source[at], source[at + 1], source[at + 2], source[at + 3]);
             }
 
             // Borrow the retained source rectangle into the existing bounded path rasterizer.

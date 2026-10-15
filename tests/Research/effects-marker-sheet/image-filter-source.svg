@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="108">
+<defs><filter id="shadow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB"><feDropShadow dx="2.25" dy="1.5" stdDeviation="1.125" flood-color="#65377a" flood-opacity=".625"/></filter></defs><image x="14.25" y="15.5" width="96.5" height="71.25" preserveAspectRatio="xMidYMid slice" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAADCAYAAABbNsX4AAAANUlEQVR4nGNQSe35f2KO6QGTqqiG////OwD5DAxAAQeQAJBzAMj+D2QfYAAS/6ECDUA2WCUAqOUcMAMh7joAAAAASUVORK5CYII=" filter="url(#shadow)" opacity=".8"/>
+</svg>

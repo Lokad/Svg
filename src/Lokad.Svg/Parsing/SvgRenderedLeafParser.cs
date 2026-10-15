@@ -50,16 +50,16 @@ internal static class SvgRenderedLeafParser
         ParserWorkCounter workCounter, CancellationToken cancellationToken)
     {
         SvgComputedStyle style = context.ResolveStyle(reader, reader.LocalName == "text");
-        if (state.FilterGroupDepth > 0 && (reader.LocalName is "image" || reader.GetAttribute("clip-path") is not null
+        if (state.FilterGroupDepth > 0 && (reader.GetAttribute("clip-path") is not null
             || reader.GetAttribute("mask") is not null || state.EffectiveFrame is not null
             || SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers))
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filtered group descendants with clips, masks, viewports, markers or images are not implemented.");
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filtered group descendants with clips, masks, viewports or markers are not implemented.");
         if (style.Filter is not string filter || filter.Trim() == "none")
             return ParseContent(reader, context, root, state, limits, budget, fontSnapshot, workCounter, cancellationToken);
         if (!SvgLocalUrl.TryParseId(filter, out string id)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only local filter url references are implemented.");
-        if (reader.LocalName is "text" or "image" || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null || state.EffectiveFrame is not null
+        if (reader.LocalName is "text" || reader.GetAttribute("clip-path") is not null || reader.GetAttribute("mask") is not null || state.EffectiveFrame is not null
             || SvgMarkerStyle.Resolve(style, context.InheritedPresentation.Markers).HasMarkers)
-            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters combined with local clips, masks, nested viewports, markers, text or images are not implemented.");
+            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters combined with local clips, masks, nested viewports, markers or text are not implemented.");
         int start = state.Scene.CommandCount, firstGeometry = state.Scene.GeometryCount;
         bool parsed = ParseContent(reader, context with { AuthoredStyle = style with { Filter = null, Opacity = null } }, root,
             state, limits, budget, fontSnapshot, workCounter, cancellationToken);

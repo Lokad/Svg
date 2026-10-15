@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One required whole CC0 effects/marker sheet and three orthogonal controls declared against 4c4b4a22. Two marker controls are exact; image-filter and affine-filter gates remain required. No new completed document or G8 closure is claimed.",
+  "purpose": "One required whole effects/marker sheet remains incomplete; three of four controls are exact. The separately declared image-filter source preserves its original healthy platform triples.",
   "cases": [
     {
       "id": "effects-marker-sheet",
@@ -60,8 +60,8 @@
       "licenseEvidence": "README.md",
       "platformReferencesByteIdentical": true,
       "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Image attribute 'filter' is not implemented.",
-      "remainingRequiredBehavior": "Filtered images, mixed graph color spaces, nested effects and affine filter placement remain required; this whole output is not complete."
+      "expectedMessage": "Filters combined with local clips, masks, nested viewports, markers or text are not implemented.",
+      "remainingRequiredBehavior": "Image filter source admission is qualified separately; outer clip/effect order, affine regions and mixed/nested effects remain required for this unchanged whole document."
     },
     {
       "id": "marker-overflow-cascade",
@@ -212,6 +212,55 @@
       "expectedError": "UnsupportedFeature",
       "expectedMessage": "Filters under rotated or skewed placement are not implemented.",
       "remainingRequiredBehavior": "Rotated/skewed filter placement remains required; this is a retained acceptance gap, not a scope boundary."
+    },
+    {
+      "id": "image-filter-source",
+      "input": "image-filter-source.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "7a08af76ebd558c967979a2f41d6b7cc88e43b229fb0c4e1441fb814792146b6",
+      "selection": "Reduced from the retained whole image panel, preserving the tiny PNG/slice/shadow/opacity and removing only clip/group placement to isolate ordinary filter source capture before effect ordering.",
+      "reference": "references/image-filter-source.png",
+      "referenceSha256": "99b4daa407a20f62392ab83020af6e3dc5643b02bb9602b16f223880eaa50c40",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "99b4daa407a20f62392ab83020af6e3dc5643b02bb9602b16f223880eaa50c40",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "99b4daa407a20f62392ab83020af6e3dc5643b02bb9602b16f223880eaa50c40",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "99b4daa407a20f62392ab83020af6e3dc5643b02bb9602b16f223880eaa50c40",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "99b4daa407a20f62392ab83020af6e3dc5643b02bb9602b16f223880eaa50c40",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "99b4daa407a20f62392ab83020af6e3dc5643b02bb9602b16f223880eaa50c40",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "99b4daa407a20f62392ab83020af6e3dc5643b02bb9602b16f223880eaa50c40",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
     }
   ],
   "linuxReferenceQualification": {

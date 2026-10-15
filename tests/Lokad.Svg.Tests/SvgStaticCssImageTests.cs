@@ -29,6 +29,55 @@ public sealed class SvgStaticCssImageTests
     public void Marker_units_and_cascade_release_owners_after_denial_and_retry(string identity)
         => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
 
+    [Fact]
+    public void Image_filter_source_preserves_input_and_releases_owners_after_denial_and_retry()
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", "image-filter-source.svg")));
+
+    [Theory]
+    [InlineData("style='filter:url(#shadow)!important;filter:none'")]
+    [InlineData("class='filtered-image'")]
+    public void Image_filter_cascade_uses_the_same_bounded_source_as_the_attribute(string declaration)
+    {
+        string source = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", "image-filter-source.svg"));
+        byte[] input = System.Text.Encoding.UTF8.GetBytes(source.Replace("filter=\"url(#shadow)\"", declaration, StringComparison.Ordinal)
+            .Replace("<defs>", "<style>.filtered-image{filter:url(#shadow)}</style><defs>", StringComparison.Ordinal));
+        Assert.Equal(SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes(source), SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(input, SvgRenderOptions.Default, CancellationToken.None).ToArray());
+    }
+
+    [Fact]
+    public void Image_filter_bounds_and_work_denial_preserve_the_prepared_source_for_retry()
+    {
+        byte[] input = File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", "image-filter-source.svg"));
+        RenderBudget budget = new(8_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgFilterBinding binding = arena.BindingAt(scene.Commands[0].MaskContentIndex);
+            Assert.Equal(new SvgPaintBounds(14.25f, 15.5f, 110.75f, 86.75f), binding.ObjectBounds);
+            long retained = budget.Snapshot().CurrentBytes;
+            byte[] expected;
+            long work;
+            using (SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None))
+            { expected = output.Pixels.ToArray(); work = output.WorkUnits; }
+            foreach (long allowed in new[] { work / 2, work - 1 })
+            {
+                SvgRenderLimits limits = SvgRenderLimits.Default;
+                SvgRenderOptions bounded = new(null, 1, SvgColor.Transparent, new(limits.MaximumAccountedBytes, limits.MaximumInputBytes,
+                    limits.MaximumDimension, limits.MaximumPixels, limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands,
+                    checked((int)allowed), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement));
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                {
+                    using SvgConverter.RasterizedSurface denied = SvgConverter.Rasterize(scene, bounded, budget, CancellationToken.None);
+                }).ErrorCode);
+                Assert.Equal(retained, budget.Snapshot().CurrentBytes);
+            }
+            using SvgConverter.RasterizedSurface retry = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, budget, CancellationToken.None);
+            Assert.Equal(expected, retry.Pixels);
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
     private static void AssertResourceLifecycle(byte[] input)
     {
         byte[] unchanged = input.ToArray();

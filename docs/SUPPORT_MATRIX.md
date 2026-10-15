@@ -1,3 +1,24 @@
+## Image filter sources and fractional shadows (2026-10-15)
+
+The separately frozen [image-filter source](../tests/Research/effects-marker-sheet/README.md)
+is exact on Windows/Linux. Local attribute, inline and static stylesheet filter
+references now admit embedded PNG sources through existing bounded capture and
+playback. The recorded object bounds retain the authored image viewport before
+meet/slice placement; opacity restores outside the filtered result.
+
+Drop-shadow fractional displacement shares the existing Q15 image sampler.
+Its source-in color follows interpolation with independently quantized flood
+lanes; ordinary `feOffset` keeps nearest sampling. Existing integer-shadow and
+image-placement results remain protected. Bounds, material storage/work denial,
+source immutability, cancellation and retry use existing regressions.
+[Qualification receipt](../artifacts/maintenance-review-20261012/image-filter-source-qualified-results.json).
+
+The effects bank remains **0/1 complete document / 3/4 exact controls**. The whole
+sheet reaches the required outer clip/filter boundary; rotated/skewed filtering,
+mixed primitive spaces, nested effects and remaining finite G8 interactions stay
+open. Earlier blanket image-filter rejection wording below is superseded; no
+feature scope is deferred and no whole-document completion is added.
+
 ## Marker units and cascaded overflow (2026-10-15)
 
 The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) has

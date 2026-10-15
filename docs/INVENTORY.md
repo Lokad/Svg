@@ -22,10 +22,12 @@ owns finished-correction evidence. Dated sections below are checkpoint history;
 completed gates are superseded by later qualified witnesses.
 
 The next [effects/marker bank](../tests/Research/effects-marker-sheet/README.md)
-remains **0/1 completed document / 2/3 exact controls**. The two marker controls and
-the original CSS-overflow fixture are exact on Windows/Linux; image-filter and
-affine-filter gates remain required. The [marker receipt](../artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json)
-records preserved preceding outputs. This adds no completed document to the nine.
+remains **0/1 completed document / 3/4 exact controls**. The two marker controls,
+the separately frozen image-filter source and the original CSS-overflow fixture
+are exact on Windows/Linux. Whole-sheet clip/filter, affine and mixed/nested
+effects remain required. The [image-source receipt](../artifacts/maintenance-review-20261012/image-filter-source-qualified-results.json)
+records preserved preceding outputs and unchanged assets. This adds no completed
+document to the nine.
 
 ## Development checkpoint (2026-10-12)
 

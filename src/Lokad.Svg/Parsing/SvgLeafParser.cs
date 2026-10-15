@@ -128,7 +128,8 @@ internal static class SvgLeafParser
             // An image is one paint operation. Its opacity can fold into a single
             // paint, but must restore outside an authored mask like other leaves.
             float alpha = geometry.Kind == SvgGeometryKind.Rectangle ? geometry.Rectangle.Color.Alpha / 255f : 1;
-            SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), alpha, true, source.Scope, source.ElementOpacity, source.OpacityScope);
+            SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), alpha, true, source.Scope, source.ElementOpacity, source.OpacityScope)
+            { ObjectBounds = source.ObjectBounds, VisualBounds = source.VisualBounds };
             return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) };
         }
         catch { geometry.Dispose(); throw; }

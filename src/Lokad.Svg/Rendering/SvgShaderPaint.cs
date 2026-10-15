@@ -25,6 +25,26 @@ internal readonly record struct SvgConstantShaderPaint(byte Red, byte Green, byt
             => (byte)((a * wa + b * wb + c * wc + d * wd) >> 8);
     }
 
+    /// <summary>Interpolates four packed pixels with the raster pipeline's signed Q15 fractions.</summary>
+    /// <remarks>Fractions encode [0,1] as [-32768,32767]. The caller prepares native fixed coordinates,
+    /// owns the samples and charges bounded sampling work. Legacy bitmap fractions remain separate.</remarks>
+    internal static SvgConstantShaderPaint InterpolatePipeline(SvgConstantShaderPaint a, SvgConstantShaderPaint b,
+        SvgConstantShaderPaint c, SvgConstantShaderPaint d, int fractionX, int fractionY)
+    {
+        return new(Lane(a.Red, b.Red, c.Red, d.Red, fractionX, fractionY), Lane(a.Green, b.Green, c.Green, d.Green, fractionX, fractionY),
+            Lane(a.Blue, b.Blue, c.Blue, d.Blue, fractionX, fractionY), Lane(a.Alpha, b.Alpha, c.Alpha, d.Alpha, fractionX, fractionY));
+
+        static byte Lane(byte a, byte b, byte c, byte d, int fractionX, int fractionY)
+        {
+            int upper = Horizontal(a, b, fractionX), lower = Horizontal(c, d, fractionX);
+            return (byte)((Multiply(fractionY, lower - upper) + lower + upper + 128) >> 8);
+
+            static int Horizontal(int left, int right, int fraction)
+                => (Multiply(fraction, (right - left) << 7) + ((right + left) << 7) + 1) >> 1;
+            static int Multiply(int first, int second) => (first * second + 16384) >> 15;
+        }
+    }
+
     internal void Blend(Span<byte> destination, byte coverage)
         => Blend(destination, coverage, false);
 
