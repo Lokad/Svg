@@ -7,6 +7,27 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgViewportPercentageTests
 {
     [Theory]
+    [InlineData("width='0' height='12'")]
+    [InlineData("width='12' height='0'")]
+    public void Empty_affine_viewports_paint_nothing_and_restore_the_sibling(string dimensions)
+    {
+        byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>"
+            + "<g transform='skewX(20)'><svg x='4' y='4' " + dimensions + "><rect width='12' height='12' fill='blue'/></svg></g>"
+            + "<rect x='24' y='24' width='4' height='4' fill='red'/></svg>");
+        RenderBudget sceneBudget = new(1_000_000), rasterBudget = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface raster = SvgConverter.Rasterize(scene, SvgRenderOptions.Default, rasterBudget, CancellationToken.None))
+            for (int y = 0; y < 32; y++) for (int x = 0; x < 32; x++)
+            {
+                int offset = (y * 32 + x) * 4;
+                byte red = x is >= 24 and < 28 && y is >= 24 and < 28 ? (byte)255 : (byte)0;
+                Assert.Equal(red, raster.Pixels[offset]); Assert.Equal(0, raster.Pixels[offset + 1]);
+                Assert.Equal(0, raster.Pixels[offset + 2]); Assert.Equal(red, raster.Pixels[offset + 3]);
+            }
+        Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes); Assert.Equal(0, rasterBudget.Snapshot().CurrentBytes);
+    }
+
+    [Theory]
     [InlineData("translate(18 12)", 30, 24, 18, 14, 22, 58, 80, 20)]
     [InlineData("translate(6 8) scale(2 1)", 30, 20, 36, 14, 14, 54, 160, 20)]
     [InlineData("translate(230 10) scale(-1 1)", 200, 22, 18, 14, 146, 56, 80, 20)]

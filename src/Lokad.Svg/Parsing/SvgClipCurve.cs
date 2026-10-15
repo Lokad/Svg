@@ -103,7 +103,7 @@ internal readonly record struct SvgClipCurve(SvgMeasuredCurveKind Kind, SvgDevic
     }
 
     /// <summary>Isolates finite real roots on the unit interval using derivative partitions.</summary>
-    /// <remarks>Degree is bounded by six for line/conic implicit intersections. Scratch is fixed per
+    /// <remarks>Degree is bounded by nine for cubic implicit intersections. Scratch is fixed per
     /// recursion level; each derivative, partition and bisection visit consumes caller work/token.</remarks>
     internal static int Roots(ReadOnlySpan<double> coefficients, Span<double> roots, ParserWorkCounter work, CancellationToken token)
     {
@@ -111,14 +111,14 @@ internal readonly record struct SvgClipCurve(SvgMeasuredCurveKind Kind, SvgDevic
         int degree = coefficients.Length - 1;
         while (degree > 0 && coefficients[degree] == 0) degree--;
         if (degree == 0) return 0;
-        if (degree > 6 || roots.Length < degree) throw new ArgumentOutOfRangeException(nameof(coefficients));
+        if (degree > 9 || roots.Length < degree) throw new ArgumentOutOfRangeException(nameof(coefficients));
         if (degree == 1)
         {
             double root = -coefficients[0] / coefficients[1];
             if (root < 0 || root > 1 || !double.IsFinite(root)) return 0;
             roots[0] = root; return 1;
         }
-        Span<double> derivative = stackalloc double[6], critical = stackalloc double[6], divisions = stackalloc double[8];
+        Span<double> derivative = stackalloc double[9], critical = stackalloc double[9], divisions = stackalloc double[11];
         for (int index = 1; index <= degree; index++) { work.Consume(token); derivative[index - 1] = coefficients[index] * index; }
         int criticalCount = Roots(derivative[..degree], critical, work, token), divisionCount = 1;
         divisions[0] = 0;

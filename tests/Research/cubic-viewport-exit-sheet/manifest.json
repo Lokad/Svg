@@ -24,8 +24,7 @@
       "reference": "references/cubic-viewport-sheet.png",
       "referenceSha256": "69192f40a86eb194a4e827538f0780dba2fa99fc277d73635ff0aafa45f2eb5f",
       "linuxReference": "references/linux64/cubic-viewport-sheet.png",
-      "linuxReferenceSha256": "69192f40a86eb194a4e827538f0780dba2fa99fc277d73635ff0aafa45f2eb5f",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "69192f40a86eb194a4e827538f0780dba2fa99fc277d73635ff0aafa45f2eb5f"
     },
     {
       "id": "cubic-pair-pending",
@@ -42,8 +41,7 @@
       "reference": "references/cubic-pair-pending.png",
       "referenceSha256": "25dfdc5bb8d16ea0d11e468d379cae62464f24617e5e4ecc127f66f3e595dd1f",
       "linuxReference": "references/linux64/cubic-pair-pending.png",
-      "linuxReferenceSha256": "25dfdc5bb8d16ea0d11e468d379cae62464f24617e5e4ecc127f66f3e595dd1f",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "25dfdc5bb8d16ea0d11e468d379cae62464f24617e5e4ecc127f66f3e595dd1f"
     },
     {
       "id": "affine-ancestor-viewport",
@@ -60,21 +58,7 @@
       "reference": "references/affine-ancestor-viewport.png",
       "referenceSha256": "3efe92f771a2c9ba0ab6312d7c8eeae30e6532b2a5c1b313df03f75d2b30c970",
       "linuxReference": "references/linux64/affine-ancestor-viewport.png",
-      "linuxReferenceSha256": "3efe92f771a2c9ba0ab6312d7c8eeae30e6532b2a5c1b313df03f75d2b30c970",
-      "knownDifference": {
-        "DimensionsMatch": true,
-        "ChangedPixelCount": 7866,
-        "MaximumChannelError": 255,
-        "MeanAbsoluteError": 40.87861328125,
-        "RootMeanSquareError": 92.04329664365162,
-        "MaximumAlphaError": 255,
-        "AlphaChangedPixelCount": 4607,
-        "MinimumMismatchX": 25,
-        "MinimumMismatchY": 8,
-        "MaximumMismatchX": 159,
-        "MaximumMismatchY": 128,
-        "IsExact": false
-      }
+      "linuxReferenceSha256": "3efe92f771a2c9ba0ab6312d7c8eeae30e6532b2a5c1b313df03f75d2b30c970"
     }
   ]
 }

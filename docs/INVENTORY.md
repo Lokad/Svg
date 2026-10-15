@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Seventeen additional authored documents** (sixteen CC0 and the MIT
+variants**. **Eighteen additional authored documents** (seventeen CC0 and the MIT
 tile sheet) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -26,21 +26,20 @@ references. Thirty-six healthy stable captures were frozen before correction.
 The [receipt](../artifacts/maintenance-review-20261012/clip-native-unions-qualified-results.json)
 owns full qualification and prior-result preservation. This is the seventeenth
 authored document; both cohort memberships and denominators stay unchanged.
-Cubic-segment pair union remains required within the existing G3/G5 promise;
-its frozen acceptance is in the next bank below. [PLAN](../PLAN.md) owns the
-remaining finite resource/font/effect exits.
-
-The declared [cubic/viewport sheet](../tests/Research/cubic-viewport-exit-sheet/README.md)
-starts at **0/1 complete document / 0/2 exact controls** on both platforms.
-The whole document and cubic-pair control reject; the affine-ancestor/scaled-
-viewport control has 7,866 differing pixels on each platform. Eighteen healthy,
-stable fresh-process captures were retained before correction. This one CC0
-document targets existing C1/C2 requirements and adds no combination quota or
-completed-document count. Its original assets/options/references are frozen.
+The [cubic/viewport sheet](../tests/Research/cubic-viewport-exit-sheet/README.md)
+is now **1/1 complete document / 2/2 exact controls** on Windows/Linux, from
+**0/1 / 0/2** at declaration. The original cubic-pair and whole-document
+rejections and 7,866-pixel viewport difference are resolved against unchanged
+references. Eighteen healthy stable captures remain unchanged. The
+[receipt](../artifacts/maintenance-review-20261012/cubic-viewport-qualified-results.json)
+records 7,861 passing tests/platform, prior-result preservation and affected
+bounds/scope/ownership checks. This is the eighteenth authored document
+(seventeenth CC0), separate from both cohorts and the W3C document. C1/C2 are
+complete; [PLAN](../PLAN.md) keeps C3-C5, font/effect and S17 exits required.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the seventeen authored documents. All **4/4 controls** are exact,
+both cohorts and the eighteen authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
@@ -64,7 +63,7 @@ The [primitive-stroke bank](../tests/Research/primitive-stroke-sheet/README.md) 
 caps, rounded dashes with independent alpha, translucent line shaders and a
 nonuniform radial point-list stroke. The [receipt](../artifacts/maintenance-review-20261012/primitive-strokes-qualified-results.json)
 records **7,826 passing tests/platform**, unchanged assets/options/default limits
-and all preceding results. It is included in the sixteen authored documents;
+and all preceding results. It is included in the additional authored documents;
 later cap/map witnesses below preserve this bank; wider G2–G9/S17 stay open.
 
 The [stroke/style exit bank](../tests/Research/stroke-style-exit-sheet/README.md)
@@ -74,7 +73,7 @@ graduate, making [use-stroke-style](../tests/Research/use-stroke-style/manifest.
 **99/99 exact**. The [receipt](../artifacts/maintenance-review-20261012/stroke-style-exits-qualified-results.json)
 records **7,832 passing tests/platform**, thirty unchanged sheet captures plus nine
 healthy Linux cross-checks of the old shader references, and preservation of all
-preceding results. This is included in the sixteen authored documents. The shared
+preceding results. This is included in the additional authored documents. The shared
 map exit below closes its named routes; wider G2-G9 and S17 remain open.
 
 The [shared map exit bank](../tests/Research/shared-map-exit-sheet/README.md) adds
@@ -82,7 +81,7 @@ The [shared map exit bank](../tests/Research/shared-map-exit-sheet/README.md) ad
 five named item-2 routes against unchanged references. The [receipt](../artifacts/maintenance-review-20261012/shared-map-exits-qualified-results.json)
 records **7,839 passing tests/platform**, thirty-six unchanged healthy captures,
 original offscreen nonpainting/device-width inputs and affected resource checks.
-This is included in the sixteen authored documents. Composition/resource/font/
+This is included in the additional authored documents. Composition/resource/font/
 effect exits remain required; the document count does not close G2-G9/S17.
 
 ## Development checkpoint (2026-10-12)

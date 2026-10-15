@@ -144,7 +144,7 @@ internal static class SvgDocumentTraversal
                     SvgAffineTransform textParent = parentFrame is {} textFrame ? textFrame.MapText(viewportContext.InheritedPresentation.Transform) : viewportContext.InheritedPresentation.Transform;
                     SvgAffineTransform textPlacement = textParent.ComposeChecked(SvgAffineTransform.FromScaleOffset(localScaleX, localScaleY, viewport.X + viewOffsetX, viewport.Y + viewOffsetY));
                     SvgAffineViewportClip textClip = new(new(viewport.X, viewport.Y, viewport.Width, viewport.Height), textParent);
-                    if (textParent.IsAxisAligned && viewportContext.InheritedPresentation.Transform != SvgAffineTransform.Identity)
+                    if (viewportContext.InheritedPresentation.Transform != SvgAffineTransform.Identity)
                     {
                         // Geometry applies the scalar viewport after its inherited
                         // source map. Rebase that ancestry so outer group placement
@@ -152,10 +152,19 @@ internal static class SvgDocumentTraversal
                         SvgAffineTransform geometryViewport = SvgAffineTransform.FromScaleOffset(composedScaleX, composedScaleY, composedOffsetX, composedOffsetY);
                         if (geometryViewport.TryInvert(out SvgAffineTransform inverseViewport))
                             inheritedViewport = inheritedViewport with { Presentation = inheritedViewport.Presentation with { Transform = inverseViewport.ComposeChecked(textPlacement) } };
-                        box = textParent.Apply(new SvgClipBox(viewport.X, viewport.Y, viewport.Width, viewport.Height));
+                        box = textParent.IsAxisAligned
+                            ? textParent.Apply(new SvgClipBox(viewport.X, viewport.Y, viewport.Width, viewport.Height))
+                            : SvgClipBox.Unbounded;
                         if (parentClip is {} enclosingClip) box = box.Intersect(enclosingClip);
                     }
-                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth) { OwnOpacity = sourceViewportOpacity, TextContext = SvgViewportTextContext.Create(state, inheritedViewport, textPlacement, textClip) });
+                    bool affineClipScope = !reader.IsEmptyElement && !textParent.IsAxisAligned;
+                    if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth) { OwnOpacity = sourceViewportOpacity, HasAffineClipScope = affineClipScope, TextContext = SvgViewportTextContext.Create(state, inheritedViewport, textPlacement, textClip) });
+                    if (affineClipScope)
+                    {
+                        (SvgClipBox bounds, int contentIndex) = textClip.Register(state, state.Scene, workCounter, cancellationToken);
+                        state.Scene.InsertCommands(state.Scene.CommandCount,
+                            [new SvgDrawCommand(SvgDrawCommandKind.BeginGroup, -1, 255, bounds, contentIndex, 255) { RegionKind = SvgLayerRegionKind.AffineViewport }]);
+                    }
                     byte viewportOpacity = sourceViewportOpacity.Alpha;
                     if (viewportOpacity != 255)
                     {
@@ -353,13 +362,15 @@ internal static class SvgDocumentTraversal
                 state.SymbolDefinition?.EndGroup(reader.Depth, state);
                 SvgRenderedGroupSourceParser.EndGroup(reader.Depth, state, workCounter, cancellationToken);
                 if (reader.Depth == state.SymbolDepth) SvgDefinitionParser.RegisterSymbol(state, workCounter, cancellationToken);
-                if (state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth) state.Viewports.RemoveLast();
+                SvgViewportFrame? closingViewport = state.Viewports.Count > 0 && state.Viewports[^1].Depth == reader.Depth ? state.Viewports[^1] : null;
+                if (closingViewport is not null) state.Viewports.RemoveLast();
                 if (state.ViewportOpacityDepth == reader.Depth)
                 {
                     state.ViewportOpacityDepth = -1;
                     state.Scene.EndOpacityScope();
                     state.HasOpacityScope = false;
                 }
+                if (closingViewport?.HasAffineClipScope == true) state.Scene.EndOpacityScope();
                 if (state.ClipDepths.Count > 0 && state.ClipDepths[^1] == reader.Depth) state.ClipDepths.RemoveLast();
                 if (state.Groups.Count > 0 && state.Groups[^1].Depth == reader.Depth && state.Groups[^1].Kind == SvgGroupKind.PatternGroup)
                 {

@@ -13,10 +13,15 @@ all preceding test semantics, original positive/rejection inputs and affected
 ownership, meaningful denial, cancellation and retry. Existing straight and single
 curve results stay exact; this supersedes their older multi-child gates below.
 
-The existing G3 cubic-segment pair intersection promise remains required and
-currently rejects; its named admission-only input needs frozen native acceptance
-before correction. [PLAN](../PLAN.md) retains that dependency, C2-C4, remaining C5,
-font/effect exits and S17. No feature scope is deferred.
+The [cubic/viewport bank](../tests/Research/cubic-viewport-exit-sheet/README.md)
+now closes C1 cubic-pair unions and C2 affine ancestor/viewBox order, physical
+viewport clipping and sibling restoration: **1/1 document / 2/2 controls exact**
+on both platforms. Independent analytic/coincident/root and zero-size controls,
+plus extended existing denial/cancellation/cleanup/retry checks, protect the
+shared mechanisms. The [receipt](../artifacts/maintenance-review-20261012/cubic-viewport-qualified-results.json)
+records 7,861 passing tests/platform and every prior result preserved. No runtime
+dependency was added. [PLAN](../PLAN.md) keeps C3-C5, font/effect exits and S17
+required without feature deferral. Older cubic/ancestor gates below are superseded.
 
 ## Basic pattern, viewport and non-scaling map exits (2026-10-15)
 

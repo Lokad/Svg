@@ -14011,3 +14011,37 @@ Cubic-segment pair intersection is still a required G3/G5 dependency. Its declar
 that solver. Completing the current sheet closes its declared outputs, not the
 remaining cubic, composition/resource, font/effect or S17 exits. No feature scope
 is deferred.
+
+
+## Cubic clip pairs and affine ancestor viewports (2026-10-15)
+
+The unchanged [cubic/viewport sheet](../tests/Research/cubic-viewport-exit-sheet/README.md)
+is **1/1 complete document / 2/2 exact controls** on Windows/Linux. This supersedes
+the preceding cubic-pair and affine-ancestor gates. Its
+[receipt](../artifacts/maintenance-review-20261012/cubic-viewport-qualified-results.json)
+retains full qualification, all prior semantics, original bytes/options/limits and
+eighteen healthy stable fresh-process captures. C3-C5, fonts/effects and S17 remain
+required; no feature promise is deferred.
+
+The symmetric three-by-three Bezout determinant eliminates one cubic parameter,
+leaving a polynomial of degree at most nine. Translation and power-of-two scaling
+bound intermediate coefficients without changing native source points. Existing
+derivative-partition root isolation finds candidates; coordinate roots recover
+the second parameter, and original-curve refinement rejects extraneous solutions.
+Exact lower-degree reduction preserves straight/quadratic cubic traces. An
+identically zero resultant projects both endpoint pairs to delimit coincident
+subintervals. Existing independent winding, boundary linking and double native
+subinterval construction remain shared; raster operands narrow once. No native
+runtime or new dependency is introduced. Analytic y=x^3/(3-x)^3 crossings,
+coincident subintervals, degree-nine roots and all-cubic straight boundaries are
+independent numerical/degenerate regressions.
+
+Nested viewport ancestry now rebases general affine maps as well as axis maps,
+keeping the parent transform outside the local viewBox scale. Rotated/skewed
+physical viewport clips use the existing native clip-content scene at viewport
+entry, with balanced closure after viewport opacity at exit. Geometry keeps only
+any enclosing axis clip; it is not trimmed to a fabricated axis approximation.
+Glyphs reuse the enclosing emitted clip instead of applying it twice. Both sibling
+scopes and zero-sized nonpainting are protected. Existing owners/work counters
+bound curve and clip preparation; the extended representative resource regression
+covers all three outputs without another API or combination matrix.

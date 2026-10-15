@@ -179,6 +179,18 @@ internal static partial class SvgClipUnion
             {
                 for (int phase = 0; phase < 4; phase++) work.Consume(token);
                 curve = curve with { Start = SvgAuthoredPath.MapPoint(map, curve.Start, new(0, 0)), First = SvgAuthoredPath.MapPoint(map, curve.First, new(0, 0)), Second = SvgAuthoredPath.MapPoint(map, curve.Second, new(0, 0)), End = SvgAuthoredPath.MapPoint(map, curve.End, new(0, 0)) };
+                if (curve.Kind == SvgMeasuredCurveKind.Cubic)
+                {
+                    double dx = curve.End.X - curve.Start.X, dy = curve.End.Y - curve.Start.Y;
+                    if ((dx != 0 || dy != 0)
+                        && (curve.First.X - curve.Start.X) * dy == (curve.First.Y - curve.Start.Y) * dx
+                        && (curve.Second.X - curve.Start.X) * dy == (curve.Second.Y - curve.Start.Y) * dx)
+                        curve = new(SvgMeasuredCurveKind.Line, curve.Start, default, default, curve.End, 1);
+                    else if (curve.End.X + 3 * (curve.First.X - curve.Second.X) - curve.Start.X == 0
+                        && curve.End.Y + 3 * (curve.First.Y - curve.Second.Y) - curve.Start.Y == 0)
+                        curve = new(SvgMeasuredCurveKind.Quadratic, curve.Start,
+                            SvgClipCurve.Narrow(new(1.5 * curve.First.X - .5 * curve.Start.X, 1.5 * curve.First.Y - .5 * curve.Start.Y)), default, curve.End, 1);
+                }
                 if (curve.Kind == SvgMeasuredCurveKind.Line && curve.Start == curve.End) return;
                 if (curve.Kind is SvgMeasuredCurveKind.Conic or SvgMeasuredCurveKind.Quadratic)
                 {
@@ -213,7 +225,10 @@ internal static partial class SvgClipUnion
         if (b.Kind == SvgMeasuredCurveKind.Cubic)
         {
             if (a.Kind == SvgMeasuredCurveKind.Cubic)
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Cubic-pair native clip unions are not implemented.");
+            {
+                CubicIntersections(a, b, left, right, cuts, work, token);
+                return;
+            }
             Intersections(b, a, right, left, cuts, work, token); return;
         }
         if (b.Kind == SvgMeasuredCurveKind.Line)
@@ -245,6 +260,92 @@ internal static partial class SvgClipUnion
             double t = roots[index], v = SvgClipCurve.Polynomial(v1, t), first = SvgClipCurve.Polynomial(v0, t), last = SvgClipCurve.Polynomial(v2, t);
             double u = Math.Abs(first) > Math.Abs(last) ? v / (2 * first + v) : 2 * last / (v + 2 * last);
             Add(t, u, a, b, left, right, cuts, work, token);
+        }
+
+        // The symmetric Bezout determinant eliminates the second cubic parameter.
+        // Translate and scale by a power of two before polynomial arithmetic, then
+        // recover the second parameter and refine against the original source curves.
+        static void CubicIntersections(SvgClipCurve a, SvgClipCurve b, int left, int right,
+            BudgetedParserList<CurveCut> cuts, ParserWorkCounter work, CancellationToken token)
+        {
+            double extent = 0;
+            foreach (SvgDevicePoint p in (ReadOnlySpan<SvgDevicePoint>)[a.Start, a.First, a.Second, a.End, b.First, b.Second, b.End])
+            {
+                work.Consume(token);
+                extent = Math.Max(extent, Math.Max(Math.Abs(p.X - b.Start.X), Math.Abs(p.Y - b.Start.Y)));
+            }
+            if (extent == 0) return;
+            double scale = Math.ScaleB(1, -Math.ILogB(extent));
+            SvgClipCurve na = Normalize(a, b.Start, scale), nb = Normalize(b, b.Start, scale);
+            Span<double> ax = stackalloc double[4], ay = stackalloc double[4], bx = stackalloc double[4], by = stackalloc double[4], z = stackalloc double[4];
+            na.Coefficients(ax, ay, z); nb.Coefficients(bx, by, z);
+            Span<double> b00 = stackalloc double[4], b01 = stackalloc double[4], b02 = stackalloc double[4], b11 = stackalloc double[4];
+            for (int i = 0; i < 4; i++)
+            {
+                work.Consume(token);
+                double f0 = (i == 0 ? bx[0] : 0) - ax[i], g0 = (i == 0 ? by[0] : 0) - ay[i];
+                b00[i] = bx[1] * g0 - by[1] * f0;
+                b01[i] = bx[2] * g0 - by[2] * f0;
+                b02[i] = bx[3] * g0 - by[3] * f0;
+                b11[i] = b02[i] + (i == 0 ? bx[2] * by[1] - bx[1] * by[2] : 0);
+            }
+            double b12 = bx[3] * by[1] - bx[1] * by[3], b22 = bx[3] * by[2] - bx[2] * by[3];
+            Span<double> equation = stackalloc double[10], roots = stackalloc double[9];
+            equation.Clear();
+            for (int i = 0; i < 4; i++)
+            {
+                work.Consume(token); equation[i] -= b00[i] * b12 * b12;
+                for (int j = 0; j < 4; j++)
+                {
+                    work.Consume(token);
+                    equation[i + j] += b00[i] * b11[j] * b22 + 2 * b01[i] * b02[j] * b12 - b01[i] * b01[j] * b22;
+                    for (int k = 0; k < 4; k++)
+                    { work.Consume(token); equation[i + j + k] -= b11[i] * b02[j] * b02[k]; }
+                }
+            }
+            int count = SvgClipCurve.Roots(equation, roots, work, token);
+            bool coincident = true;
+            foreach (double coefficient in equation) { work.Consume(token); coincident &= coefficient == 0; }
+            if (coincident)
+            {
+                // A shared cubic locus has an identically zero resultant. Both
+                // endpoint pairs delimit any partial overlap before winding selection.
+                ProjectEndpoints(na, nb, a, b, left, right, cuts, work, token);
+                ProjectEndpoints(nb, na, b, a, right, left, cuts, work, token);
+                return;
+            }
+            double xMotion = Math.Abs(bx[1]) + Math.Abs(bx[2]) + Math.Abs(bx[3]);
+            double yMotion = Math.Abs(by[1]) + Math.Abs(by[2]) + Math.Abs(by[3]);
+            Span<double> parameter = stackalloc double[4], values = stackalloc double[3];
+            for (int i = 0; i < count; i++)
+            {
+                work.Consume(token); SvgDevicePoint p = na.Evaluate(roots[i]);
+                (xMotion >= yMotion ? bx : by).CopyTo(parameter);
+                parameter[0] -= xMotion >= yMotion ? p.X : p.Y;
+                int found = SvgClipCurve.Roots(parameter, values, work, token);
+                for (int j = 0; j < found; j++) Add(roots[i], values[j], a, b, left, right, cuts, work, token);
+            }
+
+            static SvgClipCurve Normalize(SvgClipCurve curve, SvgDevicePoint origin, double scale)
+                => curve with { Start = Point(curve.Start, origin, scale), First = Point(curve.First, origin, scale), Second = Point(curve.Second, origin, scale), End = Point(curve.End, origin, scale) };
+            static SvgDevicePoint Point(SvgDevicePoint point, SvgDevicePoint origin, double scale)
+                => new((point.X - origin.X) * scale, (point.Y - origin.Y) * scale);
+
+            static void ProjectEndpoints(SvgClipCurve source, SvgClipCurve target, SvgClipCurve originalSource, SvgClipCurve originalTarget,
+                int sourceIndex, int targetIndex, BudgetedParserList<CurveCut> cuts, ParserWorkCounter work, CancellationToken token)
+            {
+                Span<double> x = stackalloc double[4], y = stackalloc double[4], z = stackalloc double[4], parameter = stackalloc double[4], values = stackalloc double[3];
+                target.Coefficients(x, y, z);
+                bool useX = Math.Abs(x[1]) + Math.Abs(x[2]) + Math.Abs(x[3]) >= Math.Abs(y[1]) + Math.Abs(y[2]) + Math.Abs(y[3]);
+                for (int endpoint = 0; endpoint < 2; endpoint++)
+                {
+                    work.Consume(token); SvgDevicePoint p = source.Evaluate(endpoint);
+                    (useX ? x : y).CopyTo(parameter); parameter[0] -= useX ? p.X : p.Y;
+                    int found = SvgClipCurve.Roots(parameter, values, work, token);
+                    for (int index = 0; index < found; index++)
+                        Add(endpoint, values[index], originalSource, originalTarget, sourceIndex, targetIndex, cuts, work, token);
+                }
+            }
         }
 
         static void Add(double t, double u, SvgClipCurve a, SvgClipCurve b, int left, int right, BudgetedParserList<CurveCut> cuts, ParserWorkCounter work, CancellationToken token)

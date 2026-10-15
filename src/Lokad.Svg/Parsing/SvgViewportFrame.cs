@@ -6,6 +6,8 @@ using Lokad.Svg.Rendering;
 internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY, double ScaleX, double ScaleY, double? ViewportWidth, double? ViewportHeight, SvgClipBox Clip, int Depth)
 {
     internal SvgPaintOpacity? OwnOpacity { get; init; }
+    /// <summary>Reports a physical affine clip emitted around this viewport's original scene commands.</summary>
+    internal bool HasAffineClipScope { get; init; }
     /// <summary>Borrows bounded presentation/text state without copying it into every deferred instance frame.</summary>
     internal SvgViewportTextContext? TextContext { get; init; }
 
@@ -35,6 +37,7 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
         {
             work.Consume(token);
             SvgViewportFrame frame = state.Viewports[index];
+            if (frame.HasAffineClipScope) continue;
             SvgViewportTextContext context = frame.TextContext ?? SvgViewportTextContext.Create(state, null,
                 SvgAffineTransform.FromScaleOffset(frame.ScaleX, frame.ScaleY, frame.OffsetX, frame.OffsetY), new(frame.Clip, SvgAffineTransform.Identity));
             if (frame.TextContext is null) state.Viewports[index] = frame with { TextContext = context };

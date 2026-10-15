@@ -6,6 +6,50 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgClipUnionTests
 {
     [Fact]
+    public void Cubic_union_preserves_analytic_crossing_and_coincident_subintervals()
+    {
+        // y = x^3 and y = (3-x)^3 cross at (1.5, 3.375).
+        // Their union keeps the lower half of each cubic, with exact dyadic controls.
+        RenderBudget budget = new(1_000_000);
+        using (SvgAuthoredPath a = Source(false, false, budget))
+        using (SvgAuthoredPath b = Source(true, false, budget))
+        {
+            using (SvgAuthoredPath result = SvgClipUnion.ResolveNativeUnion(a, false, b, false, budget, new(1_000_000), CancellationToken.None))
+            {
+                SvgAuthoredPathCommand[] curves = result.Commands.ToArray().Where(command => command.Verb == SvgAuthoredPathVerb.Cubic).ToArray();
+                Assert.Equal(2, curves.Length);
+                Assert.Contains(curves, command => command.First == new SvgDevicePoint(.5, 0)
+                    && command.Second == new SvgDevicePoint(1, 0) && command.Third == new SvgDevicePoint(1.5, 3.375));
+                Assert.Contains(curves, command => command.First == new SvgDevicePoint(2, 0)
+                    && command.Second == new SvgDevicePoint(2.5, 0) && command.Third == new SvgDevicePoint(3, 0));
+            }
+            using (SvgAuthoredPath partial = Source(false, true, budget))
+            using (SvgAuthoredPath result = SvgClipUnion.ResolveNativeUnion(a, false, partial, false, budget, new(1_000_000), CancellationToken.None))
+            {
+                SvgAuthoredPathCommand[] curves = result.Commands.ToArray().Where(command => command.Verb == SvgAuthoredPathVerb.Cubic).ToArray();
+                Assert.Equal(2, curves.Length);
+                Assert.Equal(new SvgDevicePoint(1.5, 3.375), curves[0].Third);
+                Assert.Equal(new SvgDevicePoint(3, 27), curves[1].Third);
+                Assert.Equal(SvgAuthoredPathVerb.Close, result.Commands[^1].Verb);
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+
+        static SvgAuthoredPath Source(bool reflected, bool partial, RenderBudget budget)
+        {
+            using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, new(100_000), CancellationToken.None);
+            commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(reflected ? 3 : 0, 0), default, default));
+            commands.Add(new(SvgAuthoredPathVerb.Cubic, SvgAuthoredArcFlags.None, new(partial ? .5 : reflected ? 2 : 1, 0), new(partial ? 1 : reflected ? 1 : 2, 0), new(partial ? 1.5 : reflected ? 0 : 3, partial ? 3.375 : 27)));
+            if (partial) commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(1.5, 27), default, default));
+            commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(reflected ? 3 : 0, 27), default, default));
+            commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+            OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
+            try { return SvgAuthoredPath.Create(owned, SvgAffineTransform.Identity, budget); }
+            catch { owned.Dispose(); throw; }
+        }
+    }
+
+    [Fact]
     public void Native_curve_union_preserves_conics_and_releases_owners_on_denial_and_retry()
     {
         RenderBudget sources = new(1_000_000), budget = new(1_000_000);
@@ -67,10 +111,27 @@ public sealed class SvgClipUnionTests
         Assert.InRange(Math.Abs(roots[1] - .75), 0, 1e-13);
     }
 
+    [Fact]
+    public void Degree_nine_roots_preserve_every_distinct_dyadic_crossing()
+    {
+        double[] coefficients = [1];
+        foreach (double root in new[] { 0, .125, .25, .375, .5, .625, .75, .875, 1 })
+        {
+            double[] next = new double[coefficients.Length + 1];
+            for (int i = 0; i < coefficients.Length; i++) { next[i] -= root * coefficients[i]; next[i + 1] += coefficients[i]; }
+            coefficients = next;
+        }
+        Span<double> roots = stackalloc double[9];
+        Assert.Equal(9, SvgClipCurve.Roots(coefficients, roots, new(100_000), CancellationToken.None));
+        for (int index = 0; index < 9; index++) Assert.InRange(Math.Abs(roots[index] - index * .125), 0, 1e-8);
+    }
+
     [Theory]
     [InlineData("<path d=''/><path d='M1 1H5V5H1Z'/>")]
     [InlineData("<path d='M1 1H5V5H1Z'/><circle r='0'/>")]
     [InlineData("<path d='M1 1H3V3H5V5H1Z'/><rect x='3' y='1' width='2' height='2'/>")]
+    [InlineData("<path d='M1 1C1 2 1 4 1 5L3 5C3 4 3 2 3 1Z'/><path d='M2 1C2 2 2 4 2 5L5 5C5 4 5 2 5 1Z'/>")]
+    [InlineData("<path d='M1 1C1 2 1 4 1 5C1.5 5 2.5 5 3 5C3 4 3 2 3 1C2.5 1 1.5 1 1 1Z'/><path d='M2 1C2 2 2 4 2 5C3 5 4 5 5 5C5 4 5 2 5 1C4 1 3 1 2 1Z'/>")]
     public void Clip_child_unions_preserve_expected_square_and_release_owners(string children)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'><defs><clipPath id='c'>" + children + "</clipPath></defs><rect width='8' height='8' fill='red' clip-path='url(#c)'/></svg>");
