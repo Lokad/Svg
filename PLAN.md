@@ -29,10 +29,11 @@ Optional maintenance below adds no feature-completion prerequisite.
 
 The latest complete local [qualification](artifacts/maintenance-review-20261012/primitive-strokes-qualified-results.json)
 is **7,826 tests/platform**, normal incremental Release build plus full tests in
-**70.9s Windows / 236.5s Linux**. Exact-revision hosted CI for this correction is
-pending push. The preceding [shared-map CI](https://github.com/Lokad/Svg/actions/runs/38761622532)
-is terminal green for `c73d3474`; reuse that closed audit without repolling.
-Completed work stays closed under the existing coverage/accounting policy.
+**70.9s Windows / 236.5s Linux**. [Hosted Windows/Linux CI](https://github.com/Lokad/Svg/actions/runs/38769781171)
+is terminal green for `816db741`, first attempt, with all required resource,
+browser/setup, font, validator, package and installed-consumer checks. Reuse the
+closed exact-revision audit without repolling. Completed work stays closed under
+the existing coverage/accounting policy.
 
 The [primitive-stroke bank](tests/Research/primitive-stroke-sheet/README.md) is now
 **1/1 complete document / 4/4 exact controls**, from admission **0/1 / 0/4**,
