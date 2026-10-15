@@ -75,9 +75,12 @@ is **1/1 complete document / 3/3 exact controls** against frozen platform output
 The [receipt](artifacts/maintenance-review-20261012/shared-maps-qualified-results.json)
 records full platform qualification, affected cleanup and preservation; the
 [design record](docs/RASTERIZATION_DESIGN.md#shared-paint-maps-and-nested-viewport-ancestry-2026-10-15)
-owns mechanisms. Hosted CI for this correction is pending. The previous
-[decorated-path CI](https://github.com/Lokad/Svg/actions/runs/38754459293) is terminal
-green and stays closed. Completed `inv-146`, decoration/tile banks and all earlier
+owns mechanisms.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38761622532)
+for `c73d3474`, first attempt, including resource, browser/setup, font, validator,
+package and installed-consumer checks. Reuse this exact-revision terminal audit
+for unchanged documentation; do not repoll completed runs. The previous
+[decorated-path CI](https://github.com/Lokad/Svg/actions/runs/38754459293) stays closed. Completed `inv-146`, decoration/tile banks and all earlier
 exact results remain closed. Wider G2–G9/S17 and the named legacy routes stay open.
 
 The finite tables below define the exits of these six items, rather than a second
