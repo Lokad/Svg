@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="160"><defs><clipPath id="cut"><circle cx="82" cy="76" r="52"/><ellipse cx="151" cy="83" rx="68" ry="43" transform="rotate(11 151 83)"/></clipPath></defs><rect x="8" y="8" width="232" height="144" fill="#a44f32" clip-path="url(#cut)"/></svg>
