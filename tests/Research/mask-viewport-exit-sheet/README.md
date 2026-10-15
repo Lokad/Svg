@@ -1,23 +1,32 @@
 # Mask viewport and region-default exit sheet
 
-The MIT bank starts at **0/1 complete document / 0/5 exact controls** on Windows/
-Linux. It contains the finite C3b mask-region/default/viewport exits in
-[PLAN](../../../PLAN.md), with four original SVG strings from
-[SvgRootParserTests](../../Lokad.Svg.Tests/SvgRootParserTests.cs) retained verbatim
-and one spatial group-mask/viewBox control protecting unaffected siblings.
+The unchanged MIT document is **1/1 complete / 5/5 exact controls** on Windows/
+Linux, from **0/1 / 0/5** at declaration. This is the twenty-first authored
+document (nineteen CC0, two MIT), separate from both cohorts and the sourced W3C
+decoration document. Four original SVG strings from
+[SvgRootParserTests](../../Lokad.Svg.Tests/SvgRootParserTests.cs) are retained
+verbatim. One spatial group-mask/viewBox control protects unaffected siblings.
 The 512 by 128 whole document integrates these semantics with independent IDs,
 viewport bases and an unmasked footer. All sources retain the [repository MIT
-license](LICENSE.txt); the new document adds no completed count yet.
+license](LICENSE.txt).
 
 Original bytes/options/default limits and thirty-six healthy stable fresh-process
 captures with successful profile cleanup are frozen at clean revision `bdace0ad`,
-before production correction. The [manifest](manifest.json) owns assets/options;
-the existing ignored [study](../../../artifacts/mask-viewport-exits-20261015/)
-owns declaration, baseline, health and comparison records. Source-code/build/report
+before production correction; assets were committed separately at `2f1378d9`.
+The [manifest](manifest.json) owns assets/options; the existing ignored
+[study](../../../artifacts/mask-viewport-exits-20261015/) owns declaration, baseline,
+health and comparison records. The
+[qualification](../../../artifacts/maintenance-review-20261012/mask-viewport-qualified-results.json)
+owns complete checks and prior-result preservation. Source-code/build/report
 hashes are not used.
 
-Completion requires the unchanged whole document and five controls exactly on
-both platforms, correct default region percentages and per-target viewport maps,
-with affected resource/sibling regressions. Preserve all established exact results.
-C6 clip/opacity, C5b tile masking, font/effect and S17 exits remain required;
-no feature scope or combination quota is added or deferred.
+Existing native mask target mapping now includes nontrivial axis viewports.
+Coverage checks use mapped uniform sources, and partial group sources replay
+through their full viewport map. Omitted user-space region extents use viewport
+percentages, including implicit-root defaults. Focused tests protect percentages,
+pre-clip object bounds, siblings and denial/cancellation/cleanup/retry.
+
+C3b is complete. [PLAN](../../../PLAN.md) keeps C6 clip/opacity, C5b tile masking,
+glyph/font/composite/private validation, effects/markers and S17 required; no
+feature scope or combination quota is added or deferred. Every earlier exact
+result remains protected.

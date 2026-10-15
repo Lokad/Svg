@@ -4695,11 +4695,9 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_custom_mask_regions_in_scaled_viewports()
+    public void Original_scaled_viewport_mask_maps_region_and_coverage()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#window)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        AssertMaskedRedPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1' width='2' height='2'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><svg x='8' y='8' width='48' height='48' viewBox='0 0 24 24'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#window)'/></svg></svg>"u8.ToArray(), new(10, 10, 4, 4, new(255, 0, 0, 128), true, null), 64, 64);
     }
 
     [Fact]
@@ -5060,12 +5058,11 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_forward_custom_region_masks_in_viewports()
+    public void Original_forward_viewport_mask_maps_its_region()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><svg x='4' y='0' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#later)'/></svg><defs><mask id='later' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        AssertMaskedRedPixels("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='8'><svg x='4' y='0' width='8' height='8'><rect x='0' y='0' width='8' height='8' fill='red' mask='url(#later)'/></svg><defs><mask id='later' maskUnits='userSpaceOnUse' x='2' y='2' width='4' height='4'><rect x='0' y='0' width='8' height='8' fill='#ffffff'/></mask></defs></svg>"u8.ToArray(), new(6, 2, 4, 4, new(255, 0, 0, 255), true, null), 16, 8);
     }
+
     [Fact]
     public void Applies_forward_masks_with_backward_clips_on_direct_rects()
     {
@@ -7226,11 +7223,9 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_partial_user_space_mask_regions()
+    public void Original_partial_user_space_region_uses_default_extents()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#window)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        AssertMaskedRedPixels("<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='window' maskUnits='userSpaceOnUse' x='1' y='1'><rect x='0' y='0' width='8' height='8' fill='#808080'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#window)'/></svg>"u8.ToArray(), new(1, 1, 7, 7, new(255, 0, 0, 128), true, null), 300, 150);
     }
 
     [Fact]
@@ -7288,11 +7283,9 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_custom_mask_regions_on_viewport_use_instances()
+    public void Original_viewport_use_mask_maps_its_region()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#808080'/></mask></defs><svg x='8' y='8' width='48' height='48'><use href='#r' mask='url(#m)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        AssertMaskedRedPixels("<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><defs><rect id='r' x='0' y='0' width='8' height='8' fill='red'/><mask id='m' maskUnits='userSpaceOnUse' x='0' y='0' width='8' height='8'><rect x='0' y='0' width='16' height='16' fill='#808080'/></mask></defs><svg x='8' y='8' width='48' height='48'><use href='#r' mask='url(#m)'/></svg></svg>"u8.ToArray(), new(8, 8, 8, 8, new(255, 0, 0, 128), true, null), 64, 64);
     }
 
     [Fact]
@@ -7759,5 +7752,24 @@ public sealed class SvgRootParserTests
 
         Assert.Equal(SvgErrorCode.LimitExceeded, exception.ErrorCode);
     }
+    private static void AssertMaskedRedPixels(byte[] input, SvgRectangle visible, int width, int height)
+    {
+        RenderBudget budget = new(8_000_000);
+        using (SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        using (SvgConverter.RasterizedSurface surface = SvgConverter.Rasterize(root, SvgRenderOptions.Default, budget, CancellationToken.None))
+        {
+            Assert.Equal(width, surface.Width);
+            Assert.Equal(height, surface.Height);
+            for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
+            {
+                SvgColor expected = x >= visible.X && x < visible.X + visible.Width && y >= visible.Y && y < visible.Y + visible.Height ? visible.Color : SvgColor.Transparent;
+                int offset = (y * width + x) * 4;
+                Assert.Equal(expected, new SvgColor(surface.Pixels[offset], surface.Pixels[offset + 1], surface.Pixels[offset + 2], surface.Pixels[offset + 3]));
+            }
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
 }
 

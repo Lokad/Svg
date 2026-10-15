@@ -1,3 +1,19 @@
+## Mask viewport maps and region defaults (2026-10-15)
+
+The unchanged [mask viewport/default bank](../tests/Research/mask-viewport-exit-sheet/README.md)
+is **1/1 complete document / 5/5 exact controls** on Windows/Linux. Existing native
+mask target binding handles nontrivial axis viewports for leaf/group/use sources;
+uniform coverage and spatial group replay use the complete viewport map. Partial
+user-space regions resolve omitted values and percentages against viewport bases,
+including implicit-root extents. Focused tests protect full object bounds before
+physical clipping, source cleanup and following siblings.
+
+The [qualification](../artifacts/maintenance-review-20261012/mask-viewport-qualified-results.json)
+retains original SVG/reference bytes/options/default limits and all earlier exact
+results. Former custom-region/scaled-group gates below are superseded for these
+routes. C6 clip/opacity, C5b tile masks, glyph/font/effect and S17 remain required
+in PLAN.md; no feature scope is deferred.
+
 ## Colored and general affine masks (2026-10-15)
 
 The unchanged [mask color/affine bank](../tests/Research/mask-color-affine-exit-sheet/README.md)
@@ -10,8 +26,8 @@ target and luminance-layer coverage consumers preserve exact edge arithmetic.
 The [qualification](../artifacts/maintenance-review-20261012/mask-color-affine-qualified-results.json)
 retains original assets/options/default limits, all prior regressions and affected
 resource/sibling protection. Former grayscale-only and axis-target gates are
-superseded for these routes. Nested-viewport mask-region/scoping gates and glyph
-clip/mask boundaries remain explicit in [PLAN](../PLAN.md); they do not close with
+superseded for these routes. Viewport-mask defaults/scoping are qualified above;
+glyph clip/mask and C6/C5b boundaries remain explicit in [PLAN](../PLAN.md); they do not close with
 this document. No feature deferral or new runtime dependency is introduced.
 
 ## Object-box mask content and tile-local clips (2026-10-15)

@@ -85,6 +85,49 @@ public sealed class SvgMaskContentTests
         }
     }
 
+    [Fact]
+    public void User_space_region_percentages_use_viewport_extents()
+    {
+        const string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='20' height='12'><defs><mask id='m' maskUnits='userSpaceOnUse' x='25%' y='0' width='50%' height='100%'><rect width='20' height='12' fill='white'/></mask></defs><rect width='20' height='12' fill='red' mask='url(#m)'/></svg>";
+        byte[] pixels = RenderPixels(svg, out _, out _);
+        for (int y = 0; y < 12; y++)
+        for (int x = 0; x < 20; x++) Assert.Equal(x >= 5 && x < 15 ? new SvgColor(255, 0, 0, 255) : SvgColor.Transparent, Pixel(pixels, 20, x, y));
+    }
+
+    [Fact]
+    public void Implicit_root_viewport_supplies_user_space_region_defaults()
+    {
+        const string svg = "<svg xmlns='http://www.w3.org/2000/svg'><defs><mask id='m' maskUnits='userSpaceOnUse'><rect width='8' height='8' fill='white'/></mask></defs><rect width='8' height='8' fill='red' mask='url(#m)'/></svg>";
+        byte[] pixels = RenderPixels(svg, out int width, out int height);
+        Assert.Equal(300, width);
+        Assert.Equal(150, height);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, width, 7, 7));
+        Assert.Equal(SvgColor.Transparent, Pixel(pixels, width, 8, 7));
+    }
+
+    [Fact]
+    public void Partial_uniform_group_mask_replays_in_scaled_viewport_and_restores_siblings()
+    {
+        const string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='24' height='16'><defs><mask id='m'><rect width='2' height='4' fill='white'/></mask></defs><svg x='4' y='2' width='16' height='12' viewBox='0 0 8 6'><g mask='url(#m)'><rect width='8' height='6' fill='red'/></g></svg><rect x='22' y='14' width='2' height='2' fill='blue'/></svg>";
+        byte[] pixels = RenderPixels(svg, out int width, out int height);
+        for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+        {
+            SvgColor expected = x >= 22 && y >= 14 ? new(0, 0, 255, 255)
+                : x >= 4 && x < 8 && y >= 2 && y < 10 ? new(255, 0, 0, 255) : SvgColor.Transparent;
+            Assert.Equal(expected, Pixel(pixels, width, x, y));
+        }
+    }
+
+    [Fact]
+    public void Bounding_box_region_uses_full_object_before_viewport_clipping()
+    {
+        const string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='20' height='16'><defs><mask id='m' x='0' y='0' width='.5' height='1'><rect width='20' height='16' fill='white'/></mask></defs><svg x='4' y='2' width='8' height='8' viewBox='0 0 4 4'><rect width='8' height='8' fill='red' mask='url(#m)'/></svg></svg>";
+        byte[] pixels = RenderPixels(svg, out _, out _);
+        Assert.Equal(new SvgColor(255, 0, 0, 255), Pixel(pixels, 20, 10, 6));
+        Assert.Equal(SvgColor.Transparent, Pixel(pixels, 20, 12, 6));
+    }
+
     private static byte[] RenderPixels(string svg, out int width, out int height)
     {
         byte[] input = System.Text.Encoding.UTF8.GetBytes(svg);

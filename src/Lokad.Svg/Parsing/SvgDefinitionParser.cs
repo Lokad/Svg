@@ -324,15 +324,14 @@ internal static class SvgDefinitionParser
             state.MaskValue = null;
             state.MaskContentBox = null;
             state.MaskFractionRegion = SvgMaskSyntax.ParseMaskFractionRegion(reader);
-            state.MaskCustomRegion = state.MaskFractionRegion is null ? SvgMaskSyntax.ParseMaskRegion(reader) : null;
+            state.MaskCustomRegion = state.MaskFractionRegion is null ? SvgMaskSyntax.ParseMaskRegion(reader, new(maskContext.LengthBases.Width ?? 300, maskContext.LengthBases.Height ?? 150)) : null;
             state.MaskDefaultUserSpaceRegion = reader.GetAttribute("maskUnits") == "userSpaceOnUse"
                 && reader.GetAttribute("x") is null && reader.GetAttribute("y") is null && reader.GetAttribute("width") is null && reader.GetAttribute("height") is null;
             if (state.MaskDefaultUserSpaceRegion)
             {
-                double? width = state.EffectiveFrame?.ViewportWidth ?? root.UserViewportWidth;
-                double? height = state.EffectiveFrame?.ViewportHeight ?? root.UserViewportHeight;
-                if (width is null || height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Default user-space mask regions require a known viewport.");
-                state.MaskCustomRegion = SvgMaskSyntax.MaskRegion(new(0, 0, width.Value, height.Value, default, false, null));
+                double width = maskContext.LengthBases.Width ?? 300;
+                double height = maskContext.LengthBases.Height ?? 150;
+                state.MaskCustomRegion = SvgMaskSyntax.MaskRegion(new(0, 0, width, height, default, false, null));
             }
             if (reader.IsEmptyElement)
             {

@@ -24,8 +24,7 @@
       "reference": "references/mask-viewport-sheet.png",
       "referenceSha256": "aa6a9a4c3fb78d9767915733f5da9deca086976670140195ed5a921258ce0076",
       "linuxReference": "references/linux64/mask-viewport-sheet.png",
-      "linuxReferenceSha256": "aa6a9a4c3fb78d9767915733f5da9deca086976670140195ed5a921258ce0076",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "aa6a9a4c3fb78d9767915733f5da9deca086976670140195ed5a921258ce0076"
     },
     {
       "id": "scaled-custom-region",
@@ -42,8 +41,7 @@
       "reference": "references/scaled-custom-region.png",
       "referenceSha256": "1e633adfad47c68fe536d724fea2378f10b0c5b2c1b9a34d32ffcdcbd148e03f",
       "linuxReference": "references/linux64/scaled-custom-region.png",
-      "linuxReferenceSha256": "1e633adfad47c68fe536d724fea2378f10b0c5b2c1b9a34d32ffcdcbd148e03f",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "1e633adfad47c68fe536d724fea2378f10b0c5b2c1b9a34d32ffcdcbd148e03f"
     },
     {
       "id": "forward-custom-region",
@@ -60,8 +58,7 @@
       "reference": "references/forward-custom-region.png",
       "referenceSha256": "7656e8afaa8909cd9061202e2066845eaa55e292c7fbbe0f0bb9118de9587b24",
       "linuxReference": "references/linux64/forward-custom-region.png",
-      "linuxReferenceSha256": "7656e8afaa8909cd9061202e2066845eaa55e292c7fbbe0f0bb9118de9587b24",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "7656e8afaa8909cd9061202e2066845eaa55e292c7fbbe0f0bb9118de9587b24"
     },
     {
       "id": "use-custom-region",
@@ -78,8 +75,7 @@
       "reference": "references/use-custom-region.png",
       "referenceSha256": "8b926521618778490931b82f80bbd28ac67372ba7427c3ad9f49f7efbf8cbdc7",
       "linuxReference": "references/linux64/use-custom-region.png",
-      "linuxReferenceSha256": "8b926521618778490931b82f80bbd28ac67372ba7427c3ad9f49f7efbf8cbdc7",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "8b926521618778490931b82f80bbd28ac67372ba7427c3ad9f49f7efbf8cbdc7"
     },
     {
       "id": "spatial-group-viewport",
@@ -96,8 +92,7 @@
       "reference": "references/spatial-group-viewport.png",
       "referenceSha256": "f30d85eb5864a733ac4a433696b0e046bdddcb4e32de4ab153c0220fa158130a",
       "linuxReference": "references/linux64/spatial-group-viewport.png",
-      "linuxReferenceSha256": "f30d85eb5864a733ac4a433696b0e046bdddcb4e32de4ab153c0220fa158130a",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "f30d85eb5864a733ac4a433696b0e046bdddcb4e32de4ab153c0220fa158130a"
     },
     {
       "id": "partial-user-region",
@@ -114,8 +109,7 @@
       "reference": "references/partial-user-region.png",
       "referenceSha256": "a33e96ed29b403e7c9ab913c40123d2f7ab66a3586ea1b48e5bfc1568da89887",
       "linuxReference": "references/linux64/partial-user-region.png",
-      "linuxReferenceSha256": "a33e96ed29b403e7c9ab913c40123d2f7ab66a3586ea1b48e5bfc1568da89887",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "a33e96ed29b403e7c9ab913c40123d2f7ab66a3586ea1b48e5bfc1568da89887"
     }
   ]
 }

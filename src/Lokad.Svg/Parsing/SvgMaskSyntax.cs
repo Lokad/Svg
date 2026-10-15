@@ -15,7 +15,7 @@ internal readonly record struct PendingGroupMask(string MaskId, int FirstCommand
 internal static class SvgMaskSyntax
 {
     /// <summary>Parses an explicit userSpaceOnUse mask region, returning null for the default region.</summary>
-    internal static SvgClipBox? ParseMaskRegion(XmlReader reader)
+    internal static SvgClipBox? ParseMaskRegion(XmlReader reader, SvgViewportLengthBases bases)
     {
         ArgumentNullException.ThrowIfNull(reader);
         string? units = reader.GetAttribute("maskUnits");
@@ -28,11 +28,10 @@ internal static class SvgMaskSyntax
         if (!isUserSpace && !isBoundingBox) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only userSpaceOnUse and objectBoundingBox mask units are implemented.");
         if (x is null && y is null && width is null && height is null) return null;
         if (!isUserSpace) throw new SvgException(SvgErrorCode.UnsupportedFeature, "objectBoundingBox mask regions are not implemented.");
-        if (x is null || y is null || width is null || height is null) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Default mask regions with userSpaceOnUse units are not implemented.");
-        double regionX = SvgGeometrySyntax.ParseRectangleCoordinate(x);
-        double regionY = SvgGeometrySyntax.ParseRectangleCoordinate(y);
-        double regionWidth = SvgGeometrySyntax.ParseRectangleCoordinate(width);
-        double regionHeight = SvgGeometrySyntax.ParseRectangleCoordinate(height);
+        double regionX = SvgGeometrySyntax.ParseViewportCoordinate(x ?? "-10%", bases.Width, SvgViewportCoordinateKind.Rectangle);
+        double regionY = SvgGeometrySyntax.ParseViewportCoordinate(y ?? "-10%", bases.Height, SvgViewportCoordinateKind.Rectangle);
+        double regionWidth = SvgGeometrySyntax.ParseViewportCoordinate(width ?? "120%", bases.Width, SvgViewportCoordinateKind.Rectangle);
+        double regionHeight = SvgGeometrySyntax.ParseViewportCoordinate(height ?? "120%", bases.Height, SvgViewportCoordinateKind.Rectangle);
         if (regionWidth < 0 || regionHeight < 0) throw new SvgException(SvgErrorCode.MalformedInput, "Mask region dimensions cannot be negative.");
         return new SvgClipBox(regionX, regionY, regionWidth, regionHeight);
     }
@@ -128,7 +127,7 @@ internal static class SvgMaskSyntax
             SvgRectangle objectBox = state.Scene.GetRecordedPaintValue(first.RecordedPaint).ObjectBounds is not null
                 ? RecordedObjectBox(first, state) : fallback;
             SvgMaskTarget? nativeTarget = null;
-            if (!spatialMap.IsAxisAligned)
+            if (!spatialMap.IsAxisAligned || pending.Parent is { IsTrivial: false })
             {
                 SvgObjectBoundingClip collector = new(pending.Transform, pending.Parent);
                 for (int index = pending.FirstGeometryIndex; index < pending.FirstGeometryIndex + pending.GeometryCount; index++)
@@ -150,7 +149,7 @@ internal static class SvgMaskSyntax
                     pending.Operation.Value = 255;
                 }
             }
-            if (pending.Operation.ContentIndex < 0 && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
+            if (pending.Operation.ContentIndex < 0 && !HasUniformSource(state, pending.MaskId) && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox content) && !content.Contains(fallback.X, fallback.Y, fallback.X + fallback.Width, fallback.Y + fallback.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering the masked geometry is implemented.");
             SvgClipBox region = nativeTarget is {} native ? native.SceneBounds(workCounter, cancellationToken) : ResolveDeferredRegion(state, pending, objectBox);
             pending.Operation.Region = region;
             for (int geometryIndex = pending.FirstGeometryIndex; geometryIndex < pending.FirstGeometryIndex + pending.GeometryCount; geometryIndex++)
@@ -180,15 +179,12 @@ internal static class SvgMaskSyntax
 
         static SvgClipBox ResolveDeferredRegion(SvgDocumentState state, PendingLeafMask pending, SvgRectangle fallback)
         {
-            SvgViewportFrame? parent = pending.Parent;
             if (state.MaskRegions.TryGetValue(pending.MaskId, out SvgClipBox custom))
             {
-                if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
                 return pending.Transform.Apply(custom);
             }
             if (state.MaskFractionRegions.TryGetValue(pending.MaskId, out SvgClipBox fractions))
             {
-                if (parent is not null && !parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
                 SvgClipBox resolved = new(fallback.X + fractions.X * fallback.Width, fallback.Y + fractions.Y * fallback.Height, fractions.Width * fallback.Width, fractions.Height * fallback.Height);
                 if (!HasUniformSource(state, pending.MaskId) && state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox cover) && !cover.Contains(resolved.X, resolved.Y, resolved.X + resolved.Width, resolved.Y + resolved.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");
                 return resolved;
@@ -272,7 +268,7 @@ internal static class SvgMaskSyntax
             SvgAffineTransform targetMap = pending.Transform;
             if (pending.Parent is {} viewport) targetMap = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(targetMap);
             SvgMaskTarget? nativeTarget = null;
-            if (!targetMap.IsAxisAligned)
+            if (!targetMap.IsAxisAligned || pending.Parent is { IsTrivial: false })
             {
                 SvgObjectBoundingClip collector = new(pending.Transform, pending.Parent);
                 for (int commandIndex = pending.FirstCommandIndex; commandIndex < pending.EndCommandIndex; commandIndex++)
@@ -291,10 +287,9 @@ internal static class SvgMaskSyntax
                     ? ResolveGroupMaskRegion(state, pending, hasExplicitRegion, customRegion, fractionRegion, workCounter, cancellationToken)
                     : MaskRegion(GroupChildrenUnion(state, pending, workCounter, cancellationToken));
             bool scalar = state.Masks.TryGetValue(pending.MaskId, out byte value);
-            if (!scalar || nativeTarget is not null && state.MaskContents.TryGetValue(pending.MaskId, out _))
+            if (!scalar || !targetMap.IsAxisAligned && state.MaskContents.TryGetValue(pending.MaskId, out _))
             {
                 if (!state.MaskContents.TryGetValue(pending.MaskId, out SvgMaskContent content)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local mask references are implemented.");
-                if (nativeTarget is null && !content.IsObjectBoundingBox && pending.Parent is not null && !pending.Parent.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
                 ValidateNoGlyphText(state, pending, workCounter, cancellationToken);
                 SvgAffineTransform map = content.IsObjectBoundingBox || nativeTarget is not null ? targetMap : pending.Transform;
                 int contentIndex = state.Scene.AddMaskContent(SvgMaskContentReplay.PlaceForTarget(content, map, GroupChildrenUnion(state, pending, workCounter, cancellationToken), nativeTarget, state, workCounter, cancellationToken));
@@ -303,12 +298,10 @@ internal static class SvgMaskSyntax
             }
             if (state.MaskContentBoxes.TryGetValue(pending.MaskId, out SvgClipBox contentBox))
             {
-                SvgClipBox placedContent = pending.Transform.IsAxisAligned ? pending.Transform.Apply(contentBox) : contentBox;
-                if (HasUniformSource(state, pending.MaskId) && (!pending.Transform.IsAxisAligned || !GroupCovered(state, pending, placedContent, workCounter, cancellationToken)))
+                SvgClipBox placedContent = targetMap.IsAxisAligned ? targetMap.Apply(contentBox) : contentBox;
+                if (HasUniformSource(state, pending.MaskId) && (!targetMap.IsAxisAligned || !GroupCovered(state, pending, placedContent, workCounter, cancellationToken)))
                 {
-                    if (pending.Parent is not null && !pending.Parent.Value.IsTrivial)
-                        throw new SvgException(SvgErrorCode.UnsupportedFeature, "Spatial mask content in transformed viewports is not implemented.");
-                    SvgMaskContent content = SvgMaskContentReplay.ResolveUniformSource(pending.MaskId, pending.Transform, state, workCounter, cancellationToken);
+                    SvgMaskContent content = SvgMaskContentReplay.ResolveUniformSource(pending.MaskId, targetMap, state, workCounter, cancellationToken);
                     int contentIndex = state.Scene.AddMaskContent(content);
                     RewriteGroupMaskScope(state, pending, 255, maskRegion, contentIndex);
                     continue;

@@ -894,12 +894,12 @@ internal static class SvgReferenceResolver
         }
         SvgRectangle fallback = new(left, top, right - left, bottom - top, default, false, null);
         SvgMaskTarget? nativeTarget = null;
-        if (!placement.IsAxisAligned && maskId is not null)
+        if (maskId is not null && (!placement.IsAxisAligned || frame is { IsTrivial: false }))
         {
             SvgObjectBoundingClip collector = new(placement, null);
             foreach (SvgGeometry geometry in geometries) collector.Add(geometry, workCounter, cancellationToken);
             nativeTarget = SvgMaskTarget.Create(maskId, placement, collector.SourceBounds, state);
-            if (state.MaskContents.TryGetValue(maskId, out SvgMaskContent retained)) spatialContent = retained;
+            if (!placement.IsAxisAligned && state.MaskContents.TryGetValue(maskId, out SvgMaskContent retained)) spatialContent = retained;
         }
         if (spatialContent is {} placedContent)
         {
@@ -927,7 +927,7 @@ internal static class SvgReferenceResolver
                 workCounter.Consume(cancellationToken);
                 SvgMaskSyntax.ValidateMaskCoverage(maskReference, state, SvgMaskSyntax.BoundingBox(geometry));
             }
-        SvgClipBox region = nativeTarget is {} native ? native.SceneBounds(workCounter, cancellationToken) : ResolveInstanceMaskRegion(maskReference, frame, state, fallback);
+        SvgClipBox region = nativeTarget is {} native ? native.SceneBounds(workCounter, cancellationToken) : ResolveInstanceMaskRegion(maskReference, state, fallback);
         SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
         operation.Value = mask.Value; operation.Resolved = true;
         operation.ContentIndex = contentIndex;
@@ -946,17 +946,15 @@ internal static class SvgReferenceResolver
             geometries[index] = geometries[index] with { LeafMask = outer };
         }
 
-        static SvgClipBox ResolveInstanceMaskRegion(string? maskReference, SvgViewportFrame? frame, SvgDocumentState document, SvgRectangle fallback)
+        static SvgClipBox ResolveInstanceMaskRegion(string? maskReference, SvgDocumentState document, SvgRectangle fallback)
         {
             ArgumentNullException.ThrowIfNull(document);
             if (maskReference is not null && document.MaskRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out SvgClipBox custom))
             {
-                if (frame is not null && !frame.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
                 return custom;
             }
             if (maskReference is not null && document.MaskFractionRegions.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out SvgClipBox fractions))
             {
-                if (frame is not null && !frame.Value.IsTrivial) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Custom mask regions inside viewports are not implemented.");
                 SvgClipBox resolved = new(fallback.X + fractions.X * fallback.Width, fallback.Y + fractions.Y * fallback.Height, fractions.Width * fallback.Width, fractions.Height * fallback.Height);
                 if (!SvgMaskSyntax.HasUniformSource(document, SvgMaskSyntax.ParseMaskId(maskReference))
                     && document.MaskContentBoxes.TryGetValue(SvgMaskSyntax.ParseMaskId(maskReference), out SvgClipBox cover) && !cover.Contains(resolved.X, resolved.Y, resolved.X + resolved.Width, resolved.Y + resolved.Height)) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only mask content covering its custom region is implemented.");

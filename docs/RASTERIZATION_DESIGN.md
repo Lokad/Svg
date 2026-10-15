@@ -1,3 +1,22 @@
+## Viewport mask targets and partial region defaults (2026-10-15)
+
+Nontrivial axis viewports use the same local target bounds and region mapping
+as affine masks. Scalar coverage is tested in that complete map; a partial
+uniform group source reuses native source replay through the viewport. Spatial
+mask content and region units remain separate. This removes the direct/forward/
+use custom-region and scaled-group gates without separate shape implementations.
+
+User-space region percentages and omitted -10%/120% values use the mask resource
+viewport; implicit root extents supply defaults where no dimensions are authored.
+Existing fully specified root paths keep their qualified arithmetic. The pinned
+[native resource resolver](https://chromium.googlesource.com/chromium/src/+/153.0.8010.52/third_party/blink/renderer/core/layout/svg/layout_svg_resource_container.cc)
+provides the same percentage basis. The unchanged
+[whole document and five controls](../tests/Research/mask-viewport-exit-sheet/README.md)
+are exact on both platforms. Original Core inputs now assert complete pixels and
+owner cleanup; focused percentages, partial sources, pre-clip object bounds and
+sibling protection accompany the [full qualification](../artifacts/maintenance-review-20261012/mask-viewport-qualified-results.json).
+C6/C5b and font/effect boundaries stay required in PLAN.md.
+
 ## Native affine mask replay and luminance consumers (2026-10-15)
 
 General-affine mask targets replay document-owned source snapshots through the
