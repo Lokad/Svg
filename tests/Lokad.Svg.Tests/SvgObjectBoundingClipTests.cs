@@ -114,6 +114,36 @@ public sealed class SvgObjectBoundingClipTests
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 
+    [Theory]
+    [InlineData("translate(.25 0)", 4, 2, 4, 8)]
+    [InlineData("matrix(0 1 -1 0 1 0)", 2, 2, 8, 4)]
+    public void Normalized_rectangle_content_transform_precedes_target_placement(string transform, int x, int y, int width, int height)
+    {
+        string definition = "<defs><clipPath id='c' clipPathUnits='objectBoundingBox'><rect width='.5' height='1' transform='" + transform + "'/></clipPath></defs>";
+        Assert.Equal(Render("<rect x='" + x + "' y='" + y + "' width='" + width + "' height='" + height + "' fill='red'/>"),
+            Render(definition + "<rect x='2' y='2' width='8' height='8' fill='red' clip-path='url(#c)'/>"));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Forward_and_backward_group_clips_keep_mask_object_bounds_and_siblings(bool backward)
+    {
+        const string clip = "<defs><clipPath id='c'><rect x='2' y='2' width='8' height='8'/></clipPath></defs>";
+        const string mask = "<defs><mask id='m' maskContentUnits='objectBoundingBox'><rect width='.5' height='1' fill='#808080'/></mask></defs>";
+        const string target = "<g opacity='.5' clip-path='url(#c)' mask='url(#m)'><rect width='16' height='16' fill='red'/></g>";
+        const string sibling = "<rect x='26' y='2' width='2' height='2' fill='blue'/>";
+        Assert.Equal(Render("<rect x='2' y='2' width='6' height='8' fill='red' opacity='.25'/>" + sibling),
+            Render(mask + (backward ? clip : "") + target + (backward ? "" : clip) + sibling));
+    }
+
+    [Fact]
+    public void Normalized_clip_uses_full_object_before_physical_viewport_clipping()
+    {
+        const string content = "<defs><clipPath id='c' clipPathUnits='objectBoundingBox'><rect width='.5' height='1'/></clipPath></defs><svg x='4' y='2' width='8' height='8' viewBox='0 0 4 4'><rect width='8' height='8' fill='red' clip-path='url(#c)'/></svg>";
+        Assert.Equal(Render("<rect x='4' y='2' width='8' height='8' fill='red'/>"), Render(content));
+    }
+
     private static byte[] Input(string content) => System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'>" + content + "</svg>");
     private static byte[] Render(string content) => SvgConverter.ConvertToPng(Input(content), SvgRenderOptions.Default, CancellationToken.None).ToArray();
 }

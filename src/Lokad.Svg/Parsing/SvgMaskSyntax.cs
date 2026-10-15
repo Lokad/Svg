@@ -131,7 +131,7 @@ internal static class SvgMaskSyntax
             {
                 SvgObjectBoundingClip collector = new(pending.Transform, pending.Parent);
                 for (int index = pending.FirstGeometryIndex; index < pending.FirstGeometryIndex + pending.GeometryCount; index++)
-                    collector.Add(state.Scene.GeometryAt(index), workCounter, cancellationToken);
+                    collector.Add(state.Scene.GeometryAt(index), state, workCounter, cancellationToken);
                 nativeTarget = SvgMaskTarget.Create(pending.MaskId, spatialMap, collector.SourceBounds, state);
             }
             if (spatialContent is {} placedContent)
@@ -275,7 +275,7 @@ internal static class SvgMaskSyntax
                 {
                     workCounter.Consume(cancellationToken);
                     SvgDrawCommand command = state.Scene.CommandAt(commandIndex);
-                    if (command.Kind == SvgDrawCommandKind.Geometry) collector.Add(state.Scene.GeometryAt(command.GeometryIndex), workCounter, cancellationToken);
+                    if (command.Kind == SvgDrawCommandKind.Geometry) collector.Add(state.Scene.GeometryAt(command.GeometryIndex), state, workCounter, cancellationToken);
                 }
                 nativeTarget = SvgMaskTarget.Create(pending.MaskId, targetMap, collector.SourceBounds, state);
             }

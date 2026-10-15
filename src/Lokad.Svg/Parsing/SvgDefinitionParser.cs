@@ -196,11 +196,10 @@ internal static class SvgDefinitionParser
                 SvgRectangleSyntax syntax = SvgRectangleSyntax.Parse(reader, state.ClipIsObjectBoundingBox ? new(1, 1) : context.LengthBases);
                 // A resource uses its own child map; ancestors place the referencing element.
                 SvgAffineTransform clipTransform = SvgGeometrySyntax.ParseTransform(reader.GetAttribute("transform"), workCounter, cancellationToken);
-                if (state.ClipIsObjectBoundingBox && clipTransform != SvgAffineTransform.Identity) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Transformed objectBoundingBox clip content is not implemented.");
-                SvgRectangle rect = clipTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
                 SvgAffineViewportClip source = new(new(syntax.X, syntax.Y, syntax.Width, syntax.Height), clipTransform);
-                if (state.ClipPolygon is null)
+                if (clipTransform.IsAxisAligned && state.ClipPolygon is null)
                 {
+                    SvgRectangle rect = clipTransform.Apply(new SvgRectangle(syntax.X, syntax.Y, syntax.Width, syntax.Height, default, false, null));
                     state.ClipBox = new SvgClipBox(rect.X, rect.Y, rect.Width, rect.Height);
                     state.ClipRectangleSource = source;
                 }

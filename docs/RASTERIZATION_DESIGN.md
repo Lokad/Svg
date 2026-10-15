@@ -1,3 +1,23 @@
+## Shared geometric bounds and normalized clip binding (2026-10-16)
+
+Normalized rectangular clips reuse the same deferred target-bound collector as
+curved clip content. Authored paths use tight source bounds, axis lines use
+endpoints, and remaining leaves use recorded pre-clip object bounds. Stroke
+extent does not inflate the object box. One existing native affine clip operation
+maps normalized content through the object box and target/viewport placement;
+geometry and paint replay stay shared. Definition order no longer selects a
+different normalized clip route. General rectangle-content transforms reuse
+retained clip geometry; zero-size/disjoint results remain nonpainting.
+
+The unchanged [document and six original controls](../tests/Research/forward-bbox-clip-exit-sheet/README.md)
+are exact on both platforms. Original straight/curved clip tests now assert
+pixels and cleanup instead of cropped storage layout. Mask ordering, geometric
+bounds before physical clipping and siblings are protected. The
+[qualification](../artifacts/maintenance-review-20261012/forward-bbox-qualified-results.json)
+owns captures, preservation and resource checks. The existing affine user-space
+rectangle-stroke clip gate remains C6c, alongside C5b tile masking and the
+font/effect/S17 work; no extra combination quota or scope deferral applies.
+
 ## Shared viewport clips and owning opacity layers (2026-10-16)
 
 Axis clip placement composes inherited source transforms with scalar viewport
@@ -18,7 +38,7 @@ native captures: red 82 at alpha 96 preserves native saved-layer quantization;
 independently rounding every lane to predict 85 was rejected. Production blend
 arithmetic is unchanged. The [qualification](../artifacts/maintenance-review-20261012/viewport-composition-qualified-results.json)
 owns preservation, original-input migrations and resource/sibling checks.
-C6b/C5b, font/effect and S17 remain required in PLAN.md.
+C5b/C6c, font/effect and S17 remain required in PLAN.md.
 
 ## Viewport mask targets and partial region defaults (2026-10-15)
 

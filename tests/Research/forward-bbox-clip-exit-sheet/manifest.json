@@ -24,8 +24,7 @@
       "reference": "references/forward-bbox-sheet.png",
       "referenceSha256": "98af2097dfe984edc596646f19b5b34a5249a1917a56feebcb9391ce59306034",
       "linuxReference": "references/linux64/forward-bbox-sheet.png",
-      "linuxReferenceSha256": "98af2097dfe984edc596646f19b5b34a5249a1917a56feebcb9391ce59306034",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "98af2097dfe984edc596646f19b5b34a5249a1917a56feebcb9391ce59306034"
     },
     {
       "id": "forward-clip-masked-group",
@@ -42,8 +41,7 @@
       "reference": "references/forward-clip-masked-group.png",
       "referenceSha256": "9189e6ce5adbeffacca6455282a0ef39e7a8cbfeea1822950221e9a30229a16d",
       "linuxReference": "references/linux64/forward-clip-masked-group.png",
-      "linuxReferenceSha256": "9189e6ce5adbeffacca6455282a0ef39e7a8cbfeea1822950221e9a30229a16d",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "9189e6ce5adbeffacca6455282a0ef39e7a8cbfeea1822950221e9a30229a16d"
     },
     {
       "id": "forward-image-box",
@@ -60,8 +58,7 @@
       "reference": "references/forward-image-box.png",
       "referenceSha256": "bf8382c163c8f0c3506cc0ad2041a22bee1386ebd01df53f0bf425d84b5b2083",
       "linuxReference": "references/linux64/forward-image-box.png",
-      "linuxReferenceSha256": "bf8382c163c8f0c3506cc0ad2041a22bee1386ebd01df53f0bf425d84b5b2083",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "bf8382c163c8f0c3506cc0ad2041a22bee1386ebd01df53f0bf425d84b5b2083"
     },
     {
       "id": "forward-group-box",
@@ -78,8 +75,7 @@
       "reference": "references/forward-group-box.png",
       "referenceSha256": "4f8a84938f42da33d30162b3786ae3fa5076dc2f7585a270802e885e057d113a",
       "linuxReference": "references/linux64/forward-group-box.png",
-      "linuxReferenceSha256": "4f8a84938f42da33d30162b3786ae3fa5076dc2f7585a270802e885e057d113a",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "4f8a84938f42da33d30162b3786ae3fa5076dc2f7585a270802e885e057d113a"
     },
     {
       "id": "zero-height-line-box",
@@ -96,8 +92,7 @@
       "reference": "references/zero-height-line-box.png",
       "referenceSha256": "88d920a9bd619bcf12093611f9fd5d028d0e72b53f8d57a8476cbf78a86746d7",
       "linuxReference": "references/linux64/zero-height-line-box.png",
-      "linuxReferenceSha256": "88d920a9bd619bcf12093611f9fd5d028d0e72b53f8d57a8476cbf78a86746d7",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "88d920a9bd619bcf12093611f9fd5d028d0e72b53f8d57a8476cbf78a86746d7"
     },
     {
       "id": "forward-circle-box",
@@ -114,8 +109,7 @@
       "reference": "references/forward-circle-box.png",
       "referenceSha256": "a64faed668cbcebd67c1996a0fff7e0770d9d17871632d8775c87697c55551c5",
       "linuxReference": "references/linux64/forward-circle-box.png",
-      "linuxReferenceSha256": "a64faed668cbcebd67c1996a0fff7e0770d9d17871632d8775c87697c55551c5",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "a64faed668cbcebd67c1996a0fff7e0770d9d17871632d8775c87697c55551c5"
     },
     {
       "id": "transformed-box-content",
@@ -132,8 +126,7 @@
       "reference": "references/transformed-box-content.png",
       "referenceSha256": "88d920a9bd619bcf12093611f9fd5d028d0e72b53f8d57a8476cbf78a86746d7",
       "linuxReference": "references/linux64/transformed-box-content.png",
-      "linuxReferenceSha256": "88d920a9bd619bcf12093611f9fd5d028d0e72b53f8d57a8476cbf78a86746d7",
-      "expectedError": "UnsupportedFeature"
+      "linuxReferenceSha256": "88d920a9bd619bcf12093611f9fd5d028d0e72b53f8d57a8476cbf78a86746d7"
     }
   ]
 }

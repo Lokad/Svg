@@ -208,14 +208,6 @@ internal static class SvgDocumentTraversal
                                 state.Viewports.Add(new SvgViewportFrame(clipParent?.OffsetX ?? 0, clipParent?.OffsetY ?? 0, clipParent?.ScaleX ?? 1, clipParent?.ScaleY ?? 1, clipParent?.ViewportWidth, clipParent?.ViewportHeight, clip, reader.Depth));
                                 state.ClipDepths.Add(reader.Depth);
                             }
-                            else if (state.ObjectClips.TryGetValue(groupClipId, out _))
-                            {
-                                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only defined local clip-path references are implemented.");
-                            }
-                            else if (parsedGroup.DeferredMask is {} knownMaskId && state.Masks.TryGetValue(knownMaskId, out _))
-                            {
-                                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Forward clip-path definitions on masked groups are not implemented.");
-                            }
                             else
                             {
                                 SvgViewportFrame? groupParent = state.EffectiveFrame;

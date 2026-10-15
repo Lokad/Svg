@@ -9,7 +9,7 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Twenty-two additional authored documents** (nineteen CC0 and three MIT
+variants**. **Twenty-three additional authored documents** (nineteen CC0 and four MIT
 documents) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
@@ -67,7 +67,7 @@ references/default limits and thirty-six healthy stable captures remain unchange
 The [receipt](../artifacts/maintenance-review-20261012/mask-viewport-qualified-results.json)
 owns complete checks, original-input pixel/cleanup migrations and preservation.
 This is the twenty-first authored document (second MIT). C3b is complete; C6a is
-qualified below. C6b, C5b tile masks, glyph/font/effect and S17 remain required.
+qualified below. C5b tile masks, C6c affine user-space clips, glyph/font/effect and S17 remain required.
 
 The [viewport clip/opacity sheet](../tests/Research/viewport-clip-opacity-exit-sheet/README.md)
 is **1/1 complete document / 6/6 exact controls** on both platforms, from
@@ -79,11 +79,21 @@ owns complete qualification and original-input migrations. Three retained
 fractional clipped-frame backgrounds and nested cropped opacity also match
 unchanged references; twelve healthy Linux captures cross-check their bytes.
 Six further native overlap captures protect quantized RGB and sibling scopes.
-C6a is complete. C6b, C5b, glyph/font/effect and S17 remain required.
+C6a/C6b are complete. C5b, C6c, glyph/font/effect and S17 remain required.
+
+The [forward/object-box clip sheet](../tests/Research/forward-bbox-clip-exit-sheet/README.md)
+is **1/1 complete document / 6/6 exact controls** on both platforms, from
+**0/1 / 0/6** at declaration. Six original Core SVGs, two valid empty outputs and
+forty-two healthy stable captures retain all bytes/options/default limits. This
+is the twenty-third authored document (fourth MIT), separate from both cohorts
+and W3C. The [receipt](../artifacts/maintenance-review-20261012/forward-bbox-qualified-results.json)
+owns qualification and preservation. One original rotated-stroke object-box
+control is also exact against six healthy native captures; its user-space clip
+remains a named required boundary in PLAN.md rather than a hidden deferral.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the twenty-two authored documents. All **4/4 controls** are exact,
+both cohorts and the twenty-three authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)

@@ -31,11 +31,18 @@ public sealed class SvgAffineRectangleStrokeTests
     [Theory]
     [InlineData("userSpaceOnUse")]
     [InlineData("objectBoundingBox")]
-    public void Unimplemented_rectangular_clip_maps_reject_and_release(string units)
+    public void Rectangular_clip_maps_preserve_unit_outcomes_and_release(string units)
     {
         byte[] input = Input("<defs><clipPath id='c' clipPathUnits='" + units + "'><rect width='1' height='1'/></clipPath></defs><rect width='32' height='24' stroke='red' transform='rotate(17)' clip-path='url(#c)'/>");
         RenderBudget budget = new(1_000_000);
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        if (units == "userSpaceOnUse")
+            Assert.Equal(SvgErrorCode.UnsupportedFeature, Assert.Throws<SvgException>(() => SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None)).ErrorCode);
+        else
+        {
+            using SvgRoot root = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None);
+            Assert.Equal(Render("<defs><clipPath id='c' clipPathUnits='objectBoundingBox'><path d='M0 0 H1 V1 H0 Z'/></clipPath></defs><rect width='32' height='24' stroke='red' transform='rotate(17)' clip-path='url(#c)'/>"),
+                SvgConverter.ConvertToPng(root, SvgRenderOptions.Default, budget, CancellationToken.None).ToArray());
+        }
         Assert.Equal(0, budget.Snapshot().CurrentBytes);
     }
 

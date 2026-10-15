@@ -25,7 +25,7 @@ internal struct SvgObjectBoundingClip
         _hasGeometry = false;
     }
 
-    internal void Add(SvgGeometry geometry, ParserWorkCounter work, CancellationToken token)
+    internal void Add(SvgGeometry geometry, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {
         work.Consume(token);
         SvgRectangle bounds;
@@ -47,8 +47,10 @@ internal struct SvgObjectBoundingClip
                 Math.Abs(line.X2 - line.X1), Math.Abs(line.Y2 - line.Y1), default, true, null);
             bounds = MapBox(bounds, _inverse, work, token);
         }
-        else if (geometry.Kind is SvgGeometryKind.Rectangle or SvgGeometryKind.PatternFill or SvgGeometryKind.GradientFill or SvgGeometryKind.RadialGradient)
-            bounds = MapBox(SvgMaskSyntax.BoundingBox(geometry), _inverse, work, token);
+        else if (geometry.Kind is SvgGeometryKind.Rectangle or SvgGeometryKind.PatternFill or SvgGeometryKind.GradientFill or SvgGeometryKind.RadialGradient or SvgGeometryKind.EmbeddedImage
+            or SvgGeometryKind.OrthogonalBand or SvgGeometryKind.PolygonFill or SvgGeometryKind.GradientPolygon
+            or SvgGeometryKind.RadialPolygon or SvgGeometryKind.PatternPolygon or SvgGeometryKind.GradientStroke)
+            bounds = MapBox(SvgMaskSyntax.RecordedObjectBox(geometry, state), _inverse, work, token);
         else throw new SvgException(SvgErrorCode.UnsupportedFeature, "Bounding-box curved clips require retained source geometry bounds.");
         if (!double.IsFinite(bounds.X) || !double.IsFinite(bounds.Y) || !double.IsFinite(bounds.Width) || !double.IsFinite(bounds.Height))
             throw new SvgException(SvgErrorCode.LimitExceeded, "Bounding-box clip coordinates exceed the finite range.");
@@ -66,6 +68,24 @@ internal struct SvgObjectBoundingClip
     }
 
     internal SvgRectangle SourceBounds => _hasGeometry ? new(_left, _top, Math.Max(0, _right - _left), Math.Max(0, _bottom - _top), default, true, null) : default;
+
+    /// <summary>Binds one normalized rectangle through the same geometric target map as curved clip content.</summary>
+    internal SvgLeafMaskOperation Register(SvgClipBox content, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
+    {
+        work.Consume(token);
+        SvgLeafMaskOperation operation = SvgLeafMaskComposition.NewOperation(state, null, SvgAffineTransform.Identity);
+        operation.Resolved = true;
+        if (!_hasGeometry || _right <= _left || _bottom <= _top || content.Width <= 0 || content.Height <= 0)
+        {
+            operation.Value = 0;
+            return operation;
+        }
+        SvgAffineTransform map = _map.ComposeChecked(SvgAffineTransform.FromScaleOffset(_right - _left, _bottom - _top, _left, _top));
+        operation.Value = 255;
+        operation.RegionKind = SvgLayerRegionKind.AffineViewport;
+        operation.AffineViewport = new(content, map);
+        return operation;
+    }
 
     internal SvgLeafMaskOperation Register(SvgClipPolygon content, SvgDocumentState state, ParserWorkCounter work, CancellationToken token)
     {

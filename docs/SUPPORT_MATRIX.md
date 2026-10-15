@@ -1,3 +1,17 @@
+## Forward and object-box clip binding (2026-10-16)
+
+The unchanged [bank](../tests/Research/forward-bbox-clip-exit-sheet/README.md) is
+**1/1 complete document / 6/6 exact controls** on Windows/Linux. Definition order
+no longer gates normalized rectangular clips on images, groups, lines or circles.
+Normalized content transforms precede target placement; zero-height geometric
+boxes and disjoint content have valid nonpainting outcomes. Forward clips on
+masked groups retain mask bounds/order. Original inputs, pre-viewport bounds,
+following siblings and affected ownership checks are preserved in the
+[qualification](../artifacts/maintenance-review-20261012/forward-bbox-qualified-results.json).
+The existing rotated-stroke object-box input also passes; its user-space unit
+rectangle clip still rejects and remains required as C6c. C5b tile masking,
+glyph/font/effect and S17 remain required in PLAN.md; no feature scope is deferred.
+
 ## Viewport clips, nested opacity and crossing strokes (2026-10-16)
 
 The unchanged [viewport clip/opacity bank](../tests/Research/viewport-clip-opacity-exit-sheet/README.md)
@@ -12,7 +26,7 @@ opacity control also match unchanged references, with twelve healthy Linux nativ
 cross-checks. An overlapping-opacity control preserves native quantized RGB.
 [Qualification](../artifacts/maintenance-review-20261012/viewport-composition-qualified-results.json)
 retains original sources/options/references/limits and affected ownership checks.
-C6a is complete; C6b forward/object-box clips, C5b tile masks, glyph/font/effect
+C6a/C6b are complete; C5b tile masks, C6c affine user-space clips, glyph/font/effect
 and S17 remain required in PLAN.md. No feature scope is deferred.
 
 ## Mask viewport maps and region defaults (2026-10-15)
@@ -28,7 +42,7 @@ physical clipping, source cleanup and following siblings.
 The [qualification](../artifacts/maintenance-review-20261012/mask-viewport-qualified-results.json)
 retains original SVG/reference bytes/options/default limits and all earlier exact
 results. Former custom-region/scaled-group gates below are superseded for these
-routes. C6a is qualified above; C6b, C5b tile masks, glyph/font/effect and S17 remain required
+routes. C6a/C6b are qualified above; C5b tile masks, C6c affine user-space clips, glyph/font/effect and S17 remain required
 in PLAN.md; no feature scope is deferred.
 
 ## Colored and general affine masks (2026-10-15)

@@ -897,7 +897,7 @@ internal static class SvgReferenceResolver
         if (maskId is not null && (!placement.IsAxisAligned || frame is { IsTrivial: false }))
         {
             SvgObjectBoundingClip collector = new(placement, null);
-            foreach (SvgGeometry geometry in geometries) collector.Add(geometry, workCounter, cancellationToken);
+            foreach (SvgGeometry geometry in geometries) collector.Add(geometry, state, workCounter, cancellationToken);
             nativeTarget = SvgMaskTarget.Create(maskId, placement, collector.SourceBounds, state);
             if (!placement.IsAxisAligned && state.MaskContents.TryGetValue(maskId, out SvgMaskContent retained)) spatialContent = retained;
         }
@@ -1659,7 +1659,7 @@ internal static class SvgReferenceResolver
             if (boundingClip is {} content)
             {
                 SvgObjectBoundingClip bounds = new(pendingUse.Reference.Transform, frame);
-                foreach (SvgGeometry geometry in applied) bounds.Add(geometry, workCounter, cancellationToken);
+                foreach (SvgGeometry geometry in applied) bounds.Add(geometry, state, workCounter, cancellationToken);
                 SvgLeafMaskOperation operation = bounds.Register(content, state, workCounter, cancellationToken);
                 for (int index = 0; index < applied.Length; index++)
                 {
