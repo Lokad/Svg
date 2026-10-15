@@ -247,9 +247,8 @@ internal static class SvgLeafParser
         }
         if (paintPattern)
         {
-            if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
-            if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
-            if (transform.A < 0 || transform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are implemented.");
+            tile = SvgPatternReferenceResolver.ForPlacement(SvgPatternSyntax.ParsePatternId(style.Fill), tile, transform,
+                state, context.WorkCounter, context.CancellationToken);
         }
         SvgLinearGradient linear = default;
         SvgRadialGradient radial = default;
@@ -279,7 +278,7 @@ internal static class SvgLeafParser
             if (paintGradient || paintPattern)
             {
                 SvgGeometry repainted;
-                if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(parsed.Geometries[0].Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform, state.Budget);
+                if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(parsed.Geometries[0].Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform, state.Budget);
                 else repainted = isLinear
                     ? SvgGradientPolygon.RepaintOutline(parsed.Geometries[0].Polygon, linear, box, opacity, state.Budget)
                     : SvgRadialPolygon.RepaintOutline(parsed.Geometries[0].Polygon, radial, box, opacity, state.Budget);
@@ -461,9 +460,8 @@ internal static class SvgLeafParser
         SvgAffineTransform transform = element.Transform;
         if (paintPattern)
         {
-            if (frame is not null && frame.Value.IsScaled) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Pattern fills in scaled viewports are not implemented.");
-            if (!transform.IsAxisAligned) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only axis-aligned pattern transforms are implemented.");
-            if (transform.A < 0 || transform.D < 0) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Only non-reflected pattern fills are not implemented.");
+            tile = SvgPatternReferenceResolver.ForPlacement(SvgPatternSyntax.ParsePatternId(style.Fill), tile, transform,
+                state, context.WorkCounter, context.CancellationToken);
         }
         SvgLinearGradient linear = default;
         SvgRadialGradient radial = default;
@@ -504,7 +502,7 @@ internal static class SvgLeafParser
             if (paintGradient || paintPattern)
             {
                 SvgGeometry repainted;
-                if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(filled.Geometries[0].Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(1, 1, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform, state.Budget);
+                if (paintPattern) repainted = SvgPatternPolygon.RepaintOutline(filled.Geometries[0].Polygon, tile, opacity, frame is {} viewport ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(transform) : transform, state.Budget);
                 else repainted = isLinear
                     ? SvgGradientPolygon.RepaintOutline(filled.Geometries[0].Polygon, linear, box, opacity, state.Budget)
                     : SvgRadialPolygon.RepaintOutline(filled.Geometries[0].Polygon, radial, box, opacity, state.Budget);

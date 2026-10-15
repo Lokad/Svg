@@ -162,7 +162,7 @@ internal static class SvgOrthogonalShapeParser
                         {
                             if (paintPathOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, pathGradient, pathBox, pathStrokeShape.Presentation.Opacity, budget)));
                             else if (paintPathRadial) repainted.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, pathCircle, pathBox, pathStrokeShape.Presentation.Opacity, budget)));
-                            else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, pathStrokeShape.Presentation.Opacity, budget)));
+                            else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, pathStrokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(pathStrokeShape.Transform, frame), budget)));
                         }
                         stroked.Dispose();
                         stroked = new SvgParsedGeometry(repainted.Detach(), stroked.ElementCount);
@@ -292,7 +292,7 @@ internal static class SvgOrthogonalShapeParser
                             {
                                 if (paintOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgGradientPolygon.RepaintOutline(existing.Polygon, fractionalGradient, fractionalBox, fractionalStrokeShape.Presentation.Opacity, budget)));
                                 else if (paintRadialOutline) repainted.Add(existing.TransferAuthoredPathTo(SvgRadialPolygon.RepaintOutline(existing.Polygon, fractionalCircle, fractionalBox, fractionalStrokeShape.Presentation.Opacity, budget)));
-                                else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, fractionalStrokeShape.Presentation.Opacity, budget)));
+                                else repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, fractionalStrokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(fractionalStrokeShape.Transform, frame), budget)));
                             }
                             fractionalStroked.Dispose();
                             fractionalStroked = new SvgParsedGeometry(repainted.Detach(), fractionalStroked.ElementCount);
@@ -426,7 +426,7 @@ internal static class SvgOrthogonalShapeParser
             {
                 if (paintOutline) stroked = RepaintOutlinesAsGradient(stroked, outlineGradient, SvgGradientSyntax.BoxFromGradientBands(points, shape.Transform, frame, context), strokeShape.Presentation.Opacity, budget);
                     else if (paintRadialOutline) stroked = RepaintOutlinesAsRadial(stroked, outlineCircle, SvgGradientSyntax.BoxFromGradientBands(points, shape.Transform, frame, context), strokeShape.Presentation.Opacity, budget);
-                    else if (paintPatternOutline) stroked = RepaintOutlinesAsPattern(stroked, outlineTile, strokeShape.Presentation.Opacity, budget);
+                    else if (paintPatternOutline) stroked = RepaintOutlinesAsPattern(stroked, outlineTile, strokeShape.Presentation.Opacity, SvgViewportFrame.MapGeometry(strokeShape.Transform, frame), budget);
             }
             catch { stroked.Discard(); throw; }
             }
@@ -459,12 +459,12 @@ internal static class SvgOrthogonalShapeParser
             catch { white.Discard(); throw; }
         }
 
-        SvgParsedGeometry RepaintOutlinesAsPattern(SvgParsedGeometry white, SvgPatternTile paint, byte opacity, RenderBudget budget)
+        SvgParsedGeometry RepaintOutlinesAsPattern(SvgParsedGeometry white, SvgPatternTile paint, byte opacity, SvgAffineTransform placement, RenderBudget budget)
         {
             try
             {
                 using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
-                foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, paint, opacity, budget)));
+                foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, paint, opacity, placement, budget)));
                 white.Dispose();
                 return new SvgParsedGeometry(repainted.Detach(), white.ElementCount);
             }

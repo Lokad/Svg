@@ -677,7 +677,7 @@ internal static class SvgGradientSyntax
             white = strokeLowering.LowerStrokePath(d, commandCount, hasArc, hasCurve, strokeShape, stroke.Value.Color, strokeShape.Presentation.IsPainted, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, frame, budget);
         }
         catch { filled.Discard(); throw; }
-        return RepaintAndConcatOutlines(filled, white, outlineTile, strokeShape, context, budget);
+        return RepaintAndConcatOutlines(filled, white, outlineTile, strokeShape, context, frame, budget);
     }
 
     /// <summary>Appends a radial-gradient stroke outline lowered from path data to paint-filled geometry by lowering a white outline and repainting it.</summary>
@@ -720,14 +720,15 @@ internal static class SvgGradientSyntax
     }
 
     /// <summary>Repaints white stroke outlines with a pattern paint and concatenates them after paint-filled geometry, transferring ownership on every path.</summary>
-    private static SvgParsedGeometry RepaintAndConcatOutlines(SvgParsedGeometry filled, SvgParsedGeometry white, SvgPatternTile outlineTile, SvgResolvedPaintableElement strokeShape, SvgPaintableElementContext context, RenderBudget budget)
+    private static SvgParsedGeometry RepaintAndConcatOutlines(SvgParsedGeometry filled, SvgParsedGeometry white, SvgPatternTile outlineTile, SvgResolvedPaintableElement strokeShape, SvgPaintableElementContext context, SvgViewportFrame? frame, RenderBudget budget)
     {
         bool whiteReleased = false;
         try
         {
             using BudgetedGeometryBuilder repainted = new(budget, SvgMemoryCategory.Geometry, context.WorkCounter, context.CancellationToken);
             byte strokeOpacity = strokeShape.Presentation.Opacity;
-            foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, budget)));
+            SvgAffineTransform placement = SvgViewportFrame.MapGeometry(strokeShape.Transform, frame);
+            foreach (SvgGeometry existing in white.Geometries) repainted.Add(existing.TransferAuthoredPathTo(SvgPatternPolygon.RepaintOutline(existing.Polygon, outlineTile, strokeOpacity, placement, budget)));
             int whiteCount = white.ElementCount;
             white.Dispose();
             whiteReleased = true;
@@ -824,7 +825,7 @@ internal static class SvgGradientSyntax
             white = strokeLowering.LowerStrokePolyline(points, elementName == "polygon", strokeShape, stroke.Value.Width, stroke.Value.MiterLimit, stroke.Value.Cap, stroke.Value.Join, stroke.Value.DashPattern, stroke.Value.DashOffset, stroke.Value.PathLength, stroke.Value.NonScalingStroke, stroke.Value.Color, strokeShape.Presentation.IsPainted, frame, budget);
         }
         catch { filled.Discard(); throw; }
-        return RepaintAndConcatOutlines(filled, white, outlineTile, strokeShape, context, budget);
+        return RepaintAndConcatOutlines(filled, white, outlineTile, strokeShape, context, frame, budget);
     }
 
     /// <summary>Appends a radial-gradient stroke outline to paint-filled bands and outlines by lowering a white outline and repainting it, leaving other paints to the shared stroke gates.</summary>

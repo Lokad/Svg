@@ -593,19 +593,25 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_pattern_fills_on_circles_in_scaled_viewports()
+    public void Renders_pattern_fills_on_circles_in_scaled_viewports()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='url(#p)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] original = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><circle cx='4' cy='4' r='4' fill='url(#p)'/></svg></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(original, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, Assert.Single(root.Geometries).Kind);
+        byte[] solid = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("fill='url(#p)'", "fill='red'", StringComparison.Ordinal));
+        Assert.Equal(SvgConverter.ConvertToPng(solid, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(original, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
-    public void Rejects_reflected_pattern_fills_on_circles()
+    public void Renders_reflected_pattern_fills_on_circles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><circle cx='4' cy='4' r='4' fill='url(#p)' transform='scale(-1 1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] original = "<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><circle cx='4' cy='4' r='4' fill='url(#p)' transform='scale(-1 1)'/></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(original, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, Assert.Single(root.Geometries).Kind);
+        byte[] solid = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("fill='url(#p)'", "fill='red'", StringComparison.Ordinal));
+        Assert.Equal(SvgConverter.ConvertToPng(solid, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(original, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
@@ -929,19 +935,25 @@ public sealed class SvgRootParserTests
     }
 
     [Fact]
-    public void Rejects_pattern_fills_on_rounded_rectangles_in_scaled_viewports()
+    public void Renders_pattern_fills_on_rounded_rectangles_in_scaled_viewports()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><rect x='0' y='0' width='8' height='8' rx='2' fill='url(#p)'/></svg></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] original = "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><svg x='0' y='0' width='16' height='16' viewBox='0 0 8 8'><rect x='0' y='0' width='8' height='8' rx='2' fill='url(#p)'/></svg></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(original, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, Assert.Single(root.Geometries).Kind);
+        byte[] solid = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("fill='url(#p)'", "fill='red'", StringComparison.Ordinal));
+        Assert.Equal(SvgConverter.ConvertToPng(solid, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(original, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]
-    public void Rejects_reflected_pattern_fills_on_rounded_rectangles()
+    public void Renders_reflected_pattern_fills_on_rounded_rectangles()
     {
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect x='0' y='0' width='8' height='8' rx='2' fill='url(#p)' transform='scale(-1 1)'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        byte[] original = "<svg xmlns='http://www.w3.org/2000/svg'><defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='8' height='8' fill='red'/></pattern></defs><rect x='0' y='0' width='8' height='8' rx='2' fill='url(#p)' transform='scale(-1 1)'/></svg>"u8.ToArray();
+        using SvgRoot root = SvgRootParser.Parse(original, SvgRenderLimits.Default, CancellationToken.None);
+        Assert.Equal(SvgGeometryKind.PatternPolygon, Assert.Single(root.Geometries).Kind);
+        byte[] solid = System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(original).Replace("fill='url(#p)'", "fill='red'", StringComparison.Ordinal));
+        Assert.Equal(SvgConverter.ConvertToPng(solid, SvgRenderOptions.Default, CancellationToken.None).ToArray(),
+            SvgConverter.ConvertToPng(original, SvgRenderOptions.Default, CancellationToken.None).ToArray());
     }
 
     [Fact]

@@ -13793,3 +13793,52 @@ The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-
 records complete platform qualification, all prior test semantics, immutable assets
 and the unchanged approximate-memory/maintenance clauses. PLAN item 1 is complete;
 wider G2–G9/S17 remain open.
+
+## Shared paint maps and nested viewport ancestry (2026-10-15)
+
+The [shared map bank](../tests/Research/shared-paint-map-sheet/README.md) retains
+one unchanged CC0 sheet and three controls. All four outputs are exact on
+Windows/Linux against the references frozen before implementation. The original
+W3C pattern01 sourcing candidate was already exact and was not added to the bank
+or completion denominators. Existing inherited-symbol and reflected/magnified
+phase witnesses stay closed; stale `observedGate` history did not establish a
+current blocker.
+
+Use presentation retains a local shader stroke in its existing inherited style
+until the referenced leaf is known. The legacy solid override remains solid;
+paint-server IDs still validate as local references, and shader strokes cannot
+enter solid-paint analysis. Ordinary retained source replay constructs the target
+with that inherited style, preserving authored child overrides and paint scopes.
+
+Patterned rounded/oval fills use existing rectangle-to-vector promotion and retain
+the complete source-to-viewport map separately from the tile-local map. Pattern
+stroke consumers carry that same map when repainting the shared native outline.
+No geometry kernel or tile renderer is introduced for a paint/shape/instance pair.
+The existing ellipse source and original object bounds supply skewed object-box
+coordinates, and qualified positive-axis legacy tile pixels keep their route.
+
+The complete sheet uncovered a shared viewport defect that isolated controls could
+not reveal. A translated ancestor was applied at the nested viewBox scale while
+the viewport clip remained unmoved, removing an entire panel. For axis-aligned
+ancestry, viewport traversal rebases the stored inherited geometry transform
+against the existing physical text placement and maps the clip into that same
+parent space. Text placement keeps its independently retained physical map;
+percentage bases and child source coordinates remain separate. Focused translation,
+nonuniform-scale and reflection witnesses include an intervening group and a
+following unaffected sibling. Wider affine ancestor/clip composition remains in
+PLAN item 3 rather than being inferred from this correction.
+
+Six obsolete rejection assertions preserve their original inputs as positive
+regressions, including the previously gated skewed object-box oval. Zero-radius
+ovals paint nothing; existing singular-pattern tests retain their categorized
+outcomes and cleanup. The two map controls exercise material parse/render denial,
+late work denial, cancellation, borrowed-input integrity and successful retry
+through existing source/raster owners.
+
+The [receipt](../artifacts/maintenance-review-20261012/shared-maps-qualified-results.json)
+records complete platform qualification and preservation. The
+[remaining-boundary audit](../artifacts/shared-stroke-pattern-maps-20261015/remaining-map-boundaries.json)
+names actual legacy rejection assertions still required for G4/G6. Completing
+this document does not close those routes or wider G2–G9/S17. Rejected models,
+healthy stable captures and source/clip diagnostics remain in the existing ignored
+[study](../artifacts/shared-stroke-pattern-maps-20261015/).

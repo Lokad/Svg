@@ -1,5 +1,7 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using Lokad.Svg.Parsing;
+using Lokad.Svg.Rendering;
 using Lokad.Svg.VisualDiff;
 
 namespace Lokad.Svg.VisualTests;
@@ -100,6 +102,52 @@ public sealed class SvgSymbolInstanceReferenceTests
         PixelComparison comparison = PixelComparer.Compare(reference, PngRgbaDecoder.Decode(expected, checked(width * height)));
         if (item.TryGetProperty("knownDifference", out JsonElement difference)) Assert.Equal(difference.Deserialize<PixelComparison>(), comparison);
         else Assert.True(comparison.IsExact, identity + ": " + comparison);
+    }
+
+    [Fact]
+    public void Shared_pattern_maps_release_promoted_sources_and_rasters_on_denial_cancellation_and_retry()
+    {
+        string directory = Path.Combine(AppContext.BaseDirectory, "Research", "shared-paint-map-sheet");
+        foreach (string name in new[] { "pattern-viewport-stroke-use", "pattern-skewed-oval" })
+        {
+            byte[] input = File.ReadAllBytes(Path.Combine(directory, name + ".svg"));
+            byte[] unchanged = input.ToArray();
+            RenderBudget sceneBudget = new(16_000_000);
+            ParserWorkCounter work = new(100_000_000);
+            using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, sceneBudget, null, work, CancellationToken.None))
+            {
+                foreach (long limit in new[] { 1, sceneBudget.Snapshot().PeakBytes / 2 })
+                {
+                    RenderBudget denied = new(limit);
+                    Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                        SvgRootParser.Parse(input, SvgRenderLimits.Default, denied, CancellationToken.None)).ErrorCode);
+                    Assert.Equal(0, denied.Snapshot().CurrentBytes);
+                }
+                RenderBudget workDenied = new(16_000_000);
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                    SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, null, new(work.Used - 1), CancellationToken.None)).ErrorCode);
+                Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
+                RenderBudget accepted = new(16_000_000);
+                byte[] expected = SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray();
+                Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+                RenderBudget rasterDenied = new(accepted.Snapshot().PeakBytes / 2);
+                Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() =>
+                    SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, rasterDenied, CancellationToken.None)).ErrorCode);
+                Assert.Equal(0, rasterDenied.Snapshot().CurrentBytes);
+                using CancellationTokenSource cancellation = new();
+                cancellation.Cancel();
+                Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
+                    SvgRootParser.Parse(input, SvgRenderLimits.Default, workDenied, cancellation.Token)).CancellationToken);
+                Assert.Equal(0, workDenied.Snapshot().CurrentBytes);
+                Assert.Equal(cancellation.Token, Assert.ThrowsAny<OperationCanceledException>(() =>
+                    SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, cancellation.Token)).CancellationToken);
+                Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+                Assert.Equal(expected, SvgConverter.ConvertToPng(scene, SvgRenderOptions.Default, accepted, CancellationToken.None).ToArray());
+                Assert.Equal(0, accepted.Snapshot().CurrentBytes);
+            }
+            Assert.Equal(0, sceneBudget.Snapshot().CurrentBytes);
+            Assert.Equal(unchanged, input);
+        }
     }
 
     private static string RequiredString(JsonElement element, string name) => element.GetProperty(name).GetString() ?? throw new InvalidDataException(name + " is missing.");

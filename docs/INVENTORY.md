@@ -9,17 +9,18 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. **Twelve additional authored documents** (eleven CC0 and the MIT
+variants**. **Thirteen additional authored documents** (twelve CC0 and the MIT
 tile sheet) are complete and counted separately. Preserve the delivered
 [effects sheet](../tests/Research/effects-marker-sheet/README.md),
 [composition sheet](../tests/Research/composition-sheet/README.md) and
-[tile sheet](../tests/Research/pattern-tile-sheet/README.md), including their
+[tile sheet](../tests/Research/pattern-tile-sheet/README.md) and
+[shared map sheet](../tests/Research/shared-paint-map-sheet/README.md), including their
 separately counted controls and original sources/options/references.
 These failure-selected cases establish declared outcomes, not a general SVG success rate.
 
 One additional sourced [W3C decoration document](../tests/Research/stroked-decorations/README.md)
 is **1/1 exact** on Windows/Linux at its frozen 1200×400 output, separately from
-both cohorts and the twelve authored documents. All **4/4 controls** are exact,
+both cohorts and the thirteen authored documents. All **4/4 controls** are exact,
 including curved, three-line/stroke-only and positioned/stretched paths.
 The original 974-byte SVG, supplied Noto program and platform references are
 unchanged. The [receipt](../artifacts/maintenance-review-20261012/decorated-path-qualified-results.json)
@@ -28,6 +29,15 @@ retain the original code-example license. This is not a CC0 document.
 [PLAN](../PLAN.md#ordered-delivery-checklist) owns the remaining finite exits.
 G2–G9/S17 remain open. Dated sections below are checkpoint history; later
 qualified evidence supersedes former gates.
+
+The [shared map bank](../tests/Research/shared-paint-map-sheet/README.md) is
+**1/1 complete document / 3/3 exact controls** on Windows/Linux, retaining all
+original sources, options and references. It qualifies dashed curved shader
+caps/alpha, scaled-viewport patterned strokes/uses, skewed patterned ovals and
+outer axis ancestry/viewport clipping in the whole sheet. The
+[receipt](../artifacts/maintenance-review-20261012/shared-maps-qualified-results.json)
+owns full qualification and preservation. Existing legacy primitive stroke/style
+and basic pattern routes remain required; this document count does not close them.
 
 ## Development checkpoint (2026-10-12)
 

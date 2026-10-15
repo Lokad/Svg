@@ -24,9 +24,7 @@
       "reference": "references/shared-paint-map-sheet.png",
       "referenceSha256": "e044d14dc2d8b9dd2adfb29eb6f243e73c2dc18f7c97c38f2a41d3efbd107c74",
       "linuxReference": "references/linux64/shared-paint-map-sheet.png",
-      "linuxReferenceSha256": "e044d14dc2d8b9dd2adfb29eb6f243e73c2dc18f7c97c38f2a41d3efbd107c74",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Pattern and gradient strokes on use elements are not implemented."
+      "linuxReferenceSha256": "e044d14dc2d8b9dd2adfb29eb6f243e73c2dc18f7c97c38f2a41d3efbd107c74"
     },
     {
       "id": "dashed-shader-curves",
@@ -60,9 +58,7 @@
       "reference": "references/pattern-viewport-stroke-use.png",
       "referenceSha256": "b0083787e941da7f5ce24ee62ff1aa616df3b74c620071ec55954cf1a7c35872",
       "linuxReference": "references/linux64/pattern-viewport-stroke-use.png",
-      "linuxReferenceSha256": "b0083787e941da7f5ce24ee62ff1aa616df3b74c620071ec55954cf1a7c35872",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Pattern and gradient strokes on use elements are not implemented."
+      "linuxReferenceSha256": "b0083787e941da7f5ce24ee62ff1aa616df3b74c620071ec55954cf1a7c35872"
     },
     {
       "id": "pattern-skewed-oval",
@@ -79,9 +75,7 @@
       "reference": "references/pattern-skewed-oval.png",
       "referenceSha256": "ac316d9d6ac17275ab7dc5f7847ebc342f1045d6caa5e02e5b5783da1cf81185",
       "linuxReference": "references/linux64/pattern-skewed-oval.png",
-      "linuxReferenceSha256": "ac316d9d6ac17275ab7dc5f7847ebc342f1045d6caa5e02e5b5783da1cf81185",
-      "expectedError": "UnsupportedFeature",
-      "observedGate": "Only axis-aligned pattern transforms are implemented."
+      "linuxReferenceSha256": "ac316d9d6ac17275ab7dc5f7847ebc342f1045d6caa5e02e5b5783da1cf81185"
     }
   ]
 }

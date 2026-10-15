@@ -27,13 +27,20 @@ internal static class SvgLocalReferencePresentationResolver
         SvgPaintOpacity strokeOpacity = SvgColorParser.ParsePaintOpacity(style.StrokeOpacity);
         if (paintServer) return new SvgResolvedLocalReferencePresentation(opacity, isPainted, null, strings.Copy(SvgGradientSyntax.ParsePaintId(style.Fill)), stroke) { Paint = paint, StrokeOpacity = strokeOpacity };
         SvgPaint? fillOverride = style.Fill is null ? null : paint;
-        return new SvgResolvedLocalReferencePresentation(opacity, isPainted, fillOverride, null, stroke) { Paint = paint, StrokeOpacity = strokeOpacity, AllowsSolidPaintAnalysis = style.GetOpacity().Value == 1 };
+        return new SvgResolvedLocalReferencePresentation(opacity, isPainted, fillOverride, null, stroke) { Paint = paint, StrokeOpacity = strokeOpacity, AllowsSolidPaintAnalysis = style.GetOpacity().Value == 1 && !SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke) };
 
         static SvgUseStrokeOverride? ResolveStrokeOverride(SvgComputedStyle style, SvgInheritedPresentation inheritedPresentation, IReadOnlyDictionary<string, SvgColor> namedColors)
         {
             if (style.Stroke is null) return null;
             if (SvgStrokeStyleSyntax.IsZeroStrokeWidth(style.Width)) return null;
-            SvgStrokeStyleSyntax.RejectPaintServerStroke(style.Stroke, "use");
+            // Shader strokes remain in the retained inherited style. Source
+            // replay resolves their paint after the referenced leaf is known;
+            // this legacy override represents solid colors only.
+            if (SvgGradientSyntax.IsGradientStrokeUrl(style.Stroke))
+            {
+                _ = SvgGradientSyntax.ParsePaintId(style.Stroke);
+                return null;
+            }
             double width = SvgStrokeStyleSyntax.ParseStrokeWidth(style.Width, "use");
             if (width == 0) return null;
             SvgStrokeJoin join = style.Linejoin is null ? SvgStrokeJoin.Miter : SvgStrokeStyleSyntax.ParseLinejoin(style.Linejoin, true);

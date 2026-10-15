@@ -1,3 +1,24 @@
+## Shared paint maps and nested viewport ancestry (2026-10-15)
+
+The [shared map bank](../tests/Research/shared-paint-map-sheet/README.md) is
+**1/1 complete document / 3/3 exact controls** on Windows/Linux. Preserve its
+dashed quadratic/cubic linear/radial caps and fractional alpha, patterned local-use
+strokes in a scaled viewport, skewed oval pattern maps, and whole-sheet axis
+ancestry/viewport clipping. The declaring use retains shader stroke style until
+source replay; the solid override channel stays distinct. Existing pattern
+promotion and native geometry supply rendering, with source and tile matrices
+kept separate.
+
+The [qualification receipt](../artifacts/maintenance-review-20261012/shared-maps-qualified-results.json)
+preserves all prior results and original assets/options/default limits. Six old
+rejection assertions retain their original inputs as positive regressions;
+affected source/raster denial, cancellation, cleanup and retry pass.
+The original inherited-symbol stroke gate was already stale and is superseded by
+its existing exact witness. Remaining legacy primitive caps/dashes/paint-alpha,
+nonuniform radial point-list and basic pattern placement routes still have actual
+rejections, enumerated in [PLAN](../PLAN.md#g2g4-instances-geometry-maps-and-strokes).
+G2–G9/S17 stay open; this checkpoint approves no feature deferral.
+
 ## Decorated paths and binary clip regions (2026-10-15)
 
 The [decoration bank](../tests/Research/stroked-decorations/README.md) is

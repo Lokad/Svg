@@ -82,12 +82,15 @@ public sealed class SvgLocalReferencePresentationResolverTests
     }
 
     [Fact]
-    public void Rejects_paint_server_use_strokes()
+    public void Defers_local_paint_server_use_strokes_to_retained_source_replay()
     {
         SvgComputedStyle painted = new(null, null, null, "url(#g)", null, null, null, null);
-        SvgException server = Assert.Throws<SvgException>(() => SvgLocalReferencePresentationResolver.Resolve(painted, new SvgInheritedPresentation(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), new BudgetedParserStringStore(new RenderBudget(10_000))));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, server.ErrorCode);
-
+        RenderBudget budget = new(10_000);
+        using BudgetedParserStringStore strings = new(budget);
+        SvgResolvedLocalReferencePresentation resolved = SvgLocalReferencePresentationResolver.Resolve(painted,
+            new(SvgPaint.Default, true, true, SvgAffineTransform.Identity), new Dictionary<string, SvgColor>(), strings);
+        Assert.Null(resolved.StrokeOverride);
+        Assert.False(resolved.AllowsSolidPaintAnalysis);
     }
 
     [Theory]

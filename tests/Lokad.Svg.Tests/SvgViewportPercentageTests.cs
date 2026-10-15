@@ -6,6 +6,24 @@ namespace Lokad.Svg.Tests;
 
 public sealed class SvgViewportPercentageTests
 {
+    [Theory]
+    [InlineData("translate(18 12)", 30, 24, 18, 14, 22, 58, 80, 20)]
+    [InlineData("translate(6 8) scale(2 1)", 30, 20, 36, 14, 14, 54, 160, 20)]
+    [InlineData("translate(230 10) scale(-1 1)", 200, 22, 18, 14, 146, 56, 80, 20)]
+    public void Outer_axis_maps_stay_outside_nested_viewBox_scaling_and_clipping(string ancestor,
+        int x, int y, int width, int height, int stripeX, int stripeY, int stripeWidth, int stripeHeight)
+    {
+        string nested = "<g transform='" + ancestor + "'><svg x='4' y='6' width='80' height='60' viewBox='0 0 40 30'>"
+            + "<g transform='translate(3 2)'><rect x='1' y='1' width='9' height='7' fill='#285a93'/></g>"
+            + "<rect x='-4' y='20' width='48' height='16' fill='#a44f32'/></svg></g>";
+        string explicitShapes = FormattableString.Invariant($"<rect x='{x}' y='{y}' width='{width}' height='{height}' fill='#285a93'/><rect x='{stripeX}' y='{stripeY}' width='{stripeWidth}' height='{stripeHeight}' fill='#a44f32'/>");
+        Assert.Equal(Render(explicitShapes), Render(nested));
+
+        static byte[] Render(string body)
+            => SvgConverter.ConvertToPng(System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='256' height='160'>" + body
+                + "<rect x='240' y='140' width='10' height='10' fill='#338855'/></svg>"), SvgRenderOptions.Default, CancellationToken.None).ToArray();
+    }
+
     [Fact]
     public void Root_percentages_use_the_viewBox_extent()
     {

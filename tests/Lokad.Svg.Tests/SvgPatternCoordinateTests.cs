@@ -42,12 +42,12 @@ public sealed class SvgPatternCoordinateTests
     }
 
     [Fact]
-    public void Skewed_oval_pattern_targets_keep_the_existing_explicit_boundary()
+    public void Skewed_oval_patterns_bind_original_object_units_before_native_source_replay()
     {
         const string input = "<defs><pattern id='p' width='.25' height='.5' patternUnits='objectBoundingBox'><rect width='4' height='4' fill='red'/></pattern></defs><ellipse cx='28' cy='20' rx='20' ry='12' transform='matrix(1 .15 .2 1 4 3)' fill='url(#p)'/>";
-        SvgException error = Assert.Throws<SvgException>(() => Render(input));
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, error.ErrorCode);
-        Assert.Contains("Only axis-aligned pattern transforms", error.Message);
+        string absolute = input.Replace("width='.25' height='.5' patternUnits='objectBoundingBox'", "x='8' y='8' width='10' height='12' patternUnits='userSpaceOnUse'", StringComparison.Ordinal);
+        Assert.Equal(Render(absolute), Render(input));
+        Assert.NotEqual(Render(string.Empty), Render(input));
     }
 
     [Fact]
@@ -57,6 +57,14 @@ public sealed class SvgPatternCoordinateTests
         SvgException error = Assert.Throws<SvgException>(() => Render(input));
         Assert.Equal(SvgErrorCode.LimitExceeded, error.ErrorCode);
         Assert.Contains("Pattern tile dimensions", error.Message);
+    }
+
+    [Fact]
+    public void Zero_radius_oval_patterns_do_not_paint()
+    {
+        const string pattern = "<defs><pattern id='p' width='8' height='8' patternUnits='userSpaceOnUse'><rect width='4' height='4' fill='red'/></pattern></defs>";
+        const string shape = "<ellipse cx='28' cy='20' rx='0' ry='12' fill='url(#p)'/>";
+        Assert.Equal(Render(string.Empty), Render(pattern + shape));
     }
 
     private static byte[] Render(string content)

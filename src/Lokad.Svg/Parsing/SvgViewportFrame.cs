@@ -9,6 +9,12 @@ internal readonly record struct SvgViewportFrame(double OffsetX, double OffsetY,
     /// <summary>Borrows bounded presentation/text state without copying it into every deferred instance frame.</summary>
     internal SvgViewportTextContext? TextContext { get; init; }
 
+    /// <summary>Composes a source geometry/paint map with its scalar viewport without folding tile-local coordinates into it.</summary>
+    internal static SvgAffineTransform MapGeometry(SvgAffineTransform source, SvgViewportFrame? frame)
+        => frame is {} viewport
+            ? SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(source)
+            : source;
+
     /// <summary>Places text after the viewport map while preserving intervening source-group transforms.</summary>
     /// <remarks>Immutable bounded arithmetic; callers charge the mapping and observe cancellation. Singular source ancestry retains an explicit unsupported outcome.</remarks>
     internal SvgAffineTransform MapText(SvgAffineTransform source)

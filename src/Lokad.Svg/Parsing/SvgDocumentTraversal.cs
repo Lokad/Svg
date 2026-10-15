@@ -144,6 +144,17 @@ internal static class SvgDocumentTraversal
                     SvgAffineTransform textParent = parentFrame is {} textFrame ? textFrame.MapText(viewportContext.InheritedPresentation.Transform) : viewportContext.InheritedPresentation.Transform;
                     SvgAffineTransform textPlacement = textParent.ComposeChecked(SvgAffineTransform.FromScaleOffset(localScaleX, localScaleY, viewport.X + viewOffsetX, viewport.Y + viewOffsetY));
                     SvgAffineViewportClip textClip = new(new(viewport.X, viewport.Y, viewport.Width, viewport.Height), textParent);
+                    if (textParent.IsAxisAligned && viewportContext.InheritedPresentation.Transform != SvgAffineTransform.Identity)
+                    {
+                        // Geometry applies the scalar viewport after its inherited
+                        // source map. Rebase that ancestry so outer group placement
+                        // stays outside the child viewBox scale, as it does for text.
+                        SvgAffineTransform geometryViewport = SvgAffineTransform.FromScaleOffset(composedScaleX, composedScaleY, composedOffsetX, composedOffsetY);
+                        if (geometryViewport.TryInvert(out SvgAffineTransform inverseViewport))
+                            inheritedViewport = inheritedViewport with { Presentation = inheritedViewport.Presentation with { Transform = inverseViewport.ComposeChecked(textPlacement) } };
+                        box = textParent.Apply(new SvgClipBox(viewport.X, viewport.Y, viewport.Width, viewport.Height));
+                        if (parentClip is {} enclosingClip) box = box.Intersect(enclosingClip);
+                    }
                     if (!reader.IsEmptyElement) state.Viewports.Add(new SvgViewportFrame(composedOffsetX, composedOffsetY, composedScaleX, composedScaleY, nestedViewBox?.Width ?? viewport.Width, nestedViewBox?.Height ?? viewport.Height, box, reader.Depth) { OwnOpacity = sourceViewportOpacity, TextContext = SvgViewportTextContext.Create(state, inheritedViewport, textPlacement, textClip) });
                     byte viewportOpacity = sourceViewportOpacity.Alpha;
                     if (viewportOpacity != 255)
