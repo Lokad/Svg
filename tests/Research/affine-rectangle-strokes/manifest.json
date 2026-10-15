@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "Eight frozen general/composed/quarter-turn rectangle-stroke controls advancing complete inv-132-135; all twelve raw/prepared outputs are exact on Windows/Linux. Controls remain separate from whole documents.",
+  "purpose": "Eight frozen general/composed/quarter-turn rectangle-stroke controls advancing complete inv-132-135; all twelve raw/prepared outputs are exact on Windows/Linux. Controls remain separate from whole documents. Two additional MIT C6c user-space clip controls are frozen as UnsupportedFeature before correction; the original eight outputs remain unchanged.",
   "chromeVersion": "153.0.8010.52",
   "chromiumRevision": "1681091",
   "platform": "win64",
@@ -168,6 +168,44 @@
       "license": "CC0-1.0",
       "licenseEvidence": "Original mechanism control dedicated by its SPDX CC0-1.0 declaration.",
       "role": "fidelity"
+    },
+    {
+      "id": "original-user-space-clip",
+      "input": "original-user-space-clip.svg",
+      "width": 96,
+      "height": 72,
+      "background": "transparent",
+      "role": "retained-core-admission-control",
+      "license": "MIT",
+      "selection": "Original userSpaceOnUse input of Rectangular_clip_maps_preserve_unit_outcomes_and_release at its unchanged 96x72 output",
+      "sourceSha256": "4c7f3f37e42d8469a8b3a3f8a97ccb2376071a9888c15b51c76c894c53254538",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "e64073f89faf0e58b7294218e908c569a87a378a",
+      "reference": "references/original-user-space-clip.png",
+      "referenceSha256": "bace6d8fe12c071eceb0b5dad01ea314e90b7356298065be65a32a1382dd105d",
+      "linuxReference": "references/linux64/original-user-space-clip.png",
+      "linuxReferenceSha256": "bace6d8fe12c071eceb0b5dad01ea314e90b7356298065be65a32a1382dd105d"
+    },
+    {
+      "id": "affine-clip-siblings",
+      "input": "affine-clip-siblings.svg",
+      "width": 96,
+      "height": 72,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "MIT",
+      "selection": "Visible forward rectangular clip through fractional composed affine placement and a scaled physical viewport, with inside/after siblings",
+      "sourceSha256": "e6584d45dee2e7cce1f15ddce54c904530c4f1780ed8a2a0f77fe7479ce617eb",
+      "scale": 1,
+      "licenseEvidence": "LICENSE.txt",
+      "expectedError": "UnsupportedFeature",
+      "declarationBaseRevision": "e64073f89faf0e58b7294218e908c569a87a378a",
+      "reference": "references/affine-clip-siblings.png",
+      "referenceSha256": "ebe478ddb6b701fe14ce433b80ffd725dbae7a6d6ecd8e1e051c15248dd80b6b",
+      "linuxReference": "references/linux64/affine-clip-siblings.png",
+      "linuxReferenceSha256": "ebe478ddb6b701fe14ce433b80ffd725dbae7a6d6ecd8e1e051c15248dd80b6b"
     }
   ]
 }

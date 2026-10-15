@@ -67,6 +67,11 @@ The unchanged [tile-mask sheet](tests/Research/tile-mask-exit-sheet/README.md) i
 [qualification](artifacts/maintenance-review-20261012/tile-mask-qualified-results.json)
 owns eighteen healthy captures, original inputs and resource/sibling protection.
 
+The two C6c [affine-stroke clip controls](tests/Research/affine-rectangle-strokes/README.md)
+are frozen at **0/2 exact** on both platforms, with twelve healthy stable captures
+before correction. The original eight affine-stroke controls remain exact;
+these additions change no completed-document count.
+
 | Required item, in order | Missing behavior and dependencies | Acceptance and completion condition |
 | --- | --- | --- |
 | [ ] 3. Composition and resource presentation (G5–G7) | Remaining C6c affine user-space rectangle-clip bridge below. C1–C4, C5a/C5b and C6a/C6b acceptances are complete. Reuse source replay, tight bounds and viewport rebasing; glyph-specific boundaries belong to item 4. | The original C6c rotated-stroke input is exact on both platforms, with sibling restoration and affected scope/cleanup checks. Preserve every completed C1–C5 witness. |
