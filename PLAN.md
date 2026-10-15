@@ -47,8 +47,11 @@ references, including supplied-font proof. Image/filter/font content now joins
 qualified opacity, viewport/unit and reflected-map behavior. The
 [bank](tests/Research/pattern-tile-sheet/README.md) owns assets and options; the
 [design record](docs/RASTERIZATION_DESIGN.md#complete-pattern-tile-content-2026-10-15)
-owns mechanisms and rejected models. Current-revision CI is pending; preceding
-terminal checks remain valid historical evidence and must not be repolled.
+owns mechanisms and rejected models.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38734649206)
+for `5162468c`, first attempt, including memory, browser/setup, font, validator,
+package and installed-consumer checks. Reuse this exact-revision terminal audit
+for unchanged documentation; do not repoll completed runs.
 Remaining G6 maps/resource presentation belong to row 3 below. **G2–G9 and S17
 remain open**; completing the sheet does not close those finite exits.
 
@@ -79,13 +82,16 @@ witness across groups and APIs rather than opening a second checklist.
 | [ ] 4. Remaining finite effects/markers (G8) | Colored/translucent linearRGB shadows; identity/linear-image restoration; uncovered affine paint/source maps, object-box clips, source crossings and marker semantics. Reuse qualified bounded capture, transfer and restore. | Preserve the delivered [whole sheet and eleven controls](tests/Research/effects-marker-sheet/README.md). Complete each named finite G8 acceptance below, including the retained standalone linear-image defect, with affected graph/region/resource checks. Whole-sheet completion alone does not close this row. |
 | [ ] 5. Release (S17) | Finished-revision contracts and evidence after rows 1–4. | Close all finite G2–G9 exits; preserve established exact results; pass complete platform/API/resource/package/consumer checks and exact-revision CI; report representative measurements. Every [release condition](#release-completion-s17) must hold. Counts alone cannot establish completion. |
 
-**Next correction:** freeze the missing direct stroked-decoration and curved
-decorated-path cases alongside the retained label/path bank, then take both to
-exact Windows/Linux output through existing glyph, stroke and paint routing.
-Preserve the completed tile sheet and intended-font evidence. Bind uncovered
-label/composite semantics to existing witnesses or freeze only a missing independent
-interaction. G6 target/stroke/instance maps remain on row 3; no feature promise
-is deferred or dropped to advance the next document.
+**Next complete document:** retain the unchanged
+[W3C text-decoration example](https://www.w3.org/TR/2026/CR-SVG2-20261006/images/text/textdecoration01.svg)
+at **1200×400 transparent**, with the existing public Noto program supplied under
+its initial `serif` request. Its [source/admission record](artifacts/stroked-decorations-20261015/sourcing.json)
+records the named stroked-decoration rejection and license evidence. Healthy
+platform references and intended-font proof are **pending**, not qualified.
+Freeze those before correction, then finish this whole document. Use a focused
+curved decorated-path case for the independent remaining path semantic. Preserve
+the complete tile sheet and all other row-2 obligations; G6 maps/presentation stay
+required on row 3. No feature promise is deferred to advance this document.
 
 The effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
