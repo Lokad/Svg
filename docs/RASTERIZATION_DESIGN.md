@@ -13553,6 +13553,6 @@ Positive whole/control regressions replace their obsolete rejection expectations
 Focused lifecycle checks cover allocation denial, pre/active cancellation, work
 denial, immutable inputs and retry. The [qualification receipt](../artifacts/maintenance-review-20261012/affine-filters-qualified-results.json)
 owns complete platform checks and preserved prior results. Non-solid affine source
-paints and nested resource boundaries remain explicit gates inside promised G8;
+paints, source clips and nested resource boundaries remain explicit gates inside promised G8;
 remaining shadow/restoration, object-box clip, source and marker semantics stay
 required. The composition sheet is the next document milestone; G2–G9/S17 remain open.

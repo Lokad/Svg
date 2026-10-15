@@ -48,8 +48,8 @@ records **7,755 passing tests/platform**, normal build plus complete tests in
 Approximate-memory and measured-maintenance clauses remain unchanged.
 
 This document establishes its declared graph and placement, not arbitrary affine
-paint/resource combinations. Non-solid affine sources and nested resource
-boundaries remain explicit implementation gates within promised G8 scope, alongside
+paint/resource combinations. Non-solid affine sources, source clips and nested
+resource boundaries remain explicit implementation gates within promised G8 scope, alongside
 colored/translucent linearRGB shadows, identity/linear-image restoration,
 object-box clips, other source boundaries and remaining marker semantics.
 [PLAN.md](../../../PLAN.md#ordered-delivery-checklist) owns those finite exits and

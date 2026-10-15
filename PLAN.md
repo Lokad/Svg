@@ -46,10 +46,13 @@ Normal incremental Release build plus complete tests took **88.3s Windows /
 240.4s Linux**. The [receipt](artifacts/maintenance-review-20261012/affine-filters-qualified-results.json)
 owns full checks, unchanged asset/options/default limits, 72 stable original
 captures and timings. The effects bank is **1/1 complete document / 11/11 exact
-controls** on both platforms. Hosted CI for the new substantive revision remains
-pending. Earlier terminal green evidence at `2a1e723e` stays in the
-[mixed-space receipt](artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json);
-do not repoll it or preceding completed runs.
+controls** on both platforms.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38710155561)
+for implementation `0a49af2e`, first attempt, including memory, browser/setup,
+font, validator, package and installed-consumer checks. Hosted build plus complete
+tests took **105s Windows / 89s Linux**, separate from local routine timings.
+The receipt owns the exact-revision step audit. Reuse this terminal evidence for
+unchanged documentation; do not repoll this run or preceding completed attempts.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -253,7 +256,7 @@ A flood override alone does not establish a color transition.
 
 | Required remaining behavior | Dependency / concrete acceptance / completion |
 | --- | --- |
-| Uncovered affine paint/source maps | Solid-source affine filtering and whole-panel integration are qualified in the completed bank. Non-solid affine paints and nested resource boundaries retain explicit gates. Reuse the shared layer/source/paint maps and bind an uncovered route to its owning composition/tile/label panel or focused control. Complete when each remaining independent promised route is exact, preserving all eleven effects controls, nearest offsets and native image origins. |
+| Uncovered affine paint/source maps | Solid-source affine filtering and whole-panel integration are qualified in the completed bank. Non-solid affine paints, source clips and nested resource boundaries retain explicit gates. Reuse the shared layer/source/paint maps and bind an uncovered route to its owning composition/tile/label panel or focused control. Complete when each remaining independent promised route is exact, preserving all eleven effects controls, nearest offsets and native image origins. |
 | Colored/translucent linearRGB shadows; identity/zero-offset colored-source and standalone linear-image/outer-opacity restoration | Existing transfer/restore routes. Reuse retained colored-source diagnostics; freeze a colored linearRGB shadow over a translucent source and identity/zero-offset controls only where not already qualified. The retained [single-linear-image/outer-opacity diagnostic](artifacts/effects-marker-sheet-20261015/mixed-consumer-single-blur.svg) still differs; one healthy native observation is not acceptance. Complete when each named shadow/restore semantic is exact, preserving region/opacity and mixed-space results. This remains required after the completed whole-sheet milestone. |
 | Object-box output clips and filtered sources crossing mask, nested viewport, marker, text and local-use boundaries | Reuse qualified image/vector/group output clips and nested source/halo replay. Freeze a filtered target with an object-box clip and one focused witness for each uncovered source boundary, bringing G2/G5/G9 dependencies forward as needed. Complete when each independent boundary is exact with source/output ordering, halos and scope termination protected. No content × graph × container census. |
 | Font-relative marker lengths, container presentation/inheritance, closure/tangent/degenerate behavior | Existing marker length/style/vertex replay. Freeze font-relative sizing and inherited container paint versus a child override, plus auto/auto-start-reverse open/closed/zero-length-path witnesses. Reuse exact angle/overflow controls. Complete when named semantics are exact or valid-degenerate outcomes measured; missing/recursive references remain explicit errors. |

@@ -14,7 +14,7 @@ merge inputs use packed image composition; color-transfer inputs keep their
 unquantized shader route. Embedded-image sampling retains its preceding arithmetic.
 
 Preserve all earlier marker/source/clip/nesting/color-space controls, bounded
-storage/work, cancellation, cleanup and retry. Non-solid affine source paints and
+storage/work, cancellation, cleanup and retry. Non-solid affine source paints, source clips and
 nested resource boundaries still reject explicitly and remain promised G8 work.
 The finite remaining shadow/restoration, object-box clip, source and marker exits
 remain in [PLAN](../PLAN.md). No G8/S17 closure or scope deferral is claimed.
