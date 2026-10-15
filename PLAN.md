@@ -44,9 +44,11 @@ The effects bank remains **0/1 complete document / 2/3 exact controls**; the
 original CSS marker-overflow control is also exact against unchanged references.
 The [receipt](artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json)
 owns admission changes, preservation, bounded-failure checks and timings.
-Hosted qualification follows the substantive commit/push. The preceding
-[terminal green image CI](https://github.com/Lokad/Svg/actions/runs/38677568140)
-for `4c4b4a22` stays closed; do not poll it to qualify new marker code.
+[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38681043665)
+for exact implementation revision `5e46a158`, including package/consumer, memory,
+browser/setup, font and validator checks. Build plus complete tests took
+**130s Windows / 111s Linux**, separately from local timings. Reuse this completed
+evidence for unchanged documentation; do not poll this or preceding green runs.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -88,6 +90,10 @@ Its first unit and CSS gates are resolved. Current whole-sheet rejection is imag
 filter admission; the separate affine control rejects rotated/skewed filtering.
 Keep mixed-color/nested graph and other declared interactions required as this
 same sheet advances. Original baselines remain evidence, not work to repeat.
+The [reduced image-filter source control](artifacts/effects-marker-sheet-20261015/image-filter-source-declaration.json)
+is separately frozen at `5e46a158` with healthy stable platform triples. It isolates
+capture/opacity before the whole sheet's outer clip interaction; its current
+image-filter rejection is required work, with no additional acceptance claimed.
 
 The image/effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
