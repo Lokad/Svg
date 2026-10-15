@@ -1,0 +1,2 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200"><defs><path id="s" d="M12 56H308"/><path id="p" d="M12 160Q160 72 308 160"/></defs><g font-family="serif" font-size="22" fill="#285a93" stroke="#a44f32" stroke-width=".75" text-decoration="underline overline line-through"><text><textPath href="#s" startOffset="6">AV gyp label</textPath></text><text fill="none" paint-order="stroke fill"><textPath href="#p" startOffset="6">AV gyp label</textPath></text></g></svg>

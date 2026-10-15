@@ -1,9 +1,10 @@
 # Retained stroked-decoration document
 
-This bank retains one unchanged W3C SVG document and two authored CC0 controls
+This bank retains one unchanged W3C SVG document and four authored CC0 controls
 for the remaining finite G9 decoration promises. The whole document and direct
-control are exact on Windows/Linux: **1/1 complete document / 1/2 exact controls**.
-The curved control still rejects decorated text paths and remains required.
+control are exact on Windows/Linux: **1/1 complete document / 1/4 exact controls**.
+The curved, three-line/stroke-only and positioned/stretched path controls still
+reject decorated text paths and remain required.
 [PLAN.md](../../../PLAN.md) owns delivery and wider support closure.
 
 The original [W3C example](https://www.w3.org/TR/2026/CR-SVG2-20261006/images/text/textdecoration01.svg)

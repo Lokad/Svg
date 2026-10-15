@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "purpose": "One unchanged licensed W3C decoration document and two CC0 controls for promised G9 direct/path stroked decoration behavior. References and font-use triples precede renderer changes.",
+  "purpose": "One unchanged licensed W3C decoration document and four CC0 controls for promised G9 direct/path stroked decoration behavior. References and font-use triples precede renderer changes.",
   "declarationBaseRevision": "3dc00785",
   "fontPack": "../offset-merge-document/font-pack.json",
   "fontPackId": "public-noto-sans",
@@ -398,6 +398,264 @@
         }
       ],
       "oracleInputSha256": "e4d87aa0c0ff4b4353febb1a2a92ae4df7b4782440aab5da20e3702e71a32c1e"
+    },
+    {
+      "id": "path-decoration-lines",
+      "input": "path-decoration-lines.svg",
+      "width": 320,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "411b712a9520a1050f4ac6fbc80e642595e9d7d813ca698f2f5fadf2a04a95f1",
+      "selection": "Independent remaining decorated-path semantics: three line types, straight/curved path and stroke-only paint order.",
+      "explicitViewport": true,
+      "licenseEvidence": "curved-stroked-decoration.svg",
+      "expectedError": "UnsupportedFeature",
+      "observedGate": "Decorations on retained text paths are not implemented.",
+      "reference": "references/path-decoration-lines.png",
+      "referenceSha256": "4855391c0fd63090cabcb2a5b360df2269640d0ff8c28d7431aba211d3a3369f",
+      "captures": [
+        {
+          "pngSha256": "4855391c0fd63090cabcb2a5b360df2269640d0ff8c28d7431aba211d3a3369f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4855391c0fd63090cabcb2a5b360df2269640d0ff8c28d7431aba211d3a3369f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "4855391c0fd63090cabcb2a5b360df2269640d0ff8c28d7431aba211d3a3369f",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "fontUseProof": {
+        "windows": [
+          {
+            "id": "path-decoration-lines",
+            "mode": "missing",
+            "changedPixels": 6300,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "2678d68db124ba8515924f5207f8a62ed8adcc880cf930af94615e600035f8ce",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "path-decoration-lines",
+            "mode": "corrupt",
+            "changedPixels": 6300,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "2678d68db124ba8515924f5207f8a62ed8adcc880cf930af94615e600035f8ce",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "path-decoration-lines",
+            "mode": "substituted",
+            "changedPixels": 5925,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "80f8cf253b846a314e5b45cb40b16afc1dfc2795f1eb9d1f6bb790ac0b4fa28c",
+            "inputFontProgramChangedOnly": true
+          }
+        ],
+        "linux": [
+          {
+            "id": "path-decoration-lines",
+            "mode": "missing",
+            "changedPixels": 5954,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "3429dc9d3aef23f18052bf23640f6a246597058be517a9647546e21114674a95",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "path-decoration-lines",
+            "mode": "corrupt",
+            "changedPixels": 5954,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "3429dc9d3aef23f18052bf23640f6a246597058be517a9647546e21114674a95",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "path-decoration-lines",
+            "mode": "substituted",
+            "changedPixels": 5429,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "712b2d1164a2c14a90d269ed9a31889f9fcefa835460452d1e9b8f31577c4788",
+            "inputFontProgramChangedOnly": true
+          }
+        ]
+      },
+      "linuxReference": "references/linux64/path-decoration-lines.png",
+      "linuxReferenceSha256": "f57397124b857ddd80c527dec7922cef0f7c69fd467b47fb624f47dd3854fc24",
+      "linuxCaptures": [
+        {
+          "pngSha256": "f57397124b857ddd80c527dec7922cef0f7c69fd467b47fb624f47dd3854fc24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f57397124b857ddd80c527dec7922cef0f7c69fd467b47fb624f47dd3854fc24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "f57397124b857ddd80c527dec7922cef0f7c69fd467b47fb624f47dd3854fc24",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "oracleInputSha256": "0a782280d4c267bef2ccfaff62dfef8d18cda47840f5c6b26bbbf090017edb3b",
+      "declarationBaseRevision": "ab0b3504",
+      "platformReferencesByteIdentical": false
+    },
+    {
+      "id": "path-decoration-positioning",
+      "input": "path-decoration-positioning.svg",
+      "width": 320,
+      "height": 200,
+      "scale": 1,
+      "background": "transparent",
+      "role": "fidelity-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "5d39ba865310ddc30d1ffbe5e859e00947e63b6a3e111f7d24e191e2cf5f3128",
+      "selection": "Independent remaining decorated-path semantics: out-of-range start, character rotation and textLength glyph stretching.",
+      "explicitViewport": true,
+      "licenseEvidence": "curved-stroked-decoration.svg",
+      "expectedError": "UnsupportedFeature",
+      "observedGate": "Decorations on retained text paths are not implemented.",
+      "reference": "references/path-decoration-positioning.png",
+      "referenceSha256": "ed297ade40d69860df795a29cd175532912ad0542ee290b227b2b22ae0db9279",
+      "captures": [
+        {
+          "pngSha256": "ed297ade40d69860df795a29cd175532912ad0542ee290b227b2b22ae0db9279",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ed297ade40d69860df795a29cd175532912ad0542ee290b227b2b22ae0db9279",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "ed297ade40d69860df795a29cd175532912ad0542ee290b227b2b22ae0db9279",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "fontUseProof": {
+        "windows": [
+          {
+            "id": "path-decoration-positioning",
+            "mode": "missing",
+            "changedPixels": 4697,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "194becef1bcc1328c465bac41e22e52eb0540bb2088e21bbad7fc234e1604246",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "path-decoration-positioning",
+            "mode": "corrupt",
+            "changedPixels": 4697,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "194becef1bcc1328c465bac41e22e52eb0540bb2088e21bbad7fc234e1604246",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "path-decoration-positioning",
+            "mode": "substituted",
+            "changedPixels": 5314,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "0498e5e5f18b1842612924fa90ae70c5691e4507d2c2d46fe5f9bea0520b741d",
+            "inputFontProgramChangedOnly": true
+          }
+        ],
+        "linux": [
+          {
+            "id": "path-decoration-positioning",
+            "mode": "missing",
+            "changedPixels": 4297,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "5e580984d653b9d0d54a16b6694e05a869143449065af8ce50f84abaf22ca014",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "path-decoration-positioning",
+            "mode": "corrupt",
+            "changedPixels": 4297,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "5e580984d653b9d0d54a16b6694e05a869143449065af8ce50f84abaf22ca014",
+            "inputFontProgramChangedOnly": true
+          },
+          {
+            "id": "path-decoration-positioning",
+            "mode": "substituted",
+            "changedPixels": 4851,
+            "stability": "identical",
+            "freshProcessCaptures": 3,
+            "startupHealth": "healthy",
+            "profileCleaned": true,
+            "pngSha256": "831c2922b56410efefbe8345c9882048c099dce24a8bb21185a407ef9e1b7a05",
+            "inputFontProgramChangedOnly": true
+          }
+        ]
+      },
+      "linuxReference": "references/linux64/path-decoration-positioning.png",
+      "linuxReferenceSha256": "1a27aaf1f47a4d6de37e4eed6261fe1d4705b1a267617fe8143f10829400362a",
+      "linuxCaptures": [
+        {
+          "pngSha256": "1a27aaf1f47a4d6de37e4eed6261fe1d4705b1a267617fe8143f10829400362a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1a27aaf1f47a4d6de37e4eed6261fe1d4705b1a267617fe8143f10829400362a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1a27aaf1f47a4d6de37e4eed6261fe1d4705b1a267617fe8143f10829400362a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "oracleInputSha256": "46d314add15d6379dc16cbb0995073429294af64f856280b4071bbed357f1a5c",
+      "declarationBaseRevision": "ab0b3504",
+      "platformReferencesByteIdentical": false
     }
   ]
 }
