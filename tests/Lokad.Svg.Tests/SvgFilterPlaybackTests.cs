@@ -7,6 +7,50 @@ namespace Lokad.Svg.Tests;
 public sealed class SvgFilterPlaybackTests
 {
     [Fact]
+    public void Source_layer_bounds_match_the_native_two_blur_hint_and_release_temporary_owners()
+    {
+        byte[] input = Document("<defs><filter id='f'><feGaussianBlur stdDeviation='1.125'/><feGaussianBlur stdDeviation='1.125'/></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
+        RenderBudget parser = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, parser, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+            SvgFilterRegionContext context = new(SvgAffineTransform.Identity, new(144, 108), new(-100, -100, 200, 200));
+            SvgPaintBounds source = new(7.25f, 19.5f, 61.75f, 84.75f);
+            RenderBudget budget = new(1_000_000);
+            SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, new(1, 1), context, source, budget, new(1_000), CancellationToken.None);
+            // The retained native command trace records [0,12,69,92].
+            Assert.Equal((0d, 12d, 69d, 92d), (Math.Floor(hint.Left), Math.Floor(hint.Top), Math.Ceiling(hint.Right), Math.Ceiling(hint.Bottom)));
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            Assert.Equal(SvgErrorCode.LimitExceeded, Assert.Throws<SvgException>(() => SvgFilterPlayback.SourceLayerBounds(resource,
+                new(1, 1), context, source, budget, new(1), CancellationToken.None)).ErrorCode);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+            using CancellationTokenSource cancellation = new();
+            cancellation.Cancel();
+            Assert.Equal(cancellation.Token, Assert.Throws<OperationCanceledException>(() => SvgFilterPlayback.SourceLayerBounds(resource,
+                new(1, 1), context, source, budget, new(1_000), cancellation.Token)).CancellationToken);
+            Assert.Equal(0, budget.Snapshot().CurrentBytes);
+        }
+        Assert.Equal(0, parser.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
+    public void Primitive_color_spaces_inherit_independently_and_keep_their_declared_override()
+    {
+        byte[] input = Document("<defs><filter id='f' color-interpolation-filters='sRGB'><feGaussianBlur stdDeviation='1' color-interpolation-filters='linearRGB'/><feOffset/><feMerge color-interpolation-filters='linearRGB'><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><rect width='4' height='4' filter='url(#f)'/>");
+        RenderBudget budget = new(1_000_000);
+        using (SvgRoot scene = SvgRootParser.Parse(input, SvgRenderLimits.Default, budget, CancellationToken.None))
+        {
+            SvgFilterArena arena = scene.SceneStorage?.Filters ?? throw new InvalidOperationException();
+            SvgFilterResource resource = arena.ResourceAt(arena.BindingAt(scene.Commands[0].MaskContentIndex).ResourceIndex);
+            Assert.Equal(SvgFilterColorSpace.Srgb, resource.ColorSpace);
+            Assert.Equal(new SvgFilterColorSpace?[] { SvgFilterColorSpace.LinearRgb, SvgFilterColorSpace.Srgb, SvgFilterColorSpace.LinearRgb },
+                resource.Primitives.Items.Select(p => p.ColorSpace));
+        }
+        Assert.Equal(0, budget.Snapshot().CurrentBytes);
+    }
+
+    [Fact]
     public void Required_source_bounds_preserve_both_branches_and_the_displaced_blur_halo()
     {
         byte[] input = Document("<defs><filter id='f' filterUnits='userSpaceOnUse' x='-100' y='-100' width='200' height='200'>"
@@ -177,6 +221,8 @@ public sealed class SvgFilterPlaybackTests
     [InlineData("<filter id='f'><feGaussianBlur in='later'/><feOffset result='later'/></filter>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<filter id='other'><feGaussianBlur/></filter>", SvgErrorCode.UnsupportedFeature)]
     [InlineData("<filter id='f'/><filter id='f'/>", SvgErrorCode.MalformedInput)]
+    [InlineData("<filter id='f' color-interpolation-filters='invalid'><feOffset/></filter>", SvgErrorCode.UnsupportedFeature)]
+    [InlineData("<filter id='f'><feFlood color-interpolation-filters='invalid'/></filter>", SvgErrorCode.UnsupportedFeature)]
     public void Referenced_graph_errors_release_partial_parser_owners(string definition, SvgErrorCode code)
     {
         byte[] input = Document("<rect width='4' height='4' filter='url(#f)'/><defs>" + definition + "</defs>");

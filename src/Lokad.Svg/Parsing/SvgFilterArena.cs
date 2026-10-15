@@ -17,6 +17,7 @@ internal readonly record struct SvgFilterRegion(SvgFilterLength X, SvgFilterLeng
 internal readonly record struct SvgFilterPrimitiveRegion(SvgFilterLength? X, SvgFilterLength? Y, SvgFilterLength? Width, SvgFilterLength? Height);
 internal readonly record struct SvgFilterPrimitive(SvgFilterPrimitiveKind Kind, SvgFilterInput Input, double SigmaX, double SigmaY, double OffsetX, double OffsetY, SvgColor Flood, float FloodOpacity)
 {
+    internal SvgFilterColorSpace? ColorSpace { get; init; }
     internal SvgFilterPrimitiveRegion? Region { get; init; }
     internal SvgFilterInput SecondInput { get; init; }
     internal SvgFilterComposition Composition { get; init; }

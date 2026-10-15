@@ -1,10 +1,10 @@
 # Retained effects and marker sheet
 
-The bank remains **0/1 completed document / 7/8 exact controls** on Windows/Linux.
+The bank remains **0/1 completed document / 10/11 exact controls** on Windows/Linux.
 The unchanged whole sheet is required and incomplete. Its
 four original CC0 sources/options and healthy Windows/Linux reference triples
 were frozen before correction at `4c4b4a22`. The [manifest](manifest.json)
-records current mixed-color-space and affine-filter rejection gates as remaining work,
+records current affine-filter rejection gates as remaining work,
 without a feature deferral, reference replacement or a new completed document.
 
 The two marker controls are separately exact against their unchanged references:
@@ -49,6 +49,17 @@ image subsets remain distinct from final-device restoration and nearest texel
 sampling. The unchanged whole sheet now reaches mixed primitive color spaces;
 affine placement and the remaining finite G8 boundaries stay required.
 
+The separately frozen `mixed-filter-spaces` admits the retained panel's flood
+override with unchanged pixels: a flood supplies an sRGB-origin CSS color and
+performs no interpolation. `mixed-filter-branches` proves real transitions in
+both directions and immutable reuse of an earlier result. `mixed-filter-consumers`
+separates sRGB CPU-kernel input from shadow restoration after a stored linear
+blur. All three are exact. Shader transfers stay unquantized until composition;
+CPU kernels retain their stored working-space route. The image sampler retains
+its native source bitmap origin independently of compact capture storage.
+The unchanged whole sheet now reaches rotated/skewed filter placement. Whole-panel
+integration and the remaining finite G8 boundaries remain required.
+
 These authored fixtures and the unchanged tiny embedded PNG reused from the
 existing static-CSS/image assets are dedicated to the public domain under
 CC0-1.0. No fonts are needed. Each platform has three healthy stable fresh-process
@@ -56,18 +67,17 @@ captures with cleaned profiles; all corresponding PNG bytes are identical.
 Detailed declaration/capture/baseline evidence stays in the existing ignored
 [study](../../../artifacts/effects-marker-sheet-20261015/).
 
-The [nested-source receipt](../../../artifacts/maintenance-review-20261012/nested-source-qualified-results.json)
-records **7,740 tests/platform** and complete normal qualification in
-**77.5s Windows / 238.0s Linux**. One obsolete nested rejection is promoted to
-positive rendering, original object bounds and cleanup acceptance with unchanged
-input bytes. Every other preceding displayed row is preserved. All nine sources,
-declared options, references and 54 healthy stable captures remain consistent;
-no previous asset or default resource limit changes. Approximate-memory and
-measured-maintenance clauses remain unchanged.
+The [mixed-space receipt](../../../artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json)
+records **7,750 tests/platform** and normal complete qualification in
+**85.4s Windows / 247.9s Linux**. Every preceding displayed test row is preserved.
+All twelve source/options/reference declarations and 72 healthy stable captures
+remain consistent; no preceding asset or default resource limit changes.
+Approximate-memory and measured-maintenance clauses remain unchanged.
 
-Earlier [marker](../../../artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json),
+Earlier [nested-source](../../../artifacts/maintenance-review-20261012/nested-source-qualified-results.json),
+[marker](../../../artifacts/maintenance-review-20261012/marker-units-overflow-qualified-results.json),
 [image-source](../../../artifacts/maintenance-review-20261012/image-filter-source-qualified-results.json)
 and [output-clip](../../../artifacts/maintenance-review-20261012/filter-output-clips-qualified-results.json)
 receipts own their checkpoint measurements and preservation evidence. The whole
-sheet remains required at the mixed-primitive-space gate, followed by affine
-placement and any rendering mismatches; none is a feature deferral.
+sheet remains required at affine placement, followed by any rendering mismatches;
+none is a feature deferral.

@@ -52,12 +52,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
                     Length(reader.GetAttribute("width"), new(120, true)), Length(reader.GetAttribute("height"), new(120, true)),
                     Units(reader.GetAttribute("filterUnits"), SvgFilterUnits.ObjectBoundingBox));
                 builder._primitiveUnits = Units(reader.GetAttribute("primitiveUnits"), SvgFilterUnits.UserSpace);
-                builder._colorSpace = reader.GetAttribute("color-interpolation-filters") switch
-                {
-                    null or "linearRGB" => SvgFilterColorSpace.LinearRgb,
-                    "sRGB" => SvgFilterColorSpace.Srgb,
-                    _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter color space is not implemented.")
-                };
+                builder._colorSpace = ColorSpace(reader.GetAttribute("color-interpolation-filters"), SvgFilterColorSpace.LinearRgb);
                 builder.ValidateAttributes(reader, "id class x y width height filterUnits primitiveUnits color-interpolation-filters filterRes");
                 if (reader.GetAttribute("filterRes") is string legacyResolution)
                 {
@@ -126,8 +121,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
                 SvgFilterPrimitiveKind.Blend => "id in in2 result mode color-interpolation-filters x y width height",
                 _ => "id in result dx dy stdDeviation flood-color flood-opacity color-interpolation-filters x y width height"
             });
-            if (reader.GetAttribute("color-interpolation-filters") is string space && space != (_colorSpace == SvgFilterColorSpace.Srgb ? "sRGB" : "linearRGB"))
-                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Mixed primitive filter color spaces are not implemented.");
+            SvgFilterColorSpace colorSpace = ColorSpace(reader.GetAttribute("color-interpolation-filters"), _colorSpace);
             double sigmaX = kind == SvgFilterPrimitiveKind.DropShadow ? 2 : 0, sigmaY = sigmaX;
             if (reader.GetAttribute("stdDeviation") is string deviation)
             {
@@ -143,6 +137,7 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
             float opacity = SvgColorParser.ParsePaintOpacity(reader.GetAttribute("flood-opacity")).Value;
             primitive = new(kind, Input(reader.GetAttribute("in"), _primitives.Count), sigmaX, sigmaY, dx, dy, flood, opacity)
             {
+                ColorSpace = colorSpace,
                 Region = ReadRegion(reader), MergeFirst = _mergeInputs.Count,
                 SecondInput = kind is SvgFilterPrimitiveKind.Composite or SvgFilterPrimitiveKind.Blend
                     ? Input(reader.GetAttribute("in2"), _primitives.Count) : SvgFilterInput.SourceGraphic,
@@ -227,6 +222,12 @@ internal sealed class SvgFilterDefinitionBuilder : IDisposable
         }
         reader.MoveToElement();
     }
+
+    private static SvgFilterColorSpace ColorSpace(string? value, SvgFilterColorSpace fallback) => value switch
+    {
+        null => fallback, "linearRGB" => SvgFilterColorSpace.LinearRgb, "sRGB" => SvgFilterColorSpace.Srgb,
+        _ => throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filter color space is not implemented.")
+    };
 
     private static SvgFilterUnits Units(string? value, SvgFilterUnits fallback) => value switch
     {

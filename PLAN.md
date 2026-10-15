@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15: finite delivery reconciliation at the nested-source
+Updated 2026-10-15: finite delivery reconciliation at the primitive-color-space
 checkpoint. The whole effects sheet remains required and incomplete.
 This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
@@ -31,7 +31,7 @@ accepted. A proposed deferral of an existing promise stays required until decide
 | Additional authored documents | **Nine complete CC0 documents**, each **1/1 exact** on Windows/Linux, separate from both frozen cohorts. Preserve their separately counted controls: [symbol card](tests/Research/symbol-fractional-frames/README.md) **4/4**, [affine orbit](tests/Research/affine-oval-strokes/README.md) **6/6**, [scoped card](tests/Research/scoped-clips-masks/README.md) **5/5**, [colored signal](tests/Research/colored-effects-markers/README.md) original **7/7** plus repaired **1/1** and bounds **4/4**, [CSS/image card](tests/Research/static-css-images/README.md) original **3/3** plus phase/clip **2/2**, [layout guide](tests/Research/font-layout-diagram/README.md) **4/4**, [cascade sheet](tests/Research/root-resource-cascade/README.md) **4/4**, [label/path sheet](tests/Research/remaining-label-path-sheet/README.md) **8/8**, and [affine image sheet](tests/Research/affine-image-maps/README.md) **3/3**. Banks link immutable inputs, native witnesses and finished-correction receipts; wider groups stay open. |
 | Qualified G2–G5 mechanisms | Fractional ordinary-use stroke widths, fractional/nonuniform symbol frames, nonuniform root curve fills and affine oval strokes, the non-scaling conic defect, composed cubic clips, translated custom mask regions and mask-container opacity have qualified witnesses. Preserve [use widths](artifacts/maintenance-review-20261012/fractional-use-qualified-results.json), [symbol frames](artifacts/maintenance-review-20261012/symbol-frames-final-results.json), [root curves](artifacts/maintenance-review-20261012/nonuniform-curves-qualified-results.json), [non-scaling strokes](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json), [ovals](tests/Research/affine-oval-strokes/manifest.json) and [scopes](tests/Research/scoped-clips-masks/manifest.json). These completed mechanisms are dependencies already available, not work to repeat for wider maps or locations. |
 | Filter bounds, rescaling and restoration | The [colored-effects bank](tests/Research/colored-effects-markers/README.md) preserves original controls **7/7**, repaired control **1/1**, bounds **4/4** and whole document **1/1**. The [filter-region bank](tests/Research/filter-regions/manifest.json) is **26/26 exact**, including sRGB rescaling/opacity and the unchanged displaced linearRGB blur. Preserve the [bounds](artifacts/maintenance-review-20261012/offset-image-bounds-qualified-results.json), [rescaling](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json) and [restoration receipts](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json). Wider G8 stays open. |
-| Qualified marker and filter-source mechanisms | The [effects/marker bank](tests/Research/effects-marker-sheet/README.md) has **7/8 exact controls**: marker lengths/angles, overhanging CSS overflow, image-filter source with fractional colored shadow/opacity, image/circle and vector/group output clips, and nested source/real-blur controls. The original [CSS overflow case](tests/Research/path-marker-content/marker-css-overflow-boundary.svg) is also exact. Preserve the [nested-source receipt](artifacts/maintenance-review-20261012/nested-source-qualified-results.json), existing source/clip results, sampling and nearest offsets. The whole sheet and affine-filter control remain required gaps; no new document or G8 closure is counted. |
+| Qualified marker and filter-source mechanisms | The [effects/marker bank](tests/Research/effects-marker-sheet/README.md) has **10/11 exact controls**: marker lengths/angles, overhanging CSS overflow, image-filter source with fractional colored shadow/opacity, image/circle and vector/group output clips, nested source/real-blur, flood override and mixed-space branch/consumer controls. The original [CSS overflow case](tests/Research/path-marker-content/marker-css-overflow-boundary.svg) is also exact. Preserve the [mixed-space receipt](artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json), existing source/clip results, sampling and nearest offsets. The whole sheet and affine-filter control remain required gaps; no new document or G8 closure is counted. |
 | Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared ownership are implemented. Private deployment validation below remains required; general shaping remains outside scope. |
 | Resource/API/package protections | Preserve bounded preparation/raster/encoding, allocation/work denial, cancellation/retry, partial-owner cleanup, immutable borrowed bytes, single-use prepared ownership and output integrity. Existing [API contract](docs/API_CONTRACT.md), installed-consumer and package checks apply; final release evidence must cover the finished revision. |
 
@@ -39,20 +39,13 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The nested-source correction is locally qualified: **7,740 tests/platform**
-(5,336 core / 2,398 visual / six FontProbe). One obsolete nested rejection is
-promoted to positive bounds/render/release acceptance with its original source;
-every other preceding displayed row is preserved. The
-[receipt](artifacts/maintenance-review-20261012/nested-source-qualified-results.json)
+The mixed-space correction is locally qualified: **7,750 tests/platform**
+(5,343 core / 2,401 visual / six FontProbe), with every preceding displayed row
+preserved. The [receipt](artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json)
 owns complete platform checks, preservation, bounded failures and timings. The
-effects bank remains **0/1 complete document / 7/8 exact controls**. Original
-inputs/options/references remain unchanged.
-[Hosted Windows/Linux CI is terminal green](https://github.com/Lokad/Svg/actions/runs/38693090280)
-for exact implementation revision `ab3ddb7d`, including memory, browser/setup,
-font, validator, package and installed-consumer checks. Hosted build plus complete
-tests took **133s Windows / 109s Linux**, separate from local routine timings.
-Reuse this terminal evidence for unchanged documentation; do not repoll this or
-preceding completed runs.
+effects bank remains **0/1 complete document / 10/11 exact controls**. Original
+inputs/options/references remain unchanged. Hosted exact-revision CI will be
+recorded after this substantive batch is pushed; preceding green CI stays closed.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
@@ -74,24 +67,20 @@ IDs, source coordinates or observed failure pixels may become renderer predicate
 
 | Required checklist | Missing behavior and dependencies | Concrete acceptance and exit |
 | --- | --- | --- |
-| [ ] 1. Effects/marker sheet (G8; active) | Mixed primitive color spaces and affine filter regions; image SourceGraphic/opacity, leaf/group user-space output clips and nested source/halo controls are qualified. Extend existing bounded capture/playback; use qualified G5/G7 maps and bring forward text/instance dependencies only as needed. | Make every declared output of the unchanged [whole sheet and affine control](tests/Research/effects-marker-sheet/README.md) exact on both platforms; preserve its seven exact controls and existing graph/default/result acceptance. Finish remaining finite G8 semantics with focused witnesses: colored linearRGB shadow, identity restoration, remaining source boundaries, font-relative marker sizing, container presentation and degenerate/closure behavior. Exit: these independent mechanisms have acceptance, and affected graph/region/resource checks pass. |
+| [ ] 1. Effects/marker sheet (G8; active) | Affine filter regions and unchanged whole-panel integration; image source/opacity, user-space output clips, nested capture and distinct mixed-space consumers are qualified. Extend existing bounded capture/playback; use qualified G5/G7 maps and bring forward text/instance dependencies only as needed. | Make every declared output of the unchanged [whole sheet and affine control](tests/Research/effects-marker-sheet/README.md) exact on both platforms; preserve its ten exact controls and existing graph/default/result acceptance. Finish remaining finite G8 semantics with focused witnesses: colored linearRGB shadow, identity and linear-image/opacity restoration, remaining source boundaries, font-relative marker sizing, container presentation and degenerate/closure behavior. Exit: these independent mechanisms have acceptance, and affected graph/region/resource checks pass. |
 | [ ] 2. Composition sheet (G2–G5; remaining G7 placement/style evidence) | Percentage instance bases; composed stroke-to-paint maps, dashed shader caps/translucency; clip-child unions; mask units and nested leaf/group/use boundaries. Reuse completed geometry/source replay and row 1's effect boundaries where needed. | Freeze one composition sheet joining [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg), partial-mask use in [group-mask tests](tests/Lokad.Svg.Tests/SvgGroupMaskCropTests.cs), [opposite-winding children](tests/Research/compound-clip-content/overlapping-opposite-children.svg) and [clip-child union](tests/Research/clip-intersections/overlapping-path-child-union.svg). Keep each original control. Add only missing independent stroke/map or image-alignment controls described below. Exit: whole sheet and retained defects exact, remaining G2–G5 mechanisms witnessed, finite degenerate outcomes and affected cleanup checks recorded. |
 | [ ] 3. Pattern tile sheet (G6; dependent G7–G9 content) | Combined tile/fill/stroke/element and group opacity; remaining unit/viewBox/phase/reflection maps; image, filtered and supplied-font tile content. Dependencies: bounded replay/layers and only the row 1/2/4 slices needed by each tile. | Graduate unchanged [combined opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg) and [group opacity](tests/Research/pattern-vector-content/group-opacity-promotion.svg); freeze a sheet combining the missing map/content mechanisms. Exit: whole sheet, original controls and independent G6 mechanisms exact, with recursive/size/work/cancellation cleanup checks. Preserve the eight complete pattern documents. |
 | [ ] 4. Remaining labels, paths and font validation (G9) | Stroked decorations and decorated paths; unverified skew/reflection or stroke-paint/instance maps; OVERLAP_COMPOUND, SCALED_COMPONENT_OFFSET and UNSCALED_COMPONENT_OFFSET; private deployment validation. Reuse qualified layout, fitting, preparation and rows 1–2's maps. | Freeze direct and curved-path stroked decorations and bounded synthetic overlapping/transformed-offset composites. Reuse qualified affine glyph cases. Exit: each missing semantic exact on both platforms, valid degenerate paths have measured outcomes, affected failure checks pass and the finite private request set below has sanitized outcomes. Preserve the completed label/path sheet, eight controls and intended-font proofs. |
 | [ ] 5. Release (S17) | Finished-revision contracts and evidence after rows 1–4. | Close every finite G2–G9 obligation below, preserve established exact results, pass complete platform/API/resource/package/consumer checks and exact-revision CI, and report representative measurements. All [release conditions](#release-completion-s17) must hold; document counts alone cannot establish completion. |
 
-**Next correction:** retain per-primitive color-space identity and convert at
-graph input boundaries for the whole sheet's mixed-space panel. Reuse bounded
-playback, existing color transfer and qualified nested capture; then address its
-affine regions against the same unchanged reference. The [bank](tests/Research/effects-marker-sheet/README.md)
-links original declarations, healthy platform triples and the two now-exact
-nested-source controls. Identity/zero-offset colored-source diagnostics and
-wider mask/viewport/text/instance boundaries remain required G8 work. No source,
-reference, option or promise is changed. The reduced
-[mixed-space witness](artifacts/effects-marker-sheet-20261015/mixed-filter-spaces-declaration.json)
-is frozen at `ab3ddb7d`, with six healthy stable captures, identical platform
-references and retained Windows/Linux primitive-space rejections. It isolates
-the inner graph; its unchanged whole-panel integration remains required.
+**Next correction:** carry the unchanged [affine-filter control and whole sheet](tests/Research/effects-marker-sheet/README.md)
+through their rotated/skewed filter placement using bounded source replay and
+shared geometry/paint maps. Their original sources/options/platform triples are
+already frozen; no new corpus case is needed to establish this gate. Finish all
+remaining whole-sheet pixel differences against those same references. Preserve
+the distinct shader/stored-pixel routes, native image seeding and exact mixed-space
+controls. Wider identity/zero-offset restoration, source boundaries and marker
+promises remain required G8 work; these controls establish no G8 or document closure.
 
 The image/effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
@@ -281,16 +270,24 @@ completed work; their exact cases do not close dependent tile content.
   [colored/bounds witnesses](tests/Research/colored-effects-markers/manifest.json).
   Preserve the qualified sRGB rescaling/opacity and linearRGB restoration controls.
   Primitive parsing, SourceGraphic/SourceAlpha, earlier-result lookup and omitted
-  input routing already exist in `SvgFilterDefinitionBuilder`. Preserve their
+  input routing already exist in `SvgFilterDefinitionBuilder`. Per-primitive
+  interpolation and distinct binary/merge, CPU-kernel and shadow consumers now
+  have the [mixed-space witnesses](tests/Research/effects-marker-sheet/manifest.json);
+  a flood override alone establishes no color transition. Preserve their
   [playback regressions](tests/Lokad.Svg.Tests/SvgFilterPlaybackTests.cs) and
   qualified graph/merge witnesses; do not rebuild or requalify unchanged routing.
-  Correct any newly demonstrated defect. Actual gates include mixed primitive color spaces,
+  Correct any newly demonstrated defect. Actual gates include
   colored/translucent linearRGB shadows, identity/zero-offset colored-source
-  restoration, affine filter placement and
+  restoration, standalone linear-image restoration with outer opacity, affine
+  filter placement and
   filtered sources crossing mask, nested viewport, marker, text and local-use
   boundaries. Image sources and leaf/group user-space output clips now have
   qualified witnesses, including nested source/halo controls. Object-box output
   clips and the remaining source/restoration boundaries stay required.
+  The retained [single-linear-image diagnostic](artifacts/effects-marker-sheet-20261015/mixed-consumer-single-blur.svg)
+  still differs after image-origin correction (one healthy native diagnostic,
+  not completed acceptance); preserve it for restoration work after the whole-sheet
+  blocker. This adds no feature promise or approved scope deferral.
   Bind these independent boundaries to row 1's sheet or a focused control before
   implementation; source-capture and layer-order fixes should serve several of
   them. No exhaustive content × graph × container product is an exit condition.
@@ -414,10 +411,10 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/nested-source-qualified-results.json)
-  records **7,740 tests/platform** in **77.5s Windows / 238.0s Linux**, including
+  The [latest receipt](artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json)
+  records **7,750 tests/platform** in **85.4s Windows / 247.9s Linux**, including
   normal build/startup and complete tests of the finished correction. Both meet
-  the target. Rejected source/subset models remain in that receipt; earlier timings
+  the target. Rejected transfer/seed models remain in that receipt; earlier timings
   stay in the [image-source receipt](artifacts/maintenance-review-20261012/image-filter-source-qualified-results.json),
   with distinct workload/environment definitions; these are no speedup claims.
   Use normal incremental builds without forced compiler shutdown. No rerun is

@@ -9,7 +9,7 @@
   "decodedPixelStability": "identical",
   "captureStartupHealth": "healthy",
   "captureProfilesCleaned": true,
-  "purpose": "One required whole effects/marker sheet remains incomplete; seven of eight controls are exact. Original declarations and reference bytes stay frozen while shared bounded source replay advances the document.",
+  "purpose": "One required whole effects/marker sheet remains incomplete; ten of eleven controls are exact. Original sources/options/references remain frozen while shared color-space and image-source replay advance the document.",
   "cases": [
     {
       "id": "effects-marker-sheet",
@@ -60,8 +60,8 @@
       "licenseEvidence": "README.md",
       "platformReferencesByteIdentical": true,
       "expectedError": "UnsupportedFeature",
-      "expectedMessage": "Mixed primitive filter color spaces are not implemented.",
-      "remainingRequiredBehavior": "Image source, output-clip and nested-source controls are exact separately; the unchanged whole document still needs mixed primitive color spaces and affine regions."
+      "expectedMessage": "Filters under rotated or skewed placement are not implemented.",
+      "remainingRequiredBehavior": "Nested source, flood override and genuine mixed-space branch/consumer controls are exact separately. The unchanged whole document still needs affine regions and complete-panel integration against its original reference."
     },
     {
       "id": "marker-overflow-cascade",
@@ -453,6 +453,154 @@
         },
         {
           "pngSha256": "97148e416dc8a0f639bfd733216965e398bf7b2906f4036cbaa43cdab35d5fdd",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "mixed-filter-spaces",
+      "input": "mixed-filter-spaces.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "a0135a5003400954b37f06a4504a4d13066baf9d3ac9b033662d10d07214a2dc",
+      "selection": "The retained whole panel inner graph, with a linearRGB flood feeding sRGB source-in, fractional offset and screen. The outer filter is omitted to isolate primitive color-space transitions; its nested whole-panel integration stays required.",
+      "reference": "references/mixed-filter-spaces.png",
+      "referenceSha256": "023e1a770b95d14961e904cf68ef781704caebb56c260f7ef27ce14f994d231a",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "effectiveSemantics": "The authored flood override is valid but performs no interpolation; the native flood remains an sRGB-origin color. Actual bidirectional transitions are witnessed separately by the branches and consumers controls.",
+      "captures": [
+        {
+          "pngSha256": "023e1a770b95d14961e904cf68ef781704caebb56c260f7ef27ce14f994d231a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "023e1a770b95d14961e904cf68ef781704caebb56c260f7ef27ce14f994d231a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "023e1a770b95d14961e904cf68ef781704caebb56c260f7ef27ce14f994d231a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "023e1a770b95d14961e904cf68ef781704caebb56c260f7ef27ce14f994d231a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "023e1a770b95d14961e904cf68ef781704caebb56c260f7ef27ce14f994d231a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "023e1a770b95d14961e904cf68ef781704caebb56c260f7ef27ce14f994d231a",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "mixed-filter-branches",
+      "input": "mixed-filter-branches.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "70616d44cb88a507caa335d87ee1a9c1ab83669bb5957c0e6a9ef753a8870704",
+      "selection": "Varied premultiplied PNG source: linearRGB blur feeds sRGB over/offset; a shared earlier result and moved output merge in linearRGB, then source-in consumes them in sRGB. Exercises both transition directions and immutable shared inputs without an operator/shape census.",
+      "reference": "references/mixed-filter-branches.png",
+      "referenceSha256": "3e267a7873254def0a3635f04205036dc40f02b42acd9121481044c781a33b92",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "3e267a7873254def0a3635f04205036dc40f02b42acd9121481044c781a33b92",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3e267a7873254def0a3635f04205036dc40f02b42acd9121481044c781a33b92",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3e267a7873254def0a3635f04205036dc40f02b42acd9121481044c781a33b92",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "3e267a7873254def0a3635f04205036dc40f02b42acd9121481044c781a33b92",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3e267a7873254def0a3635f04205036dc40f02b42acd9121481044c781a33b92",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "3e267a7873254def0a3635f04205036dc40f02b42acd9121481044c781a33b92",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ]
+    },
+    {
+      "id": "mixed-filter-consumers",
+      "input": "mixed-filter-consumers.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "255f89369583775ca46fcd0df764772b2251ba2b06e914640966af3348721241",
+      "selection": "An earlier stored linearRGB blur feeds two distinct sRGB consumers: another CPU Gaussian and colored fractional shadow restoration. Separates stored-kernel transfer from shader source restoration without multiplying shape/API combinations.",
+      "reference": "references/mixed-filter-consumers.png",
+      "referenceSha256": "04c735460750378967a3c70aee87f3f983a942bd4be338a6d4a738393a61ed16",
+      "licenseEvidence": "README.md",
+      "platformReferencesByteIdentical": true,
+      "captures": [
+        {
+          "pngSha256": "04c735460750378967a3c70aee87f3f983a942bd4be338a6d4a738393a61ed16",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "04c735460750378967a3c70aee87f3f983a942bd4be338a6d4a738393a61ed16",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "04c735460750378967a3c70aee87f3f983a942bd4be338a6d4a738393a61ed16",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "04c735460750378967a3c70aee87f3f983a942bd4be338a6d4a738393a61ed16",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "04c735460750378967a3c70aee87f3f983a942bd4be338a6d4a738393a61ed16",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "04c735460750378967a3c70aee87f3f983a942bd4be338a6d4a738393a61ed16",
           "startupHealth": "healthy",
           "profileCleaned": true
         }

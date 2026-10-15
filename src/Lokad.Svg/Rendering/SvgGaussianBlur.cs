@@ -95,7 +95,7 @@ internal static class SvgGaussianBlur
                             float sampleY = MathF.FusedMultiplyAdd(lowTop + y + .5f, 1 / sy, first ? cy - srcTop : cy - (float)Math.Floor(logical.Top));
                             SvgShaderPaint sample = first ? Sample(source, width, height, srcLeft, srcTop, srcWidth, srcHeight, sampleX, sampleY, false)
                                 : Sample(current.Pixels, current.Width, current.Height, 0, 0, current.Width, current.Height, sampleX, sampleY, false);
-                            if (first && !inputLinear && space == SvgFilterColorSpace.LinearRgb) sample = SvgFilterColorTransfer.Convert(sample, SvgFilterColorSpace.LinearRgb);
+                            if (first && inputLinear != (space == SvgFilterColorSpace.LinearRgb)) sample = SvgFilterColorTransfer.Convert(sample, space);
                             sample.Blend(down.Pixels.AsSpan((y * lowWidth + x) * 4, 4), 255);
                         }
                     }

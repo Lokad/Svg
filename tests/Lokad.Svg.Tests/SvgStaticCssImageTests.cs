@@ -45,6 +45,13 @@ public sealed class SvgStaticCssImageTests
     public void Nested_filter_sources_release_intermediate_owners_after_denial_and_retry(string identity)
         => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
 
+    [Theory]
+    [InlineData("mixed-filter-spaces")]
+    [InlineData("mixed-filter-branches")]
+    [InlineData("mixed-filter-consumers")]
+    public void Mixed_filter_graphs_preserve_sources_and_release_temporary_owners_after_denial_and_retry(string identity)
+        => AssertResourceLifecycle(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "TestData", "effects-marker-sheet", identity + ".svg")));
+
     [Fact]
     public void Missing_output_clip_releases_the_decoded_image_and_does_not_publish_output()
     {

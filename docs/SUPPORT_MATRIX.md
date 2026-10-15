@@ -1,3 +1,28 @@
+## Primitive color spaces and image-source sampling (2026-10-15)
+
+The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) has
+**10/11 exact controls / 0/1 completed document** on Windows/Linux. Primitive
+`sRGB`/`linearRGB` overrides retain their own identity and inherit the filter's
+value independently. Binary composition and merge consume inputs in the selected
+working space, keeping transfers unquantized until shader blending. CPU Gaussian
+kernels consume stored working-space pixels; rescaled kernels transfer while
+sampling. sRGB shadow restoration also transfers earlier linear input before
+composition. Existing nearest offsets and low-precision sRGB multiply remain.
+
+A flood supplies an sRGB-origin CSS color without interpolation. Its authored
+interpolation override is valid but does not change that origin. The separately
+frozen branches and consumer controls establish actual transitions in both
+directions, including shared inputs, CPU kernels and shadow restoration.
+Filter-source image sampling retains its native bitmap seed independently of
+compact capture storage and the transparent source border. Existing source/clip,
+object-bound and resource protections remain.
+
+The whole sheet now reaches **rotated/skewed filter placement**. Its unchanged
+mixed-panel integration and wider finite G8 requirements, including colored
+linearRGB shadows and known identity/restoration differences, remain required.
+This qualifies attributes and these mechanisms; it does not close wider resource
+CSS presentation or G8. [Qualification](../artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json).
+
 ## Nested filter source capture (2026-10-15)
 
 The [effects/marker bank](../tests/Research/effects-marker-sheet/README.md) has

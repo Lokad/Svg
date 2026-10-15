@@ -221,6 +221,8 @@ public static class SvgConverter
         // Keep the parent's rounded CTM before changing to the source device.
         internal SvgCpuBitmapOrigin? ParentOrigin { get; init; }
         internal SvgCpuBitmapOrigin CaptureOrigin { get; init; }
+        /// <summary>Retains the native padded image-shader bitmap origin in the parent's device coordinates.</summary>
+        internal SvgCpuBitmapOrigin? ImageShaderOrigin { get; init; }
     }
 
     private static RasterizedSurface Rasterize(SvgRoot root, SvgRenderOptions options, RenderBudget budget, RasterSurfaceMode surfaceMode, RasterFrame? frame, CancellationToken cancellationToken)
@@ -364,6 +366,7 @@ public static class SvgConverter
             if (binding.Transform.B != 0 || binding.Transform.C != 0)
                 throw new SvgException(SvgErrorCode.UnsupportedFeature, "Filters under rotated or skewed placement are not implemented.");
             int end = first, depth = 0, nestedDepth = -1;
+            bool hasSourceImages = false;
             SvgPaintBounds? nestedSourceBounds = null;
             for (; end < root.Commands.Length; end++)
             {
@@ -371,6 +374,8 @@ public static class SvgConverter
                 workUnits++;
                 cancellationToken.ThrowIfCancellationRequested();
                 SvgDrawCommand item = root.Commands[end];
+                if (nestedDepth < 0 && item.Kind == SvgDrawCommandKind.Geometry && root.Geometries[item.GeometryIndex].Kind == SvgGeometryKind.EmbeddedImage)
+                    hasSourceImages = true;
                 if (item.Kind == SvgDrawCommandKind.EndGroup)
                 {
                     if (depth-- == 0) break;
@@ -438,7 +443,8 @@ public static class SvgConverter
             }
             if (requestedRight <= requestedLeft || requestedBottom <= requestedTop) return end + 1;
             if (right + paddingX < requestedLeft || bottom + paddingY < requestedTop || left - paddingX > requestedRight || top - paddingY > requestedBottom) return end + 1;
-            if (activeViewportBounds is not null || nestedSourceBounds is not null)
+            SvgCpuBitmapOrigin? imageShaderOrigin = null;
+            if (activeViewportBounds is not null || nestedSourceBounds is not null || hasSourceImages)
             {
                 bool objectSourceUnits = resource.PrimitiveUnits == SvgFilterUnits.ObjectBoundingBox;
                 SvgAffineTransform sourceCoordinates = objectSourceUnits
@@ -450,6 +456,16 @@ public static class SvgConverter
                 ParserWorkCounter sourceRequestWork = new(options.Limits.MaximumWorkUnits - workUnits);
                 SvgPaintBounds needed = SvgFilterPlayback.RequiredSourceBounds(resource, primitiveMap, sourceContext,
                     new((float)requestedLeft, (float)requestedTop, (float)requestedRight, (float)requestedBottom), budget, sourceRequestWork, cancellationToken);
+                if (hasSourceImages)
+                {
+                    SvgPaintBounds painted = new((float)(visual.Left * horizontalScale + horizontalOffset), (float)(visual.Top * verticalScale + verticalOffset),
+                        (float)(visual.Right * horizontalScale + horizontalOffset), (float)(visual.Bottom * verticalScale + verticalOffset));
+                    SvgPaintBounds hint = SvgFilterPlayback.SourceLayerBounds(resource, primitiveMap, sourceContext, painted, budget, sourceRequestWork, cancellationToken);
+                    double nativeLeft = Math.Floor(MathF.Max(hint.Left, needed.Left)) - 1, nativeTop = Math.Floor(MathF.Max(hint.Top, needed.Top)) - 1;
+                    if (!double.IsFinite(nativeLeft) || !double.IsFinite(nativeTop) || nativeLeft < int.MinValue || nativeLeft > int.MaxValue || nativeTop < int.MinValue || nativeTop > int.MaxValue)
+                        throw new SvgException(SvgErrorCode.LimitExceeded, "Filter image origin exceeds the coordinate range.");
+                    imageShaderOrigin = new((int)nativeLeft, (int)nativeTop);
+                }
                 workUnits += sourceRequestWork.Used;
                 double captureLeft = Math.Max(left, needed.Left), captureTop = Math.Max(top, needed.Top);
                 double captureRight = Math.Min(right, needed.Right), captureBottom = Math.Min(bottom, needed.Bottom);
@@ -493,7 +509,7 @@ public static class SvgConverter
             SvgRoot borrowed = root with { Commands = sourceCommands, ParserWorkUnits = 0 };
             using RasterizedSurface captured = Rasterize(borrowed, sourceOptions, budget, RasterSurfaceMode.PremultipliedFilter,
                 new RasterFrame(sw + 2, sh + 2, horizontalScale, horizontalOffset - left + 1, verticalScale, verticalOffset - top + 1)
-                { SingleBitmap = true, ContentClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1) }, cancellationToken);
+                { SingleBitmap = true, ContentClip = new(1, 1, sw + 1, sh + 1), ParentOrigin = new(0, 0), CaptureOrigin = new((int)left - 1, (int)top - 1), ImageShaderOrigin = imageShaderOrigin }, cancellationToken);
             workUnits += captured.WorkUnits;
             int frameBytes = fw * fh * 4;
             using RenderBudget.BudgetReservation frameOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(frameBytes), SvgMemoryCategory.Surface);
@@ -623,7 +639,7 @@ public static class SvgConverter
                     int tw = tile.BitmapClip.Right - tile.BitmapClip.Left, th = tile.BitmapClip.Bottom - tile.BitmapClip.Top;
                     using RenderBudget.BudgetReservation tileOwner = budget.Reserve(ParserCollectionMemory.GetArrayByteCount<byte>(checked(tw * th * 4)), SvgMemoryCategory.Surface);
                     byte[] pixels = new byte[tw * th * 4];
-                    bool linear = placements.Count > 1 && resource.ColorSpace == SvgFilterColorSpace.LinearRgb;
+                    bool linear = placements.Count > 1 && (final.ColorSpace ?? resource.ColorSpace) == SvgFilterColorSpace.LinearRgb;
                     for (int placementIndex = 0; placementIndex < placements.Count; placementIndex++)
                     {
                         SvgOffsetFilterPlacement placement = placements[placementIndex];
@@ -1519,6 +1535,10 @@ public static class SvgConverter
             workUnits += sampleWork;
             SvgShaderMatrix output = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
             SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateImage(SvgShaderMatrix.Concat(output, image.ReferenceMap), image.LocalMap);
+            // The transparent source border clips painting without moving the native
+            // bitmap's shader seed. Retain that bitmap origin even in a compact capture.
+            SvgCpuBitmapOrigin? capturedImageOrigin = frame is { ImageShaderOrigin: {} nativeOrigin, ContentClip: {} content } sourceFrame && content == layerBounds
+                ? new(nativeOrigin.X - sourceFrame.CaptureOrigin.X, nativeOrigin.Y - sourceFrame.CaptureOrigin.Y) : null;
             byte[] source = image.UniformSample is null ? image.Pixels : [];
             for (int y = raster.Top; y < raster.Bottom; y++)
             {
@@ -1533,7 +1553,7 @@ public static class SvgConverter
                         ? coverageMask.Pixels[((y - raster.Top) * coverageMask.Width + x - raster.Left) * 4 + 3]
                         : raster.GetAlpha(x, y), x, y);
                     if (coverage == 0) { seeded = false; continue; }
-                    SvgCpuBitmapOrigin origin = ShaderBitmapOrigin(x, y);
+                    SvgCpuBitmapOrigin origin = capturedImageOrigin ?? ShaderBitmapOrigin(x, y);
                     if (authoredPath is not null)
                     {
                         if (!coordinates.TryGetMatrix(origin, out SvgShaderMatrix affineInverse))

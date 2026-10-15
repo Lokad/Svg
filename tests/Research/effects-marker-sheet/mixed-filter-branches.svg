@@ -1,0 +1,5 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="108">
+<defs><filter id="mixed" filterUnits="userSpaceOnUse" x="2.25" y="3.5" width="139" height="99" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="1.125" color-interpolation-filters="linearRGB" result="soft"/><feComposite in="SourceGraphic" in2="soft" operator="over" result="colored"/><feOffset in="colored" dx="2" dy="-1" result="moved"/><feMerge color-interpolation-filters="linearRGB" result="joined"><feMergeNode in="soft"/><feMergeNode in="moved"/></feMerge><feComposite in="joined" in2="SourceAlpha" operator="in"/></filter></defs>
+<image x="18.25" y="16.5" width="96.5" height="71.25" preserveAspectRatio="none" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAADCAYAAABbNsX4AAAANUlEQVR4nGNQSe35f2KO6QGTqqiG////OwD5DAxAAQeQAJBzAMj+D2QfYAAS/6ECDUA2WCUAqOUcMAMh7joAAAAASUVORK5CYII=" filter="url(#mixed)" opacity=".8"/>
+</svg>

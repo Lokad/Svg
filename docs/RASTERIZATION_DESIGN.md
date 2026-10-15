@@ -1,3 +1,47 @@
+## Per-primitive transfer and native image seeds (2026-10-15)
+
+Three frozen [mixed-space controls](../tests/Research/effects-marker-sheet/README.md)
+are exact on Windows/Linux. The graph retains per-primitive interpolation values
+and each result's stored encoding. Composition and merge transfer borrowed inputs
+as shader samples, without an intermediate byte round-trip. Low-precision sRGB
+multiply remains for inputs that need no transfer. CPU kernels use stored working
+pixels; rescaled kernels transfer during sampling. Shadow source restoration
+shares the shader transfer route when earlier input is linear and the shadow
+works in sRGB. Existing colored/translucent linearRGB shadow gates remain required.
+[Qualification](../artifacts/maintenance-review-20261012/mixed-spaces-qualified-results.json).
+
+The retained panel's flood override is an admission boundary, rather than an
+actual color transition. The native [flood contract](https://github.com/chromium/chromium/blob/main/third_party/blink/renderer/platform/graphics/filters/fe_flood.h)
+keeps a CSS color in its sRGB origin; the pinned captured output is identical to
+the previous sRGB graph. Treating it as stored linear color introduced 423 RGB
+pixel differences. The separate varied-PNG branching control exercises genuine
+linear-to-sRGB composition and sRGB-to-linear merge. Quantizing each transfer
+before blending left 3,392 differing pixels; keeping shader transfers unquantized
+makes it exact. This extends existing transfer arithmetic and graph storage.
+
+The consumer control distinguishes stored CPU input from shader shadow input.
+Correct shadow transfer removed its broad differences, leaving 261 pixels in the
+CPU panel, including 111 alpha differences in one narrow image-sampling band.
+Native tracing records the two-blur source hint [0,12,69,92]. Image shader seeds
+need that bitmap's coordinates, including its transparent border, even when the
+managed capture stores only the bounded painted input. A separate origin derived
+from shared primitive regions, visual bounds and backward source demand retains
+that context without allocating a larger pixel surface. Merely widening capture
+bounds did not resolve the error. Fusing bitmap seed arithmetic repaired one panel
+but changed the other, so the established non-fused seed and affine image arithmetic
+remain. No document IDs, coordinates or observed pixels select renderer behavior.
+
+Focused regressions cover inherited/overridden values, invalid live values,
+recorded native bounds, bounded temporary owners, work denial and cancellation.
+Existing lifecycle checks protect material storage denial, pre-cancellation,
+source immutability and exact retry. The whole sheet reaches affine filtering;
+its final integration and wider G8 exits remain open. Native traces, rejected
+prototypes and captures stay in the ignored [study](../artifacts/effects-marker-sheet-20261015/).
+The standalone single-linear-image/outer-opacity diagnostic still differs
+(3,312 pixels, maximum alpha error one) and remains required restoration work;
+it is not one of the three qualified controls. The upstream links describe
+mechanisms; frozen platform captures own exact pixels.
+
 ## Nested sources and intermediate image subsets (2026-10-15)
 
 The retained [nested controls](../tests/Research/effects-marker-sheet/README.md)
