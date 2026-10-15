@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "chromeVersion": "153.0.8010.52",
+  "chromiumRevision": "1681091",
+  "chromeExecutableSha256": "f0c7648ec30b982048d8d1b60c4b0e6ddf90a8f59319bd3debb384ad91f0a2a9",
+  "platform": "win64",
+  "captureRecipeRevision": "3",
+  "freshProcessCaptures": 3,
+  "decodedPixelStability": "identical",
+  "captureStartupHealth": "healthy",
+  "captureProfilesCleaned": true,
+  "purpose": "One whole CC0 affine image-map sheet and three orthogonal controls, declared before correction at 5a331751; original sources and healthy Windows/Linux reference triples remain unchanged.",
+  "cases": [
+    {
+      "id": "affine-image-map-sheet",
+      "input": "affine-image-map-sheet.svg",
+      "width": 432,
+      "height": 300,
+      "background": "transparent",
+      "role": "document-output",
+      "license": "CC0-1.0",
+      "sourceSha256": "e72b1d4747efd6c731a8287a38383a03e1dcad4a515c3938fc04c6dfd42880e2",
+      "selection": "Uniform fractional mapping, composed affine PNG maps, image use and partial clip/mask replay; the six panels share two unchanged small embedded PNG assets.",
+      "captures": [
+        {
+          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/affine-image-map-sheet.png",
+      "referenceSha256": "efe14ed1cdc5088f22d777b7275ca92a7e549234bd59f743da9c014e31876692",
+      "platformReferencesByteIdentical": true,
+      "licenseEvidence": "README.md"
+    },
+    {
+      "id": "uniform-fractional-placement",
+      "input": "uniform-fractional-placement.svg",
+      "width": 128,
+      "height": 96,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "f0fa9e6d3474799e05eb2390d6b73a8fdf6aa3413844b6fa52a2bea48ff4dde1",
+      "selection": "Independent uniform-color fast path fractional meet/slice and paint opacity.",
+      "captures": [
+        {
+          "pngSha256": "7473293574ecec9f392b9b47ada661aa52e09aa484b95c5b7f178d5f87d45399",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7473293574ecec9f392b9b47ada661aa52e09aa484b95c5b7f178d5f87d45399",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7473293574ecec9f392b9b47ada661aa52e09aa484b95c5b7f178d5f87d45399",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "7473293574ecec9f392b9b47ada661aa52e09aa484b95c5b7f178d5f87d45399",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7473293574ecec9f392b9b47ada661aa52e09aa484b95c5b7f178d5f87d45399",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "7473293574ecec9f392b9b47ada661aa52e09aa484b95c5b7f178d5f87d45399",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/uniform-fractional-placement.png",
+      "referenceSha256": "7473293574ecec9f392b9b47ada661aa52e09aa484b95c5b7f178d5f87d45399",
+      "platformReferencesByteIdentical": true,
+      "licenseEvidence": "README.md"
+    },
+    {
+      "id": "affine-varied-placement",
+      "input": "affine-varied-placement.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "31142debe314d7639007f376cfd5adc6bc4e0eb0aefc4e9203de2297a8372881",
+      "selection": "A single varied PNG under one non-axis-aligned map isolates shared pixel/box mapping.",
+      "captures": [
+        {
+          "pngSha256": "1910ded76fab6034d45bec3560bcca6436801c082df2a67976409e5cc114e3d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1910ded76fab6034d45bec3560bcca6436801c082df2a67976409e5cc114e3d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1910ded76fab6034d45bec3560bcca6436801c082df2a67976409e5cc114e3d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "1910ded76fab6034d45bec3560bcca6436801c082df2a67976409e5cc114e3d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1910ded76fab6034d45bec3560bcca6436801c082df2a67976409e5cc114e3d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "1910ded76fab6034d45bec3560bcca6436801c082df2a67976409e5cc114e3d8",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/affine-varied-placement.png",
+      "referenceSha256": "1910ded76fab6034d45bec3560bcca6436801c082df2a67976409e5cc114e3d8",
+      "platformReferencesByteIdentical": true,
+      "licenseEvidence": "README.md"
+    },
+    {
+      "id": "image-resource-scope",
+      "input": "image-resource-scope.svg",
+      "width": 144,
+      "height": 108,
+      "background": "transparent",
+      "role": "mechanism-control",
+      "license": "CC0-1.0",
+      "sourceSha256": "8448f220334c2e82a2efa24fbf0ccb0cf3ea4dd8bb294e80ea648ad678b11e57",
+      "selection": "One local image reference with translated clip and partial luminance mask, separate from direct map sampling.",
+      "captures": [
+        {
+          "pngSha256": "da06198991bdb21e70d54b3c4aebed5eb85c15c877c909a3d9d4b98339bb41c0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "da06198991bdb21e70d54b3c4aebed5eb85c15c877c909a3d9d4b98339bb41c0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "da06198991bdb21e70d54b3c4aebed5eb85c15c877c909a3d9d4b98339bb41c0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "linuxCaptures": [
+        {
+          "pngSha256": "da06198991bdb21e70d54b3c4aebed5eb85c15c877c909a3d9d4b98339bb41c0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "da06198991bdb21e70d54b3c4aebed5eb85c15c877c909a3d9d4b98339bb41c0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        },
+        {
+          "pngSha256": "da06198991bdb21e70d54b3c4aebed5eb85c15c877c909a3d9d4b98339bb41c0",
+          "startupHealth": "healthy",
+          "profileCleaned": true
+        }
+      ],
+      "reference": "references/image-resource-scope.png",
+      "referenceSha256": "da06198991bdb21e70d54b3c4aebed5eb85c15c877c909a3d9d4b98339bb41c0",
+      "platformReferencesByteIdentical": true,
+      "licenseEvidence": "README.md"
+    }
+  ],
+  "linuxReferenceQualification": {
+    "date": "2026-10-15",
+    "platform": "linux64",
+    "freshProcessCaptures": 3,
+    "startupHealth": "healthy",
+    "profilesCleaned": true,
+    "byteIdenticalToFrozenReferences": true
+  }
+}

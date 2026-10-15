@@ -38,6 +38,9 @@ Full Windows/Linux Release qualification is recorded in the
 [existing receipt](../../../artifacts/maintenance-review-20261012/css-image-card-qualified-results.json).
 All **7,583 tests/platform** pass with every preceding case retained; routine
 qualification takes approximately **1m40s Windows / 4m58s Linux**.
-Wider finite G7 uniform-image placement/opacity, affine/resource/clip/mask and
-container stylesheet promises remain required. The six-pixel displaced-blur
-defect remains separate required G8 work.
+The later [affine image bank](../affine-image-maps/README.md) qualifies uniform
+fractional opacity and affine/use/clip/mask witnesses. Remaining independent G7
+alignment/location evidence and dependent image content stay required. The
+six-pixel displaced-blur defect is also closed by the
+[restoration qualification](../../../artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json);
+wider G8 stays open. These later results supersede this checkpoint's old gates.

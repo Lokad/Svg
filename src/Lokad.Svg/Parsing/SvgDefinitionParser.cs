@@ -49,6 +49,7 @@ internal static class SvgDefinitionParser
             else if (reader.LocalName == "line") SvgElementAttributePolicy.ValidateLine(reader, workCounter, cancellationToken);
             else if (reader.LocalName == "path") SvgElementAttributePolicy.ValidatePath(reader, workCounter, cancellationToken);
             else if (reader.LocalName == "circle" || reader.LocalName == "ellipse") SvgElementAttributePolicy.ValidateCircle(reader, reader.LocalName, workCounter, cancellationToken);
+            else if (reader.LocalName == "image") SvgElementAttributePolicy.ValidateImage(reader, workCounter, cancellationToken);
             else SvgElementAttributePolicy.ValidatePointList(reader, reader.LocalName, workCounter, cancellationToken);
             SvgPaintableElementContext context = SvgPaintableElementContext.Create(reader, directChild, root, state, namedColors, workCounter, cancellationToken);
             if (symbolChild)
@@ -73,7 +74,8 @@ internal static class SvgDefinitionParser
             };
             SvgViewBox? symbolViewBox = null;
             if (retainedStyle.Filter is not null) dormant = dormant with { AuthoredStyle = (dormant.AuthoredStyle ?? retainedStyle) with { Filter = null } };
-            SvgDefinition definition = reader.LocalName == "rect" ? ParseRectangleDefinition(reader, dormant, state, symbolViewBox)
+            SvgDefinition definition = reader.LocalName == "image" ? new([], false, null, symbolViewBox)
+                : reader.LocalName == "rect" ? ParseRectangleDefinition(reader, dormant, state, symbolViewBox)
                 : reader.LocalName == "line" ? ParseLineDefinition(reader, dormant, state)
                 : ParseShapeDefinition(reader, dormant, state, symbolViewBox, true);
             bool retained = false;
@@ -82,11 +84,13 @@ internal static class SvgDefinitionParser
                 SvgPaintRecording.FinishDefinition(definition.Geometries, state, workCounter, cancellationToken);
                 SvgDefinition source = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, false);
                 SvgComputedStyle sourceStyle = SvgComputedStyleResolver.Resolve(reader, context.StyleSheet, workCounter, cancellationToken);
-                definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = SvgPresentationResolver.ParseDisplay(sourceStyle.Display), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true), LeafSource = SvgDefinitionLeafSource.Capture(reader, context, state) };
+                definition = definition with { SourceFillBindings = source.SymbolFillBindings, SourceDisplayed = SvgPresentationResolver.ParseDisplay(sourceStyle.Display), SourceVisible = sourceStyle.Visibility is null ? null : SvgPresentationResolver.ParseVisibility(sourceStyle.Visibility, true), LeafSource = reader.LocalName == "image"
+                    ? SvgDefinitionLeafSource.CaptureImage(reader, context, state, limits) : SvgDefinitionLeafSource.Capture(reader, context, state) };
                 if (symbolChild)
                 {
                     definition = BindSymbolFill(definition, reader, context, state, workCounter, cancellationToken, true);
                     SvgSymbolDefinitionBuilder builder = state.SymbolDefinition ?? throw new InvalidOperationException("Symbol children require an open definition builder.");
+                    if (reader.LocalName == "image") { builder.EnableContent(); state.HasRetainedSymbolContent = true; }
                     builder.Add(definition);
                     retained = true;
                 }
@@ -1658,6 +1662,7 @@ internal static class SvgDefinitionParser
         }
         SvgDefinition definition = reader.LocalName == "rect"
             ? new(RetainParsedGeometries(SvgLeafParser.ParseRectangle(reader, context, null, state), state, context.WorkCounter, context.CancellationToken), false, null, null)
+            : reader.LocalName == "image" ? ParseImageSource(reader, context, state)
             : reader.LocalName == "line" ? ParseLineDefinition(reader, context, state)
             : ParseShapeDefinition(reader, context, state, null, false);
         try
@@ -1680,6 +1685,20 @@ internal static class SvgDefinitionParser
             return BindSymbolFill(definition, reader, context, state, context.WorkCounter, context.CancellationToken, false);
         }
         catch { foreach (SvgGeometry geometry in definition.Geometries) geometry.Dispose(); throw; }
+
+        static SvgDefinition ParseImageSource(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
+        {
+            if (reader is not SvgDefinitionLeafSource source || source.ImageLimits is not {} limits)
+                throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image source replay requires retained resource limits.");
+            SvgGeometry image = SvgLeafParser.ParseImage(reader, context, null, source.ImageBases.Width, source.ImageBases.Height, limits, state);
+            try
+            {
+                using BudgetedParserList<SvgGeometry> batch = new(state.Budget, SvgMemoryCategory.Scene, context.WorkCounter, context.CancellationToken);
+                batch.Add(image);
+                return new(SvgReferenceResolver.RetainInstanceBatch(batch.AsSpan(), state, context.WorkCounter, context.CancellationToken), false, null, null);
+            }
+            catch { image.Dispose(); throw; }
+        }
     }
 
     private static SvgDefinition BindSymbolFill(SvgDefinition definition, XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, ParserWorkCounter work, CancellationToken token, bool includesSymbolPresentation)

@@ -17,7 +17,6 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
         return new SvgImageSyntax(href, x, y, width, height);
     }
 
-
     private static double? ParseDimension(string? value, double? baseValue)
     {
         if (value is null) return null;
@@ -39,7 +38,6 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
         return SvgGeometrySyntax.ParsePreserveAspectRatio(value);
     }
 
-
     /// <summary>Maps one solid image into its placement box under the effective aspect policy.</summary>
     internal static SvgRectangle MapPlacement(string? preserveAspectRatio, SvgImageSyntax syntax, DecodedSolidImage image, double width, double height)
     {
@@ -58,16 +56,7 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
             right = Math.Min(right, syntax.X + width);
             bottom = Math.Min(bottom, syntax.Y + height);
         }
-        RequireIntegralEdges(left, top, right, bottom);
         return new(left, top, right - left, bottom - top, default, true, null);
-    }
-
-    private static void RequireIntegralEdges(double left, double top, double right, double bottom)
-    {
-        if (Math.Abs(left - Math.Round(left, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
-        if (Math.Abs(top - Math.Round(top, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
-        if (Math.Abs(right - Math.Round(right, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
-        if (Math.Abs(bottom - Math.Round(bottom, MidpointRounding.AwayFromZero)) > 0.000000001) throw new SvgException(SvgErrorCode.UnsupportedFeature, "Image aspect mapping must preserve integral output edges.");
     }
 
     /// <summary>Retains the full pixel map separately from the meet/slice drawable box.</summary>
@@ -75,16 +64,50 @@ internal readonly record struct SvgImageSyntax(string Href, double X, double Y, 
         SvgImageSyntax syntax, int pixelWidth, int pixelHeight, double width, double height)
     {
         (SvgViewBoxAlignment horizontal, SvgViewBoxAlignment vertical, SvgViewBoxFit fit) = ParsePlacementAspectRatio(preserveAspectRatio);
-        (double sx, double sy, double tx, double ty) = SvgGeometrySyntax.MapViewBox(
-            new SvgViewBox(0, 0, pixelWidth, pixelHeight, horizontal, vertical, fit), width, height);
-        double left = syntax.X + tx, top = syntax.Y + ty;
-        double right = left + pixelWidth * sx, bottom = top + pixelHeight * sy;
-        SvgShaderMatrix local = new((float)sx, 0, (float)left, 0, (float)sy, (float)top);
-        if (fit == SvgViewBoxFit.Slice)
+        // Image painting maps a float source rectangle into a float destination.
+        // Slice crops the source before matrix construction; an extended destination
+        // is mathematically equivalent but changes bitmap sample-boundary rounding.
+        float left = (float)syntax.X, top = (float)syntax.Y;
+        float destinationWidth = (float)width, destinationHeight = (float)height;
+        float sourceWidth = pixelWidth, sourceHeight = pixelHeight;
+        float sourceLeft = 0, sourceTop = 0;
+        float ratio = (float)pixelHeight / pixelWidth;
+        if (fit == SvgViewBoxFit.Meet)
         {
-            left = Math.Max(left, syntax.X); top = Math.Max(top, syntax.Y);
-            right = Math.Min(right, syntax.X + width); bottom = Math.Min(bottom, syntax.Y + height);
+            if (destinationHeight > destinationWidth * ratio)
+            {
+                destinationHeight = destinationWidth * ratio;
+                top = Align(top, (float)height, destinationHeight, vertical);
+            }
+            if (destinationWidth > (float)height / ratio)
+            {
+                destinationWidth = (float)height / ratio;
+                left = Align(left, (float)width, destinationWidth, horizontal);
+            }
         }
-        return (new(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top), default, true, null), local);
+        else if (fit == SvgViewBoxFit.Slice)
+        {
+            if (destinationHeight < destinationWidth * ratio)
+            {
+                sourceHeight = destinationHeight * ((float)pixelWidth / destinationWidth);
+                sourceTop = Align(0, pixelHeight, sourceHeight, vertical);
+            }
+            if (destinationWidth < destinationHeight / ratio)
+            {
+                sourceWidth = destinationWidth * ((float)pixelHeight / destinationHeight);
+                sourceLeft = Align(0, pixelWidth, sourceWidth, horizontal);
+            }
+        }
+        float sx = (left + destinationWidth - left) / (sourceLeft + sourceWidth - sourceLeft);
+        float sy = (top + destinationHeight - top) / (sourceTop + sourceHeight - sourceTop);
+        SvgShaderMatrix local = new(sx, 0, left - sourceLeft * sx, 0, sy, top - sourceTop * sy);
+        return (new(left, top, Math.Max(0, destinationWidth), Math.Max(0, destinationHeight), default, true, null), local);
+
+        static float Align(float origin, float available, float used, SvgViewBoxAlignment alignment) => alignment switch
+        {
+            SvgViewBoxAlignment.Mid => origin + available / 2 - used / 2,
+            SvgViewBoxAlignment.Max => origin + available - used,
+            _ => origin,
+        };
     }
 }

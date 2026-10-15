@@ -9,14 +9,15 @@ The frozen selection and measured outcomes are recorded below.
 
 The selected development queue is **50/50 complete**, including unchanged
 `inv-146`; the frozen corporate cohort remains **27/27 documents / 258/258
-variants**. Eight additional authored CC0 documents are complete and counted
-separately. The latest is the [label/path sheet](../tests/Research/remaining-label-path-sheet/README.md),
-**1/1 exact**, with controls separately **8/8 exact** on Windows/Linux against
-unchanged sources, options, fonts and platform references. The seven preceding
-authored documents and their controls remain protected in their existing banks.
+variants**. Nine additional authored CC0 documents are complete and counted
+separately. The latest is the [affine image sheet](../tests/Research/affine-image-maps/README.md),
+**1/1 exact**, with controls separately **3/3 exact** on Windows/Linux against
+unchanged sources, options and platform references. The eight preceding
+completed documents and their controls, including the complete supplied-font
+label/path sheet, remain protected in their existing banks.
 These failure-selected cases establish their declared outcomes, not a general
 SVG success rate. [PLAN](../PLAN.md#ordered-delivery-checklist) owns the finite
-remaining queue and [the qualification receipt](../artifacts/maintenance-review-20261012/path-sheet-qualified-results.json)
+remaining queue and [the qualification receipt](../artifacts/maintenance-review-20261012/affine-image-qualified-results.json)
 owns finished-correction evidence. Dated sections below are checkpoint history;
 completed gates are superseded by later qualified witnesses.
 

@@ -16,7 +16,7 @@ internal static class SvgStructuralVocabulary
     internal static bool IsDescriptiveElement(string localName) => localName is "title" or "desc" or "metadata";
 
     /// <summary>Identifies the definition leaves that count as styleable content.</summary>
-    internal static bool IsDefinitionLeaf(string localName) => localName is "rect" or "line" or "polygon" or "polyline" or "path" or "circle" or "ellipse";
+    internal static bool IsDefinitionLeaf(string localName) => localName is "rect" or "line" or "polygon" or "polyline" or "path" or "circle" or "ellipse" or "image";
 
     /// <summary>Identifies style, script and animation elements that unconditionally invalidate the operation.</summary>
     internal static bool IsStyleScriptOrAnimationElement(string localName) => localName is "style" or "script" or "animate" or "animateMotion" or "animateTransform" or "set";

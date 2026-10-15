@@ -1,6 +1,6 @@
 # Lokad.Svg — finite renderer delivery plan
 
-Updated 2026-10-15 at a safe checkpoint in the affine image-map correction.
+Updated 2026-10-15 at the qualified complete affine image-map checkpoint.
 This plan owns remaining work and completion decisions;
 [SUPPORT_MATRIX](docs/SUPPORT_MATRIX.md)
 owns admission, [INVENTORY](docs/INVENTORY.md) owns document evidence,
@@ -27,7 +27,7 @@ accepted. A proposed deferral of an existing promise stays required until decide
 | Selected development documents | **50/50 complete**, including unchanged whole `inv-146`. Preserve every preceding declared output in the [gap ledger](tests/References/inventory/svg-gap-cases.json) and [supplied-font document banks](tests/Research/offset-merge-document/README.md). Failure-selected inputs establish no representative success rate; controls have separate denominators. |
 | Original acceptance and supplied-font work | Original marker/drop-shadow fixtures **2/2**, original supplied-font label/path fixtures **2/2**, SVG Translate, `inv-127` and `inv-145` are complete. Preserve intended-font proof, original programs/aliases and metrics/pixels in the [document evidence](docs/INVENTORY.md), [supplied-font documents](tests/Research/supplied-font-documents/README.md) and [curved labels](tests/Research/curved-font-documents/README.md). |
 | `inv-146` and shared rendering corrections | Whole `inv-146`, eight oval/text controls and four [merge controls](tests/Research/filter-merges/README.md) are exact. Preserve the [merge receipt](artifacts/maintenance-review-20261012/merge-qualified-results.json), [design record](docs/RASTERIZATION_DESIGN.md) and [support record](docs/SUPPORT_MATRIX.md). Paint recording is **148 exact / one required pattern-opacity gate**; I Ching is **24 exact / one out-of-scope animation boundary**. Later qualified evidence supersedes historical gates. |
-| Additional authored documents | **Eight complete CC0 documents**, each **1/1 exact** on Windows/Linux, separate from both frozen cohorts. Preserve their separately counted controls: [symbol card](tests/Research/symbol-fractional-frames/README.md) **4/4**, [affine orbit](tests/Research/affine-oval-strokes/README.md) **6/6**, [scoped card](tests/Research/scoped-clips-masks/README.md) **5/5**, [colored signal](tests/Research/colored-effects-markers/README.md) original **7/7** plus repaired **1/1** and bounds **4/4**, [CSS/image card](tests/Research/static-css-images/README.md) original **3/3** plus phase/clip **2/2**, [layout guide](tests/Research/font-layout-diagram/README.md) **4/4**, [cascade sheet](tests/Research/root-resource-cascade/README.md) **4/4**, and [label/path sheet](tests/Research/remaining-label-path-sheet/README.md) **8/8**. Banks link immutable inputs, native witnesses and finished-correction receipts; wider groups stay open. |
+| Additional authored documents | **Nine complete CC0 documents**, each **1/1 exact** on Windows/Linux, separate from both frozen cohorts. Preserve their separately counted controls: [symbol card](tests/Research/symbol-fractional-frames/README.md) **4/4**, [affine orbit](tests/Research/affine-oval-strokes/README.md) **6/6**, [scoped card](tests/Research/scoped-clips-masks/README.md) **5/5**, [colored signal](tests/Research/colored-effects-markers/README.md) original **7/7** plus repaired **1/1** and bounds **4/4**, [CSS/image card](tests/Research/static-css-images/README.md) original **3/3** plus phase/clip **2/2**, [layout guide](tests/Research/font-layout-diagram/README.md) **4/4**, [cascade sheet](tests/Research/root-resource-cascade/README.md) **4/4**, [label/path sheet](tests/Research/remaining-label-path-sheet/README.md) **8/8**, and [affine image sheet](tests/Research/affine-image-maps/README.md) **3/3**. Banks link immutable inputs, native witnesses and finished-correction receipts; wider groups stay open. |
 | Qualified G2–G5 mechanisms | Fractional ordinary-use stroke widths, fractional/nonuniform symbol frames, nonuniform root curve fills and affine oval strokes, the non-scaling conic defect, composed cubic clips, translated custom mask regions and mask-container opacity have qualified witnesses. Preserve [use widths](artifacts/maintenance-review-20261012/fractional-use-qualified-results.json), [symbol frames](artifacts/maintenance-review-20261012/symbol-frames-final-results.json), [root curves](artifacts/maintenance-review-20261012/nonuniform-curves-qualified-results.json), [non-scaling strokes](artifacts/maintenance-review-20261012/non-scaling-qualified-results.json), [ovals](tests/Research/affine-oval-strokes/manifest.json) and [scopes](tests/Research/scoped-clips-masks/manifest.json). These completed mechanisms are dependencies already available, not work to repeat for wider maps or locations. |
 | Filter bounds, rescaling and restoration | The [colored-effects bank](tests/Research/colored-effects-markers/README.md) preserves original controls **7/7**, repaired control **1/1**, bounds **4/4** and whole document **1/1**. The [filter-region bank](tests/Research/filter-regions/manifest.json) is **26/26 exact**, including sRGB rescaling/opacity and the unchanged displaced linearRGB blur. Preserve the [bounds](artifacts/maintenance-review-20261012/offset-image-bounds-qualified-results.json), [rescaling](artifacts/maintenance-review-20261012/rescaled-srgb-qualified-results.json) and [restoration receipts](artifacts/maintenance-review-20261012/linear-restoration-qualified-results.json). Wider G8 stays open. |
 | Font-pack host and acquisition | The opt-in [FontProbe host](tools/Lokad.Svg.FontProbe/README.md), its six [transport/input regressions](tests/Lokad.Svg.FontProbe.Tests/HttpFontProgramSourceProviderTests.cs), catalog conformance and prepared ownership are implemented. Private deployment validation below remains required; general shaping remains outside scope. |
@@ -37,26 +37,26 @@ Completed work remains closed. Final-release qualification covers the finished
 revision without reopening unchanged mechanisms for a new accounting or coverage
 policy.
 
-The latest qualified implementation is `5a331751`: **7,676 tests/platform**, all
-preservation checks green, and the label/path sheet **1/1** with **8/8 separate
-controls** exact on Windows/Linux. The
-[receipt](artifacts/maintenance-review-20261012/path-sheet-qualified-results.json)
-owns assertion migrations, timings and bounded-failure evidence;
-[terminal green CI](https://github.com/Lokad/Svg/actions/runs/38672544792) owns
-hosted platform/package/consumer checks. Reuse both; do not repoll this run.
-The image correction below is uncommitted and has not inherited this qualification.
+The complete image correction is locally qualified: **7,686 tests/platform**
+(5,291 core / 2,389 visual / six FontProbe), the whole image sheet **1/1** and
+**3/3 separate controls** exact on Windows/Linux. The
+[receipt](artifacts/maintenance-review-20261012/affine-image-qualified-results.json)
+owns preservation, assertion migrations, bounded-failure evidence and timings.
+Hosted qualification follows the substantive commit/push. The preceding
+[terminal green path-sheet CI](https://github.com/Lokad/Svg/actions/runs/38672544792)
+for `5a331751` stays closed; do not repoll it to qualify new image code.
 
 <a id="delivery-order"></a>
 <a id="3-ordered-support-queue"></a>
 
 ## Ordered delivery checklist
 
-All six items are **required and open**. The **next three deliverables**, in
-order, are the affine image-map sheet, effects/marker sheet and composition sheet
-in rows 1–3. The label/path sheet is complete. Its finite G9 follow-up remains
-required in row 5; it need not block the next independent document. Bring a G9
-slice forward if another document depends on it. This is delivery order, without
-a feature-scope deferral. Support-group closure still requires its finite exit.
+All six support/release items remain **required and open**; the image sheet is
+complete, while G7's remaining location/alignment and dependent-content evidence
+still needs reconciliation. The **next three deliverables**, in order, are the
+**effects/marker sheet, composition sheet and pattern tile sheet** in rows 2–4.
+Bring any remaining G7 or G9 slice forward when a document needs it. This order
+introduces no feature-scope deferral and no exhaustive group prerequisite.
 
 Select shared fixes by the retained documents they advance. Extend existing
 geometry, source replay, paint maps and bounded layers, preserving native pixel
@@ -66,22 +66,19 @@ IDs, source coordinates or observed failure pixels may become renderer predicate
 
 | Order / required item | Missing behavior and dependencies | Acceptance case and completion condition |
 | --- | --- | --- |
-| 1. CSS and images (G7), active | Finish uniform/varied fractional sampling, affine maps and image replay through use/clip/mask/opacity; qualify missing independent alignments and resource/style locations. Dependencies: existing decoder, cascade, G2 replay and G5 bounds/layers. | Finish the frozen [affine image-map sheet and three controls](artifacts/affine-image-sheet-20261015/declaration.json) against unchanged references on both platforms. Reuse [selector](tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs), [PNG](tests/Lokad.Svg.Tests/PngImageDecoderTests.cs) and cascade witnesses for already covered semantics. Close G7 only when each listed mechanism has acceptance and affected decode/resource/error checks pass. |
+| 1. Remaining G7 acceptance | The whole image-map correction is complete. Reconcile independent alignment axes and the enumerated resource/style locations against existing witnesses; dependent image content remains required with G6/G8. Dependencies: qualified decoder, crop/sampling, cascade, replay and G5 layers. | Preserve the [complete affine image sheet and three controls](tests/Research/affine-image-maps/README.md). Reuse [selector](tests/Lokad.Svg.Tests/SvgCssSelectorTests.cs), [PNG](tests/Lokad.Svg.Tests/PngImageDecoderTests.cs), static-image and cascade witnesses; add a case only for an uncovered independent alignment or listed location. Close G7 when every finite mechanism has acceptance and affected decode/resource/error checks pass. No new alignment document or Cartesian census is required. |
 | 2. Effects and markers (G8) | Remaining graph/default/result, region/color-space/shadow and affine filter behavior; marker units, CSS overflow and closure. Reuse qualified rescaling, bounded capture/composition and G5 scopes, with only the G7/G9 slices a case needs. | Freeze an **effects/marker sheet** for mechanisms lacking acceptance, including [CSS marker overflow](tests/Research/path-marker-content/marker-css-overflow-boundary.svg), polygon closure and mapped filter regions. Make every output exact on both platforms, preserving the completed displaced blur. Complete when all finite G8 mechanisms have exact witnesses, measured zero-length outcomes and affected graph/resource checks. |
 | 3. Shared maps/composition (G2–G5) | Remaining percentage/instance/paint/stroke maps, dashed shader caps/translucency, clip child unions, mask units/scopes and nested leaf/group/use boundaries. Land shared dependencies with items 1–2 and the dependent tile/text cases. | Graduate [percentage oval use](tests/Research/oval-percentage-lengths/percentage-use-boundary.svg), partial-mask use in [group-mask tests](tests/Lokad.Svg.Tests/SvgGroupMaskCropTests.cs), [opposite-winding children](tests/Research/compound-clip-content/overlapping-opposite-children.svg) and [clip child union](tests/Research/clip-intersections/overlapping-path-child-union.svg). Bind other missing independent semantics to one composition sheet or focused stroke/degenerate-map controls. Complete when finite G2–G5 mechanisms have qualified witnesses; reuse completed single-child overlap, curve, symbol and scope evidence. |
 | 4. Patterns (G6) | Remaining unit/map/combined and grouped opacity; image/text/filter tile content. Reuse bounded replay and only the G7–G9 slices each tile needs. | Graduate [combined tile opacity](tests/Research/paint-recording/pattern-tile-tile-fill-stroke-element.svg) and [group opacity](tests/Research/pattern-vector-content/group-opacity-promotion.svg), then use a tile sheet for missing unit/viewBox/phase/reflection and dependent content. Complete when finite G6 mechanisms are qualified with recursive/size/work cleanup outcomes; preserve the eight complete pattern documents. |
 | 5. Remaining labels and paths (G9) | Stroked decorations, decorated paths, affine glyph/paint-map qualification, the three named composite flags and private validation. Dependencies: qualified layout/fragment painting, supplied-font preparation and G3–G5 maps. | Freeze a stroked/decorated direct-and-curved-path witness and bounded synthetic overlap/scaled-offset composites; reuse existing witnesses for rotation/skew/reflection/nonuniform glyph maps. Record measured degenerate-path outcomes and the sanitized private request set below. Close G9 when every finite mechanism has linked acceptance and affected bounded-failure checks. The completed sheet, eight controls and intended-program proofs stay closed. |
 | 6. Release (S17) | Finished-revision contracts and delivery evidence after items 1–5. | Meet every release condition below: no unresolved required mechanism, all established exact results preserved, complete platform/API/resource/package/consumer/CI checks green and representative measurements reported. Document counts alone cannot establish completion. |
 
-**Active correction, not yet qualified:** the image sheet and three controls are
-frozen with healthy stable Windows/Linux capture triples. The
-[Windows](artifacts/affine-image-sheet-20261015/baseline-windows.json) and
-[Linux](artifacts/affine-image-sheet-20261015/baseline-linux.json) baselines own
-the original rejections. Current local Windows development renders all four:
-the three controls are exact, while the whole sheet still differs in composition.
-Finish that unchanged sheet and qualify both platforms before recording another
-completed document or closing any G7 mechanism. Preserve the current correction;
-this PLAN-only reconciliation does not certify it or require a re-run.
+The image sheet's uniform, affine and image-use rejections are resolved. Its
+[original declaration and baseline](artifacts/affine-image-sheet-20261015/declaration.json)
+remain diagnostic history; current acceptance belongs to the public bank and
+qualified receipt above. The same unchanged document now matches through source
+cropping, shared coverage, recorded opacity and clip/mask replay. It adds one
+completed document, not a G7 closure or a replacement for preceding controls.
 
 The image/effects/composition/tile sheets are bounded acceptance recipes, not new
 feature promises or acquisition quotas. Before implementation, bind each missing
@@ -189,10 +186,13 @@ completed work; their exact cases do not close dependent tile content.
   Shared decoding now retains varied premultiplied grayscale/grayscale-alpha/
   palette/RGB/RGBA pixels with bounded ownership. The complete CSS/image card and
   phase/clip controls qualify fractional axis-aligned meet/slice/none and opacity.
-  Uniform placement/opacity and general affine/resource/clip/mask mappings are
-  under active correction in item 1; its original integral-edge and image-use
-  rejection gates are diagnostic history, not additional tasks. They remain
-  unqualified until the frozen whole sheet and affected checks pass both platforms.
+  The complete [affine image bank](tests/Research/affine-image-maps/manifest.json)
+  now qualifies uniform fractional paint opacity, rotation/skew/reflection,
+  source-cropped slice, local image-use and clip/partial-mask replay. These gates
+  are closed. Reconcile other independent alignment axes and listed tree/resource
+  locations against existing evidence; image tile/filter dependencies remain
+  required in their owning rows. Preserve low-precision image matrix rounding
+  separately from the existing gradient/glyph arithmetic.
 - CSS: existing ID/class/attribute/selector lists plus SVG element,
   element+ID/class, descendant and child selectors across supported root/nested
   SVG/definition/instance trees. Existing compound/combinator matching is
@@ -362,11 +362,14 @@ representativeness quota delays this finite release.
   [PngEncoderTests](tests/Lokad.Svg.Tests/PngEncoderTests.cs). Do not multiply every
   visual by every API or require all combinations before advancing a document.
 - Keep **routine build/test qualification below ten minutes per platform**.
-  The [latest receipt](artifacts/maintenance-review-20261012/path-sheet-qualified-results.json)
-  records **7,676 tests/platform** in **101.1s Windows / 270.1s Linux**, including
-  normal incremental build/startup. Hosted build plus complete tests took
-  **106s Windows / 111s Linux** in its separate environment. Both meet the target;
-  timing definitions and earlier observations stay in existing receipts/Git.
+  The [latest receipt](artifacts/maintenance-review-20261012/affine-image-qualified-results.json)
+  records **7,686 tests/platform** in **137.3s Windows / 234.3s Linux**. Windows
+  conservatively includes the normal full build/test attempt and a complete core
+  rerun after migrating one obsolete rejection; unchanged green visual/font
+  results were reused. Linux includes normal build/startup and complete tests.
+  Both meet the target. Earlier local/hosted timings stay in the
+  [preceding receipt](artifacts/maintenance-review-20261012/path-sheet-qualified-results.json),
+  with separate workload/environment definitions; these are no speedup claims.
   Use normal incremental builds without forced compiler shutdown. No rerun is
   needed merely to refresh timing. Record one before/after timing when
   materially changing routine cost. If it exceeds the target, remove redundant

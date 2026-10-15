@@ -1402,7 +1402,7 @@ public static class SvgConverter
             switch (geometry.Kind)
             {
                 case SvgGeometryKind.EmbeddedImage:
-                    RasterizeImage(geometry.Image, destination);
+                    RasterizeImage(geometry.Image, geometry.AuthoredPath, destination);
                     return;
                 case SvgGeometryKind.Rectangle:
                     RasterizeRectangle(geometry.Rectangle, destination, pass);
@@ -1453,16 +1453,21 @@ public static class SvgConverter
         // Bitmap span mapping/interpolation and covered blending adapt Skia at
         // f8b66b7597c4cc859d3ed190e9c6872241e6721c. Copyright 2008, 2011 Google Inc.
         // See THIRD_PARTY_NOTICES.txt; existing shader matrix preparation is shared.
-        void RasterizeImage(SvgImageGeometry image, byte[] destination)
+        void RasterizeImage(SvgImageGeometry image, SvgAuthoredPath? authoredPath, byte[] destination)
         {
-            if (!image.Box.HasFill || image.Opacity == 0 || image.Box.Width == 0 || image.Box.Height == 0) return;
+            byte opacity = (byte)Math.Clamp((int)(ShaderAlpha(image.Opacity) * 255f + .5f), 0, 255);
+            if (!image.Box.HasFill || opacity == 0 || image.Box.Width == 0 || image.Box.Height == 0) return;
             SvgRectangleRaster raster = PrepareRectangle(image.Box);
+            raster = raster with { Left = Math.Max(raster.Left, layerBounds.Left), Top = Math.Max(raster.Top, layerBounds.Top),
+                Right = Math.Min(raster.Right, layerBounds.Right), Bottom = Math.Min(raster.Bottom, layerBounds.Bottom) };
+            if (raster.Left >= raster.Right || raster.Top >= raster.Bottom) return;
+            using RasterizedSurface? mask = authoredPath is null ? null : PrepareImageMask(authoredPath, image.Box.Clip, raster);
             long sampleWork = (long)(raster.Right - raster.Left) * (raster.Bottom - raster.Top) * 4;
             if (sampleWork > options.Limits.MaximumWorkUnits - workUnits) throw new SvgException(SvgErrorCode.LimitExceeded, "Embedded image sampling exceeds the configured work limit.");
             workUnits += sampleWork;
             SvgShaderMatrix output = new((float)horizontalScale, 0, (float)horizontalOffset, 0, (float)verticalScale, (float)verticalOffset);
             SvgShaderCoordinates coordinates = SvgShaderCoordinates.CreateImage(SvgShaderMatrix.Concat(output, image.ReferenceMap), image.LocalMap);
-            byte[] source = image.Pixels;
+            byte[] source = image.UniformSample is null ? image.Pixels : [];
             for (int y = raster.Top; y < raster.Bottom; y++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -1472,9 +1477,22 @@ public static class SvgConverter
                 long fixedX = 0, fixedY = 0, stepX = 0;
                 for (int x = raster.Left; x < raster.Right; x++)
                 {
-                    byte coverage = ViewportAlpha(raster.GetAlpha(x, y), x, y);
+                    byte coverage = ViewportAlpha(mask is {} coverageMask
+                        ? coverageMask.Pixels[((y - raster.Top) * coverageMask.Width + x - raster.Left) * 4 + 3]
+                        : raster.GetAlpha(x, y), x, y);
                     if (coverage == 0) { seeded = false; continue; }
                     SvgCpuBitmapOrigin origin = ShaderBitmapOrigin(x, y);
+                    if (authoredPath is not null)
+                    {
+                        if (!coordinates.TryGetMatrix(origin, out SvgShaderMatrix affineInverse))
+                            throw new SvgException(SvgErrorCode.UnsupportedFeature, "Embedded image coordinates are not finite and invertible.");
+                        float pixelX = x - origin.X + .5f, pixelY = y - origin.Y + .5f;
+                        // Low-precision pipeline matrix stages round products separately.
+                        float sampleX = pixelX * affineInverse.ScaleX + (pixelY * affineInverse.SkewX + affineInverse.TranslateX);
+                        float sampleY = pixelX * affineInverse.SkewY + (pixelY * affineInverse.ScaleY + affineInverse.TranslateY);
+                        SampleAffine(sampleX, sampleY).Blend(destination.AsSpan((y * outputWidth + x) * 4, 4), coverage);
+                        continue;
+                    }
                     if (!seeded || origin != previousOrigin || coverage != previousCoverage)
                     {
                         if (!coordinates.TryGetMatrix(origin, out SvgShaderMatrix inverse))
@@ -1524,6 +1542,7 @@ public static class SvgConverter
             // the bilerp before independent packed paint alpha is applied.
             SvgConstantShaderPaint Sample(long x, long y, bool filtering)
             {
+                if (image.UniformSample is {} uniform) return ApplyOpacity(uniform, false);
                 long bias = filtering ? 2147483648L : 65536L;
                 x -= bias; y -= bias;
                 int left = (int)Math.Clamp(x >> 32, -1, image.Width), top = (int)Math.Clamp(y >> 32, -1, image.Height);
@@ -1533,11 +1552,76 @@ public static class SvgConverter
                 int a = (y0 * image.Width + x0) * 4, b = (y0 * image.Width + x1) * 4;
                 int c = (y1 * image.Width + x0) * 4, d = (y1 * image.Width + x1) * 4;
                 SvgConstantShaderPaint sample = SvgConstantShaderPaint.Interpolate(Pixel(source, a), Pixel(source, b), Pixel(source, c), Pixel(source, d), fx, fy);
-                int opacityScale = image.Opacity + 1;
-                return new((byte)(sample.Red * opacityScale >> 8), (byte)(sample.Green * opacityScale >> 8),
-                    (byte)(sample.Blue * opacityScale >> 8), (byte)(sample.Alpha * opacityScale >> 8));
+                return ApplyOpacity(sample, false);
+
                 static SvgConstantShaderPaint Pixel(ReadOnlySpan<byte> pixels, int at)
                     => new(pixels[at], pixels[at + 1], pixels[at + 2], pixels[at + 3]);
+            }
+
+            SvgConstantShaderPaint ApplyOpacity(SvgConstantShaderPaint sample, bool pipeline)
+            {
+                if (pipeline)
+                    return new((byte)((sample.Red * opacity + 255) >> 8), (byte)((sample.Green * opacity + 255) >> 8),
+                        (byte)((sample.Blue * opacity + 255) >> 8), (byte)((sample.Alpha * opacity + 255) >> 8));
+                int opacityScale = opacity + 1;
+                return new((byte)(sample.Red * opacityScale >> 8), (byte)(sample.Green * opacityScale >> 8),
+                    (byte)(sample.Blue * opacityScale >> 8), (byte)(sample.Alpha * opacityScale >> 8));
+            }
+
+            // Pinned raster-pipeline bilerp_clamp_8888 retains Q15 intermediate
+            // fractions; the separate axis-aligned bitmap route retains four bits.
+            // Copyright 2016 Google Inc.; 2018, 2022 Google LLC.
+            // See THIRD_PARTY_NOTICES.txt for the BSD license and source pin.
+            SvgConstantShaderPaint SampleAffine(float x, float y)
+            {
+                if (image.UniformSample is {} uniform) return ApplyOpacity(uniform, true);
+                long qx = (long)MathF.Floor(65536f * Math.Clamp(x, -1, image.Width) + .5f) - 32768;
+                long qy = (long)MathF.Floor(65536f * Math.Clamp(y, -1, image.Height) + .5f) - 32768;
+                int tx = unchecked((short)(qx ^ 0x8000)), ty = unchecked((short)(qy ^ 0x8000));
+                int left = (int)(qx >> 16), top = (int)(qy >> 16);
+                int x0 = Math.Clamp(left, 0, image.Width - 1), x1 = Math.Clamp(left + 1, 0, image.Width - 1);
+                int y0 = Math.Clamp(top, 0, image.Height - 1), y1 = Math.Clamp(top + 1, 0, image.Height - 1);
+                int a = (y0 * image.Width + x0) * 4, b = (y0 * image.Width + x1) * 4;
+                int c = (y1 * image.Width + x0) * 4, d = (y1 * image.Width + x1) * 4;
+                return ApplyOpacity(new(Lane(0), Lane(1), Lane(2), Lane(3)), true);
+
+                byte Lane(int channel)
+                {
+                    int upper = Horizontal(source[a + channel], source[b + channel], tx);
+                    int lower = Horizontal(source[c + channel], source[d + channel], tx);
+                    return (byte)((Multiply(ty, lower - upper) + lower + upper + 128) >> 8);
+                }
+                static int Horizontal(int left, int right, int fraction)
+                    => (Multiply(fraction, (right - left) << 7) + ((right + left) << 7) + 1) >> 1;
+                static int Multiply(int first, int second) => (first * second + 16384) >> 15;
+            }
+
+            // Borrow the retained source rectangle into the existing bounded path rasterizer.
+            // Its temporary surface carries coverage only; source pixels and paint opacity
+            // remain separate and are blended once into the parent destination.
+            RasterizedSurface PrepareImageMask(SvgAuthoredPath sourcePath, SvgClipBox? clip, SvgRectangleRaster bounds)
+            {
+                ParserWorkCounter preparation = new(options.Limits.MaximumWorkUnits - workUnits);
+                SvgAffineTransform deviceMap = SvgAffineTransform.FromScaleOffset(horizontalScale, verticalScale,
+                    horizontalOffset - bounds.Left, verticalOffset - bounds.Top);
+                using SvgAuthoredPath path = sourcePath.Copy(deviceMap, budget, preparation, cancellationToken);
+                workUnits += preparation.Used;
+                SvgClipBox? localClip = clip is {} sourceClip ? deviceMap.Apply(sourceClip) : null;
+                using SvgPolygonFill fill = SvgPolygonFill.Create([], [], null, new(0, 0, 0, 255), true, false, SvgPolygonMapping.NativeFillEdges, localClip, null, budget);
+                using RenderBudget.BudgetReservation sceneOwner = budget.Reserve(256 + ParserCollectionMemory.GetArrayByteCount<SvgGeometry>(1)
+                    + ParserCollectionMemory.GetArrayByteCount<SvgDrawCommand>(1), SvgMemoryCategory.Geometry);
+                SvgGeometry[] geometries = [SvgGeometry.FromPolygonFill(fill) with { AuthoredPath = path }];
+                SvgDrawCommand[] commands = [new(SvgDrawCommandKind.Geometry, 0, 255, null, -1, 255)];
+                SvgRoot scene = new(null, null, null, geometries, commands, false, 0, null);
+                SvgRenderLimits limits = options.Limits;
+                long remaining = limits.MaximumWorkUnits - workUnits;
+                if (remaining <= 0) throw new SvgException(SvgErrorCode.LimitExceeded, "Image coverage exceeds the configured work limit.");
+                SvgRenderLimits bounded = new(limits.MaximumAccountedBytes, limits.MaximumInputBytes, limits.MaximumDimension, limits.MaximumPixels,
+                    limits.MaximumEncodedPngBytes, limits.MaximumNodes, limits.MaximumPathCommands, checked((int)remaining), limits.MaximumXmlDepth, limits.MaximumAttributesPerElement);
+                SvgRenderOptions maskOptions = new(new SvgViewport(bounds.Right - bounds.Left, bounds.Bottom - bounds.Top), 1, SvgColor.Transparent, bounded);
+                RasterizedSurface result = Rasterize(scene, maskOptions, budget, RasterSurfaceMode.PremultipliedGlyph, cancellationToken);
+                workUnits += result.WorkUnits;
+                return result;
             }
         }
 

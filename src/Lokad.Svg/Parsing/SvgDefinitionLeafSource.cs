@@ -27,6 +27,8 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     /// <summary>Borrows the source ancestor map for local geometry consumers; authored leaf transforms remain attributes.</summary>
     internal SvgAffineTransform InheritedTransform { get; private init; }
+    internal SvgRenderLimits? ImageLimits { get; private set; }
+    internal SvgViewportLengthBases ImageBases { get; private set; }
 
     private SvgDefinitionLeafSource(string element, Attribute[] attributes, SvgComputedStyle authored,
         SvgInheritedStrokeStyle constructedStroke, IReadOnlyDictionary<string, SvgColor> colors,
@@ -42,6 +44,14 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
 
     internal static SvgDefinitionLeafSource CaptureUnconstructed(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state)
         => Capture(reader, context, state, true);
+
+    internal static SvgDefinitionLeafSource CaptureImage(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, SvgRenderLimits limits)
+    {
+        SvgDefinitionLeafSource source = Capture(reader, context, state, true);
+        source.ImageLimits = limits;
+        source.ImageBases = context.LengthBases;
+        return source;
+    }
 
     private static SvgDefinitionLeafSource Capture(XmlReader reader, SvgPaintableElementContext context, SvgDocumentState state, bool unconstructed)
     {
@@ -121,6 +131,31 @@ internal sealed class SvgDefinitionLeafSource : XmlReader
             RetainInstanceStrokePath = retainMappedContour
         };
         return SvgDefinitionParser.LowerInstanceSource(this, context, state);
+    }
+
+    /// <summary>Replays a referenced image through ordinary decoding/placement with the complete instance map.</summary>
+    /// <remarks>Source attributes and original limits/bases stay borrowed from this document. The caller owns
+    /// returned image/path geometry; failed decode or binding releases partial owners under existing work/cancellation.</remarks>
+    internal SvgDefinition LowerImage(SvgUseReference reference, SvgViewportFrame? frame, SvgDocumentState state)
+    {
+        _attribute = -1;
+        SvgAffineTransform placement = SvgReferenceResolver.PlainInstancePlacement(reference, frame);
+        SvgPaintableElementContext context = new(new(reference.InheritedFill, reference.IsDisplayed, reference.IsVisible, placement)
+            { OwnOpacity = reference.ElementParentOpacity }, SvgInheritedTextStyle.Default, reference.InheritedStroke,
+            default, _colors, _work, _token, state.OutputMagnification, reference.InheritedFillRule)
+        { AuthoredStyle = _authored, LengthBases = ImageBases, RecordingScope = reference.RecordingScope };
+        SvgDefinition result = SvgDefinitionParser.LowerInstanceSource(this, context, state);
+        try
+        {
+            if (frame is {} viewport)
+                for (int index = 0; index < result.Geometries.Length; index++)
+                {
+                    _work.Consume(_token);
+                    result.Geometries[index] = SvgClipPathSyntax.ApplyLeafClip(result.Geometries[index], viewport.Clip);
+                }
+            return result;
+        }
+        catch { foreach (SvgGeometry geometry in result.Geometries) geometry.Dispose(); throw; }
     }
 
     public override int AttributeCount => _attributes.Length;

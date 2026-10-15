@@ -12,8 +12,20 @@ internal sealed class SvgImageGeometry : IDisposable
 
     internal SvgImageGeometry(DecodedPngRaster raster, int width, int height, SvgRectangle box,
         SvgShaderMatrix referenceMap, SvgShaderMatrix localMap, byte opacity)
+        : this(raster, null, width, height, box, referenceMap, localMap, opacity) { }
+
+    /// <summary>Retains a uniform decoded source before independent bitmap paint opacity, without a pixel array.</summary>
+    internal SvgImageGeometry(SvgColor color, int width, int height, SvgRectangle box,
+        SvgShaderMatrix referenceMap, SvgShaderMatrix localMap, byte opacity)
+        : this(null, new((byte)((color.Red * color.Alpha + 127) / 255),
+            (byte)((color.Green * color.Alpha + 127) / 255), (byte)((color.Blue * color.Alpha + 127) / 255), color.Alpha),
+            width, height, box, referenceMap, localMap, opacity) { }
+
+    private SvgImageGeometry(DecodedPngRaster? raster, SvgConstantShaderPaint? uniformSample, int width, int height,
+        SvgRectangle box, SvgShaderMatrix referenceMap, SvgShaderMatrix localMap, byte opacity)
     {
         _raster = raster;
+        UniformSample = uniformSample;
         Width = width;
         Height = height;
         Box = box;
@@ -23,6 +35,7 @@ internal sealed class SvgImageGeometry : IDisposable
     }
 
     internal byte[] Pixels => (_raster ?? throw new ObjectDisposedException(nameof(SvgImageGeometry))).Pixels;
+    internal SvgConstantShaderPaint? UniformSample { get; }
     internal int Width { get; }
     internal int Height { get; }
     internal SvgRectangle Box { get; }
@@ -32,8 +45,8 @@ internal sealed class SvgImageGeometry : IDisposable
 
     internal SvgImageGeometry ClipTo(SvgClipBox clip)
     {
-        DecodedPngRaster raster = _raster ?? throw new ObjectDisposedException(nameof(SvgImageGeometry));
-        SvgImageGeometry successor = new(raster, Width, Height, clip.ClipRectangle(Box), ReferenceMap, LocalMap, Opacity);
+        if (_raster is null && UniformSample is null) throw new ObjectDisposedException(nameof(SvgImageGeometry));
+        SvgImageGeometry successor = new(_raster, UniformSample, Width, Height, clip.ClipRectangle(Box), ReferenceMap, LocalMap, Opacity);
         _raster = null;
         return successor;
     }

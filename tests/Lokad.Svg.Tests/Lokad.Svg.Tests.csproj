@@ -137,6 +137,7 @@
     <None Include="../Research/marker-instance-content/*.svg" Link="TestData/marker-instance-content/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/colored-effects-markers/*.svg" Link="TestData/colored-effects-markers/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../Research/static-css-images/*.svg" Link="TestData/static-css-images/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Research/affine-image-maps/*.svg" Link="TestData/affine-image-maps/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../src/Lokad.Svg/Lokad.Svg.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />

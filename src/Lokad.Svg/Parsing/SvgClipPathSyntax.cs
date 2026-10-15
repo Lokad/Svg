@@ -677,7 +677,8 @@ internal static class SvgClipPathSyntax
         return frame.Clip.Intersect(placed);
     }
 
-    private static SvgGeometry ApplyLeafClip(SvgGeometry geometry, SvgClipBox clip)
+    /// <summary>Transfers geometry/path ownership through the existing axis-aligned leaf clip.</summary>
+    internal static SvgGeometry ApplyLeafClip(SvgGeometry geometry, SvgClipBox clip)
     {
         if (geometry.Kind == SvgGeometryKind.Rectangle)
         {

@@ -1299,9 +1299,13 @@ public sealed class SvgRootParserTests
     [Fact]
     public void Applies_element_opacity_to_embedded_images()
     {
-        SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
+        using SvgRoot root = SvgRootParser.Parse("<svg xmlns='http://www.w3.org/2000/svg'><image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/iZk9HQAAAABJRU5ErkJggg==' x='0' y='0' width='8' height='8' opacity='0.5'/></svg>"u8.ToArray(), SvgRenderLimits.Default, CancellationToken.None);
 
-        Assert.Equal(new SvgRectangle(0, 0, 8, 8, new SvgColor(255, 0, 0, 128), true, null), Assert.Single(root.Rectangles));
+        Assert.Equal(SvgGeometryKind.EmbeddedImage, Assert.Single(root.Geometries).Kind);
+        using SvgConverter.RasterizedSurface output = SvgConverter.Rasterize(root,
+            new(new SvgViewport(8, 8), 1, SvgColor.Transparent, SvgRenderLimits.Default), new RenderBudget(1_000_000), CancellationToken.None);
+        for (int offset = 0; offset < output.Pixels.Length; offset += 4)
+            Assert.Equal(new byte[] { 255, 0, 0, 128 }, output.Pixels.AsSpan(offset, 4).ToArray());
     }
 
     [Fact]
@@ -1359,13 +1363,15 @@ public sealed class SvgRootParserTests
     [Theory]
     [InlineData("<image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAABCAYAAAAb4BS0AAAADklEQVR4nGP4z8DwH4YBJuYF+2EsXwgAAAAASUVORK5CYII=' x='0' y='0' width='5' height='5'/>")]
     [InlineData("<image href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAYAAAD0In+KAAAADklEQVR4nGP4z8DwH4QBEfcD/ePF9e8AAAAASUVORK5CYII=' x='0' y='0' width='3' height='3'/>")]
-    public void Rejects_fractional_aspect_mappings(string image)
+    public void Retains_fractional_aspect_mappings(string image)
     {
         byte[] svg = System.Text.Encoding.UTF8.GetBytes("<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8'>" + image + "</svg>");
 
-        SvgException exception = Assert.Throws<SvgException>(() => SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None));
-
-        Assert.Equal(SvgErrorCode.UnsupportedFeature, exception.ErrorCode);
+        using SvgRoot root = SvgRootParser.Parse(svg, SvgRenderLimits.Default, CancellationToken.None);
+        SvgRectangle rectangle = Assert.Single(root.Rectangles);
+        Assert.Equal(SvgGeometryKind.Rectangle, Assert.Single(root.Geometries).Kind);
+        Assert.True(rectangle.Height > 0 && rectangle.Height < rectangle.Width);
+        Assert.Equal(rectangle.Width, rectangle.Y * 2 + rectangle.Height, 12);
     }
 
     [Theory]

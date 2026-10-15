@@ -118,40 +118,82 @@ internal static class SvgLeafParser
         return new SvgParsedGeometry(retained.Detach(), 0);
     }
 
-    internal static SvgGeometry ParseImage(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget)
+    internal static SvgGeometry ParseImage(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame, double? baseWidth, double? baseHeight, SvgRenderLimits limits, SvgDocumentState state)
     {
-        SvgImageSyntax syntax = SvgImageSyntax.Parse(reader, baseWidth, baseHeight);
-        SvgComputedStyle style = context.ResolveStyle(reader);
-        // SVG fill does not paint image pixels; a container's shader cannot recolor them.
-        if (SvgPatternSyntax.IsPatternFill(style.Fill)) style = style with { Fill = "white" };
-        SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
-        double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
-        double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
-        DecodedPngImage image = DecodeImage(syntax.Href, limits, budget, context.WorkCounter, context.CancellationToken);
+        SvgRecordedPaintStyle source = SvgPaintRecording.Resolve(reader, context, state, frame);
+        SvgGeometry geometry = ParseImageCore(reader, context with { DeferPaintOpacity = true }, frame, baseWidth, baseHeight,
+            limits, state.Budget, source.ElementOpacity.Value != 1);
         try
         {
-            string? aspect = reader.GetAttribute("preserveAspectRatio");
-            if (image.Raster is null)
-            {
-                DecodedSolidImage solid = new(StampOpacity(image.Color, element.Presentation.Opacity), image.Width, image.Height);
-                SvgRectangle placement = SvgImageSyntax.MapPlacement(aspect, syntax, solid, width, height);
-                SvgRectangle rectangle = element.Transform.Apply(placement with { Color = solid.Color, HasFill = element.Presentation.HasFill });
-                if (frame is not null) rectangle = frame.Value.Clip.ClipRectangle(frame.Value.Shift(rectangle));
-                return SvgGeometry.FromRectangle(rectangle);
-            }
-            (SvgRectangle box, SvgShaderMatrix local) = SvgImageSyntax.MapRasterPlacement(aspect, syntax, image.Width, image.Height, width, height);
-            box = element.Transform.Apply(box with { HasFill = element.Presentation.HasFill });
-            SvgAffineTransform reference = element.Transform;
-            if (frame is { } viewport)
-            {
-                box = viewport.Clip.ClipRectangle(viewport.Shift(box));
-                reference = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(reference);
-            }
-            SvgShaderMatrix referenceMap = new((float)reference.A, (float)reference.C, (float)reference.E,
-                (float)reference.B, (float)reference.D, (float)reference.F);
-            return SvgGeometry.FromImage(new(image.Raster, image.Width, image.Height, box, referenceMap, local, element.Presentation.Opacity));
+            // An image is one paint operation. Its opacity can fold into a single
+            // paint, but must restore outside an authored mask like other leaves.
+            float alpha = geometry.Kind == SvgGeometryKind.Rectangle ? geometry.Rectangle.Color.Alpha / 255f : 1;
+            SvgRecordedPaintValue paint = new(state.NewPaintOperationIdentity(), alpha, true, source.Scope, source.ElementOpacity, source.OpacityScope);
+            return geometry with { RecordedPaint = state.Scene.RegisterRecordedPaint(paint) };
         }
-        catch { image.Raster?.Dispose(); throw; }
+        catch { geometry.Dispose(); throw; }
+
+        static SvgGeometry ParseImageCore(XmlReader reader, SvgPaintableElementContext context, SvgViewportFrame? frame,
+            double? baseWidth, double? baseHeight, SvgRenderLimits limits, RenderBudget budget, bool retainBitmap)
+        {
+            SvgImageSyntax syntax = SvgImageSyntax.Parse(reader, baseWidth, baseHeight);
+            SvgComputedStyle style = context.ResolveStyle(reader);
+            // SVG fill does not paint image pixels; a container's shader cannot recolor them.
+            if (SvgPatternSyntax.IsPatternFill(style.Fill)) style = style with { Fill = "white" };
+            SvgResolvedPaintableElement element = context.ResolveShape(style, reader, false);
+            double width = syntax.Width ?? baseWidth ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            double height = syntax.Height ?? baseHeight ?? throw new SvgException(SvgErrorCode.UnsupportedFeature, "Omitted image dimensions default to 100 percent of unknown parent dimensions, which is not implemented.");
+            DecodedPngImage image = DecodeImage(syntax.Href, limits, budget, context.WorkCounter, context.CancellationToken);
+            try
+            {
+                string? aspect = reader.GetAttribute("preserveAspectRatio");
+                if (image.Raster is null && !retainBitmap && element.Transform.IsAxisAligned)
+                {
+                    DecodedSolidImage solid = new(image.Color, image.Width, image.Height);
+                    SvgRectangle placement = SvgImageSyntax.MapPlacement(aspect, syntax, solid, width, height);
+                    SvgRectangle rectangle = element.Transform.Apply(placement with { Color = solid.Color, HasFill = element.Presentation.HasFill });
+                    if (frame is not null) rectangle = frame.Value.Clip.ClipRectangle(frame.Value.Shift(rectangle));
+                    return SvgGeometry.FromRectangle(rectangle);
+                }
+                (SvgRectangle box, SvgShaderMatrix local) = SvgImageSyntax.MapRasterPlacement(aspect, syntax, image.Width, image.Height, width, height);
+                SvgRectangle sourceBox = box;
+                bool affine = !element.Transform.IsAxisAligned;
+                if (affine)
+                {
+                    SvgPaintBounds bounds = new SvgPaintBounds((float)box.X, (float)box.Y, (float)(box.X + box.Width), (float)(box.Y + box.Height))
+                        .Map(element.Transform, context.WorkCounter, context.CancellationToken);
+                    box = new(bounds.Left, bounds.Top, bounds.Right - bounds.Left, bounds.Bottom - bounds.Top, default, element.Presentation.HasFill, null);
+                }
+                else box = element.Transform.Apply(box with { HasFill = element.Presentation.HasFill });
+                SvgAffineTransform reference = element.Transform;
+                if (frame is { } viewport)
+                {
+                    box = viewport.Clip.ClipRectangle(viewport.Shift(box));
+                    reference = SvgAffineTransform.FromScaleOffset(viewport.ScaleX, viewport.ScaleY, viewport.OffsetX, viewport.OffsetY).ComposeChecked(reference);
+                }
+                SvgShaderMatrix referenceMap = new((float)reference.A, (float)reference.C, (float)reference.E,
+                    (float)reference.B, (float)reference.D, (float)reference.F);
+                SvgGeometry geometry = SvgGeometry.FromImage(image.Raster is {} pixels
+                    ? new(pixels, image.Width, image.Height, box, referenceMap, local, element.Presentation.Opacity)
+                    : new(image.Color, image.Width, image.Height, box, referenceMap, local, element.Presentation.Opacity));
+                if (!affine) return geometry;
+                try
+                {
+                    using BudgetedParserList<SvgAuthoredPathCommand> commands = new(budget, SvgMemoryCategory.Scene, context.WorkCounter, context.CancellationToken);
+                    double right = sourceBox.X + sourceBox.Width, bottom = sourceBox.Y + sourceBox.Height;
+                    commands.Add(new(SvgAuthoredPathVerb.Move, SvgAuthoredArcFlags.None, new(sourceBox.X, sourceBox.Y), default, default));
+                    commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right, sourceBox.Y), default, default));
+                    commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(right, bottom), default, default));
+                    commands.Add(new(SvgAuthoredPathVerb.Line, SvgAuthoredArcFlags.None, new(sourceBox.X, bottom), default, default));
+                    commands.Add(new(SvgAuthoredPathVerb.Close, SvgAuthoredArcFlags.None, default, default, default));
+                    OwnedParserArray<SvgAuthoredPathCommand> owned = commands.Detach();
+                    try { return geometry with { AuthoredPath = SvgAuthoredPath.CreateConvexShape(owned, reference, budget) }; }
+                    catch { owned.Dispose(); throw; }
+                }
+                catch { geometry.Dispose(); throw; }
+            }
+            catch { image.Raster?.Dispose(); throw; }
+        }
     }
 
     private static DecodedPngImage DecodeImage(string href, SvgRenderLimits limits, RenderBudget budget, ParserWorkCounter workCounter, CancellationToken cancellationToken)
@@ -171,9 +213,6 @@ internal static class SvgLeafParser
         if (!Convert.TryFromBase64Chars(encoded, decoded, out int written)) throw new SvgException(SvgErrorCode.MalformedInput, "Embedded image data is not valid base64.");
         return PngImageDecoder.Decode(decoded.AsMemory(0, written), limits, budget, workCounter, cancellationToken);
     }
-
-    private static SvgColor StampOpacity(SvgColor color, byte opacity)
-        => new(color.Red, color.Green, color.Blue, SvgReferenceResolver.MultiplyAlpha(color.Alpha, opacity));
 
     private static SvgParsedGeometry LowerPaintServerRect(XmlReader reader, SvgPaintableElementContext context, SvgComputedStyle patternStyle, SvgDocumentState state, SvgViewportFrame? frame)
     {

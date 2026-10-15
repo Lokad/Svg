@@ -1,3 +1,41 @@
+## Complete affine images through shared replay and painting (2026-10-15)
+
+The unchanged [whole image sheet](../tests/Research/affine-image-maps/README.md)
+and three separate controls are exact on Windows/Linux. The bank was declared at
+`5a331751` before image correction, using two unchanged embedded PNG assets and
+healthy stable platform triples. It closes the original uniform fractional,
+affine-bound and local image-reference gates without changing references.
+
+Uniform pixels retain packed premultiplied channels before independent paint
+opacity, without a pixel array. Applying opacity before premultiplication left
+4,457 wrong colors in the uniform control despite exact alpha. Referenced images
+reuse retained attributes and the original conversion's limits/bases, then lower
+through ordinary placement. Deferred native clips bind through shared instance
+resource machinery rather than an image-specific clipping implementation.
+
+General affine images retain a source rectangle and compose its map through the
+existing authored-path coverage rasterizer into a bounded temporary surface.
+Image sampling and paint happen once into the parent destination. The established
+axis-aligned bitmap path keeps its four-bit interpolation and packed coverage;
+affine sampling uses the pinned raster pipeline's Q15 intermediate lerps.
+
+Recording the image as one paint operation enables existing single-paint opacity
+folding while preserving outer restoration for an authored mask. Baked image
+opacity plus isolated use/mask restoration left 5,407 differing pixels in the
+sheet; shared recording reduces that to a sampling-boundary column and one pixel.
+Slice must crop the float source rectangle before constructing its pixel map;
+extending the destination first changes low bits after a bounded layer shifts
+the bitmap origin. Source cropping closes the 71-pixel column. Low-precision
+pipeline matrix products round separately; the generic fused map left the final
+one-level color difference. Existing gradient/glyph arithmetic remains unchanged.
+
+Temporary tracing is removed. No document identity, observed pixel or asset
+predicate enters rendering. The [qualification receipt](../artifacts/maintenance-review-20261012/affine-image-qualified-results.json)
+owns full platform results, original-input assertion migrations and resource
+regressions. Detailed rejected arithmetic and diagnostic captures stay under the
+existing ignored [study](../artifacts/affine-image-sheet-20261015/). Wider G7 and
+dependent image content remain required under PLAN.md.
+
 ## Shared ordered glyph paint and retained dash curves (2026-10-15)
 
 The unchanged label/path sheet advances to span rotation on text paths. Two new

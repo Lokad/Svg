@@ -1,0 +1,4 @@
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="108">
+<defs><image id="stamp" x="0" y="0" width="90.5" height="60.25" preserveAspectRatio="none" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAADCAYAAABbNsX4AAAANUlEQVR4nGNQSe35f2KO6QGTqqiG////OwD5DAxAAQeQAJBzAMj+D2QfYAAS/6ECDUA2WCUAqOUcMAMh7joAAAAASUVORK5CYII="/><clipPath id="round"><circle cx="53" cy="43" r="35.25"/></clipPath><mask id="partial" maskUnits="userSpaceOnUse" x="0" y="0" width="112" height="92"><rect width="112" height="92" fill="#808080"/><rect x="19.25" width="36.5" height="92" fill="white"/></mask></defs><g transform="translate(12.25 10.5)"><use href="#stamp" clip-path="url(#round)" mask="url(#partial)" opacity=".75"/></g>
+</svg>

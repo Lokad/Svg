@@ -1,3 +1,23 @@
+## Complete affine image-map sheet (2026-10-15)
+
+The unchanged [whole sheet](../tests/Research/affine-image-maps/README.md) is
+**1/1 exact** with **3/3 separate controls** on Windows/Linux. It qualifies
+uniform fractional paint opacity, varied-pixel rotation/skew/reflection, source
+cropping for slice, local image use and clip/partial-mask replay. The original
+SVG/PNG bytes, declared outputs and healthy platform capture triples are frozen.
+
+Images share source replay, retained resource limits, recorded paint opacity and
+bounded path coverage. Single-image opacity folds into its paint; authored masks
+retain their outer restoration. Axis-aligned bitmap arithmetic remains separate
+from Q15 affine sampling and its separately rounded matrix products. Material
+storage/work denial, active coverage cancellation, cleanup and retry are protected.
+
+The [qualified receipt](../artifacts/maintenance-review-20261012/affine-image-qualified-results.json)
+records all 7,686 tests/platform and preserved preceding outputs. Earlier uniform
+integral-edge, affine-image and local image-use blockers are superseded. Remaining
+G7 alignment/location evidence and dependent image content stay required; this
+document does not close G7 or S17.
+
 ## Complete supplied-font label/path sheet (2026-10-15)
 
 The unchanged [whole sheet](../tests/Research/remaining-label-path-sheet/README.md)
